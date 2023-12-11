@@ -17,7 +17,7 @@ object ShopFlashSaleTracking: BaseTrackerConst() {
     private const val EVENT_ACTION_CLICK_VIEW_ALL_CARD = "click view all card on dynamic channel flash sale toko home"
 
     private const val SHOP_ITEM_ID_FORMAT = "%s_%s_%s_%s_%s"
-    private const val SHOP_ITEM_NAME_FORMAT = "/ - p%s - dynamic channel rilisan spesial home - banner - %s"
+    private const val SHOP_ITEM_NAME_FORMAT = "/ - p%s - dynamic channel flash sale toko home - banner - %s"
 
     private const val EVENT_LABEL_FORMAT = "%s - %s"
 
@@ -68,6 +68,7 @@ object ShopFlashSaleTracking: BaseTrackerConst() {
                 trackingAttributionModel.headerName
             )
         )
+            .appendChannelId(trackingAttributionModel.channelId)
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendUserId(userId)
@@ -115,6 +116,7 @@ object ShopFlashSaleTracking: BaseTrackerConst() {
                 trackingAttributionModel.headerName
             )
         )
+            .appendChannelId(trackingAttributionModel.channelId)
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendUserId(userId)
