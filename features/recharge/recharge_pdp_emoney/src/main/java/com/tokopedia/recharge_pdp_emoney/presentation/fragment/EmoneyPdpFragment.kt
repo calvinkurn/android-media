@@ -660,12 +660,6 @@ open class EmoneyPdpFragment :
         startActivityForResult(intent, REQUEST_CODE_EMONEY_PDP_CHECK_SALDO)
     }
 
-    override fun onClickCameraIcon() {
-        EmoneyPdpAnalyticsUtils.clickCameraIcon(userSession.userId, getIssuerName(issuerId))
-        val intent = RouteManager.getIntent(activity, ApplinkConsInternalDigital.CAMERA_OCR)
-        startActivityForResult(intent, REQUEST_CODE_EMONEY_PDP_CAMERA_OCR)
-    }
-
     override fun onClickInputView(inputNumber: String) {
         if (topUpBillsViewModel.favNumberData.value is Success) {
             showFavoriteNumbersPage((topUpBillsViewModel.favNumberData.value as Success).data)

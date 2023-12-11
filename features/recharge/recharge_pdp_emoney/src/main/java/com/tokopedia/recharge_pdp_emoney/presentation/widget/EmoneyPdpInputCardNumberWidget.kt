@@ -45,9 +45,6 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
             clearNumberAndOperator()
             listener?.onRemoveNumberIconClick()
         }
-        binding.emoneyPdpCardCameraIcon.setOnClickListener {
-            listener?.onClickCameraIcon()
-        }
 
         binding.emoneyPdpCardInputNumber.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -101,7 +98,6 @@ class EmoneyPdpInputCardNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     interface ActionListener {
-        fun onClickCameraIcon()
         fun onClickInputView(inputNumber: String)
         fun onRemoveNumberIconClick()
         fun onInputNumberChanged(inputNumber: String)
