@@ -1155,7 +1155,7 @@ class ChatbotFragment2 :
 
         // Todo : remove hardcode
         topBotResponse.isSlowMode = true
-        topBotResponse.slowModeDurationInSeconds = 3
+        topBotResponse.slowModeDurationInSeconds = 5
 
         smallReplyBox?.sendButton?.apply {
             isSlowModeEnabled = topBotResponse.isSlowMode
@@ -1954,6 +1954,9 @@ class ChatbotFragment2 :
                 )
                 getViewState()?.scrollToBottom()
             }
+
+            smallReplyBox?.hide()
+            bigReplyBox?.show()
 
             if (smallReplyBox?.isVisible == true) {
                 smallReplyBox?.sendButton?.startSlowDown()
@@ -2783,7 +2786,9 @@ class ChatbotFragment2 :
             bigReplyBoxBottomSheet?.setErrorStatus(isError)
             BigReplyBoxBottomSheet.replyBoxClickListener = this
             bigReplyBoxBottomSheet?.clearContentPadding = true
-            bigReplyBoxBottomSheet?.show(childFragmentManager, "")
+            if (bigReplyBox?.sendButton?.isSlowModeRunning == false) {
+                bigReplyBoxBottomSheet?.show(childFragmentManager, "")
+            }
         }
     }
 
@@ -2806,12 +2811,12 @@ class ChatbotFragment2 :
         enableSendButton()
     }
 
-    override fun dismissBigReplyBoxBottomSheet(msg: String, wordLength: Int) {
-        if (msg.isEmpty()) {
+    override fun dismissBigReplyBoxBottomSheet(message: String, wordLength: Int) {
+        if (message.isEmpty()) {
             bigReplyBox?.setText(bigReplyBoxPlaceHolder)
             return
         }
-        bigReplyBox?.setText(msg)
+        bigReplyBox?.setText(message)
         if (wordLength >= MINIMUM_NUMBER_OF_WORDS) {
             bigReplyBox?.enableSendButton()
             enableSendButton()

@@ -16,6 +16,8 @@ import com.tokopedia.chatbot.databinding.BottomsheetChatbotBigReplyBoxBinding
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+
 class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     private var isSendButtonActivated: Boolean = false
     private var labelText = ""
@@ -50,7 +52,6 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         bindClickListeners()
         setUpEditText()
         getBindingView().chatText.icon1.showWithCondition(shouldShowAddAttachmentButton)
-        changeSendButtonIcon(isEnabled = true)
         if (isError) {
             setWordLengthError()
         }
@@ -63,7 +64,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
             minLine = MINIMUM_NUMBER_OF_LINES
             maxLine = MAXIMUM_NUMBER_OF_LINES
             labelText.text = this@BigReplyBoxBottomSheet.labelText
-            context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+            context?.resources?.getColor(unifyprinciplesR.color.Unify_NN950)
                 ?.let { labelText.setTextColor(it) }
             setPlaceholder(hintText)
             if (messageText.isNotEmpty()) {
@@ -72,7 +73,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
             editText.setHintTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                    unifyprinciplesR.color.Unify_NN400
                 )
             )
             val message = String.format(
@@ -144,7 +145,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
                 if (getWordCount() >= MINIMUM_NUMBER_OF_WORDS) {
                     enableSendButton()
                 }
-                context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                context?.resources?.getColor(unifyprinciplesR.color.Unify_NN950)
                     ?.let { _viewBinding?.chatText?.labelText?.setTextColor(it) }
             }
 
@@ -164,14 +165,6 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
 
     override fun enableSendButton() {
         isSendButtonActivated = true
-    }
-
-    private fun changeSendButtonIcon(isEnabled: Boolean) {
-        if (isEnabled) {
-            getBindingView().sendButton.setImageResource(R.drawable.ic_chatbot_send)
-        } else {
-            getBindingView().sendButton.setImageResource(R.drawable.ic_chatbot_send_deactivated)
-        }
     }
 
     private fun setWordLengthWarning(wordCount: Int) {
@@ -214,7 +207,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
             )
             setMessage(message)
             isInputError = true
-            context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+            context?.resources?.getColor(unifyprinciplesR.color.Unify_RN500)
                 ?.let { labelText.setTextColor(it) }
         }
     }

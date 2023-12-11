@@ -17,10 +17,11 @@ class BigReplyBox(context: Context, attributeSet: AttributeSet) :
 
     private var replyBox: CardUnify? = null
     private var addAttachmentMenu: ImageView? = null
-    private var sendButton: SlowModeSendButton? = null
     private var parentLayout: ConstraintLayout? = null
     private var isSendButtonEnabled: Boolean = true
     private var replyBoxText: com.tokopedia.unifyprinciples.Typography? = null
+    var sendButton: SlowModeSendButton? = null
+        private set
 
     var sendButtonListener: ChatbotSendButtonListener? = null
     var replyBoxClickListener: ReplyBoxClickListener? = null

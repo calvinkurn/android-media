@@ -43,6 +43,7 @@ class SlowModeSendButton(context: Context, attributeSet: AttributeSet) :
             }
 
             override fun onFinish() {
+                isSlowModeRunning = false
                 enableSendButton()
             }
         }
@@ -50,14 +51,14 @@ class SlowModeSendButton(context: Context, attributeSet: AttributeSet) :
     }
 
     fun enableSendButton() {
-        isSlowModeRunning = false
+        if (isSlowModeRunning) return
         circleAnimation.enable()
         iconSend.show()
         textTimer.gone()
     }
 
     fun disableSendButton() {
-        isSlowModeRunning = false
+        if (isSlowModeRunning) return
         circleAnimation.disable()
         iconSend.show()
         textTimer.gone()
