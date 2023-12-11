@@ -44,6 +44,6 @@ class AccountSettingViewModel @Inject constructor(
 
 interface AccountSettingUiModel {
     object Loading : AccountSettingUiModel
-    data class Display(val config: AccountSettingResponse.AccountSettingConfig = AccountSettingResponse.AccountSettingConfig()) :
+    data class Display(val config: AccountSettingResponse.Config = AccountSettingResponse.Config()) :
         AccountSettingUiModel
 }

@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class AccountSettingResponse(
     @SerializedName("accountSettingConfig")
-    val accountSettingConfig: AccountSettingConfig = AccountSettingConfig()
+    val config: Config = Config()
 ) {
-    data class AccountSettingConfig(
+    data class Config(
         @SerializedName("daftarAlamat")
         val daftarAlamat: Boolean = true,
         @SerializedName("dataDiri")

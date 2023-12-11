@@ -11,12 +11,12 @@ import javax.inject.Inject
 class GetAccountSettingUseCase @Inject constructor(
     @ApplicationContext private val gqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<Unit, AccountSettingResponse.AccountSettingConfig>(dispatcher.io) {
+) : CoroutineUseCase<Unit, AccountSettingResponse.Config>(dispatcher.io) {
 
-    override suspend fun execute(params: Unit): AccountSettingResponse.AccountSettingConfig {
+    override suspend fun execute(params: Unit): AccountSettingResponse.Config {
         val param = mapOf("type" to TYPE_CUSTOMER_APP)
         val response: AccountSettingResponse = gqlRepository.request(graphqlQuery(), param)
-        return response.accountSettingConfig
+        return response.config
     }
 
     override fun graphqlQuery(): String = """

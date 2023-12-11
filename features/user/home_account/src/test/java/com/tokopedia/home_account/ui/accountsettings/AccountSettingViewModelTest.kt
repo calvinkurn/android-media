@@ -36,7 +36,7 @@ class AccountSettingViewModelTest {
 
     @Test
     fun `given success response state should display content`() {
-        val success = AccountSettingResponse.AccountSettingConfig(dokumenDataDiri = true)
+        val success = AccountSettingResponse.Config(dokumenDataDiri = true)
         coEvery { getAccountSetting(Unit) } returns success
         sut.fetch()
 
