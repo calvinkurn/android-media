@@ -60,6 +60,7 @@ internal class ProductCardRenderer(
     private fun renderImage(productCardModel: ProductCardModel) {
         val cornerType= if (productCardModel.stockInfo() != null) TOP else ALL
         imageView?.apply {
+            cornerRadius = if (cornerType != ALL) 0 else cornerRadius
             imageRounded(
                 productCardModel.imageUrl,
                 context.resources.getDimensionPixelSize(

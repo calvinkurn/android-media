@@ -35,6 +35,25 @@
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/product_card_reimagine_carousel_padding_bottom">
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/productCardGuidelineOutlineCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.35" />
+
+            <View
+                android:id="@+id/productCardOutlineCard"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/product_card_border_item_with_background"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/productCardGuidelineOutlineCard"
+                tools:visibility="visible" />
+
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/productCardImage"
                 android:layout_width="0dp"
@@ -43,7 +62,6 @@
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 android:scaleType="centerCrop"
-                app:unify_image_corner_radius="0"
                 app:layout_constraintDimensionRatio="H,1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -133,6 +151,20 @@
                 tools:layout_height="6dp"
                 tools:visibility="visible" />
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/productCardGuidelineStartContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="0dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/productCardGuidelineEndContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="0dp" />
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productCardName"
                 android:layout_width="0dp"
@@ -141,8 +173,8 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:textColor="@color/Unify_NN950"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/productCardGuidelineEndContent"
+                app:layout_constraintStart_toStartOf="@+id/productCardGuidelineStartContent"
                 app:layout_goneMarginTop="@dimen/product_card_reimagine_name_image_margin_top"
                 app:layout_constraintTop_toBottomOf="@id/productCardStockInfoBackground"
                 app:typographyType="paragraph_3"
@@ -157,7 +189,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/Unify_NN950"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/productCardGuidelineStartContent"
                 app:layout_constraintTop_toBottomOf="@id/productCardName"
                 app:typographyType="display_2"
                 app:typographyWeight="bold"
@@ -196,7 +228,7 @@
                 app:layout_constraintStart_toEndOf="@id/productCardSlashedPriceInline"
                 app:layout_constraintTop_toTopOf="@+id/productCardSlashedPriceInline"
                 app:layout_constraintBottom_toBottomOf="@+id/productCardSlashedPriceInline"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/productCardGuidelineEndContent"
                 app:typographyType="small"
                 app:typographyWeight="bold"
                 tools:text="10%" />
@@ -212,7 +244,7 @@
                 android:maxLines="1"
                 android:textColor="@color/Unify_NN400"
                 app:typographyType="small"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/productCardGuidelineStartContent"
                 app:layout_constraintTop_toBottomOf="@id/productCardPrice"
                 tools:text="Rp80.500"/>
 
@@ -252,7 +284,7 @@
                 android:textSize="9sp"
                 app:typographyWeight="bold"
                 app:layout_constraintTop_toBottomOf="@id/productCardDiscountSlashedPriceBarrier"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/productCardGuidelineStartContent"
                 tools:textColor="@color/Unify_GN500"
                 tools:text="Cashback Rp10 rb" />
 
@@ -271,15 +303,16 @@
                 android:textSize="9sp"
                 app:typographyWeight="bold"
                 app:layout_constraintTop_toBottomOf="@id/productCardLabelBenefit"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/productCardGuidelineStartContent"
                 tools:text="Beli 3 Diskon 10%" />
 
             <LinearLayout
                 android:id="@+id/productCardCredibility"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="@dimen/product_card_reimagine_credibility_height"
                 android:layout_marginTop="@dimen/product_card_reimagine_credibility_margin_top"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/productCardGuidelineEndContent"
+                app:layout_constraintStart_toStartOf="@+id/productCardGuidelineStartContent"
                 app:layout_constraintTop_toBottomOf="@id/productCardLabelBMSM">
 
                 <com.tokopedia.iconunify.IconUnify
@@ -287,9 +320,9 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:adjustViewBounds="true"
+                    android:contentDescription="@string/product_card_content_desc_imageRating"
                     android:gravity="center"
                     android:scaleType="centerCrop"
-                    android:contentDescription="@string/product_card_content_desc_imageRating"
                     app:icon_color_light_enable="@color/Unify_YN300"
                     app:icon_color_night_enable="@color/Unify_YN600"
                     app:icon_name="STAR_FILLED"
@@ -299,29 +332,29 @@
                     android:id="@+id/productCardRating"
                     android:layout_width="wrap_content"
                     android:layout_height="16dp"
+                    android:layout_marginStart="2dp"
                     android:gravity="center"
                     android:textColor="@color/Unify_NN600"
-                    android:layout_marginStart="2dp"
                     app:typographyType="display_3"
-                    tools:text="4.9"/>
+                    tools:text="4.9" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/productCardRatingDots"
                     android:layout_width="10dp"
                     android:layout_height="16dp"
                     android:gravity="center"
-                    android:textColor="@color/Unify_NN400"
                     android:text="@string/product_card_dots"
-                    app:typographyType="display_3"/>
+                    android:textColor="@color/Unify_NN400"
+                    app:typographyType="display_3" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/productCardLabelCredibility"
                     android:layout_width="wrap_content"
                     android:layout_height="16dp"
-                    android:gravity="center_vertical"
-                    android:textColor="@color/Unify_NN600"
                     android:ellipsize="end"
+                    android:gravity="center_vertical"
                     android:lines="1"
+                    android:textColor="@color/Unify_NN600"
                     app:typographyType="display_3"
                     tools:text="10 rb+ terjual" />
 
@@ -329,19 +362,20 @@
 
             <LinearLayout
                 android:id="@+id/productCardShopSection"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="@dimen/product_card_reimagine_shop_section_height"
                 android:layout_marginTop="@dimen/product_card_reimagine_shop_section_margin_top"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/productCardCredibility"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                app:layout_constraintEnd_toEndOf="@+id/productCardGuidelineEndContent"
+                app:layout_constraintStart_toStartOf="@+id/productCardGuidelineStartContent"
+                app:layout_constraintTop_toBottomOf="@id/productCardCredibility">
 
                 <ImageView
                     android:id="@+id/productCardShopBadge"
-                    android:contentDescription="@string/content_desc_imageShopBadge"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:layout_marginEnd="2dp"
+                    android:contentDescription="@string/content_desc_imageShopBadge"
                     android:visibility="gone"
                     tools:visibility="visible" />
 
@@ -367,7 +401,7 @@
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 android:scaleType="fitStart"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/productCardGuidelineStartContent"
                 app:layout_constraintTop_toBottomOf="@id/productCardShopSection"
                 tools:layout_width="67dp" />
 
