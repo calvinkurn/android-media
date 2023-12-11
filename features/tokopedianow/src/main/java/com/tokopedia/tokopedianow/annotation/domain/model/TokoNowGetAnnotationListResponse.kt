@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.annotation.domain.model
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.common.data.model.response.Header
 
 data class TokoNowGetAnnotationListResponse(
     @SerializedName("TokonowGetAnnotationList")
@@ -8,17 +9,19 @@ data class TokoNowGetAnnotationListResponse(
 ) {
 
     data class GetAnnotationListResponse(
-        @SerializedName("widgetHeader")
-        val widgetHeader: WidgetHeaderResponse = WidgetHeaderResponse(),
+        @SerializedName("header")
+        val header: Header = Header(),
+        @SerializedName("annotationHeader")
+        val annotationHeader: AnnotationHeaderResponse = AnnotationHeaderResponse(),
         @SerializedName("status")
         val status: Int = 0,
-        @SerializedName("widgetList")
-        val widgetList: List<WidgetListResponse> = listOf(),
+        @SerializedName("annotationList")
+        val annotationList: List<AnnotationListResponse> = listOf(),
         @SerializedName("pagination")
         val pagination: PaginationResponse = PaginationResponse()
     )
 
-    data class WidgetHeaderResponse(
+    data class AnnotationHeaderResponse(
         @SerializedName("title")
         val title: String = "",
         @SerializedName("hasMore")
@@ -30,7 +33,7 @@ data class TokoNowGetAnnotationListResponse(
 
     )
 
-    data class WidgetListResponse(
+    data class AnnotationListResponse(
         @SerializedName("annotationID")
         val annotationID: String = "",
         @SerializedName("imageURL")
