@@ -77,15 +77,11 @@ class ProductPreviewFragment @Inject constructor() : TkpdBaseV4Fragment() {
     }
 
     private fun updateSelectedTabView(position: Int) = with(binding.layoutProductPreviewTab) {
-        fun updateIndicatorTab(position: Int) {
-            when (position) {
-                TAB_PRODUCT_POS -> root.transitionToStart()
-                TAB_REVIEW_POS -> root.transitionToEnd()
-                else -> return
-            }
+        when (position) {
+            TAB_PRODUCT_POS -> root.transitionToStart()
+            TAB_REVIEW_POS -> root.transitionToEnd()
+            else -> return
         }
-
-        updateIndicatorTab(position)
     }
 
     override fun onDestroyView() {

@@ -34,12 +34,12 @@
             android:id="@+id/rv_indicator_product"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:itemCount="1"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="16dp"
             tools:listitem="@layout/item_product_indicator" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
