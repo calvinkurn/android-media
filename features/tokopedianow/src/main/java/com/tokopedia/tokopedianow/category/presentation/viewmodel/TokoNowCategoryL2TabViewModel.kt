@@ -346,11 +346,6 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         }
     }
 
-    fun getWarehouseIds(): String {
-        val localCacheModel = addressData.getAddressData()
-        return AddressMapper.mapToWarehouseIds(localCacheModel)
-    }
-
     fun onClickSimilarProduct(productId: String) {
         val index = visitableList.getProductIndex(productId)
         _clickSimilarProductTracker.postValue(Pair(index, productId))
