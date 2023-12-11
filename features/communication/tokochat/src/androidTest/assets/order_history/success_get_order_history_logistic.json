@@ -1,0 +1,23 @@
+{
+  "tokochatOrderProgress": {
+    "enable": true,
+    "state": "pg_in_delivery",
+    "orderId": "167874490",
+    "invoiceId": "INV/20231116/MPL/20895737",
+    "imageUrl": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2022/9/26/64d2a54e-fb77-4bea-807b-66f6829859f9.jpg",
+    "name": "Barang Gosend Logistic",
+    "status": "Sedang Dikirim",
+    "statusId": 500,
+    "label": {
+      "title": "Estimasi tiba:",
+      "value": "16 Nov - 17 Nov, maks 13:00 WIB"
+    },
+    "additionalInfo": "+1 produk lainnya",
+    "uri": "",
+    "ctaButton": {
+      "title": "Lacak",
+      "uri": "tokopedia://shipping/tracking/167874490",
+      "enable": true
+    }
+  }
+}

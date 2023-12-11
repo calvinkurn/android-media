@@ -21,5 +21,6 @@ public class TkpdCache {
         public static final String STATUS2 = "STATUS";
         public static final String MESSAGE = "message";
         public static final String KEY_DARK_MODE = "KEY_DARK_MODE";
+        public static final String KEY_DARK_MODE_CONFIG_SCREEN_MODE = "dark_mode_config_screen_mode";
     }
 }

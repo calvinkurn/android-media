@@ -75,7 +75,6 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderP1Header
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderTickerData
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
-import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.resources.isDarkMode
@@ -94,6 +93,8 @@ class ShopPageHeaderFragmentTabContentWrapper :
         private const val FRAGMENT_SHOWCASE_KEY_SHOP_ID = "SHOP_ID"
         private const val FRAGMENT_SHOWCASE_KEY_SHOP_REF = "SHOP_REF"
         private const val FRAGMENT_SHOWCASE_KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
+        private const val FRAGMENT_SHOWCASE_KEY_FORCE_LIGHT_MODE = "force_light_mode"
+        private const val FRAGMENT_SHOWCASE_KEY_COLOR_SCHEME = "color_scheme"
         private const val FRAGMENT_SHOWCASE_KEY_IS_OS = "IS_OS"
         private const val FRAGMENT_SHOWCASE_KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
         private const val FRAGMENT_SHOWCASE_KEY_FOR_SHARE = "shop_header_for_sharing"
@@ -101,7 +102,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
         private const val DEFAULT_SHOWCASE_ID = "0"
         private const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
         private const val FEED_SHOP_FRAGMENT_SHOP_ID = "PARAM_SHOP_ID"
-        private const val FEED_SHOP_FRAGMENT_CREATE_POST_URL = "PARAM_CREATE_POST_URL"
         private const val ARGS_SHOP_ID_FOR_REVIEW_TAB = "ARGS_SHOP_ID"
         private const val MAX_ALPHA = 255f
         private const val PADDING_TOP_IN_DP = 8
@@ -127,7 +127,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
     private var shopDomain: String? = null
     private var shopAttribution: String? = null
     private var isShowFeed: Boolean = false
-    private var createPostUrl: String = ""
     private var shopPageHeaderFragmentHeaderViewHolder: ShopPageHeaderFragmentHeaderViewHolderV2? = null
     private var isForceNotShowingTab: Boolean = false
 
@@ -142,7 +141,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
     private var isLoadInitialData = false
     private var isUserSessionActive = false
     private var tabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData? = null
-    private var initialProductListData: ShopProduct.GetShopProduct? = null
     private var shopPageHeaderDataModel: ShopPageHeaderDataModel ? = null
     private var shopPagePageHeaderWidgetList: List<ShopPageHeaderWidgetUiModel> = listOf()
     private var shopHeaderLayoutData: ShopPageHeaderLayoutUiModel = ShopPageHeaderLayoutUiModel()
@@ -443,10 +441,8 @@ class ShopPageHeaderFragmentTabContentWrapper :
     }
 
     internal fun updateShareIcon(newShareIconId: Int) {
-        navToolbar?.let {
-            iconShareId = newShareIconId
-            it.updateIcon(IconList.ID_SHARE, iconShareId)
-        }
+        iconShareId = newShareIconId
+        navToolbar?.updateIcon(IconList.ID_SHARE, iconShareId)
     }
 
     private fun isCartShownInNewNavToolbar(): Boolean {
@@ -624,9 +620,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
                         shopRef,
                         shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
                     ).apply {
-                        initialProductListData?.let {
-                            setInitialProductListData(it)
-                        }
                         setHomeTabListBackgroundColor(it.listBackgroundColor)
                         setHomeTabBackgroundPatternImage(it.backgroundImage)
                         setHomeTabLottieUrl(it.lottieUrl)
@@ -646,9 +639,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
                         shopRef = shopRef,
                         isEnableDirectPurchase = shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
                     )
-                    initialProductListData?.let {
-                        shopPageProductFragment.setInitialProductListData(it)
-                    }
                     shopPageProductFragment
                 }
 
@@ -672,6 +662,14 @@ class ShopPageHeaderFragmentTabContentWrapper :
                                 FRAGMENT_SHOWCASE_KEY_FOR_SHARE,
                                 shopPageHeaderDataModel?.mapperForShopShowCase()
                             )
+                            putBoolean(
+                                FRAGMENT_SHOWCASE_KEY_FORCE_LIGHT_MODE,
+                                shopHeaderLayoutData.isOverrideTheme
+                            )
+                            putParcelable(
+                                FRAGMENT_SHOWCASE_KEY_COLOR_SCHEME,
+                                getShopBodyConfig()?.colorSchema
+                            )
                         }
                     )
                     shopShowcaseTabFragment
@@ -684,7 +682,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
                             FEED_SHOP_FRAGMENT,
                             Bundle().apply {
                                 putString(FEED_SHOP_FRAGMENT_SHOP_ID, shopId)
-                                putString(FEED_SHOP_FRAGMENT_CREATE_POST_URL, createPostUrl)
                             }
                         )
                         feedFragment
@@ -736,10 +733,10 @@ class ShopPageHeaderFragmentTabContentWrapper :
 
     fun setShopPageHeaderP1Data(
         shopPageHeaderP1Data: ShopPageHeaderP1HeaderData,
-        isEnableDirectPurchase: Boolean
+        isEnableDirectPurchase: Boolean,
+        isShouldShowFeed: Boolean
     ) {
-        isShowFeed = shopPageHeaderP1Data.isWhitelist
-        createPostUrl = shopPageHeaderP1Data.feedUrl
+        isShowFeed = isShouldShowFeed
         shopPageHeaderDataModel = ShopPageHeaderDataModel().apply {
             shopId = this@ShopPageHeaderFragmentTabContentWrapper.shopId
             isOfficial = shopPageHeaderP1Data.isOfficial
@@ -759,10 +756,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
 
     fun setTabData(tabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData) {
         this.tabData = tabData
-    }
-
-    fun setInitialProductListData(initialProductListData: ShopProduct.GetShopProduct) {
-        this.initialProductListData = initialProductListData
     }
 
     fun updateShopTickerData(tickerResultData: ShopPageHeaderTickerData) {
@@ -828,7 +821,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
     }
 
     fun setSgcPlayWidgetData() {
-        shopPageHeaderFragmentHeaderViewHolder?.setSgcPlaySection(shopPagePageHeaderWidgetList)
+        shopPageHeaderFragmentHeaderViewHolder?.setSgcPlaySection(shopPagePageHeaderWidgetList, getShopHeaderConfig())
     }
 
     fun updateNavToolbarNotification() {

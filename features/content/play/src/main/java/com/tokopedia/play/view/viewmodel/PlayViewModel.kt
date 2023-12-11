@@ -1197,7 +1197,6 @@ class PlayViewModel @AssistedInject constructor(
 
         resetChannelReportLoadedStatus()
         cancelJob(FOLLOW_POP_UP_ID)
-        cancelJob(ONBOARDING_COACHMARK_ID)
     }
 
     private fun focusVideoPlayer(channelData: PlayChannelData) {
@@ -2824,8 +2823,9 @@ class PlayViewModel @AssistedInject constructor(
                     }
                 }
                 else -> {
-                    if (_exploreWidget.value.widgets.isEmpty())
+                    if (_exploreWidget.value.widgets.isEmpty()) {
                         _exploreWidget.update { widget -> widget.copy(state = ExploreWidgetState.Empty) }
+                    }
                 }
             }
         }) { exception ->
@@ -3049,7 +3049,7 @@ class PlayViewModel @AssistedInject constructor(
         private const val FIREBASE_REMOTE_CONFIG_KEY_CAST = "android_main_app_enable_play_cast"
         private const val FIREBASE_REMOTE_CONFIG_KEY_LIKE_BUBBLE = "android_main_app_enable_play_bubbles"
         private const val FIREBASE_REMOTE_CONFIG_KEY_EXPLORE_WIDGET = "android_main_app_enable_play_explore_widget"
-        private const val ONBOARDING_DELAY = 5000L
+
         private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 2000L
 
         private const val LIKE_BURST_THRESHOLD = 30L
@@ -3076,7 +3076,6 @@ class PlayViewModel @AssistedInject constructor(
         private const val SUBSCRIBE_AWAY_THRESHOLD = 5000L
 
         private const val FOLLOW_POP_UP_ID = "FOLLOW_POP_UP"
-        private const val ONBOARDING_COACHMARK_ID = "ONBOARDING_COACHMARK"
 
         /**
          * Cart

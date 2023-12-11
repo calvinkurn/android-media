@@ -41,6 +41,7 @@ import androidx.lifecycle.LifecycleOwnerKt;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.tokopedia.darkmodeconfig.common.DarkModeIntroductionLauncher;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
@@ -56,6 +57,7 @@ import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
 import com.tokopedia.appdownloadmanager.AppDownloadManagerHelper;
+import com.tokopedia.appdownloadmanager_common.presentation.util.AppDownloadManagerPermission;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkDFMapper;
@@ -72,6 +74,7 @@ import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment;
+import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.kotlin.extensions.view.StringExtKt;
 import com.tokopedia.navigation.GlobalNavAnalytics;
@@ -91,7 +94,6 @@ import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
 import com.tokopedia.navigation.util.FeedCoachMark;
-import com.tokopedia.navigation.util.IconJumperUtil;
 import com.tokopedia.navigation.util.MainParentServerLogger;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
@@ -121,10 +123,13 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import javax.inject.Inject;
 
 import dagger.Lazy;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 import rx.android.BuildConfig;
 
 /**
@@ -154,7 +159,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final int ACCOUNT_MENU = 4;
     public static final int RECOMENDATION_LIST = 5;
     public static final int REQUEST_CODE_LOGIN = 12137;
-    public static final String FEED_PAGE = "FeedIntermediaryFragment";
+    public static final String FEED_PAGE = "FeedBaseFragment";
     public static final int UOH_MENU = 4;
     public static final int WISHLIST_MENU = 3;
     public static final String DEFAULT_NO_SHOP = "0";
@@ -284,6 +289,7 @@ public class MainParentActivity extends BaseActivity implements
                     PERFORMANCE_TRACE_HOME,
                     LifecycleOwnerKt.getLifecycleScope(this),
                     this,
+                    null,
                     null
             );
         } catch (Exception e) {
@@ -295,6 +301,7 @@ public class MainParentActivity extends BaseActivity implements
         }
 
         super.onCreate(savedInstanceState);
+        HomeRollenceController.fetchIconJumperValue();
         initInjector();
         presenter.get().setView(this);
         if (savedInstanceState != null) {
@@ -319,6 +326,7 @@ public class MainParentActivity extends BaseActivity implements
             pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_CREATE_METRICS);
         }
         sendNotificationUserSetting();
+        showDarkModeIntroBottomSheet();
     }
 
     private void initDownloadManagerDialog() {
@@ -526,7 +534,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    private void handleAppLinkBottomNavigation() {
+    private void handleAppLinkBottomNavigation(boolean isFirstInit) {
 
         if (bottomNavigation == null) return;
 
@@ -547,7 +555,7 @@ public class MainParentActivity extends BaseActivity implements
             case RECOMENDATION_LIST:
             case HOME_MENU:
             default:
-                bottomNavigation.setSelected(HOME_MENU);
+                setHomeNavSelected(isFirstInit, tabPosition);
                 break;
         }
     }
@@ -560,7 +568,7 @@ public class MainParentActivity extends BaseActivity implements
 
         setIntent(intent);
         showSelectedPage();
-        handleAppLinkBottomNavigation();
+        handleAppLinkBottomNavigation(false);
     }
 
     private void initInjector() {
@@ -776,12 +784,6 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    private void showDownloadManagerBottomSheet() {
-        if (appDownloadManagerHelper != null) {
-            appDownloadManagerHelper.showAppDownloadManagerBottomSheet();
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         AppUpdateManagerWrapper.onActivityResult(this, requestCode, resultCode);
@@ -817,21 +819,47 @@ public class MainParentActivity extends BaseActivity implements
         if (appDownloadManagerHelper != null) {
             appDownloadManagerHelper.getActivityRef().clear();
         }
+        appDownloadManagerHelper = null;
         if (presenter != null)
             presenter.get().onDestroy();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        checkWritePermissionResultAndInstallApk(requestCode, grantResults);
+    }
+
+    private void checkWritePermissionResultAndInstallApk(int requestCode, @NonNull int[] grantResults) {
+        if (GlobalConfig.IS_NAKAMA_VERSION) {
+            AppDownloadManagerPermission.checkRequestPermissionResult(requestCode, grantResults, hasPermission -> {
+                if (hasPermission) {
+                    if (appDownloadManagerHelper != null) {
+                        appDownloadManagerHelper.startDownloadApk();
+                    }
+                }
+                return null;
+            });
+        }
+    }
+
+    private void showDownloadManagerBottomSheet() {
+        if (appDownloadManagerHelper != null) {
+            appDownloadManagerHelper.showAppDownloadManagerBottomSheet();
+        }
+    }
+
     private void reloadPage(int position, boolean isJustLoggedIn) {
         boolean isPositionFeed = position == FEED_MENU;
-        getIntent().putExtra(
-                ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN,
-                isPositionFeed && isJustLoggedIn
-        );
+        Intent intent = getIntent()
+                .putExtra(
+                        ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN,
+                        isPositionFeed && isJustLoggedIn
+                ).putExtra(ARGS_TAB_POSITION, position);
         if (isPositionFeed) {
             recreate();
         } else {
             finish();
-            Intent intent = getIntent().putExtra(ARGS_TAB_POSITION, position);
             startActivity(intent);
         }
     }
@@ -1341,9 +1369,15 @@ public class MainParentActivity extends BaseActivity implements
         return embracePageName;
     }
 
+    private void setHomeNavSelected(boolean isFirstInit, int homePosition) {
+        if (isFirstInit) {
+            bottomNavigation.setSelected(homePosition);
+        }
+    }
+
     public void populateBottomNavigationView() {
         BottomMenu homeOrForYouMenu;
-        if (IconJumperUtil.isEnabledIconJumper()) {
+        if (HomeRollenceController.isIconJumper()) {
             homeOrForYouMenu = new BottomMenu(R.id.menu_home, getResources().getString(R.string.home),
                     new HomeForYouMenu(
                             getResources().getString(R.string.home),
@@ -1371,7 +1405,7 @@ public class MainParentActivity extends BaseActivity implements
         menu.add(new BottomMenu(R.id.menu_wishlist, getResources().getString(R.string.wishlist), null, R.raw.bottom_nav_wishlist, R.raw.bottom_nav_wishlist_to_enabled, R.raw.bottom_nav_wishlist_dark, R.raw.bottom_nav_wishlist_to_enabled_dark, R.drawable.ic_bottom_nav_wishlist_active, R.drawable.ic_bottom_nav_wishlist_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         menu.add(new BottomMenu(R.id.menu_uoh, getResources().getString(R.string.uoh), null, R.raw.bottom_nav_transaction, R.raw.bottom_nav_transaction_to_enabled, R.raw.bottom_nav_transaction_dark, R.raw.bottom_nav_transaction_to_enabled_dark, R.drawable.ic_bottom_nav_uoh_active, R.drawable.ic_bottom_nav_uoh_enabled, com.tokopedia.unifyprinciples.R.color.Unify_GN500, true, 1f, 1f));
         bottomNavigation.setMenu(menu);
-        handleAppLinkBottomNavigation();
+        handleAppLinkBottomNavigation(true);
     }
 
     private void gotoNewUserZonePage() {
@@ -1381,6 +1415,12 @@ public class MainParentActivity extends BaseActivity implements
 
         startActivities(new Intent[]{intentHome, intentNewUser});
         finish();
+    }
+
+    private void showDarkModeIntroBottomSheet() {
+        DarkModeIntroductionLauncher
+                .withToaster(getIntent(), getWindow().getDecorView())
+                .launch(this, getSupportFragmentManager(), userSession.get().isLoggedIn());
     }
 
     @NonNull
@@ -1417,7 +1457,7 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public boolean isIconJumperEnabled() {
-        return IconJumperUtil.isEnabledIconJumper();
+        return HomeRollenceController.isIconJumper();
     }
 
     @Override

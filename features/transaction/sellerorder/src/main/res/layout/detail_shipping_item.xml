@@ -209,21 +209,16 @@
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="@string/tv_driver_license_example" />
-
-        <com.tokopedia.unifycomponents.UnifyButton
+        
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/driver_call_btn"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="24dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
-            android:text="@string/tv_driver_call_btn"
-            app:unifyButtonSize="medium"
-            app:unifyButtonType="alternate"
-            app:unifyButtonVariant="ghost" />
+            app:icon_name="CALL"/>
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/dividerBottomCardDriver"

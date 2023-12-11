@@ -11,7 +11,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.tokopedia.home_account.view.adapter.uimodel.WalletUiModel
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -32,7 +31,7 @@ fun FundsAndInvestmentSection(
             NestTypography(
                 text = title,
                 textStyle = textStyle,
-                modifier = Modifier.padding(horizontal = 12.dp)
+                modifier = Modifier.padding(horizontal = dp_16)
             )
 
             LazyColumn {

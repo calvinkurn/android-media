@@ -5,6 +5,8 @@ import android.net.Uri
 import android.os.Environment
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.appdownloadmanager_common.presentation.model.DownloadingProgressUiModel
+import com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.Companion.TKPD_DOWNLOAD_APK_DIR
+import com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.Companion.TOKOPEDIA_APK_PATH
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -21,10 +23,12 @@ class DownloadManagerService @Inject constructor(
 ) : CoroutineScope {
 
     companion object {
-        private const val VERSION_PARAM = "version"
+        private const val VERSION_PARAM = "versionname"
+        private const val VERSION_CODE_PARAM = "versioncode"
         private const val APK_MIME_TYPE = "application/vnd.android.package-archive"
         private const val DELAY_UPDATE_PROGRESS = 300L
         private const val MAX_PROGRESS = 100
+        private const val TWO_LAST_DIGIT = 2
     }
 
     private val job = SupervisorJob()
@@ -36,7 +40,6 @@ class DownloadManagerService @Inject constructor(
         apkUrl: String,
         downloadManagerListener: DownloadManagerListener
     ) {
-
         val request = getDownloadRequest(apkUrl)
 
         downloadID = downloadManager?.enqueue(request) ?: -1L
@@ -49,7 +52,6 @@ class DownloadManagerService @Inject constructor(
 
         launch {
             try {
-
                 val query = DownloadManager.Query()
 
                 if (downloadID != -1L) {
@@ -82,21 +84,30 @@ class DownloadManagerService @Inject constructor(
                                             ),
                                             totalResourceSize = convertToHumanReadableSize(
                                                 apkTotalSize
-                                            ),
-                                            isFinishedDownloading = true
+                                            )
                                         )
                                         downloadManagerListener.onSuccessDownload(
                                             downloadingProgressUiModel,
                                             fileNamePath
                                         )
+
+                                        deleteOldApks(fileNamePath)
                                     }
 
-                                    DownloadManager.STATUS_FAILED -> {
+                                    DownloadManager.STATUS_FAILED, DownloadManager.ERROR_UNKNOWN,
+                                    DownloadManager.ERROR_FILE_ALREADY_EXISTS, DownloadManager.ERROR_HTTP_DATA_ERROR,
+                                    DownloadManager.ERROR_FILE_ERROR, DownloadManager.ERROR_UNHANDLED_HTTP_CODE,
+                                    DownloadManager.ERROR_INSUFFICIENT_SPACE,
+                                    DownloadManager.ERROR_TOO_MANY_REDIRECTS, DownloadManager.ERROR_DEVICE_NOT_FOUND,
+                                    DownloadManager.ERROR_CANNOT_RESUME -> {
                                         finishDownload = true
-                                        downloadManagerListener.onFailedDownload()
+                                        val reasonColumnIndex =
+                                            cursor.getColumnIndex(DownloadManager.COLUMN_REASON)
+                                        val reason = cursor.getString(reasonColumnIndex)
+                                        downloadManagerListener.onFailedDownload(reason, statusColumnIndex)
                                     }
 
-                                    DownloadManager.STATUS_RUNNING -> {
+                                    DownloadManager.STATUS_RUNNING, DownloadManager.STATUS_PENDING -> {
                                         if (totalSizeColumnIndex != -1 && downloadedColumnIndex != -1) {
                                             val apkTotalSize = cursor.getLong(totalSizeColumnIndex)
                                             val downloadedProgress =
@@ -114,12 +125,11 @@ class DownloadManagerService @Inject constructor(
                                                         ),
                                                         totalResourceSize = convertToHumanReadableSize(
                                                             apkTotalSize
-                                                        ),
-                                                        isFinishedDownloading = false
+                                                        )
                                                     )
 
                                                 downloadManagerListener.onDownloading(
-                                                    downloadingProgressUiModel,
+                                                    downloadingProgressUiModel
                                                 )
 
                                                 delay(DELAY_UPDATE_PROGRESS)
@@ -128,9 +138,11 @@ class DownloadManagerService @Inject constructor(
                                     }
 
                                     else -> {
-                                        // no op
                                         finishDownload = true
-                                        downloadManagerListener.onFailedDownload()
+                                        val reasonColumnIndex =
+                                            cursor.getColumnIndex(DownloadManager.COLUMN_REASON)
+                                        val reason = cursor.getString(reasonColumnIndex)
+                                        downloadManagerListener.onFailedDownload(reason, statusColumnIndex)
                                     }
                                 }
                             }
@@ -144,7 +156,8 @@ class DownloadManagerService @Inject constructor(
                 }
             } catch (e: Exception) {
                 FirebaseCrashlytics.getInstance().recordException(e)
-                downloadManagerListener.onFailedDownload()
+                job.cancel()
+                downloadManagerListener.onFailedDownload(e.localizedMessage.orEmpty(), DownloadManager.ERROR_UNKNOWN)
             }
         }
     }
@@ -159,7 +172,10 @@ class DownloadManagerService @Inject constructor(
 
     private fun getFileNameFromUrl(url: String): String {
         val uri = Uri.parse(url)
-        return "${uri.getQueryParameter(VERSION_PARAM).orEmpty()}.apk"
+        val versionCode = uri.getQueryParameter(VERSION_CODE_PARAM)?.takeLast(TWO_LAST_DIGIT).orEmpty()
+        val versionName = uri.getQueryParameter(VERSION_PARAM)
+
+        return "${versionName}-${versionCode}.apk"
     }
 
     private fun getDownloadRequest(
@@ -167,9 +183,7 @@ class DownloadManagerService @Inject constructor(
     ): DownloadManager.Request {
         val fileName = getFileNameFromUrl(apkUrl)
 
-        this.fileNamePath =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                .toString() + "/$fileName"
+        this.fileNamePath = "$TKPD_DOWNLOAD_APK_DIR/$fileName"
 
         val file = File(fileNamePath)
 
@@ -187,26 +201,49 @@ class DownloadManagerService @Inject constructor(
             .setMimeType(APK_MIME_TYPE)
     }
 
+    private fun deleteOldApks(
+        currentApkNamePath: String
+    ) {
+        val downloadDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), TOKOPEDIA_APK_PATH)
+
+        val currentApk = File(currentApkNamePath).name
+
+        if (downloadDir.exists() && downloadDir.isDirectory) {
+            val files = downloadDir.listFiles()
+
+            files?.forEach { file ->
+                val fileName = file.name
+                if (fileName.endsWith(".apk") && fileName != currentApk) {
+                    file.delete()
+                }
+            }
+        }
+    }
+
+
     private fun convertToHumanReadableSize(bytes: Long): String {
+        // If the size is less than 1024 bytes, return the size in bytes
         if (bytes < 1024) return "$bytes B"
+
+        // Calculate the appropriate unit (KB, MB, GB, TB, PB, or EB) for better readability
         val z = (63 - numberOfLeadingZeros(bytes)) / 10
+        // Format the result using the appropriate unit
         return String.format("%.1f %sB", bytes.toDouble() / (1L shl (z * 10)), " KMGTPE"[z])
     }
 
     interface DownloadManagerListener {
+        suspend fun onFailedDownload(reason: String, statusColumn: Int)
+
+        suspend fun onDownloading(
+            downloadingProgressUiModel: DownloadingProgressUiModel
+        )
 
         suspend fun onSuccessDownload(
             downloadingProgressUiModel: DownloadingProgressUiModel,
             fileNamePath: String
         )
-        suspend fun onFailedDownload()
-
-        suspend fun onDownloading(
-            downloadingProgressUiModel: DownloadingProgressUiModel,
-        )
     }
 
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Default
-
 }

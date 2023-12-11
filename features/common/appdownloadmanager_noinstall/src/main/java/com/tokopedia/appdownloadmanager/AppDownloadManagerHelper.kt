@@ -1,65 +1,81 @@
 package com.tokopedia.appdownloadmanager
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.os.Environment
 import android.provider.DocumentsContract
-import androidx.core.content.FileProvider
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.tokopedia.appdownloadmanager_common.presentation.bottomsheet.AppDownloadOnboardingBottomSheet
+import com.tokopedia.appdownloadmanager_common.presentation.bottomsheet.AppDownloadingBottomSheet
+import com.tokopedia.appdownloadmanager_common.presentation.dialog.AppFileManagerDialog
 import com.tokopedia.appdownloadmanager_common.presentation.listener.DownloadManagerSuccessListener
 import com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper
-import java.io.File
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
+import kotlin.coroutines.CoroutineContext
 
 class AppDownloadManagerHelper(
-    activityRef: WeakReference<Activity>,
-) : BaseDownloadManagerHelper(activityRef), DownloadManagerSuccessListener {
+    activityRef: WeakReference<Activity>
+) : BaseDownloadManagerHelper(activityRef), DownloadManagerSuccessListener, CoroutineScope {
     override fun showAppDownloadManagerBottomSheet() {
-        if (isEnableShowBottomSheet()) {
-            (activityRef.get() as? FragmentActivity)?.let {
-                val onBoardingBottomSheet = AppDownloadOnboardingBottomSheet.newInstance()
-                downloadManagerUpdateModel?.let { downloadManagerUpdate ->
-                    onBoardingBottomSheet.setDownloadManagerUpdate(downloadManagerUpdate)
+        launch {
+            if (isEnableShowBottomSheet()) {
+                (activityRef.get() as? FragmentActivity)?.let {
+                    val onBoardingBottomSheet = AppDownloadingBottomSheet.newInstance()
+                    downloadManagerUpdateModel?.let { downloadManagerUpdate ->
+                        onBoardingBottomSheet.setDownloadManagerUpdate(downloadManagerUpdate)
+                    }
+                    appVersionBetaInfoModel?.let { appVersionBetaInfoModel ->
+                        onBoardingBottomSheet.setAppBetaVersionInfoModel(appVersionBetaInfoModel)
+                    }
+                    onBoardingBottomSheet.setAppDownloadListener(
+                        startAppDownloading = {
+                            setCacheExpire()
+                        },
+                        this@AppDownloadManagerHelper
+                    )
+                    onBoardingBottomSheet.showBottomSheet(it.supportFragmentManager)
                 }
-
-
-                onBoardingBottomSheet.setAppDownloadListener(
-                    startAppDownloading = {
-                        setCacheExpire()
-                    }, this
-                )
-                onBoardingBottomSheet.showBottomSheet(it.supportFragmentManager)
             }
         }
     }
 
     override fun onSuccessDownloaded(fileName: String) {
-        openDownloadDir()
+        activityRef.get()?.let {
+            AppFileManagerDialog.showDialog(
+                it,
+                fileName,
+                onSuccessDownload = {
+                    openDownloadDir()
+                }
+            )
+        }
+    }
+
+    fun startDownloadApk() {
     }
 
     private fun openDownloadDir() {
-        activityRef.get()?.let {
-            val intent = getIntentOpenDownloadDir()
+        launch(Dispatchers.Main) {
+            activityRef.get()?.let {
+                val intent = getIntentOpenDownloadDir()
 
-            try {
-                it.startActivity(intent)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                FirebaseCrashlytics.getInstance().recordException(e)
+                try {
+                    it.startActivity(intent)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    FirebaseCrashlytics.getInstance().recordException(e)
+                }
             }
         }
     }
 
     private fun getIntentOpenDownloadDir(): Intent {
-        val downloadsFolder =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        val uri = Uri.fromFile(downloadsFolder)
+        val uri = Uri.parse(TKPD_DOWNLOAD_APK_DIR)
 
         return Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
@@ -72,4 +88,7 @@ class AppDownloadManagerHelper(
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
     }
+
+    override val coroutineContext: CoroutineContext
+        get() = SupervisorJob() + Dispatchers.Default
 }

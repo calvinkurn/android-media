@@ -5,9 +5,11 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
+import com.tokopedia.minicart.bmgm.domain.model.BmgmParamModel
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.mapper.MiniCartSimplifiedMapper
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase.Companion.PARAM_VALUE_MINICART
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import kotlinx.coroutines.delay
@@ -31,6 +33,21 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
                 ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
                 GetMiniCartListUseCase.PARAM_KEY_SOURCE to source.value,
                 GetMiniCartListUseCase.PARAM_KEY_SHOP_DIRECT_PURCHASE to isShopDirectPurchase
+            )
+        )
+        this.shopIds = shopIds
+        this.delay = delay
+    }
+
+    fun setParams(shopIds: List<String>, source: MiniCartSource, bmGmParam: BmgmParamModel) {
+        params = mapOf(
+            GetMiniCartListUseCase.PARAM_KEY_LANG to GetMiniCartListUseCase.PARAM_VALUE_ID,
+            GetMiniCartListUseCase.PARAM_KEY_ADDITIONAL to mapOf(
+                GetMiniCartListUseCase.PARAM_KEY_SHOP_IDS to shopIds,
+                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+                GetMiniCartListUseCase.PARAM_KEY_SOURCE to source.value,
+                GetMiniCartListUseCase.PARAM_KEY_USE_CASE to PARAM_VALUE_MINICART,
+                GetMiniCartListUseCase.PARAM_KEY_BMGM to bmGmParam
             )
         )
         this.shopIds = shopIds
@@ -123,6 +140,33 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(
                     }
                   }
                   cart_details {
+                    cart_detail_info {
+                      cart_detail_type
+                      bmgm {
+                        offer_id
+                        offer_name
+                        offer_message
+                        total_discount
+                        offer_json_data
+                        offer_status
+                        tier_product {
+                          tier_id
+                          tier_message
+                          tier_discount_text
+                          tier_discount_amount
+                          price_before_benefit
+                          price_after_benefit
+                          list_product {
+                            product_id
+                            warehouse_id
+                            quantity
+                            price_before_benefit
+                            price_after_benefit
+                            cart_id
+                          }
+                        }
+                      }
+                    }
                     bundle_detail { 
                       bundle_id
                       bundle_name

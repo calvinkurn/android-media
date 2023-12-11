@@ -26,7 +26,8 @@
         }
       ],
       "userId": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "hits_time": ".*"
     },
     {
       "event": "select_content",
@@ -102,7 +103,8 @@
         }
       ],
       "userId": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "hits_time": ".*"
     }
   ]
 }

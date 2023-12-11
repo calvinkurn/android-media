@@ -132,7 +132,7 @@ class StockReminderViewModelTest : StockReminderViewModelTestFixture() {
 
             viewModel.getProduct(productId, wareHouseId, shopId)
 
-            val expectedResult = Success(ProductStockReminderMapper.mapToProductResult(getProductV3, null))
+            val expectedResult = Success(ProductStockReminderMapper.mapToProductResult(getProductV3, 0))
 
             verifyGetProductUseCaseCalled(productId, wareHouseId)
             verifyGetProduct(expectedResult)

@@ -4,8 +4,12 @@ import com.tokopedia.seller.search.feature.initialsearch.view.model.BaseInitialS
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.TypeFactoryInitialSearchAdapter
 
 data class ItemTitleHighlightInitialSearchUiModel(
-        val title: String = ""
-): BaseInitialSearchSeller {
+    val title: String = ""
+) : BaseInitialSearchSeller {
+    override fun getUniquePosition(): Int {
+        return title.hashCode()
+    }
+
     override fun type(typeFactory: TypeFactoryInitialSearchAdapter): Int {
         return typeFactory.type(this)
     }

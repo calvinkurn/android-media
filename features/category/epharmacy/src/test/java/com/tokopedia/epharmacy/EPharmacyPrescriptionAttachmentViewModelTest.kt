@@ -13,9 +13,11 @@ import com.tokopedia.epharmacy.usecase.EPharmacyInitiateConsultationUseCase
 import com.tokopedia.epharmacy.utils.EPHARMACY_ANDROID_SOURCE
 import com.tokopedia.epharmacy.utils.EPharmacyMiniConsultationToaster
 import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewModel
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -45,6 +47,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
     private val ePharmacyGroup = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(null, EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource("abc", 1, mockk(), "", "", ""), "1", null, null, null, arrayListOf(ePharmacyProductsInfo), null)
     private val responseGroup = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData("Hi ", "test", arrayListOf(ePharmacyGroup), EPharmacyPrepareProductsGroupResponse.EPharmacyToaster("PRESCRIPTION_ATTACH_SUCCESS", "sfa", "1"), null)
     private val responseData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(responseGroup)
+    private val remoteConfig = mockk<FirebaseRemoteConfigImpl>(relaxed = true)
 
     @Before
     fun setUp() {
@@ -52,12 +55,14 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
             ePharmacyPrepareProductsGroupUseCase,
             ePharmacyInitiateConsultationUseCase,
             ePharmacyGetConsultationDetailsUseCase,
+            remoteConfig,
             dispatcherBackground
         )
     }
 
     @Test
     fun getGroupsSuccessTest() {
+        every { remoteConfig.getString(any()) } returns ""
         val response = EPharmacyPrepareProductsGroupResponse(responseData)
         coEvery {
             ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any())
@@ -71,6 +76,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
 
     @Test
     fun `getGroupsSuccessTest button data`() {
+        every { remoteConfig.getString(any()) } returns ""
         val response = EPharmacyPrepareProductsGroupResponse(responseData)
         coEvery {
             ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any())
@@ -85,6 +91,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
 
     @Test
     fun `getGroupsSuccessTest Data check`() {
+        every { remoteConfig.getString(any()) } returns ""
         val response = EPharmacyPrepareProductsGroupResponse(responseData)
         coEvery {
             ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any())
@@ -103,6 +110,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
 
     @Test
     fun `getGroupsSuccessTest Data to checkout`() {
+        every { remoteConfig.getString(any()) } returns ""
         val response = EPharmacyPrepareProductsGroupResponse(responseData)
         coEvery {
             ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any())
@@ -117,6 +125,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
 
     @Test
     fun `getGroupsSuccessTest Toaster Fail`() {
+        every { remoteConfig.getString(any()) } returns ""
         val response = EPharmacyPrepareProductsGroupResponse(responseData)
         responseData.groupsData?.toaster?.type = "PRESCRIPTION_ATTACH_FAIL"
         coEvery {

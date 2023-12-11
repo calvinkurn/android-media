@@ -12,7 +12,6 @@ import com.tokopedia.editor.databinding.FragmentPlacementBinding
 import com.tokopedia.editor.ui.widget.crop.StoryEditorUCropLayout
 import com.tokopedia.editor.ui.model.ImagePlacementModel
 import com.tokopedia.editor.util.getEditorCacheFolderPath
-import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.launch
