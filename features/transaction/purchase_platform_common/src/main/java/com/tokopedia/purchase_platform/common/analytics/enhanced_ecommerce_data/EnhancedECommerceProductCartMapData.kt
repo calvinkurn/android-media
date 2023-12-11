@@ -215,7 +215,7 @@ class EnhancedECommerceProductCartMapData {
     }
 
     fun setImpressionAlgorithm(value: String?) {
-        Product[KEY_IMPRESSION_ALGORITHM] = if (!value.isNullOrBlank()) value else DEFAULT_VALUE_NONE_OTHER
+        Product[KEY_IMPRESSION_ALGORITHM] = value.orEmpty()
     }
 
     companion object {
