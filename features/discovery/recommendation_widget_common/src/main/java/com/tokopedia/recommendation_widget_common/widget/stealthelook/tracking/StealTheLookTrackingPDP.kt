@@ -70,7 +70,7 @@ class StealTheLookTrackingPDP(
                 if(anchorItem?.isTopAds == true) VALUE_IS_TOPADS else DEFAULT_VALUE,
                 widget.layoutType,
                 stylePosition,
-                anchorItem?.gridPosition,
+                anchorItem?.gridPosition?.value.orEmpty(),
                 anchorItem?.departmentId.orZero(),
                 anchorItem?.productId
             ),
@@ -86,7 +86,7 @@ class StealTheLookTrackingPDP(
                             if(item.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
                             widget.layoutType,
                             stylePosition,
-                            item.gridPosition,
+                            item.gridPosition.value,
                             item.departmentId,
                             item.productId
                         ),
@@ -114,7 +114,7 @@ class StealTheLookTrackingPDP(
             if(item.isTopAds) VALUE_IS_TOPADS else DEFAULT_VALUE,
             widget.layoutType,
             stylePosition,
-            item.gridPosition,
+            item.gridPosition.value,
             item.departmentId,
             item.productId
         )
