@@ -39,8 +39,11 @@ class SimpleUploaderManager @Inject constructor(
 
         val requestId = uploader.requestId ?: ""
         val error = uploader.errorMessage()
+        
+        val uploadId = uploader.uploadId.orEmpty()
+        val videoUrlResult = uploader.videoUrl.orEmpty()
 
-        if (param.withTranscode) {
+        if (param.withTranscode && uploadId.isEmpty().not()) {
             while (true) {
                 if (maxRetryTranscoding >= MAX_RETRY_TRANSCODING) {
                     return UploadResult.Error(TRANSCODING_FAILED).also {
@@ -50,7 +53,14 @@ class SimpleUploaderManager @Inject constructor(
 
                 if (uploader.uploadId != null) {
                     val transcode = transcodingUseCase(uploader.uploadId)
+
+                    // transcoding succeed
                     if (transcode.isCompleted()) break
+
+                    // transcoding failed
+                    if (transcode.requestId().isNotEmpty()) {
+                        return UploadResult.Error(TRANSCODING_FAILED, transcode.requestId())
+                    }
                 }
 
                 maxRetryTranscoding++
@@ -58,7 +68,7 @@ class SimpleUploaderManager @Inject constructor(
             }
         }
 
-        return if (uploader.videoUrl.isNullOrEmpty().not()) {
+        return if (videoUrlResult.isEmpty().not()) {
             UploadResult.Success(
                 videoUrl = uploader.videoUrl ?: "",
                 uploadId = uploader.uploadId.toString()

@@ -38,7 +38,13 @@ data class KeroEditAddressResponse(
                 var chosenAddressData: KeroAddrStateChosenAddressData = KeroAddrStateChosenAddressData(),
                 @SerializedName("tokonow")
                 var tokonow: KeroAddressRespTokonow = KeroAddressRespTokonow()
-            )
+            ) {
+                val success: Boolean
+                    get() = isSuccess == SUCCESS_VALUE
+                companion object {
+                    private const val SUCCESS_VALUE = 1
+                }
+            }
         }
     }
 }
