@@ -1058,11 +1058,6 @@ class CheckoutViewModel @Inject constructor(
                                 orderModel.validationMetadata
                         }
                     }
-                    removeInvalidBoCodeFromPromoRequest(
-                        orderModel,
-                        list,
-                        validateUsePromoRequest
-                    )
                     doValidateUseLogisticPromo(
                         cartPosition,
                         orderModel.cartStringGroup,
@@ -1171,11 +1166,6 @@ class CheckoutViewModel @Inject constructor(
                                 orderModel.validationMetadata
                         }
                     }
-                    removeInvalidBoCodeFromPromoRequest(
-                        order,
-                        list,
-                        validateUsePromoRequest
-                    )
                     doValidateUseLogisticPromo(
                         cartPosition,
                         orderModel.cartStringGroup,
@@ -1359,29 +1349,6 @@ class CheckoutViewModel @Inject constructor(
         return ArrayList(promoProcessor.bboPromoCodes)
     }
 
-    internal fun removeInvalidBoCodeFromPromoRequest(
-        order: CheckoutOrderModel,
-        list: List<CheckoutItem>,
-        validateUsePromoRequest: ValidateUsePromoRequest
-    ) {
-        if (!order.isFreeShippingPlus) {
-            val shipmentCartItemModelLists =
-                list.filterIsInstance(
-                    CheckoutOrderModel::class.java
-                )
-            for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
-                for (promoOrder in validateUsePromoRequest.orders) {
-                    if (order.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == promoOrder.cartStringGroup && tmpShipmentCartItemModel.shipment.courierItemData != null && !tmpShipmentCartItemModel.isFreeShippingPlus) {
-                        promoOrder.codes.remove(
-                            tmpShipmentCartItemModel.shipment.courierItemData.selectedShipper.logPromoCode
-                        )
-                        promoOrder.boCode = ""
-                    }
-                }
-            }
-        }
-    }
-
     private suspend fun validatePromo() {
         val checkoutItems = listData.value.toMutableList()
         var newItems = promoProcessor.validateUse(
@@ -1438,11 +1405,6 @@ class CheckoutViewModel @Inject constructor(
                     }
                 }
             }
-            removeInvalidBoCodeFromPromoRequest(
-                shipmentCartItemModel,
-                listData.value,
-                validateUsePromoRequest
-            )
             for (ordersItem in validateUsePromoRequest.orders) {
                 if (ordersItem.cartStringGroup == shipmentCartItemModel.cartStringGroup) {
                     ordersItem.spId = courierItemData.shipperProductId
@@ -1580,7 +1542,6 @@ class CheckoutViewModel @Inject constructor(
                 }
             }
         }
-        removeInvalidBoCodeFromPromoRequest(order, listData.value, validateUsePromoRequest)
         for (ordersItem in validateUsePromoRequest.orders) {
             if (ordersItem.cartStringGroup == order.cartStringGroup) {
                 ordersItem.spId = selectedShipper.shipperProductId
@@ -2350,11 +2311,6 @@ class CheckoutViewModel @Inject constructor(
                                 order.validationMetadata
                         }
                     }
-                    removeInvalidBoCodeFromPromoRequest(
-                        order,
-                        checkoutItems,
-                        validateUsePromoRequest
-                    )
                     checkoutItems = promoProcessor.validateUseLogisticPromo(
                         validateUsePromoRequest,
                         order.cartStringGroup,

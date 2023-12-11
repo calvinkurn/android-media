@@ -136,7 +136,7 @@ class SellerHomeNavigator(
             pages.remove(fragment)
 
             val page = when (pageType) {
-                FragmentType.HOME -> getHomeFragment(it)
+                FragmentType.HOME -> homeFragment
                 FragmentType.PRODUCT -> setupProductManagePage(it)
                 FragmentType.ORDER -> setupSellerOrderPage(it)
                 else -> fragment
@@ -154,7 +154,6 @@ class SellerHomeNavigator(
     }
 
     private fun getHomeFragment(pageFragment: PageFragment? = null): Fragment? {
-        homeFragment = SellerHomeFragment.newInstance(pageFragment?.sellerHomeData)
         return homeFragment
     }
 
@@ -212,6 +211,12 @@ class SellerHomeNavigator(
             transaction.remove(fragment)
         }
         transaction.commitNowAllowingStateLoss()
+
+        homeFragment = null
+        productManageFragment = null
+        chatFragment = null
+        somListFragment = null
+        otherSettingsFragment = null
     }
 
     private fun showFragment(fragment: Fragment, transaction: FragmentTransaction) {

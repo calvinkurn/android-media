@@ -139,6 +139,7 @@ class MerchantVoucherGridViewHolder(
     private fun MerchantVoucherGridLayoutBinding.hideWidget() {
         merchantVoucherRv.hide()
         seeMoreBtn.hide()
+        seeMoreBtnSpace.hide()
     }
 
     private fun MerchantVoucherGridLayoutBinding.renderSeeMoreButton(redirection: Redirection) {
@@ -153,6 +154,8 @@ class MerchantVoucherGridViewHolder(
                 }
             }
         }
+
+        seeMoreBtnSpace.show()
     }
 
     private fun MerchantVoucherGridLayoutBinding.setupRecyclerView() {
