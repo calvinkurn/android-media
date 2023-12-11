@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedback_form.R
 import com.tokopedia.feedback_form.feedbackpage.util.EXTRA_IS_TICKET_LINK
+import com.tokopedia.imageassets.TokopediaImageUrl.FEEDBACK_TICKET_CREATED_THANK_YOU
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifyprinciples.Typography
 
@@ -22,8 +23,6 @@ class TicketCreatedFragment: Fragment() {
                 }
             }
         }
-
-        private const val TICKET_CREATED_THANK_YOU = "https://images.tokopedia.net/android/res/xxhdpi/ic_thankyou_feedback.png"
     }
 
     private lateinit var imageCreated: AppCompatImageView
@@ -44,7 +43,7 @@ class TicketCreatedFragment: Fragment() {
         ticketText1.text = MethodChecker.fromHtml(
             mainView.context.getString(R.string.ticket_text_new)
         )
-        imageCreated.loadImage(TICKET_CREATED_THANK_YOU)
+        imageCreated.loadImage(FEEDBACK_TICKET_CREATED_THANK_YOU)
         backButton.setOnClickListener {
             activity?.finish()
         }

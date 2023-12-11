@@ -11,7 +11,7 @@
     <string name="page">Page Name*</string>
     <string name="btn_submit_feedback_page">Submit</string>
     <string name="tokopedia_email">\@tokopedia.com</string>
-    <string name="ticket_text_new">Terima kasih atas laporanmu.\nKamu bisa cek status laporanmu di channel di slack &lt;b&gt;#help_tokopedia_pro_android&lt;/b&gt;</string>
+    <string name="ticket_text_new">Terima kasih atas laporanmu.\nKamu bisa cek status laporanmu di channel Slack &lt;b&gt;#help_tokopedia_pro_android&lt;/b&gt;</string>
     <string name="ticket_text_1">Terima kasih atas laporanmu. Kamu bisa cek status tiketmu di link ini :</string>
     <string name="ticket_text_2">Atau di channel slack &lt;b&gt;#help_tokopedia_pro_android&lt;/b&gt;</string>
     <string name="link_ticket">Link ticket</string>
