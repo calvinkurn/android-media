@@ -45,6 +45,7 @@ import com.tokopedia.chatbot.chatbot2.data.ratinglist.ChipGetChatRatingListRespo
 import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
 import com.tokopedia.chatbot.chatbot2.data.replybubble.ReplyBubbleAttributes
 import com.tokopedia.chatbot.chatbot2.data.resolink.ResoLinkResponse
+import com.tokopedia.chatbot.chatbot2.data.slowmode.DynamicAttachmentSlowMode
 import com.tokopedia.chatbot.chatbot2.data.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.chatbot2.data.submitchatcsat.ChipSubmitChatCsatResponse
 import com.tokopedia.chatbot.chatbot2.data.uploadsecure.CheckUploadSecureResponse
@@ -237,6 +238,9 @@ class ChatbotViewModel @Inject constructor(
     private val _dynamicAttachmentNewChatbotSession = MutableLiveData<Boolean>()
     val dynamicAttachmentNewChatbotSession: LiveData<Boolean>
         get() = _dynamicAttachmentNewChatbotSession
+    private val _dynamicAttachmentSlowMode = MutableLiveData<DynamicAttachmentSlowMode>()
+    val dynamicAttachmentNewSlowMode: LiveData<DynamicAttachmentSlowMode>
+        get() = _dynamicAttachmentSlowMode
 
     // Video Upload Related
     @VisibleForTesting
@@ -1170,6 +1174,8 @@ class ChatbotViewModel @Inject constructor(
                 ChatbotConstant.DynamicAttachment.DYNAMIC_NEW_CHATBOT_SESSION -> {
                     convertToDynamicAttachmentNewChatbotSession(dynamicAttachmentAttribute.dynamicContent)
                 }
+                ChatbotConstant.DynamicAttachment.DYNAMIC_SLOW_MODE -> {
+                }
                 else -> {
                     // need to show fallback message
                     mapToVisitable(pojo)
@@ -1234,6 +1240,15 @@ class ChatbotViewModel @Inject constructor(
         handleDynamicAttachmentNewChatbotSession(newChatbotSession.isNewChatbotSession)
     }
 
+    private fun convertToDynamicAttachmentSlowMode(dynamicContent: String?) {
+        if (dynamicContent == null) {
+            return
+        }
+
+        val slowModeData = Gson().fromJson(dynamicContent, DynamicAttachmentSlowMode::class.java)
+        handleDynamicAttachmentSlowMode(slowModeData)
+    }
+
     private fun handleMediaButtonWS(mediaButtonToggleContent: MediaButtonAttribute) {
         if (mediaButtonToggleContent.isMediaButtonEnabled) {
             _dynamicAttachmentMediaUploadState.postValue(
@@ -1256,6 +1271,10 @@ class ChatbotViewModel @Inject constructor(
 
     fun handleDynamicAttachmentNewChatbotSession(isNewChatbotSession: Boolean) {
         _dynamicAttachmentNewChatbotSession.postValue(isNewChatbotSession)
+    }
+
+    fun handleDynamicAttachmentSlowMode(slowModeData: DynamicAttachmentSlowMode) {
+        _dynamicAttachmentSlowMode.postValue(slowModeData)
     }
 
     fun handleDynamicAttachmentRejectReasons(rejectReasonData: DynamicAttachmentRejectReasons) {

@@ -1025,6 +1025,10 @@ class ChatbotFragment2 :
             }
         }
 
+        viewModel.dynamicAttachmentNewSlowMode.observe(viewLifecycleOwner) {
+            setupSlowModeSendButton(it.isUsingSlowMode, it.slowModeDurationInSeconds)
+        }
+
         viewModel.applink.observe(viewLifecycleOwner) { applink ->
             context?.let { context ->
                 RouteManager.route(context, applink)
@@ -1153,13 +1157,17 @@ class ChatbotFragment2 :
         val isTypingBlocked = topBotResponse.isTypingBlocked
         handleReplyBox(!isTypingBlocked)
 
+        setupSlowModeSendButton(topBotResponse.isSlowMode, topBotResponse.slowModeDurationInSeconds)
+    }
+
+    private fun setupSlowModeSendButton(isSlowMode: Boolean, slowModeDurationInSeconds: Int) {
         smallReplyBox?.sendButton?.apply {
-            isSlowModeEnabled = topBotResponse.isSlowMode
-            slowModeDurationInSecond = topBotResponse.slowModeDurationInSeconds
+            isSlowModeEnabled = isSlowMode
+            slowModeDurationInSecond = slowModeDurationInSeconds
         }
         bigReplyBox?.sendButton?.apply {
-            isSlowModeEnabled = topBotResponse.isSlowMode
-            slowModeDurationInSecond = topBotResponse.slowModeDurationInSeconds
+            isSlowModeEnabled = isSlowMode
+            slowModeDurationInSecond = slowModeDurationInSeconds
         }
     }
 
