@@ -756,11 +756,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
     private fun getOrderMessageOFOC(
         shippingWidgetUiModel: ShippingWidgetUiModel
     ): String {
-        return if (shippingWidgetUiModel.voucherLogisticExists) {
-            shippingWidgetUiModel.boOrderMessage
-        } else {
-            return shippingWidgetUiModel.courierOrderMessage
-        }
+        return shippingWidgetUiModel.boOrderMessage.ifEmpty { shippingWidgetUiModel.courierOrderMessage }
     }
 
     private fun String.convertToSpannedString(): CharSequence? {

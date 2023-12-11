@@ -45,7 +45,6 @@ import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
-import com.tokopedia.shop_widget.common.util.ProductCardMapper.LABEL_POSITION_INTEGRITY
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.unifycomponents.UnifyButton
@@ -835,6 +834,7 @@ object ShopPageHomeMapper {
         isEnableDirectPurchase: Boolean
     ): List<ShopHomeProductUiModel> {
         return listProduct.map {
+            val showStockBar = it.showStockBar
             ShopHomeProductUiModel().apply {
                 id = it.id
                 name = it.name
@@ -848,7 +848,7 @@ object ShopPageHomeMapper {
                 hideGimmick = it.hideGimmick
                 when (statusCampaign.lowercase(Locale.getDefault())) {
                     StatusCampaign.ONGOING.statusCampaign -> {
-                        stockLabel = it.stockWording.title
+                        stockLabel = it.stockWording.title.takeIf { showStockBar }.orEmpty()
                         stockSoldPercentage = it.stockSoldPercentage.toInt()
                     }
                     StatusCampaign.UPCOMING.statusCampaign -> {
@@ -937,7 +937,7 @@ object ShopPageHomeMapper {
             ),
             widgetMasterId = widgetResponse.widgetMasterID,
             productList = widgetResponse.data.firstOrNull()?.listProduct?.map {
-                val labelGroups = it.labelGroups.filter { labelGroup -> labelGroup.position == LABEL_POSITION_INTEGRITY }
+                val labelGroups = it.labelGroups
                 ProductCardUiModel(
                     id = it.id,
                     name = it.name,

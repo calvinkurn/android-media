@@ -250,6 +250,7 @@ class ShipmentMapper @Inject constructor() {
                     groupInfoBadgeUrl = it.groupInformation.badgeUrl,
                     groupInfoDescription = it.groupInformation.description,
                     groupInfoDescriptionBadgeUrl = it.groupInformation.descriptionBadgeUrl,
+                    groupMetadata = it.groupMetadata,
                     shipmentAction = mapShipmentAction(it.shipmentAction)
                 ).apply {
                     isError =

@@ -8,6 +8,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginStart
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -77,10 +79,15 @@ class ProductCardGridView: ConstraintLayout {
         assignedValueLabel.render(productCardModel.labelAssignedValue())
     }
 
-    private fun renderLabelPreventiveThematic(productCardModel: ProductCardModel){
+    private fun renderLabelPreventiveThematic(productCardModel: ProductCardModel) {
+        val labelView = preventiveThematicLabel ?: return
         val labelPreventiveThematic = productCardModel.labelPreventiveThematic()
-        preventiveThematicLabel.shouldShowWithAction(labelPreventiveThematic != null){
-            it.initLabelGroupLabel(labelPreventiveThematic)
+
+        if (labelPreventiveThematic == null) {
+            labelView.hide()
+        } else {
+            labelView.show()
+            ProductCardLabel(labelView.background, labelView).render(labelPreventiveThematic)
         }
     }
 

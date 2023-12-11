@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.revamp.view.uimodel
 
 import android.os.Parcelable
+import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
@@ -53,8 +54,16 @@ data class CheckoutOrderModel(
     var spId: Int = 0,
     var boCode: String = "",
     var boUniqueId: String = "",
-    var dropshiperName: String = "",
-    var dropshiperPhone: String = "",
+
+    // dropship
+    var useDropship: Boolean = false,
+    var isDropshipperDisabled: Boolean = false,
+    var stateDropship: CheckoutDropshipWidget.State = CheckoutDropshipWidget.State.GONE,
+    var dropshipName: String = "",
+    var dropshipPhone: String = "",
+    var isDropshipNameValid: Boolean = false,
+    var isDropshipPhoneValid: Boolean = false,
+
     val isInsurance: Boolean = false,
     val isSaveStateFlag: Boolean = false,
 
@@ -63,8 +72,9 @@ data class CheckoutOrderModel(
     val isProductFcancelPartial: Boolean = false,
     val isProductIsPreorder: Boolean = false,
 
-    // todo check this usage
-    var products: List<CheckoutProductModel> = ArrayList(),
+    // Do not use this variable, except for checkout param
+    private val finalCheckoutProducts: List<CheckoutProductModel> = ArrayList(),
+    val orderProductIds: List<String> = emptyList(),
     var preOrderDurationDay: Int = 0,
 
     // View state
@@ -162,6 +172,9 @@ data class CheckoutOrderModel(
     // add ons subtotal
     var subtotalAddOnMap: HashMap<Int, String> = hashMapOf(),
 
+    // O2O
+    val groupMetadata: String = "",
+
     // ofoc
     val shipmentAction: HashMap<Long, ShipmentAction> = HashMap()
 ) : CheckoutItem {
@@ -169,9 +182,16 @@ data class CheckoutOrderModel(
     val isCustomPinpointError: Boolean
         get() = isDisableChangeCourier && !hasGeolocation
 
-    val cartItemModelsGroupByOrder: Map<String, List<CheckoutProductModel>>
-        get() = products.filter { !it.isError }
+    val finalCheckoutProductsGroupByOrder: Map<String, List<CheckoutProductModel>>
+        get() = finalCheckoutProducts.filter { !it.isError }
             .groupBy { it.cartStringOrder }
+
+    val hasValidEthicalDrugProduct: Boolean
+        get() = finalCheckoutProducts.find { !it.isError && it.ethicalDrugDataModel.needPrescription } != null
+
+    val isEnableDropship: Boolean
+        get() = !isDropshipperDisabled && shipment.courierItemData?.isAllowDropshiper == true &&
+            shipment.courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()
 }
 
 @Parcelize

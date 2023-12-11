@@ -66,8 +66,8 @@ class InactivePhoneDataUploadViewModel @Inject constructor(
                     }
                 }
             }, onError = {
-                _imageUpload.value = Fail(it)
-            })
+                    _imageUpload.value = Fail(it)
+                })
         }, {
             _imageUpload.value = Fail(it)
         })

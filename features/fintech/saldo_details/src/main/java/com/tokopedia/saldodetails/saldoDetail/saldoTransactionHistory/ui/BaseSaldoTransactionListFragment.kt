@@ -1,21 +1,31 @@
 package com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.ui
 
+import android.app.Activity
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.listener.DataEndLessScrollListener
+import com.tokopedia.saldodetails.commom.utils.NavToolbarExt
 import com.tokopedia.saldodetails.commom.utils.SalesTransaction
 import com.tokopedia.saldodetails.commom.utils.TransactionType
 import com.tokopedia.saldodetails.commom.utils.TransactionTypeMapper
+import com.tokopedia.saldodetails.saldoDetail.SaldoDepositActivity
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.adapter.SaldoDetailTransactionFactory
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.adapter.SaldoTransactionAdapter
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.domain.data.DepositHistoryList
@@ -24,6 +34,7 @@ import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.viewmodel.
 import com.tokopedia.saldodetails.transactionDetailPages.penjualan.SaldoSalesDetailActivity
 import com.tokopedia.saldodetails.transactionDetailPages.withdrawal.SaldoWithdrawalDetailActivity
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.saldo_fragment_transaction_list.*
 import javax.inject.Inject
 
@@ -92,6 +103,34 @@ open class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
         endlessRecyclerViewScrollListener = createEndlessRecyclerViewListener()
         transactionRecyclerView.addOnScrollListener(endlessRecyclerViewScrollListener!!)
         endlessRecyclerViewScrollListener?.resetState()
+
+        setupRecyclerViewHeight()
+    }
+
+    private fun setupRecyclerViewHeight() {
+        transactionRecyclerView.post {
+            context?.let {
+                val activityHeight = activity?.window?.decorView?.measuredHeight ?: 0
+                val cardTopArr = IntArray(2)
+                activity?.window?.decorView?.findViewById<LinearLayout>(R.id.merchant_status_ll)?.getLocationOnScreen(cardTopArr)
+                val rvTopArr = IntArray(2)
+                transactionRecyclerView.getLocationOnScreen(rvTopArr)
+                transactionRecyclerView.layoutParams.height = activityHeight - HEADER_HEIGHT.toPx() - getNavigationBarHeight() - RECYCLERVIEW_HEIGHT_OFFSET.toPx()
+                transactionRecyclerView.requestLayout()
+            }
+        }
+    }
+
+    private fun getNavigationBarHeight() : Int{
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.R){
+            val imm = activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view?.windowToken, 0)
+        }
+        val resources = context?.resources
+        val resourceId:Int = resources?.getIdentifier("navigation_bar_height", "dimen", "android").toZeroIfNull()
+        return if (resourceId > 0) {
+            resources?.getDimensionPixelSize(resourceId) ?: 0
+        } else 0
     }
 
     private fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -184,6 +223,9 @@ open class BaseSaldoTransactionListFragment : BaseDaggerFragment() {
 
     companion object {
         const val PARAM_TRANSACTION_TYPE = "PARAM_TRANSACTION_TYPE"
+
+        private const val RECYCLERVIEW_HEIGHT_OFFSET = 205
+        private const val HEADER_HEIGHT = 64
 
         fun getInstance(transactionTitleStr: String): BaseSaldoTransactionListFragment {
             return BaseSaldoTransactionListFragment().apply {

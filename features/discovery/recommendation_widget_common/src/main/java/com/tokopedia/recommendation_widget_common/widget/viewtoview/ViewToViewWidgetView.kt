@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.recommendation_widget_common.R
@@ -59,7 +60,6 @@ class ViewToViewWidgetView : FrameLayout, ViewToViewItemListener, CoroutineScope
     private var typeFactory: ViewToViewItemTypeFactory? = null
     private var recyclerView: RecyclerView
     private var adapter: ViewToViewItemAdapter? = null
-    private var localLoad: LocalLoad? = null
     private var layoutManager: RecyclerView.LayoutManager? = null
     private var scrollListener: ((Parcelable?) -> Unit)? = null
     private var userSession: UserSessionInterface? = null
@@ -72,16 +72,8 @@ class ViewToViewWidgetView : FrameLayout, ViewToViewItemListener, CoroutineScope
         recyclerView = view.findViewById(R.id.rv_product)
         headerView = view.findViewById(R.id.tg_header)
         loadingView = view.findViewById(R.id.loading_view_to_view)
-        localLoad = view.findViewById(R.id.ll_view_to_view)
         this.itemView = view
         this.userSession = UserSession(itemContext)
-        initListeners()
-    }
-
-    private fun initListeners() {
-        localLoad?.setOnClickListener {
-            basicListener?.onViewToViewReload(pageName)
-        }
     }
 
     /*
@@ -101,14 +93,9 @@ class ViewToViewWidgetView : FrameLayout, ViewToViewItemListener, CoroutineScope
             )
             this.basicListener = basicListener
             this.pageName = carouselData.recommendationData.pageName
-            if (carouselData.recommendationData.recommendationItemList.isNotEmpty()) {
-                bindWidgetWithData(carouselData)
-            } else this.basicListener?.onWidgetFail(
-                carouselData.recommendationData.pageName,
-                MessageErrorException("")
-            )
+            bindWidgetWithData(carouselData)
         } catch (e: Exception) {
-            this.basicListener?.onWidgetFail(carouselData.recommendationData.pageName, e)
+            this.rootView.hide()
         }
     }
 
@@ -116,7 +103,6 @@ class ViewToViewWidgetView : FrameLayout, ViewToViewItemListener, CoroutineScope
         headerView?.gone()
         recyclerView.gone()
         loadingView?.visible()
-        localLoad?.gone()
     }
 
     fun setPageName(pageName: String) {
@@ -130,7 +116,6 @@ class ViewToViewWidgetView : FrameLayout, ViewToViewItemListener, CoroutineScope
         }
         recyclerView.gone()
         loadingView?.gone()
-        localLoad?.visible()
     }
 
     fun setBasicListener(listener: ViewToViewWidgetBasicListener) {
@@ -306,7 +291,6 @@ class ViewToViewWidgetView : FrameLayout, ViewToViewItemListener, CoroutineScope
             onLoad = {
                 recyclerView.gone()
                 loadingView?.visible()
-                localLoad?.gone()
             },
             onReady = {
                 headerView?.visible()
@@ -319,7 +303,6 @@ class ViewToViewWidgetView : FrameLayout, ViewToViewItemListener, CoroutineScope
             onFailed = {
                 recyclerView.gone()
                 loadingView?.gone()
-                localLoad?.visible()
             }
         )
     }

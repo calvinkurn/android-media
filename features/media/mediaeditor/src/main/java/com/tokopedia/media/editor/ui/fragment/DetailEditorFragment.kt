@@ -35,7 +35,7 @@ import com.tokopedia.media.editor.analytics.getToolEditorText
 import com.tokopedia.media.editor.analytics.getToolEditorTextAnalytics
 import com.tokopedia.media.editor.analytics.removeBackgroundToText
 import com.tokopedia.media.editor.analytics.watermarkToText
-import com.tokopedia.media.editor.R as editorR
+import com.tokopedia.media.editor.R as mediaeditorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.data.AddTextColorProvider
 import com.tokopedia.media.editor.data.entity.AddTextBackgroundTemplate
@@ -79,7 +79,7 @@ import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifyprinciples.R as principleR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.utils.view.binding.viewBinding
 import com.yalantis.ucrop.util.FastBitmapDrawable
 import kotlinx.coroutines.channels.awaitClose
@@ -258,7 +258,7 @@ class DetailEditorFragment @Inject constructor(
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(
-            editorR.layout.fragment_detail_editor,
+            mediaeditorR.layout.fragment_detail_editor,
             container,
             false
         )
@@ -450,7 +450,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onLoadFailed() {
-        val text = requireContext().getString(editorR.string.editor_add_logo_toast_final)
+        val text = requireContext().getString(mediaeditorR.string.editor_add_logo_toast_final)
         Toast.makeText(context, text, Toast.LENGTH_LONG).show()
         activity?.finish()
     }
@@ -580,8 +580,8 @@ class DetailEditorFragment @Inject constructor(
                     mediaTarget = MediaBitmapEmptyTarget(
                         onReady = { resultBitmap ->
                             when (removeBackgroundType) {
-                                REMOVE_BG_TYPE_GRAY -> principleR.color.Unify_NN200
-                                REMOVE_BG_TYPE_WHITE -> principleR.color.Unify_Static_White
+                                REMOVE_BG_TYPE_GRAY -> unifyprinciplesR.color.Unify_NN200
+                                REMOVE_BG_TYPE_WHITE -> unifyprinciplesR.color.Unify_Static_White
                                 else -> null
                             }?.let { backgroundColor ->
                                 val color =
@@ -962,7 +962,7 @@ class DetailEditorFragment @Inject constructor(
 
         watermarkComponent.getButtonRef().apply {
             val roundedCorner =
-                requireContext().resources.getDimension(editorR.dimen.editor_watermark_rounded)
+                requireContext().resources.getDimension(mediaeditorR.dimen.editor_watermark_rounded)
 
             bitmapResult.first?.let {
                 first.loadImageRounded(it, roundedCorner) {
@@ -1023,18 +1023,18 @@ class DetailEditorFragment @Inject constructor(
 
     private fun showRemoveBackgroundSaveConfirmation(onPrimaryClick: () -> Unit) {
         DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-            setTitle(getString(editorR.string.editor_remove_bg_dialog_title))
-            setDescription(getString(editorR.string.editor_remove_bg_dialog_desc))
+            setTitle(getString(mediaeditorR.string.editor_remove_bg_dialog_title))
+            setDescription(getString(mediaeditorR.string.editor_remove_bg_dialog_desc))
 
             dialogPrimaryCTA.apply {
-                text = getString(editorR.string.editor_remove_bg_dialog_primary_button_text)
+                text = getString(mediaeditorR.string.editor_remove_bg_dialog_primary_button_text)
                 setOnClickListener {
                     onPrimaryClick()
                 }
             }
 
             dialogSecondaryLongCTA.apply {
-                text = getString(editorR.string.editor_remove_bg_dialog_secondary_button_text)
+                text = getString(mediaeditorR.string.editor_remove_bg_dialog_secondary_button_text)
                 setOnClickListener {
                     dismiss()
                 }
@@ -1336,10 +1336,10 @@ class DetailEditorFragment @Inject constructor(
         viewBinding?.let {
             return Toaster.build(
                 it.editorFragmentDetailRoot,
-                getString(editorR.string.editor_tool_remove_background_failed_normal),
+                getString(mediaeditorR.string.editor_tool_remove_background_failed_normal),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
-                getString(editorR.string.editor_tool_remove_background_failed_cta)
+                getString(mediaeditorR.string.editor_tool_remove_background_failed_cta)
             ) { ctaAction() }
         }
         return null
@@ -1348,7 +1348,7 @@ class DetailEditorFragment @Inject constructor(
     private fun removeBgClosePage() {
         Toast.makeText(
             requireContext(),
-            getString(editorR.string.editor_tool_remove_background_failed_normal),
+            getString(mediaeditorR.string.editor_tool_remove_background_failed_normal),
             Toast.LENGTH_LONG
         ).show()
         activity?.finish()
@@ -1471,10 +1471,10 @@ class DetailEditorFragment @Inject constructor(
     private fun showAddTextTemplateSaveDialog() {
         context?.let {
             DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(editorR.string.add_text_dialog_save_title))
-                setDescription(getString(editorR.string.add_text_dialog_save_desc))
-                setPrimaryCTAText(getString(editorR.string.add_text_dialog_save_primary_btn))
-                setSecondaryCTAText(getString(editorR.string.add_text_dialog_save_secondary_btn))
+                setTitle(getString(mediaeditorR.string.add_text_dialog_save_title))
+                setDescription(getString(mediaeditorR.string.add_text_dialog_save_desc))
+                setPrimaryCTAText(getString(mediaeditorR.string.add_text_dialog_save_primary_btn))
+                setSecondaryCTAText(getString(mediaeditorR.string.add_text_dialog_save_secondary_btn))
                 show()
 
                 setSecondaryCTAClickListener {
@@ -1501,10 +1501,10 @@ class DetailEditorFragment @Inject constructor(
     private fun showAddTextTemplateLoadDialog() {
         context?.let {
             DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(editorR.string.add_text_dialog_load_title))
-                setDescription(getString(editorR.string.add_text_dialog_load_desc))
-                setPrimaryCTAText(getString(editorR.string.add_text_dialog_load_primary_btn))
-                setSecondaryCTAText(getString(editorR.string.add_text_dialog_load_secondary_btn))
+                setTitle(getString(mediaeditorR.string.add_text_dialog_load_title))
+                setDescription(getString(mediaeditorR.string.add_text_dialog_load_desc))
+                setPrimaryCTAText(getString(mediaeditorR.string.add_text_dialog_load_primary_btn))
+                setSecondaryCTAText(getString(mediaeditorR.string.add_text_dialog_load_secondary_btn))
                 show()
 
                 setSecondaryCTAClickListener {
@@ -1536,15 +1536,15 @@ class DetailEditorFragment @Inject constructor(
         val toasterType = if (isError) Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
         val textRef = if (!isLoad) {
             if (isError) {
-                editorR.string.add_text_toaster_template_save_error
+                mediaeditorR.string.add_text_toaster_template_save_error
             } else {
-                editorR.string.add_text_toaster_template_save
+                mediaeditorR.string.add_text_toaster_template_save
             }
         } else {
             if (isError) {
-                editorR.string.add_text_toaster_template_load_error
+                mediaeditorR.string.add_text_toaster_template_load_error
             } else {
-                editorR.string.add_text_toaster_template_load
+                mediaeditorR.string.add_text_toaster_template_load
             }
         }
         val text = getString(textRef)

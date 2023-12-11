@@ -147,6 +147,10 @@ open class BaseCheckoutViewModelTest {
 
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchers
 
+    lateinit var logisticProcessor: CheckoutLogisticProcessor
+
+    lateinit var promoProcessor: CheckoutPromoProcessor
+
     lateinit var viewModel: CheckoutViewModel
 
     var latestToaster: CheckoutPageToaster? = null
@@ -159,36 +163,39 @@ open class BaseCheckoutViewModelTest {
         } answers {
             latestToaster = it.invocation.args[0] as CheckoutPageToaster
         }
+        promoProcessor = CheckoutPromoProcessor(
+            clearCacheAutoApplyStackUseCase,
+            validateUsePromoRevampUseCase,
+            getPromoListRecommendationEntryPointUseCase,
+            getPromoListRecommendationMapper,
+            chosenAddressRequestHelper,
+            mTrackerShipment,
+            toasterProcessor,
+            helper,
+            dispatchers
+        )
+        logisticProcessor = CheckoutLogisticProcessor(
+            pinpointUseCase,
+            ratesUseCase,
+            ratesApiUseCase,
+            ratesWithScheduleUseCase,
+            ratesResponseStateConverter,
+            shippingCourierConverter,
+            scheduleDeliveryUseCase,
+            scheduleDeliveryMapper,
+            dispatchers
+        )
         viewModel = CheckoutViewModel(
             CheckoutCartProcessor(
                 getShipmentAddressFormV4UseCase,
                 saveShipmentStateGqlUseCase,
                 changeShippingAddressGqlUseCase,
                 releaseBookingUseCase,
-                dispatchers
-            ),
-            CheckoutLogisticProcessor(
-                pinpointUseCase,
-                ratesUseCase,
-                ratesApiUseCase,
-                ratesWithScheduleUseCase,
-                ratesResponseStateConverter,
-                shippingCourierConverter,
-                scheduleDeliveryUseCase,
-                scheduleDeliveryMapper,
-                dispatchers
-            ),
-            CheckoutPromoProcessor(
-                clearCacheAutoApplyStackUseCase,
-                validateUsePromoRevampUseCase,
-                getPromoListRecommendationEntryPointUseCase,
-                getPromoListRecommendationMapper,
-                chosenAddressRequestHelper,
-                mTrackerShipment,
-                toasterProcessor,
                 helper,
                 dispatchers
             ),
+            logisticProcessor,
+            promoProcessor,
             CheckoutAddOnProcessor(
                 prescriptionIdsUseCase,
                 epharmacyUseCase,

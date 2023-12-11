@@ -203,6 +203,7 @@ class CheckoutDataConverter @Inject constructor() {
                 groupInfoBadgeUrl = groupShop.groupInfoBadgeUrl,
                 groupInfoDescription = groupShop.groupInfoDescription,
                 groupInfoDescriptionBadgeUrl = groupShop.groupInfoDescriptionBadgeUrl,
+                groupMetadata = groupShop.groupMetadata,
                 isBlackbox = cartShipmentAddressFormData.isBlackbox,
                 isHidingCourier = cartShipmentAddressFormData.isHidingCourier,
                 addressId = cartShipmentAddressFormData.groupAddress[0].userAddress.addressId,
@@ -236,8 +237,9 @@ class CheckoutDataConverter @Inject constructor() {
                 spId = groupShop.spId,
                 boCode = groupShop.boCode,
                 boUniqueId = groupShop.boUniqueId,
-                dropshiperName = groupShop.dropshipperName,
-                dropshiperPhone = groupShop.dropshipperPhone,
+                isDropshipperDisabled = cartShipmentAddressFormData.isDropshipperDisable,
+                dropshipName = groupShop.dropshipperName,
+                dropshipPhone = groupShop.dropshipperPhone,
                 isInsurance = groupShop.isUseInsurance,
                 hasPromoList = groupShop.isHasPromoList,
                 isSaveStateFlag = groupShop.isSaveStateFlag,
@@ -257,7 +259,8 @@ class CheckoutDataConverter @Inject constructor() {
                 startDate = groupShop.scheduleDelivery.startDate,
                 addOnDefaultTo = receiverName,
                 isProductFcancelPartial = fobject.isFcancelPartial == 1,
-                products = products,
+                finalCheckoutProducts = products,
+                orderProductIds = products.map { it.productId.toString() },
                 isProductIsPreorder = fobject.isPreOrder == 1,
                 preOrderDurationDay = products.first().preOrderDurationDay,
                 isTokoNow = shop.isTokoNow,
@@ -272,7 +275,8 @@ class CheckoutDataConverter @Inject constructor() {
                 courierSelectionErrorTitle = groupShop.courierSelectionErrorData.title,
                 courierSelectionErrorDescription = groupShop.courierSelectionErrorData.description,
                 subtotalAddOnMap = mapSubtotalAddons(groupShop.listSubtotalAddOn),
-                shipmentAction = groupShop.shipmentAction
+                shipmentAction = groupShop.shipmentAction,
+                groupingState = groupShop.groupingState
             )
             for (cartItemModel in products) {
                 if (cartItemModel.ethicalDrugDataModel.needPrescription && !cartItemModel.isError) {
@@ -284,7 +288,7 @@ class CheckoutDataConverter @Inject constructor() {
             if (groupShop.isFulfillment) {
                 order.shopLocation = groupShop.fulfillmentName
             }
-            setCartItemModelError(order)
+            setCartItemModelError(order, products)
             if (order.isFreeShippingPlus && !isFirstPlusProductHasPassed) {
                 val coachmarkPlusData = CoachmarkPlusData(
                     cartShipmentAddressFormData.coachmarkPlus.isShown,
@@ -309,9 +313,12 @@ class CheckoutDataConverter @Inject constructor() {
         return mapSubtotal
     }
 
-    private fun setCartItemModelError(order: CheckoutOrderModel) {
+    private fun setCartItemModelError(
+        order: CheckoutOrderModel,
+        products: ArrayList<CheckoutProductModel>
+    ) {
         if (order.isAllItemError) {
-            for (cartItemModel in order.products) {
+            for (cartItemModel in products) {
                 cartItemModel.isError = true
                 cartItemModel.isShopError = true
             }

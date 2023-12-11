@@ -1,14 +1,12 @@
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/parent_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/sp_app_bar_layout"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:elevation="@dimen/unify_space_0">
+        android:layout_height="wrap_content">
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/layout_holdwithdrawl_dialog"
@@ -17,36 +15,30 @@
             android:visibility="gone"
             app:layout_scrollFlags="scroll"
             app:tickerType="warning"
-            app:tickerShapeType="full" />
-
-        <com.tokopedia.unifycomponents.ticker.Ticker
-            android:id="@+id/ticker_saldo_withdrawal_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:tickerType="announcement"
             app:tickerShapeType="full"
-            />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <include
             android:id="@+id/deposit_header_layout"
             layout="@layout/saldo_deposit_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll" />
+            app:layout_constraintTop_toBottomOf="@id/layout_holdwithdrawl_dialog" />
 
-    </com.google.android.material.appbar.AppBarLayout>
+        <FrameLayout
+            android:id="@+id/saldo_history_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-5dp"
+            android:background="@drawable/bg_saldo_history"
+            android:elevation="5dp"
+            android:layout_marginStart="@dimen/sd_dp_1"
+            android:layout_marginEnd="@dimen/sd_dp_1"
+            android:layout_marginBottom="@dimen/unify_space_4"
+            app:layout_constraintTop_toBottomOf="@id/deposit_header_layout"/>
 
-    <FrameLayout
-        android:id="@+id/saldo_history_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/sd_dp_1"
-        android:layout_marginEnd="@dimen/sd_dp_1"
-        android:layout_marginBottom="@dimen/unify_space_4"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
 
 
 

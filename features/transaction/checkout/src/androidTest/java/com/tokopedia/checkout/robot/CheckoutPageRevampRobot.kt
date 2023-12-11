@@ -34,7 +34,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import com.tokopedia.dialog.R as dialogR
 import com.tokopedia.logisticcart.R as logisticcartR
-import com.tokopedia.promocheckout.common.R as promocheckoutcommonR
+import com.tokopedia.promousage.R as promousageR
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 
 fun checkoutPageRevamp(func: CheckoutPageRevampRobot.() -> Unit) =
@@ -250,7 +250,7 @@ class CheckoutPageRevampRobot {
                 .perform(
                     RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                         position,
-                        clickOnViewChild(promocheckoutcommonR.id.active_promo_checkout_view)
+                        clickOnViewChild(promousageR.id.active_promo_checkout_view)
                     )
                 )
         }
