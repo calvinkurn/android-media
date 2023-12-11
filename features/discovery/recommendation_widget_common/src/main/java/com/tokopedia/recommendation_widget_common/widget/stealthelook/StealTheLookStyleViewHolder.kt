@@ -1,18 +1,18 @@
 package com.tokopedia.recommendation_widget_common.widget.stealthelook
 
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recommendation_widget_common.databinding.RecommendationImageReloadBinding
 import com.tokopedia.recommendation_widget_common.R as recommendation_widget_commonR
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.recommendation_widget_common.databinding.RecommendationWidgetStealTheLookPageBinding
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.stealthelook.tracking.StealTheLookTracking
@@ -48,6 +48,7 @@ class StealTheLookStyleViewHolder(
         val ribbonTextView = binding.stlItemLeftGrid.stlItemRibbonText
         val reloadLayout = binding.stlItemLeftGrid.stlReload
         renderGrid(grid, imageView, ribbonArchView, ribbonContentView, ribbonTextView, reloadLayout)
+        adjustLeftPadding()
         imageView.setGridClickListener(grid, model.tracking)
     }
 
@@ -71,6 +72,26 @@ class StealTheLookStyleViewHolder(
         val reloadLayout = binding.stlItemBottomRightGrid.stlReload
         renderGrid(grid, imageView, ribbonArchView, ribbonContentView, ribbonTextView, reloadLayout)
         imageView.setGridClickListener(grid, model.tracking)
+    }
+
+    private fun adjustLeftPadding() {
+        val leftGridRatio: String
+        val leftGridWeight: Int
+        val outerLeftPadding: Int
+        if(binding.stlItemLeftGrid.stlItemRibbonArch.isVisible) {
+            leftGridRatio = itemView.context.resources.getString(recommendation_widget_commonR.string.steal_the_look_left_item_ratio)
+            leftGridWeight = itemView.context.resources.getInteger(recommendation_widget_commonR.integer.steal_the_look_left_item_horizontal_weight)
+            outerLeftPadding = itemView.context.resources.getDimensionPixelOffset(recommendation_widget_commonR.dimen.steal_the_look_outer_left_padding_ribbon)
+        } else {
+            leftGridRatio = itemView.context.resources.getString(recommendation_widget_commonR.string.steal_the_look_left_image_ratio)
+            leftGridWeight = itemView.context.resources.getInteger(recommendation_widget_commonR.integer.steal_the_look_left_image_horizontal_weight)
+            outerLeftPadding = itemView.context.resources.getDimensionPixelOffset(recommendation_widget_commonR.dimen.steal_the_look_outer_padding)
+        }
+        (binding.stlItemLeftGrid.root.layoutParams as? ConstraintLayout.LayoutParams)?.apply {
+            dimensionRatio = leftGridRatio
+            horizontalWeight = leftGridWeight.toFloat()
+        }
+        binding.stlLayout.updatePadding(left = outerLeftPadding)
     }
 
     private fun renderGrid(

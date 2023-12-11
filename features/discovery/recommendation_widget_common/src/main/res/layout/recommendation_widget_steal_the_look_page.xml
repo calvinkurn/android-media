@@ -6,15 +6,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/steal_the_look_outer_left_padding"
-    android:paddingRight="@dimen/steal_the_look_outer_right_padding">
+    android:paddingLeft="@dimen/steal_the_look_outer_padding"
+    android:paddingRight="@dimen/steal_the_look_outer_padding">
 
     <include
         layout="@layout/recommendation_widget_steal_the_look_grid_left"
         android:id="@+id/stl_item_left_grid"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="@string/steal_the_look_left_item_ratio"
+        app:layout_constraintDimensionRatio="@string/steal_the_look_left_image_ratio"
         app:layout_constraintHorizontal_weight="@integer/steal_the_look_left_item_horizontal_weight"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintTop_toTopOf="parent"

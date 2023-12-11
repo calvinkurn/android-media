@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/steal_the_look_outer_left_padding"
-    android:paddingRight="@dimen/steal_the_look_outer_right_padding">
+    android:paddingLeft="@dimen/steal_the_look_outer_padding"
+    android:paddingRight="@dimen/steal_the_look_outer_padding">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/stl_item_left_grid_shimmer"

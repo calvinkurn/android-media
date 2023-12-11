@@ -4,7 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    tools:layout_width="219dp"
+    tools:layout_height="218dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/stl_item_image"
@@ -13,7 +15,6 @@
         android:layout_height="0dp"
         android:scaleType="centerCrop"
         app:layout_constraintDimensionRatio="@string/steal_the_look_left_image_ratio"
-        app:layout_goneMarginLeft="@dimen/steal_the_look_inner_padding_half"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/stl_item_ribbon_arch"
