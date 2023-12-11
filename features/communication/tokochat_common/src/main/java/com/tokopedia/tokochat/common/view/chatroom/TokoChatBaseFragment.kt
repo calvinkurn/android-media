@@ -51,8 +51,8 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews(view, savedInstanceState)
         initObservers()
+        initViews(view, savedInstanceState)
     }
 
     abstract fun getViewBindingInflate(container: ViewGroup?): viewBinding

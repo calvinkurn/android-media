@@ -6,11 +6,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.tokopedia.design.text.SearchInputView
+    <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/search_input_autocomplete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:siv_search_hint="@string/searchbar_autocomplete_hint" />
+        android:padding="10dp"
+        app:search_bar_show_icon="false"
+        app:search_bar_placeholder="@string/searchbar_autocomplete_hint" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_autocomplete"

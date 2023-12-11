@@ -12,4 +12,6 @@ class PlayWidgetDiscoveryAnalyticModel : PlayWidgetAnalyticModel {
     override val promotionsItemName: String = "play-disco-widget"
 
     override val promotionsCreativeName: String = "play widget in disco page"
+
+    override val productId: String = ""
 }

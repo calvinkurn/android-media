@@ -9,7 +9,7 @@ import com.tokopedia.logisticCommon.data.request.UpdatePinpointParam
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import javax.inject.Inject
 
-class UpdatePinpointUseCase @Inject constructor(
+open class UpdatePinpointUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<UpdatePinpointParam, KeroEditAddressResponse.Data>(dispatcher.io) {

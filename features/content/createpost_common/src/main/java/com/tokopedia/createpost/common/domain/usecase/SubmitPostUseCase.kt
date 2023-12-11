@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.common.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.createpost.common.domain.entity.request.MediaTag
 import com.tokopedia.createpost.common.domain.entity.request.SubmitPostMedium
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
@@ -27,7 +28,7 @@ import kotlin.collections.ArrayList
 @GqlQuery(SubmitPostUseCase.QUERY_NAME, SubmitPostUseCase.QUERY)
 open class SubmitPostUseCase @Inject constructor(
     private val uploadMultipleMediaUseCase: UploadMultipleMediaUseCase,
-    graphqlRepository: GraphqlRepository,
+    @ApplicationContext graphqlRepository: GraphqlRepository,
     private val saveMediaPostCacheUseCase: SaveMediaPostCacheUseCase,
     private val deleteMediaPostCacheUseCase: DeleteMediaPostCacheUseCase,
 ) : GraphqlUseCase<SubmitPostData>(graphqlRepository) {
@@ -53,65 +54,49 @@ open class SubmitPostUseCase @Inject constructor(
         authorId: String,
         caption: String,
         media: List<Pair<String, String>>,
-        relatedIdList: List<String>,
         mediaList: List<MediaModel>,
         mediaWidth: Int,
-        mediaHeight: Int
+        mediaHeight: Int,
+        onSuccessUploadPerMedia: suspend () -> Unit,
     ) {
-        uploadMultipleMediaUseCase.postUpdateProgressManager = postUpdateProgressManager
-
         val mediumList = getMediumList(media, mediaList)
 
         /** Save Media Post Cache Reference */
         val setMediaUrl = mediumList.map { it.mediaURL }.toSet()
         saveMediaPostCacheUseCase(setMediaUrl)
 
-        uploadMultipleMediaUseCase.execute(mediumList)
+        /** Upload Async */
+        val newMediumList = uploadMultipleMediaUseCase.execute(mediumList, onSuccessUploadPerMedia)
 
-        uploadMultipleMediaUseCase.state.collectLatest { state ->
-            if(state.images is UploadMediaDataModel.Media.Success && state.videos is UploadMediaDataModel.Media.Success) {
-                val newMedia = state.images.mediumList + state.videos.mediumList
+        /** Rearrange Media */
+        val arrangedMedia = rearrangeMedia(newMediumList)
 
-                /** If all media is alr processed */
-                if(mediumList.size == newMedia.size) {
-                    /** Rearrange Media */
-                    val arrangedMedia = rearrangeMedia(newMedia)
+        /** Submit Post */
+        setRequestParams(
+            mapOf(
+                PARAM_INPUT to mapOf(
+                    PARAM_ACTION to if (id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
+                    PARAM_ID to if (id.isNullOrEmpty()) null else id,
+                    PARAM_AD_ID to null,
+                    PARAM_TYPE to INPUT_TYPE_CONTENT,
+                    PARAM_TOKEN to token,
+                    PARAM_AUTHOR_ID to authorId,
+                    PARAM_AUTHOR_TYPE to type,
+                    PARAM_CAPTION to caption,
+                    PARAM_MEDIA_WIDTH to mediaWidth,
+                    PARAM_MEDIA_HEIGHT to mediaHeight,
+                    PARAM_MEDIA to arrangedMedia,
+                )
+            )
+        )
 
-                    /** Submit Post */
-                    postUpdateProgressManager?.onSubmitPost()
+        val result = super.executeOnBackground()
 
-                    setRequestParams(
-                        mapOf(
-                            PARAM_INPUT to mapOf(
-                                PARAM_ACTION to if(id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
-                                PARAM_ID to if(id.isNullOrEmpty()) null else id,
-                                PARAM_AD_ID to null,
-                                PARAM_TYPE to INPUT_TYPE_CONTENT,
-                                PARAM_TOKEN to token,
-                                PARAM_AUTHOR_ID to authorId,
-                                PARAM_AUTHOR_TYPE to type,
-                                PARAM_CAPTION to caption,
-                                PARAM_MEDIA_WIDTH to mediaWidth,
-                                PARAM_MEDIA_HEIGHT to mediaHeight,
-                                PARAM_MEDIA to arrangedMedia,
-                            )
-                        )
-                    )
-
-                    val result = super.executeOnBackground()
-
-                    deleteMediaPostCacheUseCase(Unit)
-
-                    _state.update { SubmitPostResult.Success(result) }
-                }
-            }
-            else if (state.images is UploadMediaDataModel.Media.Fail) {
-                _state.update { SubmitPostResult.Fail(state.images.throwable) }
-            }
-            else if (state.videos is UploadMediaDataModel.Media.Fail) {
-                _state.update { SubmitPostResult.Fail(state.videos.throwable) }
-            }
+        if (result.feedContentSubmit.success != SubmitPostData.SUCCESS) {
+            throw Exception(result.feedContentSubmit.error)
         }
+
+        deleteMediaPostCacheUseCase(Unit)
     }
 
     /**
@@ -144,8 +129,8 @@ open class SubmitPostUseCase @Inject constructor(
         setRequestParams(
             mapOf(
                 PARAM_INPUT to mapOf(
-                    PARAM_ACTION to if(id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
-                    PARAM_ID to if(id.isNullOrEmpty()) null else id,
+                    PARAM_ACTION to if (id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
+                    PARAM_ID to if (id.isNullOrEmpty()) null else id,
                     PARAM_AD_ID to null,
                     PARAM_TYPE to INPUT_TYPE_CONTENT,
                     PARAM_TOKEN to token,
@@ -180,7 +165,7 @@ open class SubmitPostUseCase @Inject constructor(
             position.add(it.posY.toDouble())
 
             val id = productItem.getOrNull(it.tagIndex)?.id
-            if(id != null) {
+            if (id != null) {
                 val tag = MediaTag(
                     type = TAGS_TYPE_PRODUCT,
                     content = id,
