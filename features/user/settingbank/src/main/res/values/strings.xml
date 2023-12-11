@@ -21,7 +21,7 @@
     <string name="sbank_nama_bank">Nama Bank</string>
     <string name="sbank_periksa">Periksa</string>
     <string name="sbank_save_account">Tambah Rekening</string>
-    <string name="sbank_add_bank_tnc">Dengan klik tombol di bawah, kamu menyetujui Syarat &amp; Ketentuan serta Kebijakan Privasi untuk menambahkan rekening.</string>
+    <string name="sbank_add_bank_tnc">Dengan klik tombol di bawah, kamu menyetujui Syarat &amp; Ketentuan serta Pemberitahuan Privasi untuk menambahkan rekening.</string>
     <string name="sbank_add_bank_tnc_clickable_part">Syarat &amp; Ketentuan</string>
     <string name="sbank_verification_in_progress">Sedang dalam Pengecekan</string>
     <string name="sbank_make_bank_primary">Jadikan Utama</string>
@@ -65,7 +65,7 @@
     <string name="sbank_ya_benar">Ya, Benar</string>
     <string name="sbank_batal">Batal</string>
     <string name="sbank_privacy_url">https://www.tokopedia.com/privacy</string>
-    <string name="sbank_privacy">Kebijakan</string>
+    <string name="sbank_privacy">Pemberitahuan</string>
     <string name="sbank_terms">Syarat</string>
     <string name="sbank_untuk_tnc">untuk</string>
     <string name="sbank_serta_tnc">serta</string>

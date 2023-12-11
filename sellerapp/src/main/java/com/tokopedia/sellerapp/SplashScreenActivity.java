@@ -11,13 +11,13 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 
 import com.tokopedia.app.common.SplashScreen;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.applink.sellermigration.SellerMigrationRedirectionUtil;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
-import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -77,7 +77,7 @@ public class SplashScreenActivity extends SplashScreen {
         }
 
         if (userSession.hasShop()) {
-            startActivity(SellerHomeActivity.createIntent(this));
+            RouteManager.route(this, ApplinkConst.SellerApp.SELLER_APP_HOME);
         } else if (!TextUtils.isEmpty(userSession.getUserId())) {
             Intent intent = moveToCreateShop(this);
             startActivity(intent);

@@ -18,7 +18,6 @@ object PromoCreationMapper {
         merchantPromotionGetPromoList: MerchantPromotionGetPromoList,
         hasPlayContent: Boolean = false
     ): PromoCreationListUiModel {
-
         val filterItems = arrayListOf(FilterPromoUiModel(TAB_ID_ALL_FEATURE, TAB_NAME_ALL_FEATURE))
         merchantPromotionGetPromoList.data.filterTab.map {
             filterItems.add(FilterPromoUiModel(it.id, it.name))
@@ -44,7 +43,8 @@ object PromoCreationMapper {
                         bottomText = it.bottomText,
                         headerText = it.headerText,
                         hasPerformanceButton = false,
-                        hideCheckBox = false
+                        hideCheckBox = false,
+                        currentTimeMillis = System.currentTimeMillis()
                     )
                 }
             }
@@ -79,7 +79,8 @@ object PromoCreationMapper {
             bottomText = promo.bottomText,
             headerText = promo.headerText,
             hasPerformanceButton = hasContent,
-            hideCheckBox = true
+            hideCheckBox = true,
+            currentTimeMillis = System.currentTimeMillis()
         )
     }
 }

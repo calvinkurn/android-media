@@ -661,23 +661,26 @@ class AddBankFragment : BaseDaggerFragment() {
         val spannableStringPrivacyPolicy = SpannableString(originalText)
         val color =
             MethodChecker.getColor(context, unifyprinciplesR.color.Unify_GN500)
-        spannableStringPrivacyPolicy.setSpan(
-            object : ClickableSpan() {
-                override fun onClick(widget: View) {
-                    openPrivacyBottomSheet()
-                }
 
-                override fun updateDrawState(ds: TextPaint) {
-                    super.updateDrawState(ds)
-                    ds.isUnderlineText = false
-                    ds.color = color
-                    ds.isFakeBoldText = true
-                }
-            },
-            startIndexPrivacy,
-            endIndexPrivacy,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
+        if (startIndexPrivacy >= Int.ZERO && endIndexPrivacy > startIndexPrivacy) {
+            spannableStringPrivacyPolicy.setSpan(
+                object : ClickableSpan() {
+                    override fun onClick(widget: View) {
+                        openPrivacyBottomSheet()
+                    }
+
+                    override fun updateDrawState(ds: TextPaint) {
+                        super.updateDrawState(ds)
+                        ds.isUnderlineText = false
+                        ds.color = color
+                        ds.isFakeBoldText = true
+                    }
+                },
+                startIndexPrivacy,
+                endIndexPrivacy,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
 
         return SpannableStringBuilder.valueOf(spannableStringPrivacyPolicy)
     }

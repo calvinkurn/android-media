@@ -92,6 +92,7 @@ Tech Design diagram: <https://drive.google.com/file/d/1IYPgRqP5taKQr6HUVgvZ512dt
 | 24 | `BILL_WIDGET` | `RechargeHomepageMyBillsWidgetViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/ScreenShot20230215at194700.png)<br/> |
 | 25 | `MYBILLS_ENTRYPOINT` | `RechargeHomepageMyBillsEntryPointWidgetViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/ScreenShot20230215at194645.png)<br/> |
 | 26 | `3_BUTTONS_MYBILLS_ENTRYPOINT` | `RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/ScreenShot20230522at125551.png)<br/> |
+| 27 | `TODO_WIDGET`                   | `RechargeHomepageTodoWidgetViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/ScreenShotTodoWiget.png)<br/>   |  
 | - | For loading purposes | `RechargeHomepageLoadingViewHolder` | ![](https://docs-android.tokopedia.net/images/docs/digital_homepage/image-20210520-115856.png)<br/> |
 
 ### How sub-homepage’s search bar works?
@@ -104,12 +105,13 @@ Tech Design diagram: <https://drive.google.com/file/d/1IYPgRqP5taKQr6HUVgvZ512dt
 
 
 
-| **Query / Mutation / API** | **Usage** | **Triggered By** | **API Docs** |
-| --- | --- | --- | --- |
-| `rechargeGetDynamicPageSkeleton` | Get the skeleton (list of widget) of Digital Homepage | - Open page<br/>- Pull to refresh<br/> | [[BTDC] Dynamic Page](/wiki/spaces/BT/pages/813827413)  |
-| `rechargeGetDynamicPage` | Get the detail of the widget | Bind widget’s view holder for the first time  |
-| `rechargePostDynamicPageAction` | Notify BE when user tap close button on Reminder widget (`URGENCY_WIDGETS`) & Banner widget (`COUNTDOWN_PRODUCT_BANNER`) | Tap close button |
-| `rechargeTicker` | Get available ticker information | - Open page<br/>- Pull to refresh<br/> | [[BTDC] Recharge Ticker](/wiki/spaces/BT/pages/1282442521)  |
+| **Query / Mutation / API** | **Usage**                                                                                                                | **Triggered By**                             | **API Docs** |
+| --- |--------------------------------------------------------------------------------------------------------------------------|----------------------------------------------| -- |
+| `rechargeGetDynamicPageSkeleton` | Get the skeleton (list of widget) of Digital Homepage                                                                    | - Open page<br/>- Pull to refresh<br/>       | [[BTDC] Dynamic Page](/wiki/spaces/BT/pages/813827413) |
+| `rechargeGetDynamicPage` | Get the detail of the widget, now we prioritize use section_name as parameter to get section data, instead of section id | Bind widget’s view holder for the first time |
+| `rechargePostDynamicPageAction` | Notify BE when user tap close button on Reminder widget (`URGENCY_WIDGETS`) & Banner widget (`COUNTDOWN_PRODUCT_BANNER`) | Tap close button                             |
+| `rechargeTicker` | Get available ticker information                                                                                         | - Open page<br/>- Pull to refresh<br/>       | [[BTDC] Recharge Ticker](/wiki/spaces/BT/pages/1282442521) |
+| `digitalPersonalizationCloseWidget` | Send Close Action Todo Widget for WATF close process                                                                     | - Close Widget Todo Widget<br/>-             |   |
 
 ## Applinks
 

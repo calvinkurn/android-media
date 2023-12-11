@@ -1282,4 +1282,18 @@ class OrderSummaryPageViewModelPromoTest : BaseOrderSummaryPageViewModelTest() {
         )
         assertFalse(orderSummaryPageViewModel.orderPromo.value.isDisabled)
     }
+
+    @Test
+    fun `test get use new promo page`() {
+        // Given
+        val promoUiModel = PromoUiModel()
+        orderSummaryPageViewModel.orderPromo.value =
+            orderSummaryPageViewModel.orderPromo.value.copy(
+                isPromoRevamp = true
+            )
+        // When
+        val useNewPromoPage = orderSummaryPageViewModel.useNewPromoPage()
+        // Then
+        assertTrue(useNewPromoPage)
+    }
 }

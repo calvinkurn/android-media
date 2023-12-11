@@ -24,7 +24,7 @@ class CategoryMenuAnalytic {
     fun sendImpressionCategoryRecomWidgetEvent(
         categoryIdL1: String,
         categoryRecomIdL1: String,
-        warehouseId: String,
+        warehouseIds: String,
         headerName: String
     ) {
         Tracker.Builder()
@@ -33,7 +33,7 @@ class CategoryMenuAnalytic {
             .setEventCategory(EVENT_CATEGORY_PAGE_L1)
             .setEventLabel(joinDash(categoryIdL1, categoryRecomIdL1, headerName.trim()))
             .setCustomProperty(KEY_TRACKER_ID, ID_IMPRESS_CATEGORY_RECOM_WIDGET)
-            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseId)
+            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseIds)
             .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
             .build()
@@ -44,7 +44,7 @@ class CategoryMenuAnalytic {
     fun sendClickCategoryRecomWidgetEvent(
         categoryIdL1: String,
         categoryRecomIdL1: String,
-        warehouseId: String,
+        warehouseIds: String,
         headerName: String
     ) {
         Tracker.Builder()
@@ -53,7 +53,7 @@ class CategoryMenuAnalytic {
             .setEventCategory(EVENT_CATEGORY_PAGE_L1)
             .setEventLabel(joinDash(categoryIdL1, categoryRecomIdL1, headerName.trim()))
             .setCustomProperty(KEY_TRACKER_ID, ID_CLICK_CATEGORY_RECOM_WIDGET)
-            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseId)
+            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseIds)
             .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
             .build()

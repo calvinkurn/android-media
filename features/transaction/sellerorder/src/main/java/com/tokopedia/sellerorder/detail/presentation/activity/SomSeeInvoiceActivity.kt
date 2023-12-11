@@ -38,6 +38,11 @@ open class SomSeeInvoiceActivity : BaseSimpleWebViewActivity() {
         return true
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        removeWebView()
+    }
+
     private fun doWebViewPrint() {
         val fragment = fragment
         if (fragment is BaseWebViewFragment) {
@@ -86,4 +91,15 @@ open class SomSeeInvoiceActivity : BaseSimpleWebViewActivity() {
         }
     }
 
+    private fun removeWebView() {
+        try {
+            (fragment as? BaseWebViewFragment)?.run {
+                webView?.clearHistory()
+                webView?.destroy()
+                webView = null
+            }
+        } catch (ignored: Exception) {
+            // NO-OP
+        }
+    }
 }

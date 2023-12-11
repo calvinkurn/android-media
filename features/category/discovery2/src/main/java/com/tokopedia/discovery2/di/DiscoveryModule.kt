@@ -45,6 +45,8 @@ import com.tokopedia.discovery2.repository.section.SectionGQLRepository
 import com.tokopedia.discovery2.repository.section.SectionRepository
 import com.tokopedia.discovery2.repository.shopcard.ShopCardGQLRepository
 import com.tokopedia.discovery2.repository.shopcard.ShopCardRepository
+import com.tokopedia.discovery2.repository.supportingbrand.SupportingBrandGQLRepository
+import com.tokopedia.discovery2.repository.supportingbrand.SupportingBrandRepository
 import com.tokopedia.discovery2.repository.tabs.TabsGQLRepository
 import com.tokopedia.discovery2.repository.tabs.TabsRepository
 import com.tokopedia.discovery2.repository.topads.TopAdsHeadlineRepository
@@ -58,6 +60,8 @@ import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMapper
 import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
@@ -244,5 +248,15 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Named("atcOcsMutation")
     fun provideAddToCartOcsMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, atc_commonR.raw.mutation_add_to_cart_one_click_shipment)
+    }
+
+    @Provides
+    fun provideRemoteConfig(
+        @ApplicationContext context: Context
+    ): RemoteConfig = FirebaseRemoteConfigImpl(context)
+
+    @Provides
+    fun provideSupportingBrandRepository(): SupportingBrandRepository {
+        return SupportingBrandGQLRepository()
     }
 }

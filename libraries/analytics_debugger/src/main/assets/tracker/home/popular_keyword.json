@@ -17,7 +17,8 @@
       "eventLabel": ".*",
       "businessUnit": ".*",
       "currentSite": ".*",
-      "userId": ".*"
+      "userId": ".*",
+      "hits_time": ".*"
     },
     {
       "promotions": [{

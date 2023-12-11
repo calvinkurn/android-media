@@ -11,6 +11,7 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.listener.HomeReviewListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
+import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
 import com.tokopedia.home.databinding.HomeItemReviewBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -49,6 +50,7 @@ class ReviewViewHolder(
         binding?.cardReview?.animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
         performanceMonitoring?.startTrace(performanceTraceName)
         binding?.reviewCardBg?.loadImage(cardBg)
+        setChannelDivider(element)
         element.suggestedProductReview.let { suggestedProductReview ->
             if (suggestedProductReview.suggestedProductReview.linkURL.isEmpty()) {
                 binding?.loadingReview?.root?.visibility = View.VISIBLE
@@ -133,5 +135,13 @@ class ReviewViewHolder(
         }
         performanceMonitoring?.stopTrace()
         performanceMonitoring = null
+    }
+
+    private fun setChannelDivider(element: ReviewDataModel) {
+        HomeChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channel,
+            dividerTop = binding?.homeComponentDividerHeader,
+            dividerBottom = binding?.homeComponentDividerFooter
+        )
     }
 }

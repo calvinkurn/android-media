@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
@@ -81,16 +82,15 @@ class PartialContentView(
     }
 
     fun updateWishlist(wishlisted: Boolean, shouldShowWishlist: Boolean) = with(binding.fabDetailPdp) {
-        if (!shouldShowWishlist) {
-            hide()
-        } else if (activeState != wishlisted) {
+        showWithCondition(shouldShowWishlist)
+        if (shouldShowWishlist && activeState != wishlisted) {
             activeState = wishlisted
         }
     }
 
     fun renderFreeOngkir(freeOngkirUrl: String) = with(binding) {
         imgFreeOngkir.shouldShowWithAction(freeOngkirUrl.isNotEmpty()) {
-            imgFreeOngkir.setImageUrl(freeOngkirUrl)
+            imgFreeOngkir.loadImageWithoutPlaceholder(freeOngkirUrl)
         }
     }
 

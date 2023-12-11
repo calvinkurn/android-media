@@ -6,10 +6,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import com.tokopedia.media.loader.loadImageWithoutPlaceholderAndError
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.FeedbackTokonowWidgetBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.TokoNowFeedbackWidgetViewHolder
-import com.tokopedia.utils.image.ImageUtils
 
 class ProductFeedbackView @JvmOverloads constructor(
     context: Context,
@@ -61,7 +61,7 @@ class ProductFeedbackView @JvmOverloads constructor(
 
     fun loadImage(){
         binding?.feebackWidgetImg?.let {
-            ImageUtils.loadImageWithoutPlaceholderAndError(it, FEEDBACK_WIDGET_IMAGE)
+            it.loadImageWithoutPlaceholderAndError(FEEDBACK_WIDGET_IMAGE)
         }
     }
 }
