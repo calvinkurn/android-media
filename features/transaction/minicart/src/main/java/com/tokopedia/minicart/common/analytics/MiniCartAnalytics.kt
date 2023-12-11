@@ -401,18 +401,22 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     fun eventClickBuy(page: Page, products: List<MiniCartItem>, isOCCFlow: Boolean) {
         var eventAction = ""
         var eventCategory = ""
+        var trackerId = ""
         when (page) {
             Page.HOME_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "landing")
                 eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "- homepage")
+                trackerId = VALUE_TRACKER_ID_BUY_BUTTON_CLICKED_HOME
             }
             Page.SEARCH_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "search")
                 eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "- search result")
+                trackerId = VALUE_TRACKER_ID_BUY_BUTTON_CLICKED_SEARCH
             }
             Page.CATEGORY_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "category")
                 eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "category page")
+                trackerId = VALUE_TRACKER_ID_BUY_BUTTON_CLICKED_CATEGORY
             }
             Page.DISCOVERY_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "discovery")
@@ -437,6 +441,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
             putString(KEY_USER_ID, userSession.userId)
             putString(KEY_CHECKOUT_OPTION, VALUE_CHECKOUT_OPTION_CLICK_BUY_IN_MINICART)
             putString(KEY_CHECKOUT_STEP, VALUE_CHECKOUT_STEP_ONE)
+            putString(KEY_TRACKER_ID, trackerId)
             val items = ArrayList<Bundle>()
             products.forEach { product ->
                 if (product is MiniCartItem.MiniCartItemProduct && !product.isError) {
