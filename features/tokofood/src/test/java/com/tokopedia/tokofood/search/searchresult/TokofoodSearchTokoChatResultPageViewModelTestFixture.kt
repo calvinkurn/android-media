@@ -6,8 +6,11 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
+import com.tokopedia.logisticCommon.domain.param.KeroEditAddressParam
+import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointWithAddressIdUseCase
 import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
+import com.tokopedia.tokofood.data.createKeroEditAddressResponse
 import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodFilterSortMapper
 import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodMerchantSearchResultMapper
 import com.tokopedia.tokofood.feature.search.searchresult.domain.response.TokofoodFilterSortResponse
@@ -49,7 +52,7 @@ open class TokofoodSearchTokoChatResultPageViewModelTestFixture {
     lateinit var tokofoodFilterSortUseCase: TokofoodFilterSortUseCase
 
     @RelaxedMockK
-    lateinit var keroEditAddressUseCase: KeroEditAddressUseCase
+    lateinit var keroEditAddressUseCase: UpdatePinpointWithAddressIdUseCase
 
     @RelaxedMockK
     lateinit var tokofoodMerchantSearchResultMapper: TokofoodMerchantSearchResultMapper
@@ -254,8 +257,8 @@ open class TokofoodSearchTokoChatResultPageViewModelTestFixture {
         isSuccess: Boolean
     ) {
         coEvery {
-            keroEditAddressUseCase.execute(addressId, lat, long)
-        } returns isSuccess
+            keroEditAddressUseCase(KeroEditAddressParam(addressId, lat, long, ManageAddressSource.TOKOFOOD))
+        } returns createKeroEditAddressResponse(lat, long, if (isSuccess) 1 else 0).keroEditAddress.data
     }
 
     protected fun onEditAddress_shouldThrow(
@@ -265,7 +268,7 @@ open class TokofoodSearchTokoChatResultPageViewModelTestFixture {
         throwable: Throwable
     ) {
         coEvery {
-            keroEditAddressUseCase.execute(addressId, lat, long)
+            keroEditAddressUseCase(KeroEditAddressParam(addressId, lat, long, ManageAddressSource.TOKOFOOD))
         } throws throwable
     }
 

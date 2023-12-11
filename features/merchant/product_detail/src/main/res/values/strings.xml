@@ -119,19 +119,19 @@
     <string name="ticker_href_builder">&lt;b&gt;&lt;a href="#"&gt;%s&lt;/a&gt;&lt;/b&gt;</string>
 
     <!--New Shop Info-->
-    <string name="shop_online_days_ago"><![CDATA[Online <b>%1d hari lalu</b>]]></string>
-    <string name="shop_online_hours_ago"><![CDATA[Online <b>%1d jam lalu</b>]]></string>
-    <string name="shop_online_minute_ago"><![CDATA[Online <b>%1d menit lalu</b>]]></string>
-    <string name="shop_online_yesterday">Online kemarin</string>
-    <string name="shop_online_last_date"><![CDATA[Terakhir online <b>%1s</b>]]></string>
-    <string name="shop_online">• Online</string>
+    <string name="pdp_shop_online_days_ago"><![CDATA[Online <b>%1d hari lalu</b>]]></string>
+    <string name="pdp_shop_online_hours_ago"><![CDATA[Online <b>%1d jam lalu</b>]]></string>
+    <string name="pdp_shop_online_minute_ago"><![CDATA[Online <b>%1d menit lalu</b>]]></string>
+    <string name="pdp_shop_online_yesterday">Online kemarin</string>
+    <string name="pdp_shop_online_last_date"><![CDATA[Terakhir online <b>%1s</b>]]></string>
+    <string name="pdp_shop_online">• Online</string>
     <string name="location_dot_builder">• %1s</string>
-    <string name="product_average_review">rata-rata ulasan</string>
-    <string name="product_shop_total_product">total produk</string>
-    <string name="product_shop_process_product">pesanan diproses</string>
-    <string name="product_shop_finish_rate_product">pesanan selesai</string>
-    <string name="product_shop_chat_reply">balas chat &amp; diskusi</string>
-    <string name="product_shop_start_sell">mulai jualan</string>
+    <string name="pdp_product_average_review">rata-rata ulasan</string>
+    <string name="pdp_product_shop_total_product">total produk</string>
+    <string name="pdp_product_shop_process_product">pesanan diproses</string>
+    <string name="pdp_product_shop_finish_rate_product">pesanan selesai</string>
+    <string name="pdp_product_shop_chat_reply">balas chat &amp; diskusi</string>
+    <string name="pdp_product_shop_start_sell">mulai jualan</string>
 
     <string name="shop_chat_speed_in_days">%1d hari</string>
     <string name="shop_chat_speed_in_hours">%1d jam</string>
