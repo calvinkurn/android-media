@@ -419,11 +419,19 @@ object ConstantTransactionAnalytics {
         const val CLICK_NOTE_ICON = "click note icon"
         const val CLICK_BUTTON_MIN_TO_DELETE_CART = "click button - to delete cart"
         const val IMPRESSION_CART = "impression cart"
+        const val CLICK_SWIPE_ON_PRODUCT_CART = "click swipe on product cart"
+        const val CLICK_REMOVE_CART_FROM_SWIPE = "click remove cart from swipe"
 
         // BMGM
         const val CLICK_SNK_BMGM = "click snk bmgm"
         const val CLICK_BMGM_RECOMMENDATION = "click bmgm recommendation"
         const val IMPRESSION_BMGM_RECOMMENDATION = "impression bmgm recommendation"
+
+        // dropship
+        const val IMPRESSION_DROPSHIP_WIDGET = "impression dropship widget"
+        const val CLICK_INFO_DROPSHIP_WIDGET = "click info dropship widget"
+        const val CLICK_TOGGLE_DROPSHIP_WIDGET = "click toggle dropship widget"
+        const val CLICK_PILIH_PEMBAYARAN_WITH_DROPSHIP_ENABLED = "click pilih pembayaran with dropship enabled"
     }
 
     object EventLabel {
@@ -480,6 +488,10 @@ object ConstantTransactionAnalytics {
         // Cart Checkout Revamp
         const val NOTE_SIMPAN = "simpan"
         const val NOTE_EDIT = "edit"
+
+        // dropship
+        const val TOGGLE_ON = "toggle on"
+        const val TOGGLE_OFF = "toggle off"
     }
 
     object ExtraKey {
@@ -578,10 +590,19 @@ object ConstantTransactionAnalytics {
         const val CLICK_NOTE_ICON = "46929"
         const val IMPRESSION_CART = "46932"
         const val CLICK_BUTTON_MIN_TO_DELETE_CART = "46933"
+        const val CLICK_SWIPE_ON_PRODUCT_CART = "48948"
+        const val CLICK_REMOVE_CART_FROM_SWIPE = "48949"
+        const val CLICK_UNDO_AFTER_DELETE_PRODUCT = "15468"
 
         // BMGM
         const val CLICK_SNK_BMGM = "46781"
         const val CLICK_BMGM_RECOMMENDATION = "47209"
         const val VIEW_BMGM_RECOMMENDATION = "47208"
+
+        // dropship
+        const val IMPRESSION_DROPSHIP_WIDGET = "48774"
+        const val CLICK_INFO_DROPSHIP_WIDGET = "48775"
+        const val CLICK_TOGGLE_DROPSHIP_WIDGET = "48776"
+        const val CLICK_PILIH_PEMBAYARAN_WITH_DROPSHIP_ENABLED = "48777"
     }
 }

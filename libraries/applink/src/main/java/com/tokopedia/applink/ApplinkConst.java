@@ -1,5 +1,7 @@
 package com.tokopedia.applink;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_OTP_TYPE;
+
 /**
  * @author ricoharisin .
  * <p>
@@ -143,7 +145,7 @@ public interface ApplinkConst {
     String LOGIN = "tokopedia://login";
     String ADD_PHONE = "tokopedia://add-phone";
     String PRIVACY_CENTER = "tokopedia://privacy-center";
-    String OTP = "tokopedia://otp";
+    String OTP = "tokopedia://otp" + "?" + PARAM_OTP_TYPE + "={otp-type}";
     String QR_LOGIN = "tokopedia://login/qr";
     String OTP_PUSH_NOTIF_RECEIVER = "tokopedia://otp-verify";
     String OFFICIAL_STORES = "tokopedia://official-stores";
@@ -257,6 +259,7 @@ public interface ApplinkConst {
     String BUYER_ORDER_EXTENSION = "tokopedia://marketplace/buyer-order-extension";
 
     String BUYER_PARTIAL_ORDER_FULFILLMENT = "tokopedia://marketplace/buyer-partial-order-fulfillment";
+    String SELLER_PARTIAL_ORDER_FULFILLMENT = "tokopedia://seller/seller-partial-order-fulfillment";
     String BELANJA_ORDER = "tokopedia://belanja/order";
     String MARKETPLACE_ORDER_SUB = "tokopedia://order/marketplace/filter";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";

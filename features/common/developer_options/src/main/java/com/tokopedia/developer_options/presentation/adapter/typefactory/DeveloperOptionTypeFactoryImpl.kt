@@ -21,6 +21,7 @@ import com.tokopedia.developer_options.presentation.model.FakeResponseActivityUi
 import com.tokopedia.developer_options.presentation.model.ForceCrashUiModel
 import com.tokopedia.developer_options.presentation.model.ForceDarkModeUiModel
 import com.tokopedia.developer_options.presentation.model.ForceLogoutUiModel
+import com.tokopedia.developer_options.presentation.model.ForceScpLoginUiModel
 import com.tokopedia.developer_options.presentation.model.FpiMonitoringUiModel
 import com.tokopedia.developer_options.presentation.model.FpmLogOnFileUiModel
 import com.tokopedia.developer_options.presentation.model.FpmLogOnNotificationUiModel
@@ -79,6 +80,7 @@ import com.tokopedia.developer_options.presentation.viewholder.FakeResponseActiv
 import com.tokopedia.developer_options.presentation.viewholder.ForceCrashViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ForceDarkModeViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ForceLogoutViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.ForceScpLoginViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.FpmLogOnFileViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.FpmLogOnNotificationViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.HomeAndNavigationRevampSwitcherViewHolder
@@ -150,6 +152,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ViewNetworkLogUiModel): Int = ViewNetworkLogViewHolder.LAYOUT
     override fun type(uiModel: DeviceIdUiModel): Int = DeviceIdViewHolder.LAYOUT
     override fun type(uiModel: ForceDarkModeUiModel): Int = ForceDarkModeViewHolder.LAYOUT
+    override fun type(uiModel: ForceScpLoginUiModel): Int = ForceScpLoginViewHolder.LAYOUT
     override fun type(uiModel: TopAdsLogOnNotificationUiModel): Int = TopAdsLogOnNotificationViewHolder.LAYOUT
     override fun type(uiModel: ViewTopAdsLogUiModel): Int = ViewTopAdsLogViewHolder.LAYOUT
     override fun type(uiModel: ApplinkLogOnNotificationUiModel): Int = ApplinkLogOnNotificationViewHolder.LAYOUT
@@ -212,6 +215,7 @@ class DeveloperOptionTypeFactoryImpl(
             ViewNetworkLogViewHolder.LAYOUT -> ViewNetworkLogViewHolder(view)
             DeviceIdViewHolder.LAYOUT -> DeviceIdViewHolder(view)
             ForceDarkModeViewHolder.LAYOUT -> ForceDarkModeViewHolder(view)
+            ForceScpLoginViewHolder.LAYOUT -> ForceScpLoginViewHolder(view)
             TopAdsLogOnNotificationViewHolder.LAYOUT -> TopAdsLogOnNotificationViewHolder(view)
             ViewTopAdsLogViewHolder.LAYOUT -> ViewTopAdsLogViewHolder(view)
             ApplinkLogOnNotificationViewHolder.LAYOUT -> ApplinkLogOnNotificationViewHolder(view)

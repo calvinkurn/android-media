@@ -60,8 +60,7 @@ class TokoPointsHomeViewModel @Inject constructor(
             defferedRewardTickerResponse = getStatusMatchingData()
             defferedPopUpNotifData = getPopNotifData()
             defferedRecomData = getRecommendationData()
-            if (data != null && dataSection != null && dataSection.sectionContent != null &&
-                data.tokopediaRewardTopSection != null
+            if (data != null && dataSection != null && data.tokopediaRewardTopSection != null
             ) {
                 tokopointDetailLiveData.value = Success(
                     TokopointSuccess(

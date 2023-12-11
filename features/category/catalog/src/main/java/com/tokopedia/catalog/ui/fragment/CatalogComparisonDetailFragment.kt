@@ -97,7 +97,6 @@ class CatalogComparisonDetailFragment :
             labels = label,
             trackerId = CatalogTrackerConstant.TRACKER_ID_IMPRESSION_COMPARISON_DETAIL
         )
-        sendOpenPageTracker()
     }
 
     private fun getComparison(catalogId: String, compareCatalogId: String) {
@@ -195,6 +194,7 @@ class CatalogComparisonDetailFragment :
         }
     }
 
+    // TODO: Implement this when IOS team is ready
     private fun sendOpenPageTracker() {
         CatalogReimagineDetailAnalytics.sendEventOpenScreen(
             screenName = "${CatalogTrackerConstant.SCREEN_NAME_CATALOG_COMPARISON_PAGE} - $catalogId",

@@ -10,7 +10,7 @@ import com.tokopedia.logisticCommon.domain.param.GetDetailAddressParam
 import com.tokopedia.logisticCommon.domain.param.KeroGetAddressInput
 import javax.inject.Inject
 
-class GetAddressDetailUseCase @Inject constructor(
+open class GetAddressDetailUseCase @Inject constructor(
     @ApplicationContext private val gql: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<GetDetailAddressParam, KeroGetAddressResponse.Data>(dispatcher.io) {
