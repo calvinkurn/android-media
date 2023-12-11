@@ -152,6 +152,7 @@ object ShopFlashSaleTracking: BaseTrackerConst() {
             .appendCurrentSite(TrackingConst.DEFAULT_CURRENT_SITE)
             .appendChannelId(trackingAttributionModel.channelId)
             .appendCustomKeyValue(TrackerId.KEY, TRACKER_ID_CLICK_SHOP_TAB)
+            .appendCampaignCode(grid.campaignCode)
             .build() as HashMap<String, Any>
         getTracker().sendEnhanceEcommerceEvent(trackerBuilder)
     }
