@@ -10,7 +10,8 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImageCircle
 
 class ReviewParentContentViewHolder(
-    private val binding: ItemReviewParentContentBinding
+    private val binding: ItemReviewParentContentBinding,
+    private val listener: Listener,
 ) : ViewHolder(binding.root) {
     fun bind(item: ReviewUiModel) {
         bindAuthor(item.author)
@@ -23,6 +24,16 @@ class ReviewParentContentViewHolder(
         ivAuthor.loadImageCircle(url = author.avatarUrl)
         lblAuthorStats.setLabel(author.type)
         lblAuthorStats.showWithCondition(author.type.isNotBlank())
+
+        lblAuthorStats.rootView.setOnClickListener {
+            listener.onReviewCredibilityClicked(author)
+        }
+        tvAuthorName.setOnClickListener {
+            listener.onReviewerClicked(author)
+        }
+        ivAuthor.setOnClickListener {
+            listener.onReviewerClicked(author)
+        }
     }
 
     private fun bindDescription(description: DescriptionUiModel) = with(binding) {
@@ -40,8 +51,13 @@ class ReviewParentContentViewHolder(
         tvLikeCount.text = state.count.toString()
     }
 
+    interface Listener {
+        fun onReviewCredibilityClicked(author: AuthorUiModel)
+        fun onReviewerClicked(author: AuthorUiModel)
+    }
+
     companion object {
-        fun create(binding: ItemReviewParentContentBinding) =
-            ReviewParentContentViewHolder(binding)
+        fun create(binding: ItemReviewParentContentBinding, listener: Listener) =
+            ReviewParentContentViewHolder(binding, listener)
     }
 }

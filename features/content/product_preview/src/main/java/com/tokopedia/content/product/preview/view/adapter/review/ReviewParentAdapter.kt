@@ -12,7 +12,7 @@ import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParent
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentLoadingViewHolder
 
 //TODO: please add Listener
-class ReviewParentAdapter : ListAdapter<ReviewUiModel, ViewHolder>(ReviewAdapterCallback()) {
+class ReviewParentAdapter(private val listener: ReviewParentContentViewHolder.Listener) : ListAdapter<ReviewUiModel, ViewHolder>(ReviewAdapterCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
@@ -21,7 +21,7 @@ class ReviewParentAdapter : ListAdapter<ReviewUiModel, ViewHolder>(ReviewAdapter
                     ItemReviewParentContentBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent, false
-                    )
+                    ), listener
                 )
             }
 

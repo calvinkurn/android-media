@@ -9,10 +9,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentReviewBinding
+import com.tokopedia.content.product.preview.utils.PAGE_SOURCE
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
+import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
+import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 import com.tokopedia.content.product.preview.viewmodel.EntrySource
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModelFactory
@@ -21,7 +25,8 @@ import javax.inject.Inject
 
 class ReviewFragment @Inject constructor(
     private val viewModelFactory: ProductPreviewViewModelFactory.Creator,
-) : TkpdBaseV4Fragment() {
+    private val router: Router,
+) : TkpdBaseV4Fragment(), ReviewParentContentViewHolder.Listener{
 
     private var _binding: FragmentReviewBinding? = null
     private val binding: FragmentReviewBinding
@@ -34,7 +39,7 @@ class ReviewFragment @Inject constructor(
     }
 
     private val reviewAdapter by lazy {
-        ReviewParentAdapter()
+        ReviewParentAdapter(this)
     }
 
     private val snapHelper = PagerSnapHelper() //TODO: adjust pager snap helper
@@ -78,6 +83,17 @@ class ReviewFragment @Inject constructor(
     private fun renderList(prev: List<ReviewUiModel>?, data: List<ReviewUiModel>) {
         if (prev == null || prev == data) return
         reviewAdapter.submitList(data)
+    }
+
+    /**
+     * Review Content Listener
+     */
+    override fun onReviewCredibilityClicked(author: AuthorUiModel) {
+        router.route(requireContext(), "tokopedia-android-internal://marketplace/review/credibility/${author.id}/$PAGE_SOURCE/")
+    }
+
+    override fun onReviewerClicked(author: AuthorUiModel) {
+        router.route(requireContext(), author.appLink)
     }
 
     companion object {
