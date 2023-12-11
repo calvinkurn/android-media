@@ -14,11 +14,11 @@ import javax.inject.Inject
  */
 class ProductPreviewRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-//    private val miniInfoUseCase: ProductMiniInfoUseCase,
-//    private val getReviewUseCase: MediaReviewUseCase,
-//    private val likeUseCase: ReviewLikeUseCase,
-//    private val submitReportUseCase: SubmitReportUseCase,
-//    private val addToCartUseCase: AddToCartUseCase,
+    private val miniInfoUseCase: ProductMiniInfoUseCase,
+    private val getReviewUseCase: MediaReviewUseCase,
+    private val likeUseCase: ReviewLikeUseCase,
+    private val submitReportUseCase: SubmitReportUseCase,
+    private val addToCartUseCase: AddToCartUseCase,
     private val userSessionInterface: UserSessionInterface,
     ) :
     ProductPreviewRepository {
