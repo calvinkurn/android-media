@@ -72,6 +72,33 @@ import kotlin.math.log
 
 class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, ImageClickListener, PageItemAdapter.OnPageMenuSelected {
 
+
+
+    companion object {
+        @JvmStatic
+        fun newInstance(uri: Uri?, className: String?, isFromScreenshot: Boolean) : FeedbackPageFragment {
+            return FeedbackPageFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(EXTRA_URI_IMAGE, uri)
+                    putString(EXTRA_IS_CLASS_NAME, className)
+                    putBoolean(EXTRA_IS_FROM_SCREENSHOT, isFromScreenshot)
+                }
+            }
+        }
+
+        private const val REQUEST_CODE_IMAGE = 111
+        private const val REQUEST_CODE_EDIT_IMAGE = 101
+        private const val REQUEST_CODE_TICKET_CREATED = 1313
+        private const val DEFAULT_MAX_IMAGE_SIZE_IN_KB_PRO = 10240 // 10 * 1024KB (maks 10MB)
+
+
+        private val PROJECTION = arrayOf(
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DISPLAY_NAME,
+            MediaStore.Images.Media.DATA
+        )
+    }
+
     @Inject
     lateinit var feedbackPagePresenter: FeedbackPagePresenter
 
@@ -221,11 +248,15 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
 
     }
 
+    @Suppress("DEPRECATION")
+    @SuppressLint("DeprecatedMethod")
     override fun goToTicketCreatedActivity(issueUrl: String?) {
-        activity?.finish()
-        Intent(context, TicketCreatedActivity::class.java).apply {
-            putExtra(EXTRA_IS_TICKET_LINK, issueUrl)
-            startActivityForResult(this, 1212)
+        activity?.let {
+            it.finish()
+            Intent(it, TicketCreatedActivity::class.java).apply {
+                putExtra(EXTRA_IS_TICKET_LINK, issueUrl)
+                startActivityForResult(this, REQUEST_CODE_TICKET_CREATED)
+            }
         }
     }
 
@@ -584,29 +615,4 @@ class FeedbackPageFragment: BaseDaggerFragment(), FeedbackPageContract.View, Ima
             t.printStackTrace()
         }
     }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(uri: Uri?, className: String?, isFromScreenshot: Boolean) : FeedbackPageFragment {
-            return FeedbackPageFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(EXTRA_URI_IMAGE, uri)
-                    putString(EXTRA_IS_CLASS_NAME, className)
-                    putBoolean(EXTRA_IS_FROM_SCREENSHOT, isFromScreenshot)
-                }
-            }
-        }
-
-        private const val REQUEST_CODE_IMAGE = 111
-        private const val REQUEST_CODE_EDIT_IMAGE = 101
-        private const val DEFAULT_MAX_IMAGE_SIZE_IN_KB_PRO = 10240 // 10 * 1024KB (maks 10MB)
-
-
-        private val PROJECTION = arrayOf(
-                MediaStore.Images.Media._ID,
-                MediaStore.Images.Media.DISPLAY_NAME,
-                MediaStore.Images.Media.DATA
-        )
-    }
-
 }
