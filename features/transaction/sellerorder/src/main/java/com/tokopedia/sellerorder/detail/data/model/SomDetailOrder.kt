@@ -132,7 +132,12 @@ data class SomDetailOrder(
         val addOnInfo: AddOnInfo? = null,
 
         @SerializedName("has_reso_status")
-        val hasResoStatus: Boolean? = false
+        @Expose
+        val hasResoStatus: Boolean? = false,
+
+        @SerializedName("pof_data")
+        @Expose
+        val pofData: PofData? = null
     ) {
 
         fun getFirstProduct(): Details.Product? {
@@ -656,6 +661,12 @@ data class SomDetailOrder(
             @SerializedName("penalty_reject_wording")
             @Expose
             val penaltyRejectWording: String = ""
+        )
+
+        data class PofData(
+            @SerializedName("pof_status")
+            @Expose
+            val pofStatus: Int
         )
     }
 }

@@ -28,7 +28,7 @@
     <string name="setting_application_version">Versi %1$s</string>
     <string name="setting_tc_divider">|</string>
     <string name="setting_terms_and_condition">Syarat dan Ketentuan</string>
-    <string name="setting_privacy_terms">Kebijakan Privasi</string>
+    <string name="setting_privacy_terms">Pemberitahuan Privasi</string>
     <string name="msg_share_apps">Sudah punya aplikasi Tokopedia belum? cek disini </string>
     <string name="title_share">Bagikan</string>
     <string name="setting_menu_performance">Performa Toko</string>
@@ -53,7 +53,9 @@
     <string name="setting_menu_share_app">Bagikan Aplikasi</string>
     <string name="setting_menu_review_app">Review Aplikasi</string>
     <string name="setting_menu_give_feedback">Beri Feedback</string>
+    <string name="setting_set_theme">Tampilan</string>
     <string name="setting_new_tag">BARU</string>
+    <string name="setting_beta_tag">BETA</string>
     <string name="setting_menu_developer_options">Developer Options</string>
     <string name="setting_header_error_message">Error when get %s in other setting</string>
     <string name="setting_header_multiple_error_message">Beberapa data gagal ditampilkan</string>

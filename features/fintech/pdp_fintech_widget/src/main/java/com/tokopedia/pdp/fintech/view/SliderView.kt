@@ -67,23 +67,10 @@ class SliderView: ScrollView {
             val kf6 = Keyframe.ofInt(TOTAL_DURATION.toFloat() / totalDuration, VERTICAL_PADDING.toPx())
             val pvhScrollY = PropertyValuesHolder.ofKeyframe("scrollY", kf0, kf1, kf2, kf3, kf4, kf5, kf6)
             val scrollAnim = ObjectAnimator.ofPropertyValuesHolder(this, pvhScrollY)
-
             scrollAnim.interpolator = UnifyMotion.LINEAR
             scrollAnim.startDelay = 0
             scrollAnim.duration = totalDuration
             scrollAnim.repeatCount = 1
-
-            scrollAnim.addListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(animation: Animator) {}
-
-                override fun onAnimationEnd(animation: Animator) {
-                    clearAnimation()
-                }
-
-                override fun onAnimationCancel(animation: Animator) {}
-
-                override fun onAnimationRepeat(animation: Animator) {}
-            })
 
             if (shouldAnimate) {
                 scrollAnim.start()

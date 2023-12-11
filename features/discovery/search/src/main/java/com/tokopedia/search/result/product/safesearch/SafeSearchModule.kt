@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
+import com.tokopedia.search.result.product.dialog.BottomSheetInappropriateView
 import dagger.Module
 import dagger.Provides
 
@@ -40,10 +41,12 @@ object SafeSearchModule {
     fun provideSafeSearchPresenter(
         safeSearchPreference: MutableSafeSearchPreference,
         safeSearchView: SafeSearchView,
-    ): SafeSearchPresenter {
+        bottomSheetInappropriateView : BottomSheetInappropriateView,
+        ): SafeSearchPresenter {
         return SafeSearchPresenterDelegate(
             safeSearchPreference,
             safeSearchView,
+            bottomSheetInappropriateView,
         )
     }
 }

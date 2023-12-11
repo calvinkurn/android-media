@@ -5,7 +5,7 @@ import com.tokopedia.emoney.view.fragment.EmoneyCheckBalanceFragment
 import dagger.Component
 
 @DigitalEmoneyScope
-@Component(modules = [DigitalEmoneyModule::class, DigitalEmoneyViewModelModule::class],
+@Component(modules = [DigitalEmoneyModule::class, DigitalEmoneyLibraryModule::class, DigitalEmoneyViewModelModule::class],
         dependencies = [NfcCheckBalanceComponent::class])
 interface DigitalEmoneyComponent {
 

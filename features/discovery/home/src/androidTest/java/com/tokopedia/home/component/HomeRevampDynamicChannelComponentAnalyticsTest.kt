@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.util.Log
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
@@ -17,12 +16,12 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
-import com.tokopedia.home.R
+import com.tokopedia.home.R as homeR
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
+import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
 import com.tokopedia.home.ui.HomeMockValueHelper
@@ -47,6 +46,9 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import kotlin.reflect.KClass
+import com.tokopedia.home_component.R as home_componentR
+import com.tokopedia.productcard.R as productcardR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 private const val TAG = "HomeDynamicChannelComponentAnalyticsTest"
 
@@ -85,7 +87,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
             )
         )
         val recyclerView: RecyclerView =
-            activityRule.activity.findViewById(R.id.home_fragment_recycler_view)
+            activityRule.activity.findViewById(homeR.id.home_fragment_recycler_view)
         homeRecyclerViewIdlingResource = HomeRecyclerViewIdlingResource(
             recyclerView = recyclerView
         )
@@ -118,7 +120,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
+                val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(homeR.id.home_fragment_recycler_view)
                 scrollHomeRecyclerViewToPosition(homeRecyclerView, i)
             }
         } validateAnalytics {
@@ -230,10 +232,10 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                onView(withId(R.id.home_fragment_recycler_view)).perform(ViewActions.swipeUp())
+                onView(withId(homeR.id.home_fragment_recycler_view)).perform(ViewActions.swipeUp())
                 CommonActions.clickOnEachItemRecyclerView(
                     viewHolder.itemView,
-                    R.id.home_feed_fragment_recycler_view,
+                    homeR.id.home_feed_fragment_recycler_view,
                     0
                 )
                 clickAllRecommendationFeedTabs(viewHolder.itemView)
@@ -287,7 +289,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     fun testComponentTicker() {
         visibilityIdlingResource = ViewVisibilityIdlingResource(
             activity = activityRule.activity,
-            viewId = com.tokopedia.unifycomponents.R.id.ticker_description,
+            viewId = unifycomponentsR.id.ticker_description,
             expectedVisibility = View.VISIBLE
         )
         IdlingRegistry.getInstance().register(visibilityIdlingResource)
@@ -325,7 +327,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
                 dataModelClass = ReminderWidgetModel::class,
                 predicate = { it?.source == ReminderEnum.RECHARGE }
             ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
+                val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(homeR.id.home_fragment_recycler_view)
                 // click digital widget
                 clickOnReminderWidget(viewHolder, i, homeRecyclerView)
             }
@@ -343,7 +345,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
                 dataModelClass = ReminderWidgetModel::class,
                 predicate = { it?.source == ReminderEnum.SALAM }
             ) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
+                val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(homeR.id.home_fragment_recycler_view)
                 // click salam widget
                 clickOnReminderWidget(viewHolder, i, homeRecyclerView)
             }
@@ -384,9 +386,9 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = RecommendationListCarouselDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                activityRule.runOnUiThread { viewHolder.itemView.findViewById<View>(com.tokopedia.productcard.R.id.buttonAddToCart).performClick() }
-                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
-                onView(withId(com.tokopedia.home_component.R.id.buy_again_close_image_view)).perform(ViewActions.click())
+                activityRule.runOnUiThread { viewHolder.itemView.findViewById<View>(productcardR.id.buttonAddToCart).performClick() }
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, home_componentR.id.recycleList, 0)
+                onView(withId(home_componentR.id.buy_again_close_image_view)).perform(ViewActions.click())
             }
         } validateAnalytics {
             addDebugEnd()
@@ -531,16 +533,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     private fun initTest() {
         login()
         waitForData()
-        hideStickyLogin()
-    }
-
-    private fun hideStickyLogin() {
-        activityRule.runOnUiThread {
-            val layout = activityRule.activity.findViewById<ConstraintLayout>(com.tokopedia.usercomponents.R.id.layout_sticky_container)
-            if (layout.visibility == View.VISIBLE) {
-                layout.visibility = View.GONE
-            }
-        }
     }
 
     private fun <T : Any> doActivityTestByModelClass(
@@ -549,7 +541,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         predicate: (T?) -> Boolean = { true },
         isTypeClass: (viewHolder: RecyclerView.ViewHolder, itemClickLimit: Int) -> Unit
     ) {
-        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
+        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(homeR.id.home_fragment_recycler_view)
         val homeRecycleAdapter = homeRecyclerView.adapter as? HomeRecycleAdapter
 
         val visitableList = homeRecycleAdapter?.currentList ?: listOf()
@@ -566,7 +558,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     private fun <T : Any> doActivityTest(viewClass: KClass<T>, isTypeClass: (viewHolder: RecyclerView.ViewHolder, itemPosition: Int) -> Unit) {
-        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
+        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(homeR.id.home_fragment_recycler_view)
         val itemCount = homeRecyclerView.adapter?.itemCount ?: 0
         countLoop@ for (i in 0 until itemCount) {
             scrollHomeRecyclerViewToPosition(homeRecyclerView, i)
@@ -580,7 +572,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     private fun <T : Any> doActivityTest(viewClass: KClass<T>, isTypeClass: (viewHolder: RecyclerView.ViewHolder, itemPosition: Int, recycleView: RecyclerView) -> Unit) {
-        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
+        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(homeR.id.home_fragment_recycler_view)
         val itemCount = homeRecyclerView.adapter?.itemCount ?: 0
         countLoop@ for (i in 0 until itemCount) {
             scrollHomeRecyclerViewToPosition(homeRecyclerView, i)
@@ -593,7 +585,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     private fun doActivityTest(viewClassName: List<String>, isTypeClass: (viewHolder: RecyclerView.ViewHolder, itemPosition: Int) -> Unit) {
-        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
+        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(homeR.id.home_fragment_recycler_view)
         val itemCount = homeRecyclerView.adapter?.itemCount ?: 0
         countLoop@ for (i in 0 until itemCount) {
             scrollHomeRecyclerViewToPosition(homeRecyclerView, i)

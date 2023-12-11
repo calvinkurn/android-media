@@ -17,7 +17,10 @@ import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetAllDri
 import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetInboxMenuAndWidgetMetaUseCase
 import com.tokopedia.inbox.universalinbox.domain.usecase.UniversalInboxGetProductRecommendationUseCase
 import com.tokopedia.inbox.universalinbox.util.Result
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.INBOX_ADS_REFRESH_KEY
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_NAME
+import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
+import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxAutoScrollUiState
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxCombineState
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxErrorUiState
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxMenuUiState
@@ -65,7 +68,8 @@ class UniversalInboxViewModel @Inject constructor(
     private val inboxMiscMapper: UniversalInboxMiscMapper,
     private val widgetMetaMapper: UniversalInboxWidgetMetaMapper,
     private val userSession: UserSessionInterface,
-    private val dispatcher: CoroutineDispatchers
+    private val dispatcher: CoroutineDispatchers,
+    private val abTestPlatform: UniversalInboxAbPlatform
 ) : BaseViewModel(dispatcher.main), DefaultLifecycleObserver {
 
     private val _actionFlow =
@@ -84,6 +88,9 @@ class UniversalInboxViewModel @Inject constructor(
         UniversalInboxProductRecommendationUiState()
     )
     val productRecommendationUiState = _productRecommendationState.asStateFlow()
+
+    private val _autoScrollUiState = MutableStateFlow(UniversalInboxAutoScrollUiState())
+    val autoScrollUiState = _autoScrollUiState.asStateFlow()
 
     private val _errorUiState = MutableSharedFlow<UniversalInboxErrorUiState>(
         extraBufferCapacity = 16
@@ -119,10 +126,10 @@ class UniversalInboxViewModel @Inject constructor(
             when (it) {
                 // Navigation process
                 is UniversalInboxAction.NavigateWithIntent -> {
-                    navigateWithIntent(it.intent)
+                    navigateWithIntent(it.intent, it.requestType)
                 }
                 is UniversalInboxAction.NavigateToPage -> {
-                    navigateToPage(it.applink)
+                    navigateToPage(it.applink, it.requestType)
                 }
 
                 // General process
@@ -143,6 +150,12 @@ class UniversalInboxViewModel @Inject constructor(
                 }
                 is UniversalInboxAction.LoadNextPage -> {
                     loadProductRecommendation()
+                }
+                is UniversalInboxAction.ResetUserScrollState -> {
+                    resetUserScrollState()
+                }
+                is UniversalInboxAction.AutoScrollRecommendation -> {
+                    autoScrollRecommendation()
                 }
 
                 // Widget process
@@ -264,7 +277,7 @@ class UniversalInboxViewModel @Inject constructor(
                     menuList = menuList,
                     miscList = miscList,
                     notificationCounter =
-                        counterResponse.inboxCounter.notifCenterWrapperUnread.notifUnread,
+                    counterResponse.inboxCounter.notifCenterWrapperUnread.notifUnread,
                     shouldTrackImpression = shouldTrackImpression
                 )
             }
@@ -303,13 +316,14 @@ class UniversalInboxViewModel @Inject constructor(
     ) {
         when (result) {
             is Result.Success -> {
+                val productRecommendation = result.data.recommendationItemList.map { item ->
+                    UniversalInboxRecommendationUiModel(item)
+                }
                 _productRecommendationState.update {
                     it.copy(
                         isLoading = false,
                         title = result.data.title,
-                        productRecommendation = result.data.recommendationItemList.map { item ->
-                            UniversalInboxRecommendationUiModel(item)
-                        }
+                        productRecommendation = productRecommendation
                     )
                 }
                 page++
@@ -390,21 +404,23 @@ class UniversalInboxViewModel @Inject constructor(
         observeDriverChannelFlow()
     }
 
-    private fun navigateWithIntent(intent: Intent) {
+    private fun navigateWithIntent(intent: Intent, requestType: UniversalInboxRequestType) {
         viewModelScope.launch {
             _inboxNavigationState.emit(
                 UniversalInboxNavigationUiState(
-                    intent = intent
+                    intent = intent,
+                    requestType = requestType
                 )
             )
         }
     }
 
-    private fun navigateToPage(applink: String) {
+    private fun navigateToPage(applink: String, requestType: UniversalInboxRequestType) {
         viewModelScope.launch {
             _inboxNavigationState.emit(
                 UniversalInboxNavigationUiState(
-                    applink = applink
+                    applink = applink,
+                    requestType = requestType
                 )
             )
         }
@@ -506,6 +522,32 @@ class UniversalInboxViewModel @Inject constructor(
                     actionListener.onErrorRemoveWishlist(throwable, model.productId.toString())
                     showErrorMessage(Pair(throwable, ::removeWishlistV2.name))
                 }
+            }
+        }
+    }
+
+    private fun resetUserScrollState() {
+        _autoScrollUiState.update {
+            it.copy(shouldScroll = false)
+        }
+    }
+
+    private fun checkAutoScrollEligibility(): Boolean {
+        return abTestPlatform.getString(
+            INBOX_ADS_REFRESH_KEY,
+            ""
+        ) == INBOX_ADS_REFRESH_KEY
+    }
+
+    private fun autoScrollRecommendation() {
+        viewModelScope.launch {
+            if (checkAutoScrollEligibility()) {
+                _autoScrollUiState.update {
+                    it.copy(shouldScroll = true)
+                }
+            } else {
+                // Reset, so it won't trigger anything
+                resetUserScrollState()
             }
         }
     }

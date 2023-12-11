@@ -14,10 +14,10 @@
     <string name="error_name_too_long">Nama lengkap terlalu panjang, maksimal 128 karakter</string>
     <string name="name_confirmation_yes">Ya, benar</string>
     <string name="name_confirmation_no">Tidak</string>
-    <string name="string_bottom_info">Dengan mendaftar, saya menyetujui \nSyarat dan Ketentuan serta Kebijakan Privasi.</string>
+    <string name="string_bottom_info">Dengan mendaftar, saya menyetujui \nSyarat dan Ketentuan serta Pemberitahuan Privasi.</string>
   
     <string name="text_term_and_privacy_1">Dengan mendaftar, saya menyetujui</string>
     <string name="text_term_and_privacy_2">serta</string>
     <string name="text_term_condition">Syarat dan Ketentuan</string>
-    <string name="text_privacy_policy">Kebijakan Privasi</string>
+    <string name="text_privacy_policy">Pemberitahuan Privasi</string>
 </resources>

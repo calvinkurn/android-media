@@ -79,7 +79,7 @@
             android:visibility="gone" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tokochat_tv_image_bubble_error"
+            android:id="@+id/tokochat_tv_image_bubble_error_download"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="@id/tokochat_layout_image_bubble_container"

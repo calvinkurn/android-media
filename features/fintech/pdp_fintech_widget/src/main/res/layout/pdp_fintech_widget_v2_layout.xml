@@ -18,6 +18,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
+        android:scaleType="fitCenter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -27,15 +28,25 @@
         android:id="@+id/slider_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="2dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
         android:scrollbars="none"
         android:translationY="-1dp"
         app:layout_constraintStart_toEndOf="@id/slider_icon"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/slider_chevron"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         />
+    
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/slider_chevron"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:icon_name="CHEVRON_RIGHT"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"

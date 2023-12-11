@@ -1,33 +1,24 @@
 package com.tokopedia.shop_showcase.shop_showcase_product_add.domain.model
 
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
+import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.model.GoodsSortInput.Companion.SORT_ID_DEFAULT
+import com.tokopedia.shop_showcase.shop_showcase_product_add.domain.model.GoodsSortInput.Companion.SORT_VALUE_DEFAULT
 
 /**
  * @author by Rafli Syam on 2020-03-09
  */
 
-data class GetProductListFilter (
-        @Expose
-        @SerializedName("page") var page : Int = 1,
-        @Expose
-        @SerializedName("perPage") var perPage : Int = 10,
-        @Expose
-        @SerializedName("fkeyword") var fkeyword : String = "",
-        @Expose
-        @SerializedName("fmenu") var fmenu : String? = "",
-        @Expose
-        @SerializedName("fmenuExclude") var fmenuExclude : String? = "",
-        @Expose
-        @SerializedName("fcategory") var fcategory : Int = 0,
-        @Expose
-        @SerializedName("fcondition") var fcondition : Int = 0,
-        @Expose
-        @SerializedName("fcatalog") var fcatalog : Int = 0,
-        @Expose
-        @SerializedName("fpicture") var fpicture : Int = 0,
-        @Expose
-        @SerializedName("sort") var sort : Int = 1
+data class GetProductListFilter(
+    var page: Int = 1,
+    var perPage: Int = 10,
+    var fkeyword: String = "",
+    var fmenu: String? = "",
+    var fmenuExclude: String? = "",
+    var fcategory: Int = 0,
+    var fcondition: Int = 0,
+    var fcatalog: Int = 0,
+    var fpicture: Int = 0,
+    var sortId: String = SORT_ID_DEFAULT,
+    var sortValue: String = SORT_VALUE_DEFAULT
 ) {
 
     /**

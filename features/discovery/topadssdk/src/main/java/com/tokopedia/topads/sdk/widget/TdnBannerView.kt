@@ -119,9 +119,9 @@ class TdnBannerView : FrameLayout {
     fun renderTdnBanner(
         tdnBanners: List<TopAdsImageViewModel>,
         cornerRadius: Int = 8.toPx(),
-        onTdnBannerClicked: (String) -> Unit,
+        onTdnBannerClicked: (imageData: TopAdsImageViewModel) -> Unit,
         onLoadFailed: () -> Unit = {} ,
-        onTdnBannerImpressed: () -> Unit = {}
+        onTdnBannerImpressed: (imageData: TopAdsImageViewModel) -> Unit = {}
     ) {
         val layoutType = tdnBanners.firstOrNull()?.layoutType
         if (layoutType == TYPE_CAROUSEL || layoutType == TYPE_VERTICAL_CAROUSEL) {
