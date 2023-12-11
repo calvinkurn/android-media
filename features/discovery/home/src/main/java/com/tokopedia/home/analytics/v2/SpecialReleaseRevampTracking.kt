@@ -193,7 +193,7 @@ internal object SpecialReleaseRevampTracking : BaseTrackerConst() {
                         trackingAttributionModel.persoType,
                         trackingAttributionModel.categoryId
                     ),
-                    creative = grid.attribution,
+                    creative = grid.shop.shopName,
                     name = SHOP_ITEM_NAME_FORMAT.format(trackingAttributionModel.parentPosition, trackingAttributionModel.headerName),
                     position = gridPosition
                 )
