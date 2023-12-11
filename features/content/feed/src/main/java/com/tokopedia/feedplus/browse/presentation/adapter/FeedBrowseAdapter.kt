@@ -229,7 +229,9 @@ internal class FeedBrowseAdapter(
                 if (state.isLoading) {
                     List(6) { FeedBrowseItemListModel.Banner.Placeholder }
                 } else {
-                    bannerList.map { FeedBrowseItemListModel.Banner.Item(slotInfo, it) }
+                    bannerList.mapIndexed { index, banner ->
+                        FeedBrowseItemListModel.Banner.Item(slotInfo, banner, index)
+                    }
                 }
             )
         }

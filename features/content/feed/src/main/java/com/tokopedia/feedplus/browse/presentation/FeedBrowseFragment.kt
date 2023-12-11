@@ -66,10 +66,18 @@ internal class FeedBrowseFragment @Inject constructor(
     private val binding get() = _binding!!
 
     private val bannerListener = object : FeedBrowseBannerViewHolder.Item.Listener {
+        override fun onBannerImpressed(
+            viewHolder: FeedBrowseBannerViewHolder.Item,
+            item: FeedBrowseItemListModel.Banner.Item
+        ) {
+            tracker.viewInspirationBanner(item.banner, item.slotInfo, item.index)
+        }
+
         override fun onBannerClicked(
             viewHolder: FeedBrowseBannerViewHolder.Item,
             item: FeedBrowseItemListModel.Banner.Item
         ) {
+            tracker.clickInspirationBanner(item.banner, item.slotInfo, item.index)
             router.route(context, item.banner.appLink)
         }
     }
@@ -81,7 +89,7 @@ internal class FeedBrowseFragment @Inject constructor(
             chip: WidgetMenuModel,
             chipPosition: Int
         ) {
-            tracker.sendViewChipsWidgetEvent(
+            tracker.viewChipsWidget(
                 chip,
                 widgetModel.slotInfo,
                 chipPosition
@@ -95,7 +103,7 @@ internal class FeedBrowseFragment @Inject constructor(
             chipPosition: Int
         ) {
             viewModel.onIntent(FeedBrowseIntent.SelectChipWidget(widgetModel.slotInfo.id, chip))
-            tracker.sendClickChipsWidgetEvent(
+            tracker.clickChipsWidget(
                 chip,
                 widgetModel.slotInfo,
                 chipPosition
@@ -134,7 +142,7 @@ internal class FeedBrowseFragment @Inject constructor(
             channel: PlayWidgetChannelUiModel,
             channelPosition: Int
         ) {
-            tracker.sendViewChannelCardEvent(
+            tracker.viewChannelCard(
                 item = channel,
                 config = widgetModel.itemState.config,
                 slotInfo = widgetModel.slotInfo,
@@ -149,7 +157,7 @@ internal class FeedBrowseFragment @Inject constructor(
             channelPosition: Int
         ) {
             router.route(context, channel.appLink)
-            tracker.sendClickChannelCardEvent(
+            tracker.clickChannelCard(
                 item = channel,
                 config = widgetModel.itemState.config,
                 slotInfo = widgetModel.slotInfo,
@@ -349,7 +357,7 @@ internal class FeedBrowseFragment @Inject constructor(
     }
 
     private fun exitPage() {
-        tracker.sendClickBackExitEvent()
+        tracker.clickBackExit()
         requireActivity().finish()
     }
 

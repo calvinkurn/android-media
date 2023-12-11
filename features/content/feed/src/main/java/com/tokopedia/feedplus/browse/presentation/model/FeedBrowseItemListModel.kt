@@ -16,7 +16,7 @@ internal sealed interface FeedBrowseItemListModel {
     data class Title(
         override val slotInfo: SlotInfo,
         val title: String,
-        val isLoading: Boolean = false,
+        val isLoading: Boolean = false
     ) : FeedBrowseItemListModel {
 
         companion object {
@@ -48,7 +48,7 @@ internal sealed interface FeedBrowseItemListModel {
             val Loading = HorizontalChannels(
                 SlotInfo.Empty,
                 WidgetMenuModel.Empty,
-                FeedBrowseChannelListState.initLoading(),
+                FeedBrowseChannelListState.initLoading()
             )
         }
     }
@@ -57,6 +57,7 @@ internal sealed interface FeedBrowseItemListModel {
         data class Item(
             override val slotInfo: SlotInfo,
             val banner: BannerWidgetModel,
+            val index: Int
         ) : Banner
 
         object Placeholder : Banner {
@@ -78,7 +79,7 @@ internal sealed interface FeedBrowseItemListModel {
     data class HorizontalAuthors(
         override val slotInfo: SlotInfo,
         val items: List<AuthorWidgetModel>,
-        val isLoading: Boolean = false,
+        val isLoading: Boolean = false
     ) : FeedBrowseItemListModel {
 
         companion object {

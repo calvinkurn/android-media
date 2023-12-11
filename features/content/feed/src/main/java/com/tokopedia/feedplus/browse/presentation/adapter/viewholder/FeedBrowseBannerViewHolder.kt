@@ -9,6 +9,7 @@ import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseBannerItemBinding
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseBannerPlaceholderBinding
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.unifycomponents.CardUnify2
 
 /**
@@ -32,6 +33,10 @@ internal class FeedBrowseBannerViewHolder private constructor() {
             }
             binding.tvInspiration.text = item.banner.title
 
+            binding.root.addImpressionListener {
+                listener.onBannerImpressed(this, item)
+            }
+
             binding.root.setOnClickListener {
                 listener.onBannerClicked(this, item)
             }
@@ -51,15 +56,19 @@ internal class FeedBrowseBannerViewHolder private constructor() {
         }
 
         interface Listener {
+            fun onBannerImpressed(
+                viewHolder: Item,
+                item: FeedBrowseItemListModel.Banner.Item
+            )
             fun onBannerClicked(
-                viewHolder: FeedBrowseBannerViewHolder.Item,
+                viewHolder: Item,
                 item: FeedBrowseItemListModel.Banner.Item
             )
         }
     }
 
     class Placeholder private constructor(
-        binding: ItemFeedBrowseBannerPlaceholderBinding,
+        binding: ItemFeedBrowseBannerPlaceholderBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         companion object {
@@ -68,7 +77,7 @@ internal class FeedBrowseBannerViewHolder private constructor() {
                     ItemFeedBrowseBannerPlaceholderBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
-                        false,
+                        false
                     )
                 )
             }

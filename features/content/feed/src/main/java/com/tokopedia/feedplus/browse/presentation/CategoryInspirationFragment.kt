@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
-import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTracker
+import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTrackerImpl
 import com.tokopedia.feedplus.browse.presentation.adapter.CategoryInspirationAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.CategoryInspirationItemDecoration
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
@@ -36,7 +36,7 @@ import javax.inject.Inject
 internal class CategoryInspirationFragment @Inject constructor(
     categoryInspirationViewModelFactory: CategoryInspirationViewModel.Factory,
     private val router: Router,
-    private val tracker: FeedBrowseTracker
+    private val tracker: FeedBrowseTrackerImpl
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentFeedCategoryInspirationBinding? = null
@@ -157,7 +157,7 @@ internal class CategoryInspirationFragment @Inject constructor(
     }
 
     private fun exitPage() {
-        tracker.sendClickBackExitEvent()
+        tracker.clickBackExit()
         requireActivity().finish()
     }
 

@@ -1,0 +1,266 @@
+package com.tokopedia.feedplus.browse.data.tracker
+
+import android.os.Bundle
+import com.tokopedia.content.analytic.BusinessUnit
+import com.tokopedia.content.analytic.CurrentSite
+import com.tokopedia.content.analytic.Event
+import com.tokopedia.content.analytic.EventCategory
+import com.tokopedia.content.analytic.Key
+import com.tokopedia.feedplus.browse.data.model.BannerWidgetModel
+import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
+import com.tokopedia.feedplus.browse.presentation.model.SlotInfo
+import com.tokopedia.play.widget.analytic.const.toTrackingType
+import com.tokopedia.play.widget.analytic.const.trackerMultiFields
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.builder.Tracker
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
+
+/**
+ * Created by meyta.taliti on 01/09/23.
+ * https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4134
+ */
+private typealias EnhanceEcommerce = Pair<String, Bundle>
+internal class FeedBrowseTrackerImpl @Inject constructor(
+    private val impressionManager: FeedBrowseImpressionManager,
+    private val userSession: UserSessionInterface
+) : FeedBrowseTracker {
+
+    override fun viewChannelCard(
+        item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
+        slotInfo: SlotInfo,
+        channelPositionInList: Int
+    ) = impressionManager.impress(slotInfo.id, item) {
+        val widgetPosition = slotInfo.position + 1
+        val channelPosition = channelPositionInList + 1
+
+        sendEnhanceEcommerceEvent(
+            eventName = Event.viewItem,
+            eventAction = "view - channel card",
+            eventLabel = trackerMultiFields(
+                PREFIX_VALUE,
+                /** prefix **/
+                item.channelType.toTrackingType(),
+                /** videoType **/
+                item.partner.id,
+                /** partnerID **/
+                item.channelId,
+                /** channelID **/
+                channelPositionInList,
+                /** position **/
+                config.businessWidgetPosition,
+                /** businessPosition **/
+                "null",
+                /** isAutoPlay **/
+                config.maxAutoPlayCellularDuration,
+                /** duration **/
+                item.recommendationType,
+                /** recommendationType **/
+            ),
+            trackerId = "45751",
+            enhanceEcommerce = Key.promotions to Bundle().apply {
+                putString(Key.creativeName, widgetPosition.toString())
+                putString(Key.creativeSlot, channelPosition.toString())
+                putString(Key.itemId, "${item.channelId} - ${slotInfo.title}")
+                putString(Key.itemName, "/ - $PREFIX_VALUE - $widgetPosition - channel card - ${slotInfo.title}")
+            }
+        )
+    }
+
+    override fun viewChipsWidget(
+        item: WidgetMenuModel,
+        slotInfo: SlotInfo,
+        chipPositionInList: Int
+    ) = impressionManager.impress(slotInfo.id, item) {
+        val widgetPosition = slotInfo.position + 1
+        val channelPosition = chipPositionInList + 1
+
+        sendEnhanceEcommerceEvent(
+            eventName = Event.viewItem,
+            eventAction = "view - chips recom widget",
+            eventLabel = trackerMultiFields(
+                PREFIX_VALUE,
+                item.label,
+                slotInfo.title
+            ),
+            trackerId = "45742",
+            enhanceEcommerce = Key.promotions to Bundle().apply {
+                putString(Key.creativeName, widgetPosition.toString())
+                putString(Key.creativeSlot, channelPosition.toString())
+                putString(Key.itemId, "${item.id} - ${slotInfo.title}")
+                putString(Key.itemName, item.label)
+            }
+        )
+    }
+
+    override fun clickChannelCard(
+        item: PlayWidgetChannelUiModel,
+        config: PlayWidgetConfigUiModel,
+        slotInfo: SlotInfo,
+        channelPositionInList: Int
+    ) {
+        val widgetPosition = slotInfo.position + 1
+        val channelPosition = channelPositionInList + 1
+
+        sendEnhanceEcommerceEvent(
+            eventName = Event.selectContent,
+            eventAction = "click - channel card",
+            eventLabel = trackerMultiFields(
+                PREFIX_VALUE,
+                /** prefix **/
+                item.channelType.toTrackingType(),
+                /** videoType **/
+                item.partner.id,
+                /** partnerID **/
+                item.channelId,
+                /** channelID **/
+                channelPositionInList,
+                /** position **/
+                config.businessWidgetPosition,
+                /** businessPosition **/
+                "null",
+                /** isAutoPlay **/
+                config.maxAutoPlayCellularDuration,
+                /** duration **/
+                item.recommendationType,
+                /** recommendationType **/
+            ),
+            trackerId = "45743",
+            enhanceEcommerce = Key.promotions to Bundle().apply {
+                putString(Key.creativeName, widgetPosition.toString())
+                putString(Key.creativeSlot, channelPosition.toString())
+                putString(Key.itemId, "${item.channelId} - ${slotInfo.title}")
+                putString(Key.itemName, "/ - $PREFIX_VALUE - $widgetPosition - channel card - ${slotInfo.title}")
+            }
+        )
+    }
+
+    override fun clickChipsWidget(
+        item: WidgetMenuModel,
+        slotInfo: SlotInfo,
+        chipPositionInList: Int
+    ) {
+        val widgetPosition = slotInfo.position + 1
+        val channelPosition = chipPositionInList + 1
+
+        sendEnhanceEcommerceEvent(
+            eventName = Event.selectContent,
+            eventAction = "click - chips recom widget",
+            eventLabel = trackerMultiFields(
+                PREFIX_VALUE,
+                item.label,
+                slotInfo.title
+            ),
+            trackerId = "45744",
+            enhanceEcommerce = Key.promotions to Bundle().apply {
+                putString(Key.creativeName, widgetPosition.toString())
+                putString(Key.creativeSlot, channelPosition.toString())
+                putString(Key.itemId, "${item.id} - ${slotInfo.title}")
+                putString(Key.itemName, item.label)
+            }
+        )
+    }
+
+    override fun clickBackExit() {
+        Tracker.Builder()
+            .setEvent(Event.clickHomepage)
+            .setEventAction("click - back exit browse")
+            .setEventCategory("feed browse page")
+            .setEventLabel(PREFIX_VALUE)
+            .setCustomProperty(Key.trackerId, "45745")
+            .setBusinessUnit(BusinessUnit.content)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
+
+    override fun viewInspirationBanner(
+        item: BannerWidgetModel,
+        slotInfo: SlotInfo,
+        bannerPositionInList: Int
+    ) = impressionManager.impress(slotInfo.id, item) {
+        val widgetPosition = slotInfo.position + 1
+        val bannerPosition = bannerPositionInList + 1
+
+        sendEnhanceEcommerceEvent(
+            eventName = Event.viewItem,
+            eventAction = "view - category inspiration",
+            eventLabel = trackerMultiFields(
+                PREFIX_VALUE,
+                item.title,
+                slotInfo.title,
+                bannerPosition
+            ),
+            trackerId = "45748",
+            enhanceEcommerce = Key.promotions to Bundle().apply {
+                putString(Key.creativeName, widgetPosition.toString())
+                putString(Key.creativeSlot, bannerPosition.toString())
+                putString(Key.itemId, "${item.title} - ${slotInfo.title}")
+                putString(Key.itemName, "/ - $PREFIX_VALUE - $widgetPosition - category inspiration - ${slotInfo.title}")
+            }
+        )
+    }
+
+    override fun clickInspirationBanner(
+        item: BannerWidgetModel,
+        slotInfo: SlotInfo,
+        bannerPositionInList: Int
+    ) {
+        val widgetPosition = slotInfo.position + 1
+        val bannerPosition = bannerPositionInList + 1
+
+        sendEnhanceEcommerceEvent(
+            eventName = Event.selectContent,
+            eventAction = "click - category inspiration",
+            eventLabel = trackerMultiFields(
+                PREFIX_VALUE,
+                item.title,
+                slotInfo.title,
+                bannerPosition
+            ),
+            trackerId = "45749",
+            enhanceEcommerce = Key.promotions to Bundle().apply {
+                putString(Key.creativeName, widgetPosition.toString())
+                putString(Key.creativeSlot, bannerPosition.toString())
+                putString(Key.itemId, "${item.title} - ${slotInfo.title}")
+                putString(Key.itemName, "/ - $PREFIX_VALUE - $widgetPosition - category inspiration - ${slotInfo.title}")
+            }
+        )
+    }
+
+    private fun sendEnhanceEcommerceEvent(
+        eventName: String,
+        eventAction: String,
+        eventLabel: String,
+        trackerId: String,
+        enhanceEcommerce: EnhanceEcommerce
+    ) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            eventName,
+            Bundle().apply {
+                putString(Key.event, eventName)
+                putString(Key.eventAction, eventAction)
+                putString(Key.eventCategory, EventCategory.browseFeed)
+                putString(Key.eventLabel, eventLabel)
+                putString(Key.trackerId, trackerId)
+                putString(Key.businessUnit, BusinessUnit.content)
+                putString(Key.currentSite, CurrentSite.tokopediaMarketplace)
+                putParcelableArrayList(
+                    enhanceEcommerce.first,
+                    arrayListOf(
+                        enhanceEcommerce.second
+                    )
+                )
+                putString(Key.userId, userSession.userId)
+            }
+        )
+    }
+
+    companion object {
+        private const val PREFIX_VALUE = "BROWSE_PAGE_FEED"
+    }
+}
