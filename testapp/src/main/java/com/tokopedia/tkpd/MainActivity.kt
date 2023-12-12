@@ -158,7 +158,7 @@ class MainActivity : BaseActivity() {
         /*
          * Put your default applink here
          */
-        return "tokopedia://search?q=Bens+kosmetik"
+        return ""
     }
 
     data class Model(

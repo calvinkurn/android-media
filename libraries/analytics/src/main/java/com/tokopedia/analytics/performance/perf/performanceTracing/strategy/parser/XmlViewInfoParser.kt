@@ -53,17 +53,17 @@ class XmlViewInfoParser() : ViewInfoParser<View> {
     }
 
     private fun RecyclerView.calculateRecyclerViewHeight(): Int {
-        var totalHeight = 0
+//        var totalHeight = 0
+//
+//        for (i in 0 until this.childCount) {
+//            val child: View? = this.getChildAt(i)
+//            child?.let { totalHeight += child.height }
+//        }
+//
+//        // Add the height of the RecyclerView's padding
+//        totalHeight += this.paddingTop + this.paddingBottom
 
-        for (i in 0 until this.childCount) {
-            val child: View? = this.getChildAt(i)
-            child?.let { totalHeight += child.height }
-        }
-
-        // Add the height of the RecyclerView's padding
-        totalHeight += this.paddingTop + this.paddingBottom
-
-        return totalHeight
+        return this.height
     }
 
     private fun getViewHeight(view: View): Int {
