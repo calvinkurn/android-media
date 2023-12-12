@@ -19,6 +19,7 @@ import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant
 import com.tokopedia.catalog.databinding.FragmentCatalogComparisonDetailBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
+import com.tokopedia.catalog.ui.adapter.ComparisonHeaderAdapter
 import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
@@ -43,6 +44,7 @@ class CatalogComparisonDetailFragment :
     ComparisonViewHolder.ComparisonItemListener {
 
     companion object {
+        private const val START_INDEX_HEADER = 2
         const val CATALOG_COMPARISON_DETAIL_FRAGMENT_TAG = "CATALOG_COMPARISON_DETAIL_FRAGMENT_TAG"
         const val ARG_PARAM_CATALOG_ID = "catalogId"
         const val ARG_PARAM_CATEGORY_ID = "categoryId"
@@ -204,6 +206,16 @@ class CatalogComparisonDetailFragment :
             trackerId = CatalogTrackerConstant.TRACKER_ID_IMPRESSION_COMPARISON_DETAIL
         )
         sendOpenPageTracker()
+        setupContentHeader(compareCatalogIds)
+    }
+
+    private fun setupContentHeader(compareCatalogIds: List<String>) {
+        val layoutManager = LinearLayoutManager(context ?: return, LinearLayoutManager.HORIZONTAL, false)
+        val adapter = ComparisonHeaderAdapter(List(compareCatalogIds.size) { index ->
+            getString(R.string.catalog_title_comparison, index + START_INDEX_HEADER)
+        })
+        binding?.rvHeader?.layoutManager = layoutManager
+        binding?.rvHeader?.adapter = adapter
     }
 
     override fun onCreateView(
