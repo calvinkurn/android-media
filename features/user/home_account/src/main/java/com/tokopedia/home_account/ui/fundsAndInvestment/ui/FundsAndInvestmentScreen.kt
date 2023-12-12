@@ -53,7 +53,7 @@ fun FundsAndInvestmentScreen(
             Scaffold(
                 topBar = {
                     NestHeader(
-                        type = NestHeaderType.SingleLine(
+                        type = NestHeaderType.Profile(
                             title = "",
                             onBackClicked = { onBackClicked() }
                         )
@@ -115,7 +115,7 @@ fun FundsAndInvestmentScreen(
                             contentColor = NestTheme.colors.GN._500
                         )
                     }
-                },
+                }
             )
         }
     }
@@ -169,7 +169,6 @@ fun FundsAndInvestmentLayoutSuccessPreview() {
         onReloadData = {}
     )
 }
-
 
 @Preview(device = Devices.PIXEL_3A_XL, showBackground = true)
 @Composable
