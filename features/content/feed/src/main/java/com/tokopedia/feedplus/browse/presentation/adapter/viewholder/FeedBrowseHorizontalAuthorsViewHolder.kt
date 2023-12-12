@@ -4,72 +4,69 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
-import com.tokopedia.feedplus.browse.presentation.adapter.CreatorAdapter
+import com.tokopedia.feedplus.browse.presentation.adapter.AuthorAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.FeedBrowseHorizontalChannelsItemDecoration
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
-import com.tokopedia.feedplus.databinding.ItemFeedBrowseHorizontalCreatorsBinding
+import com.tokopedia.feedplus.databinding.ItemFeedBrowseHorizontalAuthorsBinding
 
 /**
  * Created by meyta.taliti on 16/11/23.
  */
-internal class FeedBrowseHorizontalCreatorsViewHolder private constructor(
-    private val binding: ItemFeedBrowseHorizontalCreatorsBinding,
-    private val listener: Listener
+internal class FeedBrowseHorizontalAuthorsViewHolder private constructor(
+    private val binding: ItemFeedBrowseHorizontalAuthorsBinding,
+    private val listener: Listener,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private var mData: FeedBrowseItemListModel.HorizontalAuthors? = null
 
-    private val adapter = CreatorAdapter(object : CreatorCardViewHolder.Item.Listener {
+    private val adapter = AuthorAdapter(object : AuthorCardViewHolder.Item.Listener {
         override fun onChannelClicked(
-            viewHolder: CreatorCardViewHolder.Item,
+            viewHolder: AuthorCardViewHolder.Item,
             item: AuthorWidgetModel
         ) {
-            listener.onChannelClicked(this@FeedBrowseHorizontalCreatorsViewHolder, item)
+            listener.onChannelClicked(this@FeedBrowseHorizontalAuthorsViewHolder, item)
         }
 
         override fun onAuthorClicked(
-            viewHolder: CreatorCardViewHolder.Item,
+            viewHolder: AuthorCardViewHolder.Item,
             item: AuthorWidgetModel
         ) {
             val data = mData ?: return
             listener.onAuthorClicked(
-                this@FeedBrowseHorizontalCreatorsViewHolder,
+                this@FeedBrowseHorizontalAuthorsViewHolder,
                 data,
                 item,
-                viewHolder.absoluteAdapterPosition
+                viewHolder.absoluteAdapterPosition,
             )
         }
     })
 
     init {
-        binding.rvCreators.adapter = adapter
-        binding.rvCreators.addItemDecoration(
-            FeedBrowseHorizontalChannelsItemDecoration(binding.rvCreators.resources)
+        binding.rvAuthors.adapter = adapter
+        binding.rvAuthors.addItemDecoration(
+            FeedBrowseHorizontalChannelsItemDecoration(binding.rvAuthors.resources)
         )
     }
 
     fun bind(item: FeedBrowseItemListModel.HorizontalAuthors) {
         mData = item
 
-        if (item.isLoading) {
-            adapter.setLoading()
-        } else {
-            adapter.submitList(item.items)
-        }
+        if (item.isLoading) adapter.setLoading()
+        else adapter.submitList(item.items)
     }
 
     companion object {
         fun create(
             parent: ViewGroup,
-            listener: Listener
-        ): FeedBrowseHorizontalCreatorsViewHolder {
-            return FeedBrowseHorizontalCreatorsViewHolder(
-                ItemFeedBrowseHorizontalCreatorsBinding.inflate(
+            listener: Listener,
+        ) : FeedBrowseHorizontalAuthorsViewHolder {
+            return FeedBrowseHorizontalAuthorsViewHolder(
+                ItemFeedBrowseHorizontalAuthorsBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 ),
-                listener
+                listener,
             )
         }
     }
@@ -77,19 +74,19 @@ internal class FeedBrowseHorizontalCreatorsViewHolder private constructor(
     interface Listener {
 
         fun onChannelClicked(
-            viewHolder: FeedBrowseHorizontalCreatorsViewHolder,
+            viewHolder: FeedBrowseHorizontalAuthorsViewHolder,
             item: AuthorWidgetModel
         )
 
         fun onAuthorClicked(
-            viewHolder: FeedBrowseHorizontalCreatorsViewHolder,
+            viewHolder: FeedBrowseHorizontalAuthorsViewHolder,
             widgetModel: FeedBrowseItemListModel.HorizontalAuthors,
             item: AuthorWidgetModel,
-            authorWidgetPosition: Int
+            authorWidgetPosition: Int,
         )
 
         fun onRetry(
-            viewHolder: FeedBrowseHorizontalCreatorsViewHolder,
+            viewHolder: FeedBrowseHorizontalAuthorsViewHolder,
             slotId: String
         )
     }

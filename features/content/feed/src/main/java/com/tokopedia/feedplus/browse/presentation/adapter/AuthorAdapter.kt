@@ -6,14 +6,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.CreatorCardViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.AuthorCardViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.LoadingModel
 
 /**
  * Created by meyta.taliti on 16/11/23.
  */
-internal class CreatorAdapter(
-    private val creatorListener: CreatorCardViewHolder.Item.Listener
+internal class AuthorAdapter(
+    private val creatorListener: AuthorCardViewHolder.Item.Listener
 ) : ListAdapter<Any, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<Any>() {
         override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
@@ -33,8 +33,8 @@ internal class CreatorAdapter(
 ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            TYPE_LOADING -> CreatorCardViewHolder.Placeholder.create(parent)
-            TYPE_AUTHOR -> CreatorCardViewHolder.Item.create(parent, creatorListener)
+            TYPE_LOADING -> AuthorCardViewHolder.Placeholder.create(parent)
+            TYPE_AUTHOR -> AuthorCardViewHolder.Item.create(parent, creatorListener)
             else -> error("No ViewHolder found for view type $viewType")
         }
     }
@@ -42,7 +42,7 @@ internal class CreatorAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position)
         when {
-            holder is CreatorCardViewHolder.Item && item is AuthorWidgetModel -> {
+            holder is AuthorCardViewHolder.Item && item is AuthorWidgetModel -> {
                 holder.bind(item)
             }
         }

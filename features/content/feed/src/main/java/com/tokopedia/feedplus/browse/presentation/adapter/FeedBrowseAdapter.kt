@@ -11,7 +11,7 @@ import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalCreatorsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalAuthorsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChannelListState
@@ -29,7 +29,7 @@ internal class FeedBrowseAdapter(
     private val chipsListener: ChipsViewHolder.Listener,
     private val bannerListener: FeedBrowseBannerViewHolder.Item.Listener,
     private val channelListener: FeedBrowseHorizontalChannelsViewHolder.Listener,
-    private val creatorListener: FeedBrowseHorizontalCreatorsViewHolder.Listener
+    private val creatorListener: FeedBrowseHorizontalAuthorsViewHolder.Listener
 ) : ListAdapter<FeedBrowseItemListModel, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<FeedBrowseItemListModel>() {
         override fun areItemsTheSame(oldItem: FeedBrowseItemListModel, newItem: FeedBrowseItemListModel): Boolean {
@@ -75,7 +75,7 @@ internal class FeedBrowseAdapter(
                 FeedBrowseTitleViewHolder.create(parent)
             }
             TYPE_HORIZONTAL_CREATORS -> {
-                FeedBrowseHorizontalCreatorsViewHolder.create(parent, creatorListener)
+                FeedBrowseHorizontalAuthorsViewHolder.create(parent, creatorListener)
             }
             else -> error("ViewType $viewType is not supported")
         }
@@ -96,7 +96,7 @@ internal class FeedBrowseAdapter(
             holder is FeedBrowseTitleViewHolder && item is FeedBrowseItemListModel.Title -> {
                 holder.bind(item)
             }
-            holder is FeedBrowseHorizontalCreatorsViewHolder && item is FeedBrowseItemListModel.HorizontalAuthors -> {
+            holder is FeedBrowseHorizontalAuthorsViewHolder && item is FeedBrowseItemListModel.HorizontalAuthors -> {
                 holder.bind(item)
             }
         }

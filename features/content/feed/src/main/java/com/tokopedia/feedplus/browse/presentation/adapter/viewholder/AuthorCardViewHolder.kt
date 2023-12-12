@@ -4,18 +4,18 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
-import com.tokopedia.feedplus.databinding.ItemFeedBrowseCreatorBinding
-import com.tokopedia.feedplus.databinding.ItemFeedBrowseCreatorLoadingBinding
+import com.tokopedia.feedplus.databinding.ItemFeedBrowseAuthorBinding
+import com.tokopedia.feedplus.databinding.ItemFeedBrowseAuthorLoadingBinding
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 
 /**
  * Created by meyta.taliti on 25/09/23.
  */
-internal class CreatorCardViewHolder private constructor() {
+internal class AuthorCardViewHolder private constructor() {
 
     class Item private constructor(
-        private val binding: ItemFeedBrowseCreatorBinding,
+        private val binding: ItemFeedBrowseAuthorBinding,
         private val listener: Listener
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -41,7 +41,7 @@ internal class CreatorCardViewHolder private constructor() {
         companion object {
             fun create(parent: ViewGroup, listener: Listener): Item {
                 return Item(
-                    ItemFeedBrowseCreatorBinding.inflate(
+                    ItemFeedBrowseAuthorBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false,
@@ -65,13 +65,13 @@ internal class CreatorCardViewHolder private constructor() {
     }
 
     class Placeholder private constructor(
-        binding: ItemFeedBrowseCreatorLoadingBinding,
+        binding: ItemFeedBrowseAuthorLoadingBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         companion object {
             fun create(parent: ViewGroup): Placeholder {
                 return Placeholder(
-                    ItemFeedBrowseCreatorLoadingBinding.inflate(
+                    ItemFeedBrowseAuthorLoadingBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false,

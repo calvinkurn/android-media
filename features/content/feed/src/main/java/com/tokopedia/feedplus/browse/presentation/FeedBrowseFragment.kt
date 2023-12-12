@@ -28,7 +28,7 @@ import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.FeedBro
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalCreatorsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalAuthorsViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseIntent
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseStatefulModel
@@ -166,16 +166,16 @@ internal class FeedBrowseFragment @Inject constructor(
         }
     }
 
-    private val creatorListener = object : FeedBrowseHorizontalCreatorsViewHolder.Listener {
+    private val creatorListener = object : FeedBrowseHorizontalAuthorsViewHolder.Listener {
         override fun onChannelClicked(
-            viewHolder: FeedBrowseHorizontalCreatorsViewHolder,
+            viewHolder: FeedBrowseHorizontalAuthorsViewHolder,
             item: AuthorWidgetModel
         ) {
             router.route(context, item.appLink)
         }
 
         override fun onAuthorClicked(
-            viewHolder: FeedBrowseHorizontalCreatorsViewHolder,
+            viewHolder: FeedBrowseHorizontalAuthorsViewHolder,
             widgetModel: FeedBrowseItemListModel.HorizontalAuthors,
             item: AuthorWidgetModel,
             authorWidgetPosition: Int
@@ -184,7 +184,7 @@ internal class FeedBrowseFragment @Inject constructor(
             router.route(context, item.appLink)
         }
 
-        override fun onRetry(viewHolder: FeedBrowseHorizontalCreatorsViewHolder, slotId: String) {
+        override fun onRetry(viewHolder: FeedBrowseHorizontalAuthorsViewHolder, slotId: String) {
             viewModel.onIntent(FeedBrowseIntent.FetchCardsWidget(slotId, WidgetMenuModel.Empty))
         }
     }
