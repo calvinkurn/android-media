@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.browse.data.tracker
 
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.content.analytic.impression.OneTimeImpressionManager
+import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
 import com.tokopedia.feedplus.browse.data.model.BannerWidgetModel
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
@@ -33,6 +34,11 @@ internal class FeedBrowseImpressionManager @Inject constructor() {
     fun impress(slotId: String, banner: BannerWidgetModel, onImpress: () -> Unit) {
         getMenuImpressionManager(slotId)
             .impress(banner.title, onImpress)
+    }
+
+    fun impress(slotId: String, author: AuthorWidgetModel, onImpress: () -> Unit) {
+        getChannelImpressionManager(slotId)
+            .impress(author.id, onImpress)
     }
 
     fun onNewWidgets(widgets: List<FeedBrowseSlotUiModel>) {

@@ -56,6 +56,18 @@ internal interface FeedBrowseTracker {
         bannerPositionInList: Int
     )
 
+    fun viewAuthorWidget(
+        item: AuthorWidgetModel,
+        slotInfo: SlotInfo,
+        widgetPositionInList: Int
+    )
+
+    fun clickChannelCard(
+        item: AuthorWidgetModel,
+        slotInfo: SlotInfo,
+        widgetPositionInList: Int
+    )
+
     fun clickAuthorName(
         item: AuthorWidgetModel,
         slotInfo: SlotInfo,

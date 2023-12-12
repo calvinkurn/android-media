@@ -233,6 +233,88 @@ internal class FeedBrowseTrackerImpl @Inject constructor(
         )
     }
 
+    override fun viewAuthorWidget(
+        item: AuthorWidgetModel,
+        slotInfo: SlotInfo,
+        widgetPositionInList: Int
+    ) = impressionManager.impress(slotInfo.id, item) {
+        val widgetPosition = slotInfo.position + 1
+        val channelPosition = widgetPositionInList + 1
+
+//        sendEnhanceEcommerceEvent(
+//            eventName = Event.viewItem,
+//            eventAction = "view - channel card",
+//            eventLabel = trackerMultiFields(
+//                PREFIX_VALUE,
+//                /** prefix **/
+//                item.channelType.toTrackingType(),
+//                /** videoType **/
+//                item.partner.id,
+//                /** partnerID **/
+//                item.channelId,
+//                /** channelID **/
+//                channelPositionInList,
+//                /** position **/
+//                config.businessWidgetPosition,
+//                /** businessPosition **/
+//                "null",
+//                /** isAutoPlay **/
+//                config.maxAutoPlayCellularDuration,
+//                /** duration **/
+//                item.recommendationType,
+//                /** recommendationType **/
+//            ),
+//            trackerId = "45751",
+//            enhanceEcommerce = Key.promotions to Bundle().apply {
+//                putString(Key.creativeName, widgetPosition.toString())
+//                putString(Key.creativeSlot, channelPosition.toString())
+//                putString(Key.itemId, "${item.channelId} - ${slotInfo.title}")
+//                putString(Key.itemName, "/ - $PREFIX_VALUE - $widgetPosition - channel card - ${slotInfo.title}")
+//            }
+//        )
+    }
+
+    override fun clickChannelCard(
+        item: AuthorWidgetModel,
+        slotInfo: SlotInfo,
+        widgetPositionInList: Int
+    ) {
+        val widgetPosition = slotInfo.position + 1
+        val channelPosition = widgetPositionInList + 1
+
+//        sendEnhanceEcommerceEvent(
+//            eventName = Event.selectContent,
+//            eventAction = "click - channel card",
+//            eventLabel = trackerMultiFields(
+//                PREFIX_VALUE,
+//                /** prefix **/
+//                item.channelType.toTrackingType(),
+//                /** videoType **/
+//                item.partner.id,
+//                /** partnerID **/
+//                item.channelId,
+//                /** channelID **/
+//                channelPositionInList,
+//                /** position **/
+//                config.businessWidgetPosition,
+//                /** businessPosition **/
+//                "null",
+//                /** isAutoPlay **/
+//                config.maxAutoPlayCellularDuration,
+//                /** duration **/
+//                item.recommendationType,
+//                /** recommendationType **/
+//            ),
+//            trackerId = "45743",
+//            enhanceEcommerce = Key.promotions to Bundle().apply {
+//                putString(Key.creativeName, widgetPosition.toString())
+//                putString(Key.creativeSlot, channelPosition.toString())
+//                putString(Key.itemId, "${item.channelId} - ${slotInfo.title}")
+//                putString(Key.itemName, "/ - $PREFIX_VALUE - $widgetPosition - channel card - ${slotInfo.title}")
+//            }
+//        )
+    }
+
     override fun clickAuthorName(
         item: AuthorWidgetModel,
         slotInfo: SlotInfo,

@@ -8,6 +8,7 @@ import com.tokopedia.feedplus.databinding.ItemFeedBrowseAuthorBinding
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseAuthorLoadingBinding
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.play_common.util.addImpressionListener
 
 /**
  * Created by meyta.taliti on 25/09/23.
@@ -36,6 +37,10 @@ internal class AuthorCardViewHolder private constructor() {
             binding.ivCover.setOnClickListener {
                 listener.onChannelClicked(this, item)
             }
+
+            binding.root.addImpressionListener {
+                listener.onWidgetImpressed(this, item)
+            }
         }
 
         companion object {
@@ -44,14 +49,19 @@ internal class AuthorCardViewHolder private constructor() {
                     ItemFeedBrowseAuthorBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
-                        false,
+                        false
                     ),
-                    listener,
+                    listener
                 )
             }
         }
 
         interface Listener {
+
+            fun onWidgetImpressed(
+                viewHolder: Item,
+                item: AuthorWidgetModel
+            )
             fun onChannelClicked(
                 viewHolder: Item,
                 item: AuthorWidgetModel
@@ -65,7 +75,7 @@ internal class AuthorCardViewHolder private constructor() {
     }
 
     class Placeholder private constructor(
-        binding: ItemFeedBrowseAuthorLoadingBinding,
+        binding: ItemFeedBrowseAuthorLoadingBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         companion object {
@@ -74,7 +84,7 @@ internal class AuthorCardViewHolder private constructor() {
                     ItemFeedBrowseAuthorLoadingBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
-                        false,
+                        false
                     )
                 )
             }
