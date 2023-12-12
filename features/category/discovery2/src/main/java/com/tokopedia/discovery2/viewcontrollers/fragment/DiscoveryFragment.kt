@@ -1015,11 +1015,11 @@ open class DiscoveryFragment :
             )
         }
 
-        discoveryViewModel.bmGmDataList.observe(viewLifecycleOwner) { (parentPosition, bmGmDataList) ->
+        discoveryViewModel.bmGmDataList.observe(viewLifecycleOwner) { (parentPosition, offerMessages) ->
             discoveryAdapter.getViewModelAtPosition(parentPosition)
                 ?.let { discoveryBaseViewModel ->
                     if (discoveryBaseViewModel is ShopOfferHeroBrandViewModel) {
-                        discoveryBaseViewModel.changeTier(false, bmGmDataList)
+                        discoveryBaseViewModel.changeTier(false, offerMessages)
                     }
                 }
         }
@@ -2332,7 +2332,6 @@ open class DiscoveryFragment :
         discoveryViewModel.addProductToCart(
             discoATCRequestParams
         )
-
     }
 
     private fun setupMiniCart(data: MiniCartSimplifiedData) {

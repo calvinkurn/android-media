@@ -116,7 +116,11 @@ class ScpAuthActivity : BaseActivity() {
             false
         )
 
-        startGotoLogin()
+        if (intent.hasExtra(ApplinkConstInternalUserPlatform.PARAM_FROM_WEBVIEW)) {
+            handleRefreshTokenCase()
+        } else {
+            startGotoLogin()
+        }
 
         with(viewModel) {
             onLoginSuccess.observe(this@ScpAuthActivity) {
@@ -134,13 +138,30 @@ class ScpAuthActivity : BaseActivity() {
                     showGenericErrorBottomSheet()
                 }
             }
-        }
-        viewModel.showFullScreenLoading.observe(this@ScpAuthActivity) {
-            if (it) {
-                binding.screenLoader.root.visible()
-            } else {
-                binding.screenLoader.root.gone()
+            onRefreshSuccess.observe(this@ScpAuthActivity) {
+                if (it) {
+                    setResult(Activity.RESULT_OK)
+                    finish()
+                } else {
+                    startGotoLogin()
+                }
             }
+            showFullScreenLoading.observe(this@ScpAuthActivity) {
+                if (it) {
+                    binding.screenLoader.root.visible()
+                } else {
+                    binding.screenLoader.root.gone()
+                }
+            }
+        }
+    }
+
+    // Handle refresh token for webview
+    private fun handleRefreshTokenCase() {
+        if(userSession.accessToken.isNotEmpty() && userSession.freshToken.isNotEmpty()) {
+            viewModel.triggerRefreshToken()
+        } else {
+            startGotoLogin()
         }
     }
 
@@ -212,7 +233,6 @@ class ScpAuthActivity : BaseActivity() {
                 }
 
                 override fun onUserNotRegistered(credential: UserCredential, activity: Activity?) {
-                    // track click signup
                     gotoRegisterInitial(credential)
                 }
 

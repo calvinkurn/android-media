@@ -768,9 +768,7 @@ class RegisterInitialFragment :
                         goToOTPActivateEmail(registerCheckData.view)
                     }
                 } else {
-                    if (loginCredential.isNotEmpty()) {
-                        goToOTPRegisterEmail(registerCheckData.view)
-                    }
+                    goToOTPRegisterEmail(registerCheckData.view)
                 }
             }
         }
