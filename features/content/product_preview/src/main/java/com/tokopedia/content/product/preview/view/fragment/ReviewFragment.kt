@@ -13,6 +13,7 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentReviewBinding
 import com.tokopedia.content.product.preview.utils.PAGE_SOURCE
+import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
@@ -89,11 +90,7 @@ class ReviewFragment @Inject constructor(
      * Review Content Listener
      */
     override fun onReviewCredibilityClicked(author: AuthorUiModel) {
-        router.route(requireContext(), "tokopedia-android-internal://marketplace/review/credibility/${author.id}/$PAGE_SOURCE/")
-    }
-
-    override fun onReviewerClicked(author: AuthorUiModel) {
-        router.route(requireContext(), author.appLink)
+        router.route(requireContext(), "$REVIEW_CREDIBILITY_APPLINK${author.id}/$PAGE_SOURCE/")
     }
 
     companion object {

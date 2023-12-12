@@ -25,14 +25,11 @@ class ReviewParentContentViewHolder(
         lblAuthorStats.setLabel(author.type)
         lblAuthorStats.showWithCondition(author.type.isNotBlank())
 
-        lblAuthorStats.rootView.setOnClickListener {
+        lblAuthorStats.setOnClickListener {
             listener.onReviewCredibilityClicked(author)
         }
         tvAuthorName.setOnClickListener {
-            listener.onReviewerClicked(author)
-        }
-        ivAuthor.setOnClickListener {
-            listener.onReviewerClicked(author)
+            listener.onReviewCredibilityClicked(author)
         }
     }
 
@@ -53,7 +50,6 @@ class ReviewParentContentViewHolder(
 
     interface Listener {
         fun onReviewCredibilityClicked(author: AuthorUiModel)
-        fun onReviewerClicked(author: AuthorUiModel)
     }
 
     companion object {
