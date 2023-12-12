@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.unified
+package com.tokopedia.content.product.preview.view.uimodel
 
 /**
  * @author by astidhiyaa on 27/11/23
@@ -83,5 +83,3 @@ data class BottomNavUiModel(
             else -> this.price.toString()
         }
 }
-
-// ATC butuh data apa aja?

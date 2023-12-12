@@ -26,6 +26,7 @@ android {
     buildFeatures {
         viewBinding true
         buildConfig true
+        compose true
     }
 
     composeOptions {
@@ -62,6 +63,11 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.supportLibDependencies.kotlinMetaData
     ksp project(rootProject.ext.libraries.gqlKspProcessor)
+
+    //Media Review - Compose
+    implementation rootProject.ext.unifyDependencies.nestPrinciples
+    implementation rootProject.ext.composeDependencies.composeConstraint
+    implementation rootProject.ext.unifyDependencies.nestComponents
 }
 
 

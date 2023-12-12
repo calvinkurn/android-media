@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -11,7 +12,9 @@ import com.tokopedia.content.product.preview.databinding.FragmentProductPreviewB
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter.Companion.TAB_PRODUCT_POS
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter.Companion.TAB_REVIEW_POS
+import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.content.product.preview.view.components.MediaBottomNav
 import javax.inject.Inject
 
 class ProductPreviewFragment @Inject constructor() : TkpdBaseV4Fragment() {
@@ -54,6 +57,12 @@ class ProductPreviewFragment @Inject constructor() : TkpdBaseV4Fragment() {
         vpProductPreview.apply {
             registerOnPageChangeCallback(pagerListener)
             adapter = pagerAdapter
+        }
+        viewFooter.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MediaBottomNav(product = BottomNavUiModel.Empty)
+            }
         }
     }
 

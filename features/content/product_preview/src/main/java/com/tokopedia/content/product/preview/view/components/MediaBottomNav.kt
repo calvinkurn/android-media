@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.unified
+package com.tokopedia.content.product.preview.view.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.heightIn
@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.nest.components.ButtonSize
 import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
