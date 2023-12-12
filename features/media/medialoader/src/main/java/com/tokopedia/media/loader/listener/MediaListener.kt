@@ -7,6 +7,6 @@ import com.tokopedia.media.loader.wrapper.MediaDataSource
 
 interface MediaListener {
     fun onLoaded(resource: Bitmap?, dataSource: MediaDataSource?)
-    fun onLoaded(resource: GifDrawable?, dataSource: MediaDataSource?) { }
+    fun onLoaded(resource: GifDrawable?, dataSource: MediaDataSource?)
     fun onFailed(error: MediaException?)
 }

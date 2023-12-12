@@ -3,6 +3,7 @@ package com.tokopedia.media.loader
 import android.graphics.Bitmap
 import android.net.Uri
 import android.widget.ImageView
+import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.tokopedia.media.loader.data.MediaException
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.listener.MediaListener
@@ -51,10 +52,22 @@ object JvmMediaLoader {
     fun loadImage(
         imageView: ImageView,
         url: String,
-        listener: MediaListener
+        onSuccess: (Bitmap?, MediaDataSource?) -> Unit,
+        onError: (MediaException?) -> Unit
     ) {
         imageView.loadImage(url) {
-            this.loaderListener = listener
+            this.loaderListener = object: MediaListener {
+                // for GIF format
+                override fun onLoaded(resource: GifDrawable?, dataSource: MediaDataSource?) {}
+
+                override fun onLoaded(resource: Bitmap?, dataSource: MediaDataSource?) {
+                    onSuccess(resource, dataSource)
+                }
+
+                override fun onFailed(error: MediaException?) {
+                    onError(error)
+                }
+            }
         }
     }
 }
