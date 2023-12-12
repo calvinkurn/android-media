@@ -26,6 +26,7 @@ class MediaReviewUseCase @Inject constructor(
     override suspend fun execute(params: Param): MediaReviewResponse {
         return repo.request(query, params)
     }
+
     override fun graphqlQuery(): String = query.getQuery()
     data class Param(
         @SerializedName("productID")
