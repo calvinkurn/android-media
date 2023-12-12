@@ -3,6 +3,7 @@ package com.tokopedia.content.product.preview.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
@@ -32,7 +33,14 @@ class ProductPreviewViewModel @AssistedInject constructor(
     val review : Flow<List<ReviewUiModel>>
         get() = _review //TODO: add state
 
-    fun getReview() {
+    fun addAction(action: ProductPreviewAction) {
+        when(action) {
+            ProductPreviewAction.FetchReview -> getReview()
+            else -> {}
+        }
+    }
+
+    private fun getReview() {
         viewModelScope.launchCatchError(block = {
             _review.value = repo.getReview(param.productId, 1) //TODO: add pagination
         }) {}
