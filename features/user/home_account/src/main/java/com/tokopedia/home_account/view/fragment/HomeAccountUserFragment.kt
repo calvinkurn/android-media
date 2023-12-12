@@ -83,7 +83,6 @@ import com.tokopedia.home_account.databinding.HomeAccountUserFragmentBinding
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.fundsAndInvestment.FundsAndInvestmentComposeActivity
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
-import com.tokopedia.home_account.view.activity.FundsAndInvestmentActivity
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
@@ -1232,13 +1231,7 @@ open class HomeAccountUserFragment :
     }
 
     private fun goToFundsAndInvestment() {
-        val directionActivity = if (DeeplinkMapperUser.isFundsAndInvestmentComposeActivated()) {
-            FundsAndInvestmentComposeActivity::class.java
-        } else {
-            FundsAndInvestmentActivity::class.java
-        }
-
-        val intent = Intent(activity, directionActivity)
+        val intent = Intent(activity, FundsAndInvestmentComposeActivity::class.java)
         startActivity(intent)
     }
 
