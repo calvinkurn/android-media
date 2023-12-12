@@ -17,6 +17,7 @@ import com.tokopedia.content.product.preview.utils.PAGE_SOURCE
 import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 import com.tokopedia.content.product.preview.viewmodel.EntrySource
@@ -66,7 +67,7 @@ class ReviewFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
 
-        viewModel.getReview()
+        viewModel.addAction(ProductPreviewAction.FetchReview)
     }
 
     private fun setupView() {

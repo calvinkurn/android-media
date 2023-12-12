@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
-import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
@@ -40,22 +40,28 @@ class ProductPreviewViewModel @AssistedInject constructor(
     val miniInfo: Flow<BottomNavUiModel>
         get() = _miniInfo
 
-    //TODO: Add to action
-    fun getReview() {
+    fun addAction(action: ProductPreviewAction) {
+        when(action) {
+            ProductPreviewAction.FetchReview -> getReview()
+            ProductPreviewAction.FetchMiniInfo -> getMiniInfo()
+            is ProductPreviewAction.ProductAction -> addToCart(action.model)
+            else -> {}
+        }
+    }
+
+    private fun getReview() {
         viewModelScope.launchCatchError(block = {
             _review.value = repo.getReview(param.productId, 1) //TODO: add pagination
         }) {}
     }
 
-    //TODO: Add to action
-    fun getMiniInfo() {
+    private fun getMiniInfo() {
         viewModelScope.launchCatchError(block = {
             _miniInfo.value = repo.getProductMiniInfo(param.productId)
         }) {}
     }
 
-    //TODO: Add to action
-    fun addToCart(model: BottomNavUiModel) {
+    private fun addToCart(model: BottomNavUiModel) {
         //TODO: required login
         viewModelScope.launchCatchError(block = {
             //TODO: emit Event
