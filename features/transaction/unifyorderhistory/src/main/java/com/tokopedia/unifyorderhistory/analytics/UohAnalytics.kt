@@ -15,11 +15,8 @@ import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAddRecommen
 import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceClick
 import com.tokopedia.unifyorderhistory.data.model.UohListOrder
 import com.tokopedia.unifyorderhistory.util.UohConsts
-import com.tokopedia.unifyorderhistory.util.UohConsts.BUSINESS_UNIT_REPLACEE
 import com.tokopedia.unifyorderhistory.util.UohConsts.RECOMMENDATION_LIST_TOPADS_TRACK
 import com.tokopedia.unifyorderhistory.util.UohConsts.RECOMMENDATION_LIST_TRACK
-import com.tokopedia.unifyorderhistory.util.UohConsts.RECOMMENDATION_TYPE_REPLACEE
-import com.tokopedia.unifyorderhistory.util.UohConsts.SHOP_ID
 
 /**
  * Created by fwidjaja on 2019-11-29.
@@ -84,14 +81,14 @@ object UohAnalytics {
     private const val SELECT_CONTENT = "select_content"
     private const val ADD_TO_CART = "addToCart"
     private const val ADD_TO_CART_V5 = "add_to_cart"
-    private const val VIEW_ORDER_CARD = "view order card {business_unit}"
+    private const val VIEW_ORDER_CARD = "view order card "
     private const val EVENT_LABEL_RECOMMENDATION = "Rekomendasi Untuk Anda"
     private const val VIEW_RECOMMENDATION = "impression - product recommendation"
     private const val CLICK_RECOMMENDATION = "click - product recommendation"
     private const val CLICK_ATC_RECOMMENDATION = "click add to cart on my purchase list page"
-    private const val CLICK_ORDER_CARD = "click order card {business_unit}"
+    private const val CLICK_ORDER_CARD = "click order card "
     private const val CLICK_BELI_LAGI = "click beli lagi on order card marketplace"
-    private const val ACTION_FIELD_CLICK_ECOMMERCE = "/order list - {business_unit}"
+    private const val ACTION_FIELD_CLICK_ECOMMERCE = "/order list - "
     private const val ORDER_LIST_EVENT_CATEGORY = "order list"
     private const val PURCHASE_LIST_EVENT_CATEGORY = "my purchase list - mp"
     private const val UOH_PAGE_CATEGORY = "uoh page"
@@ -137,7 +134,7 @@ object UohAnalytics {
     private const val CLICK_PRODUCT_ON_BUY_AGAIN_WIDGET = "click product on buy again widget"
     private const val CLICK_BELI_LAGI_BUTTON_ON_BUY_AGAIN_WIDGET = "click beli lagi button on buy again widget"
     private const val HOME_AND_BROWSE = "home & browse"
-    private const val ACTION_FIELD_IMPRESSION_BUY_AGAIN_ECOMMERCE = "/order list - rekomendasi untuk anda - {recommendation_type}"
+    private const val ACTION_FIELD_IMPRESSION_BUY_AGAIN_ECOMMERCE = "/order list - rekomendasi untuk anda - "
     private const val VIEW_HOME_PAGE_IRIS = "viewHomepageIris"
     private const val CLICK_HOME_PAGE = "clickHomepage"
 
@@ -319,12 +316,12 @@ object UohAnalytics {
         val map = DataLayer.mapOf(
             EVENT, PRODUCT_VIEW,
             EVENT_CATEGORY, ORDER_LIST_EVENT_CATEGORY,
-            EVENT_ACTION, VIEW_ORDER_CARD.replace(BUSINESS_UNIT_REPLACEE, order.verticalCategory),
+            EVENT_ACTION, "$VIEW_ORDER_CARD$order.verticalCategory",
             EVENT_LABEL, "",
             CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
             USER_ID, userId,
             BUSINESS_UNIT, ORDER_MANAGEMENT,
-            ITEM_LIST, ACTION_FIELD_CLICK_ECOMMERCE.replace(BUSINESS_UNIT_REPLACEE, order.verticalCategory),
+            ITEM_LIST, "$ACTION_FIELD_CLICK_ECOMMERCE$order.verticalCategory",
             ECOMMERCE,
             DataLayer.mapOf(
                 CURRENCY_CODE,
@@ -377,12 +374,12 @@ object UohAnalytics {
         val bundle = Bundle().apply {
             putString(EVENT, SELECT_CONTENT)
             putString(EVENT_CATEGORY, ORDER_LIST_EVENT_CATEGORY)
-            putString(EVENT_ACTION, CLICK_ORDER_CARD.replace(BUSINESS_UNIT_REPLACEE, verticalLabel))
+            putString(EVENT_ACTION, "$CLICK_ORDER_CARD$verticalLabel")
             putString(EVENT_LABEL, "")
             putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
             putString(USER_ID, userId)
             putString(BUSINESS_UNIT, ORDER_MANAGEMENT)
-            putString(ITEM_LIST, ACTION_FIELD_CLICK_ECOMMERCE.replace(BUSINESS_UNIT_REPLACEE, verticalLabel))
+            putString(ITEM_LIST, "$ACTION_FIELD_CLICK_ECOMMERCE$verticalLabel")
             putParcelableArrayList(ITEMS, arrayListBundleItems)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
@@ -494,7 +491,7 @@ object UohAnalytics {
                 putString(DIMENSION81, "")
                 putString(DIMENSION80, "")
                 putString(DIMENSION45, cartId)
-                putString(DIMENSION40, ACTION_FIELD_CLICK_ECOMMERCE.replace(BUSINESS_UNIT_REPLACEE, verticalLabel))
+                putString(DIMENSION40, "$ACTION_FIELD_CLICK_ECOMMERCE$verticalLabel")
             }
             arrayListBundleItems.add(bundleProduct)
         }
@@ -728,7 +725,7 @@ object UohAnalytics {
                 putString(QUANTITY, product.quantity)
                 putString(SHOP_ID, product.dimension79)
                 putString(DIMENSION45, cartId)
-                putString(DIMENSION40, ACTION_FIELD_CLICK_ECOMMERCE.replace(BUSINESS_UNIT_REPLACEE, verticalLabel))
+                putString(DIMENSION40, "$ACTION_FIELD_CLICK_ECOMMERCE$verticalLabel")
             }
             arrayListBundleItems.add(bundleProduct)
         }
@@ -767,7 +764,7 @@ object UohAnalytics {
                 putString(QUANTITY, param.quantity)
                 putString(SHOP_ID, param.shopId)
                 putString(DIMENSION45, param.cartId)
-                putString(DIMENSION40, ACTION_FIELD_CLICK_ECOMMERCE.replace(BUSINESS_UNIT_REPLACEE, verticalLabel))
+                putString(DIMENSION40, "$ACTION_FIELD_CLICK_ECOMMERCE$verticalLabel")
             }
             arrayListBundleItems.add(bundleProduct)
         }
@@ -830,7 +827,7 @@ object UohAnalytics {
         index: Int
     ) {
         val bundleProduct = Bundle().apply {
-            putString(DIMENSION40, ACTION_FIELD_IMPRESSION_BUY_AGAIN_ECOMMERCE.replace(RECOMMENDATION_TYPE_REPLACEE, recommItem.recommendationType))
+            putString(DIMENSION40, "$ACTION_FIELD_IMPRESSION_BUY_AGAIN_ECOMMERCE$recommItem.recommendationType")
             putString(INDEX, index.toString())
             putString(ITEM_NAME, recommItem.name)
             putString(ITEM_ID, recommItem.productId.toString())
@@ -862,7 +859,7 @@ object UohAnalytics {
         index: Int
     ) {
         val bundleProduct = Bundle().apply {
-            putString(DIMENSION40, ACTION_FIELD_IMPRESSION_BUY_AGAIN_ECOMMERCE.replace(RECOMMENDATION_TYPE_REPLACEE, recommItem.recommendationType))
+            putString(DIMENSION40, "$ACTION_FIELD_IMPRESSION_BUY_AGAIN_ECOMMERCE$recommItem.recommendationType")
             putString(INDEX, index.toString())
             putString(ITEM_NAME, recommItem.name)
             putString(ITEM_ID, recommItem.productId.toString())
@@ -895,7 +892,7 @@ object UohAnalytics {
         cartId: String
     ) {
         val bundleProduct = Bundle().apply {
-            putString(DIMENSION40, ACTION_FIELD_IMPRESSION_BUY_AGAIN_ECOMMERCE.replace(RECOMMENDATION_TYPE_REPLACEE, recommItem.recommendationType))
+            putString(DIMENSION40, "$ACTION_FIELD_IMPRESSION_BUY_AGAIN_ECOMMERCE$recommItem.recommendationType")
             putString(DIMENSION45, cartId)
             putString(CATEGORY_ID, recommItem.departmentId.toString())
             putString(INDEX, index.toString())
