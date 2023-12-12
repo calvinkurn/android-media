@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
@@ -106,7 +105,6 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     private val shopId by lazy { arguments?.getString(BUNDLE_KEY_SHOP_ID, "").orEmpty() }
     private val localCacheModel by lazy { ShopUtil.getShopPageWidgetUserAddressLocalData(context) }
     private var review: ShopReview? = null
-    private var cacheManager: SaveInstanceCacheManager? = null
 
     override fun getScreenName(): String = ShopInfoReimagineFragment::class.java.canonicalName.orEmpty()
 
@@ -124,19 +122,6 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Typography.setUnifyTypographyOSO(true)
-
-        cacheManager = SaveInstanceCacheManager(context ?: return, true)
-        cacheManager?.put(
-            customId = ShopPrefetchData::class.java.simpleName,
-            objectToPut = ShopPrefetchData(
-                shopAvatar = "avatar",
-                shopName = "unilever",
-                shopBadge = "https://images.tokopedia.net/unilever.png",
-                lastOnline = "Online",
-                shopLocation = "Jakarta",
-                rating = "4.9"
-            )
-        )
     }
 
     override fun onCreateView(
@@ -147,15 +132,6 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         binding = FragmentShopInfoReimagineBinding.inflate(inflater, container, false)
         return binding?.root
     }
-
-    data class ShopPrefetchData(
-        val shopAvatar: String,
-        val shopName: String,
-        val shopBadge: String,
-        val lastOnline: String,
-        val shopLocation: String,
-        val rating: String
-    )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -170,12 +146,7 @@ class ShopInfoReimagineFragment : BaseDaggerFragment(), HasComponent<ShopInfoCom
         setupView()
         observeUiState()
         observeUiEffect()
-
-        val prefetch = cacheManager?.get<ShopPrefetchData>(
-            customId = ShopPrefetchData::class.java.simpleName,
-            type = ShopPrefetchData::class.java
-        )
-
+        
         viewModel.processEvent(ShopInfoUiEvent.GetShopInfo)
     }
 
