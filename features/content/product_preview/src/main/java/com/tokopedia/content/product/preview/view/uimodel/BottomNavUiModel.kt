@@ -8,9 +8,9 @@ package com.tokopedia.content.product.preview.view.uimodel
 data class BottomNavUiModel(
     val title: String,
     val price: Price,
-    val stock: Stock,
+    val stock: Int,
     val buttonState: ButtonState,
-    val variant: Variant, // or just hasVariant
+    val hasVariant: Boolean,
     val shop: Shop
 ) {
 
@@ -19,35 +19,43 @@ data class BottomNavUiModel(
             get() =
                 BottomNavUiModel(
                     title = "Test",
-                    price = NormalPrice(price = 0.0, priceFmt = ""),
-                    stock = OutOfStock,
-                    buttonState = Inactive,
-                    variant = NoVariant,
+                    price = NormalPrice(priceFmt = ""),
+                    stock = 0,
+                    buttonState = ButtonState.Inactive,
+                    hasVariant = false,
                     shop = Shop.Empty
                 )
     }
 
-    sealed interface Price {
-        val price: Double
-    }
+    sealed interface Price
 
     data class NormalPrice(
-        override val price: Double,
         val priceFmt: String
     ) : Price
 
     data class DiscountedPrice(
-        override val price: Double,
         val ogPriceFmt: String,
         val discountedPrice: String,
         val discountPercentage: String
     ) : Price
 
-    sealed interface ButtonState // define
+    enum class ButtonState(val value: String) {
+        Active("ACTIVE"),
+        Inactive("INACTIVE"),
+        OOS("OOS"),
+        Unknown("");
 
-    object Active : ButtonState
-    object Inactive : ButtonState
-    object OOS : ButtonState
+        companion object {
+            private val values = ButtonState.values()
+
+            fun getByValue(value: String): ButtonState {
+                values.forEach {
+                    if (it.value == value) return it
+                }
+                return Unknown
+            }
+        }
+    }
 
     sealed interface Variant
 
@@ -75,11 +83,10 @@ data class BottomNavUiModel(
                     Shop(id = "", name = "")
         }
     }
-
-    val Price.finalPrice: String
-        get() = when (this) {
-            is DiscountedPrice -> this.discountedPrice
-            is NormalPrice -> this.priceFmt
-            else -> this.price.toString()
-        }
 }
+
+val BottomNavUiModel.Price.finalPrice: String
+    get() = when (this) {
+        is BottomNavUiModel.DiscountedPrice -> this.discountedPrice
+        is BottomNavUiModel.NormalPrice -> this.priceFmt
+    }

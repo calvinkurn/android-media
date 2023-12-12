@@ -1,6 +1,7 @@
 package com.tokopedia.content.product.preview.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -77,12 +78,14 @@ class ReviewFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.review.withCache().collectLatest { (prev, curr) ->
                 renderList(prev, curr)
+                Log.d("hello", prev.toString())
+                Log.d("hello c", curr.toString())
             }
         }
     }
 
     private fun renderList(prev: List<ReviewUiModel>?, data: List<ReviewUiModel>) {
-        if (prev == null || prev == data) return
+//        if (prev == null || prev == data) return
         reviewAdapter.submitList(data)
     }
 

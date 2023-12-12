@@ -31,7 +31,6 @@ class ProductPreviewRepositoryImpl @Inject constructor(
             mapper.map(response)
         }
 
-
     override suspend fun getReview(productId: String, page: Int): List<ReviewUiModel> =
         withContext(dispatchers.io) {
             val response = getReviewUseCase(MediaReviewUseCase.Param(productId, page))
