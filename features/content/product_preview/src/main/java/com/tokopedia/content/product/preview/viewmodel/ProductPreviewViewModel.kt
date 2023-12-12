@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
+import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
@@ -45,6 +46,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             ProductPreviewAction.FetchReview -> getReview()
             ProductPreviewAction.FetchMiniInfo -> getMiniInfo()
             is ProductPreviewAction.ProductAction -> addToCart(action.model)
+            is ProductPreviewAction.SubmitReport -> submitReport(action.model)
             else -> {}
         }
     }
@@ -66,6 +68,13 @@ class ProductPreviewViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             //TODO: emit Event
             repo.addToCart(param.productId, model.title, model.shop.id, model.price.finalPrice.toDoubleOrZero())
+        }) {}
+    }
+
+    private fun submitReport(model: ReportUiModel) {
+        viewModelScope.launchCatchError(block = {
+            //TODO: emit Event
+            repo.submitReport(model)
         }) {}
     }
 }

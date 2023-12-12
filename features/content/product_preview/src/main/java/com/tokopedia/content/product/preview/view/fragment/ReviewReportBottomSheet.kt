@@ -27,7 +27,9 @@ class ReviewReportBottomSheet : BottomSheetUnify() {
                 LaunchedEffect(Unit) {
                     //event ->
                 }
-                ReportScreen(reports = listOfReport, onSubmit = {})
+                ReportScreen(reports = listOfReport, onSubmit = {
+                    mListener?.onReasonClicked(it)
+                })
             }
         }
         setChild(composeView)
@@ -55,7 +57,7 @@ class ReviewReportBottomSheet : BottomSheetUnify() {
     }
 
     interface Listener {
-        fun onReasonClicked(report: ReportUiModel) //TODO: add onSubmit
+        fun onReasonClicked(report: ReportUiModel)
     }
 
     companion object {

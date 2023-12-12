@@ -108,6 +108,7 @@ class ReviewFragment @Inject constructor(
     }
 
     override fun onMenuClicked(menus: List<ContentMenuItem>) {
+        //TODO: opening menu bottom sheet requiredLogin~~~
         MenuBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).apply {
             setMenu(menus)
         }.show(childFragmentManager)
@@ -128,7 +129,7 @@ class ReviewFragment @Inject constructor(
      * Review Report Bottom Sheet Listener
      */
     override fun onReasonClicked(report: ReportUiModel) {
-        TODO("Not yet implemented")
+        viewModel.addAction(ProductPreviewAction.SubmitReport(report))
     }
 
     companion object {

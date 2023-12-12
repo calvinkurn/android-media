@@ -8,6 +8,7 @@ import com.tokopedia.content.product.preview.data.usecase.ProductMiniInfoUseCase
 import com.tokopedia.content.product.preview.data.usecase.ReviewLikeUseCase
 import com.tokopedia.content.product.preview.data.usecase.SubmitReportUseCase
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
@@ -51,7 +52,10 @@ class ProductPreviewRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun submitReport(): Boolean {
-        TODO("Not yet implemented")
-    }
+    override suspend fun submitReport(report: ReportUiModel): Boolean =
+        //TODO: adjust reviewId
+        withContext(dispatchers.io) {
+            val response = submitReportUseCase(SubmitReportUseCase.Param(reasonCode = report.reasonCode, reasonText = report.text, reviewId = 0))
+            response.data.success
+        }
 }
