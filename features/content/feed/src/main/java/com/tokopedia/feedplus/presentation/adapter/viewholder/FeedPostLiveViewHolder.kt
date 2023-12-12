@@ -169,15 +169,11 @@ class FeedPostLiveViewHolder(
     }
 
     private fun handleResumeLiveVideo(element: FeedCardLivePreviewContentModel) {
-        with(binding) {
-            if (element.isLive && listener.isAllowedToPlayVideo()) {
-                mVideoPlayer?.resume(shouldReset = false)
-                playerFeedVideo.show()
-                containerFeedLiveEnd.root.hide()
-            } else if (!element.isLive) {
-                playerFeedVideo.hide()
-                containerFeedLiveEnd.root.show()
-            }
+        if (element.isLive && listener.isAllowedToPlayVideo()) {
+            mVideoPlayer?.resume(shouldReset = false)
+            hideLiveEndView()
+        } else if (!element.isLive) {
+            showLiveEndView()
         }
     }
 
@@ -210,7 +206,7 @@ class FeedPostLiveViewHolder(
     }
 
     private fun bindAuthor(data: FeedCardLivePreviewContentModel) {
-        authorView.bindData(data.author, true, !data.followers.isFollowed, trackerDataModel, null)
+        authorView.bindData(data.author, data.isLive, !data.followers.isFollowed, trackerDataModel, null)
     }
 
     private fun bindCaption(data: FeedCardLivePreviewContentModel) {
@@ -297,6 +293,22 @@ class FeedPostLiveViewHolder(
             alphaAnimator.animateToAlpha(startAlpha)
         } else {
             alphaAnimator.animateToOpaque(startAlpha)
+        }
+    }
+
+    private fun showLiveEndView() {
+        with(binding) {
+            containerFeedLiveEnd.root.show()
+            playerFeedVideo.hide()
+            feedLiveWaveLabel.hide()
+        }
+    }
+
+    private fun hideLiveEndView() {
+        with(binding) {
+            containerFeedLiveEnd.root.hide()
+            playerFeedVideo.show()
+            feedLiveWaveLabel.show()
         }
     }
 
