@@ -19,14 +19,14 @@ import com.tokopedia.content.common.R as contentcommonR
 class ProductPreviewMapperImpl @Inject constructor(private val userSession: UserSessionInterface) :
     ProductPreviewMapper {
     override fun map(response: MediaReviewResponse): List<ReviewUiModel> {
-        return response.data.detail.reviewDetail.map {
+        return response.data.review.map{
             ReviewUiModel(
                 id = it.feedbackId,
                 medias = emptyList(), //TODO: map and sew it later,
                 menus = buildMenu(it),
                 likeState = LikeUiState(
-                    count = it.totalLike,
-                    state = if (it.isLiked) LikeUiState.LikeStatus.Like else LikeUiState.LikeStatus.Dislike
+                    count = it.likeStats.totalLike,
+                    state = LikeUiState.LikeStatus.getByValue(it.likeStats.likeStatus),
                 ),
                 author = AuthorUiModel(
                     name = it.user.fullName,

@@ -31,6 +31,17 @@ data class LikeUiState(
         Like(1),
         Dislike(2),
         Reset(3);
+
+        companion object {
+            private val values = values()
+
+            fun getByValue(value: Int): LikeStatus {
+                values.forEach {
+                    if (it.value == value) return it
+                }
+                return Reset
+            }
+        }
     }
 }
 
