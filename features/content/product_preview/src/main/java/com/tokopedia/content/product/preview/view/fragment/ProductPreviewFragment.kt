@@ -19,6 +19,7 @@ import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapt
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.content.product.preview.view.components.MediaBottomNav
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.viewmodel.EntrySource
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModelFactory
@@ -78,7 +79,7 @@ class ProductPreviewFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
 
-        viewModel.getMiniInfo()
+        viewModel.addAction(ProductPreviewAction.FetchMiniInfo)
     }
 
     private fun initViews() = with(binding) {
@@ -156,7 +157,7 @@ class ProductPreviewFragment @Inject constructor(
                 }
             )
         } else {
-            viewModel.addToCart(model)
+            viewModel.addAction(ProductPreviewAction.ProductAction(model))
         }
     }
 
