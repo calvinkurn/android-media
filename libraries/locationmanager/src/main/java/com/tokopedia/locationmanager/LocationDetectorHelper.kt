@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.Date
+import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
 
@@ -397,7 +398,7 @@ class LocationDetectorHelper(ctx: Context): CoroutineScope {
 
     private fun saveToCache(deviceLocation: DeviceLocation) {
         launch {
-            cacheManager.put(PARAM_CACHE_DEVICE_LOCATION, deviceLocation)
+            cacheManager.put(PARAM_CACHE_DEVICE_LOCATION, deviceLocation, TimeUnit.DAYS.toMillis(365))
         }
     }
 
