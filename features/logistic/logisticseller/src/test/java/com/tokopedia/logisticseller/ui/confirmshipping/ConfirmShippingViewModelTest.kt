@@ -115,11 +115,11 @@ class ConfirmShippingViewModelTest {
     fun getCourierListData_shouldReturnSuccess() = coroutineTestRule.runTest {
         // given
         coEvery {
-            somGetCourierListUseCase.execute()
+            somGetCourierListUseCase.execute("")
         } returns SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment(listCourier)
 
         // when
-        confirmShippingViewModel.getCourierList()
+        confirmShippingViewModel.getCourierList("")
 
         // then
         assert(confirmShippingViewModel.courierListResult.value is Success)
@@ -128,13 +128,15 @@ class ConfirmShippingViewModelTest {
 
     @Test
     fun getCourierListData_shouldReturnFail() = coroutineTestRule.runTest {
+        val deliveryId = "123"
+
         // given
         coEvery {
-            somGetCourierListUseCase.execute()
+            somGetCourierListUseCase.execute(deliveryId)
         } throws Throwable()
 
         // when
-        confirmShippingViewModel.getCourierList()
+        confirmShippingViewModel.getCourierList(deliveryId)
 
         // then
         assert(confirmShippingViewModel.courierListResult.value is Fail)
@@ -142,13 +144,15 @@ class ConfirmShippingViewModelTest {
 
     @Test
     fun getCourierListData_shouldNotReturnEmpty() = coroutineTestRule.runTest {
+        val deliveryId = "123"
+
         // given
         coEvery {
-            somGetCourierListUseCase.execute()
+            somGetCourierListUseCase.execute(deliveryId)
         } returns SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment(listCourier)
 
         // when
-        confirmShippingViewModel.getCourierList()
+        confirmShippingViewModel.getCourierList(deliveryId)
 
         // then
         assert(confirmShippingViewModel.courierListResult.value is Success)

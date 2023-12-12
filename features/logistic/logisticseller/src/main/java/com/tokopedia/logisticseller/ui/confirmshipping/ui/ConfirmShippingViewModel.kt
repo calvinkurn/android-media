@@ -46,9 +46,9 @@ class ConfirmShippingViewModel @Inject constructor(
             })
     }
 
-    fun getCourierList(orderId: String) {
+    fun getCourierList(deliveryId: String) {
         launchCatchError(block = {
-            _courierListResult.postValue(Success(somGetCourierListUseCase.execute(orderId)))
+            _courierListResult.postValue(Success(somGetCourierListUseCase.execute(deliveryId)))
         }, onError = {
                 _courierListResult.postValue(Fail(it))
             })

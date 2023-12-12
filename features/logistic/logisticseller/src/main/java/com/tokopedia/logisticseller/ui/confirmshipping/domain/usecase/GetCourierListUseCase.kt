@@ -14,18 +14,19 @@ class GetCourierListUseCase @Inject constructor(private val useCase: GraphqlUseC
     companion object {
         private const val PARAM_DELIVERY_IDENTIFIER = "DeliveryIdentifier"
     }
+
     init {
         useCase.setTypeClass(SomCourierList.Data::class.java)
     }
 
-    private fun createParam(orderId: String): Map<String, Any> {
+    private fun createParam(deliveryId: String): Map<String, Any> {
         return RequestParams.create().apply {
-            putString(PARAM_DELIVERY_IDENTIFIER, orderId)
+            putString(PARAM_DELIVERY_IDENTIFIER, deliveryId)
         }.parameters
     }
 
-    suspend fun execute(orderId: String): SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment {
-        useCase.setRequestParams(createParam(orderId))
+    suspend fun execute(deliveryId: String): SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment {
+        useCase.setRequestParams(createParam(deliveryId))
         useCase.setGraphqlQuery(GetCourierListQuery)
         return useCase.executeOnBackground().mpLogisticGetEditShippingForm.dataShipment
     }
