@@ -424,6 +424,8 @@ object CartUiModelMapper {
             title = unavailabeSection.title
             subTitle = unavailabeSection.unavailableDescription
             productsCount = unavailabeSection.productsCount
+            showOutOfCoverageTitle = unavailabeSection.unavailableSectionCta.message
+            isShowOutOfCoverageAction = unavailabeSection.unavailableSectionCta.id != 0L
         }
     }
 
@@ -486,6 +488,7 @@ object CartUiModelMapper {
             productId = product.productId
             productInformation = product.productInformation
             productInformationWithIcon = product.productInformationWithIcon
+            productTagInfo = product.productTagInfo
             productAlertMessage = product.productAlertMessage
             productPrice = product.productPrice
             productOriginalPrice = product.productOriginalPrice
@@ -602,7 +605,8 @@ object CartUiModelMapper {
                 uniqueId = it.uniqueId,
                 status = it.status,
                 type = it.type,
-                price = it.price
+                price = it.price,
+                fixedQuantity = it.fixedQuantity
             )
             arrayListAddOnProduct.add(cartAddOnProductData)
         }

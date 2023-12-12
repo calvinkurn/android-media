@@ -11,6 +11,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.search.result.domain.model.UserProfileDobModel
 import com.tokopedia.search.result.domain.model.GlobalSearchNavigationModel
 import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.result.domain.model.QuickFilterModel
@@ -75,6 +76,7 @@ class SearchProductFirstPageGqlUseCase(
             addInspirationCarouselRequest(requestParams, params)
             addInspirationWidgetRequest(requestParams, params)
             addGetLastFilterRequest(requestParams, params)
+            addUserProfileDobRequest(reimagineRollence)
         }
 
         graphqlUseCase.clearRequest()
@@ -105,7 +107,7 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     @GqlQuery("QuickFilter", QUICK_FILTER_QUERY)
-    private fun createQuickFilterRequest(query: String, params: String) =
+    private fun createQuickFilterRequest(query: String, params: String): GraphqlRequest =
         GraphqlRequest(
             QuickFilter(),
             QuickFilterModel::class.java,
@@ -119,12 +121,12 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     @GqlQuery("GlobalNav", GLOBAL_NAV_GQL_QUERY)
-    private fun createGlobalSearchNavigationRequest(query: String, params: String) =
-            GraphqlRequest(
-                    GlobalNav(),
-                    GlobalSearchNavigationModel::class.java,
-                    mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
-            )
+    private fun createGlobalSearchNavigationRequest(query: String, params: String): GraphqlRequest =
+        GraphqlRequest(
+            GlobalNav(),
+            GlobalSearchNavigationModel::class.java,
+            mapOf(GQL.KEY_QUERY to query, GQL.KEY_PARAMS to params)
+        )
 
     private fun MutableList<GraphqlRequest>.addInspirationCarouselRequest(requestParams: RequestParams, params: String) {
         if (!requestParams.isSkipInspirationCarousel()) {
@@ -133,12 +135,12 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     @GqlQuery("InspirationCarousel", SEARCH_INSPIRATION_CAROUSEL_QUERY)
-    private fun createSearchInspirationCarouselRequest(params: String) =
-            GraphqlRequest(
-                    InspirationCarousel(),
-                    SearchInspirationCarouselModel::class.java,
-                    mapOf(GQL.KEY_PARAMS to params)
-            )
+    private fun createSearchInspirationCarouselRequest(params: String): GraphqlRequest =
+        GraphqlRequest(
+            InspirationCarousel(),
+            SearchInspirationCarouselModel::class.java,
+            mapOf(GQL.KEY_PARAMS to params)
+        )
 
     private fun MutableList<GraphqlRequest>.addInspirationWidgetRequest(requestParams: RequestParams, params: String) {
         if (!requestParams.isSkipInspirationWidget()) {
@@ -147,12 +149,12 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     @GqlQuery("InspirationWidget", SEARCH_INSPIRATION_WIDGET_QUERY)
-    private fun createSearchInspirationWidgetRequest(params: String) =
-            GraphqlRequest(
-                    InspirationWidget(),
-                    SearchInspirationWidgetModel::class.java,
-                    mapOf(GQL.KEY_PARAMS to params)
-            )
+    private fun createSearchInspirationWidgetRequest(params: String): GraphqlRequest =
+        GraphqlRequest(
+            InspirationWidget(),
+            SearchInspirationWidgetModel::class.java,
+            mapOf(GQL.KEY_PARAMS to params)
+        )
 
     private fun MutableList<GraphqlRequest>.addGetLastFilterRequest(
         requestParams: RequestParams,
@@ -163,7 +165,7 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     @GqlQuery("GetLastFilter", GET_LAST_FILTER_GQL_QUERY)
-    private fun createGetLastFilterRequest(params: String) =
+    private fun createGetLastFilterRequest(params: String): GraphqlRequest =
         GraphqlRequest(
             GetLastFilter(),
             LastFilterModel::class.java,
@@ -192,7 +194,7 @@ class SearchProductFirstPageGqlUseCase(
         withContext(coroutineDispatchers.io) {
             try {
                 val topAdsImageViewModelList = topAdsImageViewUseCase.getImageData(
-                        topAdsImageViewUseCase.getQueryMapSearch(query)
+                    topAdsImageViewUseCase.getQueryMapSearch(query)
                 )
                 emitter.onNext(topAdsImageViewModelList)
                 emitter.onCompleted()
@@ -205,7 +207,7 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     private fun TopAdsImageViewUseCase.getQueryMapSearch(query: String) =
-            getQueryMap(query, TDN_SEARCH_INVENTORY_ID, "", TDN_SEARCH_ITEM_COUNT, TDN_SEARCH_DIMENSION, "")
+        getQueryMap(query, TDN_SEARCH_INVENTORY_ID, "", TDN_SEARCH_ITEM_COUNT, TDN_SEARCH_DIMENSION, "")
 
     private fun Observable<List<TopAdsImageViewModel>>.tdnTimeout(): Observable<List<TopAdsImageViewModel>> {
         val timeoutMs : Long = TDN_TIMEOUT
@@ -217,8 +219,8 @@ class SearchProductFirstPageGqlUseCase(
     }
 
     private fun setTopAdsImageViewModelList(
-            searchProductModel: SearchProductModel?,
-            topAdsImageViewModelList: List<TopAdsImageViewModel>?
+        searchProductModel: SearchProductModel?,
+        topAdsImageViewModelList: List<TopAdsImageViewModel>?
     ): SearchProductModel? {
         if (searchProductModel == null || topAdsImageViewModelList == null) return searchProductModel
 
@@ -226,6 +228,21 @@ class SearchProductFirstPageGqlUseCase(
 
         return searchProductModel
     }
+
+    @GqlQuery("UserProfileDob", USER_PROFILE_DOB_QUERY)
+    private fun createUserProfileDobRequest(): GraphqlRequest =
+        GraphqlRequest(
+            UserProfileDob(),
+            UserProfileDobModel::class.java,
+        )
+
+    private fun MutableList<GraphqlRequest>.addUserProfileDobRequest(
+        reimagineRollence: ReimagineRollence,
+    ) {
+        if (reimagineRollence.search3ProductCard().isUseAceSearchProductV5())
+            add(createUserProfileDobRequest())
+    }
+
 
     override fun unsubscribe() {
         super.unsubscribe()
@@ -458,5 +475,19 @@ class SearchProductFirstPageGqlUseCase(
                 }
               }
             }"""
+
+        const val USER_PROFILE_DOB_QUERY = """
+        query userProfileDob(){
+            userProfileDob{
+                userID
+                age
+                bday
+                isDobExist
+                isDobVerified
+                isAdult
+                error
+            }
+        }
+    """
     }
 }

@@ -1,33 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.globalerror.GlobalError xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/emptyStateProductList"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/imageView8"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_280"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"
-        app:layout_constraintBottom_toTopOf="@+id/title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_13"
-        android:gravity="center"
-        android:text="@string/no_promoted_product"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView8"
-        app:typographyType="heading_3" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@color/Unify_Background"
+    android:gravity="center"
+    app:globalerrors_type="PAGE_NOT_FOUND" />

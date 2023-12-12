@@ -10,7 +10,6 @@ import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.model.response.AffiliateBalance
 import com.tokopedia.affiliate.model.response.AffiliateKycDetailsData
 import com.tokopedia.affiliate.model.response.AffiliateTransactionHistoryData
-import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -23,6 +22,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -112,6 +112,15 @@ class AffiliateIncomeViewModelTest {
         assertEquals(affiliateIncomeViewModel.getRangeChange().value, true)
     }
 
+    @Test
+    fun `getrangechange should not change when selectedDateRange is not changed`() {
+        val range =
+            AffiliateDatePickerData(AffiliateBottomDatePicker.THIRTY_DAYS)
+        affiliateIncomeViewModel.onRangeChanged(range)
+
+        assertNull(affiliateIncomeViewModel.getRangeChange().value)
+    }
+
     /**************************** getTransactionDetails() *******************************************/
     @Test
     fun getTransactionDetailsTest() {
@@ -141,7 +150,9 @@ class AffiliateIncomeViewModelTest {
             )
         } returns transaction
         val response =
-            affiliateIncomeViewModel.convertDataToVisitables(transaction.getAffiliateTransactionHistory?.transactionData)
+            affiliateIncomeViewModel.convertDataToVisitables(
+                transaction.getAffiliateTransactionHistory?.transactionData
+            )
 
         affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
 
@@ -175,7 +186,30 @@ class AffiliateIncomeViewModelTest {
             )
         } returns transaction
         val response =
-            affiliateIncomeViewModel.convertDataToVisitables(transaction.getAffiliateTransactionHistory?.transactionData)
+            affiliateIncomeViewModel.convertDataToVisitables(
+                transaction.getAffiliateTransactionHistory?.transactionData
+            )
+
+        affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
+
+        assertEquals(affiliateIncomeViewModel.getAffiliateDataItems().value, response)
+    }
+
+    @Test
+    fun `check visitable when data is null`() {
+        val transaction = AffiliateTransactionHistoryData(
+            AffiliateTransactionHistoryData.GetAffiliateTransactionHistory(null)
+        )
+        coEvery {
+            affiliateIncomeViewModel.affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(
+                any(),
+                any()
+            )
+        } returns transaction
+        val response =
+            affiliateIncomeViewModel.convertDataToVisitables(
+                transaction.getAffiliateTransactionHistory?.transactionData
+            )
 
         affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
 
@@ -203,32 +237,6 @@ class AffiliateIncomeViewModelTest {
     fun testAffiliateUserBlackListed() {
         affiliateIncomeViewModel.setBlacklisted(false)
         assertEquals(affiliateIncomeViewModel.getIsBlackListed(), false)
-    }
-
-    /**************************** getAffiliateValidateUser() *******************************************/
-    @Test
-    fun getAffiliateValidateUser() {
-        val affiliateValidateUserData: AffiliateValidateUserData = mockk(relaxed = true)
-        coEvery {
-            affiliateIncomeViewModel.affiliateValidateUseCaseUseCase.validateUserStatus(any())
-        } returns affiliateValidateUserData
-
-        affiliateIncomeViewModel.getAffiliateValidateUser("")
-
-        assertEquals(
-            affiliateIncomeViewModel.getValidateUserdata().value,
-            affiliateValidateUserData
-        )
-    }
-
-    @Test
-    fun getAffiliateValidateUserException() {
-        val throwable = Throwable("Validate Data Exception")
-        coEvery { affiliateIncomeViewModel.affiliateValidateUseCaseUseCase.validateUserStatus(any()) } throws throwable
-
-        affiliateIncomeViewModel.getAffiliateValidateUser("")
-
-        assertEquals(affiliateIncomeViewModel.getErrorMessage().value, throwable)
     }
 
     /**************************** getAnnouncementInformation() *******************************************/
@@ -259,28 +267,5 @@ class AffiliateIncomeViewModelTest {
         } throws throwable
 
         affiliateIncomeViewModel.getAnnouncementInformation()
-    }
-
-    @Test
-    fun `successfully getting unread notification count`() {
-        coEvery {
-            affiliateIncomeViewModel.affiliateUnreadNotificationUseCase.getUnreadNotifications()
-        } returns 5
-
-        affiliateIncomeViewModel.fetchUnreadNotificationCount()
-        assertEquals(5, affiliateIncomeViewModel.getUnreadNotificationCount().value)
-    }
-
-    @Test
-    fun `should reset notification count to zero`() {
-        coEvery {
-            affiliateIncomeViewModel.affiliateUnreadNotificationUseCase.getUnreadNotifications()
-        } returns 5
-
-        affiliateIncomeViewModel.fetchUnreadNotificationCount()
-        assertEquals(5, affiliateIncomeViewModel.getUnreadNotificationCount().value)
-
-        affiliateIncomeViewModel.resetNotificationCount()
-        assertEquals(0, affiliateIncomeViewModel.getUnreadNotificationCount().value)
     }
 }

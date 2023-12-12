@@ -10,6 +10,8 @@ android {
     defaultConfig {
         minSdkVersion 29
         targetSdkVersion 33
+        testInstrumentationRunnerArguments["androidx.benchmark.suppressErrors"] = "NOT-PROFILEABLE"
+        testInstrumentationRunnerArguments["androidx.benchmark.suppressErrors"] = "DEBUGGABLE, EMULATOR"
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
         vectorDrawables.useSupportLibrary = true
@@ -19,11 +21,11 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
+        jvmTarget = JavaVersion.VERSION_17
         freeCompilerArgs += [
                 "-opt-in=androidx.benchmark.macro.ExperimentalMetricApi"
         ]

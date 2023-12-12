@@ -1,6 +1,8 @@
 package com.tokopedia.epharmacy.ui.fragment
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -560,6 +562,24 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         updated.isFirstError = false
         ePharmacyAttachmentUiUpdater.updateModel(updated)
         updateUi()
+    }
+
+    override fun onToast(toasterType: Int, message: String) {
+        super.onToast(toasterType, message)
+        showToast(toasterType, message)
+    }
+
+    override fun redirect(link: String) {
+        super.redirect(link)
+        val viewIntent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse(link)
+        )
+        try {
+            startActivity(viewIntent)
+        } catch (e: ActivityNotFoundException) {
+            EPharmacyUtils.logException(e)
+        }
     }
 
     private fun redirectAttachmentCTA(

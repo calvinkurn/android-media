@@ -43,6 +43,9 @@ class PlayCartUiTest {
     private val repo: PlayViewerRepository = mockk(relaxed = true)
 
     private val uiModelBuilder = UiModelBuilder.get()
+
+    private val mockChannelStatus = uiModelBuilder.buildChannelStatus(waitingDuration = 5000)
+
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
     private val channelId = "12669"
@@ -51,6 +54,8 @@ class PlayCartUiTest {
         coEvery { userSession.isLoggedIn } returns true
 
         coEvery { repo.getTagItem(channelId, any(), any(), any()) } returns buildTagItems()
+
+        coEvery { repo.getChannelStatus(channelId) } returns mockChannelStatus
 
         PlayInjector.set(
             DaggerPlayTestComponent.builder()
@@ -74,6 +79,7 @@ class PlayCartUiTest {
         coEvery { repo.getCartCount() } returns 0
 
         val robot = createRobot()
+
         robot.openProductBottomSheet()
             .assertShowCartIconInProductBottomSheet(true)
             .assertShowCartCountInProductBottomSheet(false)

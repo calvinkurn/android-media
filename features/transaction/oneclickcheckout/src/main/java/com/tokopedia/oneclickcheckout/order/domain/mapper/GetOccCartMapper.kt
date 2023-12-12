@@ -96,6 +96,7 @@ class GetOccCartMapper @Inject constructor() {
             cartData = data.cartData
             cartString = groupShop.cartString
             paymentProfile = groupShop.paymentProfile
+            groupMetadata = groupShop.groupMetadata
             shop = generateOrderShop(groupShop)
             val (productList, firstProductErrorIndex) = generateOrderProducts(groupShop, shop, data)
             products = productList
@@ -374,7 +375,8 @@ class GetOccCartMapper @Inject constructor() {
             bid = payment.bid,
             specificGatewayCampaignOnlyType = payment.specificGatewayCampaignOnlyType,
             walletData = mapPaymentWalletData(payment.walletAdditionalData, data.paymentAdditionalData.callbackUrl),
-            originalPaymentFees = mapPaymentFee(payment.paymentFeeDetail)
+            originalPaymentFees = mapPaymentFee(payment.paymentFeeDetail),
+            additionalData = payment.additionalData
         )
     }
 

@@ -90,7 +90,7 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
     fun should_show_notification_and_counter() {
         // Given
         GqlResponseStub.counterResponse.editAndGetResponseObject {
-            it.allCounter.notifCenterUnread.notifUnread = "5"
+            it.allCounter.inboxCounter.notifCenterWrapperUnread.notifUnread = "5"
         }
 
         // When
@@ -106,7 +106,7 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
     fun should_show_notification_and_max_counter() {
         // Given
         GqlResponseStub.counterResponse.editAndGetResponseObject {
-            it.allCounter.notifCenterUnread.notifUnread = "100"
+            it.allCounter.inboxCounter.notifCenterWrapperUnread.notifUnread = "100"
         }
 
         // When
@@ -122,7 +122,7 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
     fun should_not_show_notification_counter() {
         // Given
         GqlResponseStub.counterResponse.editAndGetResponseObject {
-            it.allCounter.notifCenterUnread.notifUnread = "0"
+            it.allCounter.inboxCounter.notifCenterWrapperUnread.notifUnread = "0"
         }
 
         // When
@@ -146,7 +146,7 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
 
         // Given
         GqlResponseStub.counterResponse.editAndGetResponseObject {
-            it.allCounter.notifCenterUnread.notifUnread = "1"
+            it.allCounter.inboxCounter.notifCenterWrapperUnread.notifUnread = "1"
         }
 
         // When
@@ -167,7 +167,7 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
     fun should_show_pull_to_refresh_and_remove_counter() {
         // Given
         GqlResponseStub.counterResponse.editAndGetResponseObject {
-            it.allCounter.notifCenterUnread.notifUnread = "1"
+            it.allCounter.inboxCounter.notifCenterWrapperUnread.notifUnread = "1"
         }
 
         // When
@@ -180,7 +180,7 @@ class UniversalInboxMenuTest : BaseUniversalInboxTest() {
 
         // Given
         GqlResponseStub.counterResponse.editAndGetResponseObject {
-            it.allCounter.notifCenterUnread.notifUnread = "0"
+            it.allCounter.inboxCounter.notifCenterWrapperUnread.notifUnread = "0"
         }
 
         // When

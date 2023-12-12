@@ -2,87 +2,95 @@
 
 package com.tokopedia.mediauploader
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.mediauploader.analytics.UploaderLogger
+import com.tokopedia.mediauploader.common.GetSourcePolicyUseCase
+import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
+import com.tokopedia.mediauploader.common.di.UploaderQualifier
+import com.tokopedia.mediauploader.common.model.SourcePolicyModel
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.mediauploader.common.util.isVideoFormat
-import com.tokopedia.mediauploader.common.util.request
 import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.video.VideoUploaderManager
 import com.tokopedia.usecase.RequestParams
-import kotlinx.coroutines.Dispatchers
 import java.io.File
 import javax.inject.Inject
 
 class UploaderUseCase @Inject constructor(
+    @UploaderQualifier private val sourcePolicyManager: SourcePolicyManager,
     private val imageUploaderManager: ImageUploaderManager,
-    private val videoUploaderManager: VideoUploaderManager
-) : CoroutineUseCase<RequestParams, UploadResult>(Dispatchers.IO) {
+    private val videoUploaderManager: VideoUploaderManager,
+    private val sourcePolicyUseCase: GetSourcePolicyUseCase,
+    dispatchers: CoroutineDispatchers,
+) : CoroutineUseCase<RequestParams, UploadResult>(dispatchers.io) {
 
     private var progressUploader: ProgressUploader? = null
 
-    private lateinit var sourceId: String
-    private lateinit var file: File
-
-    private var withTranscode = true
-    private var shouldCompress = true
-    private var isSecure = false
-    private var isRetriable = true
-    private var extraHeader: Map<String, String> = mapOf()
-    private var extraBody: Map<String, String> = mapOf()
-
-    // this domain isn't using graphql service
-    override fun graphqlQuery() = ""
-
     override suspend fun execute(params: RequestParams): UploadResult {
-        withTranscode = params.getBoolean(PARAM_WITH_TRANSCODE, true)
-        shouldCompress = params.getBoolean(PARAM_SHOULD_COMPRESS, true)
-        sourceId = params.getString(PARAM_SOURCE_ID, "")
-        file = params.getObject(PARAM_FILE_PATH) as File
-        isSecure = params.getBoolean(PARAM_IS_SECURE, false)
-        isRetriable = params.getBoolean(PARAM_IS_RETRY, false)
-        extraHeader = params.getObject(PARAM_EXTRA_HEADER) as Map<String, String>
-        extraBody = params.getObject(PARAM_EXTRA_BODY) as Map<String, String>
+        val useCaseParam = setupRequestParams(params)
 
-        return if (isVideoFormat(file.absolutePath)) {
-            videoUploader()
-        } else {
-            imageUploader()
+        val base = useCaseParam.base as BaseParam
+        val image = useCaseParam.image as ImageParam
+
+        val policy = getOrSetGlobalSourcePolicy(base.sourceId, base.file, image.isSecure)
+
+        if (!policy.errorMessage.isNullOrEmpty()) {
+            return UploadResult.Error(policy.errorMessage, policy.requestId.toString()).also {
+                UploaderLogger.commonError(base, it)
+            }
+        }
+
+        return request(base) {
+            UploaderFactory(
+                video = videoUploaderManager,
+                image = imageUploaderManager
+            ).createUploader(useCaseParam)
         }
     }
 
-    private suspend fun videoUploader() = request(
-        file = file,
-        sourceId = sourceId,
-        uploaderManager = videoUploaderManager,
-        execute = {
-            videoUploaderManager(
-                file,
-                sourceId,
-                progressUploader,
-                withTranscode,
-                shouldCompress,
-                isRetriable
-            )
-        }
-    )
+    private fun setupRequestParams(params: RequestParams): UseCaseParam {
+        val base = BaseParam(
+            file = params.getObject(PARAM_FILE_PATH) as File,
+            sourceId = params.getString(PARAM_SOURCE_ID, ""),
+            progress = progressUploader
+        )
 
-    private suspend fun imageUploader() = request(
-        file = file,
-        sourceId = sourceId,
-        uploaderManager = imageUploaderManager,
-        execute = {
-            imageUploaderManager(
-                file,
-                sourceId,
-                progressUploader,
-                isSecure,
-                extraHeader = extraHeader,
-                extraBody = extraBody
+        return UseCaseParam(
+            base = base,
+            image = ImageParam(
+                isSecure = params.getBoolean(PARAM_IS_SECURE, false),
+                extraHeader = params.getObject(PARAM_EXTRA_HEADER) as Map<String, String>,
+                extraBody = params.getObject(PARAM_EXTRA_BODY) as Map<String, String>,
+                base = base
+            ),
+            video = VideoParam(
+                withTranscode = params.getBoolean(PARAM_WITH_TRANSCODE, true),
+                shouldCompress = params.getBoolean(PARAM_SHOULD_COMPRESS, true),
+                ableToRetry = params.getBoolean(PARAM_IS_RETRY, false),
+                base = base
             )
+        )
+    }
+
+    /**
+     * A centralized of source policy fetcher.
+     */
+    private suspend fun getOrSetGlobalSourcePolicy(
+        sourceId: String,
+        file: File,
+        isSecure: Boolean
+    ): SourcePolicyModel {
+        val param = GetSourcePolicyUseCase.Param(file, sourceId, isSecure)
+        val request = sourcePolicyUseCase(param)
+
+        return request.also {
+            if (it.policy != null) {
+                sourcePolicyManager.set(it.policy)
+            }
         }
-    )
+    }
 
     // Public Method
     @Deprecated(
@@ -136,11 +144,14 @@ class UploaderUseCase @Inject constructor(
     ) {
         try {
             val file = File(filePath)
-            videoUploaderManager.abortUpload(sourceId, file.name) {
+            videoUploaderManager.abortUpload(sourceId, file) {
                 abort()
             }
         } catch (ignored: Throwable) {}
     }
+
+    // this domain isn't using graphql service
+    override fun graphqlQuery() = ""
 
     companion object {
         const val PARAM_SOURCE_ID = "source_id"

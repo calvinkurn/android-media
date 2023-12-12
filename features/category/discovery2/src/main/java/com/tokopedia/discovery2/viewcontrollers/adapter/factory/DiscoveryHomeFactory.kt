@@ -53,6 +53,10 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mast
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.*
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewHolder
@@ -99,6 +103,12 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shop
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcardinfinite.ShopCardInfiniteViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcarditem.ShopCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcarditem.ShopCardItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopoffersupportingbrand.ShopOfferSupportingBrandItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopoffersupportingbrand.ShopOfferSupportingBrandItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopoffersupportingbrand.ShopOfferSupportingBrandViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopoffersupportingbrand.ShopOfferSupportingBrandViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing.SpacingViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsItemIconViewHolder
@@ -497,7 +507,11 @@ class DiscoveryHomeFactory {
                 ::TopQuestViewHolder,
                 ::TopQuestViewModel
             )
-            initializeComponent(ComponentsList.MyCoupon, ::MyCouponViewHolder, ::MyCouponViewModel)
+            initializeComponent(
+                ComponentsList.MyCoupon,
+                ::MyCouponViewHolder,
+                ::MyCouponViewModel
+            )
             initializeComponent(
                 ComponentsList.MyCouponItem,
                 ::MyCouponItemViewHolder,
@@ -564,6 +578,40 @@ class DiscoveryHomeFactory {
                 ComponentsList.ViewAllCarouselCard,
                 ::ViewAllCarouselViewHolder,
                 ::ViewAllCarouselViewModel
+            )
+            // Merchant Voucher Grid
+            initializeComponent(
+                ComponentsList.MerchantVoucherGrid,
+                ::MerchantVoucherGridViewHolder,
+                ::MerchantVoucherGridViewModel
+            )
+
+            initializeComponent(
+                ComponentsList.MerchantVoucherGridItem,
+                ::MerchantVoucherGridItemViewHolder,
+                ::MerchantVoucherGridItemViewModel
+            )
+
+            initializeComponent(
+                ComponentsList.ShopOfferHeroBrand,
+                ::ShopOfferHeroBrandViewHolder,
+                ::ShopOfferHeroBrandViewModel
+            )
+            initializeComponent(
+                ComponentsList.ShopOfferHeroBrandProductItem,
+                ::MasterProductCardItemViewHolder,
+                ::MasterProductCardItemViewModel
+            )
+
+            initializeComponent(
+                ComponentsList.ShopOfferSupportingBrand,
+                ::ShopOfferSupportingBrandViewHolder,
+                ::ShopOfferSupportingBrandViewModel
+            )
+            initializeComponent(
+                ComponentsList.ShopOfferSupportingBrandItem,
+                ::ShopOfferSupportingBrandItemViewHolder,
+                ::ShopOfferSupportingBrandItemViewModel
             )
         }
 

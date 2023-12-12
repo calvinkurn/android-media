@@ -8,26 +8,28 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.sessioncommon.R
 import com.tokopedia.sessioncommon.data.register.RegisterPojo
-import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * @author by nisie on 30/04/19.
  */
-class RegisterUseCase @Inject constructor(val resources: Resources,
-                                          private val graphqlUseCase: GraphqlUseCase,
-                                          private val userSession: UserSessionInterface
+class RegisterUseCase @Inject constructor(
+    val resources: Resources,
+    private val graphqlUseCase: GraphqlUseCase,
+    private val userSession: UserSessionInterface
 ) {
     fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(resources, R.raw.mutation_register)
-        val graphqlRequest = GraphqlRequest(query,
-                RegisterPojo::class.java, requestParams)
+        val graphqlRequest = GraphqlRequest(
+            query,
+            RegisterPojo::class.java,
+            requestParams
+        )
 
-        userSession.setToken(TokenGenerator().createBasicTokenGQL(),"")
+        userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         graphqlUseCase.execute(subscriber)
@@ -42,15 +44,15 @@ class RegisterUseCase @Inject constructor(val resources: Resources,
         private val PARAM_EMAIL: String = "email"
         private val PARAM_PASSWORD: String = "password"
         private val PARAM_OS_TYPE: String = "os_type"
+        private val PARAM_GOTO_VERIFICATION_TOKEN = "goto_verification_token"
         private val PARAM_ACCOUNTS_TYPE_NAME: String = "accounts_type_name"
 
         private val OS_TYPE_ANDROID: String = "1"
         private val REG_TYPE_PHONE: String = "phone"
         private val ACCOUNTS_TYPE_SELLER_ONBOARDING: String = "SellerOnboarding"
 
-
-        fun generateParamRegisterPhone(name: String, phoneNumber: String):
-                Map<String, Any> {
+        fun generateParamRegisterPhone(name: String, phoneNumber: String, token: String, isScpToken: Boolean = false):
+            Map<String, Any> {
             val requestParams = HashMap<String, Any>()
 
             val input = JsonObject()
@@ -58,13 +60,15 @@ class RegisterUseCase @Inject constructor(val resources: Resources,
             input.addProperty(PARAM_FULL_NAME, name)
             input.addProperty(PARAM_OS_TYPE, OS_TYPE_ANDROID)
             input.addProperty(PARAM_REG_TYPE, REG_TYPE_PHONE)
-
+            if (isScpToken) {
+                input.addProperty(PARAM_GOTO_VERIFICATION_TOKEN, token)
+            }
             requestParams[PARAM_INPUT] = input
             return requestParams
         }
 
         fun generateParamRegisterPhoneShopCreation(name: String, phoneNumber: String):
-                Map<String, Any> {
+            Map<String, Any> {
             val requestParams = HashMap<String, Any>()
 
             val input = JsonObject()

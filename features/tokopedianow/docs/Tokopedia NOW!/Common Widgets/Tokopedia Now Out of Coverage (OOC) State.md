@@ -1,4 +1,4 @@
-![image](../../res/tokopedia_now_ooc.png)
+![image](https://docs-android.tokopedia.net/images/docs/tokopedianow/tokopedia_now_ooc.png)
 
 
 <!--left header table-->

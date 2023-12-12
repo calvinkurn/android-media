@@ -53,7 +53,6 @@ public class ConsumerSplashScreen extends SplashScreen {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        executeInBackground();
         setUpGoogleDeeplinkListener();
     }
 
@@ -139,56 +138,15 @@ public class ConsumerSplashScreen extends SplashScreen {
         }
     }
 
-    private void executeInBackground() {
-        WeaveInterface chkTmprApkWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Boolean execute() {
-                initializationNewRelic();
-                CMPushNotificationManager.getInstance()
-                        .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(ConsumerSplashScreen.this.getApplicationContext()), false);
-
-                syncFcmToken();
-                registerPushNotif();
-                return true;
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(chkTmprApkWeave,
-                RemoteConfigKey.ENABLE_SEQ4_ASYNC, ConsumerSplashScreen.this, true);
-    }
-
-    private void initializationNewRelic() {
-        boolean isEnableInitNrInAct = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_INIT_NR_IN_ACTIVITY);
-        if (isEnableInitNrInAct) {
-            NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(this.getApplication());
-        }
-    }
-
-    private void syncFcmToken() {
-        SyncFcmTokenService.Companion.startService(this);
-    }
-
-    private void registerPushNotif() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            RegisterPushNotificationWorker.Companion.scheduleWorker(ConsumerSplashScreen.this.getApplicationContext());
-        }
-    }
-
     @Override
     public void finishSplashScreen() {
-
-        Intent homeIntent = new Intent(this, MainParentActivity.class);
-        boolean needClearTask = getIntent() == null || !getIntent().hasExtra("branch");
-        if (needClearTask) {
-            homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        // if this SplashScreenActivity is the root means this open first time, so open Home
+        // if this is not root, this SplashScreen might be triggered from opening branch link.
+        if (isTaskRoot()) {
+            Intent homeIntent = new Intent(this, MainParentActivity.class);
+            startActivity(homeIntent);
         }
-        startActivity(homeIntent);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        if (needClearTask) {
-            finishAffinity();
-        } else {
-            finish();
-        }
+        finish();
     }
 
 }

@@ -12,6 +12,7 @@ import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataCl
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.component.shipment.ShipmentUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
@@ -35,6 +36,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.stories.widget.StoriesWidgetManager
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.universal_sharing.view.customview.UniversalShareWidget
 import com.tokopedia.user.session.UserSessionInterface
 
 interface DynamicProductDetailListener {
@@ -425,6 +427,12 @@ interface DynamicProductDetailListener {
         componentTrackDataModel: ComponentTrackDataModel?
     )
 
+    fun onClickShipmentPlusBanner(
+        link: String,
+        trackerData: ShipmentUiModel.ShipmentPlusData.TrackerData,
+        componentTrackDataModel: ComponentTrackDataModel?
+    )
+
     /**
      * ProductArViewHolder
      */
@@ -491,6 +499,7 @@ interface DynamicProductDetailListener {
         item: PlayWidgetChannelUiModel,
         isRemindMe: Boolean
     )
+    fun onUniversalShareWidget(widget: UniversalShareWidget)
 
     /**
      * ProductDetailNavigation / Navigation Bar / Tab
@@ -519,7 +528,6 @@ interface DynamicProductDetailListener {
         itemPosition: Int,
         adapterPosition: Int
     )
-    fun onViewToViewReload(pageName: String, queryParam: String, thematicId: String)
 
     /**
      * Thumbnail Variant
@@ -545,4 +553,12 @@ interface DynamicProductDetailListener {
 
     // region BMGM
     fun onBMGMClicked(title: String, offerId: String, component: ComponentTrackDataModel)
+
+    /**
+     * PDP Impression
+     */
+    fun getImpressionHolders(): MutableList<String>
+
+    // remote config for pdp cacheable
+    fun isRemoteCacheableActive(): Boolean
 }

@@ -49,6 +49,7 @@ class ProductViewModelMapper(
         isLocalSearchRecommendation: Boolean,
         externalReference: String,
         newCardType: String = "",
+        isEnableAdultContent: Boolean = true,
     ): ProductDataView {
         val productDataView = ProductDataView()
         val productListType =
@@ -78,6 +79,7 @@ class ProductViewModelMapper(
             externalReference,
             searchProductModel.keywordIntention(isUseAceSearchProductV5),
             searchProductModel.isShowButtonAtc(isUseAceSearchProductV5),
+            if(isUseAceSearchProductV5) isEnableAdultContent else true
         )
         productDataView.tickerModel = convertToTickerDataView(
             searchProductModel,
@@ -94,19 +96,25 @@ class ProductViewModelMapper(
         productDataView.keywordProcess = searchProductModel.keywordProcess(isUseAceSearchProductV5)
         productDataView.pageComponentId = searchProductModel.componentId(isUseAceSearchProductV5)
         productDataView.isQuerySafe = searchProductModel.isQuerySafe(isUseAceSearchProductV5)
-        productDataView.inspirationCarouselDataView = convertToInspirationCarouselViewModel(
+        val inspirationCarouselDataView = convertToInspirationCarouselDataView(
             searchProductModel.searchInspirationCarousel,
             dimension90,
             externalReference,
             keyword,
         )
+        productDataView.inspirationCarouselDataView =
+            inspirationCarouselDataView.filter { !it.isCarouselSeamlessLayout() }
+        productDataView.seamlessCarouselDataViewList =
+            inspirationCarouselDataView.filter(InspirationCarouselDataView::isCarouselSeamlessLayout)
         productDataView.inspirationWidgetDataView = InspirationWidgetVisitable.create(
             searchProductModel.searchInspirationWidget,
             keyword,
             dimension90,
         )
-        productDataView.additionalParams = searchProductModel.additionalParams(isUseAceSearchProductV5)
-        productDataView.autocompleteApplink = searchProductModel.autocompleteApplink(isUseAceSearchProductV5)
+        productDataView.additionalParams =
+            searchProductModel.additionalParams(isUseAceSearchProductV5)
+        productDataView.autocompleteApplink =
+            searchProductModel.autocompleteApplink(isUseAceSearchProductV5)
         productDataView.bannerDataView = BannerDataView.create(
             searchProductModel.banner(isUseAceSearchProductV5),
             keyword,
@@ -121,11 +129,15 @@ class ProductViewModelMapper(
         productDataView.categoryIdL2 = searchProductModel.lastFilter.data.categoryIdL2
         productDataView.violation = convertToViolationView(searchProductModel)
         productDataView.backendFilters = searchProductModel.backendFilters(isUseAceSearchProductV5)
-        productDataView.keywordIntention = searchProductModel.keywordIntention(isUseAceSearchProductV5)
-        productDataView.isPostProcessing = searchProductModel.isPostProcessing(isUseAceSearchProductV5)
-        productDataView.redirectApplink = searchProductModel.redirectApplink(isUseAceSearchProductV5)
+        productDataView.keywordIntention =
+            searchProductModel.keywordIntention(isUseAceSearchProductV5)
+        productDataView.isPostProcessing =
+            searchProductModel.isPostProcessing(isUseAceSearchProductV5)
+        productDataView.redirectApplink =
+            searchProductModel.redirectApplink(isUseAceSearchProductV5)
         productDataView.productListType = productListType
-        productDataView.isShowButtonAtc = searchProductModel.isShowButtonAtc(isUseAceSearchProductV5)
+        productDataView.isShowButtonAtc =
+            searchProductModel.isShowButtonAtc(isUseAceSearchProductV5)
         productDataView.isReimagineProductCard =
             reimagineRollence.search3ProductCard().isReimagineProductCard()
 
@@ -166,6 +178,7 @@ class ProductViewModelMapper(
         externalReference: String,
         keywordIntention: Int,
         showButtonAtc: Boolean,
+        isEnableAdultContent: Boolean = true,
     ): List<ProductItemDataView> {
         return if (isUseAceSearchProductV5) {
             searchProductModel.searchProductV5.data.productList.mapIndexed { index, productModel ->
@@ -179,6 +192,7 @@ class ProductViewModelMapper(
                     productListType,
                     externalReference,
                     keywordIntention,
+                    isEnableAdultContent
                 )
             }
         } else {
@@ -208,6 +222,7 @@ class ProductViewModelMapper(
         productListType: String,
         externalReference: String,
         keywordIntention: Int,
+        isEnableAdultContent: Boolean = true,
     ): ProductItemDataView {
         val productItem = ProductItemDataView()
 
@@ -258,6 +273,7 @@ class ProductViewModelMapper(
         productItem.customVideoURL = productModel.mediaURL.videoCustom
         productItem.parentId = productModel.meta.parentID
         productItem.isPortrait = productModel.meta.isPortrait
+        productItem.isImageBlurred = productModel.meta.isImageBlurred && !isEnableAdultContent
         return productItem
     }
 
@@ -280,15 +296,15 @@ class ProductViewModelMapper(
     }
 
     private fun convertToProductItem(
-            productModel: Product,
-            position: Int,
-            pageTitle: String,
-            dimension90: String,
-            isLocalSearchRecommendation: Boolean,
-            productListType: String,
-            externalReference: String,
-            keywordIntention: Int,
-            showButtonAtc: Boolean,
+        productModel: Product,
+        position: Int,
+        pageTitle: String,
+        dimension90: String,
+        isLocalSearchRecommendation: Boolean,
+        productListType: String,
+        externalReference: String,
+        keywordIntention: Int,
+        showButtonAtc: Boolean,
     ): ProductItemDataView {
         val productItem = ProductItemDataView()
 
@@ -325,7 +341,8 @@ class ProductViewModelMapper(
         productItem.categoryName = productModel.categoryName
         productItem.categoryBreadcrumb = productModel.categoryBreadcrumb
         productItem.labelGroupList = productModel.labelGroupList.mapToLabelGroupDataViewList()
-        productItem.labelGroupVariantList = productModel.labelGroupVariantList.mapToLabelGroupVariantList()
+        productItem.labelGroupVariantList =
+            productModel.labelGroupVariantList.mapToLabelGroupVariantList()
         productItem.freeOngkirDataView = productModel.freeOngkir.mapToFreeOngkirDataView()
         productItem.boosterList = productModel.boosterList
         productItem.sourceEngine = productModel.sourceEngine
@@ -345,29 +362,29 @@ class ProductViewModelMapper(
     }
 
     private fun List<ProductBadge>.mapToBadgeItemList() =
-            this.map { badgeModel ->
-                BadgeItemDataView(badgeModel.imageUrl, badgeModel.title, badgeModel.isShown)
-            }
+        this.map { badgeModel ->
+            BadgeItemDataView(badgeModel.imageUrl, badgeModel.title, badgeModel.isShown)
+        }
 
     private fun List<ProductLabelGroup>.mapToLabelGroupDataViewList() =
-            this.map { labelGroupModel ->
-                LabelGroupDataView(
-                        labelGroupModel.position,
-                        labelGroupModel.type,
-                        labelGroupModel.title,
-                        labelGroupModel.url
-                )
-            }
+        this.map { labelGroupModel ->
+            LabelGroupDataView(
+                labelGroupModel.position,
+                labelGroupModel.type,
+                labelGroupModel.title,
+                labelGroupModel.url
+            )
+        }
 
     private fun List<ProductLabelGroupVariant>.mapToLabelGroupVariantList() =
-            this.map { labelGroupVariant ->
-                LabelGroupVariantDataView(
-                        labelGroupVariant.title,
-                        labelGroupVariant.type,
-                        labelGroupVariant.typeVariant,
-                        labelGroupVariant.hexColor
-                )
-            }
+        this.map { labelGroupVariant ->
+            LabelGroupVariantDataView(
+                labelGroupVariant.title,
+                labelGroupVariant.type,
+                labelGroupVariant.typeVariant,
+                labelGroupVariant.hexColor
+            )
+        }
 
     private fun ProductFreeOngkir.mapToFreeOngkirDataView() = FreeOngkirDataView(isActive, imageUrl)
 
@@ -415,34 +432,42 @@ class ProductViewModelMapper(
         )
     }
 
-    private fun convertToInspirationCarouselViewModel(
-            searchInspirationCarousel: SearchInspirationCarousel,
-            dimension90: String,
-            externalReference: String,
-            keyword: String,
-    ): List<InspirationCarouselDataView> {
-        return searchInspirationCarousel.data.map { data ->
-            InspirationCarouselDataView(
-                data.title,
-                data.type,
-                data.position,
-                data.layout,
-                data.trackingOption.toIntOrZero(),
-                convertToInspirationCarouselOptionViewModel(
-                    data,
-                    dimension90,
-                    externalReference,
-                    keyword,
-                ),
-            )
-        }
-    }
+    private fun convertToInspirationCarouselDataView(
+        searchInspirationCarousel: SearchInspirationCarousel,
+        dimension90: String,
+        externalReference: String,
+        keyword: String,
+    ): List<InspirationCarouselDataView> =
+        searchInspirationCarousel
+            .data
+            .map { data ->
+                inspirationCarouselDataView(data, dimension90, externalReference, keyword)
+            }
+
+    private fun inspirationCarouselDataView(
+        data: InspirationCarouselData,
+        dimension90: String,
+        externalReference: String,
+        keyword: String,
+    ) = InspirationCarouselDataView(
+        data.title,
+        data.type,
+        data.position,
+        data.layout,
+        data.trackingOption.toIntOrZero(),
+        convertToInspirationCarouselOptionViewModel(
+            data,
+            dimension90,
+            externalReference,
+            keyword,
+        ),
+    )
 
     private fun convertToInspirationCarouselOptionViewModel(
-            data: InspirationCarouselData,
-            dimension90: String,
-            externalReference: String,
-            keyword: String,
+        data: InspirationCarouselData,
+        dimension90: String,
+        externalReference: String,
+        keyword: String,
     ): List<InspirationCarouselDataView.Option> {
         val mapper = InspirationCarouselProductDataViewMapper()
 
@@ -511,7 +536,7 @@ class ProductViewModelMapper(
         )
     }
 
-    private fun convertToViolationView(searchProductModel: SearchProductModel) : ViolationDataView? {
+    private fun convertToViolationView(searchProductModel: SearchProductModel): ViolationDataView? {
         val violation = searchProductModel.violation(isUseAceSearchProductV5)
         return ViolationDataView.create(violation)
     }

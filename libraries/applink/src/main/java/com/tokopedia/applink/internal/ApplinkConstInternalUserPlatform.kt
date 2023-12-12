@@ -133,7 +133,14 @@ object ApplinkConstInternalUserPlatform {
      * VerificationActivity
      * @Applink : tokopedia-android-internal://user/cotp
      **/
-    const val COTP = "$NEW_INTERNAL_USER/cotp"
+    const val PARAM_OTP_TYPE = "otpType"
+    const val COTP = "$NEW_INTERNAL_USER/cotp?$PARAM_OTP_TYPE={otp-type}"
+
+    /**
+     * please refer [com.scp.auth.verification.ScpVerificationActivity]
+     * Applink: tokopedia-android-internal://user/scp-otp
+     */
+    const val SCP_OTP = "$NEW_INTERNAL_USER/scp-otp"
 
     /**
      * LoginByQrResultActivity
@@ -210,12 +217,6 @@ object ApplinkConstInternalUserPlatform {
     const val MEDIA_QUALITY_SETTING = "$NEW_INTERNAL_USER/media-quality-setting"
 
     /**
-     * FundsAndInvestmentActivity
-     * @Applink : tokopedia-android-internal://user/funds-and-investment
-     **/
-    const val FUNDS_AND_INVESTMENT = "$NEW_INTERNAL_USER/funds-and-investment"
-
-    /**
      * AddNameRegisterPhoneActivity
      * @Applink : tokopedia-android-internal://user/add-name-register
      **/
@@ -287,6 +288,9 @@ object ApplinkConstInternalUserPlatform {
     const val CHANGE_NAME = "$NEW_INTERNAL_USER/change-name?oldName={oldName}&chances={chances}"
     const val PARAM_FULL_NAME = "oldName"
     const val PARAM_CHANCE_CHANGE_NAME = "chances"
+
+    // Param to flag if its come from webview fragment (internal), this is for refresh token flow
+    const val PARAM_FROM_WEBVIEW = "from_web_view"
 
     /**
      * ProfileCompletionActivity

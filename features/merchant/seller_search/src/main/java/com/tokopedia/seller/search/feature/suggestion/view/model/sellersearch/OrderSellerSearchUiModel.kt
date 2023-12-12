@@ -15,4 +15,8 @@ data class OrderSellerSearchUiModel(
     override fun type(typeFactory: TypeFactorySuggestionSearchAdapter): Int {
         return typeFactory.type(this)
     }
+
+    override fun getUniquePosition(): Int {
+        return id.orEmpty().hashCode() + title.orEmpty().hashCode() + appUrl.orEmpty().hashCode()
+    }
 }

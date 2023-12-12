@@ -50,6 +50,7 @@ import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.graphql.util.getParamBoolean
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
@@ -872,11 +873,11 @@ class RegisterInitialFragment :
         registerInitialRouter.goToRegisterEmail(this)
     }
 
-    override fun goToRegisterEmailPageWithEmail(email: String, token: String, source: String) {
+    override fun goToRegisterEmailPageWithEmail(email: String, token: String, source: String, isFromScp: Boolean) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
         activity?.let {
             showProgressBar()
-            registerInitialRouter.goToRegisterEmailPageWithParams(this, email, token, source)
+            registerInitialRouter.goToRegisterEmailPageWithParams(this, email, token, source, isFromScp)
         }
     }
 
@@ -945,12 +946,16 @@ class RegisterInitialFragment :
                 validateToken =
                     data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
                 val uuid = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID).orEmpty()
-                goToAddName(uuid)
+                val isFromScp = data?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_SCP, false).orFalse()
+                goToAddName(uuid, isFromScp)
             }
 
             Activity.RESULT_CANCELED -> {
                 dismissProgressBar()
                 activity?.setResult(Activity.RESULT_CANCELED)
+                if (loginCredential.isNotEmpty()) {
+                    activity?.finish()
+                }
             }
         }
     }
@@ -1026,15 +1031,17 @@ class RegisterInitialFragment :
                     val email = bundle.getString(ApplinkConstInternalGlobal.PARAM_EMAIL)
                     val token = bundle.getString(ApplinkConstInternalGlobal.PARAM_TOKEN)
                     val source = bundle.getString(ApplinkConstInternalGlobal.PARAM_SOURCE)
+                    val isFromScp = bundle.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_SCP, false)
                     if (!email.isNullOrEmpty() && !token.isNullOrEmpty()) {
                         if (!source.isNullOrEmpty()) {
                             goToRegisterEmailPageWithEmail(
                                 email,
                                 token,
-                                source
+                                source,
+                                isFromScp
                             )
                         } else {
-                            goToRegisterEmailPageWithEmail(email, token, "")
+                            goToRegisterEmailPageWithEmail(email, token, "", isFromScp)
                         }
                     }
                 }
@@ -1042,6 +1049,9 @@ class RegisterInitialFragment :
 
             Activity.RESULT_CANCELED -> {
                 activity?.setResult(Activity.RESULT_CANCELED)
+                if (loginCredential.isNotEmpty()) {
+                    activity?.finish()
+                }
             }
         }
     }
@@ -1141,9 +1151,9 @@ class RegisterInitialFragment :
         registerInitialRouter.goToAddPin2FA(this, enableSkip2FA, validateToken)
     }
 
-    private fun goToAddName(uuid: String) {
+    private fun goToAddName(uuid: String, isFromScp: Boolean) {
         phoneNumber?.run {
-            registerInitialRouter.goToAddName(this@RegisterInitialFragment, uuid, this)
+            registerInitialRouter.goToAddName(this@RegisterInitialFragment, uuid, this, isFromScp)
         }
     }
 
@@ -1695,7 +1705,7 @@ class RegisterInitialFragment :
         private const val SOCMED_BUTTON_CORNER_SIZE = 10
 
         private const val TERM_AND_CONDITION = "Syarat & Ketentuan"
-        private const val PRIVACY_POLICY = "Kebijakan Privasi"
+        private const val PRIVACY_POLICY = "Pemberitahuan Privasi"
 
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 

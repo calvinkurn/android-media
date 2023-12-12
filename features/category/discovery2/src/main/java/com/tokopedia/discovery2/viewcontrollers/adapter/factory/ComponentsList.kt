@@ -132,5 +132,24 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ProductCardColumnList(
         id = R.layout.item_discovery_product_card_column_list_layout,
         componentName = ComponentNames.ProductCardColumnList.componentName
+    ),
+    MerchantVoucherGrid(R.layout.merchant_voucher_grid_layout, ComponentNames.MerchantVoucherGrid.componentName),
+    MerchantVoucherGridItem(R.layout.merchant_voucher_grid_item_layout, ComponentNames.MerchantVoucherGridItem.componentName),
+
+    ShopOfferHeroBrand(
+        id = R.layout.item_discovery_shop_offer_hero_brand_layout,
+        componentName = ComponentNames.ShopOfferHeroBrand.componentName
+    ),
+    ShopOfferHeroBrandProductItem(
+        id = R.layout.master_product_card_item_layout,
+        componentName = ComponentNames.ShopOfferHeroBrandProductItem.componentName
+    ),
+    ShopOfferSupportingBrand(
+        id = R.layout.discovery_supporting_brand_layout,
+        componentName = ComponentNames.ShopOfferSupportingBrand.componentName
+    ),
+    ShopOfferSupportingBrandItem(
+        id = R.layout.item_discovery_shop_offer_supporting_brand_layout,
+        componentName = ComponentNames.ShopOfferSupportingBrandItem.componentName
     )
 }

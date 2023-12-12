@@ -2,6 +2,7 @@ package com.tokopedia.cartrevamp.view.uimodel
 
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ProductInformationWithIcon
+import com.tokopedia.cartcommon.data.response.common.ProductTagInfo
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.WholesalePrice
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
@@ -23,6 +24,7 @@ data class CartItemHolderData(
     var productId: String = "",
     var productInformation: List<String> = emptyList(),
     var productInformationWithIcon: List<ProductInformationWithIcon> = emptyList(),
+    var productTagInfo: List<ProductTagInfo> = emptyList(),
     var productAlertMessage: String = "",
     var productPrice: Double = 0.0,
     var productOriginalPrice: Double = 0.0,
@@ -103,12 +105,20 @@ data class CartItemHolderData(
     var addOnsProduct: CartAddOnData = CartAddOnData(),
 
     // BMGM
-    var cartBmGmTickerData: CartBmGmTickerData = CartBmGmTickerData(),
+        var cartBmGmTickerData: CartBmGmTickerData = CartBmGmTickerData(),
     var showBmGmBottomDivider: Boolean = false
 ) : ImpressHolder() {
     companion object {
         const val BUNDLING_ITEM_DEFAULT = 0
         const val BUNDLING_ITEM_HEADER = 1
         const val BUNDLING_ITEM_FOOTER = 2
+    }
+
+    fun getSwipeLayoutBundlingId(): String {
+        return "$cartId|$bundleId"
+    }
+
+    fun getSwipeLayoutId(): String {
+        return cartId
     }
 }

@@ -59,7 +59,8 @@
           "customvideo_url": "",
           "parent_id": "0",
           "max_order": 999,
-          "stock": 999
+          "stock": 999,
+          "warehouse_id": "15251509"
         },
         "shop": {
           "id": "480552",
@@ -140,7 +141,8 @@
           "customvideo_url": "",
           "parent_id": "0",
           "max_order": 999,
-          "stock": 999
+          "stock": 999,
+          "warehouse_id": "15251510"
         },
         "shop": {
           "id": "480552",
@@ -221,7 +223,8 @@
           "customvideo_url": "",
           "parent_id": "0",
           "max_order": 999,
-          "stock": 999
+          "stock": 999,
+          "warehouse_id": "15251512"
         },
         "shop": {
           "id": "480552",
@@ -302,7 +305,8 @@
           "customvideo_url": "",
           "parent_id": "0",
           "max_order": 999,
-          "stock": 999
+          "stock": 999,
+          "warehouse_id": "15251512"
         },
         "shop": {
           "id": "480552",
@@ -383,7 +387,8 @@
           "customvideo_url": "",
           "parent_id": "0",
           "max_order": 999,
-          "stock": 999
+          "stock": 999,
+          "warehouse_id": "15251509"
         },
         "shop": {
           "id": "480552",
@@ -464,7 +469,8 @@
           "customvideo_url": "",
           "parent_id": "0",
           "max_order": 999,
-          "stock": 999
+          "stock": 999,
+          "warehouse_id": "15251515"
         },
         "shop": {
           "id": "480552",
@@ -545,7 +551,8 @@
           "customvideo_url": "",
           "parent_id": "0",
           "max_order": 999,
-          "stock": 999
+          "stock": 999,
+          "warehouse_id": "15251555"
         },
         "shop": {
           "id": "480552",

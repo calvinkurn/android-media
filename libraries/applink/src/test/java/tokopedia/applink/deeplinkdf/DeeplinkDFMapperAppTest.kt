@@ -25,7 +25,6 @@ import com.tokopedia.applink.DeeplinkDFMapper.DF_ALPHA_TESTING
 import com.tokopedia.applink.DeeplinkDFMapper.DF_CATEGORY_AFFILIATE
 import com.tokopedia.applink.DeeplinkDFMapper.DF_CATEGORY_TRADE_IN
 import com.tokopedia.applink.DeeplinkDFMapper.DF_CONTENT_PLAY_BROADCASTER
-import com.tokopedia.applink.DeeplinkDFMapper.DF_DIGITAL
 import com.tokopedia.applink.DeeplinkDFMapper.DF_DILAYANI_TOKOPEDIA
 import com.tokopedia.applink.DeeplinkDFMapper.DF_ENTERTAINMENT
 import com.tokopedia.applink.DeeplinkDFMapper.DF_FEED_CONTENT_CREATION
@@ -39,13 +38,14 @@ import com.tokopedia.applink.DeeplinkDFMapper.DF_PEOPLE
 import com.tokopedia.applink.DeeplinkDFMapper.DF_PROMO_GAMIFICATION
 import com.tokopedia.applink.DeeplinkDFMapper.DF_PROMO_TOKOPOINTS
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_FRONT_FUNNEL
+import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_PDP
 import com.tokopedia.applink.DeeplinkDFMapper.DF_SELLER_TALK
+import com.tokopedia.applink.DeeplinkDFMapper.DF_STORIES_CREATION
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOCHAT
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOFOOD
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TOKOPEDIA_NOW
 import com.tokopedia.applink.DeeplinkDFMapper.DF_TRAVEL
 import com.tokopedia.applink.DeeplinkDFMapper.DF_USER_SETTINGS
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.DROPOFF_PICKER
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
@@ -145,16 +145,6 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
     fun `MA df_content_play_broadcaster`() {
         assertEqualDeepLinkMA(ApplinkConst.PLAY_BROADCASTER, DF_CONTENT_PLAY_BROADCASTER)
         assertEqualDeepLinkMA(ApplinkConst.PLAY_SHORTS, DF_CONTENT_PLAY_BROADCASTER)
-        assertEqualDeepLinkMA(
-            ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER,
-            DF_CONTENT_PLAY_BROADCASTER
-        )
-    }
-
-    @Test
-    fun `MA df_digital`() {
-        assertEqualDeepLinkMA(ApplinkConsInternalDigital.SMART_BILLS, DF_DIGITAL)
-        assertEqualDeepLinkMA(ApplinkConsInternalDigital.ADD_TELCO, DF_DIGITAL)
     }
 
     @Test
@@ -184,9 +174,6 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
             DF_FEED_CONTENT_CREATION
         )
         assertEqualDeepLinkMA(ApplinkConst.FEED_CREATION_PRODUCT_SEARCH, DF_FEED_CONTENT_CREATION)
-
-        assertEqualDeepLinkMA(ApplinkConst.MediaEditor.MEDIA_EDITOR, DF_FEED_CONTENT_CREATION)
-
     }
 
     @Test
@@ -209,7 +196,6 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
     fun `MA df_merchant_product_ar`() {
         assertEqualDeepLinkMA(PRODUCT_AR, DF_MERCHANT_PRODUCT_AR)
     }
-
 
     @Test
     fun `MA df_merchant_seller`() {
@@ -291,6 +277,14 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
     }
 
     @Test
+    fun `MA df_stories_creation`() {
+        assertEqualDeepLinkMA(ApplinkConst.Stories.STORIES_CREATION, DF_STORIES_CREATION)
+        assertEqualDeepLinkMA(ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER, DF_STORIES_CREATION)
+        assertEqualDeepLinkMA(ApplinkConst.MediaEditor.MEDIA_EDITOR, DF_STORIES_CREATION)
+        assertEqualDeepLinkMA(ApplinkConstInternalMedia.INTERNAL_UNIVERSAL_MEDIA_EDITOR, DF_STORIES_CREATION)
+    }
+
+    @Test
     fun `MA df_travel`() {
         assertEqualDeepLinkMA(DASHBOARD_HOTEL, DF_TRAVEL)
         assertEqualDeepLinkMA(FLIGHT, DF_TRAVEL)
@@ -319,7 +313,6 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
         assertEqualDeepLinkMA(SETTING_BANK, DF_USER_SETTINGS)
     }
 
-
     @Test
     fun `SA df_seller_front_funnel`() {
         assertEqualDeepLinkSA("sellerapp://seller-persona", DF_SELLER_FRONT_FUNNEL)
@@ -345,8 +338,25 @@ class DeepLinkDFMapperTest : DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `SA df_talk`() {
-        assertEqualDeepLinkSA("tokopedia://product/2506450520/talk?shop_id=3318861&is_variant_selected=true&available_variants=true",
-            DF_SELLER_TALK)
+        assertEqualDeepLinkSA(
+            "tokopedia://product/2506450520/talk?shop_id=3318861&is_variant_selected=true&available_variants=true",
+            DF_SELLER_TALK
+        )
     }
 
+    @Test
+    fun `SA df_pdp`() {
+        assertEqualDeepLinkSA("tokopedia://product/2506450520", DF_SELLER_PDP)
+        assertEqualDeepLinkSA("tokopedia://product/2506450520/?aff_unique_id=12345", DF_SELLER_PDP)
+        assertEqualDeepLinkSA("tokopedia://product/2506450520/?warehouse_id=12345", DF_SELLER_PDP)
+        assertEqualDeepLinkSA("tokopedia://product-edu/1", DF_SELLER_PDP)
+        assertEqualDeepLinkSA("tokopedia://post-atc/2506450520", DF_SELLER_PDP)
+    }
+
+    @Test
+    fun `SA df_stories_creation`() {
+        assertEqualDeepLinkSA(ApplinkConst.Stories.STORIES_CREATION, DF_STORIES_CREATION)
+        assertEqualDeepLinkSA(ApplinkConstInternalMedia.INTERNAL_MEDIA_PICKER, DF_STORIES_CREATION)
+        assertEqualDeepLinkSA(ApplinkConstInternalMedia.INTERNAL_UNIVERSAL_MEDIA_EDITOR, DF_STORIES_CREATION)
+    }
 }

@@ -55,4 +55,9 @@ interface EPharmacyListener {
     fun onHelpButtonClicked(appUrl: String?) {}
 
     fun onLihatInvoiceClicked(appUrl: String?) {}
+
+    /**
+     * Ticker
+     */
+    fun redirect(link: String) {}
 }

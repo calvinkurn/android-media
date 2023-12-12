@@ -2,6 +2,7 @@ package com.tokopedia.stories.view.model
 
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.stories.uimodel.StoryAuthor
+import com.tokopedia.stories.utils.provider.StoriesLinkPropertiesProvider
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Unknown
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 
@@ -32,11 +33,11 @@ data class StoriesDetail(
     val detailItems: List<StoriesDetailItem> = emptyList()
 ) {
     companion object {
-        val Empty get() = StoriesDetail(
+        val EmptyDetail get() = StoriesDetail(
             selectedGroupId = "",
             selectedDetailPosition = 0,
             selectedDetailPositionCached = 0,
-            detailItems = listOf(StoriesDetailItem(event = StoriesDetailItem.StoriesDetailItemUiEvent.RESUME, content = StoriesDetailItem.StoriesItemContent(duration = 3000)))
+            detailItems = listOf(StoriesDetailItem.Empty)
         )
     }
 }
@@ -50,10 +51,15 @@ data class StoriesDetailItem(
     val meta: Meta = Meta(),
     val productCount: String = "",
     val author: StoryAuthor = StoryAuthor.Unknown,
+    val category: StoryCategory = StoryCategory.ASGC,
+    val publishedAt: String = "",
     val menus: List<ContentMenuItem> = emptyList(),
     val share: Sharing = Sharing.Empty,
     val status: StoryStatus = StoryStatus.Unknown,
 ) {
+    companion object {
+        val Empty get() = StoriesDetailItem(event = StoriesDetailItemUiEvent.RESUME, content = StoriesItemContent(duration = 3000), resetValue = 0)
+    }
 
     data class Meta(
         val activityTracker: String = "",
@@ -71,7 +77,7 @@ data class StoriesDetailItem(
     }
 
     enum class StoriesDetailItemUiEvent {
-        PAUSE, RESUME,
+        PAUSE, RESUME, BUFFERING
     }
 
     data class Sharing(
@@ -84,7 +90,7 @@ data class StoriesDetailItem(
                 get() = Sharing(
                     isShareable = false,
                     shareText = "",
-                    metadata = LinkProperties(),
+                    metadata = StoriesLinkPropertiesProvider.get(),
                 )
         }
     }
@@ -104,5 +110,18 @@ data class StoriesDetailItem(
         }
     }
 
-    val isProductAvailable: Boolean = productCount.isNotEmpty() && productCount != "0"
+    enum class StoryCategory(val value: String) {
+        Manual("update"), ASGC("default");
+
+        companion object {
+            fun getByValue(value: String): StoryCategory {
+                values().forEach {
+                    if (it.value.equals(value, true)) return it
+                }
+                return ASGC
+            }
+        }
+    }
+
+    val isProductAvailable: Boolean = productCount.isNotEmpty() && productCount != "0" && status == StoryStatus.Active
 }

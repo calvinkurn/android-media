@@ -12,6 +12,8 @@ import com.google.gson.Gson
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import javax.inject.Inject
 
 class TokoChatCourierRemoteConfigImpl @Inject constructor(
@@ -28,11 +30,23 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
         val data = remoteConfig.getString(COURIER_CONFIG_JSON, "")
         try {
             if (data.isNotBlank()) {
-                courierConfigData = Gson().fromJson(data, CourierConfigData::class.java)
+                val courierConfig = Gson().fromJson(data, CourierConfig::class.java)
+                val courierConfigByEnv = when (TokopediaUrl.getInstance().TYPE) {
+                    Env.LIVE -> courierConfig.configList
+                    Env.STAGING -> courierConfig.configListStaging
+                }
+                courierConfigData = getCourierConfigData(courierConfigByEnv)
             }
         } catch (throwable: Throwable) {
             ServerLogger.log(Priority.P2, ERROR_TAG, createErrorMessage(data, throwable))
         }
+    }
+
+    private fun getCourierConfigData(courierConfigList: List<CourierConfigWrapper>): CourierConfigData {
+        val matchingConfig = courierConfigList.findLast {
+            it.configVersion == COURIER_CONFIG_VERSION
+        }
+        return matchingConfig?.data ?: CourierConfigData()
     }
 
     private fun createErrorMessage(
@@ -158,6 +172,10 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
      * Set the strategy on how to store the token
      * Token expiration is depend on the use cases
      * For example 1 hour or 6 hours
+     *
+     * Because of project skynet in Gojek side,
+     * we need to temporary changed the value in Remote Config from disk to memory
+     * this is needed to reduce the edge case of old broker token cached in user's device
      */
     override val tokenCachingMechanism: TokenCachingMechanism
         get() {
@@ -261,13 +279,24 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
     override val shouldUseNewSSLFlow: Boolean
         get() = courierConfigData.shouldUseNewSSLFlow
 
+    /**
+     * Setup to limit the token expiry
+     * The usage is for broker token and 6 hours is the threshold expiry in backend side
+     * 360 minutes -> expired in 6 hours
+     */
+    override val tokenExpiryIntervalMins: Long
+        get() = courierConfigData.tokenExpiryIntervalMins
+
     companion object {
-        private const val COURIER_CONFIG_JSON = "android_courier_config_json"
+        private const val COURIER_CONFIG_JSON = "android_courier_config_list_json"
         private const val ERROR_TAG = "COURIER_CONNECTION_CONFIG"
         private const val DATA_KEY = "data"
         private const val STACKTRACE_KEY = "stacktrace"
 
         const val SHOULD_TRACK_MESSAGE_RECEIVE_EVENT = "android_tokochat_shouldTrackMessageReceiveEvent"
         const val LOCAL_PUSH_NOTIFICATION = "android_tokochat_local_push_notif_enabled"
+
+        // Config Version in Remote Config
+        private const val COURIER_CONFIG_VERSION = 1
     }
 }

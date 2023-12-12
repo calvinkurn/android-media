@@ -51,6 +51,7 @@ import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartAddOnProductData
 import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
+import com.tokopedia.cartrevamp.view.uimodel.CartDeleteItemData
 import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
@@ -278,6 +279,7 @@ class CartViewModel @Inject constructor(
         private const val BO_AFFORDABILITY_WEIGHT_KILO = 1000
 
         const val GET_CART_STATE_DEFAULT = 0
+        const val GET_CART_STATE_AFTER_CHOOSE_ADDRESS = 1
 
         const val RECOMMENDATION_START_PAGE = 1
         const val ITEM_CHECKED_ALL_WITHOUT_CHANGES = 0
@@ -1004,16 +1006,6 @@ class CartViewModel @Inject constructor(
     fun processGetWishlistV2Data() {
         val requestParams = WishlistV2Params().apply {
             source = SOURCE_CART
-            cartModel.lca?.let { address ->
-                wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
-                    districtId = address.district_id,
-                    cityId = address.city_id,
-                    latitude = address.lat,
-                    longitude = address.long,
-                    postalCode = address.postal_code,
-                    addressId = address.address_id
-                )
-            }
         }
 
         viewModelScope.launch(dispatchers.io) {
@@ -2201,8 +2193,9 @@ class CartViewModel @Inject constructor(
     fun updateBmGmTickerData(toBeDeletedProducts: List<CartItemHolderData>) {
         toBeDeletedProducts.forEach { productWillDelete ->
             val offerId = productWillDelete.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
+            val cartStringOrder = productWillDelete.cartStringOrder
             val productListByOfferId =
-                CartDataHelper.getListProductByOfferId(cartDataList.value, offerId)
+                CartDataHelper.getListProductByOfferIdAndCartStringOrder(cartDataList.value, offerId, cartStringOrder)
             if (productListByOfferId.size > 1) {
                 productListByOfferId.forEachIndexed { index, product ->
                     // move ticker to next index if product has ticker will be deleted
@@ -2430,42 +2423,31 @@ class CartViewModel @Inject constructor(
         group.boCode = ""
     }
 
-    fun processDeleteCartItem(
-        removedCartItems: List<CartItemHolderData>,
-        addWishList: Boolean,
-        forceExpandCollapsedUnavailableItems: Boolean = false,
-        isFromGlobalCheckbox: Boolean = false,
-        isFromEditBundle: Boolean = false,
-        listOfferId: ArrayList<Long> = arrayListOf()
-    ) {
+    fun processDeleteCartItem(cartDeleteItemData: CartDeleteItemData) {
         _cartProgressLoading.value = true
         val allCartItemData = CartDataHelper.getAllCartItemData(
             cartDataList.value,
             cartModel
         )
 
-        val removeAllItems = allCartItemData.size == removedCartItems.size
+        val removeAllItems = allCartItemData.size == cartDeleteItemData.removedCartItems.size
         val toBeDeletedCartIds = ArrayList<String>()
-        for (cartItemData in removedCartItems) {
+        for (cartItemData in cartDeleteItemData.removedCartItems) {
             toBeDeletedCartIds.add(cartItemData.cartId)
         }
 
-        deleteCartUseCase.setParams(toBeDeletedCartIds, addWishList)
+        deleteCartUseCase.setParams(toBeDeletedCartIds, cartDeleteItemData.addWishList)
         deleteCartUseCase.execute(
             onSuccess = {
                 _deleteCartEvent.value = DeleteCartEvent.Success(
                     toBeDeletedCartIds,
                     removeAllItems,
-                    forceExpandCollapsedUnavailableItems,
-                    addWishList,
-                    isFromGlobalCheckbox,
-                    isFromEditBundle,
-                    listOfferId
+                    cartDeleteItemData
                 )
             },
             onError = { throwable ->
                 _deleteCartEvent.value = DeleteCartEvent.Failed(
-                    forceExpandCollapsedUnavailableItems,
+                    cartDeleteItemData.forceExpandCollapsedUnavailableItems,
                     throwable
                 )
             }
@@ -2789,22 +2771,22 @@ class CartViewModel @Inject constructor(
         cartModel.availableCartItemImpressionList.addAll(availableCartItems)
     }
 
-    fun getBmGmGroupProductTicker(offerId: Long, params: BmGmGetGroupProductTickerParams) {
-        if (cartModel.lastOfferId == offerId) {
+    fun getBmGmGroupProductTicker(cartItemHolderData: CartItemHolderData, params: BmGmGetGroupProductTickerParams) {
+        if (cartModel.lastOfferId == "${cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId}|${cartItemHolderData.cartStringOrder}") {
             cartBmGmGroupTickerJob?.cancel()
         }
-        cartModel.lastOfferId = offerId
+        cartModel.lastOfferId = "${cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId}|${cartItemHolderData.cartStringOrder}"
         cartBmGmGroupTickerJob = viewModelScope.launch(dispatchers.io) {
             try {
                 val result = getGroupProductTickerUseCase(params)
                 withContext(dispatchers.main) {
                     _bmGmGroupProductTickerState.value =
-                        GetBmGmGroupProductTickerState.Success(Pair(offerId, result))
+                        GetBmGmGroupProductTickerState.Success(Pair(cartItemHolderData, result))
                 }
             } catch (t: Throwable) {
                 withContext(dispatchers.main) {
                     _bmGmGroupProductTickerState.value =
-                        GetBmGmGroupProductTickerState.Failed(Pair(offerId, t))
+                        GetBmGmGroupProductTickerState.Failed(Pair(cartItemHolderData, t))
                 }
             }
         }
@@ -2869,7 +2851,7 @@ class CartViewModel @Inject constructor(
 
     fun getEntryPointInfoNoItemSelected() {
         _entryPointInfoEvent.postValue(
-            cartPromoEntryPointProcessor.getEntryPointInfoNoItemSelected()
+            cartPromoEntryPointProcessor.getEntryPointInfoNoItemSelected(LastApplyUiModel())
         )
     }
 
@@ -2882,5 +2864,20 @@ class CartViewModel @Inject constructor(
         return lastApplyUiModel.additionalInfo.usageSummaries
             .filter { it.isDiscount() }
             .sumOf { it.amount.toLong() }
+    }
+
+    fun clearAllBo(clearPromoOrderData: ClearPromoOrderData) {
+        viewModelScope.launch {
+            try {
+                clearCacheAutoApplyStackUseCase.setParams(
+                    ClearPromoRequest(
+                        ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                        orderData = clearPromoOrderData
+                    )
+                ).executeOnBackground()
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
+        }
     }
 }
