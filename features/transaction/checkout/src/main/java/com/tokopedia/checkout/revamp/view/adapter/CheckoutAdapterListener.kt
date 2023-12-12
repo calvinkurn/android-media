@@ -150,4 +150,18 @@ interface CheckoutAdapterListener {
         categoryName: String,
         crossSellProductId: String
     )
+
+    fun showDropshipInfoBottomSheet()
+
+    fun showDropshipToasterErrorProtectionUsage()
+
+    fun checkLatestProtectionOptIn(cartStringGroup: String): Boolean
+
+    fun onCheckChangedDropship(isChecked: Boolean, position: Int)
+
+    fun setValidationDropshipName(name: String, isValid: Boolean, position: Int)
+
+    fun setValidationDropshipPhone(phone: String, isValid: Boolean, position: Int)
+
+    fun onSendImpressionDropshipWidgetAnalytics()
 }

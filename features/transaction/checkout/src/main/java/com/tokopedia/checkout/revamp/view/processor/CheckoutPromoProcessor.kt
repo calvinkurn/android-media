@@ -750,6 +750,7 @@ class CheckoutPromoProcessor @Inject constructor(
                         )
                     )
                 ).executeOnBackground()
+                onSuccessClearPromo(responseData, clearPromoOrder.codes.first())
                 return@withContext responseData.successDataModel.success
             } catch (t: Throwable) {
                 Timber.d(t)
@@ -762,8 +763,7 @@ class CheckoutPromoProcessor @Inject constructor(
         responseData: ClearPromoUiModel,
         promoCode: String
     ): Boolean {
-        val isLastAppliedPromo =
-            isLastAppliedPromo(promoCode)
+        val isLastAppliedPromo = responseData.successDataModel.success && isLastAppliedPromo(promoCode)
         if (isLastAppliedPromo) {
             validateUsePromoRevampUiModel = null
         }
@@ -835,6 +835,10 @@ class CheckoutPromoProcessor @Inject constructor(
         }
     }
 
+    private fun hasPromo(validateUsePromoRequest: ValidateUsePromoRequest): Boolean {
+        return validateUsePromoRequest.codes.isNotEmpty() || validateUsePromoRequest.orders.any { it.codes.isNotEmpty() }
+    }
+
     suspend fun validateUse(
         validateUsePromoRequest: ValidateUsePromoRequest,
         checkoutItems: List<CheckoutItem>,
@@ -845,6 +849,18 @@ class CheckoutPromoProcessor @Inject constructor(
         var items = checkoutItems.toMutableList()
         return withContext(dispatchers.io) {
             try {
+                if (!hasPromo(validateUsePromoRequest)) {
+                    val currentPromo = items.promo()!!
+                    if (currentPromo.promo.codes.isNotEmpty() || currentPromo.promo.voucherOrders.isNotEmpty()) {
+                        val newPromo = currentPromo.copy(
+                            promo = LastApplyUiModel()
+                        )
+                        items[items.size - 4] = newPromo
+                        return@withContext items
+                    } else {
+                        return@withContext items
+                    }
+                }
                 val validateUsePromoRevampUiModel = withContext(dispatchers.io) {
                     setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
                     validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
@@ -1032,19 +1048,35 @@ class CheckoutPromoProcessor @Inject constructor(
         return newCheckoutItems
     }
 
+    fun forceHitFinalValidateUse(
+        validateUsePromoRequest: ValidateUsePromoRequest,
+        validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?
+    ): Boolean {
+        return false
+    }
+
     suspend fun finalValidateUse(
         validateUsePromoRequest: ValidateUsePromoRequest
-    ): ValidateUsePromoRevampUiModel? {
-        return try {
-            val validateUsePromoRevampUiModel = withContext(dispatchers.io) {
-                setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
-                validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
-                    .executeOnBackground()
+    ): Pair<ValidateUsePromoRevampUiModel?, Boolean> {
+        if (forceHitFinalValidateUse(validateUsePromoRequest, validateUsePromoRevampUiModel) || (validateUsePromoRevampUiModel == null && hasPromo(validateUsePromoRequest))) {
+            // force hit or
+            // has promo request but no last validate use data, then should rehit validate use
+            return try {
+                val validateUsePromoRevampUiModel = withContext(dispatchers.io) {
+                    setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
+                    validateUsePromoRevampUseCase.setParam(validateUsePromoRequest)
+                        .executeOnBackground()
+                }
+                validateUsePromoRevampUiModel to true
+            } catch (t: Throwable) {
+                Timber.d(t)
+                null to true
             }
-            validateUsePromoRevampUiModel
-        } catch (t: Throwable) {
-            Timber.d(t)
-            null
+        } else if (validateUsePromoRevampUiModel == null) {
+            // does not have promo request & validate use data is null, then just return empty validate use data
+            return ValidateUsePromoRevampUiModel() to false
+        } else {
+            return validateUsePromoRevampUiModel to false
         }
     }
 

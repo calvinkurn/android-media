@@ -38,12 +38,14 @@ import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics
 import com.tokopedia.checkout.analytics.CheckoutPaymentAddOnsAnalytics
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.analytics.CornerAnalytics
+import com.tokopedia.checkout.databinding.BottomSheetDropshipBinding
 import com.tokopedia.checkout.databinding.BottomSheetPlatformFeeInfoBinding
 import com.tokopedia.checkout.databinding.FragmentCheckoutBinding
 import com.tokopedia.checkout.databinding.HeaderCheckoutBinding
 import com.tokopedia.checkout.databinding.ToastRectangleBinding
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.domain.model.checkout.Prompt
 import com.tokopedia.checkout.revamp.di.CheckoutModule
@@ -555,6 +557,10 @@ class CheckoutFragment :
                 is CheckoutPageState.AkamaiRatesError -> {
                     showToastErrorAkamai(it.message)
                 }
+
+                is CheckoutPageState.ShipmentActionPopUpConfirmation -> {
+                    showShipmentActionPopUpConfirmation(it.cartStringGroup, it.action)
+                }
             }
         }
 
@@ -644,6 +650,32 @@ class CheckoutFragment :
             if (toasterErrorAkamai?.isShownOrQueued == false) {
                 toasterErrorAkamai?.show()
             }
+        }
+    }
+
+    private fun showShipmentActionPopUpConfirmation(cartStringGroup: String, shipmentAction: ShipmentAction) {
+        context?.let {
+            val dialogUnify = DialogUnify(it, if (shipmentAction.popup.secondaryButton.isNotBlank()) DialogUnify.VERTICAL_ACTION else DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+            dialogUnify.setTitle(shipmentAction.popup.title)
+            dialogUnify.setDescription(shipmentAction.popup.body)
+            dialogUnify.setPrimaryCTAText(shipmentAction.popup.primaryButton)
+            dialogUnify.setPrimaryCTAClickListener {
+                dialogUnify.dismiss()
+                viewModel.doShipmentAction(shipmentAction)
+                checkoutAnalyticsCourierSelection.eventClickOkToSplitOrderOfoc()
+            }
+            dialogUnify.setSecondaryCTAText(shipmentAction.popup.secondaryButton)
+            dialogUnify.setSecondaryCTAClickListener {
+                dialogUnify.dismiss()
+                val index = viewModel.listData.value.indexOfFirst { item -> item is CheckoutOrderModel && item.cartStringGroup == cartStringGroup }
+                if (index > 0) {
+                    adapter.notifyItemChanged(index)
+                }
+            }
+            dialogUnify.setCanceledOnTouchOutside(false)
+            dialogUnify.setCancelable(false)
+            dialogUnify.show()
+            checkoutAnalyticsCourierSelection.eventViewSplitOfocPopUpBox()
         }
     }
 
@@ -1910,6 +1942,7 @@ class CheckoutFragment :
                 ChosenAddress(
                     ChosenAddress.MODE_ADDRESS,
                     locationDataModel.addrId,
+                    locationDataModel.city,
                     locationDataModel.district,
                     locationDataModel.postalCode,
                     if (locationDataModel.latitude.isNotEmpty() &&
@@ -1919,6 +1952,8 @@ class CheckoutFragment :
                     } else {
                         ""
                     },
+                    locationDataModel.latitude,
+                    locationDataModel.longitude,
                     ChosenAddressTokonow(
                         lca.shop_id,
                         lca.warehouse_id,
@@ -1931,6 +1966,7 @@ class CheckoutFragment :
                 ChosenAddress(
                     ChosenAddress.MODE_ADDRESS,
                     recipientAddressModel.id,
+                    recipientAddressModel.cityId,
                     recipientAddressModel.destinationDistrictId,
                     recipientAddressModel.postalCode,
                     if (recipientAddressModel.latitude.isNotEmpty() &&
@@ -1940,6 +1976,8 @@ class CheckoutFragment :
                     } else {
                         ""
                     },
+                    recipientAddressModel.latitude,
+                    recipientAddressModel.longitude,
                     ChosenAddressTokonow(
                         lca.shop_id,
                         lca.warehouse_id,
@@ -2673,5 +2711,44 @@ class CheckoutFragment :
             paymentAddOnsAnalyticData,
             productCatIds
         )
+    }
+
+    override fun showDropshipInfoBottomSheet() {
+        checkoutAnalyticsCourierSelection.eventClickInfoDropshipWidget()
+        val bottomSheetDropshipBinding =
+            BottomSheetDropshipBinding.inflate(LayoutInflater.from(context))
+        val bottomSheetUnify = BottomSheetUnify()
+        bottomSheetUnify.setTitle(
+            getString(R.string.dropship_bottomsheet_title)
+        )
+        bottomSheetUnify.showCloseIcon = false
+        bottomSheetUnify.showKnob = true
+        bottomSheetUnify.setChild(bottomSheetDropshipBinding.root)
+        bottomSheetUnify.show(childFragmentManager, null)
+    }
+
+    override fun showDropshipToasterErrorProtectionUsage() {
+        Toaster.build(binding.root, getString(R.string.dropship_error_protection_usage), type = Toaster.TYPE_ERROR).show()
+    }
+
+    override fun checkLatestProtectionOptIn(cartStringGroup: String): Boolean {
+        return viewModel.isAnyProtectionAddonOptIn(cartStringGroup)
+    }
+
+    override fun onCheckChangedDropship(isChecked: Boolean, position: Int) {
+        checkoutAnalyticsCourierSelection.eventClickToggleDropshipWidget(isChecked)
+        viewModel.setDropshipSwitch(isChecked, position)
+    }
+
+    override fun setValidationDropshipName(name: String, isValid: Boolean, position: Int) {
+        viewModel.setValidationDropshipName(name, isValid, position)
+    }
+
+    override fun setValidationDropshipPhone(phone: String, isValid: Boolean, position: Int) {
+        viewModel.setValidationDropshipPhone(phone, isValid, position)
+    }
+
+    override fun onSendImpressionDropshipWidgetAnalytics() {
+        checkoutAnalyticsCourierSelection.eventViewDropshipWidget()
     }
 }

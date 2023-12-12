@@ -8,6 +8,11 @@ import com.tokopedia.checkout.databinding.ItemCheckoutOrderBinding
 import com.tokopedia.checkout.revamp.view.adapter.CheckoutAdapterListener
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutAddressModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
+import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget
+import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget.Companion.DROPSHIPPER_MAX_NAME_LENGTH
+import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget.Companion.DROPSHIPPER_MAX_PHONE_LENGTH
+import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget.Companion.DROPSHIPPER_MIN_NAME_LENGTH
+import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget.Companion.DROPSHIPPER_MIN_PHONE_LENGTH
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -23,7 +28,8 @@ class CheckoutOrderViewHolder(
     private val binding: ItemCheckoutOrderBinding,
     private val listener: CheckoutAdapterListener
 ) : RecyclerView.ViewHolder(binding.root),
-    ShippingCheckoutRevampWidget.ShippingWidgetListener {
+    ShippingCheckoutRevampWidget.ShippingWidgetListener,
+    CheckoutDropshipWidget.DropshipWidgetListener {
 
     private var order: CheckoutOrderModel? = null
 
@@ -36,6 +42,7 @@ class CheckoutOrderViewHolder(
         renderAddOnOrderLevel(order)
         renderShippingWidget(order, addressModel)
         renderVibration(order)
+        renderDropshipWidget(order)
     }
 
     private fun renderAddOnOrderLevel(order: CheckoutOrderModel) {
@@ -134,6 +141,8 @@ class CheckoutOrderViewHolder(
                         courierShipperPrice = courierItemData.shipperPrice,
 
                         currentAddress = RecipientAddressModel(),
+                        boOrderMessage = courierItemData.boOrderMessage,
+                        courierOrderMessage = courierItemData.courierOrderMessage,
 
                         scheduleDeliveryUiModel = courierItemData.scheduleDeliveryUiModel,
                         insuranceData = InsuranceWidgetUiModel(
@@ -322,6 +331,30 @@ class CheckoutOrderViewHolder(
         }
     }
 
+    private fun renderDropshipWidget(order: CheckoutOrderModel) {
+        binding.dropshipWidget.setupListener(this)
+        if (order.isEnableDropship) {
+            if (order.useDropship) {
+                if (order.stateDropship == CheckoutDropshipWidget.State.ERROR) {
+                    binding.dropshipWidget.state = order.stateDropship
+                } else {
+                    binding.dropshipWidget.state = CheckoutDropshipWidget.State.SELECTED
+                }
+                binding.dropshipWidget.dropshipName?.editText?.setText(order.dropshipName)
+                binding.dropshipWidget.dropshipPhone?.editText?.setText(order.dropshipPhone)
+            } else {
+                if (order.stateDropship != CheckoutDropshipWidget.State.GONE) {
+                    binding.dropshipWidget.state = order.stateDropship
+                } else {
+                    binding.dropshipWidget.state = CheckoutDropshipWidget.State.INIT
+                }
+            }
+            listener.onSendImpressionDropshipWidgetAnalytics()
+        } else {
+            binding.dropshipWidget.state = CheckoutDropshipWidget.State.GONE
+        }
+    }
+
     companion object {
         val VIEW_TYPE = R.layout.item_checkout_order
     }
@@ -391,5 +424,37 @@ class CheckoutOrderViewHolder(
                 listener.getHostFragmentManager()
             )
         }
+    }
+
+    override fun onClickDropshipLabel() {
+        listener.showDropshipInfoBottomSheet()
+    }
+
+    override fun isAddOnProtectionOptIn(): Boolean {
+        return listener.checkLatestProtectionOptIn(order?.cartStringGroup ?: "")
+    }
+
+    override fun showToasterErrorProtectionUsage() {
+        listener.showDropshipToasterErrorProtectionUsage()
+    }
+
+    override fun onClickDropshipSwitch(isChecked: Boolean) {
+        listener.onCheckChangedDropship(isChecked, bindingAdapterPosition)
+    }
+
+    override fun setDropshipName(name: String) {
+        val isNameValid = name.isNotEmpty() && name.length > DROPSHIPPER_MIN_NAME_LENGTH &&
+            name.length < DROPSHIPPER_MAX_NAME_LENGTH
+        order?.isDropshipNameValid = isNameValid
+        order?.dropshipName = name
+        listener.setValidationDropshipName(name, isNameValid, bindingAdapterPosition)
+    }
+
+    override fun setDropshipPhone(phone: String) {
+        val isPhoneValid = phone.isNotEmpty() && phone.length > DROPSHIPPER_MIN_PHONE_LENGTH &&
+            phone.length < DROPSHIPPER_MAX_PHONE_LENGTH
+        order?.isDropshipPhoneValid = isPhoneValid
+        order?.dropshipPhone = phone
+        listener.setValidationDropshipPhone(phone, isPhoneValid, bindingAdapterPosition)
     }
 }

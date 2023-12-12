@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    android:paddingBottom="8dp">
 
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
         android:id="@+id/rb_shipment"
@@ -22,6 +23,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/rb_shipment"
         app:layout_constraintBottom_toTopOf="@id/tv_description_shipment"
+        app:layout_constraintVertical_chainStyle="packed"
         app:typographyType="display_3"
         android:layout_marginStart="12dp"
         tools:text="NOW! - Terjadwal (Rp0 Rp20.000)" />
@@ -40,7 +42,7 @@
         app:typographyType="display_3"
         app:typographyWeight="reguler"
         tools:text="Tiba hari ini, 10:00 - 12:00"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_other_schedule"
