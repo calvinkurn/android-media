@@ -70,7 +70,12 @@ class VisitableFactory @Inject constructor(
         addTicker(visitableList, productDataView.tickerModel, data.isTickerHasDismissed)
         addSuggestion(visitableList, data.responseCode)
         addProductList(visitableList, data.productList)
-        addInspirationCarouselSeamless(visitableList, productDataView.seamlessCarouselDataViewList)
+        addInspirationCarouselSeamless(
+            visitableList,
+            data.externalReference,
+            data.keyword,
+            productDataView.seamlessCarouselDataViewList,
+        )
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS) {
             processHeadlineAdsFirstPage(
                 data.searchProductModel,
@@ -165,17 +170,25 @@ class VisitableFactory @Inject constructor(
 
     private fun addInspirationCarouselSeamless(
         visitableList: MutableList<Visitable<*>>,
-        seamlessCarouselDataViewList: Map<Int, List<Visitable<*>>>
+        externalReference: String,
+        keyword: String,
+        seamlessCarouselDataViewList: List<InspirationCarouselDataView>,
     ) {
         inspirationCarouselPresenter
             .setInspirationCarouselSeamlessDataViewList(seamlessCarouselDataViewList)
 
-        processInspirationCarouselSeamlessPosition(visitableList)
+        processInspirationCarouselSeamlessPosition(visitableList, externalReference, keyword)
     }
 
-    private fun processInspirationCarouselSeamlessPosition(visitableList: MutableList<Visitable<*>>) {
+    private fun processInspirationCarouselSeamlessPosition(
+        visitableList: MutableList<Visitable<*>>,
+        externalReference: String,
+        keyword: String,
+    ) {
         inspirationCarouselPresenter.processInspirationCarouselSeamlessPosition(
             visitableList.getTotalProductItem(),
+            externalReference,
+            keyword,
         ) { position, inspirationSeamlessVisitable ->
             visitableList.addAll(
                 visitableList.getIndexForWidgetPosition(position),
@@ -419,7 +432,11 @@ class VisitableFactory @Inject constructor(
         val previousVisitableList = visitableList.toList()
 
         addProductList(visitableList, data.loadMoreProductList)
-        processInspirationCarouselSeamlessPosition(visitableList)
+        processInspirationCarouselSeamlessPosition(
+            visitableList,
+            data.externalReference,
+            data.keyword,
+        )
         processHeadlineAdsLoadMore(
             data.searchProductModel,
             visitableList,

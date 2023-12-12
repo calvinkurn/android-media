@@ -25,6 +25,7 @@ import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.stories.R as storiesR
 
 class StoriesMapperImpl @Inject constructor(private val userSession: UserSessionInterface) :
@@ -100,15 +101,19 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     resetValue = -1,
                     isContentLoaded = false,
                     author = buildAuthor(stories.author),
+                    category = StoriesDetailItem.StoryCategory.getByValue(stories.category),
+                    publishedAt = stories.publishedAt,
                     menus = buildMenu(stories.interaction, stories.author),
                     share = StoriesDetailItem.Sharing(
                         isShareable = stories.interaction.shareable,
-                        shareText = MethodChecker.fromHtml(stories.meta.shareTextDescription).toString(),
+                        shareText = MethodChecker.fromHtml(stories.meta.shareTextDescription)
+                            .toString(),
                         metadata = LinkProperties(
                             linkerType = LinkerData.STORIES_TYPE,
                             ogTitle = MethodChecker.fromHtml(stories.meta.shareTitle).toString(),
                             ogImageUrl = stories.meta.shareImage,
-                            ogDescription = MethodChecker.fromHtml(stories.meta.shareDescription).toString(),
+                            ogDescription = MethodChecker.fromHtml(stories.meta.shareDescription)
+                                .toString(),
                             deeplink = stories.appLink,
                             desktopUrl = stories.webLink
                         )
@@ -133,6 +138,14 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
     ) =
         buildList {
             when {
+                !isOwner(author) && template.reportable -> add(
+                    ContentMenuItem(
+                        iconUnify = IconUnify.WARNING,
+                        name = contentcommonR.string.content_common_menu_report,
+                        type = ContentMenuIdentifier.Report
+                    )
+                )
+
                 isOwner(author) && template.deletable -> add(
                     ContentMenuItem(
                         iconUnify = IconUnify.DELETE,

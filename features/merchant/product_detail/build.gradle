@@ -16,7 +16,8 @@ android {
                     pathSources + 'detail',
                     pathSources + 'detail/a_plus_content',
                     pathSources + 'detail/bmgm',
-                    pathSources + 'detail/shipment'
+                    pathSources + 'detail/shipment',
+                    pathSources + 'detail/review',
             ]
         }
         androidTest {
@@ -66,7 +67,6 @@ buildscript {
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
-    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.applink)

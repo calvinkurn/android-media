@@ -3,12 +3,12 @@ package com.tokopedia.product.addedit.description.presentation.viewmodel
 import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.YOUTU_BE_URL
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.description.domain.model.GetYoutubeVideoSnippetResponse
 import com.tokopedia.product.addedit.description.domain.model.ValidateProductDescriptionResponse
+import com.tokopedia.product.addedit.description.domain.usecase.GetYoutubeVideoSnippetUseCase
 import com.tokopedia.product.addedit.description.domain.usecase.ValidateProductDescriptionUseCase
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
@@ -25,7 +25,6 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -41,7 +40,6 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.lang.reflect.Type
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -50,7 +48,7 @@ class AddEditProductDescriptionViewModelTest {
     lateinit var resourceProvider: ResourceProvider
 
     @RelaxedMockK
-    lateinit var getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase
+    lateinit var getYoutubeVideoUseCase: GetYoutubeVideoSnippetUseCase
 
     @RelaxedMockK
     lateinit var videoUri: Uri
@@ -83,12 +81,6 @@ class AddEditProductDescriptionViewModelTest {
     private val youtubeVideoUrlFromWebsiteWithoutWww = "https://$youtubeWebsiteHostWithoutWww/watch?v=$videoId"
     private val unknownYoutubeUrl = "http://$unknownYoutubeHost/$videoId"
     private var usedYoutubeVideoUrl = ""
-
-    private val youtubeSuccessData = YoutubeVideoDetailModel()
-    private val youtubeRestResponse = RestResponse(youtubeSuccessData, 200, false)
-    private val youtubeSuccessRestResponseMap = mapOf<Type, RestResponse>(
-        YoutubeVideoDetailModel::class.java to youtubeRestResponse
-    )
 
     private fun getTestProductInputModel(): ProductInputModel {
         return ProductInputModel(
@@ -215,12 +207,12 @@ class AddEditProductDescriptionViewModelTest {
 
         coEvery {
             getYoutubeVideoUseCase.executeOnBackground()
-        } returns youtubeSuccessRestResponseMap
+        } returns GetYoutubeVideoSnippetResponse()
 
         viewModel.urlYoutubeChanged(usedYoutubeVideoUrl)
 
         val result = viewModel.videoYoutube.getOrAwaitValue()
-        assert(result == Success(youtubeSuccessData))
+        assert(result == Success(GetYoutubeVideoSnippetResponse()))
     }
 
     @Test
@@ -232,12 +224,12 @@ class AddEditProductDescriptionViewModelTest {
 
         coEvery {
             getYoutubeVideoUseCase.executeOnBackground()
-        } returns youtubeSuccessRestResponseMap
+        } returns GetYoutubeVideoSnippetResponse()
 
         viewModel.urlYoutubeChanged(usedYoutubeVideoUrl)
 
         val result = viewModel.videoYoutube.getOrAwaitValue()
-        assert(result == Success(youtubeSuccessData))
+        assert(result == Success(GetYoutubeVideoSnippetResponse()))
     }
 
     @Test
@@ -249,12 +241,12 @@ class AddEditProductDescriptionViewModelTest {
 
         coEvery {
             getYoutubeVideoUseCase.executeOnBackground()
-        } returns youtubeSuccessRestResponseMap
+        } returns GetYoutubeVideoSnippetResponse()
 
         viewModel.urlYoutubeChanged(usedYoutubeVideoUrl)
 
         val result = viewModel.videoYoutube.getOrAwaitValue()
-        assert(result == Success(youtubeSuccessData))
+        assert(result == Success(GetYoutubeVideoSnippetResponse()))
     }
 
     @Test
@@ -283,23 +275,6 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     @Test
-    fun `When the url lastPathSegment is null expect failed get youtube video data`() = coroutineTestRule.runTest {
-        mockUriParsing()
-        every {
-            videoUri.host
-        } returns YOUTU_BE_URL
-        every {
-            videoUri.lastPathSegment
-        } returns null
-
-        usedYoutubeVideoUrl = unknownYoutubeUrl
-        viewModel.urlYoutubeChanged(usedYoutubeVideoUrl)
-
-        val result = viewModel.videoYoutube.getOrAwaitValue()
-        assert(result is Fail)
-    }
-
-    @Test
     fun `When the url parsing is failed expect failed get youtube video data`() = coroutineTestRule.runTest {
         mockkStatic(Uri::class)
         every {
@@ -307,23 +282,6 @@ class AddEditProductDescriptionViewModelTest {
         } throws Throwable("")
 
         usedYoutubeVideoUrl = unknownYoutubeUrl
-
-        viewModel.urlYoutubeChanged(usedYoutubeVideoUrl)
-
-        val result = viewModel.videoYoutube.getOrAwaitValue()
-        assert(result is Fail)
-    }
-
-    @Test
-    fun `When the response is map containing no values expect failed get youtube video data`() = coroutineTestRule.runTest {
-        mockUriParsing()
-        mockkObject(GetYoutubeVideoDetailUseCase)
-
-        usedYoutubeVideoUrl = youtubeVideoUrlFromWebsiteWithoutWww
-
-        coEvery {
-            getYoutubeVideoUseCase.executeOnBackground()
-        } returns mapOf()
 
         viewModel.urlYoutubeChanged(usedYoutubeVideoUrl)
 

@@ -75,7 +75,6 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderP1Header
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderTickerData
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
-import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.resources.isDarkMode
@@ -94,6 +93,8 @@ class ShopPageHeaderFragmentTabContentWrapper :
         private const val FRAGMENT_SHOWCASE_KEY_SHOP_ID = "SHOP_ID"
         private const val FRAGMENT_SHOWCASE_KEY_SHOP_REF = "SHOP_REF"
         private const val FRAGMENT_SHOWCASE_KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
+        private const val FRAGMENT_SHOWCASE_KEY_FORCE_LIGHT_MODE = "force_light_mode"
+        private const val FRAGMENT_SHOWCASE_KEY_COLOR_SCHEME = "color_scheme"
         private const val FRAGMENT_SHOWCASE_KEY_IS_OS = "IS_OS"
         private const val FRAGMENT_SHOWCASE_KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
         private const val FRAGMENT_SHOWCASE_KEY_FOR_SHARE = "shop_header_for_sharing"
@@ -661,6 +662,14 @@ class ShopPageHeaderFragmentTabContentWrapper :
                                 FRAGMENT_SHOWCASE_KEY_FOR_SHARE,
                                 shopPageHeaderDataModel?.mapperForShopShowCase()
                             )
+                            putBoolean(
+                                FRAGMENT_SHOWCASE_KEY_FORCE_LIGHT_MODE,
+                                shopHeaderLayoutData.isOverrideTheme
+                            )
+                            putParcelable(
+                                FRAGMENT_SHOWCASE_KEY_COLOR_SCHEME,
+                                getShopBodyConfig()?.colorSchema
+                            )
                         }
                     )
                     shopShowcaseTabFragment
@@ -812,7 +821,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
     }
 
     fun setSgcPlayWidgetData() {
-        shopPageHeaderFragmentHeaderViewHolder?.setSgcPlaySection(shopPagePageHeaderWidgetList)
+        shopPageHeaderFragmentHeaderViewHolder?.setSgcPlaySection(shopPagePageHeaderWidgetList, getShopHeaderConfig())
     }
 
     fun updateNavToolbarNotification() {

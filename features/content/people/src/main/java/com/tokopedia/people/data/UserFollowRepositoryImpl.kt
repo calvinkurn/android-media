@@ -53,7 +53,7 @@ class UserFollowRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMyFollowers(
+    override suspend fun getFollowers(
         username: String,
         cursor: String,
         limit: Int
@@ -68,7 +68,7 @@ class UserFollowRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMyFollowing(
+    override suspend fun getFollowing(
         username: String,
         cursor: String,
         limit: Int
