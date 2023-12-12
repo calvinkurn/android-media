@@ -71,6 +71,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDa
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.SDUIDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
@@ -116,6 +117,7 @@ import com.tokopedia.universal_sharing.util.DateUtil
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
+import org.json.JSONObject
 import java.text.SimpleDateFormat
 
 object DynamicProductDetailMapper {
@@ -369,6 +371,15 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.SHIPMENT_V3 -> {
                     listOfComponent.add(
                         ShipmentUiModel(type = component.type, name = component.componentName)
+                    )
+                }
+                ProductDetailConstant.SDUI_VIEW -> {
+                    val sduiData = component.componentData.firstOrNull() ?: return@forEachIndexed
+                    listOfComponent.add(
+                        SDUIDataModel(type = component.type,
+                            name = component.componentName,
+                            data = JSONObject(sduiData.sduiData)
+                        )
                     )
                 }
             }

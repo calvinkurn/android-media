@@ -463,6 +463,9 @@ open class GetPdpLayoutUseCase @Inject constructor(
                             }
                         }
                     }
+                    ... on pdpDataComponentSDUIDivKit {
+                        template 
+                    }
                   }
                 }
               }
@@ -485,7 +488,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                 putString(ProductDetailCommonConstant.PARAM_SHOP_DOMAIN, shopDomain)
                 putString(ProductDetailCommonConstant.PARAM_PRODUCT_KEY, productKey)
                 putString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, whId)
-                putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutId)
+                putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "265")
                 putString(ProductDetailCommonConstant.PARAM_EXT_PARAM, extParam.encodeToUtf8())
                 putObject(ProductDetailCommonConstant.PARAM_USER_LOCATION, userLocationRequest)
                 putObject(ProductDetailCommonConstant.PARAM_TOKONOW, tokonow)

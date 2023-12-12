@@ -38,8 +38,7 @@ class ActionHandler(private val contextDivAction: Context?): DivActionHandler() 
     }
 
     private fun getApplink(applinkActionStr: String): String{
-        //parse app link str
-        return ""
+        return applinkActionStr
     }
 
     private fun sendTracker(trackerPayload: JsonObject){
