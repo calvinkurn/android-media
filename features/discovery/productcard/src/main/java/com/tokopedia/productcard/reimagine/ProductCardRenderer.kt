@@ -16,6 +16,7 @@ import com.tokopedia.productcard.utils.RoundedCornersTransformation.CornerType.A
 import com.tokopedia.productcard.utils.RoundedCornersTransformation.CornerType.TOP
 import com.tokopedia.productcard.utils.imageRounded
 import com.tokopedia.productcard.utils.shouldShowWithAction
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.productcard.R as productcardR
@@ -27,6 +28,7 @@ internal class ProductCardRenderer(
 
     private val context = view.context
 
+    private val cardContainer by view.lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val imageView by view.lazyView<ImageUnify?>(R.id.productCardImage)
     private val adsText by view.lazyView<Typography?>(R.id.productCardAds)
     private val nameText by view.lazyView<Typography?>(R.id.productCardName)
@@ -41,8 +43,14 @@ internal class ProductCardRenderer(
     private val shopSection by view.lazyView<LinearLayout?>(R.id.productCardShopSection)
     private val freeShippingImage by view.lazyView<ImageView?>(R.id.productCardFreeShipping)
     private val ribbon = ProductCardRibbon(view)
+    private val cornerRadiusCard by lazy {
+        context.resources.getDimensionPixelSize(
+            R.dimen.product_card_reimagine_carousel_image_radius
+        )
+    }
 
     fun setProductModel(productCardModel: ProductCardModel) {
+        renderRadiusCard()
         renderImage(productCardModel)
         renderAds(productCardModel)
         renderName(productCardModel)
@@ -57,15 +65,17 @@ internal class ProductCardRenderer(
         ribbon.render(productCardModel.ribbon())
     }
 
+    private fun renderRadiusCard() {
+        cardContainer?.radius = cornerRadiusCard.toFloat()
+    }
+
     private fun renderImage(productCardModel: ProductCardModel) {
         val cornerType= if (productCardModel.stockInfo() != null) TOP else ALL
         imageView?.apply {
-            cornerRadius = if (cornerType != ALL) 0 else cornerRadius
+            cornerRadius = if (cornerType != ALL) 0 else 12
             imageRounded(
                 productCardModel.imageUrl,
-                context.resources.getDimensionPixelSize(
-                    R.dimen.product_card_reimagine_carousel_image_radius
-                ).toFloat(),
+                cornerRadiusCard.toFloat(),
                 cornerType
             )
 

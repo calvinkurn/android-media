@@ -22,7 +22,7 @@ class ProductCardGridCarouselView: ConstraintLayout {
     private val stockInfo = ProductCardStockInfo(this)
 
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
-    private val productCardOutlineCard by lazyView<View?>(R.id.productCardOutlineCard)
+    private val productCardOutlineCard by lazyView<View?>(R.id.productCardOutline)
     private val cardConstraintLayout by lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
     private val imageView by lazyView<ImageUnify?>(R.id.productCardImage)
     private val productCardGuidelineStartContent by lazyView<Guideline?>(R.id.productCardGuidelineStartContent)

@@ -43,7 +43,7 @@
                 app:layout_constraintGuide_percent="0.35" />
 
             <View
-                android:id="@+id/productCardOutlineCard"
+                android:id="@+id/productCardOutline"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="@drawable/product_card_border_item_with_background"

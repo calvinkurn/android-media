@@ -414,7 +414,7 @@ private fun itemInBackground(): ProductCardReimagineMatcher {
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
         R.id.productCardFreeShipping to isDisplayed(),
-        R.id.productCardOutlineCard to isDisplayed(),
+        R.id.productCardOutline to isDisplayed(),
         )
 
     return Triple(model, matcher, "Item In Background")
@@ -482,7 +482,7 @@ private fun itemInBackgroundHasRibbonAndSlashedPriceInline(): ProductCardReimagi
         R.id.productCardRibbonText to isDisplayedWithText(reimagineRibbon.title),
         R.id.productCardRibbonArch to isDisplayed(),
         R.id.productCardRibbonBackground to isDisplayed(),
-        R.id.productCardOutlineCard to isDisplayed(),
+        R.id.productCardOutline to isDisplayed(),
     )
 
     return Triple(model, matcher, "Item in Background, Slashed Price Inline")
