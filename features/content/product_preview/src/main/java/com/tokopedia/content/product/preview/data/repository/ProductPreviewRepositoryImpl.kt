@@ -1,6 +1,7 @@
 package com.tokopedia.content.product.preview.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.product.preview.data.mapper.ProductPreviewMapper
 import com.tokopedia.content.product.preview.data.usecase.MediaReviewUseCase
@@ -43,8 +44,20 @@ class ProductPreviewRepositoryImpl @Inject constructor(
         productName: String,
         shopId: String,
         price: Double
-    ): Boolean {
-        TODO("Not yet implemented")
+    ): Boolean = withContext(dispatchers.io) {
+        val response = addToCartUseCase.apply {
+            setParams(
+                AddToCartUseCase.getMinimumParams(
+                    productId = productId,
+                    shopId = shopId,
+                    atcExternalSource = AtcFromExternalSource.ATC_FROM_STORIES,
+                    productName = productName,
+                    price = price.toString(),
+                    userId = userSessionInterface.userId,
+                )
+            )
+        }.executeOnBackground()
+        !response.isStatusError()
     }
 
     override suspend fun likeReview() {
