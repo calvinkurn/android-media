@@ -2602,12 +2602,12 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
     override fun onChevronBuyAgainWidgetClicked(applink: String) {
         UohAnalytics.sendClickLihatSemuaArrowButtonOnBuyAgainWidgetEvent()
-        RouteManager.route(context, URLDecoder.decode(applink, UohConsts.UTF_8))
+        RouteManager.route(context, applink)
     }
 
     override fun onSeeAllCardClicked(applink: String) {
         UohAnalytics.sendClickLihatSemuaButtonOnBuyAgainWidgetEvent()
-        RouteManager.route(context, URLDecoder.decode(applink, UohConsts.UTF_8))
+        RouteManager.route(context, applink)
     }
 
     override fun onProductCardClicked(recommendationItem: RecommendationItem, index: Int) {

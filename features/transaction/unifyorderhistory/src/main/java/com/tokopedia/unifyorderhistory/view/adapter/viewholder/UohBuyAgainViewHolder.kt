@@ -49,8 +49,4 @@ class UohBuyAgainViewHolder(
             }
         }
     }
-
-    companion object {
-        private const val UOH_BUY_AGAIN_BACKGROUND = "https://images.tokopedia.net/img/android/uoh_buy_again_bg.png"
-    }
 }

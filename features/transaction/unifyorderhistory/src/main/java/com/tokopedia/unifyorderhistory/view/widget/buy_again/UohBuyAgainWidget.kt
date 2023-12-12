@@ -13,13 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -51,7 +49,7 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.viewallcard.compose.NestViewAllCard
 import com.tokopedia.nest.principles.utils.ImageSource as ImageSource
 
-/*@Preview
+@Preview
 @Composable
 fun BuyAgainPreview() {
     UohBuyAgainWidget(
@@ -66,8 +64,8 @@ fun BuyAgainPreview() {
                     discountPercentageInt = 15,
                     discountPercentage = "15",
                     slashedPrice = "Rp30.000"
-                )*//*,
-            RecommendationItem(
+                ),
+                RecommendationItem(
                     name = "Fillet Ikan Pangasius",
                     imageUrl = "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/8/22/8e7f3536-af84-4300-bfff-4832fb6f0f99.png",
                     price = "Rp25.500",
@@ -75,8 +73,8 @@ fun BuyAgainPreview() {
                     discountPercentageInt = 15,
                     discountPercentage = "15",
                     slashedPrice = "Rp30.000"
-            ),
-            RecommendationItem(
+                ),
+                RecommendationItem(
                     name = "Fillet Ikan Pangasius",
                     imageUrl = "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/8/22/8e7f3536-af84-4300-bfff-4832fb6f0f99.png",
                     price = "Rp25.500",
@@ -84,8 +82,8 @@ fun BuyAgainPreview() {
                     discountPercentageInt = 15,
                     discountPercentage = "15",
                     slashedPrice = "Rp30.000"
-            ),
-            RecommendationItem(
+                ),
+                RecommendationItem(
                     name = "Fillet Ikan Pangasius",
                     imageUrl = "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/8/22/8e7f3536-af84-4300-bfff-4832fb6f0f99.png",
                     price = "Rp25.500",
@@ -93,11 +91,17 @@ fun BuyAgainPreview() {
                     discountPercentageInt = 15,
                     discountPercentage = "15",
                     slashedPrice = "Rp30.000"
-            )*//*
+                )
             )
-        )
+        ),
+        onItemScrolled = { _, _ -> },
+        onSeeAllCardClick = {},
+        onButtonBuyAgainClick = { _, _ -> },
+        onProductCardClick = { _, _ -> },
+        onChevronClicked = {},
+        onWidgetImpressed = {}
     )
-}*/
+}
 
 @Composable
 fun UohBuyAgainWidget(
@@ -253,8 +257,6 @@ fun UohBuyAgainList(
                     subtitle = " ",
                     onClick = onSeeAllCardClick
                 )
-                /*ViewAllCard(modifier = modifier,
-                        onButtonBuyAgainClick = {})*/
             }
         }
     }
@@ -358,72 +360,5 @@ private fun ImageProduct(imageSource: ImageSource, modifier: Modifier) {
                 .align(Alignment.Center),
             contentDescription = null
         )
-    }
-}
-
-@Composable
-fun ItemImpression(key: Long, lazyListState: LazyListState, onItemViewed: () -> Unit) {
-    /*val isItemWithKeyInView by remember {
-        derivedStateOf {
-            lazyListState.layoutInfo
-                    .visibleItemsInfo
-                    .any { it.key == key }
-        }
-    }
-
-    if (isItemWithKeyInView) {
-        LaunchedEffect(Unit) {
-            onItemViewed()
-        }
-    }*/
-    LaunchedEffect(Unit) {
-        onItemViewed()
-    }
-}
-
-@Composable
-private fun ViewAllCard(
-    modifier: Modifier = Modifier,
-    onButtonBuyAgainClick: () -> Unit
-) {
-    NestCard(
-        modifier = modifier
-            .heightIn(min = 68.dp)
-            .widthIn(min = 110.dp)
-            .padding(start = 6.dp, top = 6.dp, bottom = 6.dp),
-        type = NestCardType.Shadow,
-        onClick = onButtonBuyAgainClick
-    ) {
-        val backgroundImg = "https://images.tokopedia.net/img/android/uoh/uoh_buy_again_see_all_bg.png"
-        Box {
-            NestImage(
-                type = NestImageType.Rect(0.dp),
-                contentScale = ContentScale.FillWidth,
-                source = ImageSource.Remote(backgroundImg),
-                modifier = Modifier.align(Alignment.TopEnd),
-                contentDescription = null
-            )
-
-            Row(modifier = Modifier.align(Alignment.BottomStart)) {
-                NestTypography(
-                    text = "Lihat Semua",
-                    modifier = Modifier
-                        .padding(start = 10.dp),
-                    textStyle = NestTheme.typography.display3.copy(
-                        color = NestTheme.colors.GN._500,
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-
-                NestIcon(
-                    iconId = IconUnify.CHEVRON_RIGHT,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .padding(end = 8.dp),
-                    colorLightEnable = NestTheme.colors.GN._500,
-                    colorNightEnable = NestTheme.colors.GN._500
-                )
-            }
-        }
     }
 }
