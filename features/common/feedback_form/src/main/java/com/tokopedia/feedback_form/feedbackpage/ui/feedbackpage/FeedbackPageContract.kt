@@ -13,6 +13,8 @@ interface FeedbackPageContract {
     interface View: CustomerView{
         fun showLoadingDialog()
         fun hideLoadingDialog()
+        fun showLoadingFrame()
+        fun hideLoadingFrame()
         fun setSubmitFlag()
         fun checkUriImage(feedbackId: Int, imageCount: Int)
         fun goToTicketCreatedActivity(issueUrl: String?)
@@ -32,6 +34,6 @@ interface FeedbackPageContract {
         fun removeImage(image: BaseImageFeedbackUiModel) : MutableList<BaseImageFeedbackUiModel>
         fun getSelectedImageUrl(): ArrayList<String>
         fun drawOnPictureResult(uri: Uri?, oldPath: String): MutableList<BaseImageFeedbackUiModel>
-        fun setSelectedPage(pageInt: Int)
+        fun setSelectedPage(pageId: Int)
     }
 }
