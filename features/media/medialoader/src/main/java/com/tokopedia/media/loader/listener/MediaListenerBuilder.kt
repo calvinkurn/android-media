@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.media.loader.data.Properties
@@ -35,6 +36,31 @@ internal object MediaListenerBuilder {
             dataSource: DataSource?,
             isFirstResource: Boolean
         ) = onResourceReady(context, properties, startTime, resource, target, dataSource)
+    }
+
+    fun gifListener(
+        properties: Properties,
+    ) = object : RequestListener<GifDrawable> {
+        override fun onLoadFailed(
+            e: GlideException?,
+            model: Any?,
+            target: Target<GifDrawable>?,
+            isFirstResource: Boolean
+        ): Boolean {
+            properties.loaderListener?.onFailed(e)
+            return false
+        }
+
+        override fun onResourceReady(
+            resource: GifDrawable?,
+            model: Any?,
+            target: Target<GifDrawable>?,
+            dataSource: DataSource?,
+            isFirstResource: Boolean
+        ): Boolean {
+            properties.loaderListener?.onLoaded(resource, dataSource(dataSource))
+            return false
+        }
     }
 
     private fun onLoadFailed(

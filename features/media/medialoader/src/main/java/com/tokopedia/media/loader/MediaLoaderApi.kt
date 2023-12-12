@@ -11,6 +11,7 @@ import com.tokopedia.media.loader.listener.MediaListenerBuilder
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.utils.delayInto
 import com.tokopedia.media.loader.utils.isValidUrl
+import com.tokopedia.media.loader.utils.loadLookup
 import com.tokopedia.media.loader.utils.mediaLoad
 
 internal object MediaLoaderApi {
@@ -66,12 +67,14 @@ internal object MediaLoaderApi {
             GlideApp
                 .with(context)
                 .asGif()
+                .addListener(MediaListenerBuilder.gifListener(properties))
                 .load(source)
                 .delayInto(imageView, properties)
         }
     }
 
     fun loadGifImage(imageView: ImageView, source: Int, properties: Properties) {
+        // local asset especially on DF cannot load resource using appContext
         var context = imageView.context
         if (!context.isValid()) {
             context = imageView.context.applicationContext
@@ -81,7 +84,8 @@ internal object MediaLoaderApi {
             GlideApp
                 .with(context)
                 .asGif()
-                .load(source)
+                .addListener(MediaListenerBuilder.gifListener(properties))
+                .loadLookup(context, source)
                 .delayInto(imageView, properties)
         }
     }
