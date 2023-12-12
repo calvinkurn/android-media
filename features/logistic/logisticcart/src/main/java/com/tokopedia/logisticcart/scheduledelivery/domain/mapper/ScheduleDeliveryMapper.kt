@@ -7,7 +7,12 @@ import javax.inject.Inject
 
 class ScheduleDeliveryMapper @Inject constructor() {
 
-    fun map(ratesParam: RatesParam, warehouseId: String): ScheduleDeliveryParam {
+    fun map(
+        ratesParam: RatesParam,
+        warehouseId: String,
+        startDate: String = "",
+        isRecommend: Boolean = true
+    ): ScheduleDeliveryParam {
         return ScheduleDeliveryParam(
             origin = ratesParam.origin,
             destination = ratesParam.destination,
@@ -27,7 +32,10 @@ class ScheduleDeliveryMapper @Inject constructor() {
             orderValue = ratesParam.order_value.toLongOrZero(),
             cartData = ratesParam.cart_data,
             insurance = ratesParam.insurance.toLongOrZero(),
-            productInsurance = ratesParam.product_insurance.toLongOrZero()
+            productInsurance = ratesParam.product_insurance.toLongOrZero(),
+            isRecommend = isRecommend,
+            startDate = startDate,
+            groupingState = ratesParam.grouping_state
         )
     }
 }

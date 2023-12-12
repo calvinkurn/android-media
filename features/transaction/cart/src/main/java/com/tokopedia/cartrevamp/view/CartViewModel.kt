@@ -1006,16 +1006,6 @@ class CartViewModel @Inject constructor(
     fun processGetWishlistV2Data() {
         val requestParams = WishlistV2Params().apply {
             source = SOURCE_CART
-            cartModel.lca?.let { address ->
-                wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
-                    districtId = address.district_id,
-                    cityId = address.city_id,
-                    latitude = address.lat,
-                    longitude = address.long,
-                    postalCode = address.postal_code,
-                    addressId = address.address_id
-                )
-            }
         }
 
         viewModelScope.launch(dispatchers.io) {

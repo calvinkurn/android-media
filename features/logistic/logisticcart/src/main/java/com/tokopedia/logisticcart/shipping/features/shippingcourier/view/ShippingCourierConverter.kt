@@ -52,6 +52,7 @@ class ShippingCourierConverter @Inject constructor() {
             courierItemData.isUsePinPoint = it.productData.isShowMap == 1
             courierItemData.isHideChangeCourierCard = it.serviceData.selectedShipperProductId > 0
             courierItemData.durationCardDescription = it.serviceData.texts.textEtaSummarize
+            courierItemData.courierOrderMessage = it.productData.orderMessage
             if (!courierItemData.isUsePinPoint) {
                 if (it.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                     courierItemData.isUsePinPoint = true
@@ -134,6 +135,7 @@ class ShippingCourierConverter @Inject constructor() {
             courierItemData.serviceId = it.serviceData.serviceId
             courierItemData.shipperProductId = it.productData.shipperProductId
             courierItemData.name = it.productData.shipperName
+            courierItemData.courierOrderMessage = it.productData.orderMessage
             courierItemData.estimatedTimeDelivery = it.serviceData.serviceName
             courierItemData.minEtd = it.productData.etd.minEtd
             courierItemData.maxEtd = it.productData.etd.maxEtd
@@ -218,6 +220,15 @@ class ShippingCourierConverter @Inject constructor() {
         return courierItemData
     }
 
+    fun schellyToCourierItemData(schelly: ScheduleDeliveryData, validationMetadata: String = ""): CourierItemData {
+        return CourierItemData().apply {
+            setScheduleDeliveryUiModel(
+                schelly,
+                validationMetadata = validationMetadata
+            )
+        }
+    }
+
     private fun CourierItemData.setScheduleDeliveryUiModel(
         scheduleDeliveryData: ScheduleDeliveryData?,
         validationMetadata: String?
@@ -240,6 +251,7 @@ class ShippingCourierConverter @Inject constructor() {
         courierData.promoTitle = data.title
         courierData.isHideShipperName = data.hideShipperName
         courierData.shipperName = data.shipperName
+        courierData.boOrderMessage = data.orderMessage
         courierData.etaText = data.etaData.textEta
         courierData.etaErrorCode = data.etaData.errorCode
         courierData.freeShippingChosenCourierTitle = data.freeShippingChosenCourierTitle
