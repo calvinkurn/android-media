@@ -162,6 +162,10 @@ class EnhancedECommerceProductCartMapData {
         Product[KEY_DIMENSION_53] = isDiscountPrice.toString()
     }
 
+    fun setDimension56(warehouseId: String?) {
+        Product[KEY_DIMENSION_56] = if (!warehouseId.isNullOrBlank()) warehouseId else ""
+    }
+
     fun setDimension57(shopName: String?) {
         Product[KEY_DIMENSION_57] = if (!shopName.isNullOrBlank()) shopName else ""
     }
@@ -176,6 +180,10 @@ class EnhancedECommerceProductCartMapData {
 
     fun setDimension82(categoryId: String?) {
         Product[KEY_DIMENSION_82] = if (!categoryId.isNullOrBlank()) categoryId else ""
+    }
+
+    fun setDimension73(productTagInfo: String?) {
+        Product[KEY_DIMENSION_73] = if (!productTagInfo.isNullOrBlank()) productTagInfo else ""
     }
 
     fun setDimension77(cartId: String?) {
@@ -242,9 +250,11 @@ class EnhancedECommerceProductCartMapData {
         private const val KEY_DIMENSION_54 = "dimension54"
         private const val KEY_DIMENSION_52 = "dimension52"
         private const val KEY_DIMENSION_53 = "dimension53"
+        private const val KEY_DIMENSION_56 = "dimension56"
         private const val KEY_DIMENSION_57 = "dimension57"
         private const val KEY_DIMENSION_58 = "dimension58"
         private const val KEY_DIMENSION_59 = "dimension59"
+        private const val KEY_DIMENSION_73 = "dimension73"
         private const val KEY_DIMENSION_77 = "dimension77"
         private const val KEY_DIMENSION_80 = "dimension80"
         private const val KEY_DIMENSION_82 = "dimension82"

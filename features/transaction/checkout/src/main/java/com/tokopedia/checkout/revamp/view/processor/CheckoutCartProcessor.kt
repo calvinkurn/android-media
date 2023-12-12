@@ -56,7 +56,8 @@ class CheckoutCartProcessor @Inject constructor(
         checkoutLeasingId: String?,
         isPlusSelected: Boolean,
         isReloadData: Boolean,
-        isReloadAfterPriceChangeHigher: Boolean
+        isReloadAfterPriceChangeHigher: Boolean,
+        shipmentAction: String
     ): CheckoutPageState {
         return withContext(dispatchers.io) {
             try {
@@ -69,7 +70,8 @@ class CheckoutCartProcessor @Inject constructor(
                         deviceId,
                         checkoutLeasingId,
                         isPlusSelected,
-                        true
+                        true,
+                        shipmentAction
                     )
                 )
                 validateShipmentAddressFormData(

@@ -163,6 +163,8 @@ data class GetProductAdsResponse(
         val parentId: String,
         @SerializedName("max_order")
         val maxOrder: Int,
+        @SerializedName("warehouse_id")
+        val warehouseId: String,
         @SerializedName("stock")
         val stock: Int
     )

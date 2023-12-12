@@ -21,8 +21,10 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
 import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
+import com.tokopedia.cart.view.uimodel.CartDeleteButtonSource
 import com.tokopedia.cartrevamp.view.BmGmWidgetView
 import com.tokopedia.cartrevamp.view.adapter.cart.CartItemAdapter
+import com.tokopedia.cartrevamp.view.customview.CartSwipeRevealLayout
 import com.tokopedia.cartrevamp.view.customview.CartViewBinderHelper
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_FOOTER
@@ -77,6 +79,7 @@ class CartItemViewHolder constructor(
     private var informationLabel: MutableList<String> = mutableListOf()
     private var qtyTextWatcher: TextWatcher? = null
     private var lastQty: Int = 0
+    private var isDeleteFromDoneImeButton: Boolean = false
 
     @SuppressLint("ClickableViewAccessibility")
     fun clear() {
@@ -95,6 +98,7 @@ class CartItemViewHolder constructor(
     ) {
         this.viewHolderListener = viewHolderListener
         this.dataSize = dataSize
+        this.isDeleteFromDoneImeButton = false
 
         itemView.addOnImpressionListener(data, onView = {
             if (!data.isError) {
@@ -114,6 +118,7 @@ class CartItemViewHolder constructor(
         renderQuantity(data, viewHolderListener)
         renderProductAction(data)
         renderBmGmOfferTicker(data)
+        renderProductTagInfo(data)
     }
 
     private fun initSwipeLayout(data: CartItemHolderData) {
@@ -137,6 +142,7 @@ class CartItemViewHolder constructor(
             binderHelper.lockSwipe(data.getSwipeLayoutBundlingId())
         }
         setSwipeLayoutColor()
+        setSwipeLayoutSwipeListener(data)
         setSwipeLayoutClickListener(data)
     }
 
@@ -190,17 +196,35 @@ class CartItemViewHolder constructor(
         }
     }
 
+    private fun setSwipeLayoutSwipeListener(data: CartItemHolderData) {
+        binding.apply {
+            swipeLayout.setSwipeListener(object : CartSwipeRevealLayout.SwipeListener {
+                override fun onClosed(view: CartSwipeRevealLayout?) {
+                    actionListener?.onSwipeToDeleteClosed(data.productId)
+                }
+
+                override fun onOpened(view: CartSwipeRevealLayout?) {
+                    // no-op
+                }
+
+                override fun onSlide(view: CartSwipeRevealLayout?, slideOffset: Float) {
+                    // no-op
+                }
+            })
+        }
+    }
+
     private fun setSwipeLayoutClickListener(data: CartItemHolderData) {
         binding.apply {
             flSwipeDelete.setOnClickListener {
                 if (swipeLayout.isOpen()) {
-                    actionListener?.onCartItemDeleteButtonClicked(data, true)
+                    actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.SwipeToDelete)
                     binderHelper.closeAll()
                 }
             }
             flSwipeDeleteBundling.setOnClickListener {
                 if (swipeLayoutBundling.isOpen()) {
-                    actionListener?.onCartItemDeleteButtonClicked(data, true)
+                    actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.SwipeToDelete)
                     binderHelper.closeAll()
                 }
             }
@@ -393,7 +417,7 @@ class CartItemViewHolder constructor(
     private fun renderActionDelete(data: CartItemHolderData) {
         binding.buttonDeleteCart.setOnClickListener {
             if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
-                actionListener?.onCartItemDeleteButtonClicked(data, true)
+                actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.TrashBin)
             }
         }
         binding.buttonDeleteCart.show()
@@ -1238,7 +1262,11 @@ class CartItemViewHolder constructor(
                         if (data.isBundlingItem) data.bundleQuantity else data.quantity
                     if (isActive && previousQuantity != newValue) {
                         if (!qtyEditorProduct.editText.isFocused) {
-                            validateQty(newValue, data)
+                            if (isDeleteFromDoneImeButton) {
+                                isDeleteFromDoneImeButton = false
+                            } else {
+                                validateQty(newValue, data)
+                            }
                             if (isActive && newValue != 0) {
                                 actionListener?.onCartItemQuantityChanged(data, newValue)
                                 handleRefreshType(data, viewHolderListener)
@@ -1258,7 +1286,7 @@ class CartItemViewHolder constructor(
                     if (data.isBundlingItem) data.bundleQuantity else data.quantity
                 if ((currentQuantity == 1 && data.minOrder == 1) || (currentQuantity == data.minOrder && data.isAlreadyShowMinimumQuantityPurchasedError)) {
                     delayChangeQty?.cancel()
-                    actionListener?.onCartItemDeleteButtonClicked(data, false)
+                    actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.TrashBin)
                     actionListener?.sendRemoveCartFromSubtractButtonAnalytic(data)
                 }
                 actionListener?.onCartItemQuantityMinusButtonClicked()
@@ -1280,8 +1308,11 @@ class CartItemViewHolder constructor(
         qtyEditorProduct.editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 KeyboardHandler.DropKeyboard(qtyEditorProduct.editText.context, itemView)
-                if (qtyEditorProduct.editText.text.toString() == "0") {
-                    actionListener?.onCartItemDeleteButtonClicked(data, true)
+                val isDeletion = qtyEditorProduct.editText.text.toString() == "0"
+                isDeleteFromDoneImeButton = isDeletion
+                if (isDeletion) {
+                    delayChangeQty?.cancel()
+                    actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.QuantityEditorImeAction)
                 }
                 if (lastQty > data.maxOrder) {
                     binding.labelQuantityError.text = String.format(
@@ -1313,7 +1344,7 @@ class CartItemViewHolder constructor(
         }
         if (newValue < element.minOrder) {
             if (element.minOrder <= 1) {
-                actionListener?.onCartItemDeleteButtonClicked(element, false)
+                actionListener?.onCartItemDeleteButtonClicked(element, CartDeleteButtonSource.TrashBin)
                 return
             }
             binding.labelQuantityError.show()
@@ -1326,7 +1357,7 @@ class CartItemViewHolder constructor(
                 element.isAlreadyShowMinimumQuantityPurchasedError = true
             } else {
                 element.isAlreadyShowMinimumQuantityPurchasedError = false
-                actionListener?.onCartItemDeleteButtonClicked(element, false)
+                actionListener?.onCartItemDeleteButtonClicked(element, CartDeleteButtonSource.TrashBin)
             }
         }
         qtyEditorCart.addButton.isEnabled = true
@@ -1612,6 +1643,17 @@ class CartItemViewHolder constructor(
             }
         } else {
             binding.itemCartBmgm.root.gone()
+        }
+    }
+
+    private fun renderProductTagInfo(data: CartItemHolderData) {
+        if (data.productTagInfo.isNotEmpty()) {
+            binding.textProductTagInfo.apply {
+                visible()
+                text = data.productTagInfo.firstOrNull()?.message ?: ""
+            }
+        } else {
+            binding.textProductTagInfo.gone()
         }
     }
 

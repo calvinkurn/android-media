@@ -198,7 +198,8 @@ object TokoNowCommonAnalytics {
         itemName: String = "",
         itemVariant: String = "",
         dimension40: String = "",
-        price: String = ""
+        price: String = "",
+        warehouseId: String = ""
     ): Bundle = Bundle().apply {
         putString(KEY_DIMENSION_40, dimension40)
         putString(KEY_INDEX, position.toString())
@@ -208,6 +209,9 @@ object TokoNowCommonAnalytics {
         putString(KEY_ITEM_NAME, itemName)
         putString(KEY_ITEM_VARIANT, itemVariant)
         putFloat(KEY_PRICE, price.getDigits().orZero().toFloat())
+        if(warehouseId.isNotBlank()) {
+            putString(KEY_DIMENSION_56, warehouseId)
+        }
     }
 
     fun productItemDataLayer(
@@ -221,7 +225,8 @@ object TokoNowCommonAnalytics {
         quantity: Int = 0,
         shopId: String = "",
         shopName: String = "",
-        shopType: String = ""
+        shopType: String = "",
+        warehouseId: String = ""
     ): Bundle = Bundle().apply {
         putString(KEY_CATEGORY_ID, categoryId)
         putString(KEY_ITEM_BRAND, itemBrand)
@@ -234,6 +239,9 @@ object TokoNowCommonAnalytics {
         putString(KEY_SHOP_ID, shopId)
         putString(KEY_SHOP_NAME, shopName)
         putString(KEY_SHOP_TYPE, shopType)
+        if(warehouseId.isNotBlank()) {
+            putString(KEY_DIMENSION_56, warehouseId)
+        }
     }
 
     fun joinDash(vararg s: String?): String {

@@ -39,6 +39,16 @@ class GetAutoCompleteUseCase @Inject constructor(
                   value
                   offset
                 }
+                district_id
+                city_id
+                province_id
+                district_name
+                city_name
+                province_name
+                latitude
+                longitude
+                postal_code
+                title
                 structured_formatting {
                   main_text
                   main_text_matched_substrings {

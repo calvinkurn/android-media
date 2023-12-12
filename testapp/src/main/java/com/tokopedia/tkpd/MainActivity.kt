@@ -10,10 +10,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.scp.auth.common.utils.ScpUtils.setIsEnableSharedPrefScpLogin
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.user.session.UserSession
@@ -34,6 +34,10 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         userSession = UserSession(this)
         model.value = model.value.copy(isDarkModeChecked = getDarkModeStatus())
+
+        // force to use SCP login
+        setIsEnableSharedPrefScpLogin(true)
+
         setContent {
             NestTheme {
                 var modelState by remember { model }
@@ -77,7 +81,7 @@ class MainActivity : BaseActivity() {
     private fun handleNavigationLogin() {
         if (!userSession.isLoggedIn) {
             startActivityForResult(
-                RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.SCP_LOGIN),
+                RouteManager.getIntent(this, ApplinkConst.LOGIN),
                 REQUEST_CODE_LOGIN
             )
         } else {

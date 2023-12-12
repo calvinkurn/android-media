@@ -9,6 +9,7 @@ import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataR
 import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartGqlResponse
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartGqlResponse
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.minicart.bmgm.domain.mapper.BmgmMiniCartDataMapper
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductBundleRecomUiModel
@@ -23,7 +24,7 @@ object DataProvider {
 
     private val gson = Gson()
     private val fileUtil = UnitTestFileUtils
-    private val miniCartSimplifiedMapper = MiniCartSimplifiedMapper()
+    private val miniCartSimplifiedMapper = MiniCartSimplifiedMapper(BmgmMiniCartDataMapper())
     private val miniCartListUiModelMapper = MiniCartListUiModelMapper()
 
     fun provideGetMiniCartListSuccessAllAvailable(): MiniCartData {
