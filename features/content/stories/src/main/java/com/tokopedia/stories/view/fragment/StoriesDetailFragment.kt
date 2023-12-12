@@ -241,6 +241,7 @@ class StoriesDetailFragment @Inject constructor(
         analytic?.sendClickReportReason(
             storiesId = viewModel.mDetail.id,
             contentType = viewModel.mDetail.content.type,
+            storyType = getCurrentStoryType(),
             reportReason = item.title
         )
 
@@ -517,7 +518,7 @@ class StoriesDetailFragment @Inject constructor(
     }
 
     private fun buildEventLabel(): String =
-        "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - ${if (viewModel.mDetail.category == StoriesDetailItem.StoryCategory.Manual) "organic" else "asgc"} - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
+        "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - ${getCurrentStoryType()} - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
 
     private fun renderAuthor(state: StoriesDetailItem) {
         with(binding.vStoriesPartner) {
@@ -974,6 +975,7 @@ class StoriesDetailFragment @Inject constructor(
         analytic?.sendViewReportReasonList(
             storiesId = viewModel.mDetail.id,
             contentType = viewModel.mDetail.content.type,
+            storyType = getCurrentStoryType()
         )
 
         viewModel.submitAction(StoriesUiAction.OpenReport)
@@ -1037,6 +1039,9 @@ class StoriesDetailFragment @Inject constructor(
             }
         }
     }
+
+    private fun getCurrentStoryType() =
+        if (viewModel.mDetail.category == StoriesDetailItem.StoryCategory.Manual) "organic" else "asgc"
 
     companion object {
         private const val DELAY_SWIPE_PRODUCT_BADGE_SHOW = 2000L

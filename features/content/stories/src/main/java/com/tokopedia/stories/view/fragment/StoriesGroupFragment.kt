@@ -25,6 +25,7 @@ import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
 import com.tokopedia.stories.view.animation.StoriesPageAnimation
 import com.tokopedia.stories.view.custom.StoriesErrorView
 import com.tokopedia.stories.view.model.StoriesArgsModel
+import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.utils.KEY_ARGS
 import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_GROUP
@@ -158,15 +159,21 @@ class StoriesGroupFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.storiesEvent.collect { event ->
                 when (event) {
-                    is StoriesUiEvent.SelectGroup -> selectGroupPosition(event.position, event.showAnimation)
+                    is StoriesUiEvent.SelectGroup -> selectGroupPosition(
+                        event.position,
+                        event.showAnimation
+                    )
+
                     is StoriesUiEvent.ErrorGroupPage -> {
                         showPageLoading(false)
-                        setErrorType(if (event.throwable.isNetworkError) StoriesErrorView.Type.NoInternet else StoriesErrorView.Type.FailedLoad) { event.onClick()}
+                        setErrorType(if (event.throwable.isNetworkError) StoriesErrorView.Type.NoInternet else StoriesErrorView.Type.FailedLoad) { event.onClick() }
                     }
+
                     StoriesUiEvent.EmptyGroupPage -> {
                         setErrorType(StoriesErrorView.Type.EmptyStories)
                         showPageLoading(false)
                     }
+
                     StoriesUiEvent.FinishedAllStories -> activity?.finish()
                     else -> return@collect
                 }
@@ -192,23 +199,25 @@ class StoriesGroupFragment @Inject constructor(
         showPageLoading(false)
     }
 
-    private fun selectGroupPosition(position: Int, showAnimation: Boolean) = with(binding.storiesGroupViewPager) {
-        if (position < 0) return@with
+    private fun selectGroupPosition(position: Int, showAnimation: Boolean) =
+        with(binding.storiesGroupViewPager) {
+            if (position < 0) return@with
 
-        setCurrentItem(position, showAnimation)
-    }
+            setCurrentItem(position, showAnimation)
+        }
 
     private fun showPageLoading(isShowLoading: Boolean) = with(binding) {
         layoutGroupLoading.container.showWithCondition(isShowLoading)
         storiesGroupViewPager.showWithCondition(!isShowLoading)
     }
 
-    private fun setErrorType(errorType: StoriesErrorView.Type, onClick: () -> Unit = {}) = with(binding.vStoriesError) {
-        show()
-        type = errorType
-        setAction { onClick() }
-        setCloseAction { activity?.finish() }
-    }
+    private fun setErrorType(errorType: StoriesErrorView.Type, onClick: () -> Unit = {}) =
+        with(binding.vStoriesError) {
+            show()
+            type = errorType
+            setAction { onClick() }
+            setCloseAction { activity?.finish() }
+        }
 
     private fun hideError() = binding.vStoriesError.gone()
 
@@ -239,6 +248,7 @@ class StoriesGroupFragment @Inject constructor(
         analytic.sendClickExitStoryRoomEvent(
             storiesId = viewModel.mDetail.id,
             contentType = viewModel.mDetail.content.type,
+            storyType = getCurrentStoryType(),
             currentCircle = viewModel.mGroup.groupName,
         )
     }
@@ -250,13 +260,17 @@ class StoriesGroupFragment @Inject constructor(
         _binding = null
     }
 
+    private fun getCurrentStoryType() =
+        if (viewModel.mDetail.category == StoriesDetailItem.StoryCategory.Manual) "organic" else "asgc"
+
     companion object {
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             bundle: Bundle
         ): StoriesGroupFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG_FRAGMENT_STORIES_GROUP) as? StoriesGroupFragment
+            val oldInstance =
+                fragmentManager.findFragmentByTag(TAG_FRAGMENT_STORIES_GROUP) as? StoriesGroupFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 StoriesGroupFragment::class.java.name

@@ -65,16 +65,19 @@ interface StoriesRoomAnalytic {
     fun sendClickExitStoryRoomEvent(
         storiesId: String,
         contentType: StoriesDetailItem.StoriesItemContentType,
+        storyType: String,
         currentCircle: String,
     )
 
     fun sendViewReportReasonList(
         storiesId: String,
-        contentType: StoriesDetailItem.StoriesItemContentType
+        contentType: StoriesDetailItem.StoriesItemContentType,
+        storyType: String
     )
     fun sendClickReportReason(
         storiesId: String,
         contentType: StoriesDetailItem.StoriesItemContentType,
+        storyType: String,
         reportReason: String
     )
 

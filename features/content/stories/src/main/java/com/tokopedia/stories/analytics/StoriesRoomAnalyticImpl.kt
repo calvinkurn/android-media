@@ -421,16 +421,16 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     override fun sendClickExitStoryRoomEvent(
         storiesId: String,
         contentType: StoriesDetailItem.StoriesItemContentType,
+        storyType: String,
         currentCircle: String
     ) {
         val authorId = if (storiesId == "0") "0" else args.authorId
-        val mediaType =
-            if (contentType == StoriesDetailItem.StoriesItemContentType.Unknown) "0" else "asgc"
+
         Tracker.Builder()
             .setEvent(Event.clickContent)
             .setEventAction("click - exit story room")
             .setEventCategory(STORIES_ROOM_CATEGORIES)
-            .setEventLabel("${args.entryPoint} - $authorId - $storiesId - $mediaType - ${contentType.value} - $currentCircle")
+            .setEventLabel("${args.entryPoint} - $authorId - $storiesId - $storyType - ${contentType.value} - $currentCircle")
             .setCustomProperty(Key.trackerId, "46062")
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
@@ -445,17 +445,16 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     // Tracker ID: 47950
     override fun sendViewReportReasonList(
         storiesId: String,
-        contentType: StoriesDetailItem.StoriesItemContentType
+        contentType: StoriesDetailItem.StoriesItemContentType,
+        storyType: String
     ) {
         val authorId = if (storiesId == "0") "0" else args.authorId
-        val mediaType =
-            if (contentType == StoriesDetailItem.StoriesItemContentType.Unknown) "0" else "asgc"
 
         Tracker.Builder()
             .setEvent("viewContentIris")
             .setEventAction("view - list report reason")
             .setEventCategory("stories room")
-            .setEventLabel("${args.entryPoint} - $authorId - $storiesId - $mediaType - ${contentType.value}")
+            .setEventLabel("${args.entryPoint} - $authorId - $storiesId - $storyType - ${contentType.value}")
             .setCustomProperty("trackerId", "47950")
             .setBusinessUnit("content")
             .setCurrentSite("tokopediamarketplace")
@@ -469,17 +468,16 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     override fun sendClickReportReason(
         storiesId: String,
         contentType: StoriesDetailItem.StoriesItemContentType,
+        storyType: String,
         reportReason: String
     ) {
         val authorId = if (storiesId == "0") "0" else args.authorId
-        val mediaType =
-            if (contentType == StoriesDetailItem.StoriesItemContentType.Unknown) "0" else "asgc"
 
         Tracker.Builder()
             .setEvent("clickContent")
             .setEventAction("click - report reason")
             .setEventCategory("stories room")
-            .setEventLabel("${args.entryPoint} - $authorId - $storiesId - $mediaType - ${contentType.value} - $reportReason")
+            .setEventLabel("${args.entryPoint} - $authorId - $storiesId - $storyType - ${contentType.value} - $reportReason")
             .setCustomProperty("trackerId", "47951")
             .setBusinessUnit("content")
             .setCurrentSite("tokopediamarketplace")
