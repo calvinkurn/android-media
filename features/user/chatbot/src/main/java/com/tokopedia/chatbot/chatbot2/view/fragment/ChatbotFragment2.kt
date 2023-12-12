@@ -111,6 +111,7 @@ import com.tokopedia.chatbot.chatbot2.util.convertMessageIdToLong
 import com.tokopedia.chatbot.chatbot2.view.activity.ChatBotCsatActivity
 import com.tokopedia.chatbot.chatbot2.view.activity.ChatBotProvideRatingActivity
 import com.tokopedia.chatbot.chatbot2.view.activity.ChatbotVideoActivity
+import com.tokopedia.chatbot.chatbot2.view.activity.ChatbotImageActivity
 import com.tokopedia.chatbot.chatbot2.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.chatbot2.view.adapter.ChatbotTypeFactoryImpl
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
@@ -216,6 +217,8 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
@@ -1591,16 +1594,25 @@ class ChatbotFragment2 :
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String, isSecure: Boolean) {
         activity?.let {
-            val strings: ArrayList<String> = ArrayList()
-            strings.add(imageUrl)
-            it.startActivity(
-                ImagePreviewActivity.getCallingIntent(
-                    it,
-                    strings,
-                    null,
-                    0
+            val loadSecureImage = FirebaseRemoteConfigImpl(it)
+                .getBoolean(RemoteConfigKey.ANDROID_CHATBOT_SECURE_IMAGE, true)
+
+            if (loadSecureImage) {
+                it.startActivity(
+                    ChatbotImageActivity.getCallingIntent(it, imageUrl)
                 )
-            )
+            } else {
+                val strings: ArrayList<String> = ArrayList()
+                strings.add(imageUrl)
+                it.startActivity(
+                    ImagePreviewActivity.getCallingIntent(
+                        it,
+                        strings,
+                        null,
+                        0
+                    )
+                )
+            }
         }
     }
 
