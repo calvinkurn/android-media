@@ -23,8 +23,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.header.compose.NestHeader
-import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.ui.fundsAndInvestment.FundsAndInvestmentResult
 import com.tokopedia.home_account.ui.fundsAndInvestment.isRefreshData
@@ -52,12 +50,12 @@ fun FundsAndInvestmentScreen(
 
             Scaffold(
                 topBar = {
-                    NestHeader(
-                        type = NestHeaderType.Profile(
-                            title = "",
-                            onBackClicked = { onBackClicked() }
-                        )
-                    )
+//                    NestHeader(
+//                        type = NestHeaderType.SingleLine(
+//                            title = "",
+//                            onBackClicked = { onBackClicked() }
+//                        )
+//                    )
                 },
                 content = { padding ->
                     Box(
