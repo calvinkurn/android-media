@@ -25,6 +25,8 @@ data class ShippingWidgetUiModel(
     val logPromoDesc: String = "",
     val voucherLogisticExists: Boolean = false,
     var isHasShownCourierError: Boolean = false,
+    // new OFOC
+    val boOrderMessage: String = "",
 
     // showNormalShippingCourier
     // CourierItemData.estimatedTimeDelivery
@@ -34,6 +36,8 @@ data class ShippingWidgetUiModel(
     val courierName: String = "",
     // CourierItemData.shipperPrice
     val courierShipperPrice: Int = 0,
+    // new OFOC
+    val courierOrderMessage: String = "",
 
     val merchantVoucher: MerchantVoucherProductModel? = null,
     val ontimeDelivery: OntimeDelivery? = null,

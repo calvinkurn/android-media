@@ -526,22 +526,24 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             labelNow2H = labelSingleShippingPromo
         }
 
-        binding?.shippingNowWidget?.bind(
-            titleNow2H = getSingleShippingTitleForScheduleWidget(
-                shippingWidgetUiModel
-            ),
-            labelNow2H = labelNow2H,
-            scheduleDeliveryUiModel = shippingWidgetUiModel.scheduleDeliveryUiModel?.copy(),
-            listener = object : ShippingScheduleRevampWidget.ShippingScheduleWidgetListener {
-                override fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel) {
-                    mListener?.onChangeScheduleDelivery(scheduleDeliveryUiModel)
-                }
+        binding?.shippingNowWidget
+            ?.bind(
+                titleNow2H = getSingleShippingTitleForScheduleWidget(
+                    shippingWidgetUiModel
+                ),
+                descriptionNow2H = getOrderMessageOFOC(shippingWidgetUiModel),
+                labelNow2H = labelNow2H,
+                scheduleDeliveryUiModel = shippingWidgetUiModel.scheduleDeliveryUiModel?.copy(),
+                listener = object : ShippingScheduleRevampWidget.ShippingScheduleWidgetListener {
+                    override fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel) {
+                        mListener?.onChangeScheduleDelivery(scheduleDeliveryUiModel)
+                    }
 
-                override fun getFragmentManager(): FragmentManager? {
-                    return mListener?.getHostFragmentManager()
+                    override fun getFragmentManager(): FragmentManager? {
+                        return mListener?.getHostFragmentManager()
+                    }
                 }
-            }
-        )
+            )
         showInsuranceInfo(shippingWidgetUiModel)
     }
 
@@ -744,6 +746,12 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         }
     }
 
+    private fun getOrderMessageOFOC(
+        shippingWidgetUiModel: ShippingWidgetUiModel
+    ): String {
+        return shippingWidgetUiModel.boOrderMessage.ifEmpty { shippingWidgetUiModel.courierOrderMessage }
+    }
+
     private fun String.convertToSpannedString(): CharSequence? {
         return HtmlLinkHelper(
             context,
@@ -769,7 +777,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         return if (shippingWidgetUiModel.freeShippingTitle.isNotEmpty()) {
             // Change duration to promo title after promo is applied
             shippingWidgetUiModel.freeShippingTitle.convertToSpannedString()
-        } else {
+        } else if (shippingWidgetUiModel.courierName.isNotEmpty()) {
             val title = getTitleFromNameAndPrice(
                 courierName = shippingWidgetUiModel.courierName,
                 shipperPrice = shippingWidgetUiModel.courierShipperPrice
@@ -778,6 +786,9 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             StringBuilder().apply {
                 appendHtmlBoldText(title)
             }.toString().convertToSpannedString()
+        } else {
+            // only schelly available (OFOC)
+            return null
         }
     }
 

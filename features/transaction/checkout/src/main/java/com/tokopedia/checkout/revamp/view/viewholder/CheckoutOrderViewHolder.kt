@@ -133,6 +133,8 @@ class CheckoutOrderViewHolder(
                         courierName = courierItemData.name ?: "",
                         // CourierItemData.shipperPrice
                         courierShipperPrice = courierItemData.shipperPrice,
+                        boOrderMessage = courierItemData.boOrderMessage,
+                        courierOrderMessage = courierItemData.courierOrderMessage,
 
                         scheduleDeliveryUiModel = courierItemData.scheduleDeliveryUiModel,
                         insuranceData = InsuranceWidgetUiModel(
@@ -221,7 +223,6 @@ class CheckoutOrderViewHolder(
                 binding.shippingWidget.showContainerShippingExperience()
                 binding.shippingWidget.renderWhitelabelKurirRekomendasiService(
                     ShippingWidgetUiModel(
-                        // showNormalShippingCourier
                         // CourierItemData.estimatedTimeDelivery
                         estimatedTimeDelivery = courierItemData.estimatedTimeDelivery ?: "",
 
