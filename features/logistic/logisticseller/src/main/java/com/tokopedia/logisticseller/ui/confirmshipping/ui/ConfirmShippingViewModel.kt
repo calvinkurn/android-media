@@ -19,10 +19,11 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-11-15.
  */
-class ConfirmShippingViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
-                                                   private val somGetConfirmShippingResultUseCase: GetConfirmShippingResultUseCase,
-                                                   private val somGetCourierListUseCase: GetCourierListUseCase,
-                                                   private val somChangeCourierUseCase: ChangeCourierUseCase
+class ConfirmShippingViewModel @Inject constructor(
+    dispatcher: CoroutineDispatchers,
+    private val somGetConfirmShippingResultUseCase: GetConfirmShippingResultUseCase,
+    private val somGetCourierListUseCase: GetCourierListUseCase,
+    private val somChangeCourierUseCase: ChangeCourierUseCase
 ) : BaseViewModel(dispatcher.io) {
 
     private val _confirmShippingResult = MutableLiveData<Result<SomConfirmShipping.Data.MpLogisticConfirmShipping>>()
@@ -41,24 +42,23 @@ class ConfirmShippingViewModel @Inject constructor(dispatcher: CoroutineDispatch
         launchCatchError(block = {
             _confirmShippingResult.postValue(Success(somGetConfirmShippingResultUseCase.execute(orderId, shippingRef)))
         }, onError = {
-            _confirmShippingResult.postValue(Fail(it))
-        })
+                _confirmShippingResult.postValue(Fail(it))
+            })
     }
 
-    fun getCourierList() {
+    fun getCourierList(orderId: String) {
         launchCatchError(block = {
-            _courierListResult.postValue(Success(somGetCourierListUseCase.execute()))
-
+            _courierListResult.postValue(Success(somGetCourierListUseCase.execute(orderId)))
         }, onError = {
-            _courierListResult.postValue(Fail(it))
-        })
+                _courierListResult.postValue(Fail(it))
+            })
     }
 
     fun changeCourier(orderId: String, shippingRef: String, agencyId: Long, spId: Long) {
         launchCatchError(block = {
             _changeCourierResult.postValue(Success(somChangeCourierUseCase.execute(orderId, shippingRef, agencyId, spId)))
         }, onError = {
-            _changeCourierResult.postValue(Fail(it))
-        })
+                _changeCourierResult.postValue(Fail(it))
+            })
     }
 }

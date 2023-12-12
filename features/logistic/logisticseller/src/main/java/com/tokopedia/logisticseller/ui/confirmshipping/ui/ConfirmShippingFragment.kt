@@ -33,10 +33,8 @@ import com.tokopedia.logisticseller.ui.confirmshipping.data.ConfirmShippingAnaly
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.SomCourierList
 import com.tokopedia.logisticseller.ui.confirmshipping.di.ConfirmShippingComponent
 import com.tokopedia.logisticseller.ui.confirmshipping.di.DaggerConfirmShippingComponent
-import com.tokopedia.logisticseller.ui.requestpickup.data.model.SomConfirmReqPickup
 import com.tokopedia.targetedticker.domain.TargetedTickerPage
 import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
-import com.tokopedia.targetedticker.domain.TickerModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
@@ -104,7 +102,7 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
         arguments?.getBoolean(PARAM_CURR_IS_CHANGE_SHIPPING)?.let {
             currIsChangeShipping = it
         }
-        getCourierList()
+        getCourierList(currOrderId)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -247,8 +245,8 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
         confirmShippingViewModel.changeCourier(orderId, shippingRef, agencyId, spId)
     }
 
-    private fun getCourierList() {
-        confirmShippingViewModel.getCourierList()
+    private fun getCourierList(orderId: String) {
+        confirmShippingViewModel.getCourierList(orderId)
     }
 
     private fun observingConfirmShipping() {
@@ -342,7 +340,6 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
     }
 
     private fun initTicker(tickerUnificationTargets: List<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.TickerUnificationTargets>) {
-
         binding?.ticker?.apply { ->
             setTickerShape(Ticker.SHAPE_FULL)
             val param = TargetedTickerParamModel(
@@ -353,9 +350,6 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
             )
             loadAndShow(param)
         }
-
-
-
     }
 
     private fun observingChangeCourier() {
