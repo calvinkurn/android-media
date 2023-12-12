@@ -2842,7 +2842,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             if (this != null && this.recommendationItemList.isNotEmpty()) {
                 val buyAgainWidget = RecommendationWidget(
                     title = this.title,
-                    recommendationItemList = this.recommendationItemList
+                    recommendationItemList = this.recommendationItemList,
+                    seeMoreAppLink = this.seeMoreAppLink
                 )
                 uohItemAdapter.addBuyAgainWidget(UohTypeData(buyAgainWidget, UohConsts.TYPE_BUY_AGAIN))
                 restoreScrollPositionAfterAdAdded()
