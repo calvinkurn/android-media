@@ -178,7 +178,7 @@ fun ExploreCategoryListGrid(
                 }
             }
 
-            val isNestCardVisible by remember(nestCardTop, nestCardBottom) {
+            val isNestCardVisible by remember(lazyListState, nestCardTop, nestCardBottom) {
                 derivedStateOf {
                     val layoutInfo = lazyListState.layoutInfo
                     val viewportTop = layoutInfo.viewportStartOffset
@@ -196,7 +196,7 @@ fun ExploreCategoryListGrid(
                 }
             }
 
-            LaunchedEffect(isCategorySelected, nestCardTop, nestCardBottom) {
+            LaunchedEffect(isCategorySelected, nestCardDimensions) {
                 if (!isCategorySelected && !isNestCardVisible) {
                     // we need to set delay to wait until animateScrollToItem has finished
                     val nestCardHeight = nestCardBottom - nestCardTop
