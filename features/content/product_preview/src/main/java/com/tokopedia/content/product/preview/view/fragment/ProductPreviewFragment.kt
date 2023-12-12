@@ -22,6 +22,8 @@ import com.tokopedia.content.product.preview.view.components.MediaBottomNav
 import com.tokopedia.content.product.preview.viewmodel.EntrySource
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModelFactory
+import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.VariantPageSource
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -46,9 +48,11 @@ class ProductPreviewFragment @Inject constructor(
         )
     }
 
+    private val productId : String get() = "4937529690" //TODO: get from args
+
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
         viewModelFactory.create(
-            EntrySource(productId = "4937529690") //TODO: Testing purpose, change from arguments
+            EntrySource(productId = productId) //TODO: Testing purpose, change from arguments
         )
     }
 
@@ -134,9 +138,25 @@ class ProductPreviewFragment @Inject constructor(
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MediaBottomNav(product = model, onAtcClicked = {
-                    //TODO: if has variant open GVBS if not hit ATC
+                    handleAtc(model)
                 })
             }
+        }
+    }
+
+    private fun handleAtc(model: BottomNavUiModel) {
+        if (model.hasVariant) {
+            AtcVariantHelper.goToAtcVariant(
+                context = requireContext(),
+                pageSource = VariantPageSource.PRODUCT_PREVIEW_PAGESOURCE,
+                shopId = model.shop.id,
+                productId = productId,
+                startActivitResult = { data, _ ->
+                    startActivity(data)
+                }
+            )
+        } else {
+            viewModel.addToCart(model)
         }
     }
 
