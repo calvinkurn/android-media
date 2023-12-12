@@ -20,7 +20,7 @@ class ProductPreviewPagerAdapter(
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             TAB_PRODUCT_POS -> {
-                ProductFragment.getFragment(
+                ProductFragment.getOrCreate(
                     fragmentManager = fragmentManager,
                     classLoader = fragmentActivity.classLoader,
                     bundle = Bundle(),
@@ -28,7 +28,7 @@ class ProductPreviewPagerAdapter(
             }
 
             TAB_REVIEW_POS -> {
-                ReviewFragment.getFragment(
+                ReviewFragment.getOrCreate(
                     fragmentManager = fragmentManager,
                     classLoader = fragmentActivity.classLoader,
                     bundle = Bundle(),

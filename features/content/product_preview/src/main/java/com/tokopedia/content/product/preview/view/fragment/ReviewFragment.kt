@@ -99,7 +99,7 @@ class ReviewFragment @Inject constructor(
     companion object {
         const val TAG = "ReviewFragment"
 
-        fun getFragment(
+        fun getOrCreate(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             bundle: Bundle

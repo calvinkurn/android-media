@@ -10,14 +10,12 @@ object ProductPreviewInjector {
     fun get(context: Context): ProductPreviewComponent = synchronized(this) {
         return customComponent ?: DaggerProductPreviewComponent.builder()
             .baseAppComponent(
-                (context.applicationContext as BaseMainApplication).baseAppComponent,
+                (context.applicationContext as BaseMainApplication).baseAppComponent
             )
-            .productPreviewModule(ProductPreviewModule())
             .build()
     }
 
     fun set(component: ProductPreviewComponent) = synchronized(this) {
         customComponent = component
     }
-
 }

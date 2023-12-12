@@ -18,9 +18,7 @@ class ProductPreviewActivity : BaseActivity() {
 
     private var bundle: Bundle? = null
 
-    private var _binding: ActivityProductPreviewBinding? = null
-    private val binding: ActivityProductPreviewBinding
-        get() = _binding!!
+    private lateinit var binding: ActivityProductPreviewBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -48,7 +46,7 @@ class ProductPreviewActivity : BaseActivity() {
     }
 
     private fun setupViews() {
-        _binding = ActivityProductPreviewBinding.inflate(layoutInflater)
+        binding = ActivityProductPreviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         openFragment()
@@ -63,18 +61,17 @@ class ProductPreviewActivity : BaseActivity() {
                 replace(
                     binding.fragmentContainer.id,
                     getMediaPreviewFragment(),
-                    ProductPreviewFragment.TAG,
+                    ProductPreviewFragment.TAG
                 )
             }.commit()
         }
     }
 
     private fun getMediaPreviewFragment(): Fragment {
-        return ProductPreviewFragment.getFragment(
+        return ProductPreviewFragment.getOrCreate(
             fragmentManager = supportFragmentManager,
             classLoader = classLoader,
-            bundle = bundle ?: Bundle(),
+            bundle = bundle ?: Bundle()
         )
     }
-
 }

@@ -11,19 +11,20 @@ import com.tokopedia.content.product.preview.databinding.FragmentProductPreviewB
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter.Companion.TAB_PRODUCT_POS
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter.Companion.TAB_REVIEW_POS
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import javax.inject.Inject
 
-class ProductPreviewFragment @Inject constructor(): TkpdBaseV4Fragment() {
+class ProductPreviewFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentProductPreviewBinding? = null
     private val binding: FragmentProductPreviewBinding
         get() = _binding!!
 
-    private val pagerListener: ViewPager2.OnPageChangeCallback by lazy(LazyThreadSafetyMode.NONE) {
+    private val pagerListener: ViewPager2.OnPageChangeCallback by lazyThreadSafetyNone {
         pageListenerObject()
     }
 
-    private val pagerAdapter: ProductPreviewPagerAdapter by lazy(LazyThreadSafetyMode.NONE) {
+    private val pagerAdapter: ProductPreviewPagerAdapter by lazyThreadSafetyNone {
         ProductPreviewPagerAdapter(
             childFragmentManager,
             requireActivity(),
@@ -45,26 +46,26 @@ class ProductPreviewFragment @Inject constructor(): TkpdBaseV4Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
+
+        onClickHandler()
     }
 
     private fun initViews() = with(binding) {
-        fun onClickHandler() {
-            layoutProductPreviewTab.icBack.setOnClickListener {
-                activity?.finish()
-            }
-            layoutProductPreviewTab.tvProductTabTitle.setOnClickListener {
-                vpProductPreview.currentItem = TAB_PRODUCT_POS
-            }
-            layoutProductPreviewTab.tvReviewTabTitle.setOnClickListener {
-                vpProductPreview.currentItem = TAB_REVIEW_POS
-            }
-        }
-
-        onClickHandler()
-
-        binding.vpProductPreview.apply {
+        vpProductPreview.apply {
             registerOnPageChangeCallback(pagerListener)
             adapter = pagerAdapter
+        }
+    }
+
+    private fun onClickHandler() = with(binding) {
+        layoutProductPreviewTab.icBack.setOnClickListener {
+            activity?.finish()
+        }
+        layoutProductPreviewTab.tvProductTabTitle.setOnClickListener {
+            vpProductPreview.currentItem = TAB_PRODUCT_POS
+        }
+        layoutProductPreviewTab.tvReviewTabTitle.setOnClickListener {
+            vpProductPreview.currentItem = TAB_REVIEW_POS
         }
     }
 
@@ -76,15 +77,11 @@ class ProductPreviewFragment @Inject constructor(): TkpdBaseV4Fragment() {
     }
 
     private fun updateSelectedTabView(position: Int) = with(binding.layoutProductPreviewTab) {
-        fun updateIndicatorTab(position: Int) {
-            when (position) {
-                TAB_PRODUCT_POS -> root.transitionToStart()
-                TAB_REVIEW_POS -> root.transitionToEnd()
-                else -> return
-            }
+        when (position) {
+            TAB_PRODUCT_POS -> root.transitionToStart()
+            TAB_REVIEW_POS -> root.transitionToEnd()
+            else -> return
         }
-
-        updateIndicatorTab(position)
     }
 
     override fun onDestroyView() {
@@ -98,7 +95,7 @@ class ProductPreviewFragment @Inject constructor(): TkpdBaseV4Fragment() {
     companion object {
         const val TAG = "ProductPreviewFragment"
 
-        fun getFragment(
+        fun getOrCreate(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             bundle: Bundle

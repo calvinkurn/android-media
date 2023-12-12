@@ -7,17 +7,21 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.content.product.preview.databinding.ItemProductContentImageBinding
 import com.tokopedia.content.product.preview.databinding.ItemProductContentLoadingBinding
 import com.tokopedia.content.product.preview.databinding.ItemProductContentVideoBinding
+import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
+import com.tokopedia.content.product.preview.view.model.ProductVideoModel
 import com.tokopedia.content.product.preview.view.viewholder.product.ProductContentImageViewHolder
 import com.tokopedia.content.product.preview.view.viewholder.product.ProductContentLoadingViewHolder
 import com.tokopedia.content.product.preview.view.viewholder.product.ProductContentVideoViewHolder
 
-class ProductContentAdapter : Adapter<ViewHolder>() {
+class ProductContentAdapter(
+    private val listener: ProductPreviewListener,
+) : Adapter<ViewHolder>() {
 
-    private val _productContentList = mutableListOf<String>()
-    private val productContentList: List<String>
+    private val _productContentList = mutableListOf<ProductVideoModel>()
+    private val productContentList: List<ProductVideoModel>
         get() = _productContentList
 
-    fun insertData(data: List<String>) {
+    fun insertData(data: List<ProductVideoModel>) {
         _productContentList.clear()
         _productContentList.addAll(data)
         notifyItemRangeInserted(0, productContentList.size)
@@ -27,7 +31,7 @@ class ProductContentAdapter : Adapter<ViewHolder>() {
         return when (viewType) {
             TYPE_IMAGE -> {
                 ProductContentImageViewHolder(
-                    ItemProductContentImageBinding.inflate(
+                    binding = ItemProductContentImageBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent, false
                     )
@@ -36,10 +40,11 @@ class ProductContentAdapter : Adapter<ViewHolder>() {
 
             TYPE_VIDEO -> {
                 ProductContentVideoViewHolder(
-                    ItemProductContentVideoBinding.inflate(
+                    binding = ItemProductContentVideoBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent, false
-                    )
+                    ),
+                    listener = listener,
                 )
             }
 
@@ -57,7 +62,7 @@ class ProductContentAdapter : Adapter<ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         when (holder.itemViewType) {
             TYPE_IMAGE -> (holder as ProductContentImageViewHolder).bind()
-            TYPE_VIDEO -> (holder as ProductContentVideoViewHolder).bind()
+            TYPE_VIDEO -> (holder as ProductContentVideoViewHolder).bind(productContentList[position])
             else -> (holder as ProductContentLoadingViewHolder).bind()
         }
     }
@@ -65,7 +70,7 @@ class ProductContentAdapter : Adapter<ViewHolder>() {
     override fun getItemCount(): Int = productContentList.size
 
     override fun getItemViewType(position: Int): Int {
-        return TYPE_IMAGE
+        return TYPE_VIDEO
     }
 
     companion object {
