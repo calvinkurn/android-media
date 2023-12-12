@@ -6,6 +6,24 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/stl_item_ribbon_arch"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginTop="4dp"
+        android:scaleType="fitXY"
+        android:elevation="4dp"
+        app:srcCompat="@drawable/recom_ribbon_arch_red"
+        app:layout_constraintHorizontal_bias="1"
+        android:contentDescription="@string/product_card_content_desc_ribbon"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/stl_item_ribbon_content"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintTop_toTopOf="@id/stl_item_ribbon_content"
+        app:layout_constraintBottom_toBottomOf="@id/stl_item_ribbon_content"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/stl_item_image"
         android:layout_width="0dp"
@@ -30,23 +48,6 @@
         app:layout_constraintBottom_toBottomOf="@id/stl_item_image"
         app:layout_constraintLeft_toLeftOf="@id/stl_item_image"
         app:layout_constraintRight_toRightOf="@id/stl_item_image"/>
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/stl_item_ribbon_arch"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_marginTop="3dp"
-        android:scaleType="fitXY"
-        app:srcCompat="@drawable/recom_ribbon_arch_red"
-        app:layout_constraintHorizontal_bias="1"
-        android:contentDescription="@string/product_card_content_desc_ribbon"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/stl_item_ribbon_content"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintTop_toTopOf="@id/stl_item_ribbon_content"
-        app:layout_constraintBottom_toBottomOf="@id/stl_item_ribbon_content"
-        android:visibility="gone"
-        tools:visibility="visible" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/stl_item_ribbon_content"
