@@ -23,6 +23,14 @@ class ShopFlashSaleWidgetCallback(
         homeRevampViewModel.getShopFlashSale(shopFlashSaleWidgetDataModel, channelGrid.id)
     }
 
+    override fun onShopTabImpressed(
+        trackingAttributionModel: TrackingAttributionModel,
+        channelGrid: ChannelGrid
+    ) {
+        val impression = ShopFlashSaleTracking.getImpressionShopTab(trackingAttributionModel, channelGrid)
+        homeCategoryListener.getTrackingQueueObj()?.putEETracking(impression)
+    }
+
     override fun onSeeAllClick(trackingAttributionModel: TrackingAttributionModel, link: String) {
         ShopFlashSaleTracking.sendClickViewAll(trackingAttributionModel)
         homeCategoryListener.onDynamicChannelClicked(link)
