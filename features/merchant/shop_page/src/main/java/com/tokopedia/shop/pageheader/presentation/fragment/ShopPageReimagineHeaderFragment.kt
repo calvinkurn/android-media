@@ -46,6 +46,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
@@ -125,7 +126,9 @@ import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestResult
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
+import com.tokopedia.shop.common.domain.entity.ShopPrefetchData
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
+import com.tokopedia.shop.common.prefetch.ShopPagePrefetch
 import com.tokopedia.shop.common.util.*
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
 import com.tokopedia.shop.common.util.ShopUtilExt.clearHtmlTag
@@ -504,7 +507,6 @@ class ShopPageReimagineHeaderFragment :
 
             override fun onCreationNextClicked(data: ContentCreationItemModel) {
                 when (data.type) {
-
                     ContentCreationTypeEnum.LIVE -> {
                         goToBroadcaster()
                     }
@@ -1263,13 +1265,26 @@ class ShopPageReimagineHeaderFragment :
     }
 
     private fun checkShopPagePreFetchData() {
+        val prefetch = getPrefetchData()
         val shopPagePreFetchDataModel = activity?.intent?.getParcelableExtra<ShopPagePreFetchDataModel>(
-            ShopPagePreFetchDataModel.PARCEL_KEY,
+            ShopPagePreFetchDataModel.PARCEL_KEY
         )
-        if(null != shopPagePreFetchDataModel){
+        if (null != shopPagePreFetchDataModel) {
             setViewState(VIEW_CONTENT)
             createShopPreFetchDataTab(shopPagePreFetchDataModel)
         }
+    }
+
+    private fun getPrefetchData(): ShopPrefetchData? {
+        val context = context ?: return null
+
+        val prefetchCacheId = activity?.intent?.getStringExtra(ShopPagePrefetch.PREFETCH_CACHE_ID).orEmpty()
+
+        val cacheManager = SaveInstanceCacheManager(context, prefetchCacheId)
+        return cacheManager.get<ShopPrefetchData>(
+            customId = ShopPrefetchData::class.java.simpleName,
+            type = ShopPrefetchData::class.java
+        )
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -1282,7 +1297,7 @@ class ShopPageReimagineHeaderFragment :
             ShopPageHeaderP1HeaderData(
                 shopName = shopPagePreFetchDataModel.shopName,
                 shopAvatar = shopPagePreFetchDataModel.shopAvatarImageUrl,
-                shopBadge = shopPagePreFetchDataModel.shopBadgeImageUrl,
+                shopBadge = shopPagePreFetchDataModel.shopBadgeImageUrl
             ).let { headerData ->
                 setShopPageHeaderP1Data(
                     shopPageHeaderP1Data = headerData,
@@ -1295,7 +1310,7 @@ class ShopPageReimagineHeaderFragment :
         listShopPageTabModel.add(
             ShopPageHeaderTabModel(
                 tabName = tabData.name,
-                tabFragment = tabContentWrapper,
+                tabFragment = tabContentWrapper
             )
         )
         viewPagerAdapterHeader?.setTabData(listShopPageTabModel)
@@ -2801,8 +2816,6 @@ class ShopPageReimagineHeaderFragment :
         return shopPageHeaderP1Data?.shopHeaderLayoutData?.getShopConfigListByName(ShopPageHeaderLayoutUiModel.ConfigName.SHOP_HEADER)
     }
 
-
-
     fun expandHeader() {
         getSelectedFragmentWrapperInstance()?.let {
             (it as? ShopPageHeaderFragmentTabContentWrapper)?.setExpandHeader(true)
@@ -3402,7 +3415,7 @@ class ShopPageReimagineHeaderFragment :
             ShopPageActivityResult.createResult(
                 shopId = shopId,
                 isFollow = isFollowing,
-                existingIntentBundle = intentData,
+                existingIntentBundle = intentData
             )
         )
     }

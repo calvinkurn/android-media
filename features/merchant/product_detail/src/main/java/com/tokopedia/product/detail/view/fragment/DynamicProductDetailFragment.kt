@@ -311,8 +311,9 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.shop.common.constant.ShopStatusDef
-import com.tokopedia.shop.common.data.ShopPagePreFetchDataModel
+import com.tokopedia.shop.common.domain.entity.ShopPrefetchData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.prefetch.ShopPagePrefetch
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.stories.widget.NoAnimateAnimationStrategy
@@ -5115,15 +5116,28 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun generateShopPagePreFetchData(intent: Intent?) {
-        ShopPagePreFetchDataModel.Builder()
+    private fun generateShopPagePreFetchData(intent: Intent) {
+        val prefetch = ShopPagePrefetch()
+        val prefetchData = ShopPrefetchData(
+            shopAvatar = viewModel.getShopInfo().shopAssets.avatar,
+            shopName = viewModel.getDynamicProductInfoP1?.basic?.shopName.orEmpty(),
+            shopBadge = viewModel.getShopInfo().shopTierBadgeUrl,
+            shopLastOnline = "Online",
+            shopRating = 4.8f
+        )
+
+        prefetch.redirectToShopPageWithPrefetch(context ?: return, prefetchData, intent)
+
+       /* ShopPagePreFetchDataModel.Builder()
             .setShopName(viewModel.getDynamicProductInfoP1?.basic?.shopName.orEmpty())
             .setShopAvatarImageUrl(viewModel.getShopInfo().shopAssets.avatar)
             .setShopBadgeImageUrl(viewModel.getShopInfo().shopTierBadgeUrl)
+            .setShopLastOnline("Online")
+            .setShopRating(4.9f)
             .build()
             .let {
-                intent?.putExtra(ShopPagePreFetchDataModel.PARCEL_KEY, it)
-            }
+                intent.putExtra(ShopPagePreFetchDataModel.PARCEL_KEY, it)
+            }*/
     }
 
     override fun onShopTickerClicked(
