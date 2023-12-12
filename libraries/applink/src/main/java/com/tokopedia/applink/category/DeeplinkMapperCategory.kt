@@ -23,7 +23,6 @@ object DeeplinkMapperCategory {
         }
 
         return UriUtil.buildUri(ApplinkConstInternalCategory.INTERNAL_CATEGORY_DETAIL, identifier)
-
     }
 
     fun getNewExploreCategoryNavigation(deeplink: String): String {
@@ -32,7 +31,7 @@ object DeeplinkMapperCategory {
         return if (isNewExploreCategory) {
             ApplinkConstInternalDiscovery.INTERNAL_HOME_EXPLORE_CATEGORY
         } else {
-            getRegisteredNavigationExploreCategory(deeplink)
+            deeplink.replace(ApplinkConst.Digital.DIGITAL_BROWSE, ApplinkConstInternalCategory.INTERNAL_EXPLORE_CATEGORY)
         }
     }
 
@@ -42,7 +41,7 @@ object DeeplinkMapperCategory {
         val uri = Uri.parse(deeplink)
         return when (uri.getQueryParameter("type")?.toInt()) {
             TYPE_LAYANAN -> {
-                deeplink.replace(ApplinkConst.Digital.DIGITAL_BROWSE, ApplinkConstInternalCategory.INTERNAL_EXPLORE_CATEGORY)
+                getNewExploreCategoryNavigation(deeplink)
             }
             TYPE_BELANJA -> {
                 deeplink.replace(ApplinkConst.Digital.DIGITAL_BROWSE, ApplinkConstInternalCategory.INTERNAL_BELANJA_CATEGORY)
@@ -75,5 +74,4 @@ object DeeplinkMapperCategory {
     fun getRegisteredTradeinNavigation(deeplink: String): String {
         return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
     }
-
 }

@@ -202,7 +202,7 @@ object DeeplinkMainApp {
         ),
         "category-explore" to mutableListOf(
             DLP.goTo { deeplink: String ->
-                DeeplinkMapperCategory.getNewExploreCategoryNavigation(deeplink)
+                DeeplinkMapperCategory.getRegisteredNavigationExploreCategory(deeplink)
             }
         ),
         "changeinactivephone" to mutableListOf(
@@ -1256,7 +1256,7 @@ object DeeplinkMainApp {
             },
             DLP.matchPattern("bottomsheet/{type}") { deeplink: String ->
                 DeeplinkMapperCommunication.getRegisteredNavigation(deeplink)
-            },
+            }
         ),
         "tokopoints" to mutableListOf(
             DLP.goTo { deeplink: String ->

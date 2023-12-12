@@ -1,6 +1,7 @@
 package com.tokopedia.home_explore_category.presentation.compose
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,6 +38,8 @@ import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryR
 import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryState
 import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryUiEvent
 import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryUiModel
+import com.tokopedia.home_explore_category.presentation.util.DURATION_CATEGORY_EASING
+import com.tokopedia.home_explore_category.presentation.util.categoryToggleTween
 import com.tokopedia.home_explore_category.presentation.util.enterExpandVertical
 import com.tokopedia.home_explore_category.presentation.util.exitShrinkVertical
 import com.tokopedia.nest.components.NestImage
@@ -46,7 +49,6 @@ import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.nest.principles.utils.addImpression
-import kotlinx.coroutines.delay
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -54,6 +56,13 @@ import java.net.UnknownHostException
 const val GRID_COLUMN = 3
 const val MINIMUM_3_SUB_CAT = 3
 const val DELAY_SCROLL_SUB_CAT = 200L
+
+enum class VisibilityState {
+    FULLY_VISIBLE,
+    PARTIALLY_VISIBLE_TOP,
+    PARTIALLY_VISIBLE_BOTTOM,
+    NOT_VISIBLE
+}
 
 @Composable
 fun ExploreCategoryScreen(
@@ -145,6 +154,10 @@ fun ExploreCategoryListGrid(
                 mutableStateOf(false)
             }
 
+            var isEligibleScrollToThreeSubItems by remember {
+                mutableStateOf(false)
+            }
+
             var isCategorySelected by remember {
                 mutableStateOf(false)
             }
@@ -175,7 +188,9 @@ fun ExploreCategoryListGrid(
                 }
             }
 
-            LaunchedEffect(isEligibleScrollToGroupIndex) {
+            LaunchedEffect(
+                isEligibleScrollToGroupIndex
+            ) {
                 if (isEligibleScrollToGroupIndex && categoryIndex != -1) {
                     lazyListState.animateScrollToItem(categoryIndex)
                 }
@@ -184,8 +199,6 @@ fun ExploreCategoryListGrid(
             LaunchedEffect(isCategorySelected, nestCardTop, nestCardBottom) {
                 if (!isCategorySelected && !isNestCardVisible) {
                     // we need to set delay to wait until animateScrollToItem has finished
-                    delay(DELAY_SCROLL_SUB_CAT)
-
                     val nestCardHeight = nestCardBottom - nestCardTop
                     val subCategoryItemHeight = subCategoryItemBottom - subCategoryItemTop
 
@@ -202,24 +215,28 @@ fun ExploreCategoryListGrid(
                 oldCategoryGroupIndex = groupIndex
             }
 
-            selectedCategory?.let {
+            selectedCategory.let {
                 AnimatedVisibility(
-                    visible = it.isSelected,
+                    visible = it != null && it.isSelected,
                     enter = enterExpandVertical,
                     exit = exitShrinkVertical
                 ) {
                     NestCard(
                         modifier = Modifier
+                            .animateContentSize(
+                                animationSpec = categoryToggleTween(DURATION_CATEGORY_EASING)
+                            )
                             .onGloballyPositioned { layoutCoordinates ->
                                 val localPosition = layoutCoordinates.localToRoot(Offset(0f, 0f))
                                 val nestCardTop = localPosition.y
-                                nestCardDimensions = Pair(nestCardTop, nestCardTop + layoutCoordinates.size.height)
+                                nestCardDimensions =
+                                    Pair(nestCardTop, nestCardTop + layoutCoordinates.size.height)
                             }
                             .fillMaxWidth(),
                         type = NestCardType.NoBorder
                     ) {
                         Column {
-                            it.subExploreCategoryList.forEachIndexed { index, subcategory ->
+                            it?.subExploreCategoryList?.forEachIndexed { index, subcategory ->
                                 key(subcategory) {
                                     SubExploreCategoryItem(
                                         modifier = Modifier
@@ -227,7 +244,10 @@ fun ExploreCategoryListGrid(
                                                 val localPosition =
                                                     layoutCoordinates.localToRoot(Offset(0f, 0f))
                                                 val subCategoryItemTop = localPosition.y
-                                                subCategoryItemDimensions = Pair(subCategoryItemTop, subCategoryItemTop + layoutCoordinates.size.height)
+                                                subCategoryItemDimensions = Pair(
+                                                    subCategoryItemTop,
+                                                    subCategoryItemTop + layoutCoordinates.size.height
+                                                )
                                             }
                                             .addImpression(
                                                 uniqueIdentifier = subcategory.name + index.toString(),
