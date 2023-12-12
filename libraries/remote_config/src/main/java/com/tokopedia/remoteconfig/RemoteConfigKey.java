@@ -237,7 +237,7 @@ public class RemoteConfigKey {
     public static final String ENABLE_PERFORMANCE_TRACE = "android_enable_performance_trace";
 
     public static final String ENABLE_PERFORMANCE_TRACE_V2 = "android_enable_performance_trace_v2";
-    
+
     public static final String PERFORMANCE_TRACE_CONFIG = "android_universal_performance_config";
     public static final String DEV_OPTS_AUTHORIZATION = "android_dev_opts_password_hash";
 
@@ -317,4 +317,6 @@ public class RemoteConfigKey {
     public static final String ANDROID_SALDO_ENABLE_AUTO_WD_INIT_GQL = "android_saldo_enable_auto_wd_init_gql";
 
     public static final String ANDROID_ENABLE_NEW_CART_QUANTITY_EDITOR = "android_enable_new_quantity_editor_cart";
+
+    public static final String ANDROID_CHATBOT_SECURE_IMAGE = "android_chatbot_secure_image";
 }
