@@ -10,6 +10,7 @@ import com.tokopedia.feedplus.databinding.ItemFeedBrowseInspirationPlaceholderBi
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.unifycomponents.CardUnify2
 
 /**
@@ -40,6 +41,10 @@ internal class InspirationCardViewHolder private constructor() {
             binding.imgBadge.loadImage(item.item.partner.badgeUrl)
             binding.imgBadge.showWithCondition(item.item.partner.badgeUrl.isNotBlank())
 
+            binding.root.addImpressionListener {
+                listener.onImpressed(this, item)
+            }
+
             binding.root.setOnClickListener {
                 listener.onClicked(this, item)
             }
@@ -63,6 +68,8 @@ internal class InspirationCardViewHolder private constructor() {
         }
 
         interface Listener {
+
+            fun onImpressed(viewHolder: Item, model: FeedBrowseItemListModel.InspirationCard.Item)
             fun onClicked(viewHolder: Item, model: FeedBrowseItemListModel.InspirationCard.Item)
         }
     }

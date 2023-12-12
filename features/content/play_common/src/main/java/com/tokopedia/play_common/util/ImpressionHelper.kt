@@ -7,11 +7,15 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.play_common.R
 
 /**
  * Created by kenny.hadisaputra on 24/08/22
  */
 fun View.addImpressionListener(onView: () -> Unit): ImpressionListener {
+    val prevListener = getTag(R.id.impression_listener) as? ImpressionListener
+    if (prevListener != null) removeImpressionListener(prevListener)
+
     val vto = viewTreeObserver
     val scrollListener = ViewTreeObserver.OnScrollChangedListener {
         if (viewIsVisible(this@addImpressionListener)) onView()
@@ -37,7 +41,9 @@ fun View.addImpressionListener(onView: () -> Unit): ImpressionListener {
 
     addOneTimeGlobalLayoutListener { if (viewIsVisible(this)) onView() }
 
-    return ImpressionListener(scrollListener, attachStateListener)
+    return ImpressionListener(scrollListener, attachStateListener).also {
+        setTag(R.id.impression_listener, it)
+    }
 }
 
 fun View.addImpressionListener(

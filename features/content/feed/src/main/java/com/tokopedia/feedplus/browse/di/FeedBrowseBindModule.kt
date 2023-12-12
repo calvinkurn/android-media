@@ -29,15 +29,6 @@ internal abstract class FeedBrowseBindModule {
     ): FeedBrowseRepository
 
     /**
-     * Analytics
-     */
-    @ActivityScope
-    @Binds
-    abstract fun bindTracker(
-        tracker: FeedBrowseTrackerImpl
-    ): FeedBrowseTracker
-
-    /**
      * Fragment
      */
     @Binds

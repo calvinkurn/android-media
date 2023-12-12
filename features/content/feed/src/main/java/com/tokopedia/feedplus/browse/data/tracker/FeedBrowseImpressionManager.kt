@@ -6,6 +6,7 @@ import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
 import com.tokopedia.feedplus.browse.data.model.BannerWidgetModel
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
+import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationMap
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import javax.inject.Inject
 
@@ -20,6 +21,9 @@ internal class FeedBrowseImpressionManager @Inject constructor() {
     private val inspirationBannerImpressionManagerMap = mutableMapOf<String, OneTimeImpressionManager<String>>()
 
     private val oldWidgetsMap = mutableMapOf<String, FeedBrowseSlotUiModel>()
+
+    private var oldCategoryInspirationData: CategoryInspirationDataContainer =
+        CategoryInspirationDataContainer(emptyMap(), "")
 
     fun impress(slotId: String, key: PlayWidgetChannelUiModel, onImpress: () -> Unit) {
         getChannelImpressionManager(slotId)
@@ -48,6 +52,12 @@ internal class FeedBrowseImpressionManager @Inject constructor() {
         oldWidgetsMap.putAll(newWidgetsMap)
     }
 
+    fun onNewWidgets(data: CategoryInspirationMap, selectedMenuId: String) {
+        val newData = CategoryInspirationDataContainer(data, selectedMenuId)
+        doCompare(oldCategoryInspirationData, newData)
+        oldCategoryInspirationData = newData
+    }
+
     private fun doCompare(
         oldWidgets: Map<String, FeedBrowseSlotUiModel>,
         newWidgets: Map<String, FeedBrowseSlotUiModel>
@@ -63,6 +73,19 @@ internal class FeedBrowseImpressionManager @Inject constructor() {
                 }
                 else -> {}
             }
+        }
+    }
+
+    private fun doCompare(
+        oldData: CategoryInspirationDataContainer,
+        newData: CategoryInspirationDataContainer,
+    ) {
+        if (oldData.data.keys != newData.data.keys) {
+            resetMenuImpression("")
+        }
+
+        if (oldData.selectedMenuId != newData.selectedMenuId) {
+            resetChannelImpression("")
         }
     }
 
@@ -122,4 +145,9 @@ internal class FeedBrowseImpressionManager @Inject constructor() {
             inspirationBannerImpressionManagerMap[slotId] = it
         }
     }
+
+    private data class CategoryInspirationDataContainer(
+        val data: CategoryInspirationMap,
+        val selectedMenuId: String,
+    )
 }

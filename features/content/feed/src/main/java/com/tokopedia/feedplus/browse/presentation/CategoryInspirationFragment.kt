@@ -1,10 +1,12 @@
 package com.tokopedia.feedplus.browse.presentation
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -18,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
+import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseImpressionManager
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTrackerImpl
 import com.tokopedia.feedplus.browse.presentation.adapter.CategoryInspirationAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.CategoryInspirationItemDecoration
@@ -26,6 +29,7 @@ import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.Inspiration
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationAction
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.databinding.FragmentFeedCategoryInspirationBinding
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,12 +39,17 @@ import javax.inject.Inject
  */
 internal class CategoryInspirationFragment @Inject constructor(
     categoryInspirationViewModelFactory: CategoryInspirationViewModel.Factory,
+    private val impressionManager: FeedBrowseImpressionManager,
     private val router: Router,
-    private val tracker: FeedBrowseTrackerImpl
+    trackerFactory: FeedBrowseTrackerImpl.Factory,
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentFeedCategoryInspirationBinding? = null
     private val binding get() = _binding!!
+
+    private val tracker by lazyThreadSafetyNone {
+        trackerFactory.create(FeedBrowseTrackerImpl.PREFIX_CATEGORY_INSPIRATION_PAGE)
+    }
 
     private val chipsListener = object : ChipsViewHolder.Listener {
         override fun onChipImpressed(
@@ -49,6 +58,11 @@ internal class CategoryInspirationFragment @Inject constructor(
             chip: WidgetMenuModel,
             chipPosition: Int
         ) {
+            tracker.viewChipsWidget(
+                chip,
+                widgetModel.slotInfo,
+                chipPosition
+            )
         }
 
         override fun onChipClicked(
@@ -57,6 +71,11 @@ internal class CategoryInspirationFragment @Inject constructor(
             chip: WidgetMenuModel,
             chipPosition: Int
         ) {
+            tracker.clickChipsWidget(
+                chip,
+                widgetModel.slotInfo,
+                chipPosition
+            )
             viewModel.onAction(CategoryInspirationAction.SelectMenu(chip))
         }
 
@@ -70,10 +89,28 @@ internal class CategoryInspirationFragment @Inject constructor(
     }
 
     private val inspirationCardListener = object : InspirationCardViewHolder.Item.Listener {
+        override fun onImpressed(
+            viewHolder: InspirationCardViewHolder.Item,
+            model: FeedBrowseItemListModel.InspirationCard.Item
+        ) {
+            tracker.viewChannelCard(
+                model.item,
+                model.config,
+                model.slotInfo,
+                model.index,
+            )
+        }
+
         override fun onClicked(
             viewHolder: InspirationCardViewHolder.Item,
             model: FeedBrowseItemListModel.InspirationCard.Item
         ) {
+            tracker.clickChannelCard(
+                model.item,
+                model.config,
+                model.slotInfo,
+                model.index,
+            )
             router.route(context, model.item.appLink)
         }
     }
@@ -107,8 +144,23 @@ internal class CategoryInspirationFragment @Inject constructor(
         }
     }
 
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            tracker.clickBackExitCategoryInspirationPage()
+            requireActivity().finish()
+        }
+    }
+
     override fun getScreenName(): String {
-        return "Feed Browse Inspiration"
+        return "Feed Category Inspiration"
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            onBackPressedCallback
+        )
     }
 
     override fun onCreateView(
@@ -138,7 +190,7 @@ internal class CategoryInspirationFragment @Inject constructor(
         (activity as? AppCompatActivity)?.setSupportActionBar(binding.header)
         binding.header.setBackgroundColor(Color.TRANSPARENT)
         binding.header.setNavigationOnClickListener {
-            exitPage()
+            onBackPressedCallback.handleOnBackPressed()
         }
 
         val layoutManager = GridLayoutManager(context, 2).apply {
@@ -156,11 +208,6 @@ internal class CategoryInspirationFragment @Inject constructor(
         binding.rvCategoryInspiration.adapter = adapter
     }
 
-    private fun exitPage() {
-        tracker.clickBackExit()
-        requireActivity().finish()
-    }
-
     private fun observe() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState
@@ -168,6 +215,7 @@ internal class CategoryInspirationFragment @Inject constructor(
                 .collectLatest { state ->
                     binding.header.headerTitle = state.title
 
+                    impressionManager.onNewWidgets(state.items, state.selectedMenuId)
                     adapter.setList(state.state, state.items, state.selectedMenuId) {
                         binding.rvCategoryInspiration.invalidateItemDecorations()
                     }

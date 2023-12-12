@@ -153,8 +153,13 @@ internal class CategoryInspirationAdapter(
                 addAll(List(6) { FeedBrowseItemListModel.InspirationCard.Placeholder })
             } else {
                 addAll(
-                    menuItem.items.map {
-                        FeedBrowseItemListModel.InspirationCard.Item(SlotInfo.Empty, it)
+                    menuItem.items.mapIndexed { index, data ->
+                        FeedBrowseItemListModel.InspirationCard.Item(
+                            SlotInfo.Empty,
+                            data,
+                            menuItem.config,
+                            index,
+                        )
                     }
                 )
                 if (menuItem.isLoading && !pageState.isLoading) { add(LoadingModel) }

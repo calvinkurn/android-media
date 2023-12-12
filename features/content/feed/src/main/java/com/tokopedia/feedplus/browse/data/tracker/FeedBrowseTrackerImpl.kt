@@ -17,17 +17,25 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 
 /**
  * Created by meyta.taliti on 01/09/23.
  * https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4134
  */
 private typealias EnhanceEcommerce = Pair<String, Bundle>
-internal class FeedBrowseTrackerImpl @Inject constructor(
+internal class FeedBrowseTrackerImpl @AssistedInject constructor(
+    @Assisted val prefix: String,
     private val impressionManager: FeedBrowseImpressionManager,
     private val userSession: UserSessionInterface
 ) : FeedBrowseTracker {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(prefix: String): FeedBrowseTrackerImpl
+    }
 
     override fun viewChannelCard(
         item: PlayWidgetChannelUiModel,
@@ -42,7 +50,7 @@ internal class FeedBrowseTrackerImpl @Inject constructor(
             eventName = Event.viewItem,
             eventAction = "view - channel card",
             eventLabel = trackerMultiFields(
-                PREFIX_VALUE,
+                prefix,
                 /** prefix **/
                 item.channelType.toTrackingType(),
                 /** videoType **/
@@ -66,7 +74,7 @@ internal class FeedBrowseTrackerImpl @Inject constructor(
                 putString(Key.creativeName, widgetPosition.toString())
                 putString(Key.creativeSlot, channelPosition.toString())
                 putString(Key.itemId, "${item.channelId} - ${slotInfo.title}")
-                putString(Key.itemName, "/ - $PREFIX_VALUE - $widgetPosition - channel card - ${slotInfo.title}")
+                putString(Key.itemName, "/ - $prefix - $widgetPosition - channel card - ${slotInfo.title}")
             }
         )
     }
@@ -83,7 +91,7 @@ internal class FeedBrowseTrackerImpl @Inject constructor(
             eventName = Event.viewItem,
             eventAction = "view - chips recom widget",
             eventLabel = trackerMultiFields(
-                PREFIX_VALUE,
+                prefix,
                 item.label,
                 slotInfo.title
             ),
@@ -110,7 +118,7 @@ internal class FeedBrowseTrackerImpl @Inject constructor(
             eventName = Event.selectContent,
             eventAction = "click - channel card",
             eventLabel = trackerMultiFields(
-                PREFIX_VALUE,
+                prefix,
                 /** prefix **/
                 item.channelType.toTrackingType(),
                 /** videoType **/
@@ -134,7 +142,7 @@ internal class FeedBrowseTrackerImpl @Inject constructor(
                 putString(Key.creativeName, widgetPosition.toString())
                 putString(Key.creativeSlot, channelPosition.toString())
                 putString(Key.itemId, "${item.channelId} - ${slotInfo.title}")
-                putString(Key.itemName, "/ - $PREFIX_VALUE - $widgetPosition - channel card - ${slotInfo.title}")
+                putString(Key.itemName, "/ - $prefix - $widgetPosition - channel card - ${slotInfo.title}")
             }
         )
     }
@@ -151,7 +159,7 @@ internal class FeedBrowseTrackerImpl @Inject constructor(
             eventName = Event.selectContent,
             eventAction = "click - chips recom widget",
             eventLabel = trackerMultiFields(
-                PREFIX_VALUE,
+                prefix,
                 item.label,
                 slotInfo.title
             ),
@@ -165,12 +173,12 @@ internal class FeedBrowseTrackerImpl @Inject constructor(
         )
     }
 
-    override fun clickBackExit() {
+    override fun clickBackExitBrowsePage() {
         Tracker.Builder()
             .setEvent(Event.clickHomepage)
             .setEventAction("click - back exit browse")
             .setEventCategory("feed browse page")
-            .setEventLabel(PREFIX_VALUE)
+            .setEventLabel(prefix)
             .setCustomProperty(Key.trackerId, "45745")
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(CurrentSite.tokopediaMarketplace)
@@ -191,7 +199,7 @@ internal class FeedBrowseTrackerImpl @Inject constructor(
             eventName = Event.viewItem,
             eventAction = "view - category inspiration",
             eventLabel = trackerMultiFields(
-                PREFIX_VALUE,
+                prefix,
                 item.title,
                 slotInfo.title,
                 bannerPosition
@@ -201,7 +209,7 @@ internal class FeedBrowseTrackerImpl @Inject constructor(
                 putString(Key.creativeName, widgetPosition.toString())
                 putString(Key.creativeSlot, bannerPosition.toString())
                 putString(Key.itemId, "${item.title} - ${slotInfo.title}")
-                putString(Key.itemName, "/ - $PREFIX_VALUE - $widgetPosition - category inspiration - ${slotInfo.title}")
+                putString(Key.itemName, "/ - $prefix - $widgetPosition - category inspiration - ${slotInfo.title}")
             }
         )
     }
@@ -218,7 +226,7 @@ internal class FeedBrowseTrackerImpl @Inject constructor(
             eventName = Event.selectContent,
             eventAction = "click - category inspiration",
             eventLabel = trackerMultiFields(
-                PREFIX_VALUE,
+                prefix,
                 item.title,
                 slotInfo.title,
                 bannerPosition
@@ -228,7 +236,7 @@ internal class FeedBrowseTrackerImpl @Inject constructor(
                 putString(Key.creativeName, widgetPosition.toString())
                 putString(Key.creativeSlot, bannerPosition.toString())
                 putString(Key.itemId, "${item.title} - ${slotInfo.title}")
-                putString(Key.itemName, "/ - $PREFIX_VALUE - $widgetPosition - category inspiration - ${slotInfo.title}")
+                putString(Key.itemName, "/ - $prefix - $widgetPosition - category inspiration - ${slotInfo.title}")
             }
         )
     }
@@ -327,7 +335,7 @@ internal class FeedBrowseTrackerImpl @Inject constructor(
             eventName = Event.selectContent,
             eventAction = "click - creator name",
             eventLabel = trackerMultiFields(
-                PREFIX_VALUE,
+                prefix,
                 item.id,
                 widgetHorizontalPosition,
                 slotInfo.title
@@ -337,9 +345,23 @@ internal class FeedBrowseTrackerImpl @Inject constructor(
                 putString(Key.creativeName, widgetVerticalPosition.toString())
                 putString(Key.creativeSlot, widgetHorizontalPosition.toString())
                 putString(Key.itemId, "{channel_id} - ${slotInfo.title}")
-                putString(Key.itemName, "/ - $PREFIX_VALUE - $widgetVerticalPosition - creator name - ${slotInfo.title}")
+                putString(Key.itemName, "/ - $prefix - $widgetVerticalPosition - creator name - ${slotInfo.title}")
             }
         )
+    }
+
+    override fun clickBackExitCategoryInspirationPage() {
+        Tracker.Builder()
+            .setEvent(Event.clickHomepage)
+            .setEventAction("click - back exit category inspiration")
+            .setEventCategory("feed browse page")
+            .setEventLabel(prefix)
+            .setCustomProperty(Key.trackerId, "45755")
+            .setBusinessUnit(BusinessUnit.content)
+            .setCurrentSite(CurrentSite.tokopediaMarketplace)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
     }
 
     private fun sendEnhanceEcommerceEvent(
@@ -371,6 +393,7 @@ internal class FeedBrowseTrackerImpl @Inject constructor(
     }
 
     companion object {
-        private const val PREFIX_VALUE = "BROWSE_PAGE_FEED"
+        const val PREFIX_BROWSE_PAGE = "BROWSE_PAGE_FEED"
+        const val PREFIX_CATEGORY_INSPIRATION_PAGE = "CATEGORY_INSPIRATION_PAGE_FEED"
     }
 }

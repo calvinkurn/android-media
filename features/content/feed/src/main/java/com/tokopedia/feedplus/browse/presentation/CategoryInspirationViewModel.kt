@@ -140,7 +140,8 @@ internal class CategoryInspirationViewModel @AssistedInject constructor(
                                 items = FeedBrowseChannelListState.initSuccess(
                                     items = data.items.items + response.channels,
                                     nextCursor = response.nextCursor,
-                                    hasNextPage = response.hasNextPage
+                                    hasNextPage = response.hasNextPage,
+                                    config = response.config,
                                 )
                             )
                         }

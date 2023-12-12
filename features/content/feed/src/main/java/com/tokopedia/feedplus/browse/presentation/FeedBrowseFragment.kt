@@ -22,7 +22,7 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseImpressionManager
-import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTracker
+import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTrackerImpl
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.FeedBrowseItemDecoration
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
@@ -38,6 +38,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.extension.withCache
@@ -59,11 +60,15 @@ internal class FeedBrowseFragment @Inject constructor(
     private val impressionManager: FeedBrowseImpressionManager,
     private val trackingQueue: TrackingQueue,
     private val router: Router,
-    private val tracker: FeedBrowseTracker
+    trackerFactory: FeedBrowseTrackerImpl.Factory
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentFeedBrowseBinding? = null
     private val binding get() = _binding!!
+
+    private val tracker by lazyThreadSafetyNone {
+        trackerFactory.create(FeedBrowseTrackerImpl.PREFIX_BROWSE_PAGE)
+    }
 
     private val bannerListener = object : FeedBrowseBannerViewHolder.Item.Listener {
         override fun onBannerImpressed(
@@ -102,12 +107,12 @@ internal class FeedBrowseFragment @Inject constructor(
             chip: WidgetMenuModel,
             chipPosition: Int
         ) {
-            viewModel.onIntent(FeedBrowseIntent.SelectChipWidget(widgetModel.slotInfo.id, chip))
             tracker.clickChipsWidget(
                 chip,
                 widgetModel.slotInfo,
                 chipPosition
             )
+            viewModel.onIntent(FeedBrowseIntent.SelectChipWidget(widgetModel.slotInfo.id, chip))
         }
 
         override fun onChipSelected(
@@ -213,7 +218,8 @@ internal class FeedBrowseFragment @Inject constructor(
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            exitPage()
+            tracker.clickBackExitBrowsePage()
+            requireActivity().finish()
         }
     }
 
@@ -292,7 +298,7 @@ internal class FeedBrowseFragment @Inject constructor(
         (activity as? AppCompatActivity)?.setSupportActionBar(binding.feedBrowseHeader)
         binding.feedBrowseHeader.setBackgroundColor(Color.TRANSPARENT)
         binding.feedBrowseHeader.setNavigationOnClickListener {
-            exitPage()
+            onBackPressedCallback.handleOnBackPressed()
         }
 
         val layoutManager = GridLayoutManager(context, 2).apply {
@@ -321,7 +327,7 @@ internal class FeedBrowseFragment @Inject constructor(
         }
         binding.feedBrowseError.setActionClickListener {
             if (errorType == GlobalError.MAINTENANCE) {
-                exitPage()
+                onBackPressedCallback.handleOnBackPressed()
             } else {
                 viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
             }
@@ -365,11 +371,6 @@ internal class FeedBrowseFragment @Inject constructor(
                 binding.feedBrowseList.invalidateItemDecorations()
             }
         }
-    }
-
-    private fun exitPage() {
-        tracker.clickBackExit()
-        requireActivity().finish()
     }
 
     companion object {

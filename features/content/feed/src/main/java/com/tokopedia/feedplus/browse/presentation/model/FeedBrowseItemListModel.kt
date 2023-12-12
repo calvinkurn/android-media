@@ -5,6 +5,7 @@ import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
 import com.tokopedia.feedplus.browse.data.model.BannerWidgetModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 
 /**
  * Created by kenny.hadisaputra on 13/10/23
@@ -68,7 +69,9 @@ internal sealed interface FeedBrowseItemListModel {
     sealed interface InspirationCard : FeedBrowseItemListModel {
         data class Item(
             override val slotInfo: SlotInfo,
-            val item: PlayWidgetChannelUiModel
+            val item: PlayWidgetChannelUiModel,
+            val config: PlayWidgetConfigUiModel,
+            val index: Int,
         ) : InspirationCard
 
         object Placeholder : InspirationCard {

@@ -42,7 +42,7 @@ internal interface FeedBrowseTracker {
         chipPositionInList: Int
     )
 
-    fun clickBackExit()
+    fun clickBackExitBrowsePage()
 
     fun viewInspirationBanner(
         item: BannerWidgetModel,
@@ -73,4 +73,6 @@ internal interface FeedBrowseTracker {
         slotInfo: SlotInfo,
         widgetPositionInList: Int
     )
+
+    fun clickBackExitCategoryInspirationPage()
 }
