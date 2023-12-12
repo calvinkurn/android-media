@@ -1,4 +1,4 @@
-package com.tokopedia.content.product.preview
+package com.tokopedia.content.product.preview.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.content.common.report_content.ThreeDotsPage
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
+import com.tokopedia.content.product.preview.R
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.unifycomponents.BottomSheetUnify
 

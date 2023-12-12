@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.unified
+package com.tokopedia.content.product.preview.view.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -84,13 +85,12 @@ fun MyApp() {
 
 internal val listOfReport: List<ReportUiModel>
     get() = buildList {
-        add(ReportUiModel(text = "Ini adalah konten spam", isSelected = false, reasonCode = 1))
+        add(ReportUiModel(text = "Ini adalah konten spam", reasonCode = 1))
         add(
             ReportUiModel(
                 text = "Konten mengandung SARA, diskriminasi, vulgar, ancaman, dan pelanggaran nilai/norma sosial",
-                isSelected = false,
                 reasonCode = 2,
             )
         )
-        add(ReportUiModel(text = "Lainnya", isSelected = false, reasonCode = 3))
+        add(ReportUiModel(text = "Lainnya", reasonCode = 3))
     }

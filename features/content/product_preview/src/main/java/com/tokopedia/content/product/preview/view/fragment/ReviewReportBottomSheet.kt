@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.unified
+package com.tokopedia.content.product.preview.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.content.product.preview.view.components.ReportScreen
+import com.tokopedia.content.product.preview.view.components.listOfReport
+import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 /**
@@ -52,7 +55,7 @@ class ReviewReportBottomSheet : BottomSheetUnify() {
     }
 
     interface Listener {
-        fun onReasonClicked(reportUiModel: ReportUiModel) //onsubmit?
+        fun onReasonClicked(report: ReportUiModel) //TODO: add onSubmit
     }
 
     companion object {
