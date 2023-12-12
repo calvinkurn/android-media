@@ -14,6 +14,8 @@ import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
+import com.tokopedia.sellerhomecommon.common.DarkModeHelper
+import com.tokopedia.sellerhomecommon.common.di.annotation.ActivityContext
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPref
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.sse.SellerHomeWidgetSSE
@@ -32,11 +34,15 @@ import java.util.concurrent.TimeUnit
  */
 
 @Module
-class SellerHomeModule {
+class SellerHomeModule(val context: Context) {
 
     companion object {
         private const val SSE_CLIENT_READ_TIME_OUT = 0L
     }
+
+    @Provides
+    @ActivityContext
+    fun providesActivityContext() = context
 
     @SellerHomeScope
     @Provides
@@ -79,6 +85,12 @@ class SellerHomeModule {
     @Provides
     fun provideWidgetLastUpdatePref(@ApplicationContext context: Context): WidgetLastUpdatedSharedPrefInterface {
         return WidgetLastUpdatedSharedPref(context)
+    }
+
+    @SellerHomeScope
+    @Provides
+    fun provideDarkModeHelper(@ActivityContext context: Context): DarkModeHelper {
+        return DarkModeHelper(context)
     }
 
     @SellerHomeScope
