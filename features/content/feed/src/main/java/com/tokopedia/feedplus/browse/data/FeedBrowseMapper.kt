@@ -56,7 +56,7 @@ class FeedBrowseMapper @Inject constructor() {
                         slotId = item.id,
                         title = item.title,
                         identifier = item.type.removePrefix("browse_widget_recommendation"),
-                        bannerList = emptyList(),
+                        bannerList = emptyList()
                     )
                 } else {
                     null
@@ -111,13 +111,12 @@ class FeedBrowseMapper @Inject constructor() {
                             AuthorWidgetModel(
                                 id = it.author.id,
                                 name = it.author.name,
-//                                avatarUrl = it.author.thumbnailUrl,
-                                avatarUrl = "https://images.tokopedia.net/img/cache/100-square/tPxBYm/2023/6/23/91d6baf5-b79e-45c1-bf58-9f033b14a69f.jpg",
+                                avatarUrl = it.author.thumbnailUrl,
 //                                coverUrl = it.media.coverUrl,
                                 coverUrl = "https://images.tokopedia.net/img/cache/296/jJtrdn/2023/10/17/8ccb0444-a1b9-464c-b86f-119576b47504.jpg",
                                 totalViewFmt = it.viewsFmt,
                                 appLink = it.author.appLink,
-                                contentAppLink = it.appLink,
+                                contentAppLink = it.appLink
                             )
                         }
                     }
