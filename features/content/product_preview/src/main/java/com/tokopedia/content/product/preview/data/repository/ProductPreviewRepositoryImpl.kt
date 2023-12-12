@@ -1,12 +1,12 @@
 package com.tokopedia.content.product.preview.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.product.preview.data.mapper.ProductPreviewMapper
 import com.tokopedia.content.product.preview.data.usecase.MediaReviewUseCase
 import com.tokopedia.content.product.preview.data.usecase.ProductMiniInfoUseCase
 import com.tokopedia.content.product.preview.data.usecase.ReviewLikeUseCase
 import com.tokopedia.content.product.preview.data.usecase.SubmitReportUseCase
+import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
@@ -25,9 +25,12 @@ class ProductPreviewRepositoryImpl @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     private val mapper: ProductPreviewMapper,
 ) : ProductPreviewRepository {
-    override suspend fun getProductMiniInfo(productId: String) {
-        //TODO("Not yet implemented")
-    }
+    override suspend fun getProductMiniInfo(productId: String): BottomNavUiModel =
+        withContext(dispatchers.io) {
+            val response = miniInfoUseCase(ProductMiniInfoUseCase.Param(productId))
+            mapper.map(response)
+        }
+
 
     override suspend fun getReview(productId: String, page: Int): List<ReviewUiModel> =
         withContext(dispatchers.io) {

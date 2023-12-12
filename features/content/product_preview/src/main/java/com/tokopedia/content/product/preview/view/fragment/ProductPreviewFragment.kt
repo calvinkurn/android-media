@@ -6,8 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentProductPreviewBinding
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter.Companion.TAB_PRODUCT_POS
@@ -15,9 +19,16 @@ import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapt
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.content.product.preview.view.components.MediaBottomNav
+import com.tokopedia.content.product.preview.viewmodel.EntrySource
+import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
+import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModelFactory
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
-class ProductPreviewFragment @Inject constructor() : TkpdBaseV4Fragment() {
+class ProductPreviewFragment @Inject constructor(
+    private val viewModelFactory: ProductPreviewViewModelFactory.Creator,
+    private val router: Router,
+) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentProductPreviewBinding? = null
     private val binding: FragmentProductPreviewBinding
@@ -32,6 +43,12 @@ class ProductPreviewFragment @Inject constructor() : TkpdBaseV4Fragment() {
             childFragmentManager,
             requireActivity(),
             lifecycle,
+        )
+    }
+
+    private val viewModel by activityViewModels<ProductPreviewViewModel> {
+        viewModelFactory.create(
+            EntrySource(productId = "4937529690") //TODO: Testing purpose, change from arguments
         )
     }
 
@@ -51,18 +68,19 @@ class ProductPreviewFragment @Inject constructor() : TkpdBaseV4Fragment() {
         initViews()
 
         onClickHandler()
+        observeData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.getMiniInfo()
     }
 
     private fun initViews() = with(binding) {
         vpProductPreview.apply {
             registerOnPageChangeCallback(pagerListener)
             adapter = pagerAdapter
-        }
-        viewFooter.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                MediaBottomNav(product = BottomNavUiModel.Empty)
-            }
         }
     }
 
@@ -99,6 +117,27 @@ class ProductPreviewFragment @Inject constructor() : TkpdBaseV4Fragment() {
             pagerListener
         )
         _binding = null
+    }
+
+    private fun observeData() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.miniInfo.withCache().collectLatest { (prev, curr) ->
+                renderBottomNav(prev, curr)
+            }
+        }
+    }
+
+    private fun renderBottomNav(prev: BottomNavUiModel?, model: BottomNavUiModel) {
+        if (prev == null || prev == model) return
+
+        binding.viewFooter.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                MediaBottomNav(product = model, onAtcClicked = {
+                    //TODO: if has variant open GVBS if not hit ATC
+                })
+            }
+        }
     }
 
     companion object {
