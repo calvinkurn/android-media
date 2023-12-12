@@ -34,7 +34,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     fun getReview() {
         viewModelScope.launchCatchError(block = {
-            _review.value = repo.getReview(param.productId, 1)
+            _review.value = repo.getReview(param.productId, 1) //TODO: add pagination
         }) {}
     }
 }
