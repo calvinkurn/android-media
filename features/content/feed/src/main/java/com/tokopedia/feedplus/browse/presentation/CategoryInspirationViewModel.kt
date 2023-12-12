@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.browse.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.types.ResultState
@@ -17,7 +16,6 @@ import com.tokopedia.feedplus.browse.presentation.model.isLoading
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -59,7 +57,7 @@ internal class CategoryInspirationViewModel @AssistedInject constructor(
                 WidgetMenuModel.Empty.copy(
 //                group = "browse_channel_slot_channelBlock:content_browse_promo",
 //                    group = "browse_channel_slot_tabMenu:content_browse_category"
-                    group = source,
+                    group = source
                 )
             )
 
@@ -105,8 +103,6 @@ internal class CategoryInspirationViewModel @AssistedInject constructor(
         val data = _uiState.value.items[menu.id]
         if (data != null && (data.items.isLoading || !data.items.hasNextPage)) return
 
-        Log.d("CategoryInspiration", "LoadContent in ViewModel")
-
         _uiState.update {
             it.copy(
                 items = it.items.updateById(menu.id) { data ->
@@ -116,8 +112,6 @@ internal class CategoryInspirationViewModel @AssistedInject constructor(
                 }
             )
         }
-
-        delay(2000)
 
         val nextCursor = data?.items?.nextCursor.orEmpty()
         when (val response = repository.getWidgetContentSlot(menu.toRequest(nextCursor))) {
@@ -141,7 +135,7 @@ internal class CategoryInspirationViewModel @AssistedInject constructor(
                                     items = data.items.items + response.channels,
                                     nextCursor = response.nextCursor,
                                     hasNextPage = response.hasNextPage,
-                                    config = response.config,
+                                    config = response.config
                                 )
                             )
                         }

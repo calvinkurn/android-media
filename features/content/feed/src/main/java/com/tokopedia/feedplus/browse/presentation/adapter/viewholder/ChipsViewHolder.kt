@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.browse.presentation.adapter.viewholder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseChipAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowsePayloads
@@ -17,6 +18,7 @@ import com.tokopedia.feedplus.databinding.ItemFeedBrowseChipsBinding
  */
 internal class ChipsViewHolder private constructor(
     private val binding: ItemFeedBrowseChipsBinding,
+    pool: RecycledViewPool,
     listener: Listener
 ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -53,6 +55,8 @@ internal class ChipsViewHolder private constructor(
 
     init {
         binding.root.adapter = adapter
+        binding.root.setRecycledViewPool(pool)
+        binding.root.setHasFixedSize(true)
         binding.root.addItemDecoration(FeedBrowseChipsItemDecoration(binding.root.resources))
     }
 
@@ -82,6 +86,7 @@ internal class ChipsViewHolder private constructor(
     companion object {
         fun create(
             parent: ViewGroup,
+            pool: RecycledViewPool,
             listener: Listener
         ): ChipsViewHolder {
             return ChipsViewHolder(
@@ -90,6 +95,7 @@ internal class ChipsViewHolder private constructor(
                     parent,
                     false
                 ),
+                pool,
                 listener
             )
         }

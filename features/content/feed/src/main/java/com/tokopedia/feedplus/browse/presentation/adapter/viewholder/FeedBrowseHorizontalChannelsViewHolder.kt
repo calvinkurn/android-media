@@ -26,6 +26,7 @@ import kotlin.time.Duration.Companion.seconds
  */
 internal class FeedBrowseHorizontalChannelsViewHolder private constructor(
     private val binding: ItemFeedBrowseHorizontalChannelsBinding,
+    pool: RecyclerView.RecycledViewPool,
     private val scope: CoroutineScope,
     private val listener: Listener
 ) : RecyclerView.ViewHolder(binding.root) {
@@ -74,6 +75,7 @@ internal class FeedBrowseHorizontalChannelsViewHolder private constructor(
 
     init {
         binding.rvChannels.adapter = adapter
+        binding.rvChannels.setRecycledViewPool(pool)
         binding.rvChannels.setHasFixedSize(true)
         binding.rvChannels.addItemDecoration(
             FeedBrowseHorizontalChannelsItemDecoration(binding.rvChannels.resources)
@@ -141,6 +143,7 @@ internal class FeedBrowseHorizontalChannelsViewHolder private constructor(
     companion object {
         fun create(
             parent: ViewGroup,
+            pool: RecyclerView.RecycledViewPool,
             scope: CoroutineScope,
             listener: Listener
         ): FeedBrowseHorizontalChannelsViewHolder {
@@ -150,6 +153,7 @@ internal class FeedBrowseHorizontalChannelsViewHolder private constructor(
                     parent,
                     false
                 ),
+                pool,
                 scope,
                 listener
             )

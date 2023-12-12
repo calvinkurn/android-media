@@ -57,10 +57,12 @@ internal class CategoryInspirationAdapter(
     }
 ) {
 
+    private val poolManager = FeedBrowseRecycledViewPoolManager()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_CHIPS -> {
-                ChipsViewHolder.create(parent, chipsListener)
+                ChipsViewHolder.create(parent, poolManager.menuRecycledViewPool, chipsListener)
             }
             TYPE_TITLE -> {
                 FeedBrowseTitleViewHolder.create(parent)
@@ -158,7 +160,7 @@ internal class CategoryInspirationAdapter(
                             SlotInfo.Empty,
                             data,
                             menuItem.config,
-                            index,
+                            index
                         )
                     }
                 )

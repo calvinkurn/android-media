@@ -10,8 +10,8 @@ import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalAuthorsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChannelListState
@@ -31,6 +31,7 @@ internal class FeedBrowseAdapter(
     private val channelListener: FeedBrowseHorizontalChannelsViewHolder.Listener,
     private val creatorListener: FeedBrowseHorizontalAuthorsViewHolder.Listener
 ) : ListAdapter<FeedBrowseItemListModel, RecyclerView.ViewHolder>(
+
     object : DiffUtil.ItemCallback<FeedBrowseItemListModel>() {
         override fun areItemsTheSame(oldItem: FeedBrowseItemListModel, newItem: FeedBrowseItemListModel): Boolean {
             return oldItem.slotInfo.id == newItem.slotInfo.id && oldItem::class == newItem::class
@@ -57,13 +58,20 @@ internal class FeedBrowseAdapter(
     }
 ) {
 
+    private val poolManager = FeedBrowseRecycledViewPoolManager()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_CHIPS -> {
-                ChipsViewHolder.create(parent, chipsListener)
+                ChipsViewHolder.create(parent, poolManager.menuRecycledViewPool, chipsListener)
             }
             TYPE_HORIZONTAL_CHANNELS -> {
-                FeedBrowseHorizontalChannelsViewHolder.create(parent, scope, channelListener)
+                FeedBrowseHorizontalChannelsViewHolder.create(
+                    parent,
+                    poolManager.channelRecycledViewPool,
+                    scope,
+                    channelListener
+                )
             }
             TYPE_BANNER -> {
                 FeedBrowseBannerViewHolder.Item.create(parent, bannerListener)
@@ -75,7 +83,11 @@ internal class FeedBrowseAdapter(
                 FeedBrowseTitleViewHolder.create(parent)
             }
             TYPE_HORIZONTAL_CREATORS -> {
-                FeedBrowseHorizontalAuthorsViewHolder.create(parent, creatorListener)
+                FeedBrowseHorizontalAuthorsViewHolder.create(
+                    parent,
+                    poolManager.authorRecycledViewPool,
+                    creatorListener
+                )
             }
             else -> error("ViewType $viewType is not supported")
         }

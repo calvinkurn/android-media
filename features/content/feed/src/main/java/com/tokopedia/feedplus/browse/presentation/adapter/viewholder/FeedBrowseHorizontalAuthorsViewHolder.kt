@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.browse.presentation.adapter.viewholder
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
 import com.tokopedia.feedplus.browse.presentation.adapter.AuthorAdapter
 import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.FeedBrowseHorizontalChannelsItemDecoration
@@ -14,6 +15,7 @@ import com.tokopedia.feedplus.databinding.ItemFeedBrowseHorizontalAuthorsBinding
  */
 internal class FeedBrowseHorizontalAuthorsViewHolder private constructor(
     private val binding: ItemFeedBrowseHorizontalAuthorsBinding,
+    pool: RecycledViewPool,
     private val listener: Listener
 ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -62,6 +64,8 @@ internal class FeedBrowseHorizontalAuthorsViewHolder private constructor(
 
     init {
         binding.rvAuthors.adapter = adapter
+        binding.rvAuthors.setRecycledViewPool(pool)
+        binding.rvAuthors.setHasFixedSize(true)
         binding.rvAuthors.addItemDecoration(
             FeedBrowseHorizontalChannelsItemDecoration(binding.rvAuthors.resources)
         )
@@ -80,6 +84,7 @@ internal class FeedBrowseHorizontalAuthorsViewHolder private constructor(
     companion object {
         fun create(
             parent: ViewGroup,
+            pool: RecycledViewPool,
             listener: Listener
         ): FeedBrowseHorizontalAuthorsViewHolder {
             return FeedBrowseHorizontalAuthorsViewHolder(
@@ -88,6 +93,7 @@ internal class FeedBrowseHorizontalAuthorsViewHolder private constructor(
                     parent,
                     false
                 ),
+                pool,
                 listener
             )
         }
