@@ -48,6 +48,8 @@ interface EPharmacyListener {
         groupId: String?
     ) {}
 
+    fun onToast(toasterType: Int, message: String) {}
+
     /**
      * Consultation Order Detail
      */
