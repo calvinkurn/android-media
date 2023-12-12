@@ -29,7 +29,7 @@ class GWPCardOfProductViewHolder(
     private val binding: GwpCardItemBinding,
     private val callback: GWPCallback,
     private val getParentTrackData: () -> ComponentTrackDataModel
-) : GWPCardViewHolder<GWPWidgetUiModel.Card.Product>(binding.root) {
+) : GWPCardViewHolder<GWPWidgetUiModel.Card.Product>(binding.root, getParentTrackData) {
 
     init {
         val context = binding.root.context

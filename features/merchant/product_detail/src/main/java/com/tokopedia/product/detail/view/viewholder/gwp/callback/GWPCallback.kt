@@ -20,7 +20,7 @@ class GWPCallback(
     }
 
     override fun onEvent(event: GWPEvent) {
-        tracker.tracking(event = event)
+        tracker.tracking(event = event, commonTracker = getCommonTracker())
 
         when (event) {
             is GWPEvent.OnClickComponent -> {

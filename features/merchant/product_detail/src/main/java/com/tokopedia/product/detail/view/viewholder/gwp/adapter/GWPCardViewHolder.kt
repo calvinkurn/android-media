@@ -18,10 +18,9 @@ abstract class GWPCardViewHolder<in DATA : GWPWidgetUiModel.Card>(
     abstract fun bind(data: DATA)
 
     protected fun getTrackData(data: DATA): GWPWidgetUiModel.CardTrackData {
-        val trackDataModel = data.trackData.apply {
-            parentTrackData = getParentTrackData
+        return data.trackData.apply {
+            parentTrackData = getParentTrackData.invoke()
             position = bindingAdapterPosition.inc()
         }
-        return data
     }
 }

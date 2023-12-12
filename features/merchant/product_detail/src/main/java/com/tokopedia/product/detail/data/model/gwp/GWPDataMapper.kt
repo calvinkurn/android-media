@@ -127,7 +127,7 @@ private fun GWPData.Data.Card.asUiModel(
             componentTitle = componentTitle,
             cardCount = cardCount,
             offerId = offerId,
-            allText = "$title, $productName, $subtitle",
+            allText = "$title,$productName,$subtitle",
             productIds = productIDs
         )
     )

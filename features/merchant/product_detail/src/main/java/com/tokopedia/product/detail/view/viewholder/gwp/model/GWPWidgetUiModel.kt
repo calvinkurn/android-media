@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.viewholder.gwp.model
 
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.util.Separator
 import com.tokopedia.product.detail.view.viewholder.ActionUiModel
@@ -23,6 +24,8 @@ data class GWPWidgetUiModel(
     val separator: String = "",
     val offerId: String = ""
 ) {
+
+    var trackData: ComponentTrackDataModel? = null
 
     sealed interface Card {
         val id: Int

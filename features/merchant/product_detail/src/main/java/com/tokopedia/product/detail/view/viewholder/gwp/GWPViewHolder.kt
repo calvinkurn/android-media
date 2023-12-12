@@ -175,6 +175,7 @@ class GWPViewHolder(
     // region event
     private fun setEvent(uiModel: GWPWidgetUiModel) {
         binding.root.setOnClickListener {
+            uiModel.trackData = getComponentTrackData(mElement)
             callback.event(GWPEvent.OnClickComponent(data = uiModel))
         }
     }
