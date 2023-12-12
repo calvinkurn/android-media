@@ -20,8 +20,9 @@ import dagger.Provides
  */
 
 @Module
-class StatisticModule(val context: Context) {
+class StatisticModule(private val context: Context) {
 
+    @StatisticScope
     @Provides
     @ActivityContext
     fun providesActivityContext() = context

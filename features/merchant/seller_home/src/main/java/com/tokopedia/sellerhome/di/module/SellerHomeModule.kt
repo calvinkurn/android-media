@@ -34,12 +34,13 @@ import java.util.concurrent.TimeUnit
  */
 
 @Module
-class SellerHomeModule(val context: Context) {
+class SellerHomeModule(private val context: Context) {
 
     companion object {
         private const val SSE_CLIENT_READ_TIME_OUT = 0L
     }
 
+    @SellerHomeScope
     @Provides
     @ActivityContext
     fun providesActivityContext() = context
@@ -85,12 +86,6 @@ class SellerHomeModule(val context: Context) {
     @Provides
     fun provideWidgetLastUpdatePref(@ApplicationContext context: Context): WidgetLastUpdatedSharedPrefInterface {
         return WidgetLastUpdatedSharedPref(context)
-    }
-
-    @SellerHomeScope
-    @Provides
-    fun provideDarkModeHelper(@ActivityContext context: Context): DarkModeHelper {
-        return DarkModeHelper(context)
     }
 
     @SellerHomeScope
