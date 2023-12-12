@@ -4,22 +4,21 @@ import android.widget.ImageView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.editor.ui.EditorTest
 import com.tokopedia.editor.util.FileLoader
 import com.tokopedia.editor.R
+import com.tokopedia.picker.common.R as pickercommonR
 import com.tokopedia.editor.data.mapper.NavigationTypeMapper
-import com.tokopedia.editor.ui.placement.PlacementImageActivity
-import com.tokopedia.editor.ui.text.InputTextActivity
 import com.tokopedia.kotlin.extensions.view.getBitmap
 import com.tokopedia.picker.common.types.ToolType
 import com.tokopedia.test.application.annotations.UiTest
+import org.hamcrest.core.AllOf
 import org.junit.Test
+import org.junit.Assert
 
 @UiTest
-class MainEditorTest : EditorTest() {
+class EditorPageUITest : EditorTest() {
 
     @Test
     fun should_able_to_open_main_editor_activity() {
@@ -93,40 +92,6 @@ class MainEditorTest : EditorTest() {
         assertRecyclerViewDisplayed(R.id.lst_tool)
     }
 
-//    @Test
-//    fun should_open_input_text_page() {
-//        // Given
-//        val file = FileLoader.imageFile(context)
-//        val text = context.getString(NavigationTypeMapper.invoke(ToolType.TEXT).second)
-//
-//        // When
-//        startActivity {
-//            filePaths(listOf(file.path))
-//        }
-//        onView(ViewMatchers.withText(text)).perform(ViewActions.click())
-//
-//        // Then
-//        Thread.sleep(100)
-//        checkIntentCallSuccess(InputTextActivity::class.java.name)
-//    }
-
-    @Test
-    fun should_open_crop_placement_page() {
-        // Given
-        val file = FileLoader.imageFile(context)
-        val text = context.getString(NavigationTypeMapper.invoke(ToolType.PLACEMENT).second)
-
-        // When
-        startActivity {
-            filePaths(listOf(file.path))
-        }
-        onView(ViewMatchers.withText(text)).perform(ViewActions.click())
-
-        // Then
-        Thread.sleep(100)
-        checkIntentCallSuccess(PlacementImageActivity::class.java.name)
-    }
-
     @Test
     fun should_able_mute_video() {
         // Given
@@ -156,15 +121,44 @@ class MainEditorTest : EditorTest() {
             filePaths(listOf(file.path))
         }
         onView(ViewMatchers.withText(actionText)).perform(ViewActions.click())
-        Thread.sleep(2000)
+        Thread.sleep(200)
         onView(ViewMatchers.withId(R.id.add_text_input)).perform(ViewActions.typeText(typedText))
+        onView(ViewMatchers.withId(R.id.alignment_icon)).perform(ViewActions.click())
+        onView(AllOf.allOf(ViewMatchers.withParent(ViewMatchers.withId(R.id.font_color_container)), ViewMatchers.withParentIndex(2))).perform(ViewActions.click())
         Thread.sleep(2000)
         onView(ViewMatchers.withText("Simpan")).perform(ViewActions.click())
 
         // Then
-        Thread.sleep(2000)
+        Thread.sleep(200)
         assertTextDisplayedWith(typedText)
+        onView(ViewMatchers.withText(typedText)).check(ViewAssertions.matches(ViewMatchers.hasTextColor(
+            R.color.dms_universal_editor_yn_500
+        )))
     }
+
+    @Test
+    fun should_zoom_image() {
+        // Given
+        val expectedRatio = 9/16f // width/height
+        val file = FileLoader.imageFile(context)
+        val actionText = context.getString(NavigationTypeMapper.invoke(ToolType.PLACEMENT).second)
+
+        // When
+        startActivity {
+            filePaths(listOf(file.path))
+        }
+        onView(ViewMatchers.withText(actionText)).perform(ViewActions.click())
+        Thread.sleep(300)
+        onView(ViewMatchers.withId(R.id.crop_area)).perform(ViewActions.click(), ViewActions.doubleClick())
+        Thread.sleep(300)
+        onView(ViewMatchers.withId(pickercommonR.id.action_text_done)).perform(ViewActions.click(), ViewActions.doubleClick())
+
+        // Then
+        Thread.sleep(1000)
+        Assert.assertEquals(getImageResultRatio(), expectedRatio)
+    }
+
+    // ============================================================================
 
     private fun onImageView(resId: Int, imgView: (ImageView) -> Unit) {
         onView(ViewMatchers.withId(resId))
@@ -186,9 +180,5 @@ class MainEditorTest : EditorTest() {
         onView(
             ViewMatchers.withId(viewId)
         ).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-    }
-
-    private fun checkIntentCallSuccess(className: String) {
-        Intents.intended(IntentMatchers.hasComponent(className))
     }
 }
