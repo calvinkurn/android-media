@@ -1,14 +1,15 @@
 package com.tokopedia.hotel.hoteldetail.presentation.activity
 
 import android.content.Intent
+import androidx.core.widget.NestedScrollView
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import com.tokopedia.hotel.hoteldetail.presentation.activity.mock.HotelDetailMockResponseConfig
 import com.tokopedia.hotel.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import kotlinx.android.synthetic.main.fragment_hotel_detail.*
 import org.junit.*
+import com.tokopedia.hotel.R as hotelR
 
 /**
  * @author by jessica on 16/09/20
@@ -68,6 +69,7 @@ class HotelDetailActivityTest: BaseHotelPDPTest() {
     override fun getTrackerFile(): String = "tracker/travel/hotel/hotel_pdp.json"
 
     override fun scrollView() {
-        activityRule.activity.hotelDetailNestedScrollView.scrollTo(0,100)
+        activityRule.activity.findViewById<NestedScrollView>(hotelR.id.hotelDetailNestedScrollView)
+            .scrollTo(0, 100)
     }
 }

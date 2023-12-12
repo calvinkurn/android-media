@@ -2,6 +2,7 @@ package com.tokopedia.hotel.roomlist.presentation.adapter.viewholder
 
 import android.graphics.Paint
 import android.view.View
+import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
@@ -101,8 +102,8 @@ class RoomListViewHolder(val binding: ItemHotelRoomListBinding, val listener: On
             if (imageUrls.size >= 5) roomImageViewPager.setImages(imageUrls.subList(0, 5))
             else roomImageViewPager.setImages(imageUrls)
             roomImageViewPager.imageViewPagerListener = object : ImageViewPager.ImageViewPagerListener {
-                override fun onImageClicked(position: Int) {
-                    listener.onPhotoClickListener(room, imageUrls, position)
+                override fun onImageClicked(imageView: ImageView, position: Int) {
+                    listener.onPhotoClickListener(imageView, room, imageUrls, position)
                 }
             }
             roomImageViewPager.buildView()
@@ -145,7 +146,7 @@ class RoomListViewHolder(val binding: ItemHotelRoomListBinding, val listener: On
 
     interface OnClickBookListener {
         fun onClickBookListener(room: HotelRoom)
-        fun onPhotoClickListener(room: HotelRoom, imageUrls: List<String>, position: Int)
+        fun onPhotoClickListener(imageView: ImageView, room: HotelRoom, imageUrls: List<String>, position: Int)
     }
 
 }
