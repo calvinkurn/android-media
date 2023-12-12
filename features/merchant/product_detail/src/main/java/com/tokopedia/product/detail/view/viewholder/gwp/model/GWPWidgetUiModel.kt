@@ -55,13 +55,16 @@ data class GWPWidgetUiModel(
     }
 
     data class CardTrackData(
-        val creativeName: String = "",
+        val componentTitle: String = "",
         val offerId: String = "",
-        val offerIds: String = "",
-        val position: Int = -Int.ONE
+        val cardCount: Int = Int.ZERO,
+        val allText: String = "",
+        val productIds: String = ""
     ) {
 
-        lateinit var parentTrackData: ComponentTrackDataModel
+        var parentTrackData: ComponentTrackDataModel? = null
+
+        var position: Int = -Int.ONE
     }
 
     val showSeparatorBottom

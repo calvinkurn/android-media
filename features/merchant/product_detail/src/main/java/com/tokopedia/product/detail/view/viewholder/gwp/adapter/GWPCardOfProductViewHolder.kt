@@ -71,7 +71,8 @@ class GWPCardOfProductViewHolder(
 
     private fun setEvent(data: GWPWidgetUiModel.Card.Product) {
         binding.root.setOnClickListener {
-            callback.event(GWPEvent.OnClickProduct(data = data))
+            val updateData = data.copy(trackData = getTrackData(data))
+            callback.event(GWPEvent.OnClickProduct(data = updateData))
         }
     }
 
@@ -80,7 +81,8 @@ class GWPCardOfProductViewHolder(
             holders = callback.impressionHolders,
             name = data.id.toString()
         ) {
-            callback.event(GWPEvent.OnCardImpress(card = data))
+            val updateData = data.copy(trackData = getTrackData(data))
+            callback.event(GWPEvent.OnCardImpress(card = updateData))
         }
     }
 

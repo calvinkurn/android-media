@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.viewholder.gwp.tracker
 import com.tokopedia.product.detail.data.util.TrackingUtil
 import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.view.viewholder.gwp.event.GWPEvent
+import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /**
@@ -14,9 +15,12 @@ class GWPTracker(
     private val trackingQueue: TrackingQueue
 ) {
 
-    fun tracking(event: GWPEvent) {
+    fun tracking(event: GWPEvent, commonTracker: CommonTracker?) {
+        val commonTracker = commonTracker ?: return
+
         when (event) {
-            is GWPEvent.OnClickComponent -> {
+            is GWPEvent.OnClickComponent,
+            is GWPEvent.OnClickShowMore -> {
                 // event.data.action.navigate()
             }
 
@@ -24,23 +28,19 @@ class GWPTracker(
                 // event.data.action.navigate()
             }
 
-            is GWPEvent.OnClickShowMore -> {
-                // event.data.action.navigate()
-            }
-
             is GWPEvent.OnCardImpress -> {
-                // no-ops
+                trackCardImpression(event.card.trackData, commonTracker)
             }
         }
     }
 
     /**
      * {
-     *   "event": "promoClick",
-     *   "eventAction": "click - card on gwp",
+     *   "event": "view_item",
+     *   "eventAction": "impression - gwp card",
      *   "eventCategory": "product detail page",
-     *   "eventLabel": "",
-     *   "trackerId": "48996",
+     *   "eventLabel": "text:{text showed in each project};card_count:{number};",
+     *   "trackerId": "48993",
      *   "businessUnit": "product detail page",
      *   "component": "comp:{component name};temp:{template name};elem:{element name};cpos:{component position}; //component level attribute",
      *   "currentSite": "tokopediamarketplace",
@@ -48,19 +48,25 @@ class GWPTracker(
      *   "productId": "{Product ID}; //Product ID of product displayed on PDP",
      *   "promotions": [
      *     {
-     *       "creative_name": "{text};//list of text displayed in each card",
-     *       "creative_slot": "{this is integer}",
-     *       "item_id": "{offer_id}:{product_id};//list of offer_id with productID contains in each offerID",
-     *       "item_name": "{offer_id} //offer_id clicked"
-     *     }
+     *       "creative_name": "text:{text};//list of text displayed in each card",
+     *       "creative_slot": "{slot/position}",
+     *       "item_id": "offer_id:{offer_id};offer_type:{offer_type};",
+     *       "item_name": "{product_id1,product_id2,product_id3};//list of offer_id with productID contains in each offerID"
+     *     },
      *   ],
      *   "shopId": "{shop_id}; //shop_id level hit",
      *   "userId": "{user_id}; //user_id level hit"
      * }
+     *
      */
-    private fun productCardClicked(commonTracker: CommonTracker) {
-        val action = "click - card on gwp"
-        val event = "promoClick"
+    private fun trackCardImpression(
+        cardTrackData: GWPWidgetUiModel.CardTrackData,
+        commonTracker: CommonTracker
+    ) {
+        val action = "impression - gwp card"
+        val event = "promoView"
+        val eventLabel = "text:${cardTrackData.componentTitle};card_count:${cardTrackData.cardCount};"
+        val itemId = "offer_id:${cardTrackData.offerId};offer_type:gwp"
         val mapEvent = hashMapOf<String, Any>(
             "event" to event,
             "eventCategory" to "product detail page",
@@ -68,18 +74,18 @@ class GWPTracker(
             "eventLabel" to "",
             "businessUnit" to "product detail page",
             "currentSite" to "tokopediamarketplace",
-            "trackerId" to "48996",
+            "trackerId" to "48993",
             "productId" to commonTracker.productId,
             "layout" to TrackingUtil.generateLayoutValue(productInfo = commonTracker.productInfo),
-            // "component" to component.getComponentData(action),
+            "component" to cardTrackData.parentTrackData?.getComponentData(action).orEmpty(),
             "ecommerce" to hashMapOf(
                 event to hashMapOf(
                     "promotions" to arrayListOf(
                         hashMapOf(
-                            "creative_name" to "{text}",
-                            //   "creative_slot" to component.adapterPosition,
-                            "item_id" to "{offer_id}:{product_id}"
-                            //  "item_name" to "keyword_count:$count"
+                            "creative_name" to cardTrackData.allText,
+                            "creative_slot" to cardTrackData.position,
+                            "item_id" to itemId,
+                            "item_name" to cardTrackData.productIds
                         )
                     )
                 )

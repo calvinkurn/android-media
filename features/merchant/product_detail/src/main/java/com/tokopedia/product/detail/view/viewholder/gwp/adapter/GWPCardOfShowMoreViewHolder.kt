@@ -25,7 +25,7 @@ class GWPCardOfShowMoreViewHolder(
     private val binding: ViewAllCard,
     private val callback: GWPCallback,
     private val getParentTrackData: () -> ComponentTrackDataModel
-) : GWPCardViewHolder<GWPWidgetUiModel.Card.LoadMore>(binding.rootView) {
+) : GWPCardViewHolder<GWPWidgetUiModel.Card.LoadMore>(binding.rootView, getParentTrackData) {
 
     init {
         binding.mode = ViewAllCard.MODE_NORMAL
@@ -55,7 +55,8 @@ class GWPCardOfShowMoreViewHolder(
 
     private fun ViewAllCard.setEvent(data: GWPWidgetUiModel.Card.LoadMore) {
         cardView.setOnClickListener {
-            callback.event(GWPEvent.OnClickShowMore(data = data))
+            val updateData = data.copy(trackData = getTrackData(data))
+            callback.event(GWPEvent.OnClickShowMore(data = updateData))
         }
     }
 
@@ -64,7 +65,8 @@ class GWPCardOfShowMoreViewHolder(
             holders = callback.impressionHolders,
             name = data.id.toString()
         ) {
-            callback.event(GWPEvent.OnCardImpress(card = data))
+            val updateData = data.copy(trackData = getTrackData(data))
+            callback.event(GWPEvent.OnCardImpress(card = updateData))
         }
     }
 
