@@ -1,5 +1,6 @@
 package com.tokopedia.pms.howtopay.ui.adapter.viewHolder
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +16,7 @@ class MultiChannelViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
     private val binding = PmsHwpItemMultiChannelBinding.bind(view)
 
+    @SuppressLint("NotifyDataSetChanged")
     fun bindView(
         paymentChannel: HtpPaymentChannel,
         isLastItem: Boolean,

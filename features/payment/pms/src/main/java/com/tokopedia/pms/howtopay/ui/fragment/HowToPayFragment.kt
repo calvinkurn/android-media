@@ -336,6 +336,7 @@ class HowToPayFragment : BaseDaggerFragment() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun addSingleChannelInstruction(instructions: ArrayList<String>) {
         binding?.run {
             recyclerView.layoutManager = NonScrollLinerLayoutManager(activity as Context)
@@ -388,7 +389,9 @@ class HowToPayFragment : BaseDaggerFragment() {
                     ds.color = color
                 }
             },
-            startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            startIndex,
+            endIndex,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         return SpannableStringBuilder.valueOf(storeNote).append(" ").append(spannableString)
     }
