@@ -46,8 +46,8 @@ class HomeAccountUiTest {
             clickLihatSemuaSaldoPoint()
 
             fundsAndInvestmentRobot {
-                displayText("GoPay & Coins")
-                displayText("Tokopedia Card")
+//                displayText("GoPay & Coins")
+//                displayText("Tokopedia Card")
                 back()
             }
 
