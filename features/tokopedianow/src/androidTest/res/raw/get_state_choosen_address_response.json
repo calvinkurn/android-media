@@ -1,0 +1,40 @@
+{
+  "keroAddrGetStateChosenAddress": {
+    "data": {
+      "addr_id": 0,
+      "receiver_name": "",
+      "addr_name": "",
+      "district": 0,
+      "city": 0,
+      "city_name": "",
+      "district_name": "",
+      "status": 0,
+      "latitude": "",
+      "longitude": "",
+      "postal_code": ""
+    },
+    "tokonow": {
+      "shop_id": 11530573,
+      "warehouse_id": 12210375,
+      "warehouses": [
+        {
+          "warehouse_id": 12210375,
+          "service_type": "2h"
+        },
+        {
+          "warehouse_id": 0,
+          "service_type": "15m"
+        }
+      ],
+      "service_type": "2h",
+      "tokonow_last_update": "2023-11-14T12:20:52+07:00"
+    },
+    "kero_addr_error": {
+      "code": 9,
+      "detail": "state empty for user : cDWVwXqpRM269fVbbS9KGI:APA91bGAfDRKwlbShCFIcbkDDAGxbAhoEHAMjO6NHmiAT3Yy8IDCTPuBlGT719cH62uHsrXDmTTpE-ufckWB2iHcmgsbgPAJl2qB-2nnXjsmUgE625jfmlyaBCtZ9v6o7y3ZeGlgbuPH"
+    },
+    "status": "",
+    "server_process_time": "",
+    "config": ""
+  }
+}

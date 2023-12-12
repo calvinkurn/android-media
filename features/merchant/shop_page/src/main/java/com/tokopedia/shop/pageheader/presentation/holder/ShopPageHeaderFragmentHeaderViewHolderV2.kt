@@ -885,17 +885,20 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         }
     }
 
-    fun cycleDynamicUspText(dynamicUspValue: String) {
+    private fun cycleDynamicUspText(dynamicUspValue: String) {
         if (dynamicUspValue.isNotEmpty()) {
-            animateDynamicUspText(Int.ZERO.toFloat())?.withEndAction {
-                animateDynamicUspText(Int.ONE.toFloat())
-                updateDynamicUspValue(dynamicUspValue)
-            }
+            animateDynamicUspText(-textDynamicUspPerformance?.height?.toFloat().orZero())
+                ?.withEndAction {
+                    textDynamicUspPerformance?.translationY =
+                        textDynamicUspPerformance?.height?.toFloat().orZero()
+                    animateDynamicUspText(Float.ZERO)
+                    updateDynamicUspValue(dynamicUspValue)
+                }
         }
     }
 
-    private fun animateDynamicUspText(alphaValue: Float): ViewPropertyAnimator? {
-        return textDynamicUspPerformance?.animate()?.alpha(alphaValue)?.setDuration(UnifyMotion.T2)
+    private fun animateDynamicUspText(translationY: Float): ViewPropertyAnimator? {
+        return textDynamicUspPerformance?.animate()?.translationY(translationY)?.setDuration(UnifyMotion.T3)
     }
 
     private fun setHeaderBackgroundVideo(videoUrl: String) {

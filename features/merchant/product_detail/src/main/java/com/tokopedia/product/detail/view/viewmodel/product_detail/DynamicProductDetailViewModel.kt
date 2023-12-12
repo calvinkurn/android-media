@@ -43,7 +43,6 @@ import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
-import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
@@ -83,7 +82,6 @@ import com.tokopedia.product.detail.usecase.GetProductInfoP2LoginUseCase
 import com.tokopedia.product.detail.usecase.GetProductInfoP2OtherUseCase
 import com.tokopedia.product.detail.usecase.ToggleNotifyMeUseCase
 import com.tokopedia.product.detail.view.util.ProductDetailLogger
-import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataMediator
@@ -223,10 +221,6 @@ class DynamicProductDetailViewModel @Inject constructor(
     private val _addToCartLiveData = MutableLiveData<Result<AddToCartDataModel>>()
     val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
         get() = _addToCartLiveData
-
-    private val _singleVariantData = MutableLiveData<VariantCategory?>()
-    val singleVariantData: LiveData<VariantCategory?>
-        get() = _singleVariantData
 
     private val _toggleTeaserNotifyMe = MutableLiveData<Result<NotifyMeUiData>>()
     val toggleTeaserNotifyMe: LiveData<Result<NotifyMeUiData>>
@@ -453,12 +447,17 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     fun getP2RatesEstimateByProductId(): P2RatesEstimate? {
-        val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
-        var result: P2RatesEstimate? = null
-        p2Data.value?.ratesEstimate?.forEach {
-            if (productId in it.listfProductId) result = it
+        val p1 = getDynamicProductInfoP1 ?: return null
+        val p2 = p2Data.value ?: return null
+        val productId = p1.basic.productID
+
+        p2.ratesEstimate.forEach {
+            if (productId in it.listfProductId) {
+                return it
+            }
         }
-        return result
+
+        return null
     }
 
     fun getP2RatesEstimateDataByProductId(): P2RatesEstimateData? {
@@ -474,13 +473,12 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     fun getBebasOngkirDataByProductId(): BebasOngkirImage {
-        val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
-        val boType =
-            p2Data.value?.bebasOngkir?.boProduct?.firstOrNull { it.productId == productId }?.boType
-                ?: 0
-        val image = p2Data.value?.bebasOngkir?.boImages?.firstOrNull { it.boType == boType }
-            ?: BebasOngkirImage()
-        return image
+        val p1 = getDynamicProductInfoP1 ?: return BebasOngkirImage()
+        val p2 = p2Data.value ?: return BebasOngkirImage()
+
+        val productId = p1.basic.productID
+        val boType = p2.bebasOngkir.boProduct.firstOrNull { it.productId == productId }?.boType ?: 0
+        return p2.bebasOngkir.boImages.firstOrNull { it.boType == boType } ?: BebasOngkirImage()
     }
 
     /**
@@ -490,20 +488,6 @@ class DynamicProductDetailViewModel @Inject constructor(
         val p1Data = getDynamicProductInfoP1 ?: return WarehouseInfo()
         val p2Data = p2Data.value ?: return WarehouseInfo()
         return p2Data.nearestWarehouseInfo[p1Data.basic.productID] ?: WarehouseInfo()
-    }
-
-    fun processVariant(
-        data: ProductVariant,
-        mapOfSelectedVariant: Map<String, String>
-    ) {
-        runCatching {
-            ProductDetailVariantLogic.determineVariant(
-                mapOfSelectedOptionIds = mapOfSelectedVariant,
-                productVariant = data
-            )
-        }.onSuccess {
-            _singleVariantData.postValue(it)
-        }
     }
 
     fun getProductP1(
@@ -594,17 +578,15 @@ class DynamicProductDetailViewModel @Inject constructor(
          */
         var p1 = getDynamicProductInfoP1 ?: DynamicProductInfoP1()
         val isWishlist = p1.data.isWishlist.orFalse()
+
+        parentProductId = pdpLayout.layoutData.parentProductId
         getDynamicProductInfoP1 = pdpLayout.layoutData.let {
             listOfParentMedia = it.data.media.toMutableList()
             it.copy(data = it.data.copy(isWishlist = isWishlist))
         }.also { p1 = it }
 
-        variantData = if (!p1.isProductVariant()) {
-            null
-        } else {
-            pdpLayout.variantData
-        }
-        parentProductId = pdpLayout.layoutData.parentProductId
+        // process variant
+        processInitialVariant(pdpLayout = pdpLayout)
 
         // Remove all component that can be remove by using p1 data
         // So we don't have to inflate to UI
@@ -619,6 +601,12 @@ class DynamicProductDetailViewModel @Inject constructor(
         _productLayout.value = processedList.asSuccess()
 
         return p1
+    }
+
+    private fun processInitialVariant(pdpLayout: ProductDetailDataModel) {
+        variantData = pdpLayout.variantData.takeIf {
+            pdpLayout.layoutData.isProductVariant()
+        } ?: return
     }
 
     fun addToCart(atcParams: Any) {

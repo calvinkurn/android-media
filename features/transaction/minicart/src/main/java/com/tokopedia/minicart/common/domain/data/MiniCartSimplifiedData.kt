@@ -1,6 +1,7 @@
 package com.tokopedia.minicart.common.domain.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.cartcommon.data.response.common.ProductTagInfo
 import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 
 data class MiniCartSimplifiedData(
@@ -16,11 +17,21 @@ fun Map<MiniCartItemKey, MiniCartItem>.getMiniCartItemProduct(productId: String)
 }
 
 fun Map<MiniCartItemKey, MiniCartItem>.getMiniCartItemBundleGroup(bundleGroupId: String): MiniCartItem.MiniCartItemBundleGroup? {
-    return get(MiniCartItemKey(bundleGroupId, MiniCartItemType.BUNDLE)) as? MiniCartItem.MiniCartItemBundleGroup
+    return get(
+        MiniCartItemKey(
+            bundleGroupId,
+            MiniCartItemType.BUNDLE
+        )
+    ) as? MiniCartItem.MiniCartItemBundleGroup
 }
 
 fun Map<MiniCartItemKey, MiniCartItem>.getMiniCartItemParentProduct(parentId: String): MiniCartItem.MiniCartItemParentProduct? {
-    return get(MiniCartItemKey(parentId, MiniCartItemType.PARENT)) as? MiniCartItem.MiniCartItemParentProduct
+    return get(
+        MiniCartItemKey(
+            parentId,
+            MiniCartItemType.PARENT
+        )
+    ) as? MiniCartItem.MiniCartItemParentProduct
 }
 
 fun Map<MiniCartItemKey, MiniCartItem>.mapProductsWithProductId(): Map<String, MiniCartItem.MiniCartItemProduct> {
@@ -81,6 +92,7 @@ sealed class MiniCartItem {
         var quantity: Int = 0,
         var notes: String = "",
         var cartString: String = "",
+        var productTagInfo: List<ProductTagInfo> = emptyList(),
 
         // Fields below are for analytics & atc occ purpose only
         internal var campaignId: String = "",
