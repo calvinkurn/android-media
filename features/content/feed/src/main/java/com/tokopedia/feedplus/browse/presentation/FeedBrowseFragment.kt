@@ -176,8 +176,11 @@ internal class FeedBrowseFragment @Inject constructor(
 
         override fun onAuthorClicked(
             viewHolder: FeedBrowseHorizontalCreatorsViewHolder,
-            item: AuthorWidgetModel
+            widgetModel: FeedBrowseItemListModel.HorizontalAuthors,
+            item: AuthorWidgetModel,
+            authorWidgetPosition: Int
         ) {
+            tracker.clickAuthorName(item, widgetModel.slotInfo, authorWidgetPosition)
             router.route(context, item.appLink)
         }
 

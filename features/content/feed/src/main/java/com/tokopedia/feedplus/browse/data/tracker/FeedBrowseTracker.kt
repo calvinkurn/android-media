@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.browse.data.tracker
 
+import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
 import com.tokopedia.feedplus.browse.data.model.BannerWidgetModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.model.SlotInfo
@@ -53,5 +54,11 @@ internal interface FeedBrowseTracker {
         item: BannerWidgetModel,
         slotInfo: SlotInfo,
         bannerPositionInList: Int
+    )
+
+    fun clickAuthorName(
+        item: AuthorWidgetModel,
+        slotInfo: SlotInfo,
+        widgetPositionInList: Int
     )
 }

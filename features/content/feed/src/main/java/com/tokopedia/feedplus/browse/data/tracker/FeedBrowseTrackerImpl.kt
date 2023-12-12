@@ -6,6 +6,7 @@ import com.tokopedia.content.analytic.CurrentSite
 import com.tokopedia.content.analytic.Event
 import com.tokopedia.content.analytic.EventCategory
 import com.tokopedia.content.analytic.Key
+import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
 import com.tokopedia.feedplus.browse.data.model.BannerWidgetModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.model.SlotInfo
@@ -228,6 +229,33 @@ internal class FeedBrowseTrackerImpl @Inject constructor(
                 putString(Key.creativeSlot, bannerPosition.toString())
                 putString(Key.itemId, "${item.title} - ${slotInfo.title}")
                 putString(Key.itemName, "/ - $PREFIX_VALUE - $widgetPosition - category inspiration - ${slotInfo.title}")
+            }
+        )
+    }
+
+    override fun clickAuthorName(
+        item: AuthorWidgetModel,
+        slotInfo: SlotInfo,
+        widgetPositionInList: Int
+    ) {
+        val widgetVerticalPosition = slotInfo.position + 1
+        val widgetHorizontalPosition = widgetPositionInList + 1
+
+        sendEnhanceEcommerceEvent(
+            eventName = Event.selectContent,
+            eventAction = "click - creator name",
+            eventLabel = trackerMultiFields(
+                PREFIX_VALUE,
+                item.id,
+                widgetHorizontalPosition,
+                slotInfo.title
+            ),
+            trackerId = "45754",
+            enhanceEcommerce = Key.promotions to Bundle().apply {
+                putString(Key.creativeName, widgetVerticalPosition.toString())
+                putString(Key.creativeSlot, widgetHorizontalPosition.toString())
+                putString(Key.itemId, "{channel_id} - ${slotInfo.title}")
+                putString(Key.itemName, "/ - $PREFIX_VALUE - $widgetVerticalPosition - creator name - ${slotInfo.title}")
             }
         )
     }
