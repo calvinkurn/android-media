@@ -153,7 +153,7 @@ class ProductPreviewFragment @Inject constructor(
                 shopId = model.shop.id,
                 productId = productId,
                 startActivitResult = { data, _ ->
-                    startActivity(data)
+                    startActivity(data) //TODO: change with result
                 }
             )
         } else {

@@ -2,6 +2,8 @@ package com.tokopedia.content.product.preview.view.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -34,13 +36,15 @@ fun MediaBottomNav(
     NestTheme(darkTheme = true) {
         ConstraintLayout(
             modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .background(colorResource(id = unifyprinciplesR.color.Unify_Static_Black_68))
                 .padding(
                     start = 16.dp,
                     top = 8.dp,
                     bottom = 8.dp,
                     end = 16.dp
                 )
-                .background(colorResource(id = unifyprinciplesR.color.Unify_Static_Black_68))
         ) {
             /*
                 use it after design is final.
@@ -82,7 +86,7 @@ fun MediaBottomNav(
             AnimatedVisibility(visible = product.price is BottomNavUiModel.DiscountedPrice) {
                 // Slashed price [if there's a discount]
                 NestTypography(
-                    text = product.price.toString(),
+                    text = (product.price as BottomNavUiModel.DiscountedPrice).discountedPrice,
                     maxLines = 1,
                     textStyle = NestTheme.typography.small.copy(
                         color = colorResource(id = unifyprinciplesR.color.Unify_NN400),
@@ -100,7 +104,7 @@ fun MediaBottomNav(
 
                 // Discount percentage if any
                 NestTypography(
-                    text = product.price.toString(),
+                    text = product.price.discountPercentage,
                     maxLines = 1,
                     textStyle = NestTheme.typography.small.copy(
                         color = colorResource(id = unifyprinciplesR.color.Unify_RN500),
