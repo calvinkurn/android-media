@@ -65,7 +65,7 @@ class ReviewReportBottomSheet : BottomSheetUnify() {
             return fgManager.findFragmentByTag(TAG) as? ReviewReportBottomSheet
         }
 
-        fun getOrCreateFragment(
+        fun getOrCreate(
             fgManager: FragmentManager,
             classLoader: ClassLoader,
         ): ReviewReportBottomSheet {

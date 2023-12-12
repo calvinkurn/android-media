@@ -9,6 +9,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
+import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentReviewBinding
@@ -17,6 +19,7 @@ import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
+import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 import com.tokopedia.content.product.preview.viewmodel.EntrySource
@@ -28,7 +31,7 @@ import javax.inject.Inject
 class ReviewFragment @Inject constructor(
     private val viewModelFactory: ProductPreviewViewModelFactory.Creator,
     private val router: Router,
-) : TkpdBaseV4Fragment(), ReviewParentContentViewHolder.Listener{
+) : TkpdBaseV4Fragment(), ReviewParentContentViewHolder.Listener, MenuBottomSheet.Listener, ReviewReportBottomSheet.Listener {
 
     private var _binding: FragmentReviewBinding? = null
     private val binding: FragmentReviewBinding
@@ -47,6 +50,16 @@ class ReviewFragment @Inject constructor(
     private val snapHelper = PagerSnapHelper() //TODO: adjust pager snap helper
 
     override fun getScreenName() = TAG
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            when (fragment) {
+                is MenuBottomSheet -> fragment.setListener(this)
+                is ReviewReportBottomSheet -> fragment.setListener(this)
+            }
+        }
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -92,6 +105,30 @@ class ReviewFragment @Inject constructor(
      */
     override fun onReviewCredibilityClicked(author: AuthorUiModel) {
         router.route(requireContext(), "$REVIEW_CREDIBILITY_APPLINK${author.id}/$PAGE_SOURCE/")
+    }
+
+    override fun onMenuClicked(menus: List<ContentMenuItem>) {
+        MenuBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).apply {
+            setMenu(menus)
+        }.show(childFragmentManager)
+    }
+
+    /**
+     * Menu Bottom Sheet Listener
+     */
+    override fun onOptionClicked(menu: ContentMenuItem) {
+        when(menu.type) {
+            ContentMenuIdentifier.Report ->
+                ReviewReportBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).show(childFragmentManager)
+            else -> {}
+        }
+    }
+
+    /**
+     * Review Report Bottom Sheet Listener
+     */
+    override fun onReasonClicked(report: ReportUiModel) {
+        TODO("Not yet implemented")
     }
 
     companion object {

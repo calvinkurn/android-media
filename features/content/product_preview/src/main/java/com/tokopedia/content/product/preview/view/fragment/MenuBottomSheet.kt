@@ -19,25 +19,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 class MenuBottomSheet : BottomSheetUnify() {
     private var mListener: Listener? = null
 
-    //TODO() move to mapper
-    private val menus: List<ContentMenuItem> by lazy {
-        buildList {
-            add(
-                ContentMenuItem(
-                    name = R.string.product_preview_watch_menu,
-                    iconUnify = IconUnify.VISIBILITY,
-                    type = ContentMenuIdentifier.WatchMode
-                )
-            )
-            add(
-                ContentMenuItem(
-                    name = R.string.product_preview_report_menu,
-                    iconUnify = IconUnify.WARNING,
-                    type = ContentMenuIdentifier.Report
-                )
-            )
-        }
-    }
+    private var menus : List<ContentMenuItem>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,7 +28,7 @@ class MenuBottomSheet : BottomSheetUnify() {
     ): View? {
         val composeView = ComposeView(requireContext()).apply {
             setContent {
-                ThreeDotsPage(menuList = menus) { mListener?.onMenuClicked(it) }
+                ThreeDotsPage(menuList = menus.orEmpty()) { mListener?.onOptionClicked(it) }
             }
         }
         setChild(composeView)
@@ -55,6 +37,10 @@ class MenuBottomSheet : BottomSheetUnify() {
 
     fun setListener(listener: Listener) {
         mListener = listener
+    }
+
+    fun setMenu(items: List<ContentMenuItem>) {
+        menus = items
     }
 
     fun show(fg: FragmentManager) {
@@ -73,7 +59,7 @@ class MenuBottomSheet : BottomSheetUnify() {
     }
 
     interface Listener {
-        fun onMenuClicked(menu: ContentMenuItem)
+        fun onOptionClicked(menu: ContentMenuItem)
     }
 
     companion object {
