@@ -26,4 +26,9 @@
     
     <string name="best_seller_empty_title">Yaah, masih kosong nih</string>
     <string name="best_seller_empty_subtitle">Belum ada produk yang sesuai pilihanmu. Coba pilih yang lain, yuk!</string>
+
+    <string name="steal_the_look_left_item_ratio">219:218</string>
+    <string name="steal_the_look_right_item_ratio">109:105</string>
+    <string name="steal_the_look_left_image_ratio">215:218</string>
+    <string name="steal_the_look_right_image_ratio">1:1</string>
 </resources>

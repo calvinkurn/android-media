@@ -14,6 +14,7 @@ object DetailRobot {
         onView(withId(R.id.rv_carousel_product)).perform(
             smoothScrollTo(position)
         )
+        Thread.sleep(1000)
     }
 
     fun clickLoadMoreAt(position: Int) {

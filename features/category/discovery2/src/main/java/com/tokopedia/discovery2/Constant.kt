@@ -156,4 +156,9 @@ object Constant {
         const val ATF_BANNER = "atf_banner"
         const val TARGETING_BANNER = "targeting_banner"
     }
+
+    internal object ExternalParams {
+        const val OFFER_ID = "offer_id"
+        const val WAREHOUSE_ID = "offer_whid"
+    }
 }

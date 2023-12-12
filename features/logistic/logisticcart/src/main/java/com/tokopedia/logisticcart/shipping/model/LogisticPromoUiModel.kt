@@ -42,5 +42,7 @@ data class LogisticPromoUiModel(
     val boCampaignId: Long = 0,
     // cart checkout revamp
     val bebasOngkirKuota: String = "",
-    val imageChosenFreeShipping: String = ""
+    val imageChosenFreeShipping: String = "",
+    // OFOC
+    val orderMessage: String = ""
 ) : RatesViewModelType, Parcelable

@@ -33,31 +33,28 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
     private val testCoroutineDispatcherProvider by lazy {
         CoroutineTestDispatchersProvider
     }
-    
+
     @RelaxedMockK
     lateinit var getShopProductUseCase: GqlGetShopProductUseCase
-    
+
     @RelaxedMockK
     lateinit var getShopFeaturedProductUseCase: GetShopFeaturedProductUseCase
-    
+
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
-    
+
     private lateinit var viewModel: ShopBannerProductGroupWidgetTabViewModel
     private val shopId = "6555194"
     private val userAddress = LocalCacheModel()
     private val overrideTheme = false
     private val colorSchema = ShopPageColorSchema()
 
-
     @Before
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = ShopBannerProductGroupWidgetTabViewModel(
             testCoroutineDispatcherProvider,
-            getShopProductUseCase, 
-            getShopFeaturedProductUseCase, 
-            userSession
+            getShopProductUseCase, getShopFeaturedProductUseCase, userSession
         )
     }
 
@@ -66,11 +63,11 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
             data = listOf(ShopProduct())
         )
-        
+
         val widgetStyle = "horizontal"
         val products = createProducts()
         val widgets = listOf(products)
-        
+
         viewModel.getCarouselWidgets(
             widgets,
             shopId,
@@ -125,7 +122,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                     linkType = BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType.PRODUCT,
                     isShowProductInfo = false
                 )
-            ) //Has vertical banner data
+            ) // Has vertical banner data
         )
         val products = createProducts()
         val widgets = listOf(verticalBanner, products)
@@ -148,7 +145,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
             listOf(
                 VerticalBannerItemType(
                     componentId = 1,
-                    componentName =BannerProductGroupUiModel.Tab.ComponentList.ComponentName.DISPLAY_SINGLE_COLUMN ,
+                    componentName = BannerProductGroupUiModel.Tab.ComponentList.ComponentName.DISPLAY_SINGLE_COLUMN,
                     imageUrl = "https://images.tokopedia.net/img/VqbcmM/2023/8/24/76bf4387-e3f6-4dd3-b041-c03dcfebc9e4.jpg",
                     appLink = "tokopedia://product/1444",
                     id = "https://images.tokopedia.net/img/VqbcmM/2023/8/24/76bf4387-e3f6-4dd3-b041-c03dcfebc9e4.jpg",
@@ -175,7 +172,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         )
         assertEquals(expected, actual)
     }
-    
+
     @Test
     fun `When get vertical widget style but no banner data found, should return product item type only`() {
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
@@ -272,7 +269,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         )
         assertEquals(expected, actual)
     }
-    
+
     @Test
     fun `When no vertical banner or product item type exist on widgets, should not fetch data to remote`() {
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
@@ -306,7 +303,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         val products = BannerProductGroupUiModel.Tab.ComponentList(
             componentId = 2,
             componentName = BannerProductGroupUiModel.Tab.ComponentList.ComponentName.PRODUCT,
-            data = listOf() //Has no data
+            data = listOf() // Has no data
         )
         val widgets = listOf(products)
 
@@ -323,13 +320,13 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
             getShopProductUseCase.executeOnBackground()
         }
     }
-    
+
     //region getProductsByProductMetadata
     @Test
     fun `When got featured product linkType, should return correct product with linkType FEATURED_PRODUCT`() {
-        //Given
+        // Given
         val productId = "100"
-        
+
         coEvery { getShopFeaturedProductUseCase.executeOnBackground() } returns listOf(
             ShopFeaturedProduct(
                 productId = productId,
@@ -353,7 +350,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         )
         val widgets = listOf(featuredProduct)
 
-        //When
+        // When
         viewModel.getCarouselWidgets(
             widgets,
             shopId,
@@ -363,7 +360,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
             colorSchema
         )
 
-        //Then
+        // Then
         val actual = viewModel.carouselWidgets.getOrAwaitValue()
         val expected = ShopBannerProductGroupWidgetTabViewModel.UiState.Success(
             listOf(
@@ -385,13 +382,13 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
             )
         )
         assertEquals(expected, actual)
-        
+
         coVerify { getShopFeaturedProductUseCase.executeOnBackground() }
     }
 
     @Test
     fun `When get featured product linkType with overrideTheme true and showProductInfo false, should return correct product item type with with overrideTheme true and showProductInfo false`() {
-        //Given
+        // Given
         val overrideTheme = true
         val showProductInfo = false
         val productId = "100"
@@ -419,7 +416,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         )
         val widgets = listOf(featuredProduct)
 
-        //When
+        // When
         viewModel.getCarouselWidgets(
             widgets,
             shopId,
@@ -429,7 +426,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
             colorSchema
         )
 
-        //Then
+        // Then
         val actual = viewModel.carouselWidgets.getOrAwaitValue()
         val expected = ShopBannerProductGroupWidgetTabViewModel.UiState.Success(
             listOf(
@@ -459,7 +456,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
     fun `When get product linkType with overrideTheme true and showProductInfo false, should return correct product item type with with overrideTheme true and showProductInfo false`() {
         val overrideTheme = true
         val showProductInfo = false
-        
+
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
             data = listOf(ShopProduct())
         )
@@ -478,7 +475,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
                 )
             )
         )
-        
+
         val widgets = listOf(products)
 
         viewModel.getCarouselWidgets(
@@ -519,7 +516,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
 
     @Test
     fun `When get showcase linkType with showProductInfo false, should return correct product item type with showProductInfo false`() {
-        //Given
+        // Given
         val showProductInfo = false
 
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
@@ -542,7 +539,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         )
         val widgets = listOf(featuredProduct)
 
-        //When
+        // When
         viewModel.getCarouselWidgets(
             widgets,
             shopId,
@@ -552,7 +549,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
             colorSchema
         )
 
-        //Then
+        // Then
         val actual = viewModel.carouselWidgets.getOrAwaitValue()
         val expected = ShopBannerProductGroupWidgetTabViewModel.UiState.Success(
             listOf(
@@ -580,7 +577,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
 
     @Test
     fun `When get showcase linkType with showProductInfo true, should return correct product item type with showProductInfo true`() {
-        //Given
+        // Given
         val showProductInfo = true
 
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
@@ -603,7 +600,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         )
         val widgets = listOf(featuredProduct)
 
-        //When
+        // When
         viewModel.getCarouselWidgets(
             widgets,
             shopId,
@@ -613,7 +610,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
             colorSchema
         )
 
-        //Then
+        // Then
         val actual = viewModel.carouselWidgets.getOrAwaitValue()
         val expected = ShopBannerProductGroupWidgetTabViewModel.UiState.Success(
             listOf(
@@ -638,10 +635,10 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
 
         coVerify { getShopProductUseCase.executeOnBackground() }
     }
-    
+
     @Test
     fun `When got showcase product linkType, should get data to remote`() {
-        //Given
+        // Given
         val overrideTheme = true
 
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
@@ -664,7 +661,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         )
         val widgets = listOf(featuredProduct)
 
-        //When
+        // When
         viewModel.getCarouselWidgets(
             widgets,
             shopId,
@@ -674,7 +671,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
             colorSchema
         )
 
-        //Then
+        // Then
         val actual = viewModel.carouselWidgets.getOrAwaitValue()
         val expected = ShopBannerProductGroupWidgetTabViewModel.UiState.Success(
             listOf(
@@ -699,12 +696,12 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
 
         coVerify { getShopProductUseCase.executeOnBackground() }
     }
-    
+
     //endregion
 
     @Test
     fun `When get shop product error, observer should receive error as well`() {
-        //Given
+        // Given
         val overrideTheme = true
         val error = MessageErrorException("Server error")
 
@@ -726,7 +723,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         )
         val widgets = listOf(featuredProduct)
 
-        //When
+        // When
         viewModel.getCarouselWidgets(
             widgets,
             shopId,
@@ -736,13 +733,13 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
             colorSchema
         )
 
-        //Then
+        // Then
         val actual = viewModel.carouselWidgets.getOrAwaitValue()
         assertEquals(ShopBannerProductGroupWidgetTabViewModel.UiState.Error(error), actual)
         assertEquals(error, actual.errorOrNull())
         coVerify { getShopProductUseCase.executeOnBackground() }
     }
-    
+
     private fun createProducts(): BannerProductGroupUiModel.Tab.ComponentList {
         return BannerProductGroupUiModel.Tab.ComponentList(
             componentId = 2,
@@ -759,8 +756,121 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
         )
     }
 
+    @Test
+    fun `When get product on product carousel vertical banner, should set the vertical banner height to the tallest of product card height`() {
+        // Given
+        coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
+            data = listOf(ShopProduct())
+        )
+
+        val verticalBanner = BannerProductGroupUiModel.Tab.ComponentList(
+            componentId = 1,
+            componentName = BannerProductGroupUiModel.Tab.ComponentList.ComponentName.DISPLAY_SINGLE_COLUMN,
+            data = listOf(
+                BannerProductGroupUiModel.Tab.ComponentList.Data(
+                    imageUrl = "https://images.tokopedia.net/img/VqbcmM/2023/8/24/76bf4387-e3f6-4dd3-b041-c03dcfebc9e4.jpg",
+                    ctaLink = "tokopedia://product/1444",
+                    linkId = 0,
+                    linkType = BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType.PRODUCT,
+                    isShowProductInfo = false
+                )
+            )
+        )
+
+        val widgetStyle = BannerProductGroupUiModel.WidgetStyle.VERTICAL.id
+        val products = createProducts()
+        val widgets = listOf(verticalBanner, products)
+
+        viewModel.getCarouselWidgets(
+            widgets,
+            shopId,
+            userAddress,
+            widgetStyle,
+            overrideTheme,
+            colorSchema
+        )
+
+        // When
+        viewModel.refreshVerticalBannerHeight(productCardHeight = 56)
+
+        // Then
+        val actual = viewModel.verticalProductCarousel.getOrAwaitValue()
+        val expected =
+            listOf(
+                VerticalBannerItemType(
+                    componentId = 1,
+                    componentName = BannerProductGroupUiModel.Tab.ComponentList.ComponentName.DISPLAY_SINGLE_COLUMN,
+                    imageUrl = "https://images.tokopedia.net/img/VqbcmM/2023/8/24/76bf4387-e3f6-4dd3-b041-c03dcfebc9e4.jpg",
+                    appLink = "tokopedia://product/1444",
+                    id = "https://images.tokopedia.net/img/VqbcmM/2023/8/24/76bf4387-e3f6-4dd3-b041-c03dcfebc9e4.jpg",
+                    overrideTheme = false,
+                    colorSchema = ShopPageColorSchema(),
+                    verticalBannerHeight = 56
+                ),
+                ProductItemType(
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    0,
+                    "",
+                    "",
+                    "",
+                    true,
+                    "",
+                    false,
+                    ShopPageColorSchema()
+                )
+            )
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When get product on product carousel vertical banner return error, verticalProductCarousel should have empty list`() {
+        // Given
+        coEvery { getShopProductUseCase.executeOnBackground() } throws MessageErrorException("Internal Server Error")
+
+        val verticalBanner = BannerProductGroupUiModel.Tab.ComponentList(
+            componentId = 1,
+            componentName = BannerProductGroupUiModel.Tab.ComponentList.ComponentName.DISPLAY_SINGLE_COLUMN,
+            data = listOf(
+                BannerProductGroupUiModel.Tab.ComponentList.Data(
+                    imageUrl = "https://images.tokopedia.net/img/VqbcmM/2023/8/24/76bf4387-e3f6-4dd3-b041-c03dcfebc9e4.jpg",
+                    ctaLink = "tokopedia://product/1444",
+                    linkId = 0,
+                    linkType = BannerProductGroupUiModel.Tab.ComponentList.Data.LinkType.PRODUCT,
+                    isShowProductInfo = false
+                )
+            )
+        )
+
+        val widgetStyle = BannerProductGroupUiModel.WidgetStyle.VERTICAL.id
+        val products = createProducts()
+        val widgets = listOf(verticalBanner, products)
+
+        viewModel.getCarouselWidgets(
+            widgets,
+            shopId,
+            userAddress,
+            widgetStyle,
+            overrideTheme,
+            colorSchema
+        )
+
+        // When
+        viewModel.refreshVerticalBannerHeight(productCardHeight = 56)
+
+        // Then
+        val actual = viewModel.verticalProductCarousel.getOrAwaitValue()
+        val expected = listOf<ShopHomeBannerProductGroupItemType>()
+
+        assertEquals(expected, actual)
+    }
+
     private fun ShopBannerProductGroupWidgetTabViewModel.UiState.successOrNull(): List<ShopHomeBannerProductGroupItemType>? {
-        return when(this) {
+        return when (this) {
             is ShopBannerProductGroupWidgetTabViewModel.UiState.Error -> null
             ShopBannerProductGroupWidgetTabViewModel.UiState.Loading -> null
             is ShopBannerProductGroupWidgetTabViewModel.UiState.Success -> data
@@ -768,7 +878,7 @@ class ShopBannerProductGroupWidgetTabViewModelTest {
     }
 
     private fun ShopBannerProductGroupWidgetTabViewModel.UiState.errorOrNull(): Throwable? {
-        return when(this) {
+        return when (this) {
             is ShopBannerProductGroupWidgetTabViewModel.UiState.Error -> error
             ShopBannerProductGroupWidgetTabViewModel.UiState.Loading -> null
             is ShopBannerProductGroupWidgetTabViewModel.UiState.Success -> null

@@ -20,6 +20,7 @@ object GeneralResult {
     }
 
     fun assertIntentData(data: Uri?, intentCount: Int = 1) {
+        Thread.sleep(1000) // Wait until the intent called
         Intents.intended(IntentMatchers.hasData(data), times(intentCount))
     }
 

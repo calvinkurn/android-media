@@ -5,7 +5,6 @@ import androidx.test.filters.FlakyTest
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.notifcenter.data.entity.orderlist.OrderWidgetUiModel
 import com.tokopedia.notifcenter.stub.common.NotificationCacheManagerStub
-import com.tokopedia.notifcenter.stub.data.response.GqlResponseStub
 import com.tokopedia.notifcenter.test.base.BaseNotificationTest
 import com.tokopedia.notifcenter.test.robot.filterResult
 import com.tokopedia.notifcenter.test.robot.filterRobot
@@ -43,13 +42,13 @@ class NotificationOrderListTest : BaseNotificationTest() {
     @Test
     fun should_show_cached_version_order_list_when_cache_data_is_exist() {
         // Given
-        GqlResponseStub.notificationOrderListResponse.editAndGetResponseObject {
+        gqlResponseStub.notificationOrderListResponse.editAndGetResponseObject {
             it.notifcenterNotifOrderList.list[0].text = "Cache Transaksi"
             it.notifcenterNotifOrderList.list[1].text = "Cache All"
         }
         NotificationCacheManagerStub.saveCache(
             key = "notif_order_list_${RoleType.BUYER}-${userSession.userId}",
-            obj = GqlResponseStub.notificationOrderListResponse.responseObject
+            obj = gqlResponseStub.notificationOrderListResponse.responseObject
         )
 
         // When
@@ -66,15 +65,15 @@ class NotificationOrderListTest : BaseNotificationTest() {
     @Test
     fun should_update_currently_visible_cached_order_list_with_counter_when_finished_loading_remote_data() {
         // Given
-        GqlResponseStub.notificationOrderListResponse.editAndGetResponseObject {
+        gqlResponseStub.notificationOrderListResponse.editAndGetResponseObject {
             it.notifcenterNotifOrderList.list[0].text = "Cache Transaksi"
             it.notifcenterNotifOrderList.list[1].text = "Cache All"
         }
         NotificationCacheManagerStub.saveCache(
             key = "notif_order_list_${RoleType.BUYER}-${userSession.userId}",
-            obj = GqlResponseStub.notificationOrderListResponse.responseObject
+            obj = gqlResponseStub.notificationOrderListResponse.responseObject
         )
-        GqlResponseStub.notificationOrderListResponse.editAndGetResponseObject {} // Reset
+        gqlResponseStub.notificationOrderListResponse.editAndGetResponseObject {} // Reset
 
         // When
         launchActivity()
@@ -91,7 +90,7 @@ class NotificationOrderListTest : BaseNotificationTest() {
     @FlakyTest
     fun should_retain_last_position_when_user_scrolled_down_and_back_to_it() {
         // Given
-        GqlResponseStub.notificationOrderListResponse.editAndGetResponseObject {
+        gqlResponseStub.notificationOrderListResponse.editAndGetResponseObject {
             val item = it.notifcenterNotifOrderList.list[1]
             val newList = arrayListOf<OrderWidgetUiModel>()
             newList.addAll(it.notifcenterNotifOrderList.list)

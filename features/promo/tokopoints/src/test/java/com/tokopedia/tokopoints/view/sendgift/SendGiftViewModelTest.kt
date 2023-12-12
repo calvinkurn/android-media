@@ -3,10 +3,13 @@ package com.tokopedia.tokopoints.view.sendgift
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tokopoints.view.model.ValidateCouponBaseEntity
+import com.tokopedia.tokopoints.view.model.ValidateCouponEntity
 import com.tokopedia.tokopoints.view.util.ErrorMessage
 import com.tokopedia.tokopoints.view.util.Loading
 import com.tokopedia.tokopoints.view.util.Resources
 import com.tokopedia.tokopoints.view.util.Success
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,6 +17,8 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.Rule
@@ -133,5 +138,80 @@ class SendGiftViewModelTest {
 
         /*   val result = viewModel.prevalidateLiveData.value as ErrorMessage
            assert(result.data == "message")*/
+    }
+
+    @Test
+    fun `given error message size equals 2 when sendGift throws error should set first message as SendGiftData message`() {
+        val message = "first err message|second err message"
+        val error = MessageErrorException(message)
+
+        val id = 1
+        val email = "test@mail.com"
+        val notes = "this is just a test"
+
+        coEvery { respository.sendGift(id, email, notes) } throws error
+
+        viewModel.sendGift(id, email, notes)
+
+        val sendGiftLiveData = viewModel.sendGiftLiveData.value
+
+        val expectedMessage = "first err message"
+        val actualMessage = (sendGiftLiveData as Success<SendGiftData<out Any, out Any>>).data.messsage
+
+        assertEquals(expectedMessage, actualMessage)
+    }
+
+    @Test
+    fun `given error message null when sendGift throws error should set first message as SendGiftData message`() {
+        val message = null
+        val error = MessageErrorException(message)
+
+        val id = 1
+        val email = "test@mail.com"
+        val notes = "this is just a test"
+
+        coEvery { respository.sendGift(id, email, notes) } throws error
+
+        viewModel.sendGift(id, email, notes)
+
+        val sendGiftLiveData = viewModel.sendGiftLiveData.value
+
+        val actualMessage = (sendGiftLiveData as? Success<SendGiftData<out Any, out Any>>)?.data?.messsage
+
+        assertTrue(actualMessage != null)
+    }
+
+    @Test
+    fun `given isValid response NOT equals 1 when preValidateGift should update prevalidateLiveData with ErrorMessage`() {
+        val isValid = 2
+        val validateCouponResponse = ValidateCouponBaseEntity(
+            validateCoupon = ValidateCouponEntity(isValid = isValid)
+        )
+
+        val id = 1
+        val email = "tokopoints@mail.com"
+
+        coEvery { respository.preValidateGift(id, email) } returns validateCouponResponse
+
+        viewModel.preValidateGift(id, email)
+
+        viewModel.prevalidateLiveData
+            .verifyValueEquals(ErrorMessage<Nothing>(""))
+    }
+
+    @Test
+    fun `given error message when preValidateGift should update prevalidateLiveData with ErrorMessage from exception message`() {
+        val errorMessage = "[so]complicated|way|to|get|error|message]"
+        val exception = MessageErrorException(errorMessage)
+
+        val id = 1
+        val email = "tokopoints@mail.com"
+
+        coEvery { respository.preValidateGift(id, email) } throws exception
+
+        viewModel.preValidateGift(id, email)
+
+        viewModel.prevalidateLiveData
+            .verifyValueEquals(ErrorMessage<Nothing>("complicated"))
     }
 }

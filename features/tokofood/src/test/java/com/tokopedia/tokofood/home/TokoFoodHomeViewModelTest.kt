@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.home
 import android.accounts.NetworkErrorException
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
+import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.tokofood.data.createAddress
 import com.tokopedia.tokofood.data.createChooseAddress
 import com.tokopedia.tokofood.data.createDynamicIconsResponse
@@ -104,10 +105,12 @@ class TokoFoodHomeViewModelTest : TokoFoodHomeViewModelTestFixture() {
 
     @Test
     fun `when getting keroEditAddress should run and give the success result true`() {
-        onGetKeroEditAddress_thenReturn(createKeroEditAddressResponse())
+        val latitude = "111.1"
+        val longitude = "112.1"
+        onGetKeroEditAddress_thenReturn(createKeroEditAddressResponse(latitude, longitude))
 
-        val expectedResponse = createKeroEditAddressResponse().keroEditAddress.data.isEditSuccess()
-        var actualResponse: Result<Boolean>? = null
+        val expectedResponse = createKeroEditAddressResponse(latitude, longitude).keroEditAddress.data
+        var actualResponse: Result<KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse>? = null
 
         runTest {
             val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
@@ -120,7 +123,9 @@ class TokoFoodHomeViewModelTest : TokoFoodHomeViewModelTestFixture() {
         }
 
         Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
-        Assert.assertTrue((actualResponse as Success).data)
+        Assert.assertTrue((actualResponse as Success).data.success)
+        Assert.assertTrue((actualResponse as Success).data.chosenAddressData.latitude == latitude)
+        Assert.assertTrue((actualResponse as Success).data.chosenAddressData.longitude == longitude)
     }
 
     @Test
@@ -128,7 +133,7 @@ class TokoFoodHomeViewModelTest : TokoFoodHomeViewModelTestFixture() {
         onGetKeroEditAddress_thenReturn(createKeroEditAddressResponseFail())
 
         val expectedResponse = false
-        var actualResponse: Result<Boolean>? = null
+        var actualResponse: Result<KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse>? = null
 
         runTest {
             val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
@@ -140,8 +145,8 @@ class TokoFoodHomeViewModelTest : TokoFoodHomeViewModelTestFixture() {
             collectorJob.cancel()
         }
 
-        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
-        Assert.assertFalse((actualResponse as Success).data)
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data.success)
+        Assert.assertFalse((actualResponse as Success).data.success)
     }
 
     @Test
@@ -149,7 +154,7 @@ class TokoFoodHomeViewModelTest : TokoFoodHomeViewModelTestFixture() {
         val errorMessage = "Error Change Address"
         onGetKeroEditAddress_thenReturn(Throwable(errorMessage))
 
-        var actualResponse: Result<Boolean>? = null
+        var actualResponse: Result<KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse>? = null
 
         runTest {
             val collectorJob = backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
