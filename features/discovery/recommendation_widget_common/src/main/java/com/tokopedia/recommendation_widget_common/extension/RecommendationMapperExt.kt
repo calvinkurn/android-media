@@ -27,9 +27,6 @@ fun List<RecommendationEntity.RecommendationData>.mappingToRecommendationModel()
     }
 }
 
-const val SPEC_TYPE_TEXT = "text"
-const val SPEC_TYPE_BULLET = "bullet"
-
 fun RecommendationEntity.RecommendationData.toRecommendationWidget(): RecommendationWidget {
     return RecommendationWidget(
         recommendationItemList = recommendation.mapIndexed { index, recommendation ->
@@ -94,6 +91,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                 },
                 parentID = recommendation.parentID,
                 addToCartType = getAtcType(),
+                gridPosition = recommendation.getGridPosition(),
             )
         },
         title = title,
@@ -198,12 +196,19 @@ fun RecommendationItem.toViewToViewItem(): ViewToViewItemData {
     )
 }
 
-var LABEL_FULFILLMENT: String = "fulfillment"
-val LAYOUTTYPE_HORIZONTAL_ATC: String = "horizontal-atc"
-val LAYOUTTYPE_INFINITE_ATC: String = "infinite-atc"
-val PAGENAME_IDENTIFIER_RECOM_ATC: String = "hatc"
-val DEFAULT_QTY_0: Int = 0
-val DEFAULT_QTY_1: Int = 1
+const val LABEL_FULFILLMENT: String = "fulfillment"
+const val LAYOUTTYPE_HORIZONTAL_ATC: String = "horizontal-atc"
+const val LAYOUTTYPE_INFINITE_ATC: String = "infinite-atc"
+const val PAGENAME_IDENTIFIER_RECOM_ATC: String = "hatc"
+const val DEFAULT_QTY_0: Int = 0
+const val DEFAULT_QTY_1: Int = 1
+
+const val SPEC_TYPE_TEXT = "text"
+const val SPEC_TYPE_BULLET = "bullet"
+
+const val GRID_POS_LEFT = "left"
+const val GRID_POS_TOP_RIGHT = "top_right"
+const val GRID_POS_BOTTOM_RIGHT = "bottom_right"
 
 // tokonow validation
 private fun RecommendationEntity.RecommendationData.isTokonow(): Boolean {
@@ -221,6 +226,15 @@ fun List<RecommendationLabel>.hasLabelGroupFulfillment(): Boolean {
 private fun RecommendationEntity.RecommendationData.getAtcType(): RecommendationItem.AddToCartType {
     return if (hasQuantityEditor()) RecommendationItem.AddToCartType.QuantityEditor
     else RecommendationItem.AddToCartType.None
+}
+
+private fun RecommendationEntity.Recommendation.getGridPosition(): RecommendationItem.GridPosition {
+    return when(gridPosition) {
+        GRID_POS_LEFT -> RecommendationItem.GridPosition.Left
+        GRID_POS_TOP_RIGHT -> RecommendationItem.GridPosition.TopRight
+        GRID_POS_BOTTOM_RIGHT -> RecommendationItem.GridPosition.BottomRight
+        else -> RecommendationItem.GridPosition.None
+    }
 }
 
 private fun RecommendationEntity.RecommendationData.hasQuantityEditor() =

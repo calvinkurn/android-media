@@ -18,6 +18,7 @@
           "creative_url": ""
         }
       ],
+      "channelId": ".*",
       "userId": ".*",
       "sessionIris": ".*",
       "hits_time": ".*"

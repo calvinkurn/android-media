@@ -92,7 +92,7 @@ import com.tokopedia.logisticaddaddress.features.pinpoint.uimodel.ChoosePinpoint
 import com.tokopedia.logisticaddaddress.features.pinpoint.uimodel.PinpointAction
 import com.tokopedia.logisticaddaddress.features.pinpoint.uimodel.PinpointBottomSheetState
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.PinpointWebviewActivity
-import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_AUTOCOMPLETE
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.MAPS_EMPTY
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DENIED
@@ -146,7 +146,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     putLong(EXTRA_DISTRICT_ID, extra.getLong(EXTRA_DISTRICT_ID))
 
                     // from search page
-                    putString(EXTRA_PLACE_ID, extra.getString(EXTRA_PLACE_ID))
+                    putParcelable(EXTRA_AUTOCOMPLETE, extra.getParcelable(EXTRA_AUTOCOMPLETE))
 
                     // pinpoint only
                     putParcelable(
@@ -423,7 +423,6 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
             viewModel.onViewCreated(
                 districtName = getString(EXTRA_DISTRICT_NAME).orEmpty(),
                 cityName = getString(EXTRA_CITY_NAME).orEmpty(),
-                placeId = getString(EXTRA_PLACE_ID).orEmpty(),
                 lat = getDouble(EXTRA_LAT),
                 long = getDouble(EXTRA_LONG),
                 districtId = getLong(EXTRA_DISTRICT_ID),
@@ -432,7 +431,8 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 uiState = getString(EXTRA_ADDRESS_STATE).toAddressUiState(),
                 isEditWarehouse = getBoolean(EXTRA_IS_EDIT_WAREHOUSE, false),
                 source = getString(PARAM_SOURCE, ""),
-                isPositiveFlow = isPositiveFlow
+                isPositiveFlow = isPositiveFlow,
+                searchAddressData = getParcelable(EXTRA_AUTOCOMPLETE)
             )
             source = getString(PARAM_SOURCE, "")
 
@@ -623,11 +623,11 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private fun allPermissionsGranted(): Boolean {
         for (permission in requiredPermissions) {
             if (activity?.let {
-                    ContextCompat.checkSelfPermission(
+                ContextCompat.checkSelfPermission(
                         it,
                         permission
                     )
-                } != PackageManager.PERMISSION_GRANTED
+            } != PackageManager.PERMISSION_GRANTED
             ) {
                 return false
             }
@@ -892,7 +892,7 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 invalidLayout.visible()
                 wholeLoadingContainer.gone()
                 districtLayout.gone()
-                imgInvalidLoc.setImageUrl(TokopediaImageUrl.LOCATION_NOT_FOUND)
+                imgInvalidLoc.setImageUrl(data.image)
                 if (data.title.isNotEmpty()) {
                     tvInvalidLoc.text = data.title
                 }
@@ -1004,6 +1004,14 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
             }
         }
 
+    private val PinpointBottomSheetState.LocationInvalid.image: String
+        get() {
+            return when (this.type) {
+                PinpointBottomSheetState.LocationInvalid.LocationInvalidType.OUT_OF_COVERAGE -> TokopediaImageUrl.IMAGE_OUTSIDE_INDONESIA
+                PinpointBottomSheetState.LocationInvalid.LocationInvalidType.LOCATION_NOT_FOUND -> TokopediaImageUrl.LOCATION_NOT_FOUND
+            }
+        }
+
     private fun UnifyButton.setInvalidButtonData(data: PinpointBottomSheetState.LocationInvalid) {
         if (data.uiState.isEdit() && !data.uiModel.hasPinpoint()) {
             buttonVariant = UnifyButton.Variant.GHOST
@@ -1108,22 +1116,24 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun onResultFromSearchPage(data: Intent?) {
-        currentPlaceId = data?.getStringExtra(EXTRA_PLACE_ID).orEmpty()
         val currentLat = data?.getDoubleExtra(EXTRA_LAT, 0.0).orZero()
         val currentLong = data?.getDoubleExtra(EXTRA_LONG, 0.0).orZero()
         viewModel.onResultFromSearchAddress(
-            placeId = currentPlaceId,
+            searchAddressData = data?.getParcelableExtra(
+                EXTRA_AUTOCOMPLETE
+            ),
             lat = currentLat,
             long = currentLong
         )
     }
 
     fun onNewIntent(bundle: Bundle) {
-        currentPlaceId = bundle.getString(EXTRA_PLACE_ID).orEmpty()
         val currentLat = bundle.getDouble(EXTRA_LAT, 0.0).orZero()
         val currentLong = bundle.getDouble(EXTRA_LONG, 0.0).orZero()
         viewModel.onResultFromSearchAddress(
-            placeId = currentPlaceId,
+            searchAddressData = bundle.getParcelable(
+                EXTRA_AUTOCOMPLETE
+            ),
             lat = currentLat,
             long = currentLong
         )
