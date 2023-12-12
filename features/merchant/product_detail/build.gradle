@@ -192,12 +192,6 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestUtil rootProject.ext.testDependencies.orchestrator
-
-    //Media Review - Compose
-    implementation rootProject.ext.unifyDependencies.nestPrinciples
-    implementation rootProject.ext.composeDependencies.composeConstraint
-    implementation rootProject.ext.unifyDependencies.nestComponents
-
 }
 
 project.ext {
