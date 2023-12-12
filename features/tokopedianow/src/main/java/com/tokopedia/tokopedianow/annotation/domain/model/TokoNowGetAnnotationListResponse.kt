@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.data.model.response.Header
 
 data class TokoNowGetAnnotationListResponse(
     @SerializedName("TokonowGetAnnotationList")
-    val response: GetAnnotationListResponse = GetAnnotationListResponse(),
+    val response: GetAnnotationListResponse = GetAnnotationListResponse()
 ) {
 
     data class GetAnnotationListResponse(
@@ -16,7 +16,7 @@ data class TokoNowGetAnnotationListResponse(
         @SerializedName("status")
         val status: Int = 0,
         @SerializedName("annotationList")
-        val annotationList: List<AnnotationListResponse> = listOf(),
+        val annotationList: List<AnnotationResponse> = listOf(),
         @SerializedName("pagination")
         val pagination: PaginationResponse = PaginationResponse()
     )
@@ -33,7 +33,7 @@ data class TokoNowGetAnnotationListResponse(
 
     )
 
-    data class AnnotationListResponse(
+    data class AnnotationResponse(
         @SerializedName("annotationID")
         val annotationID: String = "",
         @SerializedName("imageURL")
