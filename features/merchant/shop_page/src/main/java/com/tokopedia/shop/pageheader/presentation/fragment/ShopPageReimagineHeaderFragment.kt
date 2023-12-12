@@ -119,7 +119,6 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstan
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_V4_TRACE_P1_MIDDLE
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
-import com.tokopedia.shop.common.data.ShopPagePreFetchDataModel
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopAffiliateData
 import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
@@ -1250,7 +1249,12 @@ class ShopPageReimagineHeaderFragment :
             getInitialData()
             initViews(view)
             setViewState(VIEW_LOADING)
-            checkShopPagePreFetchData()
+            // checkShopPagePreFetchData()
+            val prefetchData = getPrefetchData()
+            val hasPrefetchData = prefetchData != null
+            if (hasPrefetchData) {
+                renderPrefetchData(prefetchData)
+            }
         }
         context?.let {
             screenShotDetector = SharingUtil.createAndStartScreenShotDetector(
@@ -1264,40 +1268,19 @@ class ShopPageReimagineHeaderFragment :
         storiesManager.updateStories(listOf(shopId))
     }
 
-    private fun checkShopPagePreFetchData() {
-        val prefetch = getPrefetchData()
-        val shopPagePreFetchDataModel = activity?.intent?.getParcelableExtra<ShopPagePreFetchDataModel>(
-            ShopPagePreFetchDataModel.PARCEL_KEY
-        )
-        if (null != shopPagePreFetchDataModel) {
-            setViewState(VIEW_CONTENT)
-            createShopPreFetchDataTab(shopPagePreFetchDataModel)
-        }
-    }
+    private fun renderPrefetchData(prefetchData: ShopPrefetchData?) {
+        if (prefetchData == null) return
 
-    private fun getPrefetchData(): ShopPrefetchData? {
-        val context = context ?: return null
-
-        val prefetchCacheId = activity?.intent?.getStringExtra(ShopPagePrefetch.PREFETCH_CACHE_ID).orEmpty()
-
-        val cacheManager = SaveInstanceCacheManager(context, prefetchCacheId)
-        return cacheManager.get<ShopPrefetchData>(
-            customId = ShopPrefetchData::class.java.simpleName,
-            type = ShopPrefetchData::class.java
-        )
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun createShopPreFetchDataTab(shopPagePreFetchDataModel: ShopPagePreFetchDataModel) {
+        setViewState(VIEW_CONTENT)
         val tabData = ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData(
             name = ShopPageHeaderTabName.PRE_FETCH_DATA
         )
         val tabContentWrapper = ShopPageHeaderFragmentTabContentWrapper.createInstance().apply {
             setTabData(tabData)
             ShopPageHeaderP1HeaderData(
-                shopName = shopPagePreFetchDataModel.shopName,
-                shopAvatar = shopPagePreFetchDataModel.shopAvatarImageUrl,
-                shopBadge = shopPagePreFetchDataModel.shopBadgeImageUrl
+                shopName = prefetchData.shopName,
+                shopAvatar = prefetchData.shopAvatar,
+                shopBadge = prefetchData.shopBadge
             ).let { headerData ->
                 setShopPageHeaderP1Data(
                     shopPageHeaderP1Data = headerData,
@@ -1316,6 +1299,18 @@ class ShopPageReimagineHeaderFragment :
         viewPagerAdapterHeader?.setTabData(listShopPageTabModel)
         tabLayout?.removeAllTabs()
         viewPagerAdapterHeader?.notifyDataSetChanged()
+    }
+
+    private fun getPrefetchData(): ShopPrefetchData? {
+        val context = context ?: return null
+
+        val prefetchCacheId = activity?.intent?.getStringExtra(ShopPagePrefetch.PREFETCH_CACHE_ID).orEmpty()
+
+        val cacheManager = SaveInstanceCacheManager(context, prefetchCacheId)
+        return cacheManager.get<ShopPrefetchData>(
+            customId = ShopPrefetchData::class.java.simpleName,
+            type = ShopPrefetchData::class.java
+        )
     }
 
     private fun checkAffiliateAppLink(uri: Uri) {
