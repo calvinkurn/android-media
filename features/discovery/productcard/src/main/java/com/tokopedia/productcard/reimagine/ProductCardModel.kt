@@ -16,6 +16,7 @@ data class ProductCardModel(
     val videoUrl: String = "",
     val hasThreeDots: Boolean = false,
     val stockInfo: StockInfo = StockInfo(),
+    val isSafeProduct: Boolean = false,
     val isInBackground : Boolean = false,
 ) {
 

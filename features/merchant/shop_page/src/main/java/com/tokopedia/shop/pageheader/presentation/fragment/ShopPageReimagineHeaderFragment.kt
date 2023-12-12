@@ -727,6 +727,7 @@ class ShopPageReimagineHeaderFragment :
                         setFragmentTabContentWrapperFollowButtonUsingFollowStatusData(this)
                         isFollowing = this?.status?.userIsFollowing == true
                         setFragmentTabContentWrapperFollowButtonLoading(false)
+                        setFollowActivityResult()
                     }
                 }
 
@@ -744,6 +745,7 @@ class ShopPageReimagineHeaderFragment :
                 is Success -> {
                     it.data.followShop?.let { followShop ->
                         onSuccessUpdateFollowStatus(followShop)
+                        setFollowActivityResult()
                     }
                 }
 
@@ -3348,5 +3350,16 @@ class ShopPageReimagineHeaderFragment :
 
     override fun getBottomViewContainer(): View? {
         return bottomViewContainer
+    }
+
+    private fun setFollowActivityResult() {
+        requireActivity().setResult(
+            Activity.RESULT_OK,
+            ShopPageActivityResult.createResult(
+                shopId = shopId,
+                isFollow = isFollowing,
+                existingIntentBundle = intentData,
+            )
+        )
     }
 }
