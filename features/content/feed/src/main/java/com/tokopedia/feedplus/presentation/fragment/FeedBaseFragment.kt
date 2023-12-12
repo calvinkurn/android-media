@@ -693,7 +693,7 @@ class FeedBaseFragment :
                 selectActiveTab(TAB_FIRST_INDEX)
             }
 
-            if (firstTabData.haveNewContent) {
+            if (firstTabData.hasNewContent) {
                 binding.containerFeedTopNav.vFirstTabRedDot.show()
             } else {
                 binding.containerFeedTopNav.vFirstTabRedDot.hide()
@@ -711,7 +711,7 @@ class FeedBaseFragment :
                 selectActiveTab(TAB_SECOND_INDEX)
             }
 
-            if (secondTabData.haveNewContent) {
+            if (secondTabData.hasNewContent) {
                 binding.containerFeedTopNav.vSecondTabRedDot.show()
             } else {
                 binding.containerFeedTopNav.vSecondTabRedDot.hide()

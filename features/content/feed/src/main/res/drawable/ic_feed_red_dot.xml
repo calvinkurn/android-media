@@ -4,5 +4,5 @@
     <size
         android:width="8dp"
         android:height="8dp" />
-    <solid android:color="@color/Unify_RN600" />
+    <solid android:color="@color/feed_dms_red_dot_color" />
 </shape>

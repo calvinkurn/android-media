@@ -14,7 +14,7 @@ data class Items(
     @SerializedName("key")
     val key: String = "",
     @SerializedName("newContentExists")
-    val haveNewContent: Boolean = false,
+    val hasNewContent: Boolean = false,
     @SerializedName("__typename")
     val typeName: String = ""
 )

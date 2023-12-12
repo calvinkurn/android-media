@@ -145,7 +145,7 @@ class FeedMainViewModel @AssistedInject constructor(
                         data = tabModel.data.mapIndexed { idx, tab ->
                             tab.copy(
                                 isSelected = idx == position,
-                                haveNewContent = if (idx == position) false else tab.haveNewContent
+                                hasNewContent = if (idx == position) false else tab.hasNewContent
                             )
                         }
                     )
