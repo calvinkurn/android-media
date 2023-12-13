@@ -63,7 +63,7 @@ class GWPCardOfShowMoreViewHolder(
     private fun setImpression(data: GWPWidgetUiModel.Card.LoadMore) {
         binding.addOnPdpImpressionListener(
             holders = callback.impressionHolders,
-            name = data.id.toString()
+            name = data.toString()
         ) {
             val updateData = data.copy(trackData = getTrackData(data))
             callback.event(GWPEvent.OnCardImpress(card = updateData))

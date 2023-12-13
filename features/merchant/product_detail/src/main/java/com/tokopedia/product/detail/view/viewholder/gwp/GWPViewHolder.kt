@@ -101,9 +101,7 @@ class GWPViewHolder(
 
     // region hide state
     private fun hideContent() {
-        if (rootView.height > Int.ZERO) { // prevent inflate
-            rootView.setLayoutHeight(Int.ZERO)
-        }
+        rootView.setLayoutHeight(Int.ZERO)
     }
     // endregion
 
