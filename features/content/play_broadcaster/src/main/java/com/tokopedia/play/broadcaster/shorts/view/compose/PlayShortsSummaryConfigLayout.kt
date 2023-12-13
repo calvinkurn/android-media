@@ -48,26 +48,14 @@ fun PlayShortsSummaryConfigLayout(
             Column(
                 modifier = Modifier.padding(16.dp)
             ) {
-                when (tagsState) {
-                    is NetworkResult.Loading -> {
+                PlayShortsTagLayout(
+                    tagState = tagsState,
+                    onTagClick = onTagClick,
+                    onRefreshTag = onRefreshTag
+                )
 
-                    }
-                    is NetworkResult.Success -> {
-                        PlayShortsTagLayout(
-                            tag = tagsState.data,
-                            onTagClick = onTagClick,
-                        )
-                    }
-                    is NetworkResult.Fail -> {
-                        NestLocalLoad(
-                            title = stringResource(id = R.string.play_bro_tag_recommendation_error_title),
-                            description = stringResource(id = R.string.play_bro_tag_recommendation_error_desc),
-                            isLoading = false,
-                            onRefreshButtonClicked = { onRefreshTag() }
-                        )
-                    }
-                    else -> {}
-                }
+                Spacer(modifier = Modifier.height(16.dp))
+
             }
         }
     }
