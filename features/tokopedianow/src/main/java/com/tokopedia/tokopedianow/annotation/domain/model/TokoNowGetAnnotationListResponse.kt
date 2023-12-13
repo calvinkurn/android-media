@@ -5,8 +5,13 @@ import com.tokopedia.abstraction.common.data.model.response.Header
 
 data class TokoNowGetAnnotationListResponse(
     @SerializedName("TokonowGetAnnotationList")
-    val response: GetAnnotationListResponse = GetAnnotationListResponse(),
+    val response: GetAnnotationListResponse = GetAnnotationListResponse()
 ) {
+
+    companion object {
+        private const val STATUS_HIDE_WIDGET = 0
+        private const val STATUS_SHOW_WIDGET = 1
+    }
 
     data class GetAnnotationListResponse(
         @SerializedName("header")
@@ -14,12 +19,17 @@ data class TokoNowGetAnnotationListResponse(
         @SerializedName("annotationHeader")
         val annotationHeader: AnnotationHeaderResponse = AnnotationHeaderResponse(),
         @SerializedName("status")
-        val status: Int = 0,
+        val status: Int = STATUS_HIDE_WIDGET,
         @SerializedName("annotationList")
-        val annotationList: List<AnnotationListResponse> = listOf(),
+        val annotationList: List<AnnotationResponse> = listOf(),
         @SerializedName("pagination")
         val pagination: PaginationResponse = PaginationResponse()
-    )
+    ) {
+
+        fun showWidget(): Boolean {
+            return status == STATUS_SHOW_WIDGET
+        }
+    }
 
     data class AnnotationHeaderResponse(
         @SerializedName("title")
@@ -33,7 +43,7 @@ data class TokoNowGetAnnotationListResponse(
 
     )
 
-    data class AnnotationListResponse(
+    data class AnnotationResponse(
         @SerializedName("annotationID")
         val annotationID: String = "",
         @SerializedName("name")
