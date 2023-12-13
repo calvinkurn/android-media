@@ -44,7 +44,7 @@ class ExploreCategoryMapper @Inject constructor() {
                         categoryTitle = exploreCategory.title,
                         categoryImageUrl = exploreCategory.imageUrl,
                         subExploreCategoryList = exploreCategory.categoryRows.flatMap { categoryRow ->
-                            List(if (position % 2 == 0) 3 else 6) { subPosition ->
+                            List(if ((position + Int.ONE) % 2 == 0) 3 else 6) { subPosition ->
                                 ExploreCategoryUiModel.SubExploreCategoryUiModel(
                                     id = (categoryRow.id.toIntOrZero() + (subPosition + Int.ONE)).toString(),
                                     name = categoryRow.name,

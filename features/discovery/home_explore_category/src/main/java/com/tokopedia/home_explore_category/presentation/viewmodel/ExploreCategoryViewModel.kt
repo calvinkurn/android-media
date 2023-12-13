@@ -39,21 +39,18 @@ class ExploreCategoryViewModel @Inject constructor(
     }
 
     fun toggleSelectedCategory(categoryId: String) {
-        _exploreCategoryState.update {
-            when (it) {
-                is ExploreCategoryState.Success -> {
-                    val newCategoryList = it.data.exploreCategoryList.map { exploreCategory ->
-                        if (exploreCategory.id == categoryId) {
-                            exploreCategory.copy(isSelected = !exploreCategory.isSelected)
-                        } else {
-                            exploreCategory.copy(isSelected = false)
-                        }
+        val exploreCategoryState = _exploreCategoryState.value
+        if (exploreCategoryState is ExploreCategoryState.Success) {
+            _exploreCategoryState.update {
+                val newCategoryList = exploreCategoryState.data.exploreCategoryList.map { exploreCategory ->
+                    if (exploreCategory.id == categoryId) {
+                        exploreCategory.copy(isSelected = !exploreCategory.isSelected)
+                    } else {
+                        exploreCategory.copy(isSelected = false)
                     }
-
-                    ExploreCategoryState.Success(it.data.copy(exploreCategoryList = newCategoryList))
                 }
 
-                else -> it
+                ExploreCategoryState.Success(exploreCategoryState.data.copy(exploreCategoryList = newCategoryList))
             }
         }
     }
