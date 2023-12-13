@@ -6,4 +6,5 @@
     <string name="video_time_less_than_hour">%d:%02d</string>
     <string name="feed_video_time_hours">%d:%02d:%02d</string>
     <string name="circle_dot_divider">•</string>
+    <string name="bottom_atc_wording">+ Keranjang</string>
 </resources>

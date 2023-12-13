@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,6 +24,7 @@ import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.content.product.preview.R
 
 /**
  * @author by astidhiyaa on 23/11/23
@@ -38,7 +40,7 @@ fun MediaBottomNav(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .background(colorResource(id = unifyprinciplesR.color.Unify_Static_Black_68))
+                .background(colorResource(id = unifyprinciplesR.color.Unify_Static_Black))
                 .padding(
                     start = 16.dp,
                     top = 8.dp,
@@ -55,7 +57,7 @@ fun MediaBottomNav(
                 text = product.title,
                 maxLines = 1,
                 textStyle = NestTheme.typography.small.copy(
-                    color = colorResource(id = unifyprinciplesR.color.Unify_NN600)
+                    color = colorResource(id = R.color.product_preview_dms_bottom_title)
                 ),
                 modifier = Modifier.constrainAs(title) {
                     width = Dimension.wrapContent
@@ -123,7 +125,7 @@ fun MediaBottomNav(
             }
 
             NestButton(
-                text = "+ Keranjang",
+                text = stringResource(id = R.string.bottom_atc_wording),
                 onClick = onAtcClicked,
                 variant = ButtonVariant.GHOST_INVERTED,
                 size = ButtonSize.SMALL,
