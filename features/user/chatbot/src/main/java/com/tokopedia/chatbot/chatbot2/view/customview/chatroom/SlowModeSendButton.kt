@@ -15,9 +15,9 @@ import com.tokopedia.unifyprinciples.Typography
 class SlowModeSendButton(context: Context, attributeSet: AttributeSet) :
     ConstraintLayout(context, attributeSet) {
 
-    private lateinit var circleAnimation: CircleAnimation
-    private lateinit var textTimer: Typography
-    private lateinit var iconSend: IconUnify
+    private var circleAnimation: CircleAnimation? = null
+    private var textTimer: Typography? = null
+    private var iconSend: IconUnify? = null
     private var countDownTimer: CountDownTimer? = null
 
     var isSlowModeEnabled: Boolean = false
@@ -39,7 +39,7 @@ class SlowModeSendButton(context: Context, attributeSet: AttributeSet) :
         countDownTimer = object : CountDownTimer((slowModeDurationInSecond * 1000).toLong(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val text = (millisUntilFinished / 1000) + 1
-                textTimer.text = text.toString()
+                textTimer?.text = text.toString()
             }
 
             override fun onFinish() {
@@ -52,24 +52,24 @@ class SlowModeSendButton(context: Context, attributeSet: AttributeSet) :
 
     fun enableSendButton() {
         if (isSlowModeRunning) return
-        circleAnimation.enable()
-        iconSend.show()
-        textTimer.gone()
+        circleAnimation?.enable()
+        iconSend?.show()
+        textTimer?.gone()
     }
 
     fun disableSendButton() {
         if (isSlowModeRunning) return
-        circleAnimation.disable()
-        iconSend.show()
-        textTimer.gone()
+        circleAnimation?.disable()
+        iconSend?.show()
+        textTimer?.gone()
     }
 
     fun startSlowDown() {
         if (isSlowModeEnabled) {
             isSlowModeRunning = true
-            circleAnimation.loading(slowModeDurationInSecond)
-            iconSend.gone()
-            textTimer.show()
+            circleAnimation?.loading(slowModeDurationInSecond)
+            iconSend?.gone()
+            textTimer?.show()
             initCountDownTimer()
         }
     }

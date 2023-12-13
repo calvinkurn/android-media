@@ -27,11 +27,11 @@ class CircleAnimation @JvmOverloads constructor(
         const val STATE_LOADING = "STATE_LOADING"
     }
 
-    private lateinit var drawAreaLoader: RectF
-    private lateinit var drawAreaBackground: RectF
-    private lateinit var paintGrey: Paint
-    private lateinit var paintGreen: Paint
-    private lateinit var valueAnimator: ValueAnimator
+    private var drawAreaLoader: RectF = RectF()
+    private var drawAreaBackground: RectF = RectF()
+    private var paintGrey: Paint? = null
+    private var paintGreen: Paint? = null
+    private var valueAnimator: ValueAnimator? = null
 
     var sweepAngle = 0f
     var state: String = STATE_ENABLED
@@ -41,9 +41,6 @@ class CircleAnimation @JvmOverloads constructor(
     }
 
     private fun initAnimation() {
-        drawAreaLoader = RectF()
-        drawAreaBackground = RectF()
-
         paintGrey = Paint().apply {
             this.isAntiAlias = true
             this.color = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN300)
@@ -53,7 +50,10 @@ class CircleAnimation @JvmOverloads constructor(
             this.color = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500)
         }
 
-        valueAnimator = ValueAnimator.ofFloat(VALUE_ANIMATION_SWEEP_ANGLE_START, VALUE_ANIMATION_SWEEP_ANGLE_END).apply {
+        valueAnimator = ValueAnimator.ofFloat(
+            VALUE_ANIMATION_SWEEP_ANGLE_START,
+            VALUE_ANIMATION_SWEEP_ANGLE_END
+        ).apply {
             this.addUpdateListener { animation ->
                 run {
                     sweepAngle = animation.animatedValue as Float
@@ -67,38 +67,48 @@ class CircleAnimation @JvmOverloads constructor(
         super.onDraw(canvas)
         when (state) {
             STATE_ENABLED -> {
-                canvas?.drawArc(
-                    drawAreaBackground,
-                    START_ANGLE,
-                    VALUE_ANIMATION_SWEEP_ANGLE_MAX,
-                    true,
-                    paintGreen
-                )
+                paintGreen?.let {
+                    canvas?.drawArc(
+                        drawAreaBackground,
+                        START_ANGLE,
+                        VALUE_ANIMATION_SWEEP_ANGLE_MAX,
+                        true,
+                        it
+                    )
+                }
             }
+
             STATE_DISABLED -> {
-                canvas?.drawArc(
-                    drawAreaBackground,
-                    START_ANGLE,
-                    VALUE_ANIMATION_SWEEP_ANGLE_MAX,
-                    true,
-                    paintGrey
-                )
+                paintGreen?.let {
+                    canvas?.drawArc(
+                        drawAreaBackground,
+                        START_ANGLE,
+                        VALUE_ANIMATION_SWEEP_ANGLE_MAX,
+                        true,
+                        it
+                    )
+                }
             }
+
             STATE_LOADING -> {
-                canvas?.drawArc(
-                    drawAreaBackground,
-                    START_ANGLE,
-                    VALUE_ANIMATION_SWEEP_ANGLE_MAX,
-                    true,
-                    paintGreen
-                )
-                canvas?.drawArc(
-                    drawAreaLoader,
-                    START_ANGLE,
-                    sweepAngle,
-                    true,
-                    paintGrey
-                )
+                paintGreen?.let {
+                    canvas?.drawArc(
+                        drawAreaBackground,
+                        START_ANGLE,
+                        VALUE_ANIMATION_SWEEP_ANGLE_MAX,
+                        true,
+                        it
+                    )
+                }
+                paintGrey?.let {
+                    canvas?.drawArc(
+                        drawAreaLoader,
+                        START_ANGLE,
+                        sweepAngle,
+                        true,
+                        it
+                    )
+                }
             }
         }
     }
@@ -129,7 +139,7 @@ class CircleAnimation @JvmOverloads constructor(
 
     fun loading(durationInSec: Int) {
         state = STATE_LOADING
-        valueAnimator.apply {
+        valueAnimator?.apply {
             this.repeatCount = 0
             this.duration = (durationInSec * 1000).toLong()
             this.start()
