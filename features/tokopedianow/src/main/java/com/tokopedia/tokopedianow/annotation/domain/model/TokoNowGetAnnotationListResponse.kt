@@ -36,12 +36,12 @@ data class TokoNowGetAnnotationListResponse(
     data class AnnotationListResponse(
         @SerializedName("annotationID")
         val annotationID: String = "",
+        @SerializedName("name")
+        val name: String = "",
         @SerializedName("imageURL")
         val imageURL: String = "",
         @SerializedName("appLink")
-        val appLink: String = "",
-        @SerializedName("webLink")
-        val webLink: String = ""
+        val appLink: String = ""
     )
 
     data class PaginationResponse(
