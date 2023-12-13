@@ -5,8 +5,7 @@ import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import com.tokopedia.editor.ui.gesture.api.ScaleGestureDetector
-import com.tokopedia.editor.ui.gesture.listener.OnGestureControl
-import com.tokopedia.editor.ui.gesture.listener.OnMultiTouchListener
+import com.tokopedia.editor.ui.gesture.listener.MultiTouchListener
 import com.tokopedia.editor.ui.gesture.util.animationScale
 import com.tokopedia.editor.ui.model.AddTextModel
 import kotlin.math.abs
@@ -15,8 +14,7 @@ import kotlin.math.min
 
 class MultiGestureListener constructor(
     view: View,
-    private val onMultiTouchListener: OnMultiTouchListener?,
-    private val onGestureControl: OnGestureControl?,
+    private val multiTouchListener: MultiTouchListener?
 ) : View.OnTouchListener,
     GridGuidelineControl by GridGuidelineControlImpl(),
     DeletionViewControl by DeletionViewControlImpl() {
@@ -103,6 +101,7 @@ class MultiGestureListener constructor(
                     if (isTextDragging.not()) {
                         isTextDragging = true
                         showDeletionViewButton()
+                        multiTouchListener?.startViewDrag()
                     }
 
                     // scaling animation
@@ -118,6 +117,10 @@ class MultiGestureListener constructor(
 
             // cancel
             MotionEvent.ACTION_CANCEL -> {
+                if (isTextDragging) {
+                    multiTouchListener?.endViewDrag()
+                }
+
                 resetActivePointerId()
                 isTextDragging = false
                 hideDeletionViewButton()
@@ -136,17 +139,19 @@ class MultiGestureListener constructor(
 
                 // remove textView if the view within the deletion button view
                 if (hasPointerLocationWithinView(x, y)) {
-                    onMultiTouchListener?.onRemoveView(view)
+                    multiTouchListener?.onRemoveView(view)
                 }
 
                 // handle threshold gesture control
                 if (shouldPointerInvokeTextView(x, y)) {
-                    onGestureControl?.onClick()
+                    multiTouchListener?.onViewClick(view)
                 }
 
-                lastPositionX = 0
-                lastPositionY = 0
+                if (isTextDragging) {
+                    multiTouchListener?.endViewDrag()
+                }
 
+                resetLastPosition()
                 isTextDragging = false
                 hideDeletionViewButton()
             }
@@ -229,13 +234,11 @@ class MultiGestureListener constructor(
         // force snap the view horizontal alignment
         if (isNearestThresholdAlignCenterX(view)) {
             view.x = containerCenterX - view.width / 2
-            hapticFeedback(view)
         }
 
         // force snap the view vertical alignment
         if (isNearestThresholdAlignCenterY(view)) {
             view.y = containerCenterY - view.height / 2
-            hapticFeedback(view)
         }
     }
 
@@ -279,6 +282,11 @@ class MultiGestureListener constructor(
 
     private fun resetActivePointerId() {
         activePointerId = INVALID_POINTER_ID
+    }
+
+    private fun resetLastPosition() {
+        lastPositionX = 0
+        lastPositionY = 0
     }
 
     private fun shouldPointerInvokeTextView(x: Int, y: Int) =

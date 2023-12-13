@@ -19,6 +19,10 @@ fun View.animationScale(scaleX: Float, scaleY: Float) {
     scaleXAnimator.interpolator = interpolator
     scaleYAnimator.interpolator = interpolator
 
+    // Ensure the animation only once executed
+    scaleXAnimator.repeatCount = 0
+    scaleYAnimator.repeatCount = 0
+
     // Start animation
     scaleXAnimator.start()
     scaleYAnimator.start()

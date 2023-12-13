@@ -11,13 +11,13 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import androidx.annotation.NonNull;
 
 import com.tokopedia.editor.ui.gesture.listener.OnGestureControl;
-import com.tokopedia.editor.ui.gesture.listener.OnMultiTouchListener;
+import com.tokopedia.editor.ui.gesture.listener.MultiTouchListener;
 import com.tokopedia.editor.ui.model.AddTextModel;
 import com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout;
 import com.tokopedia.editor.ui.widget.GridGuidelineView;
 
 @Deprecated // once the kt version got stable, let's remove this class.
-public class MultiTouchListener implements View.OnTouchListener {
+public class V1MultiTouchListener implements View.OnTouchListener {
 
     private static final int INVALID_POINTER_ID = -1;
     private static final float SCALE_DOWN_ANIM_REMOVAL = 0.3f;
@@ -33,7 +33,7 @@ public class MultiTouchListener implements View.OnTouchListener {
     private float prevX, prevY;
 
     private final ScaleGestureDetector scaleGestureDetector;
-    private OnMultiTouchListener onMultiTouchListener;
+    private MultiTouchListener multiTouchListener;
     private OnGestureControl onGestureControl;
 
     private GridGuidelineView gridGuidelineView;
@@ -49,7 +49,7 @@ public class MultiTouchListener implements View.OnTouchListener {
     private int lastPositionX = 0;
     private int lastPositionY = 0;
 
-    public MultiTouchListener(Context context, View view) {
+    public V1MultiTouchListener(Context context, View view) {
         // @Workaround: for initiate state
         originalScaleX = view.getScaleX();
         originalScaleY = view.getScaleY();
@@ -229,7 +229,7 @@ public class MultiTouchListener implements View.OnTouchListener {
                 gridGuidelineView.setShowHorizontalLine(false);
 
                 if (isPointerContain(x, y)) {
-                    onMultiTouchListener.onRemoveView(view);
+                    multiTouchListener.onRemoveView(view);
                 }
 
                 if (Math.abs(lastPositionX - x) < 10 && Math.abs(lastPositionY - y) < 10) {
@@ -314,8 +314,8 @@ public class MultiTouchListener implements View.OnTouchListener {
         scaleYAnimator.start();
     }
 
-    public void setOnMultiTouchListener(OnMultiTouchListener onMultiTouchListener) {
-        this.onMultiTouchListener = onMultiTouchListener;
+    public void setOnMultiTouchListener(MultiTouchListener multiTouchListener) {
+        this.multiTouchListener = multiTouchListener;
     }
 
     public void setOnGestureControl(OnGestureControl onGestureControl) {
