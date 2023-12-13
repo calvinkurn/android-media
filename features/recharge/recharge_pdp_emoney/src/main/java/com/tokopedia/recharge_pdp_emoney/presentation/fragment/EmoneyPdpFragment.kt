@@ -740,7 +740,7 @@ open class EmoneyPdpFragment :
             showTickerNotSupported()
             addBottomSheetBCAInfoSupport()
             showRecentNumberAndPromo()
-            binding.tickerNotSupported.setHtmlDescription(data.message)
+            binding.tickerNotSupported.setHtmlDescription(data.message + getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_bca_gen_one_additional_link))
         } else {
             hideTickerNotSupported()
             showProducts()
@@ -794,6 +794,7 @@ open class EmoneyPdpFragment :
 
     private fun showTickerNotSupported() {
         binding.tickerNotSupported.show()
+        binding.tickerNotSupported.setHtmlDescription(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_bca_gen_one))
     }
 
     private fun addBottomSheetBCAInfoSupport() {
