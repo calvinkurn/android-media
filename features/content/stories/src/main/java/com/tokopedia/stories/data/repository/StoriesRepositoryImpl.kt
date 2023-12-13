@@ -169,7 +169,7 @@ class StoriesRepositoryImpl @Inject constructor(
                 TokopediaUrl.getInstance().TYPE == Env.STAGING && storyDetail.content.type == StoriesDetailItem.StoriesItemContentType.Image -> PostUserReportUseCase.ReportSource.STORY_STAGING_IMAGE
                 storyDetail.content.type == StoriesDetailItem.StoriesItemContentType.Image -> PostUserReportUseCase.ReportSource.STORY_PROD_IMAGE
                 storyDetail.content.type == StoriesDetailItem.StoriesItemContentType.Video -> PostUserReportUseCase.ReportSource.STORY_VIDEO
-                else -> null
+                else -> PostUserReportUseCase.ReportSource.UNKNOWN
             }
 
             val request = postReportUseCase.createParam(

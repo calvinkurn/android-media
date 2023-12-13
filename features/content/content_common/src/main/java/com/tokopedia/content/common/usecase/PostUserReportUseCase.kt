@@ -37,7 +37,7 @@ class PostUserReportUseCase @Inject constructor(
         partnerId: Long,
         partnerType: PartnerType,
         reporterId: Long,
-        source: ReportSource? = null
+        source: ReportSource = ReportSource.UNKNOWN
     ): RequestParams {
         val param = mutableMapOf(
             REPORTER_ID_PARAM to reporterId,
@@ -53,8 +53,8 @@ class PostUserReportUseCase @Inject constructor(
                 put(SHOP_ID_PARAM, partnerId)
             }
 
-            source?.let {
-                put(SOURCE_PARAM, it.value)
+            if (source.value.isNotEmpty()) {
+                put(SOURCE_PARAM, source.value)
             }
         }
 

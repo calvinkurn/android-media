@@ -451,7 +451,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
         val authorId = if (storiesId == "0") "0" else args.authorId
 
         Tracker.Builder()
-            .setEvent("viewContentIris")
+            .setEvent(Event.viewContentIris)
             .setEventAction("view - list report reason")
             .setEventCategory("stories room")
             .setEventLabel("${args.entryPoint} - $authorId - $storiesId - $storyType - ${contentType.value}")
@@ -474,7 +474,7 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
         val authorId = if (storiesId == "0") "0" else args.authorId
 
         Tracker.Builder()
-            .setEvent("clickContent")
+            .setEvent(Event.clickContent)
             .setEventAction("click - report reason")
             .setEventCategory("stories room")
             .setEventLabel("${args.entryPoint} - $authorId - $storiesId - $storyType - ${contentType.value} - $reportReason")

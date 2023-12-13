@@ -25,7 +25,6 @@ import com.tokopedia.stories.view.adapter.StoriesGroupPagerAdapter
 import com.tokopedia.stories.view.animation.StoriesPageAnimation
 import com.tokopedia.stories.view.custom.StoriesErrorView
 import com.tokopedia.stories.view.model.StoriesArgsModel
-import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.utils.KEY_ARGS
 import com.tokopedia.stories.view.utils.TAG_FRAGMENT_STORIES_GROUP
@@ -248,7 +247,7 @@ class StoriesGroupFragment @Inject constructor(
         analytic.sendClickExitStoryRoomEvent(
             storiesId = viewModel.mDetail.id,
             contentType = viewModel.mDetail.content.type,
-            storyType = getCurrentStoryType(),
+            storyType = viewModel.mDetail.storyType,
             currentCircle = viewModel.mGroup.groupName,
         )
     }
@@ -259,9 +258,6 @@ class StoriesGroupFragment @Inject constructor(
         binding.storiesGroupViewPager.unregisterOnPageChangeCallback(pagerListener)
         _binding = null
     }
-
-    private fun getCurrentStoryType() =
-        if (viewModel.mDetail.category == StoriesDetailItem.StoryCategory.Manual) "organic" else "asgc"
 
     companion object {
         fun getFragment(
