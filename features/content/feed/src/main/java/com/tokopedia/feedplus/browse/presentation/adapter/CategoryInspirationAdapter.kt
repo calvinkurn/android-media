@@ -1,116 +1,104 @@
 package com.tokopedia.feedplus.browse.presentation.adapter
 
-import android.annotation.SuppressLint
-import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.content.common.producttag.view.adapter.viewholder.LoadingViewHolder
 import com.tokopedia.content.common.types.ResultState
+import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
+import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalAuthorsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.InspirationCardViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationMap
+import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationUiState
 import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
-import com.tokopedia.feedplus.browse.presentation.model.LoadingModel
 import com.tokopedia.feedplus.browse.presentation.model.SlotInfo
 import com.tokopedia.feedplus.browse.presentation.model.isEmpty
 import com.tokopedia.feedplus.browse.presentation.model.isLoading
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 /**
  * Created by kenny.hadisaputra on 30/10/23
  */
 internal class CategoryInspirationAdapter(
-    private val chipsListener: ChipsViewHolder.Listener,
-    private val cardListener: InspirationCardViewHolder.Item.Listener
-) : ListAdapter<Any, RecyclerView.ViewHolder>(
-    object : DiffUtil.ItemCallback<Any>() {
-        override fun areItemsTheSame(
-            oldItem: Any,
-            newItem: Any
-        ): Boolean {
-            return when {
-                oldItem is FeedBrowseItemListModel.Chips.Item && newItem is FeedBrowseItemListModel.Chips.Item -> {
-                    true
-                }
-                oldItem is FeedBrowseItemListModel.Title && newItem is FeedBrowseItemListModel.Title -> {
-                    true
-                }
-                oldItem is FeedBrowseItemListModel.InspirationCard.Item && newItem is FeedBrowseItemListModel.InspirationCard.Item -> {
-                    oldItem.item.channelId == newItem.item.channelId
-                }
-                else -> {
-                    oldItem == newItem
-                }
-            }
+    chipsListener: ChipsViewHolder.Listener,
+    cardListener: InspirationCardViewHolder.Item.Listener
+) : FeedBrowseItemAdapter<CategoryInspirationUiState>(
+    CoroutineScope(Dispatchers.Main),
+    chipsListener,
+    object : FeedBrowseBannerViewHolder.Item.Listener {
+        override fun onBannerImpressed(
+            viewHolder: FeedBrowseBannerViewHolder.Item,
+            item: FeedBrowseItemListModel.Banner.Item
+        ) {
         }
 
-        @SuppressLint("DiffUtilEquals")
-        override fun areContentsTheSame(
-            oldItem: Any,
-            newItem: Any
-        ): Boolean {
-            return oldItem == newItem
+        override fun onBannerClicked(
+            viewHolder: FeedBrowseBannerViewHolder.Item,
+            item: FeedBrowseItemListModel.Banner.Item
+        ) {
         }
-    }
+    },
+    object : FeedBrowseHorizontalChannelsViewHolder.Listener {
+        override fun onRetry(
+            viewHolder: FeedBrowseHorizontalChannelsViewHolder,
+            slotId: String,
+            menu: WidgetMenuModel
+        ) {
+        }
+
+        override fun onRefresh(
+            viewHolder: FeedBrowseHorizontalChannelsViewHolder,
+            slotId: String,
+            menu: WidgetMenuModel
+        ) {
+        }
+
+        override fun onCardImpressed(
+            viewHolder: FeedBrowseHorizontalChannelsViewHolder,
+            widgetModel: FeedBrowseItemListModel.HorizontalChannels,
+            channel: PlayWidgetChannelUiModel,
+            channelPosition: Int
+        ) {
+        }
+
+        override fun onCardClicked(
+            viewHolder: FeedBrowseHorizontalChannelsViewHolder,
+            widgetModel: FeedBrowseItemListModel.HorizontalChannels,
+            channel: PlayWidgetChannelUiModel,
+            channelPosition: Int
+        ) {
+        }
+    },
+    object : FeedBrowseHorizontalAuthorsViewHolder.Listener {
+        override fun onWidgetImpressed(
+            viewHolder: FeedBrowseHorizontalAuthorsViewHolder,
+            widgetModel: FeedBrowseItemListModel.HorizontalAuthors,
+            item: AuthorWidgetModel,
+            authorWidgetPosition: Int
+        ) {
+        }
+
+        override fun onChannelClicked(
+            viewHolder: FeedBrowseHorizontalAuthorsViewHolder,
+            widgetModel: FeedBrowseItemListModel.HorizontalAuthors,
+            item: AuthorWidgetModel,
+            authorWidgetPosition: Int
+        ) {
+        }
+
+        override fun onAuthorClicked(
+            viewHolder: FeedBrowseHorizontalAuthorsViewHolder,
+            widgetModel: FeedBrowseItemListModel.HorizontalAuthors,
+            item: AuthorWidgetModel,
+            authorWidgetPosition: Int
+        ) {
+        }
+    },
+    cardListener
 ) {
-
-    private val poolManager = FeedBrowseRecycledViewPoolManager()
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
-            TYPE_CHIPS -> {
-                ChipsViewHolder.create(parent, poolManager.menuRecycledViewPool, chipsListener)
-            }
-            TYPE_TITLE -> {
-                FeedBrowseTitleViewHolder.create(parent)
-            }
-            TYPE_INSPIRATION_CARD -> {
-                InspirationCardViewHolder.Item.create(parent, cardListener)
-            }
-            TYPE_INSPIRATION_CARD_PLACEHOLDER -> {
-                InspirationCardViewHolder.Placeholder.create(parent)
-            }
-            TYPE_LOADING -> {
-                LoadingViewHolder.create(parent)
-            }
-            else -> error("ViewType $viewType is not supported")
-        }
-    }
-
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val item = getItem(position)
-        when {
-            holder is ChipsViewHolder && item is FeedBrowseItemListModel.Chips -> {
-                holder.bind(item)
-            }
-            holder is FeedBrowseTitleViewHolder && item is FeedBrowseItemListModel.Title -> {
-                holder.bind(item)
-            }
-            holder is InspirationCardViewHolder.Item && item is FeedBrowseItemListModel.InspirationCard.Item -> {
-                holder.bind(item)
-            }
-        }
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return when (val item = getItem(position)) {
-            is FeedBrowseItemListModel.Chips -> TYPE_CHIPS
-            is FeedBrowseItemListModel.Title -> TYPE_TITLE
-            is FeedBrowseItemListModel.InspirationCard.Item -> TYPE_INSPIRATION_CARD
-            is FeedBrowseItemListModel.InspirationCard.Placeholder -> TYPE_INSPIRATION_CARD_PLACEHOLDER
-            is LoadingModel -> TYPE_LOADING
-            else -> error("Type $item is not supported in this page")
-        }
-    }
-
-    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
-        when (holder) {
-            is InspirationCardViewHolder.Item -> holder.recycle()
-        }
-    }
 
     fun setList(
         state: ResultState,
@@ -131,10 +119,14 @@ internal class CategoryInspirationAdapter(
         }
     }
 
+    override fun CategoryInspirationUiState.mapToItems(): List<FeedBrowseItemListModel> {
+        return items.mapToListItems(state, selectedMenuId)
+    }
+
     private fun CategoryInspirationMap.mapToListItems(
         pageState: ResultState,
         selectedMenuId: String
-    ): List<Any> {
+    ): List<FeedBrowseItemListModel> {
         return buildList {
             val isMenuEmpty = keys.isEmpty() || (keys.size == 1 && keys.first().isBlank())
             val selectedData = get(selectedMenuId) ?: values.firstOrNull()
@@ -164,27 +156,8 @@ internal class CategoryInspirationAdapter(
                         )
                     }
                 )
-                if (menuItem.isLoading && !pageState.isLoading) { add(LoadingModel) }
+                if (menuItem.isLoading && !pageState.isLoading) { add(FeedBrowseItemListModel.LoadingModel) }
             }
         }
-    }
-
-    fun getSpanSizeLookup(): GridLayoutManager.SpanSizeLookup {
-        return object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                return when (getItem(position)) {
-                    is FeedBrowseItemListModel.InspirationCard -> 1
-                    else -> 2
-                }
-            }
-        }
-    }
-
-    companion object {
-        const val TYPE_CHIPS = 0
-        const val TYPE_TITLE = 1
-        const val TYPE_INSPIRATION_CARD = 2
-        const val TYPE_INSPIRATION_CARD_PLACEHOLDER = 3
-        const val TYPE_LOADING = 4
     }
 }

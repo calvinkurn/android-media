@@ -10,7 +10,6 @@ import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowsePayloads
 import com.tokopedia.feedplus.browse.presentation.adapter.itemdecoration.FeedBrowseChipsItemDecoration
 import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
-import com.tokopedia.feedplus.browse.presentation.model.LoadingModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseChipsBinding
 
 /**
@@ -80,7 +79,7 @@ internal class ChipsViewHolder private constructor(
     }
 
     private fun bindPlaceholder() {
-        adapter.submitList(List(6) { LoadingModel })
+        adapter.setLoading()
     }
 
     companion object {

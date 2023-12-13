@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.AuthorCardViewHolder
-import com.tokopedia.feedplus.browse.presentation.model.LoadingModel
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.LoadingModel
 
 /**
  * Created by meyta.taliti on 16/11/23.

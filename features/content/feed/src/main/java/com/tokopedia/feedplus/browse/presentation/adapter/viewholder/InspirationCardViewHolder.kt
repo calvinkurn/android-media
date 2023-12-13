@@ -20,7 +20,7 @@ internal class InspirationCardViewHolder private constructor() {
 
     class Item private constructor(
         private val binding: ItemFeedBrowseInspirationCardBinding,
-        private val listener: Listener,
+        private val listener: Listener
     ) : RecyclerView.ViewHolder(binding.root) {
 
         init {
@@ -33,7 +33,9 @@ internal class InspirationCardViewHolder private constructor() {
 
             binding.imgCover.scaleType = ImageView.ScaleType.FIT_CENTER
             binding.imgCover.loadImage(item.item.video.coverUrl) {
-                binding.imgCover.scaleType = ImageView.ScaleType.CENTER_CROP
+                listener(
+                    onSuccess = { _, _ -> binding.imgCover.scaleType = ImageView.ScaleType.CENTER_CROP }
+                )
             }
 
             binding.tvPartnerName.text = item.item.partner.name
@@ -60,9 +62,9 @@ internal class InspirationCardViewHolder private constructor() {
                     ItemFeedBrowseInspirationCardBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
-                        false,
+                        false
                     ),
-                    listener,
+                    listener
                 )
             }
         }
@@ -75,7 +77,7 @@ internal class InspirationCardViewHolder private constructor() {
     }
 
     class Placeholder private constructor(
-        binding: ItemFeedBrowseInspirationPlaceholderBinding,
+        binding: ItemFeedBrowseInspirationPlaceholderBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         companion object {
@@ -84,7 +86,7 @@ internal class InspirationCardViewHolder private constructor() {
                     ItemFeedBrowseInspirationPlaceholderBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
-                        false,
+                        false
                     )
                 )
             }

@@ -7,6 +7,7 @@ import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHo
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalAuthorsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.InspirationCardViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChannelListState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
@@ -29,7 +30,20 @@ internal class FeedBrowseAdapter(
     chipsListener,
     bannerListener,
     channelListener,
-    creatorListener
+    creatorListener,
+    object : InspirationCardViewHolder.Item.Listener {
+        override fun onImpressed(
+            viewHolder: InspirationCardViewHolder.Item,
+            model: FeedBrowseItemListModel.InspirationCard.Item
+        ) {
+        }
+
+        override fun onClicked(
+            viewHolder: InspirationCardViewHolder.Item,
+            model: FeedBrowseItemListModel.InspirationCard.Item
+        ) {
+        }
+    }
 ) {
 
     fun setPlaceholder() {

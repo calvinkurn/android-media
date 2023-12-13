@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.browse.presentation.adapter.CategoryInspirationAdapter
+import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseItemAdapter
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
@@ -46,14 +46,14 @@ internal class CategoryInspirationItemDecoration(
         val adapter = parent.adapter as? ListAdapter<*, *> ?: return
         try {
             when (adapter.getItemViewType(layoutPosition)) {
-                CategoryInspirationAdapter.TYPE_CHIPS -> {
+                FeedBrowseItemAdapter.TYPE_CHIPS -> {
                     outRect.itemOffsetsChips()
                 }
-                CategoryInspirationAdapter.TYPE_INSPIRATION_CARD,
-                CategoryInspirationAdapter.TYPE_INSPIRATION_CARD_PLACEHOLDER -> {
+                FeedBrowseItemAdapter.TYPE_INSPIRATION_CARD,
+                FeedBrowseItemAdapter.TYPE_INSPIRATION_CARD_PLACEHOLDER -> {
                     outRect.itemOffsetsInspirationCard(parent, view, adapter)
                 }
-                CategoryInspirationAdapter.TYPE_LOADING -> {
+                FeedBrowseItemAdapter.TYPE_LOADING -> {
                     outRect.itemOffsetsLoading()
                 }
                 else -> {
@@ -87,8 +87,8 @@ internal class CategoryInspirationItemDecoration(
         if (prevSpanRowPosition < 0) return
 
         top = when (adapter.getItemViewType(prevSpanRowPosition)) {
-            CategoryInspirationAdapter.TYPE_INSPIRATION_CARD,
-            CategoryInspirationAdapter.TYPE_INSPIRATION_CARD_PLACEHOLDER -> {
+            FeedBrowseItemAdapter.TYPE_INSPIRATION_CARD,
+            FeedBrowseItemAdapter.TYPE_INSPIRATION_CARD_PLACEHOLDER -> {
                 offset24
             }
             else -> {

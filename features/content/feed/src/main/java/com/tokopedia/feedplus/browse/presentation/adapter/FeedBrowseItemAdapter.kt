@@ -5,12 +5,21 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.content.common.producttag.view.adapter.viewholder.LoadingViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalAuthorsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseTitleViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.InspirationCardViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.Banner
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.Chips
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.HorizontalAuthors
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.HorizontalChannels
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.InspirationCard
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.LoadingModel
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.Title
 import kotlinx.coroutines.CoroutineScope
 
 internal abstract class FeedBrowseItemAdapter<Input : Any>(
@@ -19,6 +28,7 @@ internal abstract class FeedBrowseItemAdapter<Input : Any>(
     private val bannerListener: FeedBrowseBannerViewHolder.Item.Listener,
     private val channelListener: FeedBrowseHorizontalChannelsViewHolder.Listener,
     private val creatorListener: FeedBrowseHorizontalAuthorsViewHolder.Listener,
+    private val inspirationCardListener: InspirationCardViewHolder.Item.Listener,
     private val spanSize: Int = 2
 ) : ListAdapter<FeedBrowseItemListModel, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<FeedBrowseItemListModel>() {
@@ -26,7 +36,15 @@ internal abstract class FeedBrowseItemAdapter<Input : Any>(
             oldItem: FeedBrowseItemListModel,
             newItem: FeedBrowseItemListModel
         ): Boolean {
-            return oldItem.slotInfo.id == newItem.slotInfo.id && oldItem::class == newItem::class
+            if (oldItem.slotInfo.id != newItem.slotInfo.id) return false
+            return when {
+                oldItem is InspirationCard.Item && newItem is InspirationCard.Item -> {
+                    oldItem.item.channelId == newItem.item.channelId
+                }
+                else -> {
+                    oldItem::class == newItem::class
+                }
+            }
         }
 
         override fun areContentsTheSame(
@@ -41,10 +59,10 @@ internal abstract class FeedBrowseItemAdapter<Input : Any>(
             newItem: FeedBrowseItemListModel
         ): Any? {
             val payloadBuilder = FeedBrowsePayloads.Builder()
-            if (oldItem is FeedBrowseItemListModel.Chips && newItem is FeedBrowseItemListModel.Chips) {
+            if (oldItem is Chips && newItem is Chips) {
                 payloadBuilder.addChannelChipsChanged()
             }
-            if (oldItem is FeedBrowseItemListModel.HorizontalChannels && newItem is FeedBrowseItemListModel.HorizontalChannels) {
+            if (oldItem is HorizontalChannels && newItem is HorizontalChannels) {
                 payloadBuilder.addChannelItemsChanged()
             }
 
@@ -84,6 +102,15 @@ internal abstract class FeedBrowseItemAdapter<Input : Any>(
                     creatorListener
                 )
             }
+            TYPE_INSPIRATION_CARD -> {
+                InspirationCardViewHolder.Item.create(parent, inspirationCardListener)
+            }
+            TYPE_INSPIRATION_CARD_PLACEHOLDER -> {
+                InspirationCardViewHolder.Placeholder.create(parent)
+            }
+            TYPE_LOADING -> {
+                LoadingViewHolder.create(parent)
+            }
             else -> error("ViewType $viewType is not supported")
         }
     }
@@ -91,19 +118,22 @@ internal abstract class FeedBrowseItemAdapter<Input : Any>(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position)
         when {
-            holder is ChipsViewHolder && item is FeedBrowseItemListModel.Chips -> {
+            holder is ChipsViewHolder && item is Chips -> {
                 holder.bind(item)
             }
-            holder is FeedBrowseHorizontalChannelsViewHolder && item is FeedBrowseItemListModel.HorizontalChannels -> {
+            holder is FeedBrowseHorizontalChannelsViewHolder && item is HorizontalChannels -> {
                 holder.bind(item)
             }
-            holder is FeedBrowseBannerViewHolder.Item && item is FeedBrowseItemListModel.Banner.Item -> {
+            holder is FeedBrowseBannerViewHolder.Item && item is Banner.Item -> {
                 holder.bind(item)
             }
-            holder is FeedBrowseTitleViewHolder && item is FeedBrowseItemListModel.Title -> {
+            holder is FeedBrowseTitleViewHolder && item is Title -> {
                 holder.bind(item)
             }
-            holder is FeedBrowseHorizontalAuthorsViewHolder && item is FeedBrowseItemListModel.HorizontalAuthors -> {
+            holder is FeedBrowseHorizontalAuthorsViewHolder && item is HorizontalAuthors -> {
+                holder.bind(item)
+            }
+            holder is InspirationCardViewHolder.Item && item is InspirationCard.Item -> {
                 holder.bind(item)
             }
         }
@@ -120,10 +150,10 @@ internal abstract class FeedBrowseItemAdapter<Input : Any>(
         val payload = payloads.filterIsInstance<FeedBrowsePayloads>().combine()
         val item = getItem(position)
         when {
-            holder is ChipsViewHolder && item is FeedBrowseItemListModel.Chips -> {
+            holder is ChipsViewHolder && item is Chips -> {
                 holder.bindPayloads(item, payload)
             }
-            holder is FeedBrowseHorizontalChannelsViewHolder && item is FeedBrowseItemListModel.HorizontalChannels -> {
+            holder is FeedBrowseHorizontalChannelsViewHolder && item is HorizontalChannels -> {
                 holder.bindPayloads(item, payload)
             }
         }
@@ -131,23 +161,32 @@ internal abstract class FeedBrowseItemAdapter<Input : Any>(
 
     override fun getItemViewType(position: Int): Int {
         return when (val item = getItem(position)) {
-            is FeedBrowseItemListModel.Chips -> TYPE_CHIPS
-            is FeedBrowseItemListModel.HorizontalChannels -> TYPE_HORIZONTAL_CHANNELS
-            is FeedBrowseItemListModel.Banner.Item -> TYPE_BANNER
-            is FeedBrowseItemListModel.Banner.Placeholder -> TYPE_BANNER_PLACEHOLDER
-            is FeedBrowseItemListModel.Title -> TYPE_TITLE
-            is FeedBrowseItemListModel.HorizontalAuthors -> TYPE_HORIZONTAL_CREATORS
+            is Chips -> TYPE_CHIPS
+            is HorizontalChannels -> TYPE_HORIZONTAL_CHANNELS
+            is Banner.Item -> TYPE_BANNER
+            Banner.Placeholder -> TYPE_BANNER_PLACEHOLDER
+            is Title -> TYPE_TITLE
+            is HorizontalAuthors -> TYPE_HORIZONTAL_CREATORS
+            LoadingModel -> TYPE_HORIZONTAL_CREATORS
+            is InspirationCard.Item -> TYPE_INSPIRATION_CARD
+            is InspirationCard.Placeholder -> TYPE_INSPIRATION_CARD_PLACEHOLDER
             else -> error("Item $item is not supported")
+        }
+    }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        when (holder) {
+            is InspirationCardViewHolder.Item -> holder.recycle()
         }
     }
 
     fun getSpanSizeLookup(): GridLayoutManager.SpanSizeLookup {
         return object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                val item = getItem(position)
-                return when (item::class) {
-                    FeedBrowseItemListModel.Banner.Item::class,
-                    FeedBrowseItemListModel.Banner.Placeholder::class -> 1
+                return when (getItem(position)) {
+                    is Banner.Item,
+                    Banner.Placeholder,
+                    is InspirationCard -> 1
                     else -> spanSize
                 }
             }
@@ -167,5 +206,8 @@ internal abstract class FeedBrowseItemAdapter<Input : Any>(
         internal const val TYPE_BANNER_PLACEHOLDER = 3
         internal const val TYPE_TITLE = 4
         internal const val TYPE_HORIZONTAL_CREATORS = 5
+        internal const val TYPE_INSPIRATION_CARD = 6
+        internal const val TYPE_INSPIRATION_CARD_PLACEHOLDER = 7
+        internal const val TYPE_LOADING = 99
     }
 }

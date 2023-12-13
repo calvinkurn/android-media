@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChannelViewHolder2
-import com.tokopedia.feedplus.browse.presentation.model.LoadingModel
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.LoadingModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 
 /**

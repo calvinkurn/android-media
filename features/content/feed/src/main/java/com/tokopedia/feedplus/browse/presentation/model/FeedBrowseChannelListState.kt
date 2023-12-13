@@ -57,5 +57,3 @@ internal fun <T> FeedBrowseChannelListState<T>?.orInitLoading(): FeedBrowseChann
 
 internal val <T> FeedBrowseChannelListState<T>.isLoading: Boolean
     get() = this.state == ResultState.Loading
-
-internal object LoadingModel

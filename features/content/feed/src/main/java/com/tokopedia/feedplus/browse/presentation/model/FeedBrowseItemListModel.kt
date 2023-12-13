@@ -71,7 +71,7 @@ internal sealed interface FeedBrowseItemListModel {
             override val slotInfo: SlotInfo,
             val item: PlayWidgetChannelUiModel,
             val config: PlayWidgetConfigUiModel,
-            val index: Int,
+            val index: Int
         ) : InspirationCard
 
         object Placeholder : InspirationCard {
@@ -89,6 +89,10 @@ internal sealed interface FeedBrowseItemListModel {
             val Loading: HorizontalAuthors
                 get() = HorizontalAuthors(SlotInfo.Empty, emptyList(), true)
         }
+    }
+
+    object LoadingModel : FeedBrowseItemListModel {
+        override val slotInfo: SlotInfo = SlotInfo.Empty
     }
 }
 

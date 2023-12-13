@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipPlaceholderViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
-import com.tokopedia.feedplus.browse.presentation.model.LoadingModel
+import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.LoadingModel
 
 /**
  * Created by meyta.taliti on 11/08/23.
@@ -69,6 +69,10 @@ internal class FeedBrowseChipAdapter(
             LoadingModel -> TYPE_PLACEHOLDER
             else -> error("Type $type is not supported")
         }
+    }
+
+    fun setLoading() {
+        submitList(List(6) { LoadingModel })
     }
 
     companion object {
