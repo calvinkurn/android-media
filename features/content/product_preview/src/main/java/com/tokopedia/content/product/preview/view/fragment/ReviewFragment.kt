@@ -20,6 +20,7 @@ import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
@@ -77,6 +78,7 @@ class ReviewFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeReview()
+        observeEvent()
     }
 
     override fun onResume() {
@@ -98,6 +100,21 @@ class ReviewFragment @Inject constructor(
         }
     }
 
+    private fun observeEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.uiEvent.collectLatest {
+                when(val event = it) {
+                    is ProductPreviewEvent.ShowMenuSheet -> {
+                        MenuBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).apply {
+                            setMenu(event.menus)
+                        }.show(childFragmentManager)
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
     private fun renderList(prev: List<ReviewUiModel>?, data: List<ReviewUiModel>) {
         if (prev == null || prev == data) return //TODO: adjust condition
         reviewAdapter.submitList(data)
@@ -112,10 +129,7 @@ class ReviewFragment @Inject constructor(
     }
 
     override fun onMenuClicked(menus: List<ContentMenuItem>) {
-        //TODO: opening menu bottom sheet requiredLogin~~~
-        MenuBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).apply {
-            setMenu(menus)
-        }.show(childFragmentManager)
+        viewModel.onAction(ProductPreviewAction.ClickMenu(menus))
     }
 
     /**

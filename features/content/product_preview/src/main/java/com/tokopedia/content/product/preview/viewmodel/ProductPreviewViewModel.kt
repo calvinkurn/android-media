@@ -2,11 +2,12 @@ package com.tokopedia.content.product.preview.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
-import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
+import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
@@ -56,6 +57,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             ProductPreviewAction.AtcFromResult -> addToCart(_miniInfo.value)
             is ProductPreviewAction.Navigate -> navigate(action.appLink)
             is ProductPreviewAction.SubmitReport -> submitReport(action.model)
+            is ProductPreviewAction.ClickMenu -> menuOnClicked(action.menus)
             else -> {}
         }
     }
@@ -110,8 +112,20 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private fun submitReport(model: ReportUiModel) {
         viewModelScope.launchCatchError(block = {
-            //TODO: emit Event
-            repo.submitReport(model)
-        }) {}
+            val result = repo.submitReport(model)
+            if (result) _uiEvent.emit(ProductPreviewEvent.ShowSuccessToaster(type = ProductPreviewEvent.ShowSuccessToaster.Type.Report)) else throw MessageErrorException()
+        }) {
+            _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it){
+                //TODO: check if retry or no.
+            })
+        }
+    }
+
+    private fun menuOnClicked(menus: List<ContentMenuItem>) {
+        requiredLogin(menus) {
+            viewModelScope.launch {
+                _uiEvent.emit(ProductPreviewEvent.ShowMenuSheet(menus))
+            }
+        }
     }
 }

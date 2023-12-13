@@ -69,6 +69,12 @@ class ProductPreviewFragment @Inject constructor(
         if (it.resultCode == Activity.RESULT_OK) viewModel.onAction(ProductPreviewAction.AtcFromResult)
     }
 
+    private val menuResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        //TODO: open menu bottom sheet
+    }
+
     override fun getScreenName() = TAG
 
     override fun onCreateView(
@@ -151,8 +157,9 @@ class ProductPreviewFragment @Inject constructor(
                 when (val event = it) {
                     is ProductPreviewEvent.LoginEvent<*> -> {
                         val intent = router.getIntent(requireContext(), ApplinkConst.LOGIN)
-                        if (event.data is BottomNavUiModel) {
-                            productAtcResult.launch(intent)
+                        when (event.data) {
+                            is BottomNavUiModel -> productAtcResult.launch(intent)
+                            is List<*> -> menuResult.launch(intent) //TODO: move to ReviewFragment, if its success open bottom sheet
                         }
                     }
                     is ProductPreviewEvent.NavigateEvent -> router.route(requireContext(), event.appLink)
