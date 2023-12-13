@@ -7,4 +7,5 @@ sealed interface ProductPreviewAction {
     object FetchReview: ProductPreviewAction
     object FetchMiniInfo: ProductPreviewAction
     data class ProductAction(val model: BottomNavUiModel) : ProductPreviewAction
+    object AtcFromResult: ProductPreviewAction
 }

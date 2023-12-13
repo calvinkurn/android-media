@@ -1,15 +1,18 @@
 package com.tokopedia.content.product.preview.view.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentProductPreviewBinding
@@ -20,6 +23,7 @@ import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.content.product.preview.view.components.MediaBottomNav
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.viewmodel.EntrySource
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModelFactory
@@ -57,6 +61,12 @@ class ProductPreviewFragment @Inject constructor(
         )
     }
 
+    private val productAtcResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == Activity.RESULT_OK) viewModel.onAction(ProductPreviewAction.AtcFromResult)
+    }
+
     override fun getScreenName() = TAG
 
     override fun onCreateView(
@@ -74,6 +84,7 @@ class ProductPreviewFragment @Inject constructor(
 
         onClickHandler()
         observeData()
+        observeEvent()
     }
 
     override fun onResume() {
@@ -132,6 +143,24 @@ class ProductPreviewFragment @Inject constructor(
         }
     }
 
+    private fun observeEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.uiEvent.collectLatest {
+                when(val event = it) {
+                    is ProductPreviewEvent.LoginEvent<*> -> {
+                        val intent = router.getIntent(requireContext(), ApplinkConst.LOGIN)
+                        if (event.data is BottomNavUiModel) {
+                            productAtcResult.launch(intent)
+                        }
+                    }
+                    is ProductPreviewEvent.ShowInfoEvent -> {}
+                    is ProductPreviewEvent.ShowErrorEvent -> {}
+                    else -> {}
+                }
+            }
+        }
+    }
+
     private fun renderBottomNav(prev: BottomNavUiModel?, model: BottomNavUiModel) {
         if (prev == null || prev == model) return
 
@@ -152,9 +181,7 @@ class ProductPreviewFragment @Inject constructor(
                 pageSource = VariantPageSource.PRODUCT_PREVIEW_PAGESOURCE,
                 shopId = model.shop.id,
                 productId = productId,
-                startActivitResult = { data, _ ->
-                    startActivity(data) //TODO: change with result
-                }
+                startActivitResult = { _, _ -> } //TODO: will check if result is needed
             )
         } else {
             viewModel.onAction(ProductPreviewAction.ProductAction(model))
