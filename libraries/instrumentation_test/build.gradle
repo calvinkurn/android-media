@@ -89,6 +89,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.composeDependencies.composeFoundation
 
     implementation projectOrAar(rootProject.ext.libraries.keys)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
