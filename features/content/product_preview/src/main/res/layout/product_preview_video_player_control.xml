@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:viewBindingIgnore="true">
 
-    <com.tokopedia.content.product.preview.view.components.ProductPreviewTimeBar
+    <com.tokopedia.content.product.preview.view.components.player.ProductPreviewTimeBar
         android:id="@id/exo_progress"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

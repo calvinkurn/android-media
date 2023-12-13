@@ -21,7 +21,7 @@
         app:surface_type="texture_view"
         app:use_controller="false" />
 
-    <com.tokopedia.content.product.preview.view.components.ProductPreviewVideoTimeView
+    <com.tokopedia.content.product.preview.view.components.player.ProductPreviewVideoTimeView
         android:id="@+id/video_time_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.tokopedia.content.product.preview.view.components.ProductPreviewPlayerControl
+    <com.tokopedia.content.product.preview.view.components.player.ProductPreviewPlayerControl
         android:id="@+id/player_control"
         android:layout_width="0dp"
         android:layout_height="16dp"
@@ -57,7 +57,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/loader_feed_video"
+        android:id="@+id/loader_video"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_gravity="center_horizontal"

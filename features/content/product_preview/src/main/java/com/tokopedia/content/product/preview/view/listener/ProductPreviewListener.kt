@@ -1,6 +1,6 @@
 package com.tokopedia.content.product.preview.view.listener
 
-import com.tokopedia.content.product.preview.view.components.ProductPreviewExoPlayer
+import com.tokopedia.content.product.preview.view.components.player.ProductPreviewExoPlayer
 
 interface ProductPreviewListener {
 
