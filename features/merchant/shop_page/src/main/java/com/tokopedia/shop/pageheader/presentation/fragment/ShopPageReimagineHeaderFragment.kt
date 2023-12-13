@@ -1249,7 +1249,7 @@ class ShopPageReimagineHeaderFragment :
             getInitialData()
             initViews(view)
             setViewState(VIEW_LOADING)
-            // checkShopPagePreFetchData()
+
             val prefetchData = getPrefetchData()
             val hasPrefetchData = prefetchData != null
             if (hasPrefetchData) {
@@ -1272,23 +1272,47 @@ class ShopPageReimagineHeaderFragment :
         if (prefetchData == null) return
 
         setViewState(VIEW_CONTENT)
-        val tabData = ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData(
-            name = ShopPageHeaderTabName.PRE_FETCH_DATA
-        )
+
+        val tabData = ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData(name = ShopPageHeaderTabName.PRE_FETCH_DATA)
         val tabContentWrapper = ShopPageHeaderFragmentTabContentWrapper.createInstance().apply {
             setTabData(tabData)
-            ShopPageHeaderP1HeaderData(
+            val headerData = ShopPageHeaderP1HeaderData(
                 shopName = prefetchData.shopName,
                 shopAvatar = prefetchData.shopAvatar,
-                shopBadge = prefetchData.shopBadge
-            ).let { headerData ->
-                setShopPageHeaderP1Data(
-                    shopPageHeaderP1Data = headerData,
-                    isEnableDirectPurchase = getIsEnableDirectPurchase(headerData),
-                    isShouldShowFeed = isShowFeed
+                shopBadge = prefetchData.shopBadge,
+                listShopPageHeaderWidget = listOf(
+                    ShopPageHeaderWidgetUiModel(
+                        widgetId = "1",
+                        name = "shop_basic_info",
+                        type = "shop_basic_info",
+                        componentPages = listOf()
+                    ),
+                    ShopPageHeaderWidgetUiModel(
+                        widgetId = "2",
+                        name = "shop_performance",
+                        type = "shop_performance",
+                        componentPages = listOf(
+                            ShopPageHeaderBadgeTextValueComponentUiModel(
+                                name = "shop_rating",
+                                type = "badge_text_value",
+                                text = listOf(
+                                    ShopPageHeaderBadgeTextValueComponentUiModel.Text(
+                                        icon = "https://images.tokopedia.net/img/autocomplete/rating.png",
+                                        textHtml = prefetchData.shopRating.toString()
+                                    )
+                                )
+                            )
+                        )
+                    )
                 )
-            }
+            )
+            setShopPageHeaderP1Data(
+                shopPageHeaderP1Data = headerData,
+                isEnableDirectPurchase = getIsEnableDirectPurchase(headerData),
+                isShouldShowFeed = isShowFeed
+            )
         }
+
         val listShopPageTabModel = mutableListOf<ShopPageHeaderTabModel>()
         listShopPageTabModel.add(
             ShopPageHeaderTabModel(
