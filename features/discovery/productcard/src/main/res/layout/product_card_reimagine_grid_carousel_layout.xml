@@ -46,7 +46,7 @@
                 android:id="@+id/productCardOutline"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:background="@drawable/product_card_border_item_with_background"
+                android:background="@drawable/product_card_outline_item"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -243,7 +243,7 @@
                 android:maxLines="1"
                 android:paddingTop="1dp"
                 android:textColor="@color/Unify_NN400"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/productCardGuidelineStartContent"
                 app:layout_constraintTop_toBottomOf="@id/productCardPrice"
                 app:typographyType="small"
                 tools:text="Rp80.500" />
