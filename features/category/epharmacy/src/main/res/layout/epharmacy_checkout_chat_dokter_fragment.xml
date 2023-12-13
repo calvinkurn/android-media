@@ -15,8 +15,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         app:icon_name="STETHOSCOPE"
-        app:icon_color_light_enable="@color/Unify_G500"
-        app:icon_color_night_enable="@color/Unify_G500"
+        app:icon_color_light_enable="@color/Unify_GN500"
+        app:icon_color_night_enable="@color/Unify_GN500"
         />
 
     <com.tokopedia.unifyprinciples.Typography

@@ -8,7 +8,7 @@ object EPharmacyCartCheckoutGeneralQuery : GqlQueryInterface {
     override fun getOperationNameList() = listOf(OPERATION_NAME)
 
     override fun getQuery() = """
-            mutation ${OPERATION_NAME}(${'$'}params: CheckoutCartGeneralParams!){
+            mutation $OPERATION_NAME(${'$'}params: CheckoutCartGeneralParams!){
               checkout_cart_general(params: ${'$'}params) {
                 header {
                   process_time

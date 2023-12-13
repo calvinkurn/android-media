@@ -35,7 +35,7 @@ class EPharmacyOrderDetailViewModel @Inject constructor(
         )
     }
 
-    private fun onAvailableEPharmacyOrderDetail(data: EPharmacyDataModel, orderButtonData: OrderButtonData?) {
+    private fun onAvailableEPharmacyOrderDetail(data: EPharmacyDataModel, orderButtonData: OrderButtonData) {
         _ePharmacyOrderDetailData.postValue(Success(data))
         _ePharmacyButtonData.postValue(orderButtonData)
     }

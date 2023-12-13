@@ -37,11 +37,11 @@ class EPharmacyCheckoutViewModel @Inject constructor(
         )
     }
 
-    private fun onAvailableEPharmacyAtcData(data: EPharmacyAtcInstantResponse){
+    private fun onAvailableEPharmacyAtcData(data: EPharmacyAtcInstantResponse) {
         _ePharmacyAtcData.postValue(Success(data))
     }
 
-    private fun onFailEPharmacyAtcData(throwable: Throwable){
+    private fun onFailEPharmacyAtcData(throwable: Throwable ){
         _ePharmacyAtcData.postValue(Fail(throwable))
     }
 
@@ -54,11 +54,11 @@ class EPharmacyCheckoutViewModel @Inject constructor(
         )
     }
 
-    private fun onAvailableEPharmacyCheckoutData(data: EPharmacyCartGeneralCheckoutResponse){
+    private fun onAvailableEPharmacyCheckoutData(data: EPharmacyCartGeneralCheckoutResponse) {
         _ePharmacyCheckoutData.postValue(Success(data))
     }
 
-    private fun onFailEPharmacyCheckoutData(throwable: Throwable){
+    private fun onFailEPharmacyCheckoutData(throwable: Throwable) {
         _ePharmacyCheckoutData.postValue(Fail(throwable))
     }
 }

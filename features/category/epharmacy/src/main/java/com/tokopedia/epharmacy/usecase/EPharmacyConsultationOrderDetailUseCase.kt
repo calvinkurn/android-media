@@ -20,7 +20,7 @@ class EPharmacyConsultationOrderDetailUseCase @Inject constructor(graphqlReposit
     GraphqlUseCase<EPharmacyOrderDetailResponse>(graphqlRepository) {
 
     fun getEPharmacyOrderDetail(
-        onSuccess: (EPharmacyDataModel, OrderButtonData?) -> Unit,
+        onSuccess: (EPharmacyDataModel, OrderButtonData) -> Unit,
         onError: (Throwable) -> Unit,
         tConsultationId: Long,
         orderUUId: String,

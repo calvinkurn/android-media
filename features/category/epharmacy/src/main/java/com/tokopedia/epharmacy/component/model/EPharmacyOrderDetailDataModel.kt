@@ -39,7 +39,6 @@ data class EPharmacyOrderDetailInfoDataModel(
     }
 }
 
-
 data class EPharmacyOrderDetailPaymentDataModel(
     override val name: String,
     override val type: String,

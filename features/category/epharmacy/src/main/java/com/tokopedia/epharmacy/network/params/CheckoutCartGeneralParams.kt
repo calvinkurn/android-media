@@ -1,6 +1,5 @@
 package com.tokopedia.epharmacy.network.params
 
-
 import com.google.gson.annotations.SerializedName
 import com.google.gson.annotations.Expose
 
@@ -48,7 +47,7 @@ data class CheckoutCartGeneralParams(
                     val metadata: Metadata?,
                     @SerializedName("price")
                     @Expose
-                    val price: Int?,
+                    val price: Double?,
                     @SerializedName("product_id")
                     @Expose
                     val productId: String?,

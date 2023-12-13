@@ -65,7 +65,7 @@ class EPharmacyAttachmentUiUpdater(var mapOfData: LinkedHashMap<String, BaseEPha
                     (model as? EPharmacyAccordionProductDataModel)?.let { pModel ->
                         var pQuantity = pModel.product?.quantity.toIntOrZero()
                         if(pModel.product?.qtyComparison != null) {
-                            pQuantity = pModel.product?.qtyComparison?.recommendedQty.orZero()
+                            pQuantity = pModel.product.qtyComparison?.recommendedQty.orZero()
                         }
                         subTotalAmount += (pQuantity) * (pModel.product?.price.orZero())
                     }

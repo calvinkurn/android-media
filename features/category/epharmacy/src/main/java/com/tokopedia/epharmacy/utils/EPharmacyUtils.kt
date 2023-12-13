@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.usecase.BuildConfig
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import timber.log.Timber
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -323,6 +324,7 @@ object EPharmacyUtils {
         return try {
             stringToUnifyColor(context, colorHex).run { this.unifyColor ?: this.defaultColor }
         } catch (t: Throwable) {
+            Timber.e(t)
             defaultColor
         }
     }

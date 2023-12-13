@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.epharmacy.databinding.EpharmacyReminderScreenBottomSheetBinding
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent

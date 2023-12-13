@@ -167,7 +167,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                 renderDuration(duration)
                 renderPrice(price)
                 renderNote(note)
-                btnPelajari.setOnClickListener{
+                btnPelajari.setOnClickListener {
                     routePelajari()
                 }
             }

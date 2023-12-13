@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.component.model.EPharmacyOrderDetailInfoDataModel
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 
@@ -36,7 +35,7 @@ class EPharmacyOrderDetailInfoViewHolder(
 
     private fun setUpValidity(validity: String) {
         validityTimeValue.displayTextOrHide(validity)
-        if(validity.isNotBlank()){
+        if (validity.isNotBlank()) {
             validityTime.show()
         }
     }

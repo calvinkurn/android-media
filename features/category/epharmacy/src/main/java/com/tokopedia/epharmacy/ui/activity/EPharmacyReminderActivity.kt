@@ -25,10 +25,7 @@ class EPharmacyReminderActivity : BaseSimpleActivity(), HasComponent<EPharmacyCo
     private var consultationSourceId: Long = 0L
     private var groupId = String.EMPTY
     private var enablerName = String.EMPTY
-
-
     private val ePharmacyComponent: EPharmacyComponent by lazy(LazyThreadSafetyMode.NONE) { initInjector() }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         ePharmacyComponent.inject(this)
         super.onCreate(savedInstanceState)
@@ -40,12 +37,15 @@ class EPharmacyReminderActivity : BaseSimpleActivity(), HasComponent<EPharmacyCo
 
     override fun getNewFragment(): Fragment {
         extractArguments()
-        updateTitle("")
+        updateTitle(String.EMPTY)
         return EPharmacyReminderScreenBottomSheet.newInstance(
             isClosingTime,
-            openTime, closeTime,
+            openTime,
+            closeTime,
             reminderType,
-            consultationSourceId,groupId,enablerName)
+            consultationSourceId,
+            groupId,
+            enablerName)
     }
 
     private fun extractArguments() {

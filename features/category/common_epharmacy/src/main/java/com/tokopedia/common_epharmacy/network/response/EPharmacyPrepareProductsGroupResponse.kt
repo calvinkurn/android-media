@@ -222,6 +222,7 @@ data class EPharmacyPrepareProductsGroupResponse(
 
                         @IgnoredOnParcel
                         var subTotal: Double = 0.0
+
                         @Parcelize
                         data class QtyComparison(
                             @SerializedName("initial_qty")

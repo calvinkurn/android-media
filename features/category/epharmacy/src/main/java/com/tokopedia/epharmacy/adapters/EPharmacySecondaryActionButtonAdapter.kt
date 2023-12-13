@@ -29,7 +29,7 @@ class EPharmacySecondaryActionButtonAdapter(private val listener: EPharmacySecon
 
     fun setSecondaryActionButtons(secondaryActionButtons: List<EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?>) {
         this.secondaryActionButtons = secondaryActionButtons
-        notifyDataSetChanged()
+        notifyItemRangeChanged(0,secondaryActionButtons.size)
     }
 
     class ViewHolder(itemView: View, private val listener: EPharmacySecondaryActionButtonBottomSheet.ActionButtonClickListener?) : RecyclerView.ViewHolder(itemView) {
