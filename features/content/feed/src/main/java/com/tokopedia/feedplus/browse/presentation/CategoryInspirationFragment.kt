@@ -30,6 +30,7 @@ import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationActio
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.databinding.FragmentFeedCategoryInspirationBinding
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,7 +42,7 @@ internal class CategoryInspirationFragment @Inject constructor(
     categoryInspirationViewModelFactory: CategoryInspirationViewModel.Factory,
     private val impressionManager: FeedBrowseImpressionManager,
     private val router: Router,
-    trackerFactory: FeedBrowseTrackerImpl.Factory,
+    trackerFactory: FeedBrowseTrackerImpl.Factory
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentFeedCategoryInspirationBinding? = null
@@ -97,7 +98,7 @@ internal class CategoryInspirationFragment @Inject constructor(
                 model.item,
                 model.config,
                 model.slotInfo,
-                model.index,
+                model.index
             )
         }
 
@@ -109,7 +110,7 @@ internal class CategoryInspirationFragment @Inject constructor(
                 model.item,
                 model.config,
                 model.slotInfo,
-                model.index,
+                model.index
             )
             router.route(context, model.item.appLink)
         }
@@ -126,9 +127,15 @@ internal class CategoryInspirationFragment @Inject constructor(
         }
     }
 
-    private val adapter by lazy {
-        CategoryInspirationAdapter(chipsListener, inspirationCardListener)
-    }
+    private val adapter by viewLifecycleBound(
+        {
+            CategoryInspirationAdapter(
+                it.viewLifecycleOwner.lifecycleScope,
+                chipsListener,
+                inspirationCardListener
+            )
+        }
+    )
 
     private val viewModel by viewModels<CategoryInspirationViewModel> {
         object : ViewModelProvider.Factory {

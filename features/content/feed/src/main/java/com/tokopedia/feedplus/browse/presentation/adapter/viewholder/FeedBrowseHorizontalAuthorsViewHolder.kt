@@ -121,5 +121,30 @@ internal class FeedBrowseHorizontalAuthorsViewHolder private constructor(
             item: AuthorWidgetModel,
             authorWidgetPosition: Int
         )
+
+        companion object {
+            val Default get() = object : Listener {
+                override fun onWidgetImpressed(
+                    viewHolder: FeedBrowseHorizontalAuthorsViewHolder,
+                    widgetModel: FeedBrowseItemListModel.HorizontalAuthors,
+                    item: AuthorWidgetModel,
+                    authorWidgetPosition: Int
+                ) {}
+
+                override fun onChannelClicked(
+                    viewHolder: FeedBrowseHorizontalAuthorsViewHolder,
+                    widgetModel: FeedBrowseItemListModel.HorizontalAuthors,
+                    item: AuthorWidgetModel,
+                    authorWidgetPosition: Int
+                ) {}
+
+                override fun onAuthorClicked(
+                    viewHolder: FeedBrowseHorizontalAuthorsViewHolder,
+                    widgetModel: FeedBrowseItemListModel.HorizontalAuthors,
+                    item: AuthorWidgetModel,
+                    authorWidgetPosition: Int
+                ) {}
+            }
+        }
     }
 }

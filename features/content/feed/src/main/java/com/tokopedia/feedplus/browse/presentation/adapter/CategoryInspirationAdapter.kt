@@ -1,12 +1,7 @@
 package com.tokopedia.feedplus.browse.presentation.adapter
 
 import com.tokopedia.content.common.types.ResultState
-import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
-import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalAuthorsViewHolder
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.InspirationCardViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationMap
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationUiState
@@ -15,89 +10,19 @@ import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.browse.presentation.model.SlotInfo
 import com.tokopedia.feedplus.browse.presentation.model.isEmpty
 import com.tokopedia.feedplus.browse.presentation.model.isLoading
-import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 /**
  * Created by kenny.hadisaputra on 30/10/23
  */
 internal class CategoryInspirationAdapter(
+    scope: CoroutineScope,
     chipsListener: ChipsViewHolder.Listener,
     cardListener: InspirationCardViewHolder.Item.Listener
 ) : FeedBrowseItemAdapter<CategoryInspirationUiState>(
-    CoroutineScope(Dispatchers.Main),
-    chipsListener,
-    object : FeedBrowseBannerViewHolder.Item.Listener {
-        override fun onBannerImpressed(
-            viewHolder: FeedBrowseBannerViewHolder.Item,
-            item: FeedBrowseItemListModel.Banner.Item
-        ) {
-        }
-
-        override fun onBannerClicked(
-            viewHolder: FeedBrowseBannerViewHolder.Item,
-            item: FeedBrowseItemListModel.Banner.Item
-        ) {
-        }
-    },
-    object : FeedBrowseHorizontalChannelsViewHolder.Listener {
-        override fun onRetry(
-            viewHolder: FeedBrowseHorizontalChannelsViewHolder,
-            slotId: String,
-            menu: WidgetMenuModel
-        ) {
-        }
-
-        override fun onRefresh(
-            viewHolder: FeedBrowseHorizontalChannelsViewHolder,
-            slotId: String,
-            menu: WidgetMenuModel
-        ) {
-        }
-
-        override fun onCardImpressed(
-            viewHolder: FeedBrowseHorizontalChannelsViewHolder,
-            widgetModel: FeedBrowseItemListModel.HorizontalChannels,
-            channel: PlayWidgetChannelUiModel,
-            channelPosition: Int
-        ) {
-        }
-
-        override fun onCardClicked(
-            viewHolder: FeedBrowseHorizontalChannelsViewHolder,
-            widgetModel: FeedBrowseItemListModel.HorizontalChannels,
-            channel: PlayWidgetChannelUiModel,
-            channelPosition: Int
-        ) {
-        }
-    },
-    object : FeedBrowseHorizontalAuthorsViewHolder.Listener {
-        override fun onWidgetImpressed(
-            viewHolder: FeedBrowseHorizontalAuthorsViewHolder,
-            widgetModel: FeedBrowseItemListModel.HorizontalAuthors,
-            item: AuthorWidgetModel,
-            authorWidgetPosition: Int
-        ) {
-        }
-
-        override fun onChannelClicked(
-            viewHolder: FeedBrowseHorizontalAuthorsViewHolder,
-            widgetModel: FeedBrowseItemListModel.HorizontalAuthors,
-            item: AuthorWidgetModel,
-            authorWidgetPosition: Int
-        ) {
-        }
-
-        override fun onAuthorClicked(
-            viewHolder: FeedBrowseHorizontalAuthorsViewHolder,
-            widgetModel: FeedBrowseItemListModel.HorizontalAuthors,
-            item: AuthorWidgetModel,
-            authorWidgetPosition: Int
-        ) {
-        }
-    },
-    cardListener
+    scope,
+    chipsListener = chipsListener,
+    inspirationCardListener = cardListener
 ) {
 
     fun setList(

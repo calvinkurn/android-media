@@ -186,5 +186,35 @@ internal class FeedBrowseHorizontalChannelsViewHolder private constructor(
             channel: PlayWidgetChannelUiModel,
             channelPosition: Int
         )
+
+        companion object {
+            val Default get() = object : Listener {
+                override fun onRetry(
+                    viewHolder: FeedBrowseHorizontalChannelsViewHolder,
+                    slotId: String,
+                    menu: WidgetMenuModel
+                ) {}
+
+                override fun onRefresh(
+                    viewHolder: FeedBrowseHorizontalChannelsViewHolder,
+                    slotId: String,
+                    menu: WidgetMenuModel
+                ) {}
+
+                override fun onCardImpressed(
+                    viewHolder: FeedBrowseHorizontalChannelsViewHolder,
+                    widgetModel: FeedBrowseItemListModel.HorizontalChannels,
+                    channel: PlayWidgetChannelUiModel,
+                    channelPosition: Int
+                ) {}
+
+                override fun onCardClicked(
+                    viewHolder: FeedBrowseHorizontalChannelsViewHolder,
+                    widgetModel: FeedBrowseItemListModel.HorizontalChannels,
+                    channel: PlayWidgetChannelUiModel,
+                    channelPosition: Int
+                ) {}
+            }
+        }
     }
 }

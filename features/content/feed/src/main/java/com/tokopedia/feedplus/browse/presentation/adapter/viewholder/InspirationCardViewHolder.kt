@@ -73,6 +73,20 @@ internal class InspirationCardViewHolder private constructor() {
 
             fun onImpressed(viewHolder: Item, model: FeedBrowseItemListModel.InspirationCard.Item)
             fun onClicked(viewHolder: Item, model: FeedBrowseItemListModel.InspirationCard.Item)
+
+            companion object {
+                val Default get() = object : Listener {
+                    override fun onImpressed(
+                        viewHolder: Item,
+                        model: FeedBrowseItemListModel.InspirationCard.Item
+                    ) {}
+
+                    override fun onClicked(
+                        viewHolder: Item,
+                        model: FeedBrowseItemListModel.InspirationCard.Item
+                    ) {}
+                }
+            }
         }
     }
 

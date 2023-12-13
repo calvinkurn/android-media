@@ -66,6 +66,20 @@ internal class FeedBrowseBannerViewHolder private constructor() {
                 viewHolder: Item,
                 item: FeedBrowseItemListModel.Banner.Item
             )
+
+            companion object {
+                val Default get() = object : Listener {
+                    override fun onBannerImpressed(
+                        viewHolder: Item,
+                        item: FeedBrowseItemListModel.Banner.Item
+                    ) {}
+
+                    override fun onBannerClicked(
+                        viewHolder: Item,
+                        item: FeedBrowseItemListModel.Banner.Item
+                    ) {}
+                }
+            }
         }
     }
 

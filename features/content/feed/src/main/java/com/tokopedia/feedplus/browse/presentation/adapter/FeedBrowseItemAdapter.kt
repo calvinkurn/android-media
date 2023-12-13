@@ -24,11 +24,11 @@ import kotlinx.coroutines.CoroutineScope
 
 internal abstract class FeedBrowseItemAdapter<Input : Any>(
     private val scope: CoroutineScope,
-    private val chipsListener: ChipsViewHolder.Listener,
-    private val bannerListener: FeedBrowseBannerViewHolder.Item.Listener,
-    private val channelListener: FeedBrowseHorizontalChannelsViewHolder.Listener,
-    private val creatorListener: FeedBrowseHorizontalAuthorsViewHolder.Listener,
-    private val inspirationCardListener: InspirationCardViewHolder.Item.Listener,
+    private val chipsListener: ChipsViewHolder.Listener = ChipsViewHolder.Listener.Default,
+    private val bannerListener: FeedBrowseBannerViewHolder.Item.Listener = FeedBrowseBannerViewHolder.Item.Listener.Default,
+    private val channelListener: FeedBrowseHorizontalChannelsViewHolder.Listener = FeedBrowseHorizontalChannelsViewHolder.Listener.Default,
+    private val creatorListener: FeedBrowseHorizontalAuthorsViewHolder.Listener = FeedBrowseHorizontalAuthorsViewHolder.Listener.Default,
+    private val inspirationCardListener: InspirationCardViewHolder.Item.Listener = InspirationCardViewHolder.Item.Listener.Default,
     private val spanSize: Int = 2
 ) : ListAdapter<FeedBrowseItemListModel, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<FeedBrowseItemListModel>() {

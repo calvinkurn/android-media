@@ -120,5 +120,29 @@ internal class ChipsViewHolder private constructor(
             widgetModel: FeedBrowseItemListModel.Chips.Item,
             chip: WidgetMenuModel
         )
+
+        companion object {
+            val Default get() = object : Listener {
+                override fun onChipImpressed(
+                    viewHolder: ChipsViewHolder,
+                    widgetModel: FeedBrowseItemListModel.Chips.Item,
+                    chip: WidgetMenuModel,
+                    chipPosition: Int
+                ) {}
+
+                override fun onChipClicked(
+                    viewHolder: ChipsViewHolder,
+                    widgetModel: FeedBrowseItemListModel.Chips.Item,
+                    chip: WidgetMenuModel,
+                    chipPosition: Int
+                ) {}
+
+                override fun onChipSelected(
+                    viewHolder: ChipsViewHolder,
+                    widgetModel: FeedBrowseItemListModel.Chips.Item,
+                    chip: WidgetMenuModel
+                ) {}
+            }
+        }
     }
 }
