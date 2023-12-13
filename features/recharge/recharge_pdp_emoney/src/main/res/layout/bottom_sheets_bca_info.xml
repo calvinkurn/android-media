@@ -21,9 +21,19 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                android:text="@string/recharge_pdp_emoney_bca_text_gen_one"
+                />
+
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/img_info_gen_one"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="85dp"
                 android:layout_marginEnd="4dp"
                 android:layout_marginStart="4dp"
@@ -52,9 +62,19 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                android:text="@string/recharge_pdp_emoney_bca_text_gen_two"
+                />
+
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/img_info_gen_two"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="100dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

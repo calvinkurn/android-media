@@ -42,4 +42,7 @@
     <string name="recharge_pdp_emoney_bca_info_title">Bagaimana membedakan versi kartu BCA Flazz-mu</string>
     <string name="recharge_pdp_emoney_bca_info_gen_one">Gen 1 \n 1. Tidak ada ikon Wi-Fi di logo \n 2. Hanya bisa check saldo \n 3. Tidak dapat transaksi di Tokopedia</string>
     <string name="recharge_pdp_emoney_bca_info_gen_two">Gen 2 (versi baru) \n 1. Ada ikon Wi-Fi di logo \n 2. Bisa top-up &amp; update saldo di Tokopedia</string>
+    <string name="recharge_pdp_emoney_bca_text_gen_one">Gen 1</string>
+    <string name="recharge_pdp_emoney_bca_text_gen_two">Gen 2</string>
+
 </resources>
