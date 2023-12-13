@@ -171,6 +171,7 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderLayoutUi
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderP1HeaderData
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderTickerData
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPageHeaderComponentUiModel
+import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderActionWidgetFollowButtonComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderBadgeTextValueComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderButtonComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderImageOnlyComponentUiModel
@@ -1285,7 +1286,17 @@ class ShopPageReimagineHeaderFragment :
                         widgetId = "1",
                         name = "shop_basic_info",
                         type = "shop_basic_info",
-                        componentPages = listOf()
+                        componentPages = listOf(
+                            ShopPageHeaderBadgeTextValueComponentUiModel(
+                                name = "shop_name",
+                                type = "badge_text_value",
+                                text = listOf(
+                                    ShopPageHeaderBadgeTextValueComponentUiModel.Text(
+                                        textHtml = MethodChecker.fromHtml(prefetchData.shopLastOnline).toString()
+                                    )
+                                )
+                            )
+                        )
                     ),
                     ShopPageHeaderWidgetUiModel(
                         widgetId = "2",
@@ -1302,6 +1313,21 @@ class ShopPageReimagineHeaderFragment :
                                     )
                                 )
                             )
+                        )
+                    ),
+                    ShopPageHeaderWidgetUiModel(
+                        widgetId = "3",
+                        name = "action_button",
+                        type = "action_button",
+                        componentPages = listOf(
+                            ShopPageHeaderButtonComponentUiModel().apply {
+                                this.label = "Chat"
+                            },
+                            ShopPageHeaderActionWidgetFollowButtonComponentUiModel().apply {
+                                this.isButtonLoading = false
+                                this.isFollowing = true
+                                this.label = "Follow"
+                            }
                         )
                     )
                 )
