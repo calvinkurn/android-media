@@ -27,11 +27,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.globalerror.compose.NestGlobalErrorType
 import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryResultUiModel
@@ -42,12 +39,8 @@ import com.tokopedia.home_explore_category.presentation.util.DURATION_CATEGORY_E
 import com.tokopedia.home_explore_category.presentation.util.categoryToggleTween
 import com.tokopedia.home_explore_category.presentation.util.enterExpandVertical
 import com.tokopedia.home_explore_category.presentation.util.exitShrinkVertical
-import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.card.NestCard
 import com.tokopedia.nest.components.card.NestCardType
-import com.tokopedia.nest.principles.NestTypography
-import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.nest.principles.utils.addImpression
 import kotlinx.coroutines.delay
 import java.net.ConnectException
@@ -343,144 +336,4 @@ fun getGroupIndexToScrollTo(rows: List<List<ExploreCategoryUiModel>>, categoryId
         }
     }
     return -1
-}
-
-@Composable
-fun ExploreCategoryItem(
-    exploreCategoryUiModel: ExploreCategoryUiModel,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val nestCardType = remember(exploreCategoryUiModel.isSelected) {
-        if (exploreCategoryUiModel.isSelected) {
-            NestCardType.StateBorder(false)
-        } else {
-            NestCardType.NoBorder
-        }
-    }
-
-    val titleTextStyle = if (exploreCategoryUiModel.isSelected) {
-        NestTheme.typography.display3.copy(
-            fontWeight = FontWeight.Bold,
-            color = NestTheme.colors.GN._500
-        )
-    } else {
-        NestTheme.typography.display3.copy(
-            fontWeight = FontWeight.Normal,
-            color = NestTheme.colors.NN._950
-        )
-    }
-
-    NestCard(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(147.dp),
-        enableBounceAnimation = true,
-        type = nestCardType,
-        onClick = onClick
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                contentAlignment = Alignment.Center
-            ) {
-                NestTypography(
-                    text = exploreCategoryUiModel.categoryTitle,
-                    textStyle = titleTextStyle,
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
-            NestImage(
-                source = ImageSource.Remote(
-                    source = exploreCategoryUiModel.categoryImageUrl,
-                    shouldRetried = true
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(84.dp),
-                contentScale = ContentScale.Crop,
-                contentDescription = null
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ExploreCategoryScreenPreview() {
-    val subExploreCategoryList = listOf(
-        ExploreCategoryUiModel.SubExploreCategoryUiModel(
-            id = "1",
-            name = "Computer & Laptop Computer & Laptop Computer & Laptop Computer & Laptop",
-            imageUrl = "https://images.tokopedia.net/img/MIPuRC/2023/11/29/115eec51-442d-4454-b2e2-6a8528c36987.png",
-            appLink = "",
-            categoryLabel = "",
-            buIdentifier = ""
-        ),
-        ExploreCategoryUiModel.SubExploreCategoryUiModel(
-            id = "1",
-            name = "Kamera Terkini",
-            imageUrl = "https://images.tokopedia.net/img/MIPuRC/2023/11/29/115eec51-442d-4454-b2e2-6a8528c36987.png",
-            appLink = "",
-            categoryLabel = "",
-            buIdentifier = ""
-        ),
-        ExploreCategoryUiModel.SubExploreCategoryUiModel(
-            id = "1",
-            name = "Baju Terkini",
-            imageUrl = "https://images.tokopedia.net/img/MIPuRC/2023/11/29/115eec51-442d-4454-b2e2-6a8528c36987.png",
-            appLink = "",
-            categoryLabel = "",
-            buIdentifier = ""
-        ),
-        ExploreCategoryUiModel.SubExploreCategoryUiModel(
-            id = "1",
-            name = "Sepatu Terkini",
-            imageUrl = "https://images.tokopedia.net/img/MIPuRC/2023/11/29/115eec51-442d-4454-b2e2-6a8528c36987.png",
-            appLink = "",
-            categoryLabel = "",
-            buIdentifier = ""
-        ),
-        ExploreCategoryUiModel.SubExploreCategoryUiModel(
-            id = "1",
-            name = "Celana Terkini",
-            imageUrl = "https://images.tokopedia.net/img/MIPuRC/2023/11/29/115eec51-442d-4454-b2e2-6a8528c36987.png",
-            appLink = "",
-            categoryLabel = "",
-            buIdentifier = ""
-        ),
-        ExploreCategoryUiModel.SubExploreCategoryUiModel(
-            id = "1",
-            name = "Rok Terkini",
-            imageUrl = "https://images.tokopedia.net/img/MIPuRC/2023/11/29/115eec51-442d-4454-b2e2-6a8528c36987.png",
-            appLink = "",
-            categoryLabel = "",
-            buIdentifier = ""
-        )
-    )
-    NestCard(
-        modifier = Modifier.fillMaxWidth(),
-        type = NestCardType.Border
-    ) {
-        LazyColumn(
-            modifier = Modifier.padding(vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(
-                12.dp,
-                Alignment.CenterVertically
-            )
-        ) {
-            itemsIndexed(subExploreCategoryList) { index, item ->
-                SubExploreCategoryItem(
-                    subExploreCategoryUiModel = item,
-                    onUiEvent = {},
-                    actualPosition = 0
-                )
-            }
-        }
-    }
 }
