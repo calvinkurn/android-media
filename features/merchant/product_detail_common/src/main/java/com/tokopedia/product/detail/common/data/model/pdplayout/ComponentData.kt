@@ -188,7 +188,7 @@ data class ComponentData(
     // region promo price
     @SerializedName("componentPriceType")
     val componentPriceType: Int = 0,
-    @SerializedName("componentPriceType")
+    @SerializedName("promo")
     val promoPrice: PromoPriceResponse = PromoPriceResponse(),
     // endregion
 ) {
