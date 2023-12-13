@@ -182,7 +182,14 @@ data class ComponentData(
     // region socialProof
     @SerializedName("socialProofContent")
     @Expose
-    val socialProof: List<SocialProofData> = emptyList()
+    val socialProof: List<SocialProofData> = emptyList(),
+    // endregion
+
+    // region promo price
+    @SerializedName("componentPriceType")
+    val componentPriceType: Int = 0,
+    @SerializedName("componentPriceType")
+    val promoPrice: PromoPriceResponse = PromoPriceResponse(),
     // endregion
 ) {
     companion object {

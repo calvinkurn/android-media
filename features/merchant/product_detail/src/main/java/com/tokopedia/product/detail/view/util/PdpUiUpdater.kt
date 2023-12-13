@@ -71,6 +71,7 @@ import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.mapIntoPromoPriceUiModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
@@ -79,6 +80,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.VIEW_TO_VIEW
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiState
+import com.tokopedia.product.detail.view.viewholder.promo_price.ProductPromoPriceUiModel
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.extension.toViewToViewItemModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -198,6 +200,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val bmgmSneakPeak: BMGMUiModel?
         get() = mapOfData[ProductDetailConstant.BMGM_SNEAK_PEEK_NAME] as? BMGMUiModel
 
+    val promoPrice: ProductPromoPriceUiModel?
+        get() = mapOfData[ProductDetailConstant.PRICE] as? ProductPromoPriceUiModel
+
     fun updateDataP1(
         dataP1: DynamicProductInfoP1?,
         loadInitialData: Boolean = false
@@ -267,6 +272,16 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateData(ProductDetailConstant.SHOPADS_CAROUSEL, loadInitialData) {
                 topAdsProductBundlingData?.run {
                     this.productId = dataP1.basic.productID
+                }
+            }
+
+            updateData(ProductDetailConstant.PRICE, loadInitialData) {
+                promoPrice?.run {
+                    this.priceComponentType = dataP1.data.componentPriceType
+                    this.promoPriceData = dataP1.data.promoPrice.mapIntoPromoPriceUiModel(
+                        dataP1.data.price.slashPriceFmt
+                    )
+                    this.normalPromoUiModel = dataP1.data.price
                 }
             }
 
@@ -732,6 +747,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     selectedUpcoming?.upcomingType.orEmpty(),
                     selectedUpcoming?.campaignTypeName.orEmpty(),
                     selectedUpcoming?.startDate.orEmpty()
+                )
+            }
+        }
+
+        updateData(ProductDetailConstant.ONGOING_CAMPAIGN) {
+            promoPrice?.run {
+                promoPriceData = promoPriceData?.copy(
+                    boIconUrl = freeOngkirImgUrl
                 )
             }
         }

@@ -95,6 +95,8 @@ import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_detail_info.ProductDetailInfoViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
+import com.tokopedia.product.detail.view.viewholder.promo_price.ProductPromoPriceUiModel
+import com.tokopedia.product.detail.view.viewholder.promo_price.ProductPromoPriceViewHolder
 import com.tokopedia.product.detail.view.viewholder.review.ui.ProductReviewViewHolder
 import com.tokopedia.product.detail.view.viewholder.show_review.ProductShopReviewViewHolder
 import com.tokopedia.product.detail.view.viewholder.social_proof.ProductMiniSocialProofViewHolder
@@ -284,6 +286,10 @@ class DynamicProductDetailAdapterFactoryImpl(
 
     override fun type(data: ShipmentUiModel): Int {
         return ShipmentViewHolder.LAYOUT
+    }
+
+    override fun type(data: ProductPromoPriceUiModel): Int {
+        return ProductPromoPriceViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
