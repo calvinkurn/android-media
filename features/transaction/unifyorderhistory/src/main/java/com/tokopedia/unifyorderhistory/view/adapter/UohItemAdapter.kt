@@ -246,6 +246,9 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     fun addBuyAgainWidget(data: UohTypeData) {
+        if (listTypeData[0].typeLayout == TYPE_BUY_AGAIN) {
+            listTypeData.removeAt(0)
+        }
         listTypeData.add(0, data)
         notifyItemInserted(0)
     }

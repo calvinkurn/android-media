@@ -715,7 +715,6 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         if (!paramUohOrder.hasActiveFilter()) {
             uohListViewModel.loadPmsCounter(userSession.shopId)
         }
-        loadBuyAgainWidget()
     }
 
     private fun loadBuyAgainWidget() {
@@ -1981,6 +1980,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             } else {
                 uohItemAdapter.removePmsButton()
             }
+            loadBuyAgainWidget()
         } else {
             uohItemAdapter.appendList(listOrder)
             scrollRecommendationListener.updateStateAfterGetData()

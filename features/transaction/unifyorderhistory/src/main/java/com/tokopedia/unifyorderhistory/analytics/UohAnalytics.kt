@@ -316,12 +316,12 @@ object UohAnalytics {
         val map = DataLayer.mapOf(
             EVENT, PRODUCT_VIEW,
             EVENT_CATEGORY, ORDER_LIST_EVENT_CATEGORY,
-            EVENT_ACTION, "$VIEW_ORDER_CARD$order.verticalCategory",
+            EVENT_ACTION, "$VIEW_ORDER_CARD${order.verticalCategory}",
             EVENT_LABEL, "",
             CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
             USER_ID, userId,
             BUSINESS_UNIT, ORDER_MANAGEMENT,
-            ITEM_LIST, "$ACTION_FIELD_CLICK_ECOMMERCE$order.verticalCategory",
+            ITEM_LIST, "$ACTION_FIELD_CLICK_ECOMMERCE${order.verticalCategory}",
             ECOMMERCE,
             DataLayer.mapOf(
                 CURRENCY_CODE,
