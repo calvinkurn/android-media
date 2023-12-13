@@ -3,9 +3,7 @@ package com.tokopedia.targetedticker.ui
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.FrameLayout
 import android.widget.LinearLayout
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
@@ -52,7 +50,6 @@ class TargetedTickerWidget : LinearLayout {
     }
 
     private fun observeTickerState() {
-
         findViewTreeLifecycleOwner()?.let { treeLifecycleOwner ->
 
             viewModel?.tickerState?.observe(treeLifecycleOwner) { tickerResult ->

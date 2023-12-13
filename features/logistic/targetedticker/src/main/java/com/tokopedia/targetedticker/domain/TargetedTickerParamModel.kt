@@ -6,7 +6,7 @@ data class TargetedTickerParamModel(
     @SuppressLint("ParamFieldAnnotation")
     val page: String = "",
     @SuppressLint("ParamFieldAnnotation")
-    val targets: List<Target> = listOf(),
+    val target: List<Target> = listOf(),
     @SuppressLint("ParamFieldAnnotation")
     val template: Template = Template()
 ) {
