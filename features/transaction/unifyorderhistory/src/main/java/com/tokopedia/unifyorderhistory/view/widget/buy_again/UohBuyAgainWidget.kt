@@ -183,7 +183,7 @@ fun UohBuyAgainWidget(
             iconId = IconUnify.CHEVRON_RIGHT,
             modifier = Modifier
                 .constrainAs(chevron) {
-                    top.linkTo(title.top, margin = 16.dp)
+                    top.linkTo(title.top)
                     bottom.linkTo(title.bottom)
                     end.linkTo(parent.end, margin = 16.dp)
                 }
