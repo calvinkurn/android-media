@@ -98,8 +98,10 @@ class PlayShortsSummaryFragment @Inject constructor(
 
                         viewModel.submitAction(PlayShortsAction.LoadTag)
                     },
-                    onTagClick = {
+                    onTagClick = { item ->
+                        analytic.clickContentTag(item.tag, viewModel.selectedAccount)
 
+                        viewModel.submitAction(PlayShortsAction.SelectTag(item))
                     }
                 )
             }

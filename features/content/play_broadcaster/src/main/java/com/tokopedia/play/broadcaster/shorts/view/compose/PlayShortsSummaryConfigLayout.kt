@@ -53,7 +53,7 @@ fun PlayShortsSummaryConfigLayout(
 
                     }
                     is NetworkResult.Success -> {
-                        TagsSection(
+                        PlayShortsTagLayout(
                             tag = tagsState.data,
                             onTagClick = onTagClick,
                         )
@@ -74,73 +74,18 @@ fun PlayShortsSummaryConfigLayout(
 }
 
 @Composable
-private fun TagsSection(
-    tag: PlayTagUiModel,
-    onTagClick: (PlayTagItem) -> Unit,
-) {
-    val subtitle = if (tag.maxTags < 0) {
-        ""
-    } else {
-        stringResource(
-            R.string.play_shorts_content_tagging_description_template,
-            tag.maxTags
-        )
-    }
-
-    Column {
-        NestTypography(
-            text = stringResource(id = R.string.play_bro_select_tag_title),
-            textStyle = NestTheme.typography.heading3
-        )
-
-        if (subtitle.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(4.dp))
-
-            NestTypography(
-                text = subtitle,
-                textStyle = NestTheme.typography.paragraph2.copy(
-                    color = NestTheme.colors.NN._600,
-                )
-            )
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        FlowRow(
-            horizontalGap = 8.dp,
-            verticalGap = 8.dp,
-        ) {
-            for(item in tag.tags) {
-                NestChips(
-                    text = item.tag,
-                    state = if (item.isChosen) NestChipsState.Selected
-                            else if (item.isActive) NestChipsState.Default
-                            else NestChipsState.Disabled,
-                    onClick = { onTagClick(item) }
-                )
-            }
-        }
-    }
-}
-
-@Composable
 @Preview
 private fun PlayShortsSummaryConfigLayoutPreview() {
     val tags = setOf(
-        PlayTagItem("Tag 1", false, true),
-        PlayTagItem("Tag 2", false, true),
-        PlayTagItem("Tag 3", false, true),
-        PlayTagItem("Tag 4", false, true),
-        PlayTagItem("Tag 5", false, true),
-        PlayTagItem("Tag 6", false, true),
-        PlayTagItem("Tag 7", false, true),
-        PlayTagItem("Tag 8", false, true),
-        PlayTagItem("Tag 9", false, true),
-        PlayTagItem("Tag 10", false, true),
+        PlayTagItem("Tag 1 Very Long", false, true),
+        PlayTagItem("Tag 2 Long", false, true),
+        PlayTagItem("Tag 3 Very Long", true, true),
+        PlayTagItem("Tag 4 Short But Long", false, true),
     )
+
     PlayShortsSummaryConfigLayout(
         tagsState = NetworkResult.Success(
-            PlayTagUiModel(tags, 1, 10)
+            PlayTagUiModel(tags, 1, 2)
         ),
         onRefreshTag = { /*TODO*/ },
         onTagClick = {
@@ -148,71 +93,3 @@ private fun PlayShortsSummaryConfigLayoutPreview() {
         }
     )
 }
-
-
-@Composable
-fun FlowRow(
-    modifier: Modifier = Modifier,
-    alignment: Alignment.Horizontal = Alignment.Start,
-    verticalGap: Dp = 0.dp,
-    horizontalGap: Dp = 0.dp,
-    content: @Composable () -> Unit
-) = Layout(content, modifier) { measurables, constraints ->
-    val hGapPx = horizontalGap.roundToPx()
-    val vGapPx = verticalGap.roundToPx()
-
-    val rows = mutableListOf<MeasuredRow>()
-    val itemConstraints = constraints.copy(minWidth = 0)
-
-    for (measurable in measurables) {
-        val lastRow = rows.lastOrNull()
-        val placeable = measurable.measure(itemConstraints)
-
-        if (lastRow != null && lastRow.width + hGapPx + placeable.width <= constraints.maxWidth) {
-            lastRow.items.add(placeable)
-            lastRow.width += hGapPx + placeable.width
-            lastRow.height = max(lastRow.height, placeable.height)
-        } else {
-            val nextRow = MeasuredRow(
-                items = mutableListOf(placeable),
-                width = placeable.width,
-                height = placeable.height
-            )
-
-            rows.add(nextRow)
-        }
-    }
-
-    val width = rows.maxOfOrNull { row -> row.width } ?: 0
-    val height = rows.sumBy { row -> row.height } + max(vGapPx.times(rows.size - 1), 0)
-
-    val coercedWidth = width.coerceIn(constraints.minWidth, constraints.maxWidth)
-    val coercedHeight = height.coerceIn(constraints.minHeight, constraints.maxHeight)
-
-    layout(coercedWidth, coercedHeight) {
-        var y = 0
-
-        for (row in rows) {
-            var x = when(alignment) {
-                Alignment.Start -> 0
-                Alignment.CenterHorizontally -> (coercedWidth - row.width) / 2
-                Alignment.End -> coercedWidth - row.width
-
-                else -> throw Exception("unsupported alignment")
-            }
-
-            for (item in row.items) {
-                item.place(x, y)
-                x += item.width + hGapPx
-            }
-
-            y += row.height + vGapPx
-        }
-    }
-}
-
-private data class MeasuredRow(
-    val items: MutableList<Placeable>,
-    var width: Int,
-    var height: Int
-)
