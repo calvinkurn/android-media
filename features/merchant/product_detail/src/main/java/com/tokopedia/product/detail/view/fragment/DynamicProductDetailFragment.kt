@@ -93,6 +93,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -5118,26 +5119,27 @@ open class DynamicProductDetailFragment :
 
     private fun generateShopPagePreFetchData(intent: Intent) {
         val prefetch = ShopPagePrefetch()
+
+        val shopCredibility = pdpUiUpdater?.shopCredibility ?: return
+
+        val averageShopRatingId = context?.getString(R.string.pdp_product_average_review).orEmpty()
+        val shopRating = shopCredibility.infoShopData.firstOrNull { it.desc == averageShopRatingId }?.value
+        val castedShopRating = try {
+            shopRating.toFloatOrZero()
+        } catch (e: Exception) {
+            Timber.e(e)
+            0f
+        }
+
         val prefetchData = ShopPrefetchData(
-            shopAvatar = viewModel.getShopInfo().shopAssets.avatar,
-            shopName = viewModel.getDynamicProductInfoP1?.basic?.shopName.orEmpty(),
-            shopBadge = viewModel.getShopInfo().shopTierBadgeUrl,
-            shopLastOnline = "Online",
-            shopRating = 4.8f
+            shopAvatar = shopCredibility.shopAva,
+            shopName = shopCredibility.shopName,
+            shopBadge = shopCredibility.shopTierBadgeUrl,
+            shopLastOnline = shopCredibility.shopLastActive,
+            shopRating = castedShopRating
         )
 
         prefetch.redirectToShopPageWithPrefetch(context ?: return, prefetchData, intent)
-
-       /* ShopPagePreFetchDataModel.Builder()
-            .setShopName(viewModel.getDynamicProductInfoP1?.basic?.shopName.orEmpty())
-            .setShopAvatarImageUrl(viewModel.getShopInfo().shopAssets.avatar)
-            .setShopBadgeImageUrl(viewModel.getShopInfo().shopTierBadgeUrl)
-            .setShopLastOnline("Online")
-            .setShopRating(4.9f)
-            .build()
-            .let {
-                intent.putExtra(ShopPagePreFetchDataModel.PARCEL_KEY, it)
-            }*/
     }
 
     override fun onShopTickerClicked(
