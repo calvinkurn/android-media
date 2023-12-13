@@ -33,7 +33,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
     val review : Flow<List<ReviewUiModel>>
         get() = _review //TODO: add state
 
-    fun addAction(action: ProductPreviewAction) {
+    fun onAction(action: ProductPreviewAction) {
         when(action) {
             ProductPreviewAction.FetchReview -> getReview()
             else -> {}

@@ -32,7 +32,7 @@ class ProductPreviewRepositoryImpl @Inject constructor(
     override suspend fun getReview(productId: String, page: Int): List<ReviewUiModel> =
         withContext(dispatchers.io) {
             val response = getReviewUseCase(MediaReviewUseCase.Param(productId, page))
-            mapper.map(response)
+            mapper.mapReviews(response)
         }
 
     override suspend fun addToCart(

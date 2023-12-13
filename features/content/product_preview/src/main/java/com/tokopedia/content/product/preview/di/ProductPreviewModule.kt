@@ -10,6 +10,7 @@ import dagger.Provides
 @Module
 class ProductPreviewModule {
     @Provides
+    @ProductPreviewScope
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }

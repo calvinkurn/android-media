@@ -6,7 +6,7 @@ import com.tokopedia.content.common.report_content.model.ContentMenuItem
  * @author by astidhiyaa on 06/12/23
  */
 data class ReviewUiModel(
-    val id: String,
+    val reviewId: String,
     val medias: List<MediaUiModel>,
     val menus: List<ContentMenuItem>,
     val likeState: LikeUiState,
