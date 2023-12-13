@@ -69,7 +69,7 @@ class ProductPreviewMapperImpl @Inject constructor(private val userSession: User
     private fun isOwner(author: MediaReviewResponse.ReviewerUserInfo): Boolean =
         author.userId == userSession.userId
 
-    override fun map(response: GetMiniProductInfoResponse): BottomNavUiModel =
+    override fun mapMiniInfo(response: GetMiniProductInfoResponse): BottomNavUiModel =
         BottomNavUiModel(
             title = response.data.product.name,
             price = if (response.data.campaign.isActive) {

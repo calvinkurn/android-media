@@ -30,7 +30,7 @@ class ProductPreviewRepositoryImpl @Inject constructor(
     override suspend fun getProductMiniInfo(productId: String): BottomNavUiModel =
         withContext(dispatchers.io) {
             val response = miniInfoUseCase(ProductMiniInfoUseCase.Param(productId))
-            mapper.map(response)
+            mapper.mapMiniInfo(response)
         }
 
     override suspend fun getReview(productId: String, page: Int): List<ReviewUiModel> =
