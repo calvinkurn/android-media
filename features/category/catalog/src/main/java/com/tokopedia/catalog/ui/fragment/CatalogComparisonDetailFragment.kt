@@ -185,10 +185,24 @@ class CatalogComparisonDetailFragment :
                 searchButton?.hide()
                 cartButton?.hide()
                 shareButton?.hide()
+                editButton?.show()
                 setColors(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN950))
                 setNavigationOnClickListener {
                     onFragmentBackPressed()
                     activity?.finish()
+                }
+                editButton?.setOnClickListener {
+                    /*
+                    TODO: implement redirection to switch catalog activity
+                    CatalogComponentBottomSheet.newInstance(
+                        "",
+                        catalogId,
+                        "",
+                        categoryId,
+                        compareCatalogIds,
+                        CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,
+                        this
+                    ).show(childFragmentManager, "")*/
                 }
             }
         }
@@ -272,6 +286,7 @@ class CatalogComparisonDetailFragment :
     override fun onComparisonSwitchButtonClicked(
         items: List<ComparisonUiModel.ComparisonContent>
     ) {
+        // TODO: Ask to DA, should we remove this tracker?
         compareCatalogIds = items.map { it.id }
         val label = "$catalogId | compared catalog id: ${compareCatalogIds.joinToString()}"
         CatalogReimagineDetailAnalytics.sendEvent(
@@ -281,17 +296,6 @@ class CatalogComparisonDetailFragment :
             labels = label,
             trackerId = CatalogTrackerConstant.TRACKER_ID_CHANGE_COMPARISON_IN_COMPARISON_DETAIL
         )
-        /*
-        TODO: implement redirection to switch catalog activity
-        CatalogComponentBottomSheet.newInstance(
-            "",
-            catalogId,
-            "",
-            categoryId,
-            compareCatalogIds,
-            CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,
-            this
-        ).show(childFragmentManager, "")*/
     }
 
     override fun onComparisonSeeMoreButtonClicked(items: List<ComparisonUiModel.ComparisonContent>) {

@@ -69,6 +69,7 @@ class CatalogToolbar : Toolbar {
     var moreMenuButton: IconUnify? = null
     var shareButton: IconUnify? = null
     var searchButton: IconUnify? = null
+    var editButton: IconUnify? = null
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet) {
@@ -99,6 +100,7 @@ class CatalogToolbar : Toolbar {
         moreMenuButton = findViewById(R.id.more_menu)
         shareButton = findViewById(R.id.share)
         searchButton = findViewById(R.id.search)
+        editButton = findViewById(R.id.edit)
         navigationIcon = backIconWhite
         setupIconRedirection()
     }
@@ -127,6 +129,7 @@ class CatalogToolbar : Toolbar {
         applyIconUnifyColor(moreMenuButton?.drawable ?: return, color)
         applyIconUnifyColor(shareButton?.drawable ?: return, color)
         applyIconUnifyColor(searchButton?.drawable ?: return, color)
+        applyIconUnifyColor(editButton?.drawable ?: return, color)
         tpgTitle?.setTextColor(color)
     }
 
