@@ -6,6 +6,7 @@ import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.listener.MediaListenerBuilder
 import com.tokopedia.media.loader.module.GlideApp
@@ -50,7 +51,7 @@ internal object MediaLoaderApi {
             .dynamicPlaceHolder(context, properties)
             .thumbnail(setThumbnailUrl(context, properties))
             .listener(
-                MediaListenerBuilder(
+                MediaListenerBuilder<Bitmap>(
                     context,
                     properties,
                     startTimeRequest
@@ -61,13 +62,13 @@ internal object MediaLoaderApi {
     }
 
     fun loadGifImage(imageView: ImageView, source: String, properties: Properties) {
-        val context = imageView.context.applicationContext
+        val context = imageView.context
 
         if (context.isValid()) {
             GlideApp
                 .with(context)
                 .asGif()
-                .addListener(MediaListenerBuilder.gifListener(properties))
+                .addListener(MediaListenerBuilder<GifDrawable>(context, properties, 0L))
                 .load(source)
                 .delayInto(imageView, properties)
         }
@@ -75,16 +76,13 @@ internal object MediaLoaderApi {
 
     fun loadGifImage(imageView: ImageView, source: Int, properties: Properties) {
         // local asset especially on DF cannot load resource using appContext
-        var context = imageView.context
-        if (!context.isValid()) {
-            context = imageView.context.applicationContext
-        }
+        val context = imageView.context
 
         if (context.isValid()) {
             GlideApp
                 .with(context)
                 .asGif()
-                .addListener(MediaListenerBuilder.gifListener(properties))
+                .addListener(MediaListenerBuilder<GifDrawable>(context, properties, 0L))
                 .loadLookup(context, source)
                 .delayInto(imageView, properties)
         }
