@@ -9,7 +9,6 @@ import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
  * @author by astidhiyaa on 06/12/23
  */
 interface ProductPreviewMapper {
-    fun map(response: MediaReviewResponse): List<ReviewUiModel>
-
+    fun mapReviews(response: MediaReviewResponse): List<ReviewUiModel>
     fun map(response: GetMiniProductInfoResponse): BottomNavUiModel
 }

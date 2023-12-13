@@ -40,7 +40,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
     val miniInfo: Flow<BottomNavUiModel>
         get() = _miniInfo
 
-    fun addAction(action: ProductPreviewAction) {
+    fun onAction(action: ProductPreviewAction) {
         when(action) {
             ProductPreviewAction.FetchReview -> getReview()
             ProductPreviewAction.FetchMiniInfo -> getMiniInfo()

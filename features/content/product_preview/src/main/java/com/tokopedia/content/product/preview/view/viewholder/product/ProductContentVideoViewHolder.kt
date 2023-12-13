@@ -2,11 +2,11 @@ package com.tokopedia.content.product.preview.view.viewholder.product
 
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.google.android.exoplayer2.ui.PlayerControlView
+import com.tokopedia.content.product.preview.data.ContentUiModel
 import com.tokopedia.content.product.preview.databinding.ItemProductContentVideoBinding
-import com.tokopedia.content.product.preview.view.components.ProductPreviewExoPlayer
-import com.tokopedia.content.product.preview.view.components.ProductPreviewPlayerControl
+import com.tokopedia.content.product.preview.view.components.player.ProductPreviewExoPlayer
+import com.tokopedia.content.product.preview.view.components.player.ProductPreviewPlayerControl
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
-import com.tokopedia.content.product.preview.view.model.ProductVideoModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -18,17 +18,17 @@ class ProductContentVideoViewHolder(
 
     private var mVideoPlayer: ProductPreviewExoPlayer? = null
 
-    fun bind(element: ProductVideoModel) {
-        bindVideoPlayer(element)
+    fun bind(content: ContentUiModel) {
+        bindVideoPlayer(content)
     }
 
-    private fun bindVideoPlayer(element: ProductVideoModel) {
-        val videoPlayer = mVideoPlayer ?: listener.getVideoPlayer(element.id)
+    private fun bindVideoPlayer(content: ContentUiModel) {
+        val videoPlayer = mVideoPlayer ?: listener.getVideoPlayer("productContentVideo_" + content.url)
         mVideoPlayer = videoPlayer
         binding.playerProductContentVideo.player = videoPlayer.exoPlayer
         binding.playerControl.player = videoPlayer.exoPlayer
         videoPlayer.start(
-            videoUrl = element.videoUrl,
+            videoUrl = content.url,
             isMute = false,
             playWhenReady = false,
         )
@@ -67,15 +67,19 @@ class ProductContentVideoViewHolder(
     }
 
     private fun showLoading() {
-        binding.loaderFeedVideo.show()
-        if (mVideoPlayer?.exoPlayer?.currentPosition == 0L) {
-            binding.playerProductContentVideo.hide()
+        binding.apply {
+            loaderVideo.show()
+            if (mVideoPlayer?.exoPlayer?.currentPosition == 0L) {
+                playerProductContentVideo.hide()
+            }
         }
     }
 
     private fun hideLoading() {
-        binding.loaderFeedVideo.hide()
-        binding.playerProductContentVideo.show()
+        binding.apply {
+            loaderVideo.hide()
+            playerProductContentVideo.show()
+        }
     }
 
 }
