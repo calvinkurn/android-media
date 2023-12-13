@@ -95,10 +95,10 @@ class AutoCompleteFragment :
                 data.mainText,
                 data.secondaryText
             )
-            if (data.lat == 0.0 || data.long == 0.0) {
+            if (!data.hasPinpoint()) {
                 viewModel.getLatLng(data.placeId)
             } else {
-                sendResult(data.lat.toString(), data.long.toString())
+                sendResult(data.lat, data.long)
             }
         } else if (data is SavedAddress) {
             sendResult(data.latitude, data.longitude)

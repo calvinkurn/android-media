@@ -12,6 +12,7 @@ import com.tokopedia.checkout.revamp.view.uimodel.CheckoutOrderModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutProductModel
 import com.tokopedia.checkout.revamp.view.uimodel.CheckoutUpsellModel
 import com.tokopedia.checkout.revamp.view.uimodel.CoachmarkPlusData
+import com.tokopedia.checkout.revamp.view.uimodel.ShippingComponents
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -253,6 +254,9 @@ class CheckoutDataConverter @Inject constructor() {
                 scheduleDate = groupShop.scheduleDelivery.scheduleDate,
                 validationMetadata = groupShop.scheduleDelivery.validationMetadata,
                 ratesValidationFlow = groupShop.ratesValidationFlow,
+                shippingComponents = ShippingComponents.fromInt(groupShop.shippingComponents),
+                isRecommendScheduleDelivery = groupShop.scheduleDelivery.isRecommend,
+                startDate = groupShop.scheduleDelivery.startDate,
                 addOnDefaultTo = receiverName,
                 isProductFcancelPartial = fobject.isFcancelPartial == 1,
                 finalCheckoutProducts = products,
@@ -270,7 +274,9 @@ class CheckoutDataConverter @Inject constructor() {
                 hasGeolocation = userAddress.longitude.isNotEmpty() && userAddress.latitude.isNotEmpty(),
                 courierSelectionErrorTitle = groupShop.courierSelectionErrorData.title,
                 courierSelectionErrorDescription = groupShop.courierSelectionErrorData.description,
-                subtotalAddOnMap = mapSubtotalAddons(groupShop.listSubtotalAddOn)
+                subtotalAddOnMap = mapSubtotalAddons(groupShop.listSubtotalAddOn),
+                shipmentAction = groupShop.shipmentAction,
+                groupingState = groupShop.groupingState
             )
             for (cartItemModel in products) {
                 if (cartItemModel.ethicalDrugDataModel.needPrescription && !cartItemModel.isError) {
