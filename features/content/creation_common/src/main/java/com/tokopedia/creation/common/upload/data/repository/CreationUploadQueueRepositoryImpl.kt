@@ -5,6 +5,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.data.local.database.CreationUploadQueueDatabase
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
 import com.tokopedia.creation.common.upload.model.CreationUploadData
+import com.tokopedia.creation.common.upload.util.logger.CreationUploadLogger
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -18,7 +22,23 @@ class CreationUploadQueueRepositoryImpl @Inject constructor(
     private val mutex: Mutex,
     private val gson: Gson,
     private val creationUploadQueueDatabase: CreationUploadQueueDatabase,
+    private val logger: CreationUploadLogger,
 ) : CreationUploadQueueRepository {
+
+    override fun observeTopQueue(): Flow<CreationUploadData> {
+        return creationUploadQueueDatabase
+            .creationUploadQueueDao()
+            .observeTopQueue()
+            .distinctUntilChanged()
+            .mapNotNull { data ->
+                try {
+                    CreationUploadData.parseFromEntity(data, gson)
+                } catch (throwable: Throwable) {
+                    logger.sendLog(data.toString(), throwable)
+                    null
+                }
+            }
+    }
 
     override suspend fun insert(data: CreationUploadData) {
         lockAndSwitchContext(dispatchers) {

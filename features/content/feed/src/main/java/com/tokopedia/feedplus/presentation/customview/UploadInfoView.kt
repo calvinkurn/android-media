@@ -49,7 +49,7 @@ class UploadInfoView : FrameLayout {
     fun setUploadProgress(progress: Int) {
         binding.progress.show()
         binding.progress.setText("$progress%")
-        binding.progress.setProgress(progress)
+        binding.progress.setProgress(progress, false)
         binding.failed.hide()
     }
 
