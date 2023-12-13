@@ -6,5 +6,4 @@ data class ProductIndicatorUiModel(
     val id: String = "",
     val selected: Boolean = false,
     val content: ContentUiModel = ContentUiModel(),
-    val variantName: String = "",
 )
