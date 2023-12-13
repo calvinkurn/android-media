@@ -48,7 +48,6 @@ import com.tokopedia.logisticorder.view.bottomsheet.DriverInfoBottomSheet
 import com.tokopedia.logisticorder.view.bottomsheet.DriverTippingBottomSheet
 import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.targetedticker.domain.TargetedTickerPage
 import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
@@ -552,11 +551,15 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
     private fun setTicketInfoCourier(trackOrder: TrackingDataModel) {
         binding?.tickerInfoCourier?.apply { ->
             setTickerShape(Ticker.SHAPE_LOOSE)
+
+            val tickerParam = trackOrder.page.targetedTickerParam
             val param = TargetedTickerParamModel(
-                page = TargetedTickerPage.TRACKING_PAGE,
-                targets = trackOrder.page.tickerUnificationTargets.map {
-                    TargetedTickerParamModel.Target(it.type, it.values)
-                }
+                page = tickerParam.page,
+                template = TargetedTickerParamModel.Template(
+                    contents = tickerParam.template.contents.map {
+                        TargetedTickerParamModel.Template.Content(it.key, it.values)
+                    }
+                )
             )
             loadAndShow(param)
         }

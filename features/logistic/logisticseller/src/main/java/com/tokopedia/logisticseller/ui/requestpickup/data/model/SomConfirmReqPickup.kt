@@ -60,9 +60,6 @@ data class SomConfirmReqPickup(
                 @Expose
                 val ticker: Ticker = Ticker(),
 
-                @SerializedName("ticker_unification_targets")
-                val tickerUnificationTargets: List<TickerUnificationTargets> = listOf(),
-
                 @SerializedName("ticker_unification_params")
                 val tickerUnificationParams: TickerUnificationParams = TickerUnificationParams()
 

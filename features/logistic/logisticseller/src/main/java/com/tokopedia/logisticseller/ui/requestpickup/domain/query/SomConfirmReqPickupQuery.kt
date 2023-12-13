@@ -60,10 +60,6 @@ object SomConfirmReqPickupQuery : GqlQueryInterface {
                   action_key
                   type
               }
-              ticker_unification_targets {
-                type
-                values
-              }
               ticker_unification_params{
                 page
                 target{

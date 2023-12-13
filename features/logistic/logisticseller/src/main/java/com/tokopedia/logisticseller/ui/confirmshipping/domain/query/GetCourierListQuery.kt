@@ -22,10 +22,6 @@ object GetCourierListQuery : GqlQueryInterface {
                       sp_id
                     }
                   }
-                  ticker_unification_targets{
-                    type
-                    values
-                  }
                   ticker_unification_params{
                     page
                     target{

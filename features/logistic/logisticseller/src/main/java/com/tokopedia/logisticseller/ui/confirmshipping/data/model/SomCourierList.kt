@@ -27,13 +27,8 @@ data class SomCourierList(
                 @SerializedName("shipment")
                 val listShipment: List<Shipment> = listOf(),
 
-                // Deprecated
-                @SerializedName("ticker_unification_targets")
-                val tickerUnificationTargets: List<TickerUnificationTargets> = listOf(),
-
                 @SerializedName("ticker_unification_params")
                 val tickerUnificationParams: TickerUnificationParams = TickerUnificationParams()
-
             ) {
 
                 data class TickerUnificationParams(
