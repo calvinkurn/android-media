@@ -33,7 +33,6 @@ import com.tokopedia.logisticseller.ui.confirmshipping.data.ConfirmShippingAnaly
 import com.tokopedia.logisticseller.ui.confirmshipping.data.model.SomCourierList
 import com.tokopedia.logisticseller.ui.confirmshipping.di.ConfirmShippingComponent
 import com.tokopedia.logisticseller.ui.confirmshipping.di.DaggerConfirmShippingComponent
-import com.tokopedia.targetedticker.domain.TargetedTickerPage
 import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -320,7 +319,7 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
                         binding?.labelChoosenCourierService?.setOnClickListener { showBottomSheetCourier(true) }
                         binding?.ivChooseCourierService?.setOnClickListener { showBottomSheetCourier(true) }
 
-                        initTicker(it.data.tickerUnificationTargets)
+                        initTicker(it.data.tickerUnificationParams)
                     }
 
                     is Fail -> {
@@ -339,14 +338,23 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
         )
     }
 
-    private fun initTicker(tickerUnificationTargets: List<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.TickerUnificationTargets>) {
+    private fun initTicker(params: SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.TickerUnificationParams) {
         binding?.ticker?.apply { ->
             setTickerShape(Ticker.SHAPE_FULL)
-            val param = TargetedTickerParamModel(
-                page = TargetedTickerPage.SHIPPING_FORM,
-                targets = tickerUnificationTargets.map {
-                    TargetedTickerParamModel.Target(it.type, it.values)
+
+            val template = TargetedTickerParamModel.Template().copy(
+                contents =
+                params.template.contents.map {
+                    TargetedTickerParamModel.Template.Content(it.key, it.values)
                 }
+            )
+
+            val param = TargetedTickerParamModel(
+                page = params.page,
+                targets = params.target.map {
+                    TargetedTickerParamModel.Target(it.type, it.values)
+                },
+                template = template
             )
             loadAndShow(param)
         }

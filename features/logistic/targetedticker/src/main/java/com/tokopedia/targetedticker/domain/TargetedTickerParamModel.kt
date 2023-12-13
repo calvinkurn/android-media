@@ -1,20 +1,32 @@
 package com.tokopedia.targetedticker.domain
 
-import com.google.gson.annotations.SerializedName
+import android.annotation.SuppressLint
 
 data class TargetedTickerParamModel(
-    @SerializedName("page")
+    @SuppressLint("ParamFieldAnnotation")
     val page: String = "",
-
-    @SerializedName("targets")
-    val targets: List<Target> = listOf()
+    @SuppressLint("ParamFieldAnnotation")
+    val targets: List<Target> = listOf(),
+    @SuppressLint("ParamFieldAnnotation")
+    val template: Template = Template()
 ) {
+
+    data class Template(
+        @SuppressLint("ParamFieldAnnotation")
+        val contents: List<Content> = listOf()
+    ) {
+        data class Content(
+            @SuppressLint("ParamFieldAnnotation")
+            val key: String = "",
+            @SuppressLint("ParamFieldAnnotation")
+            val values: List<String> = listOf()
+        )
+    }
+
     data class Target(
-
-        @SerializedName("type")
+        @SuppressLint("ParamFieldAnnotation")
         val type: String = "",
-
-        @SerializedName("value")
+        @SuppressLint("ParamFieldAnnotation")
         val value: List<String> = listOf()
     )
 }

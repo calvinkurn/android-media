@@ -23,14 +23,44 @@ data class SomCourierList(
             val status: String = ""
         ) {
 
-
             data class DataShipment(
                 @SerializedName("shipment")
                 val listShipment: List<Shipment> = listOf(),
 
+                // Deprecated
                 @SerializedName("ticker_unification_targets")
-                val tickerUnificationTargets: List<TickerUnificationTargets> = listOf()
+                val tickerUnificationTargets: List<TickerUnificationTargets> = listOf(),
+
+                @SerializedName("ticker_unification_params")
+                val tickerUnificationParams: TickerUnificationParams = TickerUnificationParams()
+
             ) {
+
+                data class TickerUnificationParams(
+
+                    @SerializedName("page")
+                    val page: String = "",
+
+                    @SerializedName("target")
+                    val target: List<TickerUnificationTargets> = listOf(),
+
+                    @SerializedName("template")
+                    val template: Template = Template()
+
+                ) {
+                    data class Template(
+                        @SerializedName("contents")
+                        val contents: List<Content> = listOf()
+                    ) {
+                        data class Content(
+                            @SerializedName("key")
+                            val key: String = "",
+
+                            @SerializedName("values")
+                            val values: List<String> = listOf()
+                        )
+                    }
+                }
 
                 data class TickerUnificationTargets(
                     @SerializedName("type")
