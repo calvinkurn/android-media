@@ -15,20 +15,22 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
+import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.databinding.FragmentProductPreviewBinding
+import com.tokopedia.content.product.preview.view.components.MediaBottomNav
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter.Companion.TAB_PRODUCT_POS
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter.Companion.TAB_REVIEW_POS
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
-import com.tokopedia.content.product.preview.view.components.MediaBottomNav
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.viewmodel.EntrySource
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModelFactory
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -53,7 +55,7 @@ class ProductPreviewFragment @Inject constructor(
         )
     }
 
-    private val productId : String get() = "4937529690" //TODO: get from args
+    private val productId: String get() = "4937529690" //TODO: get from args
 
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
         viewModelFactory.create(
@@ -146,15 +148,40 @@ class ProductPreviewFragment @Inject constructor(
     private fun observeEvent() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.uiEvent.collectLatest {
-                when(val event = it) {
+                when (val event = it) {
                     is ProductPreviewEvent.LoginEvent<*> -> {
                         val intent = router.getIntent(requireContext(), ApplinkConst.LOGIN)
                         if (event.data is BottomNavUiModel) {
                             productAtcResult.launch(intent)
                         }
                     }
-                    is ProductPreviewEvent.ShowInfoEvent -> {}
-                    is ProductPreviewEvent.ShowErrorEvent -> {}
+                    is ProductPreviewEvent.NavigateEvent -> router.route(requireContext(), event.appLink)
+                    //TODO: need to check all toaster in PDP unified media
+                    is ProductPreviewEvent.ShowSuccessToaster -> {
+                        Toaster.build(
+                            requireView().rootView,
+                            text = getString(R.string.bottom_atc_success_toaster),
+                            actionText = getString(R.string.bottom_atc_success_click_toaster),
+                            duration = Toaster.LENGTH_LONG,
+                            clickListener = {
+                                viewModel.onAction(ProductPreviewAction.Navigate(ApplinkConst.CART))
+                            }
+                        ).show()
+                    }
+
+                    is ProductPreviewEvent.ShowErrorToaster -> {
+                        Toaster.build(
+                            requireView().rootView,
+                            text = getString(R.string.bottom_atc_failed_toaster),
+                            actionText = getString(R.string.bottom_atc_failed_click_toaster),
+                            duration = Toaster.LENGTH_LONG,
+                            clickListener = {
+                                run { event.onClick() }
+                            },
+                            type = Toaster.TYPE_ERROR
+                        ).show()
+                    }
+
                     else -> {}
                 }
             }
@@ -181,7 +208,7 @@ class ProductPreviewFragment @Inject constructor(
                 pageSource = VariantPageSource.PRODUCT_PREVIEW_PAGESOURCE,
                 shopId = model.shop.id,
                 productId = productId,
-                startActivitResult = { _, _ -> } //TODO: will check if result is needed
+                startActivitResult = { intent, _ -> startActivity(intent) }
             )
         } else {
             viewModel.onAction(ProductPreviewAction.ProductAction(model))

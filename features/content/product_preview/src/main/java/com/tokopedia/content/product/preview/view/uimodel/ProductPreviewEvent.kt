@@ -1,14 +1,27 @@
 package com.tokopedia.content.product.preview.view.uimodel
 
-import androidx.annotation.StringRes
-
 /**
  * @author by astidhiyaa on 12/12/23
  */
 sealed interface ProductPreviewEvent {
-    data class LoginEvent<T>(val data: T): ProductPreviewEvent
-    data class ShowErrorEvent(val message: Throwable) : ProductPreviewEvent
-    data class ShowInfoEvent(@StringRes val message: Int) : ProductPreviewEvent
+    data class LoginEvent<T>(val data: T) : ProductPreviewEvent
+    data class ShowSuccessToaster(
+        val message: String? = null,
+        val type: Type,
+    ) : ProductPreviewEvent {
+        enum class Type {
+            ATC, Unknown;
+        }
+    }
+
+    data class ShowErrorToaster(
+        val message: Throwable,
+        val onClick: () -> Unit
+    ) : ProductPreviewEvent
+
+    data class NavigateEvent(
+        val appLink: String
+    ) : ProductPreviewEvent
 }
 
 

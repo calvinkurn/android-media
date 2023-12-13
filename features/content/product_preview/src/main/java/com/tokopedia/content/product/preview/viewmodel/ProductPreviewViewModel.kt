@@ -53,6 +53,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             ProductPreviewAction.FetchMiniInfo -> getMiniInfo()
             is ProductPreviewAction.ProductAction -> addToCart(action.model)
             ProductPreviewAction.AtcFromResult -> addToCart(_miniInfo.value)
+            is ProductPreviewAction.Navigate -> navigate(action.appLink)
             else -> {}
         }
     }
@@ -79,11 +80,17 @@ class ProductPreviewViewModel @AssistedInject constructor(
                     model.price.finalPrice.toDoubleOrZero()
                 )
 
-                if (result) _uiEvent.emit(ProductPreviewEvent.ShowInfoEvent(1)) else throw MessageErrorException()
+                if (result) _uiEvent.emit(ProductPreviewEvent.ShowSuccessToaster(type = ProductPreviewEvent.ShowSuccessToaster.Type.ATC)) else throw MessageErrorException()
             }
             ) {
-                _uiEvent.emit(ProductPreviewEvent.ShowErrorEvent(it))
+                _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it) { addToCart(model) })
             }
+        }
+    }
+
+    private fun navigate(appLink: String) {
+        viewModelScope.launch {
+            _uiEvent.emit(ProductPreviewEvent.NavigateEvent(appLink))
         }
     }
 
