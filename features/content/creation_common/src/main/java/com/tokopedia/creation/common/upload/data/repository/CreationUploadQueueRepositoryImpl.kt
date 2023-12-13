@@ -8,6 +8,7 @@ import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.util.logger.CreationUploadLogger
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -30,6 +31,7 @@ class CreationUploadQueueRepositoryImpl @Inject constructor(
             .creationUploadQueueDao()
             .observeTopQueue()
             .distinctUntilChanged()
+            .filterNotNull()
             .mapNotNull { data ->
                 try {
                     CreationUploadData.parseFromEntity(data, gson)

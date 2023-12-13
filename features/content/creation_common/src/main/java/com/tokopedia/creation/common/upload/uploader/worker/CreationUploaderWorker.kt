@@ -88,7 +88,7 @@ class CreationUploaderWorker(
                                 uploadStatus: CreationUploadStatus,
                             ) {
                                 launch {
-                                    emitProgress(progress, uploadData, uploadStatus)
+                                    saveProgress(progress, uploadData, uploadStatus)
                                 }
                             }
                         }
@@ -101,7 +101,7 @@ class CreationUploaderWorker(
                         is CreationUploadExecutionResult.Error -> {
                             logger.sendLog(result.uploadData, result.throwable)
 
-                            emitProgress(CreationUploadConst.PROGRESS_FAILED, data, CreationUploadStatus.Failed)
+                            saveProgress(CreationUploadConst.PROGRESS_FAILED, data, CreationUploadStatus.Failed)
                             break
                         }
                     }
@@ -126,19 +126,11 @@ class CreationUploaderWorker(
         }
     }
 
-    private suspend fun emitProgress(
+    private suspend fun saveProgress(
         progress: Int,
         data: CreationUploadData,
         uploadStatus: CreationUploadStatus,
     ) {
-        setProgress(
-            workDataOf(
-                CreationUploadConst.PROGRESS to progress,
-                CreationUploadConst.UPLOAD_DATA to data.mapToJson(gson),
-                CreationUploadConst.UPLOAD_STATUS to uploadStatus.value,
-            )
-        )
-
         queueRepository.updateProgress(data.queueId, progress, uploadStatus.value)
     }
 

@@ -56,7 +56,7 @@ class UploadInfoView : FrameLayout {
     fun setOtherProgress(progress: Int) {
         binding.progress.show()
         binding.progress.setText(context.getString(R.string.feed_uploading_title))
-        binding.progress.setProgress(progress)
+        binding.progress.setProgress(progress, false)
         binding.failed.hide()
     }
 
