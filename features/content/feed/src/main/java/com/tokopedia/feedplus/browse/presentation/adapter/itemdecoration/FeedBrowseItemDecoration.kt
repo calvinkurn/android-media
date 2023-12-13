@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.State
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseAdapter
+import com.tokopedia.feedplus.browse.presentation.adapter.FeedBrowseItemAdapter
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
@@ -44,12 +44,12 @@ class FeedBrowseItemDecoration(
         val adapter = parent.adapter as? ListAdapter<*, *> ?: return
         try {
             when (adapter.getItemViewType(layoutPosition)) {
-                FeedBrowseAdapter.TYPE_CHIPS -> outRect.itemOffsetsChips(parent, view, adapter)
-                FeedBrowseAdapter.TYPE_HORIZONTAL_CHANNELS,
-                FeedBrowseAdapter.TYPE_HORIZONTAL_CREATORS -> outRect.itemOffsetsHorizontalChannels()
-                FeedBrowseAdapter.TYPE_BANNER,
-                FeedBrowseAdapter.TYPE_BANNER_PLACEHOLDER -> outRect.itemOffsetsBanner(parent, view, adapter, state)
-                FeedBrowseAdapter.TYPE_TITLE -> outRect.itemOffsetsTitle(parent, view)
+                FeedBrowseItemAdapter.TYPE_CHIPS -> outRect.itemOffsetsChips(parent, view, adapter)
+                FeedBrowseItemAdapter.TYPE_HORIZONTAL_CHANNELS,
+                FeedBrowseItemAdapter.TYPE_HORIZONTAL_CREATORS -> outRect.itemOffsetsHorizontalChannels()
+                FeedBrowseItemAdapter.TYPE_BANNER,
+                FeedBrowseItemAdapter.TYPE_BANNER_PLACEHOLDER -> outRect.itemOffsetsBanner(parent, view, adapter, state)
+                FeedBrowseItemAdapter.TYPE_TITLE -> outRect.itemOffsetsTitle(parent, view)
                 else -> outRect.itemOffsetsElse()
             }
 
@@ -81,7 +81,7 @@ class FeedBrowseItemDecoration(
         if (prevSpanRowPosition < 0) return
 
         top = when (adapter.getItemViewType(prevSpanRowPosition)) {
-            FeedBrowseAdapter.TYPE_TITLE -> offset12
+            FeedBrowseItemAdapter.TYPE_TITLE -> offset12
             else -> offset8
         }
     }
@@ -105,7 +105,7 @@ class FeedBrowseItemDecoration(
         if (prevSpanRowPosition < 0) return
 
         top = when (adapter.getItemViewType(prevSpanRowPosition)) {
-            FeedBrowseAdapter.TYPE_BANNER, FeedBrowseAdapter.TYPE_BANNER_PLACEHOLDER -> offset8
+            FeedBrowseItemAdapter.TYPE_BANNER, FeedBrowseItemAdapter.TYPE_BANNER_PLACEHOLDER -> offset8
             else -> offset12
         }
 
@@ -113,7 +113,7 @@ class FeedBrowseItemDecoration(
         if (nextSpanRowPosition >= state.itemCount) return
 
         bottom = when (adapter.getItemViewType(nextSpanRowPosition)) {
-            FeedBrowseAdapter.TYPE_BANNER, FeedBrowseAdapter.TYPE_BANNER_PLACEHOLDER -> 0
+            FeedBrowseItemAdapter.TYPE_BANNER, FeedBrowseItemAdapter.TYPE_BANNER_PLACEHOLDER -> 0
             else -> offset16
         }
     }

@@ -366,8 +366,8 @@ internal class FeedBrowseFragment @Inject constructor(
         if (widgets.isEmpty()) {
             adapter.setPlaceholder()
         } else {
-            adapter.setList(widgets) {
-                if (_binding == null) return@setList
+            adapter.setItems(widgets) {
+                if (_binding == null) return@setItems
                 binding.feedBrowseList.invalidateItemDecorations()
             }
         }
