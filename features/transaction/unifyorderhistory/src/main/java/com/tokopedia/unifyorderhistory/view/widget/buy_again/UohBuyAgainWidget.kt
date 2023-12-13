@@ -68,38 +68,38 @@ fun BuyAgainPreview() {
                 RecommendationItem(
                     name = "Fillet Ikan Pangasius",
                     imageUrl = "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/8/22/8e7f3536-af84-4300-bfff-4832fb6f0f99.png",
-                    price = "Rp25.500",
+                    price = "Rp250.500",
                     priceInt = 25500,
                     discountPercentageInt = 15,
-                    discountPercentage = "15",
-                    slashedPrice = "Rp30.000"
+                    discountPercentage = "15%",
+                    slashedPrice = "Rp300.000"
                 ),
                 RecommendationItem(
                     name = "Fillet Ikan Pangasius",
                     imageUrl = "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/8/22/8e7f3536-af84-4300-bfff-4832fb6f0f99.png",
-                    price = "Rp25.500",
+                    price = "Rp250.500",
                     priceInt = 25500,
                     discountPercentageInt = 15,
-                    discountPercentage = "15",
-                    slashedPrice = "Rp30.000"
+                    discountPercentage = "15%",
+                    slashedPrice = "Rp300.000"
                 ),
                 RecommendationItem(
                     name = "Fillet Ikan Pangasius",
                     imageUrl = "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/8/22/8e7f3536-af84-4300-bfff-4832fb6f0f99.png",
-                    price = "Rp25.500",
+                    price = "Rp250.500",
                     priceInt = 25500,
                     discountPercentageInt = 15,
-                    discountPercentage = "15",
-                    slashedPrice = "Rp30.000"
+                    discountPercentage = "15%",
+                    slashedPrice = "Rp300.000"
                 ),
                 RecommendationItem(
                     name = "Fillet Ikan Pangasius",
                     imageUrl = "https://images.tokopedia.net/img/cache/250-square/VqbcmM/2022/8/22/8e7f3536-af84-4300-bfff-4832fb6f0f99.png",
-                    price = "Rp25.500",
+                    price = "Rp250.500",
                     priceInt = 25500,
                     discountPercentageInt = 15,
-                    discountPercentage = "15",
-                    slashedPrice = "Rp30.000"
+                    discountPercentage = "15%",
+                    slashedPrice = "Rp300.000"
                 )
             )
         ),
@@ -183,10 +183,12 @@ fun UohBuyAgainWidget(
             iconId = IconUnify.CHEVRON_RIGHT,
             modifier = Modifier
                 .constrainAs(chevron) {
-                    top.linkTo(title.top)
+                    top.linkTo(title.top, margin = 16.dp)
                     bottom.linkTo(title.bottom)
                     end.linkTo(parent.end, margin = 16.dp)
                 }
+                .width(20.dp)
+                .height(20.dp)
                 .clickable { onChevronClicked.invoke() }
         )
 
@@ -211,7 +213,8 @@ fun UohBuyAgainWidget(
                 listBuyAgain = recom.recommendationItemList,
                 modifier = Modifier.constrainAs(list) {
                     top.linkTo(title.bottom, margin = 4.dp)
-                    start.linkTo(parent.start)
+                    start.linkTo(parent.start, margin = 16.dp)
+                    end.linkTo(chevron.end)
                     bottom.linkTo(bottomDivider.top, margin = 10.dp)
                 },
                 onProductCardClick = onProductCardClick,
@@ -258,9 +261,9 @@ fun UohBuyAgainList(
             } else if (index == 3) {
                 NestViewAllCard(
                     modifier = modifier
-                        .height(62.dp)
+                        .height(60.dp)
                         .width(130.dp)
-                        .padding(start = 6.dp, top = 6.dp),
+                        .padding(start = 6.dp, top = 6.dp, end = 4.dp),
                     enableCta = true,
                     ctaText = "Lihat Semua",
                     subtitle = " ",
@@ -285,8 +288,8 @@ fun UohBuyAgainCard(
     NestCard(
         modifier = modifier
             .heightIn(min = 56.dp)
-            .widthIn(max = 315.dp)
-            .padding(start = 6.dp, end = 6.dp, top = 6.dp, bottom = 6.dp),
+            .widthIn(max = 325.dp)
+            .padding(start = 8.dp, top = 6.dp, bottom = 6.dp),
         type = NestCardType.Shadow,
         onClick = { onProductCardClick.invoke(recommItem, index) }
     ) {
@@ -346,8 +349,9 @@ fun UohBuyAgainCard(
                 variant = ButtonVariant.GHOST,
                 size = ButtonSize.MICRO,
                 modifier = Modifier
-                    .padding(start = 4.dp, end = 8.dp)
+                    .padding(start = 8.dp, end = 8.dp)
                     .align(Alignment.CenterVertically)
+                    .weight(1f)
             )
         }
     }
