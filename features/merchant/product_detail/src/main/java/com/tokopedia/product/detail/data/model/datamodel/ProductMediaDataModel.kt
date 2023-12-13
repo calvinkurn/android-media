@@ -118,12 +118,6 @@ data class MediaDataModel(
     fun isVideoType(): Boolean = type == ProductMediaDataModel.VIDEO_TYPE
 }
 
-data class ThumbnailDataModel(
-    val media: MediaDataModel = MediaDataModel(),
-    val isSelected: Boolean = false,
-    val impressHolder: ImpressHolder = ImpressHolder()
-)
-
 sealed class MediaContainerType(val type: String, val ratio: String) {
     object Square : MediaContainerType(type = "square", "H,1:1")
     object Portrait : MediaContainerType(type = "portrait", "H,4:5")
