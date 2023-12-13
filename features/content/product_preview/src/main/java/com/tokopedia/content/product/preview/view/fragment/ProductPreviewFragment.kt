@@ -79,7 +79,7 @@ class ProductPreviewFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
 
-        viewModel.addAction(ProductPreviewAction.FetchMiniInfo)
+        viewModel.onAction(ProductPreviewAction.FetchMiniInfo)
     }
 
     private fun initViews() = with(binding) {
@@ -157,7 +157,7 @@ class ProductPreviewFragment @Inject constructor(
                 }
             )
         } else {
-            viewModel.addAction(ProductPreviewAction.ProductAction(model))
+            viewModel.onAction(ProductPreviewAction.ProductAction(model))
         }
     }
 
