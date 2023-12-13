@@ -51,7 +51,7 @@ class ReviewParentContentViewHolder(
         tvReviewDescription.text = description.description
     }
 
-    private fun bindLike(state: LikeUiState) = with(binding.layoutLikeReview) {
+    fun bindLike(state: LikeUiState) = with(binding.layoutLikeReview) {
         tvLikeCount.text = state.count.toString()
         root.setOnClickListener {
             listener.onLike(state)
