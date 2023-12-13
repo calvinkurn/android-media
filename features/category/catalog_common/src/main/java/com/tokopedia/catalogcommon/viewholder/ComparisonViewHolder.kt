@@ -3,6 +3,7 @@ package com.tokopedia.catalogcommon.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetItemComparisonBinding
@@ -33,8 +34,8 @@ class ComparisonViewHolder(
         )
         fun onComparisonSeeMoreButtonClicked(items: List<ComparisonUiModel.ComparisonContent>)
         fun onComparisonProductClick(id: String)
-
         fun onComparisonImpression(id: String)
+        fun onComparisonScrolled(dx: Int, dy: Int)
     }
 
     companion object {
@@ -69,6 +70,12 @@ class ComparisonViewHolder(
                 isDisplayingTopSpec,
                 comparisonItemListener
             )
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    comparisonItemListener?.onComparisonScrolled(dx, dy)
+                }
+            })
         }
         comparisonContents = contents
     }

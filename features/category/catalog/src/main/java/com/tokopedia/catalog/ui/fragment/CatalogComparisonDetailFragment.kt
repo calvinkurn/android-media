@@ -1,5 +1,6 @@
 package com.tokopedia.catalog.ui.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -28,6 +30,7 @@ import com.tokopedia.catalogcommon.viewholder.ComparisonViewHolder
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
@@ -45,6 +48,8 @@ class CatalogComparisonDetailFragment :
 
     companion object {
         private const val START_INDEX_HEADER = 2
+        private const val HEADER_VISIBLE_THRESHOLD = 150
+        private const val HEADER_ELEVATION = 5F
         const val CATALOG_COMPARISON_DETAIL_FRAGMENT_TAG = "CATALOG_COMPARISON_DETAIL_FRAGMENT_TAG"
         const val ARG_PARAM_CATALOG_ID = "catalogId"
         const val ARG_PARAM_CATEGORY_ID = "categoryId"
@@ -153,11 +158,21 @@ class CatalogComparisonDetailFragment :
     }
 
     private fun setupContent() {
+        var scrollProgress = 0
         val layoutManager = LinearLayoutManager(context)
-        binding?.rvContent?.layoutManager = layoutManager
-        binding?.rvContent?.adapter = widgetAdapter
-        binding?.gePageError?.setActionClickListener {
-            viewModel.getProductCatalogComparisons(catalogId, compareCatalogIds)
+        binding?.apply {
+            rvContent.layoutManager = layoutManager
+            rvContent.adapter = widgetAdapter
+            rvContent.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    scrollProgress += dy
+                    updateHeaderVisibility(scrollProgress)
+                }
+            })
+            gePageError.setActionClickListener {
+                viewModel.getProductCatalogComparisons(catalogId, compareCatalogIds)
+            }
         }
     }
 
@@ -175,6 +190,16 @@ class CatalogComparisonDetailFragment :
                 }
             }
         }
+    }
+
+    private fun FragmentCatalogComparisonDetailBinding.updateHeaderVisibility(scrollProgress: Int) {
+        val showHeader = scrollProgress > HEADER_VISIBLE_THRESHOLD
+        tfHeaderTitle.isVisible = showHeader
+        rvHeader.isVisible = showHeader
+        toolbar.elevation = if (showHeader) HEADER_ELEVATION else 0f
+        divider.elevation = toolbar.elevation
+        tfHeaderTitle.elevation = toolbar.elevation
+        rvHeader.elevation = toolbar.elevation
     }
 
     // TODO: Implement this when IOS team is ready
@@ -209,13 +234,18 @@ class CatalogComparisonDetailFragment :
         setupContentHeader(compareCatalogIds)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupContentHeader(compareCatalogIds: List<String>) {
-        val layoutManager = LinearLayoutManager(context ?: return, LinearLayoutManager.HORIZONTAL, false)
-        val adapter = ComparisonHeaderAdapter(List(compareCatalogIds.size) { index ->
-            getString(R.string.catalog_title_comparison, index + START_INDEX_HEADER)
-        })
-        binding?.rvHeader?.layoutManager = layoutManager
-        binding?.rvHeader?.adapter = adapter
+        val comparisonAdapter = ComparisonHeaderAdapter(
+            List(compareCatalogIds.size) { index ->
+                getString(R.string.catalog_title_comparison, index + START_INDEX_HEADER)
+            }
+        )
+        binding?.rvHeader?.apply {
+            layoutManager = LinearLayoutManager(context ?: return, LinearLayoutManager.HORIZONTAL, false)
+            adapter = comparisonAdapter
+            setOnTouchListener { _, _ -> return@setOnTouchListener true } // disable scrolling
+        }
     }
 
     override fun onCreateView(
@@ -278,6 +308,10 @@ class CatalogComparisonDetailFragment :
 
     override fun onComparisonImpression(id: String) {
         // no-op
+    }
+
+    override fun onComparisonScrolled(dx: Int, dy: Int) {
+        binding?.rvHeader?.scrollBy(dx, dy)
     }
 
     override fun onFragmentBackPressed(): Boolean {

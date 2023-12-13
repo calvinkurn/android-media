@@ -871,6 +871,10 @@ class CatalogDetailPageFragment :
         }
     }
 
+    override fun onComparisonScrolled(dx: Int, dy: Int) {
+        // no-op
+    }
+
     private fun changeComparison(compareCatalogIds: List<String>) {
         retriedCompareCatalogIds = compareCatalogIds
         viewModel.getProductCatalogComparisons(catalogId, compareCatalogIds)
