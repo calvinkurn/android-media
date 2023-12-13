@@ -2,11 +2,14 @@ package com.tokopedia.content.product.preview.view.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,6 +24,7 @@ import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.content.product.preview.R
 
 /**
  * @author by astidhiyaa on 23/11/23
@@ -34,13 +38,15 @@ fun MediaBottomNav(
     NestTheme(darkTheme = true) {
         ConstraintLayout(
             modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .background(colorResource(id = unifyprinciplesR.color.Unify_Static_Black))
                 .padding(
                     start = 16.dp,
                     top = 8.dp,
                     bottom = 8.dp,
                     end = 16.dp
                 )
-                .background(colorResource(id = unifyprinciplesR.color.Unify_Static_Black_68))
         ) {
             /*
                 use it after design is final.
@@ -51,7 +57,7 @@ fun MediaBottomNav(
                 text = product.title,
                 maxLines = 1,
                 textStyle = NestTheme.typography.small.copy(
-                    color = colorResource(id = unifyprinciplesR.color.Unify_NN600)
+                    color = colorResource(id = R.color.product_preview_dms_bottom_title)
                 ),
                 modifier = Modifier.constrainAs(title) {
                     width = Dimension.wrapContent
@@ -82,7 +88,7 @@ fun MediaBottomNav(
             AnimatedVisibility(visible = product.price is BottomNavUiModel.DiscountedPrice) {
                 // Slashed price [if there's a discount]
                 NestTypography(
-                    text = product.price.toString(),
+                    text = (product.price as BottomNavUiModel.DiscountedPrice).discountedPrice,
                     maxLines = 1,
                     textStyle = NestTheme.typography.small.copy(
                         color = colorResource(id = unifyprinciplesR.color.Unify_NN400),
@@ -100,7 +106,7 @@ fun MediaBottomNav(
 
                 // Discount percentage if any
                 NestTypography(
-                    text = product.price.toString(),
+                    text = product.price.discountPercentage,
                     maxLines = 1,
                     textStyle = NestTheme.typography.small.copy(
                         color = colorResource(id = unifyprinciplesR.color.Unify_RN500),
@@ -119,7 +125,7 @@ fun MediaBottomNav(
             }
 
             NestButton(
-                text = "+ Keranjang",
+                text = stringResource(id = R.string.bottom_atc_wording),
                 onClick = onAtcClicked,
                 variant = ButtonVariant.GHOST_INVERTED,
                 size = ButtonSize.SMALL,

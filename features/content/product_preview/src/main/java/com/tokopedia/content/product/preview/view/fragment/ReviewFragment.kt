@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentReviewBinding
@@ -25,8 +26,10 @@ import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParent
 import com.tokopedia.content.product.preview.viewmodel.EntrySource
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModelFactory
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+
 
 class ReviewFragment @Inject constructor(
     private val viewModelFactory: ProductPreviewViewModelFactory.Creator,
@@ -43,7 +46,7 @@ class ReviewFragment @Inject constructor(
         )
     }
 
-    private val reviewAdapter by lazy {
+    private val reviewAdapter by lazyThreadSafetyNone {
         ReviewParentAdapter(this)
     }
 
@@ -79,7 +82,7 @@ class ReviewFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
 
-        viewModel.addAction(ProductPreviewAction.FetchReview)
+        viewModel.onAction(ProductPreviewAction.FetchReview)
     }
 
     private fun setupView() {
@@ -96,7 +99,7 @@ class ReviewFragment @Inject constructor(
     }
 
     private fun renderList(prev: List<ReviewUiModel>?, data: List<ReviewUiModel>) {
-        if (prev == null || prev == data) return
+        if (prev == null || prev == data) return //TODO: adjust condition
         reviewAdapter.submitList(data)
     }
 
@@ -104,7 +107,8 @@ class ReviewFragment @Inject constructor(
      * Review Content Listener
      */
     override fun onReviewCredibilityClicked(author: AuthorUiModel) {
-        router.route(requireContext(), "$REVIEW_CREDIBILITY_APPLINK${author.id}/$PAGE_SOURCE/")
+        val appLink = UriUtil.buildUri(REVIEW_CREDIBILITY_APPLINK, author.id, PAGE_SOURCE)
+        router.route(requireContext(), appLink)
     }
 
     override fun onMenuClicked(menus: List<ContentMenuItem>) {
@@ -129,7 +133,7 @@ class ReviewFragment @Inject constructor(
      * Review Report Bottom Sheet Listener
      */
     override fun onReasonClicked(report: ReportUiModel) {
-        viewModel.addAction(ProductPreviewAction.SubmitReport(report))
+        viewModel.onAction(ProductPreviewAction.SubmitReport(report))
     }
 
     companion object {

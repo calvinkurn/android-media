@@ -11,7 +11,6 @@ import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentLoadingViewHolder
 
-//TODO: please add Listener
 class ReviewParentAdapter(private val listener: ReviewParentContentViewHolder.Listener) : ListAdapter<ReviewUiModel, ViewHolder>(ReviewAdapterCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -58,7 +57,7 @@ class ReviewParentAdapter(private val listener: ReviewParentContentViewHolder.Li
 
 internal class ReviewAdapterCallback : DiffUtil.ItemCallback<ReviewUiModel>() {
     override fun areItemsTheSame(oldItem: ReviewUiModel, newItem: ReviewUiModel): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem.reviewId == newItem.reviewId
     }
 
     override fun areContentsTheSame(oldItem: ReviewUiModel, newItem: ReviewUiModel): Boolean {

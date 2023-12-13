@@ -1,4 +1,4 @@
-package com.tokopedia.content.product.preview.view.components
+package com.tokopedia.content.product.preview.view.components.player
 
 import android.content.Context
 import android.util.AttributeSet

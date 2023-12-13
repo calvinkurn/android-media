@@ -11,18 +11,19 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.content.product.preview.data.ContentUiModel
+import com.tokopedia.content.product.preview.data.product.ProductIndicatorUiModel
 import com.tokopedia.content.product.preview.databinding.FragmentProductBinding
 import com.tokopedia.content.product.preview.view.adapter.product.ProductContentAdapter
 import com.tokopedia.content.product.preview.view.adapter.product.ProductIndicatorAdapter
-import com.tokopedia.content.product.preview.view.components.ProductPreviewExoPlayer
-import com.tokopedia.content.product.preview.view.components.ProductPreviewVideoPlayerManager
+import com.tokopedia.content.product.preview.view.components.items.ProductPreviewIndicatorItemDecoration
+import com.tokopedia.content.product.preview.view.components.player.ProductPreviewExoPlayer
+import com.tokopedia.content.product.preview.view.components.player.ProductPreviewVideoPlayerManager
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
-import com.tokopedia.content.product.preview.view.model.ProductVideoModel
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
-import timber.log.Timber
 import javax.inject.Inject
 
-class ProductFragment @Inject constructor(): TkpdBaseV4Fragment() {
+class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentProductBinding? = null
     private val binding: FragmentProductBinding
@@ -31,8 +32,13 @@ class ProductFragment @Inject constructor(): TkpdBaseV4Fragment() {
     private var productContentAdapter: ProductContentAdapter? = null
     private var productIndicatorAdapter: ProductIndicatorAdapter? = null
 
-    private var snapHelper: PagerSnapHelper = PagerSnapHelper()
-    private val layoutManager by lazyThreadSafetyNone {
+    private var snapHelperContent: PagerSnapHelper = PagerSnapHelper()
+    private var snapHelperIndicator: PagerSnapHelper = PagerSnapHelper()
+
+    private val layoutManagerContent by lazyThreadSafetyNone {
+        LinearLayoutManager(requireContext(), HORIZONTAL, false)
+    }
+    private val layoutManagerIndicator by lazyThreadSafetyNone {
         LinearLayoutManager(requireContext(), HORIZONTAL, false)
     }
 
@@ -40,8 +46,14 @@ class ProductFragment @Inject constructor(): TkpdBaseV4Fragment() {
     private val contentScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == ViewPager2.SCROLL_STATE_IDLE) {
-                val position = getCurrentPosition()
-                Timber.d("position $position")
+                val position = getContentCurrentPosition()
+            }
+        }
+    }
+    private val indicatorScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == ViewPager2.SCROLL_STATE_IDLE) {
+                val position = getIndicatorCurrentPosition()
             }
         }
     }
@@ -64,48 +76,143 @@ class ProductFragment @Inject constructor(): TkpdBaseV4Fragment() {
 
     private fun setupViews() {
         setupProductContentViews()
+        setupProductIndicatorViews()
     }
 
-    private fun setupProductContentViews() {
+    private fun setupProductContentViews() = with(binding.rvContentProduct) {
         productContentAdapter = ProductContentAdapter(listener = object : ProductPreviewListener {
             override fun getVideoPlayer(id: String): ProductPreviewExoPlayer {
                 return videoPlayerManager.occupy(id)
             }
         })
-        binding.rvContentProduct.adapter = productContentAdapter
-        binding.rvContentProduct.layoutManager = layoutManager
-        binding.rvContentProduct.hasFixedSize()
-        binding.rvContentProduct.removeOnScrollListener(contentScrollListener)
-        binding.rvContentProduct.addOnScrollListener(contentScrollListener)
-        snapHelper.attachToRecyclerView(binding.rvContentProduct)
+        adapter = productContentAdapter
+        layoutManager = layoutManagerContent
+        hasFixedSize()
+        removeOnScrollListener(contentScrollListener)
+        addOnScrollListener(contentScrollListener)
+        snapHelperContent.attachToRecyclerView(this)
+        val data = listOf(
+                ContentUiModel(
+                    type = ContentUiModel.MediaType.Video,
+                    url = "https://vod-stream.tokopedia.net/view/adaptive.m3u8?id=f01396ff94ae71eeae0987c7371d0102",
+                ),
+                ContentUiModel(
+                    type = ContentUiModel.MediaType.Image,
+                    url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/12/12/ca158fc4-699a-495e-aaac-229b4f8ed1aa.png",
+                ),
+                ContentUiModel(
+                    type = ContentUiModel.MediaType.Image,
+                    url = "https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/2/4/6a3db555-a5e9-4bc1-9c17-1753ad105b92.jpg",
+                ),
+                ContentUiModel(
+                    type = ContentUiModel.MediaType.Image,
+                    url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/9/14/9d770fbf-2bbd-4206-8511-56df29a6f4be.png",
+                ),
+                ContentUiModel(
+                    type = ContentUiModel.MediaType.Image,
+                    url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/8/25/1f559a48-03f3-4656-b77f-3caf0fcc94d2.png",
+                ),
+            )
 
-        productContentAdapter?.insertData(listOf(
-            ProductVideoModel(
-                "1",
-                "https://vod-stream.tokopedia.net/view/adaptive.m3u8?id=f01396ff94ae71eeae0987c7371d0102"
-            ),
-            ProductVideoModel(
-                "2",
-                "https://vod.tokopedia.com/view/adaptive.m3u8?id=515438f0665971edad0287c7361c0102"
-            ),
-            ProductVideoModel(
-                "3",
-                "https://vod-stream.tokopedia.net/view/adaptive.m3u8?id=d0c8f02d94aa71eeb0805114c0db0102"
-            ),
-            ProductVideoModel(
-                "4",
-                "https://vod-stream.tokopedia.net/view/adaptive.m3u8?id=10795c6294ab71eeb0215114c1ca0102"
-            ),
-            ProductVideoModel(
-                "5",
-                "https://vod-stream.tokopedia.net/view/adaptive.m3u8?id=1009f0ef94ae71ee8e0597c6360c0102"
-            ),
-        ))
+        productContentAdapter?.insertData(data)
     }
 
-    private fun getCurrentPosition(): Int {
-        val snappedView = snapHelper.findSnapView(layoutManager) ?: return RecyclerView.NO_POSITION
+    private fun setupProductIndicatorViews() = with(binding.rvIndicatorProduct) {
+        productIndicatorAdapter = ProductIndicatorAdapter()
+        adapter = productIndicatorAdapter
+        layoutManager = layoutManagerIndicator
+        removeOnScrollListener(indicatorScrollListener)
+        addOnScrollListener(indicatorScrollListener)
+        snapHelperIndicator.attachToRecyclerView(this)
+        if (itemDecorationCount == 0) {
+            addItemDecoration(ProductPreviewIndicatorItemDecoration(requireContext()))
+        }
+        val data = listOf(
+                ProductIndicatorUiModel(
+                    id = "1",
+                    selected = true,
+                    content = ContentUiModel(
+                        type = ContentUiModel.MediaType.Video,
+                        url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/12/12/ca158fc4-699a-495e-aaac-229b4f8ed1aa.png",
+                    ),
+                    variantName = "Test 1",
+                ),
+                ProductIndicatorUiModel(
+                    id = "2",
+                    selected = false,
+                    content = ContentUiModel(
+                        type = ContentUiModel.MediaType.Image,
+                        url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/12/12/ca158fc4-699a-495e-aaac-229b4f8ed1aa.png",
+                    ),
+                    variantName = "Test 2",
+                ),
+                ProductIndicatorUiModel(
+                    id = "3",
+                    selected = false,
+                    content = ContentUiModel(
+                        type = ContentUiModel.MediaType.Image,
+                        url = "https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/2/4/6a3db555-a5e9-4bc1-9c17-1753ad105b92.jpg",
+                    ),
+                    variantName = "Test 3",
+                ),
+                ProductIndicatorUiModel(
+                    id = "4",
+                    selected = false,
+                    content = ContentUiModel(
+                        type = ContentUiModel.MediaType.Image,
+                        url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/9/14/9d770fbf-2bbd-4206-8511-56df29a6f4be.png",
+                    ),
+                    variantName = "Test 4",
+                ),
+                ProductIndicatorUiModel(
+                    id = "5",
+                    selected = false,
+                    content = ContentUiModel(
+                        type = ContentUiModel.MediaType.Image,
+                        url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/8/25/1f559a48-03f3-4656-b77f-3caf0fcc94d2.png",
+                    ),
+                    variantName = "Test 5",
+                ),
+                ProductIndicatorUiModel(
+                    id = "6",
+                    selected = false,
+                    content = ContentUiModel(
+                        type = ContentUiModel.MediaType.Image,
+                        url = "https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/2/4/6a3db555-a5e9-4bc1-9c17-1753ad105b92.jpg",
+                    ),
+                    variantName = "Test 6",
+                ),
+                ProductIndicatorUiModel(
+                    id = "7",
+                    selected = false,
+                    content = ContentUiModel(
+                        type = ContentUiModel.MediaType.Image,
+                        url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/9/14/9d770fbf-2bbd-4206-8511-56df29a6f4be.png",
+                    ),
+                    variantName = "Test 7",
+                ),
+                ProductIndicatorUiModel(
+                    id = "8",
+                    selected = false,
+                    content = ContentUiModel(
+                        type = ContentUiModel.MediaType.Image,
+                        url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/8/25/1f559a48-03f3-4656-b77f-3caf0fcc94d2.png",
+                    ),
+                    variantName = "Test 8",
+                ),
+            )
+
+        productIndicatorAdapter?.insertData(data)
+    }
+
+    private fun getContentCurrentPosition(): Int {
+        val snappedView = snapHelperContent.findSnapView(layoutManagerContent) ?: return RecyclerView.NO_POSITION
         return binding.rvContentProduct.getChildAdapterPosition(snappedView)
+    }
+
+    private fun getIndicatorCurrentPosition(): Int {
+        val snappedView = snapHelperIndicator.findSnapView(layoutManagerIndicator) ?: return RecyclerView.NO_POSITION
+        return binding.rvIndicatorProduct.getChildAdapterPosition(snappedView)
     }
 
     override fun onDestroyView() {

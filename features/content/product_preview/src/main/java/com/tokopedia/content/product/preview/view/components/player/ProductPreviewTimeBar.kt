@@ -1,4 +1,4 @@
-package com.tokopedia.content.product.preview.view.components
+package com.tokopedia.content.product.preview.view.components.player
 
 import android.annotation.SuppressLint
 import android.content.Context

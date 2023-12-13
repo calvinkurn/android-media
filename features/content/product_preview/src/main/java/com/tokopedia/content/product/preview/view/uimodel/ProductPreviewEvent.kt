@@ -4,5 +4,24 @@ package com.tokopedia.content.product.preview.view.uimodel
  * @author by astidhiyaa on 12/12/23
  */
 sealed interface ProductPreviewEvent {
-    //TODO: add event
+    data class LoginEvent<T>(val data: T) : ProductPreviewEvent
+    data class ShowSuccessToaster(
+        val message: String? = null,
+        val type: Type,
+    ) : ProductPreviewEvent {
+        enum class Type {
+            ATC, Unknown;
+        }
+    }
+
+    data class ShowErrorToaster(
+        val message: Throwable,
+        val onClick: () -> Unit
+    ) : ProductPreviewEvent
+
+    data class NavigateEvent(
+        val appLink: String
+    ) : ProductPreviewEvent
 }
+
+
