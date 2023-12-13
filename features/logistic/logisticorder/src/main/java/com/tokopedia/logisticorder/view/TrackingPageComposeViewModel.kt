@@ -4,14 +4,11 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.logisticorder.mapper.TrackingPageMapperNew
-import com.tokopedia.logisticorder.uimodel.ErrorTrackingPage
 import com.tokopedia.logisticorder.uimodel.TrackingPageEvent
 import com.tokopedia.logisticorder.uimodel.TrackingPageState
 import com.tokopedia.logisticorder.usecase.GetTrackingUseCase
 import com.tokopedia.logisticorder.usecase.SetRetryAvailabilityUseCase
 import com.tokopedia.logisticorder.usecase.SetRetryBookingUseCase
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,10 +25,17 @@ class TrackingPageComposeViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher.main) {
 
     private var orderId: String = ""
-    private val _uiState = MutableStateFlow<TrackingPageState>(TrackingPageState.FirstLoad)
+    private var orderTxId: String? = null
+    private var groupType: Int? = null
+    private var trackingUrl: String? = null
+    private var caller: String? = null
+    private val _uiState = MutableStateFlow(TrackingPageState())
     val uiState: StateFlow<TrackingPageState> = _uiState.asStateFlow()
 
     fun onEvent(event: TrackingPageEvent) {
+        _uiState.update {
+            it.copy(isLoading = true)
+        }
         when (event) {
             is TrackingPageEvent.CheckAvailabilityToFindNewDriver -> {
                 retryAvailability(event.orderId)
@@ -55,11 +59,11 @@ class TrackingPageComposeViewModel @Inject constructor(
                 val getTrackingData = trackingUseCase(trackingParam)
                 val uiModel = mapper.mapTrackingData(getTrackingData)
                 _uiState.update {
-                    TrackingPageState.SuccessGetTrackingData(uiModel)
+                    it.copy(isLoading = false, trackingData = uiModel)
                 }
             } catch (e: Throwable) {
                 _uiState.update {
-                    TrackingPageState.TrackingPageError(ErrorTrackingPage.TRACKING_DATA, e)
+                    it.copy(isLoading = false, error = e)
                 }
             }
         }
@@ -70,10 +74,12 @@ class TrackingPageComposeViewModel @Inject constructor(
             try {
                 val retryBooking = setRetryBookingUseCase(orderId)
                 _uiState.update {
-                    _retryBooking.value = Success(retryBooking)
+                    it.copy(isLoading = false, retryBooking = retryBooking)
                 }
             } catch (e: Throwable) {
-                _retryBooking.value = Fail(e)
+                _uiState.update {
+                    it.copy(isLoading = false, error = e)
+                }
             }
         }
     }
@@ -82,9 +88,13 @@ class TrackingPageComposeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val retryAvailability = setRetryAvailabilityUseCase(orderId)
-                _retryAvailability.value = Success(retryAvailability)
+                _uiState.update {
+                    it.copy(isLoading = false, retryAvailability = retryAvailability)
+                }
             } catch (e: Throwable) {
-                _retryAvailability.value = Fail(e)
+                _uiState.update {
+                    it.copy(isLoading = false, error = e)
+                }
             }
         }
     }
