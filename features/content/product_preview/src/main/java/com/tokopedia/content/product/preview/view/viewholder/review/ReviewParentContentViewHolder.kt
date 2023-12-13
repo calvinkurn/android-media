@@ -38,9 +38,9 @@ class ReviewParentContentViewHolder(
         val divider = root.context.getString(R.string.circle_dot_divider)
         tvReviewDetails.text = buildString {
             append(description.stars)
-            append(divider)
+            append(" $divider ")
             append(description.productType)
-            append(divider)
+            append(" $divider ")
             append(description.timestamp)
         }
         tvReviewDescription.text = description.description
