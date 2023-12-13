@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +18,7 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUploadUiState
+import com.tokopedia.play.broadcaster.shorts.view.compose.PlayShortsSummaryConfigLayout
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
@@ -27,6 +30,7 @@ import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -79,6 +83,28 @@ class PlayShortsSummaryFragment @Inject constructor(
             container,
             false
         )
+
+        binding.composeView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+
+            setContent {
+
+                val uiState by viewModel.uiState.collectAsStateWithLifecycle(PlayShortsUiState.Empty)
+
+                PlayShortsSummaryConfigLayout(
+                    tagsState = uiState.tags,
+                    onRefreshTag = {
+                        analytic.clickRefreshContentTag(viewModel.selectedAccount)
+
+                        viewModel.submitAction(PlayShortsAction.LoadTag)
+                    },
+                    onTagClick = {
+
+                    }
+                )
+            }
+        }
+
         return _binding?.root
     }
 

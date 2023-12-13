@@ -29,7 +29,26 @@ data class PlayShortsUiState(
     val uploadState: PlayShortsUploadUiState,
     val isAffiliate: Boolean,
     val bannerPreparation: List<PlayBroadcastPreparationBannerModel>,
-)
+) {
+    companion object {
+        val Empty: PlayShortsUiState
+            get() = PlayShortsUiState(
+                globalLoader = false,
+                config = PlayShortsConfigUiModel.Empty,
+                media = PlayShortsMediaUiModel.Empty,
+                accountList = emptyList(),
+                selectedAccount = ContentAccountUiModel.Empty,
+                menuList = emptyList(),
+                titleForm = PlayShortsTitleFormUiState.Empty,
+                coverForm = PlayShortsCoverFormUiState.Empty,
+                productSectionList = emptyList(),
+                tags = NetworkResult.Unknown,
+                uploadState = PlayShortsUploadUiState.Unknown,
+                isAffiliate = false,
+                bannerPreparation = emptyList(),
+            )
+    }
+}
 
 data class PlayShortsTitleFormUiState(
     val title: String,
