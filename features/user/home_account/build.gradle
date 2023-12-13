@@ -85,10 +85,11 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.nestComponents
     implementation rootProject.ext.unifyDependencies.nestPrinciples
     implementation rootProject.ext.composeDependencies.composeUi
+    implementation rootProject.ext.composeDependencies.composeFoundation
     implementation rootProject.ext.composeDependencies.composeLiveData
     implementation rootProject.ext.composeDependencies.composeActivity
     implementation rootProject.ext.unifyDependencies.header
-    debugImplementation rootProject.ext.composeDependencies.composeUiTooling
+    implementation rootProject.ext.composeDependencies.composeUiTooling
     debugImplementation rootProject.ext.composeDependencies.composePreview
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
