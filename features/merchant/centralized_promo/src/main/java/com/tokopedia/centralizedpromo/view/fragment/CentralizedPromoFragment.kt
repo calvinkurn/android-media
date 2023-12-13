@@ -200,6 +200,7 @@ class CentralizedPromoFragment :
                     true
                 ),
                 onSelectedFilter = { filter ->
+                    hidePromoCreationCoachmark(filter)
                     currentFilterTab = filter
                     CentralizedPromoTracking.sendClickFilter(filter.id)
                     partialViews[LayoutType.PROMO_CREATION]?.renderLoading(LoadingType.PROMO_LIST)
@@ -438,6 +439,14 @@ class CentralizedPromoFragment :
             ApplinkConst.WEBVIEW,
             PLAY_PERFORMANCE_URL
         )
+    }
+
+    private fun hidePromoCreationCoachmark(selectedFilter: FilterPromoUiModel) {
+        if (selectedFilter != currentFilterTab && coachMark2?.isDismissed != true) {
+            view?.post {
+                coachMark2?.dismissCoachMark()
+            }
+        }
     }
 }
 
