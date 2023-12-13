@@ -38,6 +38,8 @@ import com.tokopedia.logisticorder.uimodel.LastDriverModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.utils.TippingConstant.OPEN
+import com.tokopedia.logisticorder.utils.TippingConstant.PARAM_ORDER_ID
+import com.tokopedia.logisticorder.utils.TippingConstant.PARAM_REF_NUM
 import com.tokopedia.logisticorder.utils.TippingConstant.REFUND_TIP
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_PAYMENT
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_TIPPING
@@ -45,7 +47,6 @@ import com.tokopedia.logisticorder.utils.TippingConstant.WAITING_PAYMENT
 import com.tokopedia.logisticorder.utils.isHypen
 import com.tokopedia.logisticorder.utils.toHyphenIfEmptyOrNull
 import com.tokopedia.logisticorder.view.bottomsheet.DriverInfoBottomSheet
-import com.tokopedia.logisticorder.view.bottomsheet.DriverTippingBottomSheet
 import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.targetedticker.domain.TargetedTickerPage
@@ -391,7 +392,10 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
             btnTipping.setOnClickListener {
                 when (tippingData.status) {
                     SUCCESS_PAYMENT, SUCCESS_TIPPING, OPEN -> {
-                        DriverTippingBottomSheet().show(parentFragmentManager, mOrderId, data)
+                        RouteManager.route(
+                            context,
+                            "${ApplinkConstInternalLogistic.TIPPING_DRIVER}?$PARAM_ORDER_ID=$mOrderId&$PARAM_REF_NUM=${data.trackOrder.shippingRefNum}"
+                        )
                     }
 
                     WAITING_PAYMENT -> {

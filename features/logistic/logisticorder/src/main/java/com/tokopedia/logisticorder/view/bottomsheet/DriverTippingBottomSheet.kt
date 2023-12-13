@@ -35,8 +35,8 @@ import com.tokopedia.logisticorder.utils.TippingConstant.OPEN
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_PAYMENT
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_TIPPING
 import com.tokopedia.logisticorder.utils.TippingConstant.WAITING_PAYMENT
-import com.tokopedia.logisticorder.view.TrackingPageViewModel
 import com.tokopedia.logisticorder.view.adapter.TippingValueAdapter
+import com.tokopedia.logisticorder.view.tipping.TippingDriverViewModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -53,11 +53,12 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var binding by autoCleared<BottomsheetTippingGojekBinding>()
-    private val viewModel: TrackingPageViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[TrackingPageViewModel::class.java]
+    private val viewModel: TippingDriverViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[TippingDriverViewModel::class.java]
     }
 
     private var orderId: String? = ""
+    private var refNum: String? = ""
     private var trackingDataModel: TrackingDataModel? = null
     private var tippingValueAdapter: TippingValueAdapter? = null
     private var selectedTippingValue: Int? = null
@@ -161,7 +162,15 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
             imgTipDriver.urlSrc = IMG_SUCCESS_TIPPING
             tvTipResult.text = getString(if (logisticDriverModel.status == SUCCESS_PAYMENT) com.tokopedia.logisticorder.R.string.tipping_success_payment_text else com.tokopedia.logisticorder.R.string.tipping_success_to_gojek_text)
             tvTipResultDesc.text = HtmlLinkHelper(this.root.context, getString(com.tokopedia.logisticorder.R.string.tipping_result_desc)).spannedString
-            tvResiValue.text = trackingDataModel?.trackOrder?.shippingRefNum
+            if (trackingDataModel != null) {
+                tvResiValue.text = trackingDataModel?.trackOrder?.shippingRefNum
+            } else {
+                tvResiValue.gone()
+                tvResi.gone()
+            }
+            refNum?.let {
+                tvResiValue.text = it
+            }
             tvInvoiceValue.text = orderId
             tvDriverNameValue.text = logisticDriverModel.lastDriver.name
             tvPhoneNumberValue.text = logisticDriverModel.lastDriver.phone
@@ -314,9 +323,9 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
         binding.etNominalTip.editText.setText(tippingValue.toString())
     }
 
-    fun show(fm: FragmentManager, orderId: String?, trackingDataModel: TrackingDataModel) {
+    fun show(fm: FragmentManager, orderId: String?, refNum: String?) {
         this.orderId = orderId
-        this.trackingDataModel = trackingDataModel
+        this.refNum = refNum
         show(fm, "TAG")
     }
 

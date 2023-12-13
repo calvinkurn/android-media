@@ -22,6 +22,24 @@
         </activity>
 
         <activity
+            android:name="com.tokopedia.logisticorder.view.tipping.TippingDriverActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Translucent">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_logistic"
+                    android:pathPattern="@string/path_tipping_driver"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".view.pod.ui.ProofOfDeliveryActivity"
             android:exported="false"
             android:label="@string/label_pod"

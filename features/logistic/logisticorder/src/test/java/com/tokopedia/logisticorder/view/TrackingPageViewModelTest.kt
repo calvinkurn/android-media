@@ -2,13 +2,9 @@ package com.tokopedia.logisticorder.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.logisticorder.domain.response.GetDriverTipResponse
 import com.tokopedia.logisticorder.domain.response.GetLogisticTrackingResponse
-import com.tokopedia.logisticorder.mapper.DriverTipMapper
 import com.tokopedia.logisticorder.mapper.TrackingPageMapperNew
-import com.tokopedia.logisticorder.uimodel.LogisticDriverModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
-import com.tokopedia.logisticorder.usecase.GetDriverTipUseCase
 import com.tokopedia.logisticorder.usecase.GetTrackingUseCase
 import com.tokopedia.logisticorder.usecase.SetRetryAvailabilityUseCase
 import com.tokopedia.logisticorder.usecase.SetRetryBookingUseCase
@@ -35,17 +31,14 @@ class TrackingPageViewModelTest {
     private val getTrackingUseCase: GetTrackingUseCase = mockk(relaxed = true)
     private val setRetryAvailabilityUseCase: SetRetryAvailabilityUseCase = mockk(relaxed = true)
     private val setRetryBookingUseCase: SetRetryBookingUseCase = mockk(relaxed = true)
-    private val getDriverTipUseCase: GetDriverTipUseCase = mockk(relaxed = true)
 
     private val mapper = TrackingPageMapperNew()
-    private val driverTipMapper = DriverTipMapper()
 
     private lateinit var trackingPageViewModel: TrackingPageViewModel
 
     private val trackingDataObserver: Observer<Result<TrackingDataModel>> = mockk(relaxed = true)
     private val retryBookingObserver: Observer<Result<RetryBookingResponse>> = mockk(relaxed = true)
     private val retryAvailabilityObserver: Observer<Result<RetryAvailabilityResponse>> = mockk(relaxed = true)
-    private val driverTipDataObserver: Observer<Result<LogisticDriverModel>> = mockk(relaxed = true)
 
     private val defaultThrowable = Throwable("test error")
 
@@ -56,14 +49,11 @@ class TrackingPageViewModelTest {
             getTrackingUseCase,
             setRetryBookingUseCase,
             setRetryAvailabilityUseCase,
-            getDriverTipUseCase,
-            mapper,
-            driverTipMapper
+            mapper
         )
         trackingPageViewModel.trackingData.observeForever(trackingDataObserver)
         trackingPageViewModel.retryBooking.observeForever(retryBookingObserver)
         trackingPageViewModel.retryAvailability.observeForever(retryAvailabilityObserver)
-        trackingPageViewModel.driverTipData.observeForever(driverTipDataObserver)
     }
 
     @Test
@@ -106,19 +96,5 @@ class TrackingPageViewModelTest {
         coEvery { setRetryAvailabilityUseCase(any()) } throws defaultThrowable
         trackingPageViewModel.retryAvailability("12234")
         verify { retryAvailabilityObserver.onChanged(match { it is Fail }) }
-    }
-
-    @Test
-    fun `Driver Tips Data Success`() {
-        coEvery { getDriverTipUseCase(any()) } returns GetDriverTipResponse()
-        trackingPageViewModel.getDriverTipsData("12234")
-        verify { driverTipDataObserver.onChanged(match { it is Success }) }
-    }
-
-    @Test
-    fun `Driver Tips Data Fail`() {
-        coEvery { getDriverTipUseCase(any()) } throws defaultThrowable
-        trackingPageViewModel.getDriverTipsData("12234")
-        verify { driverTipDataObserver.onChanged(match { it is Fail }) }
     }
 }
