@@ -5,6 +5,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.tokopedianow.annotation.presentation.adapter.typefactory.BrandWidgetTypeFactory
+import com.tokopedia.tokopedianow.annotation.presentation.uimodel.BrandWidgetUiModel
+import com.tokopedia.tokopedianow.annotation.presentation.viewholder.BrandWidgetViewHolder
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.listener.CategoryTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
@@ -54,12 +57,14 @@ class CategoryAdapterTypeFactory(
     TokoNowCategoryMenuTypeFactory,
     TokoNowProductRecommendationTypeFactory,
     TokoNowProgressBarTypeFactory,
-    TokoNowTickerTypeFactory {
+    TokoNowTickerTypeFactory,
+    BrandWidgetTypeFactory {
 
     /* Category Component Ui Model */
     override fun type(uiModel: CategoryTitleUiModel): Int = CategoryTitleViewHolder.LAYOUT
     override fun type(uiModel: CategoryNavigationUiModel): Int = CategoryNavigationViewHolder.LAYOUT
     override fun type(uiModel: CategoryShowcaseUiModel): Int = CategoryShowcaseViewHolder.LAYOUT
+    override fun type(uiModel: BrandWidgetUiModel): Int = BrandWidgetViewHolder.LAYOUT
 
     /* Common Component Ui Model */
     override fun type(uiModel: TokoNowCategoryMenuUiModel): Int = TokoNowCategoryMenuViewHolder.LAYOUT
@@ -99,6 +104,9 @@ class CategoryAdapterTypeFactory(
                 itemView = view
             )
             TokoNowTickerViewHolder.LAYOUT -> TokoNowTickerViewHolder(
+                itemView = view
+            )
+            BrandWidgetViewHolder.LAYOUT -> BrandWidgetViewHolder(
                 itemView = view
             )
             else -> super.createViewHolder(view, type)

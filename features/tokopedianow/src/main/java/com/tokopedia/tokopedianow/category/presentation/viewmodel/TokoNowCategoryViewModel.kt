@@ -13,6 +13,13 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
+import com.tokopedia.tokopedianow.annotation.domain.mapper.BrandWidgetMapper.addBrandWidget
+import com.tokopedia.tokopedianow.annotation.domain.mapper.BrandWidgetMapper.mapBrandWidget
+import com.tokopedia.tokopedianow.annotation.domain.mapper.BrandWidgetMapper.removeBrandWidget
+import com.tokopedia.tokopedianow.annotation.domain.model.TokoNowGetAnnotationListResponse.GetAnnotationListResponse
+import com.tokopedia.tokopedianow.annotation.domain.param.AnnotationPageSource
+import com.tokopedia.tokopedianow.annotation.domain.param.AnnotationType
+import com.tokopedia.tokopedianow.annotation.domain.usecase.GetAnnotationWidgetUseCase
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryRecommendationMapper.mapToCategoryRecommendation
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.DEFAULT_PRODUCT_QUANTITY
@@ -63,6 +70,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     private val getCategoryProductUseCase: GetCategoryProductUseCase,
     private val getCategoryDetailUseCase: GetCategoryDetailUseCase,
     private val getProductAdsUseCase: GetProductAdsUseCase,
+    private val getAnnotationWidgetUseCase: GetAnnotationWidgetUseCase,
     private val aceSearchParamMapper: AceSearchParamMapper,
     private val addressData: TokoNowLocalAddress,
     getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
@@ -166,6 +174,7 @@ class TokoNowCategoryViewModel @Inject constructor(
             categoryId = listOf(categoryIdL1)
         )
         visitableList.addProductAdsCarousel()
+        visitableList.addBrandWidget()
 
         addCategoryShowcases(
             categoryNavigationUiModel = categoryNavigationUiModel
@@ -344,6 +353,7 @@ class TokoNowCategoryViewModel @Inject constructor(
             block = {
                 getBatchShowcase(hasAdded = true)
                 getProductAds(categoryIdL1)
+                getBrandWidget()
             },
             onError = { /* nothing to do */ }
         )
@@ -391,6 +401,34 @@ class TokoNowCategoryViewModel @Inject constructor(
             onError = {
                 updateProductCartQuantity(productId, quantity, layoutType)
             }
+        )
+    }
+
+    private fun getBrandWidget() {
+        launchCatchError(block = {
+            val response = getAnnotationWidget(AnnotationType.BRAND)
+
+            if(response.showWidget()) {
+                visitableList.mapBrandWidget(response)
+            } else {
+                visitableList.removeBrandWidget()
+            }
+
+            updateVisitableListLiveData()
+        }) {
+            visitableList.removeBrandWidget()
+            updateVisitableListLiveData()
+        }
+    }
+
+    private suspend fun getAnnotationWidget(
+        annotationType: AnnotationType
+    ): GetAnnotationListResponse {
+        return getAnnotationWidgetUseCase.execute(
+            categoryId = categoryIdL1,
+            warehouseIds = getWarehouseIds(),
+            annotationType = annotationType,
+            pageSource = AnnotationPageSource.CLP_L1
         )
     }
 

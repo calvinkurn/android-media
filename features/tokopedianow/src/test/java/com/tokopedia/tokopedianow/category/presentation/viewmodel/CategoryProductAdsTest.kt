@@ -121,6 +121,23 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
     }
 
     @Test
+    fun `given get product ads error when getFirstPage should remove ads carousel from visitableList`() {
+        val error = NullPointerException()
+        setupAddressAndUserData()
+
+        onCategoryDetail_thenReturns()
+        onTargetedTicker_thenReturns()
+        onGetProductAds_thenReturn(error)
+
+        viewModel.onViewCreated()
+
+        val expectedVisitableList = createVisitableList()
+
+        viewModel.visitableListLiveData
+            .verifyValueEquals(expectedVisitableList)
+    }
+
+    @Test
     fun `given get product ads return empty product when getFirstPage should remove product ads carousel from categoryPage`() {
         val isLoggedIn = true
         val userId = "12223"
@@ -278,7 +295,9 @@ class CategoryProductAdsTest : TokoNowCategoryViewModelTestFixture() {
 
             val getProductAdsResponse = getProductAdsResponse.productAds
             val addToCartDataModel = AddToCartMapper.mapAddToCartResponse(addToCartGqlResponse)
+
             onAddToCart_thenReturns(addToCartDataModel)
+            onGetIsLoggedIn_thenReturn(loggedIn = false)
 
             val productAdsCarousel = ProductAdsMapper.mapProductAdsCarousel(
                 response = getProductAdsResponse
