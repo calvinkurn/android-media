@@ -30,6 +30,10 @@ sealed interface ProductPreviewEvent {
     data class ShowMenuSheet(
         val menus: List<ContentMenuItem>,
     ) : ProductPreviewEvent
+
+    data class LikeUpdate(
+        val state: LikeUiState
+    ) : ProductPreviewEvent
 }
 
 

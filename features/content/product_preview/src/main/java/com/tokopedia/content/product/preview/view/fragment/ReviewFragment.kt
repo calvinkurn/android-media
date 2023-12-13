@@ -19,6 +19,7 @@ import com.tokopedia.content.product.preview.utils.PAGE_SOURCE
 import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
+import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
@@ -141,6 +142,10 @@ class ReviewFragment @Inject constructor(
                 ReviewReportBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).show(childFragmentManager)
             else -> {}
         }
+    }
+
+    override fun onLike(status: LikeUiState) {
+        viewModel.onAction(ProductPreviewAction.Like(status))
     }
 
     /**

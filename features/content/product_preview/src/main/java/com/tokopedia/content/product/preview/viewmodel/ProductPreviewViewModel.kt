@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
@@ -58,6 +59,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             is ProductPreviewAction.Navigate -> navigate(action.appLink)
             is ProductPreviewAction.SubmitReport -> submitReport(action.model)
             is ProductPreviewAction.ClickMenu -> menuOnClicked(action.menus)
+            is ProductPreviewAction.Like -> like(action.state)
             else -> {}
         }
     }
@@ -115,7 +117,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             val result = repo.submitReport(model)
             if (result) _uiEvent.emit(ProductPreviewEvent.ShowSuccessToaster(type = ProductPreviewEvent.ShowSuccessToaster.Type.Report)) else throw MessageErrorException()
         }) {
-            _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it){
+            _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it) {
                 //TODO: check if retry or no.
             })
         }
@@ -125,6 +127,17 @@ class ProductPreviewViewModel @AssistedInject constructor(
         requiredLogin(menus) {
             viewModelScope.launch {
                 _uiEvent.emit(ProductPreviewEvent.ShowMenuSheet(menus))
+            }
+        }
+    }
+
+    private fun like(state: LikeUiState) {
+        requiredLogin(state) {
+            viewModelScope.launchCatchError(block = {
+                val state = repo.likeReview(state)
+                //TODO: check toaster. Need to update dedicated reviewId to update value
+            }){
+                _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it){})
             }
         }
     }

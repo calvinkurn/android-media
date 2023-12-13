@@ -53,11 +53,15 @@ class ReviewParentContentViewHolder(
 
     private fun bindLike(state: LikeUiState) = with(binding.layoutLikeReview) {
         tvLikeCount.text = state.count.toString()
+        root.setOnClickListener {
+            listener.onLike(state)
+        }
     }
 
     interface Listener {
         fun onReviewCredibilityClicked(author: AuthorUiModel)
         fun onMenuClicked(menus: List<ContentMenuItem>)
+        fun onLike(status: LikeUiState)
     }
 
     companion object {

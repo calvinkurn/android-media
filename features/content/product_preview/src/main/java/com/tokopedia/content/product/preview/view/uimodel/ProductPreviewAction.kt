@@ -12,5 +12,6 @@ sealed interface ProductPreviewAction {
     object AtcFromResult : ProductPreviewAction
     data class Navigate(val appLink: String) : ProductPreviewAction
     data class SubmitReport(val model: ReportUiModel) : ProductPreviewAction
-    data class ClickMenu(val menus: List<ContentMenuItem>,) : ProductPreviewAction
+    data class ClickMenu(val menus: List<ContentMenuItem>) : ProductPreviewAction
+    data class Like(val state: LikeUiState) : ProductPreviewAction
 }

@@ -33,6 +33,7 @@ data class LikeUiState(
         Reset(3);
 
         companion object {
+            //TODO: add helper to switch LikeStatus
             private val values = values()
 
             fun getByValue(value: Int): LikeStatus {

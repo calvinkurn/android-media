@@ -4,6 +4,7 @@ import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.data.GetMiniProductInfoResponse
+import com.tokopedia.content.product.preview.data.LikeReviewResponse
 import com.tokopedia.content.product.preview.data.MediaReviewResponse
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
@@ -88,5 +89,11 @@ class ProductPreviewMapperImpl @Inject constructor(private val userSession: User
             buttonState = if (response.data.hasVariant) BottomNavUiModel.ButtonState.Active else BottomNavUiModel.ButtonState.getByValue(
                 response.data.buttonState
             ) //Variant product always active, to open GVBS.
+        )
+
+    override fun mapLike(response: LikeReviewResponse): LikeUiState =
+        LikeUiState(
+            count = response.data.totalLike,
+            state = LikeUiState.LikeStatus.getByValue(response.data.likeStatus)
         )
 }
