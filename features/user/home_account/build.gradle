@@ -140,6 +140,7 @@ dependencies {
     androidTestImplementation rootProject.ext.miscDependencies.dagger
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation rootProject.ext.composeDependencies.composeFoundation
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.composeDependencies.composeUiTest
     debugImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
