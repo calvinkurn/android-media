@@ -93,6 +93,8 @@ class PlayShortsSummaryFragment @Inject constructor(
 
                 PlayShortsSummaryConfigLayout(
                     tagsState = uiState.tags,
+                    isInterspersingVideoAllowed = true, /** TODO: mock for testing purpose */
+                    isInterspersing = true, /** TODO: mock for testing purpose */
                     onRefreshTag = {
                         analytic.clickRefreshContentTag(viewModel.selectedAccount)
 
@@ -102,6 +104,9 @@ class PlayShortsSummaryFragment @Inject constructor(
                         analytic.clickContentTag(item.tag, viewModel.selectedAccount)
 
                         viewModel.submitAction(PlayShortsAction.SelectTag(item))
+                    },
+                    onInterspersingChanged = {
+                        /** TODO: handle this */
                     }
                 )
             }

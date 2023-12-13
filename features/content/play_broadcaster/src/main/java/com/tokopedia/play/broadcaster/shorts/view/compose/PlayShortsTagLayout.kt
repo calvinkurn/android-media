@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.components.NestChips
 import com.tokopedia.nest.components.NestChipsState
@@ -41,7 +42,9 @@ fun PlayShortsTagLayout(
     Column {
         NestTypography(
             text = stringResource(id = R.string.play_bro_select_tag_title),
-            textStyle = NestTheme.typography.heading3
+            textStyle = NestTheme.typography.display1.copy(
+                fontWeight = FontWeight.Bold,
+            ),
         )
 
         if (tagState is NetworkResult.Success) {

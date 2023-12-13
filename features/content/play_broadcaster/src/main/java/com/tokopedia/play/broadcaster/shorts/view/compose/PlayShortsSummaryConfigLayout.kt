@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
@@ -36,8 +37,11 @@ import java.lang.Integer.max
 @Composable
 fun PlayShortsSummaryConfigLayout(
     tagsState: NetworkResult<PlayTagUiModel>,
+    isInterspersingVideoAllowed: Boolean,
+    isInterspersing: Boolean,
     onRefreshTag: () -> Unit,
     onTagClick: (PlayTagItem) -> Unit,
+    onInterspersingChanged: (Boolean) -> Unit,
 ) {
     NestTheme(
         isOverrideStatusBarColor = false
@@ -47,6 +51,7 @@ fun PlayShortsSummaryConfigLayout(
         ) {
             Column(
                 modifier = Modifier.padding(16.dp)
+                            .fillMaxWidth()
             ) {
                 PlayShortsTagLayout(
                     tagState = tagsState,
@@ -54,8 +59,14 @@ fun PlayShortsSummaryConfigLayout(
                     onRefreshTag = onRefreshTag
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                if (isInterspersingVideoAllowed) {
+                    Spacer(modifier = Modifier.height(20.dp))
 
+                    InterspersingVideoLayout(
+                        isChecked = isInterspersing,
+                        onSwitchChanged = onInterspersingChanged
+                    )
+                }
             }
         }
     }
@@ -75,9 +86,12 @@ private fun PlayShortsSummaryConfigLayoutPreview() {
         tagsState = NetworkResult.Success(
             PlayTagUiModel(tags, 1, 2)
         ),
+        isInterspersingVideoAllowed = true,
+        isInterspersing = true,
         onRefreshTag = { /*TODO*/ },
         onTagClick = {
 
-        }
+        },
+        onInterspersingChanged = {}
     )
 }
