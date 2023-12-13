@@ -5,5 +5,6 @@ data class ShopPrefetchData(
     val shopName: String,
     val shopBadge: String,
     val shopLastOnline: String,
-    val shopRating: Float
+    val shopRating: Float,
+    val isFollowed: Boolean
 )

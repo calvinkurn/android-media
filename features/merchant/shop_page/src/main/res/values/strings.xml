@@ -89,6 +89,8 @@
     <string name="shop_note_title">Catatan Toko</string>
     <string name="shop_info_label_process_time">Waktu Proses</string>
     <string name="shop_page_label_follow">Follow</string>
+    <string name="shop_page_label_chat">Chat</string>
+    <string name="shop_page_label_following">Following</string>
     <string name="shop_product_empty_follower_title">Toko ini belum memiliki follower</string>
     <string name="shop_product_my_empty_follower_title">Toko Anda belum memiliki follower</string>
     <string name="shop_product_empty_product_title_desc">Jadi yang pertama untuk follow Toko %1$s dan temukan update tentang toko ini di feed Anda.</string>

@@ -5136,7 +5136,8 @@ open class DynamicProductDetailFragment :
             shopName = shopCredibility.shopName,
             shopBadge = shopCredibility.shopTierBadgeUrl,
             shopLastOnline = shopCredibility.shopLastActive,
-            shopRating = castedShopRating
+            shopRating = castedShopRating,
+            isFollowed = shopCredibility.isFavorite
         )
 
         prefetch.redirectToShopPageWithPrefetch(context ?: return, prefetchData, intent)

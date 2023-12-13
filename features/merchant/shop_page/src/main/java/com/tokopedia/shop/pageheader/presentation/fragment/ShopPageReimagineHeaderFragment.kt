@@ -1287,10 +1287,20 @@ class ShopPageReimagineHeaderFragment :
                         name = "shop_basic_info",
                         type = "shop_basic_info",
                         componentPages = listOf(
+                            ShopPageHeaderImageOnlyComponentUiModel(
+                                name = "shop_logo",
+                                type = "image_only",
+                                image = prefetchData.shopAvatar
+                            ),
                             ShopPageHeaderBadgeTextValueComponentUiModel(
                                 name = "shop_name",
+                                ctaIcon = "https://images.tokopedia.net/img/chevron_down.png",
                                 type = "badge_text_value",
                                 text = listOf(
+                                    ShopPageHeaderBadgeTextValueComponentUiModel.Text(
+                                        icon = prefetchData.shopBadge,
+                                        textHtml = prefetchData.shopName,
+                                    ),
                                     ShopPageHeaderBadgeTextValueComponentUiModel.Text(
                                         textHtml = MethodChecker.fromHtml(prefetchData.shopLastOnline).toString()
                                     )
@@ -1321,12 +1331,16 @@ class ShopPageReimagineHeaderFragment :
                         type = "action_button",
                         componentPages = listOf(
                             ShopPageHeaderButtonComponentUiModel().apply {
-                                this.label = "Chat"
+                                this.label = context?.getString(R.string.shop_page_label_chat).orEmpty()
                             },
                             ShopPageHeaderActionWidgetFollowButtonComponentUiModel().apply {
                                 this.isButtonLoading = false
-                                this.isFollowing = true
-                                this.label = "Follow"
+                                this.isFollowing = prefetchData.isFollowed
+                                this.label = if (prefetchData.isFollowed) {
+                                    context?.getString(R.string.shop_page_label_following).orEmpty()
+                                } else {
+                                    context?.getString(R.string.shop_page_label_follow).orEmpty()
+                                }
                             }
                         )
                     )
