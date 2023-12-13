@@ -1,6 +1,8 @@
 package com.tokopedia.content.product.preview.view.viewholder.product
 
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.ui.PlayerControlView
 import com.tokopedia.content.product.preview.data.ContentUiModel
 import com.tokopedia.content.product.preview.databinding.ItemProductContentVideoBinding
@@ -14,7 +16,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 class ProductContentVideoViewHolder(
     private val binding: ItemProductContentVideoBinding,
     private val listener: ProductPreviewListener,
-) : ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
 
     private var mVideoPlayer: ProductPreviewExoPlayer? = null
 
@@ -23,7 +25,8 @@ class ProductContentVideoViewHolder(
     }
 
     private fun bindVideoPlayer(content: ContentUiModel) {
-        val videoPlayer = mVideoPlayer ?: listener.getVideoPlayer("productContentVideo_" + content.url)
+        val videoPlayer =
+            mVideoPlayer ?: listener.getVideoPlayer("productContentVideo_" + content.url)
         mVideoPlayer = videoPlayer
         binding.playerProductContentVideo.player = videoPlayer.exoPlayer
         binding.playerControl.player = videoPlayer.exoPlayer
@@ -82,4 +85,14 @@ class ProductContentVideoViewHolder(
         }
     }
 
+    companion object {
+        fun create(parent: ViewGroup, listener: ProductPreviewListener) =
+            ProductContentVideoViewHolder(
+                binding = ItemProductContentVideoBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent, false
+                ),
+                listener = listener,
+            )
+    }
 }

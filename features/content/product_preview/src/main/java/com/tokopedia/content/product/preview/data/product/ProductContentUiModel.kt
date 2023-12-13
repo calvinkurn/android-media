@@ -5,6 +5,5 @@ import com.tokopedia.content.product.preview.data.ContentUiModel
 data class ProductContentUiModel(
     val id: String = "",
     val content: List<ContentUiModel> = emptyList(),
-    val labels: List<String> = emptyList(),
     val indicators: List<ProductIndicatorUiModel> = emptyList(),
 )

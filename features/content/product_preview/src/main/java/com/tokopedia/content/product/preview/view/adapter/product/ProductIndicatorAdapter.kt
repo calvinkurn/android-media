@@ -1,55 +1,64 @@
 package com.tokopedia.content.product.preview.view.adapter.product
 
-import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView.Adapter
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
+import com.tokopedia.adapterdelegate.TypedAdapterDelegate
+import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.data.product.ProductIndicatorUiModel
-import com.tokopedia.content.product.preview.databinding.ItemProductIndicatorBinding
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewIndicatorListener
 import com.tokopedia.content.product.preview.view.viewholder.product.ProductIndicatorViewHolder
 
 class ProductIndicatorAdapter(
-    private val listener: ProductPreviewIndicatorListener,
-) : Adapter<ViewHolder>() {
+    listener: ProductPreviewIndicatorListener,
+) : BaseDiffUtilAdapter<ProductIndicatorUiModel>() {
 
-    private val _productIndicatorList = mutableListOf<ProductIndicatorUiModel>()
-    private val productIndicatorList: List<ProductIndicatorUiModel>
-        get() = _productIndicatorList
+    init {
+        delegatesManager.addDelegate(ProductIndicatorDelegate.ProductIndicator(listener))
+    }
 
     fun insertData(data: List<ProductIndicatorUiModel>) {
-        _productIndicatorList.clear()
-        _productIndicatorList.addAll(data)
-        notifyItemRangeInserted(0, productIndicatorList.size)
+        clearAllItems()
+        setItems(data)
+        notifyItemRangeChanged(0, data.size)
     }
 
-    fun updateSelected(position: Int) {
-        val newData = _productIndicatorList.mapIndexed { index, productIndicatorUiModel ->
-            productIndicatorUiModel.copy(selected = index == position)
+    override fun areItemsTheSame(
+        oldItem: ProductIndicatorUiModel,
+        newItem: ProductIndicatorUiModel
+    ): Boolean {
+        return oldItem == newItem
+    }
+
+    override fun areContentsTheSame(
+        oldItem: ProductIndicatorUiModel,
+        newItem: ProductIndicatorUiModel
+    ): Boolean {
+        return oldItem.selected == newItem.selected
+    }
+
+    internal class ProductIndicatorDelegate private constructor() {
+
+        internal class ProductIndicator(private val listener: ProductPreviewIndicatorListener) :
+            TypedAdapterDelegate<
+                ProductIndicatorUiModel,
+                ProductIndicatorUiModel,
+                ProductIndicatorViewHolder>(R.layout.item_product_indicator) {
+
+            override fun onBindViewHolder(
+                item: ProductIndicatorUiModel,
+                holder: ProductIndicatorViewHolder
+            ) {
+                holder.bind(item)
+            }
+
+            override fun onCreateViewHolder(
+                parent: ViewGroup,
+                basicView: View
+            ): ProductIndicatorViewHolder {
+                return ProductIndicatorViewHolder.create(parent, listener)
+            }
         }
-
-        val diffCallback = ProductIndicatorCallback(productIndicatorList, newData)
-        val diffData = DiffUtil.calculateDiff(diffCallback)
-        _productIndicatorList.clear()
-        _productIndicatorList.addAll(newData)
-        diffData.dispatchUpdatesTo(this)
     }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ProductIndicatorViewHolder(
-            binding = ItemProductIndicatorBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent, false
-            ),
-            listener = listener,
-        )
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        (holder as ProductIndicatorViewHolder).bind(productIndicatorList[position])
-    }
-
-    override fun getItemCount(): Int = productIndicatorList.size
 
 }
