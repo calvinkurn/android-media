@@ -871,7 +871,7 @@ class CatalogDetailPageFragment :
         }
     }
 
-    override fun onComparisonScrolled(dx: Int, dy: Int) {
+    override fun onComparisonScrolled(dx: Int, dy: Int, scrollProgress: Int) {
         // no-op
     }
 

@@ -35,7 +35,7 @@ class ComparisonViewHolder(
         fun onComparisonSeeMoreButtonClicked(items: List<ComparisonUiModel.ComparisonContent>)
         fun onComparisonProductClick(id: String)
         fun onComparisonImpression(id: String)
-        fun onComparisonScrolled(dx: Int, dy: Int)
+        fun onComparisonScrolled(dx: Int, dy: Int, scrollProgress: Int)
     }
 
     companion object {
@@ -49,6 +49,7 @@ class ComparisonViewHolder(
 
     private val binding by viewBinding<WidgetItemComparisonBinding>()
     private var comparisonContents: List<ComparisonUiModel.ComparisonContent> = emptyList()
+    private var scrollProgress = 0
 
     init {
         binding?.btnSeeMore?.setOnClickListener {
@@ -73,7 +74,8 @@ class ComparisonViewHolder(
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    comparisonItemListener?.onComparisonScrolled(dx, dy)
+                    scrollProgress += dx
+                    comparisonItemListener?.onComparisonScrolled(dx, dy, scrollProgress)
                 }
             })
         }

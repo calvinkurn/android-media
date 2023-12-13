@@ -28,12 +28,14 @@ import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.viewholder.ComparisonViewHolder
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -196,7 +198,7 @@ class CatalogComparisonDetailFragment :
         val showHeader = scrollProgress > HEADER_VISIBLE_THRESHOLD
         tfHeaderTitle.isVisible = showHeader
         rvHeader.isVisible = showHeader
-        toolbar.elevation = if (showHeader) HEADER_ELEVATION else 0f
+        toolbar.elevation = if (showHeader) HEADER_ELEVATION.dpToPx() else Float.ZERO
         divider.elevation = toolbar.elevation
         tfHeaderTitle.elevation = toolbar.elevation
         rvHeader.elevation = toolbar.elevation
@@ -310,8 +312,9 @@ class CatalogComparisonDetailFragment :
         // no-op
     }
 
-    override fun onComparisonScrolled(dx: Int, dy: Int) {
+    override fun onComparisonScrolled(dx: Int, dy: Int, scrollProgress: Int) {
         binding?.rvHeader?.scrollBy(dx, dy)
+        binding?.viewComparisonShadow?.isVisible = scrollProgress > Int.ZERO
     }
 
     override fun onFragmentBackPressed(): Boolean {
