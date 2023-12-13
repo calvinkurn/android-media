@@ -737,10 +737,10 @@ open class EmoneyPdpFragment :
 
     private fun renderTickerNFCNotSupportedByGeneration(data: EmoneyBCAGenCheckModel) {
         if (data.isGenOne) {
-            showTickerNotSupported()
+            showTickerNotSupported(data.message +
+                getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_bca_gen_one_additional_link))
             addBottomSheetBCAInfoSupport()
             showRecentNumberAndPromo()
-            binding.tickerNotSupported.setHtmlDescription(data.message + getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_bca_gen_one_additional_link))
         } else {
             hideTickerNotSupported()
             showProducts()
@@ -748,24 +748,22 @@ open class EmoneyPdpFragment :
     }
 
     private fun renderTickerGenerationCheckError() {
-        showTickerNotSupported()
+        showTickerNotSupported(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_nfc_check_gen))
         showRecentNumberAndPromo()
-        binding.tickerNotSupported.setHtmlDescription(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_nfc_check_gen))
     }
 
     private fun renderTickerNFCNotSupported() {
         emoneyPdpViewModel.cancelBCACheckGenJob()
         if (detailPassData.isBCAGenOne) {
-            showTickerNotSupported()
+            showTickerNotSupported(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_bca_gen_one))
             addBottomSheetBCAInfoSupport()
             showRecentNumberAndPromo()
         } else if (emoneyPdpViewModel.selectedOperatorIsBCA() && !binding.emoneyPdpInputCardWidget.isShownError
             && binding.emoneyPdpInputCardWidget.getNumber().isNotEmpty()) {
 
             if (this::nfcAdapter.isInitialized && !nfcAdapter.isEnabled) {
-                showTickerNotSupported()
+                showTickerNotSupported(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_nfc_is_not_active))
                 showRecentNumberAndPromo()
-                binding.tickerNotSupported.setHtmlDescription(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_nfc_is_not_active))
                 binding.tickerNotSupported.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         navigateToNFCSettings()
@@ -778,9 +776,8 @@ open class EmoneyPdpFragment :
                     emoneyPdpViewModel.getBCAGenCheck(it)
                 }
             } else {
-                showTickerNotSupported()
+                showTickerNotSupported(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_nfc_not_supported))
                 showRecentNumberAndPromo()
-                binding.tickerNotSupported.setHtmlDescription(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_nfc_not_supported))
                 addBottomSheetBCAInfoSupport()
             }
         } else {
@@ -792,9 +789,9 @@ open class EmoneyPdpFragment :
         binding.tickerNotSupported.hide()
     }
 
-    private fun showTickerNotSupported() {
+    private fun showTickerNotSupported(description: String) {
         binding.tickerNotSupported.show()
-        binding.tickerNotSupported.setHtmlDescription(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_bca_gen_one))
+        binding.tickerNotSupported.setHtmlDescription(description)
     }
 
     private fun addBottomSheetBCAInfoSupport() {

@@ -60,7 +60,6 @@
                 app:tickerShapeType="loose"
                 app:closeButtonVisibility="gone"
                 android:layout_marginHorizontal="12dp"
-                app:descriptionText="@string/recharge_pdp_emoney_bca_gen_one"
                 />
 
             <com.tokopedia.unifycomponents.TabsUnify
