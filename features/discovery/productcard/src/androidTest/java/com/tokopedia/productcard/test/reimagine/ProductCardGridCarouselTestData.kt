@@ -6,15 +6,12 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_BENEFIT
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_CREDIBILITY
-import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_RIBBON
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.productcard.test.utils.freeOngkirImageUrl
 import com.tokopedia.productcard.test.utils.isDisplayedWithText
 import com.tokopedia.productcard.test.utils.longProductName
 import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
 import com.tokopedia.productcard.test.utils.productImageUrl
-import com.tokopedia.productcard.utils.LIGHT_GREEN
-import com.tokopedia.productcard.utils.RED
 import com.tokopedia.productcard.utils.TEXT_DARK_GREY
 import com.tokopedia.productcard.utils.WORDING_SEGERA_HABIS
 import org.hamcrest.Matcher
@@ -222,11 +219,7 @@ private fun ribbonAndSlashedPriceInline(): ProductCardReimagineMatcher {
         title = "10 rb+ terjual",
         type = TEXT_DARK_GREY,
     )
-    val reimagineRibbon = ProductCardModel.LabelGroup(
-        position = LABEL_REIMAGINE_RIBBON,
-        title = "20%",
-        type = RED,
-    )
+    val reimagineRibbon = labelGroupRibbon()
     val shopBadge = ProductCardModel.ShopBadge(
         imageUrl = officialStoreBadgeImageUrl,
         title = "Shop Name",
@@ -269,9 +262,9 @@ private fun ribbonAndSlashedPriceInline(): ProductCardReimagineMatcher {
         R.id.productCardStockInfoBackground to isDisplayed(),
         R.id.productCardStockInfoLabel to isDisplayedWithText(stockInfo.label),
         R.id.productCardStockInfoBar to isDisplayed(),
+        R.id.productCardRibbon to isDisplayed(),
         R.id.productCardRibbonText to isDisplayedWithText(reimagineRibbon.title),
-        R.id.productCardRibbonArch to isDisplayed(),
-        R.id.productCardRibbonBackground to isDisplayed(),
+        R.id.productCardRibbonSlip to isDisplayed(),
     )
 
     return Triple(model, matcher, "Ribbon & Slashed Price Inline")

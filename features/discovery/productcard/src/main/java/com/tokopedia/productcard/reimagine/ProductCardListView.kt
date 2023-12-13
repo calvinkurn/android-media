@@ -14,8 +14,6 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.reimagine.ProductCardType.*
-import com.tokopedia.productcard.reimagine.ProductCardType.Grid
 import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.glideClear
@@ -26,8 +24,8 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.video_widget.VideoPlayerController
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class ProductCardGridView: ConstraintLayout {
-    private val renderer = ProductCardRenderer(this, Grid)
+class ProductCardListView: ConstraintLayout {
+    private val renderer = ProductCardRenderer(this, ProductCardType.List)
 
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val imageView by lazyView<ImageUnify?>(R.id.productCardImage)
@@ -60,7 +58,7 @@ class ProductCardGridView: ConstraintLayout {
     }
 
     private fun init(attrs: AttributeSet? = null) {
-        View.inflate(context, R.layout.product_card_reimagine_grid_layout, this)
+        View.inflate(context, R.layout.product_card_reimagine_list_layout, this)
 
         cardContainer?.run {
             elevation = 0f
@@ -85,7 +83,7 @@ class ProductCardGridView: ConstraintLayout {
         val labelView = preventiveThematicLabel ?: return
         val labelPreventiveThematic = productCardModel.labelPreventiveThematic()
 
-        if (labelPreventiveThematic == null || productCardModel.isSafeProduct) {
+        if (labelPreventiveThematic == null) {
             labelView.hide()
         } else {
             labelView.show()
@@ -94,9 +92,7 @@ class ProductCardGridView: ConstraintLayout {
     }
 
     private fun renderVideo(productCardModel: ProductCardModel) {
-        videoIdentifier?.showWithCondition(
-            productCardModel.videoUrl.isNotBlank() && !productCardModel.isSafeProduct
-        )
+        videoIdentifier?.showWithCondition(productCardModel.videoUrl.isNotBlank())
         video.setVideoURL(productCardModel.videoUrl)
     }
 

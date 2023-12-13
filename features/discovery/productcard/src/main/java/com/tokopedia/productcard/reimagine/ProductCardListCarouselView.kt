@@ -15,8 +15,8 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class ProductCardGridCarouselView: ConstraintLayout {
-    private val renderer = ProductCardRenderer(this, GridCarousel)
+class ProductCardListCarouselView: ConstraintLayout {
+    private val renderer = ProductCardRenderer(this, ProductCardType.ListCarousel)
     private val stockInfo = ProductCardStockInfo(this)
 
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
@@ -43,7 +43,7 @@ class ProductCardGridCarouselView: ConstraintLayout {
     }
 
     private fun init(attrs: AttributeSet? = null) {
-        View.inflate(context, R.layout.product_card_reimagine_grid_carousel_layout, this)
+        View.inflate(context, R.layout.product_card_reimagine_list_carousel_layout, this)
 
         cardContainer?.run {
             layoutParams = layoutParams?.apply { height = MATCH_PARENT }
@@ -58,24 +58,11 @@ class ProductCardGridCarouselView: ConstraintLayout {
     fun setProductModel(productCardModel: ProductCardModel) {
         renderer.setProductModel(productCardModel)
 
-        renderAddToCart(productCardModel)
         stockInfo.render(productCardModel)
-    }
-
-    private fun renderAddToCart(productCardModel: ProductCardModel) {
-        val cardConstraintLayout = cardConstraintLayout ?: return
-
-        showView(R.id.productCardAddToCart, productCardModel.hasAddToCart) {
-            AddToCartButton(cardConstraintLayout)
-        }
     }
 
     fun addOnImpressionListener(holder: ImpressHolder, onView: () -> Unit) {
         imageView?.addOnImpressionListener(holder, onView)
-    }
-
-    fun setAddToCartOnClickListener(onClickListener: OnClickListener) {
-        findViewById<View?>(R.id.productCardAddToCart)?.setOnClickListener(onClickListener)
     }
 
     override fun setOnClickListener(l: OnClickListener?) {

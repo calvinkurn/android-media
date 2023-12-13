@@ -77,6 +77,9 @@ private class ProductCardInPositionMatcher(
         productcardtestR.id.productCardReimagineTestDescription,
         productcardtestR.id.productCardReimagineGridCarouselView,
         productcardtestR.id.productCardReimagineGridView,
+        productcardtestR.id.productCardReimagineListView,
+        productcardtestR.id.productCardTestDivider,
+        productcardtestR.id.productCardReimagineListCarouselView,
     )
 
     private fun ViewGroup.getUncheckedChildren(): List<View> {

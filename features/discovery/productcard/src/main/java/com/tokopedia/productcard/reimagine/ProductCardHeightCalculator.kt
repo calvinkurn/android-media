@@ -11,7 +11,7 @@ import com.tokopedia.productcard.R as productcardR
 suspend fun List<ProductCardModel>?.getMaxHeightForGridCarouselView(
     context: Context?,
     coroutineDispatcher: CoroutineDispatcher = Dispatchers.Default,
-    productImageWidth: Int = context.getPixel(productcardR.dimen.product_card_reimagine_carousel_width),
+    productImageWidth: Int = context.getPixel(productcardR.dimen.product_card_reimagine_grid_carousel_width),
 ): Int {
     if (this == null || context == null) return 0
 

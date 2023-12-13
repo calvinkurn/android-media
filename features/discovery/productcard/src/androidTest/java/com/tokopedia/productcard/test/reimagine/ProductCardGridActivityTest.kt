@@ -40,7 +40,8 @@ class ProductCardGridActivityTest: AppCompatActivity() {
             val view = LayoutInflater.from(parent.context)
                 .inflate(
                     productcardtestR.layout.product_card_reimagine_grid_item_test_layout,
-                    null
+                    parent,
+                    false,
                 )
 
             return ViewHolder(view)

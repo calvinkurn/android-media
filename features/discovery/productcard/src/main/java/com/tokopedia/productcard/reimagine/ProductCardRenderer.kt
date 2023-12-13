@@ -4,6 +4,7 @@ import android.graphics.BlurMaskFilter
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.Group
@@ -17,12 +18,16 @@ import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.R
+import com.tokopedia.productcard.reimagine.ribbon.ProductCardReimagineRibbon
+import com.tokopedia.productcard.utils.ImageBlurUtil
 import com.tokopedia.productcard.utils.RoundedCornersTransformation
 import com.tokopedia.productcard.utils.RoundedCornersTransformation.CornerType.ALL
 import com.tokopedia.productcard.utils.RoundedCornersTransformation.CornerType.TOP
 import com.tokopedia.productcard.utils.imageRounded
 import com.tokopedia.productcard.utils.shouldShowWithAction
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.productcard.R as productcardR
 
@@ -33,6 +38,7 @@ internal class ProductCardRenderer(
 
     private val context = view.context
 
+    private val cardContainer by view.lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val imageView by view.lazyView<ImageUnify?>(R.id.productCardImage)
     private val adsText by view.lazyView<Typography?>(R.id.productCardAds)
     private val nameText by view.lazyView<Typography?>(R.id.productCardName)
@@ -46,10 +52,9 @@ internal class ProductCardRenderer(
     private val credibilitySection by view.lazyView<LinearLayout?>(R.id.productCardCredibility)
     private val shopSection by view.lazyView<LinearLayout?>(R.id.productCardShopSection)
     private val freeShippingImage by view.lazyView<ImageView?>(R.id.productCardFreeShipping)
-    private val ribbon = ProductCardRibbon(view)
+    private val ribbon by view.lazyView<ProductCardReimagineRibbon?>(R.id.productCardRibbon)
     private val productCardSafeContainer by view.lazyView<Group?>(R.id.productCardSafeContainer)
     private val productCardSafeNameBackground by view.lazyView<View?>(R.id.productCardSafeNameBackground)
-
 
     fun setProductModel(productCardModel: ProductCardModel) {
         renderImage(productCardModel)
@@ -63,7 +68,7 @@ internal class ProductCardRenderer(
         renderCredibilitySection(productCardModel)
         renderShopSection(productCardModel)
         renderFreeShipping(productCardModel)
-        ribbon.render(productCardModel.ribbon())
+        renderRibbon(productCardModel)
         renderSafeContainer(productCardModel)
     }
 
@@ -134,8 +139,10 @@ internal class ProductCardRenderer(
 
     private fun maxLinesName(productCardModel: ProductCardModel): Int {
         val hasMultilineName = when (type) {
-            GridCarousel -> productCardModel.hasMultilineName
-            Grid -> productCardModel.labelAssignedValue() == null
+            ProductCardType.GridCarousel,
+            ProductCardType.ListCarousel -> productCardModel.hasMultilineName
+            ProductCardType.Grid -> productCardModel.labelAssignedValue() == null
+            ProductCardType.List -> true
         }
 
         return if (hasMultilineName) 2 else 1
@@ -176,7 +183,7 @@ internal class ProductCardRenderer(
     }
 
     private fun showDiscountAsInline(productCardModel: ProductCardModel): Boolean =
-        type == GridCarousel && productCardModel.ribbon() != null
+        type == ProductCardType.GridCarousel && productCardModel.ribbon() != null
 
     private fun renderDiscountPercentage(productCardModel: ProductCardModel) {
         val hasDiscountPercentage = productCardModel.discountPercentage != 0
@@ -212,7 +219,7 @@ internal class ProductCardRenderer(
         val labelProductOffer = productCardModel.labelProductOffer()
         val hasLabelBenefit = productCardModel.labelBenefit() != null
         val showLabelProductOffer =
-            labelProductOffer != null && (!hasLabelBenefit || type != GridCarousel)
+            labelProductOffer != null && (!hasLabelBenefit || type != ProductCardType.GridCarousel)
 
         bmsmLabel?.shouldShowWithAction(showLabelProductOffer) {
             it.text = labelProductOffer?.title ?: ""
@@ -260,6 +267,21 @@ internal class ProductCardRenderer(
         val freeShippingImageUrl = productCardModel.freeShipping.imageUrl
         freeShippingImage?.shouldShowWithAction(freeShippingImageUrl.isNotEmpty()) {
             it.loadIcon(freeShippingImageUrl)
+        }
+    }
+
+    private fun renderRibbon(productCardModel: ProductCardModel) {
+        val labelRibbon = productCardModel.ribbon()
+
+        ribbon?.render(labelRibbon)
+
+        val marginStart =
+            if (labelRibbon != null) ribbon?.additionalMarginStart() ?: 0
+            else 0
+
+        cardContainer?.layoutParams = cardContainer?.layoutParams?.apply {
+            val marginLayoutParams = this as? ViewGroup.MarginLayoutParams
+            marginLayoutParams?.marginStart = marginStart
         }
     }
 
