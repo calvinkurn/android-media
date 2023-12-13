@@ -206,7 +206,13 @@ class FeedPostLiveViewHolder(
     }
 
     private fun bindAuthor(data: FeedCardLivePreviewContentModel) {
-        authorView.bindData(data.author, data.isLive, !data.followers.isFollowed, trackerDataModel, null)
+        authorView.bindData(
+            data.author,
+            data.isLive,
+            !data.followers.isFollowed,
+            trackerDataModel,
+            null
+        )
     }
 
     private fun bindCaption(data: FeedCardLivePreviewContentModel) {
@@ -224,7 +230,7 @@ class FeedPostLiveViewHolder(
             }
 
             override fun onBuffering() {
-                showLoading()
+                if (element.isLive) showLoading()
             }
 
             override fun onVideoReadyToPlay(isPlaying: Boolean) {
@@ -277,6 +283,7 @@ class FeedPostLiveViewHolder(
 
     private fun showLoading() {
         binding.loaderFeedVideo.show()
+        binding.containerFeedLiveEnd.root.hide()
         if (mVideoPlayer?.getExoPlayer()?.currentPosition == 0L) {
             binding.playerFeedVideo.hide()
         }
@@ -301,6 +308,7 @@ class FeedPostLiveViewHolder(
             containerFeedLiveEnd.root.show()
             playerFeedVideo.hide()
             feedLiveWaveLabel.hide()
+            loaderFeedVideo.hide()
         }
     }
 
