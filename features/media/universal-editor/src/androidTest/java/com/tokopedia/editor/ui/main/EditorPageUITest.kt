@@ -10,6 +10,8 @@ import com.tokopedia.editor.util.FileLoader
 import com.tokopedia.editor.R
 import com.tokopedia.picker.common.R as pickercommonR
 import com.tokopedia.editor.data.mapper.NavigationTypeMapper
+import com.tokopedia.editor.util.FontAlignment
+import com.tokopedia.editor.util.isAlignmentMatch
 import com.tokopedia.kotlin.extensions.view.getBitmap
 import com.tokopedia.picker.common.types.ToolType
 import com.tokopedia.test.application.annotations.UiTest
@@ -125,15 +127,16 @@ class EditorPageUITest : EditorTest() {
         onView(ViewMatchers.withId(R.id.add_text_input)).perform(ViewActions.typeText(typedText))
         onView(ViewMatchers.withId(R.id.alignment_icon)).perform(ViewActions.click())
         onView(AllOf.allOf(ViewMatchers.withParent(ViewMatchers.withId(R.id.font_color_container)), ViewMatchers.withParentIndex(2))).perform(ViewActions.click())
-        Thread.sleep(2000)
+        Thread.sleep(1000)
         onView(ViewMatchers.withText("Simpan")).perform(ViewActions.click())
 
         // Then
-        Thread.sleep(200)
+        Thread.sleep(1000)
         assertTextDisplayedWith(typedText)
         onView(ViewMatchers.withText(typedText)).check(ViewAssertions.matches(ViewMatchers.hasTextColor(
             R.color.dms_universal_editor_yn_500
         )))
+        onView(ViewMatchers.withText(typedText)).check(ViewAssertions.matches(isAlignmentMatch(FontAlignment.LEFT)))
     }
 
     @Test
@@ -154,7 +157,7 @@ class EditorPageUITest : EditorTest() {
         onView(ViewMatchers.withId(pickercommonR.id.action_text_done)).perform(ViewActions.click(), ViewActions.doubleClick())
 
         // Then
-        Thread.sleep(1000)
+        Thread.sleep(2000)
         Assert.assertEquals(getImageResultRatio(), expectedRatio)
     }
 
