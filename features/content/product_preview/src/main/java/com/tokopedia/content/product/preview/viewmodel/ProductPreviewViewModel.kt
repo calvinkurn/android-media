@@ -49,6 +49,8 @@ class ProductPreviewViewModel @AssistedInject constructor(
     val miniInfo: Flow<BottomNavUiModel>
         get() = _miniInfo
 
+    private val _reviewIndex = MutableStateFlow(0)
+
     fun onAction(action: ProductPreviewAction) {
         when (action) {
             ProductPreviewAction.FetchReview -> getReview()
@@ -58,6 +60,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             is ProductPreviewAction.Navigate -> navigate(action.appLink)
             is ProductPreviewAction.SubmitReport -> submitReport(action.model)
             is ProductPreviewAction.ClickMenu -> menuOnClicked(action.menus)
+            is ProductPreviewAction.UpdateReviewPosition -> updateReviewIndex(action.index)
             else -> {}
         }
     }
@@ -127,5 +130,9 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 _uiEvent.emit(ProductPreviewEvent.ShowMenuSheet(menus))
             }
         }
+    }
+
+    private fun updateReviewIndex(position: Int) {
+        _reviewIndex.value = position
     }
 }

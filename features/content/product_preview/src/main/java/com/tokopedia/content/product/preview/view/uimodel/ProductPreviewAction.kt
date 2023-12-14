@@ -13,4 +13,5 @@ sealed interface ProductPreviewAction {
     data class Navigate(val appLink: String) : ProductPreviewAction
     data class SubmitReport(val model: ReportUiModel) : ProductPreviewAction
     data class ClickMenu(val menus: List<ContentMenuItem>,) : ProductPreviewAction
+    data class UpdateReviewPosition(val index: Int) : ProductPreviewAction
 }
