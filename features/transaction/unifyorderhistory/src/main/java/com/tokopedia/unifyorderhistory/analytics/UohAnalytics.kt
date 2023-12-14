@@ -827,7 +827,7 @@ object UohAnalytics {
         index: Int
     ) {
         val bundleProduct = Bundle().apply {
-            putString(DIMENSION40, "$ACTION_FIELD_IMPRESSION_BUY_AGAIN_ECOMMERCE$recommItem.recommendationType")
+            putString(DIMENSION40, "$ACTION_FIELD_IMPRESSION_BUY_AGAIN_ECOMMERCE${recommItem.recommendationType}")
             putString(INDEX, index.toString())
             putString(ITEM_NAME, recommItem.name)
             putString(ITEM_ID, recommItem.productId.toString())
@@ -859,7 +859,7 @@ object UohAnalytics {
         index: Int
     ) {
         val bundleProduct = Bundle().apply {
-            putString(DIMENSION40, "$ACTION_FIELD_IMPRESSION_BUY_AGAIN_ECOMMERCE$recommItem.recommendationType")
+            putString(DIMENSION40, "$ACTION_FIELD_IMPRESSION_BUY_AGAIN_ECOMMERCE${recommItem.recommendationType}")
             putString(INDEX, index.toString())
             putString(ITEM_NAME, recommItem.name)
             putString(ITEM_ID, recommItem.productId.toString())
@@ -892,7 +892,7 @@ object UohAnalytics {
         cartId: String
     ) {
         val bundleProduct = Bundle().apply {
-            putString(DIMENSION40, "$ACTION_FIELD_IMPRESSION_BUY_AGAIN_ECOMMERCE$recommItem.recommendationType")
+            putString(DIMENSION40, "$ACTION_FIELD_IMPRESSION_BUY_AGAIN_ECOMMERCE${recommItem.recommendationType}")
             putString(DIMENSION45, cartId)
             putString(CATEGORY_ID, recommItem.departmentId.toString())
             putString(INDEX, index.toString())
