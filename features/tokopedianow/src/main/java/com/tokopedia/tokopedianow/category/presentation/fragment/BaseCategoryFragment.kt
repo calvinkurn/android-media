@@ -725,7 +725,7 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
 
             analytic.sendClickSearchBarEvent(
                 categoryIdL1 = categoryIdL1,
-                warehouseId = viewModel.getWarehouseId()
+                warehouseIds = viewModel.getWarehouseIds()
             )
         },
         disableDefaultGtmTracker = true
@@ -764,7 +764,7 @@ abstract class BaseCategoryFragment : Fragment(), ScreenShotListener,
     ) {
         analytic.sendClickCartButtonEvent(
             categoryIdL1 = categoryIdL1,
-            warehouseId = viewModel.getWarehouseId()
+            warehouseIds = viewModel.getWarehouseIds()
         )
     }
 

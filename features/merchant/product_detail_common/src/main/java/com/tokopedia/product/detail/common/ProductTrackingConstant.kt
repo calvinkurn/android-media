@@ -342,8 +342,6 @@ object ProductTrackingConstant {
     }
 
     object TrackerId {
-        const val TRACKER_ID_CLICK_THUMBNAIL = "31790"
-        const val TRACKER_ID_IMPRESS_THUMBNAIL = "31789"
         const val TRACKER_ID_CLICK_SPECIFICATION = "36325"
         const val TRACKER_ID_IMPRESS_SPECIFICATION = "36326"
         const val TRACKER_ID_CLICK_LOCATION_RESTRICTION = "40907"

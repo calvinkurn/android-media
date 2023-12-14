@@ -2,6 +2,9 @@ package com.tokopedia.recommendation_widget_common.presentation.model
 
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.recommendation_widget_common.extension.GRID_POS_BOTTOM_RIGHT
+import com.tokopedia.recommendation_widget_common.extension.GRID_POS_LEFT
+import com.tokopedia.recommendation_widget_common.extension.GRID_POS_TOP_RIGHT
 
 data class RecommendationItem(
     val productId: Long = 0L,
@@ -48,6 +51,7 @@ data class RecommendationItem(
     val isOfficial: Boolean = false,
     val specs: List<RecommendationSpecificationLabels> = listOf(),
     val addToCartType: AddToCartType = AddToCartType.None,
+    val gridPosition: GridPosition = GridPosition.None,
     // for tracker field
     val dimension61: String = "",
     // for tokonow
@@ -59,6 +63,13 @@ data class RecommendationItem(
         DirectAtc,
         QuantityEditor,
         None
+    }
+
+    enum class GridPosition(val value: String) {
+        None(""),
+        Left(GRID_POS_LEFT),
+        TopRight(GRID_POS_TOP_RIGHT),
+        BottomRight(GRID_POS_BOTTOM_RIGHT)
     }
 
     override fun equals(other: Any?): Boolean {

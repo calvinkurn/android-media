@@ -691,7 +691,7 @@ class AtcVariantBottomSheet :
                     productId,
                     pageSource
                 )
-                ProductCartHelper.goToCartCheckout(getAtcActivity(), "")
+                ProductCartHelper.goToCartCheckout(getAtcActivity(), cartDataModel.data.cartId)
             }
             atcMessage = message
         }

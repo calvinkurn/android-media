@@ -24,4 +24,5 @@
     <string name="recharge_home_others_label">Lainnya</string>
 
     <string name="horizontal_card_product_image_content_description">Product Icon</string>
+    <string name="recharge_home_remove_item_failed">Gagal menghapus, silahkan ulangi kembali.</string>
 </resources>

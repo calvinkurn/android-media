@@ -1,13 +1,15 @@
 package com.tokopedia.minicart.common.domain.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.cartcommon.data.response.common.ProductTagInfo
+import com.tokopedia.minicart.bmgm.presentation.model.BmgmMiniCartDataUiModel
 
 data class MiniCartSimplifiedData(
     var miniCartWidgetData: MiniCartWidgetData = MiniCartWidgetData(),
     var miniCartItems: Map<MiniCartItemKey, MiniCartItem> = emptyMap(),
     var isShowMiniCartWidget: Boolean = false,
     var shoppingSummaryBottomSheetData: ShoppingSummaryBottomSheetData = ShoppingSummaryBottomSheetData(),
-    var bmGmDataList: List<BmGmData> = emptyList()
+    var bmgmData: BmgmMiniCartDataUiModel = BmgmMiniCartDataUiModel()
 )
 
 fun Map<MiniCartItemKey, MiniCartItem>.getMiniCartItemProduct(productId: String): MiniCartItem.MiniCartItemProduct? {
@@ -15,11 +17,21 @@ fun Map<MiniCartItemKey, MiniCartItem>.getMiniCartItemProduct(productId: String)
 }
 
 fun Map<MiniCartItemKey, MiniCartItem>.getMiniCartItemBundleGroup(bundleGroupId: String): MiniCartItem.MiniCartItemBundleGroup? {
-    return get(MiniCartItemKey(bundleGroupId, MiniCartItemType.BUNDLE)) as? MiniCartItem.MiniCartItemBundleGroup
+    return get(
+        MiniCartItemKey(
+            bundleGroupId,
+            MiniCartItemType.BUNDLE
+        )
+    ) as? MiniCartItem.MiniCartItemBundleGroup
 }
 
 fun Map<MiniCartItemKey, MiniCartItem>.getMiniCartItemParentProduct(parentId: String): MiniCartItem.MiniCartItemParentProduct? {
-    return get(MiniCartItemKey(parentId, MiniCartItemType.PARENT)) as? MiniCartItem.MiniCartItemParentProduct
+    return get(
+        MiniCartItemKey(
+            parentId,
+            MiniCartItemType.PARENT
+        )
+    ) as? MiniCartItem.MiniCartItemParentProduct
 }
 
 fun Map<MiniCartItemKey, MiniCartItem>.mapProductsWithProductId(): Map<String, MiniCartItem.MiniCartItemProduct> {
@@ -35,6 +47,7 @@ fun Map<MiniCartItemKey, MiniCartItem>.mapProductsWithProductId(): Map<String, M
 data class MiniCartWidgetData(
     var totalProductCount: Int = 0,
     var totalProductPrice: Double = 0.0,
+    var totalProductOriginalPrice: Double = 0.0,
     var totalProductError: Int = 0,
     var containsOnlyUnavailableItems: Boolean = false,
     var unavailableItemsCount: Int = 0,
@@ -79,6 +92,7 @@ sealed class MiniCartItem {
         var quantity: Int = 0,
         var notes: String = "",
         var cartString: String = "",
+        var productTagInfo: List<ProductTagInfo> = emptyList(),
 
         // Fields below are for analytics & atc occ purpose only
         internal var campaignId: String = "",

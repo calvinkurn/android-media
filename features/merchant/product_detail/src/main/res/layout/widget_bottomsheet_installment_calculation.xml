@@ -62,7 +62,7 @@
             android:layout_height="2dp"
             android:background="@drawable/top_bar_shadow" />
 
-        <com.tokopedia.design.bottomsheet.BottomSheetViewPager
+        <com.tokopedia.product.detail.view.widget.BottomSheetViewPager
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

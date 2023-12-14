@@ -301,8 +301,6 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
 
     private fun getCurrentLocation() {
         val locationDetectorHelper = LocationDetectorHelper(
-                permissionCheckerHelper,
-                fusedLocationProviderClient,
                 requireActivity().applicationContext)
 
         activity?.let {
@@ -323,6 +321,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
                                 requireActivity(),
                                 LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
                                 RequestLocationType.APPROXIMATE,
+                                permissionCheckerHelper,
                                 requireActivity().getString(R.string.hotel_destination_need_permission))
                         }
 

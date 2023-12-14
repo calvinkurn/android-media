@@ -53,7 +53,11 @@ class AutoCompleteFragment :
         initInjector()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentAutocompleteBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -91,7 +95,11 @@ class AutoCompleteFragment :
                 data.mainText,
                 data.secondaryText
             )
-            viewModel.getLatLng(data.placeId)
+            if (!data.hasPinpoint()) {
+                viewModel.getLatLng(data.placeId)
+            } else {
+                sendResult(data.lat, data.long)
+            }
         } else if (data is SavedAddress) {
             sendResult(data.latitude, data.longitude)
         }
@@ -160,7 +168,11 @@ class AutoCompleteFragment :
             Observer {
                 when (it) {
                     is Success -> sendResult(it.data.latitude, it.data.longitude)
-                    is Fail -> Toast.makeText(context, "Oops.. something went wrong", Toast.LENGTH_SHORT).show()
+                    is Fail -> Toast.makeText(
+                        context,
+                        "Oops.. something went wrong",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         )

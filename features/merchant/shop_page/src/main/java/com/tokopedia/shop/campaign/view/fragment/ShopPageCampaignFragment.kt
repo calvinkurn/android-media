@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
@@ -1119,7 +1120,8 @@ class ShopPageCampaignFragment :
             shopId,
             extParam,
             ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
-            getSelectedTabName()
+            getSelectedTabName(),
+            activity?.let { DeviceConnectionInfo.getConnectionType(it) }.orEmpty()
         )
     }
 

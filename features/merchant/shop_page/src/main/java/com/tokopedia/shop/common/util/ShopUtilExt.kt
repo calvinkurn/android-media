@@ -1,10 +1,16 @@
 package com.tokopedia.shop.common.util
 
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
@@ -68,4 +74,31 @@ object ShopUtilExt {
         val regex = """<[^>]+>""".toRegex()
         return regex.replace(this, "")
     }
+
+    /**
+     * This method can be used to determine whether view is visible on a certain screen area or not
+     * @param screenWidth set constraint for the width of screen, getScreenWidth() will be used if not set
+     * @param screenHeight set constraint for the height of screen, getScreenHeight() will be used if not set
+     */
+    fun View.isViewRectVisibleOnScreenArea(
+        screenWidth: Int = getScreenWidth(),
+        screenHeight: Int = getScreenHeight()
+    ): Boolean {
+        if (!isShown) {
+            return false
+        }
+        val intArraySize = 2
+        val viewLocationOnScreen = IntArray(intArraySize)
+        getLocationOnScreen(viewLocationOnScreen)
+        val viewLeft = viewLocationOnScreen.getOrNull(Int.ZERO).orZero()
+        val viewTop = viewLocationOnScreen.getOrNull(Int.ONE).orZero()
+        val viewRight = viewLeft + width
+        val viewBottom = viewTop + height
+        val viewRect = Rect(viewLeft, viewTop, viewRight, viewBottom)
+        val screenRect = Rect(Int.ZERO, Int.ZERO, screenWidth, screenHeight)
+        return screenRect.top <= viewRect.top && screenRect.bottom >= viewRect.bottom &&
+            screenRect.left <= viewRect.left && screenRect.right >= viewRect.right
+    }
+
+    fun asd(){}
 }
