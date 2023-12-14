@@ -44,12 +44,13 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 const val REQUEST_CODE_LOCATION: Int = 1
 const val REQUEST_CODE_AUTOCOMPLETE: Int = 2
@@ -134,7 +135,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
 
         binding?.searchInputDropoff?.apply {
             setOnClickListener(goToAutoComplete)
-            with(searchTextView) {
+            with(searchBarTextField) {
                 setOnClickListener(goToAutoComplete)
                 isCursorVisible = false
                 isFocusable = false
@@ -409,7 +410,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
     private fun drawCircle(radius: Int) {
         if (radius > 0) {
             val circleColor =
-                ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN600)
+                ContextCompat.getColor(this, unifyprinciplesR.color.Unify_GN600)
             val alphaCircleColor = ColorUtils.setAlphaComponent(circleColor, 40)
             mMap?.addCircle(
                 CircleOptions().center(mLastLocation)

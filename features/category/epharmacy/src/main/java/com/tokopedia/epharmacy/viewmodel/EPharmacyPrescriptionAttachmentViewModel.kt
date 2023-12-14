@@ -3,25 +3,28 @@ package com.tokopedia.epharmacy.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_CHECKOUT
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyPPGTrackingData
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.epharmacy.network.params.InitiateConsultationParam
-import com.tokopedia.epharmacy.network.request.EPharmacyUpdateCartParam
 import com.tokopedia.epharmacy.network.response.EPharmacyConsultationDetails
 import com.tokopedia.epharmacy.network.response.EPharmacyConsultationDetailsResponse
 import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationResponse
-import com.tokopedia.epharmacy.network.response.EPharmacyUpdateCartResponse
 import com.tokopedia.epharmacy.usecase.EPharmacyGetConsultationDetailsUseCase
 import com.tokopedia.epharmacy.usecase.EPharmacyInitiateConsultationUseCase
-import com.tokopedia.epharmacy.usecase.EPharmacyUpdateCartUseCase
+import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
 import com.tokopedia.epharmacy.utils.EPharmacyMiniConsultationToaster
 import com.tokopedia.epharmacy.utils.EPharmacyUploadError
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.epharmacy.utils.PRESCRIPTION_ATTACH_SUCCESS
+import com.tokopedia.epharmacy.utils.*
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -32,7 +35,8 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
     private val ePharmacyPrepareProductsGroupUseCase: EPharmacyPrepareProductsGroupUseCase,
     private val ePharmacyInitiateConsultationUseCase: EPharmacyInitiateConsultationUseCase,
     private val ePharmacyGetConsultationDetailsUseCase: EPharmacyGetConsultationDetailsUseCase,
-    private val ePharmacyUpdateCartUseCase: EPharmacyUpdateCartUseCase,
+    private val updateCartUseCase: UpdateCartUseCase,
+    private val remoteConfig: RemoteConfig,
     @CoroutineBackgroundDispatcher private val dispatcherBackground: CoroutineDispatcher
 ) : BaseViewModel(dispatcherBackground) {
 
@@ -51,8 +55,8 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
     private val _consultationDetails = MutableLiveData<Result<EPharmacyConsultationDetails>>()
     val consultationDetails: LiveData<Result<EPharmacyConsultationDetails>> = _consultationDetails
 
-    private val _updateEPharmacyCart = MutableLiveData<Result<EPharmacyUpdateCartResponse.UpdateEPharmacyCart>>()
-    val updateEPharmacyCart: LiveData<Result<EPharmacyUpdateCartResponse.UpdateEPharmacyCart>> = _updateEPharmacyCart
+    private val _updateEPharmacyCart = MutableLiveData<Boolean>()
+    val updateEPharmacyCart: LiveData<Boolean> = _updateEPharmacyCart
 
     var ePharmacyPrepareProductsGroupResponseData: EPharmacyPrepareProductsGroupResponse ? = null
 
@@ -84,20 +88,24 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         )
     }
 
-    fun updateEPharmacyCart(params: EPharmacyUpdateCartParam) {
-        ePharmacyUpdateCartUseCase.cancelJobs()
-        ePharmacyUpdateCartUseCase.updateEPharmacyCart(
-            ::onSuccessUpdateEPharmacyCart,
-            ::onFailUpdateEPharmacyCart,
-            params
+    fun updateEPharmacyCart(uiUpdater: EPharmacyAttachmentUiUpdater) {
+        updateCartUseCase.setParams(
+            updateCartRequestList = uiUpdater.getUpdateCartParams(),
+            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
         )
+        updateCartUseCase.execute({
+            _updateEPharmacyCart.postValue(it.data.status)
+        }, {
+            _updateEPharmacyCart.postValue(false)
+        })
     }
 
     private fun onAvailablePrepareProductGroup(ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse, source: String?) {
         ePharmacyPrepareProductsGroupResponseData = ePharmacyPrepareProductsGroupResponse
         ePharmacyPrepareProductsGroupResponse.let { data ->
             if (data.detailData?.groupsData?.epharmacyGroups?.isNotEmpty() == true) {
-                _productGroupLiveData.postValue(Success(EPharmacyUtils.mapGroupsDataIntoDataModel(data,source)))
+                val tickerWebViewText = remoteConfig.getString(RemoteConfigKey.REDIRECT_EPHARMACY_WEB_VIEW_VERSION_LOW)
+                _productGroupLiveData.postValue(Success(EPharmacyUtils.mapGroupsDataIntoDataModel(data, source, tickerWebViewText)))
                 _buttonLiveData.postValue(ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.papPrimaryCTA)
                 showToastData(ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.toaster)
             } else {
@@ -123,14 +131,6 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessUpdateEPharmacyCart(response: EPharmacyUpdateCartResponse) {
-        response.updateEPharmacyCart?.let { data ->
-            _updateEPharmacyCart.value = Success(data)
-        } ?: kotlin.run {
-            onFailUpdateEPharmacyCart(Throwable("Data Invalid"))
-        }
-    }
-
     private fun showToastData(toaster: EPharmacyPrepareProductsGroupResponse.EPharmacyToaster?) {
         toaster?.message?.let { message ->
             if (PRESCRIPTION_ATTACH_SUCCESS == toaster.type) {
@@ -151,10 +151,6 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
 
     private fun onFailGetConsultationDetails(throwable: Throwable) {
         _consultationDetails.postValue(Fail(throwable))
-    }
-
-    private fun onFailUpdateEPharmacyCart(throwable: Throwable) {
-        _updateEPharmacyCart.postValue(Fail(throwable))
     }
 
     fun getResultForCheckout(): ArrayList<EPharmacyMiniConsultationResult> {
@@ -185,5 +181,10 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
 
     fun findGroup(ePharmacyGroupId: String?): EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup? {
         return EPharmacyUtils.findGroup(ePharmacyGroupId, ePharmacyPrepareProductsGroupResponseData)
+    }
+
+    fun getTrackingData(): EPharmacyPPGTrackingData {
+        ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.epharmacyGroups
+        return EPharmacyPPGTrackingData("", "", "")
     }
 }

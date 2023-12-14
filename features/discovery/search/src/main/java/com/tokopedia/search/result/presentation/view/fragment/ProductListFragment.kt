@@ -47,12 +47,11 @@ import com.tokopedia.filter.common.helper.toMapParam
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.ProductDetailPrefetch
-import com.tokopedia.product.detail.common.ProductDetailPrefetch.Data.Companion.CONTAINER_TYPE_PORTRAIT
-import com.tokopedia.product.detail.common.ProductDetailPrefetch.Data.Companion.CONTAINER_TYPE_SQUARE
 import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_CREDIBILITY
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -743,11 +742,12 @@ class ProductListFragment: BaseDaggerFragment(),
         } ?: ""
         val pageComponentId = presenter?.pageComponentId ?: ""
 
+        val additionalLabel = item.createAdditionalLabel(additionalPositionMap)
         dataLayerList.add(
             item.getProductAsObjectDataLayer(
                 filterSortParams,
                 pageComponentId,
-                additionalPositionMap,
+                additionalLabel,
             )
         )
         productItemDataViews.add(item)
@@ -812,13 +812,17 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onItemClicked(item: ProductItemDataView?, adapterPosition: Int) {
-        presenter?.onProductClick(item, adapterPosition)
+        if(item?.isImageBlurred.orFalse()) {
+            onSafeProductClickInfo(item)
+        } else {
+            presenter?.onProductClick(item, adapterPosition)
+        }
     }
 
     override fun sendTopAdsGTMTrackingProductClick(item: ProductItemDataView) {
         val product = createTopAdsProductForTracking(item)
         val pageComponentId = presenter?.pageComponentId ?: ""
-
+        val additionalLabel = item.createAdditionalLabel(additionalPositionMap)
         TopAdsGtmTracker.eventSearchResultProductClick(
             context,
             queryKey,
@@ -827,7 +831,7 @@ class ProductListFragment: BaseDaggerFragment(),
             getUserId(),
             item.dimension90,
             item.topadsTag,
-            item.getDimension115(additionalPositionMap),
+            item.getDimension115(additionalLabel),
             item.dimension131,
             pageComponentId,
         )
@@ -850,11 +854,12 @@ class ProductListFragment: BaseDaggerFragment(),
             filterSortParams = filterSortParams,
             componentId = pageComponentId,
         )
+        val additionalLabel = item.createAdditionalLabel(additionalPositionMap)
         SearchTracking.trackEventClickSearchResultProduct(
             item.getProductAsObjectDataLayer(
                 filterSortParams,
                 pageComponentId,
-                additionalPositionMap,
+                additionalLabel,
             ),
             eventLabel,
             userId,
@@ -876,9 +881,6 @@ class ProductListFragment: BaseDaggerFragment(),
                 it.position == LABEL_INTEGRITY
         }?.title ?: ""
 
-        val containerType = if (item.isPortrait) CONTAINER_TYPE_PORTRAIT
-        else CONTAINER_TYPE_SQUARE
-
         val prefetchData = ProductDetailPrefetch.Data(
             image = item.imageUrl300,
             name = item.productName,
@@ -887,8 +889,7 @@ class ProductListFragment: BaseDaggerFragment(),
             discount = item.discountPercentage,
             freeShippingLogo = item.freeOngkirDataView.imageUrl,
             rating = item.ratingString,
-            integrity = integrity,
-            containerType = containerType
+            integrity = integrity
         )
         ProductDetailPrefetch.process(context, intent, prefetchData)
     }
@@ -1471,5 +1472,11 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun updateSearchBarNotification() {
         searchNavigationListener?.updateSearchBarNotification()
+    }
+
+    private fun onSafeProductClickInfo(itemProduct: ProductItemDataView?) {
+        if(itemProduct == null) return
+        presenter?.trackProductClick(itemProduct)
+        presenter?.showBottomSheetInappropriate(itemProduct)
     }
 }

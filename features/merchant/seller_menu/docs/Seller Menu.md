@@ -34,7 +34,7 @@ title: "Seller Menu"
 
 
 
-| ![](res/seller_menu_top_cut.png) Seller Menu Top Cut <br/> | ![](res/seller_menu_bottom_cut.png) Seller Menu Bottom Cut <br/> | ![](res/seller_menu_setting.png) Seller Menu Setting <br/> |
+| ![](https://docs-android.tokopedia.net/images/docs/seller_menu/seller_menu_top_cut.png) Seller Menu Top Cut <br/> | ![](https://docs-android.tokopedia.net/images/docs/seller_menu/seller_menu_bottom_cut.png) Seller Menu Bottom Cut <br/> | ![](https://docs-android.tokopedia.net/images/docs/seller_menu/seller_menu_setting.png) Seller Menu Setting <br/> |
 |------------------------------------------------------------|------------------------------------------------------------------|------------------------------------------------------------|
 
 The Seller Menu module contains page that shows main seller informations, such as:
@@ -74,11 +74,11 @@ This page also has a capability to handle different admin roles. Admins can only
 
 ## Flow Diagram
 
-![](res/seller_menu_main.png)
+![](https://docs-android.tokopedia.net/images/docs/seller_menu/seller_menu_main.png)
 
 Main Flow
 
-![](res/seller_menu_admin.png)
+![](https://docs-android.tokopedia.net/images/docs/seller_menu/seller_menu_admin.png)
 
 Admin Authorization Flow
 
@@ -86,7 +86,7 @@ Admin Authorization Flow
 
 To access Seller Menu, seller will need to click the seller button in Main Nav page
 
-![](res/seller_menu_entry_point.png)
+![](https://docs-android.tokopedia.net/images/docs/seller_menu/seller_menu_entry_point.png)
 
 ## How-to
 

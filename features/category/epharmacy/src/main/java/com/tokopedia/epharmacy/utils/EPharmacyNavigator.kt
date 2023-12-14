@@ -5,13 +5,12 @@ import android.content.Intent
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.common_epharmacy.EPHARMACY_CHECKOUT_CONSULTATION_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_RESULT_EXTRA
+import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_CHECKOUT
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CART_RESULT_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.epharmacy.R
-import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationResponse
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyQuantityChangeFragment
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.webview.ext.encode
@@ -43,10 +42,14 @@ internal object EPharmacyNavigator {
         )
     }
 
-    internal fun prescriptionAttachmentDoneRedirection(activity: Activity?, appLink: String?, requestCode: Int?, result: ArrayList<EPharmacyMiniConsultationResult>): Boolean {
-        if (!appLink.isNullOrBlank() && appLink.contains(EPHARMACY_APP_CHECKOUT_APPLINK)) {
-            if (requestCode == EPHARMACY_CHECKOUT_CONSULTATION_REQUEST_CODE) {
-                return true
+    internal fun prescriptionAttachmentDoneRedirection(activity: Activity?, appLink: String?, source: String, result: ArrayList<EPharmacyMiniConsultationResult>): PapCtaRedirection {
+        if (appLink.isNullOrBlank()) {
+            return PapCtaRedirection.None
+        }
+
+        if (appLink.contains(EPHARMACY_APP_CHECKOUT_APPLINK)) {
+            if (source != EPHARMACY_PPG_SOURCE_CHECKOUT) {
+                return PapCtaRedirection.RedirectionUpdateQuantity
             }
             activity?.setResult(
                 EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE,
@@ -58,22 +61,35 @@ internal object EPharmacyNavigator {
                 }
             )
             activity?.finish()
-        } else if (!appLink.isNullOrBlank() && appLink.contains(EPHARMACY_CART_APPLINK)) {
+        } else if (appLink.contains(EPHARMACY_CART_APPLINK)) {
             activity?.setResult(
                 EPHARMACY_REDIRECT_CART_RESULT_CODE,
                 Intent()
             )
             activity?.finish()
+        } else if (appLink.contains(EPHARMACY_QUANTITY_EDITOR)) {
+            return PapCtaRedirection.RedirectionQuantityEditor(getTConsultationIds(result))
         } else {
             RouteManager.route(activity, appLink)
         }
-        return false
+        return PapCtaRedirection.None
     }
 
-    fun navigateToQuantityBottomSheet(childFragmentManager: FragmentManager) {
+    private fun getTConsultationIds(result: ArrayList<EPharmacyMiniConsultationResult>): List<String> {
+        return result
+            .mapNotNull { it.tokoConsultationId?.takeIf { id -> id.isNotBlank() } }
+    }
+
+    fun navigateToQuantityBottomSheet(tConsultationIds: ArrayList<String>?, childFragmentManager: FragmentManager) {
         childFragmentManager.beginTransaction().replace(
             R.id.ep_frame_content,
-            EPharmacyQuantityChangeFragment.newInstance()
+            EPharmacyQuantityChangeFragment.newInstance(tConsultationIds)
         ).commit()
     }
+}
+
+sealed class PapCtaRedirection {
+    object RedirectionUpdateQuantity : PapCtaRedirection()
+    data class RedirectionQuantityEditor(val tConsultationIds: List<String>) : PapCtaRedirection()
+    object None : PapCtaRedirection()
 }

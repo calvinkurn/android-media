@@ -4,11 +4,9 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 
 object EPharmacyAtcQuery : GqlQueryInterface {
     private const val OPERATION_NAME = "cart_general_add_to_cart_instant"
-
     override fun getOperationNameList() = listOf(OPERATION_NAME)
-
     override fun getQuery() = """
-            mutation ${OPERATION_NAME}(${'$'}params: CartGeneralAddToCartInstantParams!){
+            mutation $OPERATION_NAME(${'$'}params: CartGeneralAddToCartInstantParams!){
               cart_general_add_to_cart_instant(params: ${'$'}params) {
                 header {
                   process_time

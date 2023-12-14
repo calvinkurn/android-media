@@ -23,7 +23,7 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/upload_prescription_text"
+        android:id="@+id/lblPrescriptionAttached"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:typographyWeight="bold"
@@ -35,11 +35,11 @@
         app:layout_constraintTop_toTopOf="@id/upload_icon"
         app:layout_constraintStart_toEndOf="@id/upload_icon"
         app:layout_constraintEnd_toStartOf="@id/iv_prescription_right"
-        app:layout_constraintBottom_toTopOf="@id/upload_description_text"
+        app:layout_constraintBottom_toTopOf="@id/lblPrescriptionEnablerName"
         />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/upload_description_text"
+        android:id="@+id/lblPrescriptionEnablerName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN950"
@@ -50,7 +50,7 @@
         app:typographyWeight="reguler"
         app:layout_constraintStart_toEndOf="@id/upload_icon"
         app:layout_constraintEnd_toStartOf="@id/iv_prescription_right"
-        app:layout_constraintTop_toBottomOf="@id/upload_prescription_text"
+        app:layout_constraintTop_toBottomOf="@id/lblPrescriptionAttached"
         app:layout_constraintBottom_toBottomOf="@id/upload_icon"
         tools:text="2 foto resep di-upload"
         tools:visibility="gone"

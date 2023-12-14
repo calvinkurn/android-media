@@ -1,21 +1,35 @@
 package com.tokopedia.productcard.reimagine
 
+import android.graphics.BlurMaskFilter
+import android.graphics.PorterDuff
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.Group
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.productcard.R
+import com.tokopedia.productcard.utils.ImageBlurUtil
+import com.tokopedia.productcard.utils.RoundedCornersTransformation
 import com.tokopedia.productcard.utils.RoundedCornersTransformation.CornerType.ALL
 import com.tokopedia.productcard.utils.RoundedCornersTransformation.CornerType.TOP
 import com.tokopedia.productcard.utils.imageRounded
+import com.tokopedia.productcard.utils.loadImageRoundedBlurred
 import com.tokopedia.productcard.utils.shouldShowWithAction
+import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import com.tokopedia.productcard.R as productcardR
 
 internal class ProductCardRenderer(
     private val view: View,
@@ -23,6 +37,9 @@ internal class ProductCardRenderer(
 ) {
 
     private val context = view.context
+    private val imageBlurUtil = ImageBlurUtil(context)
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(job + Dispatchers.Main.immediate)
 
     private val imageView by view.lazyView<ImageUnify?>(R.id.productCardImage)
     private val adsText by view.lazyView<Typography?>(R.id.productCardAds)
@@ -33,10 +50,13 @@ internal class ProductCardRenderer(
     private val slashedPriceInlineText by view.lazyView<Typography?>(R.id.productCardSlashedPriceInline)
     private val discountInlineText by view.lazyView<Typography?>(R.id.productCardDiscountInline)
     private val benefitLabel by view.lazyView<Typography?>(R.id.productCardLabelBenefit)
+    private val bmsmLabel by view.lazyView<Typography?>(R.id.productCardLabelBMSM)
     private val credibilitySection by view.lazyView<LinearLayout?>(R.id.productCardCredibility)
     private val shopSection by view.lazyView<LinearLayout?>(R.id.productCardShopSection)
     private val freeShippingImage by view.lazyView<ImageView?>(R.id.productCardFreeShipping)
     private val ribbon = ProductCardRibbon(view)
+    private val productCardSafeContainer by view.lazyView<Group?>(R.id.productCardSafeContainer)
+
 
     fun setProductModel(productCardModel: ProductCardModel) {
         renderImage(productCardModel)
@@ -46,21 +66,65 @@ internal class ProductCardRenderer(
         renderSlashedPrice(productCardModel)
         renderDiscountPercentage(productCardModel)
         renderLabelBenefit(productCardModel)
+        renderLabelProductOffer(productCardModel)
         renderCredibilitySection(productCardModel)
         renderShopSection(productCardModel)
         renderFreeShipping(productCardModel)
         ribbon.render(productCardModel.ribbon())
+        renderSafeContainer(productCardModel)
     }
 
     private fun renderImage(productCardModel: ProductCardModel) {
         val cornerType= if (productCardModel.stockInfo() != null) TOP else ALL
-        imageView?.imageRounded(
+        imageView?.apply {
+            loadImage(productCardModel, cornerType)
+
+            setColorFilter(
+                ContextCompat.getColor(
+                    context,
+                    productcardR.color.dms_product_card_reimagine_image_overlay,
+                ),
+                PorterDuff.Mode.SRC_OVER
+            )
+        }
+    }
+
+    private fun ImageView.loadImage(
+        productCardModel: ProductCardModel,
+        cornerType: RoundedCornersTransformation.CornerType,
+    ) {
+
+        if (productCardModel.isSafeProduct) {
+            imageBlurredImage(productCardModel, cornerType)
+        } else {
+            imageRounded(
+                productCardModel.imageUrl,
+                context.resources.getDimensionPixelSize(
+                    R.dimen.product_card_reimagine_carousel_image_radius
+                ).toFloat(),
+                cornerType
+            )
+        }
+    }
+
+    private fun ImageView.imageBlurredImage(
+        productCardModel: ProductCardModel,
+        cornerType: RoundedCornersTransformation.CornerType,
+    ) {
+
+        loadImageRoundedBlurred(
             productCardModel.imageUrl,
             context.resources.getDimensionPixelSize(
                 R.dimen.product_card_reimagine_carousel_image_radius
-            ).toFloat(),
+            ),
             cornerType
-        )
+        ) { bitmap, _ ->
+            scope.launch {
+                this@imageBlurredImage.setImageBitmap(
+                    imageBlurUtil.blurImage(bitmap?:return@launch, 25.0f)
+                )
+            }
+        }
     }
 
     private fun renderAds(productCardModel: ProductCardModel) {
@@ -74,7 +138,23 @@ internal class ProductCardRenderer(
                 R.string.content_desc_textViewProductName
             )
             it.maxLines = maxLinesName(productCardModel)
+
+            if (productCardModel.isSafeProduct) {
+                renderBlurredText()
+            } else {
+                renderNonBlurredText()
+            }
         }
+    }
+
+    private fun renderBlurredText() {
+        val radius: Float = nameText?.textSize.orZero() / 3
+        val filter = BlurMaskFilter(radius, BlurMaskFilter.Blur.NORMAL)
+        nameText?.paint?.maskFilter = filter
+    }
+
+    private fun renderNonBlurredText() {
+        nameText?.paint?.maskFilter = null
     }
 
     private fun maxLinesName(productCardModel: ProductCardModel): Int {
@@ -153,6 +233,17 @@ internal class ProductCardRenderer(
         }
     }
 
+    private fun renderLabelProductOffer(productCardModel: ProductCardModel) {
+        val labelProductOffer = productCardModel.labelProductOffer()
+        val hasLabelBenefit = productCardModel.labelBenefit() != null
+        val showLabelProductOffer =
+            labelProductOffer != null && (!hasLabelBenefit || type != GridCarousel)
+
+        bmsmLabel?.shouldShowWithAction(showLabelProductOffer) {
+            it.text = labelProductOffer?.title ?: ""
+        }
+    }
+
     private fun renderCredibilitySection(productCardModel: ProductCardModel) {
         val hasRating = productCardModel.rating.isNotEmpty()
         val labelCredibility = productCardModel.labelCredibility()
@@ -195,5 +286,9 @@ internal class ProductCardRenderer(
         freeShippingImage?.shouldShowWithAction(freeShippingImageUrl.isNotEmpty()) {
             it.loadIcon(freeShippingImageUrl)
         }
+    }
+
+    private fun renderSafeContainer(productCardModel: ProductCardModel){
+        productCardSafeContainer?.showWithCondition(productCardModel.isSafeProduct)
     }
 }

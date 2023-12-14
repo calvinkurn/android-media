@@ -18,6 +18,10 @@ import com.bumptech.glide.request.transition.Transition
 import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.utils.R
 
+@Deprecated(
+    message = "Please using MediaLoader instead",
+    replaceWith = ReplaceWith("imageView.loadImage(url)", "com.tokopedia.media.loader")
+)
 object ImageUtils {
 
     private fun isValidContextForGlide(context: Context?): Boolean {

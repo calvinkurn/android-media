@@ -26,8 +26,6 @@ object ProductDetailConstant {
     const val PDP_RESULT_TRACE_P2_DATA = "pdp_result_trace_p2_data"
 
     // PAYLOADS
-    const val PAYLOAD_WISHLIST = 1
-    const val PAYLOAD_TRADEIN_AND_BOE = 421321
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
     const val PAYLOAD_SCROLL_IMAGE_VARIANT = 5
@@ -60,6 +58,7 @@ object ProductDetailConstant {
     const val INFO = "info"
     const val SHIPMENT = "shipment"
     const val SHIPMENT_V2 = "shipment_v2"
+    const val SHIPMENT_V3 = "shipment_v3"
     const val PRODUCT_LIST = "product_list"
     const val NOTIFY_ME = "teaser"
     const val TICKER_INFO = "ticker_info"
@@ -113,6 +112,7 @@ object ProductDetailConstant {
     const val DILAYANI_TOKOPEDIA = "dt_info"
     const val AR_BUTTON = "button_ar"
     const val RECOM_VERTICAL = "pdp_vertical"
+    const val RECOM_STEAL_THE_LOOK = "steal_the_look"
     const val A_PLUS_IMAGE = "product_detail_media"
 
     // custom info title as component type

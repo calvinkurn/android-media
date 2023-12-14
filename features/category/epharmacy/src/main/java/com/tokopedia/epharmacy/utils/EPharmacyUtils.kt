@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 import com.tokopedia.usecase.BuildConfig
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import timber.log.Timber
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -172,7 +173,7 @@ object EPharmacyUtils {
         )
     }
 
-    fun mapGroupsDataIntoDataModel(data: EPharmacyPrepareProductsGroupResponse, source: String?): EPharmacyDataModel {
+    fun mapGroupsDataIntoDataModel(data: EPharmacyPrepareProductsGroupResponse, source: String?, redirectTickerText: String?): EPharmacyDataModel {
         val listOfComponents = arrayListOf<BaseEPharmacyDataModel>()
         if (data.detailData?.groupsData?.attachmentPageTickerText?.isNotBlank() == true) {
             listOfComponents.add(
@@ -181,7 +182,8 @@ object EPharmacyUtils {
                     TICKER_COMPONENT,
                     data.detailData?.groupsData?.attachmentPageTickerText,
                     data.detailData?.groupsData?.attachmentPageTickerLogoUrl,
-                    EPHARMACY_TICKER_BACKGROUND
+                    EPHARMACY_TICKER_BACKGROUND,
+                    redirectTickerText
                 )
             )
         }
@@ -322,6 +324,7 @@ object EPharmacyUtils {
         return try {
             stringToUnifyColor(context, colorHex).run { this.unifyColor ?: this.defaultColor }
         } catch (t: Throwable) {
+            Timber.e(t)
             defaultColor
         }
     }

@@ -30,17 +30,7 @@ import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSl
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignCarouselProductListener
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignPlayWidgetListener
-import com.tokopedia.shop.home.WidgetName.BANNER_TIMER
-import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
-import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
-import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
-import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
-import com.tokopedia.shop.home.WidgetName.PRODUCT_HIGHLIGHT
-import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
-import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER_HIGHLIGHT
-import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
-import com.tokopedia.shop.home.WidgetName.VIDEO
-import com.tokopedia.shop.home.WidgetName.VOUCHER
+import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopCarouselProductWidgetPlaceholderViewHolder
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
@@ -63,18 +53,19 @@ class ShopCampaignTabAdapterTypeFactory(
 
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
         return when (baseShopHomeWidgetUiModel.name) {
-            VOUCHER -> getShopCampaignVoucherSliderViewHolder(baseShopHomeWidgetUiModel)
-            BANNER_TIMER -> getShopCampaignDisplayBannerTimerViewHolder(baseShopHomeWidgetUiModel)
-            PRODUCT_HIGHLIGHT -> getShopCampaignCarouselProductViewHolder(baseShopHomeWidgetUiModel)
-            DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN -> getShopCampaignMultipleImageColumnViewHolder(
+            WidgetNameEnum.VOUCHER.value -> getShopCampaignVoucherSliderViewHolder(baseShopHomeWidgetUiModel)
+            WidgetNameEnum.BANNER_TIMER.value -> getShopCampaignDisplayBannerTimerViewHolder(baseShopHomeWidgetUiModel)
+            WidgetNameEnum.PRODUCT_HIGHLIGHT.value -> getShopCampaignCarouselProductViewHolder(baseShopHomeWidgetUiModel)
+            WidgetNameEnum.DISPLAY_SINGLE_COLUMN.value,
+            WidgetNameEnum.DISPLAY_DOUBLE_COLUMN.value,
+            WidgetNameEnum.DISPLAY_TRIPLE_COLUMN.value -> getShopCampaignMultipleImageColumnViewHolder(
                 baseShopHomeWidgetUiModel
             )
-
-            SLIDER_SQUARE_BANNER -> getShopCampaignSliderSquareViewHolder(baseShopHomeWidgetUiModel)
-            SLIDER_BANNER -> getShopCampaignSliderBannerViewHolder(baseShopHomeWidgetUiModel)
-            PLAY_CAROUSEL_WIDGET -> ShopCampaignCarouselPlayWidgetViewHolder.LAYOUT
-            VIDEO -> getShopCampaignVideoViewHolder(baseShopHomeWidgetUiModel)
-            SLIDER_BANNER_HIGHLIGHT -> getShopCampaignDisplaySliderBannerHighlight(
+            WidgetNameEnum.SLIDER_SQUARE_BANNER.value -> getShopCampaignSliderSquareViewHolder(baseShopHomeWidgetUiModel)
+            WidgetNameEnum.SLIDER_BANNER.value -> getShopCampaignSliderBannerViewHolder(baseShopHomeWidgetUiModel)
+            WidgetNameEnum.PLAY_CAROUSEL_WIDGET.value -> ShopCampaignCarouselPlayWidgetViewHolder.LAYOUT
+            WidgetNameEnum.VIDEO.value -> getShopCampaignVideoViewHolder(baseShopHomeWidgetUiModel)
+            WidgetNameEnum.SLIDER_BANNER_HIGHLIGHT.value -> getShopCampaignDisplaySliderBannerHighlight(
                 baseShopHomeWidgetUiModel
             )
 

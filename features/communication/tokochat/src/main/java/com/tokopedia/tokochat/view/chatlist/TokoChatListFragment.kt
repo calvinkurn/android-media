@@ -14,10 +14,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.analytics.TokoChatAnalytics
+import com.tokopedia.tokochat.analytics.TokoChatAnalyticsConstants
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.getSource
 import com.tokopedia.tokochat.common.util.TokoChatNetworkUtil
 import com.tokopedia.tokochat.common.util.TokoChatTimeUtil.getRelativeTime
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.BATCH_LIMIT
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.getSource
 import com.tokopedia.tokochat.common.view.chatlist.TokoChatListBaseFragment
 import com.tokopedia.tokochat.common.view.chatlist.adapter.TokoChatListBaseAdapter
 import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
@@ -26,11 +26,8 @@ import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiMod
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListLoaderUiModel
 import com.tokopedia.tokochat.config.util.TokoChatErrorLogger
 import com.tokopedia.tokochat.databinding.TokochatChatlistFragmentBinding
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -46,9 +43,7 @@ class TokoChatListFragment @Inject constructor(
         itemListener = this
     )
 
-    private var chatListJob: Job? = null
     private var tokoChatAnalytics = TokoChatAnalytics()
-    private var isFirstLoad = true
 
     override fun getScreenName(): String = TAG
 
@@ -66,20 +61,13 @@ class TokoChatListFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initChatListData()
         initListeners()
     }
 
     private fun initChatListData() {
         toggleRecyclerViewLayout(true)
         addInitialShimmering()
-        chatListJob = lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                isFirstLoad = true
-                loadChatListData(BATCH_LIMIT)
-                viewModel.setupChatListSource()
-            }
-        }
+        viewModel.processAction(TokoChatListAction.RefreshPage)
     }
 
     private fun setChatListData(
@@ -116,18 +104,8 @@ class TokoChatListFragment @Inject constructor(
         }
     }
 
-    private fun loadChatListData(size: Int) {
-        viewModel.loadNextPageChatList(size, false) { (isSuccess, _) ->
-            if (!isSuccess) {
-                showErrorLayout()
-            }
-            toggleSwipeRefreshState(false)
-        }
-    }
-
     private fun showErrorLayout() {
         adapter.clearAllItems()
-        toggleRecyclerViewLayout(false)
         showGlobalErrorLayout {
             resetChatList()
         }
@@ -138,38 +116,73 @@ class TokoChatListFragment @Inject constructor(
     }
 
     override fun initObservers() {
-        viewModel.chatListPair.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty()) {
-                tokoChatAnalytics.viewDriverChatList(it)
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    observeTrackerUiState()
+                }
+                launch {
+                    observeChatListUiState()
+                }
+                launch {
+                    observeNavigationUiState()
+                }
+                launch {
+                    observeErrorUiState()
+                }
+                initChatListData() // reset page data from remote
             }
         }
 
-        viewModel.error.observe(viewLifecycleOwner) {
-            TokoChatErrorLogger.logExceptionToServerLogger(
-                TokoChatErrorLogger.PAGE.TOKOCHAT_LIST,
-                it.first,
-                TokoChatErrorLogger.ErrorType.ERROR_PAGE,
-                userSession.deviceId.orEmpty(),
-                it.second
-            )
-        }
+        // Setup flow observer
+        viewModel.setupViewModelObserver()
+    }
 
-        viewModel.chatList.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    setChatListData(it.data, isFirstLoad)
-                    if (isFirstLoad) {
-                        isFirstLoad = false
-                        if (it.data.size > BATCH_LIMIT) {
-                            loadChatListData(it.data.size - BATCH_LIMIT)
-                        }
+    private suspend fun observeChatListUiState() {
+        viewModel.chatListUiState.collectLatest {
+            toggleSwipeRefreshState(false)
+            if (!it.isLoading) {
+                when {
+                    (it.errorMessage != null) -> showErrorLayout()
+                    (it.page > 0) -> { // 0 means haven't load anything
+                        setChatListData(it.chatItemList, it.page == 1)
+                        endlessRecyclerViewScrollListener?.setHasNextPage(it.hasNextPage)
+                        removeLoader()
                     }
                 }
-                is Fail -> {
-                    showErrorLayout()
-                }
-                else -> Unit // no op
             }
+        }
+    }
+
+    private suspend fun observeNavigationUiState() {
+        viewModel.navigationUiState.collectLatest {
+            if (it.applink.isNotBlank() && context != null) {
+                val intent = RouteManager.getIntent(context, it.applink)
+                startActivity(intent)
+            }
+        }
+    }
+
+    private suspend fun observeErrorUiState() {
+        viewModel.errorUiState.collectLatest {
+            if (it.error != null) {
+                TokoChatErrorLogger.logExceptionToServerLogger(
+                    TokoChatErrorLogger.PAGE.TOKOCHAT_LIST,
+                    it.error.first,
+                    TokoChatErrorLogger.ErrorType.ERROR_PAGE,
+                    userSession.deviceId.orEmpty(),
+                    it.error.second
+                )
+            }
+        }
+    }
+
+    private suspend fun observeTrackerUiState() {
+        viewModel.chatListTrackerUiState.collectLatest {
+            tokoChatAnalytics.viewDriverChatList(
+                listChatPair = it,
+                role = TokoChatAnalyticsConstants.BUYER
+            )
         }
     }
 
@@ -183,11 +196,7 @@ class TokoChatListFragment @Inject constructor(
     private fun resetChatList() {
         endlessRecyclerViewScrollListener?.resetState()
         adapter.clearAllItemsAndAnimateChanges()
-        viewModel.resetChatListData()
-        lifecycleScope.launch {
-            chatListJob?.cancelAndJoin()
-            initChatListData()
-        }
+        initChatListData()
     }
 
     private fun addEmptyChatItem() {
@@ -198,26 +207,23 @@ class TokoChatListFragment @Inject constructor(
     }
 
     override fun onLoadMore() {
-        if (!adapter.isLoaderExist()) {
+        if (adapter.getLoaderPosition() < 0) {
             val loaderUiModel = TokoChatListLoaderUiModel()
             adapter.addItem(loaderUiModel)
             baseBinding?.tokochatListRv?.post {
                 adapter.notifyItemInserted(adapter.lastIndex)
-                viewModel.loadNextPageChatList(isLoadMore = true) { (_, newSize) ->
-                    removeLoader(loaderUiModel)
-                    toggleSwipeRefreshState(false)
-                    endlessRecyclerViewScrollListener?.setHasNextPage(
-                        (newSize ?: Int.ZERO) > Int.ZERO
-                    )
-                }
+                viewModel.processAction(TokoChatListAction.LoadNextPage)
             }
         }
     }
 
-    private fun removeLoader(loaderUiModel: TokoChatListLoaderUiModel) {
-        adapter.removeItem(loaderUiModel)
+    private fun removeLoader() {
         baseBinding?.tokochatListRv?.post {
-            adapter.notifyItemRemoved(adapter.lastIndex)
+            val loaderPosition = adapter.getLoaderPosition()
+            if (loaderPosition >= 0) {
+                adapter.removeItemAt(loaderPosition)
+                adapter.notifyItemRemoved(loaderPosition)
+            }
         }
     }
 
@@ -233,8 +239,7 @@ class TokoChatListFragment @Inject constructor(
             val source = "?${ApplinkConst.TokoChat.PARAM_SOURCE}=$serviceName"
             val paramOrderIdGojek = "&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=${element.orderId}"
             val applink = "${ApplinkConstInternalCommunication.TOKO_CHAT}$source$paramOrderIdGojek"
-            val intent = RouteManager.getIntent(it, applink)
-            startActivity(intent)
+            viewModel.processAction(TokoChatListAction.NavigateToPage(applink))
         }
     }
 

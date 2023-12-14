@@ -1,6 +1,8 @@
 package com.tokopedia.epharmacy.ui.fragment
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,11 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.common_epharmacy.EPHARMACY_CEK_RESEP_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_CHOOSER_REQUEST_CODE
-import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
 import com.tokopedia.common_epharmacy.EPHARMACY_PPG_SOURCE_CHECKOUT
+import com.tokopedia.common_epharmacy.EPHARMACY_SEND_RESULT_KEY
 import com.tokopedia.common_epharmacy.EPHARMACY_UPLOAD_REQUEST_CODE
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.epharmacy.R
@@ -29,19 +32,18 @@ import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyShimmerDataModel
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.params.InitiateConsultationParam
-import com.tokopedia.epharmacy.network.request.EPharmacyUpdateCartParam
 import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationResponse
-import com.tokopedia.epharmacy.network.response.EPharmacyUpdateCartResponse
+import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyCommonBottomSheet
 import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyReminderScreenBottomSheet
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.ATTACH_PRESCRIPTION_PAGE
 import com.tokopedia.epharmacy.utils.ENABLER_IMAGE_URL
 import com.tokopedia.epharmacy.utils.EPHARMACY_ANDROID_SOURCE
 import com.tokopedia.epharmacy.utils.EPHARMACY_APPLINK
-import com.tokopedia.epharmacy.utils.EPHARMACY_APP_CHECKOUT_APPLINK
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_NAME
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_SOURCE
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
+import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_IDS
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
 import com.tokopedia.epharmacy.utils.EPharmacyButtonState
 import com.tokopedia.epharmacy.utils.EPharmacyConsultationStatus
@@ -51,9 +53,12 @@ import com.tokopedia.epharmacy.utils.EPharmacyNavigator
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.epharmacy.utils.ERROR_CODE_OUTSIDE_WORKING_HOUR
 import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_ID_STRING
+import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_PAGE_SOURCE
+import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_PAGE_SOURCE_EPHARMACY
 import com.tokopedia.epharmacy.utils.EXTRA_SOURCE_STRING
 import com.tokopedia.epharmacy.utils.LabelKeys.Companion.FAILED
 import com.tokopedia.epharmacy.utils.LabelKeys.Companion.SUCCESS
+import com.tokopedia.epharmacy.utils.PapCtaRedirection
 import com.tokopedia.epharmacy.utils.PrescriptionActionType
 import com.tokopedia.epharmacy.utils.SHIMMER_COMPONENT
 import com.tokopedia.epharmacy.utils.SHIMMER_COMPONENT_1
@@ -63,8 +68,10 @@ import com.tokopedia.epharmacy.utils.UPLOAD_PAGE_SOURCE_PAP
 import com.tokopedia.epharmacy.utils.openDocument
 import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewModel
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isLessThanEqualZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -91,7 +98,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private var tConsultationId = 0L
     private var source = EPHARMACY_PPG_SOURCE_CHECKOUT
-    private var requestCode = 0
+    private var isSendResult = false
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -139,7 +146,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun initArguments() {
         tConsultationId = arguments?.getLong(EPHARMACY_TOKO_CONSULTATION_ID).orZero()
-        requestCode = arguments?.getInt(EPHARMACY_CONSULTATION_REQUEST_CODE).orZero()
+        isSendResult = arguments?.getBoolean(EPHARMACY_SEND_RESULT_KEY).orFalse()
         source = arguments?.getString(EPHARMACY_SOURCE).orEmpty()
     }
 
@@ -170,10 +177,13 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     }
 
     private fun makeRequestParams(): MutableMap<String, Any?> {
-        return mutableMapOf(
-            EPharmacyPrepareProductsGroupUseCase.PARAM_SOURCE to source,
-            EPharmacyPrepareProductsGroupUseCase.PARAM_TOKO_CONSULTATION_ID to tConsultationId
+        val params = mutableMapOf<String, Any?>(
+            EPharmacyPrepareProductsGroupUseCase.PARAM_SOURCE to source
         )
+        if (!tConsultationId.isLessThanEqualZero()) {
+            params[EPharmacyPrepareProductsGroupUseCase.PARAM_TOKO_CONSULTATION_IDS] = arrayOf(tConsultationId)
+        }
+        return params
     }
 
     private fun addShimmer() {
@@ -269,22 +279,21 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun observerUpdateEPharmacyCart() {
         ePharmacyPrescriptionAttachmentViewModel.updateEPharmacyCart.observe(viewLifecycleOwner) { updateEPharmacyCart ->
-            when (updateEPharmacyCart) {
-                is Success -> {
-                    if (updateEPharmacyCart.data.status == EPharmacyUpdateCartResponse.UpdateEPharmacyCart.Status.SUCCESS) {
-                        onSuccessUpdateEPharmacyCart()
-                    } else if (updateEPharmacyCart.data.header?.errorMessage.orEmpty().isNotBlank()) {
-                        showToast(TYPE_ERROR, updateEPharmacyCart.data.header?.errorMessage.orEmpty())
-                    }
-                }
-                is Fail -> {
-                    showToasterError(updateEPharmacyCart.throwable)
-                }
+            if (updateEPharmacyCart) {
+                onSuccessUpdateEPharmacyCart()
+            } else {
+                showToast(TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_reminder_fail).orEmpty())
             }
         }
     }
 
-    private fun onSuccessUpdateEPharmacyCart() = RouteManager.route(context, EPHARMACY_APP_CHECKOUT_APPLINK)
+    private fun onSuccessUpdateEPharmacyCart() {
+        RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT).apply {
+            putExtra(EXTRA_CHECKOUT_PAGE_SOURCE, EXTRA_CHECKOUT_PAGE_SOURCE_EPHARMACY)
+        }.also {
+            startActivity(it)
+        }
+    }
 
     private fun onFailGetConsultationDetails(throwable: Throwable) {
         showToasterError(throwable)
@@ -462,17 +471,27 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         EPharmacyNavigator.prescriptionAttachmentDoneRedirection(
             activity,
             appLink,
-            requestCode,
+            source,
             ePharmacyPrescriptionAttachmentViewModel.getResultForCheckout()
-        ).let { isUpdateCart ->
-            if (isUpdateCart) {
-                ePharmacyPrescriptionAttachmentViewModel.updateEPharmacyCart(getUpdateCartRequestParams())
+        ).let { result ->
+            when (result) {
+                is PapCtaRedirection.RedirectionUpdateQuantity -> ePharmacyPrescriptionAttachmentViewModel.updateEPharmacyCart(ePharmacyAttachmentUiUpdater)
+                is PapCtaRedirection.RedirectionQuantityEditor -> {
+                    EPharmacyCommonBottomSheet.newInstance(
+                        Bundle().apply {
+                            putString(EPharmacyCommonBottomSheet.COMPONENT_NAME, EPharmacyCommonBottomSheet.TYPE_QUANTITY_EDITOR)
+                            putStringArrayList(
+                                EPHARMACY_TOKO_CONSULTATION_IDS,
+                                ArrayList(result.tConsultationIds)
+                            )
+                        }
+                    ).show(childFragmentManager, EPharmacyCommonBottomSheet::class.simpleName)
+                }
+                is PapCtaRedirection.None -> {
+                    // No - op
+                }
             }
         }
-    }
-
-    private fun getUpdateCartRequestParams(): EPharmacyUpdateCartParam {
-        return ePharmacyAttachmentUiUpdater.getUpdateCartParams(tConsultationId)
     }
 
     private fun hasAnyError(): Boolean {
@@ -548,6 +567,19 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     override fun onToast(toasterType: Int, message: String) {
         super.onToast(toasterType, message)
         showToast(toasterType, message)
+    }
+
+    override fun redirect(link: String) {
+        super.redirect(link)
+        val viewIntent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse(link)
+        )
+        try {
+            startActivity(viewIntent)
+        } catch (e: ActivityNotFoundException) {
+            EPharmacyUtils.logException(e)
+        }
     }
 
     private fun redirectAttachmentCTA(

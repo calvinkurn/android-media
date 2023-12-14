@@ -1,34 +1,28 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation
 
-import android.os.Bundle
-import com.tokopedia.home.beranda.domain.gql.feed.Product
-import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationVisitable
-import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactory
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommendation.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.smart_recycler_helper.SmartVisitable
+import com.tokopedia.productcard.ProductCardModel
 
 data class HomeRecommendationItemDataModel(
-        val product: Product,
-        val pageName: String = "",
-        val layoutName: String = "",
-        val position: Int = -1,
-        val tabName: String = ""
-) : HomeRecommendationVisitable, ImpressHolder()
-{
-    override fun type(typeFactory: HomeRecommendationTypeFactory): Int {
+    val productCardModel: ProductCardModel,
+    val recommendationProductItem: HomeRecommendationProductItem,
+    val pageName: String = "",
+    val layoutName: String = "",
+    val position: Int = -1,
+    val tabName: String = ""
+) : BaseHomeRecommendationVisitable, ImpressHolder() {
+
+    override fun type(typeFactory: HomeRecommendationTypeFactoryImpl): Int {
         return typeFactory.type(this)
     }
 
-    override fun equalsDataModel(dataModel: SmartVisitable<*>): Boolean {
-        return dataModel == this
+    override fun areItemsTheSame(other: Any): Boolean {
+        return other is HomeRecommendationItemDataModel && other.recommendationProductItem.id == recommendationProductItem.id
     }
 
-    override fun getUniqueIdentity(): Any {
-        return product.id
-    }
-
-    override fun getChangePayloadFrom(b: Any?): Bundle? {
-        return Bundle()
+    override fun areContentsTheSame(other: Any): Boolean {
+        return this == other
     }
 
     override fun equals(other: Any?): Boolean {
@@ -37,12 +31,36 @@ data class HomeRecommendationItemDataModel(
 
         other as HomeRecommendationItemDataModel
 
-        if (product != other.product) return false
+        if (recommendationProductItem != other.recommendationProductItem) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return product.hashCode()
+        return recommendationProductItem.hashCode()
+    }
+
+    data class HomeRecommendationProductItem(
+        val id: String = "",
+        val name: String = "",
+        val imageUrl: String = "",
+        val recommendationType: String = "",
+        val priceInt: Int = 0,
+        val freeOngkirIsActive: Boolean = false,
+        val labelGroup: List<LabelGroup> = emptyList(),
+        val categoryBreadcrumbs: String = "",
+        val clusterID: Int = 0,
+        val isTopAds: Boolean = false,
+        val trackerImageUrl: String = "",
+        val clickUrl: String = "",
+        val isWishlist: Boolean = false,
+        val wishListUrl: String = ""
+    ) {
+        data class LabelGroup(
+            val position: String = "",
+            val title: String = "",
+            val type: String = "",
+            val url: String = ""
+        )
     }
 }

@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.component.model.EPharmacyOrderDetailInfoDataModel
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 
@@ -14,7 +13,7 @@ class EPharmacyOrderDetailInfoViewHolder(
 ) : AbstractViewHolder<EPharmacyOrderDetailInfoDataModel>(view) {
 
     private val detailProductHeader = view.findViewById<Typography>(R.id.detail_product_header)
-    private val serviceTypeValue = view.findViewById<Typography>(R.id.service_type_value)
+    private val serviceTypeValue = view.findViewById<Typography>(R.id.lblValueItemOfService)
     private val providerName = view.findViewById<Typography>(R.id.service_provider_value)
     private val durationValue = view.findViewById<Typography>(R.id.duration_value)
     private val feesValue = view.findViewById<Typography>(R.id.fee_value)
@@ -36,8 +35,8 @@ class EPharmacyOrderDetailInfoViewHolder(
 
     private fun setUpValidity(validity: String) {
         validityTimeValue.displayTextOrHide(validity)
-        if(validity.isEmpty()){
-            validityTime.hide()
+        if (validity.isNotBlank()) {
+            validityTime.show()
         }
     }
 }

@@ -41,6 +41,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation projectOrAar(rootProject.ext.features.commonEPharmacy)
     implementation projectOrAar(rootProject.ext.features.commonPayment)
+    implementation projectOrAar(rootProject.ext.features.cart_common)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
 
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.mediapickerCommon)
@@ -57,6 +59,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.miscDependencies.viewModelKtx
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar

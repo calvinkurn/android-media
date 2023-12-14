@@ -1,6 +1,7 @@
 package com.tokopedia.epharmacy.component.model
 
 import com.tokopedia.epharmacy.adapters.factory.EPharmacyAdapterFactory
+import com.tokopedia.epharmacy.network.response.EPharmacyOrderDetailResponse
 
 data class EPharmacyOrderDetailHeaderDataModel(
     override val name: String,
@@ -10,8 +11,9 @@ data class EPharmacyOrderDetailHeaderDataModel(
     val tickerMessage: String?,
     val invoiceNumber: String?,
     val invoiceLink: String?,
-    val chatDate: String?,
+    val paymentDate: String?,
     val validUntil: String?,
+    val chatStartDate: String?,
     val indicatorColor: String?
 ) :
     BaseEPharmacySimpleDataModelImpl(name, type) {
@@ -37,13 +39,13 @@ data class EPharmacyOrderDetailInfoDataModel(
     }
 }
 
-
 data class EPharmacyOrderDetailPaymentDataModel(
     override val name: String,
     override val type: String,
     val paymentMethod: String?,
     val totalPrice: String?,
-    val totalPayment: String?
+    val totalPayment: String?,
+    val helpButton: EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?
 ) :
     BaseEPharmacySimpleDataModelImpl(name, type) {
 

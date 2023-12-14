@@ -69,8 +69,8 @@ import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
-import com.tokopedia.shop.home.WidgetName
-import com.tokopedia.shop.home.WidgetType
+import com.tokopedia.shop.home.WidgetNameEnum
+import com.tokopedia.shop.home.WidgetTypeEnum
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetParamsModel
@@ -950,7 +950,6 @@ class ShopHomeViewModel @Inject constructor(
         shopId: String,
         productPerPage: Int,
         shopProductFilterParameter: ShopProductFilterParameter,
-        initialProductListData: ShopProduct.GetShopProduct?,
         widgetUserAddressLocalData: LocalCacheModel,
         isEnableDirectPurchase: Boolean
     ) {
@@ -958,18 +957,14 @@ class ShopHomeViewModel @Inject constructor(
             val productList = asyncCatchError(
                 dispatcherProvider.io,
                 block = {
-                    if (initialProductListData == null) {
-                        getProductListData(
-                            shopId,
-                            ShopPageConstant.START_PAGE,
-                            productPerPage,
-                            shopProductFilterParameter,
-                            widgetUserAddressLocalData,
-                            isEnableDirectPurchase
-                        )
-                    } else {
-                        null
-                    }
+                    getProductListData(
+                        shopId,
+                        ShopPageConstant.START_PAGE,
+                        productPerPage,
+                        shopProductFilterParameter,
+                        widgetUserAddressLocalData,
+                        isEnableDirectPurchase
+                    )
                 },
                 onError = { null }
             )
@@ -982,22 +977,8 @@ class ShopHomeViewModel @Inject constructor(
                 onError = { null }
             )
             sortResponse.await()?.let {
-                if (initialProductListData == null) {
-                    productList.await()?.let { productListData ->
-                        _productListData.postValue(Success(productListData))
-                    }
-                } else {
-                    _productListData.postValue(
-                        Success(
-                            mapToShopHomeProductUiModel(
-                                shopId,
-                                productPerPage,
-                                ShopPageConstant.START_PAGE,
-                                initialProductListData,
-                                isEnableDirectPurchase
-                            )
-                        )
-                    )
+                productList.await()?.let { productListData ->
+                    _productListData.postValue(Success(productListData))
                 }
                 it.let { sortResponse ->
                     sortListData = sortResponse
@@ -1214,12 +1195,12 @@ class ShopHomeViewModel @Inject constructor(
         widgetModel: ShopHomeCarousellProductUiModel
     ): ShopHomeCarousellProductUiModel? {
         val isProductWidgetWithDirectPurchase = when (widgetModel.type) {
-            WidgetType.PRODUCT -> {
+            WidgetTypeEnum.PRODUCT.value -> {
                 true
             }
-            WidgetType.PERSONALIZATION -> {
+            WidgetTypeEnum.PERSONALIZATION.value -> {
                 when (widgetModel.name) {
-                    WidgetName.RECENT_ACTIVITY, WidgetName.REMINDER -> {
+                    WidgetNameEnum.RECENT_ACTIVITY.value, WidgetNameEnum.REMINDER.value -> {
                         true
                     }
                     else -> {
@@ -1297,7 +1278,7 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     fun isWidgetBundle(data: ShopPageWidgetUiModel): Boolean {
-        return data.widgetType == WidgetType.BUNDLE
+        return data.widgetType == WidgetTypeEnum.BUNDLE.value
     }
 
     fun getLatestShopHomeWidgetLayoutData(
@@ -1498,20 +1479,20 @@ class ShopHomeViewModel @Inject constructor(
         selectedEtalaseIndex: Int,
         errorMessage: String = ""
     ) {
-        val position = visitable.indexOfFirst { it is ShopDirectPurchaseByEtalaseUiModel }.orZero()
+        val position = visitable.indexOfFirst { it is ShopDirectPurchaseByEtalaseUiModel }
         val curModel = visitable.getOrNull(position) as? ShopDirectPurchaseByEtalaseUiModel
-        curModel?.widgetData?.titleList?.forEachIndexed { index, title ->
-            if (index == selectedSwitcherIndex) {
-                title.etalaseList.forEachIndexed { index2, etalase ->
-                    if (index2 == selectedEtalaseIndex) {
+        curModel?.widgetData?.titleList?.forEachIndexed { titleItemIndex, title ->
+            if (titleItemIndex == selectedSwitcherIndex) {
+                title.etalaseList.forEachIndexed { etalaseItemIndex, etalase ->
+                    if (etalaseItemIndex == selectedEtalaseIndex) {
                         etalase.productList = listProductData.map {
                             ProductCardDirectPurchaseDataModel(
                                 productId = it.id,
-                                imageUrl = it.imageUrl.orEmpty(),
+                                imageUrl = it.imageUrl,
                                 name = it.name,
                                 price = it.displayedPrice,
-                                discount = it.discountPercentage.orEmpty(),
-                                slashPrice = it.originalPrice.orEmpty(),
+                                discount = it.discountPercentage,
+                                slashPrice = it.originalPrice,
                                 ratingAverage = it.averageRating,
                                 isVariant = it.isVariant,
                                 minimumOrder = it.minimumOrder,

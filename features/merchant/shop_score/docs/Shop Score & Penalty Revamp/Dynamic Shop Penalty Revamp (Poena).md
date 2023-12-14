@@ -46,17 +46,17 @@ The main issue in the previous penalty calculation is the deduction mechanism. A
 
 ## Diagram
 
-![](../res/poena_usecase_diagram.png) <br/> Use Case Diagram
+![](https://docs-android.tokopedia.net/images/docs/shop_score/poena_usecase_diagram.png) <br/> Use Case Diagram
 
-![](../res/poena_flowchart.png) <br/> Flow Chart
+![](https://docs-android.tokopedia.net/images/docs/shop_score/poena_flowchart.png) <br/> Flow Chart
 
 ## Design
 
 
 
-| ![](../res/poena_ongoing_page.png) Ongoing Penalty Page <br/>                      | ![](../res/poena_filter_bottomsheet.png) Filter Bottom Sheet <br/>         |
+| ![](../res/poena_ongoing_page.png) Ongoing Penalty Page <br/>                      | ![](https://docs-android.tokopedia.net/images/docs/shop_score/poena_filter_bottomsheet.png) Filter Bottom Sheet <br/>         |
 |------------------------------------------------------------------------------------|----------------------------------------------------------------------------|
-| ![](../res/poena_calculation_bottomsheet.png) Calculation Detail BottomSheet <br/> | ![](../res/poena_filter_see_all.png) Filter See All Bottom Sheet <br/>     |
+| ![](../res/poena_calculation_bottomsheet.png) Calculation Detail BottomSheet <br/> | ![](https://docs-android.tokopedia.net/images/docs/shop_score/poena_filter_see_all.png) Filter See All Bottom Sheet <br/>     |
 
 ## Navigation
 

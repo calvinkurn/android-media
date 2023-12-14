@@ -5,7 +5,7 @@ import com.tokopedia.tokochat.base.TokoChatViewModelTestFixture
 import com.tokopedia.tokochat.utils.observeAwaitValue
 import io.mockk.coEvery
 import io.mockk.coVerify
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 
@@ -13,7 +13,7 @@ class TokoChatTypingViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when getTypingStatus should call getTypingStatusCallback (from SDK) once and return typing status`() {
-        runBlocking {
+        runTest {
             // Given
             val typingStatusListDummy = listOf("123", "456")
             coEvery {
@@ -33,7 +33,7 @@ class TokoChatTypingViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when failed to getTypingStatus should call give throwable on error livedata`() {
-        runBlocking {
+        runTest {
             // Given
             coEvery {
                 getTypingUseCase.getTypingStatus()
@@ -52,7 +52,7 @@ class TokoChatTypingViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when setTypingStatus should call setTypingStatus (from SDK) once`() {
-        runBlocking {
+        runTest {
             // Given
             val typingStatusDummy = true
 
@@ -68,7 +68,7 @@ class TokoChatTypingViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when failed to setTypingStatus should call give throwable on error livedata`() {
-        runBlocking {
+        runTest {
             // Given
             val typingStatusDummy = true
 
@@ -89,7 +89,7 @@ class TokoChatTypingViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when resetTypingStatus should call resetTypingStatusCallback (from SDK) once`() {
-        runBlocking {
+        runTest {
             // When
             viewModel.resetTypingStatus()
 
@@ -102,7 +102,7 @@ class TokoChatTypingViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when failed to resetTypingStatus should call give throwable on error livedata`() {
-        runBlocking {
+        runTest {
             // Given
             coEvery {
                 getTypingUseCase.resetTypingStatus()

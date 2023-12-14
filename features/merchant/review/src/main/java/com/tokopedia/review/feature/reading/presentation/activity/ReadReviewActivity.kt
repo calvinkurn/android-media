@@ -5,10 +5,10 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.review.R
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
+import com.tokopedia.reviewcommon.constant.ReviewCommonConstants
 
 class ReadReviewActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringListener {
 
@@ -21,23 +21,37 @@ class ReadReviewActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringList
 
     override fun getNewFragment(): Fragment {
         val uriPath = intent.data?.path.orEmpty()
+        val selectedTopic = getSelectedTopic()
+
         return if (isProductReviewAppLink(uriPath)) {
-            ReadReviewFragment.createNewInstance(productId = getDataFromApplink(), isProductReview = true)
+            ReadReviewFragment.createNewInstance(
+                productId = getDataFromApplink(),
+                isProductReview = true,
+                selectedTopic = selectedTopic
+            )
         } else {
-            ReadReviewFragment.createNewInstance(shopId = getDataFromApplink(), isProductReview = false)
+            ReadReviewFragment.createNewInstance(
+                shopId = getDataFromApplink(),
+                isProductReview = false,
+                selectedTopic = selectedTopic
+            )
         }
+    }
+
+    private fun getSelectedTopic(): String? {
+        return intent.getStringExtra(ReviewCommonConstants.EXTRAS_SELECTED_TOPIC)
     }
 
     override fun startPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
-                ReviewConstants.REVIEW_READING_PLT_PREPARE_METRICS,
-                ReviewConstants.REVIEW_READING_PLT_NETWORK_METRICS,
-                ReviewConstants.REVIEW_READING_PLT_RENDER_METRICS,
-                0,
-                0,
-                0,
-                0,
-                null
+            ReviewConstants.REVIEW_READING_PLT_PREPARE_METRICS,
+            ReviewConstants.REVIEW_READING_PLT_NETWORK_METRICS,
+            ReviewConstants.REVIEW_READING_PLT_RENDER_METRICS,
+            0,
+            0,
+            0,
+            0,
+            null
         )
         pageLoadTimePerformanceMonitoring?.startMonitoring(ReviewConstants.REVIEW_READING_TRACE)
         pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
@@ -91,11 +105,12 @@ class ReadReviewActivity : BaseSimpleActivity(), ReviewPerformanceMonitoringList
         return if (uri != null) {
             val segments = uri.pathSegments
             segments.getOrNull(segments.size - 2) ?: "0"
-        } else ""
+        } else {
+            ""
+        }
     }
 
-    private fun isProductReviewAppLink(appLink: String): Boolean{
+    private fun isProductReviewAppLink(appLink: String): Boolean {
         return !appLink.contains("shop")
     }
-
 }

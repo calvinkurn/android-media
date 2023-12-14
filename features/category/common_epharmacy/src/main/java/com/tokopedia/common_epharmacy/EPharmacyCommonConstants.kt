@@ -9,8 +9,7 @@ const val EPHARMACY_REDIRECT_CHECKOUT_RESULT_CODE = 10031
 const val EPHARMACY_REDIRECT_CART_RESULT_CODE = 10032
 
 const val EPHARMACY_CONSULTATION_RESULT_EXTRA = "epharmacy_consultation_result_extra"
-const val EPHARMACY_CONSULTATION_REQUEST_CODE = "epharmacy_consultation_request_code"
-const val EPHARMACY_CHECKOUT_CONSULTATION_REQUEST_CODE = 10022
+const val EPHARMACY_SEND_RESULT_KEY = "send_result"
 
 // PWA,UOH from BE
 const val EPHARMACY_PPG_QTY_CHANGE = "QTY"

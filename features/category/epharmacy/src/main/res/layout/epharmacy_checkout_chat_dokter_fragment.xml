@@ -7,7 +7,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/chat_dokter_icon"
+        android:id="@+id/imgChatDoctor"
         android:layout_width="40dp"
         android:layout_height="40dp"
         app:layout_constraintTop_toTopOf="parent"
@@ -15,17 +15,17 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         app:icon_name="STETHOSCOPE"
-        app:icon_color_light_enable="@color/Unify_G500"
-        app:icon_color_night_enable="@color/Unify_G500"
+        app:icon_color_light_enable="@color/Unify_GN500"
+        app:icon_color_night_enable="@color/Unify_GN500"
         />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/title_chat_dokter"
+        android:id="@+id/lblChatDoctor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/chat_dokter_icon"
-        app:layout_constraintBottom_toBottomOf="@id/chat_dokter_icon"
-        app:layout_constraintStart_toEndOf="@id/chat_dokter_icon"
+        app:layout_constraintTop_toTopOf="@id/imgChatDoctor"
+        app:layout_constraintBottom_toBottomOf="@id/imgChatDoctor"
+        app:layout_constraintStart_toEndOf="@id/imgChatDoctor"
         android:layout_marginStart="16dp"
         android:text="@string/epharmacy_chat_dokter"
         app:typographyType="heading_4"
@@ -40,7 +40,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@id/chat_dokter_icon"
+        app:layout_constraintTop_toBottomOf="@id/imgChatDoctor"
         />
 
     <include
@@ -61,7 +61,7 @@
         />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/subtotal"
+        android:id="@+id/lblPaymentSummary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/divider"
@@ -74,10 +74,10 @@
         />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/subtotal_text"
+        android:id="@+id/lblSubtotalBill"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/subtotal"
+        app:layout_constraintTop_toBottomOf="@id/lblPaymentSummary"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"
@@ -86,10 +86,10 @@
         />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/subtotal_value"
+        android:id="@+id/lblSubtotalBillValue"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/subtotal_text"
+        app:layout_constraintTop_toTopOf="@id/lblSubtotalBill"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="16dp"
         app:typographyType="body_2"
@@ -109,7 +109,7 @@
         android:id="@+id/epharmacy_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="title_chat_dokter,qc_total_amount,subtotal,subtotal_value,subtotal_text,divider,divider_icon,chat_dokter_icon,epharmacy_checkout_detail_view"
+        app:constraint_referenced_ids="lblChatDoctor,qc_total_amount,lblPaymentSummary,lblSubtotalBillValue,lblSubtotalBill,divider,divider_icon,imgChatDoctor,epharmacy_checkout_detail_view"
         android:visibility="gone"
         />
 
@@ -117,7 +117,7 @@
         android:id="@+id/epharmacy_loader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/chat_dokter_icon"
+        app:layout_constraintTop_toBottomOf="@id/imgChatDoctor"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="12dp"

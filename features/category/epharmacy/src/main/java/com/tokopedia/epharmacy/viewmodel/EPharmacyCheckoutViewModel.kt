@@ -17,16 +17,16 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class EPharmacyCheckoutViewModel @Inject constructor(
-    private val ePharmacyAtcUseCase : EPharmacyAtcUseCase,
+    private val ePharmacyAtcUseCase: EPharmacyAtcUseCase,
     private val ePharmacyCheckoutCartGeneralUseCase: EPharmacyCheckoutCartGeneralUseCase,
-    @CoroutineBackgroundDispatcher private val dispatcherBackground : CoroutineDispatcher
-) : BaseViewModel(dispatcherBackground){
+    @CoroutineBackgroundDispatcher private val dispatcherBackground: CoroutineDispatcher
+) : BaseViewModel(dispatcherBackground) {
 
     private val _ePharmacyAtcData = MutableLiveData<Result<EPharmacyAtcInstantResponse>>()
-    val ePharmacyAtcData : LiveData<Result<EPharmacyAtcInstantResponse>> = _ePharmacyAtcData
+    val ePharmacyAtcData: LiveData<Result<EPharmacyAtcInstantResponse>> = _ePharmacyAtcData
 
     private val _ePharmacyCheckoutData = MutableLiveData<Result<EPharmacyCartGeneralCheckoutResponse>>()
-    val ePharmacyCheckoutData : LiveData<Result<EPharmacyCartGeneralCheckoutResponse>> = _ePharmacyCheckoutData
+    val ePharmacyCheckoutData: LiveData<Result<EPharmacyCartGeneralCheckoutResponse>> = _ePharmacyCheckoutData
 
     fun getEPharmacyAtcData(params: CartGeneralAddToCartInstantParams) {
         ePharmacyAtcUseCase.cancelJobs()
@@ -37,11 +37,11 @@ class EPharmacyCheckoutViewModel @Inject constructor(
         )
     }
 
-    private fun onAvailableEPharmacyAtcData(data: EPharmacyAtcInstantResponse){
+    private fun onAvailableEPharmacyAtcData(data: EPharmacyAtcInstantResponse) {
         _ePharmacyAtcData.postValue(Success(data))
     }
 
-    private fun onFailEPharmacyAtcData(throwable: Throwable){
+    private fun onFailEPharmacyAtcData(throwable: Throwable) {
         _ePharmacyAtcData.postValue(Fail(throwable))
     }
 
@@ -54,11 +54,11 @@ class EPharmacyCheckoutViewModel @Inject constructor(
         )
     }
 
-    private fun onAvailableEPharmacyCheckoutData(data: EPharmacyCartGeneralCheckoutResponse){
+    private fun onAvailableEPharmacyCheckoutData(data: EPharmacyCartGeneralCheckoutResponse) {
         _ePharmacyCheckoutData.postValue(Success(data))
     }
 
-    private fun onFailEPharmacyCheckoutData(throwable: Throwable){
+    private fun onFailEPharmacyCheckoutData(throwable: Throwable) {
         _ePharmacyCheckoutData.postValue(Fail(throwable))
     }
 }

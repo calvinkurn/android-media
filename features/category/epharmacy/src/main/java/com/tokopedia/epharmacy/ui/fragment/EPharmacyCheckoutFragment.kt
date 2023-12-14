@@ -18,12 +18,14 @@ import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.params.EPharmacyCheckoutParams
 import com.tokopedia.epharmacy.network.response.EPharmacyAtcInstantResponse
 import com.tokopedia.epharmacy.network.response.EPharmacyCartGeneralCheckoutResponse
+import com.tokopedia.epharmacy.utils.CategoryKeys
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.EPHARMACY_CHECKOUT_PAGE
 import com.tokopedia.epharmacy.utils.DEFAULT_ZERO_VALUE
 import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
+import com.tokopedia.epharmacy.utils.EventKeys
 import com.tokopedia.epharmacy.viewmodel.EPharmacyCheckoutViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -132,7 +134,7 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
         ePharmacyCheckoutViewModel?.ePharmacyCheckoutData?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    onSuccessCartCheckout(it)
+                    onSuccessCartCheckout(it.data)
                 }
                 is Fail -> {
                     onFailCartCheckout()
@@ -169,14 +171,14 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
 
     private fun setTitle(title: String?) {
         if (!title.isNullOrBlank()) {
-            binding?.titleChatDokter?.text = title
+            binding?.lblChatDoctor?.text = title
         }
     }
 
     private fun setCartInfo(cart: EPATCData.BusinessDataList.BusinessData.CartGroup.Cart?) {
         binding?.epharmacyCheckoutDetailView?.apply {
             detailProductHeader.hide()
-            serviceTypeValue.text = cart?.customResponse?.serviceType
+            lblValueItemOfService.text = cart?.customResponse?.serviceType
             serviceProviderValue.text = cart?.customResponse?.enablerName
             durationValue.text = cart?.customResponse?.durationMinutes
         }
@@ -184,8 +186,8 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
 
     private fun setSummaryInfo(summary: EPCheckoutSummary?) {
         binding?.apply {
-            subtotalText.text = summary?.businessBreakDown?.firstOrNull()?.product?.title
-            subtotalValue.text = summary?.businessBreakDown?.firstOrNull()?.totalBillFmt
+            lblSubtotalBill.text = summary?.businessBreakDown?.firstOrNull()?.product?.title
+            lblSubtotalBillValue.text = summary?.businessBreakDown?.firstOrNull()?.totalBillFmt
             epharmacyCheckoutDetailView.feeValue.text = summary?.businessBreakDown?.firstOrNull()?.totalBillFmt
         }
     }
@@ -253,10 +255,12 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
         ePharmacyCheckoutViewModel?.getEPharmacyCheckoutData(EPharmacyUtils.createCheckoutGeneralParams(ePharmacyCheckoutParams))
     }
 
-    private fun onSuccessCartCheckout(result: Success<EPharmacyCartGeneralCheckoutResponse>) {
-        when (result.data.checkout?.checkoutData?.success) {
-            EPharmacyCartGeneralCheckoutResponse.ERROR -> showToast(TYPE_ERROR, result.data.checkout?.checkoutData?.message.orEmpty())
-            EPharmacyCartGeneralCheckoutResponse.SUCCESS -> successCheckout(result.data.checkout?.checkoutData?.cartGeneralResponse)
+    private fun onSuccessCartCheckout(cartGeneralResponse: EPharmacyCartGeneralCheckoutResponse) {
+        when (cartGeneralResponse.checkout?.checkoutData?.success) {
+            EPharmacyCartGeneralCheckoutResponse.ERROR -> {
+                showToast(TYPE_ERROR, cartGeneralResponse.checkout.checkoutData.message.orEmpty())
+            }
+            EPharmacyCartGeneralCheckoutResponse.SUCCESS -> successCheckout(cartGeneralResponse.checkout.checkoutData.cartGeneralResponse)
         }
     }
 
@@ -298,39 +302,26 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
 
     private fun sendViewCheckoutPageEvent(eventLabel: String) {
         Tracker.Builder()
-            .setEvent("viewGroceriesIris")
+            .setEvent(EventKeys.VIEW_GROCERIES_IRIS)
             .setEventAction("view checkout page")
-            .setEventCategory("epharmacy chat dokter checkout page")
+            .setEventCategory(CategoryKeys.EPHARMACY_CHAT_DOkTER_CHECKOUT_PAGE)
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45865")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
+            .setCustomProperty(EventKeys.TRACKER_ID, "45865")
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
             .send()
     }
 
     private fun sendClickPilihPembayaranEvent(eventLabel: String) {
         Tracker.Builder()
-            .setEvent("clickGroceries")
+            .setEvent(EventKeys.CLICK_GROCERIES)
             .setEventAction("click pilih pembayaran")
-            .setEventCategory("epharmacy chat dokter checkout page")
+            .setEventCategory(CategoryKeys.EPHARMACY_CHAT_DOkTER_CHECKOUT_PAGE)
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45866")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
-            .build()
-            .send()
-    }
-
-    fun sendClickBackEvent(eventLabel: String) {
-        Tracker.Builder()
-            .setEvent("clickGroceries")
-            .setEventAction("click back")
-            .setEventCategory("epharmacy chat dokter checkout page")
-            .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45890")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
+            .setCustomProperty(EventKeys.TRACKER_ID, "45866")
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
             .send()
     }

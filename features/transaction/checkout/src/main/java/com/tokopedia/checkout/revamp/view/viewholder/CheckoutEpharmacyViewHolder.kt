@@ -33,7 +33,7 @@ class CheckoutEpharmacyViewHolder(
         val VIEW_TYPE = R.layout.item_checkout_epharmacy
         const val EPharmacyAppLink = "tokopedia://epharmacy/"
         const val EPharmacyCountImageUrl = TokopediaImageUrl.E_PHARMACY_COUNT_IMAGE_URL
-        const val EPharmacyMiniConsultationAppLink = "tokopedia://epharmacy/attach-prescription/"
+        const val EPharmacyMiniConsultationAppLink = "tokopedia://epharmacy/component/attach-prescription/"
         private const val VIBRATION_ANIMATION_DURATION = 1250
         private const val VIBRATION_ANIMATION_TRANSLATION_X = -10
         private const val VIBRATION_ANIMATION_CYCLE = 4f

@@ -81,6 +81,7 @@ import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimode
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_GROCERIES
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_117
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_118
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_56
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel.LabelGroup
@@ -377,7 +378,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     }
 
     fun onImpressBannerPromo(channelModel: ChannelModel, channelGrid: ChannelGrid, warehouseId: String, position: Int) {
-        val ecommerceDataLayerBanner = ecommerceDataLayerBanner(
+        val ecommerceDataLayerBanner = ecommerceDataLayerSliderBanner(
             channelModel = channelModel,
             channelGrid = channelGrid,
             position = position,
@@ -466,7 +467,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                     productId = recommendationItem.productCardModel.productId,
                     productName = recommendationItem.productCardModel.name,
                     price = recommendationItem.productCardModel.price.filter { it.isDigit() }.toLongOrZero(),
-                    productCategory = ""
+                    warehouseId = recommendationItem.productCardModel.warehouseId
                 ).apply {
                     putString(KEY_DIMENSION_40, "/tokonow - recomproduct - carousel - ${recommendationItem.recomType} - ${recommendationItem.pageName} - $headerName")
                     putString(KEY_DIMENSION_84, channelId)
@@ -494,7 +495,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                 productId = recommendationItem.productCardModel.productId,
                 productName = recommendationItem.productCardModel.name,
                 price = recommendationItem.productCardModel.price.filter { it.isDigit() }.toLongOrZero(),
-                productCategory = ""
+                warehouseId = recommendationItem.productCardModel.warehouseId
             ).apply {
                 putString(KEY_DIMENSION_40, "/tokonow - recomproduct - carousel - ${recommendationItem.recomType} - ${recommendationItem.pageName} - $headerName")
                 putString(KEY_DIMENSION_84, channelId)
@@ -586,7 +587,8 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             index = position.getTrackerPosition().toString(),
             productId = recommendationItem.productCardModel.productId,
             productName = recommendationItem.productCardModel.name,
-            price = recommendationItem.productCardModel.price.filter { it.isDigit() }.toLongOrZero()
+            price = recommendationItem.productCardModel.price.filter { it.isDigit() }.toLongOrZero(),
+            warehouseId = recommendationItem.productCardModel.warehouseId
         ).apply {
             putString(
                 KEY_DIMENSION_40,
@@ -627,7 +629,8 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             index = position.getTrackerPosition().toString(),
             productId = recommendationItem.productCardModel.productId,
             productName = recommendationItem.productCardModel.name,
-            price = recommendationItem.productCardModel.price.filter { it.isDigit() }.toLongOrZero()
+            price = recommendationItem.productCardModel.price.filter { it.isDigit() }.toLongOrZero(),
+            warehouseId = recommendationItem.productCardModel.warehouseId
         ).apply {
             putString(KEY_QUANTITY, quantity)
             putString(KEY_SHOP_ID, recommendationItem.shopId)
@@ -658,7 +661,8 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         val item = productItemDataLayer(
             productId = uiModel.id.toString(),
             productName = uiModel.productCardModel.name,
-            price = uiModel.productCardModel.price.filter { it.isDigit() }.toLongOrZero()
+            price = uiModel.productCardModel.price.filter { it.isDigit() }.toLongOrZero(),
+            warehouseId = uiModel.productCardModel.warehouseId
         ).apply {
             putString(KEY_DIMENSION_40, "/tokonow - recomproduct - carousel - ${uiModel.recommendationType} - ${uiModel.channelPageName} - ${uiModel.channelHeaderName}")
             putString(KEY_DIMENSION_45, cartId)
@@ -874,7 +878,8 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             productName = product.productCardModel.name,
             price = product.productCardModel.price.filter { it.isDigit() }.toLongOrZero(),
             productBrand = product.brandId,
-            productCategory = product.categoryId
+            productCategory = product.categoryId,
+            warehouseId = product.productCardModel.warehouseId
         )
         productItem.putString(KEY_DIMENSION_90, PRODUCT_PAGE_SOURCE)
 
@@ -905,7 +910,8 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                 productName = grid.name,
                 price = grid.price.filter { it.isDigit() }.toLongOrZero(),
                 productBrand = grid.brandId,
-                productCategory = grid.categoryId
+                productCategory = grid.categoryId,
+                warehouseId = grid.warehouseId
             )
         )
 
@@ -934,7 +940,8 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                 productName = product.productCardModel.name,
                 price = product.productCardModel.price.filter { it.isDigit() }.toLongOrZero(),
                 productBrand = product.brandId,
-                productCategory = product.categoryId
+                productCategory = product.categoryId,
+                warehouseId = product.productCardModel.warehouseId
             )
         )
 
@@ -966,7 +973,8 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                 productName = grid.name,
                 price = grid.price.filter { it.isDigit() }.toLongOrZero(),
                 productBrand = grid.brandId,
-                productCategory = grid.categoryId
+                productCategory = grid.categoryId,
+                warehouseId = grid.warehouseId
             )
         )
 
@@ -2054,7 +2062,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             putString(KEY_DIMENSION_82, channelModel.trackingAttributionModel.categoryId)
             putString(
                 KEY_ITEM_ID,
-                "0_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType + "_" + channelModel.trackingAttributionModel.categoryId
+                "0_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.categoryId
             )
             putString(KEY_ITEM_NAME, "/ - p$trackerPosition - slider banner - banner - ${channelModel.channelHeader.name}")
         }
@@ -2072,6 +2080,23 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             putString(
                 KEY_ITEM_ID,
                 "0_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType + "_" + channelModel.trackingAttributionModel.categoryId
+            )
+            putString(KEY_ITEM_NAME, itemName)
+        }
+    }
+
+    private fun ecommerceDataLayerSliderBanner(
+        channelModel: ChannelModel,
+        channelGrid: ChannelGrid,
+        position: Int,
+        itemName: String
+    ): Bundle {
+        return Bundle().apply {
+            putString(KEY_CREATIVE_NAME, channelGrid.attribution)
+            putString(KEY_CREATIVE_SLOT, position.getTrackerPosition().toString())
+            putString(
+                KEY_ITEM_ID,
+                "0_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.categoryId
             )
             putString(KEY_ITEM_NAME, itemName)
         }
@@ -2302,11 +2327,15 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         price: Long = 0L,
         productBrand: String = "",
         productCategory: String = "",
-        productVariant: String = ""
+        productVariant: String = "",
+        warehouseId: String = ""
     ): Bundle {
         return Bundle().apply {
             if (index.isNotBlank()) {
                 putString(KEY_INDEX, index)
+            }
+            if (warehouseId.isNotBlank()) {
+                putString(KEY_DIMENSION_56, warehouseId)
             }
             putString(KEY_ITEM_BRAND, productBrand)
             putString(KEY_ITEM_CATEGORY, productCategory)

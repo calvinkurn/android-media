@@ -21,11 +21,14 @@ import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.databinding.EpharmacyOrderDetailFragmentBinding
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.response.EPharmacyOrderDetailResponse
+import com.tokopedia.epharmacy.network.response.OrderButtonData
+import com.tokopedia.epharmacy.network.response.OrderTrackingData
 import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.EPHARMACY_ORDER_DETAIL_PAGE
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_VERTICAL_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_WAITING_INVOICE
 import com.tokopedia.epharmacy.utils.EPharmacyAttachmentUiUpdater
+import com.tokopedia.epharmacy.utils.EventKeys
 import com.tokopedia.epharmacy.viewmodel.EPharmacyOrderDetailViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
@@ -55,6 +58,8 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
     private var tConsultationId = 0L
     private var waitingInvoice = false
     private var verticalId = String.EMPTY
+
+    private var orderTrackingData: OrderTrackingData? = null
 
     private var binding by autoClearedNullable<EpharmacyOrderDetailFragmentBinding>()
 
@@ -170,33 +175,40 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
     private fun observeButtonData() {
         ePharmacyOrderDetailViewModel?.ePharmacyButtonData?.observe(viewLifecycleOwner) {
             renderButtons(it)
+            orderTrackingData = it.orderTrackingData
+            sendViewChatDokterOrderDetailPageEvent(orderTrackingData.toString())
         }
     }
 
-    private fun renderButtons(buttonData: EPharmacyOrderDetailResponse.OrderButtonData?) {
+    private fun renderButtons(buttonData: OrderButtonData?) {
         buttonData?.cta?.firstOrNull()?.let { primaryButtonData ->
             ePharmacyActionButton?.show()
             ePharmacyPrimaryButton?.apply {
                 text = primaryButtonData.label
-                buttonVariant = EPharmacyOrderDetailResponse.OrderButtonData.mapButtonVariant(primaryButtonData.variantColor)
-                buttonType = EPharmacyOrderDetailResponse.OrderButtonData.mapButtonType(primaryButtonData.type)
+                buttonVariant = OrderButtonData.mapButtonVariant(primaryButtonData.variantColor)
+                buttonType = OrderButtonData.mapButtonType(primaryButtonData.type)
                 setOnClickListener {
-                    onPrimaryButtonClick(primaryButtonData.appUrl)
+                    onPrimaryButtonClick(primaryButtonData.appUrl, primaryButtonData.label)
                 }
                 show()
             }
         } ?: ePharmacyPrimaryButton?.hide()
 
         buttonData?.triDots?.let { secondaryButtonData ->
-            ePharmacySecondaryButton?.setOnClickListener {
-                onSecondaryButtonClick(secondaryButtonData)
+            if (secondaryButtonData.isEmpty()) {
+                ePharmacySecondaryButton?.hide()
+            } else {
+                ePharmacySecondaryButton?.show()
+                ePharmacySecondaryButton?.setOnClickListener {
+                    onSecondaryButtonClick(secondaryButtonData)
+                }
             }
-            ePharmacySecondaryButton?.show()
         } ?: ePharmacySecondaryButton?.hide()
     }
 
-    private fun onPrimaryButtonClick(appUrl: String?) {
+    private fun onPrimaryButtonClick(appUrl: String?, label: String?) {
         redirectionAppLink(appUrl)
+        sendClickMainCtaEvent("$label - $orderTrackingData")
     }
 
     private fun onSecondaryButtonClick(secondaryButtonData: List<EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?>) {
@@ -205,6 +217,9 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
             object : EPharmacySecondaryActionButtonBottomSheet.ActionButtonClickListener {
                 override fun onActionButtonClicked(isFromPrimaryButton: Boolean, button: EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?) {
                     redirectionAppLink(button?.appUrl)
+                    if (!isFromPrimaryButton) {
+                        sendClickSecondaryCtaEvent(orderTrackingData.toString(), "click ${button?.label} on lainnya", "")
+                    }
                 }
             }
         )
@@ -259,6 +274,18 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
         }
     }
 
+    override fun onHelpButtonClicked(appUrl: String?) {
+        super.onHelpButtonClicked(appUrl)
+        RouteManager.route(context, appUrl)
+        sendClickPusatBantuanEvent(orderTrackingData.toString())
+    }
+
+    override fun onLihatInvoiceClicked(appUrl: String?) {
+        super.onLihatInvoiceClicked(appUrl)
+        RouteManager.route(context, appUrl)
+        sendClickLihatInvoiceEvent(orderTrackingData.toString())
+    }
+
     override fun getScreenName() = EPHARMACY_ORDER_DETAIL_PAGE
 
     override fun initInjector() = getComponent(EPharmacyComponent::class.java).inject(this)
@@ -272,80 +299,80 @@ class EPharmacyOrderDetailFragment : BaseDaggerFragment(), EPharmacyListener {
         }
     }
 
-    fun sendViewChatDokterOrderDetailPageEvent(eventLabel: String) {
+    private fun sendClickMainCtaEvent(eventLabel: String) {
         Tracker.Builder()
-            .setEvent("viewGroceriesIris")
-            .setEventAction("view chat dokter order detail page")
-            .setEventCategory("epharmacy chat dokter order detail page")
-            .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45879")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
-            .build()
-            .send()
-    }
-
-    fun sendClickMainCtaEvent(eventLabel: String) {
-        Tracker.Builder()
-            .setEvent("clickGroceries")
+            .setEvent(EventKeys.CLICK_GROCERIES)
             .setEventAction("click main CTA")
-            .setEventCategory("epharmacy chat dokter order detail page")
+            .setEventCategory(EPHARMACY_ORDER_DETAIL_PAGE)
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45880")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
+            .setCustomProperty(EventKeys.TRACKER_ID, "45880")
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
             .send()
     }
 
-    fun sendViewPrescriptionImageWebviewEvent(eventLabel: String) {
+    private fun sendViewPrescriptionImageWebviewEvent(eventLabel: String) {
         Tracker.Builder()
-            .setEvent("viewGroceriesIris")
+            .setEvent(EventKeys.VIEW_GROCERIES_IRIS)
             .setEventAction("view prescription image webview")
             .setEventCategory("epharmacy prescription image webview")
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45882")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
+            .setCustomProperty(EventKeys.TRACKER_ID, "45882")
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
             .send()
     }
 
-    fun sendClickPusatBantuanEvent(eventLabel: String) {
+    private fun sendViewChatDokterOrderDetailPageEvent(eventLabel: String) {
         Tracker.Builder()
-            .setEvent("clickGroceries")
+            .setEvent(EventKeys.VIEW_GROCERIES_IRIS)
+            .setEventAction("view chat dokter order detail page")
+            .setEventCategory(EPHARMACY_ORDER_DETAIL_PAGE)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(EventKeys.TRACKER_ID, "45879")
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .build()
+            .send()
+    }
+
+    private fun sendClickLihatInvoiceEvent(eventLabel: String) {
+        Tracker.Builder()
+            .setEvent(EventKeys.CLICK_GROCERIES)
+            .setEventAction("click lihat invoice")
+            .setEventCategory(EPHARMACY_ORDER_DETAIL_PAGE)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(EventKeys.TRACKER_ID, "45881")
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .build()
+            .send()
+    }
+
+    private fun sendClickPusatBantuanEvent(eventLabel: String) {
+        Tracker.Builder()
+            .setEvent(EventKeys.CLICK_GROCERIES)
             .setEventAction("click pusat bantuan")
-            .setEventCategory("epharmacy chat dokter order detail page")
+            .setEventCategory(EPHARMACY_ORDER_DETAIL_PAGE)
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45885")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
+            .setCustomProperty(EventKeys.TRACKER_ID, "45885")
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
             .send()
     }
 
-    fun sendClickBantuanOnLainnyaEvent(eventLabel: String) {
+    private fun sendClickSecondaryCtaEvent(eventLabel: String, eventAction: String, tracker: String) {
         Tracker.Builder()
-            .setEvent("clickGroceries")
-            .setEventAction("click bantuan on lainnya")
-            .setEventCategory("epharmacy chat dokter order detail page")
+            .setEvent(EventKeys.CLICK_GROCERIES)
+            .setEventAction(eventAction)
+            .setEventCategory(EPHARMACY_ORDER_DETAIL_PAGE)
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45886")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
-            .build()
-            .send()
-    }
-
-    fun sendClickBatalkanEvent(eventLabel: String) {
-        Tracker.Builder()
-            .setEvent("clickGroceries")
-            .setEventAction("click batalkan")
-            .setEventCategory("epharmacy chat dokter order detail page")
-            .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "45888")
-            .setBusinessUnit("Physical Goods")
-            .setCurrentSite("tokopediamarketplace")
+            .setCustomProperty(EventKeys.TRACKER_ID, tracker)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
             .send()
     }

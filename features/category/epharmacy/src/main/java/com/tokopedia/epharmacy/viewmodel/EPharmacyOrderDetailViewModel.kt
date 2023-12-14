@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
-import com.tokopedia.epharmacy.network.response.EPharmacyOrderDetailResponse
+import com.tokopedia.epharmacy.network.response.OrderButtonData
 import com.tokopedia.epharmacy.usecase.EPharmacyConsultationOrderDetailUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -21,8 +21,8 @@ class EPharmacyOrderDetailViewModel @Inject constructor(
     private val _ePharmacyOrderDetailData = MutableLiveData<Result<EPharmacyDataModel>>()
     val ePharmacyOrderDetailData: LiveData<Result<EPharmacyDataModel>> = _ePharmacyOrderDetailData
 
-    private val _ePharmacyButtonData = MutableLiveData<EPharmacyOrderDetailResponse.OrderButtonData>()
-    val ePharmacyButtonData: LiveData<EPharmacyOrderDetailResponse.OrderButtonData> = _ePharmacyButtonData
+    private val _ePharmacyButtonData = MutableLiveData<OrderButtonData>()
+    val ePharmacyButtonData: LiveData<OrderButtonData> = _ePharmacyButtonData
 
     fun getEPharmacyOrderDetail(tConsultationId: Long, orderUUId: String, waitingInvoice: Boolean) {
         ePharmacyConsultationOrderDetailUseCase.cancelJobs()
@@ -35,7 +35,7 @@ class EPharmacyOrderDetailViewModel @Inject constructor(
         )
     }
 
-    private fun onAvailableEPharmacyOrderDetail(data: EPharmacyDataModel, orderButtonData: EPharmacyOrderDetailResponse.OrderButtonData?) {
+    private fun onAvailableEPharmacyOrderDetail(data: EPharmacyDataModel, orderButtonData: OrderButtonData) {
         _ePharmacyOrderDetailData.postValue(Success(data))
         _ePharmacyButtonData.postValue(orderButtonData)
     }

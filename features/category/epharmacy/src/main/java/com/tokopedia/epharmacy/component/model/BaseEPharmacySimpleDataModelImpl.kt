@@ -6,7 +6,8 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 
 abstract class BaseEPharmacySimpleDataModelImpl(
     open val name: String = String.EMPTY,
-    open val type: String = String.EMPTY) : BaseEPharmacyDataModel {
+    open val type: String = String.EMPTY
+) : BaseEPharmacyDataModel {
 
     override fun name(): String = name
 

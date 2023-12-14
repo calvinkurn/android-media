@@ -20,6 +20,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
@@ -149,6 +150,11 @@ open class BaseTokoNowViewModel(
 
     fun getWarehouseId(): String = addressData.getWarehouseId().toString()
 
+    fun getWarehouseIds(): String {
+        val localCacheModel = addressData.getAddressData()
+        return AddressMapper.mapToWarehouseIds(localCacheModel)
+    }
+
     fun updateAddressData() = addressData.updateLocalDataIfAddressHasUpdated()
 
     fun createAffiliateLink(url: String) = affiliateService.createAffiliateLink(url)
@@ -169,7 +175,7 @@ open class BaseTokoNowViewModel(
         }
     }
 
-    suspend fun getTickerDataAsync(
+    fun getTickerDataAsync(
         warehouseId: String,
         page: String
     ): Deferred<GetTickerData?> {

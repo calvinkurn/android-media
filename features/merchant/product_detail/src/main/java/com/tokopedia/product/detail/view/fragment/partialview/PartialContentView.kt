@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
@@ -17,6 +17,7 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import com.tokopedia.common_tradein.R as common_tradeinR
 import com.tokopedia.product.detail.common.R as productdetailcommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Yehezkiel on 25/05/20
@@ -39,9 +40,7 @@ class PartialContentView(
         productName.contentDescription = context.getString(R.string.content_desc_product_name, MethodChecker.fromHtml(data.productName))
         productName.text = MethodChecker.fromHtml(data.productName)
 
-        imgFreeOngkir.shouldShowWithAction(freeOngkirImgUrl.isNotEmpty()) {
-            imgFreeOngkir.loadImage(freeOngkirImgUrl)
-        }
+        renderFreeOngkir(freeOngkirImgUrl)
 
         textCashbackGreen.shouldShowWithAction(data.cashbackPercentage > 0) {
             textCashbackGreen.text = context.getString(productdetailcommonR.string.template_cashback, data.cashbackPercentage.toString())
@@ -83,16 +82,25 @@ class PartialContentView(
     }
 
     fun updateWishlist(wishlisted: Boolean, shouldShowWishlist: Boolean) = with(binding.fabDetailPdp) {
-        if (!shouldShowWishlist) {
-            hide()
-        } else if (activeState != wishlisted) {
+        showWithCondition(shouldShowWishlist)
+        if (shouldShowWishlist && activeState != wishlisted) {
             activeState = wishlisted
         }
     }
 
     fun renderFreeOngkir(freeOngkirUrl: String) = with(binding) {
         imgFreeOngkir.shouldShowWithAction(freeOngkirUrl.isNotEmpty()) {
-            imgFreeOngkir.loadImage(freeOngkirUrl)
+            imgFreeOngkir.loadImageWithoutPlaceholder(freeOngkirUrl)
+        }
+    }
+
+    fun updateUniversalShareWidget(shouldShow: Boolean) = with(binding.universalShareWidget) {
+        if (shouldShow) {
+            listener.onUniversalShareWidget(this)
+            setColorShareIcon(unifyprinciplesR.color.Unify_NN700)
+            show()
+        } else {
+            hide()
         }
     }
 

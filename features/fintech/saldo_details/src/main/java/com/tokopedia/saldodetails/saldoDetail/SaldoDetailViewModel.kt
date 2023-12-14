@@ -1,5 +1,6 @@
 package com.tokopedia.saldodetails.saldoDetail
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.saldodetails.R
@@ -9,9 +10,11 @@ import com.tokopedia.saldodetails.commom.utils.Resources
 import com.tokopedia.saldodetails.commom.utils.Success
 import com.tokopedia.saldodetails.saldoDetail.domain.data.*
 import com.tokopedia.saldodetails.saldoDetail.domain.usecase.*
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import retrofit2.Response
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -22,6 +25,7 @@ class SaldoDetailViewModel @Inject constructor(
     val getTickerWithdrawalMessageUseCase: GetTickerWithdrawalMessageUseCase,
     var getMerchantSaldoDetails: GetMerchantSaldoDetails,
     val getMCLLateCountUseCase: GetMCLLateCountUseCase,
+    val getSaldoAutoWDInitUseCase: GetSaldoAutoWDInitUseCase,
     @Named(DispatcherModule.MAIN) val uiDispatcher: CoroutineDispatcher,
     @Named(DispatcherModule.IO) val workerDispatcher: CoroutineDispatcher
 ) : BaseViewModel(uiDispatcher) {
@@ -32,6 +36,9 @@ class SaldoDetailViewModel @Inject constructor(
     val gqlLateCountResponseLiveData: MutableLiveData<Resources<GqlMclLateCountResponse>> = MutableLiveData()
     val gqlTickerWithdrawalLiveData: MutableLiveData<Resources<GqlWithdrawalTickerResponse>> = MutableLiveData()
     val gqlUserSaldoBalanceLiveData: MutableLiveData<Resources<GqlSaldoBalanceResponse>> = MutableLiveData()
+    private val _gqlAutoWDInitLiveData: MutableLiveData<Resources<GqlAutoWDInitResponse>> = MutableLiveData()
+    val gqlAutoWDInitLiveData: LiveData<Resources<GqlAutoWDInitResponse>>
+        get() = _gqlAutoWDInitLiveData
 
     fun getUserSaldoBalance() {
         launchCatchError(block = {
@@ -85,4 +92,15 @@ class SaldoDetailViewModel @Inject constructor(
         })
     }
 
+    fun getAutoWDStatus(shouldHitGql: Boolean) {
+        if (!shouldHitGql) return
+        launchCatchError(block = {
+            withContext(workerDispatcher) {
+                val response = getSaldoAutoWDInitUseCase()
+                _gqlAutoWDInitLiveData.postValue(Success(response))
+            }
+        }, onError = {
+            _gqlAutoWDInitLiveData.postValue(ErrorMessage(it.toString()))
+        })
+    }
 }

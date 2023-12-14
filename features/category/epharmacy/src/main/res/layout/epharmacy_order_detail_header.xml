@@ -13,6 +13,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="12dp"
         android:layout_marginTop="16dp"
+        app:typographyWeight="bold"
         tools:text="Siap Chat Dokter"
         />
 
@@ -100,6 +101,8 @@
         android:layout_marginStart="16dp"
         android:text="@string/epharmacy_tanggal_pembelian"
         android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        tools:visibility="visible"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -111,6 +114,8 @@
         app:typographyType="body_3"
         android:layout_marginEnd="16dp"
         tools:text="25 Des 2023, 05:00 WIB"
+        android:visibility="gone"
+        tools:visibility="visible"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -124,6 +129,8 @@
         android:layout_marginStart="16dp"
         android:text="@string/epharmacy_masa_berlaku_hingga"
         android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        tools:visibility="visible"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -135,6 +142,36 @@
         app:typographyType="body_3"
         android:layout_marginEnd="16dp"
         tools:text="26 Des 2023, 05:00 WIB"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/ep_chat_start_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/ep_time_valid_until"
+        app:typographyType="body_3"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/epharmacy_tanggal_chat_dokter"
+        android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/ep_chat_start_date_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/ep_chat_start_date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="body_3"
+        android:layout_marginEnd="16dp"
+        tools:text="26 Des 2023, 05:00 WIB"
+        android:visibility="gone"
+        tools:visibility="visible"
         />
 
     <com.tokopedia.unifycomponents.DividerUnify
@@ -144,7 +181,7 @@
         android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ep_time_valid_until"
+        app:layout_constraintTop_toBottomOf="@id/ep_chat_start_date"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

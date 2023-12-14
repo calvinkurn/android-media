@@ -19,6 +19,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -187,6 +188,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     private fun setUpAutoRedirect() {
         if (thanksPageData.configFlagData?.autoRedirect != true) return
         tv_payment_success_info.show()
+        view_divider_2.hide()
 
         countDownTimer = object : CountDownTimer(
             thanksPageData.customDataOther?.delayDuration?.toLong()?.times(1000L) ?: 0L,
@@ -196,7 +198,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
                 if (context == null) return
 
                 val secondsRemaining = millisUntilFinished / 1000
-                val spannableString = SpannableString(thanksPageData.customDataMessage?.loaderText + secondsRemaining.toString() + "detik")
+                val spannableString = SpannableString(thanksPageData.customDataMessage?.loaderText + " " + secondsRemaining.toString() + " detik")
 
                 val secondIndex = spannableString.indexOf(secondsRemaining.toString())
                 spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500)), secondIndex, secondIndex + secondsRemaining.toString().length, 0)

@@ -18,16 +18,14 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 class EPharmacyReminderActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent> {
 
+    private var isClosingTime: Boolean = true
     private var openTime: String = DEFAULT_OPEN_TIME
     private var closeTime: String = DEFAULT_CLOSE_TIME
     private var reminderType: Int = TYPE_DOCTOR_NOT_AVAILABLE_REMINDER
     private var consultationSourceId: Long = 0L
     private var groupId = String.EMPTY
     private var enablerName = String.EMPTY
-
-
     private val ePharmacyComponent: EPharmacyComponent by lazy(LazyThreadSafetyMode.NONE) { initInjector() }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         ePharmacyComponent.inject(this)
         super.onCreate(savedInstanceState)
@@ -39,16 +37,21 @@ class EPharmacyReminderActivity : BaseSimpleActivity(), HasComponent<EPharmacyCo
 
     override fun getNewFragment(): Fragment {
         extractArguments()
-        updateTitle("")
+        updateTitle(String.EMPTY)
         return EPharmacyReminderScreenBottomSheet.newInstance(
-            true,
-            openTime, closeTime,
+            isClosingTime,
+            openTime,
+            closeTime,
             reminderType,
-            consultationSourceId,groupId,enablerName)
+            consultationSourceId,
+            groupId,
+            enablerName
+        )
     }
 
     private fun extractArguments() {
         intent?.data?.let {
+            isClosingTime = it.getBooleanQueryParameter(REMINDER_IS_CLOSING_HOURS, false)
             openTime = it.getQueryParameter(REMINDER_OPEN_TIME_KEY).orEmpty()
             closeTime = it.getQueryParameter(REMINDER_CLOSE_TIME_KEY).orEmpty()
             reminderType = it.getQueryParameter(REMINDER_TYPE_KEY).toIntSafely()
@@ -67,11 +70,12 @@ class EPharmacyReminderActivity : BaseSimpleActivity(), HasComponent<EPharmacyCo
         ).build()
 
     companion object {
-        const val REMINDER_OPEN_TIME_KEY = "openTime"
-        const val REMINDER_CLOSE_TIME_KEY = "closeTime"
-        const val REMINDER_TYPE_KEY = "reminderType"
-        const val REMINDER_C_ID_KEY = "consultationSourceId"
-        const val REMINDER_GROUP_ID_KEY = "groupId"
-        const val REMINDER_ENABLER_NAME_KEY = "enablerName"
+        const val REMINDER_IS_CLOSING_HOURS = "is_closing_hour"
+        const val REMINDER_OPEN_TIME_KEY = "open_time"
+        const val REMINDER_CLOSE_TIME_KEY = "close_time"
+        const val REMINDER_TYPE_KEY = "reminder_type"
+        const val REMINDER_C_ID_KEY = "consultation_source_id"
+        const val REMINDER_GROUP_ID_KEY = "group_id"
+        const val REMINDER_ENABLER_NAME_KEY = "enabler_name"
     }
 }
