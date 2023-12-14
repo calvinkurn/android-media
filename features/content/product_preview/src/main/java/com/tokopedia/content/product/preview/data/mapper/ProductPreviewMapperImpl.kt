@@ -12,7 +12,9 @@ import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
+import kotlin.math.roundToInt
 import com.tokopedia.content.common.R as contentcommonR
 
 /**
@@ -74,9 +76,9 @@ class ProductPreviewMapperImpl @Inject constructor(private val userSession: User
             title = response.data.product.name,
             price = if (response.data.campaign.isActive) {
                 BottomNavUiModel.DiscountedPrice(
-                    discountedPrice = response.data.campaign.discountedPrice.toString(), //TODO: convert to RP
+                    discountedPrice = CurrencyFormatUtil.convertPriceValue(response.data.campaign.discountedPrice, false), //TODO: convert to RP
                     ogPriceFmt = response.data.product.priceFmt,
-                    discountPercentage = response.data.campaign.discountPercentage.toString(), //TODO: convert to %
+                    discountPercentage = "${response.data.campaign.discountPercentage.roundToInt()}%",
                 )
             } else BottomNavUiModel.NormalPrice(priceFmt = response.data.product.priceFmt),
             stock = response.data.product.stock,
