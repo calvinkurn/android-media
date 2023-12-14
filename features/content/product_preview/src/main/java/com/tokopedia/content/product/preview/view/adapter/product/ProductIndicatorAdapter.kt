@@ -5,12 +5,12 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.content.product.preview.R
-import com.tokopedia.content.product.preview.view.listener.ProductPreviewIndicatorListener
+import com.tokopedia.content.product.preview.view.listener.ProductIndicatorListener
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
 import com.tokopedia.content.product.preview.view.viewholder.product.ProductIndicatorViewHolder
 
 class ProductIndicatorAdapter(
-    listener: ProductPreviewIndicatorListener
+    listener: ProductIndicatorListener
 ) : BaseDiffUtilAdapter<ProductIndicatorUiModel>() {
 
     init {
@@ -39,7 +39,7 @@ class ProductIndicatorAdapter(
 
     internal class ProductIndicatorDelegate private constructor() {
 
-        internal class ProductIndicator(private val listener: ProductPreviewIndicatorListener) :
+        internal class ProductIndicator(private val listener: ProductIndicatorListener) :
             TypedAdapterDelegate<
                 ProductIndicatorUiModel,
                 ProductIndicatorUiModel,

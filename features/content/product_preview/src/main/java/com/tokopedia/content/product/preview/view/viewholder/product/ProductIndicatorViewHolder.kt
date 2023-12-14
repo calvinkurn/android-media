@@ -6,13 +6,13 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.databinding.ItemProductIndicatorBinding
-import com.tokopedia.content.product.preview.view.listener.ProductPreviewIndicatorListener
+import com.tokopedia.content.product.preview.view.listener.ProductIndicatorListener
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
 import com.tokopedia.media.loader.loadImage
 
 internal class ProductIndicatorViewHolder(
     private val binding: ItemProductIndicatorBinding,
-    private val listener: ProductPreviewIndicatorListener
+    private val listener: ProductIndicatorListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(data: ProductIndicatorUiModel) {
@@ -34,7 +34,7 @@ internal class ProductIndicatorViewHolder(
     }
 
     companion object {
-        fun create(parent: ViewGroup, listener: ProductPreviewIndicatorListener) =
+        fun create(parent: ViewGroup, listener: ProductIndicatorListener) =
             ProductIndicatorViewHolder(
                 binding = ItemProductIndicatorBinding.inflate(
                     LayoutInflater.from(parent.context),

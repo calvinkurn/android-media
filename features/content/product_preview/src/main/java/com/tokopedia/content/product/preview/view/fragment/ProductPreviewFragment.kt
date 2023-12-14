@@ -11,13 +11,13 @@ import com.tokopedia.content.product.preview.databinding.FragmentProductPreviewB
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter.Companion.TAB_PRODUCT_POS
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter.Companion.TAB_REVIEW_POS
-import com.tokopedia.content.product.preview.viewmodel.EntrySource
-import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModelFactory
+import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
+import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import javax.inject.Inject
 
 class ProductPreviewFragment @Inject constructor(
-    private val viewModelFactory: ProductPreviewViewModelFactory.Creator,
+    private val viewModelFactory: ProductPreviewViewModelFactory.Creator
 ) : TkpdBaseV4Fragment() {
 
     val viewModelProvider get() = viewModelFactory.create(EntrySource("123"))
@@ -34,7 +34,7 @@ class ProductPreviewFragment @Inject constructor(
         ProductPreviewPagerAdapter(
             childFragmentManager,
             requireActivity(),
-            lifecycle,
+            lifecycle
         )
     }
 
@@ -115,5 +115,4 @@ class ProductPreviewFragment @Inject constructor(
             } as ProductPreviewFragment
         }
     }
-
 }

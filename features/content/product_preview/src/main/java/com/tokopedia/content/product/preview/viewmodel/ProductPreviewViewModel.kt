@@ -8,6 +8,7 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAc
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.InitializeMainData
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.ProductSelected
 import com.tokopedia.content.product.preview.viewmodel.state.ProductPreviewUiState
+import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject

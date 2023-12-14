@@ -17,10 +17,10 @@ import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentProductBinding
 import com.tokopedia.content.product.preview.view.adapter.product.ProductContentAdapter
 import com.tokopedia.content.product.preview.view.adapter.product.ProductIndicatorAdapter
-import com.tokopedia.content.product.preview.view.components.items.ProductPreviewIndicatorItemDecoration
+import com.tokopedia.content.product.preview.view.components.items.ProductIndicatorItemDecoration
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewExoPlayer
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewVideoPlayerManager
-import com.tokopedia.content.product.preview.view.listener.ProductPreviewIndicatorListener
+import com.tokopedia.content.product.preview.view.listener.ProductIndicatorListener
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
 import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
@@ -67,7 +67,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     private val productIndicatorAdapter by lazyThreadSafetyNone {
         ProductIndicatorAdapter(
             listener = object :
-                ProductPreviewIndicatorListener {
+                ProductIndicatorListener {
                 override fun onClickProductIndicator(position: Int) {
                     scrollTo(position)
 //                setupTextLabelIndicatorViews(position = position)
@@ -127,7 +127,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
         layoutManager = layoutManagerIndicator
         itemAnimator = null
         if (itemDecorationCount == 0) {
-            addItemDecoration(ProductPreviewIndicatorItemDecoration(requireContext()))
+            addItemDecoration(ProductIndicatorItemDecoration(requireContext()))
         }
     }
 
