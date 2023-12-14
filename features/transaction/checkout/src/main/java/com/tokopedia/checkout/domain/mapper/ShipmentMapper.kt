@@ -12,6 +12,7 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippi
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.NewUpsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.PaymentLevelAddOnItem
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ScheduleDelivery
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAction
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentPlatformFee
@@ -39,6 +40,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
 import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.ScheduleDeliveryData
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction.ShipmentActionPopup
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentSubtotalAddOnData
@@ -248,7 +250,8 @@ class ShipmentMapper @Inject constructor() {
                     groupInfoBadgeUrl = it.groupInformation.badgeUrl,
                     groupInfoDescription = it.groupInformation.description,
                     groupInfoDescriptionBadgeUrl = it.groupInformation.descriptionBadgeUrl,
-                    groupMetadata = it.groupMetadata
+                    groupMetadata = it.groupMetadata,
+                    shipmentAction = mapShipmentAction(it.shipmentAction)
                 ).apply {
                     isError =
                         it.errors.isNotEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
@@ -298,6 +301,8 @@ class ShipmentMapper @Inject constructor() {
                     )
                     scheduleDelivery = mapScheduleDelivery(it.scheduledDelivery)
                     ratesValidationFlow = it.ratesValidationFlow
+                    shippingComponents = it.shippingComponents
+                    groupingState = it.groupingState
                     listSubtotalAddOn = mapSubtotalAddOn(it.listSubtotalAddOns)
                 }
             )
@@ -1278,7 +1283,9 @@ class ShipmentMapper @Inject constructor() {
         return ScheduleDeliveryData(
             scheduleDelivery.timeslotId,
             scheduleDelivery.scheduleDate,
-            scheduleDelivery.validationMetadata
+            scheduleDelivery.validationMetadata,
+            scheduleDelivery.startDate,
+            scheduleDelivery.isRecommend
         )
     }
 
@@ -1350,6 +1357,22 @@ class ShipmentMapper @Inject constructor() {
         } else {
             paymentLevelAddOns.map { it.id }
         }
+    }
+
+    private fun mapShipmentAction(shipmentAction: List<ShipmentAction>): HashMap<Long, com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction> {
+        return HashMap(
+            shipmentAction.associateBy({ it.spId }, {
+                com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction(
+                    action = it.action,
+                    popup = ShipmentActionPopup(
+                        title = it.popup.title,
+                        body = it.popup.body,
+                        primaryButton = it.popup.buttonOk,
+                        secondaryButton = it.popup.buttonCancel
+                    )
+                )
+            })
+        )
     }
 
     companion object {

@@ -5,7 +5,9 @@ import com.tokopedia.cachemanager.db.CacheDeletion
 import com.tokopedia.cachemanager.db.PersistentCacheDatabase
 import com.tokopedia.cachemanager.db.dao.PersistentCacheDatabaseDao
 import com.tokopedia.cachemanager.db.model.PersistentCacheDbModel
+import com.tokopedia.cachemanager.db.model.SaveInstanceCacheDbModel
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 
 class PersistentCacheDataSource(context: Context) :
         CacheDataSource<PersistentCacheDbModel, PersistentCacheDatabaseDao>(context) {
@@ -33,6 +35,10 @@ class PersistentCacheDataSource(context: Context) :
         } else {
             data
         }
+    }
+
+    override fun getFlow(key: String): Flow<PersistentCacheDbModel?> {
+        return cacheDatabaseDao.getCacheModelFlow(key)
     }
 
     override fun deleteExpired() {

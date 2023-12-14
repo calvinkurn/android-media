@@ -19,7 +19,7 @@ class ShopFlashSaleWidgetCallback(
         trackingAttributionModel: TrackingAttributionModel,
         channelGrid: ChannelGrid
     ) {
-        ShopFlashSaleTracking.sendClickShopTab(trackingAttributionModel)
+        ShopFlashSaleTracking.sendClickShopTab(trackingAttributionModel, channelGrid)
         homeRevampViewModel.getShopFlashSale(shopFlashSaleWidgetDataModel, channelGrid.id)
     }
 

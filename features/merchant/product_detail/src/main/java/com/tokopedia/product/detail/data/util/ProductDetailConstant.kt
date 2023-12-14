@@ -112,6 +112,7 @@ object ProductDetailConstant {
     const val DILAYANI_TOKOPEDIA = "dt_info"
     const val AR_BUTTON = "button_ar"
     const val RECOM_VERTICAL = "pdp_vertical"
+    const val RECOM_STEAL_THE_LOOK = "steal_the_look"
     const val A_PLUS_IMAGE = "product_detail_media"
 
     // custom info title as component type

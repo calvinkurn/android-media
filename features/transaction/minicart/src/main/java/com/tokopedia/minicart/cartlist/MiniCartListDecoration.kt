@@ -20,7 +20,9 @@ class MiniCartListDecoration @Inject constructor() : RecyclerView.ItemDecoration
     private var defaultMargin: Int = 0
     private var mediumMargin: Int = 0
     private var smallMargin: Int = 0
+    private var tinyMargin: Int = 0
     private var lastItemMargin: Int = 0
+    private var startItemMargin: Int = 0
     private var context: Context? = null
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
@@ -30,17 +32,19 @@ class MiniCartListDecoration @Inject constructor() : RecyclerView.ItemDecoration
             defaultMargin = context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0
             mediumMargin = context?.resources?.getDimension(R.dimen.dp_12)?.toInt() ?: 0
             smallMargin = context?.resources?.getDimension(R.dimen.dp_10)?.toInt() ?: 0
+            tinyMargin = context?.resources?.getDimension(R.dimen.dp_6)?.toInt() ?: 0
+            startItemMargin = context?.resources?.getDimension(R.dimen.dp_20)?.toInt() ?: 0
             lastItemMargin = context?.resources?.getDimension(R.dimen.dp_64)?.toInt() ?: 0
         }
 
         when (parent.getChildViewHolder(view)) {
-            is MiniCartProductViewHolder -> setupOutRect(outRect, defaultMargin, defaultMargin, noMargin, noMargin)
+            is MiniCartProductViewHolder -> setupOutRect(outRect, startItemMargin, defaultMargin, noMargin, noMargin)
             is MiniCartUnavailableHeaderViewHolder -> setupOutRect(outRect, defaultMargin, defaultMargin, defaultMargin, mediumMargin)
             is MiniCartUnavailableReasonViewHolder -> setupOutRect(outRect, defaultMargin, defaultMargin, noMargin, defaultMargin)
             is MiniCartSeparatorViewHolder -> setupOutRect(outRect, noMargin, noMargin, noMargin, noMargin)
             is MiniCartAccordionViewHolder -> setupOutRect(outRect, noMargin, noMargin, noMargin, noMargin)
-            is MiniCartTickerErrorViewHolder -> setupOutRect(outRect, defaultMargin, defaultMargin, noMargin, smallMargin)
-            is MiniCartTickerWarningViewHolder -> setupOutRect(outRect, defaultMargin, defaultMargin, noMargin, smallMargin)
+            is MiniCartTickerErrorViewHolder -> setupOutRect(outRect, defaultMargin, defaultMargin, noMargin, tinyMargin)
+            is MiniCartTickerWarningViewHolder -> setupOutRect(outRect, defaultMargin, defaultMargin, noMargin, tinyMargin)
             else -> setupOutRect(outRect, defaultMargin, defaultMargin, noMargin, defaultMargin)
         }
     }
