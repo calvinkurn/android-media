@@ -1,6 +1,5 @@
 package com.tokopedia.home_explore_category.presentation.compose
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryUiEvent
 import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryUiModel
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.NestImageType
@@ -26,24 +24,10 @@ import com.tokopedia.nest.principles.utils.ImageSource
 @Composable
 fun SubExploreCategoryItem(
     modifier: Modifier = Modifier,
-    subExploreCategoryUiModel: ExploreCategoryUiModel.SubExploreCategoryUiModel,
-    onUiEvent: (ExploreCategoryUiEvent) -> Unit,
-    actualPosition: Int,
-    categoryName: String = ""
+    subExploreCategoryUiModel: ExploreCategoryUiModel.SubExploreCategoryUiModel
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable {
-                onUiEvent(
-                    ExploreCategoryUiEvent.OnSubExploreCategoryItemClicked(
-                        subExploreCategoryUiModel = subExploreCategoryUiModel,
-                        position = actualPosition,
-                        categoryName = categoryName
-                    )
-                )
-            }
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         NestImage(
@@ -129,9 +113,7 @@ fun ExploreCategoryScreenPreview() {
         ) {
             itemsIndexed(subExploreCategoryList) { index, item ->
                 SubExploreCategoryItem(
-                    subExploreCategoryUiModel = item,
-                    onUiEvent = {},
-                    actualPosition = 0
+                    subExploreCategoryUiModel = item
                 )
             }
         }

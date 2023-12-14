@@ -42,13 +42,10 @@ class ExploreCategoryViewModel @Inject constructor(
         val exploreCategoryState = _exploreCategoryState.value
         if (exploreCategoryState is ExploreCategoryState.Success) {
             _exploreCategoryState.update {
-                val newCategoryList = exploreCategoryState.data.exploreCategoryList.map { exploreCategory ->
-                    if (exploreCategory.id == categoryId) {
-                        exploreCategory.copy(isSelected = !exploreCategory.isSelected)
-                    } else {
-                        exploreCategory.copy(isSelected = false)
+                val newCategoryList =
+                    exploreCategoryState.data.exploreCategoryList.map { exploreCategory ->
+                        exploreCategory.copy(isSelected = exploreCategory.id == categoryId)
                     }
-                }
 
                 ExploreCategoryState.Success(exploreCategoryState.data.copy(exploreCategoryList = newCategoryList))
             }
