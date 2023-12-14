@@ -42,6 +42,7 @@ sealed interface PlayShortsUiEvent {
         val isToasterUpdate: Boolean
     ) : PlayShortsUiEvent
 
-    object ResetForm: PlayShortsUiEvent
+    object ResetForm : PlayShortsUiEvent
 
+    object ShowInterspersingConfirmation : PlayShortsUiEvent
 }

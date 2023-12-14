@@ -10,9 +10,11 @@ import com.tokopedia.play.broadcaster.domain.usecase.SetChannelTagsUseCase
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.model.OnboardAffiliateRequestModel
 import com.tokopedia.play.broadcaster.shorts.domain.usecase.BroadcasterCheckIsAffiliateUseCase
+import com.tokopedia.play.broadcaster.shorts.domain.usecase.CheckProductCustomVideoUseCase
 import com.tokopedia.play.broadcaster.shorts.domain.usecase.OnBoardAffiliateUseCase
 import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsMapper
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
+import com.tokopedia.play.broadcaster.shorts.ui.model.ProductVideoUiModel
 import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.BroadcasterCheckAffiliateResponseUiModel
 import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.OnboardAffiliateUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
@@ -34,6 +36,7 @@ class PlayShortsRepositoryImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val broadcasterCheckAffiliateUseCase: BroadcasterCheckIsAffiliateUseCase,
     private val onboardAffiliateUseCase: OnBoardAffiliateUseCase,
+    private val checkProductCustomVideoUseCase: CheckProductCustomVideoUseCase,
 ) : PlayShortsRepository {
 
     override suspend fun getAccountList(): List<ContentAccountUiModel> = withContext(dispatchers.io) {
@@ -115,4 +118,9 @@ class PlayShortsRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun checkProductCustomVideo(channelId: String): ProductVideoUiModel {
+        return withContext(dispatchers.io) {
+            mapper.mapProductVideo(checkProductCustomVideoUseCase(channelId))
+        }
+    }
 }

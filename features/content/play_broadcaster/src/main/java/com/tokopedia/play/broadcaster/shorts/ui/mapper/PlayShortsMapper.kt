@@ -5,8 +5,10 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.domain.model.GetBroadcasterAuthorConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.GetRecommendedChannelTagsResponse
 import com.tokopedia.play.broadcaster.shorts.domain.model.BroadcasterCheckAffiliateResponseModel
+import com.tokopedia.play.broadcaster.shorts.domain.model.CheckProductCustomVideoResponse
 import com.tokopedia.play.broadcaster.shorts.domain.model.OnboardAffiliateResponseModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
+import com.tokopedia.play.broadcaster.shorts.ui.model.ProductVideoUiModel
 import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.BroadcasterCheckAffiliateResponseUiModel
 import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.OnboardAffiliateUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
@@ -25,4 +27,6 @@ interface PlayShortsMapper {
     fun mapBroadcasterCheckAffiliate(response: BroadcasterCheckAffiliateResponseModel): BroadcasterCheckAffiliateResponseUiModel
 
     fun mapOnboardAffiliate(response: OnboardAffiliateResponseModel): OnboardAffiliateUiModel
+
+    fun mapProductVideo(response: CheckProductCustomVideoResponse): ProductVideoUiModel
 }

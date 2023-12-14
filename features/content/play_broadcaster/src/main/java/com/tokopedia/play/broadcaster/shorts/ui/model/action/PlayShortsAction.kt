@@ -45,11 +45,11 @@ sealed interface PlayShortsAction {
         val tag: PlayTagItem,
     ) : PlayShortsAction
 
-    object UploadVideo : PlayShortsAction
-
     data class SwitchInterspersing(
         val isEnabled: Boolean,
     ) : PlayShortsAction
+
+    object UploadVideo : PlayShortsAction
 
     /** Shorts x Affiliate */
     object SubmitOnboardAffiliateTnc : PlayShortsAction

@@ -141,10 +141,9 @@ class PlayShortsSummaryFragment @Inject constructor(
         childFragmentManager.addFragmentOnAttachListener { _, childFragment ->
             when (childFragment) {
                 is InterspersingConfirmationBottomSheet -> {
-                    /** TODO: handle new cover & old cover url */
                     childFragment.data = InterspersingConfirmationBottomSheet.Data(
-                        newCoverUrl = "",
-                        oldCoverUrl = "",
+                        newCoverUrl = viewModel.coverUri,
+                        oldCoverUrl = viewModel.productVideoCoverUri,
                     )
 
                     childFragment.listener = object : InterspersingConfirmationBottomSheet.Listener {
@@ -171,7 +170,6 @@ class PlayShortsSummaryFragment @Inject constructor(
         binding.btnUploadVideo.setOnClickListener {
             analytic.clickUploadVideo(viewModel.shortsId, viewModel.selectedAccount)
 
-            /** TODO: hit gql to check existing video */
             viewModel.submitAction(PlayShortsAction.UploadVideo)
         }
     }
@@ -195,6 +193,9 @@ class PlayShortsSummaryFragment @Inject constructor(
                             duration = Toaster.LENGTH_SHORT
                         )
                     }
+                    is PlayShortsUiEvent.ShowInterspersingConfirmation -> {
+                        showInterspersingConfirmation()
+                    }
                     else -> {}
                 }
             }
@@ -207,11 +208,7 @@ class PlayShortsSummaryFragment @Inject constructor(
     ) {
         if (prev?.coverForm == curr.coverForm) return
 
-        if (curr.coverForm.coverUri.isEmpty()) {
-            binding.ivCover.setImageUrl(curr.media.mediaUri)
-        } else {
-            binding.ivCover.setImageUrl(curr.coverForm.coverUri)
-        }
+        binding.ivCover.setImageUrl(viewModel.coverUri)
     }
 
     private fun renderSummaryInfo(
