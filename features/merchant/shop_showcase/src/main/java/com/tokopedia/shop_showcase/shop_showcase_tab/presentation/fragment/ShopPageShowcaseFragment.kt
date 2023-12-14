@@ -323,7 +323,7 @@ class ShopPageShowcaseFragment :
     }
 
     private fun initRecyclerView() {
-        featuredShowcaseAdapter = ShopPageFeaturedShowcaseAdapter(shouldForceToLightMode, colorScheme ?: return, this)
+        featuredShowcaseAdapter = ShopPageFeaturedShowcaseAdapter(shouldForceToLightMode, colorScheme ?: ShopPageColorSchema(), this)
         allShowcaseListAdapter = ShopPageShowcaseListAdapter(this, this)
 
         val featuredShowcaseLayoutManager = LinearLayoutManager(
