@@ -144,7 +144,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     ) {
         if (prev == state) return
 
-        productContentAdapter.insertData(state)
+        productContentAdapter.updateData(state)
     }
 
     private fun renderIndicator(
@@ -168,7 +168,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
         } catch (_: Exception) {
             binding.tvIndicatorLabel.gone()
         }
-        productIndicatorAdapter.insertData(state)
+        productIndicatorAdapter.updateData(state)
     }
 
     private fun getContentCurrentPosition(): Int {
