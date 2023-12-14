@@ -65,6 +65,7 @@ class SlowModeSendButton(context: Context, attributeSet: AttributeSet) :
     }
 
     fun startSlowDown() {
+        if (isSlowModeRunning) return
         if (isSlowModeEnabled) {
             isSlowModeRunning = true
             circleAnimation?.loading(slowModeDurationInSecond)

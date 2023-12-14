@@ -345,7 +345,9 @@ class ChatbotFragment2 :
     private var reasonsBottomSheet: ChatbotRejectReasonsBottomSheet? = null
     private var rejectReasonsText: String = ""
 
-    val selectedList = mutableListOf<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>()
+    val selectedList =
+        mutableListOf<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>()
+
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
         private const val GUIDELINE_VALUE_FOR_REPLY_BUBBLE = 65
@@ -408,15 +410,19 @@ class ChatbotFragment2 :
             getBindingView().chatbotViewHelpRate.btnInactive1.id -> {
                 onClickEmoji(RATING_ONE)
             }
+
             getBindingView().chatbotViewHelpRate.btnInactive2.id -> {
                 onClickEmoji(RATING_TWO)
             }
+
             getBindingView().chatbotViewHelpRate.btnInactive3.id -> {
                 onClickEmoji(RATING_THREE)
             }
+
             getBindingView().chatbotViewHelpRate.btnInactive4.id -> {
                 onClickEmoji(RATING_FOUR)
             }
+
             getBindingView().chatbotViewHelpRate.btnInactive5.id -> {
                 onClickEmoji(RATING_FIVE)
             }
@@ -514,6 +520,7 @@ class ChatbotFragment2 :
         bigReplyBox?.replyBoxClickListener = this
         bigReplyBox?.sendButtonListener = this
     }
+
     private fun initSmoothScroller() {
         smoothScroll = SmoothScroller(context)
     }
@@ -725,7 +732,8 @@ class ChatbotFragment2 :
         startObservingViewModels()
 
         pageSource = getParamString(PAGE_SOURCE, arguments, savedInstanceState)
-        val isChatbotActive = getParamBoolean(ChatbotActivity.IS_CHATBOT_ACTIVE, arguments, savedInstanceState, true)
+        val isChatbotActive =
+            getParamBoolean(ChatbotActivity.IS_CHATBOT_ACTIVE, arguments, savedInstanceState, true)
         checkIsChatbotServerActive(isChatbotActive)
         handlingForMessageIdValidity(messageId)
         viewModel.setPageSourceValue(pageSource)
@@ -792,6 +800,7 @@ class ChatbotFragment2 :
                 is TopBotNewSessionState.SuccessTopBotNewSession -> {
                     handleTopBotNewSessionSuccess(it.data)
                 }
+
                 is TopBotNewSessionState.HandleFailureNewSession -> {
                     handleTopBotNewSessionFailure()
                 }
@@ -803,6 +812,7 @@ class ChatbotFragment2 :
                 is CheckUploadSecureState.SuccessCheckUploadSecure -> {
                     handleCheckUploadSecureSuccess()
                 }
+
                 is CheckUploadSecureState.HandleFailureCheckUploadSecure -> {
                     // Using same error method as we have same logic
                     handleTopBotNewSessionFailure()
@@ -815,6 +825,7 @@ class ChatbotFragment2 :
                 is GetTickerDataState.SuccessTickerData -> {
                     onSuccessGetTickerData(it.data)
                 }
+
                 is GetTickerDataState.HandleTickerDataFailure -> {
                     onError(it.error)
                 }
@@ -826,6 +837,7 @@ class ChatbotFragment2 :
                 is ChatbotSubmitCsatRatingState.SuccessChatbotSubmtiCsatRating -> {
                     onSuccessSubmitCsatRating(it.data)
                 }
+
                 is ChatbotSubmitCsatRatingState.HandleFailureChatbotSubmitCsatRating -> {
                     onError(it.error)
                 }
@@ -837,6 +849,7 @@ class ChatbotFragment2 :
                 is ChatbotSubmitChatCsatState.HandleChatbotSubmitChatCsatSuccess -> {
                     onSuccessSubmitChatCsat(it.message)
                 }
+
                 is ChatbotSubmitChatCsatState.FailureChatbotSubmitChatCsat -> {
                     onError(it.error)
                 }
@@ -869,6 +882,7 @@ class ChatbotFragment2 :
                 is ChatbotSendChatRatingState.HandleSuccessChatbotSendChatRating -> {
                     onSuccessSendRating(it.data)
                 }
+
                 is ChatbotSendChatRatingState.HandleErrorSendChatRating -> {
                     onError(it.throwable)
                 }
@@ -884,6 +898,7 @@ class ChatbotFragment2 :
                         onSuccessGetExistingChatFirstTime(it.chatReplies, it.chatroomViewModel)
                     }
                 }
+
                 is ChatDataState.HandleFailureChatData -> {
                     onError(it.throwable)
                 }
@@ -895,6 +910,7 @@ class ChatbotFragment2 :
                 is ChatDataState.SuccessChatDataState -> {
                     onSuccessGetTopChatData(it.chatReplies, it.chatroomViewModel)
                 }
+
                 is ChatDataState.HandleFailureChatData -> {
                     onErrorGetTopChat()
                 }
@@ -906,6 +922,7 @@ class ChatbotFragment2 :
                 is ChatDataState.SuccessChatDataState -> {
                     onSuccessGetBottomChatData(it.chatReplies, it.chatroomViewModel)
                 }
+
                 is ChatDataState.HandleFailureChatData -> {
                     onErrorGetBottomChat()
                 }
@@ -963,9 +980,18 @@ class ChatbotFragment2 :
 
         viewModel.socketReceiveMessageEvent.observe(viewLifecycleOwner) {
             when (it) {
-                is ChatbotSocketReceiveEvent.StartTypingEvent -> { onReceiveStartTypingEvent() }
-                is ChatbotSocketReceiveEvent.EndTypingEvent -> { onReceiveStopTypingEvent() }
-                is ChatbotSocketReceiveEvent.ReadEvent -> { onReceiveReadEvent() }
+                is ChatbotSocketReceiveEvent.StartTypingEvent -> {
+                    onReceiveStartTypingEvent()
+                }
+
+                is ChatbotSocketReceiveEvent.EndTypingEvent -> {
+                    onReceiveStopTypingEvent()
+                }
+
+                is ChatbotSocketReceiveEvent.ReadEvent -> {
+                    onReceiveReadEvent()
+                }
+
                 is ChatbotSocketReceiveEvent.ReplyMessageEvent -> {
                     onReceiveMessageEvent(it.visitable)
                 }
@@ -1027,6 +1053,12 @@ class ChatbotFragment2 :
 
         viewModel.dynamicAttachmentNewSlowMode.observe(viewLifecycleOwner) {
             setupSlowModeSendButton(it.isUsingSlowMode, it.slowModeDurationInSeconds)
+        }
+
+        viewModel.sendWebsocketMessageEvent.observe(viewLifecycleOwner) {
+            if (it) {
+                slowDownSendButton()
+            }
         }
 
         viewModel.applink.observe(viewLifecycleOwner) { applink ->
@@ -1161,13 +1193,21 @@ class ChatbotFragment2 :
     }
 
     private fun setupSlowModeSendButton(isSlowMode: Boolean, slowModeDurationInSeconds: Int) {
+//        smallReplyBox?.sendButton?.apply {
+//            isSlowModeEnabled = isSlowMode
+//            slowModeDurationInSecond = slowModeDurationInSeconds
+//        }
+//        bigReplyBox?.sendButton?.apply {
+//            isSlowModeEnabled = isSlowMode
+//            slowModeDurationInSecond = slowModeDurationInSeconds
+//        }
         smallReplyBox?.sendButton?.apply {
-            isSlowModeEnabled = isSlowMode
-            slowModeDurationInSecond = slowModeDurationInSeconds
+            isSlowModeEnabled = true
+            slowModeDurationInSecond = 5
         }
         bigReplyBox?.sendButton?.apply {
-            isSlowModeEnabled = isSlowMode
-            slowModeDurationInSecond = slowModeDurationInSeconds
+            isSlowModeEnabled = true
+            slowModeDurationInSecond = 5
         }
     }
 
@@ -1517,9 +1557,11 @@ class ChatbotFragment2 :
             is ChatActionSelectionBubbleUiModel -> getViewState()?.onReceiveQuickReplyEventWithActionButton(
                 visitable
             )
+
             is ChatRatingUiModel -> getViewState()?.onReceiveQuickReplyEventWithChatRating(
                 visitable
             )
+
             else -> super.onReceiveMessageEvent(visitable)
         }
     }
@@ -1897,7 +1939,8 @@ class ChatbotFragment2 :
                 }
             } else {
                 getBindingView().footer.showToaster(
-                    context?.resources?.getString(R.string.chatbot_float_invoice_input_length_zero).toBlankOrString()
+                    context?.resources?.getString(R.string.chatbot_float_invoice_input_length_zero)
+                        .toBlankOrString()
                 )
             }
         }
@@ -1958,12 +2001,10 @@ class ChatbotFragment2 :
                 )
                 getViewState()?.scrollToBottom()
             }
-
-            startSendButtonSlowDown()
         }
     }
 
-    private fun startSendButtonSlowDown() {
+    private fun slowDownSendButton() {
         if (smallReplyBox?.isVisible == true) {
             smallReplyBox?.sendButton?.startSlowDown()
         } else if (bigReplyBox?.isVisible == true) {
@@ -1988,7 +2029,6 @@ class ChatbotFragment2 :
                 model.isTypingBlocked ?: false
             )
             handleIsTypingBlocked(model.isTypingBlocked)
-            startSendButtonSlowDown()
         }
     }
 
@@ -2242,7 +2282,8 @@ class ChatbotFragment2 :
             mediaRetryBottomSheet?.dismiss()
         }
         getBindingView().footer.showToaster(
-            context?.resources?.getString(R.string.chatbot_your_picture_has_been_deleted).toBlankOrString()
+            context?.resources?.getString(R.string.chatbot_your_picture_has_been_deleted)
+                .toBlankOrString()
         )
     }
 
@@ -2273,7 +2314,8 @@ class ChatbotFragment2 :
             mediaRetryBottomSheet?.dismiss()
         }
         getBindingView().footer.showToaster(
-            context?.resources?.getString(R.string.chatbot_your_video_has_been_deleted).toBlankOrString()
+            context?.resources?.getString(R.string.chatbot_your_video_has_been_deleted)
+                .toBlankOrString()
         )
     }
 
@@ -2353,6 +2395,7 @@ class ChatbotFragment2 :
             is ChatbotReplyOptionsUiModel.Reply -> {
                 sendReplyToSpecificChat(messageUiModel)
             }
+
             is ChatbotReplyOptionsUiModel.CopyToClipboard -> {
                 copyToClipBoard(messageBubble)
             }
@@ -2778,6 +2821,7 @@ class ChatbotFragment2 :
         attachmentMenuRecyclerView?.toggle()
         createAttachmentMenus()
     }
+
     override fun goToBigReplyBoxBottomSheet(isError: Boolean) {
         activity?.let {
             if (bigReplyBoxBottomSheet == null) {
@@ -2831,6 +2875,7 @@ class ChatbotFragment2 :
         }
         hideKeyboard()
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _viewBinding = null
@@ -2915,12 +2960,13 @@ class ChatbotFragment2 :
     }
 
     private fun setReplayBubbleCoachMarkListener() {
-        replyBubbleOnBoarding.onboardingDismissListener = object : com.tokopedia.chatbot.chatbot2.view.util.OnboardingReplayDismissListener {
-            override fun dismissReplyBubbleOnBoarding() {
-                isReplyCoachMarkShowing = false
-                checkVideoUploadOnboardingStatus()
+        replyBubbleOnBoarding.onboardingDismissListener =
+            object : com.tokopedia.chatbot.chatbot2.view.util.OnboardingReplayDismissListener {
+                override fun dismissReplyBubbleOnBoarding() {
+                    isReplyCoachMarkShowing = false
+                    checkVideoUploadOnboardingStatus()
+                }
             }
-        }
     }
 
     private fun setHandlingViewHelperReplayCoachMark() {
