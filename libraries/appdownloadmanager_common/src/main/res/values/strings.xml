@@ -14,4 +14,16 @@
     <string name="dialog_update_app_version_desc"><![CDATA[Yuk, download &amp; install aplikasi Tokopedia <b>v%s</b> untuk cobain fitur-fitur terbaru!]]></string>
     <string name="dialog_update_app_version_btn_primary">Download</string>
     <string name="dialog_update_app_version_btn_secondary">Nanti Aja</string>
+    
+    <string name="app_download_error_network_message">Wah, internet putus. Cek Wi-Fi atau paket datamu, ya.</string>
+    <string name="app_download_try_again">Coba Lagi</string>
+
+    <string name="app_download_error_insufficient_space_title">Ruang penyimpanan penuh</string>
+    <string name="app_download_error_insufficient_space_desc">Perangkat ini tidak memiliki cukup ruang. Coba  atur ruang penyimpanan dan coba lagi.</string>
+    <string name="app_download_error_insufficient_button_primary">Lihat Penyimpanan</string>
+
+    <string name="update_app_version_toaster_install">Cek notifikasi HP kamu untuk monitor proses download, ya.</string>
+    <string name="update_app_version_toaster_oke">Oke</string>
+
+
 </resources>

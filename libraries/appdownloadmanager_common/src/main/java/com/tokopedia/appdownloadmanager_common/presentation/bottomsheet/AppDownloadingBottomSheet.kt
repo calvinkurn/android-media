@@ -1,5 +1,7 @@
 package com.tokopedia.appdownloadmanager_common.presentation.bottomsheet
 
+import android.app.DownloadManager
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +22,7 @@ import com.tokopedia.appdownloadmanager_common.presentation.listener.DownloadMan
 import com.tokopedia.appdownloadmanager_common.presentation.model.AppDownloadingUiEvent
 import com.tokopedia.appdownloadmanager_common.presentation.model.DownloadManagerUpdateModel
 import com.tokopedia.appdownloadmanager_common.presentation.model.DownloadingUiState
+import com.tokopedia.appdownloadmanager_common.presentation.screen.AppDownloadInsufficientSpaceScreen
 import com.tokopedia.appdownloadmanager_common.presentation.screen.AppDownloadingState
 import com.tokopedia.appdownloadmanager_common.presentation.screen.DownloadManagerOnboardingScreen
 import com.tokopedia.appdownloadmanager_common.presentation.util.AppDownloadManagerPermission
@@ -32,6 +35,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.tokopedia.unifycomponents.R as unifycomponentsR
+import com.tokopedia.appdownloadmanager_common.R as appdownloadmanager_commonR
 
 class AppDownloadingBottomSheet :
     BottomSheetUnify(),
@@ -91,6 +95,14 @@ class AppDownloadingBottomSheet :
                             appDownloadingUiEvent = ::onDownloadingUiEvent
                         )
                     }
+
+                    is DownloadingUiState.InSufficientSpace -> {
+                        AppDownloadInsufficientSpaceScreen(onTryAgainClicked = {
+                            viewModel.updateDownloadingState()
+                        }, onGoToStorageClicked = {
+                            goToStorageSettings()
+                        })
+                    }
                 }
             }
         }
@@ -136,6 +148,12 @@ class AppDownloadingBottomSheet :
             .build()
     }
 
+    private fun goToStorageSettings() {
+        startActivity(Intent(android.provider.Settings.ACTION_INTERNAL_STORAGE_SETTINGS).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        })
+    }
+
     private fun hideKnobDownloadingUiState(view: View) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.downloadingUiState.collectLatest {
@@ -159,7 +177,16 @@ class AppDownloadingBottomSheet :
                 onDownloadSuccess(uiEvent.fileNamePath)
             }
             is AppDownloadingUiEvent.OnDownloadFailed -> {
-                onDownloadFailed(uiEvent.reason)
+                if (uiEvent.statusColumn == DownloadManager.ERROR_INSUFFICIENT_SPACE) {
+                    viewModel.updateInsufficientSpaceState()
+                } else {
+                    val errorMessage = try {
+                        getString(appdownloadmanager_commonR.string.app_download_error_network_message)
+                    } catch (e: Exception) {
+                        uiEvent.reason
+                    }
+                    onDownloadFailed(errorMessage)
+                }
             }
 
             is AppDownloadingUiEvent.OnCancelClick -> {
@@ -218,7 +245,11 @@ class AppDownloadingBottomSheet :
                 it,
                 reason,
                 Toaster.LENGTH_SHORT,
-                Toaster.TYPE_ERROR
+                Toaster.TYPE_ERROR,
+                actionText = getString(appdownloadmanager_commonR.string.app_download_try_again),
+                clickListener = {
+                    viewModel.updateDownloadingState()
+                }
             ).show()
         }
     }

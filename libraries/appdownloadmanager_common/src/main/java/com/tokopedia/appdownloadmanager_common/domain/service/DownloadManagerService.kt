@@ -96,9 +96,11 @@ class DownloadManagerService @Inject constructor(
 
                                     DownloadManager.STATUS_FAILED, DownloadManager.ERROR_UNKNOWN,
                                     DownloadManager.ERROR_FILE_ALREADY_EXISTS, DownloadManager.ERROR_HTTP_DATA_ERROR,
-                                    DownloadManager.ERROR_FILE_ERROR, DownloadManager.ERROR_UNHANDLED_HTTP_CODE,
+                                    DownloadManager.ERROR_UNHANDLED_HTTP_CODE,
+                                    DownloadManager.ERROR_TOO_MANY_REDIRECTS,
                                     DownloadManager.ERROR_INSUFFICIENT_SPACE,
-                                    DownloadManager.ERROR_TOO_MANY_REDIRECTS, DownloadManager.ERROR_DEVICE_NOT_FOUND,
+                                    DownloadManager.ERROR_FILE_ERROR,
+                                    DownloadManager.ERROR_DEVICE_NOT_FOUND,
                                     DownloadManager.ERROR_CANNOT_RESUME -> {
                                         finishDownload = true
                                         val reasonColumnIndex =

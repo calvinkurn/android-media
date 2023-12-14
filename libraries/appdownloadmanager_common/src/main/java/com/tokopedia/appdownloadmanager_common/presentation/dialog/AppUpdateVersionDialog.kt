@@ -14,6 +14,7 @@ import com.tokopedia.appdownloadmanager_common.presentation.model.DownloadingPro
 import com.tokopedia.appdownloadmanager_common.presentation.util.AppDownloadManagerPermission
 import com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.Companion.APK_URL
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.unifycomponents.Toaster
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 import com.tokopedia.appdownloadmanager_common.R as appdownloadmanager_commonR
@@ -78,10 +79,11 @@ class AppUpdateVersionDialog(
                     appdownloadmanager_commonR.string.dialog_update_app_version_title
                 )
 
-                val description = downloadManagerUpdateModel?.dialogText?.format(apkName) ?: it.getString(
-                    appdownloadmanager_commonR.string.dialog_update_app_version_desc,
-                    apkName
-                )
+                val description =
+                    downloadManagerUpdateModel?.dialogText?.format(apkName) ?: it.getString(
+                        appdownloadmanager_commonR.string.dialog_update_app_version_desc,
+                        apkName
+                    )
 
                 val btnPrimaryText =
                     downloadManagerUpdateModel?.dialogButtonPositive ?: it.getString(
@@ -135,5 +137,22 @@ class AppUpdateVersionDialog(
             apkUrl,
             downloadManagerListener
         )
+
+        showStartDownloadToaster()
+    }
+
+    private fun showStartDownloadToaster() {
+        val view = activityRef.get()?.window?.decorView?.rootView
+        val message = activityRef.get()?.getString(appdownloadmanager_commonR.string.update_app_version_toaster_install).orEmpty()
+
+        view?.let {
+            Toaster.build(
+                it,
+                message,
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_NORMAL,
+                actionText = activityRef.get()?.getString(appdownloadmanager_commonR.string.app_download_try_again).orEmpty()
+            ).show()
+        }
     }
 }

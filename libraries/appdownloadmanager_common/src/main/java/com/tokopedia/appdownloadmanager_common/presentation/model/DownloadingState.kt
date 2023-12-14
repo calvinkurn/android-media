@@ -11,5 +11,5 @@ sealed interface DownloadingState {
         val fileNamePath: String = ""
     ) : DownloadingState
 
-    data class DownloadFailed(val reason: String) : DownloadingState
+    data class DownloadFailed(val reason: String, val statusColumn: Int) : DownloadingState
 }

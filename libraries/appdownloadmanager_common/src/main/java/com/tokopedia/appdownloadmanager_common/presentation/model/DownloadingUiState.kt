@@ -4,4 +4,6 @@ interface DownloadingUiState {
     object Onboarding : DownloadingUiState
 
     object Downloading : DownloadingUiState
+
+    object InSufficientSpace: DownloadingUiState
 }

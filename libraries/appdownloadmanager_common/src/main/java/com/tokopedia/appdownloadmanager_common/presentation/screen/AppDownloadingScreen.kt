@@ -47,7 +47,7 @@ fun AppDownloadingState(
         when (downloadingState) {
             is DownloadingState.DownloadFailed -> {
                 (downloadingState as? DownloadingState.DownloadFailed)?.let {
-                    appDownloadingUiEvent(AppDownloadingUiEvent.OnDownloadFailed(it.reason))
+                    appDownloadingUiEvent(AppDownloadingUiEvent.OnDownloadFailed(it.reason, it.statusColumn))
                 }
             }
 
