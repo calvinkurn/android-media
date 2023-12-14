@@ -64,17 +64,18 @@ class XMLPagePerformanceTrace(
 
         observeXMLPagePerformance(rootView)
 
-        parsingStrategy.getViewCallbackStrategy().startObserving(rootView)
+        parsingStrategy.getViewCallbackStrategy().startObserving(rootView.context)
     }
 
     override fun stopMonitoring(result: Result<PerformanceTraceData>) {
         when (result) {
             is Success -> onPerformanceTraceFinished.invoke(result)
             is Error -> onPerformanceTraceError.invoke(result)
+            else -> {}
         }
         scope.cancel()
         isPerformanceTraceFinished = true
-        parsingStrategy.getViewCallbackStrategy().stopObserving(rootView)
+        parsingStrategy.getViewCallbackStrategy().stopObserving(rootView.context)
     }
 
     override fun recordPerformanceData(result: Result<PerformanceTraceData>) {
@@ -143,7 +144,6 @@ class XMLPagePerformanceTrace(
     private fun observeXMLPagePerformance(rootView: View) {
         parsingStrategy.getViewCallbackStrategy().registerCallback {
             if (isPerformanceTraceFinished) {
-                parsingStrategy.getViewCallbackStrategy().stopObserving(rootView)
                 perfParsingJob?.cancel()
             }
 

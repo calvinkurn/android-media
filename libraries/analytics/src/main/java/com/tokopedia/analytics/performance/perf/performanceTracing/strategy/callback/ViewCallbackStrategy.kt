@@ -1,11 +1,11 @@
 package com.tokopedia.analytics.performance.perf.performanceTracing.strategy.callback
 
-import android.view.View
+import android.content.Context
 
 interface ViewCallbackStrategy {
 
-    fun startObserving(view: View)
+    fun startObserving(context: Context)
     fun registerCallback(onRender: () -> Unit)
 
-    fun stopObserving(view: View)
+    fun stopObserving(context: Context)
 }
