@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.browse.presentation.adapter
 
 import com.tokopedia.content.common.types.ResultState
+import com.tokopedia.content.common.types.isFailed
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
@@ -82,7 +83,11 @@ internal class FeedBrowseAdapter(
                 FeedBrowseItemListModel.HorizontalChannels(
                     slotInfo,
                     selectedMenu,
-                    itemsInSelectedMenu ?: FeedBrowseChannelListState.initLoading()
+                    if (state.isFailed()) {
+                        FeedBrowseChannelListState.initFail(state.error)
+                    } else {
+                        itemsInSelectedMenu ?: FeedBrowseChannelListState.initLoading()
+                    }
                 )
             )
         }
@@ -92,7 +97,7 @@ internal class FeedBrowseAdapter(
         state: ResultState,
         position: Int
     ): List<FeedBrowseItemListModel> {
-        if (state.isFail || (state.isSuccess && bannerList.isEmpty())) return emptyList()
+        if (state.isFail || bannerList.isEmpty()) return emptyList()
 
         val slotInfo = getSlotInfo(position)
         return buildList {

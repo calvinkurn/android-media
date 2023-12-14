@@ -172,7 +172,19 @@ internal class FeedBrowseViewModel @Inject constructor(
                         }
                     }
                 }
-                is ContentSlotModel.NoData -> { }
+                is ContentSlotModel.NoData -> {
+                    val error = IllegalStateException("Empty list for request model: $requestModel")
+                    if (menuKeys.isEmpty()) {
+                        updateWidget<FeedBrowseSlotUiModel.ChannelsWithMenus>(slotId, ResultState.Fail(error))
+                    } else {
+                        updateWidget<FeedBrowseSlotUiModel.ChannelsWithMenus>(slotId, ResultState.Success) {
+                            val menu = selectedMenu ?: menuKeys.first()
+                            it.copy(
+                                menus = menus + (menu to FeedBrowseChannelListState.initFail(error))
+                            )
+                        }
+                    }
+                }
             }
         } catch (e: Throwable) {
             updateWidget<FeedBrowseSlotUiModel.ChannelsWithMenus>(slotId, ResultState.Fail(e)) { it }
@@ -183,7 +195,7 @@ internal class FeedBrowseViewModel @Inject constructor(
         updateWidget<FeedBrowseSlotUiModel.InspirationBanner>(slotId, ResultState.Loading)
         try {
             val response = repository.getWidgetRecommendation(identifier)
-            if (response !is WidgetRecommendationModel.Banners) return
+            if (response !is WidgetRecommendationModel.Banners) error("Expected $identifier to return banner, but it's not")
 
             updateWidget<FeedBrowseSlotUiModel.InspirationBanner>(slotId, ResultState.Success) {
                 it.copy(bannerList = response.banners)
@@ -199,7 +211,8 @@ internal class FeedBrowseViewModel @Inject constructor(
         updateWidget<FeedBrowseSlotUiModel.Authors>(slotId, ResultState.Loading)
         try {
             val mappedResult = repository.getWidgetRecommendation(identifier)
-            if (mappedResult !is WidgetRecommendationModel.Authors) return
+            if (mappedResult !is WidgetRecommendationModel.Authors) error("Expected $identifier to return author, but it's not")
+
             updateWidget<FeedBrowseSlotUiModel.Authors>(slotId, ResultState.Success) {
                 it.copy(authorList = mappedResult.channels)
             }
