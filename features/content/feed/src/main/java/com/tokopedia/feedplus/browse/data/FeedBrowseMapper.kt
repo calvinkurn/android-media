@@ -42,7 +42,7 @@ class FeedBrowseMapper @Inject constructor() {
     internal fun mapSlotsResponse(response: FeedXHomeEntity): List<FeedBrowseSlotUiModel> {
         return response.items.mapNotNull { item ->
             if (item.typename == FeedXCard.TYPE_FEED_X_CARD_PLACEHOLDER) {
-                if (item.type.startsWith("browse_channel_slot")) {
+                if (item.type.startsWith(PREFIX_SLOT_WIDGET)) {
                     FeedBrowseSlotUiModel.ChannelsWithMenus(
                         slotId = item.id,
                         title = item.title,
@@ -50,14 +50,25 @@ class FeedBrowseMapper @Inject constructor() {
                         menus = emptyMap(),
                         selectedMenuId = ""
                     )
-                } else if (item.type.startsWith("browse_widget_recommendation")) {
-                    // UGC or Creator widget also one of the widgets with item.type = 'browse_widget_recommendation:ugc_widget'
-                    FeedBrowseSlotUiModel.InspirationBanner(
-                        slotId = item.id,
-                        title = item.title,
-                        identifier = item.type.removePrefix("browse_widget_recommendation"),
-                        bannerList = emptyList()
-                    )
+                } else if (item.type.startsWith(PREFIX_RECOMMENDATION_WIDGET)) {
+                    when (val identifier = item.type.removePrefix("$PREFIX_RECOMMENDATION_WIDGET:")) {
+                        IDENTIFIER_INSPIRATIONAL_WIDGET -> {
+                            FeedBrowseSlotUiModel.InspirationBanner(
+                                slotId = item.id,
+                                title = item.title,
+                                identifier = identifier,
+                                bannerList = emptyList()
+                            )
+                        }
+                        else -> {
+                            FeedBrowseSlotUiModel.Authors(
+                                slotId = item.id,
+                                title = item.title,
+                                identifier = identifier,
+                                authorList = emptyList()
+                            )
+                        }
+                    }
                 } else {
                     null
                 }
@@ -192,5 +203,16 @@ class FeedBrowseMapper @Inject constructor() {
             gridType = PlayGridType.Unknown,
             extras = emptyMap()
         )
+    }
+
+    companion object {
+        private const val PREFIX_SLOT_WIDGET = "browse_channel_slot"
+        private const val PREFIX_RECOMMENDATION_WIDGET = "browse_widget_recommendation"
+
+        /**
+         * Recommendation Identifier
+         */
+        private const val IDENTIFIER_UGC_WIDGET = "ugc_widget"
+        private const val IDENTIFIER_INSPIRATIONAL_WIDGET = "inspirational_widget"
     }
 }
