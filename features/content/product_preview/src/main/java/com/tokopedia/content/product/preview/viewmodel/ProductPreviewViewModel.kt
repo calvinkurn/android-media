@@ -50,6 +50,10 @@ class ProductPreviewViewModel @AssistedInject constructor(
     val miniInfo: Flow<BottomNavUiModel>
         get() = _miniInfo
 
+    private val _reviewIndex = MutableStateFlow(0)
+    private val currentReview
+        get() = _review.value[_reviewIndex.value]
+
     fun onAction(action: ProductPreviewAction) {
         when (action) {
             ProductPreviewAction.FetchReview -> getReview()
@@ -59,6 +63,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             is ProductPreviewAction.Navigate -> navigate(action.appLink)
             is ProductPreviewAction.SubmitReport -> submitReport(action.model)
             is ProductPreviewAction.ClickMenu -> menuOnClicked(action.menus)
+            is ProductPreviewAction.UpdateReviewPosition -> updateReviewIndex(action.index)
             is ProductPreviewAction.Like -> like(action.state)
             else -> {}
         }
@@ -114,7 +119,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private fun submitReport(model: ReportUiModel) {
         viewModelScope.launchCatchError(block = {
-            val result = repo.submitReport(model)
+            val result = repo.submitReport(model, currentReview.reviewId)
             if (result) _uiEvent.emit(ProductPreviewEvent.ShowSuccessToaster(type = ProductPreviewEvent.ShowSuccessToaster.Type.Report)) else throw MessageErrorException()
         }) {
             _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it) {
@@ -131,13 +136,17 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
+    private fun updateReviewIndex(position: Int) {
+        _reviewIndex.value = position
+    }
+
     private fun like(state: LikeUiState) {
         requiredLogin(state) {
             viewModelScope.launchCatchError(block = {
                 val state = repo.likeReview(state)
                 //TODO: check toaster. Need to update dedicated reviewId to update value
-            }){
-                _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it){})
+            }) {
+                _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it) {})
             }
         }
     }

@@ -1,11 +1,10 @@
 package com.tokopedia.content.product.preview.view.components
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -16,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import com.tokopedia.nest.components.ButtonSize
@@ -24,14 +24,12 @@ import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.content.product.preview.R
 
 /**
  * @author by astidhiyaa on 23/11/23
  */
 @Composable
 fun MediaBottomNav(
-    // parse data here. should we use our own data class
     product: BottomNavUiModel,
     onAtcClicked: () -> Unit = {}
 ) {
@@ -39,7 +37,7 @@ fun MediaBottomNav(
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight()
+                .wrapContentHeight()
                 .background(colorResource(id = unifyprinciplesR.color.Unify_Static_Black))
                 .padding(
                     start = 16.dp,
@@ -48,10 +46,6 @@ fun MediaBottomNav(
                     end = 16.dp
                 )
         ) {
-            /*
-                use it after design is final.
-                val (title, ogPrice, discountedPrice, discountFmt, atcBtn) = createRefs()
-             */
             val (title, ogPrice, slashedPrice, discountTag, atcBtn) = createRefs()
             NestTypography(
                 text = product.title,
@@ -60,8 +54,7 @@ fun MediaBottomNav(
                     color = colorResource(id = R.color.product_preview_dms_bottom_title)
                 ),
                 modifier = Modifier.constrainAs(title) {
-                    width = Dimension.wrapContent
-                    height = Dimension.wrapContent
+                    width = Dimension.fillToConstraints
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                     end.linkTo(atcBtn.start, 8.dp)
@@ -85,10 +78,29 @@ fun MediaBottomNav(
                     }
             )
 
-            AnimatedVisibility(visible = product.price is BottomNavUiModel.DiscountedPrice) {
-                // Slashed price [if there's a discount]
+            val btnWording = when (product.buttonState) {
+                BottomNavUiModel.ButtonState.Active -> R.string.bottom_atc_wording
+                BottomNavUiModel.ButtonState.Inactive -> R.string.bottom_remind_wording
+                BottomNavUiModel.ButtonState.OOS -> R.string.bottom_oos_wording
+                else -> R.string.bottom_atc_wording
+            }
+            NestButton(
+                text = stringResource(id = btnWording),
+                onClick = onAtcClicked,
+                variant = ButtonVariant.GHOST_INVERTED,
+                size = ButtonSize.SMALL,
+                isClickable = product.buttonState != BottomNavUiModel.ButtonState.OOS,
+                modifier = Modifier
+                    .constrainAs(atcBtn) {
+                        end.linkTo(parent.end)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    }
+            )
+
+            if (product.price is BottomNavUiModel.DiscountedPrice) {
                 NestTypography(
-                    text = (product.price as BottomNavUiModel.DiscountedPrice).discountedPrice,
+                    text = product.price.ogPriceFmt,
                     maxLines = 1,
                     textStyle = NestTheme.typography.small.copy(
                         color = colorResource(id = unifyprinciplesR.color.Unify_NN400),
@@ -103,8 +115,6 @@ fun MediaBottomNav(
                             top.linkTo(ogPrice.top)
                         }
                 )
-
-                // Discount percentage if any
                 NestTypography(
                     text = product.price.discountPercentage,
                     maxLines = 1,
@@ -119,23 +129,9 @@ fun MediaBottomNav(
                             start.linkTo(slashedPrice.end, 2.dp)
                             bottom.linkTo(slashedPrice.bottom)
                             top.linkTo(slashedPrice.top)
-                            end.linkTo(atcBtn.start, 8.dp)
                         }
                 )
             }
-
-            NestButton(
-                text = stringResource(id = R.string.bottom_atc_wording),
-                onClick = onAtcClicked,
-                variant = ButtonVariant.GHOST_INVERTED,
-                size = ButtonSize.SMALL,
-                modifier = Modifier
-                    .constrainAs(atcBtn) {
-                        end.linkTo(parent.end)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                    }
-            )
         }
     }
 }

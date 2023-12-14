@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
@@ -54,6 +56,17 @@ class ReviewFragment @Inject constructor(
 
     private val snapHelper = PagerSnapHelper() //TODO: adjust pager snap helper
 
+    private val scrollListener by lazyThreadSafetyNone {
+        object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    val index = getCurrentPosition()
+                    viewModel.onAction(ProductPreviewAction.UpdateReviewPosition(index))
+                }
+            }
+        }
+    }
+
     override fun getScreenName() = TAG
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,6 +104,7 @@ class ReviewFragment @Inject constructor(
     private fun setupView() {
         binding.rvReview.adapter = reviewAdapter
         snapHelper.attachToRecyclerView(binding.rvReview)
+        binding.rvReview.addOnScrollListener(scrollListener)
     }
 
     private fun observeReview() {
@@ -117,7 +131,7 @@ class ReviewFragment @Inject constructor(
     }
 
     private fun renderList(prev: List<ReviewUiModel>?, data: List<ReviewUiModel>) {
-        if (prev == null || prev == data) return //TODO: adjust condition
+        if (prev == data) return //TODO: adjust condition
         reviewAdapter.submitList(data)
     }
 
@@ -153,6 +167,10 @@ class ReviewFragment @Inject constructor(
      */
     override fun onReasonClicked(report: ReportUiModel) {
         viewModel.onAction(ProductPreviewAction.SubmitReport(report))
+    }
+
+    private fun getCurrentPosition() : Int {
+        return (binding.rvReview.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition() ?: RecyclerView.NO_POSITION
     }
 
     companion object {

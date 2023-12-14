@@ -12,6 +12,7 @@ import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -52,7 +53,7 @@ class ProductPreviewRepositoryImpl @Inject constructor(
                 AddToCartUseCase.getMinimumParams(
                     productId = productId,
                     shopId = shopId,
-                    atcExternalSource = AtcFromExternalSource.ATC_FROM_STORIES,
+                    atcExternalSource = AtcFromExternalSource.ATC_FROM_PRODUCT_PREVIEW,
                     productName = productName,
                     price = price.toString(),
                     userId = userSessionInterface.userId,
@@ -64,18 +65,18 @@ class ProductPreviewRepositoryImpl @Inject constructor(
 
     override suspend fun likeReview(state: LikeUiState): LikeUiState = withContext(dispatchers.io) {
         //TODO: adjust reviewId
-        val response = likeUseCase(ReviewLikeUseCase.Param(reviewId = "", likeStatus = state.state.value))
+        val response =
+            likeUseCase(ReviewLikeUseCase.Param(reviewId = "", likeStatus = state.state.value))
         mapper.mapLike(response)
     }
 
-    override suspend fun submitReport(report: ReportUiModel): Boolean =
-        //TODO: adjust reviewId
+    override suspend fun submitReport(report: ReportUiModel, reviewId: String): Boolean =
         withContext(dispatchers.io) {
             val response = submitReportUseCase(
                 SubmitReportUseCase.Param(
                     reasonCode = report.reasonCode,
                     reasonText = report.text,
-                    reviewId = 0
+                    reviewId = reviewId.toIntOrZero()
                 )
             )
             response.data.success
