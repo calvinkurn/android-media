@@ -167,6 +167,50 @@ class FeedPostViewModelTest {
     }
 
     @Test
+    fun getScrollPosition_onInitial_shouldBeNull() {
+        assert(viewModel.getScrollPosition() == null)
+    }
+
+    @Test
+    fun getScrollPosition_whenChanged_shouldBeChanged() {
+        // given
+        val position = 1
+
+        // when
+        viewModel.saveScrollPosition(position)
+
+        // then
+        assert(viewModel.getScrollPosition() == position)
+    }
+
+    @Test
+    fun shouldFetchInitialPost_whenNotLoggedInAndFirstTime_shouldReturnTrue() {
+        assert(viewModel.shouldFetchInitialPost())
+    }
+
+    @Test
+    fun shouldFetchInitialPost_whenNotLoggedInAndAlreadyHaveData_shouldReturnTrue() {
+        coEvery { userSession.isLoggedIn } returns true
+        provideDefaultFeedPostMockData()
+        assert(!viewModel.shouldFetchInitialPost())
+    }
+
+    @Test
+    fun shouldFetchInitialPost_whenLoggedInAndFirstTime_shouldReturnTrue() {
+        coEvery { userSession.isLoggedIn } returns true
+
+        assert(viewModel.shouldFetchInitialPost())
+    }
+
+    @Test
+    fun shouldFetchInitialPost_whenLoggedInAndAlreadyHaveData_shouldReturnTrue() {
+        coEvery { userSession.isLoggedIn } returns false andThen true
+        provideDefaultFeedPostMockData()
+
+        assert(viewModel.shouldFetchInitialPost())
+    }
+
+    @Test
     fun onGetMerchantVoucher_whenFailed_shouldReturnFail() {
         // given
         coEvery { mvcSummaryUseCase.getQueryParams(any()) } returns hashMapOf()
