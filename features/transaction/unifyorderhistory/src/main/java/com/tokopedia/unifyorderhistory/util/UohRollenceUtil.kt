@@ -2,6 +2,7 @@ package com.tokopedia.unifyorderhistory.util
 
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
+import timber.log.Timber
 
 object UohRollenceUtil {
 
@@ -15,13 +16,12 @@ object UohRollenceUtil {
     }
 
     fun isEnableBuyAgainWidget(): Boolean {
-        /*return try {
+        return try {
             val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.UOH_BUY_AGAIN_WIDGET, RollenceKey.UOH_BUY_AGAIN_WIDGET_CONTROL)
             return (remoteConfigRollenceValue == RollenceKey.UOH_BUY_AGAIN_WIDGET_VARIANT)
         } catch (e: Exception) {
             Timber.d(e.message)
             false
-        }*/
-        return true
+        }
     }
 }
