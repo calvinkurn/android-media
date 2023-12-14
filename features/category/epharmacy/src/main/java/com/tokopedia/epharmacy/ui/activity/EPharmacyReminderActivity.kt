@@ -45,7 +45,8 @@ class EPharmacyReminderActivity : BaseSimpleActivity(), HasComponent<EPharmacyCo
             reminderType,
             consultationSourceId,
             groupId,
-            enablerName)
+            enablerName
+        )
     }
 
     private fun extractArguments() {

@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.network.response.EPharmacyOrderDetailResponse
 import com.tokopedia.epharmacy.ui.fragment.EPharmacySecondaryActionButtonBottomSheet
+import com.tokopedia.unifyprinciples.Typography
 
 class EPharmacySecondaryActionButtonAdapter(private val listener: EPharmacySecondaryActionButtonBottomSheet.ActionButtonClickListener?) : RecyclerView.Adapter<EPharmacySecondaryActionButtonAdapter.ViewHolder>() {
 
@@ -15,7 +15,7 @@ class EPharmacySecondaryActionButtonAdapter(private val listener: EPharmacySecon
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_epharmacy_order_detail_secondary_action_button, parent, false)
+            .inflate(R.layout.item_epharmacy_order_detail_secondary_action_button, parent, false)
         return ViewHolder(view, listener)
     }
 
@@ -29,7 +29,7 @@ class EPharmacySecondaryActionButtonAdapter(private val listener: EPharmacySecon
 
     fun setSecondaryActionButtons(secondaryActionButtons: List<EPharmacyOrderDetailResponse.GetConsultationOrderDetail.EPharmacyOrderButtonModel?>) {
         this.secondaryActionButtons = secondaryActionButtons
-        notifyItemRangeChanged(0,secondaryActionButtons.size)
+        notifyItemRangeChanged(0, secondaryActionButtons.size)
     }
 
     class ViewHolder(itemView: View, private val listener: EPharmacySecondaryActionButtonBottomSheet.ActionButtonClickListener?) : RecyclerView.ViewHolder(itemView) {
