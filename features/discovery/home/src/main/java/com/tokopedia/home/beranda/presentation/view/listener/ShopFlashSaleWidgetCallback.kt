@@ -19,7 +19,11 @@ class ShopFlashSaleWidgetCallback(
         trackingAttributionModel: TrackingAttributionModel,
         channelGrid: ChannelGrid
     ) {
-        ShopFlashSaleTracking.sendClickShopTab(trackingAttributionModel, channelGrid)
+        ShopFlashSaleTracking.sendClickShopTab(
+            trackingAttributionModel,
+            channelGrid,
+            homeCategoryListener.userId
+        )
         homeRevampViewModel.getShopFlashSale(shopFlashSaleWidgetDataModel, channelGrid.id)
     }
 
@@ -27,7 +31,11 @@ class ShopFlashSaleWidgetCallback(
         trackingAttributionModel: TrackingAttributionModel,
         channelGrid: ChannelGrid
     ) {
-        val impression = ShopFlashSaleTracking.getImpressionShopTab(trackingAttributionModel, channelGrid)
+        val impression = ShopFlashSaleTracking.getImpressionShopTab(
+            trackingAttributionModel,
+            channelGrid,
+            homeCategoryListener.userId
+        )
         homeCategoryListener.getTrackingQueueObj()?.putEETracking(impression)
     }
 
