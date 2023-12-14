@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.common.domain.entity.ShopPrefetchData
 
 class ShopPagePrefetch {
@@ -16,8 +18,7 @@ class ShopPagePrefetch {
         prefetchData: ShopPrefetchData,
         intent: Intent
     ) {
-        val isPrefetchEnabled = isPrefetchEnabled(context)
-        if (!isPrefetchEnabled) return
+        if (!isPrefetchEnabledOnRemoteConfig(context) || !isPrefetchEnabledOnRollence()) return
 
         val cacheManager = SaveInstanceCacheManager(context = context, generateObjectId = true)
 
@@ -30,9 +31,16 @@ class ShopPagePrefetch {
         intent.putExtra(BUNDLE_KEY_PREFETCH_CACHE_ID, cacheId)
     }
 
-    private fun isPrefetchEnabled(context: Context): Boolean {
+    private fun isPrefetchEnabledOnRemoteConfig(context: Context): Boolean {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
         // return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SHOP_PAGE_PREFETCH, false)
+        return true
+    }
+
+    private fun isPrefetchEnabledOnRollence(): Boolean {
+        val abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
+        val result = abTestPlatform.getString(RollenceKey.AB_TEST_SHOP_PREFETCH, RollenceKey.AB_TEST_SHOP_PREFETCH_DISABLED)
+        // return result == RollenceKey.AB_TEST_SHOP_PREFETCH_ENABLED
         return true
     }
 }
