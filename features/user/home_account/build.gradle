@@ -28,7 +28,6 @@ android {
         exclude 'META-INF/**'
     }
     defaultConfig {
-        multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 
@@ -90,7 +89,7 @@ dependencies {
     implementation rootProject.ext.composeDependencies.composeLiveData
     implementation rootProject.ext.composeDependencies.composeActivity
     implementation rootProject.ext.unifyDependencies.header
-    debugImplementation rootProject.ext.composeDependencies.composeUiTooling
+    implementation rootProject.ext.composeDependencies.composeUiTooling
     debugImplementation rootProject.ext.composeDependencies.composePreview
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
@@ -142,6 +141,8 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.composeDependencies.composeUiTest
+    debugImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib

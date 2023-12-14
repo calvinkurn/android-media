@@ -1,4 +1,4 @@
-package com.tokopedia.home_account.fundsAndInvestment
+package com.tokopedia.home_account.ui.fundsAndInvestment
 
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.data.model.AssetConfig

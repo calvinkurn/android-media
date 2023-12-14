@@ -1,4 +1,4 @@
-package com.tokopedia.home_account.fundsAndInvestment
+package com.tokopedia.home_account.ui.fundsAndInvestment
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -11,7 +11,7 @@ import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.analytics.TokopediaCardAnalytics
 import com.tokopedia.home_account.di.ActivityComponentFactory
 import com.tokopedia.home_account.di.HomeAccountUserComponents
-import com.tokopedia.home_account.fundsAndInvestment.ui.FundsAndInvestmentScreen
+import com.tokopedia.home_account.ui.fundsAndInvestment.ui.FundsAndInvestmentScreen
 import com.tokopedia.home_account.view.adapter.uimodel.WalletUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.user.session.UserSessionInterface

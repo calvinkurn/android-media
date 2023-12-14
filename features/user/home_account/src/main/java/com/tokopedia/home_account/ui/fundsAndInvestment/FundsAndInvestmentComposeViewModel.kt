@@ -1,4 +1,4 @@
-package com.tokopedia.home_account.fundsAndInvestment
+package com.tokopedia.home_account.ui.fundsAndInvestment
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

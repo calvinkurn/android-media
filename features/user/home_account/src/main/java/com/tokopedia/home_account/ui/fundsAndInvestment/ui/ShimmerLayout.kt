@@ -1,4 +1,4 @@
-package com.tokopedia.home_account.fundsAndInvestment.ui
+package com.tokopedia.home_account.ui.fundsAndInvestment.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
