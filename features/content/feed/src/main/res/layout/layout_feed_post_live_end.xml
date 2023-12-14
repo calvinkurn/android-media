@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:background="@color/black">
+    tools:background="@color/Unify_Static_Black">
 
     <com.tokopedia.iconunify.IconUnify
         android:layout_width="80dp"
