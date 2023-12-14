@@ -148,7 +148,7 @@ class PlayShortsSummaryFragment @Inject constructor(
 
                     childFragment.listener = object : InterspersingConfirmationBottomSheet.Listener {
                         override fun clickPdpVideo() {
-                            /** TODO: redirect to new fragment */
+                            viewModel.submitAction(PlayShortsAction.ClickVideoPreview)
                         }
 
                         override fun clickNext() {

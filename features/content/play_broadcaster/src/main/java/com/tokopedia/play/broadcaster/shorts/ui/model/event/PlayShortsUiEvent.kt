@@ -30,6 +30,8 @@ sealed interface PlayShortsUiEvent {
 
     object GoToSummary : PlayShortsUiEvent
 
+    object GoToVideoPreview : PlayShortsUiEvent
+
     data class ErrorUploadMedia(
         val throwable: Throwable
     ) : PlayShortsUiEvent

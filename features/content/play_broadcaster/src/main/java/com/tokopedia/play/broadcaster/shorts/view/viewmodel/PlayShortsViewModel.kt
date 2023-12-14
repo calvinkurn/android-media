@@ -244,6 +244,7 @@ class PlayShortsViewModel @Inject constructor(
             is PlayShortsAction.LoadTag -> handleLoadTag()
             is PlayShortsAction.SelectTag -> handleSelectTag(action.tag)
             is PlayShortsAction.SwitchInterspersing -> handleSwitchInterspersing(action.isEnabled)
+            is PlayShortsAction.ClickVideoPreview -> handleClickVideoPreview()
             is PlayShortsAction.UploadVideo -> handleUploadVideo()
 
             /** Shorts x Affiliate */
@@ -501,6 +502,12 @@ class PlayShortsViewModel @Inject constructor(
             it.copy(
                 isInterspersing = isEnabled
             )
+        }
+    }
+
+    private fun handleClickVideoPreview() {
+        viewModelScope.launch {
+            _uiEvent.emit(PlayShortsUiEvent.GoToVideoPreview)
         }
     }
 

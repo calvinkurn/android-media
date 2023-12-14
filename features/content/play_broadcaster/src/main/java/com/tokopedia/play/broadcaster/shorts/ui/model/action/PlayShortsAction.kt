@@ -49,6 +49,8 @@ sealed interface PlayShortsAction {
         val isEnabled: Boolean,
     ) : PlayShortsAction
 
+    object ClickVideoPreview : PlayShortsAction
+
     object UploadVideo : PlayShortsAction
 
     /** Shorts x Affiliate */
