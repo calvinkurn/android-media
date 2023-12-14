@@ -5,19 +5,19 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.content.product.preview.R
-import com.tokopedia.content.product.preview.data.ContentUiModel
-import com.tokopedia.content.product.preview.data.ContentUiModel.MediaType
 import com.tokopedia.content.product.preview.view.adapter.product.ProductContentAdapter.ProductContentModelType
 import com.tokopedia.content.product.preview.view.adapter.product.ProductContentAdapter.ProductContentModelType.ImageType
 import com.tokopedia.content.product.preview.view.adapter.product.ProductContentAdapter.ProductContentModelType.Unknown
 import com.tokopedia.content.product.preview.view.adapter.product.ProductContentAdapter.ProductContentModelType.VideoType
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
+import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel.MediaType
 import com.tokopedia.content.product.preview.view.viewholder.product.ProductContentImageViewHolder
 import com.tokopedia.content.product.preview.view.viewholder.product.ProductContentLoadingViewHolder
 import com.tokopedia.content.product.preview.view.viewholder.product.ProductContentVideoViewHolder
 
 class ProductContentAdapter(
-    listener: ProductPreviewListener,
+    listener: ProductPreviewListener
 ) : BaseDiffUtilAdapter<ProductContentModelType>() {
 
     init {
@@ -35,13 +35,15 @@ class ProductContentAdapter(
 
     private fun generateModel(data: List<ContentUiModel>): List<ProductContentModelType> {
         return buildList {
-            addAll(data.map {
-                when (it.type) {
-                    MediaType.Video -> VideoType(it)
-                    MediaType.Image -> ImageType(it)
-                    else -> Unknown
+            addAll(
+                data.map {
+                    when (it.type) {
+                        MediaType.Video -> VideoType(it)
+                        MediaType.Image -> ImageType(it)
+                        else -> Unknown
+                    }
                 }
-            })
+            )
         }
     }
 
@@ -130,9 +132,8 @@ class ProductContentAdapter(
     }
 
     sealed interface ProductContentModelType {
-        data class ImageType(val image: ContentUiModel): ProductContentModelType
-        data class VideoType(val video: ContentUiModel): ProductContentModelType
-        object Unknown: ProductContentModelType
+        data class ImageType(val image: ContentUiModel) : ProductContentModelType
+        data class VideoType(val video: ContentUiModel) : ProductContentModelType
+        object Unknown : ProductContentModelType
     }
-
 }

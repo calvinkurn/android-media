@@ -4,18 +4,18 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.ui.PlayerControlView
-import com.tokopedia.content.product.preview.data.ContentUiModel
 import com.tokopedia.content.product.preview.databinding.ItemProductContentVideoBinding
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewExoPlayer
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewPlayerControl
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
+import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 
 class ProductContentVideoViewHolder(
     private val binding: ItemProductContentVideoBinding,
-    private val listener: ProductPreviewListener,
+    private val listener: ProductPreviewListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private var mVideoPlayer: ProductPreviewExoPlayer? = null
@@ -33,7 +33,7 @@ class ProductContentVideoViewHolder(
         videoPlayer.start(
             videoUrl = content.url,
             isMute = false,
-            playWhenReady = false,
+            playWhenReady = false
         )
 
         binding.playerControl.setListener(object : ProductPreviewPlayerControl.Listener {
@@ -54,7 +54,6 @@ class ProductContentVideoViewHolder(
             ) {
                 binding.videoTimeView.hide()
             }
-
         })
         videoPlayer.setVideoListener(object : ProductPreviewExoPlayer.VideoStateListener {
             override fun onBuffering() {
@@ -90,9 +89,10 @@ class ProductContentVideoViewHolder(
             ProductContentVideoViewHolder(
                 binding = ItemProductContentVideoBinding.inflate(
                     LayoutInflater.from(parent.context),
-                    parent, false
+                    parent,
+                    false
                 ),
-                listener = listener,
+                listener = listener
             )
     }
 }

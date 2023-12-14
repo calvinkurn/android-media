@@ -3,16 +3,16 @@ package com.tokopedia.content.product.preview.view.viewholder.product
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.content.product.preview.data.ContentUiModel
 import com.tokopedia.content.product.preview.databinding.ItemProductContentImageBinding
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
+import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 
 class ProductContentImageViewHolder(
     private val binding: ItemProductContentImageBinding,
-    private val listener: ProductPreviewListener,
+    private val listener: ProductPreviewListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(content: ContentUiModel) {
@@ -38,9 +38,10 @@ class ProductContentImageViewHolder(
             ProductContentImageViewHolder(
                 binding = ItemProductContentImageBinding.inflate(
                     LayoutInflater.from(parent.context),
-                    parent, false
+                    parent,
+                    false
                 ),
-                listener = listener,
+                listener = listener
             )
     }
 }

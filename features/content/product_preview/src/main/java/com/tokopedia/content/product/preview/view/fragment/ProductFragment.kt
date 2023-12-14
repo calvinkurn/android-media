@@ -14,8 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.withCache
-import com.tokopedia.content.product.preview.data.ContentUiModel
-import com.tokopedia.content.product.preview.data.product.ProductIndicatorUiModel
 import com.tokopedia.content.product.preview.databinding.FragmentProductBinding
 import com.tokopedia.content.product.preview.view.adapter.product.ProductContentAdapter
 import com.tokopedia.content.product.preview.view.adapter.product.ProductIndicatorAdapter
@@ -24,6 +22,8 @@ import com.tokopedia.content.product.preview.view.components.player.ProductPrevi
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewVideoPlayerManager
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewIndicatorListener
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
+import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction
 import com.tokopedia.kotlin.extensions.view.gone
@@ -56,21 +56,25 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     }
 
     private val productContentAdapter by lazyThreadSafetyNone {
-        ProductContentAdapter(listener = object : ProductPreviewListener {
-            override fun getVideoPlayer(id: String): ProductPreviewExoPlayer {
-                return videoPlayerManager.occupy(id)
+        ProductContentAdapter(
+            listener = object : ProductPreviewListener {
+                override fun getVideoPlayer(id: String): ProductPreviewExoPlayer {
+                    return videoPlayerManager.occupy(id)
+                }
             }
-        })
+        )
     }
     private val productIndicatorAdapter by lazyThreadSafetyNone {
-        ProductIndicatorAdapter(listener = object :
-            ProductPreviewIndicatorListener {
-            override fun onClickProductIndicator(position: Int) {
-                scrollTo(position)
+        ProductIndicatorAdapter(
+            listener = object :
+                ProductPreviewIndicatorListener {
+                override fun onClickProductIndicator(position: Int) {
+                    scrollTo(position)
 //                setupTextLabelIndicatorViews(position = position)
-                viewModel.submitAction(ProductPreviewUiAction.ProductSelected(position))
+                    viewModel.submitAction(ProductPreviewUiAction.ProductSelected(position))
+                }
             }
-        })
+        )
     }
 
     private val videoPlayerManager by lazy { ProductPreviewVideoPlayerManager(requireContext()) }
@@ -158,7 +162,9 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
                 visible()
                 text = String.format(
                     getString(contentproductpreviewR.string.text_label_place_holder),
-                    position.plus(1), state.size, state[position].variantName,
+                    position.plus(1),
+                    state.size,
+                    state[position].variantName
                 )
             }
         } catch (_: Exception) {
@@ -201,5 +207,4 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
             } as ProductFragment
         }
     }
-
 }

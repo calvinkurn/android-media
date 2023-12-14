@@ -1,7 +1,7 @@
-package com.tokopedia.content.product.preview.data
+package com.tokopedia.content.product.preview.view.uimodel
 
 data class ContentUiModel(
-    val id: String = "",
+    val contentId: String = "",
     val selected: Boolean = false,
     val type: MediaType = MediaType.Unknown,
     val url: String = "",
