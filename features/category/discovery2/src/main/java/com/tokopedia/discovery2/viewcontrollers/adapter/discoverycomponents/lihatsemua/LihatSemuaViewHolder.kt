@@ -276,7 +276,13 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
 
     private fun setupMargin() {
         fragment.context?.resources?.let {
-            textTitleParent.setMargin(it.getDimensionPixelSize(R.dimen.dp_8), 0, 0, 0)
+            val leftMargin = if (titleImageViewParent.isVisible) {
+                R.dimen.dp_8
+            } else {
+                R.dimen.dp_22
+            }
+
+            textTitleParent.setMargin(it.getDimensionPixelSize(leftMargin), 0, 0, 0)
         }
     }
 
