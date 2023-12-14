@@ -152,6 +152,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Yoris Prayogo on 10/07/20.
@@ -1110,7 +1111,7 @@ open class HomeAccountUserFragment :
     private fun setupStatusBar() {
         activity?.let {
             binding?.statusBarBg?.background = ColorDrawable(
-                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                ContextCompat.getColor(it, unifyprinciplesR.color.Unify_GN500)
             )
             binding?.statusBarBg?.layoutParams?.height = ViewHelper.getStatusBarHeight(it)
         }
@@ -1552,7 +1553,7 @@ open class HomeAccountUserFragment :
             override fun updateDrawState(ds: TextPaint) {
                 ds.color = MethodChecker.getColor(
                     activity,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    unifyprinciplesR.color.Unify_GN500
                 )
             }
         }
