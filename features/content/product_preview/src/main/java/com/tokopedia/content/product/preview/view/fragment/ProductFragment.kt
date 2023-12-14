@@ -70,7 +70,6 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
                 ProductIndicatorListener {
                 override fun onClickProductIndicator(position: Int) {
                     scrollTo(position)
-//                setupTextLabelIndicatorViews(position = position)
                     viewModel.submitAction(ProductPreviewUiAction.ProductSelected(position))
                 }
             }
@@ -82,7 +81,6 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == ViewPager2.SCROLL_STATE_IDLE) {
                 val position = getContentCurrentPosition()
-//                setupTextLabelIndicatorViews(position = position)
                 scrollTo(position)
                 viewModel.submitAction(ProductPreviewUiAction.ProductSelected(position))
             }
@@ -105,7 +103,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
         setupViews()
         setupObservers()
 
-        viewModel.submitAction(ProductPreviewUiAction.InitializeMainData)
+        viewModel.submitAction(ProductPreviewUiAction.InitializeProductMainData)
     }
 
     private fun setupViews() {

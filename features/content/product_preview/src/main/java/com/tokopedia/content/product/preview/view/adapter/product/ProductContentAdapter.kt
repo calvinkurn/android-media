@@ -59,8 +59,8 @@ class ProductContentAdapter(
         newItem: ProductContentModelType
     ): Boolean {
         return when {
-            oldItem as VideoType == newItem as VideoType -> oldItem.video.url == newItem.video.url
-            oldItem as ImageType == newItem as ImageType -> oldItem.video.url == newItem.video.url
+            oldItem is VideoType && newItem is VideoType -> oldItem.video.url == newItem.video.url
+            oldItem is ImageType && newItem is ImageType -> oldItem.image.url == newItem.image.url
             else -> oldItem == newItem
         }
     }

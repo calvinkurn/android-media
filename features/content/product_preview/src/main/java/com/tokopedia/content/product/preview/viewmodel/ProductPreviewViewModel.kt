@@ -5,7 +5,7 @@ import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.InitializeMainData
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.InitializeProductMainData
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.ProductSelected
 import com.tokopedia.content.product.preview.viewmodel.state.ProductPreviewUiState
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
@@ -45,12 +45,12 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     fun submitAction(action: ProductPreviewUiAction) {
         when (action) {
-            InitializeMainData -> handleProductMainData()
+            InitializeProductMainData -> handleInitializeProductMainData()
             is ProductSelected -> handleProductSelected(action.position)
         }
     }
 
-    private fun handleProductMainData() {
+    private fun handleInitializeProductMainData() {
         _productContentState.value = mockData().content
         _productIndicatorState.value = mockData().indicator
     }
@@ -69,6 +69,9 @@ class ProductPreviewViewModel @AssistedInject constructor(
     }
 }
 
+/**
+ * TODO: implement real data
+ */
 fun mockData() = ProductContentUiModel(
     productId = "productID_123",
     content = listOf(

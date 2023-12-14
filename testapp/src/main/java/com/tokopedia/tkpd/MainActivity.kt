@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.content.product.preview.view.activity.ProductPreviewActivity
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -144,12 +143,11 @@ class MainActivity : BaseActivity() {
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
 
-        startActivity(Intent(this, ProductPreviewActivity::class.java))
-//        if (model.value.applink.isNotBlank()) {
-//            RouteManager.route(this, model.value.applink)
-//        } else {
-//            Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
-//        }
+        if (model.value.applink.isNotBlank()) {
+            RouteManager.route(this, model.value.applink)
+        } else {
+            Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun getDefaultAppLink(): String {
