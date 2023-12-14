@@ -43,9 +43,6 @@ import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohTdnBannerViewH
 import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohTickerItemViewHolder
 import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
 
-/**
- * Created by fwidjaja on 22/07/20.
- */
 class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var listTypeData = mutableListOf<UohTypeData>()
     private var actionListener: ActionListener? = null
@@ -167,7 +164,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.bind(element)
             }
             is UohOrderListViewHolder -> {
-                holder.bind(element, holder.adapterPosition)
+                holder.bind(element, holder.absoluteAdapterPosition)
             }
             is UohTickerItemViewHolder -> {
                 holder.bind(element)
@@ -179,7 +176,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.bind(element)
             }
             is UohRecommendationItemViewHolder -> {
-                holder.bind(element, holder.adapterPosition)
+                holder.bind(element, holder.absoluteAdapterPosition)
             }
             is UohTdnBannerViewHolder -> {
                 holder.bind(element)

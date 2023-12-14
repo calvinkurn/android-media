@@ -17,17 +17,13 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -35,9 +31,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.components.ButtonSize
@@ -55,6 +48,7 @@ import com.tokopedia.nest.principles.utils.tag
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifyorderhistory.util.UohConsts.LIMIT_BUY_AGAIN_WIDGET_PRODUCT
 import com.tokopedia.viewallcard.compose.NestViewAllCard
 import com.tokopedia.nest.principles.utils.ImageSource as ImageSource
 
@@ -250,15 +244,15 @@ fun UohBuyAgainList(
         contentPadding = PaddingValues(start = 10.dp, end = 10.dp)
     ) {
         itemsIndexed(listBuyAgain) { index, item ->
-            if (index < 3) {
+            if (index < LIMIT_BUY_AGAIN_WIDGET_PRODUCT) {
                 UohBuyAgainCard(
                     index = index,
-                    recommItem = listBuyAgain[index],
+                    recommItem = item,
                     onProductCardClick = onProductCardClick,
                     onBuyAgainButtonClicked = onButtonBuyAgainClick,
                     onItemScrolled = onItemScrolled
                 )
-            } else if (index == 3) {
+            } else if (index == LIMIT_BUY_AGAIN_WIDGET_PRODUCT) {
                 NestViewAllCard(
                     modifier = modifier
                         .height(60.dp)
@@ -374,19 +368,4 @@ private fun ImageProduct(imageSource: ImageSource, modifier: Modifier) {
             contentDescription = null
         )
     }
-}
-
-@Composable
-fun rememberLifecycleEvent(lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current): Lifecycle.Event {
-    var state by remember { mutableStateOf(Lifecycle.Event.ON_ANY) }
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            state = event
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
-    return state
 }

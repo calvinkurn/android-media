@@ -880,7 +880,7 @@ object UohAnalytics {
             putString(BUSINESS_UNIT, HOME_AND_BROWSE)
             putParcelableArrayList(ITEMS, arrayListOf(bundleProduct))
         }
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, bundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4366
@@ -919,7 +919,7 @@ object UohAnalytics {
             putString(BUSINESS_UNIT, HOME_AND_BROWSE)
             putParcelableArrayList(ITEMS, arrayListOf(bundleProduct))
         }
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, bundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4366

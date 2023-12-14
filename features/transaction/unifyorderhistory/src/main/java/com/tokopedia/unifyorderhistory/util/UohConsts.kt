@@ -187,4 +187,6 @@ object UohConsts {
     const val EVENT_LABEL_OCC_REDIRECTION = "occ"
     const val EVENT_LABEL_ULAS_BUTTON = "star: false"
     const val EVENT_LABEL_STAR_RATING = "star: true"
+
+    const val LIMIT_BUY_AGAIN_WIDGET_PRODUCT = 4
 }

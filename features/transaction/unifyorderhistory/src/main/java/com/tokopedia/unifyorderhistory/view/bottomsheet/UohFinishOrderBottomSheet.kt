@@ -10,9 +10,6 @@ import com.tokopedia.unifyorderhistory.databinding.BottomsheetFinishOrderUohBind
 import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-/**
- * Created by fwidjaja on 01/10/21.
- */
 class UohFinishOrderBottomSheet : BottomSheetUnify() {
     private var listener: UohFinishOrderBottomSheetListener? = null
     private var binding by autoClearedNullable<BottomsheetFinishOrderUohBinding>()

@@ -223,9 +223,6 @@ import java.util.*
 import javax.inject.Inject
 import com.tokopedia.atc_common.R as atc_commonR
 
-/**
- * Created by fwidjaja on 29/06/20.
- */
 @Keep
 open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener, UohItemAdapter.ActionListener {
     @Inject
@@ -1980,10 +1977,10 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         uohItemAdapter.removePmsButton()
                     }
                 }
+                loadBuyAgainWidget()
             } else {
                 uohItemAdapter.removePmsButton()
             }
-            loadBuyAgainWidget()
         } else {
             uohItemAdapter.appendList(listOrder)
             scrollRecommendationListener.updateStateAfterGetData()

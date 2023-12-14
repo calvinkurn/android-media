@@ -31,9 +31,6 @@ import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
 import com.tokopedia.unifyorderhistory.view.widget.review_rating.UohReviewRatingWidget
 import com.tokopedia.unifyorderhistory.view.widget.review_rating.UohReviewRatingWidgetConfig
 
-/**
- * Created by fwidjaja on 25/07/20.
- */
 class UohOrderListViewHolder(
     private val binding: UohListItemBinding,
     private val actionListener: UohItemAdapter.ActionListener?
