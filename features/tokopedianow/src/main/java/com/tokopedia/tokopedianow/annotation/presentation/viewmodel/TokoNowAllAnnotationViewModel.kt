@@ -31,9 +31,10 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
     private val _headerTitle = MutableLiveData<Result<String>>()
     private val _firstPage = MutableLiveData<Result<List<Visitable<*>>>>()
     private val _loadMore = MutableLiveData<List<Visitable<*>>>()
+    private val _isOnScrollNotNeeded = MutableLiveData<Unit>()
 
     private val layout: MutableList<Visitable<*>> = arrayListOf()
-    private var needToLoadMoreData: LoadMoreDataModel = LoadMoreDataModel(true)
+    private var needToLoadMoreData: LoadMoreDataModel = LoadMoreDataModel(isNeededToLoadMore = true)
 
     val headerTitle: LiveData<Result<String>>
         get() = _headerTitle
@@ -41,6 +42,8 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
         get() = _firstPage
     val loadMore: LiveData<List<Visitable<*>>>
         get() = _loadMore
+    val isOnScrollNotNeeded: LiveData<Unit>
+        get() = _isOnScrollNotNeeded
 
     fun getFirstPage(
         categoryId: String,
@@ -50,7 +53,7 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
             val warehouseIds = mapToWarehouseIds(addressData.getAddressData())
             val response = getAllAnnotationPageUseCase.execute(
                 categoryId = categoryId,
-                warehouseIds = warehouseIds,
+                warehouseId = warehouseIds,
                 annotationType = annotationType,
                 pageLastId = FIRST_PAGE_LAST_ID
             )
@@ -74,36 +77,42 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
         annotationType: String,
         isAtTheBottomOfThePage: Boolean
     ) {
-        if (isAtTheBottomOfThePage && needToLoadMoreData.isNeededToLoadMore) {
-            if (layout.last() is LoadingMoreModel) {
-                launchCatchError(block = {
-                    val warehouseIds = mapToWarehouseIds(addressData.getAddressData())
-                    val response = getAllAnnotationPageUseCase.execute(
-                        categoryId = categoryId,
-                        warehouseIds = warehouseIds,
-                        annotationType = annotationType,
-                        pageLastId = needToLoadMoreData.pageLastId
-                    )
+        if (isAtTheBottomOfThePage) {
+            when {
+                layout.last() is LoadingMoreModel -> {
+                    launchCatchError(block = {
+                        val warehouseIds = mapToWarehouseIds(addressData.getAddressData())
+                        val response = getAllAnnotationPageUseCase.execute(
+                            categoryId = categoryId,
+                            warehouseId = warehouseIds,
+                            annotationType = annotationType,
+                            pageLastId = needToLoadMoreData.pageLastId
+                        )
 
-                    if (response.annotationList.isNotEmpty()) {
+                        needToLoadMoreData = if (response.annotationList.isNotEmpty()) {
+                            layout.removeLoadMore()
+                            layout.addAnnotations(response)
+                            _loadMore.postValue(layout)
+
+                            needToLoadMoreData.copy(
+                                isNeededToLoadMore = response.isNeededToLoadMore(),
+                                pageLastId = response.pagination.pageLastID
+                            )
+                        } else {
+                            needToLoadMoreData.copy(isNeededToLoadMore = false)
+                        }
+                    }) {
                         layout.removeLoadMore()
-                        layout.addAnnotations(response)
                         _loadMore.postValue(layout)
-                    } else {
-                        _loadMore.postValue(emptyList())
                     }
-
-                    needToLoadMoreData = needToLoadMoreData.copy(
-                        isNeededToLoadMore = response.isNeededToLoadMore(),
-                        pageLastId = response.pagination.pageLastID
-                    )
-                }) {
-                    layout.removeLoadMore()
-                    _loadMore.postValue(layout)
                 }
-            } else {
-                layout.addLoadMore()
-                _loadMore.value = layout
+                needToLoadMoreData.isNeededToLoadMore -> {
+                    layout.addLoadMore()
+                    _loadMore.value = layout
+                }
+                else -> {
+                    _isOnScrollNotNeeded.value = Unit
+                }
             }
         }
     }

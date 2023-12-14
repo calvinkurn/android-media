@@ -30,7 +30,7 @@ internal object GlobalErrorUtil {
         throwable: Throwable?,
         onClickRetryListener: () -> Unit
     ) {
-        if (throwable is MessageErrorException) {
+        if (throwable is MessageErrorException && throwable.errorCode != null) {
             val errorType = getErrorType(
                 throwable = throwable,
                 errorCode = throwable.errorCode

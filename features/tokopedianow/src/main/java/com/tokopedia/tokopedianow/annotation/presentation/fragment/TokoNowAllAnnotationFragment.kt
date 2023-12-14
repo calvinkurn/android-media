@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokopedianow.annotation.di.component.DaggerAllAnnotationComponent
@@ -28,8 +29,6 @@ import com.tokopedia.tokopedianow.annotation.presentation.viewholder.AnnotationV
 import com.tokopedia.tokopedianow.annotation.presentation.viewmodel.TokoNowAllAnnotationViewModel
 import com.tokopedia.tokopedianow.common.util.GlobalErrorUtil.setupLayout
 import com.tokopedia.tokopedianow.recipebookmark.persentation.fragment.TokoNowRecipeBookmarkFragment
-import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -127,7 +126,7 @@ class TokoNowAllAnnotationFragment : Fragment() {
     }
 
     private fun FragmentTokopedianowAllAnnotationBinding.observeLiveData() {
-        viewModel.firstPage.observe(viewLifecycleOwner) { result ->
+        observe(viewModel.firstPage) { result ->
             hideShimmering()
 
             when (result) {
@@ -136,11 +135,15 @@ class TokoNowAllAnnotationFragment : Fragment() {
             }
         }
 
-        viewModel.loadMore.observe(viewLifecycleOwner) { result ->
+        observe(viewModel.loadMore) { result ->
             loadLayout(result)
         }
 
-        viewModel.headerTitle.observe(viewLifecycleOwner) { result ->
+        observe(viewModel.isOnScrollNotNeeded) {
+            rvAllAnnotation.removeOnScrollListener(loadMoreListener)
+        }
+
+        observe(viewModel.headerTitle) { result ->
             header.isShowShadow = false
             header.headerTitle = if (result is Success && result.data.isNotBlank()) result.data else "Semua brand"
         }
@@ -156,14 +159,6 @@ class TokoNowAllAnnotationFragment : Fragment() {
                 getFirstPage()
             }
         )
-    }
-
-    private fun FragmentTokopedianowAllAnnotationBinding.loadLayout(annotationList: List<Visitable<*>>) {
-        if (annotationList.isNotEmpty()) {
-            adapter?.submitList(annotationList)
-        } else {
-            rvAllAnnotation.removeOnScrollListener(loadMoreListener)
-        }
     }
 
     private fun FragmentTokopedianowAllAnnotationBinding.hideShimmering() {
@@ -191,6 +186,10 @@ class TokoNowAllAnnotationFragment : Fragment() {
             categoryId = categoryId,
             annotationType = annotationType
         )
+    }
+
+    private fun loadLayout(annotationList: List<Visitable<*>>) {
+        adapter?.submitList(annotationList)
     }
 
     private fun createLoadMoreListener(): RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
