@@ -4,6 +4,8 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.seeallcategory.persentation.decoration.SeeAllCategoryDecoration
 
 class AllAnnotationDecoration(
     private val spacing: Int,
@@ -22,13 +24,16 @@ class AllAnnotationDecoration(
                                 view: View,
                                 parent: RecyclerView,
                                 state: RecyclerView.State) {
+        val absolutePos = parent.getChildAdapterPosition(view)
         val halfSpace = spacing / DIVIDED_BY_TWO
         val spanIndex = getSpanIndex(view)
 
-        outRect.left = getLeftProductOffset(spanIndex, halfSpace)
-        outRect.top = getTopOffset(halfSpace)
-        outRect.right = getRightProductOffset(spanIndex, halfSpace)
-        outRect.bottom = halfSpace
+        if (isAnnotation(parent, absolutePos)) {
+            outRect.left = getLeftProductOffset(spanIndex, halfSpace)
+            outRect.top = getTopOffset(halfSpace)
+            outRect.right = getRightProductOffset(spanIndex, halfSpace)
+            outRect.bottom = halfSpace
+        }
     }
 
     private fun getSpanIndex(view: View): Int {
@@ -48,5 +53,13 @@ class AllAnnotationDecoration(
         END_PRODUCT_POSITION -> spacing
         MIDDLE_PRODUCT_POSITION -> halfSpace
         else -> DEFAULT_OFFSET
+    }
+
+    private fun isAnnotation(parent: RecyclerView, viewPosition: Int): Boolean = R.layout.item_tokopedianow_all_annotation == getRecyclerViewViewType(parent, viewPosition)
+
+    private fun getRecyclerViewViewType(parent: RecyclerView, viewPosition: Int): Int {
+        val adapter = parent.adapter ?: return SeeAllCategoryDecoration.INVALID_VIEW_TYPE
+        val isInvalidPosition = viewPosition !in SeeAllCategoryDecoration.ADAPTER_START_INDEX until adapter.itemCount
+        return if (isInvalidPosition) SeeAllCategoryDecoration.INVALID_VIEW_TYPE else adapter.getItemViewType(viewPosition)
     }
 }

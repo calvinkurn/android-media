@@ -4,7 +4,7 @@ import com.tokopedia.tokopedianow.annotation.domain.model.TokoNowGetAnnotationLi
 import com.tokopedia.tokopedianow.annotation.presentation.uimodel.AnnotationUiModel
 
 object AllAnnotationMapper {
-    fun GetAnnotationListResponse.mapToAnnotationUiModel(): List<AnnotationUiModel> {
+    fun GetAnnotationListResponse.mapToAnnotationUiModels(): List<AnnotationUiModel> {
         return annotationList.map {
             AnnotationUiModel(
                 id = it.annotationID,

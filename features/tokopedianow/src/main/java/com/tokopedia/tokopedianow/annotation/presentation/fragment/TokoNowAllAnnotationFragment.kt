@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -25,6 +27,9 @@ import com.tokopedia.tokopedianow.annotation.presentation.uimodel.AnnotationUiMo
 import com.tokopedia.tokopedianow.annotation.presentation.viewholder.AnnotationViewHolder
 import com.tokopedia.tokopedianow.annotation.presentation.viewmodel.TokoNowAllAnnotationViewModel
 import com.tokopedia.tokopedianow.common.util.GlobalErrorUtil.setupLayout
+import com.tokopedia.tokopedianow.recipebookmark.persentation.fragment.TokoNowRecipeBookmarkFragment
+import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
+import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -34,6 +39,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class TokoNowAllAnnotationFragment : Fragment() {
     companion object {
         private const val SPAN_COUNT = 3
+        private const val SPAN_FULL_SPACE = 1
 
         fun newInstance(
             categoryId: String?,
@@ -58,6 +64,8 @@ class TokoNowAllAnnotationFragment : Fragment() {
         by lazy { arguments?.getString(KEY_CATEGORY_ID).orEmpty() }
     private val annotationType: String
         by lazy { arguments?.getString(KEY_ANNOTATION_TYPE).orEmpty() }
+    private val loadMoreListener: RecyclerView.OnScrollListener
+        by lazy { createLoadMoreListener() }
 
     private var binding: FragmentTokopedianowAllAnnotationBinding?
         by autoClearedNullable()
@@ -102,19 +110,34 @@ class TokoNowAllAnnotationFragment : Fragment() {
         adapter = AllAnnotationAdapter(AllAnnotationAdapterTypeFactory(annotationCallback()))
         rvAllAnnotation.apply {
             addItemDecoration(AllAnnotationDecoration(getDpFromDimen(context, unifyprinciplesR.dimen.unify_space_16).toIntSafely()))
+            addOnScrollListener(loadMoreListener)
+            animation = null
             adapter = this@TokoNowAllAnnotationFragment.adapter
-            layoutManager = GridLayoutManager(context, SPAN_COUNT)
+            layoutManager = GridLayoutManager(context, SPAN_COUNT).apply {
+                spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(position: Int): Int {
+                        return when (adapter?.getItemViewType(position)) {
+                            AnnotationViewHolder.LAYOUT -> SPAN_FULL_SPACE
+                            else -> SPAN_COUNT
+                        }
+                    }
+                }
+            }
         }
     }
 
     private fun FragmentTokopedianowAllAnnotationBinding.observeLiveData() {
-        viewModel.annotationList.observe(viewLifecycleOwner) { result ->
+        viewModel.firstPage.observe(viewLifecycleOwner) { result ->
             hideShimmering()
 
             when (result) {
-                is Success -> showLayout(result.data)
+                is Success -> loadLayout(result.data)
                 is Fail -> showGlobalError(result.throwable)
             }
+        }
+
+        viewModel.loadMore.observe(viewLifecycleOwner) { result ->
+            loadLayout(result)
         }
 
         viewModel.headerTitle.observe(viewLifecycleOwner) { result ->
@@ -135,14 +158,18 @@ class TokoNowAllAnnotationFragment : Fragment() {
         )
     }
 
-    private fun FragmentTokopedianowAllAnnotationBinding.showLayout(annotationList: List<AnnotationUiModel>) {
-        rvAllAnnotation.show()
-        adapter?.submitList(annotationList)
+    private fun FragmentTokopedianowAllAnnotationBinding.loadLayout(annotationList: List<Visitable<*>>) {
+        if (annotationList.isNotEmpty()) {
+            adapter?.submitList(annotationList)
+        } else {
+            rvAllAnnotation.removeOnScrollListener(loadMoreListener)
+        }
     }
 
     private fun FragmentTokopedianowAllAnnotationBinding.hideShimmering() {
         loadingState.root.hide()
         errorState.hide()
+        rvAllAnnotation.show()
     }
 
     private fun FragmentTokopedianowAllAnnotationBinding.showShimmering() {
@@ -166,7 +193,21 @@ class TokoNowAllAnnotationFragment : Fragment() {
         )
     }
 
-    private fun annotationCallback() = object : AnnotationViewHolder.AnnotationListener {
+    private fun createLoadMoreListener(): RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            val isAtTheBottomOfThePage = !recyclerView.canScrollVertically(
+                TokoNowRecipeBookmarkFragment.SCROLL_DOWN_DIRECTION
+            )
+            viewModel.loadMore(
+                categoryId,
+                annotationType,
+                isAtTheBottomOfThePage
+            )
+        }
+    }
+
+    private fun annotationCallback(): AnnotationViewHolder.AnnotationListener = object : AnnotationViewHolder.AnnotationListener {
         override fun onClick(data: AnnotationUiModel, position: Int) {
             //track
         }
