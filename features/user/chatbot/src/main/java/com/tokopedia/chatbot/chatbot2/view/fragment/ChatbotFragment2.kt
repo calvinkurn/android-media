@@ -1161,21 +1161,13 @@ class ChatbotFragment2 :
     }
 
     private fun setupSlowModeSendButton(isSlowMode: Boolean, slowModeDurationInSeconds: Int) {
-//        smallReplyBox?.sendButton?.apply {
-//            isSlowModeEnabled = isSlowMode
-//            slowModeDurationInSecond = slowModeDurationInSeconds
-//        }
-//        bigReplyBox?.sendButton?.apply {
-//            isSlowModeEnabled = isSlowMode
-//            slowModeDurationInSecond = slowModeDurationInSeconds
-//        }
         smallReplyBox?.sendButton?.apply {
-            isSlowModeEnabled = true
-            slowModeDurationInSecond = 5
+            isSlowModeEnabled = isSlowMode
+            slowModeDurationInSecond = slowModeDurationInSeconds
         }
         bigReplyBox?.sendButton?.apply {
-            isSlowModeEnabled = true
-            slowModeDurationInSecond = 5
+            isSlowModeEnabled = isSlowMode
+            slowModeDurationInSecond = slowModeDurationInSeconds
         }
     }
 
