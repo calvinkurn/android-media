@@ -51,7 +51,7 @@ internal object MediaListenerBuilder {
             }catch (e: Exception) {
                 properties.loaderListener?.onFailed(MediaException(e.message))
             }
-            return true
+            return false
         }
     }
 
