@@ -919,7 +919,7 @@ object UohAnalytics {
             putString(BUSINESS_UNIT, HOME_AND_BROWSE)
             putParcelableArrayList(ITEMS, arrayListOf(bundleProduct))
         }
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(ADD_TO_CART_V5, bundle)
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4366
