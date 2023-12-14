@@ -50,6 +50,8 @@ class ProductPreviewViewModel @AssistedInject constructor(
         get() = _miniInfo
 
     private val _reviewIndex = MutableStateFlow(0)
+    private val currentReview
+        get() = _review.value[_reviewIndex.value]
 
     fun onAction(action: ProductPreviewAction) {
         when (action) {
@@ -115,7 +117,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private fun submitReport(model: ReportUiModel) {
         viewModelScope.launchCatchError(block = {
-            val result = repo.submitReport(model)
+            val result = repo.submitReport(model, currentReview.reviewId)
             if (result) _uiEvent.emit(ProductPreviewEvent.ShowSuccessToaster(type = ProductPreviewEvent.ShowSuccessToaster.Type.Report)) else throw MessageErrorException()
         }) {
             _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it){
