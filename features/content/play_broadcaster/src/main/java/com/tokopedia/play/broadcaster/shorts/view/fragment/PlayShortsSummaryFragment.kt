@@ -18,6 +18,7 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUploadUiState
+import com.tokopedia.play.broadcaster.shorts.view.bottomsheet.InterspersingConfirmationBottomSheet
 import com.tokopedia.play.broadcaster.shorts.view.compose.PlayShortsSummaryConfigLayout
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
@@ -146,7 +147,8 @@ class PlayShortsSummaryFragment @Inject constructor(
         binding.btnUploadVideo.setOnClickListener {
             analytic.clickUploadVideo(viewModel.shortsId, viewModel.selectedAccount)
 
-            viewModel.submitAction(PlayShortsAction.ClickUploadVideo)
+            showInterspersingConfirmation()
+//            viewModel.submitAction(PlayShortsAction.ClickUploadVideo)
         }
     }
 
@@ -256,6 +258,12 @@ class PlayShortsSummaryFragment @Inject constructor(
                 binding.btnUploadVideo.isEnabled = isButtonEnabled
             }
         }
+    }
+
+    private fun showInterspersingConfirmation() {
+        InterspersingConfirmationBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .show(childFragmentManager)
     }
 
     companion object {
