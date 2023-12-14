@@ -25,10 +25,9 @@ class WebpExtensionTest {
     @Test
     fun `generate normal image url from data properties`() {
         // Given
-        val url = "https://images.tokopedia.net/img/cache/900/VqbcmM/2023/5/23/bcb24bbc-ffd6-4f6b-9b85-32ce7458115f.jpg"
+        val url = "https://ect7.tokopedia.net/img/cache/900/VqbcmM/2023/5/23/bcb24bbc-ffd6-4f6b-9b85-32ce7458115f.jpg"
 
         // When
-        fakeFeatureToggleManager.isFakeWebpFormatEnabled = false // avoid the WebP validation
         val properties = setupProperties(url)
 
         // Then
@@ -44,7 +43,6 @@ class WebpExtensionTest {
         val expectedMimeType = "image/webp"
 
         // When
-        fakeFeatureToggleManager.isFakeWebpFormatEnabled = true
         val properties = setupProperties(url)
 
         // Then
@@ -58,7 +56,6 @@ class WebpExtensionTest {
         val url = "https://images.tokopedia.net/img/cache/900/VqbcmM/2023/5/23/bcb24bbc-ffd6-4f6b-9b85-32ce7458115f.jpg.webp"
 
         // When
-        fakeFeatureToggleManager.isFakeWebpFormatEnabled = true
         val properties = setupProperties(url)
 
         // Then

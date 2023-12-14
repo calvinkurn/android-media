@@ -268,6 +268,10 @@ const val CART_REVAMP_V4_QUERY =
                           text
                           icon_url
                         }
+                        product_tag_info {
+                            message
+                            icon_url
+                        }
                         product_tracker_data {
                           attribution
                           tracker_list_name

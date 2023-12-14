@@ -79,7 +79,7 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
                                 else -> {}
                             }
 
-                            setCustomCtaText(fromEditorJson.getCustomCtaText() ?: "")
+                            setCustomCtaText(fromEditorJson.getCustomCtaText() ?: "Upload")
                         }
                     }
                 }
@@ -150,6 +150,7 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
                 withRemoveBackground()
                 withWatermark()
                 autoCrop1to1()
+                setCustomCtaText("Upload")
             }
         )
 

@@ -90,6 +90,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.GLOBAL_BUNDL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRODUCT_BUNDLING
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_STEAL_THE_LOOK
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_VERTICAL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
 import com.tokopedia.product.detail.view.util.checkIfNumber
@@ -177,7 +178,7 @@ object DynamicProductDetailMapper {
                             name = component.componentName,
                             position = index,
                             queryParam = componentData?.queryParam.orEmpty(),
-                            thematicId = componentData?.thematicId.orEmpty()
+                            thematicId = componentData?.thematicId.orEmpty(),
                         )
                     )
                 }
@@ -404,7 +405,8 @@ object DynamicProductDetailMapper {
             }
 
             else -> {
-                if (component.componentName.startsWith(RECOM_VERTICAL)) {
+                if (component.componentName.startsWith(RECOM_VERTICAL) ||
+                    component.componentName.contains(RECOM_STEAL_THE_LOOK)) {
                     PdpRecommendationWidgetDataModel(
                         recommendationWidgetModel = mapPdpRecommendationWidgetModel(component, dynamicProductInfoP1, index)
                     )
@@ -1069,7 +1071,8 @@ object DynamicProductDetailMapper {
             pageName = component.componentName,
             pageType = component.type,
             queryParam = data?.queryParam.orEmpty(),
-            criteriaThematicIDs = thematicIds
+            criteriaThematicIDs = thematicIds,
+            productIds = listOf(dynamicProductInfoP1.basic.productID),
         )
         val trackingModel = RecommendationWidgetTrackingModel(
             androidPageName = RecommendationCarouselTrackingConst.Category.PDP,

@@ -31,5 +31,6 @@ class ShipmentCartData(
     val isFulfillment: Boolean = false,
     val shopTier: Int = 0,
     val boMetadata: BoMetadata = BoMetadata(),
-    val groupType: Int = 0
+    val groupType: Int = 0,
+    var groupingState: Int = 0
 ) : Parcelable

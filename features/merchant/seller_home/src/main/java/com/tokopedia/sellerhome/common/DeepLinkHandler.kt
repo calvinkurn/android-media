@@ -5,8 +5,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
-import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
-import com.tokopedia.sellerhome.view.model.SellerHomeDataUiModel
 
 /**
  * Created By @ilhamsuaib on 2020-03-05
@@ -153,23 +151,7 @@ object DeepLinkHandler {
                 if (uri == null) {
                     callback(PageFragment(FragmentType.HOME))
                 } else {
-                    val toasterMessage = uri.getQueryParameter(
-                        SellerHomeApplinkConst.TOASTER_MESSAGE
-                    ).orEmpty()
-                    val toasterCta = uri.getQueryParameter(SellerHomeApplinkConst.TOASTER_CTA)
-                        .orEmpty()
-                    val isPersona = uri.getBooleanQueryParameter(SellerHomeApplinkConst.IS_PERSONA, false)
-                    val sellerHomeData = SellerHomeDataUiModel(
-                        toasterMessage = toasterMessage,
-                        toasterCta = toasterCta,
-                        shouldShowPersonaBtmSheet = isPersona
-                    )
-                    callback(
-                        PageFragment(
-                            type = FragmentType.HOME,
-                            sellerHomeData = sellerHomeData
-                        )
-                    )
+                    callback(PageFragment(type = FragmentType.HOME))
                 }
             }
 

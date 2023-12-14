@@ -55,11 +55,11 @@ class HeaderChevronLayoutStrategy : HeaderLayoutStrategy {
         colorMode: Int?
     ) {
         val header = channel.channelHeader
-        if (header.hasSeeMoreApplink() || ctaMode != DynamicChannelHeaderView.CTA_MODE_SEE_ALL) {
-            ctaButtonRevamp = itemView.findViewById(home_component_headerR.id.cta_chevron_icon)
-            ctaButtonRevampContainer = itemView.findViewById(home_component_headerR.id.cta_chevron_container)
-            ctaBorder = itemView.findViewById(home_component_headerR.id.cta_chevron_border)
+        ctaButtonRevamp = itemView.findViewById(home_component_headerR.id.cta_chevron_icon)
+        ctaButtonRevampContainer = itemView.findViewById(home_component_headerR.id.cta_chevron_container)
+        ctaBorder = itemView.findViewById(home_component_headerR.id.cta_chevron_border)
 
+        if (header.hasSeeMoreApplink() || ctaMode != DynamicChannelHeaderView.CTA_MODE_SEE_ALL) {
             setCtaIcon(
                 itemView.context,
                 ctaBorder,
@@ -69,6 +69,9 @@ class HeaderChevronLayoutStrategy : HeaderLayoutStrategy {
             )
 
             ctaButtonRevampContainer?.show()
+            ctaButtonRevamp?.show()
+            ctaBorder?.show()
+
             ctaButtonRevamp?.setOnClickListener {
                 when (ctaMode) {
                     DynamicChannelHeaderView.CTA_MODE_SEE_ALL -> listener?.onSeeAllClick(channel.channelHeader.getLink())
@@ -81,6 +84,8 @@ class HeaderChevronLayoutStrategy : HeaderLayoutStrategy {
             }
         } else {
             ctaButtonRevampContainer?.hide()
+            ctaButtonRevamp?.hide()
+            ctaBorder?.hide()
         }
     }
 
