@@ -34,6 +34,7 @@ import com.tokopedia.thankyou_native.domain.usecase.ThankYouTopAdsViewModelUseCa
 import com.tokopedia.thankyou_native.domain.usecase.ThanksPageDataUseCase
 import com.tokopedia.thankyou_native.domain.usecase.ThanksPageMapperUseCase
 import com.tokopedia.thankyou_native.domain.usecase.TopTickerUseCase
+import com.tokopedia.thankyou_native.presentation.activity.IS_V2
 import com.tokopedia.thankyou_native.presentation.adapter.model.BannerWidgetModel
 import com.tokopedia.thankyou_native.presentation.adapter.model.DigitalRecommendationWidgetModel
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
@@ -55,6 +56,7 @@ import javax.inject.Inject
 
 class ThanksPageDataViewModel @Inject constructor(
     private val thanksPageDataUseCase: ThanksPageDataUseCase,
+    private val thanksPageDataV2UseCase: ThanksPageDataV2UseCase,
     private val thanksPageMapperUseCase: ThanksPageMapperUseCase,
     private val gyroEngineRequestUseCase: GyroEngineRequestUseCase,
     private val fetchWalletBalanceUseCase: FetchWalletBalanceUseCase,
@@ -109,6 +111,15 @@ class ThanksPageDataViewModel @Inject constructor(
 
     fun getThanksPageData(paymentId: String, merchant: String) {
         thanksPageDataUseCase.cancelJobs()
+        if (IS_V2) {
+            thanksPageDataV2UseCase.getThankPageData(
+                ::onThanksPageDataSuccess,
+                ::onThanksPageDataError,
+                paymentId,
+                merchant
+            )
+            return
+        }
         thanksPageDataUseCase.getThankPageData(
             ::onThanksPageDataSuccess,
             ::onThanksPageDataError,

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">ThankYou</string>
     <string name="thank_instant_payment_successful">Selamat, pembayaranmu berhasil!</string>
+    <string name="thank_instant_payment_successful_v2">Oke, pembayaran berhasil!</string>
 
     <string name="thank_instant_payment_check_order">Pesanan akan diteruskan ke penjual. Silakan cek status pesananmu di Daftar Transaksi.</string>
     <string name="thank_processing_payment_check_order">Pesananmu baru diteruskan ke penjual setelah pembayaran terverifikasi.</string>
@@ -16,7 +17,7 @@
     <string name="thank_copy">Salin</string>
     <string name="thank_total_amount_label">Total Pembayaran</string>
     <string name="thank_see_detail">Lihat Detail</string>
-    <string name="thank_see_payment_methods">Lihat Cara Pembayaran</string>
+    <string name="thank_see_payment_methods">Lihat Cara Bayar</string>
 
 
     <string name="thank_virtual_account_tag">Nomor Virtual Account</string>
@@ -25,7 +26,7 @@
     <string name="thank_phone_number">Nomor Ponsel</string>
     <string name="thank_account_number">Nomor Rekening</string>
     <string name="thank_order_will_be_deliver_after_payment">Pesananmu baru diteruskan ke penjual setelah pembayaran terverifikasi.</string>
-    <string name="thank_check_payment_status">Cek Status Pembayaran</string>
+    <string name="thank_check_payment_status">Cek Status Bayar</string>
     <string name="thank_shop_again">Belanja Lagi</string>
 
 
@@ -50,8 +51,10 @@
 
 
     <string name="thank_total_pay">Total Bayar</string>
+    <string name="thank_total_pay_rp">Total Bayar %s</string>
     <string name="thank_type_of_payment">Jenis Pembayaran</string>
     <string name="thank_payment_in_progress">Pembayaran sedang diproses</string>
+    <string name="thank_payment_in_progress_v2">Pembayaran diproses dulu, yas</string>
     <string name="thank_payment_in_progress_time">Pembayaranmu sedang diverifikasi oleh pihak %s, harap tunggu maks. 2 x 24 jam.</string>
 
 

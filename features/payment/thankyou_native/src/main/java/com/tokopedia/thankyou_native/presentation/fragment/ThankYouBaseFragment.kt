@@ -30,16 +30,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
-import com.tokopedia.home_component.listener.MixTopComponentListener
-import com.tokopedia.home_component.model.ChannelBanner
-import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.model.ChannelHeader
-import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleTimerDataModel
-import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
-import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetListener
-import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleProductGridShimmerDataModel
-import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabDataModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
@@ -55,13 +45,16 @@ import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.CLOSE_MEMBERSHIP
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.OPEN_MEMBERSHIP
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.DigitalThankPage
+import com.tokopedia.thankyou_native.data.mapper.InstantPaymentPage
 import com.tokopedia.thankyou_native.data.mapper.MarketPlaceThankPage
 import com.tokopedia.thankyou_native.data.mapper.PaymentExpired
 import com.tokopedia.thankyou_native.data.mapper.PaymentPageMapper
 import com.tokopedia.thankyou_native.data.mapper.PaymentStatus
 import com.tokopedia.thankyou_native.data.mapper.PaymentStatusMapper
 import com.tokopedia.thankyou_native.data.mapper.PaymentVerified
+import com.tokopedia.thankyou_native.data.mapper.ProcessingPaymentPage
 import com.tokopedia.thankyou_native.data.mapper.ThankPageTypeMapper
+import com.tokopedia.thankyou_native.data.mapper.WaitingPaymentPage
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThankPageTopTickerData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
@@ -71,6 +64,7 @@ import com.tokopedia.thankyou_native.helper.attachTopAdsHeadlinesView
 import com.tokopedia.thankyou_native.helper.getTopAdsHeadlinesView
 import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
 import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
+import com.tokopedia.thankyou_native.presentation.activity.IS_V2
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.adapter.BottomContentAdapter
 import com.tokopedia.thankyou_native.presentation.adapter.factory.BottomContentFactory
@@ -88,6 +82,7 @@ import com.tokopedia.thankyou_native.presentation.views.listener.FlashSaleWidget
 import com.tokopedia.thankyou_native.presentation.views.listener.MarketplaceRecommendationListener
 import com.tokopedia.thankyou_native.presentation.views.listener.MixTopComponentListenerCallback
 import com.tokopedia.thankyou_native.presentation.views.listener.ThankYouBaseInterface
+import com.tokopedia.thankyou_native.presentation.views.listener.HeaderListenerImpl
 import com.tokopedia.thankyou_native.recommendation.presentation.view.IRecommendationView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.MarketPlaceRecommendation
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendation
@@ -103,10 +98,12 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
+import kotlinx.android.synthetic.main.thank_base_layout.*
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
 import javax.inject.Inject
 
@@ -166,7 +163,13 @@ open class ThankYouBaseFragment :
     private val bottomContentAdapter: BottomContentAdapter by lazy(LazyThreadSafetyMode.NONE) {
         BottomContentAdapter(
             ArrayList(),
-            BottomContentFactory(this, this, this, MixTopComponentListenerCallback(this))
+            BottomContentFactory(
+                this,
+                this,
+                this,
+                MixTopComponentListenerCallback(this),
+                HeaderListenerImpl(context, view, thanksPageData, thankYouPageAnalytics.get(), this)
+            )
         )
     }
 
@@ -203,9 +206,8 @@ open class ThankYouBaseFragment :
         if (!::thanksPageData.isInitialized) {
             activity?.finish()
         } else {
-            val recyclerView = getBottomContentRecyclerView() ?: view.findViewById(R.id.thanksPageRecyclerView)
-            recyclerView?.layoutManager = LinearLayoutManager(context)
-            recyclerView?.adapter = bottomContentAdapter
+            getBottomContentRecyclerView()?.layoutManager = LinearLayoutManager(context)
+            getBottomContentRecyclerView()?.adapter = bottomContentAdapter
 
             bindThanksPageDataToUI(thanksPageData)
             addHeader()
@@ -221,7 +223,18 @@ open class ThankYouBaseFragment :
             )
 
             showOnBoardingShare()
+            startAnimate()
         }
+    }
+
+    private fun startAnimate() {
+        (activity as ThankYouPageActivity).globalNabToolbar.alpha = 0f
+        (activity as ThankYouPageActivity).globalNabToolbar.animate().alpha(1f).setDuration(UnifyMotion.T5).start()
+        (activity as ThankYouPageActivity).thanksPageHeaderBackground.alpha = 0f
+        (activity as ThankYouPageActivity).thanksPageHeaderBackground.animate().alpha(1f).setDuration(UnifyMotion.T5).start()
+        view?.findViewById<RecyclerView>(R.id.thanksPageRecyclerView)?.animate()?.translationY(0f)?.setDuration(UnifyMotion.T5)?.start()
+        view?.findViewById<RecyclerView>(R.id.thanksPageRecyclerView)?.alpha = 0f
+        view?.findViewById<RecyclerView>(R.id.thanksPageRecyclerView)?.animate()?.alpha(1f)?.setDuration(UnifyMotion.T5)?.start()
     }
 
     override fun getScreenName(): String {
@@ -229,10 +242,13 @@ open class ThankYouBaseFragment :
     }
 
     private fun addHeader() {
-        if (true) return
+        if (!IS_V2) return
 
-        if (thanksPageData.pageType == "Waiting") {
-            thanksPageDataViewModel.addBottomContentWidget(WaitingHeaderUiModel.create(thanksPageData, context))
+        when(PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)) {
+            WaitingPaymentPage -> thanksPageDataViewModel.addBottomContentWidget(WaitingHeaderUiModel.create(thanksPageData, context))
+            InstantPaymentPage -> {}
+            ProcessingPaymentPage -> {}
+            else -> {}
         }
     }
 
@@ -348,7 +364,7 @@ open class ThankYouBaseFragment :
         return LayoutInflater.from(context).inflate(layout, null, false)
     }
 
-    fun refreshThanksPageData() {
+    override fun refreshThanksPageData() {
         getLoadingView()?.visible()
         arguments?.let {
             if (it.containsKey(ARG_PAYMENT_ID) && it.containsKey(ARG_MERCHANT)) {
@@ -576,6 +592,12 @@ open class ThankYouBaseFragment :
         }
     }
 
+    private fun isTimerExpired(thanksPageData: ThanksPageData): Boolean {
+        if (thanksPageData.expireTimeUnix * 1000L <= System.currentTimeMillis())
+            return true
+        return false
+    }
+
     private fun isPaymentVerified(paymentStatus: PaymentStatus?): Boolean {
         return when (paymentStatus) {
             is PaymentVerified -> true
@@ -612,6 +634,19 @@ open class ThankYouBaseFragment :
     }
 
     fun openInvoiceDetail(thanksPageData: ThanksPageData) {
+        InvoiceFragment.openInvoiceBottomSheet(activity, thanksPageData)
+        thankYouPageAnalytics.get().sendLihatDetailClickEvent(
+            thanksPageData.profileCode,
+            PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
+            thanksPageData.paymentID
+        )
+
+        if (activity is ThankYouPageActivity) {
+            (activity as ThankYouPageActivity).cancelGratifDialog()
+        }
+    }
+
+    override fun openInvoiceDetail() {
         InvoiceFragment.openInvoiceBottomSheet(activity, thanksPageData)
         thankYouPageAnalytics.get().sendLihatDetailClickEvent(
             thanksPageData.profileCode,
@@ -721,6 +756,16 @@ open class ThankYouBaseFragment :
                 activity?.finish()
             }
         } catch (e: Exception) {
+        }
+    }
+
+    override fun openHowToPay() {
+        thanksPageData.howToPayAPP?.let {
+            RouteManager.route(context, thanksPageData.howToPayAPP)
+            thankYouPageAnalytics.get().sendOnHowtoPayClickEvent(
+                thanksPageData.profileCode,
+                thanksPageData.paymentID
+            )
         }
     }
 
@@ -1039,11 +1084,13 @@ open class ThankYouBaseFragment :
     }
 
     override fun getLoadingView(): View? {
-        return null
+        return view?.findViewById(R.id.loadingLayout)
     }
 
     override fun onThankYouPageDataReLoaded(data: ThanksPageData) {
-
+        getLoadingView()?.gone()
+        thanksPageData = data
+        showPaymentStatusDialog(isTimerExpired(data), thanksPageData)
     }
 
     override fun getTopTickerView(): Ticker? {
@@ -1051,7 +1098,7 @@ open class ThankYouBaseFragment :
     }
 
     override fun getBottomContentRecyclerView(): RecyclerView? {
-        return null
+        return view?.findViewById(R.id.thanksPageRecyclerView)
     }
 
     override fun getBannerTitle(): Typography? {

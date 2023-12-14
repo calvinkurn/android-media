@@ -52,6 +52,7 @@ private const val GLOBAL_NAV_HINT = "Cari lagi barang impianmu"
 private const val KEY_CONFIG_NEW_NAVIGATION = "app_flag_thankyou_new_navigation"
 private const val KEY_ROLLENCE_SHARE = "share_thankyoupage"
 private const val VALUE_MERCHANT_TOKOPEDIA = "tokopedia"
+const val IS_V2 = true
 
 class ThankYouPageActivity :
     BaseSimpleActivity(),
@@ -170,14 +171,16 @@ class ThankYouPageActivity :
             bundle.putAll(intent.extras)
         }
 
-//        return FragmentByPaymentMode(
-//            ThankYouBaseFragment.getFragmentInstance(
-//                bundle,
-//                thanksPageData,
-//                isWidgetOrderingEnabled()
-//            ),
-//            ""
-//        )
+        if (IS_V2) {
+            return FragmentByPaymentMode(
+                ThankYouBaseFragment.getFragmentInstance(
+                    bundle,
+                    thanksPageData,
+                    isWidgetOrderingEnabled()
+                ),
+                ""
+            )
+        }
 
         return when (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)) {
             is ProcessingPaymentPage -> {

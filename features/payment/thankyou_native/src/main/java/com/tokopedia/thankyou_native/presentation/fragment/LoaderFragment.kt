@@ -25,6 +25,7 @@ import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
 import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
+import com.tokopedia.thankyou_native.presentation.activity.IS_V2
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -66,6 +67,7 @@ class LoaderFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
         showLoaderView()
+        showSuccessLottie()
         handler.postDelayed(delayLoadingRunnable, DELAY_MILLIS)
     }
 
@@ -140,11 +142,12 @@ class LoaderFragment : BaseDaggerFragment() {
             callback?.onInvalidThankYouPage()
             return
         } else {
-            callback?.onThankYouPageDataLoaded(thanksPageData)
+//            callback?.onThankYouPageDataLoaded(thanksPageData)
         }
     }
 
     private fun showLoaderView() {
+        if (IS_V2) return
         tvWaitForMinute.visible()
         tvProcessingPayment.visible()
         lottieAnimationView.visible()
@@ -153,7 +156,16 @@ class LoaderFragment : BaseDaggerFragment() {
         addLottieAnimationToView()
     }
 
+    private fun showSuccessLottie() {
+        if (!IS_V2) return
+
+        lottieSuccess.visible()
+        lottieTask = prepareSuccessLottieTask()
+        addLottieAnimationToView()
+    }
+
     private fun hideLoaderView() {
+        if (IS_V2) return
         lottieAnimationView.gone()
         tvWaitForMinute.hide()
         tvProcessingPayment.hide()
@@ -187,6 +199,16 @@ class LoaderFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun prepareSuccessLottieTask(): LottieTask<LottieComposition>? {
+        return try {
+            val lottieFileZipStream =
+                ZipInputStream(requireContext().assets.open(SUCCESS_JSON_ZIP_FILE))
+            LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
+        } catch (ignore: IllegalStateException) {
+            null
+        }
+    }
+
     private fun addLottieAnimationToView() {
         lottieTask?.addListener { result: LottieComposition? ->
             result?.let {
@@ -203,6 +225,7 @@ class LoaderFragment : BaseDaggerFragment() {
         const val DELAY_MILLIS = 2000L
         const val VIBRATION_MILLIS = 150L
         const val LOADER_JSON_ZIP_FILE = "thanks_payment_data_loader.zip"
+        const val SUCCESS_JSON_ZIP_FILE = "thanks_success.zip"
         fun getLoaderFragmentInstance(bundle: Bundle): LoaderFragment = LoaderFragment().apply {
             arguments = bundle
         }

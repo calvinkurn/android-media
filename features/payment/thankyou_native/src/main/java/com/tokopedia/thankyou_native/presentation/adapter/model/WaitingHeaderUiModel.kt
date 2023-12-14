@@ -22,7 +22,7 @@ data class WaitingHeaderUiModel(
     val accountImage: String,
     val amountLabel: String,
     val amount: Long,
-    val note: String,
+    val note: List<String>,
     val shouldHighlightLastThreeDigits: Boolean,
     val shouldHidePrimaryButton: Boolean,
     val primaryButtonText: String,
@@ -46,29 +46,30 @@ data class WaitingHeaderUiModel(
                 else -> "Nomor Virtual Account"
             }
 
-            val note = if (thanksPageData.customDataMessage == null || thanksPageData.customDataMessage.wtvText.isNullOrBlank()) {
-                context?.getString(R.string.thank_processing_payment_check_order)
+            val note = if (thanksPageData.customDataMessage == null || thanksPageData.customDataMessage.customNotes.isNullOrEmpty()) {
+                listOf(context?.getString(R.string.thank_processing_payment_check_order).orEmpty())
             } else {
-                 thanksPageData.customDataMessage.wtvText
+                thanksPageData.customDataMessage.customNotes
             }
 
-            val primaryButtonText = if (thanksPageData.customDataMessage?.wtvText.isNullOrEmpty()) context?.getString(R.string.thank_check_payment_status) else thanksPageData.customDataMessage?.wtvText
+            val primaryButtonText = if (thanksPageData.customDataMessage?.titleHomeButton.isNullOrEmpty()) context?.getString(R.string.thank_check_payment_status) else thanksPageData.customDataMessage?.titleHomeButton
+            val secondaryButtonText = if (thanksPageData.customDataMessage?.titleOrderButton.isNullOrEmpty()) context?.getString(R.string.thank_see_payment_methods) else thanksPageData.customDataMessage?.titleOrderButton
 
             return WaitingHeaderUiModel(
                 "Bayar Sebelum",
                 thanksPageData.expireTimeStr,
-                thanksPageData.expireTimeUnix,
+                thanksPageData.expireTimeUnix - System.currentTimeMillis() / 1000,
                 accountIdLabel,
                 thanksPageData.additionalInfo.accountDest,
                 thanksPageData.gatewayImage,
                 "Total Tagihan",
                 thanksPageData.amount,
-                note.orEmpty(),
+                note,
                 thanksPageData.paymentType == "BANKTRANSFER",
                 thanksPageData.configFlagData?.shouldHideHomeButton == true,
                 primaryButtonText.orEmpty(),
                 false,
-                context?.getString(R.string.thank_see_payment_methods).orEmpty()
+                secondaryButtonText.orEmpty()
             )
         }
     }
