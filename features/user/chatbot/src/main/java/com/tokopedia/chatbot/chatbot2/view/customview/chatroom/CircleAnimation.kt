@@ -67,49 +67,61 @@ class CircleAnimation @JvmOverloads constructor(
         super.onDraw(canvas)
         when (state) {
             STATE_ENABLED -> {
-                paintGreen?.let {
-                    canvas?.drawArc(
-                        drawAreaBackground,
-                        START_ANGLE,
-                        VALUE_ANIMATION_SWEEP_ANGLE_MAX,
-                        true,
-                        it
-                    )
-                }
+                drawStateEnabled(canvas)
             }
 
             STATE_DISABLED -> {
-                paintGreen?.let {
-                    canvas?.drawArc(
-                        drawAreaBackground,
-                        START_ANGLE,
-                        VALUE_ANIMATION_SWEEP_ANGLE_MAX,
-                        true,
-                        it
-                    )
-                }
+                drawStateDisabled(canvas)
             }
 
             STATE_LOADING -> {
-                paintGreen?.let {
-                    canvas?.drawArc(
-                        drawAreaBackground,
-                        START_ANGLE,
-                        VALUE_ANIMATION_SWEEP_ANGLE_MAX,
-                        true,
-                        it
-                    )
-                }
-                paintGrey?.let {
-                    canvas?.drawArc(
-                        drawAreaLoader,
-                        START_ANGLE,
-                        sweepAngle,
-                        true,
-                        it
-                    )
-                }
+                drawStateLoading(canvas)
             }
+        }
+    }
+
+    private fun drawStateLoading(canvas: Canvas?) {
+        paintGreen?.let {
+            canvas?.drawArc(
+                drawAreaBackground,
+                START_ANGLE,
+                VALUE_ANIMATION_SWEEP_ANGLE_MAX,
+                true,
+                it
+            )
+        }
+        paintGrey?.let {
+            canvas?.drawArc(
+                drawAreaLoader,
+                START_ANGLE,
+                sweepAngle,
+                true,
+                it
+            )
+        }
+    }
+
+    private fun drawStateEnabled(canvas: Canvas?) {
+        paintGreen?.let {
+            canvas?.drawArc(
+                drawAreaBackground,
+                START_ANGLE,
+                VALUE_ANIMATION_SWEEP_ANGLE_MAX,
+                true,
+                it
+            )
+        }
+    }
+
+    private fun drawStateDisabled(canvas: Canvas?) {
+        paintGreen?.let {
+            canvas?.drawArc(
+                drawAreaBackground,
+                START_ANGLE,
+                VALUE_ANIMATION_SWEEP_ANGLE_MAX,
+                true,
+                it
+            )
         }
     }
 

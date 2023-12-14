@@ -1161,13 +1161,21 @@ class ChatbotFragment2 :
     }
 
     private fun setupSlowModeSendButton(isSlowMode: Boolean, slowModeDurationInSeconds: Int) {
+//        smallReplyBox?.sendButton?.apply {
+//            isSlowModeEnabled = isSlowMode
+//            slowModeDurationInSecond = slowModeDurationInSeconds
+//        }
+//        bigReplyBox?.sendButton?.apply {
+//            isSlowModeEnabled = isSlowMode
+//            slowModeDurationInSecond = slowModeDurationInSeconds
+//        }
         smallReplyBox?.sendButton?.apply {
-            isSlowModeEnabled = isSlowMode
-            slowModeDurationInSecond = slowModeDurationInSeconds
+            isSlowModeEnabled = true
+            slowModeDurationInSecond = 5
         }
         bigReplyBox?.sendButton?.apply {
-            isSlowModeEnabled = isSlowMode
-            slowModeDurationInSecond = slowModeDurationInSeconds
+            isSlowModeEnabled = true
+            slowModeDurationInSecond = 5
         }
     }
 
@@ -1959,11 +1967,15 @@ class ChatbotFragment2 :
                 getViewState()?.scrollToBottom()
             }
 
-            if (smallReplyBox?.isVisible == true) {
-                smallReplyBox?.sendButton?.startSlowDown()
-            } else if (bigReplyBox?.isVisible == true) {
-                bigReplyBox?.sendButton?.startSlowDown()
-            }
+            startSendButtonSlowDown()
+        }
+    }
+
+    private fun startSendButtonSlowDown() {
+        if (smallReplyBox?.isVisible == true) {
+            smallReplyBox?.sendButton?.startSlowDown()
+        } else if (bigReplyBox?.isVisible == true) {
+            bigReplyBox?.sendButton?.startSlowDown()
         }
     }
 
@@ -1984,6 +1996,7 @@ class ChatbotFragment2 :
                 model.isTypingBlocked ?: false
             )
             handleIsTypingBlocked(model.isTypingBlocked)
+            startSendButtonSlowDown()
         }
     }
 
