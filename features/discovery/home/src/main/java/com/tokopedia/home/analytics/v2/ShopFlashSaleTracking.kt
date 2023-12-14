@@ -128,7 +128,7 @@ object ShopFlashSaleTracking: BaseTrackerConst() {
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4099
     // Tracker ID: 45517
-    fun sendClickShopTab(trackingAttributionModel: TrackingAttributionModel, grid: ChannelGrid) {
+    fun sendClickShopTab(trackingAttributionModel: TrackingAttributionModel, grid: ChannelGrid, userId: String) {
         val gridPosition = (grid.position + 1).toString()
         val trackerBuilder = BaseTrackerBuilder().constructBasicPromotionClick(
             event = Event.PROMO_CLICK,
@@ -153,6 +153,7 @@ object ShopFlashSaleTracking: BaseTrackerConst() {
             .appendBusinessUnit(TrackingConst.DEFAULT_BUSINESS_UNIT)
             .appendCurrentSite(TrackingConst.DEFAULT_CURRENT_SITE)
             .appendChannelId(trackingAttributionModel.channelId)
+            .appendUserId(userId)
             .appendCustomKeyValue(TrackerId.KEY, TRACKER_ID_CLICK_SHOP_TAB)
             .appendCampaignCode(grid.campaignCode)
             .build() as HashMap<String, Any>
