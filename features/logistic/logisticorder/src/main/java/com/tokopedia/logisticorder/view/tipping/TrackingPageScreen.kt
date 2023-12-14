@@ -1,6 +1,5 @@
 package com.tokopedia.logisticorder.view.tipping
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +27,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.header.compose.HeaderActionButton
@@ -66,16 +67,17 @@ fun TrackingPageScreen() {
         Column(
             Modifier
                 .padding(paddingValues)
+                .padding(top = 16.dp)
                 .verticalScroll(rememberScrollState())
-                .fillMaxSize()
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             TrackingDetail()
             Divider(
                 thickness = 8.dp
             )
             DriverWidget()
-            NestTypography(text = stringResource(logisticorderR.string.label_tracking_status))
-            NestTypography(text = "Shipping")
+            ShippingStatusSection()
             Divider(
                 thickness = 4.dp
             )
@@ -88,26 +90,42 @@ fun TrackingPageScreen() {
 }
 
 @Composable
+fun ShippingStatusSection() {
+    Column {
+        NestTypography(text = stringResource(logisticorderR.string.label_tracking_status))
+        NestTypography(text = "Shipping")
+    }
+}
+
+@Composable
 fun FindNewDriverSection() {
     Column {
-        NestButton(modifier = Modifier.fillMaxWidth(),
+        NestButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
             variant = ButtonVariant.GHOST_ALTERNATE,
             text = stringResource(id = logisticorderR.string.find_new_driver),
-            onClick = { /*TODO*/ })
+            onClick = { /*TODO*/ }
+        )
         NestTypography(text = "Tunggu xx:xx untuk mencari driver baru")
     }
 }
 
 @Composable
 fun LiveTrackingButton() {
-    NestButton(modifier = Modifier.fillMaxWidth(),
+    NestButton(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
         text = stringResource(id = logisticorderR.string.label_live_tracking),
-        onClick = { /*TODO*/ })
+        onClick = { /*TODO*/ }
+    )
 }
 
 @Composable
 fun EmptyTracking() {
-    Column {
+    Column(modifier = Modifier.padding(horizontal = 20.dp)) {
         Row {
             NestImage(source = ImageSource.Painter(logisticorderR.drawable.info))
             NestTypography(text = stringResource(id = logisticorderR.string.warning_no_courier_change))
@@ -120,7 +138,7 @@ fun EmptyTracking() {
 
 @Composable
 fun TrackingHistory() {
-    Column {
+    Column(modifier = Modifier.padding(horizontal = 20.dp)) {
         repeat(3) {
             TrackingHistoryItem()
         }
@@ -163,8 +181,16 @@ fun TrackingHistoryItem() {
 
 @Composable
 fun DriverWidget() {
-    Column(Modifier.fillMaxWidth()) {
-        NestTypography(text = stringResource(id = logisticorderR.string.driver_section_tracking_title))
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        NestTypography(
+            text = stringResource(id = logisticorderR.string.driver_section_tracking_title),
+            textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold)
+        )
         DriverInfoLayout()
         TippingLayout()
     }
@@ -178,13 +204,34 @@ fun TippingLayout() {
         backgroundColor = colorResource(id = logisticorderR.color.dms_background_tipping_gojek_open)
     ) {
         Box(contentAlignment = Alignment.TopEnd) {
-            NestImage(source = ImageSource.Painter(logisticorderR.drawable.background_tipping_gojek))
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start) {
-                NestImage(source = ImageSource.Remote("https://images.tokopedia.net/img/tokofood/gofood.png"))
-                Column {
-                    NestTypography(text = "tipping text")
-                    NestTypography(text = "tipping description")
+            NestImage(
+                source = ImageSource.Painter(logisticorderR.drawable.background_tipping_gojek)
+            )
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row {
+                    NestImage(
+                        modifier = Modifier
+                            .size(48.dp, 48.dp),
+                        type = NestImageType.Circle,
+                        source = ImageSource.Remote("https://images.tokopedia.net/img/tokofood/gofood.png")
+                    )
+                    Column(modifier = Modifier.padding(start = 12.dp)) {
+                        NestTypography(
+                            text = "tipping text",
+                            textStyle = NestTheme.typography.display2.copy(color = NestTheme.colors.NN._0, fontWeight = FontWeight.Bold)
+                        )
+                        NestTypography(
+                            text = "tipping description",
+                            textStyle = NestTheme.typography.paragraph3.copy(color = NestTheme.colors.NN._0)
+                        )
+                    }
                 }
+
                 NestButton(
                     text = stringResource(id = logisticorderR.string.card_tipping_btn_default_text),
                     onClick = { /*TODO*/ },
@@ -197,39 +244,64 @@ fun TippingLayout() {
 
 @Composable
 fun DriverInfoLayout() {
-    Row(Modifier.fillMaxWidth()) {
-        NestImage(
-            type = NestImageType.Circle,
-            source = ImageSource.Remote("https://images.tokopedia.net/img/tokofood/gofood.png")
-        ) {
-            NestImage(ImageSource.Painter(logisticorderR.drawable.ic_find_driver))
-        }
-
-        Column {
-            Row {
-                NestTypography(text = "Nama driver")
-                NestIcon(iconId = IconUnify.INFORMATION)
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Row {
+            NestImage(
+                modifier = Modifier.size(48.dp, 48.dp),
+                type = NestImageType.Circle,
+                source = ImageSource.Remote("https://images.tokopedia.net/img/tokofood/gofood.png")
+            ) {
+                NestImage(
+                    modifier = Modifier
+                        .padding(start = 12.dp)
+                        .size(48.dp, 48.dp),
+                    type = NestImageType.Circle,
+                    source = ImageSource.Painter(logisticorderR.drawable.ic_find_driver)
+                )
             }
-            NestTypography(text = "Driver phone")
+            Column(modifier = Modifier.padding(start = 8.dp)) {
+                Row {
+                    NestTypography(text = "Nama driver")
+                    NestIcon(
+                        modifier = Modifier
+                            .padding(start = 6.dp)
+                            .size(13.dp, 13.dp),
+                        iconId = IconUnify.INFORMATION
+                    )
+                }
+                NestTypography(text = "Driver phone")
+            }
         }
 
         Box(
             modifier = Modifier
-                .clip(CircleShape)
-                .border(BorderStroke(1.dp, NestTheme.colors.NN._300))
+                .size(36.dp, 36.dp)
+                .border(1.dp, NestTheme.colors.NN._300, CircleShape),
+            contentAlignment = Alignment.Center
         ) {
-            NestIcon(iconId = IconUnify.CALL)
+            NestIcon(modifier = Modifier.size(20.dp, 20.dp), iconId = IconUnify.CALL)
         }
     }
 }
 
 @Composable
 fun TrackingDetail() {
-    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        TrackingDetailsItem(title = stringResource(id =logisticorderR.string.label_reference_number), "486118")
+    // todo i think this one need to be constraint layout
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        TrackingDetailsItem(
+            title = stringResource(id = logisticorderR.string.label_reference_number),
+            "486118",
+            valueStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._950)
+        )
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             TrackingDetailsItem(
-                stringResource(logisticorderR.string.label_delivery_date), "1 February 2020"
+                stringResource(logisticorderR.string.label_delivery_date),
+                "1 February 2020"
             )
             TrackingDetailsItem(stringResource(logisticorderR.string.label_service_code), "REG15")
         }
@@ -247,17 +319,25 @@ fun TrackingDetail() {
             )
         }
         TrackingDetailsItem(
-            stringResource(logisticorderR.string.tracking_label_eta), "17 - 19 April 2020"
+            stringResource(logisticorderR.string.tracking_label_eta),
+            "17 - 19 April 2020"
         )
     }
 }
 
 @Composable
-fun TrackingDetailsItem(title: String, vararg value: String) {
+fun TrackingDetailsItem(
+    title: String,
+    vararg value: String,
+    valueStyle: TextStyle = NestTheme.typography.heading6.copy(color = NestTheme.colors.NN._950)
+) {
     Column {
-        NestTypography(text = title)
+        NestTypography(
+            text = title,
+            textStyle = NestTheme.typography.body3.copy(color = NestTheme.colors.NN._950)
+        )
         value.forEach {
-            NestTypography(text = it)
+            NestTypography(text = it, textStyle = valueStyle)
         }
     }
 }
