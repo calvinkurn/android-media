@@ -113,8 +113,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticAnnotation
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticFirebaseRules
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
-    implementation rootProject.ext.composeDependencies.composeUi
-    implementation rootProject.ext.composeDependencies.composeFoundation
     implementation rootProject.ext.composeDependencies.composeActivity
     implementation rootProject.ext.composeDependencies.composeConstraint
     implementation rootProject.ext.unifyDependencies.components
