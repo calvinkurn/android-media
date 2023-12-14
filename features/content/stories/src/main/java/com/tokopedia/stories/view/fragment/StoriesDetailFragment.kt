@@ -531,10 +531,10 @@ class StoriesDetailFragment @Inject constructor(
                     val creationTimestamp =
                         ContentDateConverter.getDiffTime(state.publishedAt) { dateTime ->
                             when {
-                                dateTime.day > 30 -> dateTime.yearMonth
-                                dateTime.day in 1..30 -> "${dateTime.day} ${ContentDateConverter.DAY}"
-                                dateTime.hour in 1..23 -> "${dateTime.hour} ${ContentDateConverter.HOUR}"
-                                dateTime.minute in 1..59 -> "${dateTime.minute} ${ContentDateConverter.MINUTE_CONCISE}"
+                                dateTime.day > THIRTY -> dateTime.yearMonth
+                                dateTime.day in ONE..THIRTY -> "${dateTime.day} ${ContentDateConverter.DAY}"
+                                dateTime.hour in ONE..TWENTY_THREE -> "${dateTime.hour} ${ContentDateConverter.HOUR}"
+                                dateTime.minute in ONE..FIFTY_NINE -> "${dateTime.minute} ${ContentDateConverter.MINUTE_CONCISE}"
                                 else -> ContentDateConverter.BELOW_1_MINUTE_CONCISE
                             }
                         }
@@ -1043,6 +1043,12 @@ class StoriesDetailFragment @Inject constructor(
 
     companion object {
         private const val DELAY_SWIPE_PRODUCT_BADGE_SHOW = 2000L
+
+        private const val THIRTY = 30
+        private const val TWENTY_THREE = 23
+        private const val FIFTY_NINE = 59
+        private const val ONE = 1
+
 
         private const val VARIANT_BOTTOM_SHEET_TAG = "atc variant bottom sheet"
 
