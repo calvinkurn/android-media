@@ -18,10 +18,10 @@ data class BottomNavUiModel(
         val Empty: BottomNavUiModel
             get() =
                 BottomNavUiModel(
-                    title = "Test",
+                    title = "",
                     price = NormalPrice(priceFmt = ""),
                     stock = 0,
-                    buttonState = ButtonState.Inactive,
+                    buttonState = ButtonState.Unknown,
                     hasVariant = false,
                     shop = Shop.Empty
                 )

@@ -76,7 +76,7 @@ class ProductPreviewMapperImpl @Inject constructor(private val userSession: User
             title = response.data.product.name,
             price = if (response.data.campaign.isActive) {
                 BottomNavUiModel.DiscountedPrice(
-                    discountedPrice = CurrencyFormatUtil.convertPriceValue(response.data.campaign.discountedPrice, false), //TODO: convert to RP
+                    discountedPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(price = response.data.campaign.discountedPrice, hasSpace = false),
                     ogPriceFmt = response.data.product.priceFmt,
                     discountPercentage = "${response.data.campaign.discountPercentage.roundToInt()}%",
                 )

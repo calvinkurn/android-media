@@ -1,11 +1,10 @@
 package com.tokopedia.content.product.preview.view.components
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -38,7 +37,7 @@ fun MediaBottomNav(
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight()
+                .wrapContentHeight()
                 .background(colorResource(id = unifyprinciplesR.color.Unify_Static_Black))
                 .padding(
                     start = 16.dp,
@@ -55,8 +54,7 @@ fun MediaBottomNav(
                     color = colorResource(id = R.color.product_preview_dms_bottom_title)
                 ),
                 modifier = Modifier.constrainAs(title) {
-                    width = Dimension.wrapContent
-                    height = Dimension.wrapContent
+                    width = Dimension.fillToConstraints
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
                     end.linkTo(atcBtn.start, 8.dp)
@@ -80,43 +78,6 @@ fun MediaBottomNav(
                     }
             )
 
-            // Slashed price & discount [if there's a discount]
-            AnimatedVisibility(visible = product.price is BottomNavUiModel.DiscountedPrice) {
-                NestTypography(
-                    text = (product.price as BottomNavUiModel.DiscountedPrice).discountedPrice,
-                    maxLines = 1,
-                    textStyle = NestTheme.typography.small.copy(
-                        color = colorResource(id = unifyprinciplesR.color.Unify_NN400),
-                        textDecoration = TextDecoration.LineThrough
-                    ),
-                    modifier = Modifier
-                        .constrainAs(slashedPrice) {
-                            width = Dimension.wrapContent
-                            height = Dimension.wrapContent
-                            start.linkTo(ogPrice.end, 4.dp)
-                            bottom.linkTo(ogPrice.bottom)
-                            top.linkTo(ogPrice.top)
-                        }
-                )
-                NestTypography(
-                    text = product.price.discountPercentage,
-                    maxLines = 1,
-                    textStyle = NestTheme.typography.small.copy(
-                        color = colorResource(id = unifyprinciplesR.color.Unify_RN500),
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier
-                        .constrainAs(discountTag) {
-                            width = Dimension.wrapContent
-                            height = Dimension.wrapContent
-                            start.linkTo(slashedPrice.end, 2.dp)
-                            bottom.linkTo(slashedPrice.bottom)
-                            top.linkTo(slashedPrice.top)
-                            end.linkTo(atcBtn.start, 8.dp)
-                        }
-                )
-            }
-
             val btnWording = when (product.buttonState) {
                 BottomNavUiModel.ButtonState.Active -> R.string.bottom_atc_wording
                 BottomNavUiModel.ButtonState.Inactive -> R.string.bottom_remind_wording
@@ -134,6 +95,41 @@ fun MediaBottomNav(
                         end.linkTo(parent.end)
                         top.linkTo(parent.top)
                         bottom.linkTo(parent.bottom)
+                    }
+            )
+
+
+
+            NestTypography(
+                text = (product.price as BottomNavUiModel.DiscountedPrice).ogPriceFmt,
+                maxLines = 1,
+                textStyle = NestTheme.typography.small.copy(
+                    color = colorResource(id = unifyprinciplesR.color.Unify_NN400),
+                    textDecoration = TextDecoration.LineThrough
+                ),
+                modifier = Modifier
+                    .constrainAs(slashedPrice) {
+                        width = Dimension.wrapContent
+                        height = Dimension.wrapContent
+                        start.linkTo(ogPrice.end, 4.dp)
+                        bottom.linkTo(ogPrice.bottom)
+                        top.linkTo(ogPrice.top)
+                    }
+            )
+            NestTypography(
+                text = product.price.discountPercentage,
+                maxLines = 1,
+                textStyle = NestTheme.typography.small.copy(
+                    color = colorResource(id = unifyprinciplesR.color.Unify_RN500),
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier
+                    .constrainAs(discountTag) {
+                        width = Dimension.wrapContent
+                        height = Dimension.wrapContent
+                        start.linkTo(slashedPrice.end, 2.dp)
+                        bottom.linkTo(slashedPrice.bottom)
+                        top.linkTo(slashedPrice.top)
                     }
             )
         }
