@@ -407,7 +407,6 @@ dependencies {
     }
 
     implementation rootProject.ext.miscDependencies.profileInstaller
-    implementation rootProject.ext.composeDependencies.composeFoundation
 
     //[START] test and androidTest dependencies
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
