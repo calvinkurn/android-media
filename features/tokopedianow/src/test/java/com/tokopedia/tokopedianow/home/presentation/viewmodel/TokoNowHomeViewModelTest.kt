@@ -1,11 +1,6 @@
 package com.tokopedia.tokopedianow.home.presentation.viewmodel
 
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
-import com.tokopedia.home_component.model.ChannelConfig
-import com.tokopedia.home_component.model.ChannelHeader
-import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.model.ChannelStyle
-import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
@@ -51,9 +46,7 @@ import com.tokopedia.tokopedianow.data.createChooseAddress
 import com.tokopedia.tokopedianow.data.createDynamicChannelLayoutList
 import com.tokopedia.tokopedianow.data.createDynamicLegoBannerDataModel
 import com.tokopedia.tokopedianow.data.createEmptyState
-import com.tokopedia.tokopedianow.data.createHomeLayoutData
 import com.tokopedia.tokopedianow.data.createHomeLayoutList
-import com.tokopedia.tokopedianow.data.createHomeLayoutListForBannerOnly
 import com.tokopedia.tokopedianow.data.createHomeLayoutListForQuestOnly
 import com.tokopedia.tokopedianow.data.createHomeProductCardUiModel
 import com.tokopedia.tokopedianow.data.createKeywordSearch
@@ -65,7 +58,6 @@ import com.tokopedia.tokopedianow.data.createPlayWidgetChannel
 import com.tokopedia.tokopedianow.data.createPlayWidgetUiModel
 import com.tokopedia.tokopedianow.data.createQuestWidgetList
 import com.tokopedia.tokopedianow.data.createQuestWidgetListEmpty
-import com.tokopedia.tokopedianow.data.createSliderBannerDataModel
 import com.tokopedia.tokopedianow.data.createTicker
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.analytic.HomeSwitchServiceTracker
@@ -159,11 +151,6 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
                     "Category Tokonow",
                     null,
                     TokoNowLayoutState.HIDE
-                ),
-                createSliderBannerDataModel(
-                    "2222",
-                    "",
-                    "Banner Tokonow"
                 )
             ),
             state = TokoNowLayoutState.UPDATE
@@ -207,35 +194,6 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         verifyGetHomeLayoutDataUseCaseCalled(times = 2)
-    }
-
-    @Test
-    fun `when getting homeLayoutData should run and give the success result`() {
-        onGetHomeLayoutData_thenReturn(createHomeLayoutListForBannerOnly())
-
-        viewModel.getHomeLayout(
-            localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf()
-        )
-        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-
-        onGetHomeLayoutData_thenReturn(listOf(createHomeLayoutData()))
-
-        viewModel.onScroll(1, LocalCacheModel(), listOf())
-
-        val expectedBannerItem = BannerDataModel(
-            channelModel = ChannelModel(
-                id = "2222",
-                groupId = "",
-                style = ChannelStyle.ChannelHome,
-                channelHeader = ChannelHeader(name = "Banner Tokonow"),
-                channelConfig = ChannelConfig(layout = "banner_carousel_v2"),
-                layout = "banner_carousel_v2"
-            )
-        )
-
-        verifyGetHomeLayoutDataUseCaseCalled(times = 2)
-        verifyGetBannerItem(expectedBannerItem)
     }
 
     @Test
@@ -775,11 +733,6 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
                     title = "Category Tokonow",
                     categoryListUiModel = null,
                     state = TokoNowLayoutState.HIDE
-                ),
-                createSliderBannerDataModel(
-                    "2222",
-                    "",
-                    "Banner Tokonow"
                 )
             ),
             state = TokoNowLayoutState.UPDATE
@@ -835,17 +788,13 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
                     headerName = "Lego 6",
                     layout = "6_image"
                 ),
-                createSliderBannerDataModel(
-                    id = "2222",
-                    groupId = "",
-                    headerName = "Banner Tokonow"
-                ),
                 HomeProductRecomUiModel(
                     id = "2322",
                     title = "Product Recommendation",
                     productList = listOf(),
                     realTimeRecom = realTimeRecom,
                     seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
+                        id = channelId,
                         headerName = "Product Recommendation"
                     ),
                     headerModel = TokoNowDynamicHeaderUiModel(
@@ -1265,6 +1214,8 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
 
         val productList = listOf(
             ProductCardCompactCarouselItemUiModel(
+                channelId = channelId,
+                headerName = "Lagi Diskon",
                 productCardModel = ProductCardCompactUiModel(
                     productId = "2",
                     usePreDraw = true,
@@ -1286,6 +1237,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
             productList = productList,
             realTimeRecom = realTimeRecom,
             seeMoreModel = ProductCardCompactCarouselSeeMoreUiModel(
+                id = channelId,
                 headerName = "Lagi Diskon"
             ),
             headerModel = TokoNowDynamicHeaderUiModel(
@@ -1693,11 +1645,6 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
                         "Category Tokonow",
                         null,
                         TokoNowLayoutState.HIDE
-                    ),
-                    createSliderBannerDataModel(
-                        "2222",
-                        "",
-                        "Banner Tokonow"
                     )
                 ),
                 state = TokoNowLayoutState.UPDATE

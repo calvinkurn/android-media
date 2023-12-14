@@ -2,7 +2,8 @@ package com.tokopedia.stories.view.model
 
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.stories.uimodel.StoryAuthor
-import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Image
+import com.tokopedia.stories.utils.provider.StoriesLinkPropertiesProvider
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Unknown
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 
 data class StoriesUiModel(
@@ -30,10 +31,19 @@ data class StoriesDetail(
     val selectedDetailPosition: Int = -1,
     val selectedDetailPositionCached: Int = -1,
     val detailItems: List<StoriesDetailItem> = emptyList()
-)
+) {
+    companion object {
+        val EmptyDetail get() = StoriesDetail(
+            selectedGroupId = "",
+            selectedDetailPosition = 0,
+            selectedDetailPositionCached = 0,
+            detailItems = listOf(StoriesDetailItem.Empty)
+        )
+    }
+}
 
 data class StoriesDetailItem(
-    val id: String = "",
+    val id: String = "0",
     val event: StoriesDetailItemUiEvent = StoriesDetailItemUiEvent.PAUSE,
     val content: StoriesItemContent = StoriesItemContent(),
     val resetValue: Int = -1,
@@ -41,10 +51,15 @@ data class StoriesDetailItem(
     val meta: Meta = Meta(),
     val productCount: String = "",
     val author: StoryAuthor = StoryAuthor.Unknown,
+    val category: StoryCategory = StoryCategory.ASGC,
+    val publishedAt: String = "",
     val menus: List<ContentMenuItem> = emptyList(),
     val share: Sharing = Sharing.Empty,
     val status: StoryStatus = StoryStatus.Unknown,
 ) {
+    companion object {
+        val Empty get() = StoriesDetailItem(event = StoriesDetailItemUiEvent.RESUME, content = StoriesItemContent(duration = 3000), resetValue = 0)
+    }
 
     data class Meta(
         val activityTracker: String = "",
@@ -52,17 +67,17 @@ data class StoriesDetailItem(
     )
 
     data class StoriesItemContent(
-        val type: StoriesItemContentType = Image,
+        val type: StoriesItemContentType = Unknown,
         val data: String = "",
         val duration: Int = -1
     )
 
     enum class StoriesItemContentType(val value: String) {
-        Image("image"), Video("video"), Unknown("unknown")
+        Image("image"), Video("video"), Unknown("0")
     }
 
     enum class StoriesDetailItemUiEvent {
-        PAUSE, RESUME,
+        PAUSE, RESUME, BUFFERING
     }
 
     data class Sharing(
@@ -75,7 +90,7 @@ data class StoriesDetailItem(
                 get() = Sharing(
                     isShareable = false,
                     shareText = "",
-                    metadata = LinkProperties(),
+                    metadata = StoriesLinkPropertiesProvider.get(),
                 )
         }
     }
@@ -95,5 +110,18 @@ data class StoriesDetailItem(
         }
     }
 
-    val isProductAvailable: Boolean = productCount.isNotEmpty() && productCount != "0"
+    enum class StoryCategory(val value: String) {
+        Manual("update"), ASGC("default");
+
+        companion object {
+            fun getByValue(value: String): StoryCategory {
+                values().forEach {
+                    if (it.value.equals(value, true)) return it
+                }
+                return ASGC
+            }
+        }
+    }
+
+    val isProductAvailable: Boolean = productCount.isNotEmpty() && productCount != "0" && status == StoryStatus.Active
 }

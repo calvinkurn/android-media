@@ -28,7 +28,11 @@ object BmGmTickerRequestMapper {
                     productId = product.productId,
                     warehouseId = product.warehouseId,
                     qty = product.quantity,
-                    finalPrice = if (product.wholesalePrice > 0.0) product.wholesalePrice.toString().removeSingleDecimalSuffix() else product.productPrice.toString().removeSingleDecimalSuffix(),
+                    finalPrice = if (product.wholesalePrice > 0.0) {
+                        product.wholesalePrice.toBigDecimal().toPlainString().removeSingleDecimalSuffix()
+                    } else {
+                        product.productPrice.toBigDecimal().toPlainString().removeSingleDecimalSuffix()
+                    },
                     checkboxState = product.isSelected
                 )
             )
@@ -67,11 +71,12 @@ object BmGmTickerRequestMapper {
         val listCart = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart>()
         val cartDetailsBmGm = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails>()
         val listProductBmGm = arrayListOf<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product>()
-        CartDataHelper.getListProductByOfferId(
+
+        CartDataHelper.getListProductByOfferIdAndCartStringOrder(
             cartDataList,
-            cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId
+            cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId,
+            cartItemHolderData.cartStringOrder
         ).forEach { product ->
-            CartCalculator.calculatePriceWholesaleProduct(product, product.quantity)
             listProductBmGm.add(
                 BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.Product(
                     cartId = product.cartId,
@@ -79,7 +84,11 @@ object BmGmTickerRequestMapper {
                     productId = product.productId,
                     warehouseId = product.warehouseId,
                     qty = product.quantity,
-                    finalPrice = if (product.wholesalePrice > 0.0) product.wholesalePrice.toString().removeSingleDecimalSuffix() else product.productPrice.toString().removeSingleDecimalSuffix(),
+                    finalPrice = if (product.wholesalePrice > 0.0) {
+                        product.wholesalePrice.toBigDecimal().toPlainString().removeSingleDecimalSuffix()
+                    } else {
+                        product.productPrice.toBigDecimal().toPlainString().removeSingleDecimalSuffix()
+                    },
                     checkboxState = product.isSelected
                 )
             )

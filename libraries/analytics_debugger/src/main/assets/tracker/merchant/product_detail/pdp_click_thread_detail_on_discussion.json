@@ -18,6 +18,7 @@
       "warehouseId": ".*",
       "shopType": ".*",
       "shop_id": ".*",
+      "hits_time": ".*",
       "promotions": [
         {
           "item_id": ".*",

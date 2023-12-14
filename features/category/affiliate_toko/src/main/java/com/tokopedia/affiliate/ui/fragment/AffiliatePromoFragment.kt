@@ -48,7 +48,6 @@ import com.tokopedia.affiliate.model.pojo.AffiliatePromotionBottomSheetParams
 import com.tokopedia.affiliate.model.pojo.TokonowRemoteConfigData
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.setAnnouncementData
-import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateDiscoPromoListActivity
 import com.tokopedia.affiliate.ui.activity.AffiliatePromoSearchActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
@@ -59,6 +58,7 @@ import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDiscoBannerUiModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.affiliate_toko.databinding.AffiliatePromoFragmentLayoutBinding
 import com.tokopedia.applink.ApplinkConst
@@ -89,6 +89,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class AffiliatePromoFragment :
     AffiliateBaseFragment<AffiliatePromoViewModel>(),
@@ -109,6 +110,7 @@ class AffiliatePromoFragment :
     var remoteConfigInstance: RemoteConfigInstance? = null
 
     private var affiliatePromoViewModel: AffiliatePromoViewModel? = null
+    private var affiliateViewModel: AffiliateViewModel? = null
 
     private val tabFragments = arrayListOf<Fragment>()
     private var remoteConfig: RemoteConfig? = null
@@ -215,7 +217,7 @@ class AffiliatePromoFragment :
             val iconBuilder = IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.AFFILIATE))
             if (isAffiliateNCEnabled()) {
                 iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
-                    affiliatePromoViewModel?.resetNotificationCount()
+                    affiliateViewModel?.resetNotificationCount()
                     sendNotificationClickEvent()
                     RouteManager.route(
                         context,
@@ -233,7 +235,7 @@ class AffiliatePromoFragment :
                     getString(R.string.affiliate_promo)
                 }
             setOnBackButtonClickListener {
-                (activity as? AffiliateActivity)?.handleBackButton(false)
+                activity?.finish()
             }
         }
 
@@ -284,7 +286,7 @@ class AffiliatePromoFragment :
             affiliatePromoViewModel?.getDiscoBanners(page = 0, limit = 7)
         }
         if (isAffiliateNCEnabled()) {
-            affiliatePromoViewModel?.fetchUnreadNotificationCount()
+            affiliateViewModel?.fetchUnreadNotificationCount()
         }
     }
 
@@ -305,7 +307,7 @@ class AffiliatePromoFragment :
 
     fun handleBack() {
         if (binding?.recommendedLayout?.isVisible == true) {
-            (activity as? AffiliateActivity)?.handleBackButton(false)
+            activity?.finish()
         } else {
             showDefaultState()
         }
@@ -317,6 +319,7 @@ class AffiliatePromoFragment :
         savedInstanceState: Bundle?
     ): View? {
         binding = AffiliatePromoFragmentLayoutBinding.inflate(inflater, container, false)
+        affiliateViewModel = activity?.let { ViewModelProvider(it)[AffiliateViewModel::class.java] }
         return binding?.root
     }
 
@@ -397,7 +400,7 @@ class AffiliatePromoFragment :
     }
 
     private fun setObservers() {
-        affiliatePromoViewModel?.progressBar()?.observe(this) { visibility ->
+        affiliatePromoViewModel?.progressBar()?.observe(viewLifecycleOwner) { visibility ->
             if (visibility != null) {
                 if (visibility) {
                     hideAllElements()
@@ -408,7 +411,7 @@ class AffiliatePromoFragment :
             }
         }
 
-        affiliatePromoViewModel?.getErrorMessage()?.observe(this) { _ ->
+        affiliatePromoViewModel?.getErrorMessage()?.observe(viewLifecycleOwner) { _ ->
             binding?.root?.let {
                 Toaster.build(
                     it,
@@ -419,10 +422,10 @@ class AffiliatePromoFragment :
             }
         }
 
-        affiliatePromoViewModel?.getValidateUserdata()?.observe(this) { validateUserdata ->
+        affiliatePromoViewModel?.getValidateUserdata()?.observe(viewLifecycleOwner) { validateUserdata ->
             onGetValidateUserData(validateUserdata)
         }
-        affiliatePromoViewModel?.getAffiliateAnnouncement()?.observe(this) { announcementData ->
+        affiliatePromoViewModel?.getAffiliateAnnouncement()?.observe(viewLifecycleOwner) { announcementData ->
             if (announcementData.getAffiliateAnnouncementV2?.announcementData?.subType != TICKER_BOTTOM_SHEET) {
                 sendTickerImpression(
                     announcementData.getAffiliateAnnouncementV2?.announcementData?.type,
@@ -463,7 +466,7 @@ class AffiliatePromoFragment :
                 }
             }
         }
-        affiliatePromoViewModel?.getDiscoCampaignBanners()?.observe(this) {
+        affiliatePromoViewModel?.getDiscoCampaignBanners()?.observe(viewLifecycleOwner) {
             if (!it?.recommendedAffiliateDiscoveryCampaign?.data?.items.isNullOrEmpty()) {
                 binding?.discoPromotionGroup?.show()
                 binding?.discoInspirationLihatSemua?.setOnClickListener {
@@ -535,7 +538,7 @@ class AffiliatePromoFragment :
                 ssaAdapter.setVisitables(it)
             }
         }
-        affiliatePromoViewModel?.getUnreadNotificationCount()?.observe(this) { count ->
+        affiliateViewModel?.getUnreadNotificationCount()?.observe(viewLifecycleOwner) { count ->
             binding?.promoNavToolbar?.apply {
                 setCentralizedBadgeCounter(IconList.ID_NOTIFICATION, count)
             }
@@ -608,7 +611,7 @@ class AffiliatePromoFragment :
                 setTextColor(
                     MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                        unifyprinciplesR.color.Unify_GN500
                     )
                 )
             }
@@ -622,7 +625,7 @@ class AffiliatePromoFragment :
                 setTextColor(
                     MethodChecker.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
+                        unifyprinciplesR.color.Unify_NN950_44
                     )
                 )
             }

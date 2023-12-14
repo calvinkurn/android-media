@@ -113,6 +113,7 @@ class GetOccCartUseCase @Inject constructor(
         payment_profile
         is_disable_change_courier
         auto_courier_selection
+        group_metadata
         shipment_information {
           shop_location
           free_shipping {
@@ -537,6 +538,7 @@ class GetOccCartUseCase @Inject constructor(
             tooltip_info
             type
           }
+          additional_data
         }
         shipment {
           service_id

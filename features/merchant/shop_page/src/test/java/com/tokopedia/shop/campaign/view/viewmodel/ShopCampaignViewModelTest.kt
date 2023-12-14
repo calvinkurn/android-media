@@ -15,9 +15,8 @@ import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.data.model.WidgetIdList
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetDynamicTabUseCase
-import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetNameEnum
-import com.tokopedia.shop.home.WidgetType
+import com.tokopedia.shop.home.WidgetTypeEnum
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetV2
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutV2UseCase
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
@@ -138,8 +137,8 @@ class ShopCampaignViewModelTest {
                 listOf(
                     ShopPageWidgetUiModel(
                         widgetId = "2",
-                        widgetType = WidgetType.CAMPAIGN,
-                        widgetName = WidgetName.BIG_CAMPAIGN_THEMATIC
+                        widgetType = WidgetTypeEnum.CAMPAIGN.value,
+                        widgetName = WidgetNameEnum.BIG_CAMPAIGN_THEMATIC.value
                     )
                 ),
                 mockShopId,
@@ -180,7 +179,8 @@ class ShopCampaignViewModelTest {
             mockShopId,
             mockExtParam,
             addressWidgetData,
-            "CampaignTab"
+            "CampaignTab",
+            "LTE"
         )
         val result = viewModel.latestShopCampaignWidgetLayoutData.value
         assert(result is Success)
@@ -214,7 +214,8 @@ class ShopCampaignViewModelTest {
             mockShopId,
             mockExtParam,
             addressWidgetData,
-            "CampaignTab"
+            "CampaignTab",
+            "LTE"
         )
         val result = viewModel.latestShopCampaignWidgetLayoutData.value
         assert(result is Success)
@@ -248,7 +249,8 @@ class ShopCampaignViewModelTest {
             mockShopId,
             mockExtParam,
             addressWidgetData,
-            "CampaignTab"
+            "CampaignTab",
+            "LTE"
         )
         val result = viewModel.latestShopCampaignWidgetLayoutData.value
         assert(result is Success)
@@ -264,7 +266,8 @@ class ShopCampaignViewModelTest {
             mockShopId,
             mockExtParam,
             addressWidgetData,
-            "CampaignTab"
+            "CampaignTab",
+            "LTE"
         )
         val result = viewModel.latestShopCampaignWidgetLayoutData.value
         assert(result is Fail)
@@ -590,6 +593,44 @@ class ShopCampaignViewModelTest {
 
     @Test
     fun `when update banner timer ui model with banner timer on visitable, then visitable should be updated`() {
+        val mockBannerTimerUiModel = ShopWidgetDisplayBannerTimerUiModel(
+            data = ShopWidgetDisplayBannerTimerUiModel.Data()
+        )
+        val expectedBannerTimerModel = ShopWidgetDisplayBannerTimerUiModel(
+            data = ShopWidgetDisplayBannerTimerUiModel.Data(
+                totalNotify = 5,
+                totalNotifyWording = "Ingatkan",
+                isRemindMe = true,
+                showRemindMeLoading = true,
+                isHideRemindMeTextAfterXSeconds = true
+            )
+        )
+        val mockListVisitable = mutableListOf<Visitable<*>>(mockBannerTimerUiModel)
+        viewModel.updateBannerTimerWidgetUiModel(
+            mockListVisitable,
+            expectedBannerTimerModel
+        )
+        assert(viewModel.campaignWidgetListVisitable.value is Success)
+        assert((viewModel.campaignWidgetListVisitable.value as Success).data.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().first().isNewData)
+    }
+
+    @Test
+    fun `when update banner timer ui model with banner timer on visitable but data is using default value, then visitable should be updated`() {
+        val mockBannerTimerUiModel = ShopWidgetDisplayBannerTimerUiModel(
+            data = ShopWidgetDisplayBannerTimerUiModel.Data()
+        )
+        val expectedBannerTimerModel = ShopWidgetDisplayBannerTimerUiModel()
+        val mockListVisitable = mutableListOf<Visitable<*>>(mockBannerTimerUiModel)
+        viewModel.updateBannerTimerWidgetUiModel(
+            mockListVisitable,
+            expectedBannerTimerModel
+        )
+        assert(viewModel.campaignWidgetListVisitable.value is Success)
+        assert((viewModel.campaignWidgetListVisitable.value as Success).data.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().first().isNewData)
+    }
+
+    @Test
+    fun `when update banner timer ui model with banner timer on visitable but the data is null, then visitable should be updated`() {
         val mockBannerTimerUiModel = ShopWidgetDisplayBannerTimerUiModel()
         val expectedBannerTimerModel = ShopWidgetDisplayBannerTimerUiModel()
         val mockListVisitable = mutableListOf<Visitable<*>>(mockBannerTimerUiModel)
@@ -598,7 +639,7 @@ class ShopCampaignViewModelTest {
             expectedBannerTimerModel
         )
         assert(viewModel.campaignWidgetListVisitable.value is Success)
-        assert((viewModel.campaignWidgetListVisitable.value as Success).data.first { it is ShopWidgetDisplayBannerTimerUiModel } == expectedBannerTimerModel)
+        assert((viewModel.campaignWidgetListVisitable.value as Success).data.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().first().isNewData)
     }
 
     @Test

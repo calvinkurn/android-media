@@ -6,7 +6,7 @@ import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
+import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationVisitable
 import timber.log.Timber
@@ -120,11 +120,11 @@ data class HomeDynamicChannelModel(
 
     fun evaluateChooseAddressData() {
         val processList = _list.copy()
-        val homeHeaderOvoDataModel = processList.find { visitable -> visitable is HomeHeaderDataModel }
+        val dataModel = processList.find { visitable -> visitable is HomeHeaderDataModel }
         val headerIndex = processList.indexOfFirst { visitable -> visitable is HomeHeaderDataModel }
-        (homeHeaderOvoDataModel as? HomeHeaderDataModel)?.let {
+        (dataModel as? HomeHeaderDataModel)?.let {
             it.needToShowChooseAddress = homeChooseAddressData.isActive
-            _list[headerIndex] = homeHeaderOvoDataModel
+            _list[headerIndex] = dataModel
         }
     }
 

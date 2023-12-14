@@ -8,7 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_POF_STATUS
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.activities.SomPrintAwbActivity
@@ -19,7 +22,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
-import java.net.URLDecoder
 
 object SomNavigator {
 
@@ -30,6 +32,7 @@ object SomNavigator {
     const val REQUEST_RESCHEDULE_PICKUP = 994
     const val REQUEST_RETURN_TO_SHIPPER = 993
     const val REQUEST_FIND_NEW_DRIVER = 992
+    const val REQUEST_POF = 991
 
     fun goToSomOrderDetail(fragment: SomListFragment, orderId: String) {
         fragment.run {
@@ -40,19 +43,9 @@ object SomNavigator {
         }
     }
 
-    fun goToTrackingPage(context: Context?, orderId: String, url: String) {
+    fun goToTrackingPage(context: Context?, url: String) {
         context?.run {
-            var routingAppLink: String = ApplinkConst.ORDER_TRACKING.replace("{order_id}", orderId)
-            val uriBuilder = Uri.Builder()
-            val decodedUrl = if (url.startsWith(SomConsts.PREFIX_HTTPS)) {
-                url
-            } else {
-                URLDecoder.decode(url, SomConsts.ENCODING_UTF_8)
-            }
-            uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, decodedUrl)
-            uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_CALLER, SomConsts.PARAM_SELLER)
-            routingAppLink += uriBuilder.toString()
-            RouteManager.route(this, routingAppLink)
+            RouteManager.route(this, url)
         }
     }
 
@@ -113,7 +106,8 @@ object SomNavigator {
                 ).apply {
                     putExtra(SomConsts.PARAM_ORDER_ID, orderId)
                     putExtra(SomConsts.PARAM_INVOICE, invoice.orEmpty())
-                }, REQUEST_FIND_NEW_DRIVER
+                },
+                REQUEST_FIND_NEW_DRIVER
             )
         }
     }
@@ -163,5 +157,18 @@ object SomNavigator {
     fun openWebView(context: Context?, url: String) {
         val intent: Intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
         context?.startActivity(intent)
+    }
+
+    fun goToPofPage(fragment: Fragment, orderId: String, pofStatus: Int) {
+        fragment.run {
+            val appLink = UriUtil.buildUriAppendParam(
+                ApplinkConst.SELLER_PARTIAL_ORDER_FULFILLMENT,
+                mapOf(
+                    PARAM_ORDER_ID to orderId,
+                    PARAM_POF_STATUS to pofStatus.toString()
+                )
+            )
+            startActivityForResult(RouteManager.getIntent(context, appLink), REQUEST_POF)
+        }
     }
 }

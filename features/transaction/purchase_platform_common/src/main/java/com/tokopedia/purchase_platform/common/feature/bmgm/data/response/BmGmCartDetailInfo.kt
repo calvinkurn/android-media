@@ -13,4 +13,8 @@ data class BmGmCartDetailInfo(
     @Expose
     @SerializedName("bmgm")
     val bmgmData: BmGmData = BmGmData()
-) : Parcelable
+) : Parcelable {
+    companion object {
+        const val CART_DETAIL_TYPE = "bmgm"
+    }
+}

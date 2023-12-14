@@ -3,14 +3,14 @@ package com.tokopedia.play.broadcaster.setup.etalaselist
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
-import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
-import com.tokopedia.play.broadcaster.helper.contains
+import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
 import com.tokopedia.play.broadcaster.helper.containsEventAction
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
-import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatusUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignUiModel
+import com.tokopedia.content.product.picker.seller.model.etalase.EtalaseUiModel
 import com.tokopedia.test.application.annotations.CassavaTest
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -25,7 +25,8 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4ClassRunner::class)
 class EtalaseListAnalyticTest {
 
-    private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
+    private val mockRepo: ContentProductPickerSellerRepository = mockk(relaxed = true)
+    private val mockCommonRepo: ProductPickerSellerCommonRepository = mockk(relaxed = true)
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
@@ -57,14 +58,15 @@ class EtalaseListAnalyticTest {
     private val analyticFile = "tracker/content/playbroadcaster/play_broadcaster_analytic.json"
 
     init {
-        coEvery { mockRepo.getEtalaseList() } returns mockEtalaseList
-        coEvery { mockRepo.getCampaignList() } returns mockCampaignList
+        coEvery { mockCommonRepo.getEtalaseList() } returns mockEtalaseList
+        coEvery { mockCommonRepo.getCampaignList() } returns mockCampaignList
     }
 
     private fun createRobot() = EtalaseListRobot {
         productSetupViewModel(
             productSectionList = emptyList(),
             repo = mockRepo,
+            commonRepo = mockCommonRepo,
         )
     }
 

@@ -24,6 +24,8 @@ internal const val GENERAL_ORANGE = "generalOrange"
 internal const val GENERAL_TEAL = "generalTeal"
 internal const val GOLD = "gold"
 internal const val RED = "red"
+internal const val LABEL_BLACK = "labelBlack"
+internal const val LABEL_WHITE = "labelWhite"
 
 internal const val LABEL_PRODUCT_STATUS = "status"
 internal const val LABEL_PRICE = "price"

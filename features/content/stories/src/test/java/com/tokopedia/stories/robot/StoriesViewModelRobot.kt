@@ -1,6 +1,7 @@
 package com.tokopedia.stories.robot
 
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.view.model.StoriesArgsModel
@@ -17,6 +18,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import java.io.Closeable
@@ -201,6 +203,26 @@ internal class StoriesViewModelRobot(
         viewModel.submitAction(StoriesUiAction.OpenKebabMenu)
     }
 
+    fun openReport() {
+        viewModel.submitAction(StoriesUiAction.OpenReport)
+    }
+
+    fun resetReportState() {
+        viewModel.submitAction(StoriesUiAction.ResetReportState)
+    }
+
+    fun selectReason(reason: PlayUserReportReasoningUiModel.Reasoning) {
+        viewModel.submitAction(StoriesUiAction.SelectReportReason(reason))
+    }
+
+    fun updateDuration(duration: Int) {
+        viewModel.submitAction(StoriesUiAction.UpdateStoryDuration(duration))
+    }
+
+    fun buffering() {
+        viewModel.submitAction(StoriesUiAction.VideoBuffering)
+    }
+
     fun openProductBottomSheet() {
         entryPointTestCase(0)
         viewModel.submitAction(StoriesUiAction.OpenProduct)
@@ -218,6 +240,10 @@ internal class StoriesViewModelRobot(
         viewModel.submitAction(StoriesUiAction.DismissSheet(type))
     }
 
+    fun hasSeenTimestampCoachMark() {
+        viewModel.submitAction(StoriesUiAction.HasSeenDurationCoachMark)
+    }
+
     fun testGetProducts() {
         viewModel.submitAction(StoriesUiAction.FetchProduct)
     }
@@ -230,7 +256,16 @@ internal class StoriesViewModelRobot(
         viewModel.submitAction(StoriesUiAction.Navigate(appLink))
     }
 
+    private fun <T> getPrivateField(name: String): T {
+        val field = viewModel.javaClass.getDeclaredField(name)
+        field.isAccessible = true
+        return field.get(viewModel) as T
+    }
+
     override fun close() {
         cancelRemainingTasks()
     }
+
+    fun getBottomSheetState(): Map<BottomSheetType, Boolean> =
+        getPrivateField<MutableStateFlow<Map<BottomSheetType, Boolean>>>("_bottomSheetStatusState").value
 }

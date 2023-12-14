@@ -29,8 +29,7 @@ class CatalogProductCard {
                 hasThreeDots = true,
                 isWishlisted = item.wishlist,
                 shopName = item.shop.name,
-                shopImageUrl = item.shop.url,
-                hasAddToCartButton = true,
+                shopImageUrl = item.shop.url
             )
         }
 

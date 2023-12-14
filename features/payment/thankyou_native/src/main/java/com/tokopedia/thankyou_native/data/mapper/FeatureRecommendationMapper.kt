@@ -141,6 +141,23 @@ object FeatureRecommendationMapper {
         return ""
     }
 
+    fun getChannelId(engineData: FeatureEngineData?): String {
+        if (engineData != null && !engineData.featureEngineItem.isNullOrEmpty()) {
+            try {
+                val jsonObject = JsonParser.parseString(engineData.featureEngineItem.first().detail).asJsonObject
+                return if (jsonObject[KEY_TYPE].asString.equals(TYPE_CONFIG, true)) {
+                    jsonObject[KEY_CHANNEL_IDS].asString
+                } else {
+                    ""
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
+
+        return ""
+    }
+
     fun getBanner(engineData: FeatureEngineData?): BannerWidgetModel? {
         if (engineData != null && !engineData.featureEngineItem.isNullOrEmpty()) {
             try {
@@ -214,6 +231,7 @@ object FeatureRecommendationMapper {
     private const val KEY_ASSET_URL = "asset_url"
     private const val KEY_APPLINK = "applink"
     private const val KEY_ID = "id"
+    private const val KEY_CHANNEL_IDS = "channelIDs"
     const val TYPE_TOKOMEMBER = "tokomember"
     const val TYPE_TDN_PRODUCT = "tdn_product"
 }

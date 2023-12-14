@@ -144,4 +144,14 @@
     <string name="checkout_label_total_shipping_insurance">Total Asuransi Pengiriman</string>
     <string name="checkout_label_total_gifting">Total Pelengkap Hadiah</string>
     <string name="bmgm_mini_cart_bottom_sheet_title">Buy More Save More</string>
+
+    <!--dropship-->
+    <string name="dropship_label">dropshipper</string>
+    <string name="dropship_title_widget">Kirim sebagai %1$s</string>
+    <string name="dropship_bottomsheet_title">Kirim sebagai dropshipper</string>
+    <string name="dropship_bottomsheet_description">Kalau kamu jadi dropshipper untuk pesanan ini, nama dan nomor telepon yang kamu isi akan dicantumkan sebagai pengirim.</string>
+    <string name="dropship_name">Nama Pengirim</string>
+    <string name="dropship_phone">Nomor Telepon</string>
+    <string name="dropship_error_protection_usage">Fitur dropshipper tidak dapat digunakan ketika menggunakan layanan tambahan</string>
+
 </resources>

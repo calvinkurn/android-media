@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.universalinbox.util
 
-import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
 import com.tokopedia.topads.sdk.utils.PARAM_DEVICE
 import com.tokopedia.topads.sdk.utils.PARAM_EP
 import com.tokopedia.topads.sdk.utils.PARAM_HEADLINE_PRODUCT_COUNT
@@ -22,17 +21,10 @@ object UniversalInboxValueUtil {
     const val PAGE_NAME = "inbox"
 
     /**
-     * Rollence (for analytics only)
+     * Rollence
      */
-    const val VAR_B = "var_b"
-
-    const val ROLLENCE_REFRESH_RECOMMENDATION = "refresh_inboxUpdate"
-    fun shouldRefreshProductRecommendation(abTestPlatform: UniversalInboxAbPlatform): Boolean {
-        return abTestPlatform.getString(
-            ROLLENCE_REFRESH_RECOMMENDATION,
-            ""
-        ) == ROLLENCE_REFRESH_RECOMMENDATION
-    }
+    const val VAR_B = "var_b" // for analytics only
+    const val INBOX_ADS_REFRESH_KEY = "inbox_ads_refresh"
 
     /**
      * User Session
@@ -106,5 +98,6 @@ object UniversalInboxValueUtil {
     const val WISHLIST_STATUS_IS_WISHLIST = "isWishlist"
 
     // Widget
-    const val WIDGET_PAGE_NAME = "inbox_pre-purchase"
+    const val WIDGET_PAGE_NAME_PRE_PURCHASE = "inbox_pre-purchase"
+    const val WIDGET_PAGE_NAME_POST_PURCHASE = "inbox_post-purchase"
 }

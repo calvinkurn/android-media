@@ -75,4 +75,18 @@ internal class SearchProductRedirectionTest: ProductListPresenterTestFixtures() 
 
         startFrom shouldBe SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS.toInt()
     }
+
+    @Test
+    fun `Load Data Success With Redirection for reimagine`() {
+        val searchProductModel = "searchproduct/redirection/redirection-reimagine.json".jsonToObject<SearchProductModel>()
+        `Given search reimagine rollence product card will return non control variant`()
+        `Given Search Product API will return SearchProductModel with redirection`(searchProductModel)
+        `Given View getQueryKey will return the keyword`()
+
+        `When Load Data`()
+
+        `Then verify use case request params START should be 0`()
+        `Then verify view interaction for redirection`(searchProductModel.searchProductV5.data.redirection.redirectApplink)
+        `Then verify start from is incremented`()
+    }
 }

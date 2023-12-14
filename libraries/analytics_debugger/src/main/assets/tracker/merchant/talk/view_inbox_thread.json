@@ -9,6 +9,7 @@
       "event": "view_item",
       "userId": "\\d{1,}",
       "screenName": "/inbox - talk",
+      "hits_time": "\\d{1,}",
       "promotions": [
         {
           "item_id":  ".{1,}",

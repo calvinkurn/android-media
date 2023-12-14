@@ -18,6 +18,7 @@ ext {
             nps                             : ":features:common:nps",
             feedbackForm                    : ":features:common:feedback_form",
             internalReview                  : ":features:common:internal_review",
+            darkModeConfig                  : ":features:common:dark_mode_config",
 
             catalog                         : ":features:category:catalog",
             catalogLibrary                  : ":features:category:catalog_library",
@@ -57,6 +58,10 @@ ext {
             playWidget                      : ":features:content:play_widget",
 			storiesWidget					: ":features:content:stories_widget",
 			storiesInternal					: ":features:content:stories_internal",
+			contentProductPicker            : ":features:content:product_picker",
+			creationCommon					: ":features:content:creation_common",
+			storiesCreation					: ":features:content:stories_creation",
+
             commonTopupBills                : ":features:recharge:common_topup_bills",
             commonDigital                   : ":features:recharge:common_digital",
             digitalRecommendation           : ":features:recharge:digital_recommendation",
@@ -71,7 +76,6 @@ ext {
             rechargeCreditCard              : ":features:recharge:recharge_credit_card",
             rechargeComponent               : ":features:recharge:recharge_component",
             rechargePdpEmoney               : ":features:recharge:recharge_pdp_emoney",
-            smartBills                      : ":features:recharge:smart_bills",
             voucherGame                     : ":features:recharge:voucher_game",
             digitalProductDetail            : ":features:recharge:digital_product_detail",
 
@@ -136,13 +140,14 @@ ext {
             activation                      : ":features:logistic:activation",
             localizationchooseaddress       : ":features:logistic:localizationchooseaddress",
             localizationchooseaddress_common: ":features:logistic:localizationchooseaddress_common",
-
+			targetedticker					: ":features:logistic:targetedticker",
             mediauploader                   : ":features:media:mediauploader",
             medialoader                     : ":features:media:medialoader",
             liveBroadcaster                 : ":features:media:live-broadcaster",
             mediaeditor                     : ":features:media:mediaeditor",
             mediapicker                     : ":features:media:mediapicker",
             mediapickerCommon               : ":features:media:mediapicker-common",
+			universalEditor		        	: ":features:media:universal-editor",
 
             goldMerchantCommon              : ":features:merchant:gold_merchant_common",
             powerMerchantSubscribe          : ":features:merchant:power_merchant_subscribe",
@@ -313,5 +318,6 @@ ext {
             watch                           : ":features:watch",
             tokofood                        : ":features:tokofood",
             samples                         : ":features:samples",
+			scpAuth                         : ":features:scp:auth"
     ]
 }

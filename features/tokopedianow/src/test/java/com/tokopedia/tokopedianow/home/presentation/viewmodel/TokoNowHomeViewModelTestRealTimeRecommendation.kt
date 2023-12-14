@@ -51,7 +51,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     shopId = 5,
                     name = "Tahu Bulat",
                     categoryBreadcrumbs = "Bahan Masak/Sayur",
-                    appUrl = "tokopedia://product/detail/1"
+                    appUrl = "tokopedia://product/detail/1",
+                    warehouseId = 15024905
                 )
             )
 
@@ -97,6 +98,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             val productList = listOf(
                 ProductCardCompactCarouselItemUiModel(
+                    channelId = channelId,
+                    headerName = "Lagi Diskon",
                     shopId = "5",
                     shopType = "pm",
                     categoryBreadcrumbs = "Bahan Masak/Sayur",
@@ -111,7 +114,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     ),
                     parentId = "0"
                 )
-            )
+        )
 
             val rtrProductList = listOf(
                 ProductCardCompactCarouselItemUiModel(
@@ -124,7 +127,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                         name = "Tahu Bulat",
                         usePreDraw = true,
                         needToShowQuantityEditor = true,
-                        needToChangeMaxLinesName = true
+                        needToChangeMaxLinesName = true,
+                        warehouseId = "15024905"
                     ),
                     parentId = "0"
                 )
@@ -145,7 +149,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             )
 
             val seeMoreUiModel = ProductCardCompactCarouselSeeMoreUiModel(
-                id = "5",
+                id = "1001",
                 headerName = "Lagi Diskon",
                 appLink = "tokopedia://now"
             )
@@ -207,7 +211,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     shopId = 2,
                     name = "Tahu Bulat",
                     quantity = 2,
-                    categoryBreadcrumbs = "Bahan Masak/Sayur"
+                    categoryBreadcrumbs = "Bahan Masak/Sayur",
+                    warehouseId = 15024905
                 )
             )
 
@@ -262,21 +267,25 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             val productList = listOf(
                 ProductCardCompactCarouselItemUiModel(
-                    parentId = "3",
-                    shopId = "5",
-                    shopType = "pm",
-                    categoryBreadcrumbs = "Bahan Masak/Sayur",
-                    productCardModel = ProductCardCompactUiModel(
-                        productId = "2",
-                        imageUrl = "https://tokopedia.com/image.jpg",
-                        price = "2000",
-                        orderQuantity = 1,
-                        isVariant = true,
-                        usePreDraw = true,
-                        needToShowQuantityEditor = true
-                    )
-                ),
-                ProductCardCompactCarouselItemUiModel(
+                    channelId = channelId,
+                headerName = "Lagi Diskon",
+                parentId = "3",
+                shopId = "5",
+                shopType = "pm",
+                categoryBreadcrumbs = "Bahan Masak/Sayur",
+                productCardModel = ProductCardCompactUiModel(
+                    productId = "2",
+                    imageUrl = "https://tokopedia.com/image.jpg",
+                    price = "2000",
+                    orderQuantity = 1,
+                    isVariant = true,
+                    usePreDraw = true,
+                    needToShowQuantityEditor = true
+                )
+            ),
+            ProductCardCompactCarouselItemUiModel(
+                channelId = channelId,
+                headerName = "Lagi Diskon",
                     parentId = "7",
                     shopId = "2",
                     shopType = "pm",
@@ -306,7 +315,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                         isVariant = true,
                         usePreDraw = true,
                         needToShowQuantityEditor = true,
-                        needToChangeMaxLinesName = true
+                        needToChangeMaxLinesName = true,
+                        warehouseId = "15024905"
                     )
                 )
             )
@@ -326,7 +336,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             )
 
             val seeMoreUiModel = ProductCardCompactCarouselSeeMoreUiModel(
-                id = "",
+                id = "1001",
                 headerName = "Lagi Diskon",
                 appLink = ""
             )
@@ -387,7 +397,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                     productId = 5,
                     shopId = 5,
                     name = "Tahu Bulat",
-                    categoryBreadcrumbs = "Bahan Masak/Sayur"
+                    categoryBreadcrumbs = "Bahan Masak/Sayur",
+                    warehouseId = 15024905
                 )
             )
 
@@ -442,6 +453,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             val productList = listOf(
                 ProductCardCompactCarouselItemUiModel(
+                    channelId = channelId,
+                    headerName = "Lagi Diskon",
                     shopId = "5",
                     shopType = "pm",
                     categoryBreadcrumbs = "Bahan Masak/Sayur",
@@ -468,7 +481,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                         name = "Tahu Bulat",
                         usePreDraw = true,
                         needToShowQuantityEditor = true,
-                        needToChangeMaxLinesName = true
+                        needToChangeMaxLinesName = true,
+                        warehouseId = "15024905"
                     ),
                     parentId = "0"
                 )
@@ -489,7 +503,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             )
 
             val seeMoreUiModel = ProductCardCompactCarouselSeeMoreUiModel(
-                id = "5",
+                id = "1001",
                 headerName = "Lagi Diskon",
                 appLink = "tokopedia://now"
             )
@@ -596,6 +610,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             val productList = listOf(
                 ProductCardCompactCarouselItemUiModel(
+                    channelId = channelId,
+                    headerName = "Lagi Diskon",
                     shopId = "5",
                     shopType = "pm",
                     categoryBreadcrumbs = "Bahan Masak/Sayur",
@@ -627,7 +643,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             )
 
             val seeMoreUiModel = ProductCardCompactCarouselSeeMoreUiModel(
-                id = "5",
+                id = "1001",
                 headerName = "Lagi Diskon",
                 appLink = "tokopedia://now"
             )
@@ -782,6 +798,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
             val productList = listOf(
                 ProductCardCompactCarouselItemUiModel(
+                    channelId = channelId,
+                    headerName = "Lagi Diskon",
                     shopId = "5",
                     shopType = "pm",
                     categoryBreadcrumbs = "Bahan Masak/Sayur",
@@ -813,7 +831,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             )
 
             val seeMoreUiModel = ProductCardCompactCarouselSeeMoreUiModel(
-                id = "5",
+                id = "1001",
                 headerName = "Lagi Diskon",
                 appLink = "tokopedia://now"
             )

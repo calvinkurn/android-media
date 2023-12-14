@@ -17,6 +17,7 @@ import com.tokopedia.developer_options.presentation.model.FakeResponseActivityUi
 import com.tokopedia.developer_options.presentation.model.ForceCrashUiModel
 import com.tokopedia.developer_options.presentation.model.ForceDarkModeUiModel
 import com.tokopedia.developer_options.presentation.model.ForceLogoutUiModel
+import com.tokopedia.developer_options.presentation.model.ForceScpLoginUiModel
 import com.tokopedia.developer_options.presentation.model.FpiMonitoringUiModel
 import com.tokopedia.developer_options.presentation.model.FpmLogOnFileUiModel
 import com.tokopedia.developer_options.presentation.model.FpmLogOnNotificationUiModel
@@ -29,6 +30,7 @@ import com.tokopedia.developer_options.presentation.model.NetworkLogOnNotificati
 import com.tokopedia.developer_options.presentation.model.OpenScreenRecorderUiModel
 import com.tokopedia.developer_options.presentation.model.PdpDevUiModel
 import com.tokopedia.developer_options.presentation.model.PlayWebSocketSseLoggingUiModel
+import com.tokopedia.developer_options.presentation.model.RandomizeAccessTokenUiModel
 import com.tokopedia.developer_options.presentation.model.RemoteConfigEditorUiModel
 import com.tokopedia.developer_options.presentation.model.RequestNewFcmTokenUiModel
 import com.tokopedia.developer_options.presentation.model.ResetOnBoardingNavigationUiModel
@@ -38,6 +40,7 @@ import com.tokopedia.developer_options.presentation.model.RouteManagerUiModel
 import com.tokopedia.developer_options.presentation.model.SellerAppReviewDebuggingUiModel
 import com.tokopedia.developer_options.presentation.model.SendFirebaseCrashExceptionUiModel
 import com.tokopedia.developer_options.presentation.model.SharedPreferencesEditorUiModel
+import com.tokopedia.developer_options.presentation.model.ShopIdUiModel
 import com.tokopedia.developer_options.presentation.model.ShowApplinkOnToastUiModel
 import com.tokopedia.developer_options.presentation.model.StrictModeLeakPublisherUiModel
 import com.tokopedia.developer_options.presentation.model.SystemNonSystemAppsUiModel
@@ -46,6 +49,7 @@ import com.tokopedia.developer_options.presentation.model.TopchatWebSocketLoggin
 import com.tokopedia.developer_options.presentation.model.TranslatorUiModel
 import com.tokopedia.developer_options.presentation.model.TypographySwitchUiModel
 import com.tokopedia.developer_options.presentation.model.UrlEnvironmentUiModel
+import com.tokopedia.developer_options.presentation.model.UserIdUiModel
 import com.tokopedia.developer_options.presentation.model.ViewAnalyticsLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewApplinkLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewFpmLogUiModel
@@ -54,8 +58,7 @@ import com.tokopedia.developer_options.presentation.model.ViewIrisLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewJourneyLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewNetworkLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewTopAdsLogUiModel
-import com.tokopedia.developer_options.presentation.model.UserIdUiModel
-import com.tokopedia.developer_options.presentation.model.ShopIdUiModel
+
 /**
  * @author Said Faisal on 24/11/2021
  *
@@ -70,12 +73,14 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: ResetOnBoardingUiModel): Int
     fun type(uiModel: ForceCrashUiModel): Int
     fun type(uiModel: ForceLogoutUiModel): Int
+    fun type(uiModel: RandomizeAccessTokenUiModel): Int
     fun type(uiModel: SendFirebaseCrashExceptionUiModel): Int
     fun type(uiModel: OpenScreenRecorderUiModel): Int
     fun type(uiModel: NetworkLogOnNotificationUiModel): Int
     fun type(uiModel: ViewNetworkLogUiModel): Int
     fun type(uiModel: DeviceIdUiModel): Int
     fun type(uiModel: ForceDarkModeUiModel): Int
+    fun type(uiModel: ForceScpLoginUiModel): Int
     fun type(uiModel: TopAdsLogOnNotificationUiModel): Int
     fun type(uiModel: ViewTopAdsLogUiModel): Int
     fun type(uiModel: ApplinkLogOnNotificationUiModel): Int

@@ -62,6 +62,9 @@ import com.tokopedia.minicart.bmgm.common.utils.MiniCartUtils
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.LinkProperties
@@ -158,6 +161,9 @@ class OfferLandingPageFragment :
     private val productIds by lazy {
         arguments?.getString(BuyMoreGetMoreHelper.KEY_PRODUCT_IDS).orEmpty()
     }
+    private val remoteConfig: RemoteConfig by lazy(LazyThreadSafetyMode.NONE) {
+        FirebaseRemoteConfigImpl(context)
+    }
 
     override fun getScreenName() = ""
 
@@ -218,13 +224,13 @@ class OfferLandingPageFragment :
         viewModel.offeringInfo.observe(viewLifecycleOwner) { offerInfoForBuyer ->
             when (offerInfoForBuyer.responseHeader.status) {
                 Status.SUCCESS -> {
-                    setupHeader(offerInfoForBuyer)
                     viewModel.processEvent(OlpEvent.SetWarehouseIds(offerInfoForBuyer.nearestWarehouseIds))
                     viewModel.processEvent(OlpEvent.SetShopData(offerInfoForBuyer.offerings.firstOrNull()?.shopData))
                     viewModel.processEvent(OlpEvent.SetOfferingJsonData(offerInfoForBuyer.offeringJsonData))
                     viewModel.processEvent(OlpEvent.SetTncData(offerInfoForBuyer.offerings.firstOrNull()?.tnc.orEmpty()))
                     viewModel.processEvent(OlpEvent.SetEndDate(offerInfoForBuyer.offerings.firstOrNull()?.endDate.orEmpty()))
                     viewModel.processEvent(OlpEvent.SetOfferTypeId(offerInfoForBuyer.offerings.firstOrNull()?.offerTypeId.orZero()))
+                    setupHeader(offerInfoForBuyer)
                     setupTncBottomSheet()
                     fetchMiniCart()
                     setMiniCartOnOfferEnd(offerInfoForBuyer)
@@ -256,7 +262,10 @@ class OfferLandingPageFragment :
                     viewModel.processEvent(OlpEvent.SetSharingData(sharingData = sharingData.data))
                     savedImagePath = ""
                     if (sharingData.data.offerData.imageUrl.isNotEmpty()) {
-                        viewModel.saveBmgmImageToPhoneStorage(context, sharingData.data.offerData.imageUrl)
+                        viewModel.saveBmgmImageToPhoneStorage(
+                            context,
+                            sharingData.data.offerData.imageUrl
+                        )
                     } else {
                         openShareBottomSheet()
                     }
@@ -324,7 +333,9 @@ class OfferLandingPageFragment :
     }
 
     private fun setupProductList(offerProductList: OfferProductListUiModel) {
+        val isProductCountVisible = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_SET_VISIBLE_PRODUCT_COUNTER_OLP, false)
         olpAdapter?.apply {
+            setProductCountVisibility(isProductCountVisible)
             updateProductCount(offerProductList.totalProduct)
             setProductListData(offerProductList.productList)
             changeSelectedSortFilter(currentState.sortId, currentState.sortName)
@@ -682,7 +693,8 @@ class OfferLandingPageFragment :
     }
 
     private fun addToCartProduct(product: OfferProductListUiModel.Product) {
-        val analyticsData = OlpTrackerUtil.generateAtcNonVariantAnalytics(product, currentState.shopData)
+        val analyticsData =
+            OlpTrackerUtil.generateAtcNonVariantAnalytics(product, currentState.shopData)
         tracker.sendClickAtcEvent(
             currentState.offerIds.toSafeString(),
             currentState.warehouseIds.toSafeString(),

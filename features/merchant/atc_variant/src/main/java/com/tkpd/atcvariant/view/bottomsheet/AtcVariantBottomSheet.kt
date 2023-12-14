@@ -235,6 +235,7 @@ class AtcVariantBottomSheet :
         val productId = adapter.getHeaderDataModel()?.productId ?: ""
 
         AtcCommonMapper.putChatProductInfoTo(intent, productId)
+        intent.putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.Source.SOURCE_PDP)
         startActivity(intent)
     }
 
@@ -690,7 +691,7 @@ class AtcVariantBottomSheet :
                     productId,
                     pageSource
                 )
-                ProductCartHelper.goToCartCheckout(getAtcActivity(), "")
+                ProductCartHelper.goToCartCheckout(getAtcActivity(), cartDataModel.data.cartId)
             }
             atcMessage = message
         }
@@ -788,7 +789,7 @@ class AtcVariantBottomSheet :
         adapter.removeTextWatcherQuantityViewHolder(rvVariantBottomSheet)
         viewModel.onVariantClicked(
             sharedViewModel.aggregatorParams.value?.isTokoNow ?: false ||
-                    sharedViewModel.aggregatorParams.value?.showQtyEditor ?: false,
+                sharedViewModel.aggregatorParams.value?.showQtyEditor ?: false,
             variantOptions.variantCategoryKey,
             variantOptions.variantId,
             variantOptions.imageOriginal,

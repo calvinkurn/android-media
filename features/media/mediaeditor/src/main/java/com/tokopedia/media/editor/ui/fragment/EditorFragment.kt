@@ -40,7 +40,7 @@ import com.tokopedia.picker.common.utils.isVideoFormat
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
-import com.tokopedia.media.editor.R as editorR
+import com.tokopedia.media.editor.R as mediaeditorR
 
 class EditorFragment @Inject constructor(
     private val editorHomeAnalytics: EditorHomeAnalytics,
@@ -65,13 +65,18 @@ class EditorFragment @Inject constructor(
     }
 
     override fun onPause() {
-        viewBinding?.viewPager?.releaseImage()
+        viewBinding?.viewPager?.releaseImageVideo()
         super.onPause()
     }
 
     override fun onResume() {
-        viewBinding?.viewPager?.reloadImage()
+        viewBinding?.viewPager?.reloadImageVideo()
         super.onResume()
+    }
+
+    override fun onDestroyView() {
+        viewBinding?.viewPager?.clearPlayer()
+        super.onDestroyView()
     }
 
     override fun onCreateView(
@@ -80,7 +85,7 @@ class EditorFragment @Inject constructor(
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(
-            editorR.layout.fragment_main_editor,
+            mediaeditorR.layout.fragment_main_editor,
             container,
             false
         )
@@ -96,19 +101,19 @@ class EditorFragment @Inject constructor(
         viewBinding?.btnRedo?.setOnClickListener {
             forwardState()
         }
-    }
 
-    private fun startAutoCrop() {
         loader = LoaderDialog(requireContext()).apply {
             setLoadingText("")
             customView = View.inflate(
                 requireContext(),
-                editorR.layout.fragment_main_crop_loader_layout,
+                mediaeditorR.layout.fragment_main_crop_loader_layout,
                 null
             ) as LinearLayout
             show()
         }
+    }
 
+    private fun startAutoCrop() {
         autoCropStartTime = System.nanoTime()
         iterateCrop(viewModel.editStateList.values.toList(), 0)
     }
@@ -357,9 +362,9 @@ class EditorFragment @Inject constructor(
 
         val toastEditText = getString(sourceInt)
         val toastStateChangeText = if (toastKey == TOAST_UNDO)
-            getString(editorR.string.editor_undo_state_format, toastEditText)
+            getString(mediaeditorR.string.editor_undo_state_format, toastEditText)
         else
-            getString(editorR.string.editor_redo_state_format, toastEditText)
+            getString(mediaeditorR.string.editor_redo_state_format, toastEditText)
 
 
         viewBinding?.undoRedoToast?.let {
@@ -375,6 +380,20 @@ class EditorFragment @Inject constructor(
 
     private fun observeEditorParam() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
+            viewModel.compressImage(it) { // on compress done
+                thumbnailDrawerComponent.setupView(viewModel.editStateList.values.toList())
+
+                if (it.autoCropRatio() != null) {
+                    startAutoCrop()
+                } else {
+                    viewBinding?.viewPager?.apply {
+                        setAdapter(viewModel.editStateList.values.toList())
+                        setPagerPageChangeListener(this)
+                    }
+                    loader?.dismiss()
+                }
+            }
+
             // show/hide add logo base on rollence
             if (!viewModel.isShopAvailable()) {
                 it.editorToolsList().apply {
@@ -392,16 +411,6 @@ class EditorFragment @Inject constructor(
             }
 
             editorToolComponent.setupView(it.editorToolsList())
-            thumbnailDrawerComponent.setupView(viewModel.editStateList.values.toList())
-
-            if (it.autoCropRatio() != null) {
-                startAutoCrop()
-            } else {
-                viewBinding?.viewPager?.apply {
-                    setAdapter(viewModel.editStateList.values.toList())
-                    setPagerPageChangeListener(this)
-                }
-            }
         }
     }
 
@@ -444,7 +453,7 @@ class EditorFragment @Inject constructor(
             toaster = Toaster.build(
                 editorFragmentContainer,
                 getString(
-                    editorR.string.editor_auto_crop_format,
+                    mediaeditorR.string.editor_auto_crop_format,
                     ratioWidth.toInt(),
                     ratioHeight.toInt()
                 ),

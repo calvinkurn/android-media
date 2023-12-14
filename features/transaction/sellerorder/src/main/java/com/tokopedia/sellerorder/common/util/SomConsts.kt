@@ -37,6 +37,7 @@ object SomConsts {
     const val DETAIL_PRODUCTS_TYPE = "products"
     const val DETAIL_SHIPPING_TYPE = "shipping"
     const val DETAIL_PAYMENT_TYPE = "payment"
+    const val DETAIL_INCOME_TYPE = "income"
     const val DETAIL_MVC_USAGE_TYPE = "mvc_usage"
     const val DETAIL_POF_DATA_TYPE = "pof_data"
 
@@ -67,6 +68,7 @@ object SomConsts {
     const val KEY_RESCHEDULE_PICKUP = "reschedule_pickup"
     const val KEY_RETURN_TO_SHIPPER = "confirm_return"
     const val KEY_SEARCH_NEW_DRIVER = "search_new_driver"
+    const val KEY_POF = "request_partial_order_fulfillment"
 
     const val KEY_BATALKAN_PESANAN = "reject_shipping"
     const val KEY_UBAH_NO_RESI = "change_awb"
@@ -90,7 +92,6 @@ object SomConsts {
 
     const val LIST_ORDER_SCREEN_NAME = "/myorder"
     const val DETAIL_ORDER_SCREEN_NAME = "myorder/detail/"
-    const val PARAM_SOURCE_ASK_BUYER = "tx_ask_buyer"
     const val ATTRIBUTE_ID = "id"
 
     const val STATUS_CODE_ORDER_CANCELLED = 0

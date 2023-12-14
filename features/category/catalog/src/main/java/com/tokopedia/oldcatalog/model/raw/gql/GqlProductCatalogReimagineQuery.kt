@@ -195,6 +195,7 @@ const val GQL_CATALOG_REIMAGINE_QUERY = """query catalogGetDetailModular(${'$'}c
     layout{
       name
       type
+      position
       data {
         ... on CatalogCompHero {
           hero {
@@ -231,18 +232,6 @@ const val GQL_CATALOG_REIMAGINE_QUERY = """query catalogGetDetailModular(${'$'}c
             imageUrl
             title
             subtitle
-          }
-          style {
-            isHidden
-          }
-          navInfo {
-            title
-          }
-        }
-        ... on CatalogCompCharacteristic {
-          characteristic {
-            iconUrl
-            desc
           }
           style {
             isHidden
@@ -339,6 +328,47 @@ const val GQL_CATALOG_REIMAGINE_QUERY = """query catalogGetDetailModular(${'$'}c
             title
           }
         }
+                ... on CatalogCompComparison {
+          section {
+            title
+          }
+          comparison {
+            id
+            name
+            url
+            mobileUrl
+            applink
+            catalogImage {
+              imageUrl
+              isPrimary
+            }
+            marketPrice {
+              max
+              min
+              minFmt
+              maxFmt
+              date
+              name
+            }
+            fullSpec {
+              name
+              icon
+              row {
+                key
+                value
+                flags
+              }
+            }
+            topSpec {
+              key
+              value
+              icon
+            }
+          }
+          style {
+            isHidden
+          }
+        }
         ... on CatalogCompFeatureSupport {
           section {
             title
@@ -368,6 +398,35 @@ const val GQL_CATALOG_REIMAGINE_QUERY = """query catalogGetDetailModular(${'$'}c
           }
           navInfo {
             title
+          }
+        }
+        ... on CatalogCompInfoColumn {
+          section {
+            title
+          }
+          infoColumn {
+            name
+            row {
+              key
+              value
+            }
+          }
+          style {
+            isHidden
+            columnType
+          }
+        }
+        ... on CatalogCompVideo {
+          video {
+            url
+            type
+            thumbnail
+            author
+            title
+            videoId
+          }
+          style {
+            isHidden
           }
         }
         ... on CatalogCompCtaPrice {

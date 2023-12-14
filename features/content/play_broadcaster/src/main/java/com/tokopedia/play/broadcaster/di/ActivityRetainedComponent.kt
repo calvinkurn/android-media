@@ -17,7 +17,8 @@ import com.tokopedia.play.broadcaster.data.config.ProductConfigStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
-import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
+import com.tokopedia.content.common.util.bottomsheet.ContentDialogCustomizer
+import com.tokopedia.content.product.picker.seller.di.ProductPickerBindModule
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreferences
@@ -39,6 +40,7 @@ import dagger.Component
         PlayBroadcastNetworkModule::class,
         PlayBroadcastBindModule::class,
         PlayBroadcastModule::class,
+        ProductPickerBindModule::class,
         ContentCoachMarkSharedPrefModule::class,
         ContentCreationProductTagBindModule::class,
         UGCOnboardingModule::class
@@ -74,7 +76,7 @@ abstract class ActivityRetainedComponent : ViewModel() {
     /**
      * Util
      */
-    abstract fun navBarDialogCustomizer(): PlayBroadcastDialogCustomizer
+    abstract fun navBarDialogCustomizer(): ContentDialogCustomizer
 
     abstract fun broadcaster(): Broadcaster
 

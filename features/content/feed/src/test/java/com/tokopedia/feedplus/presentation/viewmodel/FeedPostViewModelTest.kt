@@ -60,10 +60,12 @@ import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedPaginationModel
 import com.tokopedia.feedplus.presentation.model.FeedPostEvent
+import com.tokopedia.feedplus.presentation.model.FeedProductActionModel
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedViewModel
 import com.tokopedia.feedplus.presentation.model.PostSourceModel
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
+import com.tokopedia.feedplus.presentation.model.type.FeedContentType
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.kolcommon.data.SubmitActionContentResponse
@@ -84,12 +86,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.*
 
 /**
  * Created By : Muhammad Furqan on 22/05/23
@@ -134,6 +136,8 @@ class FeedPostViewModelTest {
 
     @Before
     fun setUp() {
+        every { userSession.isLoggedIn } returns false
+
         viewModel = FeedPostViewModel(
             repository = repository,
             addToCartUseCase = atcUseCase,
@@ -364,7 +368,7 @@ class FeedPostViewModelTest {
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = ContentTaggedProductUiModel.Campaign(
                 ContentTaggedProductUiModel.CampaignType.NoCampaign,
                 ContentTaggedProductUiModel.CampaignStatus.Unknown,
@@ -403,7 +407,7 @@ class FeedPostViewModelTest {
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = ContentTaggedProductUiModel.Campaign(
                 ContentTaggedProductUiModel.CampaignType.NoCampaign,
                 ContentTaggedProductUiModel.CampaignStatus.Unknown,
@@ -453,7 +457,7 @@ class FeedPostViewModelTest {
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = ContentTaggedProductUiModel.Campaign(
                 ContentTaggedProductUiModel.CampaignType.NoCampaign,
                 ContentTaggedProductUiModel.CampaignStatus.Unknown,
@@ -465,12 +469,19 @@ class FeedPostViewModelTest {
             ),
             ContentTaggedProductUiModel.Stock.Available
         )
+
+        val cartId = "123"
         val dummyAtcResult = AddToCartDataModel(
             errorMessage = arrayListOf(),
             status = "OK",
-            data = DataModel(message = arrayListOf()),
+            data = DataModel(message = arrayListOf(), cartId = cartId),
             errorReporter = ErrorReporterModel(),
             responseJson = ""
+        )
+
+        val dummySuccess = FeedProductActionModel(
+            cartId = cartId,
+            product = dummyData
         )
 
         coEvery { userSession.userId } returns "1"
@@ -483,7 +494,7 @@ class FeedPostViewModelTest {
 
         // then
         assert(viewModel.observeAddProductToCart.value is Success)
-        assert((viewModel.observeAddProductToCart.value as Success).data == dummyAtcResult)
+        assert((viewModel.observeAddProductToCart.value as Success).data == dummySuccess)
     }
 
     @Test
@@ -508,7 +519,7 @@ class FeedPostViewModelTest {
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = ContentTaggedProductUiModel.Campaign(
                 ContentTaggedProductUiModel.CampaignType.NoCampaign,
                 ContentTaggedProductUiModel.CampaignStatus.Unknown,
@@ -547,7 +558,7 @@ class FeedPostViewModelTest {
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = ContentTaggedProductUiModel.Campaign(
                 ContentTaggedProductUiModel.CampaignType.NoCampaign,
                 ContentTaggedProductUiModel.CampaignStatus.Unknown,
@@ -597,7 +608,7 @@ class FeedPostViewModelTest {
                 "Rp1.000.000",
                 1000000.0
             ),
-            appLink ="dummy applink",
+            appLink = "dummy applink",
             campaign = ContentTaggedProductUiModel.Campaign(
                 ContentTaggedProductUiModel.CampaignType.NoCampaign,
                 ContentTaggedProductUiModel.CampaignStatus.Unknown,
@@ -609,12 +620,19 @@ class FeedPostViewModelTest {
             ),
             ContentTaggedProductUiModel.Stock.Available
         )
+
+        val cartId = "123"
         val dummyAtcResult = AddToCartDataModel(
             errorMessage = arrayListOf(),
             status = "OK",
-            data = DataModel(message = arrayListOf()),
+            data = DataModel(message = arrayListOf(), cartId = cartId),
             errorReporter = ErrorReporterModel(),
             responseJson = ""
+        )
+
+        val dummySuccess = FeedProductActionModel(
+            cartId = cartId,
+            product = dummyData
         )
 
         coEvery { userSession.userId } returns "1"
@@ -627,13 +645,13 @@ class FeedPostViewModelTest {
 
         // then
         assert(viewModel.observeBuyProduct.value is Success)
-        assert((viewModel.observeBuyProduct.value as Success).data == dummyAtcResult)
+        assert((viewModel.observeBuyProduct.value as Success).data == dummySuccess)
     }
 
     @Test
     fun onFetchFeedPosts_whenFailed() {
         // given
-        coEvery { repository.getPost(any(), any(), any()) } throws MessageErrorException("Failed")
+        coEvery { repository.getPost(any(), any(), any(), any()) } throws MessageErrorException("Failed")
 
         // when
         viewModel.fetchFeedPosts("", postSource = null)
@@ -648,7 +666,7 @@ class FeedPostViewModelTest {
     fun onFetchFeedPosts_whenSuccessWithoutRelevantPostInCDP() {
         // given
         val dummyData = getDummyFeedModel()
-        coEvery { repository.getPost(any(), any(), any()) } returns dummyData
+        coEvery { repository.getPost(any(), any(), any(), any()) } returns dummyData
 
         // when
         viewModel.fetchFeedPosts("", true, postSource = PostSourceModel("1", FeedBaseFragment.TAB_TYPE_CDP))
@@ -671,7 +689,7 @@ class FeedPostViewModelTest {
     @Test
     fun onFetchFeedPosts_whenSuccessWithoutRelevantPost() {
         // given
-        coEvery { repository.getPost(any(), any(), any()) } returns getDummyFeedModel()
+        coEvery { repository.getPost(any(), any(), any(), any()) } returns getDummyFeedModel()
 
         // when
         viewModel.fetchFeedPosts("", postSource = PostSourceModel("1", FeedBaseFragment.TAB_TYPE_CDP))
@@ -695,7 +713,7 @@ class FeedPostViewModelTest {
     @Test
     fun onFetchFeedPosts_whenSuccessWithRelevantPost() {
         // given
-        coEvery { repository.getPost(any(), any(), any()) } returns getDummyFeedModel()
+        coEvery { repository.getPost(any(), any(), any(), any()) } returns getDummyFeedModel()
         coEvery { repository.getRelevantPosts(any()) } returns getDummyFeedModel()
 
         // when
@@ -730,7 +748,7 @@ class FeedPostViewModelTest {
     @Test
     fun onFetchFeedPosts_whenSuccessWithOnlyFollowRecomWidget() {
         // given
-        coEvery { repository.getPost(any(), any(), any()) } returns getDummyFollowRecommendationWidgetOnlyModel()
+        coEvery { repository.getPost(any(), any(), any(), any()) } returns getDummyFollowRecommendationWidgetOnlyModel()
         coEvery { feedXRecomWidgetUseCase(any()) } returns getDummyProfileRecommendationList()
 
         // when
@@ -1891,7 +1909,7 @@ class FeedPostViewModelTest {
         val mockFollowRecommendationData = getDummyProfileRecommendationList()
         val selectedRemovedProfile = mockFollowRecommendationData.data[1]
 
-        coEvery { repository.getPost(any(), any(), any()) } throws MessageErrorException("Failed")
+        coEvery { repository.getPost(any(), any(), any(), any()) } throws MessageErrorException("Failed")
         viewModel.fetchFeedPosts("", true, null)
 
         // test
@@ -1902,7 +1920,7 @@ class FeedPostViewModelTest {
     }
 
     private fun provideDefaultFeedPostMockData() {
-        coEvery { repository.getPost(any(), any(), any()) } returns getDummyFeedModel()
+        coEvery { repository.getPost(any(), any(), any(), any()) } returns getDummyFeedModel()
         viewModel.fetchFeedPosts("")
     }
 
@@ -1973,7 +1991,8 @@ class FeedPostViewModelTest {
                 "",
                 "",
                 false,
-                ""
+                "",
+                FeedContentType.TopAds
             ),
             FeedCardVideoContentModel(
                 "video 1 id",
@@ -2002,7 +2021,8 @@ class FeedPostViewModelTest {
                 emptyList(),
                 emptyList(),
                 "",
-                "1"
+                "1",
+                FeedContentType.PlayShortVideo
             ),
             FeedCardLivePreviewContentModel(
                 "live 1 id",
@@ -2058,7 +2078,8 @@ class FeedPostViewModelTest {
                 "",
                 "",
                 false,
-                ""
+                "",
+                FeedContentType.ProductHighlight
             ),
             FeedCardVideoContentModel(
                 "video 2 id",
@@ -2087,7 +2108,8 @@ class FeedPostViewModelTest {
                 emptyList(),
                 emptyList(),
                 "",
-                ""
+                "",
+                FeedContentType.PlayChannel
             ),
             FeedCardLivePreviewContentModel(
                 "live 2 id",
@@ -2120,7 +2142,7 @@ class FeedPostViewModelTest {
 
     private fun getDummyFollowRecommendationWidgetOnlyModel() = FeedModel(
         items = listOf(
-            FeedFollowRecommendationModel.Empty.copy(id = "follow-recommendation"),
+            FeedFollowRecommendationModel.Empty.copy(id = "follow-recommendation")
         ),
         pagination = FeedPaginationModel(
             "",

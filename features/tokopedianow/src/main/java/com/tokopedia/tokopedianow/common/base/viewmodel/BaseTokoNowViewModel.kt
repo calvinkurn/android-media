@@ -20,6 +20,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
@@ -76,7 +77,7 @@ open class BaseTokoNowViewModel(
     private val _updateCartItem = MutableLiveData<Result<Triple<String, UpdateCartV2Data, Int>>>()
     private val _openLoginPage = MutableLiveData<Unit>()
 
-    private var changeQuantityJob: Job? = null
+    private var changeQuantityJob: MutableMap<String, Job> = mutableMapOf()
     private var getMiniCartJob: Job? = null
 
     var miniCartSource: MiniCartSource? = null
@@ -149,6 +150,11 @@ open class BaseTokoNowViewModel(
 
     fun getWarehouseId(): String = addressData.getWarehouseId().toString()
 
+    fun getWarehouseIds(): String {
+        val localCacheModel = addressData.getAddressData()
+        return AddressMapper.mapToWarehouseIds(localCacheModel)
+    }
+
     fun updateAddressData() = addressData.updateLocalDataIfAddressHasUpdated()
 
     fun createAffiliateLink(url: String) = affiliateService.createAffiliateLink(url)
@@ -169,7 +175,7 @@ open class BaseTokoNowViewModel(
         }
     }
 
-    suspend fun getTickerDataAsync(
+    fun getTickerDataAsync(
         warehouseId: String,
         page: String
     ): Deferred<GetTickerData?> {
@@ -223,8 +229,9 @@ open class BaseTokoNowViewModel(
             // this only blocks add to cart when using repurchase widget
             _blockAddToCart.postValue(Unit)
         } else {
-            changeQuantityJob?.cancel()
             val productId = product.id
+            changeQuantityJob[productId]?.cancel()
+
             val quantity = product.quantity
 
             val miniCartItem = getMiniCartItem(productId)
@@ -237,8 +244,9 @@ open class BaseTokoNowViewModel(
                     quantity.isZero() -> deleteCartItem(miniCartItem, onSuccessDeleteCart, onError)
                     else -> updateCartItem(product, miniCartItem, onSuccessUpdateCart, onError)
                 }
+                removeChangeQuantityJob(productId)
             }, delay = CHANGE_QUANTITY_DELAY).let {
-                changeQuantityJob = it
+                changeQuantityJob[productId] = it
             }
         }
     }
@@ -328,5 +336,9 @@ open class BaseTokoNowViewModel(
         val warehouseId = addressData.getWarehouseId()
         val outOfCoverage = warehouseId == OOC_WAREHOUSE_ID
         return shopId != INVALID_SHOP_ID && !outOfCoverage && userSession.isLoggedIn
+    }
+
+    private fun removeChangeQuantityJob(productId: String) {
+        changeQuantityJob.remove(productId)
     }
 }

@@ -8,7 +8,6 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
-import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ImageSpan
 import android.view.View
@@ -17,10 +16,12 @@ import android.widget.ImageView
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.config.GlobalConfig
+import com.tokopedia.creation.common.presentation.customviews.ContentCreationEntryPointWidget
+import com.tokopedia.creation.common.presentation.model.ContentCreationEntryPointSource
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -45,14 +46,13 @@ import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
+import com.tokopedia.shop.common.util.ShopTimer
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.convertUrlToBitmapAndLoadImage
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopHeaderFragmentTabContentBinding
-import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopPageHeaderPlayWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopPageHeaderRequestUnmoderateBottomSheet
-import com.tokopedia.shop.pageheader.presentation.customview.ShopPageHeaderCenteredImageSpan
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopFollowButtonUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderLayoutUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderTickerData
@@ -79,7 +79,10 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.ColorMode
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.UnifyMotion
-import java.util.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopPageHeaderFragmentHeaderViewHolderV2(
@@ -93,8 +96,9 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
 ) {
 
     companion object {
-        private const val CYCLE_DURATION = 5000L
+        private const val CYCLE_DURATION = 3500L
         private const val MAXIMUM_WIDTH_STATIC_USP = 100
+        private const val DELAY_DURATION_TICKER_MILLIS = 1000L
         private const val NEW_SELLER_TEXT_HTML = "Penjual Baru"
     }
 
@@ -140,16 +144,8 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         get() = viewBinding?.buttonChat
     private val buttonFollow: UnifyButton?
         get() = viewBinding?.buttonFollow
-    private val widgetPlayRootContainer: View?
-        get() = viewBinding?.widgetPlayEntryPoint?.widgetPlayRootContainer
-    private val playSgcWidgetContainer: View?
-        get() = viewBinding?.widgetPlayEntryPoint?.playSgcWidgetContainer
-    private val tvStartCreateContentDesc: Typography?
-        get() = viewBinding?.widgetPlayEntryPoint?.tvStartCreateContentDesc
-    private val playSgcBtnStartLive: View?
-        get() = viewBinding?.widgetPlayEntryPoint?.playSgcBtnStartLive
-    private val tvStartCreateContent: Typography?
-        get() = viewBinding?.widgetPlayEntryPoint?.tvStartCreateContent
+    private val widgetPlayRootContainer: ContentCreationEntryPointWidget?
+        get() = viewBinding?.widgetPlayEntryPoint
 
     private val shopLogoContainer: StoriesWidgetLayout?
         get() = viewBinding?.imageShopContainer
@@ -157,8 +153,8 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     private var coachMark: CoachMark2? = null
     private val tickerShopStatus: Ticker? = viewBinding?.tickerShopStatus
     private var playVideoWrapper: PlayVideoWrapper? = null
-    private var timer: Timer? = null
     private var currentIndexUspDynamicValue: Int = 0
+    private val timer = ShopTimer()
 
     fun setupChooseAddressWidget(isMyShop: Boolean) {
         chooseAddressWidget?.apply {
@@ -192,106 +188,45 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             isOverrideTheme,
             shopHeaderConfig?.patternColorType.orEmpty()
         )
-        setSgcPlaySection(listWidgetShopData)
+        setSgcPlaySection(listWidgetShopData, shopHeaderConfig)
     }
 
-    fun setSgcPlaySection(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>) {
+    fun setSgcPlaySection(
+        listWidgetShopData: List<ShopPageHeaderWidgetUiModel>,
+        shopHeaderConfig: ShopPageHeaderLayoutUiModel.Config?,
+    ) {
         val shopSgcPlayData = getShopSgcPlayData(listWidgetShopData)
         val modelComponent =
             shopSgcPlayData?.componentPages?.filterIsInstance<ShopPageHeaderPlayWidgetButtonComponentUiModel>()
                 ?.firstOrNull()
-        if (null != shopSgcPlayData && null != modelComponent?.shopPageHeaderDataModel) {
-            widgetPlayRootContainer?.show()
-            tvStartCreateContent?.setCompoundDrawablesWithIntrinsicBounds(
-                MethodChecker.getDrawable(context, R.drawable.ic_content_creation),
-                null,
-                null,
-                null
-            )
-            modelComponent.shopPageHeaderDataModel?.let { shopPageHeaderDataModel ->
-                if (allowContentCreation(shopPageHeaderDataModel)) {
-                    showPlayWidget()
-                    setupTextContentSgcWidget(shopPageHeaderDataModel)
-                    shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
-                    playSgcBtnStartLive?.setOnClickListener {
-                        shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
-                        shopPagePlayWidgetListener?.onStartLiveStreamingClicked(
-                            modelComponent,
-                            shopSgcPlayData,
-                            shopPageHeaderDataModel.broadcaster
-                        )
-                    }
-                } else {
-                    hidePlayWidget()
-                }
+
+        if (null != shopSgcPlayData && modelComponent != null) {
+            listenerHeader?.let {
+                widgetPlayRootContainer?.creationBottomSheetListener =
+                    it.getContentCreationListener()
             }
-        } else {
-            widgetPlayRootContainer?.hide()
+            widgetPlayRootContainer?.widgetSource = ContentCreationEntryPointSource.Shop
+            widgetPlayRootContainer?.onClickListener = {
+                shopPageTrackingSGCPlayWidget?.onClickSGCContent(
+                    shopId = modelComponent.shopPageHeaderDataModel?.shopId.orEmpty()
+                )
+                shopPagePlayWidgetListener?.onStartLiveStreamingClicked(
+                    modelComponent,
+                    shopSgcPlayData,
+                )
+            }
+            shopHeaderConfig?.let {
+                widgetPlayRootContainer?.iconColor?.value = it.colorSchema.getColorIntValue(
+                    ShopPageColorSchema.ColorSchemaName.ICON_ENABLED_HIGH_COLOR
+                ).orZero()
+                widgetPlayRootContainer?.textColor?.value = it.colorSchema.getColorIntValue(
+                    ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS
+                ).orZero()
+            }
+            widgetPlayRootContainer?.fetchConfig()
+
+            shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = modelComponent.shopPageHeaderDataModel?.shopId.orEmpty())
         }
-    }
-
-    private fun showPlayWidget() {
-        widgetPlayRootContainer?.show()
-        playSgcWidgetContainer?.show()
-    }
-
-    private fun hidePlayWidget() {
-        widgetPlayRootContainer?.hide()
-        playSgcWidgetContainer?.hide()
-    }
-
-    private fun allowContentCreation(dataModel: ShopPageHeaderDataModel): Boolean {
-        return (isStreamAllowed(dataModel) || isShortsVideoAllowed(dataModel)) && GlobalConfig.isSellerApp()
-    }
-
-    private fun setupTextContentSgcWidget(dataModel: ShopPageHeaderDataModel) {
-        if (tvStartCreateContentDesc?.text?.isNotBlank() == true) return
-
-        val betaTemplate = context.getString(R.string.shop_page_play_widget_beta_template)
-
-        val imgBeta = MethodChecker.getDrawable(context, R.drawable.ic_play_beta_badge)?.apply {
-            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
-        }
-        val imgBetaSpan = imgBeta?.let { ShopPageHeaderCenteredImageSpan(it) }
-
-        val span = SpannableString(
-            MethodChecker.fromHtml(
-                when {
-                    isStreamAllowed(dataModel) && isShortsVideoAllowed(dataModel) -> {
-                        context.getString(R.string.shop_page_play_widget_livestream_and_shorts_label)
-                    }
-
-                    isStreamAllowed(dataModel) -> {
-                        context.getString(R.string.shop_page_play_widget_livestream_only_label)
-                    }
-
-                    isShortsVideoAllowed(dataModel) -> {
-                        context.getString(R.string.shop_page_play_widget_shorts_only_label)
-                    }
-
-                    else -> {
-                        ""
-                    }
-                }
-            )
-        )
-
-        span.setSpan(
-            imgBetaSpan,
-            span.indexOf(betaTemplate),
-            span.indexOf(betaTemplate) + betaTemplate.length,
-            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
-        )
-
-        tvStartCreateContentDesc?.text = span
-    }
-
-    private fun isStreamAllowed(dataModel: ShopPageHeaderDataModel): Boolean {
-        return dataModel.broadcaster.streamAllowed
-    }
-
-    private fun isShortsVideoAllowed(dataModel: ShopPageHeaderDataModel): Boolean {
-        return dataModel.broadcaster.shortVideoAllowed
     }
 
     private fun getShopSgcPlayData(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>): ShopPageHeaderWidgetUiModel? {
@@ -347,14 +282,20 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         val shopStatusText = getShopBasicDataShopNameComponent(
             shopBasicData
         )?.text?.getOrNull(Int.ONE)?.textHtml.orEmpty()
-        val shopStaticUspUrl = getShopPerformanceFreeShippingComponent(shopPerformanceData)?.image.orEmpty()
+        val shopStaticUspUrl =
+            getShopPerformanceFreeShippingComponent(shopPerformanceData)?.image.orEmpty()
         val isShowShopOnlineStatus = shopStatusText.isNotEmpty()
         val isShowShopStaticUsp = shopStaticUspUrl.isNotEmpty()
         sectionShopStatus?.shouldShowWithAction(isShowShopOnlineStatus || isShowShopStaticUsp) {}
         shopStatusSectionDotSeparator?.shouldShowWithAction(isShowShopOnlineStatus && isShowShopStaticUsp) {}
         imageShopStaticUsp?.shouldShowWithAction(isShowShopStaticUsp) {
             imageShopStaticUsp?.loadImage(shopStaticUspUrl) {
-                overrideSize(Resize(MAXIMUM_WIDTH_STATIC_USP.toPx(), imageShopStaticUsp?.layoutParams?.height.orZero()))
+                overrideSize(
+                    Resize(
+                        MAXIMUM_WIDTH_STATIC_USP.toPx(),
+                        imageShopStaticUsp?.layoutParams?.height.orZero()
+                    )
+                )
             }
         }
         val onlineStatusTextPairHtmlColor: Pair<String, String>
@@ -422,7 +363,8 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
             getShopPerformanceShopRatingComponent(shopPerformanceData)?.text?.firstOrNull()?.textLink.orEmpty()
         val ratingText =
             getShopPerformanceShopRatingComponent(shopPerformanceData)?.text?.firstOrNull()?.textHtml.orEmpty()
-        val initialUspValue = listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
+        val initialUspValue =
+            listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
         val isShowRating = ratingText.isNotEmpty()
         val isShowDynamicUsp = initialUspValue.isNotEmpty()
         val ratingTextPairHtmlColor: Pair<String, String>
@@ -461,7 +403,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                 "\$lowEmphasis",
                 ratingTextPairHtmlColor.second
             )
-            
+
             textRatingDescription?.apply {
                 text = MethodChecker.fromHtml(adjustedRatingText)
                 setOnClickListener { handleShopReviewClick(adjustedRatingText, appLink) }
@@ -475,12 +417,13 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     private fun handleShopReviewClick(adjustedRatingText: String, appLink: String) {
         val isNewSeller = adjustedRatingText.contains(NEW_SELLER_TEXT_HTML, ignoreCase = true)
         if (isNewSeller) return
-        
+
         listenerHeader?.onShopReviewClicked(appLink)
     }
 
     private fun configDynamicUsp(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>) {
-        val listDynamicUspValue = listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
+        val listDynamicUspValue =
+            listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
         updateDynamicUspValue(listDynamicUspValue.firstOrNull().orEmpty())
         textDynamicUspPerformance?.setOnClickListener {
             listenerHeader?.onUspClicked(listDynamicUspValue)
@@ -591,7 +534,8 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         val isFollowing = model.isFollowing
         buttonFollow?.apply {
             buttonSize = UnifyButton.Size.MICRO
-            buttonVariant = UnifyButton.Variant.FILLED.takeIf { !isFollowing } ?: UnifyButton.Variant.GHOST
+            buttonVariant =
+                UnifyButton.Variant.FILLED.takeIf { !isFollowing } ?: UnifyButton.Variant.GHOST
             buttonType = UnifyButton.Type.MAIN
             val isShowLoading = model.isShowLoading
             if (!isShowLoading) {
@@ -635,7 +579,10 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     }
 
     private fun applyWhiteTintColorToVoucherFollowerImage(voucherFollowerBitmap: Bitmap) {
-        val tintColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Static_White) // Replace with your desired tint color
+        val tintColor = MethodChecker.getColor(
+            context,
+            unifyprinciplesR.color.Unify_Static_White
+        ) // Replace with your desired tint color
         val canvas = Canvas(voucherFollowerBitmap)
         val paint = Paint()
         val filter = PorterDuffColorFilter(tintColor, PorterDuff.Mode.SRC_IN)
@@ -685,14 +632,15 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         isMyShop: Boolean = false
     ) {
         tickerShopStatus?.show()
+        tickerShopStatus?.tickerTitle =
+            HtmlLinkHelper(context, shopOperationalHourStatus.tickerTitle).spannedString.toString()
+        tickerShopStatus?.setHtmlDescription(shopOperationalHourStatus.tickerMessage)
         tickerShopStatus?.tickerType = if (isMyShop) {
             Ticker.TYPE_WARNING
         } else {
             Ticker.TYPE_ANNOUNCEMENT
         }
-        tickerShopStatus?.tickerTitle =
-            HtmlLinkHelper(context, shopOperationalHourStatus.tickerTitle).spannedString.toString()
-        tickerShopStatus?.setHtmlDescription(shopOperationalHourStatus.tickerMessage)
+
         tickerShopStatus?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 listenerHeader?.onShopStatusTickerClickableDescriptionClicked(linkUrl)
@@ -705,6 +653,15 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         } else {
             tickerShopStatus?.closeButtonVisibility = View.VISIBLE
         }
+
+        doOnDelayFinished(DELAY_DURATION_TICKER_MILLIS) {
+            tickerShopStatus?.tickerTitle =
+                HtmlLinkHelper(
+                    context,
+                    shopOperationalHourStatus.tickerTitle
+                ).spannedString.toString()
+            tickerShopStatus?.setHtmlDescription(shopOperationalHourStatus.tickerMessage)
+        }
     }
 
     private fun showShopStatusTicker(shopInfo: ShopInfo, isMyShop: Boolean = false) {
@@ -715,13 +672,6 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         val shopId = shopInfo.shopCore.shopID
         val isOfficialStore = shopInfo.goldOS.isOfficialStore()
         val isGoldMerchant = shopInfo.goldOS.isGoldMerchant()
-        tickerShopStatus?.show()
-        tickerShopStatus?.tickerType = when (shopTickerType) {
-            ShopTickerType.INFO -> Ticker.TYPE_ANNOUNCEMENT
-            ShopTickerType.WARNING -> Ticker.TYPE_WARNING
-            ShopTickerType.DANGER -> Ticker.TYPE_ERROR
-            else -> Ticker.TYPE_WARNING
-        }
         tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(statusTitle).toString()
         tickerShopStatus?.setHtmlDescription(
             if (shopStatus == ShopStatusDef.MODERATED && isMyShop) {
@@ -730,6 +680,14 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                 statusMessage
             }
         )
+        tickerShopStatus?.show()
+        tickerShopStatus?.tickerType = when (shopTickerType) {
+            ShopTickerType.INFO -> Ticker.TYPE_ANNOUNCEMENT
+            ShopTickerType.WARNING -> Ticker.TYPE_WARNING
+            ShopTickerType.DANGER -> Ticker.TYPE_ERROR
+            else -> Ticker.TYPE_WARNING
+        }
+
         tickerShopStatus?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 // set tracker data based on shop status
@@ -783,6 +741,28 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
                 tickerShopStatus?.closeButtonVisibility = View.GONE
             } else {
                 tickerShopStatus?.closeButtonVisibility = View.VISIBLE
+            }
+        }
+
+        doOnDelayFinished(DELAY_DURATION_TICKER_MILLIS) {
+            tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(statusTitle).toString()
+            tickerShopStatus?.setHtmlDescription(
+                if (shopStatus == ShopStatusDef.MODERATED && isMyShop) {
+                    generateShopModerateTickerDescription(statusMessage)
+                } else {
+                    statusMessage
+                }
+            )
+        }
+    }
+
+    private fun doOnDelayFinished(delayMillis: Long, block: () -> Unit) {
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(delayMillis)
+            try {
+                block()
+            } catch (e: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(e)
             }
         }
     }
@@ -905,17 +885,20 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
         }
     }
 
-    fun cycleDynamicUspText(dynamicUspValue: String) {
+    private fun cycleDynamicUspText(dynamicUspValue: String) {
         if (dynamicUspValue.isNotEmpty()) {
-            animateDynamicUspText(Int.ZERO.toFloat())?.withEndAction {
-                animateDynamicUspText(Int.ONE.toFloat())
-                updateDynamicUspValue(dynamicUspValue)
-            }
+            animateDynamicUspText(-textDynamicUspPerformance?.height?.toFloat().orZero())
+                ?.withEndAction {
+                    textDynamicUspPerformance?.translationY =
+                        textDynamicUspPerformance?.height?.toFloat().orZero()
+                    animateDynamicUspText(Float.ZERO)
+                    updateDynamicUspValue(dynamicUspValue)
+                }
         }
     }
 
-    private fun animateDynamicUspText(alphaValue: Float): ViewPropertyAnimator? {
-        return textDynamicUspPerformance?.animate()?.alpha(alphaValue)?.setDuration(UnifyMotion.T2)
+    private fun animateDynamicUspText(translationY: Float): ViewPropertyAnimator? {
+        return textDynamicUspPerformance?.animate()?.translationY(translationY)?.setDuration(UnifyMotion.T3)
     }
 
     private fun setHeaderBackgroundVideo(videoUrl: String) {
@@ -956,29 +939,23 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     }
 
     fun startDynamicUspCycle(listWidgetShopData: List<ShopPageHeaderWidgetUiModel>) {
-        val listDynamicUspValue = listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
-        if (timer == null && listDynamicUspValue.isNotEmpty()) {
-            timer = Timer()
-            timer?.scheduleAtFixedRate(
-                object : TimerTask() {
-                    override fun run() {
-                        if (currentIndexUspDynamicValue == listDynamicUspValue.size - Int.ONE) {
-                            currentIndexUspDynamicValue = Int.ZERO
-                        } else {
-                            ++currentIndexUspDynamicValue
-                        }
-                        val currentValue = listDynamicUspValue[currentIndexUspDynamicValue]
-                        cycleDynamicUspText(currentValue)
-                    }
-                },
-                CYCLE_DURATION, CYCLE_DURATION
-            )
+        val listDynamicUspValue =
+            listWidgetShopData.getDynamicUspComponent()?.text?.map { it.textHtml }.orEmpty()
+        if (listDynamicUspValue.isNotEmpty()) {
+            timer.startTimer(CYCLE_DURATION) {
+                if (currentIndexUspDynamicValue == listDynamicUspValue.size - Int.ONE) {
+                    currentIndexUspDynamicValue = Int.ZERO
+                } else {
+                    ++currentIndexUspDynamicValue
+                }
+                val currentValue = listDynamicUspValue[currentIndexUspDynamicValue]
+                cycleDynamicUspText(currentValue)
+            }
         }
     }
 
     fun clearTimerDynamicUsp() {
-        timer?.cancel()
-        timer = null
+        timer.stopTimer()
         currentIndexUspDynamicValue = Int.ZERO
         updateDynamicUspValue(String.EMPTY)
     }
@@ -992,8 +969,7 @@ class ShopPageHeaderFragmentHeaderViewHolderV2(
     }
 
     fun pauseTimerDynamicUspCycle() {
-        timer?.cancel()
-        timer = null
+        timer.stopTimer()
     }
 
     fun resumeTimerDynamicUspCycle() {

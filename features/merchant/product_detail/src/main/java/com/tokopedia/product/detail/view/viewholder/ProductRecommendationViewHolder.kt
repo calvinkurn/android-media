@@ -10,13 +10,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -57,7 +57,12 @@ class ProductRecommendationViewHolder(
             binding.loadingRecom.visible()
         } else {
             element.recomWidgetData?.run {
-                view.addOnImpressionListener(element.impressHolder) {
+                view.addOnImpressionListener(
+                    holder = element.impressHolder,
+                    holders = listener.getImpressionHolders(),
+                    name = element.name,
+                    useHolders = listener.isRemoteCacheableActive()
+                ) {
                     listener.onImpressComponent(getComponentTrackData(element))
                 }
                 if (annotationChipAdapter == null && element.filterData?.isNotEmpty() == true) {

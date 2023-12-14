@@ -29,6 +29,7 @@ import com.tokopedia.kyc_centralized.common.KycServerLogger
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.AwaitingApprovalGopayBottomSheet
+import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.BlockedKycBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.DobChallengeExhaustedBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.FailedSavePreferenceBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardNonProgressiveBottomSheet
@@ -45,6 +46,7 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.removeGotoKycPreference
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.webview.ext.decode
 import javax.inject.Inject
 
 class GotoKycTransparentFragment : BaseDaggerFragment() {
@@ -77,6 +79,16 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             }
             KYCConstant.ActivityResult.LAUNCH_CALLBACK -> {
                 gotoCallbackApplink(viewModel.callback)
+            }
+            KYCConstant.ActivityResult.LAUNCH_TOKO_KYC -> {
+                gotoTokoKyc(viewModel.projectId)
+            }
+            KYCConstant.ActivityResult.BLOCKED_KYC -> {
+                val isBlockedMultipleAccount = result.data?.getBooleanExtra(
+                    KYCConstant.PARAM_BLOCKED_IS_MULTIPLE_ACCOUNT,
+                    false
+                ) == true
+                showBlockedKycBottomSheet(isBlockedMultipleAccount)
             }
             else -> {
                 finishWithResult(result.resultCode)
@@ -142,7 +154,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         oneKycSdk.init()
         val projectId = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID)
         val source = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_SOURCE)
-        val callback = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_CALL_BACK)
+        val callback = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_CALL_BACK)?.decode()
         isReVerify = activity?.intent?.extras?.getBoolean(IS_RE_VERIFY).orFalse()
         validationParameter(projectId = projectId, source = source, callback)
         initObserver()
@@ -233,6 +245,9 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                         handleNonProgressiveFlow()
                     }
                 }
+                is ProjectInfoResult.Blocked -> {
+                    showBlockedKycBottomSheet(it.isMultipleAccount)
+                }
                 is ProjectInfoResult.Failed -> {
                     showToaster(it.throwable)
                     finishWithResult(Activity.RESULT_CANCELED)
@@ -264,6 +279,12 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             when (it) {
                 is AccountLinkingStatusResult.Loading -> {
                     binding?.gotoKycLoader?.show()
+                }
+                is AccountLinkingStatusResult.TokoKyc -> {
+                    gotoTokoKyc(viewModel.projectId)
+                }
+                is AccountLinkingStatusResult.Blocked -> {
+                    showBlockedKycBottomSheet(it.isMultipleAccount)
                 }
                 is AccountLinkingStatusResult.Linked -> {
                     viewModel.checkEligibility()
@@ -422,6 +443,14 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             TAG_BOTTOM_SHEET_ONBOARD_NON_PROGRESSIVE
         )
 
+        onBoardNonProgressiveBottomSheet.setOnLaunchTokoKycListener {
+            gotoTokoKyc(viewModel.projectId)
+        }
+
+        onBoardNonProgressiveBottomSheet.setOnLaunchBlockedKycListener { isBlockedMultipleAccount ->
+            showBlockedKycBottomSheet(isBlockedMultipleAccount)
+        }
+
         onBoardNonProgressiveBottomSheet.setOnDismissWithDataListener { isReload ->
             if (isReload) {
                 viewModel.getProjectInfo(viewModel.projectId.toIntSafely())
@@ -472,6 +501,15 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun showBlockedKycBottomSheet(isMultipleAccount: Boolean) {
+        val blockedKycBottomSheet = BlockedKycBottomSheet.newInstance(isMultipleAccount, viewModel.projectId)
+
+        blockedKycBottomSheet.show(
+            childFragmentManager,
+            TAG_BOTTOM_SHEET_BLOCKED_KYC
+        )
+    }
+
     private fun showToaster(throwable: Throwable?) {
         val message = throwable?.getGotoKycErrorMessage(requireContext())
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
@@ -490,6 +528,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         private const val TAG_BOTTOM_SHEET_ONBOARD_PROGRESSIVE = "bottom_sheet_progressive"
         private const val TAG_BOTTOM_SHEET_FAILED_SAVE_PREFERENCE = "bottom_sheet_failed_save_preference"
         private const val TAG_BOTTOM_SHEET_DOB_CHALLENGE_EXHAUSTED = "bottom_sheet_dob_challenge_exhausted"
+        private const val TAG_BOTTOM_SHEET_BLOCKED_KYC = "bottom_sheet_blocked_kyc"
 
         fun createInstance(): Fragment = GotoKycTransparentFragment()
     }

@@ -109,3 +109,5 @@ const val OUTSIDE_WORKING_HOURS_SOURCE = "outside_working_hours"
 const val WORKING_HOURS_SOURCE = "working_hours"
 const val EPHARMACY_HALF_ALPHA = 0.5f
 const val EPHARMACY_FULL_ALPHA = 1.0f
+
+const val WEB_VIEW_MIN_VERSION_SUPPORT_CONSULTATION = 70

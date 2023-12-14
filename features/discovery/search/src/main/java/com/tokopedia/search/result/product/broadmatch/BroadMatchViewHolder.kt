@@ -10,7 +10,7 @@ import com.tokopedia.carouselproductcard.reimagine.CarouselProductCardModel
 import com.tokopedia.carouselproductcard.reimagine.grid.CarouselProductCardGridModel
 import com.tokopedia.carouselproductcard.reimagine.viewallcard.CarouselProductCardViewAllCardModel
 import com.tokopedia.discovery.common.reimagine.Search2Component
-import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
+import com.tokopedia.home_component_header.view.HomeComponentHeaderListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.reimagine.ProductCardModel.StockInfo
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductBroadMatchLayoutBinding
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
@@ -87,7 +88,7 @@ class BroadMatchViewHolder(
         val headerView = binding?.searchBroadMatchHeader ?: return
         headerView.bind(
             channelHeader = broadMatchDataView.convertToChannelHeader(headerView.context ?: return),
-            listener = object : HomeChannelHeaderListener {
+            listener = object : HomeComponentHeaderListener {
                 override fun onSeeAllClick(link: String) {
                     broadMatchListener.onBroadMatchSeeMoreClicked(broadMatchDataView)
                 }
@@ -143,6 +144,11 @@ class BroadMatchViewHolder(
                         imageUrl = item.freeOngkirDataView.imageUrl,
                     ),
                     hasMultilineName = reimagineSearch2Component.hasMultilineProductName(),
+                    stockInfo = StockInfo(
+                        percentage = item.stockBarDataView.percentageValue,
+                        label = item.stockBarDataView.value,
+                        labelColor = item.stockBarDataView.color,
+                    ),
                 ),
                 impressHolder = { item },
                 onImpressed = { broadMatchListener.onBroadMatchItemImpressed(item) },
@@ -243,7 +249,6 @@ class BroadMatchViewHolder(
                     stockBarPercentage = it.stockBarDataView.percentageValue,
                     stockBarLabel = it.stockBarDataView.value,
                     stockBarLabelColor = it.stockBarDataView.color,
-                    pageSource = ProductCardModel.PageSource.SEARCH,
                 )
             },
             carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {

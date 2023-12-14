@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:orientation="vertical">
@@ -13,8 +14,10 @@
         android:background="@color/Unify_NN0"
         android:orientation="horizontal">
 
-        <com.tokopedia.design.text.SearchInputView
+        <com.tokopedia.unifycomponents.SearchBarUnify
             android:id="@+id/search_input_view"
+            app:search_bar_show_icon="false"
+            android:layout_margin="6dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="6"/>

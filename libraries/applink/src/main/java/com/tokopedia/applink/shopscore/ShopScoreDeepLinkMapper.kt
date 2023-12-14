@@ -1,12 +1,8 @@
 package com.tokopedia.applink.shopscore
 
-import android.content.Context
 import android.net.Uri
-import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.remoteconfig.RemoteConfigKey
 
 object ShopScoreDeepLinkMapper {
 
@@ -33,16 +29,4 @@ object ShopScoreDeepLinkMapper {
         }
     }
 
-    fun getInternalApplinkPenalty(context: Context): String {
-        return if (getIsShopScorePenaltyNew(context)) {
-            ApplinkConstInternalMarketplace.SHOP_PENALTY
-        } else {
-            ApplinkConstInternalMarketplace.SHOP_PENALTY_OLD
-        }
-    }
-
-    private fun getIsShopScorePenaltyNew(context: Context): Boolean {
-        return FirebaseRemoteConfigInstance.get(context).getBoolean(RemoteConfigKey.IS_SHOP_PENALTY_NEW_PAGE)
-            .orFalse()
-    }
 }

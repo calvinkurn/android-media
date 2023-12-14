@@ -9,12 +9,13 @@ import com.tokopedia.sellerorder.detail.data.model.SomDetailHeader
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.data.model.SomDetailProducts
 import com.tokopedia.sellerorder.detail.data.model.SomDetailShipping
-import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
+import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactory
 import com.tokopedia.sellerorder.detail.presentation.model.AddOnSummaryUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.AddOnUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.BaseProductUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.NonProductBundleUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
+import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofRequestInfoResponse.Data.InfoRequestPartialOrderFulfillment.Companion.STATUS_INITIAL
 
 object SomGetOrderDetailResponseMapper {
 
@@ -110,7 +111,7 @@ object SomGetOrderDetailResponseMapper {
         }
     }
 
-    private fun MutableList<Visitable<SomDetailAdapterFactoryImpl>>.includeProductBmgms(
+    private fun MutableList<Visitable<SomDetailAdapterFactory>>.includeProductBmgms(
         bmgms: List<SomDetailOrder.GetSomDetail.Bmgm>?,
         orderId: String,
         bmgmIcon: String,
@@ -118,17 +119,17 @@ object SomGetOrderDetailResponseMapper {
         addonLabel: String
     ) {
         val bmgmList = getBmgmList(bmgms, orderId, bmgmIcon, addonLabel, addonIcon)
-        (bmgmList as? List<Visitable<SomDetailAdapterFactoryImpl>>)?.let { addAll(it) }
+        (bmgmList as? List<Visitable<SomDetailAdapterFactory>>)?.let { addAll(it) }
     }
 
-    private fun MutableList<Visitable<SomDetailAdapterFactoryImpl>>.includeProductBundles(
+    private fun MutableList<Visitable<SomDetailAdapterFactory>>.includeProductBundles(
         bundle: List<SomDetailOrder.GetSomDetail.Details.Bundle>?,
         bundleIcon: String
     ) {
         addAll(getProductBundleList(bundle, bundleIcon))
     }
 
-    private fun MutableList<Visitable<SomDetailAdapterFactoryImpl>>.includeProductNonBundles(
+    private fun MutableList<Visitable<SomDetailAdapterFactory>>.includeProductNonBundles(
         nonBundle: List<SomDetailOrder.GetSomDetail.Details.Product>?,
         addOnInfo: SomDetailOrder.GetSomDetail.AddOnInfo?,
         addOnIcon: String,
@@ -188,36 +189,37 @@ object SomGetOrderDetailResponseMapper {
 
     private fun SomDetailOrder.GetSomDetail.mapToHeaderUiModel(): SomDetailHeader {
         return SomDetailHeader(
-            statusCode,
-            statusText,
-            statusIndicatorColor,
-            buyerRequestCancel.isRequestCancel,
-            invoice,
-            invoiceUrl,
-            paymentDate,
-            customer.name,
-            deadline.text,
-            deadline.color,
-            deadline.style,
-            listLabelInfo,
-            orderId,
-            shipment.awbUploadUrl,
-            shipment.awbUploadProofText,
-            bookingInfo.onlineBooking.bookingCode,
-            bookingInfo.onlineBooking.state,
-            bookingInfo.onlineBooking.barcodeType,
-            warehouse.fullFillBy,
-            flagOrderMeta.isWareHouse,
-            tickerInfo
+            statusCode = statusCode,
+            statusText = statusText,
+            statusIndicatorColor = statusIndicatorColor,
+            isBuyerRequestCancel = buyerRequestCancel.isRequestCancel,
+            invoice = invoice,
+            invoiceUrl = invoiceUrl,
+            paymentDate = paymentDate,
+            custName = customer.name,
+            deadlineText = deadline.text,
+            deadlineColor = deadline.color,
+            deadlineStyle = deadline.style,
+            listLabelOrder = listLabelInfo,
+            orderId = orderId,
+            awbUploadUrl = shipment.awbUploadUrl,
+            awbUploadProofText = shipment.awbUploadProofText,
+            onlineBookingCode = bookingInfo.onlineBooking.bookingCode,
+            onlineBookingState = bookingInfo.onlineBooking.state,
+            onlineBookingType = bookingInfo.onlineBooking.barcodeType,
+            fullFillBy = warehouse.fullFillBy,
+            isWarehouse = flagOrderMeta.isWareHouse,
+            tickerInfo = tickerInfo,
+            pofStatus = pofData?.pofStatus ?: STATUS_INITIAL
         )
     }
 
     private fun SomDetailOrder.GetSomDetail.mapToProductsHeaderUiModel(): SomDetailProducts {
-        return SomDetailProducts(flagOrderMeta.isTopAds, flagOrderMeta.isBroadcastChat)
+        return SomDetailProducts(flagOrderMeta.isTopAds, flagOrderMeta.isBroadcastChat, flagOrderMeta.isAffiliate)
     }
 
-    private fun SomDetailOrder.GetSomDetail.mapToProductsUiModel(): List<Visitable<SomDetailAdapterFactoryImpl>> {
-        return mutableListOf<Visitable<SomDetailAdapterFactoryImpl>>().apply {
+    private fun SomDetailOrder.GetSomDetail.mapToProductsUiModel(): List<Visitable<SomDetailAdapterFactory>> {
+        return mutableListOf<Visitable<SomDetailAdapterFactory>>().apply {
             includeProductBmgms(details.bmgms, orderId, details.bmgmIcon, details.addOnIcon, details.addOnLabel)
             includeProductBundles(details.bundle, details.bundleIcon)
             includeProductNonBundles(details.nonBundle, addOnInfo, details.addOnIcon, details.addOnLabel)
@@ -273,7 +275,7 @@ object SomGetOrderDetailResponseMapper {
 
     fun mapResponseToProductsUiModels(
         response: SomDetailOrder.GetSomDetail?
-    ): List<Visitable<SomDetailAdapterFactoryImpl>> {
+    ): List<Visitable<SomDetailAdapterFactory>> {
         return response?.mapToProductsUiModel().orEmpty()
     }
 

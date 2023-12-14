@@ -60,12 +60,14 @@ data class DeliveryProduct(
 ) : Parcelable {
     fun getFormattedPrice(): String {
         return StringBuilder().apply {
-            if (realPrice != finalPrice) {
-                appendHtmlBoldText(" ($textFinalPrice ")
-                appendHtmlStrikethroughText(textRealPrice)
-                appendHtmlBoldText(")")
-            } else {
-                appendHtmlBoldText(" ($textFinalPrice)")
+            if (textFinalPrice.isNotEmpty()) {
+                if (realPrice != finalPrice) {
+                    appendHtmlBoldText(" ($textFinalPrice ")
+                    appendHtmlStrikethroughText(textRealPrice)
+                    appendHtmlBoldText(")")
+                } else {
+                    appendHtmlBoldText(" ($textFinalPrice)")
+                }
             }
         }.toString()
     }

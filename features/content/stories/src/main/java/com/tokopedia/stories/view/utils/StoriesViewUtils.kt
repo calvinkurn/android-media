@@ -1,5 +1,10 @@
 package com.tokopedia.stories.view.utils
 
+import android.content.Context
+import android.provider.Settings.Global
+import android.provider.Settings.Global.ANIMATOR_DURATION_SCALE
+import android.provider.Settings.Global.TRANSITION_ANIMATION_SCALE
+import android.provider.Settings.Global.WINDOW_ANIMATION_SCALE
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
@@ -10,23 +15,26 @@ import java.lang.Math.toDegrees
 import kotlin.math.atan2
 
 internal fun View.onTouchEventStories(
-    eventAction: (event: TouchEventStories) -> Unit,
+    eventAction: (event: TouchEventStories) -> Unit
 ) {
     var longPressState = false
 
     val gestureDetector by lazyThreadSafetyNone {
-        GestureDetectorCompat(this.context, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onScroll(
-                e1: MotionEvent,
-                e2: MotionEvent,
-                distanceX: Float,
-                distanceY: Float
-            ): Boolean {
-                val angle = toDegrees(atan2(e1.x - e2.y, e2.x - e1.x).toDouble()).toFloat()
-                if (angle > 45 && angle <= 135) eventAction.invoke(TouchEventStories.SWIPE_UP)
-                return false
+        GestureDetectorCompat(
+            this.context,
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onScroll(
+                    e1: MotionEvent,
+                    e2: MotionEvent,
+                    distanceX: Float,
+                    distanceY: Float
+                ): Boolean {
+                    val angle = toDegrees(atan2(e1.x - e2.y, e2.x - e1.x).toDouble()).toFloat()
+                    if (angle > 45 && angle <= 135) eventAction.invoke(TouchEventStories.SWIPE_UP)
+                    return false
+                }
             }
-        })
+        )
     }
 
     setOnLongClickListener {
@@ -41,7 +49,9 @@ internal fun View.onTouchEventStories(
                 if (longPressState) {
                     longPressState = false
                     eventAction.invoke(TouchEventStories.RESUME)
-                } else eventAction.invoke(TouchEventStories.NEXT_PREV)
+                } else {
+                    eventAction.invoke(TouchEventStories.NEXT_PREV)
+                }
             }
             MotionEvent.ACTION_CANCEL -> eventAction.invoke(TouchEventStories.RESUME)
             else -> {}
@@ -76,6 +86,18 @@ internal fun Int.getRandomNumber(): Int {
     val oldValue = this
     val newValue = (1 until 100).random()
     return if (oldValue == newValue) newValue.plus(1) else newValue
+}
+
+internal fun Context.isDeviceAnimationsEnabled(): Boolean {
+    return try {
+        (
+            Global.getFloat(contentResolver, ANIMATOR_DURATION_SCALE) > 0f &&
+                Global.getFloat(contentResolver, TRANSITION_ANIMATION_SCALE) > 0f &&
+                Global.getFloat(contentResolver, WINDOW_ANIMATION_SCALE) > 0f
+            )
+    } catch (_: Exception) {
+        false
+    }
 }
 
 internal const val KEY_CONFIG_ENABLE_STORIES_ROOM = "android_enable_content_stories_room"

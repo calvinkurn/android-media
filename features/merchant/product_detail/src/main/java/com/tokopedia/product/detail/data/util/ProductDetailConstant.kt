@@ -26,8 +26,6 @@ object ProductDetailConstant {
     const val PDP_RESULT_TRACE_P2_DATA = "pdp_result_trace_p2_data"
 
     // PAYLOADS
-    const val PAYLOAD_WISHLIST = 1
-    const val PAYLOAD_TRADEIN_AND_BOE = 421321
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
     const val PAYLOAD_SCROLL_IMAGE_VARIANT = 5
@@ -60,6 +58,7 @@ object ProductDetailConstant {
     const val INFO = "info"
     const val SHIPMENT = "shipment"
     const val SHIPMENT_V2 = "shipment_v2"
+    const val SHIPMENT_V3 = "shipment_v3"
     const val PRODUCT_LIST = "product_list"
     const val NOTIFY_ME = "teaser"
     const val TICKER_INFO = "ticker_info"
@@ -107,10 +106,13 @@ object ProductDetailConstant {
     const val CONTENT_WIDGET = "content_widget"
     const val PLAY_CAROUSEL = "play_carousel"
     const val FINTECH_WIDGET_TYPE = "chips_carousel"
+    const val FINTECH_WIDGET_V2_TYPE = "cicil_one_liner"
     const val FINTECH_WIDGET_NAME = "paylater_cicilan"
+    const val FINTECH_WIDGET_V2_NAME = "paylater_cicilan_v2"
     const val DILAYANI_TOKOPEDIA = "dt_info"
     const val AR_BUTTON = "button_ar"
     const val RECOM_VERTICAL = "pdp_vertical"
+    const val RECOM_STEAL_THE_LOOK = "steal_the_look"
     const val A_PLUS_IMAGE = "product_detail_media"
 
     // custom info title as component type
@@ -139,6 +141,7 @@ object ProductDetailConstant {
     const val ARG_CHANNEL = "ARG_CHANNEL"
     const val ARG_CAMPAIGN_ID = "ARG_CAMPAIGN_ID"
     const val ARG_VARIANT_ID = "ARG_VARIANT_ID"
+    const val ARG_PREFETCH_CACHE_ID = "ARG_PREFETCH_CACHE_ID"
 
     // Animation
     const val CART_MAX_COUNT = 99
@@ -181,7 +184,6 @@ object ProductDetailConstant {
     const val ERROR_TYPE_KEY = "error_type"
     const val EXTRAS_KEY = "extras"
     const val PDP_LOG_TAG = "BUYER_FLOW_PDP"
-
     const val DEFAULT_ATC_MAX_ORDER = 100
     const val DEFAULT_MIN_QTY = 1
 

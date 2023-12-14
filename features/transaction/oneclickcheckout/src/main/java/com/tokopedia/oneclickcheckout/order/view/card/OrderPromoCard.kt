@@ -9,10 +9,10 @@ import com.tokopedia.oneclickcheckout.databinding.CardOrderPromoBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
-import com.tokopedia.promocheckout.common.view.uimodel.PromoEntryPointSummaryItem
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.promousage.data.response.ResultStatus
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
+import com.tokopedia.promousage.domain.entity.PromoEntryPointSummaryItem
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.promocheckout.common.R as promocheckoutcommonR
 import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
@@ -40,6 +40,13 @@ class OrderPromoCard(
             }
         } else {
             renderOldButtonPromo(orderPromo)
+        }
+    }
+
+    private fun initPromoButton(enableNewInterface: Boolean) {
+        if (binding.btnPromoEntryPoint.enableNewInterface != enableNewInterface) {
+            binding.btnPromoEntryPoint.enableNewInterface = enableNewInterface
+            binding.btnPromoEntryPoint.init()
         }
     }
 
@@ -159,6 +166,7 @@ class OrderPromoCard(
     }
 
     private fun renderNewButtonPromoWithNewBehavior(orderPromo: OrderPromo) {
+        initPromoButton(orderPromo.enableNewInterface)
         binding.btnPromoCheckout.gone()
         binding.btnPromoEntryPoint.visible()
         binding.dividerPromoEntryPointBottom.visible()
@@ -171,171 +179,198 @@ class OrderPromoCard(
                 val isUsingPromo = orderPromo.lastApply.additionalInfo.usageSummaries.isNotEmpty()
                 val entryPointInfo = orderPromo.entryPointInfo
 
-                if (!entryPointInfo.isSuccess) {
-                    if (entryPointInfo.statusCode == ResultStatus.STATUS_USER_BLACKLISTED ||
-                        entryPointInfo.statusCode == ResultStatus.STATUS_PHONE_NOT_VERIFIED ||
-                        entryPointInfo.statusCode == ResultStatus.STATUS_COUPON_LIST_EMPTY
-                    ) {
-                        val message = entryPointInfo.messages.firstOrNull().ifNull { "" }
-                        if (entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN) {
-                            binding.btnPromoEntryPoint.showActiveNew(
-                                leftImageUrl = entryPointInfo.iconUrl,
-                                wording = message,
-                                rightIcon = IconUnify.CHEVRON_RIGHT,
-                                onClickListener = {
-                                    if (entryPointInfo.isClickable && !orderPromo.isDisabled) {
-                                        listener.onClickPromo()
-                                        listener.sendClickUserSavingAndPromoEntryPointEvent(
-                                            entryPointMessages = listOf(message),
-                                            entryPointInfo = entryPointInfo,
-                                            lastApply = orderPromo.lastApply
-                                        )
-                                    }
-                                }
-                            )
+                val isUserBlacklisted = entryPointInfo.statusCode == ResultStatus.STATUS_USER_BLACKLISTED
+                val isUserPhoneNotVerified = entryPointInfo.statusCode == ResultStatus.STATUS_PHONE_NOT_VERIFIED
+                val isUserPromoEmpty = entryPointInfo.statusCode == ResultStatus.STATUS_COUPON_LIST_EMPTY
+
+                if (!isUsingPromo) {
+                    if (!entryPointInfo.isSuccess) {
+                        if (isUserBlacklisted || isUserPhoneNotVerified || isUserPromoEmpty) {
+                            renderPromoError(orderPromo, entryPointInfo)
                         } else {
-                            binding.btnPromoEntryPoint.showInactiveNew(
-                                leftImageUrl = entryPointInfo.iconUrl,
-                                wording = message,
-                                onClickListener = {
-                                    if (entryPointInfo.isClickable && !orderPromo.isDisabled) {
-                                        listener.onClickPromo()
-                                        listener.sendClickUserSavingAndPromoEntryPointEvent(
-                                            entryPointMessages = listOf(message),
-                                            entryPointInfo = entryPointInfo,
-                                            lastApply = orderPromo.lastApply
-                                        )
-                                    }
-                                }
-                            )
+                            renderPromoErrorDefault(orderPromo)
                         }
-                        listener.sendImpressionPromoEntryPointErrorEvent(
-                            errorMessage = message,
-                            lastApply = orderPromo.lastApply
-                        )
                     } else {
-                        binding.btnPromoEntryPoint.showError {
-                            listener.onClickRetryValidatePromo()
-                            val errorMessage = binding.btnPromoEntryPoint.context
-                                .getString(promocheckoutcommonR.string.promo_checkout_failed_label_new)
-                            listener.sendImpressionPromoEntryPointErrorEvent(
-                                errorMessage = errorMessage,
-                                lastApply = orderPromo.lastApply
-                            )
-                        }
+                        renderPromoNoneApplied(orderPromo, entryPointInfo)
                     }
                 } else {
-                    if (!isUsingPromo) {
-                        val message = entryPointInfo.messages.firstOrNull()
-                            .ifNull { binding.root.context.getString(purchase_platformcommonR.string.promo_funnel_label) }
-                        if (entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN) {
-                            binding.btnPromoEntryPoint.showActiveNew(
-                                leftImageUrl = entryPointInfo.iconUrl,
-                                wording = message,
-                                rightIcon = IconUnify.CHEVRON_RIGHT,
-                                onClickListener = {
-                                    if (entryPointInfo.isClickable && !orderPromo.isDisabled) {
-                                        listener.onClickPromo()
-                                    }
-                                }
-                            )
+                    if (!entryPointInfo.isSuccess) {
+                        if (isUserBlacklisted || isUserPhoneNotVerified) {
+                            renderPromoError(orderPromo, entryPointInfo)
+                        } else if (isUserPromoEmpty) {
+                            renderPromoApplied(orderPromo, entryPointInfo)
                         } else {
-                            binding.btnPromoEntryPoint.showInactiveNew(
-                                leftImageUrl = entryPointInfo.iconUrl,
-                                wording = message,
-                                onClickListener = {
-                                    if (entryPointInfo.isClickable && !orderPromo.isDisabled) {
-                                        listener.onClickPromo()
-                                    }
-                                }
-                            )
+                            renderPromoErrorDefault(orderPromo)
                         }
                     } else {
-                        val lastApply = orderPromo.lastApply
-                        val message = when {
-                            lastApply.additionalInfo.messageInfo.message.isNotBlank() -> {
-                                lastApply.additionalInfo.messageInfo.message
-                            }
-
-                            lastApply.defaultEmptyPromoMessage.isNotBlank() -> {
-                                lastApply.defaultEmptyPromoMessage
-                            }
-
-                            else -> {
-                                binding.root.context.getString(purchase_platformcommonR.string.promo_funnel_label)
-                            }
-                        }
-                        val boPromoSummaries = lastApply.additionalInfo.usageSummaries
-                            .filter { it.type == PROMO_TYPE_BEBAS_ONGKIR }
-                            .map {
-                                PromoEntryPointSummaryItem(
-                                    title = it.description,
-                                    value = it.amountStr
-                                )
-                            }
-                        val otherPromoSummaries = lastApply.additionalInfo.usageSummaries
-                            .filter { it.type != PROMO_TYPE_BEBAS_ONGKIR }
-                            .map {
-                                PromoEntryPointSummaryItem(
-                                    title = it.description,
-                                    value = it.amountStr
-                                )
-                            }
-                        val secondaryText = if (otherPromoSummaries.isEmpty()) {
-                            entryPointInfo.messages.firstOrNull().ifNull { "" }
-                        } else {
-                            ""
-                        }
-                        val isSecondaryTextEnabled = otherPromoSummaries.isEmpty() &&
-                            secondaryText.isNotEmpty() &&
-                            entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN
-                        val isDetailExpanded = boPromoSummaries.isNotEmpty() && isSecondaryTextEnabled
-                        binding.btnPromoEntryPoint.showActiveNewExpandable(
-                            leftImageUrl = PromoEntryPointInfo.ICON_URL_ENTRY_POINT_APPLIED,
-                            wording = message,
-                            firstLevelSummary = boPromoSummaries,
-                            groupedSummary = otherPromoSummaries,
-                            secondaryText = secondaryText,
-                            isSecondaryTextEnabled = isSecondaryTextEnabled,
-                            isExpanded = isDetailExpanded,
-                            animateWording = orderPromo.isAnimateWording,
-                            onClickListener = {
-                                if (entryPointInfo.isClickable && !orderPromo.isDisabled) {
-                                    listener.onClickPromo()
-                                    listener.sendClickUserSavingDetailTotalSubsidyEvent(
-                                        entryPointMessages = listOf(message),
-                                        entryPointInfo = entryPointInfo,
-                                        lastApply = lastApply
-                                    )
-                                }
-                            },
-                            onChevronExpandClickListener = { isExpanded ->
-                                if (isExpanded) {
-                                    listener.sendClickUserSavingAndPromoEntryPointEvent(
-                                        entryPointMessages = listOf(message),
-                                        entryPointInfo = entryPointInfo,
-                                        lastApply = lastApply
-                                    )
-                                }
-                            },
-                            onSummaryExpandedListener = {
-                                listener.sendImpressionUserSavingDetailTotalSubsidyEvent(
-                                    entryPointMessages = listOf(message),
-                                    entryPointInfo = entryPointInfo,
-                                    lastApply = lastApply
-                                )
-                            }
-                        )
-                        listener.sendImpressionUserSavingTotalSubsidyEvent(
-                            entryPointMessages = listOf(message),
-                            entryPointInfo = entryPointInfo,
-                            lastApply = lastApply
-                        )
+                        renderPromoApplied(orderPromo, entryPointInfo)
                     }
                 }
             }
         }
         binding.root.alpha = if (orderPromo.isDisabled) DISABLE_ALPHA else ENABLE_ALPHA
+    }
+
+    private fun renderPromoError(orderPromo: OrderPromo, entryPointInfo: PromoEntryPointInfo) {
+        val message = entryPointInfo.messages.firstOrNull().ifNull { "" }
+        if (entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN) {
+            binding.btnPromoEntryPoint.showActiveNew(
+                leftImageUrl = entryPointInfo.iconUrl,
+                wording = message,
+                rightIcon = IconUnify.CHEVRON_RIGHT,
+                onClickListener = {
+                    if (entryPointInfo.isClickable && !orderPromo.isDisabled) {
+                        listener.onClickPromo()
+                        listener.sendClickUserSavingAndPromoEntryPointEvent(
+                            entryPointMessages = listOf(message),
+                            entryPointInfo = entryPointInfo,
+                            lastApply = orderPromo.lastApply
+                        )
+                    }
+                }
+            )
+        } else {
+            binding.btnPromoEntryPoint.showInactiveNew(
+                leftImageUrl = entryPointInfo.iconUrl,
+                wording = message,
+                onClickListener = {
+                    if (entryPointInfo.isClickable && !orderPromo.isDisabled) {
+                        listener.onClickPromo()
+                        listener.sendClickUserSavingAndPromoEntryPointEvent(
+                            entryPointMessages = listOf(message),
+                            entryPointInfo = entryPointInfo,
+                            lastApply = orderPromo.lastApply
+                        )
+                    }
+                }
+            )
+        }
+        listener.sendImpressionPromoEntryPointErrorEvent(
+            errorMessage = message,
+            lastApply = orderPromo.lastApply
+        )
+    }
+
+    private fun renderPromoErrorDefault(orderPromo: OrderPromo) {
+        binding.btnPromoEntryPoint.showError {
+            listener.onClickRetryValidatePromo()
+            val errorMessage = binding.btnPromoEntryPoint.context
+                .getString(promocheckoutcommonR.string.promo_checkout_failed_label_new)
+            listener.sendImpressionPromoEntryPointErrorEvent(
+                errorMessage = errorMessage,
+                lastApply = orderPromo.lastApply
+            )
+        }
+    }
+
+    private fun renderPromoNoneApplied(orderPromo: OrderPromo, entryPointInfo: PromoEntryPointInfo) {
+        val message = entryPointInfo.messages.firstOrNull()
+            .ifNull { binding.root.context.getString(purchase_platformcommonR.string.promo_funnel_label) }
+        if (entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN) {
+            binding.btnPromoEntryPoint.showActiveNew(
+                leftImageUrl = entryPointInfo.iconUrl,
+                wording = message,
+                rightIcon = IconUnify.CHEVRON_RIGHT,
+                onClickListener = {
+                    if (entryPointInfo.isClickable && !orderPromo.isDisabled) {
+                        listener.onClickPromo()
+                    }
+                }
+            )
+        } else {
+            binding.btnPromoEntryPoint.showInactiveNew(
+                leftImageUrl = entryPointInfo.iconUrl,
+                wording = message,
+                onClickListener = {
+                    if (entryPointInfo.isClickable && !orderPromo.isDisabled) {
+                        listener.onClickPromo()
+                    }
+                }
+            )
+        }
+    }
+
+    private fun renderPromoApplied(orderPromo: OrderPromo, entryPointInfo: PromoEntryPointInfo) {
+        val lastApply = orderPromo.lastApply
+        val message = when {
+            lastApply.additionalInfo.messageInfo.message.isNotBlank() -> {
+                lastApply.additionalInfo.messageInfo.message
+            }
+
+            lastApply.defaultEmptyPromoMessage.isNotBlank() -> {
+                lastApply.defaultEmptyPromoMessage
+            }
+
+            else -> {
+                binding.root.context.getString(purchase_platformcommonR.string.promo_funnel_label)
+            }
+        }
+        val boPromoSummaries = lastApply.additionalInfo.usageSummaries
+            .filter { it.type == PROMO_TYPE_BEBAS_ONGKIR }
+            .map {
+                PromoEntryPointSummaryItem(
+                    title = it.description,
+                    value = it.amountStr
+                )
+            }
+        val otherPromoSummaries = lastApply.additionalInfo.usageSummaries
+            .filter { it.type != PROMO_TYPE_BEBAS_ONGKIR }
+            .map {
+                PromoEntryPointSummaryItem(
+                    title = it.description,
+                    value = it.amountStr
+                )
+            }
+        val secondaryText = if (otherPromoSummaries.isEmpty()) {
+            entryPointInfo.messages.firstOrNull().ifNull { "" }
+        } else {
+            ""
+        }
+        val isSecondaryTextEnabled = otherPromoSummaries.isEmpty() &&
+            secondaryText.isNotEmpty() &&
+            entryPointInfo.color == PromoEntryPointInfo.COLOR_GREEN
+        val isDetailExpanded = boPromoSummaries.isNotEmpty() && isSecondaryTextEnabled
+        binding.btnPromoEntryPoint.showActiveNewExpandable(
+            leftImageUrl = PromoEntryPointInfo.ICON_URL_ENTRY_POINT_APPLIED,
+            wording = message,
+            firstLevelSummary = boPromoSummaries,
+            groupedSummary = otherPromoSummaries,
+            secondaryText = secondaryText,
+            isSecondaryTextEnabled = isSecondaryTextEnabled,
+            isExpanded = isDetailExpanded,
+            animateWording = orderPromo.isAnimateWording,
+            onClickListener = {
+                if (entryPointInfo.isClickable && !orderPromo.isDisabled) {
+                    listener.onClickPromo()
+                    listener.sendClickUserSavingDetailTotalSubsidyEvent(
+                        entryPointMessages = listOf(message),
+                        entryPointInfo = entryPointInfo,
+                        lastApply = lastApply
+                    )
+                }
+            },
+            onChevronExpandClickListener = { isExpanded ->
+                if (isExpanded) {
+                    listener.sendClickUserSavingAndPromoEntryPointEvent(
+                        entryPointMessages = listOf(message),
+                        entryPointInfo = entryPointInfo,
+                        lastApply = lastApply
+                    )
+                }
+            },
+            onSummaryExpandedListener = {
+                listener.sendImpressionUserSavingDetailTotalSubsidyEvent(
+                    entryPointMessages = listOf(message),
+                    entryPointInfo = entryPointInfo,
+                    lastApply = lastApply
+                )
+            }
+        )
+        listener.sendImpressionUserSavingTotalSubsidyEvent(
+            entryPointMessages = listOf(message),
+            entryPointInfo = entryPointInfo,
+            lastApply = lastApply
+        )
     }
 
     interface OrderPromoCardListener {

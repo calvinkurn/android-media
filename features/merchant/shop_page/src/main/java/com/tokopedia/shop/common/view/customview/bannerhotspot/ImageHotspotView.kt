@@ -4,15 +4,18 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.DefaultLifecycleObserver
 import com.tokopedia.feedcomponent.util.util.doOnLayout
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.shop.common.util.ShopUtilExt.isViewRectVisibleOnScreenArea
 import com.tokopedia.shop.common.view.model.ImageHotspotData
 import com.tokopedia.shop.databinding.ImageHotspotViewBinding
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.dpToPx
 
 class ImageHotspotView @JvmOverloads constructor(
     context: Context,
@@ -22,7 +25,7 @@ class ImageHotspotView @JvmOverloads constructor(
     HotspotTagView.Listener {
 
     companion object {
-        private val DEFAULT_CORNER_RADIUS = 4f.dpToPx().toInt()
+        private const val DEFAULT_CORNER_RADIUS = 12
         private const val DEFAULT_RATIO = "1:1"
     }
 
@@ -40,7 +43,16 @@ class ImageHotspotView @JvmOverloads constructor(
     private val imageShoppingBag: IconUnify
         get() = viewBinding.imageShoppingBag
     private var listHotspot: List<ImageHotspotData.HotspotData> = listOf()
-    private var isAllHotspotTagViewVisible = true
+    private val showIntroAnimationListener = object : ViewTreeObserver.OnScrollChangedListener {
+        override fun onScrollChanged() {
+            if (isViewRectVisibleOnScreenArea()) {
+                listHotspot.forEach {
+                    it.hotspotTagView?.showIntroAnimation()
+                }
+                viewTreeObserver.removeOnScrollChangedListener(this)
+            }
+        }
+    }
 
     init {
         viewBinding = ImageHotspotViewBinding.inflate(LayoutInflater.from(context), this)
@@ -53,40 +65,34 @@ class ImageHotspotView @JvmOverloads constructor(
         imageHotspotData: ImageHotspotData,
         listenerBubbleView: Listener,
         cornerRadius: Int = DEFAULT_CORNER_RADIUS,
-        ratio: String? = DEFAULT_RATIO
+        ratio: String? = DEFAULT_RATIO,
+        isShowIntroAnimation: Boolean = false,
     ) {
         setImageBanner(imageHotspotData.imageBannerUrl, cornerRadius, ratio)
-        setHotspot(imageHotspotData.listHotspot, listenerBubbleView)
+        setHotspot(imageHotspotData.listHotspot, listenerBubbleView, isShowIntroAnimation)
         setOnImageShoppingBagClicked()
     }
 
     private fun setOnImageShoppingBagClicked() {
-        imageShoppingBag.setOnClickListener {
-            hideAllBubbleView()
-            isAllHotspotTagViewVisible = !isAllHotspotTagViewVisible
-            if (isAllHotspotTagViewVisible) {
-                showAllHotspotTag()
-            } else {
-                hideAllHotspotTag()
-            }
-        }
+        imageShoppingBag.setOnClickListener { toggleAllHotspotTagsVisibility() }
     }
 
     private fun hideAllHotspotTag() {
         listHotspot.forEach {
-            it.hotspotTagView?.hideWithAnimation()
+            it.hotspotTagView?.hideWithAnimation()?.start()
         }
     }
 
     private fun showAllHotspotTag() {
         listHotspot.forEach {
-            it.hotspotTagView?.showWithAnimation()
+            it.hotspotTagView?.showWithAnimation()?.start()
         }
     }
 
     private fun setHotspot(
         listHotspot: List<ImageHotspotData.HotspotData>,
-        listenerBubbleView: Listener
+        listenerBubbleView: Listener,
+        isShowIntroAnimation: Boolean
     ) {
         clearDynamicView()
         this.listHotspot = listHotspot
@@ -94,6 +100,9 @@ class ImageHotspotView @JvmOverloads constructor(
             post {
                 addHotspotTagView(listHotspot, listenerBubbleView)
                 addBubbleView(listHotspot)
+                if(isShowIntroAnimation) {
+                    showIntroAnimation()
+                }
             }
         }
     }
@@ -153,9 +162,23 @@ class ImageHotspotView @JvmOverloads constructor(
             (imageBanner.layoutParams as? LayoutParams)?.dimensionRatio = ratio.takeIf { !it.isNullOrEmpty() } ?: DEFAULT_RATIO
             loadImage(imageBannerUrl)
             this.cornerRadius = cornerRadius
+            setOnClickListener { toggleAllHotspotTagsVisibility() }
         }
     }
 
+    private fun toggleAllHotspotTagsVisibility() {
+        hideAllBubbleView()
+        if (!isAllHotspotTagViewVisible()) {
+            showAllHotspotTag()
+        } else {
+            hideAllHotspotTag()
+        }
+    }
+
+    private fun isAllHotspotTagViewVisible(): Boolean {
+        return listHotspot.all { it.hotspotTagView?.isVisible == true }
+    }
+    
     override fun onHotspotTagClicked(
         hotspotData: ImageHotspotData.HotspotData,
         view: View
@@ -176,6 +199,11 @@ class ImageHotspotView @JvmOverloads constructor(
         listHotspot.forEach {
             it.bubbleView?.hideWithAnimation()
         }
+    }
+
+    private fun showIntroAnimation() {
+        viewTreeObserver.removeOnScrollChangedListener(showIntroAnimationListener)
+        viewTreeObserver.addOnScrollChangedListener(showIntroAnimationListener)
     }
 
 }

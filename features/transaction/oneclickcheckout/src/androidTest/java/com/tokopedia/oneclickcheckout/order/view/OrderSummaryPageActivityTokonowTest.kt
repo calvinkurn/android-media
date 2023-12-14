@@ -17,6 +17,7 @@ import com.tokopedia.oneclickcheckout.common.interceptor.RATES_TOKONOW_NO_DISCOU
 import com.tokopedia.oneclickcheckout.common.interceptor.RATES_TOKONOW_RP0_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.VALIDATE_USE_PROMO_REVAMP_TOKONOW_RP0_APPLIED_RESPONSE
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
+import com.tokopedia.oneclickcheckout.common.robot.waiting
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.test.application.annotations.UiTest
@@ -208,6 +209,7 @@ class OrderSummaryPageActivityTokonowTest {
                 closeBottomSheet()
             }
         } pay {
+            waiting()
             assertGoToPayment(
                 redirectUrl = "https://www.tokopedia.com/payment",
                 queryString = "transaction_id=123",

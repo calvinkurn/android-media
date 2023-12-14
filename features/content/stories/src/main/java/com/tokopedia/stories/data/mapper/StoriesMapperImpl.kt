@@ -1,5 +1,6 @@
 package com.tokopedia.stories.data.mapper
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.iconunify.IconUnify
@@ -24,6 +25,7 @@ import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.stories.R as storiesR
 
 class StoriesMapperImpl @Inject constructor(private val userSession: UserSessionInterface) :
@@ -71,7 +73,7 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
         dataDetail: StoriesDetailsResponseModel
     ): StoriesDetail {
         val detailData = dataDetail.data
-        if (detailData == ContentStoriesDetails()) return StoriesDetail()
+        if (detailData == ContentStoriesDetails()) return StoriesDetail.EmptyDetail
 
         val storiesSelectedPos = detailData.meta.selectedStoriesIndex
         val storiesItem = detailData.stories
@@ -99,15 +101,19 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                     resetValue = -1,
                     isContentLoaded = false,
                     author = buildAuthor(stories.author),
+                    category = StoriesDetailItem.StoryCategory.getByValue(stories.category),
+                    publishedAt = stories.publishedAt,
                     menus = buildMenu(stories.interaction, stories.author),
                     share = StoriesDetailItem.Sharing(
                         isShareable = stories.interaction.shareable,
-                        shareText = stories.meta.shareTextDescription,
+                        shareText = MethodChecker.fromHtml(stories.meta.shareTextDescription)
+                            .toString(),
                         metadata = LinkProperties(
                             linkerType = LinkerData.STORIES_TYPE,
-                            ogTitle = stories.meta.shareTitle,
+                            ogTitle = MethodChecker.fromHtml(stories.meta.shareTitle).toString(),
                             ogImageUrl = stories.meta.shareImage,
-                            ogDescription = stories.meta.shareDescription,
+                            ogDescription = MethodChecker.fromHtml(stories.meta.shareDescription)
+                                .toString(),
                             deeplink = stories.appLink,
                             desktopUrl = stories.webLink
                         )
@@ -132,6 +138,14 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
     ) =
         buildList {
             when {
+                !isOwner(author) && template.reportable -> add(
+                    ContentMenuItem(
+                        iconUnify = IconUnify.WARNING,
+                        name = contentcommonR.string.content_common_menu_report,
+                        type = ContentMenuIdentifier.Report
+                    )
+                )
+
                 isOwner(author) && template.deletable -> add(
                     ContentMenuItem(
                         iconUnify = IconUnify.DELETE,
@@ -144,17 +158,18 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
 
     private fun buildAuthor(author: ContentStoriesDetails.Stories.Author): StoryAuthor {
         val type = AuthorType.convertValue(author.type)
+        val name = MethodChecker.fromHtml(author.name).toString()
 
         return if (type == AuthorType.User) {
             StoryAuthor.Buyer(
-                userName = author.name,
+                userName = name,
                 userId = author.id,
                 avatarUrl = author.thumbnailURL,
                 appLink = author.appLink
             )
         } else {
             StoryAuthor.Shop(
-                shopName = author.name,
+                shopName = name,
                 shopId = author.id,
                 avatarUrl = author.thumbnailURL,
                 badgeUrl = author.badgeURL,

@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.explore.R
+import com.tokopedia.explore.databinding.FragmentContentHashtagLandingPageBinding
 import com.tokopedia.explore.di.ExploreComponent
 import com.tokopedia.explore.domain.entity.PostKol
 import com.tokopedia.explore.domain.entity.Tracking
@@ -32,7 +32,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_content_hashtag_landing_page.*
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -40,11 +39,14 @@ import javax.inject.Inject
 
 class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapter.OnHashtagPostClick {
 
+    private var _binding: FragmentContentHashtagLandingPageBinding? = null
+    private val binding: FragmentContentHashtagLandingPageBinding
+        get() = _binding!!
+
     private var searchTag: String = ""
     private var isInitialLoad: Boolean = true
     private var isFromContentDetailpage: Boolean = false
     private var sourceFromContentDetail: String = ""
-
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -76,6 +78,29 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
         getComponent(ExploreComponent::class.java).inject(this)
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentContentHashtagLandingPageBinding.inflate(layoutInflater)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (activity as? BaseSimpleActivity)?.updateTitle(searchTag)
+
+        binding.swipeRefresh.setOnRefreshListener {
+            endlessScrollListener.resetState()
+            isInitialLoad = true
+            loadData(true)
+        }
+
+        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView.addOnScrollListener(endlessScrollListener)
+        binding.recyclerView.adapter = adapter
+        loadData()
+
+        feedAnalytics.eventOpenHashtagScreen()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, viewModelFactory).get(HashtagLandingPageViewModel::class.java)
@@ -101,9 +126,9 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
     }
 
     private fun hideLoading() {
-        if (swipe_refresh.isRefreshing){
-            swipe_refresh.isRefreshing = false
-            swipe_refresh.isEnabled = true
+        if (binding.swipeRefresh.isRefreshing){
+            binding.swipeRefresh.isRefreshing = false
+            binding.swipeRefresh.isEnabled = true
         }
         adapter.hideLoadMore()
     }
@@ -159,48 +184,18 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
     }
 
     private fun showGlobalError(type: Int) {
-        error_hashtag?.setType(type)
-        error_hashtag?.setActionClickListener {
-            loadData(true)
-
-        }
-        error_hashtag?.show()
-        recycler_view?.gone()
+        binding.errorHashtag.setType(type)
+        binding.errorHashtag.setActionClickListener { loadData(true) }
+        binding.errorHashtag.show()
+        binding.recyclerView.gone()
     }
-
 
     private fun onSuccessGetData(data: List<PostKolUiModel>) {
-        recycler_view?.show()
-        if (isInitialLoad)
-            adapter.updateList(data)
-        else
-            adapter.addData(data)
+        binding.recyclerView.show()
+        if (isInitialLoad) adapter.updateList(data)
+        else adapter.addData(data)
 
-        if (adapter.itemCount == 0) {
-            adapter.showEmpty()
-        }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_content_hashtag_landing_page, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        (activity as? BaseSimpleActivity)?.updateTitle(searchTag)
-
-        swipe_refresh.setOnRefreshListener {
-            endlessScrollListener.resetState()
-            isInitialLoad = true
-            loadData(true)
-        }
-
-        recycler_view.layoutManager = layoutManager
-        recycler_view.addOnScrollListener(endlessScrollListener)
-        recycler_view.adapter = adapter
-        loadData()
-
-        feedAnalytics.eventOpenHashtagScreen()
+        if (adapter.itemCount == 0) adapter.showEmpty()
     }
 
     override fun onImageClick(post: PostKol, position: Int) {
@@ -261,10 +256,14 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
         if (!isForceRefresh && isLoadMore){
             adapter.showLoadMore()
         } else {
-            if (!swipe_refresh.isRefreshing)
-                swipe_refresh.isRefreshing = true
+            if (!binding.swipeRefresh.isRefreshing) binding.swipeRefresh.isRefreshing = true
         }
         viewModel.getContentByHashtag(isForceRefresh)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private val isLoadMore: Boolean

@@ -55,9 +55,11 @@ class GetMiniCartListUseCase @Inject constructor(
         const val PARAM_KEY_PROMO_ID = "promo_id"
         const val PARAM_KEY_PROMO_CODE = "promo_code"
         const val PARAM_KEY_SOURCE = "source"
+        const val PARAM_KEY_BMGM = "bmgm"
         const val PARAM_KEY_SHOP_DIRECT_PURCHASE = "is_shop_direct_purchase"
-
+        const val PARAM_KEY_USE_CASE = "usecase"
         const val PARAM_VALUE_ID = "id"
+        const val PARAM_VALUE_MINICART = "minicart"
 
         val QUERY = """
             query mini_cart_v3(${'$'}lang: String, ${'$'}additional_params: CartRevampAdditionalParams) {
@@ -172,6 +174,10 @@ class GetMiniCartListUseCase @Inject constructor(
                           initial_price
                           product_price
                           product_information
+                          product_tag_info {
+                            message
+                            icon_url
+                          }
                           product_notes
                           product_min_order
                           product_max_order

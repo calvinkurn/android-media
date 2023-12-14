@@ -142,6 +142,10 @@ open class BaseTokoNowViewModelTestFixture {
         every { userSession.isLoggedIn } returns isLoggedIn
     }
 
+    protected fun onGetDeviceId_thenReturn(deviceId: String) {
+        every { userSession.deviceId } returns deviceId
+    }
+
     protected fun onGetShopId_thenReturn(shopId: Long) {
         every { addressData.getShopId() } returns shopId
     }
@@ -158,8 +162,8 @@ open class BaseTokoNowViewModelTestFixture {
         coEvery { affiliateHelper.initCookie(any(), any(), any()) } throws error
     }
 
-    protected fun onGetTickerDataAsync_thenReturn(error: Throwable) {
-        coEvery { getTargetedTickerUseCase.execute(anyString(), anyString()) } throws error
+    protected fun onGetTickerDataAsync_thenReturn(error: Throwable, warehouseId: String = "", page: String = "") {
+        coEvery { getTargetedTickerUseCase.execute(warehouseId, page) } throws error
     }
 
     protected fun verifyGetMiniCartUseCaseCalled() {

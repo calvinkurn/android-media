@@ -26,6 +26,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
@@ -36,8 +37,8 @@ import com.tokopedia.discovery.common.reimagine.ReimagineRollence
 import com.tokopedia.discovery.common.reimagine.Search2Component
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
-import com.tokopedia.filter.common.data.IOption
 import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.IOption
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.filter.common.helper.getSortFilterParamsString
@@ -46,10 +47,13 @@ import com.tokopedia.filter.common.helper.toMapParam
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.detail.common.ProductDetailPrefetch
 import com.tokopedia.productcard.ProductCardLifecycleObserver
+import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_CREDIBILITY
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -97,9 +101,9 @@ import com.tokopedia.search.result.product.lastfilter.LastFilterListenerDelegate
 import com.tokopedia.search.result.product.onboarding.OnBoardingListenerDelegate
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationListener
-import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordListenerDelegate
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductListenerDelegate
+import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
 import com.tokopedia.search.result.product.suggestion.SuggestionListenerDelegate
 import com.tokopedia.search.result.product.tdn.TopAdsImageViewListenerDelegate
 import com.tokopedia.search.result.product.ticker.TickerListenerDelegate
@@ -111,7 +115,6 @@ import com.tokopedia.search.utils.BackToTopView
 import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.SearchIdlingResource
 import com.tokopedia.search.utils.SearchLogger
-import com.tokopedia.search.utils.SmallGridSpanCount
 import com.tokopedia.search.utils.applinkmodifier.ApplinkModifier
 import com.tokopedia.search.utils.applyQuickFilterElevation
 import com.tokopedia.search.utils.componentIdMap
@@ -177,9 +180,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
-
-    @Inject
-    lateinit var smallGridSpanCount: SmallGridSpanCount
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
@@ -419,9 +419,6 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun setupRecyclerView(rootView: View) {
-        val isReimagineSearchComponent =
-            reimagineRollence.search2Component() != Search2Component.CONTROL
-
         gridLayoutManager.spanSizeLookup = spanSizeLookup
         recyclerViewUpdater.initialize(
             rootView.findViewById(R.id.recyclerview),
@@ -432,7 +429,6 @@ class ProductListFragment: BaseDaggerFragment(),
             ),
             createProductListTypeFactory(),
             viewLifecycleOwner,
-            isReimagineSearchComponent,
         )
 
         recyclerViewUpdater.recyclerView?.let {
@@ -530,6 +526,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 this
             ),
             reimagineSearch2Component = reimagineRollence.search2Component(),
+            reimagineSearch3ProductCard = reimagineRollence.search3ProductCard(),
         )
     }
 
@@ -745,11 +742,12 @@ class ProductListFragment: BaseDaggerFragment(),
         } ?: ""
         val pageComponentId = presenter?.pageComponentId ?: ""
 
+        val additionalLabel = item.createAdditionalLabel(additionalPositionMap)
         dataLayerList.add(
             item.getProductAsObjectDataLayer(
                 filterSortParams,
                 pageComponentId,
-                additionalPositionMap,
+                additionalLabel,
             )
         )
         productItemDataViews.add(item)
@@ -814,13 +812,17 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onItemClicked(item: ProductItemDataView?, adapterPosition: Int) {
-        presenter?.onProductClick(item, adapterPosition)
+        if(item?.isImageBlurred.orFalse()) {
+            onSafeProductClickInfo(item)
+        } else {
+            presenter?.onProductClick(item, adapterPosition)
+        }
     }
 
     override fun sendTopAdsGTMTrackingProductClick(item: ProductItemDataView) {
         val product = createTopAdsProductForTracking(item)
         val pageComponentId = presenter?.pageComponentId ?: ""
-
+        val additionalLabel = item.createAdditionalLabel(additionalPositionMap)
         TopAdsGtmTracker.eventSearchResultProductClick(
             context,
             queryKey,
@@ -829,7 +831,7 @@ class ProductListFragment: BaseDaggerFragment(),
             getUserId(),
             item.dimension90,
             item.topadsTag,
-            item.getDimension115(additionalPositionMap),
+            item.getDimension115(additionalLabel),
             item.dimension131,
             pageComponentId,
         )
@@ -852,11 +854,12 @@ class ProductListFragment: BaseDaggerFragment(),
             filterSortParams = filterSortParams,
             componentId = pageComponentId,
         )
+        val additionalLabel = item.createAdditionalLabel(additionalPositionMap)
         SearchTracking.trackEventClickSearchResultProduct(
             item.getProductAsObjectDataLayer(
                 filterSortParams,
                 pageComponentId,
-                additionalPositionMap,
+                additionalLabel,
             ),
             eventLabel,
             userId,
@@ -867,8 +870,28 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun routeToProductDetail(item: ProductItemDataView?, adapterPosition: Int) {
         item ?: return
         val intent = getProductIntent(item.productID, item.warehouseID, item.applink) ?: return
-
+        prefetchPdp(intent, item)
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL)
+    }
+
+    private fun prefetchPdp(intent: Intent, item: ProductItemDataView) {
+        val context = context ?: return
+        val integrity = item.labelGroupList?.find {
+            it.position == LABEL_REIMAGINE_CREDIBILITY ||
+                it.position == LABEL_INTEGRITY
+        }?.title ?: ""
+
+        val prefetchData = ProductDetailPrefetch.Data(
+            image = item.imageUrl300,
+            name = item.productName,
+            price = item.priceInt.toDouble(),
+            slashPrice = item.originalPrice,
+            discount = item.discountPercentage,
+            freeShippingLogo = item.freeOngkirDataView.imageUrl,
+            rating = item.ratingString,
+            integrity = integrity
+        )
+        ProductDetailPrefetch.process(context, intent, prefetchData)
     }
 
     private fun getProductIntent(productId: String, warehouseId: String, applink: String = ""): Intent? {
@@ -1449,5 +1472,11 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun updateSearchBarNotification() {
         searchNavigationListener?.updateSearchBarNotification()
+    }
+
+    private fun onSafeProductClickInfo(itemProduct: ProductItemDataView?) {
+        if(itemProduct == null) return
+        presenter?.trackProductClick(itemProduct)
+        presenter?.showBottomSheetInappropriate(itemProduct)
     }
 }

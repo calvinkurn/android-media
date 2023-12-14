@@ -1,6 +1,7 @@
 package com.tokopedia.productcard.utils
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.Rect
@@ -22,6 +23,12 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.MultiTransformation
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -30,8 +37,10 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageTopRightCrop
+import com.tokopedia.media.loader.wrapper.MediaDataSource
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
+import com.tokopedia.productcard.utils.RoundedCornersTransformation.CornerType
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Label
@@ -41,6 +50,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.video_widget.VideoPlayerView
 import timber.log.Timber
+import kotlin.math.roundToInt
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.unifyprinciples.R.color as unifyRColor
 import com.tokopedia.unifycomponents.R as unifycomponentsR
@@ -168,6 +178,58 @@ internal fun ImageView.loadImageRounded(url: String?, radius: Float) {
     }
 }
 
+internal fun ImageView.imageRounded(url: String?, radius: Float, cornerType: CornerType?) {
+    if(url == null) return
+
+    if (cornerType == null || cornerType == CornerType.ALL) {
+        this.loadImageRounded(url, radius)
+    } else {
+        this.loadImageRounded(url,radius.roundToInt(), cornerType)
+    }
+}
+
+internal fun ImageView.loadImageRounded(
+    url: String,
+    roundingRadius: Int,
+    cornerType: CornerType
+){
+    val transformation = MultiTransformation(
+        RoundedCornersTransformation(roundingRadius, cornerType)
+    )
+    Glide.with(context)
+        .load(url)
+        .transform(CenterCrop(), transformation)
+        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+        .into(this)
+}
+
+internal fun ImageView.loadImageRoundedBlurred(
+    url: String,
+    roundingRadius: Int,
+    cornerType: CornerType= CornerType.TOP,
+    listenerOnSuccessLoad: (Bitmap?, MediaDataSource?) -> Unit = { _, _ -> },
+){
+    val transformation = MultiTransformation(
+        RoundedCornersTransformation(roundingRadius, cornerType)
+    )
+
+    val transcodingCoverTarget: CustomTarget<Bitmap> = object : CustomTarget<Bitmap>() {
+        override fun onLoadCleared(placeholder: Drawable?) {
+
+        }
+
+        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+            listenerOnSuccessLoad(resource, null)
+        }
+    }
+
+    Glide.with(context)
+        .asBitmap()
+        .load(url)
+        .transform(CenterCrop(), transformation)
+        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+        .into(transcodingCoverTarget)
+}
 internal fun Label.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
     if (labelGroup == null) {
         hide()
@@ -742,6 +804,14 @@ fun Label.forceLightRed() {
     setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_RN500))
     val drawable = ContextCompat.getDrawable(context, unifycomponentsR.drawable.label_bg)
     drawable?.setColorFilter(context.resources.getColor(R.color.dms_static_light_RN100), PorterDuff.Mode.SRC_ATOP)
+
+    setBackgroundDrawable(drawable)
+}
+
+fun Label.forceLightGreen() {
+    setTextColor(ContextCompat.getColor(context, R.color.dms_static_light_GN500))
+    val drawable = ContextCompat.getDrawable(context, unifycomponentsR.drawable.label_bg)
+    drawable?.setColorFilter(context.resources.getColor(R.color.dms_static_light_GN100), PorterDuff.Mode.SRC_ATOP)
 
     setBackgroundDrawable(drawable)
 }

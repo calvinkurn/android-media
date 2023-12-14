@@ -6,9 +6,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
-import com.tokopedia.sellerhomecommon.databinding.*
+import com.tokopedia.sellerhomecommon.databinding.ShcRecommendationWidgetBinding
+import com.tokopedia.sellerhomecommon.databinding.ShcRecommendationWidgetErrorBinding
+import com.tokopedia.sellerhomecommon.databinding.ShcRecommendationWidgetLoadingBinding
+import com.tokopedia.sellerhomecommon.databinding.ShcRecommendationWidgetSuccessBinding
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationTickerUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
@@ -19,6 +31,7 @@ import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By @ilhamsuaib on 05/04/21
@@ -167,10 +180,10 @@ class RecommendationViewHolder(
                 tickerShcRecommendation.gone()
 
                 val marginLeft = root.context.resources.getDimensionPixelSize(
-                    com.tokopedia.unifyprinciples.R.dimen.unify_space_12
+                    unifyprinciplesR.dimen.unify_space_12
                 )
                 val marginTop = root.context.resources.getDimensionPixelSize(
-                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                    unifyprinciplesR.dimen.layout_lvl3
                 )
                 slvShcShopLevel.setMargin(marginLeft, marginTop, Int.ZERO, Int.ZERO)
                 return
@@ -198,10 +211,10 @@ class RecommendationViewHolder(
                 })
 
                 val marginLeft = root.context.resources.getDimensionPixelSize(
-                    com.tokopedia.unifyprinciples.R.dimen.unify_space_12
+                    unifyprinciplesR.dimen.unify_space_12
                 )
                 val marginTop = root.context.resources.getDimensionPixelSize(
-                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl1
+                    unifyprinciplesR.dimen.layout_lvl1
                 )
                 slvShcShopLevel.setMargin(marginLeft, marginTop, Int.ZERO, Int.ZERO)
             }
@@ -220,13 +233,13 @@ class RecommendationViewHolder(
                     openAppLink(element)
                 }
                 val iconColor = root.context.getResColor(
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                    unifyprinciplesR.color.Unify_GN500
                 )
                 val iconWidth = root.context.resources.getDimension(
-                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                    unifyprinciplesR.dimen.layout_lvl3
                 )
                 val iconHeight = root.context.resources.getDimension(
-                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                    unifyprinciplesR.dimen.layout_lvl3
                 )
                 tvShcRecommendationCta.setUnifyDrawableEnd(
                     IconUnify.CHEVRON_RIGHT,
@@ -264,7 +277,7 @@ class RecommendationViewHolder(
             val recommendation = element.data?.recommendation
             recommendation?.let { data ->
                 val dp24 = root.context.resources.getDimension(
-                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                    unifyprinciplesR.dimen.layout_lvl3
                 )
                 tvShcRecommendationHeaderItem.setUnifyDrawableEnd(
                     IconUnify.CHEVRON_UP,
@@ -335,12 +348,12 @@ class RecommendationViewHolder(
         }
 
     private fun getProgressState(value: Int, max: Int): ShopScorePMWidget.State {
-        val textColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+        val textColor = unifyprinciplesR.color.Unify_NN950_96
         val barColor = when (value * max / INT_100) {
-            in INT_80..INT_100 -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
-            in INT_70..INT_79 -> com.tokopedia.unifyprinciples.R.color.Unify_GN300
-            in INT_60..INT_69 -> com.tokopedia.unifyprinciples.R.color.Unify_YN300
-            else -> com.tokopedia.unifyprinciples.R.color.Unify_RN500
+            in INT_80..INT_100 -> unifyprinciplesR.color.Unify_GN500
+            in INT_70..INT_79 -> unifyprinciplesR.color.Unify_GN300
+            in INT_60..INT_69 -> unifyprinciplesR.color.Unify_YN300
+            else -> unifyprinciplesR.color.Unify_RN500
         }
         return ShopScorePMWidget.State.Custom(textColor, barColor, barColor)
     }

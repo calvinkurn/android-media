@@ -327,7 +327,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     private boolean showFingerprintMenu() {
-        return !abtestPlatform.getString(AccountConstants.RollenceKey.BIOMETRIC_ENTRY_POINT, "").isEmpty();
+        return DeeplinkMapperUser.INSTANCE.isGotoLoginDisabled() &&
+        !abtestPlatform.getString(AccountConstants.RollenceKey.BIOMETRIC_ENTRY_POINT, "").isEmpty();
     }
 
     private void onPinMenuClicked(){

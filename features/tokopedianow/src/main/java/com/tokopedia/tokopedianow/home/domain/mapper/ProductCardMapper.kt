@@ -14,7 +14,8 @@ object ProductCardMapper {
         headerName: String,
         recomWidget: RecommendationWidget,
         miniCartData: MiniCartSimplifiedData?,
-        needToChangeMaxLinesName: Boolean
+        needToChangeMaxLinesName: Boolean,
+        hasBlockedAddToCart: Boolean
     ): List<ProductCardCompactCarouselItemUiModel> {
         return recomWidget.recommendationItemList.map { product ->
             val productId = product.productId.toString()
@@ -45,7 +46,9 @@ object ProductCardMapper {
                     needToShowQuantityEditor = true,
                     labelGroupList = mapLabelGroup(product),
                     usePreDraw = true,
-                    needToChangeMaxLinesName = needToChangeMaxLinesName
+                    needToChangeMaxLinesName = needToChangeMaxLinesName,
+                    hasBlockedAddToCart = hasBlockedAddToCart,
+                    warehouseId = product.warehouseId.toString()
                 ),
                 pageName = product.pageName,
                 recommendationType = product.recommendationType

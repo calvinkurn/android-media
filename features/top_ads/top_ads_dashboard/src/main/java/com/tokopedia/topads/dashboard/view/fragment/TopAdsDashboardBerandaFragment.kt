@@ -107,7 +107,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private var creditPerformance: String = ""
     private var topUpUCount: Int = 0
     private var autoTopUpBonus: Double = 0.0
-    private var showAutoTopUpOldFlow = false
 
     /*
         Insight Widget
@@ -193,11 +192,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         }
         binding.tambahKreditLayout.addCredit.setOnClickListener {
             TopadsTopupTracker.sendClickTambahKreditEvent()
-            if (showAutoTopUpOldFlow) {
-                openOldAutoTopUpBottomSheet()
-            } else {
-                openNewAutoTopUpBottomSheet()
-            }
+            openNewAutoTopUpBottomSheet()
         }
         binding.layoutRingkasan.ivSummaryDropDown.setOnClickListener {
             summaryAdTypesBottomSheet.show(childFragmentManager, "")
@@ -238,12 +233,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         intent.putExtra(TopAdsCreditTopUpActivity.TOP_UP_COUNT, topUpUCount)
         intent.putExtra(TopAdsCreditTopUpActivity.AUTO_TOP_UP_BONUS, autoTopUpBonus)
         startActivityForResult(intent, REQUEST_CODE_TOP_UP_CREDIT)
-    }
-
-    private fun openOldAutoTopUpBottomSheet() {
-        val intent = Intent(activity, TopAdsAddCreditActivity::class.java)
-        intent.putExtra(TopAdsAddCreditActivity.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
-        startActivityForResult(intent, REQUEST_CODE_ADD_CREDIT)
     }
 
     private fun setUpRecyclerView() {
@@ -618,7 +607,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 TopAdsCreditHistoryActivity.createInstance(
                     it,
                     isFromSelection,
-                    showAutoTopUpOldFlow,
+                    false,
                     (activity as? TopAdsDashboardActivity)?.datePickerIndex
                         ?: DATE_PICKER_DEFAULT_INDEX
                 ),

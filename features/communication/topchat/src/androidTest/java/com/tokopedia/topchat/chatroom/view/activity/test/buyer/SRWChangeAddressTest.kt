@@ -92,7 +92,7 @@ class SRWChangeAddressTest : TopchatRoomTest() {
 
         // When
         msgBubbleRobot {
-            clickCtaHeaderMsgAtBubblePosition(0)
+            clickCtaHeaderMsgBubbleAt(0)
         }
 
         // Then
@@ -150,7 +150,7 @@ class SRWChangeAddressTest : TopchatRoomTest() {
 
         // When
         msgBubbleRobot {
-            clickCtaHeaderMsgAtBubblePosition(0)
+            clickCtaHeaderMsgBubbleAt(0)
         }
 
         // Then

@@ -46,10 +46,10 @@ For detail about navigation can see this [figma](https://www.figma.com/file/e3yg
 
 **Positive Flow**
 
-![](../res/addnewaddress/navigation_positive_flow.png)  
+![](https://docs-android.tokopedia.net/images/docs/logisticaddaddress/addnewaddress/navigation_positive_flow.png)  
 **Negative Flow**
 
-![](../res/addnewaddress/navigation_negative_flow.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticaddaddress/addnewaddress/navigation_negative_flow.png)
 
 ## Tech Stack
 
@@ -60,7 +60,7 @@ For detail about navigation can see this [figma](https://www.figma.com/file/e3yg
 
 ## Flow Diagram
 
-![](../res/addnewaddress/flow_diagram.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticaddaddress/addnewaddress/flow_diagram.png)
 
 ## How-to
 

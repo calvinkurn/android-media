@@ -342,13 +342,13 @@ object ProductTrackingConstant {
     }
 
     object TrackerId {
-        const val TRACKER_ID_CLICK_THUMBNAIL = "31790"
-        const val TRACKER_ID_IMPRESS_THUMBNAIL = "31789"
         const val TRACKER_ID_CLICK_SPECIFICATION = "36325"
         const val TRACKER_ID_IMPRESS_SPECIFICATION = "36326"
         const val TRACKER_ID_CLICK_LOCATION_RESTRICTION = "40907"
         const val TRACKER_ID_IMPRESSION_LOCATION_RESTRICTION = "40906"
         const val TRACKER_ID_CLICK_A_PLUS_MORE = "45824"
         const val TRACKER_ID_CLICK_A_PLUS_LESS = "45825"
+        const val VALUE_TRACKER_ID_CLICK_SHARE_WIDGET = "48001"
+        const val VALUE_TRACKER_ID_CLICK_DIRECT_CHANNEL = "48135"
     }
 }

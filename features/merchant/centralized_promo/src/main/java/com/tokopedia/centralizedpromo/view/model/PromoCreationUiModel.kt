@@ -1,15 +1,23 @@
 package com.tokopedia.centralizedpromo.view.model
 
 import android.os.Parcelable
+import androidx.compose.runtime.Immutable
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.nest.principles.utils.ImpressionHolder
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
+@Immutable
 data class PromoCreationListUiModel(
     val filterItems: List<FilterPromoUiModel>,
     override val items: List<PromoCreationUiModel>,
     override val errorMessage: String
-) : BaseUiListModel<PromoCreationUiModel>
+) : BaseUiListModel<PromoCreationUiModel> {
+
+    val aovFilterImpressionHolder = ImpressionHolder()
+    val aovFilterImpressHolder = ImpressHolder()
+}
 
 @Parcelize
 data class PromoCreationUiModel(
@@ -27,12 +35,18 @@ data class PromoCreationUiModel(
     val headerText: String,
     val bottomText: String,
     val hasPerformanceButton: Boolean,
-    val hideCheckBox: Boolean
+    val hideCheckBox: Boolean,
+    val currentTimeMillis: Long
 ) : Parcelable, BaseUiListItemModel<CentralizedPromoAdapterTypeFactory> {
     companion object {
         const val PAGE_ID_SHOP_COUPON = "65"
     }
+
+    @IgnoredOnParcel
     override val impressHolder: ImpressHolder = ImpressHolder()
+
+    @IgnoredOnParcel
+    val impressHolderCompose: ImpressionHolder = ImpressionHolder()
 
     override fun type(typeFactory: CentralizedPromoAdapterTypeFactory): Int {
         return typeFactory.type(this)
@@ -43,5 +57,5 @@ data class PromoCreationUiModel(
 
 data class FilterPromoUiModel(
     val id: String = "0",
-    val name: String = "Semua Fitur",
+    val name: String = "Semua Fitur"
 )

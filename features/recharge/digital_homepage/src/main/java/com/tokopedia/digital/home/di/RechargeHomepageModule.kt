@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.digital.home.analytics.RechargeHomepageAnalytics
 import com.tokopedia.digital.home.domain.DigitalHomepageSearchByDynamicIconUseCase
+import com.tokopedia.digital.home.domain.DigitalPersoCloseWidgetUseCase
 import com.tokopedia.digital.home.domain.SearchAutoCompleteHomePageUseCase
 import com.tokopedia.digital.home.domain.SearchCategoryHomePageUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -48,6 +49,11 @@ class RechargeHomepageModule {
     @Provides
     fun provideSearchAutoCompleteUseCase(graphqlRepository: GraphqlRepository): SearchAutoCompleteHomePageUseCase =
             SearchAutoCompleteHomePageUseCase(graphqlRepository)
+
+    @RechargeHomepageScope
+    @Provides
+    fun provideDigitalClosePersoWidgetUseCase(graphqlRepository: GraphqlRepository): DigitalPersoCloseWidgetUseCase =
+        DigitalPersoCloseWidgetUseCase(graphqlRepository)
 
     @RechargeHomepageScope
     @Provides

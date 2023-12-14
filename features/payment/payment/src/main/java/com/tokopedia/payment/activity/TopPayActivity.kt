@@ -40,7 +40,7 @@ import com.tokopedia.common.payment.utils.LINK_ACCOUNT_BACK_BUTTON_APPLINK
 import com.tokopedia.common.payment.utils.LINK_ACCOUNT_SOURCE_PAYMENT
 import com.tokopedia.common.payment.utils.LinkStatusMatcher
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.device.info.model.AdditionalInfoModel.Companion.generateJson
+import com.tokopedia.device.info.model.AdditionalDeviceInfo
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
 import com.tokopedia.fingerprint.util.FingerprintConstant
 import com.tokopedia.logger.ServerLogger
@@ -124,6 +124,7 @@ class TopPayActivity :
     private var isPaymentPageLoadingTimeout: Boolean = false
 
     private val paymentPageTimeOutLogging by lazy { PaymentPageTimeOutLogging(this.application) }
+    private val paymentFingerprintDataLogger by lazy { PaymentFingerprintDataLogger() }
 
     private var reloadUrl = ""
 
@@ -235,7 +236,7 @@ class TopPayActivity :
 
     private fun setActionVar() {
         generateDeviceInfoData()
-        presenter.processUriPayment()
+        presenter.processUriPayment(paymentFingerprintDataLogger)
 
         val message = intent.getStringExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE)
         if (!message.isNullOrEmpty()) {
@@ -247,8 +248,14 @@ class TopPayActivity :
 
     override fun renderWebViewPostUrl(url: String, postData: ByteArray, isGet: Boolean) {
         if (isGet || isInsufficientBookingStockUrl(url)) {
+            paymentFingerprintDataLogger.loadMethod = PaymentPassData.METHOD_GET
+            paymentFingerprintDataLogger.length3 = String(postData, Charsets.UTF_8).length
+            paymentFingerprintDataLogger.sendLog(postData)
             scroogeWebView?.validateAndLoadUrl(url, getFingerprintHeader())
         } else {
+            paymentFingerprintDataLogger.loadMethod = PaymentPassData.METHOD_POST
+            paymentFingerprintDataLogger.length3 = String(postData, Charsets.UTF_8).length
+            paymentFingerprintDataLogger.sendLog(postData)
             scroogeWebView?.postUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, this) ?: "", postData)
         }
     }
@@ -892,9 +899,19 @@ class TopPayActivity :
     }
 
     private fun generateDeviceInfoData() {
+        val queryStringHashOriginal = paymentPassData?.queryString ?: ""
+        paymentFingerprintDataLogger.lengthOri = queryStringHashOriginal.length
+
         if (remoteConfig.getBoolean(RemoteConfigKey.PAYMENT_ENABLE_ADDITIONAL_DEVICE_INFO_HEADER, true)) {
             val additionalData = "$KEY_FINGERPRINT_DATA=${getFingerprintData()}&$KEY_FINTECH_FINGERPRINT_DATA=${getFintechFingerprintData()}"
             paymentPassData?.queryString = "${paymentPassData?.queryString}&$additionalData"
+
+            val queryStringHashUpdated = paymentPassData?.queryString ?: ""
+            paymentFingerprintDataLogger.length1 = queryStringHashUpdated.length
+            paymentFingerprintDataLogger.isToggledOn = true
+        } else {
+            paymentFingerprintDataLogger.length1 = queryStringHashOriginal.length
+            paymentFingerprintDataLogger.isToggledOn = false
         }
     }
 
@@ -905,7 +922,26 @@ class TopPayActivity :
     }
 
     private fun getFintechFingerprintData(): String {
-        val additionalInfoJson = generateJson(this@TopPayActivity.applicationContext)
+        val isEnableGetWidevineId = remoteConfig.getBoolean(
+            RemoteConfigKey.ANDROID_ENABLE_GENERATE_WIDEVINE_ID,
+            true
+        )
+        val isEnableGetWidevineIdSuspend = remoteConfig.getBoolean(
+            RemoteConfigKey.ANDROID_ENABLE_GENERATE_WIDEVINE_ID_SUSPEND,
+            true
+        )
+        val whitelistDisableWidevineId = remoteConfig.getString(
+            RemoteConfigKey.ANDROID_WHITELIST_DISABLE_GENERATE_WIDEVINE_ID,
+            ""
+        )
+
+        val additionalInfoJson = AdditionalDeviceInfo.generateJson(
+            this@TopPayActivity.applicationContext,
+            isEnableGetWidevineId,
+            isEnableGetWidevineIdSuspend,
+            whitelistDisableWidevineId,
+            userSession.userId
+        )
             .toByteArray(StandardCharsets.UTF_8)
         return Base64.encodeToString(additionalInfoJson, Base64.DEFAULT)
             .replace("\n", "")
@@ -1018,7 +1054,7 @@ class TopPayActivity :
 
         private const val PAYMENT_RELOAD_IS_TRUE = "payment_reload=true"
         private const val PAYMENT_RELOAD_IS_FALSE = "payment_reload=false"
-        private const val KEY_FINGERPRINT_DATA = "Fingerprint-Data"
+        const val KEY_FINGERPRINT_DATA = "Fingerprint-Data"
         private const val KEY_FINTECH_FINGERPRINT_DATA = "Fintech-Fingerprint-Data"
 
         @JvmStatic
