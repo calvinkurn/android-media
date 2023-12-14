@@ -41,7 +41,11 @@ class FrameViewCallbackStrategy() : ViewCallbackStrategy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             listener?.let {
                 val window = (context as? Activity)?.window
-                window?.removeOnFrameMetricsAvailableListener(it)
+                try {
+                    window?.removeOnFrameMetricsAvailableListener(it)
+                } catch (e: IllegalArgumentException) {
+                    e.printStackTrace()
+                }
             }
         }
     }
