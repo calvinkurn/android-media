@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.shorts.view.compose
+package com.tokopedia.play.broadcaster.shorts.view.compose.helper
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment

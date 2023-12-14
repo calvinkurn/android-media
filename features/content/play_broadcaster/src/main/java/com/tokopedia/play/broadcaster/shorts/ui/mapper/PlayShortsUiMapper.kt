@@ -59,7 +59,9 @@ class PlayShortsUiMapper @Inject constructor(
             },
             maxTitleCharacter = config.maxTitleCharacter,
             maxTaggedProduct = config.maxTaggedProduct,
-            shortsVideoSourceId = config.shortVideoSourceId
+            shortsVideoSourceId = config.shortVideoSourceId,
+            eligibleForInterspersing = config.eligibleForInterspersing,
+            productCountForInterspersing = config.productCountForInterspersing,
         )
     }
 

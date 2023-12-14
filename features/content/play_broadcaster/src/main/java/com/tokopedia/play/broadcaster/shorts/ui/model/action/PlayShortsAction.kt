@@ -47,6 +47,10 @@ sealed interface PlayShortsAction {
 
     object ClickUploadVideo : PlayShortsAction
 
+    data class SwitchInterspersing(
+        val isEnabled: Boolean,
+    ) : PlayShortsAction
+
     /** Shorts x Affiliate */
     object SubmitOnboardAffiliateTnc : PlayShortsAction
 
