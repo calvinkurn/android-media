@@ -46,9 +46,9 @@ class EPharmacyOrderDetailViewModelTest {
         } coAnswers {
             firstArg<(EPharmacyDataModel, OrderButtonData) -> Unit>().invoke(response, OrderButtonData(null, null, null))
         }
-        viewModel.getEPharmacyOrderDetail(mockk(), mockk(), mockk())
+        viewModel.getEPharmacyOrderDetail(0L, "", false)
         assert(viewModel.ePharmacyOrderDetailData.value is Success)
-        assert(viewModel.ePharmacyButtonData.value != null)
+        assert(viewModel.ePharmacyOrderDetailData.value != null)
     }
 
     @Test
@@ -58,7 +58,7 @@ class EPharmacyOrderDetailViewModelTest {
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.getEPharmacyOrderDetail(mockk(), mockk(), mockk())
+        viewModel.getEPharmacyOrderDetail(0L, "", false)
         Assert.assertEquals(
             (viewModel.ePharmacyOrderDetailData.value as Fail).throwable,
             mockThrowable
