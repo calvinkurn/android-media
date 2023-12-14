@@ -3,7 +3,7 @@ package com.tokopedia.content.product.preview.view.uimodel
 /**
  * @author by astidhiyaa on 27/11/23
  *
- * Button State [Ingatkan Saya, +Keranjang, Stok Habis], map product
+ * Button State [Ingatkan Saya, +Keranjang, Stok Habis]
  */
 data class BottomNavUiModel(
     val title: String,
@@ -40,9 +40,9 @@ data class BottomNavUiModel(
     ) : Price
 
     enum class ButtonState(val value: String) {
-        Active("ACTIVE"),
-        Inactive("INACTIVE"),
-        OOS("OOS"),
+        Active("ACTIVE"), //+Keranjang
+        Inactive("INACTIVE"), //Stok Habis
+        OOS("OOS"), //Ingatkan Saya
         Unknown("");
 
         companion object {
@@ -56,22 +56,6 @@ data class BottomNavUiModel(
             }
         }
     }
-
-    sealed interface Variant
-
-    object NoVariant : Variant
-    data class WithVariant(val lastSelected: Int) : Variant
-
-    sealed interface Stock {
-        val stock: Int
-    }
-
-    object OutOfStock : Stock {
-        override val stock: Int
-            get() = 0
-    }
-
-    data class Available(override val stock: Int) : Stock
 
     data class Shop(
         val id: String,

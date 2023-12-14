@@ -189,7 +189,7 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private fun renderBottomNav(prev: BottomNavUiModel?, model: BottomNavUiModel) {
-        if (prev == null || prev == model) return
+        if (prev == model) return
 
         binding.viewFooter.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
