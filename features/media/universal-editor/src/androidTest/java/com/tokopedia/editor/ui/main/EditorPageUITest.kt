@@ -23,17 +23,6 @@ import org.junit.Assert
 class EditorPageUITest : EditorTest() {
 
     @Test
-    fun should_able_to_open_main_editor_activity() {
-        // Given
-        val file = FileLoader.imageFile(context)
-
-        // When
-        startActivity {
-            filePaths(listOf(file.path))
-        }
-    }
-
-    @Test
     fun should_able_to_set_configurable_toolbar_component() {
         // Given
         val file = FileLoader.imageFile(context)
