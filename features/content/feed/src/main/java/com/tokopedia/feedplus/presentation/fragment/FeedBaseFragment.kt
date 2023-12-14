@@ -516,6 +516,7 @@ class FeedBaseFragment :
             creationUploader
                 .observe()
                 .collect { uploadResult ->
+                    println("JOE LOG $uploadResult")
                     when (uploadResult) {
                         is CreationUploadResult.Empty -> {
                             binding.uploadView.hide()
