@@ -7,7 +7,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.nfc.NfcAdapter
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
@@ -79,6 +78,7 @@ import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpMapper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
@@ -737,9 +737,9 @@ open class EmoneyPdpFragment :
 
     private fun renderTickerNFCNotSupportedByGeneration(data: EmoneyBCAGenCheckModel) {
         if (data.isGenOne) {
-            showTickerNotSupported(data.message +
+            showTickerNotSupported()
+            setTickerAdapter(data.message +
                 getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_bca_gen_one_additional_link))
-            addBottomSheetBCAInfoSupport()
             showRecentNumberAndPromo()
         } else {
             hideTickerNotSupported()
@@ -748,38 +748,37 @@ open class EmoneyPdpFragment :
     }
 
     private fun renderTickerGenerationCheckError() {
-        showTickerNotSupported(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_nfc_check_gen))
+        showTickerNotSupported()
+        setTickerAdapter(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_nfc_check_gen))
         showRecentNumberAndPromo()
     }
 
     private fun renderTickerNFCNotSupported() {
         emoneyPdpViewModel.cancelBCACheckGenJob()
         if (detailPassData.isBCAGenOne) {
-            showTickerNotSupported(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_bca_gen_one))
-            addBottomSheetBCAInfoSupport()
+            showTickerNotSupported()
+            setTickerAdapter(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_bca_gen_one))
             showRecentNumberAndPromo()
         } else if (emoneyPdpViewModel.selectedOperatorIsBCA() && !binding.emoneyPdpInputCardWidget.isShownError
             && binding.emoneyPdpInputCardWidget.getNumber().isNotEmpty()) {
 
             if (this::nfcAdapter.isInitialized && !nfcAdapter.isEnabled) {
-                showTickerNotSupported(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_nfc_is_not_active))
+                showTickerNotSupported()
+                setTickerAdapter(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_nfc_is_not_active))
                 showRecentNumberAndPromo()
-                binding.tickerNotSupported.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        navigateToNFCSettings()
-                    }
-
-                    override fun onDismiss() {}
-                })
             } else if (this::nfcAdapter.isInitialized && nfcAdapter != null) {
                 detailPassData.clientNumber?.let {
                     emoneyPdpViewModel.getBCAGenCheck(it)
                 }
             } else {
-                showTickerNotSupported(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_nfc_not_supported))
+                showTickerNotSupported()
+                setTickerAdapter(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_nfc_not_supported))
                 showRecentNumberAndPromo()
-                addBottomSheetBCAInfoSupport()
             }
+        } else if (convertRupiahToInt(detailPassData.additionalETollBalance) >= MAX_TAPCASH) {
+            showTickerNotSupported()
+            setTickerAdapter()
+            showRecentNumberAndPromo()
         } else {
             hideTickerNotSupported()
         }
@@ -789,19 +788,53 @@ open class EmoneyPdpFragment :
         binding.tickerNotSupported.hide()
     }
 
-    private fun showTickerNotSupported(description: String) {
+    private fun showTickerNotSupported() {
         binding.tickerNotSupported.show()
-        binding.tickerNotSupported.setHtmlDescription(description)
     }
 
-    private fun addBottomSheetBCAInfoSupport() {
-        binding.tickerNotSupported.setDescriptionClickEvent(object : TickerCallback {
-            override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                showBottomSheetBCAInfo()
+    private fun setTickerAdapter(message: String = "") {
+        val tickers = mutableListOf<TickerData>()
+        if (message.isNotEmpty()) {
+            tickers.add(
+                TickerData(
+                    "",
+                    message,
+                    Ticker.TYPE_ERROR,
+                    true
+            ))
+        }
+        detailPassData.additionalETollBalance?.let { balanceString ->
+            val balance = convertRupiahToInt(balanceString)
+            detailPassData.additionalETollOperatorName?.let { operatorName ->
+                if ((operatorName != ISSUER_NAME_TAPCASH && balance >= MAX_NON_TAPCASH) ||
+                    (operatorName == ISSUER_NAME_TAPCASH && balance >= MAX_TAPCASH)) {
+                    tickers.add(
+                        TickerData(
+                            getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_max_limit_title),
+                            getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_max_limit_desc),
+                            Ticker.TYPE_WARNING,
+                            true
+                        ))
+                }
             }
-
-            override fun onDismiss() {}
-        })
+        }
+        if (tickers.isEmpty()) {
+            hideTickerNotSupported()
+        } else {
+            context?.let { context ->
+                val tickerAdapter = TickerPagerAdapter(context, tickers)
+                tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                    override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                        if (linkUrl.contains("nfc")) {
+                            navigateToNFCSettings()
+                        } else {
+                            showBottomSheetBCAInfo()
+                        }
+                    }
+                })
+                binding.tickerNotSupported.addPagerView(tickerAdapter, tickers)
+            }
+        }
     }
 
     private fun loadProducts(prefix: RechargePrefix) {
@@ -1109,6 +1142,18 @@ open class EmoneyPdpFragment :
         bottomSheets.show(childFragmentManager, TAG_BCA_INFO)
     }
 
+    private fun convertRupiahToInt(rupiah: String?): Int {
+        return try {
+            var newRupiah = rupiah
+            newRupiah = newRupiah?.replace("Rp", "")
+            newRupiah = newRupiah?.replace(".", "")
+            newRupiah = newRupiah?.replace(" ", "")
+            newRupiah.toIntSafely()
+        } catch (e: Exception) {
+            0
+        }
+    }
+
     companion object {
         private const val TAG = "EmoneyProductDetailBottomSheet"
         private const val TAG_BCA_INFO = "EmoneyBCAInfoBottomSheets"
@@ -1124,6 +1169,8 @@ open class EmoneyPdpFragment :
         private const val REQUEST_CODE_LOGIN = 1010
 
         private const val MAX_CHAR_EMONEY_CARD_NUMBER = 16
+        private const val MAX_NON_TAPCASH = 1700000
+        private const val MAX_TAPCASH = 700000
 
         const val EXTRA_PARAM_DIGITAL_CATEGORY_DETAIL_PASS_DATA = "EXTRA_PARAM_PASS_DATA"
         private const val EXTRA_USER_INPUT_EMONEY_NUMBER = "EXTRA_USER_INPUT_EMONEY_NUMBER"
