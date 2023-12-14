@@ -74,6 +74,11 @@ class PlayShortsSummaryFragment @Inject constructor(
         creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
     )
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setAttachedFragment()
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -121,7 +126,6 @@ class PlayShortsSummaryFragment @Inject constructor(
 
         analytic.openScreenSummaryPage(viewModel.selectedAccount)
 
-        setupView()
         setupListener()
         setupObserver()
 
@@ -133,8 +137,28 @@ class PlayShortsSummaryFragment @Inject constructor(
         _binding = null
     }
 
-    private fun setupView() {
-        /** TODO: setup cover, name, pict, title here */
+    private fun setAttachedFragment() {
+        childFragmentManager.addFragmentOnAttachListener { _, childFragment ->
+            when (childFragment) {
+                is InterspersingConfirmationBottomSheet -> {
+                    /** TODO: handle new cover & old cover url */
+                    childFragment.data = InterspersingConfirmationBottomSheet.Data(
+                        newCoverUrl = "",
+                        oldCoverUrl = "",
+                    )
+
+                    childFragment.listener = object : InterspersingConfirmationBottomSheet.Listener {
+                        override fun clickPdpVideo() {
+                            /** TODO: redirect to new fragment */
+                        }
+
+                        override fun clickNext() {
+                            viewModel.submitAction(PlayShortsAction.UploadVideo)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun setupListener() {
@@ -147,8 +171,8 @@ class PlayShortsSummaryFragment @Inject constructor(
         binding.btnUploadVideo.setOnClickListener {
             analytic.clickUploadVideo(viewModel.shortsId, viewModel.selectedAccount)
 
-            showInterspersingConfirmation()
-//            viewModel.submitAction(PlayShortsAction.ClickUploadVideo)
+            /** TODO: hit gql to check existing video */
+            viewModel.submitAction(PlayShortsAction.UploadVideo)
         }
     }
 

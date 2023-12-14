@@ -1,6 +1,8 @@
 package com.tokopedia.play.broadcaster.shorts.view.compose
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,12 +17,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.components.NestImage
@@ -94,9 +99,7 @@ fun InterspersingConfirmationLayout(
         ContentPreviewSection(
             coverUrl = oldCoverUrl,
             description = stringResource(id = R.string.play_shorts_interspersing_video_old_video_desc),
-            onClickCover = {
-
-            },
+            onClickCover = onClickPdpVideo,
             modifier = Modifier.constrainAs(oldContentSection) {
                 top.linkTo(tvSectionSeparator.bottom, 20.dp)
                 start.linkTo(parent.start)
@@ -155,7 +158,10 @@ private fun ContentPreviewSection(
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
                     .width(60.dp)
-                    .height(60.dp),
+                    .height(60.dp)
+                    .clickable {
+                        onClickCover?.invoke()
+                    },
             ) {
                 NestImage(
                     source = ImageSource.Remote(coverUrl),
@@ -163,7 +169,20 @@ private fun ContentPreviewSection(
                 )
 
                 if (onClickCover != null) {
-                    /** TODO: handle this */
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color(0f, 0f, 0f, 0.4f))
+                    )
+
+                    NestIcon(
+                        iconId = IconUnify.PLAY,
+                        modifier = Modifier.align(Alignment.Center),
+                        colorLightEnable = Color.White,
+                        colorLightDisable = Color.White,
+                        colorNightEnable = Color.White,
+                        colorNightDisable = Color.White,
+                    )
                 }
             }
 

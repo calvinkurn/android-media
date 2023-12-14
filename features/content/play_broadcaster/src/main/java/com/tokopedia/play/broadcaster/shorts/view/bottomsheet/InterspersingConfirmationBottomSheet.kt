@@ -18,9 +18,9 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
  */
 class InterspersingConfirmationBottomSheet : BottomSheetUnify() {
 
-    private var listener: Listener? = null
+    var listener: Listener? = null
 
-    private var data: Data = Data.Empty
+    var data: Data = Data.Empty
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

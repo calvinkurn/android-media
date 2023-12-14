@@ -227,7 +227,7 @@ class PlayShortsViewModel @Inject constructor(
             /** Summary */
             is PlayShortsAction.LoadTag -> handleLoadTag()
             is PlayShortsAction.SelectTag -> handleSelectTag(action.tag)
-            is PlayShortsAction.ClickUploadVideo -> handleClickUploadVideo()
+            is PlayShortsAction.UploadVideo -> handleUploadVideo()
             is PlayShortsAction.SwitchInterspersing -> handleSwitchInterspersing(action.isEnabled)
 
             /** Shorts x Affiliate */
@@ -480,7 +480,7 @@ class PlayShortsViewModel @Inject constructor(
         }
     }
 
-    private fun handleClickUploadVideo() {
+    private fun handleUploadVideo() {
         viewModelScope.launchCatchError(block = {
             if (_uploadState.value is PlayShortsUploadUiState.Loading) return@launchCatchError
 
