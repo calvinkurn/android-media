@@ -12,11 +12,7 @@ class ProductIndicatorAdapter(
     private val listener: ProductIndicatorListener
 ) : ListAdapter<ProductIndicatorUiModel, ViewHolder>(ProductIndicatorDiffUtil()) {
 
-    private val productIndicator = mutableListOf<ProductIndicatorUiModel>()
-
     fun updateData(data: List<ProductIndicatorUiModel>) {
-        productIndicator.clear()
-        productIndicator.addAll(data)
         submitList(data)
     }
 
@@ -25,7 +21,7 @@ class ProductIndicatorAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        (holder as ProductIndicatorViewHolder).bind(productIndicator[position])
+        (holder as ProductIndicatorViewHolder).bind(getItem(position))
     }
 
     internal class ProductIndicatorDiffUtil : DiffUtil.ItemCallback<ProductIndicatorUiModel>() {

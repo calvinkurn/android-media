@@ -15,11 +15,7 @@ class ProductContentAdapter(
     private val listener: ProductPreviewListener
 ) : ListAdapter<ContentUiModel, ViewHolder>(ProductContentDiffUtil()) {
 
-    private val productContent = mutableListOf<ContentUiModel>()
-
     fun updateData(data: List<ContentUiModel>) {
-        productContent.clear()
-        productContent.addAll(data)
         submitList(data)
     }
 
@@ -33,14 +29,14 @@ class ProductContentAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         when (holder.itemViewType) {
-            TYPE_IMAGE -> (holder as ProductContentImageViewHolder).bind(productContent[position])
-            TYPE_VIDEO -> (holder as ProductContentVideoViewHolder).bind(productContent[position])
+            TYPE_IMAGE -> (holder as ProductContentImageViewHolder).bind(getItem(position))
+            TYPE_VIDEO -> (holder as ProductContentVideoViewHolder).bind(getItem(position))
             else -> (holder as ProductContentLoadingViewHolder).bind()
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (productContent[position].type) {
+        return when (getItem(position).type) {
             MediaType.Image -> TYPE_IMAGE
             MediaType.Video -> TYPE_VIDEO
             MediaType.Unknown -> TYPE_UNKNOWN

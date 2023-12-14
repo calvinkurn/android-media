@@ -29,8 +29,8 @@ class ProductPreviewViewModel @AssistedInject constructor(
         fun create(param: EntrySource): ProductPreviewViewModel
     }
 
-    private val _productContentState = MutableStateFlow(listOf<ContentUiModel>())
-    private val _productIndicatorState = MutableStateFlow(listOf<ProductIndicatorUiModel>())
+    private val _productContentState = MutableStateFlow(emptyList<ContentUiModel>())
+    private val _productIndicatorState = MutableStateFlow(emptyList<ProductIndicatorUiModel>())
 
     val productUiState: Flow<ProductPreviewUiState>
         get() = combine(

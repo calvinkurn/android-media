@@ -15,6 +15,7 @@ class ProductPreviewViewModelFactory @AssistedInject constructor(
     @Assisted private val param: EntrySource,
     private val factory: ProductPreviewViewModel.Factory,
 ) : ViewModelProvider.Factory {
+
     @AssistedFactory
     interface Creator {
         fun create(@Assisted param: EntrySource): ProductPreviewViewModelFactory

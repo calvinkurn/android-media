@@ -11,7 +11,7 @@ class ProductIndicatorItemDecoration(
 ) : RecyclerView.ItemDecoration() {
 
     private val spaceItemEdge = context.resources.getDimensionPixelOffset(contentproductpreviewR.dimen.product_preview_space_16)
-    private val spaceItem = context.resources.getDimensionPixelOffset(contentproductpreviewR.dimen.product_preview_space_2)
+    private val spaceItem = context.resources.getDimensionPixelOffset(contentproductpreviewR.dimen.product_preview_space_6)
 
     override fun getItemOffsets(
         outRect: Rect,
