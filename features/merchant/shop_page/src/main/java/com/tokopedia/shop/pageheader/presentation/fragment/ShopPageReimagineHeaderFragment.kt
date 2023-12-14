@@ -1252,14 +1252,9 @@ class ShopPageReimagineHeaderFragment :
             observeShopPageMiniCartSharedViewModel()
             getInitialData()
             initViews(view)
-            setViewState(VIEW_LOADING)
-
-            val prefetchData = getPrefetchData()
-            val hasPrefetchData = prefetchData != null
-            if (hasPrefetchData) {
-                renderPrefetchData(prefetchData)
-            }
+            handlePrefetchData()
         }
+
         context?.let {
             screenShotDetector = SharingUtil.createAndStartScreenShotDetector(
                 it,
@@ -1272,13 +1267,24 @@ class ShopPageReimagineHeaderFragment :
         storiesManager.updateStories(listOf(shopId))
     }
 
+    private fun handlePrefetchData() {
+        val prefetchData = getPrefetchData()
+        val hasPrefetchData = prefetchData != null
+
+        if (hasPrefetchData) {
+            renderPrefetchData(prefetchData)
+            setViewState(VIEW_CONTENT)
+        } else {
+            setViewState(VIEW_LOADING)
+        }
+    }
+
     private fun renderPrefetchData(prefetchData: ShopPrefetchData?) {
         if (prefetchData == null) return
 
-        setViewState(VIEW_CONTENT)
+        val tabContentWrapper = ShopPageHeaderFragmentTabContentWrapper.createInstance()
 
         val tabData = ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData(name = ShopPageHeaderTabName.PRE_FETCH_DATA)
-        val tabContentWrapper = ShopPageHeaderFragmentTabContentWrapper.createInstance()
         tabContentWrapper.setTabData(tabData)
 
         val prefetchHeaderData = shopPrefetchMapper.createHeaderData(context, prefetchData)
@@ -1295,6 +1301,7 @@ class ShopPageReimagineHeaderFragment :
                 tabFragment = tabContentWrapper
             )
         )
+
         viewPagerAdapterHeader?.setTabData(listShopPageTabModel)
         tabLayout?.removeAllTabs()
         viewPagerAdapterHeader?.notifyDataSetChanged()
