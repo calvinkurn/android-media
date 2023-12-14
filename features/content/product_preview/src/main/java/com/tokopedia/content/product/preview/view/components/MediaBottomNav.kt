@@ -98,40 +98,40 @@ fun MediaBottomNav(
                     }
             )
 
-
-
-            NestTypography(
-                text = (product.price as BottomNavUiModel.DiscountedPrice).ogPriceFmt,
-                maxLines = 1,
-                textStyle = NestTheme.typography.small.copy(
-                    color = colorResource(id = unifyprinciplesR.color.Unify_NN400),
-                    textDecoration = TextDecoration.LineThrough
-                ),
-                modifier = Modifier
-                    .constrainAs(slashedPrice) {
-                        width = Dimension.wrapContent
-                        height = Dimension.wrapContent
-                        start.linkTo(ogPrice.end, 4.dp)
-                        bottom.linkTo(ogPrice.bottom)
-                        top.linkTo(ogPrice.top)
-                    }
-            )
-            NestTypography(
-                text = product.price.discountPercentage,
-                maxLines = 1,
-                textStyle = NestTheme.typography.small.copy(
-                    color = colorResource(id = unifyprinciplesR.color.Unify_RN500),
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier
-                    .constrainAs(discountTag) {
-                        width = Dimension.wrapContent
-                        height = Dimension.wrapContent
-                        start.linkTo(slashedPrice.end, 2.dp)
-                        bottom.linkTo(slashedPrice.bottom)
-                        top.linkTo(slashedPrice.top)
-                    }
-            )
+            if (product.price is BottomNavUiModel.DiscountedPrice) {
+                NestTypography(
+                    text = product.price.ogPriceFmt,
+                    maxLines = 1,
+                    textStyle = NestTheme.typography.small.copy(
+                        color = colorResource(id = unifyprinciplesR.color.Unify_NN400),
+                        textDecoration = TextDecoration.LineThrough
+                    ),
+                    modifier = Modifier
+                        .constrainAs(slashedPrice) {
+                            width = Dimension.wrapContent
+                            height = Dimension.wrapContent
+                            start.linkTo(ogPrice.end, 4.dp)
+                            bottom.linkTo(ogPrice.bottom)
+                            top.linkTo(ogPrice.top)
+                        }
+                )
+                NestTypography(
+                    text = product.price.discountPercentage,
+                    maxLines = 1,
+                    textStyle = NestTheme.typography.small.copy(
+                        color = colorResource(id = unifyprinciplesR.color.Unify_RN500),
+                        fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier
+                        .constrainAs(discountTag) {
+                            width = Dimension.wrapContent
+                            height = Dimension.wrapContent
+                            start.linkTo(slashedPrice.end, 2.dp)
+                            bottom.linkTo(slashedPrice.bottom)
+                            top.linkTo(slashedPrice.top)
+                        }
+                )
+            }
         }
     }
 }
