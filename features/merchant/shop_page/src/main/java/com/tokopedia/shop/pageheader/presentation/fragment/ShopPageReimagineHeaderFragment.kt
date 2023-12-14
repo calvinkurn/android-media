@@ -147,6 +147,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopPageMiniCartSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.databinding.ShopHeaderFragmentBinding
 import com.tokopedia.shop.databinding.WidgetSellerMigrationBottomSheetHasPostBinding
+import com.tokopedia.shop.home.util.mapper.ShopPagePrefetchMapper
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabModel
@@ -171,7 +172,6 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderLayoutUi
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderP1HeaderData
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderTickerData
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.BaseShopPageHeaderComponentUiModel
-import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderActionWidgetFollowButtonComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderBadgeTextValueComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderButtonComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderImageOnlyComponentUiModel
@@ -336,6 +336,9 @@ class ShopPageReimagineHeaderFragment :
 
     @Inject
     lateinit var entryPointSharedPref: ContentCreationEntryPointSharedPref
+
+    @Inject
+    lateinit var shopPrefetchMapper: ShopPagePrefetchMapper
 
     var shopHeaderViewModel: ShopPageHeaderViewModel? = null
     private var remoteConfig: RemoteConfig? = null
@@ -1275,83 +1278,15 @@ class ShopPageReimagineHeaderFragment :
         setViewState(VIEW_CONTENT)
 
         val tabData = ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData(name = ShopPageHeaderTabName.PRE_FETCH_DATA)
-        val tabContentWrapper = ShopPageHeaderFragmentTabContentWrapper.createInstance().apply {
-            setTabData(tabData)
-            val headerData = ShopPageHeaderP1HeaderData(
-                shopName = prefetchData.shopName,
-                shopAvatar = prefetchData.shopAvatar,
-                shopBadge = prefetchData.shopBadge,
-                listShopPageHeaderWidget = listOf(
-                    ShopPageHeaderWidgetUiModel(
-                        widgetId = "1",
-                        name = "shop_basic_info",
-                        type = "shop_basic_info",
-                        componentPages = listOf(
-                            ShopPageHeaderImageOnlyComponentUiModel(
-                                name = "shop_logo",
-                                type = "image_only",
-                                image = prefetchData.shopAvatar
-                            ),
-                            ShopPageHeaderBadgeTextValueComponentUiModel(
-                                name = "shop_name",
-                                ctaIcon = "https://images.tokopedia.net/img/chevron_down.png",
-                                type = "badge_text_value",
-                                text = listOf(
-                                    ShopPageHeaderBadgeTextValueComponentUiModel.Text(
-                                        icon = prefetchData.shopBadge,
-                                        textHtml = prefetchData.shopName,
-                                    ),
-                                    ShopPageHeaderBadgeTextValueComponentUiModel.Text(
-                                        textHtml = MethodChecker.fromHtml(prefetchData.shopLastOnline).toString()
-                                    )
-                                )
-                            )
-                        )
-                    ),
-                    ShopPageHeaderWidgetUiModel(
-                        widgetId = "2",
-                        name = "shop_performance",
-                        type = "shop_performance",
-                        componentPages = listOf(
-                            ShopPageHeaderBadgeTextValueComponentUiModel(
-                                name = "shop_rating",
-                                type = "badge_text_value",
-                                text = listOf(
-                                    ShopPageHeaderBadgeTextValueComponentUiModel.Text(
-                                        icon = "https://images.tokopedia.net/img/autocomplete/rating.png",
-                                        textHtml = prefetchData.shopRating.toString()
-                                    )
-                                )
-                            )
-                        )
-                    ),
-                    ShopPageHeaderWidgetUiModel(
-                        widgetId = "3",
-                        name = "action_button",
-                        type = "action_button",
-                        componentPages = listOf(
-                            ShopPageHeaderButtonComponentUiModel().apply {
-                                this.label = context?.getString(R.string.shop_page_label_chat).orEmpty()
-                            },
-                            ShopPageHeaderActionWidgetFollowButtonComponentUiModel().apply {
-                                this.isButtonLoading = false
-                                this.isFollowing = prefetchData.isFollowed
-                                this.label = if (prefetchData.isFollowed) {
-                                    context?.getString(R.string.shop_page_label_following).orEmpty()
-                                } else {
-                                    context?.getString(R.string.shop_page_label_follow).orEmpty()
-                                }
-                            }
-                        )
-                    )
-                )
-            )
-            setShopPageHeaderP1Data(
-                shopPageHeaderP1Data = headerData,
-                isEnableDirectPurchase = getIsEnableDirectPurchase(headerData),
-                isShouldShowFeed = isShowFeed
-            )
-        }
+        val tabContentWrapper = ShopPageHeaderFragmentTabContentWrapper.createInstance()
+        tabContentWrapper.setTabData(tabData)
+
+        val prefetchHeaderData = shopPrefetchMapper.createHeaderData(context, prefetchData)
+        tabContentWrapper.setShopPageHeaderP1Data(
+            shopPageHeaderP1Data = prefetchHeaderData,
+            isEnableDirectPurchase = getIsEnableDirectPurchase(prefetchHeaderData),
+            isShouldShowFeed = isShowFeed
+        )
 
         val listShopPageTabModel = mutableListOf<ShopPageHeaderTabModel>()
         listShopPageTabModel.add(
@@ -1368,7 +1303,7 @@ class ShopPageReimagineHeaderFragment :
     private fun getPrefetchData(): ShopPrefetchData? {
         val context = context ?: return null
 
-        val prefetchCacheId = activity?.intent?.getStringExtra(ShopPagePrefetch.PREFETCH_CACHE_ID).orEmpty()
+        val prefetchCacheId = activity?.intent?.getStringExtra(ShopPagePrefetch.BUNDLE_KEY_PREFETCH_CACHE_ID).orEmpty()
 
         val cacheManager = SaveInstanceCacheManager(context, prefetchCacheId)
         return cacheManager.get<ShopPrefetchData>(

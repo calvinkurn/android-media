@@ -8,7 +8,7 @@ import com.tokopedia.shop.common.domain.entity.ShopPrefetchData
 
 class ShopPagePrefetch {
     companion object {
-        const val PREFETCH_CACHE_ID = "shop_prefetch_cache_id"
+        const val BUNDLE_KEY_PREFETCH_CACHE_ID = "shop_prefetch_cache_id"
     }
 
     fun redirectToShopPageWithPrefetch(
@@ -27,7 +27,7 @@ class ShopPagePrefetch {
         )
 
         val cacheId = cacheManager.id
-        intent.putExtra(PREFETCH_CACHE_ID, cacheId)
+        intent.putExtra(BUNDLE_KEY_PREFETCH_CACHE_ID, cacheId)
     }
 
     private fun isPrefetchEnabled(context: Context): Boolean {
