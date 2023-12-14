@@ -5,6 +5,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.domain.mapper.MilestoneMapper
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
@@ -44,13 +45,11 @@ class GetMilestoneDataUseCase(
             response?.let {
                 val isFromCache = cacheStrategy.type == CacheType.CACHE_ONLY
                 val questStatus = it.fetchMilestoneWidgetData?.data?.firstOrNull()?.questStatus
+                val rewardId = it.fetchMilestoneWidgetData?.data?.firstOrNull()?.reward?.rewardId.orZero()
                 val shouldLoadRewardDetail =
-                    questStatus == MilestoneItemRewardUiModel.QuestStatus.NOT_STARTED_OR_ONGOING
+                    questStatus == MilestoneItemRewardUiModel.QuestStatus.NOT_STARTED_OR_ONGOING && !rewardId.isZero()
                 return if (shouldLoadRewardDetail) {
-                    val rewardDetail = getRewardDetailById(
-                        it.fetchMilestoneWidgetData?.data?.firstOrNull()?.reward?.rewardId.orZero()
-                            .toLong()
-                    )
+                    val rewardDetail = getRewardDetailById(rewardId)
                     mapper.mapRemoteDataToUiData(it, isFromCache, REWARD_KEY to rewardDetail)
                 } else {
                     mapper.mapRemoteDataToUiData(it, isFromCache)

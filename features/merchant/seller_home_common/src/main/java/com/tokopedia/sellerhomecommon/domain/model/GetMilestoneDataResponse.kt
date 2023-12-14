@@ -1,6 +1,5 @@
 package com.tokopedia.sellerhomecommon.domain.model
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class GetMilestoneDataResponse(
@@ -82,9 +81,8 @@ data class MilestoneData(
         val rewardSubtitle: String = "",
         @SerializedName("rewardImg")
         val rewardImage: String = "",
-        @SuppressLint("Invalid Data Type")
         @SerializedName("rewardID")
-        val rewardId: Int = 0,
+        val rewardId: Long = 0,
         @SerializedName("rewardStatus")
         val rewardStatus: Int = 0,
         @SerializedName("button")
