@@ -148,7 +148,7 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
 
             setResult(0, intent)
             finish()
-        },200)
+        },300)
     }
 
     private fun hideSoftKeyboard() {
