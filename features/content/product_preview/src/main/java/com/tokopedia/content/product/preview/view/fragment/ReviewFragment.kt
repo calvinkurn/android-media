@@ -116,7 +116,7 @@ class ReviewFragment @Inject constructor(
     }
 
     private fun renderList(prev: List<ReviewUiModel>?, data: List<ReviewUiModel>) {
-        if (prev == null || prev == data) return //TODO: adjust condition
+        if (prev == data) return //TODO: adjust condition
         reviewAdapter.submitList(data)
     }
 

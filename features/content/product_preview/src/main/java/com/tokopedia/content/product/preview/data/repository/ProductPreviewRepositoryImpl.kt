@@ -51,7 +51,7 @@ class ProductPreviewRepositoryImpl @Inject constructor(
                 AddToCartUseCase.getMinimumParams(
                     productId = productId,
                     shopId = shopId,
-                    atcExternalSource = AtcFromExternalSource.ATC_FROM_STORIES,
+                    atcExternalSource = AtcFromExternalSource.ATC_FROM_PRODUCT_PREVIEW,
                     productName = productName,
                     price = price.toString(),
                     userId = userSessionInterface.userId,
