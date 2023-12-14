@@ -38,12 +38,14 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
     fun getTimerData(): LiveData<TimerDataModel> = mutableTimeDiffModel
     fun getRestartTimerAction(): LiveData<Boolean> = restartStoppedTimerEvent
     fun handleSaleEndSates() {
-        when {
-            Utils.isFutureSale(getStartDate()) || (Utils.isFutureSaleOngoing(getStartDate(), getEndDate())) -> {
-                refreshAfterDelay()
-            }
-            Utils.isSaleOver(getEndDate()) -> {
-                this@TimerSprintSaleItemViewModel.syncData.value = true
+        requireAutoRefreshEnabled {
+            when {
+                Utils.isFutureSale(getStartDate()) || (Utils.isFutureSaleOngoing(getStartDate(), getEndDate())) -> {
+                    refreshAfterDelay()
+                }
+                Utils.isSaleOver(getEndDate()) -> {
+                    this@TimerSprintSaleItemViewModel.syncData.value = true
+                }
             }
         }
     }
@@ -63,13 +65,22 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
     }
 
     private fun refreshAfterDelay() {
-        timerWithBannerCounter = SaleCountDownTimer(delayBeforeRefresh, elapsedTime, showDays = false, isCurrentTimer = false) { timerData ->
-            if (timerData.timeFinish) {
-                stopTimer()
-                needPageRefresh.value = true
+        requireAutoRefreshEnabled {
+            timerWithBannerCounter = SaleCountDownTimer(delayBeforeRefresh, elapsedTime, showDays = false, isCurrentTimer = false) { timerData ->
+                if (timerData.timeFinish) {
+                    stopTimer()
+                    needPageRefresh.value = true
+                }
             }
+            timerWithBannerCounter?.start()
         }
-        timerWithBannerCounter?.start()
+    }
+
+    private fun requireAutoRefreshEnabled(action: () -> Unit) {
+        val shouldAutoRefresh = components.properties?.shouldAutoRefresh ?: false
+        if (!shouldAutoRefresh) return
+
+        action.invoke()
     }
 
     fun startTimer(timerUnify: TimerUnifySingle) {
