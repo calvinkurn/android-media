@@ -239,7 +239,7 @@ class ChatbotViewModel @Inject constructor(
     val dynamicAttachmentNewChatbotSession: LiveData<Boolean>
         get() = _dynamicAttachmentNewChatbotSession
     private val _dynamicAttachmentSlowMode = MutableLiveData<DynamicAttachmentSlowMode>()
-    val dynamicAttachmentNewSlowMode: LiveData<DynamicAttachmentSlowMode>
+    val dynamicAttachmentSlowMode: LiveData<DynamicAttachmentSlowMode>
         get() = _dynamicAttachmentSlowMode
 
     // Video Upload Related
@@ -1180,6 +1180,7 @@ class ChatbotViewModel @Inject constructor(
                     convertToDynamicAttachmentNewChatbotSession(dynamicAttachmentAttribute.dynamicContent)
                 }
                 ChatbotConstant.DynamicAttachment.DYNAMIC_SLOW_MODE -> {
+                    convertToDynamicAttachmentSlowMode(dynamicAttachmentAttribute.dynamicContent)
                 }
                 else -> {
                     // need to show fallback message

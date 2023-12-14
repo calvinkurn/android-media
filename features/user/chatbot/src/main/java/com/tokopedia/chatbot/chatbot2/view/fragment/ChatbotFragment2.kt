@@ -1051,7 +1051,7 @@ class ChatbotFragment2 :
             }
         }
 
-        viewModel.dynamicAttachmentNewSlowMode.observe(viewLifecycleOwner) {
+        viewModel.dynamicAttachmentSlowMode.observe(viewLifecycleOwner) {
             setupSlowModeSendButton(it.isUsingSlowMode, it.slowModeDurationInSeconds)
         }
 
