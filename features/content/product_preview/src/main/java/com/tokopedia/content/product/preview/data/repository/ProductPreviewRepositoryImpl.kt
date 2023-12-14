@@ -12,6 +12,7 @@ import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
+import com.tokopedia.content.product.preview.view.uimodel.switch
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
@@ -63,10 +64,9 @@ class ProductPreviewRepositoryImpl @Inject constructor(
         !response.isStatusError()
     }
 
-    override suspend fun likeReview(state: LikeUiState): LikeUiState = withContext(dispatchers.io) {
-        //TODO: adjust reviewId
+    override suspend fun likeReview(state: LikeUiState, reviewId: String): LikeUiState = withContext(dispatchers.io) {
         val response =
-            likeUseCase(ReviewLikeUseCase.Param(reviewId = "", likeStatus = state.state.value))
+            likeUseCase(ReviewLikeUseCase.Param(reviewId = reviewId, likeStatus = state.state.switch.value))
         mapper.mapLike(response)
     }
 

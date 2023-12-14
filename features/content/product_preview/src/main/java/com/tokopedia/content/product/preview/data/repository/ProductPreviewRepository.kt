@@ -19,6 +19,6 @@ interface ProductPreviewRepository {
         price: Double
     ): Boolean
 
-    suspend fun likeReview(state: LikeUiState): LikeUiState //TODO: param reviewId
+    suspend fun likeReview(state: LikeUiState, reviewId: String): LikeUiState
     suspend fun submitReport(report: ReportUiModel, reviewId: String): Boolean
 }

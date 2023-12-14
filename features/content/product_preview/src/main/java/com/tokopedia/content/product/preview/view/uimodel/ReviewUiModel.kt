@@ -29,11 +29,10 @@ data class LikeUiState(
 ) {
     enum class LikeStatus(val value: Int) {
         Like(1),
-        Dislike(2),
+        Dislike(2), //Not yet
         Reset(3);
 
         companion object {
-            //TODO: add helper to switch LikeStatus
             private val values = values()
 
             fun getByValue(value: Int): LikeStatus {
@@ -60,4 +59,7 @@ data class DescriptionUiModel(
     val timestamp: String,
     val description: String,
 )
+
+val LikeUiState.LikeStatus.switch: LikeUiState.LikeStatus
+    get() = if (this == LikeUiState.LikeStatus.Like) LikeUiState.LikeStatus.Reset else LikeUiState.LikeStatus.Like
 

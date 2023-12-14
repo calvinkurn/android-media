@@ -2,14 +2,15 @@ package com.tokopedia.content.product.preview.view.viewholder.review
 
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
+import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.databinding.ItemReviewParentContentBinding
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.DescriptionUiModel
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImageCircle
-import com.tokopedia.content.product.preview.R
 
 class ReviewParentContentViewHolder(
     private val binding: ItemReviewParentContentBinding,
@@ -19,7 +20,7 @@ class ReviewParentContentViewHolder(
         bindAuthor(item.author)
         bindDescription(item.description)
         bindLike(item.likeState)
-        
+
         binding.ivReviewMenu.setOnClickListener {
             listener.onMenuClicked(item.menus)
         }
@@ -52,6 +53,11 @@ class ReviewParentContentViewHolder(
     }
 
     fun bindLike(state: LikeUiState) = with(binding.layoutLikeReview) {
+        val icon = when (state.state) {
+            LikeUiState.LikeStatus.Reset -> IconUnify.THUMB
+            else -> IconUnify.THUMB_FILLED
+        }
+        ivReviewLike.setImage(newIconId = icon)
         tvLikeCount.text = state.count.toString()
         root.setOnClickListener {
             listener.onLike(state)

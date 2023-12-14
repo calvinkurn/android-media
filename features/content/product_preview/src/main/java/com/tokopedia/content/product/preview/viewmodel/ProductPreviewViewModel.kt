@@ -143,7 +143,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private fun like(state: LikeUiState) {
         requiredLogin(state) {
             viewModelScope.launchCatchError(block = {
-                val state = repo.likeReview(state)
+                val state = repo.likeReview(state, currentReview.reviewId)
                 //TODO: check toaster. Need to update dedicated reviewId to update value
             }) {
                 _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it) {})
