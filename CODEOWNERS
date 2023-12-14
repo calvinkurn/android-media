@@ -215,12 +215,12 @@
 /features/logistic/dilayanitokopedia/                   @tokopedia/android-minionbob-dev
 /features/promo/promo-usage/                            @tokopedia/android-minionbob-dev
 
-/features/media/mediauploader/			                @tokopedia/android-minionkevin-dev
-/features/media/medialoader/                            @tokopedia/android-minionkevin-dev
-/features/media/live-broadcaster/                       @tokopedia/android-minionlance-dev
-/features/media/mediapicker/                            @tokopedia/android-minionkevin-dev
-/features/media/mediapicker-common/                     @tokopedia/android-minionkevin-dev
-/features/media/mediaeditor/                            @tokopedia/android-minionkevin-dev
+/features/media/mediauploader/			                @tokopedia/android-minionjerry-dev
+/features/media/medialoader/                            @tokopedia/android-minionjerry-dev
+/features/media/live-broadcaster/                       @tokopedia/android-minionjerry-dev
+/features/media/mediapicker/                            @tokopedia/android-minionjerry-dev
+/features/media/mediapicker-common/                     @tokopedia/android-minionjerry-dev
+/features/media/mediaeditor/                            @tokopedia/android-minionjerry-dev
 
 /features/user/chatbot/                         		@tokopedia/android-minionmark-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev
@@ -306,15 +306,15 @@
 /features/im/install_referral                           @tokopedia/android-core-dev
 /features/im/common_promo                               @tokopedia/android-core-dev
 /features/im/referral                   				@tokopedia/android-minionyoda-dev
-/features/payment/common_payment                        @tokopedia/android-minionmark-dev
+/features/payment/common_payment                        @tokopedia/android-minionjerry-dev
 /features/fintech/wallet                				@tokopedia/android-minionmark-dev
-/features/payment/thankyou_native                		@tokopedia/android-minionmark-dev
-/features/payment/withdraw/             				@tokopedia/android-minionmark-dev
+/features/payment/thankyou_native                		@tokopedia/android-minionjerry-dev
+/features/payment/withdraw/             				@tokopedia/android-minionjerry-dev
 
-/features/payment/payment/                      		@tokopedia/android-minionmark-dev
-/features/payment/payment_setting/              		@tokopedia/android-minionmark-dev
-/features/payment/pms/                          		@tokopedia/android-minionmark-dev
-/features/payment/gopay.kyc/                          	@tokopedia/android-minionmark-dev
+/features/payment/payment/                      		@tokopedia/android-minionjerry-dev
+/features/payment/payment_setting/              		@tokopedia/android-minionjerry-dev
+/features/payment/pms/                          		@tokopedia/android-minionjerry-dev
+/features/payment/gopay.kyc/                          	@tokopedia/android-minionjerry-dev
 
 /libraries/adapter_delegate/							@tokopedia/android-core-dev
 /libraries/akamai_bot_lib/							    @tokopedia/android-core-dev
