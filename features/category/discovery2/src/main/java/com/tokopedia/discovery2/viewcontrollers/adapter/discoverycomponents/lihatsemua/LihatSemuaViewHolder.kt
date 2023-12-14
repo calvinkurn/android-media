@@ -69,7 +69,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
                         setupBackgroundImage(data)
                         setupLihat(data, componentItem, backgroundImageView.isVisible)
                         setupTitleTextColours(data.fontColor, backgroundImageView.isVisible)
-                        setupSubtitleTextColours(backgroundImageView.isVisible)
+                        setupSubtitleTextColours(data.fontColor, backgroundImageView.isVisible)
                         setupTimer(data, backgroundImageView.isVisible)
                         setComponentSpace(data.isDynamicTitle())
                     }
@@ -162,45 +162,45 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
 
     private fun setupTitleTextColours(fontColor: String?, backgroundPresent: Boolean) {
         fragment.context?.let {
-            if (backgroundPresent) {
-                lihatTitleTextView.setTextColor(
-                    MethodChecker.getColor(
-                        it,
-                        R.color.discovery2_dms_white
-                    )
-                )
-            } else {
-                if (!fontColor.isNullOrEmpty()) {
-                    lihatTitleTextView.setTextColor(Color.parseColor(fontColor))
-                } else {
-                    lihatTitleTextView.setTextColor(
-                        MethodChecker.getColor(
-                            it,
-                            unifyprinciplesR.color.Unify_NN950_96
-                        )
-                    )
-                }
+            val defaultColorWithBG = MethodChecker.getColor(
+                it,
+                R.color.discovery2_dms_white
+            )
+
+            val defaultColorWithoutBG = MethodChecker.getColor(
+                it,
+                unifyprinciplesR.color.Unify_NN950_96
+            )
+
+            val textColor = when {
+                backgroundPresent -> defaultColorWithBG
+                !backgroundPresent && !fontColor.isNullOrEmpty() -> Color.parseColor(fontColor)
+                else -> defaultColorWithoutBG
             }
+
+            lihatTitleTextView.setTextColor(textColor)
         }
     }
 
-    private fun setupSubtitleTextColours(backgroundPresent: Boolean) {
+    private fun setupSubtitleTextColours(fontColor: String?, backgroundPresent: Boolean) {
         fragment.context?.let {
-            if (backgroundPresent) {
-                lihatSubTitleTextView.setTextColor(
-                    MethodChecker.getColor(
-                        it,
-                        R.color.discovery2_dms_white_95
-                    )
-                )
-            } else {
-                lihatSubTitleTextView.setTextColor(
-                    MethodChecker.getColor(
-                        it,
-                        unifyprinciplesR.color.Unify_NN950_68
-                    )
-                )
+            val defaultColorWithBG = MethodChecker.getColor(
+                it,
+                R.color.discovery2_dms_white_95
+            )
+
+            val defaultColorWithoutBG = MethodChecker.getColor(
+                it,
+                unifyprinciplesR.color.Unify_NN950_68
+            )
+
+            val textColor = when {
+                backgroundPresent -> defaultColorWithBG
+                !backgroundPresent && !fontColor.isNullOrEmpty() -> Color.parseColor(fontColor)
+                else -> defaultColorWithoutBG
             }
+
+            lihatSubTitleTextView.setTextColor(textColor)
         }
     }
 
