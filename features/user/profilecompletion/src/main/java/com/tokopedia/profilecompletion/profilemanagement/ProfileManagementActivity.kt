@@ -87,7 +87,7 @@ class ProfileManagementActivity: BaseSimpleWebViewActivity(), HasComponent<Profi
             val expiredTime = expiredTimeList?.get(1)?.toLong()
 
             currentTimeStamp >= expiredTime.orZero()
-        } catch (e: Exception) {
+        } catch (ignore: Exception) {
             true
         }
     }
