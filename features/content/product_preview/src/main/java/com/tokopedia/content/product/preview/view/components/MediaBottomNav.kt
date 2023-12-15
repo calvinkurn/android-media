@@ -103,7 +103,7 @@ fun MediaBottomNav(
                     text = product.price.ogPriceFmt,
                     maxLines = 1,
                     textStyle = NestTheme.typography.small.copy(
-                        color = colorResource(id = unifyprinciplesR.color.Unify_NN400),
+                        color = NestTheme.colors.NN._400,
                         textDecoration = TextDecoration.LineThrough
                     ),
                     modifier = Modifier
@@ -119,7 +119,7 @@ fun MediaBottomNav(
                     text = product.price.discountPercentage,
                     maxLines = 1,
                     textStyle = NestTheme.typography.small.copy(
-                        color = colorResource(id = unifyprinciplesR.color.Unify_RN500),
+                        color = NestTheme.colors.RN._500,
                         fontWeight = FontWeight.Bold
                     ),
                     modifier = Modifier
