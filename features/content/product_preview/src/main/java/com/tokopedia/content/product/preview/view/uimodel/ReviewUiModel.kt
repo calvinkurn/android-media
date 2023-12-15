@@ -8,7 +8,7 @@ import com.tokopedia.content.common.report_content.model.ContentMenuItem
 data class ReviewUiModel(
     val reviewId: String,
     val medias: List<MediaUiModel>,
-    val menus: List<ContentMenuItem>,
+    val menus: MenuStatus,
     val likeState: LikeUiState,
     val author: AuthorUiModel,
     val description: DescriptionUiModel,
@@ -58,5 +58,9 @@ data class DescriptionUiModel(
     val productType: String,
     val timestamp: String,
     val description: String,
+)
+
+data class MenuStatus(
+    val isReportable: Boolean,
 )
 
