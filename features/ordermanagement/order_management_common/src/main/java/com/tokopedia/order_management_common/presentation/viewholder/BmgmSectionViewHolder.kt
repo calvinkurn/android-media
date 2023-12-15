@@ -206,7 +206,7 @@ class BmgmSectionViewHolder(
             listener.onBmgmProductBenefitExpand(isExpand, addOnsIdentifier)
         }
 
-        override fun onAddOnsInfoLinkClicked(infoLink: String) {
+        override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
             // noop
         }
 

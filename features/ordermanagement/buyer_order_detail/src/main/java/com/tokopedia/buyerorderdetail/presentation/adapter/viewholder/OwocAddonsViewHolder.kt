@@ -87,7 +87,7 @@ class OwocAddonsViewHolder(
     override fun onAddOnsBmgmExpand(isExpand: Boolean, addOnsIdentifier: String) {
     }
 
-    override fun onAddOnsInfoLinkClicked(infoLink: String) {
+    override fun onAddOnsInfoLinkClicked(infoLink: String, type: String) {
     }
 
     override fun onAddOnClicked(addOn: AddOnSummaryUiModel.AddonItemUiModel) {}
