@@ -55,6 +55,11 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
         initObserver()
     }
 
+    override fun onStop() {
+        super.onStop()
+        finishActivity()
+    }
+
     override fun onCloseClicked() {
         finish()
     }
