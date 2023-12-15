@@ -13,11 +13,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CreationUploadQueueDao {
 
-    @Query(GET_TOP_QUEUE_QUERY)
+    @Query("SELECT * FROM $CREATION_UPLOAD_QUEUE ORDER BY timestamp ASC LIMIT 1")
     fun observeTopQueue(): Flow<CreationUploadQueueEntity?>
-
-    @Query(GET_TOP_QUEUE_QUERY)
-    suspend fun getTopQueue(): CreationUploadQueueEntity?
 
     @Insert
     suspend fun insert(entity: CreationUploadQueueEntity)
@@ -35,5 +32,3 @@ interface CreationUploadQueueDao {
         uploadStatus: String,
     )
 }
-
-private const val GET_TOP_QUEUE_QUERY = "SELECT * FROM $CREATION_UPLOAD_QUEUE ORDER BY timestamp ASC LIMIT 1"
