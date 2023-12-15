@@ -44,6 +44,7 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.Editor.InputText"/>
 
         <activity
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.Editor.Main"
             android:noHistory="true"
             android:name="com.tokopedia.editor.ui.placement.PlacementImageActivity"
             android:exported="false"
