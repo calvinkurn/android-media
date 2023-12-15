@@ -123,8 +123,6 @@ class OrderSummaryPageViewModel @Inject constructor(
     val uploadPrescriptionUiModel: OccMutableLiveData<UploadPrescriptionUiModel> =
         OccMutableLiveData(UploadPrescriptionUiModel())
 
-    val orderShippingDuration: OccMutableLiveData<OccState<RatesParam>> = OccMutableLiveData(OccState.Loading)
-
     private var getCartJob: Job? = null
     private var debounceJob: Job? = null
     private var finalUpdateJob: Job? = null
