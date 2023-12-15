@@ -122,6 +122,8 @@ class OrderSummaryPageViewModel @Inject constructor(
     val uploadPrescriptionUiModel: OccMutableLiveData<UploadPrescriptionUiModel> =
         OccMutableLiveData(UploadPrescriptionUiModel())
 
+    val orderShippingDuration: OccMutableLiveData<OccState<RatesParam>> = OccMutableLiveData(OccState.Loading)
+
     private var getCartJob: Job? = null
     private var debounceJob: Job? = null
     private var finalUpdateJob: Job? = null
@@ -1630,14 +1632,25 @@ class OrderSummaryPageViewModel @Inject constructor(
         )
     }
 
-    fun getShippingBottomsheetParam(): RatesParam? {
-        return logisticProcessor.generateRatesParam(
-            orderCart,
-            orderProfile.value,
-            orderTotal.value.orderCost,
-            orderShop.value.shopShipment,
-            orderShipment.value
-        ).first
+    fun getShippingBottomsheetParam() {
+        launch(executorDispatchers.immediate) {
+            val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(
+                orderCart,
+                orderShipment.value,
+                validateUsePromoRevampUiModel,
+                orderPayment.value
+            )
+            val ratesParam = logisticProcessor.generateRatesParam(
+                orderCart,
+                orderProfile.value,
+                orderCost,
+                orderShop.value.shopShipment,
+                orderShipment.value
+            ).first
+            ratesParam?.let {
+                orderShippingDuration.value = OccState.Success(it)
+            }
+        }
     }
 
     fun updatePrescriptionIds(it: ArrayList<String>) {
