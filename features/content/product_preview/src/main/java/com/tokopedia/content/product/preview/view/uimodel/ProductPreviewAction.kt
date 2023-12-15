@@ -1,7 +1,5 @@
 package com.tokopedia.content.product.preview.view.uimodel
 
-import com.tokopedia.content.common.report_content.model.ContentMenuItem
-
 /**
  * @author by astidhiyaa on 12/12/23
  */
@@ -12,7 +10,7 @@ sealed interface ProductPreviewAction {
     object AtcFromResult : ProductPreviewAction
     data class Navigate(val appLink: String) : ProductPreviewAction
     data class SubmitReport(val model: ReportUiModel) : ProductPreviewAction
-    data class ClickMenu(val menus: List<ContentMenuItem>) : ProductPreviewAction
+    data class ClickMenu(val status: MenuStatus) : ProductPreviewAction
     data class UpdateReviewPosition(val index: Int) : ProductPreviewAction
     data class Like(val state: LikeUiState) : ProductPreviewAction
 }

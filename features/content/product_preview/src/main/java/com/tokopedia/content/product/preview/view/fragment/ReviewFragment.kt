@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -22,6 +24,7 @@ import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
+import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
@@ -32,6 +35,7 @@ import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModelFactory
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -44,7 +48,7 @@ class ReviewFragment @Inject constructor(
     private val binding: FragmentReviewBinding
         get() = _binding!!
 
-    private val viewModel by activityViewModels<ProductPreviewViewModel> {
+    private val viewModel by viewModels<ProductPreviewViewModel> {
         viewModelFactory.create(
             EntrySource(productId = "4937529690") //TODO: Testing purpose, change from arguments
         )
@@ -108,8 +112,11 @@ class ReviewFragment @Inject constructor(
     }
 
     private fun observeReview() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.review.withCache().collectLatest { (prev, curr) ->
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.review.flowWithLifecycle(
+                viewLifecycleOwner.lifecycle,
+                Lifecycle.State.RESUMED
+            ).withCache().collectLatest { (prev, curr) ->
                 renderList(prev, curr)
             }
         }
@@ -121,7 +128,7 @@ class ReviewFragment @Inject constructor(
                 when(val event = it) {
                     is ProductPreviewEvent.ShowMenuSheet -> {
                         MenuBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).apply {
-                            setMenu(event.menus)
+                            setMenu(event.status)
                         }.show(childFragmentManager)
                     }
                     else -> {}
@@ -143,7 +150,7 @@ class ReviewFragment @Inject constructor(
         router.route(requireContext(), appLink)
     }
 
-    override fun onMenuClicked(menus: List<ContentMenuItem>) {
+    override fun onMenuClicked(menus: MenuStatus) {
         viewModel.onAction(ProductPreviewAction.ClickMenu(menus))
     }
 

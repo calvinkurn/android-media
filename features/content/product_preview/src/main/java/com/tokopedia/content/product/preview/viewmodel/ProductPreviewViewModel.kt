@@ -2,10 +2,10 @@ package com.tokopedia.content.product.preview.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
+import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
@@ -62,7 +62,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             ProductPreviewAction.AtcFromResult -> addToCart(_miniInfo.value)
             is ProductPreviewAction.Navigate -> navigate(action.appLink)
             is ProductPreviewAction.SubmitReport -> submitReport(action.model)
-            is ProductPreviewAction.ClickMenu -> menuOnClicked(action.menus)
+            is ProductPreviewAction.ClickMenu -> menuOnClicked(action.status)
             is ProductPreviewAction.UpdateReviewPosition -> updateReviewIndex(action.index)
             is ProductPreviewAction.Like -> like(action.state)
             else -> {}
@@ -128,10 +128,10 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
-    private fun menuOnClicked(menus: List<ContentMenuItem>) {
-        requiredLogin(menus) {
+    private fun menuOnClicked(status: MenuStatus) {
+        requiredLogin(status) {
             viewModelScope.launch {
-                _uiEvent.emit(ProductPreviewEvent.ShowMenuSheet(menus))
+                _uiEvent.emit(ProductPreviewEvent.ShowMenuSheet(status))
             }
         }
     }
