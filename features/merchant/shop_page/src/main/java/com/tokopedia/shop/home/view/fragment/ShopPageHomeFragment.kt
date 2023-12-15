@@ -155,6 +155,7 @@ import com.tokopedia.shop.home.WidgetTypeEnum
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.util.CheckCampaignNplException
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
 import com.tokopedia.shop.home.util.ShopHomeReimagineShowcaseNavigationDependencyProvider
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
@@ -269,7 +270,8 @@ open class ShopPageHomeFragment :
     ShopBannerProductGroupWidgetTabDependencyProvider,
     ShopBannerProductGroupListener,
     ShopHomeDisplayAdvanceCarouselBannerWidgetListener,
-    ShopHomeDirectPurchaseByEtalaseWidgetListener {
+    ShopHomeDirectPurchaseByEtalaseWidgetListener,
+    RecyclerviewPoolListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -433,7 +435,8 @@ open class ShopPageHomeFragment :
             shopBannerProductGroupListener = this,
             shopBannerProductGroupWidgetTabDependencyProvider = this,
             shopHomeDisplayAdvanceCarouselBannerWidgetListener = this,
-            shopHomeDirectPurchaseByEtalaseWidgetListener = this
+            shopHomeDirectPurchaseByEtalaseWidgetListener = this,
+            recyclerviewPoolListener = this
         )
     }
 
@@ -5622,4 +5625,7 @@ open class ShopPageHomeFragment :
             )
         }
     }
+
+    override val parentPool: RecyclerView.RecycledViewPool
+        get() = viewBinding?.recyclerView?.recycledViewPool ?: RecyclerView.RecycledViewPool()
 }
