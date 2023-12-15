@@ -60,7 +60,8 @@ data class DescriptionUiModel(
     val description: String,
 )
 
+@Parcelize
 data class MenuStatus(
     val isReportable: Boolean,
-)
+) : Parcelable
 

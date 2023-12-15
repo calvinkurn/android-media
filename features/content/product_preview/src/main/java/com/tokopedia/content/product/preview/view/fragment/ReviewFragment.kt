@@ -19,6 +19,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentReviewBinding
+import com.tokopedia.content.product.preview.utils.MenuReviewResultContract
 import com.tokopedia.content.product.preview.utils.PAGE_SOURCE
 import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
@@ -68,6 +69,12 @@ class ReviewFragment @Inject constructor(
                 }
             }
         }
+    }
+
+    private val menuResult = registerForActivityResult(
+        MenuReviewResultContract()
+    ) {
+        viewModel.onAction(ProductPreviewAction.ClickMenu(it))
     }
 
     override fun getScreenName() = TAG
@@ -129,6 +136,11 @@ class ReviewFragment @Inject constructor(
                         MenuBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).apply {
                             setMenu(event.status)
                         }.show(childFragmentManager)
+                    }
+                    is ProductPreviewEvent.LoginEvent<*> -> {
+                        when(val data = event.data) {
+                            is MenuStatus -> menuResult.launch(data)
+                        }
                     }
                     else -> {}
                 }
