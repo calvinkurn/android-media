@@ -10,7 +10,10 @@ import com.tokopedia.content.common.report_content.ThreeDotsPage
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.product.preview.R
+import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 /**
@@ -19,7 +22,28 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 class MenuBottomSheet : BottomSheetUnify() {
     private var mListener: Listener? = null
 
-    private var menus : List<ContentMenuItem>? = null
+    private var status : MenuStatus? = null
+
+    private val menus: List<ContentMenuItem> by lazyThreadSafetyNone {
+        buildList {
+            add(
+                ContentMenuItem(
+                    name = R.string.product_preview_watch_menu,
+                    iconUnify = IconUnify.VISIBILITY,
+                    type = ContentMenuIdentifier.WatchMode
+                )
+            )
+            if (status?.isReportable.orFalse()) {
+                add(
+                    ContentMenuItem(
+                        name = R.string.product_preview_report_menu,
+                        iconUnify = IconUnify.WARNING,
+                        type = ContentMenuIdentifier.Report
+                    )
+                )
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,7 +52,7 @@ class MenuBottomSheet : BottomSheetUnify() {
     ): View? {
         val composeView = ComposeView(requireContext()).apply {
             setContent {
-                ThreeDotsPage(menuList = menus.orEmpty()) { mListener?.onOptionClicked(it) }
+                ThreeDotsPage(menuList = menus) { mListener?.onOptionClicked(it) }
             }
         }
         setChild(composeView)
@@ -39,8 +63,8 @@ class MenuBottomSheet : BottomSheetUnify() {
         mListener = listener
     }
 
-    fun setMenu(items: List<ContentMenuItem>) {
-        menus = items
+    fun setMenu(status: MenuStatus) {
+        this.status = status
     }
 
     fun show(fg: FragmentManager) {

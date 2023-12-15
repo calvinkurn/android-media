@@ -1,15 +1,15 @@
 package com.tokopedia.content.product.preview.view.viewholder.review
 
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.tokopedia.content.common.report_content.model.ContentMenuItem
+import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.databinding.ItemReviewParentContentBinding
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.DescriptionUiModel
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
+import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImageCircle
-import com.tokopedia.content.product.preview.R
 
 class ReviewParentContentViewHolder(
     private val binding: ItemReviewParentContentBinding,
@@ -57,7 +57,7 @@ class ReviewParentContentViewHolder(
 
     interface Listener {
         fun onReviewCredibilityClicked(author: AuthorUiModel)
-        fun onMenuClicked(menus: List<ContentMenuItem>)
+        fun onMenuClicked(menus: MenuStatus)
     }
 
     companion object {
