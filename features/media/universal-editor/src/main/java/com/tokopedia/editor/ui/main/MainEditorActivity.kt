@@ -108,10 +108,9 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
     private val audioMuteState by uiComponent { AudioStateUiComponent(it) }
 
     private val inputTextIntent = registerForActivityResult(StartActivityForResult()) {
-        animateSlide(isShow = true) {
-            val result = InputTextActivity.result(it)
-            viewModel.onEvent(MainEditorEvent.InputTextResult(result))
-        }
+        animateSlide(isShow = true) {}
+        val result = InputTextActivity.result(it)
+        viewModel.onEvent(MainEditorEvent.InputTextResult(result))
     }
 
     private val placementIntent = registerForActivityResult(StartActivityForResult()) {
