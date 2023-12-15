@@ -79,12 +79,6 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".view.activity.FundsAndInvestmentActivity"
-            android:label="@string/home_account_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:exported="false"/>
 
         <activity
             android:name=".ui.fundsAndInvestment.FundsAndInvestmentComposeActivity"
