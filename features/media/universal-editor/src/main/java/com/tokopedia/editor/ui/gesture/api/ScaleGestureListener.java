@@ -9,10 +9,10 @@ import com.tokopedia.editor.ui.model.AddTextModel;
 
 public class ScaleGestureListener implements OnScaleGestureListener {
 
-    private MultiTouchListener multiTouchListener;
+    private V1MultiTouchListener v1MultiTouchListener;
 
-    ScaleGestureListener(MultiTouchListener multiTouchListener) {
-        this.multiTouchListener = multiTouchListener;
+    ScaleGestureListener(V1MultiTouchListener v1MultiTouchListener) {
+        this.v1MultiTouchListener = v1MultiTouchListener;
     }
 
     private float pivotX;
@@ -24,7 +24,7 @@ public class ScaleGestureListener implements OnScaleGestureListener {
         pivotX = detector.getFocusX();
         pivotY = detector.getFocusY();
         prevSpanVector.set(detector.getCurrentSpanVector());
-        return multiTouchListener.isTextPinchZoomable;
+        return v1MultiTouchListener.isTextPinchZoomable;
     }
 
     @Override
@@ -35,16 +35,16 @@ public class ScaleGestureListener implements OnScaleGestureListener {
     @Override
     public boolean onScale(View view, ScaleGestureDetector detector) {
         AddTextModel info = new AddTextModel(
-                multiTouchListener.isTranslateEnabled ? detector.getFocusX() - pivotX : 0.0f,
-                multiTouchListener.isTranslateEnabled ? detector.getFocusY() - pivotY : 0.0f,
-                multiTouchListener.isScaleEnabled ? detector.getScaleFactor() : 1.0f,
-                multiTouchListener.isRotateEnabled ? VectorAngle.get(prevSpanVector, detector.getCurrentSpanVector()) : 0.0f,
+                v1MultiTouchListener.isTranslateEnabled ? detector.getFocusX() - pivotX : 0.0f,
+                v1MultiTouchListener.isTranslateEnabled ? detector.getFocusY() - pivotY : 0.0f,
+                v1MultiTouchListener.isScaleEnabled ? detector.getScaleFactor() : 1.0f,
+                v1MultiTouchListener.isRotateEnabled ? VectorAngle.get(prevSpanVector, detector.getCurrentSpanVector()) : 0.0f,
                 pivotX,
                 pivotY,
-                multiTouchListener.minimumScale,
-                multiTouchListener.maximumScale
+                v1MultiTouchListener.minimumScale,
+                v1MultiTouchListener.maximumScale
         );
-        multiTouchListener.move(view, info);
-        return !multiTouchListener.isTextPinchZoomable;
+        v1MultiTouchListener.move(view, info);
+        return !v1MultiTouchListener.isTextPinchZoomable;
     }
 }

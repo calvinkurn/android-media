@@ -7,12 +7,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselPlaceholderBinding
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.view.adapter.ShopCarouselProductPlaceholderAdapter
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopCarouselProductWidgetPlaceholderViewHolder(
-    itemView: View
+    itemView: View,
+    private val recyclerviewPoolListener: RecyclerviewPoolListener
 ) : AbstractViewHolder<BaseShopHomeWidgetUiModel>(itemView) {
 
     companion object {
@@ -31,6 +33,7 @@ class ShopCarouselProductWidgetPlaceholderViewHolder(
             }
             adapter = ShopCarouselProductPlaceholderAdapter()
             adapter?.notifyDataSetChanged()
+            setRecycledViewPool(recyclerviewPoolListener.parentPool)
         }
     }
 }
