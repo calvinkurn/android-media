@@ -22,7 +22,6 @@ import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapt
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter.Companion.TAB_PRODUCT_POS
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter.Companion.TAB_REVIEW_POS
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
-import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.viewmodel.EntrySource
@@ -68,12 +67,6 @@ class ProductPreviewFragment @Inject constructor(
         ActivityResultContracts.StartActivityForResult()
     ) {
         if (it.resultCode == Activity.RESULT_OK) viewModel.onAction(ProductPreviewAction.AtcFromResult)
-    }
-
-    private val menuResult = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) {
-        //TODO: open menu bottom sheet
     }
 
     override fun getScreenName() = TAG
@@ -160,7 +153,6 @@ class ProductPreviewFragment @Inject constructor(
                         val intent = router.getIntent(requireContext(), ApplinkConst.LOGIN)
                         when (event.data) {
                             is BottomNavUiModel -> productAtcResult.launch(intent)
-                            is MenuStatus -> menuResult.launch(intent) //TODO: move to ReviewFragment, if its success open bottom sheet
                         }
                     }
                     is ProductPreviewEvent.NavigateEvent -> router.route(requireContext(), event.appLink)

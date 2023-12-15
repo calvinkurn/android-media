@@ -19,6 +19,7 @@ import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentReviewBinding
+import com.tokopedia.content.product.preview.utils.MenuReviewResultContract
 import com.tokopedia.content.product.preview.utils.PAGE_SOURCE
 import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
 import com.tokopedia.content.product.preview.utils.ReviewResultContract
@@ -71,6 +72,12 @@ class ReviewFragment @Inject constructor(
                 }
             }
         }
+    }
+
+    private val menuResult = registerForActivityResult(
+        MenuReviewResultContract()
+    ) {
+        viewModel.onAction(ProductPreviewAction.ClickMenu(it))
     }
 
     private val likeResult = registerForActivityResult(
@@ -144,6 +151,7 @@ class ReviewFragment @Inject constructor(
                     }
                     is ProductPreviewEvent.LoginEvent<*> -> {
                         when(val data = event.data) {
+                            is MenuStatus -> menuResult.launch(data)
                             is LikeUiState -> likeResult.launch(data)
                         }
                     }

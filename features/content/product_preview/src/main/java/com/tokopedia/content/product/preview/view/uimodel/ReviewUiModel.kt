@@ -74,9 +74,10 @@ data class DescriptionUiModel(
     val description: String,
 )
 
+@Parcelize
 data class MenuStatus(
     val isReportable: Boolean,
-)
+) : Parcelable
 
 val LikeUiState.LikeStatus.switch: LikeUiState.LikeStatus
     get() = if (this == LikeUiState.LikeStatus.Like) LikeUiState.LikeStatus.Reset else LikeUiState.LikeStatus.Like
