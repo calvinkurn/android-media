@@ -559,20 +559,6 @@ open class EmoneyPdpFragment :
                     }
                 }
 
-                REQUEST_CODE_EMONEY_PDP_CAMERA_OCR -> {
-                    val clientNumber =
-                        data?.getStringExtra(DigitalExtraParam.EXTRA_NUMBER_FROM_CAMERA_OCR)
-
-                    clientNumber?.let {
-                        showToastMessage(getString(R.string.recharge_pdp_success_message_scan_ocr))
-                        renderClientNumber(TopupBillsSearchNumberDataModel(clientNumber = it))
-
-                        // to handle don't keep activities case, so displayed client number wont be override with client number on detailPassData
-                        detailPassData.clientNumber = it
-                        detailPassData.additionalETollBalance = ""
-                    }
-                }
-
                 REQUEST_CODE_EMONEY_PDP_CHECK_SALDO -> {
                     val checkSaldoData =
                         data?.getParcelableExtra<DigitalCategoryDetailPassData>(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA)
@@ -1163,7 +1149,6 @@ open class EmoneyPdpFragment :
 
         private const val TAB_COUNT_THRESHOLD_NUMBER = 1
         private const val REQUEST_CODE_EMONEY_PDP_CHECK_SALDO = 1007
-        private const val REQUEST_CODE_EMONEY_PDP_CAMERA_OCR = 1008
         const val REQUEST_CODE_CART_DIGITAL = 1090
         private const val REQUEST_CODE_EMONEY_PDP_DIGITAL_SEARCH_NUMBER = 1004
         private const val REQUEST_CODE_LOGIN = 1010
