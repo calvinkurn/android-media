@@ -75,6 +75,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -1632,24 +1633,21 @@ class OrderSummaryPageViewModel @Inject constructor(
         )
     }
 
-    fun getShippingBottomsheetParam() {
-        launch(executorDispatchers.immediate) {
+    fun getShippingBottomsheetParam(): RatesParam? {
+        return runBlocking {
             val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(
                 orderCart,
                 orderShipment.value,
                 validateUsePromoRevampUiModel,
                 orderPayment.value
             )
-            val ratesParam = logisticProcessor.generateRatesParam(
+            logisticProcessor.generateRatesParam(
                 orderCart,
                 orderProfile.value,
                 orderCost,
                 orderShop.value.shopShipment,
                 orderShipment.value
             ).first
-            ratesParam?.let {
-                orderShippingDuration.value = OccState.Success(it)
-            }
         }
     }
 

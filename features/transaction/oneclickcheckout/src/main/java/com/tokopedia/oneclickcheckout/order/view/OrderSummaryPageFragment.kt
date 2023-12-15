@@ -71,7 +71,6 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.Shippi
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheetListener
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
-import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
@@ -536,8 +535,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
 
         observeGlobalEvent()
 
-        observeOrderShippingDuration()
-
         observeUploadPrescription()
 
         // first load
@@ -700,40 +697,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         }
     }
 
-    private fun observeOrderShippingDuration() {
-        viewModel.orderShippingDuration.observe(viewLifecycleOwner) {
-            when (it) {
-                is OccState.Loading -> {
-                    // no ops
-                }
-                is OccState.Failed -> {
-                    binding.loaderContent.animateGone()
-                    it.getFailure()?.let { failure ->
-                        handleError(failure.throwable)
-                    }
-                }
-                is OccState.FirstLoad -> {
-                    // no ops
-                }
-                is OccState.Success -> openShippingDurationBottomsheet(it.data)
-            }
-        }
-    }
-
-    private fun openShippingDurationBottomsheet(param: RatesParam) {
-        ShippingDurationBottomsheet.show(
-            ratesParam = param,
-            fragmentManager = parentFragmentManager,
-            selectedServiceId = viewModel.orderShipment.value.serviceId.toZeroIfNull(),
-            selectedSpId = viewModel.orderShipment.value.shipperProductId.toZeroIfNull(),
-            cartPosition = 0,
-            isDisableOrderPrioritas = true,
-            isRatesTradeInApi = false,
-            recipientAddressModel = null,
-            isOcc = true,
-            shippingDurationBottomsheetListener = getShippingDurationListener()
-        )
-    }
     private fun observeOrderShipment() {
         viewModel.orderShipment.observe(viewLifecycleOwner) {
             adapter.shipment = it
@@ -1716,7 +1679,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                 } else if (currentSpId.isNotEmpty()) {
                     orderSummaryAnalytics.eventClickArrowToChangeDurationOption(currentSpId, userSession.get().userId)
                 }
-                viewModel.getShippingBottomsheetParam()
+                viewModel.getShippingBottomsheetParam()?.let { param ->
+                    ShippingDurationBottomsheet.show(
+                        ratesParam = param,
+                        fragmentManager = parentFragmentManager,
+                        selectedServiceId = viewModel.orderShipment.value.serviceId.toZeroIfNull(),
+                        selectedSpId = viewModel.orderShipment.value.shipperProductId.toZeroIfNull(),
+                        cartPosition = 0,
+                        isDisableOrderPrioritas = true,
+                        isRatesTradeInApi = false,
+                        recipientAddressModel = null,
+                        isOcc = true,
+                        shippingDurationBottomsheetListener = getShippingDurationListener()
+                    )
+                }
             }
         }
 
