@@ -28,7 +28,7 @@ data class ProcessingHeaderUiModel(
     }
 
     companion object {
-        fun create(context: Context?, thanksPageData: ThanksPageData): ProcessingHeaderUiModel {
+        fun create(thanksPageData: ThanksPageData, context: Context?): ProcessingHeaderUiModel {
 
             val title = if (thanksPageData.customDataMessage?.title.isNullOrEmpty())
                 context?.getString(R.string.thank_payment_in_progress_v2)

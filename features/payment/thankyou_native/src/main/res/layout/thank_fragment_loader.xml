@@ -76,6 +76,10 @@
         android:id="@+id/lottieSuccess"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible" />
+        android:visibility="gone"
+        android:scaleType="centerCrop"
+        app:lottie_autoPlay="false"
+        app:lottie_fileName="thanks_success_lottie.json"
+        app:lottie_imageAssetsFolder="images"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

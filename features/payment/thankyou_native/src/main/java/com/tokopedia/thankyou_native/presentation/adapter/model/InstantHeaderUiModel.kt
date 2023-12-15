@@ -24,7 +24,7 @@ data class InstantHeaderUiModel(
     }
 
     companion object {
-        fun create(context: Context?, thanksPageData: ThanksPageData): InstantHeaderUiModel {
+        fun create(thanksPageData: ThanksPageData, context: Context?): InstantHeaderUiModel {
 
             val title = if (thanksPageData.customDataMessage?.title.isNullOrEmpty())
                     context?.getString(R.string.thank_instant_payment_successful_v2)

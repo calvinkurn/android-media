@@ -111,15 +111,15 @@ class ThanksPageDataViewModel @Inject constructor(
 
     fun getThanksPageData(paymentId: String, merchant: String) {
         thanksPageDataUseCase.cancelJobs()
-        if (IS_V2) {
-            thanksPageDataV2UseCase.getThankPageData(
-                ::onThanksPageDataSuccess,
-                ::onThanksPageDataError,
-                paymentId,
-                merchant
-            )
-            return
-        }
+//        if (IS_V2) {
+//            thanksPageDataV2UseCase.getThankPageData(
+//                ::onThanksPageDataSuccess,
+//                ::onThanksPageDataError,
+//                paymentId,
+//                merchant
+//            )
+//            return
+//        }
         thanksPageDataUseCase.getThankPageData(
             ::onThanksPageDataSuccess,
             ::onThanksPageDataError,

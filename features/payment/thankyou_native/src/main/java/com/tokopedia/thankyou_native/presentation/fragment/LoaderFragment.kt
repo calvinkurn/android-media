@@ -1,5 +1,7 @@
 package com.tokopedia.thankyou_native.presentation.fragment
 
+import android.animation.Animator
+import android.animation.Animator.AnimatorListener
 import android.content.Context
 import android.os.*
 import android.view.LayoutInflater
@@ -28,6 +30,7 @@ import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
 import com.tokopedia.thankyou_native.presentation.activity.IS_V2
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
+import com.tokopedia.unifyprinciples.UnifyMotion
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_loader.*
@@ -68,6 +71,7 @@ class LoaderFragment : BaseDaggerFragment() {
         observeViewModel()
         showLoaderView()
         showSuccessLottie()
+        lottieSuccess.hide()
         handler.postDelayed(delayLoadingRunnable, DELAY_MILLIS)
     }
 
@@ -142,7 +146,27 @@ class LoaderFragment : BaseDaggerFragment() {
             callback?.onInvalidThankYouPage()
             return
         } else {
-//            callback?.onThankYouPageDataLoaded(thanksPageData)
+            lottieSuccess.visible()
+            lottieSuccess.playAnimation()
+            lottieSuccess.addAnimatorListener(object: AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {
+
+                }
+
+                override fun onAnimationEnd(animation: Animator) {
+                    lottieSuccess.animate().alpha(0f).setDuration(UnifyMotion.T5).start()
+                    callback?.onThankYouPageDataLoaded(thanksPageData)
+                }
+
+                override fun onAnimationCancel(animation: Animator) {
+
+                }
+
+                override fun onAnimationRepeat(animation: Animator) {
+
+                }
+            })
+
         }
     }
 

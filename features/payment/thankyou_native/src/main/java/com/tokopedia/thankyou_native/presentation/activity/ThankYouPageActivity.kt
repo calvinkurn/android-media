@@ -73,7 +73,7 @@ class ThankYouPageActivity :
         DialogController(GratificationPresenter(this))
     }
 
-    fun getHeader(): HeaderUnify = thank_header
+//    fun getHeader(): HeaderUnify = thank_header
 
     override fun getScreenName(): String {
         return SCREEN_NAME
@@ -233,26 +233,26 @@ class ThankYouPageActivity :
     }
 
     private fun showToolbarBeforeLoading() {
-        thank_header.isShowBackButton = false
-        thank_header.visible()
+//        thank_header.isShowBackButton = false
+//        thank_header.visible()
         globalNabToolbar.gone()
     }
 
     private fun showToolbarAfterLoading(title: String) {
         if (isGlobalNavEnable()) {
-            thank_header.gone()
+//            thank_header.gone()
             globalNabToolbar.visible()
             initializeGlobalNav(title)
         } else {
             globalNabToolbar.gone()
-            thank_header.visible()
+//            thank_header.visible()
             setupOldToolbar(title)
         }
     }
 
     private fun setupOldToolbar(title: String) {
-        thank_header.isShowBackButton = true
-        toolbar = thank_header
+//        thank_header.isShowBackButton = true
+//        toolbar = thank_header
         setSupportActionBar(toolbar)
         supportActionBar?.let {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -298,7 +298,7 @@ class ThankYouPageActivity :
     }
 
     private fun updateHeaderTitle(screenName: String) {
-        thank_header.title = screenName
+//        thank_header.title = screenName
     }
 
     /**

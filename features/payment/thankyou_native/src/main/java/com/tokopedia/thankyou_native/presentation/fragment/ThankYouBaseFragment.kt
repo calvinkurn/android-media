@@ -232,9 +232,18 @@ open class ThankYouBaseFragment :
         (activity as ThankYouPageActivity).globalNabToolbar.animate().alpha(1f).setDuration(UnifyMotion.T5).start()
         (activity as ThankYouPageActivity).thanksPageHeaderBackground.alpha = 0f
         (activity as ThankYouPageActivity).thanksPageHeaderBackground.animate().alpha(1f).setDuration(UnifyMotion.T5).start()
-        view?.findViewById<RecyclerView>(R.id.thanksPageRecyclerView)?.animate()?.translationY(0f)?.setDuration(UnifyMotion.T5)?.start()
-        view?.findViewById<RecyclerView>(R.id.thanksPageRecyclerView)?.alpha = 0f
-        view?.findViewById<RecyclerView>(R.id.thanksPageRecyclerView)?.animate()?.alpha(1f)?.setDuration(UnifyMotion.T5)?.start()
+        getBottomContentRecyclerView()?.animate()?.translationY(0f)?.setDuration(UnifyMotion.T5)?.start()
+        getBottomContentRecyclerView()?.alpha = 0f
+        getBottomContentRecyclerView()?.animate()?.alpha(1f)?.setDuration(UnifyMotion.T5)?.start()
+        getBottomContentRecyclerView()?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (recyclerView.scrollY == 0) {
+                    (activity as ThankYouPageActivity).globalNabToolbar.hideShadow()
+                } else {
+                    (activity as ThankYouPageActivity).globalNabToolbar.showShadow()
+                }
+            }
+        })
     }
 
     override fun getScreenName(): String {
@@ -246,8 +255,8 @@ open class ThankYouBaseFragment :
 
         when(PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)) {
             WaitingPaymentPage -> thanksPageDataViewModel.addBottomContentWidget(WaitingHeaderUiModel.create(thanksPageData, context))
-            InstantPaymentPage -> {}
-            ProcessingPaymentPage -> {}
+            InstantPaymentPage -> { thanksPageDataViewModel.addBottomContentWidget(InstantHeaderUiModel.create(thanksPageData, context)) }
+            ProcessingPaymentPage -> { thanksPageDataViewModel.addBottomContentWidget(ProcessingHeaderUiModel.create(thanksPageData, context)) }
             else -> {}
         }
     }
