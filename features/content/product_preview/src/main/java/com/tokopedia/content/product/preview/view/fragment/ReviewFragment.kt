@@ -13,14 +13,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentReviewBinding
 import com.tokopedia.content.product.preview.utils.PAGE_SOURCE
 import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
+import com.tokopedia.content.product.preview.utils.ReviewResultContract
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
@@ -42,7 +43,8 @@ import javax.inject.Inject
 class ReviewFragment @Inject constructor(
     private val viewModelFactory: ProductPreviewViewModelFactory.Creator,
     private val router: Router,
-) : TkpdBaseV4Fragment(), ReviewParentContentViewHolder.Listener, MenuBottomSheet.Listener, ReviewReportBottomSheet.Listener {
+) : TkpdBaseV4Fragment(), ReviewParentContentViewHolder.Listener, MenuBottomSheet.Listener,
+    ReviewReportBottomSheet.Listener {
 
     private var _binding: FragmentReviewBinding? = null
     private val binding: FragmentReviewBinding
@@ -69,6 +71,12 @@ class ReviewFragment @Inject constructor(
                 }
             }
         }
+    }
+
+    private val likeResult = registerForActivityResult(
+        ReviewResultContract()
+    ) { result ->
+        viewModel.onAction(ProductPreviewAction.Like(result))
     }
 
     override fun getScreenName() = TAG
@@ -125,12 +133,21 @@ class ReviewFragment @Inject constructor(
     private fun observeEvent() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.uiEvent.collectLatest {
-                when(val event = it) {
+                when (val event = it) {
                     is ProductPreviewEvent.ShowMenuSheet -> {
-                        MenuBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).apply {
+                        MenuBottomSheet.getOrCreate(
+                            childFragmentManager,
+                            requireActivity().classLoader
+                        ).apply {
                             setMenu(event.status)
                         }.show(childFragmentManager)
                     }
+                    is ProductPreviewEvent.LoginEvent<*> -> {
+                        when(val data = event.data) {
+                            is LikeUiState -> likeResult.launch(data)
+                        }
+                    }
+
                     else -> {}
                 }
             }
@@ -158,9 +175,13 @@ class ReviewFragment @Inject constructor(
      * Menu Bottom Sheet Listener
      */
     override fun onOptionClicked(menu: ContentMenuItem) {
-        when(menu.type) {
+        when (menu.type) {
             ContentMenuIdentifier.Report ->
-                ReviewReportBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).show(childFragmentManager)
+                ReviewReportBottomSheet.getOrCreate(
+                    childFragmentManager,
+                    requireActivity().classLoader
+                ).show(childFragmentManager)
+
             else -> {}
         }
     }
@@ -176,8 +197,9 @@ class ReviewFragment @Inject constructor(
         viewModel.onAction(ProductPreviewAction.SubmitReport(report))
     }
 
-    private fun getCurrentPosition() : Int {
-        return (binding.rvReview.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition() ?: RecyclerView.NO_POSITION
+    private fun getCurrentPosition(): Int {
+        return (binding.rvReview.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition()
+            ?: RecyclerView.NO_POSITION
     }
 
     companion object {

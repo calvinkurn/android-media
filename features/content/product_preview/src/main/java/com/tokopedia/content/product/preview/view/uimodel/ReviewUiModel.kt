@@ -1,5 +1,8 @@
 package com.tokopedia.content.product.preview.view.uimodel
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
 /**
  * @author by astidhiyaa on 06/12/23
  */
@@ -10,7 +13,19 @@ data class ReviewUiModel(
     val likeState: LikeUiState,
     val author: AuthorUiModel,
     val description: DescriptionUiModel,
-)
+) {
+    companion object {
+        val Empty
+            get() = ReviewUiModel(
+                reviewId = "",
+                medias = emptyList(),
+                menus = MenuStatus(false),
+                likeState = LikeUiState(0, LikeUiState.LikeStatus.Reset),
+                author = AuthorUiModel("", "", "", "", ""),
+                description = DescriptionUiModel(0, "", "", "")
+            )
+    }
+}
 
 data class MediaUiModel(
     val type: String,
@@ -21,10 +36,11 @@ data class MediaUiModel(
     }
 }
 
+@Parcelize
 data class LikeUiState(
     val count: Int,
-    val state: LikeStatus
-) {
+    val state: LikeStatus,
+) : Parcelable {
     enum class LikeStatus(val value: Int) {
         Like(1),
         Dislike(2), //Not yet

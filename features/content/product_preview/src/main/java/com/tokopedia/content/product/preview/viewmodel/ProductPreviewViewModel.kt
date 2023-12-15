@@ -52,8 +52,12 @@ class ProductPreviewViewModel @AssistedInject constructor(
         get() = _miniInfo
 
     private val _reviewIndex = MutableStateFlow(0)
-    private val currentReview
-        get() = _review.value[_reviewIndex.value]
+    //TODO: temp
+    private val currentReview : ReviewUiModel
+        get() {
+            return if (_review.value.isEmpty() || _reviewIndex.value < 0) ReviewUiModel.Empty
+            else _review.value[_reviewIndex.value]
+        }
 
     fun onAction(action: ProductPreviewAction) {
         when (action) {
@@ -147,7 +151,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 val state = repo.likeReview(state, currentReview.reviewId)
                 _review.update { reviews ->
                     reviews.map { review ->
-                        if (review.reviewId == currentReview.reviewId) review.copy(likeState = state)
+                        if (review.reviewId == currentReview.reviewId) review.copy(likeState = state) //TODO: need better catch to know current review
                         else review
                     }
                 }
