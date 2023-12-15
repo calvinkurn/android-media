@@ -67,9 +67,8 @@ import javax.inject.Inject
  *
  * @applink tokopedia-android-internal://global/universal-editor
  */
-open class MainEditorActivity : AppCompatActivity()
-    , NavToolbarComponent.Listener
-    , DynamicTextCanvasLayout.Listener {
+open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listener,
+    DynamicTextCanvasLayout.Listener {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
@@ -166,7 +165,7 @@ open class MainEditorActivity : AppCompatActivity()
     }
 
     override fun startViewDrag() {
-        navigationTool.container().slideDown()
+        navigationTool.container().slideDown().start()
     }
 
     override fun endViewDrag() {
@@ -242,27 +241,30 @@ open class MainEditorActivity : AppCompatActivity()
                 viewModel.onEvent(MainEditorEvent.DisposeRemainingTasks)
                 finish()
             }
+
             is MainEditorEffect.ShowCloseDialogConfirmation -> {
                 confirmationDialog.show(this@MainEditorActivity) {
                     viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton(true))
                 }
             }
+
             is MainEditorEffect.UpdateTextAddedState -> {
                 val hasTextAdded = binding?.container?.hasTextAdded() ?: return
                 viewModel.onEvent(MainEditorEvent.HasTextAdded(hasTextAdded))
             }
+
             is MainEditorEffect.RemoveAudioState -> {
                 navigationTool.setRemoveAudioUiState(effect.isRemoved)
                 audioMuteState.onShowOrHideAudioState(effect.isRemoved)
             }
+
             is MainEditorEffect.OpenPlacementPage -> {
                 animateSlide {
                     navigateToPlacementImagePage(effect.sourcePath, effect.model)
                 }
             }
-            is MainEditorEffect.UpdatePagerSourcePath -> {
-                pagerContainer.updateView(effect.newSourcePath)
-            }
+
+            is MainEditorEffect.UpdatePagerSourcePath -> pagerContainer.updateView(effect.newSourcePath)
             is MainEditorEffect.FinishEditorPage -> navigateBackToPickerAndFinishIntent(effect.filePath)
             is MainEditorEffect.ShowToastErrorMessage -> onShowToastErrorMessage(effect.message)
             is MainEditorEffect.OpenInputText -> {
@@ -270,6 +272,7 @@ open class MainEditorActivity : AppCompatActivity()
                     navigateToInputTextTool(effect.model)
                 }
             }
+
             is MainEditorEffect.ShowLoading -> globalLoader.showLoading()
             is MainEditorEffect.HideLoading -> globalLoader.hideLoading()
         }
@@ -302,7 +305,7 @@ open class MainEditorActivity : AppCompatActivity()
         }
 
         animatorSet.apply {
-            addListener(object: AnimatorListener{
+            addListener(object : AnimatorListener {
                 override fun onAnimationStart(p0: Animator) {}
                 override fun onAnimationCancel(p0: Animator) {}
                 override fun onAnimationRepeat(p0: Animator) {}

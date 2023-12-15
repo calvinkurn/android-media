@@ -163,7 +163,6 @@ public class V1MultiTouchListener implements View.OnTouchListener {
 
                     if (!isDragging) {
                         isDragging = true;
-                        onMultiTouchListener.onDrag();
                         showDeletionButton();
                     }
 
@@ -212,7 +211,6 @@ public class V1MultiTouchListener implements View.OnTouchListener {
             case MotionEvent.ACTION_CANCEL:
                 activePointerId = INVALID_POINTER_ID;
 
-                onMultiTouchListener.onRelease(isDragging);
                 isDragging = false;
                 hideDeletionButton();
                 break;
@@ -241,7 +239,6 @@ public class V1MultiTouchListener implements View.OnTouchListener {
                 lastPositionX = 0;
                 lastPositionY = 0;
 
-                onMultiTouchListener.onRelease(isDragging);
                 isDragging = false;
                 hideDeletionButton();
                 break;
