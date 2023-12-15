@@ -21,6 +21,7 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /**
@@ -144,7 +145,12 @@ class ProductPreviewViewModel @AssistedInject constructor(
         requiredLogin(state) {
             viewModelScope.launchCatchError(block = {
                 val state = repo.likeReview(state, currentReview.reviewId)
-                //TODO: check toaster. Need to update dedicated reviewId to update value
+                _review.update { reviews ->
+                    reviews.map { review ->
+                        if (review.reviewId == currentReview.reviewId) review.copy(likeState = state)
+                        else review
+                    }
+                }
             }) {
                 _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it) {})
             }
