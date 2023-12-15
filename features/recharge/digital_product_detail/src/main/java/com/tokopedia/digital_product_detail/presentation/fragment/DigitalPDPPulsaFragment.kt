@@ -71,6 +71,7 @@ import com.tokopedia.digital_product_detail.presentation.custom.activityresult.O
 import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegate
 import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegateImpl
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
+import com.tokopedia.digital_product_detail.presentation.monitoring.DigitalPDPPulsaPerformanceCallback
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPWidgetMapper
@@ -163,6 +164,9 @@ class DigitalPDPPulsaFragment :
     @Inject
     lateinit var commonMultiCheckoutAnalytics: CommonMultiCheckoutAnalytics
 
+    @Inject
+    lateinit var performanceMonitoring: DigitalPDPPulsaPerformanceCallback
+
     private var binding by autoClearedNullable<FragmentDigitalPdpPulsaBinding>()
 
     private lateinit var localCacheHandler: LocalCacheHandler
@@ -238,6 +242,11 @@ class DigitalPDPPulsaFragment :
         initClientNumberWidget()
         observeData()
         getCatalogMenuDetail()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        stopPrepareMonitoring()
     }
 
     private fun setupKeyboardWatcher() {
@@ -393,6 +402,7 @@ class DigitalPDPPulsaFragment :
         }
 
         viewModel.observableDenomMCCMData.observe(viewLifecycleOwner) { denomData ->
+            startProductsRenderMonitoring()
             when (denomData) {
                 is RechargeNetworkResult.Success -> {
                     if (productId >= 0) {
@@ -551,6 +561,7 @@ class DigitalPDPPulsaFragment :
     }
 
     private fun getCatalogProductInput(selectedOperatorKey: String) {
+        startNetworkMonitoring()
         viewModel.setRechargeCatalogInputMultiTabLoading()
         viewModel.cancelCatalogProductJob()
         viewModel.getRechargeCatalogInputMultiTab(
@@ -634,6 +645,7 @@ class DigitalPDPPulsaFragment :
                     inputNumberActionType = InputNumberActionType.NOTHING
                 }
             }
+            clearFocusAutoComplete()
         }
     }
 
@@ -1321,6 +1333,54 @@ class DigitalPDPPulsaFragment :
                         }
                     }
                 })
+    }
+
+    private fun stopPrepareMonitoring() {
+        performanceMonitoring.stopPreparePagePerformanceMonitoring()
+    }
+
+    private fun startNetworkMonitoring() {
+        stopPrepareMonitoring()
+        performanceMonitoring.startNetworkRequestPerformanceMonitoring()
+    }
+
+    private fun stopNetworkMonitoring() {
+        performanceMonitoring.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    private fun stopPageMonitoring() {
+        performanceMonitoring.stopMonitoring()
+    }
+
+    /**
+     * Monitor duration between receive response until the UI is rendered.
+     * */
+    private fun startRenderMonitoring() {
+        stopNetworkMonitoring()
+        performanceMonitoring.startRenderPerformanceMonitoring()
+    }
+
+    private fun stopRenderMonitoring() {
+        performanceMonitoring.stopRenderPerformanceMonitoring()
+        stopPageMonitoring()
+    }
+
+    private var onRenderProductsGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener? = null
+
+    private fun startProductsRenderMonitoring() {
+        startRenderMonitoring()
+
+        if (onRenderProductsGlobalLayoutListener == null) {
+            onRenderProductsGlobalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    if (isAdded) {
+                        stopRenderMonitoring()
+                        binding?.rechargePdpPulsaDenomGridWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    }
+                }
+            }
+            binding?.rechargePdpPulsaDenomGridWidget?.viewTreeObserver?.addOnGlobalLayoutListener(onRenderProductsGlobalLayoutListener)
+        }
     }
 
     //region ClientNumberInputFieldListener

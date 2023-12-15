@@ -61,21 +61,21 @@ Tickets:
 
 ## Flow Chart
 
-![](res/admin_mobile_flow_chart.png)
+![](https://docs-android.tokopedia.net/images/docs/shop_admin/admin_mobile_flow_chart.png)
 Admin View Journey
 
 ## Pages
 
-![](res/admin_invitation_confirmation_input_email.png)
+![](https://docs-android.tokopedia.net/images/docs/shop_admin/admin_invitation_confirmation_input_email.png)
 Admin Invitation Confirmation - Input Email
 
-![](res/admin_invitation_confirmation_no_input_email.png)
+![](https://docs-android.tokopedia.net/images/docs/shop_admin/admin_invitation_confirmation_no_input_email.png)
 Admin Invitation Confirmation - No Input Email
 
-![](res/admin_invitation_confirmation_reject_dialog.png)
+![](https://docs-android.tokopedia.net/images/docs/shop_admin/admin_invitation_confirmation_reject_dialog.png)
 Admin Invitation Confirmation - Reject Dialog
 
-![](res/admin_invitation_accepted_onboarding1.png)
+![](https://docs-android.tokopedia.net/images/docs/shop_admin/admin_invitation_accepted_onboarding1.png)
 Admin Invitation Accepted - Onboarding
 
 

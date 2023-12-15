@@ -10,23 +10,21 @@ object RollenceKey {
     const val AB_TEST_SHOP_AFFILIATE_SHARE_ICON = "shareIconShopAff"
     const val AB_TEST_SHOP_RE_IMAGINED = "shop_page_reimagined"
 
+    const val AB_TEST_GRADUAL_ROLLOUT_KEY_SHOP_INFO_REIMAGINED = "an_shop_info_revamp"
+
     // home rollence section
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
-    const val HOME_COMPONENT_ATF = "revamp_atf"
-    const val HOME_COMPONENT_ATF_2 = "home_atf2"
+    const val HOME_COMPONENT_ATF = "test_atf"
+    const val HOME_COMPONENT_ATF_2 = "control_atf2"
+    const val HOME_COMPONENT_ATF_3 = "exp_atf3"
     const val HOME_LOAD_TIME_KEY = "load_time"
     const val HOME_LOAD_TIME_CONTROL = "control_variant"
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_KEY = "loadtime_homepage_an"
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL = "control_variant"
     const val HOME_LOAD_ATF_CACHE_ROLLENCE_EXP = "experiment_variant"
     // end of home rollence section
-
-    // home component rollence section
-    const val HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_EXP = "btf_revamp_header"
-    const val HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_VARIANT = "header_variant"
-    // end of home component rollence section
 
     // navigation rollence section
     const val ME_PAGE_EXP = "GlobalMenuRV"
@@ -57,6 +55,8 @@ object RollenceKey {
     const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
     const val CART_CHECKOUT_REVAMP = "cartcheckout_revamp"
     const val CART_CHECKOUT_NEW = "cart_checkout_new"
+    const val PROMO_ENTRY_POINT_IMPROVEMENT = "promowidget_cartco"
+    const val PROMO_ENTRY_POINT_NEW = "new_promowidget"
 
     // SRP Video Sneak Peek Autoplay
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY = "srp_prodvideo_3"
@@ -72,14 +72,14 @@ object RollenceKey {
     const val PRODUCT_CARD_EXPERIMENT_GIMMICK = "gimmick"
     const val PRODUCT_CARD_EXPERIMENT_PORTRAIT = "portrait"
     const val PRODUCT_CARD_EXPERIMENT_ETA = "eta"
-    const val PRODUCT_CARD_SLASHED_PRICE_CASHBACK_EXPERIMENT = "seg_sp_cb"
-    const val PRODUCT_CARD_SLASHED_PRICE_CASHBACK_SRP = "sp_cb_srp"
-    const val PRODUCT_CARD_SLASHED_PRICE_CASHBACK_ALL = "sp_cb_all"
+
+    // For You Rollence
+    const val FOR_YOU_FEATURE_FLAG = "foryou_feature_flag"
 
     // PDP
-    const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
-    const val PDP_SHOW_THUMBNAIL = "pdp_show_thumbnail"
-    const val PDP_HIDE_THUMBNAIL = "pdp_hide_thumbnail"
+    const val PDP_PREFETCH = "prefetch_pdp_android"
+    const val PDP_PREFETCH_ENABLE = "variant_prefetch"
+    const val PDP_PREFETCH_DISABLE = "control_prefetch"
 
     // Review
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
@@ -90,6 +90,9 @@ object RollenceKey {
     // DG SBM Transition
     const val KEY_SBM_TRANSITION = "sbm_ticker_mybills"
 
+    // BCA Rollence
+    const val BCA_ROLLENCE = "android_flazzrollout"
+
     // Payment
     const val THANKYOU_PAGE_WIDGET_ORDERING = "android_thankyou_v0"
     const val THANKYOU_PAGE_WIDGET_VARIANT = "TYP_Exp_PG_DG"
@@ -97,6 +100,7 @@ object RollenceKey {
     // TokopediaNOW
     const val TOKOPEDIA_NOW_AFFILIATE = "aff_now_att"
     const val TOKOPEDIA_NOW_PAGINATION = "now_pagination"
+    const val TOKOPEDIA_NOW_EXPERIMENT = "now_experiment"
 
     // FS Toko OOS Gradual Rollout
     const val FLASH_SALE_OUT_OF_STOCK_GRADUAL_ROLLOUT = "fst_oosimprovement"

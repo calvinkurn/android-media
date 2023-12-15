@@ -1,13 +1,12 @@
 package com.tokopedia.productcard.reimagine
 
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.annotation.ColorRes
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.BlendModeColorFilterCompat
-import androidx.core.graphics.BlendModeCompat
 import androidx.core.graphics.alpha
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
@@ -22,7 +21,7 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 private val LABEL_COLOR_MAP by lazyThreadSafetyNone { mapOf(
     LIGHT_GREEN to
-        (unifycomponentsR.color.Unify_GN50
+        (unifycomponentsR.color.Unify_GN100
             to unifycomponentsR.color.Unify_GN500),
 
     LABEL_BLACK to
@@ -47,20 +46,18 @@ private fun Typography.showLabel(labelGroup: ProductCardModel.LabelGroup) {
             val unifyLabelType = labelGroup.type
             val labelColorPair = LABEL_COLOR_MAP[unifyLabelType] ?: (0 to 0)
 
-            it.background = labelBackground(labelColorPair.first)
+            it.setLabelBackground(labelColorPair.first)
             it.setTextColor(ContextCompat.getColor(context, labelColorPair.second))
         } catch (_: Throwable) { }
     }
 }
 
-private fun Typography.labelBackground(@ColorRes color: Int) =
-    background.apply {
-        val colorInt = ContextCompat.getColor(context, color)
+private fun Typography.setLabelBackground(@ColorRes color: Int) =
+    background.run {
+        mutate()
 
-        colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-            colorInt,
-            BlendModeCompat.SRC_ATOP,
-        )
+        val colorInt = ContextCompat.getColor(context, color)
+        (this as? GradientDrawable)?.setColor(colorInt)
 
         alpha = colorInt.alpha
     }

@@ -470,7 +470,7 @@ class ShopHomeFlashSaleViewHolder(
         val totalProductWording = flashSaleData?.totalProductWording ?: ""
         // add product place holder if product list size > 5 and metada is not empty
         val isUsingPlaceHolder = isUsingPlaceHolder(totalProduct, totalProductWording)
-        if (false) {
+        if (isUsingPlaceHolder) {
             productList.add(
                 ShopHomeProductUiModel().apply {
                     this.isProductPlaceHolder = isUsingPlaceHolder

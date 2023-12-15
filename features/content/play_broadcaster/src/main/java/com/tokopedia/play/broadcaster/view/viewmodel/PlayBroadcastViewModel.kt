@@ -672,7 +672,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     getChannelById(channelId)
                 }) { it }
                 val deferredProductMap = asyncCatchError(block = {
-                    repo.getProductTagSummarySection(channelID = channelId)
+                    repo.getProductTagSummarySection(creationId = channelId)
                 }) { emptyList() }
 
                 val error = deferredChannel.await()
@@ -1548,6 +1548,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     IllegalStateException("Not allowed to create session")
                 )
             )
+            return // dont  create giveaway
         }
 
         viewModelScope.launchCatchError(dispatcher.io, block = {

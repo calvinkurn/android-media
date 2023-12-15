@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.home.beranda.data.model.GetHomeBalanceWidgetData
+import com.tokopedia.home.beranda.helper.DeviceScreenHelper
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.usecase.RequestParams
@@ -14,7 +15,8 @@ import javax.inject.Inject
  * Created by dhaba
  */
 class GetHomeBalanceWidgetUseCase @Inject constructor(
-    private val graphqlUseCase: GraphqlUseCase<GetHomeBalanceWidgetData>
+    private val graphqlUseCase: GraphqlUseCase<GetHomeBalanceWidgetData>,
+    private val deviceScreenHelper: DeviceScreenHelper,
 ) : UseCase<GetHomeBalanceWidgetData>() {
     private val params = RequestParams.create()
 
@@ -31,7 +33,7 @@ class GetHomeBalanceWidgetUseCase @Inject constructor(
     override suspend fun executeOnBackground(): GetHomeBalanceWidgetData {
         graphqlUseCase.clearCache()
         params.putString(EXPERIMENT, RollenceKey.HOME_COMPONENT_ATF)
-        params.putString(VARIANT, HomeRollenceController.rollenceAtfValue)
+        params.putString(VARIANT, HomeRollenceController.getAtfRollence(deviceScreenHelper.isFoldableOrTablet()))
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground()
     }

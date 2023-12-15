@@ -1,26 +1,39 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation
 
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.annotation.LayoutRes
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationError
-import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
-import com.tokopedia.smart_recycler_helper.SmartListener
+import com.tokopedia.home.databinding.ItemHomeRecommendationErrorLayoutBinding
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
-class HomeRecommendationErrorViewHolder (view: View) : SmartAbstractViewHolder<HomeRecommendationError>(view){
-    private val globalError: GlobalError? = itemView.findViewById(R.id.global_unify_error)
+class HomeRecommendationErrorViewHolder(
+    view: View,
+    private val listener: HomeRecommendationListener
+) : AbstractViewHolder<HomeRecommendationError>(view) {
 
-    override fun bind(element: HomeRecommendationError, listener: SmartListener) {
-        globalError?.setType(GlobalError.NO_CONNECTION)
-        globalError?.setActionClickListener { (listener as HomeRecommendationListener).onRetryGetProductRecommendationData() }
+    private val binding = ItemHomeRecommendationErrorLayoutBinding.bind(itemView)
+
+    override fun bind(element: HomeRecommendationError) {
+        with(binding.globalUnifyError) {
+            element.throwable?.getGlobalErrorType()?.let { setType(it) }
+            setActionClickListener { listener.onRetryGetProductRecommendationData() }
+        }
     }
 
-    companion object{
+    private fun Throwable?.getGlobalErrorType(): Int {
+        return when (this) {
+            is SocketTimeoutException, is UnknownHostException, is ConnectException -> GlobalError.NO_CONNECTION
+            else -> GlobalError.SERVER_ERROR
+        }
+    }
+
+    companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_home_recommendation_error_layout
     }

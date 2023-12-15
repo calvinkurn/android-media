@@ -10,7 +10,8 @@ import kotlinx.parcelize.Parcelize
 data class EditorParam(
     private var ratioList: ArrayList<ImageRatioType> = createDefaultRatioList(),
     private var editorToolsList: ArrayList<Int> = createDefaultEditorTools(),
-    private var autoCropRatio: ImageRatioType? = null
+    private var autoCropRatio: ImageRatioType? = null,
+    private var customCtaText: String? = null
 ) : Parcelable {
     private var addLogoIndex = 0
 
@@ -48,8 +49,28 @@ data class EditorParam(
     fun ratioListAdd3to4() = ratioList.add(ImageRatioType.RATIO_3_4)
     fun ratioListAdd2to1() = ratioList.add(ImageRatioType.RATIO_2_1)
 
+    fun getCustomCtaText() = customCtaText
+    fun setCustomCtaText(text: String) {
+        customCtaText = text
+    }
+
+    // prepare if we will open the compress config to user
+    fun getCompressConfig(): Triple<Float, Float, Int> {
+        return Triple(
+            COMPRESS_WIDTH,
+            COMPRESS_HEIGHT,
+            COMPRESS_QUALITY
+        )
+    }
+
     private fun setAutoCropRatio(ratio: ImageRatioType) {
         autoCropRatio = ratio
+    }
+
+    companion object {
+        private const val COMPRESS_WIDTH = 3000f
+        private const val COMPRESS_HEIGHT = 3000f
+        private const val COMPRESS_QUALITY = 100
     }
 }
 

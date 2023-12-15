@@ -7,9 +7,8 @@ import com.scp.login.core.domain.common.infrastructure.LSdkPopupActionType
 import com.scp.login.core.domain.common.infrastructure.LSdkPopupErrorType
 import com.scp.login.core.domain.common.infrastructure.LSdkScreenName
 import com.scp.login.core.domain.common.infrastructure.LSdkStatusType
-import com.scp.login.sso.BuildConfig
+import com.scp.login.core.domain.common.infrastructure.LoginMethodAnalytic
 import com.scp.verification.core.domain.common.infrastructure.CVEventFieldName
-import com.scp.verification.core.domain.common.infrastructure.CVEventName
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSession
@@ -17,6 +16,12 @@ import com.tokopedia.user.session.UserSession
 object AuthAnalyticsMapper {
 
     private val gtm = TrackApp.getInstance().gtm
+
+    var loginFrom = ""
+
+    var progressiveSignupTransactionId = ""
+    var lsdkVersion = ""
+
     fun trackScreenLsdk(eventName: String, param: Map<String, Any?>) {
         val lsdkScreen = getSource(param)
         gtm.sendGeneralEvent(
@@ -35,7 +40,8 @@ object AuthAnalyticsMapper {
         when (eventName) {
             LSdkEventName.LSDK_SCREEN_SHOWN, LSdkEventName.LSDK_HELP_CLICKED,
             LSdkEventName.LSDK_BACK_CLICKED, LSdkEventName.LSDK_TNC_CLICKED,
-            LSdkEventName.LSDK_PRIVACY_POLICY_CLICKED -> {
+            LSdkEventName.LSDK_PRIVACY_POLICY_CLICKED, LSdkEventName.LSDK_LOGIN_ACCOUNT_OPTION_CTA_CLICKED
+            -> {
                 trackCommonClickedLsdk(eventName, param)
             }
 
@@ -44,11 +50,21 @@ object AuthAnalyticsMapper {
             }
 
             LSdkEventName.LSDK_LOGIN_SUCCESS, LSdkEventName.LSDK_LOGIN_FAIL, LSdkEventName.LSDK_CTA_OTHER_ACC, LSdkEventName.LSDK_LOGIN_CTA_CLICKED -> {
+                if (eventName == LSdkEventName.LSDK_LOGIN_CTA_CLICKED) {
+                    val lsdkScreen = getSource(param)
+                    loginFrom = lsdkScreen
+                }
                 trackLoginLsdk(eventName, param)
             }
 
             LSdkEventName.LSDK_INPUT_BOX_CLICKED, LSdkEventName.LSDK_ACC_RECOVERY_CLICKED,
-            LSdkEventName.LSDK_CONTINUE_CTA_CLICKED, LSdkEventName.LSDK_SOCMED_CTA_CLICKED -> trackInputCredential(eventName, param)
+            LSdkEventName.LSDK_CONTINUE_CTA_CLICKED, LSdkEventName.LSDK_SOCMED_CTA_CLICKED -> {
+                if (eventName == LSdkEventName.LSDK_CONTINUE_CTA_CLICKED) {
+                    val lsdkScreen = getSource(param)
+                    loginFrom = lsdkScreen
+                }
+                trackInputCredential(eventName, param)
+            }
 
             LSdkEventName.LSDK_POPUP_VIEW, LSdkEventName.LSDK_POPUP_ACTION -> trackPopup(eventName, param)
             LSdkEventName.LSDK_LOGOUT_INIT, LSdkEventName.LSDK_LOGOUT_SUCCESS, LSdkEventName.LSDK_LOGOUT_FAIL -> trackLogout(eventName, param)
@@ -65,8 +81,8 @@ object AuthAnalyticsMapper {
             createData(
                 getTrackerIdClick(eventName, lsdkScreen, param),
                 CLICK_ACCOUNT_EVENT,
-                createScreenCategory(getSource(param)),
-                createClickAction(clickTypeFactory(eventName)),
+                createScreenCategory(mapScreenView(getSource(param))),
+                createClickAction(clickTypeFactory(eventName, lsdkScreen)),
                 getTransactionId(param),
                 createCustomDimension(getSdkVersion(param))
             )
@@ -89,12 +105,17 @@ object AuthAnalyticsMapper {
 
     fun trackLoginLsdk(eventName: String, param: Map<String, Any?>) {
         val lsdkScreen = getSource(param)
+        val page = if (eventName == LSdkEventName.LSDK_CTA_OTHER_ACC) {
+            mapScreenView(lsdkScreen)
+        } else {
+            mapScreenView(loginFrom)
+        }
         gtm.sendGeneralEvent(
             createData(
                 getTrackerIdClick(eventName, lsdkScreen, param),
                 CLICK_ACCOUNT_EVENT,
-                createScreenCategory("sso login"),
-                createClickAction(clickTypeFactory(eventName)),
+                createScreenCategory(page),
+                createClickAction(clickTypeFactory(eventName, lsdkScreen)),
                 getLoginLabel(eventName, param),
                 createCustomDimension(getSdkVersion(param))
             )
@@ -136,7 +157,7 @@ object AuthAnalyticsMapper {
                 getTrackerIdClick(eventName, lsdkScreen, param),
                 CLICK_ACCOUNT_EVENT,
                 createScreenCategory("login"),
-                createClickAction(clickTypeFactory(eventName)),
+                createClickAction(clickTypeFactory(eventName, lsdkScreen)),
                 getCredentialScreenLabel(eventName, param),
                 createCustomDimension(getSdkVersion(param))
             )
@@ -150,7 +171,7 @@ object AuthAnalyticsMapper {
                 getTrackerIdClick(eventName, lsdkScreen, param),
                 getPopupEvent(eventName),
                 getPopupCategoryFactory(param),
-                getPopupActionType(eventName, param),
+                getPopupType(eventName, param),
                 getPopupEventLabel(eventName, param),
                 createCustomDimension(getSdkVersion(param))
             )
@@ -207,7 +228,7 @@ object AuthAnalyticsMapper {
                 getTrackerIdClick(eventName, lsdkScreen, param),
                 VIEW_ACCOUNT_EVENT,
                 TRIGGER_PAGE_CATEGORY,
-                SSO_ACCCOUNT_ACTION,
+                SEAMLESS_ACCOUNT_ACTION,
                 "$TRIGGERED_EVENT_LABEL - ${param[CVEventFieldName.TRANSACTION_ID]}",
                 createCustomDimension(getSdkVersion(param))
             )
@@ -264,7 +285,7 @@ object AuthAnalyticsMapper {
     }
 
     private fun createCustomDimension(sdkVersion: String): Map<String, Any> {
-        return mapOf(SDK_VERSION to sdkVersion, BUSINESS_UNIT to "")
+        return mapOf(SDK_VERSION to sdkVersion, BUSINESS_UNIT to BUSINESS_UNIT_VALUE, CURRENT_SITE to CURRENT_SITE_VALUE)
     }
 
     private fun mapScreenView(lsdkScreen: String): String {
@@ -289,7 +310,7 @@ object AuthAnalyticsMapper {
 
     private fun getTrackerIdClick(event: String, lsdkScreen: String, param: Map<String, Any?>): String {
         return when (event) {
-            CVEventName.CVSDK_HELP_CLICKED -> {
+            LSdkEventName.LSDK_HELP_CLICKED -> {
                 when (lsdkScreen) {
                     LSdkScreenName.SCREEN_LANDING -> "" // sso screen
                     LSdkScreenName.SCREEN_SEAMLESS_ACC_SELECTION -> ""
@@ -299,7 +320,7 @@ object AuthAnalyticsMapper {
                 }
             }
 
-            CVEventName.CVSDK_BACK_CLICKED -> {
+            LSdkEventName.LSDK_BACK_CLICKED -> {
                 when (lsdkScreen) {
                     LSdkScreenName.SCREEN_LANDING -> "46266" // sso screen
                     LSdkScreenName.SCREEN_SEAMLESS_ACC_SELECTION -> "46272"
@@ -320,13 +341,31 @@ object AuthAnalyticsMapper {
             }
 
             LSdkEventName.LSDK_PRIVACY_POLICY_CLICKED -> "46268"
-            LSdkEventName.LSDK_LOGIN_SUCCESS, LSdkEventName.LSDK_LOGIN_FAIL -> "continue"
-            LSdkEventName.LSDK_CTA_OTHER_ACC -> "46265"
+            LSdkEventName.LSDK_LOGIN_CTA_CLICKED, LSdkEventName.LSDK_LOGIN_SUCCESS, LSdkEventName.LSDK_LOGIN_FAIL -> {
+                return if (lsdkScreen == LSdkScreenName.SCREEN_LANDING || loginFrom == LSdkScreenName.SCREEN_LANDING) {
+                    "46264"
+                } else if (lsdkScreen == LSdkScreenName.SCREEN_SEAMLESS_ACC_SELECTION || loginFrom == LSdkScreenName.SCREEN_SEAMLESS_ACC_SELECTION) {
+                    "46270"
+                } else if (lsdkScreen == LSdkScreenName.SCREEN_INPUT_CREDS || loginFrom == LSdkScreenName.SCREEN_INPUT_CREDS) {
+                    "46275"
+                } else {
+                    ""
+                }
+            }
+
+            LSdkEventName.LSDK_CTA_OTHER_ACC -> {
+                return if (lsdkScreen == LSdkScreenName.SCREEN_LANDING) {
+                    "46265"
+                } else if (lsdkScreen == LSdkScreenName.SCREEN_ACCOUNT_SELECTION) {
+                    "46271"
+                } else {
+                    ""
+                }
+            }
             LSdkEventName.LSDK_INPUT_BOX_CLICKED -> "46274"
             LSdkEventName.LSDK_ACC_RECOVERY_CLICKED -> "46277"
             LSdkEventName.LSDK_CONTINUE_CTA_CLICKED -> "46275"
             LSdkEventName.LSDK_SOCMED_CTA_CLICKED -> "46276"
-            LSdkEventName.LSDK_LOGIN_CTA_CLICKED -> "46264"
             LSdkEventName.LSDK_VERIFICATION_TRIGGERED -> "46284"
             LSdkEventName.LSDK_POPUP_ACTION -> {
                 if (param[CVEventFieldName.TYPE] == LSdkPopupErrorType.TokoDialog.status) {
@@ -369,36 +408,54 @@ object AuthAnalyticsMapper {
             LSdkEventName.LSDK_ACCOUNT_FETCH_INIT -> {
                 return "47755"
             }
+            LSdkEventName.LSDK_LOGIN_ACCOUNT_OPTION_CTA_CLICKED -> {
+                return "46282"
+            }
 
             else -> ""
         }
     }
 
-    private fun clickTypeFactory(event: String): String {
+    private fun clickTypeFactory(event: String, source: String): String {
         return when (event) {
-            CVEventName.CVSDK_HELP_CLICKED -> "icon help"
-            CVEventName.CVSDK_BACK_CLICKED -> "button back"
+            LSdkEventName.LSDK_HELP_CLICKED -> "icon help"
+            LSdkEventName.LSDK_BACK_CLICKED -> "button back"
             LSdkEventName.LSDK_TNC_CLICKED -> "terms of service"
             LSdkEventName.LSDK_PRIVACY_POLICY_CLICKED -> "privacy policy"
-            LSdkEventName.LSDK_LOGIN_SUCCESS, LSdkEventName.LSDK_LOGIN_FAIL -> "continue"
-            LSdkEventName.LSDK_CTA_OTHER_ACC -> "continue with other account"
+            LSdkEventName.LSDK_LOGIN_SUCCESS, LSdkEventName.LSDK_LOGIN_FAIL -> "continue login"
+            LSdkEventName.LSDK_CTA_OTHER_ACC -> {
+                return if (source == LSdkScreenName.SCREEN_LANDING) {
+                    "continue with other account"
+                } else if (source == LSdkScreenName.SCREEN_ACCOUNT_SELECTION) {
+                    "use phone number or email"
+                } else {
+                    ""
+                }
+            }
             LSdkEventName.LSDK_INPUT_BOX_CLICKED -> "input box"
             LSdkEventName.LSDK_ACC_RECOVERY_CLICKED -> "cannot access account"
             LSdkEventName.LSDK_CONTINUE_CTA_CLICKED, LSdkEventName.LSDK_LOGIN_CTA_CLICKED -> "continue login"
             LSdkEventName.LSDK_SOCMED_CTA_CLICKED -> "login with google sso"
+            LSdkEventName.LSDK_LOGIN_ACCOUNT_OPTION_CTA_CLICKED -> "an account"
             else -> ""
         }
     }
 
     private fun getSource(param: Map<String, Any?>): String = param[CVEventFieldName.SOURCE].toString()
 
-    private fun getTransactionId(param: Map<String, Any?>): String = param[CVEventFieldName.TRANSACTION_ID].toString()
+    private fun getTransactionId(param: Map<String, Any?>): String {
+        progressiveSignupTransactionId = param[CVEventFieldName.TRANSACTION_ID].toString()
+        return progressiveSignupTransactionId
+    }
 
-    private fun getSdkVersion(param: Map<String, Any?>): String = param[CVEventFieldName.SDK_VERSION].toString()
+    private fun getSdkVersion(param: Map<String, Any?>): String {
+        lsdkVersion = param[CVEventFieldName.SDK_VERSION].toString()
+        return lsdkVersion
+    }
 
     private fun getVerificationType(param: Map<String, Any?>): String = param[LSdkAnalyticFieldName.VERIFICATION_TYPE].toString()
 
-    private fun getPopupActionType(eventName: String, param: Map<String, Any?>): String {
+    private fun getPopupType(eventName: String, param: Map<String, Any?>): String {
         return when (eventName) {
             LSdkEventName.LSDK_POPUP_VIEW -> {
                 if (param[CVEventFieldName.TYPE] == LSdkPopupErrorType.TokoDialog.status) {
@@ -418,7 +475,7 @@ object AuthAnalyticsMapper {
                         ""
                     }
                 } else {
-                    return createScreenAction(CLICK_RETRY_ACTION)
+                    return CLICK_RETRY_ACTION
                 }
             }
 
@@ -455,7 +512,7 @@ object AuthAnalyticsMapper {
                         return ""
                     }
                 } else {
-                    return "${param[CVEventFieldName.ERROR_TYPE]} - ${getTransactionId(param)}"
+                    return "${param[CVEventFieldName.TYPE]} - ${getTransactionId(param)}"
                 }
             }
 
@@ -512,13 +569,45 @@ object AuthAnalyticsMapper {
         }
     }
 
+    fun trackProgressiveSignupSuccess() {
+        gtm.sendGeneralEvent(
+            createData(
+                trackerId = "46264",
+                event = CLICK_ACCOUNT_EVENT,
+                category = SSO_PAGE_CATEGORY,
+                action = CLICK_ON_CONTINUE,
+                label = "$LABEL_SUCCESS - register - ${LoginMethodAnalytic.SSO} - $progressiveSignupTransactionId",
+                customDimension = createCustomDimension(lsdkVersion)
+            )
+        )
+    }
+
+    fun trackProgressiveSignupFailed(errorMsg: String) {
+        gtm.sendGeneralEvent(
+            createData(
+                trackerId = "46264",
+                event = CLICK_ACCOUNT_EVENT,
+                category = SSO_PAGE_CATEGORY,
+                action = CLICK_ON_CONTINUE,
+                label = "$LABEL_FAILED - $errorMsg - register - ${LoginMethodAnalytic.SSO} - $progressiveSignupTransactionId",
+                customDimension = createCustomDimension(lsdkVersion)
+            )
+        )
+    }
+
     private fun getLoginLabel(eventName: String, param: Map<String, Any?>): String {
         val transactionId = getTransactionId(param)
         return when (eventName) {
-            LSdkEventName.LSDK_LOGIN_SUCCESS -> "success - login - $transactionId"
+            LSdkEventName.LSDK_LOGIN_SUCCESS -> "success - login - ${param[CVEventFieldName.METHOD]} - $transactionId"
             LSdkEventName.LSDK_LOGIN_FAIL -> "failed - login - ${param[CVEventFieldName.ERROR_MESSAGE]} - $transactionId"
             LSdkEventName.LSDK_CTA_OTHER_ACC -> transactionId
-            LSdkEventName.LSDK_LOGIN_CTA_CLICKED -> "click - $transactionId"
+            LSdkEventName.LSDK_LOGIN_CTA_CLICKED -> {
+                if (param[CVEventFieldName.TYPE] == "progressive_signup") {
+                    "click - register - ${LoginMethodAnalytic.SSO} - $transactionId"
+                } else {
+                    "click - login - ${param[CVEventFieldName.TYPE]} - $transactionId"
+                }
+            }
             else -> ""
         }
     }
@@ -526,7 +615,13 @@ object AuthAnalyticsMapper {
     private fun getCredentialScreenLabel(eventName: String, param: Map<String, Any?>): String {
         return when (eventName) {
             LSdkEventName.LSDK_INPUT_BOX_CLICKED, LSdkEventName.LSDK_ACC_RECOVERY_CLICKED -> getTransactionId(param)
-            LSdkEventName.LSDK_CONTINUE_CTA_CLICKED -> "click - ${getSource(param)} - ${getTransactionId(param)}"
+            LSdkEventName.LSDK_CONTINUE_CTA_CLICKED -> {
+                if (param.containsKey(CVEventFieldName.FLOW)) {
+                    "click - ${param[CVEventFieldName.FLOW]} - ${LoginMethodAnalytic.Verification} - ${getTransactionId(param)}"
+                } else {
+                    "click - ${LoginMethodAnalytic.Verification} - ${getTransactionId(param)}"
+                }
+            }
             LSdkEventName.LSDK_SOCMED_CTA_CLICKED -> "click - ${getTransactionId(param)}"
             else -> ""
         }
@@ -537,6 +632,10 @@ object AuthAnalyticsMapper {
 
     private const val SDK_VERSION = "sdkVersion"
     private const val BUSINESS_UNIT = "businessUnit"
+    private const val CURRENT_SITE = "currentSite"
+
+    private const val BUSINESS_UNIT_VALUE = "Shared Consumer Platform"
+    private const val CURRENT_SITE_VALUE = "tokopediamarketplace"
     private const val TRACKER_ID = "trackerId"
     private const val CCU_BUTTON_VALUE = "with CCU button"
     private const val WITHOUT_CCU_BUTTON_VALUE = "no CCU button"
@@ -546,6 +645,7 @@ object AuthAnalyticsMapper {
 
     // static category
     private const val TRIGGER_PAGE_CATEGORY = "goto trigger page"
+    private const val SSO_PAGE_CATEGORY = "goto sso page"
 
     // screen
     private const val SSO_LOGIN_SCREEN = "sso"
@@ -556,7 +656,7 @@ object AuthAnalyticsMapper {
     // static action
     private const val CLICK_BUTTON_CLOSE_POPUP_ACTION = "click on button close"
     private const val CLICK_BUTTON_TOKOPEDIA_CARE_ACTION = "click on contact tokopedia care"
-    private const val CLICK_RETRY_ACTION = "click on button coba lagi"
+    private const val CLICK_RETRY_ACTION = "click on button cta"
     private const val LOGOUT_ACTION = "view on logout trigger"
     private const val REFRESH_TOKEN_ACTION = "view on refresh token page"
     private const val SSO_ACCCOUNT_ACTION = "view on sso account fetch"
@@ -564,4 +664,9 @@ object AuthAnalyticsMapper {
     private const val ONE_TAP_ACTION = "view on onetap account fetch"
     private const val VIEW_ON_PROFILE_FETCH_ACTION = "view on profile fetch"
     private const val VIEW_ON_MFA_TRIGGER = "view on mfa trigger"
+
+    private const val CLICK_ON_CONTINUE = "click on continue"
+
+    private const val LABEL_SUCCESS = "success"
+    private const val LABEL_FAILED = "failed"
 }

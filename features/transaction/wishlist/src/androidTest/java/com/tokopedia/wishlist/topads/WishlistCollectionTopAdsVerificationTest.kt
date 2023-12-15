@@ -1,8 +1,13 @@
 package com.tokopedia.wishlist.topads
 
 import android.Manifest
+import android.app.Activity
+import android.app.Instrumentation.*
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
@@ -12,13 +17,13 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.runWishlistCollectionBot
-import com.tokopedia.wishlist.util.WishlistIdlingResource
+import com.tokopedia.wishlist.detail.util.WishlistIdlingResource
 import com.tokopedia.wishlist.util.adapter
 import com.tokopedia.wishlist.util.disableWishlistCoachmark
 import com.tokopedia.wishlist.util.setupRemoteConfig
-import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionActivity
-import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
-import com.tokopedia.wishlistcollection.view.adapter.viewholder.WishlistCollectionRecommendationItemViewHolder
+import com.tokopedia.wishlist.collection.view.activity.WishlistCollectionActivity
+import com.tokopedia.wishlist.collection.view.adapter.WishlistCollectionAdapter
+import com.tokopedia.wishlist.collection.view.adapter.viewholder.WishlistCollectionRecommendationItemViewHolder
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -41,7 +46,7 @@ class WishlistCollectionTopAdsVerificationTest {
     @get:Rule
     var activityRule =
         object :
-            ActivityTestRule<WishlistCollectionActivity>(WishlistCollectionActivity::class.java) {
+                ActivityTestRule<WishlistCollectionActivity>(WishlistCollectionActivity::class.java) {
             override fun beforeActivityLaunched() {
                 super.beforeActivityLaunched()
                 InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
@@ -53,6 +58,7 @@ class WishlistCollectionTopAdsVerificationTest {
 
     @Before
     fun setup() {
+        Intents.init()
         IdlingRegistry.getInstance().register(WishlistIdlingResource.countingIdlingResource)
     }
 
@@ -60,17 +66,19 @@ class WishlistCollectionTopAdsVerificationTest {
     fun cleanup() {
         topAdsAssertion.after()
         IdlingRegistry.getInstance().unregister(WishlistIdlingResource.countingIdlingResource)
+        Intents.release()
     }
 
     @Test
     fun testWishlistCollectionTopAds() {
         runWishlistCollectionBot {
             loading()
+            Intents.intending(IntentMatchers.anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
             val wishlistCollectionRecyclerView =
                 activityRule.activity.findViewById<RecyclerView>(R.id.rv_wishlist_collection)
             val itemCount = wishlistCollectionRecyclerView.adapter?.itemCount ?: 0
             for (index in 0 until itemCount) {
-                scrollWishlistRecyclerViewToIndex(index)
+                scrollWishlistRecyclerViewToIndex(wishlistCollectionRecyclerView, index)
                 if (isRecommendationItem(
                         wishlistCollectionRecyclerView.findViewHolderForAdapterPosition(index)
                     )
@@ -92,5 +100,10 @@ class WishlistCollectionTopAdsVerificationTest {
 
     private fun isRecommendationItem(viewHolder: RecyclerView.ViewHolder?): Boolean {
         return viewHolder is WishlistCollectionRecommendationItemViewHolder
+    }
+
+    private fun scrollWishlistRecyclerViewToIndex(rv: RecyclerView, index: Int) {
+        val layoutManager = rv.layoutManager as GridLayoutManager
+        activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(index, 0) }
     }
 }

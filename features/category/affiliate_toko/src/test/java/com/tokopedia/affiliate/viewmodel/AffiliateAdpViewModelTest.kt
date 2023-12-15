@@ -12,19 +12,16 @@ import com.tokopedia.affiliate.model.response.AffiliateDateFilterResponse
 import com.tokopedia.affiliate.model.response.AffiliatePerformanceItemTypeListData
 import com.tokopedia.affiliate.model.response.AffiliatePerformanceListData
 import com.tokopedia.affiliate.model.response.AffiliateUserPerformaListItemData
-import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.sse.AffiliateSSE
 import com.tokopedia.affiliate.sse.AffiliateSSEPageSource
 import com.tokopedia.affiliate.sse.model.AffiliateSSEAction
 import com.tokopedia.affiliate.sse.model.AffiliateSSECloseReason
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
-import com.tokopedia.affiliate.usecase.AffiliateGetUnreadNotificationUseCase
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceDataUseCase
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceItemTypeUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSSEAuthTokenUseCase
 import com.tokopedia.affiliate.usecase.AffiliateUserPerformanceUseCase
-import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -47,25 +44,21 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class AffiliateAdpViewModelTest {
     private val userSessionInterface: UserSessionInterface = mockk()
-    private val affiliateValidateUserStatus: AffiliateValidateUserStatusUseCase = mockk()
     private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase = mockk()
     private val affiliateUserPerformanceUseCase: AffiliateUserPerformanceUseCase = mockk()
     private val affiliatePerformanceDataUseCase: AffiliatePerformanceDataUseCase = mockk()
     private val affiliatePerformanceItemTypeUseCase: AffiliatePerformanceItemTypeUseCase = mockk()
     private val affiliateSSEAuthTokenUseCase: AffiliateSSEAuthTokenUseCase = mockk()
-    private val getUnreadNotificationUseCase: AffiliateGetUnreadNotificationUseCase = mockk()
     private val dispatchers: CoroutineDispatchers = mockk()
     private val affiliateSSE: AffiliateSSE = mockk(relaxed = true)
     private var affiliateAdpViewModel = spyk(
         AffiliateAdpViewModel(
             userSessionInterface,
-            affiliateValidateUserStatus,
             affiliateAffiliateAnnouncementUseCase,
             affiliateUserPerformanceUseCase,
             affiliatePerformanceItemTypeUseCase,
             affiliatePerformanceDataUseCase,
             affiliateSSEAuthTokenUseCase,
-            getUnreadNotificationUseCase,
             dispatchers,
             affiliateSSE
         )
@@ -135,28 +128,6 @@ class AffiliateAdpViewModelTest {
         } throws throwable
 
         affiliateAdpViewModel.getAnnouncementInformation(true)
-    }
-
-    /**************************** getAffiliateValidateUser() *******************************************/
-    @Test
-    fun getAffiliateValidateUser() {
-        val affiliateValidateUserData: AffiliateValidateUserData = mockk(relaxed = true)
-        coEvery { affiliateValidateUserStatus.validateUserStatus(any()) } returns affiliateValidateUserData
-
-        affiliateAdpViewModel.getAffiliateValidateUser()
-
-        assertEquals(affiliateAdpViewModel.getValidateUserdata().value, affiliateValidateUserData)
-    }
-
-    @Test
-    fun getAffiliateValidateUserException() {
-        val throwable = Throwable("Validate Data Exception")
-        coEvery { affiliateValidateUserStatus.validateUserStatus(any()) } throws throwable
-
-        affiliateAdpViewModel.getAffiliateValidateUser()
-
-        assertEquals(affiliateAdpViewModel.getErrorMessage().value, throwable)
-        assertEquals(affiliateAdpViewModel.progressBar().value, false)
     }
 
     /**************************** getAffiliatePerformance() *******************************************/
@@ -312,29 +283,6 @@ class AffiliateAdpViewModelTest {
         affiliateAdpViewModel.onRangeChanged(range)
 
         assertEquals(null, affiliateAdpViewModel.getRangeChanged().value)
-    }
-
-    @Test
-    fun `successfully getting unread notification count`() {
-        coEvery {
-            getUnreadNotificationUseCase.getUnreadNotifications()
-        } returns 5
-
-        affiliateAdpViewModel.fetchUnreadNotificationCount()
-        assertEquals(5, affiliateAdpViewModel.getUnreadNotificationCount().value)
-    }
-
-    @Test
-    fun `should reset notification count to zero`() {
-        coEvery {
-            getUnreadNotificationUseCase.getUnreadNotifications()
-        } returns 5
-
-        affiliateAdpViewModel.fetchUnreadNotificationCount()
-        assertEquals(5, affiliateAdpViewModel.getUnreadNotificationCount().value)
-
-        affiliateAdpViewModel.resetNotificationCount()
-        assertEquals(0, affiliateAdpViewModel.getUnreadNotificationCount().value)
     }
 
     @Test

@@ -13,12 +13,12 @@ import com.tokopedia.home.beranda.data.mapper.factory.HomeDynamicChannelVisitabl
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.di.HomeScope
+import com.tokopedia.home.beranda.helper.DeviceScreenHelper
 import com.tokopedia.home.beranda.presentation.view.helper.HomePrefController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigController
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -44,10 +44,6 @@ class HomeModule {
     @HomeScope
     @Provides
     fun provideTrackingQueue(@ApplicationContext context: Context) = TrackingQueue(context)
-
-    @HomeScope
-    @Provides
-    fun provideExecutors(): SmartExecutors = SmartExecutors()
 
     @HomeScope
     @Provides
@@ -94,5 +90,11 @@ class HomeModule {
 
     @HomeScope
     @Provides
-    fun provideHomeThematicUtil(): HomeThematicUtil = HomeThematicUtil()
+    fun provideHomeThematicUtil(
+        @ApplicationContext context: Context
+    ): HomeThematicUtil = HomeThematicUtil(context)
+
+    @HomeScope
+    @Provides
+    fun provideDeviceScreenHelper(@ApplicationContext context: Context) = DeviceScreenHelper(context)
 }

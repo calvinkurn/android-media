@@ -7,232 +7,277 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignTop="@+id/saldo_balance_layout"
+        android:layout_alignBottom="@+id/saldo_balance_layout"
+        app:srcCompat="@drawable/background_saldo"
+        android:contentDescription="@string/content_desc_background"
+        android:scaleType="fitXY"
+        />
+
     <LinearLayout
         android:id="@+id/saldo_balance_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/saldo_card_bg_green_gradient"
         android:orientation="vertical"
-        android:paddingStart="@dimen/unify_space_16"
-        android:paddingTop="@dimen/unify_space_16"
-        android:paddingEnd="@dimen/unify_space_16"
-        android:paddingBottom="@dimen/unify_space_12">
+        android:paddingStart="16dp"
+        android:paddingTop="60dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="34dp">
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_saldo_withdrawal_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginBottom="12dp"
+            app:tickerType="announcement"
+            app:tickerShapeType="loose"
+            />
 
         <FrameLayout
             android:id="@+id/withdraw_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.tokopedia.unifycomponents.CardUnify
-                android:id="@+id/cardWithdrawBalance"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/sd_dp_3"
-                android:layout_marginBottom="@dimen/unify_space_4"
-                app:card_type="shadow">
-
-                <LinearLayout
-                    android:id="@+id/llWithdrawBalance"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <RelativeLayout
-                        android:id="@+id/main_balance_rl"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="@dimen/unify_space_8">
-
-                        <com.tokopedia.iconunify.IconUnify
-                            android:id="@+id/saldo_icon"
-                            android:layout_width="@dimen/dp_28"
-                            android:layout_height="@dimen/dp_28"
-                            android:layout_alignWithParentIfMissing="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerVertical="true"
-                            android:contentDescription="@string/sp_saldo_title"
-                            android:padding="@dimen/unify_space_2"
-                            app:icon_color_light_enable="@color/Unify_GN500"
-                            app:icon_color_night_enable="@color/Unify_GN500"
-                            app:icon_name="SALDO" />
-
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/saldo_deposit_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginStart="@dimen/sd_dp_6"
-                            android:layout_toEndOf="@+id/saldo_icon"
-                            android:text="@string/sp_title_remaining_tokopedia"
-                            android:textColor="@color/Unify_NN950_68"
-                            app:typographyType="body_3" />
-
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/total_balance"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_toStartOf="@+id/saldo_deposit_layout_expand"
-                            android:layout_toEndOf="@+id/saldo_deposit_text"
-                            android:gravity="end"
-                            android:textColor="@color/Unify_NN950_68"
-                            android:textSize="@dimen/sp_16"
-                            android:textStyle="bold"
-                            app:typographyType="body_1"
-                            app:typographyWeight="bold"
-                            tools:text="Rp 1.000.000" />
-
-                        <com.tokopedia.iconunify.IconUnify
-                            android:id="@+id/saldo_deposit_layout_expand"
-                            android:layout_width="@dimen/unify_space_24"
-                            android:layout_height="@dimen/unify_space_24"
-                            android:layout_alignWithParentIfMissing="true"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            app:icon_color_light_enable="@color/Unify_NN600"
-                            app:icon_color_night_enable="@color/Unify_NN600"
-                            app:icon_name="CHEVRON_UP" />
-
-                    </RelativeLayout>
-
-                    <LinearLayout
-                        android:id="@+id/saldo_type_ll"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/unify_space_8"
-                        android:orientation="vertical">
-
-                        <com.tokopedia.unifycomponents.DividerUnify
-                            android:id="@+id/saldo_balance_separator"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/sd_dp_1"
-                            android:layout_marginBottom="@dimen/unify_space_12" />
-
-                        <RelativeLayout
-                            android:id="@+id/saldo_buyer_balance_rl"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingLeft="@dimen/unify_space_8"
-                            android:paddingRight="@dimen/unify_space_8">
-
-                            <com.tokopedia.unifyprinciples.Typography
-                                android:id="@+id/saldo_buyer_deposit_text"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_centerVertical="true"
-                                android:layout_marginStart="@dimen/unify_space_4"
-                                android:layout_marginTop="@dimen/sd_dp_10"
-                                android:text="@string/saldo_total_balance_buyer"
-                                android:textColor="@color/Unify_NN950_68"
-                                app:typographyType="body_3" />
-
-                            <com.tokopedia.iconunify.IconUnify
-                                android:id="@+id/saldo_buyer_deposit_text_info"
-                                android:layout_width="@dimen/unify_space_24"
-                                android:layout_height="@dimen/unify_space_24"
-                                android:layout_alignWithParentIfMissing="true"
-                                android:layout_alignTop="@+id/saldo_buyer_deposit_text"
-                                android:layout_alignBottom="@+id/saldo_buyer_deposit_text"
-                                android:layout_centerVertical="true"
-                                android:layout_toEndOf="@+id/saldo_buyer_deposit_text"
-                                android:padding="@dimen/unify_space_2"
-                                app:icon_color_light_enable="@color/Unify_NN600"
-                                app:icon_color_night_enable="@color/Unify_NN600"
-                                app:icon_name="INFORMATION" />
-
-                            <com.tokopedia.unifyprinciples.Typography
-                                android:id="@+id/buyer_balance"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true"
-                                android:layout_marginEnd="@dimen/unify_space_4"
-                                android:maxLines="1"
-                                android:textColor="@color/Unify_NN950_68"
-                                app:typographyType="body_3"
-                                tools:text="Rp 1.000.000" />
-
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:id="@+id/saldo_seller_balance_rl"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingStart="@dimen/unify_space_8"
-                            android:paddingEnd="@dimen/unify_space_8">
-
-                            <com.tokopedia.unifyprinciples.Typography
-                                android:id="@+id/saldo_seller_deposit_text"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentTop="true"
-                                android:layout_centerVertical="true"
-                                android:layout_marginStart="@dimen/unify_space_4"
-                                android:text="@string/saldo_total_balance_seller"
-                                android:textColor="@color/Unify_NN950_68"
-                                app:typographyType="body_3" />
-
-                            <com.tokopedia.iconunify.IconUnify
-                                android:id="@+id/saldo_seller_deposit_text_info"
-                                android:layout_width="@dimen/unify_space_24"
-                                android:layout_height="@dimen/unify_space_24"
-                                android:layout_alignWithParentIfMissing="true"
-                                android:layout_alignTop="@+id/saldo_seller_deposit_text"
-                                android:layout_alignBottom="@+id/saldo_seller_deposit_text"
-                                android:layout_centerVertical="true"
-                                android:layout_toEndOf="@+id/saldo_seller_deposit_text"
-                                android:padding="@dimen/unify_space_2"
-                                app:icon_color_light_enable="@color/Unify_NN600"
-                                app:icon_color_night_enable="@color/Unify_NN600"
-                                app:icon_name="INFORMATION" />
-
-                            <com.tokopedia.unifyprinciples.Typography
-                                android:id="@+id/seller_balance"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true"
-                                android:layout_marginEnd="@dimen/unify_space_4"
-                                android:gravity="start"
-                                android:maxLines="1"
-                                android:textColor="@color/Unify_NN950_68"
-                                app:typographyType="body_3"
-                                tools:text="Rp 1.000.000" />
-
-                        </RelativeLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/hold_balance_ll"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/unify_space_8"
-                        android:paddingStart="@dimen/unify_space_8"
-                        android:paddingEnd="@dimen/unify_space_8">
-
-                        <com.tokopedia.unifycomponents.ticker.Ticker
-                            android:id="@+id/hold_balance_layout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            app:closeButtonVisibility="gone"
-                            app:tickerShapeType="loose"
-                            app:tickerType="warning"
-                            tools:visibility="visible" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </com.tokopedia.unifycomponents.CardUnify>
-
             <com.tokopedia.unifycomponents.LocalLoad
                 android:id="@+id/localLoadSaldoBalance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/newCardBalance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <Space
+                    android:id="@+id/saldoSpaceLeft"
+                    android:layout_width="18dp"
+                    android:layout_height="0dp"
+                    android:elevation="10dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/saldoTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:elevation="10dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintStart_toEndOf="@id/saldoSpaceLeft"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/saldoSpaceRight"
+                    app:typographyType="display_2" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/saldoBalance"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:elevation="10dp"
+                    app:layout_constraintStart_toEndOf="@id/saldoSpaceLeft"
+                    app:layout_constraintTop_toBottomOf="@id/saldoTitle"
+                    app:layout_constraintEnd_toStartOf="@id/saldoSpaceRight"
+                    app:typographyType="heading_1" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/saldoHold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:elevation="10dp"
+                    app:layout_constraintStart_toEndOf="@id/saldoSpaceLeft"
+                    app:layout_constraintTop_toBottomOf="@id/saldoBalance"
+                    app:typographyType="display_3" />
+
+                <com.tokopedia.iconunify.IconUnify
+                    android:id="@+id/saldoHoldIcon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:elevation="10dp"
+                    app:icon_name="CHEVRON_RIGHT"
+                    app:layout_constraintTop_toTopOf="@id/saldoHold"
+                    app:layout_constraintBottom_toBottomOf="@id/saldoHold"
+                    app:layout_constraintStart_toEndOf="@id/saldoHold"/>
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/saldoHoldGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:constraint_referenced_ids="saldoHold, saldoHoldIcon"/>
+
+                <com.tokopedia.unifycomponents.DividerUnify
+                    android:id="@+id/saldoDivider"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="16dp"
+                    android:elevation="10dp"
+                    android:outlineProvider="none"
+                    app:layout_constraintStart_toEndOf="@id/saldoSpaceLeft"
+                    app:layout_constraintEnd_toStartOf="@id/saldoSpaceRight"
+                    app:layout_constraintTop_toBottomOf="@id/saldoHold"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/saldoRefund"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:elevation="10dp"
+                    app:layout_constraintStart_toEndOf="@id/saldoSpaceLeft"
+                    app:layout_constraintTop_toBottomOf="@id/saldoDivider"
+                    app:typographyType="display_2"
+                    android:text="Saldo Refund" />
+
+                <com.tokopedia.iconunify.IconUnify
+                    android:id="@+id/saldoRefundIcon"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:elevation="10dp"
+                    android:layout_marginStart="6dp"
+                    app:icon_name="INFORMATION"
+                    app:layout_constraintTop_toTopOf="@id/saldoRefund"
+                    app:layout_constraintBottom_toBottomOf="@id/saldoRefund"
+                    app:layout_constraintStart_toEndOf="@id/saldoRefund"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/saldoRefundAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:elevation="10dp"
+                    app:layout_constraintEnd_toStartOf="@id/saldoSpaceRight"
+                    app:layout_constraintTop_toBottomOf="@id/saldoDivider"
+                    app:typographyType="display_2"
+                    app:typographyWeight="bold" />
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/saldoRefundGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:constraint_referenced_ids="saldoRefund, saldoRefundIcon, saldoRefundAmount"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/saldoIncome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:elevation="10dp"
+                    app:layout_constraintStart_toEndOf="@id/saldoSpaceLeft"
+                    app:layout_constraintTop_toBottomOf="@id/saldoRefund"
+                    app:typographyType="display_2"
+                    android:text="Saldo Penghasilan" />
+
+                <com.tokopedia.iconunify.IconUnify
+                    android:id="@+id/saldoIncomeIcon"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:elevation="10dp"
+                    android:layout_marginStart="6dp"
+                    app:icon_name="INFORMATION"
+                    app:layout_constraintTop_toTopOf="@id/saldoIncome"
+                    app:layout_constraintBottom_toBottomOf="@id/saldoIncome"
+                    app:layout_constraintStart_toEndOf="@id/saldoIncome"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/saldoIncomeAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:elevation="10dp"
+                    android:paddingBottom="16dp"
+                    app:layout_constraintEnd_toStartOf="@id/saldoSpaceRight"
+                    app:layout_constraintTop_toTopOf="@id/saldoIncome"
+                    app:typographyType="display_2"
+                    app:typographyWeight="bold" />
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/saldoIncomGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:constraint_referenced_ids="saldoIncome, saldoIncomeIcon, saldoIncomeAmount"/>
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/saldoTicker"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:elevation="10dp"
+                    android:paddingTop="6dp"
+                    android:paddingStart="16dp"
+                    android:paddingBottom="6dp"
+                    android:paddingEnd="6dp"
+                    app:layout_constraintStart_toEndOf="@id/saldoSpaceLeft"
+                    app:layout_constraintEnd_toStartOf="@id/saldoTickerIcon"
+                    app:layout_constraintTop_toBottomOf="@id/saldoIncome"
+                    app:layout_constraintBottom_toTopOf="@id/saldoSpaceBottom"
+                    app:typographyType="paragraph_3" />
+
+                <com.tokopedia.iconunify.IconUnify
+                    android:id="@+id/saldoTickerIcon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:elevation="10dp"
+                    android:layout_marginEnd="8dp"
+                    app:icon_name="CHEVRON_RIGHT"
+                    app:layout_constraintTop_toTopOf="@id/saldoTicker"
+                    app:layout_constraintBottom_toBottomOf="@id/saldoTicker"
+                    app:layout_constraintEnd_toStartOf="@id/saldoSpaceRight"/>
+
+                <View
+                    android:id="@+id/saldoTickerBackground"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@drawable/bg_saldo_ticker"
+                    android:outlineProvider="none"
+                    android:elevation="9dp"
+                    app:layout_constraintStart_toEndOf="@id/saldoSpaceLeft"
+                    app:layout_constraintEnd_toStartOf="@id/saldoSpaceRight"
+                    app:layout_constraintTop_toTopOf="@id/saldoTicker"
+                    app:layout_constraintBottom_toBottomOf="@id/saldoTicker"/>
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/saldoTickerGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:constraint_referenced_ids="saldoTicker, saldoTickerIcon, saldoTickerBackground"/>
+
+                <Space
+                    android:id="@+id/saldoSpaceRight"
+                    android:layout_width="18dp"
+                    android:layout_height="0dp"
+                    android:elevation="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+                
+                <Space
+                    android:id="@+id/saldoSpaceBottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="18dp"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <com.tokopedia.unifycomponents.CardUnify2
+                    android:id="@+id/saldoCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginTop="2dp"
+                    android:clickable="false"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </FrameLayout>
 
@@ -242,7 +287,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_4"
-            android:layout_marginTop="@dimen/unify_space_2"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="@dimen/unify_space_4"
             android:gravity="center"
             android:padding="@dimen/unify_space_12"
@@ -257,8 +302,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/saldo_balance_layout"
-        android:background="@color/Unify_NN0"
+        android:background="@drawable/bg_saldo_history"
         android:orientation="vertical"
+        android:layout_marginTop="-10dp"
+        android:elevation="5dp"
         android:padding="@dimen/unify_space_16"
         android:visibility="gone"
         tools:visibility="visible">

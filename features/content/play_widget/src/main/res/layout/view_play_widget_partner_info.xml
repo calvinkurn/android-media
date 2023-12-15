@@ -12,16 +12,16 @@
 
     <com.tokopedia.play_common.view.RoundedImageView
         android:id="@+id/img_avatar"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:scaleType="centerCrop"
         app:rImg_cornerRadius="12dp"
         />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_badge"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_marginStart="6dp"
         />
 
@@ -33,7 +33,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/Unify_Static_White"
-        app:typographyType="display_2"
+        app:typographyType="paragraph_3"
         app:typographyWeight="bold"
         tools:text="Sepatuku Store"
         />

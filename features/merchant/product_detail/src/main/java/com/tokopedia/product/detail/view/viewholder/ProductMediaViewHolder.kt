@@ -16,7 +16,7 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 class ProductMediaViewHolder(
     private val view: View,
     private val listener: DynamicProductDetailListener
-) : AbstractViewHolder<ProductMediaDataModel>(view) {
+) : ProductDetailPageViewHolder<ProductMediaDataModel>(view) {
     companion object {
         val LAYOUT = R.layout.item_dynamic_product_media
     }
@@ -45,6 +45,14 @@ class ProductMediaViewHolder(
         }
 
         payloads.forEach { processPayload(it as? Int, element) }
+        view.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = element.name,
+            useHolders = listener.isRemoteCacheableActive()
+        ) {
+            listener.onImpressComponent(getComponentTrackData(element))
+        }
     }
 
     private fun processPayload(payload: Int?, element: ProductMediaDataModel) = when (payload) {
@@ -69,18 +77,12 @@ class ProductMediaViewHolder(
             componentTrackDataModel = getComponentTrackData(element),
             initialScrollPosition = scrollPosition,
             containerType = element.containerType,
-            recommendation = element.recommendation
+            recommendation = element.recommendation,
+            isPrefetch = element.isPrefetch
         )
     }
 
     fun detachView() {
         listener.getProductVideoCoordinator()?.onPause()
     }
-
-    private fun getComponentTrackData(element: ProductMediaDataModel?) = ComponentTrackDataModel(
-        element?.type
-            ?: "",
-        element?.name ?: "",
-        adapterPosition + 1
-    )
 }

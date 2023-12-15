@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="HomeChannelHeaderView">
+    <declare-styleable name="HomeComponentHeaderView">
         <attr name="color_mode" format="enum">
             <enum name="normal" value="0" />
             <enum name="inverted" value="1" />

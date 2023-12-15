@@ -5,10 +5,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.common.constant.RequestCode.REQUEST_CODE_LOGIN
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil.switchService
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
@@ -56,7 +56,7 @@ class BannerComponentCallback(
     ) {
         context?.let {
             val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
-            val warehouseId = localCacheModel.warehouse_id.toLongOrZero().toString()
+            val warehouseId = AddressMapper.mapToWarehouseIds(localCacheModel)
             analytics.onImpressBannerPromo(channelModel, channelGrid, warehouseId, position)
         }
         impressionStatusList[channelGrid.id] = true

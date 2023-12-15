@@ -13,6 +13,8 @@ data class Items(
     val title: String = "",
     @SerializedName("key")
     val key: String = "",
+    @SerializedName("newContentExists")
+    val hasNewContent: Boolean = false,
     @SerializedName("__typename")
     val typeName: String = ""
 )

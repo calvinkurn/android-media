@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.cloud.model.PMCancellationQuestionnaireAnswerModel
 import com.tokopedia.gm.common.presentation.model.DeactivationResultUiModel
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.visible
@@ -43,13 +44,18 @@ class DeactivationQuestionnaireBottomSheet :
     BaseBottomSheet<BottomSheetPmDeactivationQuestionnaireBinding>() {
 
     companion object {
+        private const val EXPIRED_DATE_FORMAT = "dd MMMM yyyy hh:mm:ss"
+        private const val NEW_EXPIRED_DATE_FORMAT = "dd MMMM yyyy, hh:mm"
+
         private const val TAG = "DeactivationBottomSheet"
         private const val KEY_PM_TIRE_TYPE = "key_pm_tier"
         private const val KEY_CURRENT_PM_TIRE_TYPE = "key_current_pm_tier"
         private const val KEY_PM_EXPIRED_DATE = "key_expired_date"
+        private const val KEY_SHOULD_USE_NEXT_MONTHLY = "key_should_use_next_monthly"
 
         fun createInstance(
             expiredDate: String,
+            shouldUseNextMonthlyDateFormat: Boolean,
             currentPmTireType: Int,
             pmTireType: Int
         ): DeactivationQuestionnaireBottomSheet {
@@ -58,6 +64,7 @@ class DeactivationQuestionnaireBottomSheet :
                 isFullpage = true
                 arguments = Bundle().apply {
                     putString(KEY_PM_EXPIRED_DATE, expiredDate)
+                    putBoolean(KEY_SHOULD_USE_NEXT_MONTHLY, shouldUseNextMonthlyDateFormat)
                     putInt(KEY_PM_TIRE_TYPE, pmTireType)
                     putInt(KEY_CURRENT_PM_TIRE_TYPE, currentPmTireType)
                 }
@@ -237,15 +244,16 @@ class DeactivationQuestionnaireBottomSheet :
 
         binding?.run {
             val expiredDateStr = arguments?.getString(KEY_PM_EXPIRED_DATE).orEmpty()
-            val currentFormat = "dd MMMM yyyy hh:mm:ss"
-            val newDateFormat = "dd MMMM yyyy, hh:mm"
+            val shouldUseNextMonthlyDateFormat = arguments?.getBoolean(KEY_SHOULD_USE_NEXT_MONTHLY).orFalse()
+            val currentFormat = getCurrentFormat(shouldUseNextMonthlyDateFormat)
+            val newDateFormat = getNewFormat(shouldUseNextMonthlyDateFormat)
             val expiredDateFmt = DateFormatUtils.formatDate(
                 currentFormat,
                 newDateFormat,
                 expiredDateStr
             )
             tvPmDeactivationInfo.text = root.context.getString(
-                R.string.pm_label_deactivation_questionnaire_intro_desc,
+                getInfoStringRes(shouldUseNextMonthlyDateFormat),
                 expiredDateFmt
             ).parseAsHtml()
             nestedScrollPmDeactivation.visible()
@@ -256,6 +264,30 @@ class DeactivationQuestionnaireBottomSheet :
             tvPmDeactivateTnc.setOnClickListener {
                 showTncBottomSheet()
             }
+        }
+    }
+
+    private fun getCurrentFormat(shouldUseNextMonthlyDateFormat: Boolean): String {
+        return if (shouldUseNextMonthlyDateFormat) {
+            DateFormatUtils.FORMAT_YYYY_MM_DD
+        } else {
+            EXPIRED_DATE_FORMAT
+        }
+    }
+
+    private fun getNewFormat(shouldUseNextMonthlyDateFormat: Boolean): String {
+        return if (shouldUseNextMonthlyDateFormat) {
+            DateFormatUtils.FORMAT_DD_MMMM_YYYY
+        } else {
+            NEW_EXPIRED_DATE_FORMAT
+        }
+    }
+
+    private fun getInfoStringRes(shouldUseNextMonthlyDateFormat: Boolean): Int {
+        return if (shouldUseNextMonthlyDateFormat) {
+            R.string.pm_label_deactivation_questionnaire_intro_desc_new
+        } else {
+            R.string.pm_label_deactivation_questionnaire_intro_desc
         }
     }
 

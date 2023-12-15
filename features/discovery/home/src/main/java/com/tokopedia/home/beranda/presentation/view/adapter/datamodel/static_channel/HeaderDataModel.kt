@@ -4,23 +4,23 @@ import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
+import com.tokopedia.home.beranda.presentation.view.uimodel.HomeHeaderWalletAction
 
 /**
  * @author Lukas on 18/05/2020.
  */
 
 data class HeaderDataModel(
-      val homeHeaderWalletActionData: HomeHeaderWalletAction? = null,
-      val tokoPointDrawerData: TokopointHomeDrawerData? = null,
-      val tokopointsDrawerHomeData: TokopointsDrawer? = null,
-      val tokopointsDrawerBBOHomeData: TokopointsDrawer? = null,
-      val cashBackData: CashBackData? = null,
-      var isPendingTokocashChecked: Boolean = false,
-      val isWalletDataError: Boolean = false,
-      val isTokoPointDataError: Boolean = false,
-      var isUserLogin: Boolean = false,
-      var homeBalanceModel: HomeBalanceModel = HomeBalanceModel()
+    val homeHeaderWalletActionData: HomeHeaderWalletAction? = null,
+    val tokoPointDrawerData: TokopointHomeDrawerData? = null,
+    val tokopointsDrawerHomeData: TokopointsDrawer? = null,
+    val tokopointsDrawerBBOHomeData: TokopointsDrawer? = null,
+    val cashBackData: CashBackData? = null,
+    var isPendingTokocashChecked: Boolean = false,
+    val isWalletDataError: Boolean = false,
+    val isTokoPointDataError: Boolean = false,
+    var isUserLogin: Boolean = false,
+    var homeBalanceModel: HomeBalanceModel = HomeBalanceModel()
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

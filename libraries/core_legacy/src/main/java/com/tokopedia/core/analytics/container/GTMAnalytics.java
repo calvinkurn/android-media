@@ -6,7 +6,6 @@ import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEMS;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_ID;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_LIST;
 import static com.google.firebase.analytics.FirebaseAnalytics.Param.ITEM_NAME;
-import static com.google.firebase.analytics.FirebaseAnalytics.Param.SCREEN_NAME;
 import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
 
 import android.annotation.SuppressLint;
@@ -15,11 +14,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
-
-import androidx.annotation.Nullable;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.tagmanager.DataLayer;
@@ -31,7 +29,6 @@ import com.tokopedia.analytics.mapper.model.EmbraceConfig;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
@@ -44,9 +41,9 @@ import com.tokopedia.device.info.DeviceConnectionInfo;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.iris.util.IrisSession;
+import com.tokopedia.iris.util.Utils;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
-import com.tokopedia.relic.track.NewRelicUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -103,14 +100,13 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String PROMOCLICK = "promoclick";
 
     private static int prevCampaignHash = 0;
-    public static String[] GENERAL_EVENT_KEYS = new String[]{
-            KEY_ACTION, KEY_CATEGORY, KEY_LABEL, KEY_EVENT
-    };
+    public static String[] GENERAL_EVENT_KEYS = new String[]{KEY_ACTION, KEY_CATEGORY, KEY_LABEL, KEY_EVENT};
     private static final String ECOMMERCE = "ecommerce";
     private final Iris iris;
     private final RemoteConfig remoteConfig;
     private final Long DELAY_GET_CONN = 120000L; //2 minutes
     private String clientIdString = "";
+    private static boolean successGetClientId = false;
     private final UserSessionInterface userSession;
     private final SharedPreferences sharedPreferences;
     private String connectionTypeString = "";
@@ -131,6 +127,9 @@ public class GTMAnalytics extends ContextAnalytics {
     private static String UTM_SOURCE_HOLDER = "";
     private static String UTM_MEDIUM_HOLDER = "";
     private static String UTM_CAMPAIGN_HOLDER = "";
+    private static final String NO_GA_ID = "NO_GA_ID";
+    private static int gaIdRetryCount = 0;
+    private static final int MAX_GA_ID_RETRY = 10;
 
     public static void setUTMParamsForSession(Map<String, Object> maps) {
         if (maps != null && maps.get(AppEventTracking.GTM.UTM_SOURCE) != null) {
@@ -155,18 +154,15 @@ public class GTMAnalytics extends ContextAnalytics {
     public static String bruteForceCastToString(Object object) {
         Integer integer = safeCast(object, Integer.class);
 
-        if (integer != null)
-            return integer.toString();
+        if (integer != null) return integer.toString();
 
         Long aLong = safeCast(object, Long.class);
 
-        if (aLong != null)
-            return aLong.toString();
+        if (aLong != null) return aLong.toString();
 
         Double aDouble = safeCast(object, Double.class);
 
-        if (aDouble != null)
-            return aDouble.toString();
+        if (aDouble != null) return aDouble.toString();
 
         String aString = safeCast(object, String.class);
 
@@ -295,11 +291,7 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         // https://tokopedia.atlassian.net/browse/AN-19138
 
-        Observable.just(value)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .map(this::sendEnhanceECommerceEventOrigin)
-                .subscribe(getDefaultSubscriber());
+        Observable.just(value).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).map(this::sendEnhanceECommerceEventOrigin).subscribe(getDefaultSubscriber());
     }
 
     private boolean sendEnhanceECommerceEventOrigin(Map<String, Object> value) {
@@ -335,9 +327,15 @@ public class GTMAnalytics extends ContextAnalytics {
 
     @Override
     public void sendEnhanceEcommerceEvent(String eventName, Bundle value) {
-        Bundle bundle = addWrapperValue(value);
-        bundle = addGclIdIfNeeded(eventName, bundle);
-        pushEventV5(eventName, bundle, context);
+        Observable.fromCallable(() -> {
+                    Bundle bundle = addWrapperValue(value);
+                    bundle = addGclIdIfNeeded(eventName, bundle);
+                    pushEventV5(eventName, bundle, context);
+                    return true;
+                })
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(getDefaultSubscriber());
     }
 
     @SuppressWarnings("unchecked")
@@ -527,8 +525,7 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     private double emptyDouble(String doubleRaw) {
-        return TextUtils.isEmpty(doubleRaw) ? 0.0 :
-                Double.valueOf(PriceUtil.from(doubleRaw));
+        return TextUtils.isEmpty(doubleRaw) ? 0.0 : Double.valueOf(PriceUtil.from(doubleRaw));
     }
 
     private void transactionBundle(Bundle bundle, Map<String, Object> ecommerce) {
@@ -664,8 +661,7 @@ public class GTMAnalytics extends ContextAnalytics {
         String category = bruteForceCastToString(value.remove(CheckoutKey.KEY_CAT));
         String variant = (String) value.remove(CheckoutKey.KEY_VARIANT);
         String priceString = bruteForceCastToString(value.remove(CheckoutKey.KEY_PRICE));
-        double price = TextUtils.isEmpty(priceString) ? 0.0 :
-                Double.valueOf(PriceUtil.from(priceString));
+        double price = TextUtils.isEmpty(priceString) ? 0.0 : Double.valueOf(PriceUtil.from(priceString));
         String qtyString = bruteForceCastToString(value.remove(CheckoutKey.KEY_QTY));
         int quantity = TextUtils.isEmpty(qtyString) ? 0 : Integer.valueOf(qtyString);
 
@@ -788,15 +784,49 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public String getClientIDString() {
-        try {
-            if (TextUtils.isEmpty(clientIdString)) {
-                Bundle bundle = getContext().getPackageManager().getApplicationInfo(getContext().getPackageName(), PackageManager.GET_META_DATA).metaData;
-                clientIdString = GoogleAnalytics.getInstance(getContext()).newTracker(bundle.getString(AppEventTracking.GTM.GA_ID)).get("&cid");
+        if (needGetGAId()) {
+            String clientIdFromLib = getClientIdFromLib();
+            if (isClientIdValid(clientIdFromLib)) {
+                // save to cache if client Id is not empty and not NO_GA_ID
+                sharedPreferences.edit().putString(TkpdCache.Key.GCLID, clientIdFromLib).apply();
+                clientIdString = clientIdFromLib;
+                successGetClientId = true;
+            } else {
+                // get from cache
+                clientIdString = sharedPreferences.getString(TkpdCache.Key.GCLID, clientIdFromLib);
+                if (isClientIdValid(clientIdString)) {
+                    successGetClientId = true;
+                }
             }
-            return clientIdString;
+        }
+        return clientIdString;
+    }
+
+    private boolean isClientIdValid(String str) {
+        return !TextUtils.isEmpty(str) && !NO_GA_ID.equals(str);
+    }
+
+    private boolean needGetGAId() {
+        if (successGetClientId) {
+            return false;
+        }
+        if (isClientIdValid(clientIdString)) {
+            return false;
+        }
+        if (gaIdRetryCount < MAX_GA_ID_RETRY) {
+            gaIdRetryCount++;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private String getClientIdFromLib() {
+        try {
+            Bundle bundle = getContext().getPackageManager().getApplicationInfo(getContext().getPackageName(), PackageManager.GET_META_DATA).metaData;
+            return GoogleAnalytics.getInstance(getContext()).newTracker(bundle.getString(AppEventTracking.GTM.GA_ID)).get("&cid");
         } catch (Exception e) {
-            e.printStackTrace();
-            return "NO_GA_ID";
+            return NO_GA_ID;
         }
     }
 
@@ -824,7 +854,13 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void sendScreen(String screenName, Map<String, String> customDimension) {
+        Observable.fromCallable(() -> {
+            internalSendScreen(screenName, customDimension);
+            return true;
+        }).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(getDefaultSubscriber());
+    }
 
+    private void internalSendScreen(String screenName, Map<String, String> customDimension) {
         UserSessionInterface userSession = new UserSession(context);
         final String afUniqueId = !TextUtils.isEmpty(getAfUniqueId(context)) ? getAfUniqueId(context) : "none";
 
@@ -870,8 +906,7 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void putNetworkSpeed(Bundle bundle) {
-        if (TextUtils.isEmpty(connectionTypeString) ||
-                (System.currentTimeMillis() - lastGetConnectionTimeStamp > DELAY_GET_CONN)) {
+        if (TextUtils.isEmpty(connectionTypeString) || (System.currentTimeMillis() - lastGetConnectionTimeStamp > DELAY_GET_CONN)) {
             connectionTypeString = DeviceConnectionInfo.getConnectionType(context);
             lastGetConnectionTimeStamp = System.currentTimeMillis();
         }
@@ -880,33 +915,11 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public void pushEvent(String eventName, Map<String, Object> values) {
         Map<String, Object> data = new HashMap<>(values);
-        Observable.just(data)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .map(it -> {
-                    log(getContext(), eventName, it);
-                    pushIris(eventName, it);
-                    return true;
-                })
-                .subscribe(getDefaultSubscriber());
-    }
-
-    @Override
-    public void sendGTMGeneralEvent(String event, String category, String action, String label,
-                                    String shopId, String shopType, String userId,
-                                    @Nullable Map<String, Object> customDimension) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(KEY_EVENT, event);
-        map.put(KEY_CATEGORY, category);
-        map.put(KEY_ACTION, action);
-        map.put(KEY_LABEL, label);
-        map.put(USER_ID, userId);
-        map.put(SHOP_TYPE, shopType);
-        map.put(SHOP_ID, shopId);
-        if (customDimension != null) {
-            map.putAll(customDimension);
-        }
-        pushGeneral(map);
+        Observable.just(data).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).map(it -> {
+            log(getContext(), eventName, it);
+            pushIris(eventName, it);
+            return true;
+        }).subscribe(getDefaultSubscriber());
     }
 
     private void logV5(Context context, String eventName, Bundle bundle) {
@@ -933,8 +946,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
     private long getGTMSizeLogThreshold() {
         if (gtmSizeThresholdLog == 0) {
-            gtmSizeThresholdLog = remoteConfig.getLong(GTM_SIZE_LOG_REMOTE_CONFIG_KEY,
-                    GTM_SIZE_LOG_THRESHOLD_DEFAULT);
+            gtmSizeThresholdLog = remoteConfig.getLong(GTM_SIZE_LOG_REMOTE_CONFIG_KEY, GTM_SIZE_LOG_THRESHOLD_DEFAULT);
         }
         return gtmSizeThresholdLog;
     }
@@ -983,9 +995,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
     private void logEventForVerification(String eventName, Map<String, Object> values) {
         if (remoteConfig.getBoolean(ANDROID_GA_EVENT_LOGGING)) {
-            if (values.containsKey(AppEventTracking.GTM.UTM_SOURCE) &&
-                    values.get(AppEventTracking.GTM.UTM_SOURCE) != null &&
-                    !TextUtils.isEmpty(values.get(AppEventTracking.GTM.UTM_SOURCE).toString())) {
+            if (values.containsKey(AppEventTracking.GTM.UTM_SOURCE) && values.get(AppEventTracking.GTM.UTM_SOURCE) != null && !TextUtils.isEmpty(values.get(AppEventTracking.GTM.UTM_SOURCE).toString())) {
                 Map<String, String> messageMap = new HashMap<>();
                 messageMap.put("type", "event_verification");
                 messageMap.put("name", eventName);
@@ -1026,8 +1036,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
     private void pushEECommerceInternal(String keyEvent, Bundle bundle) {
         // replace list
-        if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST))
-                && !TextUtils.isEmpty(bundle.getString("list"))) {
+        if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST)) && !TextUtils.isEmpty(bundle.getString("list"))) {
             bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, bundle.getString("list"));
             bundle.remove("list");
         }
@@ -1064,14 +1073,11 @@ public class GTMAnalytics extends ContextAnalytics {
         //
         bundle.putString(KEY_EVENT, keyEvent);
 
-        pushEventV5Legacy(keyEvent, wrapWithSessionIris(bundle), context);
+        pushEventV5(keyEvent, wrapWithSessionIris(bundle), context);
     }
 
     @Override
-    public void sendCampaign(Activity activity,
-                             String campaignUrl,
-                             String screenName,
-                             boolean isOriginalUrlAmp) {
+    public void sendCampaign(Activity activity, String campaignUrl, String screenName, boolean isOriginalUrlAmp) {
         Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUrl), isOriginalUrlAmp);
         if (!TrackingUtils.isValidCampaign(campaign.getCampaign())) return;
 
@@ -1079,12 +1085,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
         sendCampaign(campaign.getCampaign());
 
-        sendGeneralEvent(new EventTracking(
-                AppEventTracking.Event.CAMPAIGN,
-                AppEventTracking.Category.CAMPAIGN,
-                AppEventTracking.Action.DEEPLINK,
-                campaignUrl
-        ).getEvent());
+        sendGeneralEvent(new EventTracking(AppEventTracking.Event.CAMPAIGN, AppEventTracking.Category.CAMPAIGN, AppEventTracking.Action.DEEPLINK, campaignUrl).getEvent());
     }
 
     public void sendCampaign(Map<String, Object> param) {
@@ -1161,17 +1162,12 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void pushGeneralGtmV5Internal(Map<String, Object> params) {
-        Observable.fromCallable(() -> pushGeneralGtmV5InternalOrigin(params))
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(getDefaultSubscriber());
+        Observable.fromCallable(() -> pushGeneralGtmV5InternalOrigin(params)).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(getDefaultSubscriber());
     }
 
     private boolean pushGeneralGtmV5InternalOrigin(Map<String, Object> params) {
-        pushGeneral(params);
 
-        if (TextUtils.isEmpty((String) params.get(KEY_EVENT)))
-            return false;
+        if (TextUtils.isEmpty((String) params.get(KEY_EVENT))) return false;
 
         Bundle bundle = new Bundle();
         bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY) + "");
@@ -1200,41 +1196,19 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     @SuppressLint("MissingPermission")
-    public void pushEventV5Legacy(String eventName, Bundle bundle, Context context) {
-        try {
-            if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS))) {
-                bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
-            }
-            publishNewRelic(eventName, bundle);
-            FirebaseAnalytics fa = FirebaseAnalytics.getInstance(context);
-            fa.logEvent(eventName, bundle);
-
-            mappingToGA4(fa, eventName, bundle);
-            logV5(context, eventName, bundle);
-
-            addUtmHolder(bundle);
-            pushGeneralEcommerce(bundle);
-
-            trackEmbraceBreadcrumb(eventName, bundle);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    @SuppressLint("MissingPermission")
     public void pushEventV5(String eventName, Bundle bundle, Context context) {
         try {
             if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS))) {
                 bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
             }
-            publishNewRelic(eventName, bundle);
             FirebaseAnalytics fa = FirebaseAnalytics.getInstance(context);
             fa.logEvent(eventName, bundle);
 
-            pushGeneralEcommerce(bundle);
-
             mappingToGA4(fa, eventName, bundle);
             logV5(context, eventName, bundle);
+
+            pushGeneralEcommerce(bundle);
+
             trackEmbraceBreadcrumb(eventName, bundle);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1288,8 +1262,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private void sendBundleGA4BundleClick(FirebaseAnalytics fa, Bundle oriBundle) {
         String eventCategory = oriBundle.getString(KEY_CATEGORY);
         boolean isPromotion = true;
-        if ((eventCategory != null && eventCategory.contains("search result")) ||
-                oriBundle.get(KEY_PROMOTIONS) == null) {
+        if ((eventCategory != null && eventCategory.contains("search result")) || oriBundle.get(KEY_PROMOTIONS) == null) {
             isPromotion = false;
         }
         if (isPromotion) {
@@ -1434,18 +1407,11 @@ public class GTMAnalytics extends ContextAnalytics {
     private void trackEmbraceBreadcrumb(String eventName, Bundle bundle) {
         String logEmbraceConfigString = remoteConfig.getString(RemoteConfigKey.ANDROID_EMBRACE_CONFIG);
         try {
-            EmbraceConfig config =
-                    new Gson().fromJson(logEmbraceConfigString, EmbraceConfig.class);
+            EmbraceConfig config = new Gson().fromJson(logEmbraceConfigString, EmbraceConfig.class);
             if (bundle.containsKey(KEY_CATEGORY)) {
                 String eventCategoryValue = bundle.getString(KEY_CATEGORY);
                 if (config.getBreadcrumb_categories().contains(eventCategoryValue)) {
-                    EmbraceMonitoring.INSTANCE.logBreadcrumb(
-                            String.format(
-                                    EMBRACE_BREADCRUMB_FORMAT,
-                                    EMBRACE_KEY,
-                                    createJsonFromBundle(eventName, bundle)
-                            )
-                    );
+                    EmbraceMonitoring.INSTANCE.logBreadcrumb(String.format(EMBRACE_BREADCRUMB_FORMAT, EMBRACE_KEY, createJsonFromBundle(eventName, bundle)));
                 }
             }
         } catch (Exception e) {
@@ -1473,40 +1439,24 @@ public class GTMAnalytics extends ContextAnalytics {
         return json;
     }
 
-    public void publishNewRelic(String eventName, Bundle bundle) {
-        Map<String, Object> map = bundleToMap(bundle);
-        for (Iterator<Map.Entry<String, Object>> it = map.entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry<String, Object> entry = it.next();
-            Object value = entry.getValue();
-            if (value != null & value instanceof String) {
-                String value2 = (String) value;
-                if (TextUtils.isEmpty(value2)) {
-                    it.remove();
-                }
-            }
-        }
-        if (GlobalConfig.isSellerApp()) {
-            NewRelicUtil.sendTrack(eventName, map);
-        }
-    }
-
-    private void pushGeneral(Map<String, Object> values) {
-        Map<String, Object> data = new HashMap<>(values);
-        // push Iris already launch in coroutine in background. No need to wrap this with Observable.
-        pushIris("", data);
-    }
-
     private void pushGeneralEcommerce(Bundle values) {
-        Observable.just(values)
+        Map<String, Object> map = Utils.bundleToMap(values);
+        Observable.just(map)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .map(it -> {
-                    if (!TextUtils.isEmpty(mGclid)) {
-                        if (it.containsKey("event") && !TextUtils.isEmpty(it.getString("event"))) {
-                            String eventName = it.getString("event");
-                            addGclIdIfNeeded(eventName, it);
-                        }
+                    String eventName = null;
+                    if (it.get("event") != null) {
+                        eventName = String.valueOf(it.get("event"));
                     }
+                    if (!TextUtils.isEmpty(mGclid)) {
+                        addGclIdIfNeeded(eventName, it);
+                    }
+                    // https://tokopedia.atlassian.net/browse/AN-44955
+                    addUtmHolder(it, eventName);
+                    // https://tokopedia.atlassian.net/browse/AN-54858
+                    addOsVersion(it, eventName);
+
                     pushIris(it);
                     return true;
                 })
@@ -1528,9 +1478,22 @@ public class GTMAnalytics extends ContextAnalytics {
         return values;
     }
 
+    private void addGclIdIfNeeded(String eventName, Map<String, Object> values) {
+        if (null == eventName) return;
+        switch (eventName.toLowerCase()) {
+            case FirebaseAnalytics.Event.ADD_TO_CART:
+            case ADDTOCART:
+            case FirebaseAnalytics.Event.VIEW_ITEM:
+            case VIEWPRODUCT:
+            case PRODUCTVIEW:
+            case FirebaseAnalytics.Event.ECOMMERCE_PURCHASE:
+            case TRANSACTION:
+                values.put(KEY_GCLID, mGclid);
+        }
+    }
+
     public void eventOnline(String uid) {
-        pushEvent(
-                "onapps", DataLayer.mapOf("LoginId", uid));
+        pushEvent("onapps", DataLayer.mapOf("LoginId", uid));
     }
 
     public void event(String name, Map<String, Object> data) {
@@ -1556,17 +1519,38 @@ public class GTMAnalytics extends ContextAnalytics {
         }
     }
 
-    private void addUtmHolder(Bundle values) {
-        values.putString(AppEventTracking.GTM.UTM_MEDIUM, UTM_MEDIUM_HOLDER);
-        values.putString(AppEventTracking.GTM.UTM_CAMPAIGN, UTM_CAMPAIGN_HOLDER);
-        values.putString(AppEventTracking.GTM.UTM_SOURCE, UTM_SOURCE_HOLDER);
+    private void addUtmHolder(Map<String, Object> map, String eventName) {
+        // https://tokopedia.atlassian.net/browse/AN-44955
+        if (FirebaseAnalytics.Event.ECOMMERCE_PURCHASE.equals(eventName)) {
+            map.put(AppEventTracking.GTM.UTM_MEDIUM, UTM_MEDIUM_HOLDER);
+            map.put(AppEventTracking.GTM.UTM_CAMPAIGN, UTM_CAMPAIGN_HOLDER);
+            map.put(AppEventTracking.GTM.UTM_SOURCE, UTM_SOURCE_HOLDER);
+        }
     }
 
-    private void pushIris(Bundle values) {
+    private void addOsVersion(Map<String, Object> map, String eventName) {
+        // https://tokopedia.atlassian.net/browse/AN-54858
+        if (FirebaseAnalytics.Event.ECOMMERCE_PURCHASE.equals(eventName) ||
+                FirebaseAnalytics.Event.ADD_TO_CART.equals(eventName) ||
+                "addToCart".equals(eventName) ||
+                "view product page".equals(getEventActionFromMap(map))) {
+            map.put("os_version", Build.VERSION.RELEASE);
+        }
+    }
+
+    private String getEventActionFromMap(Map<String, Object> map) {
+        String eventAction = "";
+        if (map.get(AppEventTracking.EVENT_ACTION) != null) {
+            eventAction = String.valueOf(map.get(AppEventTracking.EVENT_ACTION));
+        }
+        return eventAction;
+    }
+
+    private void pushIris(Map<String, Object> map) {
         if (iris != null &&
-                values.get("event") != null &&
-                !String.valueOf(values.get("event")).equals("")) {
-            iris.saveEvent(values);
+                map.get("event") != null &&
+                !String.valueOf(map.get("event")).equals("")) {
+            iris.saveEvent(map);
         }
     }
 

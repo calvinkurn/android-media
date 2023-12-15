@@ -5,11 +5,6 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 
 abstract class AffiliateBaseFragment<T : BaseViewModel> : BaseViewModelFragment<T>() {
-    companion object {
-        const val WARNING = "warning"
-        const val ERROR = "error"
-        const val ANNOUNCEMENT = "announcement"
-    }
     fun onGetValidateUserData(validateUserdata: AffiliateValidateUserData?) {
         validateUserdata?.validateAffiliateUserStatus?.userStatusData?.let {
             if (it.isEligible == false) {

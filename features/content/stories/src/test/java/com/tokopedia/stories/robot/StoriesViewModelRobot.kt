@@ -1,6 +1,7 @@
 package com.tokopedia.stories.robot
 
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.stories.data.repository.StoriesRepository
 import com.tokopedia.stories.view.model.StoriesArgsModel
@@ -202,6 +203,26 @@ internal class StoriesViewModelRobot(
         viewModel.submitAction(StoriesUiAction.OpenKebabMenu)
     }
 
+    fun openReport() {
+        viewModel.submitAction(StoriesUiAction.OpenReport)
+    }
+
+    fun resetReportState() {
+        viewModel.submitAction(StoriesUiAction.ResetReportState)
+    }
+
+    fun selectReason(reason: PlayUserReportReasoningUiModel.Reasoning) {
+        viewModel.submitAction(StoriesUiAction.SelectReportReason(reason))
+    }
+
+    fun updateDuration(duration: Int) {
+        viewModel.submitAction(StoriesUiAction.UpdateStoryDuration(duration))
+    }
+
+    fun buffering() {
+        viewModel.submitAction(StoriesUiAction.VideoBuffering)
+    }
+
     fun openProductBottomSheet() {
         entryPointTestCase(0)
         viewModel.submitAction(StoriesUiAction.OpenProduct)
@@ -217,6 +238,10 @@ internal class StoriesViewModelRobot(
 
     fun closeBottomSheet(type: BottomSheetType) {
         viewModel.submitAction(StoriesUiAction.DismissSheet(type))
+    }
+
+    fun hasSeenTimestampCoachMark() {
+        viewModel.submitAction(StoriesUiAction.HasSeenDurationCoachMark)
     }
 
     fun testGetProducts() {
@@ -241,5 +266,6 @@ internal class StoriesViewModelRobot(
         cancelRemainingTasks()
     }
 
-    fun getBottomSheetState() : Map<BottomSheetType, Boolean> = getPrivateField<MutableStateFlow<Map<BottomSheetType, Boolean>>>("_bottomSheetStatusState").value
+    fun getBottomSheetState(): Map<BottomSheetType, Boolean> =
+        getPrivateField<MutableStateFlow<Map<BottomSheetType, Boolean>>>("_bottomSheetStatusState").value
 }

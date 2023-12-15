@@ -107,6 +107,7 @@ object QueryListProductRecommendation {
         "                            }\n" +
         "                        }\n" +
         "                        parentID\n" +
+        "                        gridPosition\n" +
         "                      }\n" +
         "                    }\n" +
         "                  }\n" +

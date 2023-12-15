@@ -19,6 +19,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.product.detail.common.ProductDetailPrefetch
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirProduct
@@ -42,8 +43,11 @@ import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
+import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomBottomSheetState
+import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.ui.OneTimeMethodEvent
@@ -98,6 +102,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
 import rx.Observable
 
@@ -524,6 +529,16 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val data = spykViewModel.getP2RatesEstimateDataByProductId()
         Assert.assertNull(data)
     }
+
+    @Test
+    fun `getP2RatesEstimateByProductId resolved jacoco`() {
+        spykViewModel.getDynamicProductInfoP1 = null
+        Assert.assertNull(spykViewModel.getP2RatesEstimateDataByProductId())
+
+        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        every { spykViewModel.p2Data.value } returns null
+        Assert.assertNull(spykViewModel.getP2RatesEstimateDataByProductId())
+    }
     //endregion
 
     //region getP2ShipmentPlusByProductId
@@ -636,6 +651,22 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         val data = spykViewModel.getBebasOngkirDataByProductId()
         assertTrue(data.imageURL == "")
+        assertTrue(data.boType == 0)
+    }
+
+    @Test
+    fun `getBebasOngkirDataByProductId resolved jacoco`() {
+        // p1 is null
+        spykViewModel.getDynamicProductInfoP1 = null
+        var data = spykViewModel.getBebasOngkirDataByProductId()
+        assertTrue(data.imageURL.isEmpty())
+        assertTrue(data.boType == 0)
+
+        // basic info is null
+        spykViewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(BasicInfo(productID = "123"))
+        every { spykViewModel.p2Data.value } returns null
+        data = spykViewModel.getBebasOngkirDataByProductId()
+        assertTrue(data.imageURL.isEmpty())
         assertTrue(data.boType == 0)
     }
     //endregion
@@ -1631,9 +1662,12 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     @Test
     fun `process initial variant tokonow`() {
         val variantData = ProductDetailTestUtil.getMockVariant()
-        viewModel.processVariant(variantData, mutableMapOf())
+        val result = ProductDetailVariantLogic.determineVariant(
+            mapOfSelectedOptionIds = mutableMapOf(),
+            productVariant = variantData
+        )
 
-        assertTrue(viewModel.singleVariantData.value != null)
+        assertTrue(result != null)
     }
 
     @Test
@@ -1649,8 +1683,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             ProductDetailVariantLogic.determineVariant(mapOfSelectedOptionIds, productVariant)
         } returns expectedVariantCategory
 
-        viewModel.processVariant(productVariant, mapOfSelectedOptionIds)
-        assertTrue(viewModel.singleVariantData.value == expectedVariantCategory)
+        val result = ProductDetailVariantLogic.determineVariant(
+            mapOfSelectedOptionIds = mapOfSelectedOptionIds,
+            productVariant = productVariant
+        )
+        assertTrue(result == expectedVariantCategory)
     }
 
     @Test
@@ -1664,23 +1701,29 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             ProductDetailVariantLogic.determineVariant(mapOfSelectedOptionIds, productVariant)
         } returns null
 
-        viewModel.processVariant(productVariant, mapOfSelectedOptionIds)
-        assertTrue(viewModel.singleVariantData.value == null)
+        val result = ProductDetailVariantLogic.determineVariant(
+            mapOfSelectedOptionIds = mapOfSelectedOptionIds,
+            productVariant = productVariant
+        )
+        assertTrue(result == null)
     }
 
     @Test
     fun `determine variant is throw`() {
-        val productVariant = ProductVariant()
+        val productVariant = mockk<ProductVariant>()
         val mapOfSelectedOptionIds = mutableMapOf<String, String>()
 
         mockkObject(ProductDetailVariantLogic)
 
         every {
-            ProductDetailVariantLogic.determineVariant(mapOfSelectedOptionIds, productVariant)
+            productVariant.isSelectedChildHasFlashSale(anyString())
         } throws Throwable()
 
-        viewModel.processVariant(productVariant, mapOfSelectedOptionIds)
-        assertTrue(viewModel.singleVariantData.value == null)
+        val result = ProductDetailVariantLogic.determineVariant(
+            mapOfSelectedOptionIds = mapOfSelectedOptionIds,
+            productVariant = productVariant
+        )
+        assertTrue(result == null)
     }
 
     @Test
@@ -2968,6 +3011,81 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.getProductP1(ProductParams(), userLocationLocal = getUserLocationCache())
 
         assertTrue(viewModel.productLayout.value is Fail)
+    }
+
+    @Test
+    fun `prefetch data success load`() {
+        val refreshPage = false
+        val image = "qwerty"
+        val name = "name"
+        val price = 10000.0
+        val slashPrice = ""
+        val discount = 0
+        val freeShippingLogo = "asdf"
+        val rating = "5.0"
+        val integrity = "10 Terjual"
+        val prefetchData = ProductDetailPrefetch.Data(
+            image = image,
+            name = name,
+            price = price,
+            slashPrice = slashPrice,
+            discount = discount,
+            freeShippingLogo = freeShippingLogo,
+            rating = rating,
+            integrity = integrity
+        )
+
+        viewModel.getProductP1(
+            productParams = ProductParams(),
+            userLocationLocal = getUserLocationCache(),
+            refreshPage = refreshPage,
+            prefetchData = prefetchData
+        )
+
+        assertTrue(viewModel.productLayout.value is Success)
+
+        val data = (viewModel.productLayout.value as Success).data
+        assertTrue(data.size == 3)
+
+        assertTrue(data[0] is ProductMediaDataModel)
+        val media = data[0] as ProductMediaDataModel
+        assertTrue(media.name == "product_media")
+        assertTrue(media.type == "product_media")
+
+        assertTrue(data[1] is ProductContentDataModel)
+        val content = data[1] as ProductContentDataModel
+        assertTrue(content.name == "product_content")
+        assertTrue(content.type == "product_content")
+
+        assertTrue(data[2] is ProductMiniSocialProofDataModel)
+        val social = data[2] as ProductMiniSocialProofDataModel
+        assertTrue(social.name == "social_proof_mini")
+        assertTrue(social.type == "social_proof_mini")
+    }
+
+    @Test
+    fun `prefetch data should not be load when refresh page`() {
+        val refreshPage = true
+
+        val prefetchData = ProductDetailPrefetch.Data(
+            image = "",
+            name = "",
+            price = 0.0,
+            slashPrice = "",
+            discount = 0,
+            freeShippingLogo = "",
+            rating = "",
+            integrity = ""
+        )
+
+        viewModel.getProductP1(
+            productParams = ProductParams(),
+            userLocationLocal = getUserLocationCache(),
+            refreshPage = refreshPage,
+            prefetchData = prefetchData
+        )
+
+        assertTrue(viewModel.productLayout.value == null)
     }
 
     companion object {

@@ -22,22 +22,22 @@ import com.tokopedia.content.test.util.clickTabLayout
 import com.tokopedia.content.test.util.onItemRecyclerView
 import com.tokopedia.content.test.util.pressBack
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
+import com.tokopedia.people.R
 import com.tokopedia.people.builder.ProfileModelBuilder
+import com.tokopedia.people.builder.UserReviewModelBuilder
 import com.tokopedia.people.data.UserProfileRepository
-import com.tokopedia.people.di.UserProfileInjector
 import com.tokopedia.people.di.DaggerUserProfileTestComponent
+import com.tokopedia.people.di.UserProfileInjector
 import com.tokopedia.people.di.UserProfileTestModule
+import com.tokopedia.people.helper.PeopleCassavaValidator
+import com.tokopedia.people.utils.UserProfileSharedPref
 import com.tokopedia.people.views.activity.UserProfileActivity
+import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
+import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Rule
-import com.tokopedia.people.R
-import com.tokopedia.people.builder.UserReviewModelBuilder
-import com.tokopedia.people.helper.PeopleCassavaValidator
-import com.tokopedia.people.utils.UserProfileSharedPref
-import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
-import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 
 /**
  * Created By : Jonathan Darwin on June 14, 2023
@@ -102,7 +102,7 @@ class UserProfileRobot {
         coEvery { mockRepo.getShopRecom(any()) } returns ShopRecomUiModel()
 
         coEvery { mockRepo.getPlayVideo(any(), any(), any()) } returns UserPlayVideoUiModel.Empty
-        coEvery { mockRepo.getFeedPosts(any(), any(), any()) } returns UserFeedPostsUiModel()
+        coEvery { mockRepo.getFeedPosts(any(), any(), any()) } returns UserFeedPostsUiModel.Empty
         coEvery { mockRepo.getUserReviewList(any(), any(), any()) } returns mockReviewList
 
         coEvery { mockRepo.getProfileSettings(any()) } returns mockProfileSettings

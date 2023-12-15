@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.mvc.R
 import com.tokopedia.mvc.data.response.UpdateStatusVoucherDataModel
 import com.tokopedia.mvc.domain.entity.GenerateVoucherImageMetadata
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
@@ -118,7 +119,12 @@ class VoucherDetailViewModel @Inject constructor(
     fun getSpendingEstimation(data: VoucherDetailData): String {
         val voucherDiscount = data.voucherDiscountAmount
         val voucherQuota = data.voucherQuota
-        return (voucherDiscount * voucherQuota).getCurrencyFormatted()
+        val usedQuota = data.confirmedGlobalQuota
+        val spendingEstimation = when (data.voucherStatus) {
+            VoucherStatus.ONGOING, VoucherStatus.ENDED -> (voucherDiscount * usedQuota).getCurrencyFormatted()
+            else -> (voucherDiscount * voucherQuota).getCurrencyFormatted()
+        }
+        return spendingEstimation
     }
 
     fun getPercentage(availableQuota: Long, remainingQuota: Long): Int {

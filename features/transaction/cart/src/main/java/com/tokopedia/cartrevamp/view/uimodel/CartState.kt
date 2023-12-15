@@ -86,11 +86,7 @@ sealed interface DeleteCartEvent {
     data class Success(
         val toBeDeletedCartIds: ArrayList<String>,
         val removeAllItems: Boolean,
-        val forceExpandCollapsedUnavailableItems: Boolean,
-        val addWishList: Boolean,
-        val isFromGlobalCheckbox: Boolean,
-        val isFromEditBundle: Boolean,
-        val listCartStringOrderAndOfferId: ArrayList<String>
+        val cartDeleteItemData: CartDeleteItemData
     ) : DeleteCartEvent
 
     data class Failed(
@@ -211,7 +207,7 @@ sealed class EntryPointInfoEvent {
     data class InactiveNew(
         val lastApply: LastApplyUiModel,
         val isNoItemSelected: Boolean = false,
-        val entryPointInfo: PromoEntryPointInfo? = null,
+        val entryPointInfo: PromoEntryPointInfo = PromoEntryPointInfo(),
         val recommendedPromoCodes: List<String>
     ) : EntryPointInfoEvent()
 

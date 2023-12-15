@@ -54,7 +54,10 @@ class PlayVoucherTest {
         )
 
         robot.use {
-            val state = it.recordState {}
+            val state = it.recordState {
+                createPage(emptyVoucher)
+                focusPage(emptyVoucher)
+            }
             state.tagItems.voucher.voucherList
                 .assertEqualTo(emptyVoucherList)
         }
@@ -91,11 +94,12 @@ class PlayVoucherTest {
 
     @Test
     fun `given voucher can be shown, when page is focused, then it should return vouchers from network`() {
-        every { repo.getChannelData(any()) } returns channelDataBuilder.buildChannelData(
+        val mockChannelData = channelDataBuilder.buildChannelData(
             tagItems = modelBuilder.buildTagItem(
                 product = modelBuilder.buildProductModel(canShow = true)
             )
         )
+        every { repo.getChannelData(any()) } returns mockChannelData
 
         val mockVoucherList = List(3) {
             modelBuilder.buildMerchantVoucher(
@@ -117,8 +121,8 @@ class PlayVoucherTest {
 
         robot.use {
             val state = it.recordState {
-                createPage(repo.getChannelData("1")!!)
-                focusPage(mockk(relaxed = true))
+                createPage(mockChannelData)
+                focusPage(mockChannelData)
             }
             state.tagItems.voucher.voucherList
                 .assertEqualTo(mockVoucherList)
@@ -128,7 +132,7 @@ class PlayVoucherTest {
     @Test
     fun `given voucher cannot be shown, when page is focused, then it should return initial voucher`() {
         val initialVoucherList = emptyList<PlayVoucherUiModel.Merchant>()
-        every { repo.getChannelData(any()) } returns channelDataBuilder.buildChannelData(
+        val mockChannelData = channelDataBuilder.buildChannelData(
             tagItems = modelBuilder.buildTagItem(
                 product = modelBuilder.buildProductModel(
                     canShow = false
@@ -138,6 +142,7 @@ class PlayVoucherTest {
                 )
             )
         )
+        every { repo.getChannelData(any()) } returns mockChannelData
 
         val mockVoucherList = List(3) {
             modelBuilder.buildMerchantVoucher(
@@ -159,7 +164,7 @@ class PlayVoucherTest {
 
         robot.use {
             val state = it.recordState {
-                focusPage(mockk(relaxed = true))
+                focusPage(mockChannelData)
             }
             state.tagItems.voucher.voucherList
                 .assertEqualTo(initialVoucherList)
@@ -188,12 +193,13 @@ class PlayVoucherTest {
         every { mockSocket.listenAsFlow() } returns socketFlow
 
         val mockRepo: PlayViewerRepository = mockk(relaxed = true)
-        every { mockRepo.getChannelData(any()) } returns channelDataBuilder.buildChannelData(
+        val mockChannelData = channelDataBuilder.buildChannelData(
             tagItems = modelBuilder.buildTagItem(
                 product = modelBuilder.buildProductModel(emptyList(), false),
                 voucher = modelBuilder.buildVoucherModel(emptyList())
             )
         )
+        every { mockRepo.getChannelData(any()) } returns mockChannelData
 
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,
@@ -203,7 +209,7 @@ class PlayVoucherTest {
 
         robot.use {
             val state = it.recordState {
-                focusPage(mockk(relaxed = true))
+                focusPage(mockChannelData)
                 socketFlow.emit(
                     WebSocketAction.NewMessage(mockVoucherSocketResponse)
                 )
@@ -223,6 +229,7 @@ class PlayVoucherTest {
 
     @Test
     fun `given voucher from socket when there is public voucher show ticker`() {
+        val mockChannelData = channelDataBuilder.buildChannelData(tagItems = modelBuilder.buildTagItem())
         val voucherTagSocketJson = PlayMerchantVoucherSocketResponse.generateResponse(
             isPrivate = false
         )
@@ -246,7 +253,7 @@ class PlayVoucherTest {
 
         robot.use {
             val state = it.recordState {
-                focusPage(mockk(relaxed = true))
+                focusPage(mockChannelData)
                 socketFlow.emit(
                     WebSocketAction.NewMessage(mockVoucherSocketResponse)
                 )
@@ -259,6 +266,8 @@ class PlayVoucherTest {
 
     @Test
     fun `given voucher from socket when there is no public voucher hide ticker`() {
+        val mockChannelData = channelDataBuilder.buildChannelData(tagItems = modelBuilder.buildTagItem())
+
         val voucherTagSocketJson = PlayMerchantVoucherSocketResponse.generateResponse()
 
         val mockVoucherSocketResponse = gson.fromJson(
@@ -280,7 +289,7 @@ class PlayVoucherTest {
 
         robot.use {
             val state = it.recordState {
-                focusPage(mockk(relaxed = true))
+                focusPage(mockChannelData)
                 socketFlow.emit(
                     WebSocketAction.NewMessage(mockVoucherSocketResponse)
                 )
