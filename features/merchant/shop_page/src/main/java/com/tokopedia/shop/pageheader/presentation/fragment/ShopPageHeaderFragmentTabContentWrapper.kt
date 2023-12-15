@@ -100,7 +100,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
         private const val FRAGMENT_SHOWCASE_KEY_SHOP_REF = "SHOP_REF"
         private const val FRAGMENT_SHOWCASE_KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
         private const val FRAGMENT_SHOWCASE_KEY_FORCE_LIGHT_MODE = "force_light_mode"
-        private const val FRAGMENT_SHOWCASE_KEY_COLOR_SCHEME = "color_scheme"
         private const val FRAGMENT_SHOWCASE_KEY_IS_OS = "IS_OS"
         private const val FRAGMENT_SHOWCASE_KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
         private const val FRAGMENT_SHOWCASE_KEY_FOR_SHARE = "shop_header_for_sharing"
@@ -684,10 +683,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
                             putBoolean(
                                 FRAGMENT_SHOWCASE_KEY_FORCE_LIGHT_MODE,
                                 shopHeaderLayoutData.isOverrideTheme
-                            )
-                            putParcelable(
-                                FRAGMENT_SHOWCASE_KEY_COLOR_SCHEME,
-                                getShopBodyConfig()?.colorSchema
                             )
                         }
                     )
