@@ -4,10 +4,8 @@ package com.tokopedia.play.widget.ui.model
  * Created by kenny.hadisaputra on 24/01/22
  */
 enum class PlayWidgetType(val typeString: String) {
-    Small("SMALL"),
     Medium("MEDIUM"),
     Large("LARGE"),
-    Jumbo("JUMBO"),
     Carousel("CAROUSEL"),
     Unknown("");
 

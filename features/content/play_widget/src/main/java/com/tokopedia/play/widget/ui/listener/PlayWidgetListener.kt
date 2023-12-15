@@ -10,7 +10,6 @@ import com.tokopedia.play.widget.ui.model.error.PlayWidgetException
 interface PlayWidgetListener :
     PlayWidgetMediumListener,
     PlayWidgetLargeListener,
-    PlayWidgetJumboListener,
     PlayWidgetCarouselView.Listener
 {
 

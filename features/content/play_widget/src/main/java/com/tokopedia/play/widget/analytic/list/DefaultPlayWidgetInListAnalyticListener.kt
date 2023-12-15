@@ -195,51 +195,6 @@ class DefaultPlayWidgetInListAnalyticListener(
         )
     }
 
-    override fun onClickChannelCard(
-        view: PlayWidgetJumboView,
-        item: PlayWidgetChannelUiModel,
-        config: PlayWidgetConfigUiModel,
-        channelPositionInList: Int,
-    ) {
-        analytic.onClickChannelCard(
-            view,
-            item,
-            config,
-            channelPositionInList,
-            verticalWidgetPosition,
-        )
-    }
-
-    override fun onClickToggleReminderChannel(
-        view: PlayWidgetJumboView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        isRemindMe: Boolean
-    ) {
-        analytic.onClickToggleReminderChannel(
-            view,
-            item,
-            channelPositionInList,
-            isRemindMe,
-            verticalWidgetPosition,
-        )
-    }
-
-    override fun onImpressChannelCard(
-        view: PlayWidgetJumboView,
-        item: PlayWidgetChannelUiModel,
-        config: PlayWidgetConfigUiModel,
-        channelPositionInList: Int,
-    ) {
-        analytic.onImpressChannelCard(
-            view,
-            item,
-            config,
-            channelPositionInList,
-            verticalWidgetPosition,
-        )
-    }
-
     /**
      * Region Carousel
      */

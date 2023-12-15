@@ -14,7 +14,6 @@ import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticLi
 import com.tokopedia.play.widget.sample.adapter.feed.PlayWidgetSampleFeedAdapter
 import com.tokopedia.play.widget.sample.analytic.PlayWidgetFeedSampleAnalytic
 import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
-import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.carousel.PlayWidgetCarouselView
@@ -74,13 +73,6 @@ class PlayWidgetSampleFeedFragment : TkpdBaseV4Fragment(), PlayWidgetListener {
 
     private fun getSampleWidgets(): List<PlayFeedUiModel> {
         return listOf(
-            PlayWidgetJumboUiModel(
-                PlayWidgetUiMock.getSamplePlayWidget(
-                    items = listOf(
-                        PlayWidgetUiMock.getSampleChannelModel(PlayWidgetChannelType.Vod)
-                    )
-                )
-            ),
             PlayWidgetMediumUiModel(
                 PlayWidgetUiMock.getSamplePlayWidget()
             ),
@@ -119,15 +111,6 @@ class PlayWidgetSampleFeedFragment : TkpdBaseV4Fragment(), PlayWidgetListener {
                 PlayWidgetUiMock.getSamplePlayWidget()
             ),
         )
-    }
-
-    override fun onToggleReminderClicked(
-        view: PlayWidgetJumboView,
-        channelId: String,
-        reminderType: PlayWidgetReminderType,
-        position: Int
-    ) {
-        Toast.makeText(context, "onToggleReminderClicked PlayWidgetJumboView $channelId", Toast.LENGTH_SHORT).show()
     }
 
     override fun onToggleReminderClicked(

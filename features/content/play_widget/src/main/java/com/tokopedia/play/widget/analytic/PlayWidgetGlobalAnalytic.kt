@@ -1,10 +1,8 @@
 package com.tokopedia.play.widget.analytic
 
 import com.tokopedia.play.widget.analytic.list.PlayWidgetInListAnalyticListener
-import com.tokopedia.play.widget.analytic.list.jumbo.PlayWidgetInListJumboAnalyticListener
 import com.tokopedia.play.widget.analytic.list.large.PlayWidgetInListLargeAnalyticListener
 import com.tokopedia.play.widget.analytic.list.medium.PlayWidgetInListMediumAnalyticListener
-import com.tokopedia.play.widget.analytic.global.PlayWidgetJumboGlobalAnalytic
 import com.tokopedia.play.widget.analytic.global.PlayWidgetLargeGlobalAnalytic
 import com.tokopedia.play.widget.analytic.global.model.PlayWidgetAnalyticModel
 import com.tokopedia.play.widget.analytic.global.PlayWidgetMediumGlobalAnalytic
@@ -21,11 +19,9 @@ class PlayWidgetGlobalAnalytic @AssistedInject constructor(
     @Assisted private val trackingQueue: TrackingQueue,
     private val mediumAnalytic: PlayWidgetMediumGlobalAnalytic.Factory,
     private val largeAnalytic: PlayWidgetLargeGlobalAnalytic.Factory,
-    private val jumboAnalytic: PlayWidgetJumboGlobalAnalytic.Factory,
 ) : PlayWidgetInListAnalyticListener,
     PlayWidgetInListMediumAnalyticListener by mediumAnalytic.create(model, trackingQueue),
-    PlayWidgetInListLargeAnalyticListener by largeAnalytic.create(model, trackingQueue),
-    PlayWidgetInListJumboAnalyticListener by jumboAnalytic.create(model, trackingQueue)
+    PlayWidgetInListLargeAnalyticListener by largeAnalytic.create(model, trackingQueue)
 {
 
     @AssistedFactory

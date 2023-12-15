@@ -1,7 +1,6 @@
 package com.tokopedia.videoTabComponent.analytics
 
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
-import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -22,36 +21,6 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
 
     fun setOnClickChannelCard(callback: (channelId: String, position: Int) -> Unit) {
         mOnClickChannelCardListener = callback
-    }
-
-    override fun onClickChannelCard(
-        view: PlayWidgetJumboView,
-        item: PlayWidgetChannelUiModel,
-        config: PlayWidgetConfigUiModel,
-        channelPositionInList: Int,
-    ) {
-        tracker.clickOnContentHighlightCardsInVideoTab(
-            item.channelId, item.partner.id,
-            listOf(item.video.coverUrl),
-            item.channelType.toString().lowercase(), channelPositionInList
-        )
-        mOnClickChannelCardListener?.invoke(item.channelId, channelPositionInList)
-    }
-
-    override fun onImpressChannelCard(
-        view: PlayWidgetJumboView,
-        item: PlayWidgetChannelUiModel,
-        config: PlayWidgetConfigUiModel,
-        channelPositionInList: Int,
-    ) {
-        tracker.impressOnContentHighlightWidgetInVideoTab(
-            item.channelId, item.partner.id, item.channelType.toString().lowercase()
-        )
-        tracker.impressOnContentHighlightCard(
-            item.channelId, item.partner.id,
-            listOf(item.video.coverUrl), item.channelType.toString().lowercase(),
-            channelPositionInList
-        )
     }
 
     override fun onClickChannelCard(
@@ -137,26 +106,6 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
     private fun impressMediumLiveWidget(channelPositionInList: Int) {
         if (channelPositionInList == FIRST_CHANNEL_POSITION_IN_LIST) {
             tracker.impressOnLagiLiveContentCarouselWidget()
-        }
-    }
-
-    override fun onClickToggleReminderChannel(
-        view: PlayWidgetJumboView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        isRemindMe: Boolean
-    ) {
-        super.onClickToggleReminderChannel(view, item, channelPositionInList, isRemindMe)
-        if (isRemindMe) {
-            tracker.clickOnRemindMeButtonOnPlayCardInContentHighlight(
-                item.channelId, item.partner.id, listOf(item.video.coverUrl),
-                item.channelType.toString().lowercase(), filterCategory
-            )
-        } else {
-            tracker.clickOnUnRemindMeButtonOnPlayCardInContentHighlight(
-                item.channelId, item.partner.id, listOf(item.video.coverUrl),
-                item.channelType.toString().lowercase(), filterCategory
-            )
         }
     }
 

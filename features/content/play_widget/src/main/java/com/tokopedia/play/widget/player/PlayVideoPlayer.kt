@@ -37,11 +37,9 @@ open class PlayVideoPlayer(val context: Context, cardType: PlayWidgetType) {
 
     private var mLiveTimer: CountDownTimer2? = null
 
-    private val shouldForceLowest = cardType != PlayWidgetType.Jumbo
-
     private val trackSelector = DefaultTrackSelector(context).apply {
         parameters = DefaultTrackSelector.ParametersBuilder(context)
-            .setForceLowestBitrate(shouldForceLowest).build()
+            .setForceLowestBitrate(true).build()
     }
 
     private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context)
