@@ -87,7 +87,10 @@ data class OngkirRatesV3Input(
     val group_type: Int = 0,
     // O2O
     @SerializedName("group_metadata")
-    val group_metadata: String = ""
+    val group_metadata: String = "",
+    // new ofoc
+    @SerializedName("grouping_state")
+    val grouping_state: Int = 0
 ) : GqlParam
 
 data class RatesMetadata(@SerializedName("cart_data") val cartData: String) : GqlParam

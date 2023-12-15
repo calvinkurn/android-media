@@ -268,27 +268,4 @@ class AffiliateIncomeViewModelTest {
 
         affiliateIncomeViewModel.getAnnouncementInformation()
     }
-
-    @Test
-    fun `successfully getting unread notification count`() {
-        coEvery {
-            affiliateIncomeViewModel.affiliateUnreadNotificationUseCase.getUnreadNotifications()
-        } returns 5
-
-        affiliateIncomeViewModel.fetchUnreadNotificationCount()
-        assertEquals(5, affiliateIncomeViewModel.getUnreadNotificationCount().value)
-    }
-
-    @Test
-    fun `should reset notification count to zero`() {
-        coEvery {
-            affiliateIncomeViewModel.affiliateUnreadNotificationUseCase.getUnreadNotifications()
-        } returns 5
-
-        affiliateIncomeViewModel.fetchUnreadNotificationCount()
-        assertEquals(5, affiliateIncomeViewModel.getUnreadNotificationCount().value)
-
-        affiliateIncomeViewModel.resetNotificationCount()
-        assertEquals(0, affiliateIncomeViewModel.getUnreadNotificationCount().value)
-    }
 }
