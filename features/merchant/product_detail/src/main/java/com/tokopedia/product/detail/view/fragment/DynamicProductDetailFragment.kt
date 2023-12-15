@@ -177,6 +177,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherS
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
@@ -5109,21 +5110,24 @@ open class DynamicProductDetailFragment :
                 ApplinkConst.SHOP,
                 shopId
             )
-            generateShopPagePreFetchData(intent)
+
+            
+            val shopCredibility = pdpUiUpdater?.shopCredibility ?: return
+
+            val prefetch = ShopPagePrefetch()
+            val prefetchData = shopCredibility.toShopPrefetchData()
+            prefetch.redirectToShopPageWithPrefetch(context ?: return, prefetchData, intent)
+            
             startActivityForResult(
                 intent,
                 ProductDetailConstant.REQUEST_CODE_SHOP_INFO
             )
         }
     }
-
-    private fun generateShopPagePreFetchData(intent: Intent) {
-        val prefetch = ShopPagePrefetch()
-
-        val shopCredibility = pdpUiUpdater?.shopCredibility ?: return
-
+    
+    private fun ProductShopCredibilityDataModel.toShopPrefetchData(): ShopPrefetchData {
         val averageShopRatingId = context?.getString(R.string.pdp_product_average_review).orEmpty()
-        val shopRating = shopCredibility.infoShopData.firstOrNull { it.desc == averageShopRatingId }?.value
+        val shopRating = infoShopData.firstOrNull { it.desc == averageShopRatingId }?.value
         val castedShopRating = try {
             shopRating.toFloatOrZero()
         } catch (e: Exception) {
@@ -5131,16 +5135,14 @@ open class DynamicProductDetailFragment :
             0f
         }
 
-        val prefetchData = ShopPrefetchData(
-            shopAvatar = shopCredibility.shopAva,
-            shopName = shopCredibility.shopName,
-            shopBadge = shopCredibility.shopTierBadgeUrl,
-            shopLastOnline = shopCredibility.shopLastActive,
+        return ShopPrefetchData(
+            shopAvatar = shopAva,
+            shopName = shopName,
+            shopBadge = shopTierBadgeUrl,
+            shopLastOnline = shopLastActive,
             shopRating = castedShopRating,
-            isFollowed = shopCredibility.isFavorite
+            isFollowed = isFavorite
         )
-
-        prefetch.redirectToShopPageWithPrefetch(context ?: return, prefetchData, intent)
     }
 
     override fun onShopTickerClicked(
