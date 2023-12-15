@@ -671,7 +671,8 @@ class CartViewModel @Inject constructor(
             cartModel = cartModel,
             updateCartModel = { newCartModel ->
                 cartModel = newCartModel
-            }
+            },
+            isCalculateAddons = true
         )
         totalItemQty += returnValueMarketplaceProduct.first
         subtotalBeforeSlashedPrice += returnValueMarketplaceProduct.second.first
@@ -2262,7 +2263,8 @@ class CartViewModel @Inject constructor(
                         cartModel = cartModel,
                         updateCartModel = { newCartModel ->
                             cartModel = newCartModel
-                        }
+                        },
+                        isCalculateAddons = false
                     )
                 val subtotalPrice = calculatePriceMarketplaceProduct.second.second.toLong()
                 val shipping = ShippingParam().apply {
