@@ -14,8 +14,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -210,6 +210,7 @@ class FeedBaseFragment :
                     fragment.shouldShowPerformanceAction = false
                     fragment.analytics = contentCreationAnalytics
                 }
+
                 is FeedFragment -> {
                     fragment.setDataSource(object : FeedFragment.DataSource {
                         override fun getViewModelStoreOwner(type: String): ViewModelStoreOwner {
@@ -349,43 +350,43 @@ class FeedBaseFragment :
         binding.vpFeedTabItemsContainer.adapter = adapter
         binding.vpFeedTabItemsContainer.reduceDragSensitivity(3)
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-                OnPageChangeCallback() {
+            OnPageChangeCallback() {
 
-                var shouldSendSwipeTracker = false
+            var shouldSendSwipeTracker = false
 
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                handleTabTransition(position)
+                if (!userSession.isLoggedIn &&
+                    activeTabSource.tabName == null // not coming from appLink
                 ) {
-                    handleTabTransition(position)
-                    if (!userSession.isLoggedIn &&
-                        activeTabSource.tabName == null // not coming from appLink
-                    ) {
-                        if (position == TAB_SECOND_INDEX) {
-                            swipeFollowingLoginResult.launch(
-                                RouteManager.getIntent(context, ApplinkConst.LOGIN)
-                            )
-                        }
-                    }
-
-                    if (shouldSendSwipeTracker) {
-                        if (THRESHOLD_OFFSET_HALF > positionOffset) {
-                            feedNavigationAnalytics.eventSwipeFollowingTab()
-                        } else {
-                            feedNavigationAnalytics.eventSwipeForYouTab()
-                        }
-                        shouldSendSwipeTracker = false
+                    if (position == TAB_SECOND_INDEX) {
+                        swipeFollowingLoginResult.launch(
+                            RouteManager.getIntent(context, ApplinkConst.LOGIN)
+                        )
                     }
                 }
 
-                override fun onPageSelected(position: Int) {
+                if (shouldSendSwipeTracker) {
+                    if (THRESHOLD_OFFSET_HALF > positionOffset) {
+                        feedNavigationAnalytics.eventSwipeFollowingTab()
+                    } else {
+                        feedNavigationAnalytics.eventSwipeForYouTab()
+                    }
+                    shouldSendSwipeTracker = false
                 }
+            }
 
-                override fun onPageScrollStateChanged(state: Int) {
-                    shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
-                }
-            })
+            override fun onPageSelected(position: Int) {
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+                shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
+            }
+        })
 
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
@@ -520,16 +521,19 @@ class FeedBaseFragment :
                         is CreationUploadResult.Empty -> {
                             binding.uploadView.hide()
                         }
+
                         is CreationUploadResult.Upload -> {
                             binding.uploadView.show()
                             binding.uploadView.setUploadProgress(uploadResult.progress)
                             binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
                         }
+
                         is CreationUploadResult.OtherProcess -> {
                             binding.uploadView.show()
                             binding.uploadView.setOtherProgress(uploadResult.progress)
                             binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
                         }
+
                         is CreationUploadResult.Success -> {
                             binding.uploadView.hide()
 
@@ -540,6 +544,7 @@ class FeedBaseFragment :
                                         duration = Toaster.LENGTH_LONG
                                     )
                                 }
+
                                 is CreationUploadData.Shorts -> {
                                     showNormalToaster(
                                         getString(R.string.feed_upload_content_success),
@@ -559,6 +564,7 @@ class FeedBaseFragment :
                                         }
                                     )
                                 }
+
                                 is CreationUploadData.Stories -> {
                                     showNormalToaster(
                                         getString(R.string.feed_upload_story_success),
@@ -572,9 +578,11 @@ class FeedBaseFragment :
                                         }
                                     )
                                 }
+
                                 else -> {}
                             }
                         }
+
                         is CreationUploadResult.Failed -> {
                             binding.uploadView.show()
                             binding.uploadView.setFailed()
@@ -599,6 +607,7 @@ class FeedBaseFragment :
                                 }
                             })
                         }
+
                         else -> {}
                     }
                 }
@@ -683,6 +692,13 @@ class FeedBaseFragment :
                 feedNavigationAnalytics.eventClickForYouTab()
                 selectActiveTab(TAB_FIRST_INDEX)
             }
+
+            if (firstTabData.hasNewContent && userSession.isLoggedIn) {
+                binding.containerFeedTopNav.vFirstTabRedDot.show()
+            } else {
+                binding.containerFeedTopNav.vFirstTabRedDot.hide()
+            }
+
             binding.containerFeedTopNav.tyFeedFirstTab.show()
         } else {
             binding.containerFeedTopNav.tyFeedFirstTab.hide()
@@ -694,6 +710,13 @@ class FeedBaseFragment :
                 feedNavigationAnalytics.eventClickFollowingTab()
                 selectActiveTab(TAB_SECOND_INDEX)
             }
+
+            if (secondTabData.hasNewContent && userSession.isLoggedIn) {
+                binding.containerFeedTopNav.vSecondTabRedDot.show()
+            } else {
+                binding.containerFeedTopNav.vSecondTabRedDot.hide()
+            }
+
             binding.containerFeedTopNav.tyFeedSecondTab.show()
         } else {
             binding.containerFeedTopNav.tyFeedSecondTab.hide()

@@ -77,10 +77,6 @@ object RollenceKey {
     const val FOR_YOU_FEATURE_FLAG = "foryou_feature_flag"
 
     // PDP
-    const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
-    const val PDP_SHOW_THUMBNAIL = "pdp_show_thumbnail"
-    const val PDP_HIDE_THUMBNAIL = "pdp_hide_thumbnail"
-
     const val PDP_PREFETCH = "prefetch_pdp_android"
     const val PDP_PREFETCH_ENABLE = "variant_prefetch"
     const val PDP_PREFETCH_DISABLE = "control_prefetch"
