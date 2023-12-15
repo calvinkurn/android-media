@@ -7,7 +7,6 @@ import com.tokopedia.play.widget.analytic.impression.ImpressionHelper
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
-import com.tokopedia.play.widget.ui.PlayWidgetSmallView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -34,11 +33,6 @@ class PlayWidgetCoordinator(
         lifecycleOwner?.let { configureLifecycle(it) }
     }
 
-    fun controlWidget(widget: PlayWidgetSmallView) {
-        widget.setWidgetListener(mListener)
-        widget.setAnalyticListener(mAnalyticListener)
-    }
-
     fun controlWidget(widget: PlayWidgetMediumView) {
         widget.setWidgetListener(mListener)
         widget.setAnalyticListener(mAnalyticListener)
@@ -52,10 +46,6 @@ class PlayWidgetCoordinator(
     fun controlWidget(widget: PlayWidgetJumboView) {
         widget.setWidgetListener(mListener)
         widget.setAnalyticListener(mAnalyticListener)
-    }
-
-    fun connect(widget: PlayWidgetSmallView, model: PlayWidgetUiModel) {
-        widget.setData(model)
     }
 
     fun connect(widget: PlayWidgetMediumView, model: PlayWidgetUiModel) {

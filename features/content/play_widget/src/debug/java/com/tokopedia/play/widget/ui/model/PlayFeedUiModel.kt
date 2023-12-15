@@ -17,10 +17,6 @@ data class PlayWidgetMediumUiModel(
     val model: PlayWidgetUiModel
 ): PlayFeedUiModel()
 
-data class PlayWidgetSmallUiModel(
-    val model: PlayWidgetUiModel
-): PlayFeedUiModel()
-
 data class PlayWidgetSlotTabUiModel(
     val labels: List<Pair<String, Boolean>>
 ): PlayFeedUiModel()

@@ -8,7 +8,6 @@ import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
-import com.tokopedia.play.widget.ui.PlayWidgetSmallView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.autoplay.AutoPlayModel
 import com.tokopedia.play.widget.ui.autoplay.AutoPlayReceiverDecider
@@ -115,11 +114,6 @@ class PlayWidgetAutoPlayCoordinator(
 
     // For PlayWidgetView
     fun configureAutoPlay(widget: PlayWidgetView, config: PlayWidgetConfigUiModel, type: PlayWidgetType) = synchronized(this@PlayWidgetAutoPlayCoordinator) {
-        setupAutoplay(widget.context, config, type)
-    }
-
-    // For Small View
-    fun configureAutoPlaySmall(widget: PlayWidgetSmallView, config: PlayWidgetConfigUiModel, type: PlayWidgetType) = synchronized(this@PlayWidgetAutoPlayCoordinator) {
         setupAutoplay(widget.context, config, type)
     }
 

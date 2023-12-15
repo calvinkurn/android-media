@@ -20,7 +20,6 @@ class PlayWidgetSampleFeedAdapter(
             .addDelegate(PlayWidgetViewAdapterDelegate.Jumbo(coordinator))
             .addDelegate(PlayWidgetViewAdapterDelegate.Large(coordinator))
             .addDelegate(PlayWidgetViewAdapterDelegate.Medium(coordinator))
-            .addDelegate(PlayWidgetViewAdapterDelegate.Small(coordinator))
             .addDelegate(PlaySlotTabViewAdapterDelegate.SlotTab())
     }
 

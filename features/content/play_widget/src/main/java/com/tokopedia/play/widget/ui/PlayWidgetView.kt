@@ -51,7 +51,6 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
 
     override fun onViewRemoved(child: View?) {
         when (child) {
-            is PlayWidgetSmallView -> child.setAnalyticListener(null)
             is PlayWidgetMediumView -> child.setAnalyticListener(null)
             is PlayWidgetLargeView -> child.setAnalyticListener(null)
             is PlayWidgetJumboView -> child.setAnalyticListener(null)
@@ -63,7 +62,6 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
     override fun setWidgetInternalListener(listener: PlayWidgetInternalListener?) {
         mWidgetInternalListener = listener
         when (val child = getFirstChild()) {
-            is PlayWidgetSmallView -> child.setWidgetInternalListener(listener)
             is PlayWidgetMediumView -> child.setWidgetInternalListener(listener)
             is PlayWidgetLargeView -> child.setWidgetInternalListener(listener)
             is PlayWidgetJumboView -> child.setWidgetInternalListener(listener)
@@ -78,7 +76,6 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
 
     fun setCustomHeader(header: View) {
         when (val child = getFirstChild()) {
-            is PlayWidgetSmallView -> child.setCustomHeader(header)
             is PlayWidgetMediumView -> child.setCustomHeader(header)
             else -> {}
         }
@@ -86,7 +83,6 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
 
     fun getHeader(): View? {
         return when (val child = getFirstChild()) {
-            is PlayWidgetSmallView -> child.getHeader()
             is PlayWidgetMediumView -> child.getHeader()
             else -> null
         }
@@ -99,7 +95,6 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
         }
 
         when (state.widgetType) {
-            PlayWidgetType.Small -> addSmallView(state.model)
             PlayWidgetType.Medium -> addMediumView(state.model)
             PlayWidgetType.Large -> addLargeView(state.model)
             PlayWidgetType.Jumbo -> addJumboView(state.model)
@@ -114,7 +109,6 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
     fun setAnalyticListener(listener: PlayWidgetAnalyticListener?) {
         mAnalyticListener = listener
         when (val child = getFirstChild()) {
-            is PlayWidgetSmallView -> child.setAnalyticListener(listener)
             is PlayWidgetMediumView -> child.setAnalyticListener(listener)
             is PlayWidgetLargeView -> child.setAnalyticListener(listener)
             is PlayWidgetJumboView -> child.setAnalyticListener(listener)
@@ -125,25 +119,10 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
     fun setWidgetListener(listener: PlayWidgetListener?) {
         mWidgetListener = listener
         when (val child = getFirstChild()) {
-            is PlayWidgetSmallView -> child.setWidgetListener(listener)
             is PlayWidgetMediumView -> child.setWidgetListener(listener)
             is PlayWidgetLargeView -> child.setWidgetListener(listener)
             is PlayWidgetJumboView -> child.setWidgetListener(listener)
             is PlayWidgetCarouselView -> child.setWidgetListener(listener)
-        }
-    }
-
-    private fun addSmallView(model: PlayWidgetUiModel) {
-        val widgetView = addWidgetView { PlayWidgetSmallView(context) } ?: return
-
-        if (model.items.isEmpty()) {
-            widgetView.hide()
-        } else {
-            widgetView.show()
-            widgetView.setData(model)
-            widgetView.setWidgetListener(mWidgetListener)
-            widgetView.setWidgetInternalListener(mWidgetInternalListener)
-            widgetView.setAnalyticListener(mAnalyticListener)
         }
     }
 

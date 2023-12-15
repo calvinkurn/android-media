@@ -8,7 +8,6 @@ import com.tokopedia.play.widget.ui.model.error.PlayWidgetException
  * Created by jegul on 13/10/20
  */
 interface PlayWidgetListener :
-    PlayWidgetSmallListener,
     PlayWidgetMediumListener,
     PlayWidgetLargeListener,
     PlayWidgetJumboListener,

@@ -13,7 +13,6 @@ import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
 import com.tokopedia.play.widget.analytic.list.PlayWidgetInListAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
-import com.tokopedia.play.widget.ui.PlayWidgetSmallView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.carousel.PlayWidgetCarouselView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
@@ -128,25 +127,6 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
     }
 
     override fun onClickChannelCard(
-        view: PlayWidgetSmallView,
-        item: PlayWidgetChannelUiModel,
-        config: PlayWidgetConfigUiModel,
-        channelPositionInList: Int,
-        verticalWidgetPosition: Int
-    ) {
-        discoveryPlayWidgetViewModel?.components?.let {
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetClick(
-                it.data?.firstOrNull(),
-                UserSession(fragment.context).userId,
-                item,
-                verticalWidgetPosition,
-                channelPositionInList,
-                config.autoPlay
-            )
-        }
-    }
-
-    override fun onClickChannelCard(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
         config: PlayWidgetConfigUiModel,
@@ -177,25 +157,6 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
                 it.data?.firstOrNull(),
                 UserSession(fragment.context).userId,
                 item,
-                verticalWidgetPosition,
-                channelPositionInList,
-                config.autoPlay
-            )
-        }
-    }
-
-    override fun onImpressChannelCard(
-        view: PlayWidgetSmallView,
-        item: PlayWidgetChannelUiModel,
-        config: PlayWidgetConfigUiModel,
-        channelPositionInList: Int,
-        verticalWidgetPosition: Int
-    ) {
-        discoveryPlayWidgetViewModel?.components?.let {
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetImpression(
-                it.data?.firstOrNull(),
-                item,
-                UserSession(fragment.context).userId,
                 verticalWidgetPosition,
                 channelPositionInList,
                 config.autoPlay
@@ -239,16 +200,6 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
                 verticalWidgetPosition,
                 channelPositionInList,
                 config.autoPlay
-            )
-        }
-    }
-
-    override fun onClickBannerCard(view: PlayWidgetSmallView, verticalWidgetPosition: Int) {
-        discoveryPlayWidgetViewModel?.components?.let {
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetBannerClick(
-                it.data?.firstOrNull(),
-                UserSession(fragment.context).userId,
-                verticalWidgetPosition
             )
         }
     }
@@ -261,16 +212,6 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
     ) {
         discoveryPlayWidgetViewModel?.components?.let {
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetBannerClick(
-                it.data?.firstOrNull(),
-                UserSession(fragment.context).userId,
-                verticalWidgetPosition
-            )
-        }
-    }
-
-    override fun onClickViewAll(view: PlayWidgetSmallView, verticalWidgetPosition: Int) {
-        discoveryPlayWidgetViewModel?.components?.let {
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLihatSemuaClick(
                 it.data?.firstOrNull(),
                 UserSession(fragment.context).userId,
                 verticalWidgetPosition

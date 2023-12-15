@@ -29,50 +29,12 @@ class DefaultPlayWidgetInListAnalyticListener(
         analytic.onImpressPlayWidget(view, item, widgetPositionInList, item.config.businessWidgetPosition)
     }
 
-    override fun onClickViewAll(view: PlayWidgetSmallView) {
-        analytic.onClickViewAll(view, verticalWidgetPosition)
-    }
-
     override fun onImpressViewAll(view: PlayWidgetMediumView) {
         analytic.onImpressViewAll(view, verticalWidgetPosition)
     }
 
     override fun onClickViewAll(view: PlayWidgetMediumView) {
         analytic.onClickViewAll(view, verticalWidgetPosition)
-    }
-
-    override fun onClickChannelCard(
-        view: PlayWidgetSmallView,
-        item: PlayWidgetChannelUiModel,
-        config: PlayWidgetConfigUiModel,
-        channelPositionInList: Int,
-    ) {
-        analytic.onClickChannelCard(
-            view,
-            item,
-            config,
-            channelPositionInList,
-            verticalWidgetPosition,
-        )
-    }
-
-    override fun onClickBannerCard(view: PlayWidgetSmallView) {
-        analytic.onClickBannerCard(view, verticalWidgetPosition)
-    }
-
-    override fun onImpressChannelCard(
-        view: PlayWidgetSmallView,
-        item: PlayWidgetChannelUiModel,
-        config: PlayWidgetConfigUiModel,
-        channelPositionInList: Int,
-    ) {
-        analytic.onImpressChannelCard(
-            view,
-            item,
-            config,
-            channelPositionInList,
-            verticalWidgetPosition,
-        )
     }
 
     override fun onImpressOverlayCard(view: PlayWidgetMediumView, item: PlayWidgetBackgroundUiModel, channelPositionInList: Int) {
@@ -276,14 +238,6 @@ class DefaultPlayWidgetInListAnalyticListener(
             channelPositionInList,
             verticalWidgetPosition,
         )
-    }
-
-    override fun onImpressViewAll(view: PlayWidgetSmallView) {
-        analytic.onImpressViewAll(view, verticalWidgetPosition)
-    }
-
-    override fun onImpressBannerCard(view: PlayWidgetSmallView) {
-        analytic.onImpressBannerCard(view, verticalWidgetPosition)
     }
 
     /**
