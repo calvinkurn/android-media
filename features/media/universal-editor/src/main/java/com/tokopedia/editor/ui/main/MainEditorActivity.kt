@@ -160,7 +160,6 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
     override fun onTextViewClick(text: View, model: InputTextModel?) {
         if (model == null) return
 
-        binding?.container?.setTextVisibility(text.id, false)
         viewModel.onEvent(MainEditorEvent.EditInputTextPage(text.id, model))
     }
 
@@ -269,6 +268,10 @@ open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listene
             is MainEditorEffect.ShowToastErrorMessage -> onShowToastErrorMessage(effect.message)
             is MainEditorEffect.OpenInputText -> {
                 animateSlide {
+                    // hide clicked text view when open InputText page
+                    effect.textViewId?.let {
+                        binding?.container?.setTextVisibility(it, false)
+                    }
                     navigateToInputTextTool(effect.model)
                 }
             }

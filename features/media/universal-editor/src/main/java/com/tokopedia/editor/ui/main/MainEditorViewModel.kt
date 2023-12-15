@@ -76,7 +76,7 @@ class MainEditorViewModel @Inject constructor(
                 setAction(MainEditorEffect.OpenInputText(InputTextModel.default()))
             }
             is MainEditorEvent.EditInputTextPage -> {
-                setAction(MainEditorEffect.OpenInputText(event.model))
+                setAction(MainEditorEffect.OpenInputText(event.model, event.viewId))
                 updateViewIdOnUiParam(event.viewId)
             }
             is MainEditorEvent.ExportMedia -> {

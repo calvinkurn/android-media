@@ -9,7 +9,7 @@ import com.tokopedia.editor.ui.model.InputTextModel
  */
 sealed class MainEditorEffect {
     // Intent action
-    data class OpenInputText(val model: InputTextModel) : MainEditorEffect()
+    data class OpenInputText(val model: InputTextModel, val textViewId: Int? = null) : MainEditorEffect()
     data class FinishEditorPage(val filePath: String) : MainEditorEffect()
     data class OpenPlacementPage(val sourcePath: String, val model: ImagePlacementModel?) : MainEditorEffect()
 
