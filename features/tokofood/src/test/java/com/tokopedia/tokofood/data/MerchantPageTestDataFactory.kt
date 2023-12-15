@@ -10,9 +10,6 @@ import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCartRules
 import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCartVariant
 import com.tokopedia.tokofood.common.domain.response.CartListCartMetadata
 import com.tokopedia.tokofood.common.domain.response.CartListCartMetadataVariant
-import com.tokopedia.tokofood.common.domain.response.KeroEditAddress
-import com.tokopedia.tokofood.common.domain.response.KeroEditAddressData
-import com.tokopedia.tokofood.common.domain.response.KeroEditAddressResponse
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.GetMerchantDataResponse
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogDetail
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodCatalogVariantDetail
@@ -441,17 +438,6 @@ fun generateTestProductUiModelWithVariant(
         isOutOfStock = false,
         isShopClosed = false,
         customListItems = listOf(customListItem)
-    )
-}
-
-fun generateTestKeroEditAddressResponse(): KeroEditAddressResponse {
-    return KeroEditAddressResponse(
-        keroEditAddress = KeroEditAddress(
-            data = KeroEditAddressData(
-                addressId = "123",
-                isSuccess = 1
-            )
-        )
     )
 }
 

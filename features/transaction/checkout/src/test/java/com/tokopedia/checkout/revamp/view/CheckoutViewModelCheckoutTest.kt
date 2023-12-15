@@ -84,6 +84,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
         )
+        promoProcessor.validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel()
 
         coEvery {
             validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
@@ -101,6 +102,9 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         })
 
         // Then
+        coVerify(inverse = true) {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        }
         assertEquals(true, invokeSuccess)
     }
 
@@ -1045,6 +1049,9 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
 
         // Then
         assertEquals(false, invokeSuccess)
+        coVerify(exactly = 1) {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        }
         coVerify {
             clearCacheAutoApplyStackUseCase.setParams(
                 match {
@@ -1119,6 +1126,9 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
         })
 
         // Then
+        coVerify(inverse = true) {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        }
         assertEquals(false, invokeSuccess)
         assertEquals(CheckoutPageState.Prompt(prompt), viewModel.pageState.value)
     }
@@ -1149,7 +1159,7 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
                 shipment = CheckoutOrderShipment(courierItemData = CourierItemData())
             ),
             CheckoutEpharmacyModel(epharmacy = UploadPrescriptionUiModel()),
-            CheckoutPromoModel(promo = LastApplyUiModel()),
+            CheckoutPromoModel(promo = LastApplyUiModel(codes = listOf("code"))),
             CheckoutCostModel(),
             CheckoutCrossSellGroupModel(),
             CheckoutButtonPaymentModel()
@@ -1171,6 +1181,9 @@ class CheckoutViewModelCheckoutTest : BaseCheckoutViewModelTest() {
 
         // Then
         assertEquals(false, invokeSuccess)
+        coVerify(exactly = 1) {
+            validateUsePromoRevampUseCase.setParam(any()).executeOnBackground()
+        }
         coVerify(inverse = true) {
             checkoutGqlUseCase(any())
         }

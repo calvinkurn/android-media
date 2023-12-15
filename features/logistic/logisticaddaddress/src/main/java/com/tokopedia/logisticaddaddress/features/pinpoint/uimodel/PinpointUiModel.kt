@@ -32,6 +32,10 @@ data class PinpointUiModel(
     val hasDistrictAndCityName: Boolean
         get() = districtName.isNotBlank() && cityName.isNotBlank()
 
+    fun isNotEmpty(): Boolean {
+        return districtName.isNotEmpty() && cityName.isNotEmpty() && provinceName.isNotEmpty() && lat != 0.0 && long != 0.0 && cityId != 0L && provinceId != 0L
+    }
+
     private fun Double.isValidPinpoint(): Boolean {
         return this != 0.0
     }
