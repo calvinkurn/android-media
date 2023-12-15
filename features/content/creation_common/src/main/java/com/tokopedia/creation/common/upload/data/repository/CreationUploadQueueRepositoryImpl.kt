@@ -10,8 +10,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.flow.toCollection
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -52,9 +50,13 @@ class CreationUploadQueueRepositoryImpl @Inject constructor(
 
     override suspend fun getTopQueue(): CreationUploadData? {
         return lockAndSwitchContext(dispatchers) {
-            val list = mutableListOf<CreationUploadData?>()
-            val topQueue = observeTopQueue().take(1).toCollection(list).first()
-            topQueue
+            val data = creationUploadQueueDatabase.creationUploadQueueDao().getTopQueue()
+
+            if (data != null) {
+                CreationUploadData.parseFromEntity(data, gson)
+            } else {
+                null
+            }
         }
     }
 
