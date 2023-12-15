@@ -16,6 +16,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.picker.common.ConfigurableUniversalEditorParam
+import com.tokopedia.picker.common.MediaPicker
+import com.tokopedia.picker.common.PageSource
+import com.tokopedia.picker.common.UniversalEditor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -141,24 +145,22 @@ class MainActivity : BaseActivity() {
     }
 
     private fun goTo() {
-        /* @example: open groupchat module;
-         * startActivity(PlayActivity.getCallingIntent(this, "668", true))
-         * or, you can use route like this:
-         * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
-         * LEAVE THIS EMPTY AS DEFAULT!!
-         * */
-        if (model.value.applink.isNotBlank()) {
-            RouteManager.route(this, model.value.applink)
-        } else {
-            Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
+        val intent = UniversalEditor.intent(this) {
+            filePaths(listOf("/storage/self/primary/Pictures/Tkpd_1288155.jpg"))
+            setPageSource(PageSource.AddLogo)
+            setCustomParam(ConfigurableUniversalEditorParam().apply {
+                setHeaderTitle("Isfa!")
+            })
         }
+
+        startActivity(intent)
     }
 
     private fun getDefaultAppLink(): String {
         /*
          * Put your default applink here
          */
-        return ""
+        return "direct"
     }
 
     data class Model(
