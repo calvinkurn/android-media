@@ -18,7 +18,7 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
             ReviewUiModel(
                 reviewId = it.feedbackId,
                 medias = emptyList(), //TODO: map and sew it later,
-                menus = MenuStatus(isReportable = it.isReportable && isOwner(it.user)),
+                menus = MenuStatus(isReportable = it.isReportable && !isOwner(it.user)),
                 likeState = LikeUiState(
                     count = it.likeStats.totalLike,
                     state = LikeUiState.LikeStatus.getByValue(it.likeStats.likeStatus),
