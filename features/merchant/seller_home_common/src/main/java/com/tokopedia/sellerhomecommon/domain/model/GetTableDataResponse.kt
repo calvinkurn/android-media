@@ -55,7 +55,9 @@ data class ColumnModel(
     @SerializedName("iconUrl")
     val iconUrl: String? = "",
     @SerializedName("meta")
-    val meta: String = ""
+    val meta: String = "",
+    @SerializedName("additionalValue")
+    val additionalValue: String = ""
 )
 
 data class TableRowMeta(

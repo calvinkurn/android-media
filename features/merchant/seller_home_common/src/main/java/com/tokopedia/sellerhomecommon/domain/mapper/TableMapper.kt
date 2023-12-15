@@ -110,7 +110,8 @@ class TableMapper @Inject constructor(
                                 width = width,
                                 meta = getTableRowMeta(col.meta),
                                 isLeftAlign = firstTextColumn == col,
-                                colorInt = getColorFromHtml(valueStr)
+                                colorInt = getColorFromHtml(valueStr),
+                                additionalValueString = col.additionalValue
                             )
                         }
                         else -> {

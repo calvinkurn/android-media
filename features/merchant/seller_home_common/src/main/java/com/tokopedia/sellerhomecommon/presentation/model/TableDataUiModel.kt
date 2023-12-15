@@ -81,7 +81,8 @@ sealed class TableRowsUiModel(
         override val width: Int = 0,
         override val meta: Meta = Meta(),
         val isLeftAlign: Boolean = false,
-        var colorInt: Int? = null
+        var colorInt: Int? = null,
+        var additionalValueString: String = String.EMPTY
     ) : TableRowsUiModel(valueStr, width, meta) {
 
         override fun type(typeFactory: TableItemFactory): Int {

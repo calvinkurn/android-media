@@ -14,7 +14,10 @@ import com.tokopedia.applink.DeepLinkChecker
 import com.tokopedia.applink.DeeplinkMatcher
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setClickableUrlHtml
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcItemTableColumnHtmlBinding
 import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
@@ -37,6 +40,8 @@ class TableColumnHtmlViewHolder(
         private const val SCHEME_SELLERAPP = "sellerapp"
 
         private const val NUNITO_TYPOGRAPHY_FONT = "NunitoSansExtraBold.ttf"
+
+        private const val MAX_LINES_WITHOUT_ADDITIONAL = 2
     }
 
     private val binding by lazy { ShcItemTableColumnHtmlBinding.bind(itemView) }
@@ -50,9 +55,12 @@ class TableColumnHtmlViewHolder(
             setOnHtmlTextClicked(element)
             if (element.isLeftAlign) {
                 tvTableColumnHtml.gravity = Gravity.START
+                tvTableColumnHtmlDesc.gravity = Gravity.START
             } else {
                 tvTableColumnHtml.gravity = Gravity.END
+                tvTableColumnHtmlDesc.gravity = Gravity.END
             }
+            setAdditionalValue(element.additionalValueString)
         }
     }
 
@@ -83,6 +91,19 @@ class TableColumnHtmlViewHolder(
                 })
                 setTextColor(textColorInt)
             }
+        }
+    }
+
+    private fun setAdditionalValue(additionalValueString: String) {
+        if (additionalValueString.isBlank()) {
+            binding.tvTableColumnHtmlDesc.gone()
+            binding.tvTableColumnHtml.maxLines = MAX_LINES_WITHOUT_ADDITIONAL
+        } else {
+            binding.tvTableColumnHtmlDesc.run {
+                show()
+                text = additionalValueString
+            }
+            binding.tvTableColumnHtml.maxLines = Int.ONE
         }
     }
 
