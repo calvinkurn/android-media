@@ -11,12 +11,13 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import androidx.annotation.NonNull;
 
 import com.tokopedia.editor.ui.gesture.listener.OnGestureControl;
-import com.tokopedia.editor.ui.gesture.listener.OnMultiTouchListener;
+import com.tokopedia.editor.ui.gesture.listener.MultiTouchListener;
 import com.tokopedia.editor.ui.model.AddTextModel;
 import com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout;
 import com.tokopedia.editor.ui.widget.GridGuidelineView;
 
-public class MultiTouchListener implements View.OnTouchListener {
+@Deprecated // once the kt version got stable, let's remove this class.
+public class V1MultiTouchListener implements View.OnTouchListener {
 
     private static final int INVALID_POINTER_ID = -1;
     private static final float SCALE_DOWN_ANIM_REMOVAL = 0.3f;
@@ -32,7 +33,7 @@ public class MultiTouchListener implements View.OnTouchListener {
     private float prevX, prevY;
 
     private final ScaleGestureDetector scaleGestureDetector;
-    private OnMultiTouchListener onMultiTouchListener;
+    private MultiTouchListener multiTouchListener;
     private OnGestureControl onGestureControl;
 
     private GridGuidelineView gridGuidelineView;
@@ -48,7 +49,7 @@ public class MultiTouchListener implements View.OnTouchListener {
     private int lastPositionX = 0;
     private int lastPositionY = 0;
 
-    public MultiTouchListener(Context context, View view) {
+    public V1MultiTouchListener(Context context, View view) {
         // @Workaround: for initiate state
         originalScaleX = view.getScaleX();
         originalScaleY = view.getScaleY();
@@ -96,15 +97,10 @@ public class MultiTouchListener implements View.OnTouchListener {
     }
 
     private void computeRenderOffset(View view, float pivotX, float pivotY) {
-        if (view.getPivotX() == pivotX && view.getPivotY() == pivotY) {
-            return;
-        }
+        if (view.getPivotX() == pivotX && view.getPivotY() == pivotY) return;
 
         float[] prevPoint = {0.0f, 0.0f};
         view.getMatrix().mapPoints(prevPoint);
-
-        view.setPivotX(pivotX);
-        view.setPivotY(pivotY);
 
         float[] currPoint = {0.0f, 0.0f};
         view.getMatrix().mapPoints(currPoint);
@@ -124,11 +120,13 @@ public class MultiTouchListener implements View.OnTouchListener {
         gestureListener.onTouchEvent(event);
 
         if (gridGuidelineView == null) {
-            gridGuidelineView = ((View) view.getParent()).findViewById(DynamicTextCanvasLayout.VIEW_GRID_GUIDELINE_ID);
+            gridGuidelineView = ((View) ((View) view.getParent()).getParent())
+                    .findViewById(DynamicTextCanvasLayout.VIEW_GRID_GUIDELINE_ID);
         }
 
         if (deletionButtonView == null) {
-            deletionButtonView = ((View) view.getParent()).findViewById(DynamicTextCanvasLayout.VIEW_DELETION_BUTTON_ID);
+            deletionButtonView = ((View) ((View) view.getParent()).getParent())
+                    .findViewById(DynamicTextCanvasLayout.VIEW_DELETION_BUTTON_ID);
         }
 
         if (!isTranslateEnabled) return true;
@@ -231,7 +229,7 @@ public class MultiTouchListener implements View.OnTouchListener {
                 gridGuidelineView.setShowHorizontalLine(false);
 
                 if (isPointerContain(x, y)) {
-                    onMultiTouchListener.onRemoveView(view);
+                    multiTouchListener.onRemoveView(view);
                 }
 
                 if (Math.abs(lastPositionX - x) < 10 && Math.abs(lastPositionY - y) < 10) {
@@ -316,8 +314,8 @@ public class MultiTouchListener implements View.OnTouchListener {
         scaleYAnimator.start();
     }
 
-    public void setOnMultiTouchListener(OnMultiTouchListener onMultiTouchListener) {
-        this.onMultiTouchListener = onMultiTouchListener;
+    public void setOnMultiTouchListener(MultiTouchListener multiTouchListener) {
+        this.multiTouchListener = multiTouchListener;
     }
 
     public void setOnGestureControl(OnGestureControl onGestureControl) {

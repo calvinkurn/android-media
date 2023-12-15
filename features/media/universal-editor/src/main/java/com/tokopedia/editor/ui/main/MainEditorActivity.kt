@@ -147,11 +147,19 @@ open class MainEditorActivity : AppCompatActivity()
         exportFinalResult()
     }
 
-    override fun onTextClick(text: View, model: InputTextModel?) {
+    override fun onTextViewClick(text: View, model: InputTextModel?) {
         if (model == null) return
 
         binding?.container?.setTextVisibility(text.id, false)
         viewModel.onEvent(MainEditorEvent.EditInputTextPage(text.id, model))
+    }
+
+    override fun startViewDrag() {
+        //TODO: Animator will be used
+    }
+
+    override fun endViewDrag() {
+        //TODO: Animator will be used
     }
 
     override fun onBackPressed() {
