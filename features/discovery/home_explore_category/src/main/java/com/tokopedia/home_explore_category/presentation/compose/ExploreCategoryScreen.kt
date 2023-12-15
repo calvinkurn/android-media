@@ -189,6 +189,50 @@ fun ExploreCategoryListGrid(
         LocalConfiguration.current.screenHeightDp.dp.toPx()
     }
 
+    var prevNestCardHeight by remember {
+        mutableStateOf(0f)
+    }
+
+    val categoryItemTop by remember(categoryItemDimensions) {
+        derivedStateOf {
+            categoryItemDimensions.first
+        }
+    }
+
+    val categoryItemBottom by remember(categoryItemDimensions) {
+        derivedStateOf {
+            categoryItemDimensions.second
+        }
+    }
+
+    val subCategoryItemTop by remember(subCategoryItemDimensions) {
+        derivedStateOf {
+            subCategoryItemDimensions.first
+        }
+    }
+
+    val subCategoryItemBottom by remember(subCategoryItemDimensions) {
+        derivedStateOf {
+            subCategoryItemDimensions.second
+        }
+    }
+
+    val nestCardTop by remember(nestCardDimensions) {
+        derivedStateOf {
+            nestCardDimensions.first
+        }
+    }
+
+    val nestCardBottom by remember(nestCardDimensions) {
+        derivedStateOf {
+            nestCardDimensions.second
+        }
+    }
+
+    var categoryName by remember {
+        mutableStateOf("")
+    }
+
     LazyColumn(
         state = lazyListState,
         modifier = modifier
@@ -199,45 +243,7 @@ fun ExploreCategoryListGrid(
             groupIndex
         }) { groupIndex, row ->
 
-            val categoryItemTop by remember(categoryItemDimensions) {
-                derivedStateOf {
-                    categoryItemDimensions.first
-                }
-            }
-
-            val categoryItemBottom by remember(categoryItemDimensions) {
-                derivedStateOf {
-                    categoryItemDimensions.second
-                }
-            }
-
-            val subCategoryItemTop by remember(subCategoryItemDimensions) {
-                derivedStateOf {
-                    subCategoryItemDimensions.first
-                }
-            }
-
-            val subCategoryItemBottom by remember(subCategoryItemDimensions) {
-                derivedStateOf {
-                    subCategoryItemDimensions.second
-                }
-            }
-
-            val nestCardTop by remember(nestCardDimensions) {
-                derivedStateOf {
-                    nestCardDimensions.first
-                }
-            }
-
-            val nestCardBottom by remember(nestCardDimensions) {
-                derivedStateOf {
-                    nestCardDimensions.second
-                }
-            }
-
-            var categoryName by remember {
-                mutableStateOf("")
-            }
+            var isFirstItemHeightMeasured by remember { mutableStateOf(false) }
 
             val isNotVisible by remember(lazyListState, groupIndex, fullyVisibleIndices) {
                 derivedStateOf {
@@ -266,7 +272,6 @@ fun ExploreCategoryListGrid(
             }
 
             val isNestCardNotVisible by remember(
-                lazyListState,
                 nestCardDimensions,
                 groupIndex
             ) {
@@ -288,10 +293,8 @@ fun ExploreCategoryListGrid(
             }
 
             val nestCardHeight by remember(
-                lazyListState,
-                groupIndex,
-                nestCardTop,
-                nestCardBottom
+                nestCardDimensions,
+                groupIndex
             ) {
                 derivedStateOf {
                     val layoutInfo = lazyListState.layoutInfo
@@ -304,13 +307,11 @@ fun ExploreCategoryListGrid(
 
                     val calculatedHeight = max(
                         0f,
-                        min(nestCardBottom, viewportBottom.toFloat()) - max(
-                            nestCardTop,
+                        min(nestCardDimensions.second, viewportBottom.toFloat()) - max(
+                            nestCardDimensions.first,
                             viewportTop.toFloat()
                         )
                     )
-
-//                    val nestCardHeight = max(0f, min(nestCardBottom, viewportHeight) - max(nestCardTop, 0f))
 
                     // Debugging: Print the calculated height
                     println("calculatedHeight: $calculatedHeight")
@@ -375,38 +376,19 @@ fun ExploreCategoryListGrid(
                     enter = enterExpandVertical,
                     exit = exitShrinkVertical
                 ) {
-//                    LaunchedEffect(isVisible) {
-//                        if (isEligibleScrollToTopSide && isNotVisible) {
-//                            if (categoryIndex != -1) {
-//                                delay(DELAY_SCROLL_ANIMATION)
-//                                lazyListState.animateScrollToItem(categoryIndex)
-//                            }
-//                        }
-
-//                        if (isEligibleScrollToBottomSide && isBottomSideNotVisible) {
-//                            val verticalMargin = with(localDensity) {
-//                                16.dp.toPx()
-//                            }
-//                            val subCategoryItemHeight = subCategoryItemBottom - subCategoryItemTop
-//
-//                            val subCategoryItemsHeight = (MINIMUM_3_SUB_CAT * subCategoryItemHeight)
-//
-//                            val remainSubItemsHeight = categoryItemHeight + subCategoryItemsHeight + verticalMargin
-//
-//                            lazyListState.scrollBy(remainSubItemsHeight)
-//                        }
-//                    }
-
                     LaunchedEffect(isVisible) {
-                        if (isEligibleScrollToTopSide) {
+                        if (isEligibleScrollToTopSide && isNotVisible) {
                             if (categoryIndex != -1) {
                                 delay(DELAY_SCROLL_ANIMATION)
                                 lazyListState.animateScrollToItem(categoryIndex)
                             }
-                        } else if (isEligibleScrollToThreeSubCategoryIndex) {
+                        } else if (isEligibleScrollToThreeSubCategoryIndex && isNestCardNotVisible) {
                             val verticalMargin = with(localDensity) {
                                 8.dp.toPx()
                             }
+
+                            prevNestCardHeight = max(0f, min(nestCardBottom, viewportHeight) - max(nestCardTop, 0f))
+                            delay(DELAY_SCROLL_ANIMATION)
 
                             val heightSubCat = (
                                 with(localDensity) {
@@ -414,21 +396,24 @@ fun ExploreCategoryListGrid(
                                 } * 3
                                 ) + verticalMargin
 
-                            val subCategoriesHeight = ((subCategoryItemBottom - subCategoryItemTop) * 3) + verticalMargin
+                            val nestCardHeight = max(0f, min(nestCardBottom, viewportHeight) - max(nestCardTop, 0f))
+
+                            val subCategoriesHeight = ((subCategoryItemBottom - subCategoryItemTop) * 3)
 
 //                            val nestCardHeight = max(0f, min(nestCardBottom, viewportHeight) - max(nestCardTop, 0f))
+//                            val nestCardHeight = nestCardBottom - nestCardTop
 
                             println("nestCardHeight: $nestCardHeight")
                             println("subCategoryItemsHeight: $subCategoriesHeight")
+                            println("prevNestCardHeight: $prevNestCardHeight")
 
                             val remainSubItemsHeight =
                                 if (nestCardHeight < subCategoriesHeight) {
                                     Math.abs(subCategoriesHeight - nestCardHeight)
                                 } else {
                                     nestCardHeight
-                                }
+                                } - prevNestCardHeight
 
-                            delay(DELAY_SCROLL_ANIMATION)
                             lazyListState.animateScrollBy(remainSubItemsHeight)
                         }
                     }
@@ -439,20 +424,30 @@ fun ExploreCategoryListGrid(
                                 animationSpec = categoryToggleTween(DURATION_CATEGORY_EASING)
                             )
                             .onGloballyPositioned { layoutCoordinates ->
-                                val viewTop = layoutCoordinates.localToWindow(Offset.Zero).y
+//                                val viewTop = layoutCoordinates.localToWindow(Offset.Zero).y
+//
+//                                val viewBottom = layoutCoordinates.localToWindow(
+//                                    Offset(
+//                                        0f,
+//                                        layoutCoordinates.size.height.toFloat()
+//                                    )
+//                                ).y
 
-                                val viewBottom = layoutCoordinates.localToWindow(
-                                    Offset(
-                                        0f,
-                                        layoutCoordinates.size.height.toFloat()
-                                    )
-                                ).y
+                                val viewTop =
+                                    layoutCoordinates.localToRoot(Offset.Zero).y
+
+                                val viewBottom = viewTop + layoutCoordinates.size.height.toFloat()
 
                                 nestCardDimensions =
                                     Pair(
                                         viewTop,
                                         viewBottom
                                     )
+
+                                if (!isFirstItemHeightMeasured) {
+//                                    prevNestCardHeight = viewBottom - viewTop
+                                    isFirstItemHeightMeasured = true
+                                }
                             }
                     ) {
                         NestCard(
@@ -474,23 +469,25 @@ fun ExploreCategoryListGrid(
                                                     )
                                                 )
                                             }
-                                            .padding(top = 12.dp, start = 16.dp, end = 16.dp)
                                             .onGloballyPositioned { layoutCoordinates ->
                                                 val viewTop =
-                                                    layoutCoordinates.localToWindow(Offset.Zero).y
+                                                    layoutCoordinates.localToRoot(Offset.Zero).y
 
-                                                val viewBottom = layoutCoordinates.localToWindow(
-                                                    Offset(
-                                                        0f,
-                                                        layoutCoordinates.size.height.toFloat()
-                                                    )
-                                                ).y
+//                                                val viewBottom = layoutCoordinates.localToWindow(
+//                                                    Offset(
+//                                                        0f,
+//                                                        layoutCoordinates.size.height.toFloat()
+//                                                    )
+//                                                ).y
+
+                                                val viewBottom = viewTop + layoutCoordinates.size.height.toFloat()
 
                                                 subCategoryItemDimensions = Pair(
                                                     viewTop,
                                                     viewBottom
                                                 )
                                             }
+                                            .padding(top = 12.dp, start = 16.dp, end = 16.dp)
                                             .addImpression(
                                                 uniqueIdentifier = subcategory.name + index.toString(),
                                                 impressionState = subcategory.impressHolderCompose,
