@@ -9,9 +9,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -35,6 +37,8 @@ import com.tokopedia.editor.ui.placement.PlacementImageActivity
 import com.tokopedia.editor.ui.text.InputTextActivity
 import com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout
 import com.tokopedia.editor.util.safeLoadNativeLibrary
+import com.tokopedia.foldable.FoldableInfo
+import com.tokopedia.foldable.FoldableSupportManager
 import com.tokopedia.picker.common.EXTRA_UNIVERSAL_EDITOR_PARAM
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.RESULT_UNIVERSAL_EDITOR
@@ -60,9 +64,10 @@ import javax.inject.Inject
  *
  * @applink tokopedia-android-internal://global/universal-editor
  */
-open class MainEditorActivity : AppCompatActivity()
-    , NavToolbarComponent.Listener
-    , DynamicTextCanvasLayout.Listener {
+open class MainEditorActivity : AppCompatActivity(),
+    NavToolbarComponent.Listener,
+    DynamicTextCanvasLayout.Listener,
+    FoldableSupportManager.FoldableInfoCallback {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
@@ -125,6 +130,14 @@ open class MainEditorActivity : AppCompatActivity()
 
         setDataParam()
         initObserver()
+    }
+
+    override fun onChangeLayout(foldableInfo: FoldableInfo) {
+        if (foldableInfo.isFoldableDevice() && foldableInfo.isTableTopMode()) {
+            setLargeScreenMode()
+        } else {
+            setCompactMode()
+        }
     }
 
     override fun onDestroy() {
@@ -198,6 +211,9 @@ open class MainEditorActivity : AppCompatActivity()
     }
 
     private fun initObserver() {
+        // observe the configuration device mode adaptively
+        FoldableSupportManager(this, this)
+
         lifecycleScope.launchWhenCreated {
             viewModel.mainEditorState.collect(::initView)
         }
@@ -338,6 +354,20 @@ open class MainEditorActivity : AppCompatActivity()
     private fun defaultActionButtonText(param: UniversalEditorParam): String {
         if (param.custom.headerActionButton.isNotEmpty()) return param.custom.headerActionButton
         return getString(R.string.universal_editor_toolbar_action_button)
+    }
+
+    private fun setCompactMode() {
+        val layoutParams = binding?.canvasContainer?.layoutParams as ConstraintLayout.LayoutParams
+        layoutParams.dimensionRatio = "H,9:16"
+        layoutParams.height = 0
+        binding?.canvasContainer?.layoutParams = layoutParams
+    }
+
+    private fun setLargeScreenMode() {
+        val layoutParams = binding?.canvasContainer?.layoutParams as ConstraintLayout.LayoutParams
+        layoutParams.dimensionRatio = "W,9:16"
+        layoutParams.height = RelativeLayout.LayoutParams.MATCH_PARENT
+        binding?.canvasContainer?.layoutParams = layoutParams
     }
 
     private fun fragmentProvider(): EditorFragmentProvider {
