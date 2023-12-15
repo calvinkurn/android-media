@@ -59,16 +59,25 @@ class UpdateChannelUseCase @Inject constructor(
             authorId: String,
             status: PlayChannelStatusType,
             activeMediaId: String,
+            isInterspersed: Boolean,
         ): QueryParams {
             val params = mapOf(
                 PARAMS_CHANNEL_ID to channelId,
                 FieldsToUpdate.ActiveMediaId.fieldName to activeMediaId,
                 FieldsToUpdate.AuthorID.fieldName to authorId,
-                FieldsToUpdate.Status.fieldName to status.value.toLong()
+                FieldsToUpdate.Status.fieldName to status.value.toLong(),
+                FieldsToUpdate.Interspersing.fieldName to isInterspersed,
             )
             return QueryParamBuilder()
                 .setParams(params)
-                .setFields(listOf(FieldsToUpdate.Status, FieldsToUpdate.AuthorID, FieldsToUpdate.ActiveMediaId))
+                .setFields(
+                    listOf(
+                        FieldsToUpdate.Status,
+                        FieldsToUpdate.AuthorID,
+                        FieldsToUpdate.ActiveMediaId,
+                        FieldsToUpdate.Interspersing,
+                    )
+                )
                 .build()
         }
 

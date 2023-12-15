@@ -682,6 +682,7 @@ class PlayShortsViewModel @Inject constructor(
             sourceId = _config.value.shortsVideoSourceId,
             authorId = selectedAccount.id,
             authorType = selectedAccount.type,
+            isInterspersed = _interspersingConfig.value.isInterspersing,
         )
 
         creationUploader.upload(uploadData)

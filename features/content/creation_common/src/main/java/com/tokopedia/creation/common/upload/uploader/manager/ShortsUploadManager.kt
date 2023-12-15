@@ -235,7 +235,8 @@ class ShortsUploadManager @AssistedInject constructor(
                     channelId = uploadData.creationId,
                     authorId = uploadData.authorId,
                     status = status,
-                    activeMediaId = activeMediaId
+                    activeMediaId = activeMediaId,
+                    isInterspersed = uploadData.isInterspersed,
                 )
             )
         }.executeOnBackground()
