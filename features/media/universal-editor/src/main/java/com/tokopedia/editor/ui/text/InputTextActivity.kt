@@ -148,7 +148,7 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
 
             setResult(0, intent)
             finish()
-        },300)
+        }, HIDE_KEYBOARD_DELAY)
     }
 
     private fun hideSoftKeyboard() {
@@ -160,6 +160,7 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
     companion object {
         private const val INPUT_TEXT_RESULT = "input_text_result"
         private const val EXTRA_INPUT_TEXT_MODEL = "extra_input_text_model"
+        private const val HIDE_KEYBOARD_DELAY = 300L
 
         fun create(context: Context, model: InputTextModel): Intent {
             return Intent(context, InputTextActivity::class.java).also {

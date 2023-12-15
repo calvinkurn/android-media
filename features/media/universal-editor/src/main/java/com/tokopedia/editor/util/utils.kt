@@ -2,7 +2,6 @@ package com.tokopedia.editor.util
 
 import android.animation.ObjectAnimator
 import android.view.View
-import android.view.animation.AccelerateInterpolator
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
 import com.tokopedia.unifyprinciples.UnifyMotion
