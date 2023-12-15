@@ -86,12 +86,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.*
 
 /**
  * Created By : Muhammad Furqan on 22/05/23
@@ -136,6 +136,8 @@ class FeedPostViewModelTest {
 
     @Before
     fun setUp() {
+        every { userSession.isLoggedIn } returns false
+
         viewModel = FeedPostViewModel(
             repository = repository,
             addToCartUseCase = atcUseCase,
@@ -162,6 +164,50 @@ class FeedPostViewModelTest {
             feedXGetActivityProductsUseCase = feedXGetActivityProductsUseCase,
             dispatchers = testDispatcher
         )
+    }
+
+    @Test
+    fun getScrollPosition_onInitial_shouldBeNull() {
+        assert(viewModel.getScrollPosition() == null)
+    }
+
+    @Test
+    fun getScrollPosition_whenChanged_shouldBeChanged() {
+        // given
+        val position = 1
+
+        // when
+        viewModel.saveScrollPosition(position)
+
+        // then
+        assert(viewModel.getScrollPosition() == position)
+    }
+
+    @Test
+    fun shouldFetchInitialPost_whenNotLoggedInAndFirstTime_shouldReturnTrue() {
+        assert(viewModel.shouldFetchInitialPost())
+    }
+
+    @Test
+    fun shouldFetchInitialPost_whenNotLoggedInAndAlreadyHaveData_shouldReturnTrue() {
+        coEvery { userSession.isLoggedIn } returns true
+        provideDefaultFeedPostMockData()
+        assert(!viewModel.shouldFetchInitialPost())
+    }
+
+    @Test
+    fun shouldFetchInitialPost_whenLoggedInAndFirstTime_shouldReturnTrue() {
+        coEvery { userSession.isLoggedIn } returns true
+
+        assert(viewModel.shouldFetchInitialPost())
+    }
+
+    @Test
+    fun shouldFetchInitialPost_whenLoggedInAndAlreadyHaveData_shouldReturnTrue() {
+        coEvery { userSession.isLoggedIn } returns false andThen true
+        provideDefaultFeedPostMockData()
+
+        assert(viewModel.shouldFetchInitialPost())
     }
 
     @Test

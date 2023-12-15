@@ -269,8 +269,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     protected abstract String getOriginalPackageApp();
 
     private void initCacheManager() {
-        PersistentCacheManager.init(this);
-        cacheManager = PersistentCacheManager.instance;
+        cacheManager = PersistentCacheManager.init(this);
     }
 
     public void registerActivityLifecycleCallbacks() {

@@ -26,6 +26,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -63,8 +64,12 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.creation.common.consts.ContentCreationConsts
 import com.tokopedia.creation.common.presentation.bottomsheet.ContentCreationBottomSheet
+import com.tokopedia.creation.common.presentation.bottomsheet.ViewContentInfoBottomSheet
+import com.tokopedia.creation.common.presentation.model.ContentCreationConfigModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
+import com.tokopedia.creation.common.presentation.utils.ContentCreationEntryPointSharedPref
+import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
 import com.tokopedia.foldable.FoldableAndTabletSupportManager
@@ -363,6 +368,9 @@ class ShopPageHeaderFragment :
     @Inject
     lateinit var playPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic
 
+    @Inject
+    lateinit var entryPointSharedPref: ContentCreationEntryPointSharedPref
+
     var shopHeaderViewModel: ShopPageHeaderViewModel? = null
     private var remoteConfig: RemoteConfig? = null
     private var cartLocalCacheHandler: LocalCacheHandler? = null
@@ -484,6 +492,17 @@ class ShopPageHeaderFragment :
         setAnimationStrategy(com.tokopedia.stories.widget.OneTimeAnimationStrategy())
     }
 
+    private val contentCreationActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { data ->
+        if (data.resultCode == RESULT_OK &&
+            GlobalConfig.isSellerApp() &&
+            !entryPointSharedPref.hasShownViewContentInfoInMa()
+        ) {
+            ViewContentInfoBottomSheet
+                .getOrCreateFragment(childFragmentManager, requireActivity().classLoader)
+                .show(childFragmentManager)
+        }
+    }
+
     override fun getComponent() = activity?.run {
         DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())
             .shopComponent(ShopComponentHelper().getComponent(application, this)).build()
@@ -497,6 +516,7 @@ class ShopPageHeaderFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setDataFromAppLinkQueryParam()
+        onFragmentAttached()
         super.onCreate(savedInstanceState)
         FoldableAndTabletSupportManager(this, activity as AppCompatActivity)
     }
@@ -548,6 +568,16 @@ class ShopPageHeaderFragment :
         super.onSaveInstanceState(outState)
         outState.putParcelable(SAVED_INITIAL_FILTER, initialProductFilterParameter)
         outState.putBoolean(SAVED_IS_CONFETTI_ALREADY_SHOWN, isConfettiAlreadyShown)
+    }
+
+    private fun onFragmentAttached() {
+        childFragmentManager.addFragmentOnAttachListener { _, childFragment ->
+            when (childFragment) {
+                is ViewContentInfoBottomSheet -> {
+                    entryPointSharedPref.setShownViewContentInfoInMa()
+                }
+            }
+        }
     }
 
     private fun initViews(view: View) {
@@ -762,7 +792,7 @@ class ShopPageHeaderFragment :
                             isFollowing = this?.status?.userIsFollowing == true
                         }
 
-                        setActivityResult()
+                        setFollowActivityResult()
                     }
 
                     else -> {
@@ -786,7 +816,7 @@ class ShopPageHeaderFragment :
                     is Success -> {
                         it.data.followShop?.let { followShop ->
                             onSuccessUpdateFollowStatus(followShop)
-                            setActivityResult()
+                            setFollowActivityResult()
                         }
                     }
 
@@ -1428,6 +1458,7 @@ class ShopPageHeaderFragment :
             widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
             extParam = extParam,
             tabName = getSelectedTabName().takeIf { it.isNotEmpty() } ?: queryParamTab,
+            connectionType = activity?.let { DeviceConnectionInfo.getConnectionType(it) }.orEmpty(),
             isEnableShopReimagined = ShopUtil.isEnableShopPageReImagined(context)
         )
     }
@@ -1790,13 +1821,19 @@ class ShopPageHeaderFragment :
     }
 
     private fun goToShortsCreation() {
-        RouteManager.route(context, ApplinkConst.PLAY_SHORTS)
+        val intent = RouteManager.getIntent(context, ApplinkConst.PLAY_SHORTS)
+        contentCreationActivityResult.launch(intent)
     }
 
     private fun goToBroadcaster() {
         val intent =
             RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
         startActivityForResult(intent, REQUEST_CODE_START_LIVE_STREAMING)
+    }
+
+    private fun goToStoriesCreation(appLink: String) {
+        val intent = RouteManager.getIntent(context, appLink)
+        contentCreationActivityResult.launch(intent)
     }
 
     private fun onSuccessGetShopPageP1Data(shopPageHeaderP1Data: ShopPageHeaderP1HeaderData) {
@@ -2789,7 +2826,7 @@ class ShopPageHeaderFragment :
                     }
 
                     ContentCreationTypeEnum.STORY -> {
-                        RouteManager.route(context, data.applink)
+                        goToStoriesCreation(data.applink)
                     }
 
                     else -> {}
@@ -3803,10 +3840,14 @@ class ShopPageHeaderFragment :
     /**
      * Set activity result
      */
-    private fun setActivityResult() {
+    private fun setFollowActivityResult() {
         requireActivity().setResult(
             RESULT_OK,
-            ShopPageActivityResult.createResult(shopId, isFollowing)
+            ShopPageActivityResult.createResult(
+                shopId = shopId,
+                isFollow = isFollowing,
+                existingIntentBundle = intentData,
+            )
         )
     }
 }

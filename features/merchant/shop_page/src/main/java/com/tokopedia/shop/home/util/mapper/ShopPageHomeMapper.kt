@@ -834,6 +834,7 @@ object ShopPageHomeMapper {
         isEnableDirectPurchase: Boolean
     ): List<ShopHomeProductUiModel> {
         return listProduct.map {
+            val showStockBar = it.showStockBar
             ShopHomeProductUiModel().apply {
                 id = it.id
                 name = it.name
@@ -847,7 +848,7 @@ object ShopPageHomeMapper {
                 hideGimmick = it.hideGimmick
                 when (statusCampaign.lowercase(Locale.getDefault())) {
                     StatusCampaign.ONGOING.statusCampaign -> {
-                        stockLabel = it.stockWording.title
+                        stockLabel = it.stockWording.title.takeIf { showStockBar }.orEmpty()
                         stockSoldPercentage = it.stockSoldPercentage.toInt()
                     }
                     StatusCampaign.UPCOMING.statusCampaign -> {

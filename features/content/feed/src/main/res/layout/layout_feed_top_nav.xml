@@ -57,6 +57,30 @@
         app:typographyType="display_1"
         app:typographyWeight="bold" />
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/v_first_tab_red_dot"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:padding="4dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/ty_feed_first_tab"
+        app:layout_constraintStart_toEndOf="@id/ty_feed_first_tab"
+        app:layout_constraintTop_toTopOf="@id/ty_feed_first_tab"
+        app:srcCompat="@drawable/ic_feed_red_dot"
+        tools:visibility="visible" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/v_second_tab_red_dot"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:padding="4dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/ty_feed_second_tab"
+        app:layout_constraintStart_toEndOf="@id/ty_feed_second_tab"
+        app:layout_constraintTop_toTopOf="@id/ty_feed_second_tab"
+        app:srcCompat="@drawable/ic_feed_red_dot"
+        tools:visibility="visible" />
+
     <View
         android:id="@+id/view_feed_tab_indicator"
         android:layout_width="16dp"

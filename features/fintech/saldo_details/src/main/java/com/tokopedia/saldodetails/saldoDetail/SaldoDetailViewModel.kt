@@ -92,7 +92,8 @@ class SaldoDetailViewModel @Inject constructor(
         })
     }
 
-    fun getAutoWDStatus() {
+    fun getAutoWDStatus(shouldHitGql: Boolean) {
+        if (!shouldHitGql) return
         launchCatchError(block = {
             withContext(workerDispatcher) {
                 val response = getSaldoAutoWDInitUseCase()

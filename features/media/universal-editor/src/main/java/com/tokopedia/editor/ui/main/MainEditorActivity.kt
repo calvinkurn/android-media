@@ -158,21 +158,19 @@ open class MainEditorActivity : AppCompatActivity()
         exportFinalResult()
     }
 
-    override fun onTextClick(text: View, model: InputTextModel?) {
+    override fun onTextViewClick(text: View, model: InputTextModel?) {
         if (model == null) return
 
         binding?.container?.setTextVisibility(text.id, false)
         viewModel.onEvent(MainEditorEvent.EditInputTextPage(text.id, model))
     }
 
-    override fun onDrag() {
-        navigationTool.container().slideDown().start()
+    override fun startViewDrag() {
+        navigationTool.container().slideDown()
     }
 
-    override fun onRelease(isDragging: Boolean) {
-        if (isDragging) {
-            navigationTool.container().slideOriginalPos().start()
-        }
+    override fun endViewDrag() {
+        navigationTool.container().slideOriginalPos().start()
     }
 
     override fun onBackPressed() {

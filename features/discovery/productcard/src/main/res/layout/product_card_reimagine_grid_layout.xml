@@ -179,6 +179,13 @@
                 tools:text="Tokopedia Choice"
                 tools:visibility="visible" />
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/productCardBarrierName"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:constraint_referenced_ids="productCardName, productCardSafeNameBackground"
+                app:barrierDirection="bottom"/>
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productCardName"
                 android:layout_width="0dp"
@@ -195,6 +202,19 @@
                 tools:text="Product Name"
                 tools:visibility="visible" />
 
+            <View
+                android:id="@+id/productCardSafeNameBackground"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_marginTop="@dimen/product_card_reimagine_name_image_margin_top"
+                android:visibility="gone"
+                android:background="@drawable/product_card_safe_background_title"
+                app:layout_goneMarginTop="@dimen/product_card_reimagine_name_image_margin_top"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/productCardLabelAssignedValueText"
+                tools:visibility="visible"/>
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productCardPrice"
                 android:layout_width="wrap_content"
@@ -204,7 +224,7 @@
                 android:maxLines="1"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/productCardName"
+                app:layout_constraintTop_toBottomOf="@id/productCardBarrierName"
                 app:typographyType="display_2"
                 app:typographyWeight="bold"
                 tools:text="Rp7.999.000"
@@ -404,6 +424,113 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:srcCompat="@drawable/product_card_ic_three_dots" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/productCardSafeContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                app:constraint_referenced_ids="productCardSafeIcon,
+                productCardSafeTitle, productCardSafeDescription,
+                productCardSafeDivider, productCardSafeCheckInfo"
+                app:layout_constraintBottom_toBottomOf="@+id/productCardImage"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/productCardSafeIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/productCardSafeTitle"
+                app:layout_constraintEnd_toEndOf="@+id/productCardImage"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/productCardImage"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:srcCompat="@drawable/product_card_ic_safe"
+                tools:visibility="visible"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/productCardSafeTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/product_card_safe_title"
+                android:textAlignment="center"
+                android:textColor="@color/Unify_Static_White"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/productCardSafeDescription"
+                app:layout_constraintEnd_toEndOf="@+id/productCardSafeIcon"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/productCardSafeIcon"
+                app:layout_constraintTop_toBottomOf="@+id/productCardSafeIcon"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/productCardSafeDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="2"
+                android:text="@string/product_card_safe_description"
+                android:textAlignment="center"
+                android:textColor="@color/Unify_Static_White"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/productCardSafeDivider"
+                app:layout_constraintEnd_toEndOf="@+id/productCardSafeTitle"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/productCardSafeTitle"
+                app:layout_constraintTop_toBottomOf="@+id/productCardSafeTitle"
+                app:typographyType="small"
+                app:typographyWeight="reguler"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:id="@+id/productCardSafeDivider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="12dp"
+                android:background="@color/Unify_Static_White"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/productCardSafeCheckInfo"
+                app:layout_constraintEnd_toEndOf="@+id/productCardSafeDescription"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/productCardSafeDescription"
+                app:layout_constraintTop_toBottomOf="@+id/productCardSafeDescription"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/productCardSafeCheckInfo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:layout_marginTop="8dp"
+                android:text="@string/product_card_safe_check_info"
+                android:textAlignment="center"
+                android:textColor="@color/Unify_Static_White"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/productCardImage"
+                app:layout_constraintEnd_toEndOf="@+id/productCardSafeDivider"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/productCardSafeDivider"
+                app:layout_constraintTop_toBottomOf="@+id/productCardSafeDivider"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
+                tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

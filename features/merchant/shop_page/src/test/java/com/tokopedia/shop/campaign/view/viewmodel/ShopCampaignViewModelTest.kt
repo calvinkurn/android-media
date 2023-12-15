@@ -179,7 +179,8 @@ class ShopCampaignViewModelTest {
             mockShopId,
             mockExtParam,
             addressWidgetData,
-            "CampaignTab"
+            "CampaignTab",
+            "LTE"
         )
         val result = viewModel.latestShopCampaignWidgetLayoutData.value
         assert(result is Success)
@@ -213,7 +214,8 @@ class ShopCampaignViewModelTest {
             mockShopId,
             mockExtParam,
             addressWidgetData,
-            "CampaignTab"
+            "CampaignTab",
+            "LTE"
         )
         val result = viewModel.latestShopCampaignWidgetLayoutData.value
         assert(result is Success)
@@ -247,7 +249,8 @@ class ShopCampaignViewModelTest {
             mockShopId,
             mockExtParam,
             addressWidgetData,
-            "CampaignTab"
+            "CampaignTab",
+            "LTE"
         )
         val result = viewModel.latestShopCampaignWidgetLayoutData.value
         assert(result is Success)
@@ -263,7 +266,8 @@ class ShopCampaignViewModelTest {
             mockShopId,
             mockExtParam,
             addressWidgetData,
-            "CampaignTab"
+            "CampaignTab",
+            "LTE"
         )
         val result = viewModel.latestShopCampaignWidgetLayoutData.value
         assert(result is Fail)
@@ -589,6 +593,44 @@ class ShopCampaignViewModelTest {
 
     @Test
     fun `when update banner timer ui model with banner timer on visitable, then visitable should be updated`() {
+        val mockBannerTimerUiModel = ShopWidgetDisplayBannerTimerUiModel(
+            data = ShopWidgetDisplayBannerTimerUiModel.Data()
+        )
+        val expectedBannerTimerModel = ShopWidgetDisplayBannerTimerUiModel(
+            data = ShopWidgetDisplayBannerTimerUiModel.Data(
+                totalNotify = 5,
+                totalNotifyWording = "Ingatkan",
+                isRemindMe = true,
+                showRemindMeLoading = true,
+                isHideRemindMeTextAfterXSeconds = true
+            )
+        )
+        val mockListVisitable = mutableListOf<Visitable<*>>(mockBannerTimerUiModel)
+        viewModel.updateBannerTimerWidgetUiModel(
+            mockListVisitable,
+            expectedBannerTimerModel
+        )
+        assert(viewModel.campaignWidgetListVisitable.value is Success)
+        assert((viewModel.campaignWidgetListVisitable.value as Success).data.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().first().isNewData)
+    }
+
+    @Test
+    fun `when update banner timer ui model with banner timer on visitable but data is using default value, then visitable should be updated`() {
+        val mockBannerTimerUiModel = ShopWidgetDisplayBannerTimerUiModel(
+            data = ShopWidgetDisplayBannerTimerUiModel.Data()
+        )
+        val expectedBannerTimerModel = ShopWidgetDisplayBannerTimerUiModel()
+        val mockListVisitable = mutableListOf<Visitable<*>>(mockBannerTimerUiModel)
+        viewModel.updateBannerTimerWidgetUiModel(
+            mockListVisitable,
+            expectedBannerTimerModel
+        )
+        assert(viewModel.campaignWidgetListVisitable.value is Success)
+        assert((viewModel.campaignWidgetListVisitable.value as Success).data.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().first().isNewData)
+    }
+
+    @Test
+    fun `when update banner timer ui model with banner timer on visitable but the data is null, then visitable should be updated`() {
         val mockBannerTimerUiModel = ShopWidgetDisplayBannerTimerUiModel()
         val expectedBannerTimerModel = ShopWidgetDisplayBannerTimerUiModel()
         val mockListVisitable = mutableListOf<Visitable<*>>(mockBannerTimerUiModel)
@@ -597,7 +639,7 @@ class ShopCampaignViewModelTest {
             expectedBannerTimerModel
         )
         assert(viewModel.campaignWidgetListVisitable.value is Success)
-        assert((viewModel.campaignWidgetListVisitable.value as Success).data.first { it is ShopWidgetDisplayBannerTimerUiModel } == expectedBannerTimerModel)
+        assert((viewModel.campaignWidgetListVisitable.value as Success).data.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().first().isNewData)
     }
 
     @Test
