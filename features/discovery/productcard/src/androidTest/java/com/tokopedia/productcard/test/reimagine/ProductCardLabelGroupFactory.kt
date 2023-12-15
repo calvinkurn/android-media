@@ -1,5 +1,8 @@
 package com.tokopedia.productcard.test.reimagine
 
+import android.provider.MediaStore.Video
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_ASSIGNED_VALUE
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_BENEFIT
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_PREVENTIVE_THEMATIC
@@ -18,7 +21,12 @@ internal fun labelGroupRibbon(type: String = RED) = LabelGroup(
 internal fun labelGroupBenefit() = LabelGroup(
     position = LABEL_REIMAGINE_BENEFIT,
     title = "Cashback Rp10 rb",
-    type = "lightGreen",
+    styles = listOf(
+        LabelGroup.Style(LabelGroupStyle.BACKGROUND_COLOR, "#FFF5F6"),
+        LabelGroup.Style(LabelGroupStyle.TEXT_COLOR, "#F94D63"),
+        LabelGroup.Style(LabelGroupStyle.OUTLINE_COLOR, "#FFB2C2"),
+        LabelGroup.Style(LabelGroupStyle.BACKGROUND_OPACITY, "1"),
+    ),
 )
 
 internal fun labelGroupPreventiveThematic() = LabelGroup(
@@ -34,6 +42,9 @@ internal fun labelGroupPreventiveThematic() = LabelGroup(
 internal fun labelGroupProductOffers() = LabelGroup(
     position = LABEL_REIMAGINE_PRODUCT_OFFER,
     title = "Beli 3 Diskon 10%",
+    styles = listOf(
+        LabelGroup.Style(LabelGroupStyle.TEXT_COLOR, "#FF7F17"),
+    )
 )
 
 internal fun labelGroupAssignedValueGradient() = LabelGroup(

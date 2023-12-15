@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.LinearLayout.VERTICAL
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.hide
@@ -19,7 +18,7 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-internal class ProductCardReimagineRibbon: LinearLayout {
+internal class RibbonView: LinearLayout {
 
     private val text by lazyView<Typography?>(R.id.productCardRibbonText)
     private val slip by lazyView<ImageView?>(R.id.productCardRibbonSlip)

@@ -231,7 +231,7 @@
                 app:typographyWeight="bold"
                 tools:text="10%" />
 
-            <com.tokopedia.unifyprinciples.Typography
+            <com.tokopedia.productcard.reimagine.benefit.LabelBenefitView
                 android:id="@+id/productCardLabelBenefit"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/product_card_reimagine_label_benefit_height"
@@ -239,22 +239,17 @@
                 android:paddingVertical="2dp"
                 android:background="@drawable/product_card_reimagine_label_background"
                 android:layout_marginTop="@dimen/product_card_reimagine_label_benefit_margin_top"
-                android:gravity="center"
-                android:textSize="9sp"
-                app:typographyWeight="bold"
                 app:layout_constraintTop_toBottomOf="@id/productCardPrice"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:textColor="@color/Unify_GN500"
-                tools:text="Cashback Rp10 rb" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/productCardLabelBMSM"
+                android:id="@+id/productCardLabelOffer"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/product_card_reimagine_label_benefit_height"
                 android:paddingHorizontal="6dp"
                 android:paddingVertical="2dp"
-                android:background="@drawable/product_card_reimagine_label_bmsm_background"
-                android:layout_marginTop="@dimen/product_card_reimagine_label_bmsm_margin_top"
+                android:background="@drawable/product_card_reimagine_label_background"
+                android:layout_marginTop="@dimen/product_card_reimagine_label_offer_margin_top"
                 android:layout_marginStart="4dp"
                 app:layout_goneMarginStart="0dp"
                 android:ellipsize="end"
@@ -275,7 +270,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:barrierDirection="bottom"
-                app:constraint_referenced_ids="productCardLabelBenefit,productCardLabelBMSM"/>
+                app:constraint_referenced_ids="productCardLabelBenefit,productCardLabelOffer"/>
 
             <LinearLayout
                 android:id="@+id/productCardCredibility"
@@ -501,7 +496,7 @@
 
     </com.tokopedia.unifycomponents.CardUnify2>
 
-    <com.tokopedia.productcard.reimagine.ribbon.ProductCardReimagineRibbon
+    <com.tokopedia.productcard.reimagine.ribbon.RibbonView
         android:id="@+id/productCardRibbon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

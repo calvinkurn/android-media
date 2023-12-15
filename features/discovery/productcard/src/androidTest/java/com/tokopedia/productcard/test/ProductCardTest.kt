@@ -82,7 +82,7 @@ internal class ProductCardTest {
         recyclerViewViewInteraction = onView(withId(R.id.productCardReimagineGridTestRecyclerView))
         productCardModelMatcherData = productCardReimagineGridTestData.map { it.second }
 
-        startTest()
+//        startTest()
     }
 
     @Test

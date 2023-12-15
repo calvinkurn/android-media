@@ -82,6 +82,14 @@ internal class ProductCardLabel(
             context.getString(R.string.product_card_content_desc_label_text),
         )
 
+        setTextColor(context, labelGroup)
+        setTextPadding(labelGroup)
+    }
+
+    private fun setTextColor(
+        context: Context,
+        labelGroup: ProductCardModel.LabelGroup
+    ) {
         val defaultColor =
             ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White)
 
@@ -90,15 +98,36 @@ internal class ProductCardLabel(
         val textColor =
             if (labelGroupTextColor == null) defaultColor
             else safeParseColor(labelGroupTextColor, defaultColor)
+//            else {
+//                val color = context.resources.getIdentifier(labelGroupTextColor, "color", context.packageName)
+//                ContextCompat.getColor(context, color)
+//            }
 
         typography?.setTextColor(textColor)
     }
+
+    private fun setTextPadding(labelGroup: ProductCardModel.LabelGroup) {
+        val (paddingHorizontal, paddingVertical) = padding(labelGroup)
+
+        typography?.setPadding(
+            paddingHorizontal,
+            paddingVertical,
+            paddingHorizontal,
+            paddingVertical,
+        )
+    }
+
+    private fun padding(labelGroup: ProductCardModel.LabelGroup) =
+        if (labelGroup.backgroundOpacity() == DEFAULT_OPACITY) PADDING_HORIZONTAL to PADDING_VERTICAL
+        else Int.ZERO to Int.ZERO
 
     companion object {
         private const val TYPE_DELIMITER = ","
         private const val SOLID_COLOR_LIST_SIZE = 1
         private const val STROKE_WIDTH_DP = 1
-        private const val DEFAULT_OPACITY = 1.0f
+        private const val DEFAULT_OPACITY = 0f
         private const val OPACITY_INT = 255
+        private const val PADDING_HORIZONTAL = 6
+        private const val PADDING_VERTICAL = 2
     }
 }

@@ -187,7 +187,7 @@
     <dimen name="product_card_reimagine_discount_percentage_height">14dp</dimen>
     <dimen name="product_card_reimagine_label_benefit_margin_top">4dp</dimen>
     <dimen name="product_card_reimagine_label_benefit_height">18dp</dimen>
-    <dimen name="product_card_reimagine_label_bmsm_margin_top">4dp</dimen>
+    <dimen name="product_card_reimagine_label_offer_margin_top">4dp</dimen>
     <dimen name="product_card_reimagine_credibility_margin_top">4dp</dimen>
     <dimen name="product_card_reimagine_credibility_height">16dp</dimen>
     <dimen name="product_card_reimagine_shop_section_margin_top">4dp</dimen>

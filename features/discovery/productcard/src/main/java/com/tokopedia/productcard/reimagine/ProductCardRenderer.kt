@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -18,7 +19,8 @@ import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.reimagine.ribbon.ProductCardReimagineRibbon
+import com.tokopedia.productcard.reimagine.benefit.LabelBenefitView
+import com.tokopedia.productcard.reimagine.ribbon.RibbonView
 import com.tokopedia.productcard.utils.ImageBlurUtil
 import com.tokopedia.productcard.utils.RoundedCornersTransformation
 import com.tokopedia.productcard.utils.RoundedCornersTransformation.CornerType.ALL
@@ -27,7 +29,6 @@ import com.tokopedia.productcard.utils.imageRounded
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.productcard.R as productcardR
 
@@ -47,12 +48,12 @@ internal class ProductCardRenderer(
     private val discountText by view.lazyView<Typography?>(R.id.productCardDiscount)
     private val slashedPriceInlineText by view.lazyView<Typography?>(R.id.productCardSlashedPriceInline)
     private val discountInlineText by view.lazyView<Typography?>(R.id.productCardDiscountInline)
-    private val benefitLabel by view.lazyView<Typography?>(R.id.productCardLabelBenefit)
-    private val bmsmLabel by view.lazyView<Typography?>(R.id.productCardLabelBMSM)
+    private val benefitLabel by view.lazyView<LabelBenefitView?>(R.id.productCardLabelBenefit)
+    private val offerLabel by view.lazyView<Typography?>(R.id.productCardLabelOffer)
     private val credibilitySection by view.lazyView<LinearLayout?>(R.id.productCardCredibility)
     private val shopSection by view.lazyView<LinearLayout?>(R.id.productCardShopSection)
     private val freeShippingImage by view.lazyView<ImageView?>(R.id.productCardFreeShipping)
-    private val ribbon by view.lazyView<ProductCardReimagineRibbon?>(R.id.productCardRibbon)
+    private val ribbon by view.lazyView<RibbonView?>(R.id.productCardRibbon)
     private val productCardSafeContainer by view.lazyView<Group?>(R.id.productCardSafeContainer)
     private val productCardSafeNameBackground by view.lazyView<View?>(R.id.productCardSafeNameBackground)
 
@@ -211,18 +212,23 @@ internal class ProductCardRenderer(
     private fun renderLabelBenefit(productCardModel: ProductCardModel) {
         val labelBenefit = productCardModel.labelBenefit()
         benefitLabel?.shouldShowWithAction(labelBenefit != null) {
-            it.initLabelGroupLabel(labelBenefit)
+            it.render(labelBenefit)
         }
     }
 
     private fun renderLabelProductOffer(productCardModel: ProductCardModel) {
+        val offerLabel = offerLabel ?: return
         val labelProductOffer = productCardModel.labelProductOffer()
-        val hasLabelBenefit = productCardModel.labelBenefit() != null
-        val showLabelProductOffer =
-            labelProductOffer != null && (!hasLabelBenefit || type != ProductCardType.GridCarousel)
 
-        bmsmLabel?.shouldShowWithAction(showLabelProductOffer) {
-            it.text = labelProductOffer?.title ?: ""
+        if (labelProductOffer == null) {
+            offerLabel.hide()
+        } else {
+            val hasLabelBenefit = productCardModel.labelBenefit() != null
+            val showLabelProductOffer = !hasLabelBenefit || type != ProductCardType.GridCarousel
+
+            offerLabel.shouldShowWithAction(showLabelProductOffer) {
+                ProductCardLabel(it.background, it).render(labelProductOffer)
+            }
         }
     }
 

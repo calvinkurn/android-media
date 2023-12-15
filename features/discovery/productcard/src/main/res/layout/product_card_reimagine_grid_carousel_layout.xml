@@ -242,11 +242,11 @@
                 tools:textColor="@color/Unify_GN500" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/productCardLabelBMSM"
+                android:id="@+id/productCardLabelOffer"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/product_card_reimagine_label_benefit_height"
-                android:layout_marginTop="@dimen/product_card_reimagine_label_bmsm_margin_top"
-                android:background="@drawable/product_card_reimagine_label_bmsm_background"
+                android:layout_marginTop="@dimen/product_card_reimagine_label_offer_margin_top"
+                android:background="@drawable/product_card_reimagine_label_background"
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxLines="1"
@@ -265,7 +265,7 @@
                 android:layout_height="@dimen/product_card_reimagine_credibility_height"
                 android:layout_marginTop="@dimen/product_card_reimagine_credibility_margin_top"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/productCardLabelBMSM">
+                app:layout_constraintTop_toBottomOf="@id/productCardLabelOffer">
 
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/productCardRatingIcon"
@@ -466,7 +466,7 @@
 
     </com.tokopedia.unifycomponents.CardUnify2>
 
-    <com.tokopedia.productcard.reimagine.ribbon.ProductCardReimagineRibbon
+    <com.tokopedia.productcard.reimagine.ribbon.RibbonView
         android:id="@+id/productCardRibbon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

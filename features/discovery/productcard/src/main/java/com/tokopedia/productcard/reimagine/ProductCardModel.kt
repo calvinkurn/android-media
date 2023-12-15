@@ -50,8 +50,10 @@ data class ProductCardModel(
         val title: String = "",
         val type: String = "",
         val imageUrl: String = "",
+        val styles: List<Style> = listOf(),
     ) {
-        private val style = style()
+//        private val style = style()
+        private val style = styles.associate { it.key to it.value }
 
         private fun style() =
             type.split(STYLE_SEPARATOR)
@@ -65,6 +67,8 @@ data class ProductCardModel(
         fun backgroundOpacity() = style[LabelGroupStyle.BACKGROUND_OPACITY]?.toFloatOrNull()
         fun textColor() = style[LabelGroupStyle.TEXT_COLOR]
         fun outlineColor(): String? = style[LabelGroupStyle.OUTLINE_COLOR]
+
+        data class Style(val key: String = "", val value: String = "")
 
         companion object {
             private const val STYLE_SEPARATOR = "&"

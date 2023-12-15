@@ -299,7 +299,7 @@ private fun bmsm(): ProductCardReimagineMatcher {
         R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
         R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
         R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
-        R.id.productCardLabelBMSM to isDisplayedWithText(reimagineProductOffers.title),
+        R.id.productCardLabelOffer to isDisplayedWithText(reimagineProductOffers.title),
         R.id.productCardCredibility to isDisplayed(),
         R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
         R.id.productCardRatingIcon to isDisplayed(),
