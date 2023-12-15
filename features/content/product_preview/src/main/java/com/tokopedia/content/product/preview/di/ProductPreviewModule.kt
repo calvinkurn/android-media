@@ -8,7 +8,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class ProductPreviewModule {
+object ProductPreviewModule {
     @Provides
     @ProductPreviewScope
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
