@@ -15,7 +15,6 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
-import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OrderInsurance
@@ -43,6 +42,7 @@ import io.mockk.verify
 import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 import rx.Observable
 
@@ -2917,10 +2917,10 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
 
         // When
-        orderSummaryPageViewModel.getShippingBottomsheetParam()
+        val result = orderSummaryPageViewModel.getShippingBottomsheetParam()
 
         // Then
-        assertNotNull((orderSummaryPageViewModel.orderShippingDuration.value as OccState.Success).data)
+        assertNotNull(result)
     }
 
     @Test
@@ -2936,10 +2936,10 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
 
         // When
-        orderSummaryPageViewModel.getShippingBottomsheetParam()
+        val result = orderSummaryPageViewModel.getShippingBottomsheetParam()
 
         // Then
-        assert(orderSummaryPageViewModel.orderShippingDuration.value !is OccState.Success)
+        assertNull(result)
     }
 
     @Test
@@ -2955,9 +2955,9 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
             )
 
         // When
-        orderSummaryPageViewModel.getShippingBottomsheetParam()
+        val result = orderSummaryPageViewModel.getShippingBottomsheetParam()
 
         // Then
-        assert((orderSummaryPageViewModel.orderShippingDuration.value as OccState.Success).data.psl_code == helper.logisticPromo.promoCode)
+        assert(result?.psl_code == helper.logisticPromo.promoCode)
     }
 }
