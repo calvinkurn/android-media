@@ -512,8 +512,6 @@ class FeedBaseFragment :
     }
 
     private fun observeUpload() {
-        // we don't use repeatOnLifecycle here as we want to listen to upload receivers even when the page is not fully resumed
-
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 creationUploader
