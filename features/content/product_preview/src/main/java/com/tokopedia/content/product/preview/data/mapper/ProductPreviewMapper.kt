@@ -6,18 +6,19 @@ import com.tokopedia.content.product.preview.view.uimodel.DescriptionUiModel
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
  * @author by astidhiyaa on 06/12/23
  */
-class ProductPreviewMapper @Inject constructor() {
+class ProductPreviewMapper @Inject constructor(private val userSession: UserSessionInterface) {
     fun mapReviews(response: MediaReviewResponse): List<ReviewUiModel> {
         return response.data.review.map {
             ReviewUiModel(
                 reviewId = it.feedbackId,
                 medias = emptyList(), //TODO: map and sew it later,
-                menus = MenuStatus(isReportable = it.isReportable),
+                menus = MenuStatus(isReportable = it.isReportable && isOwner(it.user)),
                 likeState = LikeUiState(
                     count = it.likeStats.totalLike,
                     state = LikeUiState.LikeStatus.getByValue(it.likeStats.likeStatus),
@@ -38,4 +39,7 @@ class ProductPreviewMapper @Inject constructor() {
             )
         }
     }
+
+    private fun isOwner(author: MediaReviewResponse.ReviewerUserInfo): Boolean =
+        author.userId == userSession.userId
 }
