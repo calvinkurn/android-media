@@ -69,6 +69,7 @@ import com.tokopedia.creation.common.presentation.model.ContentCreationConfigMod
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
 import com.tokopedia.creation.common.presentation.utils.ContentCreationEntryPointSharedPref
+import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
 import com.tokopedia.foldable.FoldableAndTabletSupportManager
@@ -1457,6 +1458,7 @@ class ShopPageHeaderFragment :
             widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
             extParam = extParam,
             tabName = getSelectedTabName().takeIf { it.isNotEmpty() } ?: queryParamTab,
+            connectionType = activity?.let { DeviceConnectionInfo.getConnectionType(it) }.orEmpty(),
             isEnableShopReimagined = ShopUtil.isEnableShopPageReImagined(context)
         )
     }

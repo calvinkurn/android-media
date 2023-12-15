@@ -53,6 +53,10 @@ object DataProvider {
         return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/schedule_delivery_recommended_rates.json"), ScheduleDeliveryRatesResponse::class.java)
     }
 
+    fun provideScheduleDeliveryUnAvailableRatesResponse(): ScheduleDeliveryRatesResponse {
+        return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/schedule_delivery_unavailable_rates.json"), ScheduleDeliveryRatesResponse::class.java)
+    }
+
     fun provideShipmentAddressFormWithPlatformFeeEnabledResponse(): ShipmentAddressFormGqlResponse {
         return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/saf_with_platform_fee_enabled.json"), ShipmentAddressFormGqlResponse::class.java)
     }

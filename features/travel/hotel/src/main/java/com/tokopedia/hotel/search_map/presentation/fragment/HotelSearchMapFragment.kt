@@ -1701,11 +1701,7 @@ class HotelSearchMapFragment :
     }
 
     private fun getCurrentLocation() {
-        val locationDetectorHelper = LocationDetectorHelper(
-            permissionCheckerHelper,
-            fusedLocationClient,
-            requireActivity().applicationContext
-        )
+        val locationDetectorHelper = LocationDetectorHelper(requireActivity().applicationContext)
 
         activity?.let {
             permissionCheckerHelper.checkPermission(
@@ -1726,6 +1722,7 @@ class HotelSearchMapFragment :
                             requireActivity(),
                             LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
                             RequestLocationType.APPROXIMATE,
+                            permissionCheckerHelper,
                             requireActivity().getString(R.string.hotel_destination_need_permission)
                         )
                     }

@@ -158,8 +158,8 @@ open class PinpointViewModelTest {
     fun `WHEN address detail is set THEN dont hit get district location GQL to get pinpoint detail`() {
         val districtName = "jakarta barat"
         val cityName = "jakarta"
-        val lat = 106.77
-        val lng = 77.03
+        val lat = "106.77"
+        val lng = "77.03"
         val districtId = 1111L
         val postalCode = "13456"
         viewModel.onViewCreated(
@@ -196,9 +196,9 @@ open class PinpointViewModelTest {
         assert((viewModel.pinpointBottomSheet.value as PinpointBottomSheetState.LocationDetail).buttonSecondary.enable)
         assert(viewModel.uiModel.districtName == districtName)
         assert(viewModel.uiModel.cityName == cityName)
-        assert(viewModel.uiModel.lat == lat)
-        assert(viewModel.uiModel.long == lng)
-        assert(viewModel.map.value == MoveMap(lat, lng))
+        assert(viewModel.uiModel.lat == lat.toDouble())
+        assert(viewModel.uiModel.long == lng.toDouble())
+        assert(viewModel.map.value == MoveMap(lat.toDouble(), lng.toDouble()))
     }
 
     @Test
