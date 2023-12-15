@@ -16,6 +16,9 @@ buildscript {
 android {
     namespace 'com.tokopedia.top_ads_on_boarding'
     testNamespace 'com.tokopedia.top_ads_on_boarding.test'
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -23,7 +26,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.accordion
     implementation rootProject.ext.miscDependencies.lottie
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)

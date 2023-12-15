@@ -15,4 +15,8 @@
     <string name="topads_ads_start_page_positive_button">Buat Iklan Pertamamu</string>
     <string name="topads_ads_start_page_button_button">Yuk, Pelajari TopAds</string>
 
+    <string name="topads_onboarding_create_new_ads_cta">Buat Iklan Sekarang!</string>
+    <string name="topads_onboarding_frequently_asked_questions">Hal yang sering ditanyakan</string>
+    <string name="topads_onboarding_title">TopAds</string>
+
 </resources>
