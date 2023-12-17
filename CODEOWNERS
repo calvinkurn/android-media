@@ -156,38 +156,38 @@
 /features/content/stories_widget/                       @tokopedia/android-minionlance-dev
 /features/media/live-broadcaster/                       @tokopedia/android-minionlance-dev
 
-/features/recharge/common_digital                       @tokopedia/android-minionkevin-dev
-/features/recharge/common_electronic_money              @tokopedia/android-minionkevin-dev
-/features/recharge/common_topup_bills                   @tokopedia/android-minionkevin-dev
-/features/recharge/digital_brizzi                       @tokopedia/android-minionkevin-dev
-/features/recharge/digital_emoney                       @tokopedia/android-minionkevin-dev
-/features/recharge/digital_checkout                     @tokopedia/android-minionkevin-dev
-/features/recharge/digital_homepage                     @tokopedia/android-minionkevin-dev
-/features/recharge/digital_recommendation               @tokopedia/android-minionkevin-dev
-/features/recharge/digital_topup_bills                  @tokopedia/android-minionkevin-dev
-/features/recharge/recharge_component                   @tokopedia/android-minionkevin-dev
-/features/recharge/recharge_credit_card                 @tokopedia/android-minionkevin-dev
-/features/recharge/recharge_general                     @tokopedia/android-minionkevin-dev
-/features/recharge/rechargeocr                          @tokopedia/android-minionkevin-dev
-/features/recharge/voucher_game                         @tokopedia/android-minionkevin-dev
-/features/recharge/recharge_pdp_emoney                  @tokopedia/android-minionkevin-dev
-/features/recharge/digital_product_detail               @tokopedia/android-minionkevin-dev
+/features/recharge/common_digital                       @tokopedia/android-minionoscar-dev
+/features/recharge/common_electronic_money              @tokopedia/android-minionoscar-dev
+/features/recharge/common_topup_bills                   @tokopedia/android-minionoscar-dev
+/features/recharge/digital_brizzi                       @tokopedia/android-minionoscar-dev
+/features/recharge/digital_emoney                       @tokopedia/android-minionoscar-dev
+/features/recharge/digital_checkout                     @tokopedia/android-minionoscar-dev
+/features/recharge/digital_homepage                     @tokopedia/android-minionoscar-dev
+/features/recharge/digital_recommendation               @tokopedia/android-minionoscar-dev
+/features/recharge/digital_topup_bills                  @tokopedia/android-minionoscar-dev
+/features/recharge/recharge_component                   @tokopedia/android-minionoscar-dev
+/features/recharge/recharge_credit_card                 @tokopedia/android-minionoscar-dev
+/features/recharge/recharge_general                     @tokopedia/android-minionoscar-dev
+/features/recharge/rechargeocr                          @tokopedia/android-minionoscar-dev
+/features/recharge/voucher_game                         @tokopedia/android-minionoscar-dev
+/features/recharge/recharge_pdp_emoney                  @tokopedia/android-minionoscar-dev
+/features/recharge/digital_product_detail               @tokopedia/android-minionoscar-dev
 
-/features/entertainment/deals               	        @tokopedia/android-minionkevin-dev
-/features/entertainment/event                 			@tokopedia/android-minionkevin-dev
-/features/entertainment/common_entertainment            @tokopedia/android-minionkevin-dev
+/features/entertainment/deals               	        @tokopedia/android-minionoscar-dev
+/features/entertainment/event                 			@tokopedia/android-minionoscar-dev
+/features/entertainment/common_entertainment            @tokopedia/android-minionoscar-dev
 
-/features/travel/common_travel                          @tokopedia/android-minionkevin-dev
-/features/travel/flight/                                @tokopedia/android-minionkevin-dev
-/features/travel/hotel/                                 @tokopedia/android-minionkevin-dev
-/features/travel/travel_country_code                    @tokopedia/android-minionkevin-dev
-/features/travel/travel_homepage                        @tokopedia/android-minionkevin-dev
-/features/travel/travel_passenger                       @tokopedia/android-minionkevin-dev
-/dynamic-features-customerapp_pro/travel                @tokopedia/android-minionkevin-dev
-/dynamic-features/travel                                @tokopedia/android-minionkevin-dev
+/features/travel/common_travel                          @tokopedia/android-minionoscar-dev
+/features/travel/flight/                                @tokopedia/android-minionoscar-dev
+/features/travel/hotel/                                 @tokopedia/android-minionoscar-dev
+/features/travel/travel_country_code                    @tokopedia/android-minionoscar-dev
+/features/travel/travel_homepage                        @tokopedia/android-minionoscar-dev
+/features/travel/travel_passenger                       @tokopedia/android-minionoscar-dev
+/dynamic-features-customerapp_pro/travel                @tokopedia/android-minionoscar-dev
+/dynamic-features/travel                                @tokopedia/android-minionoscar-dev
 
-/features/salam/umrah                                   @tokopedia/android-minionkevin-dev
-/libraries/travel_calendar                              @tokopedia/android-minionkevin-dev
+/features/salam/umrah                                   @tokopedia/android-minionoscar-dev
+/libraries/travel_calendar                              @tokopedia/android-minionoscar-dev
 
 /features/promo/promo_checkout/                 		@tokopedia/android-minionkevin-dev
 /features/promo/promo_checkout_common/          		@tokopedia/android-minionkevin-dev
