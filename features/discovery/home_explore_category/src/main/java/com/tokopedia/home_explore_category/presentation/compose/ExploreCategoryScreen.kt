@@ -177,7 +177,6 @@ fun ExploreCategoryListGrid(
             val isNestCardNotVisible by remember(
                 lazyListState,
                 nestCardDimensions,
-                subCategoryItemDimensions,
                 groupIndex
             ) {
                 derivedStateOf {
@@ -315,13 +314,9 @@ fun ExploreCategoryListGrid(
                             .onGloballyPositioned { layoutCoordinates ->
 
                                 val viewTop = layoutCoordinates.localToRoot(Offset.Zero).y
-
                                 val viewBottom = viewTop + layoutCoordinates.size.height.toFloat()
 
-                                nestCardDimensions = Pair(
-                                    viewTop,
-                                    viewBottom
-                                )
+                                nestCardDimensions = Pair(viewTop, viewBottom)
                             },
                         type = NestCardType.NoBorder
                     ) {
