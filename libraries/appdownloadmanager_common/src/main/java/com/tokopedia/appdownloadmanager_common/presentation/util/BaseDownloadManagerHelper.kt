@@ -45,25 +45,26 @@ abstract class BaseDownloadManagerHelper(
         val canShowToday = isExpired()
 
         return isAppDownloadingBottomSheetNotShow() && isNeedToUpgradeVersion() &&
+            isBetaNetwork() &&
             downloadManagerUpdateModel?.isEnabled == true && isWhitelistByRollence() &&
             canShowToday
     }
 
-    fun isExpired(): Boolean {
+    protected fun isExpired(): Boolean {
         val interval = sharePref?.getInt(DOWNLOAD_MANAGER_EXPIRED_TIME, 0) ?: 0
         val time = sharePref?.getLong(DOWNLOAD_MANAGER_TIMESTAMP, 0) ?: 0L
         val currTime = System.currentTimeMillis() / 1000
         return currTime - time > interval
     }
 
-    fun isWhitelistByRollence(): Boolean {
+    protected fun isWhitelistByRollence(): Boolean {
         return RemoteConfigInstance.getInstance().abTestPlatform?.getString(
             RollenceKey.ANDROID_INTERNAL_TEST,
             ""
         ) == RollenceKey.ANDROID_INTERNAL_TEST
     }
 
-    fun setCacheExpire() {
+    protected fun setCacheExpire() {
         val expireTime = downloadManagerUpdateModel?.expireTime.orZero()
 
         val sharePrefEditor = sharePref?.edit()
@@ -80,7 +81,7 @@ abstract class BaseDownloadManagerHelper(
         sharePrefEditor?.apply()
     }
 
-    fun isBetaNetwork(): Boolean {
+    protected fun isBetaNetwork(): Boolean {
         return activityRef.get()?.let { BannerEnvironmentInterceptor.isBeta(it) } == true
     }
 
@@ -111,8 +112,7 @@ abstract class BaseDownloadManagerHelper(
     }
 
     private fun initDownloadManagerUpdateConfig() {
-//        val configKey = if (GlobalConfig.IS_NAKAMA_VERSION) RemoteConfigKey.ANDROID_INTERNAL_NAKAMA_VERSION_DIALOG_CONFIG else RemoteConfigKey.ANDROID_INTERNAL_PUBLIC_VERSION_DIALOG_CONFIG
-        val configKey = RemoteConfigKey.ANDROID_INTERNAL_NAKAMA_VERSION_DIALOG_CONFIG
+        val configKey = if (GlobalConfig.IS_NAKAMA_VERSION) RemoteConfigKey.ANDROID_INTERNAL_NAKAMA_VERSION_DIALOG_CONFIG else RemoteConfigKey.ANDROID_INTERNAL_PUBLIC_VERSION_DIALOG_CONFIG
 
         val internalTestConfigJson =
             remoteConfig.getString(configKey)
