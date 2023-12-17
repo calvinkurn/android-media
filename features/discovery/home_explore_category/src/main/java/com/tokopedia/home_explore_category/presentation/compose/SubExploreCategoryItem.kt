@@ -35,7 +35,7 @@ fun SubExploreCategoryItem(
                 subExploreCategoryUiModel.imageUrl,
                 shouldRetried = true
             ),
-            type = NestImageType.Rect(12.dp),
+            type = NestImageType.Rect(8.dp),
             modifier = Modifier.size(42.dp),
             contentDescription = null
         )

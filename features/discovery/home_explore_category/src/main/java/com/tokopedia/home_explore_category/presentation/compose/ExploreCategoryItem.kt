@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryUiModel
 import com.tokopedia.nest.components.NestImage
+import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.components.card.NestCard
 import com.tokopedia.nest.components.card.NestCardType
 import com.tokopedia.nest.principles.NestTypography
@@ -71,6 +72,7 @@ fun ExploreCategoryItem(
                     source = exploreCategoryUiModel.categoryImageUrl,
                     shouldRetried = true
                 ),
+                type = NestImageType.Rect(0.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(84.dp),

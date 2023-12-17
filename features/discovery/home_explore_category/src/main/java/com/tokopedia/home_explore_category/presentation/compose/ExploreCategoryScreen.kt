@@ -54,7 +54,7 @@ import java.net.UnknownHostException
 
 const val GRID_COLUMN = 3
 const val MINIMUM_3_SUB_CAT = 3
-const val HEIGHT_SUB_CAT = 63
+const val HEIGHT_SUB_CAT = 62
 const val DELAY_SCROLL_ANIMATION = 300L
 
 @Composable
@@ -140,6 +140,10 @@ fun ExploreCategoryListGrid(
     val minNestCardVisibleHeight =
         with(localDensity) { (MINIMUM_3_SUB_CAT * (HEIGHT_SUB_CAT.dp).toPx()) }
 
+    val verticalMargin = with(localDensity) {
+        16.dp.toPx()
+    }
+
     LazyColumn(
         state = lazyListState,
         modifier = modifier
@@ -171,7 +175,9 @@ fun ExploreCategoryListGrid(
             }
 
             val isNestCardNotVisible by remember(
+                lazyListState,
                 nestCardDimensions,
+                subCategoryItemDimensions,
                 groupIndex
             ) {
                 derivedStateOf {
@@ -186,7 +192,9 @@ fun ExploreCategoryListGrid(
 
                     val visibleHeight = maxOf(0f, visibleBottom - visibleTop)
 
-                    visibleHeight < minNestCardVisibleHeight
+                    val subCategoriesHeight = minNestCardVisibleHeight - verticalMargin
+
+                    visibleHeight < subCategoriesHeight
                 }
             }
 
@@ -263,10 +271,6 @@ fun ExploreCategoryListGrid(
                     exit = exitShrinkVertical
                 ) {
                     LaunchedEffect(isSubCategoryVisible) {
-                        val verticalMargin = with(localDensity) {
-                            16.dp.toPx()
-                        }
-
                         when {
                             isEligibleScrollToTopSide && isTopSideNotVisible -> {
                                 if (categoryIndex != -1) {
@@ -288,10 +292,10 @@ fun ExploreCategoryListGrid(
 
                             isEligibleScrollToThreeSubCategoryIndex && isNestCardNotVisible -> {
                                 val subCategoriesHeight =
-                                    ((subCategoryItemDimensions.second - subCategoryItemDimensions.first) * MINIMUM_3_SUB_CAT) + verticalMargin
+                                    ((subCategoryItemDimensions.second - subCategoryItemDimensions.first) * MINIMUM_3_SUB_CAT)
 
                                 val remainSubItemsHeight = if (nestCardHeight < subCategoriesHeight) {
-                                    Math.abs(subCategoriesHeight - nestCardHeight)
+                                    Math.abs(subCategoriesHeight - nestCardHeight) + verticalMargin
                                 } else {
                                     nestCardHeight
                                 }
