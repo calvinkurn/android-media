@@ -23,8 +23,7 @@ import com.tokopedia.nest.principles.utils.ImageSource
 @Composable
 fun ExploreCategoryItem(
     exploreCategoryUiModel: ExploreCategoryUiModel,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onClick: () -> Unit
 ) {
     val nestCardType = remember(exploreCategoryUiModel.isSelected) {
         if (exploreCategoryUiModel.isSelected) {
@@ -47,17 +46,14 @@ fun ExploreCategoryItem(
     }
 
     NestCard(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .height(147.dp),
         enableBounceAnimation = true,
         type = nestCardType,
         onClick = onClick
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
+        Column {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
