@@ -129,6 +129,11 @@ class ExploreCategoryActivity : BaseActivity(), HasComponent<ExploreCategoryComp
         super.onBackPressed()
     }
 
+    override fun onPause() {
+        super.onPause()
+        trackingQueue.sendAll()
+    }
+
     private fun initInjector() {
         component.inject(this)
     }
