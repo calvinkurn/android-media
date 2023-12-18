@@ -44,6 +44,7 @@ class CategoryAdapterTypeFactory(
     private var categoryShowcaseHeaderListener: TokoNowDynamicHeaderListener? = null,
     private var tokoNowCategoryMenuListener: TokoNowCategoryMenuListener? = null,
     private var tokoNowProductRecommendationListener: TokoNowProductRecommendationListener? = null,
+    private var brandHeaderListener: TokoNowDynamicHeaderListener? = null,
     private var recycledViewPool: RecyclerView.RecycledViewPool? = null,
     private val lifecycleOwner: LifecycleOwner? = null,
     tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetListener,
@@ -107,7 +108,8 @@ class CategoryAdapterTypeFactory(
                 itemView = view
             )
             BrandWidgetViewHolder.LAYOUT -> BrandWidgetViewHolder(
-                itemView = view
+                itemView = view,
+                headerListener = brandHeaderListener
             )
             else -> super.createViewHolder(view, type)
         }
@@ -121,5 +123,6 @@ class CategoryAdapterTypeFactory(
         categoryShowcaseHeaderListener = null
         tokoNowCategoryMenuListener = null
         tokoNowProductRecommendationListener = null
+        brandHeaderListener = null
     }
 }

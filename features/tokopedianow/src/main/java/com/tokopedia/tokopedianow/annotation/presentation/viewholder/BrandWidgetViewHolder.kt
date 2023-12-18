@@ -10,12 +10,14 @@ import com.tokopedia.tokopedianow.annotation.presentation.uimodel.BrandWidgetUiM
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.annotation.presentation.adapter.typefactory.BrandWidgetItemAdapter
 import com.tokopedia.tokopedianow.annotation.presentation.itemdecoration.BrandWidgetItemDecoration
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.annotation.presentation.uimodel.BrandWidgetUiModel.BrandWidgetState
+import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowBrandWidgetBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
 class BrandWidgetViewHolder(
-    itemView: View
+    itemView: View,
+    private val headerListener: TokoNowDynamicHeaderListener?
 ) : AbstractViewHolder<BrandWidgetUiModel>(itemView) {
 
     companion object {
@@ -33,17 +35,27 @@ class BrandWidgetViewHolder(
 
     override fun bind(uiModel: BrandWidgetUiModel) {
         when(uiModel.state) {
-            TokoNowLayoutState.SHOW -> showWidget(uiModel)
-            else -> hideWidget()
+            BrandWidgetState.LOADING -> showLoading()
+            BrandWidgetState.LOADED -> showWidget(uiModel)
+            BrandWidgetState.ERROR -> showError()
         }
     }
 
     private fun showWidget(uiModel: BrandWidgetUiModel) {
         binding?.apply {
             header.setModel(uiModel.header)
-            adapter.setVisitables(uiModel.brandList)
+            header.setListener(headerListener)
+            adapter.setVisitables(uiModel.items)
             root.show()
         }
+    }
+
+    private fun showLoading() {
+
+    }
+
+    private fun showError() {
+
     }
 
     private fun hideWidget() {

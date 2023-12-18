@@ -46,7 +46,7 @@ import com.tokopedia.tokopedianow.common.listener.ProductAdsCarouselListener
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuItemUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
-import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
+import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder
@@ -119,6 +119,7 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
             tokoNowCategoryMenuListener = createTokoNowCategoryMenuCallback(),
             tokoNowProductRecommendationListener = createProductRecommendationCallback(),
             productAdsCarouselListener = createProductCardAdsCallback(),
+            brandHeaderListener = createBrandHeaderListener(),
             recycledViewPool = recycledViewPool,
             lifecycleOwner = viewLifecycleOwner
         )
@@ -434,7 +435,7 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
         override fun onProductCardAddToCartBlocked() = showToasterWhenAddToCartBlocked()
     }
 
-    private fun createCategoryShowcaseHeaderCallback() = object : TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
+    private fun createCategoryShowcaseHeaderCallback() = object : TokoNowDynamicHeaderListener {
         override fun onSeeAllClicked(
             context: Context,
             channelId: String,
@@ -645,6 +646,24 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
         }
 
         override fun onProductCardAddToCartBlocked() = showToasterWhenAddToCartBlocked()
+    }
+
+    private fun createBrandHeaderListener(): TokoNowDynamicHeaderListener? {
+        return object: TokoNowDynamicHeaderListener {
+            override fun onSeeAllClicked(
+                context: Context,
+                channelId: String,
+                headerName: String,
+                appLink: String,
+                widgetId: String
+            ) {
+                RouteManager.route(context, appLink)
+            }
+
+            override fun onChannelExpired() {
+
+            }
+        }
     }
 
     private fun createNavRecyclerViewOnScrollListener(
