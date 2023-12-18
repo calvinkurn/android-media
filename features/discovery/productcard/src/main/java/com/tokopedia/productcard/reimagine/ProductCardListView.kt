@@ -8,8 +8,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginStart
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -20,7 +18,6 @@ import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.video_widget.VideoPlayerController
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -29,10 +26,8 @@ class ProductCardListView: ConstraintLayout {
 
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val imageView by lazyView<ImageUnify?>(R.id.productCardImage)
-    private val preventiveThematicLabel by lazyView<Typography?>(R.id.productCardLabelPreventiveThematic)
     private val videoIdentifier by lazyView<ImageView?>(R.id.productCardVideoIdentifier)
     private val threeDots by lazyView<ImageView?>(R.id.productCardThreeDots)
-    private val assignedValueLabel = ProductCardLabelAssignedValue(this)
 
     val video: VideoPlayerController by lazyThreadSafetyNone {
         VideoPlayerController(this, R.id.productCardVideo, R.id.productCardImage)
@@ -72,23 +67,8 @@ class ProductCardListView: ConstraintLayout {
     fun setProductModel(productCardModel: ProductCardModel) {
         renderer.setProductModel(productCardModel)
 
-        renderLabelPreventiveThematic(productCardModel)
         renderVideo(productCardModel)
         renderThreeDots(productCardModel)
-
-        assignedValueLabel.render(productCardModel.labelAssignedValue())
-    }
-
-    private fun renderLabelPreventiveThematic(productCardModel: ProductCardModel) {
-        val labelView = preventiveThematicLabel ?: return
-        val labelPreventiveThematic = productCardModel.labelPreventiveThematic()
-
-        if (labelPreventiveThematic == null) {
-            labelView.hide()
-        } else {
-            labelView.show()
-            ProductCardLabel(labelView.background, labelView).render(labelPreventiveThematic)
-        }
     }
 
     private fun renderVideo(productCardModel: ProductCardModel) {

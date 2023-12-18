@@ -2,11 +2,16 @@ package com.tokopedia.productcard.reimagine
 
 import android.graphics.BlurMaskFilter
 import android.graphics.PorterDuff
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.SpannedString
+import android.text.style.ImageSpan
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView.BufferType
 import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -16,8 +21,12 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.strikethrough
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.benefit.LabelBenefitView
 import com.tokopedia.productcard.reimagine.ribbon.RibbonView
@@ -29,6 +38,7 @@ import com.tokopedia.productcard.utils.imageRounded
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.productcard.R as productcardR
 
@@ -42,7 +52,7 @@ internal class ProductCardRenderer(
     private val cardContainer by view.lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val imageView by view.lazyView<ImageUnify?>(R.id.productCardImage)
     private val adsText by view.lazyView<Typography?>(R.id.productCardAds)
-    private val nameText by view.lazyView<Typography?>(R.id.productCardName)
+    private val nameText by lazyThreadSafetyNone { initNameText() }
     private val priceText by view.lazyView<Typography?>(R.id.productCardPrice)
     private val slashedPriceText by view.lazyView<Typography?>(R.id.productCardSlashedPrice)
     private val discountText by view.lazyView<Typography?>(R.id.productCardDiscount)
@@ -56,6 +66,11 @@ internal class ProductCardRenderer(
     private val ribbon by view.lazyView<RibbonView?>(R.id.productCardRibbon)
     private val productCardSafeContainer by view.lazyView<Group?>(R.id.productCardSafeContainer)
     private val productCardSafeNameBackground by view.lazyView<View?>(R.id.productCardSafeNameBackground)
+
+    private fun initNameText(): Typography? =
+        view.findViewById<Typography?>(R.id.productCardName).also {
+            it.setSpannableFactory(SPANNABLE_FACTORY)
+        }
 
     fun setProductModel(productCardModel: ProductCardModel) {
         renderImage(productCardModel)
@@ -114,16 +129,44 @@ internal class ProductCardRenderer(
         val isSafeProduct = productCardModel.isSafeProduct
         productCardSafeNameBackground?.showWithCondition(isSafeProduct)
         nameText?.shouldShowWithAction(productCardModel.name.isNotEmpty() && !isSafeProduct) {
-            it.setTextAndContentDescription(
-                MethodChecker.fromHtml(productCardModel.name).toString(),
-                R.string.content_desc_textViewProductName
-            )
+            val name = MethodChecker.fromHtml(productCardModel.name).toString()
             it.maxLines = maxLinesName(productCardModel)
+            it.contentDescription = context.getString(R.string.content_desc_textViewProductName) + " " + name
 
             if (productCardModel.isSafeProduct) {
                 renderBlurredText()
             } else {
                 renderNonBlurredText()
+            }
+
+            val labelAssignedValue = productCardModel.labelAssignedValue()
+            val labelAssignedValueImageURL = labelAssignedValue?.imageUrl ?: ""
+            val labelAssignedValueWidth = labelAssignedValue?.width() ?: 0
+
+            val hasLabelAssignedValue = labelAssignedValue != null
+                && labelAssignedValueImageURL.isNotEmpty()
+                && labelAssignedValueWidth != 0
+
+            if (hasLabelAssignedValue) {
+                labelAssignedValueImageURL.getBitmapImageUrl(
+                    context,
+                    properties = {
+                        overrideSize(Resize(labelAssignedValueWidth.toPx(), 18.toPx()))
+                    },
+                    MediaBitmapEmptyTarget(
+                        onReady = { bitmap ->
+                            val imageSpan = ImageSpan(context, bitmap)
+                            val spannableStringBuilder = SpannableStringBuilder(" $name")
+                            spannableStringBuilder.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            it.setText(spannableStringBuilder, BufferType.SPANNABLE)
+                        },
+                        onFailed = { _ ->
+                            it.setText(SpannedString(name), BufferType.SPANNABLE)
+                        }
+                    )
+                )
+            } else {
+                it.setText(SpannedString(name), BufferType.SPANNABLE)
             }
         }
     }
@@ -142,7 +185,7 @@ internal class ProductCardRenderer(
         val hasMultilineName = when (type) {
             ProductCardType.GridCarousel,
             ProductCardType.ListCarousel -> productCardModel.hasMultilineName
-            ProductCardType.Grid -> productCardModel.labelAssignedValue() == null
+            ProductCardType.Grid,
             ProductCardType.List -> true
         }
 
@@ -300,5 +343,14 @@ internal class ProductCardRenderer(
             ContextCompat.getDrawable(context, R.drawable.product_card_safe_background_top_rounded)
         else
             ContextCompat.getDrawable(context, R.drawable.product_card_safe_background_full_rounded)
+    }
+
+    companion object {
+        private val SPANNABLE_FACTORY = object: Spannable.Factory() {
+            override fun newSpannable(source: CharSequence?): Spannable {
+                return if (source is Spannable) source
+                else super.newSpannable(source)
+            }
+        }
     }
 }

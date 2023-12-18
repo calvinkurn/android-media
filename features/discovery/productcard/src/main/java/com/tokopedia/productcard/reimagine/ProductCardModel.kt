@@ -1,5 +1,7 @@
 package com.tokopedia.productcard.reimagine
 
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+
 data class ProductCardModel(
     val imageUrl: String = "",
     val isAds: Boolean = false,
@@ -25,11 +27,8 @@ data class ProductCardModel(
     fun labelCredibility(): LabelGroup? =
         labelGroup(LABEL_REIMAGINE_CREDIBILITY)?.takeIf(LabelGroup::hasTitle)
 
-    fun labelPreventiveThematic(): LabelGroup? =
-        labelGroup(LABEL_REIMAGINE_PREVENTIVE_THEMATIC)?.takeIf(LabelGroup::hasTitle)
-
     fun labelAssignedValue(): LabelGroup? =
-        labelGroup(LABEL_REIMAGINE_ASSIGNED_VALUE)?.takeIf(LabelGroup::hasTitle)
+        labelGroup(LABEL_REIMAGINE_ASSIGNED_VALUE)?.takeIf(LabelGroup::hasImage)
 
     fun ribbon(): LabelGroup? =
         labelGroup(LABEL_REIMAGINE_RIBBON)?.takeIf(LabelGroup::hasTitle)
@@ -63,10 +62,12 @@ data class ProductCardModel(
                 }
 
         fun hasTitle() = title.isNotBlank()
+        fun hasImage() = imageUrl.isNotBlank()
         fun backgroundColor() = style[LabelGroupStyle.BACKGROUND_COLOR]
         fun backgroundOpacity() = style[LabelGroupStyle.BACKGROUND_OPACITY]?.toFloatOrNull()
         fun textColor() = style[LabelGroupStyle.TEXT_COLOR]
         fun outlineColor(): String? = style[LabelGroupStyle.OUTLINE_COLOR]
+        fun width(): Int = style[LabelGroupStyle.WIDTH]?.toIntOrNull() ?: 0
 
         data class Style(val key: String = "", val value: String = "")
 

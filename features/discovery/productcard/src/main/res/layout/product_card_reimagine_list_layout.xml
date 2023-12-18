@@ -73,16 +73,6 @@
                 app:layout_constraintEnd_toEndOf="@+id/productCardMediaAnchor"
                 app:srcCompat="@drawable/product_card_ic_video_identifier" />
 
-            <include
-                layout="@layout/product_card_reimagine_label"
-                android:id="@+id/productCardLabelPreventiveThematic"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/product_card_reimagine_label_height"
-                android:layout_marginBottom="4dp"
-                android:layout_marginStart="4dp"
-                app:layout_constraintBottom_toBottomOf="@+id/productCardMediaAnchor"
-                app:layout_constraintStart_toStartOf="@+id/productCardMediaAnchor" />
-
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productCardAds"
                 android:contentDescription="@string/content_desc_textTopAds"
