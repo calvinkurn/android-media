@@ -3,8 +3,6 @@ package com.tokopedia.logger.repository
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.analyticsdebugger.debugger.ServerLogLogger
-import com.tokopedia.analyticsdebugger.debugger.ServerLogLoggerInterface
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicApiImpl
@@ -21,7 +19,13 @@ import com.tokopedia.logger.model.scalyr.ScalyrEventAttrs
 import com.tokopedia.logger.utils.Constants
 import com.tokopedia.logger.utils.LoggerReporting
 import com.tokopedia.logger.utils.addValue
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import kotlin.coroutines.CoroutineContext
 
