@@ -26,24 +26,22 @@ fun ExploreCategoryItem(
     exploreCategoryUiModel: ExploreCategoryUiModel,
     onClick: () -> Unit
 ) {
-    val nestCardType = remember(exploreCategoryUiModel.isSelected) {
-        if (exploreCategoryUiModel.isSelected) {
-            NestCardType.StateBorder(false)
-        } else {
-            NestCardType.NoBorder
-        }
-    }
+    val nonSelectedColor = NestTheme.typography.display3.copy(
+        fontWeight = FontWeight.Normal,
+        color = NestTheme.colors.NN._950
+    )
 
-    val titleTextStyle = if (exploreCategoryUiModel.isSelected) {
-        NestTheme.typography.display3.copy(
-            fontWeight = FontWeight.Bold,
-            color = NestTheme.colors.GN._500
-        )
-    } else {
-        NestTheme.typography.display3.copy(
-            fontWeight = FontWeight.Normal,
-            color = NestTheme.colors.NN._950
-        )
+    val selectedColor = NestTheme.typography.display3.copy(
+        fontWeight = FontWeight.Bold,
+        color = NestTheme.colors.GN._500
+    )
+
+    val (nestCardType, titleTextStyle) = remember(exploreCategoryUiModel.isSelected) {
+        if (exploreCategoryUiModel.isSelected) {
+            Pair(NestCardType.StateBorder(false), selectedColor)
+        } else {
+            Pair(NestCardType.NoBorder, nonSelectedColor)
+        }
     }
 
     NestCard(

@@ -8,6 +8,7 @@ import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -147,9 +148,8 @@ fun ExploreCategoryListGrid(
 
     LazyColumn(
         state = lazyListState,
-        modifier = modifier
-            .fillMaxSize()
-            .padding(start = horizontalPadding, end = horizontalPadding, bottom = 8.dp)
+        contentPadding = PaddingValues(start = horizontalPadding, end = horizontalPadding, bottom = 8.dp),
+        modifier = modifier.fillMaxSize()
     ) {
         itemsIndexed(categories, key = { groupIndex, row ->
             groupIndex.toString()
@@ -175,7 +175,8 @@ fun ExploreCategoryListGrid(
                 }
             }
 
-            val isNestCardNotVisible by remember(
+            val isNestCardNotMinimumVisible by remember(
+                lazyListState,
                 nestCardDimensions,
                 groupIndex
             ) {
@@ -198,6 +199,7 @@ fun ExploreCategoryListGrid(
             }
 
             val nestCardHeight by remember(
+                lazyListState,
                 nestCardDimensions,
                 groupIndex
             ) {
@@ -211,7 +213,6 @@ fun ExploreCategoryListGrid(
                         nestCardDimensions.second - lazyListState.layoutInfo.viewportStartOffset
                     )
 
-                    // Calculate the actual visible height
                     val visibleHeight = maxOf(0f, visibleBottom - visibleTop)
 
                     visibleHeight
@@ -240,16 +241,12 @@ fun ExploreCategoryListGrid(
                 }
             }
 
-            val selectedCategory by remember(row) {
-                derivedStateOf {
-                    row.find { it.isSelected }
-                }
+            val selectedCategory = remember(row) {
+                row.find { it.isSelected }
             }
 
-            val categoryIndex by remember(selectedCategory?.id) {
-                derivedStateOf {
-                    getGroupIndexToScrollTo(categories, selectedCategory?.id.orEmpty())
-                }
+            val categoryIndex = remember(selectedCategory?.id) {
+                getGroupIndexToScrollTo(categories, selectedCategory?.id.orEmpty())
             }
 
             CategoryRowItem(
@@ -259,7 +256,8 @@ fun ExploreCategoryListGrid(
                 onExploreCategoryItemClicked = { isSelected ->
                     isEligibleScrollToTopSide = !isSelected && isTopSideNotVisible
                     isEligibleScrollToBottomSide = !isSelected && isBottomSideNotVisible
-                    isEligibleScrollToThreeSubCategoryIndex = !isSelected && isNestCardNotVisible
+                    isEligibleScrollToThreeSubCategoryIndex =
+                        !isSelected && isNestCardNotMinimumVisible
                 }
             )
 
@@ -295,7 +293,7 @@ fun ExploreCategoryListGrid(
                                 isEligibleScrollToBottomSide = false
                             }
 
-                            isEligibleScrollToThreeSubCategoryIndex && isNestCardNotVisible -> {
+                            isEligibleScrollToThreeSubCategoryIndex && isNestCardNotMinimumVisible -> {
                                 val subCategoriesHeight =
                                     ((subCategoryItemDimensions.second - subCategoryItemDimensions.first) * MINIMUM_3_SUB_CAT)
 
@@ -415,13 +413,16 @@ fun CategoryRowItem(
         row.forEach { category ->
             categoryName.invoke(category.categoryTitle)
 
-            Box(
-                modifier = Modifier.weight(1f)
-            ) {
-                ExploreCategoryItem(exploreCategoryUiModel = category, onClick = {
-                    uiEvent(ExploreCategoryUiEvent.OnExploreCategoryItemClicked(category))
-                    onExploreCategoryItemClicked(category.isSelected)
-                })
+            val categoryKey = "${category.categoryTitle}_${category.categoryImageUrl}"
+            key(categoryKey) {
+                Box(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    ExploreCategoryItem(exploreCategoryUiModel = category, onClick = {
+                        uiEvent(ExploreCategoryUiEvent.OnExploreCategoryItemClicked(category))
+                        onExploreCategoryItemClicked(category.isSelected)
+                    })
+                }
             }
         }
 
