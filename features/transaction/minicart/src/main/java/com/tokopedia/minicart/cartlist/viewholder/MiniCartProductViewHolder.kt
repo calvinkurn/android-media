@@ -46,8 +46,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class MiniCartProductViewHolder(
     private val viewBinding: ItemMiniCartProductBinding,
     private val listener: MiniCartListActionListener
-) :
-    AbstractViewHolder<MiniCartProductUiModel>(viewBinding.root) {
+) : AbstractViewHolder<MiniCartProductUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_mini_cart_product
@@ -148,7 +147,7 @@ class MiniCartProductViewHolder(
             val hasPriceOriginal = element.productOriginalPrice > 0
             val hasWholesalePrice = element.productWholeSalePrice > 0
             val hasPriceDrop = element.productInitialPriceBeforeDrop > 0 && element.productInitialPriceBeforeDrop > element.productPrice
-            val paddingLeft = if (element.isBundlingItem) {
+            val paddingLeft = if (element.isNeededToAddVerticalLine()) {
                 itemView.resources.getDimensionPixelOffset(R.dimen.dp_0)
             } else {
                 itemView.resources.getDimensionPixelOffset(R.dimen.dp_4)
@@ -212,7 +211,7 @@ class MiniCartProductViewHolder(
                 constraintSet.applyTo(containerProduct)
             }
 
-            if (element.isBundlingItem) {
+            if (element.isNeededToAddVerticalLine()) {
                 adjustProductPriceConstraint()
             }
         }
@@ -418,7 +417,7 @@ class MiniCartProductViewHolder(
 
     private fun renderActionDelete(element: MiniCartProductUiModel) {
         with(viewBinding) {
-            if (!element.isBundlingItem || element.isLastProductItem) {
+            if (!element.isNeededToAddVerticalLine() || element.isLastProductItem) {
                 adjustButtonDeleteConstraint(element)
                 buttonDeleteCart.setOnClickListener {
                     if (adapterPosition != RecyclerView.NO_POSITION) {
@@ -606,7 +605,7 @@ class MiniCartProductViewHolder(
 
     private fun renderActionSimilarProduct(action: Action, element: MiniCartProductUiModel) {
         with(viewBinding) {
-            if (!element.isBundlingItem || element.isLastProductItem) {
+            if (!element.isNeededToAddVerticalLine() || element.isLastProductItem) {
                 textProductUnavailableAction.text = action.message
                 textProductUnavailableAction.setOnClickListener {
                     if (element.selectedUnavailableActionLink.isNotBlank()) {
@@ -711,7 +710,7 @@ class MiniCartProductViewHolder(
 
     private fun renderVerticalLine(element: MiniCartProductUiModel) {
         with(viewBinding) {
-            if (element.isBundlingItem) {
+            if (element.isNeededToAddVerticalLine()) {
                 adjustVerticalLine(element)
                 verticalLine.show()
             } else {
@@ -748,7 +747,7 @@ class MiniCartProductViewHolder(
     }
 
     private fun adjustTextNotesConstraint(element: MiniCartProductUiModel) {
-        if (element.isBundlingItem && element.isLastProductItem) {
+        if (element.isNeededToAddVerticalLine() && element.isLastProductItem) {
             with(viewBinding) {
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProduct)
@@ -770,7 +769,7 @@ class MiniCartProductViewHolder(
     }
 
     private fun adjustVerticalLineConstraint(element: MiniCartProductUiModel) {
-        if (element.isBundlingItem && element.isLastProductItem) {
+        if (element.isNeededToAddVerticalLine() && element.isLastProductItem) {
             with(viewBinding) {
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProduct)
@@ -829,7 +828,7 @@ class MiniCartProductViewHolder(
     }
 
     private fun adjustButtonDeleteVisibility(element: MiniCartProductUiModel) {
-        if (element.isBundlingItem && !element.isLastProductItem) {
+        if (element.isNeededToAddVerticalLine() && !element.isLastProductItem) {
             with(viewBinding) {
                 if (textFieldNotes.isVisible || textNotesFilled.isVisible) {
                     buttonDeleteCart.gone()

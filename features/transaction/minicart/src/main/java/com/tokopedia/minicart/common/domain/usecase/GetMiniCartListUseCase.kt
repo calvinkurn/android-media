@@ -1,6 +1,9 @@
 package com.tokopedia.minicart.common.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.cartcommon.data.response.bmgm.BmGmData
+import com.tokopedia.cartcommon.data.response.bmgm.BmGmProductBenefit
+import com.tokopedia.cartcommon.data.response.bmgm.BmGmTierProduct
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -47,7 +50,42 @@ class GetMiniCartListUseCase @Inject constructor(
         val response = graphqlRepository.response(listOf(request)).getSuccessData<MiniCartGqlResponse>()
 
         if (response.miniCart.status == "OK") {
-            return response.miniCart
+            return response.miniCart.copy(data = response.miniCart.data.copy(availableSection = response.miniCart.data.availableSection.copy(
+                availableGroup = response.miniCart.data.availableSection.availableGroup.map { it.copy(cartDetails = it.cartDetails.map { it.copy(cartDetailInfo = it.cartDetailInfo.copy(cartDetailType = "BMGM", bmgmData = BmGmData(
+                    offerMessage = listOf("<b>Testing aja</b> * mana ada"),
+                    offerLandingPageLink = "tokopedia://now",
+                    offerIcon = "https://images.tokopedia.net/img/android/res/singleDpi/catalog_library_logo.png",
+                    tierProductList = listOf(
+                        BmGmTierProduct(
+                            tierId = 12312,
+                            tierName = "Summer Sale",
+                            benefitWording = "3 Hadiah",
+                            actionWording = "Lihat",
+                            productsBenefit = listOf(
+                                BmGmProductBenefit(
+                                    productId = "12311",
+                                    productName = "testing aja 1",
+                                    productImage = "https://images.tokopedia.net/img/android/res/singleDpi/catalog_library_logo.png",
+                                    originalPrice = 10000.0
+                                ),
+                                BmGmProductBenefit(
+                                    productId = "12312",
+                                    productName = "testing aja 2",
+                                    productImage = "https://images.tokopedia.net/img/android/res/singleDpi/catalog_library_logo.png",
+                                    originalPrice = 10000.0
+                                ),
+                                BmGmProductBenefit(
+                                    productId = "12313",
+                                    productName = "testing aja 3",
+                                    productImage = "https://images.tokopedia.net/img/android/res/singleDpi/catalog_library_logo.png",
+                                    originalPrice = 10000.0
+                                )
+                            )
+                        )
+                    )
+                )
+                )) }) }
+            )))
         } else {
             throw ResponseErrorException(response.miniCart.errorMessage.joinToString(", "))
         }
@@ -141,6 +179,18 @@ class GetMiniCartListUseCase @Inject constructor(
                         }
                       }
                       cart_details {
+                        cart_detail_info {
+                          cart_detail_type
+                          bmgm {
+                            offer_id
+                            offer_icon
+                            offer_message
+                            offer_landing_page_link
+                            tier_product {
+                              tier_id
+                            }
+                          }
+                        }
                         errors
                         bundle_detail { 
                           bundle_id

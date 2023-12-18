@@ -3,12 +3,16 @@ package com.tokopedia.minicart.cartlist
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.data.model.request.ProductDetail
 import com.tokopedia.atc_common.domain.model.response.ProductDataModel
+import com.tokopedia.bmsm_widget.presentation.model.ProductGiftUiModel
+import com.tokopedia.cartcommon.data.response.bmgm.BmGmData
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartGwpGiftUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductBundleRecomUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartProgressiveInfoUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartSeparatorUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartShopUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerErrorUiModel
@@ -193,7 +197,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
         var miniCartTickerErrorUiModel: MiniCartTickerErrorUiModel? = null
         val miniCartTickerWarningUiModel: MiniCartTickerWarningUiModel? = null
         var miniCartShopUiModel: MiniCartShopUiModel? = null
-        val miniCartAvailableSectionUiModels: MutableList<MiniCartProductUiModel> = mutableListOf()
+        val miniCartAvailableSectionUiModels: MutableList<Visitable<*>> = mutableListOf()
         val miniCartUnavailableSectionUiModels: MutableList<Visitable<*>> = mutableListOf()
         val productIds: ArrayList<String> = arrayListOf()
         val bundleIds: ArrayList<String> = arrayListOf()
@@ -210,11 +214,18 @@ class MiniCartListUiModelMapper @Inject constructor() {
                 // miniCartShopUiModel = mapShopUiModel(availableGroup.shop, availableGroup.shipmentInformation)
 
                 // Add available product
-                val miniCartProductUiModels = mutableListOf<MiniCartProductUiModel>()
                 val cartItemsCount = availableGroup.cartDetails.count()
                 val lastGroupItem = groupIndex == groupCount - 1
                 availableGroup.cartDetails.forEachIndexed { cartIndex, cartDetail ->
+                    val miniCartProductUiModels = mutableListOf<MiniCartProductUiModel>()
                     val lastCartItem = cartIndex == cartItemsCount - 1
+
+                    // Add progressive info if bmgm only
+                    if (cartDetail.isBmgm()) {
+                        miniCartAvailableSectionUiModels.add(mapProgressiveInfo(cartDetail.cartDetailInfo.bmgmData))
+                    }
+
+                    // Add product card
                     cartDetail.products.forEachIndexed { productIndex, product ->
                         weightTotal += product.productWeight * product.productQuantity
                         val miniCartProductUiModel = mapProductUiModel(
@@ -228,7 +239,8 @@ class MiniCartListUiModelMapper @Inject constructor() {
                             notesLength = miniCartData.data.maxCharNote,
                             placeholderNote = miniCartData.data.placeholderNote,
                             lastCartItem = lastCartItem,
-                            lastGroupItem = lastGroupItem
+                            lastGroupItem = lastGroupItem,
+                            isBmgm = cartDetail.isBmgm()
                         )
                         miniCartProductUiModels.add(miniCartProductUiModel)
                         if (miniCartProductUiModel.isBundlingItem) {
@@ -237,8 +249,13 @@ class MiniCartListUiModelMapper @Inject constructor() {
                             productIds.add(miniCartProductUiModel.productId)
                         }
                     }
+                    miniCartAvailableSectionUiModels.addAll(miniCartProductUiModels)
+
+                    // Add gwp gift if bmgm only
+                    if (cartDetail.isBmgm()) {
+                        miniCartAvailableSectionUiModels.addAll(mapGwpGift(cartDetail.cartDetailInfo.bmgmData))
+                    }
                 }
-                miniCartAvailableSectionUiModels.addAll(miniCartProductUiModels)
             }
         }
 
@@ -318,7 +335,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
         )
     }
 
-    private fun constructVisitableOrder(miniCartTickerErrorUiModel: MiniCartTickerErrorUiModel?, miniCartTickerWarningUiModel: MiniCartTickerWarningUiModel?, miniCartShopUiModel: MiniCartShopUiModel?, miniCartAvailableSectionUiModels: MutableList<MiniCartProductUiModel>, miniCartUnavailableSectionUiModels: MutableList<Visitable<*>>): MutableList<Visitable<*>> {
+    private fun constructVisitableOrder(miniCartTickerErrorUiModel: MiniCartTickerErrorUiModel?, miniCartTickerWarningUiModel: MiniCartTickerWarningUiModel?, miniCartShopUiModel: MiniCartShopUiModel?, miniCartAvailableSectionUiModels: MutableList<Visitable<*>>, miniCartUnavailableSectionUiModels: MutableList<Visitable<*>>): MutableList<Visitable<*>> {
         val visitables = mutableListOf<Visitable<*>>()
 
         miniCartTickerErrorUiModel?.let {
@@ -344,6 +361,37 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
     }
 
+    private fun mapProgressiveInfo(
+        bmgmData: BmGmData
+    ): MiniCartProgressiveInfoUiModel {
+        return MiniCartProgressiveInfoUiModel(
+            message = bmgmData.offerMessage.firstOrNull().orEmpty(),
+            icon = bmgmData.offerIcon,
+            appLink = bmgmData.offerLandingPageLink
+        )
+    }
+
+    private fun mapGwpGift(
+        bmgmData: BmGmData
+    ): List<MiniCartGwpGiftUiModel> {
+        return bmgmData.tierProductList.map { tierProduct ->
+            val giftList = tierProduct.productsBenefit.map { productBenefit ->
+                ProductGiftUiModel(
+                    id = productBenefit.productId,
+                    name = productBenefit.productName,
+                    imageUrl = productBenefit.productImage,
+                    qty = productBenefit.quantity,
+                    isUnlocked = true
+                )
+            }
+            MiniCartGwpGiftUiModel(
+                ribbonText = tierProduct.benefitWording,
+                ctaText = tierProduct.actionWording,
+                giftList = giftList
+            )
+        }
+    }
+
     private fun mapProductUiModel(
         productIndex: Int,
         cartDetail: CartDetail,
@@ -358,7 +406,8 @@ class MiniCartListUiModelMapper @Inject constructor() {
         placeholderNote: String = "",
         lastCartItem: Boolean = false,
         lastGroupItem: Boolean = false,
-        cartStringId: String = ""
+        cartStringId: String = "",
+        isBmgm: Boolean = false
     ): MiniCartProductUiModel {
         return MiniCartProductUiModel().apply {
             val products = cartDetail.products
@@ -447,7 +496,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             isBundlingItem = bundlingItem
             isLastProductItem = lastProductItem
             editBundleApplink = cartDetail.bundleDetail.editBundleApplink
-
+            this.isBmgm = isBmgm
             if (bundlingItem) {
                 bundleMultiplier = productQuantity / bundleQuantity
                 bundleLabelQty = productQuantity / bundleQuantity

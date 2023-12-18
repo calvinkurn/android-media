@@ -55,6 +55,7 @@ data class MiniCartProductUiModel(
     var showBottomDivider: Boolean = false,
     var isLastProductItem: Boolean = false,
     var editBundleApplink: String = "",
+    var isBmgm: Boolean = false,
 
     // Fields below are for analytics purpose only
     var campaignId: String = "",
@@ -166,4 +167,6 @@ data class MiniCartProductUiModel(
             productMinOrder
         }
     }
+
+    fun isNeededToAddVerticalLine(): Boolean = isBundlingItem || isBmgm
 }

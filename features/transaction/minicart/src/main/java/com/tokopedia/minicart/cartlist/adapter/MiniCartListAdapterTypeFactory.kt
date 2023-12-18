@@ -9,9 +9,11 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.minicart.cartlist.MiniCartListActionListener
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartGwpGiftUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductBundleRecomShimmeringUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductBundleRecomUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartProgressiveInfoUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartSeparatorUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartShopUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerErrorUiModel
@@ -19,10 +21,12 @@ import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerWarningUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableHeaderUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableReasonUiModel
 import com.tokopedia.minicart.cartlist.viewholder.MiniCartAccordionViewHolder
+import com.tokopedia.minicart.cartlist.viewholder.MiniCartGwpGiftViewHolder
 import com.tokopedia.minicart.cartlist.viewholder.MiniCartLoadingViewHolder
 import com.tokopedia.minicart.cartlist.viewholder.MiniCartProductBundleRecomShimmeringViewHolder
 import com.tokopedia.minicart.cartlist.viewholder.MiniCartProductBundleRecomViewHolder
 import com.tokopedia.minicart.cartlist.viewholder.MiniCartProductViewHolder
+import com.tokopedia.minicart.cartlist.viewholder.MiniCartProgressiveInfoViewHolder
 import com.tokopedia.minicart.cartlist.viewholder.MiniCartSeparatorViewHolder
 import com.tokopedia.minicart.cartlist.viewholder.MiniCartShopViewHolder
 import com.tokopedia.minicart.cartlist.viewholder.MiniCartTickerErrorViewHolder
@@ -30,10 +34,12 @@ import com.tokopedia.minicart.cartlist.viewholder.MiniCartTickerWarningViewHolde
 import com.tokopedia.minicart.cartlist.viewholder.MiniCartUnavailableHeaderViewHolder
 import com.tokopedia.minicart.cartlist.viewholder.MiniCartUnavailableReasonViewHolder
 import com.tokopedia.minicart.databinding.ItemMiniCartAccordionBinding
+import com.tokopedia.minicart.databinding.ItemMiniCartGwpGiftBinding
 import com.tokopedia.minicart.databinding.ItemMiniCartLoadingBinding
 import com.tokopedia.minicart.databinding.ItemMiniCartProductBinding
 import com.tokopedia.minicart.databinding.ItemMiniCartProductBundleRecomBinding
 import com.tokopedia.minicart.databinding.ItemMiniCartProductBundleRecomShimmeringBinding
+import com.tokopedia.minicart.databinding.ItemMiniCartProgressiveInfoBinding
 import com.tokopedia.minicart.databinding.ItemMiniCartSeparatorBinding
 import com.tokopedia.minicart.databinding.ItemMiniCartShopBinding
 import com.tokopedia.minicart.databinding.ItemMiniCartTickerErrorBinding
@@ -91,6 +97,14 @@ class MiniCartListAdapterTypeFactory(
 
     override fun type(uiModel: LoadingModel): Int {
         return MiniCartLoadingViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: MiniCartProgressiveInfoUiModel): Int {
+        return MiniCartProgressiveInfoViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: MiniCartGwpGiftUiModel): Int {
+        return MiniCartGwpGiftViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<out Visitable<*>> {
@@ -196,6 +210,24 @@ class MiniCartListAdapterTypeFactory(
                     false
                 )
                 MiniCartProductBundleRecomShimmeringViewHolder(viewBinding)
+            }
+
+            MiniCartProgressiveInfoViewHolder.LAYOUT -> {
+                val viewBinding = ItemMiniCartProgressiveInfoBinding.inflate(
+                    LayoutInflater.from(view.context),
+                    view as ViewGroup,
+                    false
+                )
+                MiniCartProgressiveInfoViewHolder(viewBinding)
+            }
+
+            MiniCartGwpGiftViewHolder.LAYOUT -> {
+                val viewBinding = ItemMiniCartGwpGiftBinding.inflate(
+                    LayoutInflater.from(view.context),
+                    view as ViewGroup,
+                    false
+                )
+                MiniCartGwpGiftViewHolder(viewBinding)
             }
 
             else -> super.createViewHolder(view, viewType)
