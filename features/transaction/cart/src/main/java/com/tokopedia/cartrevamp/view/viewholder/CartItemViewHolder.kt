@@ -130,6 +130,7 @@ class CartItemViewHolder(
         renderQuantity(data, viewHolderListener)
         renderProductAction(data)
         renderBmGmOfferTicker(data)
+        renderProductTagInfo(data)
     }
 
     private fun initSwipeLayout(data: CartItemHolderData) {
@@ -1670,6 +1671,17 @@ class CartItemViewHolder(
             }
         } else {
             binding.itemCartBmgm.root.gone()
+        }
+    }
+
+    private fun renderProductTagInfo(data: CartItemHolderData) {
+        if (data.productTagInfo.isNotEmpty()) {
+            binding.textProductTagInfo.apply {
+                visible()
+                text = data.productTagInfo.firstOrNull()?.message ?: ""
+            }
+        } else {
+            binding.textProductTagInfo.gone()
         }
     }
 

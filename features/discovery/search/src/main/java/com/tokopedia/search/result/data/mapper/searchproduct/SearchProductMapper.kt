@@ -18,6 +18,8 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspira
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationWidget
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchProduct
 import com.tokopedia.search.result.domain.model.SearchProductV5
+import com.tokopedia.search.result.domain.model.UserDOB
+import com.tokopedia.search.result.domain.model.UserProfileDobModel
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 import rx.functions.Func1
@@ -37,6 +39,7 @@ internal class SearchProductMapper : Func1<GraphqlResponse?, SearchProductModel?
             searchInspirationCarousel = graphqlResponse.getSearchInspirationCarousel(),
             searchInspirationWidget = graphqlResponse.getSearchInspirationWidget(),
             lastFilter = graphqlResponse.getLastFilter(),
+            userDOB = graphqlResponse.getUserProfile(),
         )
     }
 
@@ -84,4 +87,9 @@ internal class SearchProductMapper : Func1<GraphqlResponse?, SearchProductModel?
         getData<LastFilterModel>(LastFilterModel::class.java)
             ?.lastFilter
             ?: LastFilter()
+
+    private fun GraphqlResponse.getUserProfile(): UserDOB =
+        getData<UserProfileDobModel>(UserProfileDobModel::class.java)
+            ?.userDOB
+            ?: UserDOB()
 }
