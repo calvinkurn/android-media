@@ -194,6 +194,7 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TOKOFOOD
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TRAIN
 import com.tokopedia.unifyorderhistory.util.UohConsts.WAREHOUSE_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.WEB_LINK_TYPE
+import com.tokopedia.unifyorderhistory.util.UohDataHelper
 import com.tokopedia.unifyorderhistory.util.UohRollenceUtil
 import com.tokopedia.unifyorderhistory.util.UohUtils
 import com.tokopedia.unifyorderhistory.view.activity.UohListActivity
@@ -422,18 +423,20 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 activity?.finish()
             }
         } else if ((requestCode == CREATE_REVIEW_REQUEST_CODE)) {
-            if (resultCode == Activity.RESULT_OK) {
-                onSuccessCreateReview(
-                    data?.getStringExtra(CREATE_REVIEW_MESSAGE)
-                        ?: getString(R.string.uoh_review_create_success_toaster, userSession.name)
-                )
-            } else if (resultCode == Activity.RESULT_FIRST_USER) {
-                onFailCreateReview(
-                    data?.getStringExtra(CREATE_REVIEW_MESSAGE)
-                        ?: getString(R.string.uoh_review_create_invalid_to_review)
-                )
-            } else {
-                onCancelCreateReview()
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    onSuccessCreateReview(
+                        data?.getStringExtra(CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_success_toaster, userSession.name)
+                    )
+                }
+                Activity.RESULT_FIRST_USER -> {
+                    onFailCreateReview(
+                        data?.getStringExtra(CREATE_REVIEW_MESSAGE) ?: getString(R.string.uoh_review_create_invalid_to_review)
+                    )
+                }
+                else -> {
+                    onCancelCreateReview()
+                }
             }
             currIndexNeedUpdate = -1
             orderIdNeedUpdated = ""
@@ -2122,11 +2125,12 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
-    override fun onKebabMenuClicked(order: UohListOrder.UohOrders.Order, orderIndex: Int) {
+    override fun onKebabMenuClicked(order: UohListOrder.UohOrders.Order) {
         val kebabMenuBottomSheet = UohKebabMenuBottomSheet.newInstance()
         if (kebabMenuBottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
         val kebabMenuAdapter = UohBottomSheetKebabMenuAdapter()
+        val orderIndex = UohDataHelper.getIndexUohItemByUuid(uohItemAdapter.listTypeData, order.orderUUID)
         kebabMenuAdapter._orderIndex = orderIndex
         kebabMenuAdapter.addList(order)
 
@@ -2228,7 +2232,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                             dotMenu.actionType.equals(GQL_MP_FINISH, true) -> {
                                 orderIdNeedUpdated = orderData.orderUUID
                                 doFinishOrder(
-                                    orderIndex,
+                                    orderData.orderUUID,
                                     orderData.verticalStatus,
                                     orderData.verticalID
                                 )
@@ -2266,15 +2270,17 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         userSession.userId?.let { UohAnalytics.clickThreeDotsMenu(order.verticalCategory, it) }
     }
 
-    private fun doFinishOrder(index: Int, status: String, verticalId: String) {
-        val finishOrderBottomSheet = UohFinishOrderBottomSheet.newInstance(index, status, verticalId)
+    private fun doFinishOrder(uuid: String, status: String, verticalId: String) {
+        val indexOrder = UohDataHelper.getIndexUohItemByUuid(uohItemAdapter.listTypeData, uuid)
+        val finishOrderBottomSheet = UohFinishOrderBottomSheet.newInstance(uuid, status, verticalId)
         if (finishOrderBottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
         finishOrderBottomSheet.setListener(object : UohFinishOrderBottomSheet.UohFinishOrderBottomSheetListener {
-            override fun onClickFinishOrder(index: Int, status: String, orderId: String) {
+            override fun onClickFinishOrder(uuid: String, status: String, orderId: String) {
                 finishOrderBottomSheet.dismiss()
-                currIndexNeedUpdate = index
-                uohItemAdapter.showLoaderAtIndex(index)
+                val orderIndex = UohDataHelper.getIndexUohItemByUuid(uohItemAdapter.listTypeData, uuid)
+                currIndexNeedUpdate = orderIndex
+                uohItemAdapter.showLoaderAtIndex(orderIndex)
 
                 var actionStatus = ""
                 if (status.isNotEmpty() && status.toIntOrZero() < STATUS_600) actionStatus = ACTION_FINISH_ORDER
@@ -2297,7 +2303,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         finishOrderBottomSheet.show(childFragmentManager)
     }
 
-    override fun onListItemClicked(order: UohListOrder.UohOrders.Order, index: Int) {
+    override fun onListItemClicked(order: UohListOrder.UohOrders.Order) {
         try {
             val detailUrl = order.metadata.detailURL
             if (detailUrl.appURL.isEmpty()) {
@@ -2310,7 +2316,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                     intent = RouteManager.getIntent(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
                 }
 
-                currIndexNeedUpdate = index
+                val orderIndex = UohDataHelper.getIndexUohItemByUuid(uohItemAdapter.listTypeData, order.orderUUID)
+                currIndexNeedUpdate = orderIndex
                 orderIdNeedUpdated = order.orderUUID
 
                 // analytics
@@ -2334,7 +2341,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                             id = eeProductId,
                             price = eeProductPrice,
                             list = "/order list - ${order.verticalCategory}",
-                            position = index.toString()
+                            position = orderIndex.toString()
                         )
                     )
                     i++
@@ -2354,19 +2361,19 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
     override fun onActionButtonClicked(
         order: UohListOrder.UohOrders.Order,
-        index: Int,
         buttonIndex: Int
     ) {
         try {
             order.metadata.buttons.getOrNull(buttonIndex)?.let { button ->
                 _buttonAction = button.actionType
                 if (button.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
-                    handleRouting(button.appURL, index, order)
+                    handleRouting(button.appURL, order)
                 } else {
+                    val orderIndex = UohDataHelper.getIndexUohItemByUuid(uohItemAdapter.listTypeData, order.orderUUID)
                     when {
                         button.actionType.equals(GQL_FINISH_ORDER, true) -> {
                             orderIdNeedUpdated = order.orderUUID
-                            doFinishOrder(index, order.verticalStatus, order.verticalID)
+                            doFinishOrder(order.orderUUID, order.verticalStatus, order.verticalID)
                         }
 
                         button.actionType.equals(GQL_MP_ATC, true) -> {
@@ -2392,13 +2399,13 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         button.actionType.equals(GQL_LS_FINISH, true) -> {
                             orderIdNeedUpdated = order.orderUUID
                             val lsFinishOrderBottomSheet =
-                                UohLsFinishOrderBottomSheet.newInstance(index, order.verticalID)
+                                UohLsFinishOrderBottomSheet.newInstance(order.orderUUID, order.verticalID)
                             if (lsFinishOrderBottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
                             lsFinishOrderBottomSheet.setListener(object : UohLsFinishOrderBottomSheet.UohLsFinishOrderBottomSheetListener {
-                                override fun onClickLsFinishOrder(index: Int, orderId: String) {
-                                    currIndexNeedUpdate = index
-                                    uohItemAdapter.showLoaderAtIndex(index)
+                                override fun onClickLsFinishOrder(uuid: String, orderId: String) {
+                                    currIndexNeedUpdate = orderIndex
+                                    uohItemAdapter.showLoaderAtIndex(orderIndex)
                                     uohListViewModel.doLsPrintFinishOrder(orderId)
                                 }
                             })
@@ -2411,7 +2418,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         }
 
                         button.actionType.equals(GQL_RECHARGE_BATALKAN, true) -> {
-                            currIndexNeedUpdate = index
+                            currIndexNeedUpdate = orderIndex
                             orderIdNeedUpdated = order.orderUUID
                             if (order.verticalID.isNotEmpty()) {
                                 uohListViewModel.doRechargeSetFail(order.verticalID.toIntOrZero())
@@ -2419,11 +2426,11 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         }
 
                         button.actionType.equals(GQL_MP_EXTEND, true) -> {
-                            goToOrderExtension(order, index)
+                            goToOrderExtension(order, orderIndex)
                         }
 
                         button.actionType.equals(GQL_MP_POF, true) -> {
-                            goToPartialOrderFulfillment(order, index)
+                            goToPartialOrderFulfillment(order, orderIndex)
                         }
                     }
                 }
@@ -2464,19 +2471,19 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
-    override fun trackViewOrderCard(order: UohListOrder.UohOrders.Order, index: Int) {
+    override fun trackViewOrderCard(order: UohListOrder.UohOrders.Order) {
         var jsonArray = JsonArray()
         if (order.metadata.listProducts.isNotEmpty()) {
             jsonArray = JsonParser().parse(order.metadata.listProducts).asJsonArray
         }
-        userSession.userId?.let { userId ->
-            trackingQueue?.let { UohAnalytics.viewOrderCard(it, order, userId, jsonArray, index.toString()) }
-        }
+
+        val orderIndex = UohDataHelper.getIndexUohItemByUuid(uohItemAdapter.listTypeData, order.orderUUID)
+        UohAnalytics.viewOrderCard(trackingQueue, order, userSession.userId, jsonArray, orderIndex.toString())
     }
 
     override fun onMulaiBelanjaBtnClicked() {
         RouteManager.route(context, ApplinkConst.HOME)
-        userSession.userId?.let { UohAnalytics.clickMulaiBelanjaOnEmptyOrderList(it) }
+        UohAnalytics.clickMulaiBelanjaOnEmptyOrderList(userSession.userId)
     }
 
     override fun trackProductViewRecommendation(recommendationItem: RecommendationItem, index: Int) {
@@ -2492,9 +2499,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             activity?.let { TopAdsUrlHitter(it).hitImpressionUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
         }
 
-        userSession.userId?.let { userId ->
-            trackingQueue?.let { UohAnalytics.productViewRecommendation(it, userId, recommendationItem, topAds, index.toString()) }
-        }
+        UohAnalytics.productViewRecommendation(trackingQueue, userSession.userId, recommendationItem, topAds, index.toString())
     }
 
     override fun trackProductClickRecommendation(recommendationItem: RecommendationItem, index: Int) {
@@ -2582,13 +2587,13 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
-    override fun onReviewRatingClicked(index: Int, order: UohListOrder.UohOrders.Order, appLink: String) {
+    override fun onReviewRatingClicked(order: UohListOrder.UohOrders.Order, appLink: String) {
         UohAnalytics.clickPrimaryButtonOnOrderCard(
             verticalLabel = order.verticalCategory,
             primaryButton = UohConsts.EVENT_LABEL_STAR_RATING,
             userId = userSession.userId
         )
-        handleRouting(appLink, index, order)
+        handleRouting(appLink, order)
     }
 
     override fun onReviewRatingImpressed(
@@ -2728,7 +2733,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
         }
     }
 
-    private fun handleRouting(applink: String, index: Int, order: UohListOrder.UohOrders.Order) {
+    private fun handleRouting(applink: String, order: UohListOrder.UohOrders.Order) {
+        val orderIndex = UohDataHelper.getIndexUohItemByUuid(uohItemAdapter.listTypeData, order.orderUUID)
         if (applink.contains(CREATE_REVIEW_APPLINK)) {
             startActivityForResult(
                 RouteManager.getIntent(
@@ -2737,7 +2743,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 ),
                 CREATE_REVIEW_REQUEST_CODE
             )
-            currIndexNeedUpdate = index
+            currIndexNeedUpdate = orderIndex
             orderIdNeedUpdated = order.orderUUID
         } else if (applink.startsWith(ApplinkConst.PRODUCT_BULK_CREATE_REVIEW)) {
             startActivityForResult(
@@ -2747,7 +2753,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                 ),
                 BULK_REVIEW_REQUEST_CODE
             )
-            currIndexNeedUpdate = index
+            currIndexNeedUpdate = orderIndex
             orderIdNeedUpdated = order.orderUUID
         } else {
             RouteManager.route(context, URLDecoder.decode(applink, UohConsts.UTF_8))

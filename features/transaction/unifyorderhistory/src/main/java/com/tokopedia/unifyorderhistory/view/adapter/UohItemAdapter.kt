@@ -61,19 +61,19 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     interface ActionListener {
-        fun onKebabMenuClicked(order: UohListOrder.UohOrders.Order, orderIndex: Int)
-        fun onListItemClicked(order: UohListOrder.UohOrders.Order, index: Int)
-        fun onActionButtonClicked(order: UohListOrder.UohOrders.Order, index: Int, buttonIndex: Int)
+        fun onKebabMenuClicked(order: UohListOrder.UohOrders.Order)
+        fun onListItemClicked(order: UohListOrder.UohOrders.Order)
+        fun onActionButtonClicked(order: UohListOrder.UohOrders.Order, buttonIndex: Int)
         fun onTickerDetailInfoClicked(url: String)
         fun onEmptyResultResetBtnClicked()
-        fun trackViewOrderCard(order: UohListOrder.UohOrders.Order, index: Int)
+        fun trackViewOrderCard(order: UohListOrder.UohOrders.Order)
         fun onMulaiBelanjaBtnClicked()
         fun trackProductViewRecommendation(recommendationItem: RecommendationItem, index: Int)
         fun trackProductClickRecommendation(recommendationItem: RecommendationItem, index: Int)
         fun atcRecommendationItem(recommendationItem: RecommendationItem)
         fun onImpressionPmsButton()
         fun onPmsButtonClicked()
-        fun onReviewRatingClicked(index: Int, order: UohListOrder.UohOrders.Order, appLink: String)
+        fun onReviewRatingClicked(order: UohListOrder.UohOrders.Order, appLink: String)
         fun onReviewRatingImpressed(
             orderUUID: String,
             componentData: UohListOrder.UohOrders.Order.Metadata.ExtraComponent
@@ -164,7 +164,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.bind(element)
             }
             is UohOrderListViewHolder -> {
-                holder.bind(element, holder.absoluteAdapterPosition)
+                holder.bind(element)
             }
             is UohTickerItemViewHolder -> {
                 holder.bind(element)

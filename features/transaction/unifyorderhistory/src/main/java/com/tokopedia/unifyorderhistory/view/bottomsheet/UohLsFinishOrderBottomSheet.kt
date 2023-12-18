@@ -14,14 +14,14 @@ class UohLsFinishOrderBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val TAG: String = "UohLsFinishOrderBottomSheet"
-        private const val INDEX = "index"
+        private const val UUID = "uuid"
         private const val ORDER_ID = "order_id"
 
         @JvmStatic
-        fun newInstance(index: Int, orderId: String): UohLsFinishOrderBottomSheet {
+        fun newInstance(uuid: String, orderId: String): UohLsFinishOrderBottomSheet {
             return UohLsFinishOrderBottomSheet().apply {
                 val bundle = Bundle()
-                bundle.putInt(INDEX, index)
+                bundle.putString(UUID, uuid)
                 bundle.putString(ORDER_ID, orderId)
                 arguments = bundle
             }
@@ -30,13 +30,13 @@ class UohLsFinishOrderBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val index = arguments?.getInt(INDEX) ?: 0
+        val uuid = arguments?.getString(UUID) ?: ""
         val orderId = arguments?.getString(ORDER_ID) ?: ""
         binding = BottomsheetLsFinishOrderUohBinding.inflate(LayoutInflater.from(context), null, false)
         binding?.run {
             btnLsFinishOrder.setOnClickListener {
                 dismiss()
-                listener?.onClickLsFinishOrder(index, orderId)
+                listener?.onClickLsFinishOrder(uuid, orderId)
             }
             btnLsKembali.setOnClickListener { dismiss() }
         }
@@ -48,7 +48,7 @@ class UohLsFinishOrderBottomSheet : BottomSheetUnify() {
     }
 
     interface UohLsFinishOrderBottomSheetListener {
-        fun onClickLsFinishOrder(index: Int, orderId: String)
+        fun onClickLsFinishOrder(uuid: String, orderId: String)
     }
 
     fun setListener(listener: UohLsFinishOrderBottomSheetListener) {

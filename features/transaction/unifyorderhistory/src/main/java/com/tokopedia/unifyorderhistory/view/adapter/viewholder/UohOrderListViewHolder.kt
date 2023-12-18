@@ -3,7 +3,7 @@ package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import coil.load
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.kotlin.extensions.view.gone
@@ -36,15 +36,13 @@ class UohOrderListViewHolder(
     private val actionListener: UohItemAdapter.ActionListener?
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: UohTypeData, position: Int) {
+    fun bind(item: UohTypeData) {
         if (item.dataObject is UohListOrder.UohOrders.Order) {
             binding.clDataProduct.visible()
-            ImageHandler.loadImage(
-                itemView.context,
-                binding.icUohVertical,
-                item.dataObject.metadata.verticalLogo,
-                null
-            )
+
+            binding.icUohVertical.clearImage()
+            binding.icUohVertical.load(item.dataObject.metadata.verticalLogo)
+
             binding.tvUohCategories.text = item.dataObject.metadata.verticalLabel
             binding.tvUohDate.text = item.dataObject.metadata.paymentDateStr
 
@@ -134,7 +132,7 @@ class UohOrderListViewHolder(
 
             if (item.dataObject.metadata.dotMenus.isNotEmpty()) {
                 binding.ivKebabMenu.setOnClickListener {
-                    actionListener?.onKebabMenuClicked(item.dataObject, position)
+                    actionListener?.onKebabMenuClicked(item.dataObject)
                 }
             }
 
@@ -184,14 +182,13 @@ class UohOrderListViewHolder(
             }
 
             binding.clDataProduct.setOnClickListener {
-                actionListener?.onListItemClicked(item.dataObject, position)
+                actionListener?.onListItemClicked(item.dataObject)
             }
 
             binding.uohBtnAction1.setOnClickListener {
                 if (item.dataObject.metadata.buttons.isNotEmpty()) {
                     actionListener?.onActionButtonClicked(
                         item.dataObject,
-                        position,
                         FIRST_BUTTON_INDEX
                     )
                 }
@@ -201,7 +198,6 @@ class UohOrderListViewHolder(
                 if (item.dataObject.metadata.buttons.size > 1) {
                     actionListener?.onActionButtonClicked(
                         item.dataObject,
-                        position,
                         SECOND_BUTTON_INDEX
                     )
                 }
@@ -209,7 +205,7 @@ class UohOrderListViewHolder(
 
             setupReviewRatingWidget(item.dataObject, item.dataObject.orderUUID)
 
-            actionListener?.trackViewOrderCard(item.dataObject, position)
+            actionListener?.trackViewOrderCard(item.dataObject)
         }
     }
 
@@ -230,7 +226,6 @@ class UohOrderListViewHolder(
                                 componentData = componentData,
                                 onRatingChanged = { appLink ->
                                     actionListener?.onReviewRatingClicked(
-                                        index = bindingAdapterPosition,
                                         order = order,
                                         appLink = appLink
                                     )

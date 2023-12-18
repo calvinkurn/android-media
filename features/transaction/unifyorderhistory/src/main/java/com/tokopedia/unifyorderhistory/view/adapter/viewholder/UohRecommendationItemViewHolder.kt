@@ -31,10 +31,7 @@ class UohRecommendationItemViewHolder(private val binding: UohRecommendationItem
                     item.dataObject,
                     object : ViewHintListener {
                         override fun onViewHint() {
-                            actionListener?.trackProductViewRecommendation(
-                                item.dataObject,
-                                position
-                            )
+                            actionListener?.trackProductViewRecommendation(item.dataObject, position)
                         }
                     }
                 )
