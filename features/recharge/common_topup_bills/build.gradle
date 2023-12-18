@@ -81,12 +81,14 @@ dependencies {
     //Unit Test
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     //Instrument Test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.assertJCore
     androidTestImplementation(rootProject.ext.testDependencies.androidRulesVersion) {
         exclude module: 'support-annotations'
     }
