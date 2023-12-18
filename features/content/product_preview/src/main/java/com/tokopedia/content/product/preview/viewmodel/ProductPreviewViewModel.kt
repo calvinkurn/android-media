@@ -45,14 +45,14 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     fun submitAction(action: ProductPreviewUiAction) {
         when (action) {
-            InitializeProductMainData -> handleInitializeProductMainData()
+            is InitializeProductMainData -> handleInitializeProductMainData(action.data)
             is ProductSelected -> handleProductSelected(action.position)
         }
     }
 
-    private fun handleInitializeProductMainData() {
-        _productContentState.value = mockData().content
-        _productIndicatorState.value = mockData().indicator
+    private fun handleInitializeProductMainData(data: ProductContentUiModel) {
+        _productContentState.value = data.content
+        _productIndicatorState.value = data.indicator
     }
 
     private fun handleProductSelected(position: Int) {
@@ -68,144 +68,3 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 }
-
-/**
- * TODO: implement real data
- */
-fun mockData() = ProductContentUiModel(
-    productId = "productID_123",
-    content = listOf(
-        ContentUiModel(
-            type = ContentUiModel.MediaType.Video,
-            url = "https://vod-stream.tokopedia.net/view/adaptive.m3u8?id=f01396ff94ae71eeae0987c7371d0102"
-        ),
-        ContentUiModel(
-            type = ContentUiModel.MediaType.Image,
-            url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/12/12/ca158fc4-699a-495e-aaac-229b4f8ed1aa.png"
-        ),
-        ContentUiModel(
-            type = ContentUiModel.MediaType.Unknown,
-            url = "https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/2/4/6a3db555-a5e9-4bc1-9c17-1753ad105b92.jpg"
-        ),
-        ContentUiModel(
-            type = ContentUiModel.MediaType.Image,
-            url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/9/14/9d770fbf-2bbd-4206-8511-56df29a6f4be.png"
-        ),
-        ContentUiModel(
-            type = ContentUiModel.MediaType.Image,
-            url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/8/25/1f559a48-03f3-4656-b77f-3caf0fcc94d2.png"
-        ),
-        ContentUiModel(
-            type = ContentUiModel.MediaType.Unknown,
-            url = "https://vod-stream.tokopedia.net/view/adaptive.m3u8?id=f01396ff94ae71eeae0987c7371d0102"
-        ),
-        ContentUiModel(
-            type = ContentUiModel.MediaType.Image,
-            url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/12/12/ca158fc4-699a-495e-aaac-229b4f8ed1aa.png"
-        ),
-        ContentUiModel(
-            type = ContentUiModel.MediaType.Image,
-            url = "https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/2/4/6a3db555-a5e9-4bc1-9c17-1753ad105b92.jpg"
-        ),
-        ContentUiModel(
-            type = ContentUiModel.MediaType.Unknown,
-            url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/9/14/9d770fbf-2bbd-4206-8511-56df29a6f4be.png"
-        ),
-        ContentUiModel(
-            type = ContentUiModel.MediaType.Image,
-            url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/8/25/1f559a48-03f3-4656-b77f-3caf0fcc94d2.png"
-        )
-    ),
-    indicator = listOf(
-        ProductIndicatorUiModel(
-            indicatorId = "1",
-            selected = true,
-            variantName = "Variant 1",
-            content = ContentUiModel(
-                type = ContentUiModel.MediaType.Video,
-                url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/12/12/ca158fc4-699a-495e-aaac-229b4f8ed1aa.png"
-            )
-        ),
-        ProductIndicatorUiModel(
-            indicatorId = "2",
-            selected = false,
-            variantName = "Variant 2",
-            content = ContentUiModel(
-                type = ContentUiModel.MediaType.Image,
-                url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/12/12/ca158fc4-699a-495e-aaac-229b4f8ed1aa.png"
-            )
-        ),
-        ProductIndicatorUiModel(
-            indicatorId = "3",
-            selected = false,
-            variantName = "Variant 3",
-            content = ContentUiModel(
-                type = ContentUiModel.MediaType.Image,
-                url = "https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/2/4/6a3db555-a5e9-4bc1-9c17-1753ad105b92.jpg"
-            )
-        ),
-        ProductIndicatorUiModel(
-            indicatorId = "4",
-            selected = false,
-            variantName = "Variant 4",
-            content = ContentUiModel(
-                type = ContentUiModel.MediaType.Image,
-                url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/9/14/9d770fbf-2bbd-4206-8511-56df29a6f4be.png"
-            )
-        ),
-        ProductIndicatorUiModel(
-            indicatorId = "5",
-            selected = false,
-            variantName = "Variant 5",
-            content = ContentUiModel(
-                type = ContentUiModel.MediaType.Image,
-                url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/8/25/1f559a48-03f3-4656-b77f-3caf0fcc94d2.png"
-            )
-        ),
-        ProductIndicatorUiModel(
-            indicatorId = "6",
-            selected = false,
-            variantName = "Variant 6",
-            content = ContentUiModel(
-                type = ContentUiModel.MediaType.Image,
-                url = "https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/2/4/6a3db555-a5e9-4bc1-9c17-1753ad105b92.jpg"
-            )
-        ),
-        ProductIndicatorUiModel(
-            indicatorId = "7",
-            selected = false,
-            variantName = "Variant 7",
-            content = ContentUiModel(
-                type = ContentUiModel.MediaType.Image,
-                url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/9/14/9d770fbf-2bbd-4206-8511-56df29a6f4be.png"
-            )
-        ),
-        ProductIndicatorUiModel(
-            indicatorId = "8",
-            selected = false,
-            variantName = "Variant 8",
-            content = ContentUiModel(
-                type = ContentUiModel.MediaType.Image,
-                url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/8/25/1f559a48-03f3-4656-b77f-3caf0fcc94d2.png"
-            )
-        ),
-        ProductIndicatorUiModel(
-            indicatorId = "9",
-            selected = false,
-            variantName = "Variant 9",
-            content = ContentUiModel(
-                type = ContentUiModel.MediaType.Video,
-                url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/12/12/ca158fc4-699a-495e-aaac-229b4f8ed1aa.png"
-            )
-        ),
-        ProductIndicatorUiModel(
-            indicatorId = "10",
-            selected = false,
-            variantName = "Variant 10",
-            content = ContentUiModel(
-                type = ContentUiModel.MediaType.Image,
-                url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/12/12/ca158fc4-699a-495e-aaac-229b4f8ed1aa.png"
-            )
-        )
-    )
-)

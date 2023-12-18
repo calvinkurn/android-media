@@ -71,6 +71,7 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.common_tradein.utils.TradeInPDPHelper
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.product.preview.view.activity.ProductPreviewActivity
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
 import com.tokopedia.dialog.DialogUnify
@@ -216,6 +217,7 @@ import com.tokopedia.product.detail.data.util.VariantMapper
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.di.ProductDetailComponent
+import com.tokopedia.product.detail.mapper.ProductDetailMapper
 import com.tokopedia.product.detail.tracking.APlusContentTracking
 import com.tokopedia.product.detail.tracking.BMGMTracking
 import com.tokopedia.product.detail.tracking.CommonTracker
@@ -487,6 +489,9 @@ open class DynamicProductDetailFragment :
 
     @Inject
     lateinit var affiliateCookieHelper: dagger.Lazy<AffiliateCookieHelper>
+
+    @Inject
+    lateinit var productDetailMapper: ProductDetailMapper
 
     private var sharedViewModel: ProductDetailSharedViewModel? = null
     private var screenshotDetector: ScreenshotDetector? = null
@@ -2311,21 +2316,29 @@ open class DynamicProductDetailFragment :
     override fun onImageClicked(position: Int) {
         val dynamicProductInfoData = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
 
-        activity?.let {
-            val items = dynamicProductInfoData.data.getGalleryItems()
-            if (items.isEmpty()) return
-            val intent = ProductDetailGalleryActivity.createIntent(
-                context = it,
-                productDetailGallery = ProductDetailGallery(
-                    productId = dynamicProductInfoData.basic.productID,
-                    userId = viewModel.userId,
-                    page = ProductDetailGallery.Page.ProductDetail,
-                    items = items,
-                    selectedId = position.toString()
-                )
+//        activity?.let {
+//            val items = dynamicProductInfoData.data.getGalleryItems()
+//            if (items.isEmpty()) return
+//            val intent = ProductDetailGalleryActivity.createIntent(
+//                context = it,
+//                productDetailGallery = ProductDetailGallery(
+//                    productId = dynamicProductInfoData.basic.productID,
+//                    userId = viewModel.userId,
+//                    page = ProductDetailGallery.Page.ProductDetail,
+//                    items = items,
+//                    selectedId = position.toString()
+//                )
+//            )
+//            startActivity(intent)
+//        }
+        val intent = ProductPreviewActivity.createIntent(
+            context = requireActivity(),
+            productContentData = productDetailMapper.mapProductDetailToProductPreview(
+                data = dynamicProductInfoData,
+                position = position,
             )
-            startActivity(intent)
-        }
+        )
+        startActivity(intent)
     }
 
     override fun txtTradeinClicked(componentTrackDataModel: ComponentTrackDataModel) {

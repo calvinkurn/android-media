@@ -87,6 +87,8 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
         }
     }
 
+    private var autoScrollFirstOpenContent = true
+
     override fun getScreenName() = TAG
 
     override fun onCreateView(
@@ -102,8 +104,6 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         setupObservers()
-
-        viewModel.submitAction(ProductPreviewUiAction.InitializeProductMainData)
     }
 
     private fun setupViews() {
@@ -145,6 +145,10 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
         if (prev == state) return
 
         productContentAdapter.updateData(state)
+        if (autoScrollFirstOpenContent) {
+            binding.rvContentProduct.scrollToPosition(productContentAdapter.selectedPosition())
+            autoScrollFirstOpenContent = false
+        }
     }
 
     private fun renderIndicator(
@@ -156,14 +160,25 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
         try {
             val selectedData = state.firstOrNull { it.selected }
             val position = state.indexOf(selectedData)
-            binding.tvIndicatorLabel.apply {
-                visible()
-                text = String.format(
-                    getString(contentproductpreviewR.string.text_label_place_holder),
-                    position.plus(1),
-                    state.size,
-                    state[position].variantName
-                )
+            if (state[position].variantName.isEmpty()) {
+                binding.tvIndicatorLabel.apply {
+                    visible()
+                    text = String.format(
+                        getString(contentproductpreviewR.string.text_label_place_holder_empty_variant),
+                        position.plus(1),
+                        state.size,
+                    )
+                }
+            } else {
+                binding.tvIndicatorLabel.apply {
+                    visible()
+                    text = String.format(
+                        getString(contentproductpreviewR.string.text_label_place_holder),
+                        position.plus(1),
+                        state.size,
+                        state[position].variantName
+                    )
+                }
             }
         } catch (_: Exception) {
             binding.tvIndicatorLabel.gone()
