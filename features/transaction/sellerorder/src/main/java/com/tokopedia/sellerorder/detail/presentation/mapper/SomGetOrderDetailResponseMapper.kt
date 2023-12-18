@@ -117,12 +117,12 @@ object SomGetOrderDetailResponseMapper {
     ): List<AddOnSummaryUiModel.AddonItemUiModel> {
         return orderDetails.map { orderDetail ->
             AddOnSummaryUiModel.AddonItemUiModel(
-                priceText = orderDetail.productPrice,
-                quantity = orderDetail.productQty,
+                priceText = orderDetail.totalPriceText,
+                quantity = orderDetail.quantity,
                 addonsId = orderDetail.productId.toString(),
                 addOnsName = orderDetail.productName,
                 type = String.EMPTY,
-                addOnsThumbnailUrl = orderDetail.picture,
+                addOnsThumbnailUrl = orderDetail.thumbnail,
                 toStr = String.EMPTY,
                 fromStr = String.EMPTY,
                 message = String.EMPTY,
@@ -132,7 +132,7 @@ object SomGetOrderDetailResponseMapper {
                 infoLink = String.EMPTY,
                 tips = String.EMPTY,
                 orderId = orderId,
-                orderDetailId = orderDetail.orderDtlId.toString()
+                orderDetailId = orderDetail.orderDetailId.toString()
             )
         }
     }

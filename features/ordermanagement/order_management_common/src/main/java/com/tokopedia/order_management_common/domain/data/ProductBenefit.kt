@@ -16,23 +16,23 @@ data class ProductBenefit(
     val orderDetail: List<OrderDetail> = listOf()
 ) {
     data class OrderDetail(
-        @SerializedName("order_dtl_id")
+        @SerializedName("order_detail_id")
         @Expose
-        val orderDtlId: Long = 0,
-        @SerializedName("product_id")
+        val orderDetailId: Long = 0,
+        @SerializedName(value = "product_id", alternate = ["id"])
         @Expose
         val productId: Long = 0,
-        @SerializedName("product_name")
+        @SerializedName(value = "product_name", alternate = ["name"])
         @Expose
         val productName: String = "",
-        @SerializedName("picture")
+        @SerializedName("thumbnail")
         @Expose
-        val picture: String = "",
-        @SerializedName("product_price")
+        val thumbnail: String = "",
+        @SerializedName(value = "total_price_text", alternate = ["price_text"])
         @Expose
-        val productPrice: String = "",
-        @SerializedName("product_qty")
+        val totalPriceText: String = "",
+        @SerializedName("quantity")
         @Expose
-        val productQty: Int = 0
+        val quantity: Int = 0
     )
 }

@@ -478,12 +478,12 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                       label
                       icon_url
                       order_detail {
+                        order_detail_id
                         product_id
                         product_name
-                        picture
-                        snapshot_url
-                        product_qty
-                        product_price
+                        thumbnail
+                        quantity
+                        total_price_text
                       }
                     }
                   }

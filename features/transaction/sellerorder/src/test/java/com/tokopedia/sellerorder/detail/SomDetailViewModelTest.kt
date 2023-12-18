@@ -124,28 +124,28 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
                             label = "Hadiah",
                             orderDetail = listOf(
                                 ProductBenefit.OrderDetail(
-                                    orderDtlId = 1234567890,
+                                    orderDetailId = 1234567890,
                                     productId = 987654321,
                                     productName = "Bahan Bakar",
-                                    picture = "https://www.tokopedia.com/img/patrick_terbakar.png",
-                                    productPrice = "Rp0",
-                                    productQty = 1
+                                    thumbnail = "https://www.tokopedia.com/img/patrick_terbakar.png",
+                                    totalPriceText = "Rp0",
+                                    quantity = 1
                                 ),
                                 ProductBenefit.OrderDetail(
-                                    orderDtlId = 1234567891,
+                                    orderDetailId = 1234567891,
                                     productId = 987654322,
                                     productName = "Bahan Goreng",
-                                    picture = "https://www.tokopedia.com/img/patrick_tergoreng.png",
-                                    productPrice = "Rp0",
-                                    productQty = 1
+                                    thumbnail = "https://www.tokopedia.com/img/patrick_tergoreng.png",
+                                    totalPriceText = "Rp0",
+                                    quantity = 1
                                 ),
                                 ProductBenefit.OrderDetail(
-                                    orderDtlId = 1234567892,
+                                    orderDetailId = 1234567892,
                                     productId = 987654323,
                                     productName = "Bahan Rebus",
-                                    picture = "https://www.tokopedia.com/img/patrick_terrebus.png",
-                                    productPrice = "Rp0",
-                                    productQty = 1
+                                    thumbnail = "https://www.tokopedia.com/img/patrick_terrebus.png",
+                                    totalPriceText = "Rp0",
+                                    quantity = 1
                                 )
                             )
                         )
@@ -258,28 +258,28 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
                             label = "Hadiah",
                             orderDetail = listOf(
                                 ProductBenefit.OrderDetail(
-                                    orderDtlId = 1234567890,
+                                    orderDetailId = 1234567890,
                                     productId = 987654321,
                                     productName = "Bahan Bakar",
-                                    picture = "https://www.tokopedia.com/img/patrick_terbakar.png",
-                                    productPrice = "Rp0",
-                                    productQty = 1
+                                    thumbnail = "https://www.tokopedia.com/img/patrick_terbakar.png",
+                                    totalPriceText = "Rp0",
+                                    quantity = 1
                                 ),
                                 ProductBenefit.OrderDetail(
-                                    orderDtlId = 1234567891,
+                                    orderDetailId = 1234567891,
                                     productId = 987654322,
                                     productName = "Bahan Goreng",
-                                    picture = "https://www.tokopedia.com/img/patrick_tergoreng.png",
-                                    productPrice = "Rp0",
-                                    productQty = 1
+                                    thumbnail = "https://www.tokopedia.com/img/patrick_tergoreng.png",
+                                    totalPriceText = "Rp0",
+                                    quantity = 1
                                 ),
                                 ProductBenefit.OrderDetail(
-                                    orderDtlId = 1234567892,
+                                    orderDetailId = 1234567892,
                                     productId = 987654323,
                                     productName = "Bahan Rebus",
-                                    picture = "https://www.tokopedia.com/img/patrick_terrebus.png",
-                                    productPrice = "Rp0",
-                                    productQty = 1
+                                    thumbnail = "https://www.tokopedia.com/img/patrick_terrebus.png",
+                                    totalPriceText = "Rp0",
+                                    quantity = 1
                                 )
                             )
                         )

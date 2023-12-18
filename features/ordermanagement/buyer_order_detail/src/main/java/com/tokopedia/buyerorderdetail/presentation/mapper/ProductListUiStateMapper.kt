@@ -789,12 +789,12 @@ object ProductListUiStateMapper {
     ): List<AddOnSummaryUiModel.AddonItemUiModel> {
         return orderDetails.map { orderDetail ->
             AddOnSummaryUiModel.AddonItemUiModel(
-                priceText = orderDetail.productPrice,
-                quantity = orderDetail.productQty,
-                addonsId = orderDetail.orderDtlId.toString(),
+                priceText = orderDetail.totalPriceText,
+                quantity = orderDetail.quantity,
+                addonsId = orderDetail.orderDetailId.toString(),
                 addOnsName = orderDetail.productName,
                 type = String.EMPTY,
-                addOnsThumbnailUrl = orderDetail.picture,
+                addOnsThumbnailUrl = orderDetail.thumbnail,
                 toStr = String.EMPTY,
                 fromStr = String.EMPTY,
                 message = String.EMPTY,
@@ -804,7 +804,7 @@ object ProductListUiStateMapper {
                 infoLink = String.EMPTY,
                 tips = String.EMPTY,
                 orderId = orderId,
-                orderDetailId = orderDetail.orderDtlId.toString()
+                orderDetailId = orderDetail.orderDetailId.toString()
             )
         }
     }

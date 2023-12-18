@@ -385,12 +385,12 @@ class SomGetOrderDetailUseCase @Inject constructor(
                       label
                       icon_url
                       order_detail {
-                        product_id
-                        product_name
-                        picture
-                        snapshot_url
-                        product_qty
-                        product_price
+                        order_detail_id
+                        id
+                        name
+                        thumbnail
+                        quantity
+                        price_text
                       }
                     }
                   }
