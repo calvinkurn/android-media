@@ -230,8 +230,8 @@ open class ThankYouBaseFragment :
     private fun startAnimate() {
         (activity as ThankYouPageActivity).globalNabToolbar.alpha = 0f
         (activity as ThankYouPageActivity).globalNabToolbar.animate().alpha(1f).setDuration(UnifyMotion.T5).start()
-        (activity as ThankYouPageActivity).thanksPageHeaderBackground.alpha = 0f
-        (activity as ThankYouPageActivity).thanksPageHeaderBackground.animate().alpha(1f).setDuration(UnifyMotion.T5).start()
+//        (activity as ThankYouPageActivity).thanksPageHeaderBackground.alpha = 0f
+//        (activity as ThankYouPageActivity).thanksPageHeaderBackground.animate().alpha(1f).setDuration(UnifyMotion.T5).start()
         getBottomContentRecyclerView()?.animate()?.translationY(0f)?.setDuration(UnifyMotion.T5)?.start()
         getBottomContentRecyclerView()?.alpha = 0f
         getBottomContentRecyclerView()?.animate()?.alpha(1f)?.setDuration(UnifyMotion.T5)?.start()

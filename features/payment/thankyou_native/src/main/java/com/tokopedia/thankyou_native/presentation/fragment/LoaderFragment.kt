@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
@@ -28,6 +29,7 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
 import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
 import com.tokopedia.thankyou_native.presentation.activity.IS_V2
+import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCallback
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.unifyprinciples.UnifyMotion
@@ -71,7 +73,7 @@ class LoaderFragment : BaseDaggerFragment() {
         observeViewModel()
         showLoaderView()
         showSuccessLottie()
-        lottieSuccess.hide()
+        (activity as ThankYouPageActivity).findViewById<LottieAnimationView>(R.id.lottieSuccess).hide()
         handler.postDelayed(delayLoadingRunnable, DELAY_MILLIS)
     }
 
@@ -146,15 +148,16 @@ class LoaderFragment : BaseDaggerFragment() {
             callback?.onInvalidThankYouPage()
             return
         } else {
-            lottieSuccess.visible()
-            lottieSuccess.playAnimation()
-            lottieSuccess.addAnimatorListener(object: AnimatorListener {
+            val lottie = (activity as ThankYouPageActivity).findViewById<LottieAnimationView>(R.id.lottieSuccess)
+            lottie.visible()
+            lottie.playAnimation()
+            lottie.addAnimatorListener(object: AnimatorListener {
                 override fun onAnimationStart(animation: Animator) {
 
                 }
 
                 override fun onAnimationEnd(animation: Animator) {
-                    lottieSuccess.animate().alpha(0f).setDuration(UnifyMotion.T5).start()
+//                    (activity as ThankYouPageActivity).findViewById<LottieAnimationView>(R.id.lottieSuccess).animate().alpha(0f).setDuration(UnifyMotion.T5).start()
                     callback?.onThankYouPageDataLoaded(thanksPageData)
                 }
 
@@ -172,6 +175,7 @@ class LoaderFragment : BaseDaggerFragment() {
 
     private fun showLoaderView() {
         if (IS_V2) return
+
         tvWaitForMinute.visible()
         tvProcessingPayment.visible()
         lottieAnimationView.visible()
@@ -183,16 +187,16 @@ class LoaderFragment : BaseDaggerFragment() {
     private fun showSuccessLottie() {
         if (!IS_V2) return
 
-        lottieSuccess.visible()
+        (activity as ThankYouPageActivity).findViewById<LottieAnimationView>(R.id.lottieSuccess).visible()
         lottieTask = prepareSuccessLottieTask()
         addLottieAnimationToView()
     }
 
     private fun hideLoaderView() {
-        if (IS_V2) return
         lottieAnimationView.gone()
         tvWaitForMinute.hide()
         tvProcessingPayment.hide()
+        loaderAnimation.hide()
         triggerHaptics()
     }
 

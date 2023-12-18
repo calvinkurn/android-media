@@ -3,7 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:background="@color/Unify_Background">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieSuccess"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:scaleType="centerCrop"
+        app:lottie_autoPlay="false"
+        app:lottie_fileName="thanks_success_lottie.json"
+        app:lottie_imageAssetsFolder="images"/>
 
     <FrameLayout
         android:id="@+id/thank_parent_view"
@@ -29,8 +39,5 @@
 <!--        android:layout_height="wrap_content"-->
 <!--        android:visibility="gone"-->
 <!--        app:layout_constraintTop_toTopOf="parent"/>-->
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
