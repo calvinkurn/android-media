@@ -438,4 +438,8 @@ produk eksklusif ini.</string>
 
     <string name="content_follow">Follow</string>
     <string name="content_section_timer_title">Berakhir dalam</string>
+
+    <string name="content_video_duration_separator">/</string>
+    <string name="content_video_time_less_than_hour">%d:%02d</string>
+    <string name="content_video_time_hours">%d:%02d:%02d</string>
 </resources>
