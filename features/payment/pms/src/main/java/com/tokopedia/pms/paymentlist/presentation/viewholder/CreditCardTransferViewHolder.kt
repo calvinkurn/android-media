@@ -7,18 +7,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pms.R
+import com.tokopedia.pms.databinding.CreditCardPaymentListItemBinding
 import com.tokopedia.pms.paymentlist.domain.data.BasePaymentModel
 import com.tokopedia.pms.paymentlist.domain.data.CreditCardPaymentModel
 import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFragment.Companion.ACTION_CHEVRON_ACTIONS
 import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFragment.Companion.ACTION_COMPLETE_PAYMENT
 import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFragment.Companion.ACTION_INVOICE_PAGE_REDIRECTION
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import kotlinx.android.synthetic.main.credit_card_payment_list_item.view.*
 
 class CreditCardTransferViewHolder(
     val view: View,
     val actionItemListener: (Int, BasePaymentModel) -> Unit
 ) : RecyclerView.ViewHolder(view) {
+
+    private val binding = CreditCardPaymentListItemBinding.bind(view)
 
     fun bind(element: CreditCardPaymentModel) {
         setCompletePaymentButtonVisibility(element)
@@ -29,29 +31,32 @@ class CreditCardTransferViewHolder(
     }
 
     private fun setCompletePaymentButtonVisibility(element: CreditCardPaymentModel) {
-        if(element.paymentUrl.isNullOrEmpty())
-            view.completePaymentButton.gone()
-        else
-            view.completePaymentButton.visible()
+        if (element.paymentUrl.isNullOrEmpty()) {
+            binding.completePaymentButton.gone()
+        } else {
+            binding.completePaymentButton.visible()
+        }
     }
 
     private fun setHeaderData(element: CreditCardPaymentModel) {
-        view.apply {
+        binding.run {
             cardTitle.text = element.productName
-            cardIcon.urlSrc = if(element.productImage != "") element.productImage else CARD_ICON_URL
+            cardIcon.urlSrc = if (element.productImage != "") element.productImage else CARD_ICON_URL
             tvPaymentTransactionDate.text = element.expiryDate
-            setOnClickListener { actionItemListener(ACTION_INVOICE_PAGE_REDIRECTION, element) }
+            root.setOnClickListener { actionItemListener(ACTION_INVOICE_PAGE_REDIRECTION, element) }
             cardMenu.setOnClickListener { actionItemListener(ACTION_CHEVRON_ACTIONS, element) }
-            completePaymentButton.setOnClickListener{
-                actionItemListener(ACTION_COMPLETE_PAYMENT,element)
+            completePaymentButton.setOnClickListener {
+                actionItemListener(ACTION_COMPLETE_PAYMENT, element)
             }
         }
         setTickerMessage(element.label)
     }
 
     private fun setTickerMessage(label: String) {
-        view.deferredPaymentLabel.run {
-            if (label.isEmpty()) gone() else {
+        binding.deferredPaymentLabel.run {
+            if (label.isEmpty()) {
+                gone()
+            } else {
                 text = label
                 visible()
             }
@@ -59,20 +64,19 @@ class CreditCardTransferViewHolder(
     }
 
     private fun setGatewayData(element: CreditCardPaymentModel) {
-        view.apply {
+        binding.run {
             ivGatewayImage.urlSrc = element.gatewayImage
             tvGatewayName.text = element.gatewayName
         }
-
     }
 
     private fun setAmountData(amount: Int) {
-        view.tvTotalPaymentAmount.text =
+        binding.tvTotalPaymentAmount.text =
             CurrencyFormatUtil.convertPriceValueToIdrFormat(amount, false)
     }
 
     private fun handleActionList(isActionListEmpty: Boolean) =
-        if (isActionListEmpty) view.cardMenu.gone() else view.cardMenu.visible()
+        if (isActionListEmpty) binding.cardMenu.gone() else binding.cardMenu.visible()
 
     companion object {
         private val LAYOUT_ID = R.layout.credit_card_payment_list_item
@@ -85,7 +89,8 @@ class CreditCardTransferViewHolder(
             actionItemListener: (Int, BasePaymentModel) -> Unit
         ) =
             CreditCardTransferViewHolder(
-                inflater.inflate(LAYOUT_ID, parent, false), actionItemListener
+                inflater.inflate(LAYOUT_ID, parent, false),
+                actionItemListener
             )
     }
 }

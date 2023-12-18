@@ -174,6 +174,7 @@ object ProductAdsMapper {
         imageUrl = product.image.mEcs,
         minOrder = product.productMinimumOrder,
         maxOrder = product.maxOrder,
+        warehouseId = product.warehouseId,
         availableStock = product.stock,
         orderQuantity = getAddToCartQuantity(product.id, miniCartData),
         price = product.priceFormat,

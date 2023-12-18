@@ -40,7 +40,7 @@ object DeeplinkMapperTravel {
     }
 
     private fun checkDefaultHotelApplink(deeplink: String): String {
-        return if (deeplink.startsWith(ApplinkConst.HOTEL, true)) {
+        return if (deeplink == ApplinkConst.HOTEL) {
             ApplinkConstInternalTravel.DASHBOARD_HOTEL
         } else {
             deeplink

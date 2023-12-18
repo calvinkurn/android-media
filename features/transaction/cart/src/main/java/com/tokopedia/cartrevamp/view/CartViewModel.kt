@@ -51,6 +51,7 @@ import com.tokopedia.cartrevamp.view.uimodel.AddToCartExternalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartAddOnProductData
 import com.tokopedia.cartrevamp.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cartrevamp.view.uimodel.CartCheckoutButtonState
+import com.tokopedia.cartrevamp.view.uimodel.CartDeleteItemData
 import com.tokopedia.cartrevamp.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartGlobalEvent
 import com.tokopedia.cartrevamp.view.uimodel.CartGroupHolderData
@@ -668,9 +669,7 @@ class CartViewModel @Inject constructor(
         val returnValueMarketplaceProduct = CartCalculator.calculatePriceMarketplaceProduct(
             allCartItemDataList = cartItemDataList,
             cartModel = cartModel,
-            updateCartModel = { newCartModel ->
-                cartModel = newCartModel
-            }
+            isCalculateAddons = true
         )
         totalItemQty += returnValueMarketplaceProduct.first
         subtotalBeforeSlashedPrice += returnValueMarketplaceProduct.second.first
@@ -1005,16 +1004,6 @@ class CartViewModel @Inject constructor(
     fun processGetWishlistV2Data() {
         val requestParams = WishlistV2Params().apply {
             source = SOURCE_CART
-            cartModel.lca?.let { address ->
-                wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
-                    districtId = address.district_id,
-                    cityId = address.city_id,
-                    latitude = address.lat,
-                    longitude = address.long,
-                    postalCode = address.postal_code,
-                    addressId = address.address_id
-                )
-            }
         }
 
         viewModelScope.launch(dispatchers.io) {
@@ -2269,9 +2258,7 @@ class CartViewModel @Inject constructor(
                     CartCalculator.calculatePriceMarketplaceProduct(
                         allCartItemDataList = shopProductList,
                         cartModel = cartModel,
-                        updateCartModel = { newCartModel ->
-                            cartModel = newCartModel
-                        }
+                        isCalculateAddons = false
                     )
                 val subtotalPrice = calculatePriceMarketplaceProduct.second.second.toLong()
                 val shipping = ShippingParam().apply {
@@ -2432,42 +2419,31 @@ class CartViewModel @Inject constructor(
         group.boCode = ""
     }
 
-    fun processDeleteCartItem(
-        removedCartItems: List<CartItemHolderData>,
-        addWishList: Boolean,
-        forceExpandCollapsedUnavailableItems: Boolean = false,
-        isFromGlobalCheckbox: Boolean = false,
-        isFromEditBundle: Boolean = false,
-        listCartStringOrderAndBmGmOfferId: ArrayList<String> = arrayListOf()
-    ) {
+    fun processDeleteCartItem(cartDeleteItemData: CartDeleteItemData) {
         _cartProgressLoading.value = true
         val allCartItemData = CartDataHelper.getAllCartItemData(
             cartDataList.value,
             cartModel
         )
 
-        val removeAllItems = allCartItemData.size == removedCartItems.size
+        val removeAllItems = allCartItemData.size == cartDeleteItemData.removedCartItems.size
         val toBeDeletedCartIds = ArrayList<String>()
-        for (cartItemData in removedCartItems) {
+        for (cartItemData in cartDeleteItemData.removedCartItems) {
             toBeDeletedCartIds.add(cartItemData.cartId)
         }
 
-        deleteCartUseCase.setParams(toBeDeletedCartIds, addWishList)
+        deleteCartUseCase.setParams(toBeDeletedCartIds, cartDeleteItemData.addWishList)
         deleteCartUseCase.execute(
             onSuccess = {
                 _deleteCartEvent.value = DeleteCartEvent.Success(
                     toBeDeletedCartIds,
                     removeAllItems,
-                    forceExpandCollapsedUnavailableItems,
-                    addWishList,
-                    isFromGlobalCheckbox,
-                    isFromEditBundle,
-                    listCartStringOrderAndBmGmOfferId
+                    cartDeleteItemData
                 )
             },
             onError = { throwable ->
                 _deleteCartEvent.value = DeleteCartEvent.Failed(
-                    forceExpandCollapsedUnavailableItems,
+                    cartDeleteItemData.forceExpandCollapsedUnavailableItems,
                     throwable
                 )
             }

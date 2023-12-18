@@ -1,5 +1,6 @@
 package com.tokopedia.applink.user
 
+import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
@@ -20,6 +21,9 @@ object DeeplinkMapperUser {
     const val ROLLENCE_GOTO_KYC_SA = "goto_kyc_sellerapp"
     const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_3"
     const val ROLLENCE_GOTO_LOGIN = "scp_goto_login_and"
+    const val KEY_SCP_DEBUG = "key_force_scp"
+    const val PREF_SCP_DEBUG = "scp_goto_login_and"
+
     const val ROLLENCE_CVSDK_INTEGRATION = "and_cvsdk_intg"
     const val ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE = "android_fundinvest"
     private const val REGISTER_PHONE_NUMBER = 116
@@ -98,11 +102,28 @@ object DeeplinkMapperUser {
         }
     }
 
+    fun Context.getIsEnableSharedPrefScpLogin(): Boolean {
+        val sharedPref = getSharedPreferences(
+            PREF_SCP_DEBUG,
+            Context.MODE_PRIVATE
+        )
+        return sharedPref.getBoolean(
+            KEY_SCP_DEBUG,
+            false
+        )
+    }
+
+    private fun isForceScpLoginForDebug(context: Context) : Boolean {
+        return GlobalConfig.isAllowDebuggingTools() &&
+            GlobalConfig.isSellerApp().not() &&
+            context.getIsEnableSharedPrefScpLogin()
+    }
+
     fun isGotoLoginEnabled(): Boolean {
         return RemoteConfigInstance.getInstance()
             .abTestPlatform
             .getString(ROLLENCE_GOTO_LOGIN)
-            .isNotEmpty()
+            .isNotEmpty() || isForceScpLoginForDebug(RemoteConfigInstance.getInstance().abTestPlatform.context)
     }
 
     fun isProfileManagementM2Activated(): Boolean {

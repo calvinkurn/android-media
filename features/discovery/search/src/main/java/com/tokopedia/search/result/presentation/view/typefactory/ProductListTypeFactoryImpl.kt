@@ -139,7 +139,7 @@ class ProductListTypeFactoryImpl(
     private val inspirationProductListener: InspirationProductListener,
     private val reimagineSearch2Component: Search2Component = Search2Component.CONTROL,
     private val reimagineSearch3ProductCard: Search3ProductCard = Search3ProductCard.CONTROL,
-) : BaseAdapterTypeFactory(), ProductListTypeFactory {
+    ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
     override fun type(cpmDataView: CpmDataView): Int {
         return if (reimagineSearch2Component.isReimagineShopAds()) {
@@ -391,8 +391,12 @@ class ProductListTypeFactoryImpl(
             InspirationProductTitleViewHolder.LAYOUT -> InspirationProductTitleViewHolder(
                 view,
                 inspirationCarouselListener,
+                reimagineSearch3ProductCard.isReimagineProductCard(),
             )
-            VerticalSeparatorViewHolder.LAYOUT -> VerticalSeparatorViewHolder(view)
+            VerticalSeparatorViewHolder.LAYOUT -> VerticalSeparatorViewHolder(
+                view,
+                reimagineSearch3ProductCard.isReimagineProductCard(),
+            )
 
             else -> super.createViewHolder(view, type)
         }

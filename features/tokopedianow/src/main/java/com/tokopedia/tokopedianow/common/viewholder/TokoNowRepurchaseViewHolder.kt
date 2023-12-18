@@ -32,6 +32,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class TokoNowRepurchaseViewHolder(
     itemView: View,
     private val productCardListener: TokoNowRepurchaseProductListener?,
+    private val listener: TokoNowRepurchaseListener?,
     private val tokoNowView: TokoNowView? = null
 ) : AbstractViewHolder<TokoNowRepurchaseUiModel>(itemView) {
 
@@ -97,6 +98,7 @@ class TokoNowRepurchaseViewHolder(
 
         cardViewChevron?.setOnClickListener {
             goToRepurchasePage()
+            listener?.onChevronClicked()
         }
 
         adapter.submitList(data.productList)
@@ -181,5 +183,9 @@ class TokoNowRepurchaseViewHolder(
     private fun setSubtitleColor(resId: Int) {
         val color = ContextCompat.getColor(itemView.context, resId)
         binding?.textSubtitle?.setTextColor(color)
+    }
+
+    interface TokoNowRepurchaseListener {
+        fun onChevronClicked()
     }
 }

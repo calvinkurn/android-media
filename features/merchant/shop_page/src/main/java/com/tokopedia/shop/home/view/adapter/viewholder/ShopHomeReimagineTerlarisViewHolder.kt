@@ -16,6 +16,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopHomeTerlarisWidgetTrackerDataModel
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.LayoutShopHomeV4TerlarisWidgetBinding
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.view.adapter.ShopHomeV4TerlarisAdapter
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
@@ -26,7 +27,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeReimagineTerlarisViewHolder(
     itemView: View,
-    private val listener: ShopHomeV4TerlarisViewHolderListener
+    private val listener: ShopHomeV4TerlarisViewHolderListener,
+    private val recyclerviewPoolListener: RecyclerviewPoolListener
 ) : AbstractViewHolder<ShopHomeCarousellProductUiModel>(itemView) {
 
     interface ShopHomeV4TerlarisViewHolderListener {
@@ -94,6 +96,7 @@ class ShopHomeReimagineTerlarisViewHolder(
                 isNestedScrollingEnabled = false
                 layoutManager = linearLayoutManager
                 adapter = terlarisWidgetAdapter
+                setRecycledViewPool(recyclerviewPoolListener.parentPool)
             }
             overrideWidgetHeaderTheme(colorSchema)
             val productCarouselData = getProductCarouselData(productList = it.productList)
