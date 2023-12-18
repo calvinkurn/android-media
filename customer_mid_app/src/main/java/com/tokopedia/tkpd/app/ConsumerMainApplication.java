@@ -497,12 +497,11 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     private void initLogManager() {
         LogManager.init(ConsumerMainApplication.this, new LoggerProxy() {
-            final ServerLogLoggerInterface logger = ServerLogLogger.getInstance(ConsumerMainApplication.this);
-
-            @Nullable
+            @NonNull
             @Override
             public InternalLoggerInterface getInternalLogger() {
-                return data -> logger.putServerLoggerEvent(data);
+                ServerLogLoggerInterface logger = ServerLogLogger.getInstance(ConsumerMainApplication.this);
+                return logger::putServerLoggerEvent;
             }
 
             final AESEncryptorECB encryptor = new AESEncryptorECB();

@@ -190,12 +190,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
 
     private void initLogManager(){
         LogManager.init(SellerMainApplication.this, new LoggerProxy() {
-            final ServerLogLoggerInterface logger = ServerLogLogger.getInstance(SellerMainApplication.this);
 
-            @Nullable
+            @NonNull
             @Override
             public InternalLoggerInterface getInternalLogger() {
-                return data -> logger.putServerLoggerEvent(data);
+                ServerLogLoggerInterface logger = ServerLogLogger.getInstance(SellerMainApplication.this);
+                return logger::putServerLoggerEvent;
             }
 
             final AESEncryptorECB encryptor = new AESEncryptorECB();

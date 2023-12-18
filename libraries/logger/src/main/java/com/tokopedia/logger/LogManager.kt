@@ -3,7 +3,6 @@ package com.tokopedia.logger
 import android.app.Application
 import android.content.Context
 import com.google.gson.Gson
-import com.tokopedia.analyticsdebugger.debugger.ServerLogLogger
 import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicApiDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicSdkDataSource
@@ -13,9 +12,12 @@ import com.tokopedia.logger.model.scalyr.ScalyrConfig
 import com.tokopedia.logger.repository.InternalLoggerInterface
 import com.tokopedia.logger.repository.LoggerRepository
 import com.tokopedia.logger.service.LogWorker
-import com.tokopedia.logger.utils.*
+import com.tokopedia.logger.utils.DataLogConfig
+import com.tokopedia.logger.utils.LoggerReporting
 import com.tokopedia.logger.utils.LoggerUtils.getLogSession
 import com.tokopedia.logger.utils.LoggerUtils.getPartDeviceId
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.logger.utils.globalScopeLaunch
 
 /**
  * Class to wrap the mechanism to send the logging message to server.
