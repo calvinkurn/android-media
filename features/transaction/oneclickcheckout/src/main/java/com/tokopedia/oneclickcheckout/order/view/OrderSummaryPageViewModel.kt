@@ -56,7 +56,6 @@ import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePayme
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.ResultRates
 import com.tokopedia.promousage.data.response.ResultStatus
-import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.promousage.util.PromoUsageRollenceManager
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
@@ -1352,7 +1351,7 @@ class OrderSummaryPageViewModel @Inject constructor(
         orderTotal: OrderTotal,
         orderPromo: OrderPromo,
         orderShipment: OrderShipment
-    ) : Boolean {
+    ): Boolean {
         // check valid total
         val isValidTotal = orderTotal.buttonState == OccButtonState.NORMAL
         // check valid promo
@@ -1363,8 +1362,10 @@ class OrderSummaryPageViewModel @Inject constructor(
             ResultStatus.STATUS_COUPON_LIST_EMPTY
         )
         val isValidPromoStatusCode = orderPromo.entryPointInfo.isSuccess ||
-                (!orderPromo.entryPointInfo.isSuccess
-                        && validStatusCodes.any { code -> code == orderPromo.entryPointInfo.statusCode })
+            (
+                !orderPromo.entryPointInfo.isSuccess &&
+                    validStatusCodes.any { code -> code == orderPromo.entryPointInfo.statusCode }
+                )
         val isValidPromo = isValidPromoState && isValidPromoStatusCode
         // check valid shipment
         val isValidShipment = !orderShipment.isLoading
