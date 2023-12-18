@@ -74,7 +74,7 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
         }
 
         fun bind(productCardModel: ProductCardModel, description: String) {
-            testDescription?.text = description
+            testDescription?.text = "$bindingAdapterPosition $description"
 
             productCardView?.findViewById<CardUnify2?>(
                 productcardR.id.productCardCardUnifyContainer

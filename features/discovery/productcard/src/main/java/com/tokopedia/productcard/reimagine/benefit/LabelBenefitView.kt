@@ -15,6 +15,7 @@ import com.tokopedia.productcard.reimagine.ProductCardLabel
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.productcard.R as productcardR
 
 class LabelBenefitView: FrameLayout {
 
@@ -39,6 +40,7 @@ class LabelBenefitView: FrameLayout {
 
     private fun init(attrs: AttributeSet? = null) {
         text = Typography(context).also {
+            it.id = productcardR.id.productCardLabelBenefitText
             it.textSize = 9f
             it.setWeight(Typography.BOLD)
             it.gravity = Gravity.CENTER

@@ -3,6 +3,7 @@ package com.tokopedia.productcard.test.utils
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Space
+import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
@@ -91,7 +92,8 @@ private class ProductCardInPositionMatcher(
                     // These layouts will always be shown
                     || productCardComponent.id in alwaysShownComponentId
                     // Ignore spaces, barriers, and not visible view helpers
-                    || (productCardComponent is Space)
+                    || productCardComponent is Space
+                    || productCardComponent is Group
             }
         }
     }

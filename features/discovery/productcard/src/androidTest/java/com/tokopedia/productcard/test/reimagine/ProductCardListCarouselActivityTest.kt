@@ -76,7 +76,7 @@ class ProductCardListCarouselActivityTest: AppCompatActivity() {
         }
 
         fun bind(productCardModel: ProductCardModel, description: String) {
-            testDescription?.text = description
+            testDescription?.text = "$bindingAdapterPosition $description"
 
             productCardView?.run {
                 setProductModel(productCardModel)

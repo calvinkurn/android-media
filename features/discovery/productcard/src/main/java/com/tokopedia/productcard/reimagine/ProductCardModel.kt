@@ -1,7 +1,5 @@
 package com.tokopedia.productcard.reimagine
 
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-
 data class ProductCardModel(
     val imageUrl: String = "",
     val isAds: Boolean = false,

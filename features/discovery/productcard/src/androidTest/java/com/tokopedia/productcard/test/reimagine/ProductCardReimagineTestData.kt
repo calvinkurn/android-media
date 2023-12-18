@@ -10,6 +10,7 @@ import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.reimagine.ProductCardModel.ShopBadge
 import com.tokopedia.productcard.test.utils.freeOngkirImageUrl
 import com.tokopedia.productcard.test.utils.isDisplayedWithText
+import com.tokopedia.productcard.test.utils.isDisplayedWithTextAndImage
 import com.tokopedia.productcard.test.utils.longProductName
 import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
 import com.tokopedia.productcard.test.utils.productImageUrl
@@ -36,10 +37,9 @@ internal val productCardReimagineTestData = listOf(
     shopSectionWithoutBadge(),
     shopSectionWithoutTitle(),
     bebasOngkir(),
-    ribbon(RED),
-    ribbon(GOLD),
     labelAssignedValue(),
-    productOffers()
+    productOffers(),
+    blur()
 )
 
 private fun imageNamePrice(): ProductCardReimagineMatcher {
@@ -135,7 +135,9 @@ private fun labelBenefit(): ProductCardReimagineMatcher {
         R.id.productCardPrice to isDisplayedWithText(model.price),
         R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
         R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
+
+        R.id.productCardLabelBenefit to isDisplayed(),
+        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
     )
 
     return Triple(model, matcher, "Label benefit (cashback, grosir, etc)")
@@ -159,7 +161,10 @@ private fun rating(): ProductCardReimagineMatcher {
         R.id.productCardPrice to isDisplayedWithText(model.price),
         R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
         R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
+
+        R.id.productCardLabelBenefit to isDisplayed(),
+        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
+
         R.id.productCardCredibility to isDisplayed(),
         R.id.productCardRatingIcon to isDisplayed(),
         R.id.productCardRating to isDisplayedWithText(model.rating),
@@ -190,7 +195,10 @@ private fun labelCredibility(): ProductCardReimagineMatcher {
         R.id.productCardPrice to isDisplayedWithText(model.price),
         R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
         R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
+
+        R.id.productCardLabelBenefit to isDisplayed(),
+        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
+
         R.id.productCardCredibility to isDisplayed(),
         R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
     )
@@ -222,7 +230,10 @@ private fun ratingAndLabelCredibility(): ProductCardReimagineMatcher {
         R.id.productCardPrice to isDisplayedWithText(model.price),
         R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
         R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
+
+        R.id.productCardLabelBenefit to isDisplayed(),
+        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
+
         R.id.productCardCredibility to isDisplayed(),
         R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
         R.id.productCardRatingIcon to isDisplayed(),
@@ -261,7 +272,10 @@ private fun shopSection(): ProductCardReimagineMatcher {
         R.id.productCardPrice to isDisplayedWithText(model.price),
         R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
         R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
+
+        R.id.productCardLabelBenefit to isDisplayed(),
+        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
+
         R.id.productCardCredibility to isDisplayed(),
         R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
         R.id.productCardRatingIcon to isDisplayed(),
@@ -302,7 +316,10 @@ private fun shopSectionWithoutBadge(): ProductCardReimagineMatcher {
         R.id.productCardPrice to isDisplayedWithText(model.price),
         R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
         R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
+
+        R.id.productCardLabelBenefit to isDisplayed(),
+        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
+
         R.id.productCardCredibility to isDisplayed(),
         R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
         R.id.productCardRatingIcon to isDisplayed(),
@@ -342,7 +359,10 @@ private fun shopSectionWithoutTitle(): ProductCardReimagineMatcher {
         R.id.productCardPrice to isDisplayedWithText(model.price),
         R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
         R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
+
+        R.id.productCardLabelBenefit to isDisplayed(),
+        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
+
         R.id.productCardCredibility to isDisplayed(),
         R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
         R.id.productCardRatingIcon to isDisplayed(),
@@ -384,7 +404,10 @@ private fun bebasOngkir(): ProductCardReimagineMatcher {
         R.id.productCardPrice to isDisplayedWithText(model.price),
         R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
         R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
+
+        R.id.productCardLabelBenefit to isDisplayed(),
+        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
+
         R.id.productCardCredibility to isDisplayed(),
         R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
         R.id.productCardRatingIcon to isDisplayed(),
@@ -397,60 +420,6 @@ private fun bebasOngkir(): ProductCardReimagineMatcher {
     )
 
     return Triple(model, matcher, "Free shipping (Bebas ongkir)")
-}
-
-private fun ribbon(type: String): ProductCardReimagineMatcher {
-    val reimagineRibbon = labelGroupRibbon(type)
-    val reimagineBenefitLabel = labelGroupBenefit()
-    val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
-        position = LABEL_REIMAGINE_CREDIBILITY,
-        title = "10 rb+ terjual",
-        type = TEXT_DARK_GREY,
-    )
-    val shopBadge = ProductCardModel.ShopBadge(
-        imageUrl = officialStoreBadgeImageUrl,
-        title = "Shop Name",
-    )
-    val model = ProductCardModel(
-        imageUrl = productImageUrl,
-        name = longProductName,
-        price = "Rp79.000",
-        slashedPrice = "Rp100.000",
-        discountPercentage = 10,
-        labelGroupList = listOf(
-            reimagineRibbon,
-            reimagineBenefitLabel,
-            reimagineCredibilityLabel,
-        ),
-        rating = "4.5",
-        shopBadge = shopBadge,
-        freeShipping = ProductCardModel.FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
-    )
-
-    val matcher = mapOf<Int, Matcher<View?>>(
-        R.id.productCardImage to isDisplayed(),
-        R.id.productCardName to isDisplayedWithText(model.name),
-        R.id.productCardPrice to isDisplayedWithText(model.price),
-        R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
-        R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
-        R.id.productCardCredibility to isDisplayed(),
-        R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
-        R.id.productCardRatingIcon to isDisplayed(),
-        R.id.productCardRating to isDisplayedWithText(model.rating),
-        R.id.productCardRatingDots to isDisplayed(),
-        R.id.productCardShopSection to isDisplayed(),
-        R.id.productCardShopBadge to isDisplayed(),
-        R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
-        R.id.productCardRibbon to isDisplayed(),
-        R.id.productCardRibbonText to isDisplayedWithText(reimagineRibbon.title),
-        R.id.productCardRibbonSlip to isDisplayed(),
-    )
-
-    return Triple(model, matcher, "Ribbon type $type")
 }
 
 private fun labelAssignedValue(): ProductCardReimagineMatcher {
@@ -481,17 +450,18 @@ private fun labelAssignedValue(): ProductCardReimagineMatcher {
         freeShipping = ProductCardModel.FreeShipping(
             imageUrl = freeOngkirImageUrl,
         ),
-        videoUrl = productVideoUrl,
-        hasThreeDots = true,
     )
 
     val matcher = mapOf<Int, Matcher<View?>>(
         R.id.productCardImage to isDisplayed(),
-        R.id.productCardName to isDisplayedWithText(model.name),
+        R.id.productCardName to isDisplayedWithTextAndImage(model.name),
         R.id.productCardPrice to isDisplayedWithText(model.price),
         R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
         R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
+
+        R.id.productCardLabelBenefit to isDisplayed(),
+        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
+
         R.id.productCardCredibility to isDisplayed(),
         R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
         R.id.productCardRatingIcon to isDisplayed(),
@@ -501,15 +471,12 @@ private fun labelAssignedValue(): ProductCardReimagineMatcher {
         R.id.productCardShopBadge to isDisplayed(),
         R.id.productCardShopNameLocation to isDisplayed(),
         R.id.productCardFreeShipping to isDisplayed(),
-        R.id.productCardVideoIdentifier to isDisplayed(),
-        R.id.productCardThreeDots to isDisplayed(),
     )
 
     return Triple(model, matcher, "Label Assigned Value")
 }
 
 private fun productOffers(): ProductCardReimagineMatcher {
-    val reimagineBenefitLabel = labelGroupBenefit()
     val reimagineProductOffers = labelGroupProductOffers()
     val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
         position = LABEL_REIMAGINE_CREDIBILITY,
@@ -526,7 +493,7 @@ private fun productOffers(): ProductCardReimagineMatcher {
         price = "Rp79.000",
         slashedPrice = "Rp100.000",
         discountPercentage = 10,
-        labelGroupList = listOf(reimagineBenefitLabel, reimagineCredibilityLabel, reimagineProductOffers),
+        labelGroupList = listOf(reimagineCredibilityLabel, reimagineProductOffers),
         rating = "4.5",
         shopBadge = shopBadge,
         freeShipping = ProductCardModel.FreeShipping(
@@ -540,7 +507,6 @@ private fun productOffers(): ProductCardReimagineMatcher {
         R.id.productCardPrice to isDisplayedWithText(model.price),
         R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
         R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
         R.id.productCardLabelOffer to isDisplayedWithText(reimagineProductOffers.title),
         R.id.productCardCredibility to isDisplayed(),
         R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
@@ -554,4 +520,66 @@ private fun productOffers(): ProductCardReimagineMatcher {
     )
 
     return Triple(model, matcher, "Product Offers")
+}
+
+private fun blur(): ProductCardReimagineMatcher {
+    val reimagineBenefitLabel = labelGroupBenefit()
+    val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
+        position = LABEL_REIMAGINE_CREDIBILITY,
+        title = "10 rb+ terjual",
+        type = TEXT_DARK_GREY,
+    )
+    val shopBadge = ProductCardModel.ShopBadge(
+        imageUrl = officialStoreBadgeImageUrl,
+        title = "Shop Name paling panjang",
+    )
+
+    val model = ProductCardModel(
+        imageUrl = productImageUrl,
+        name = longProductName,
+        price = "Rp79.000",
+        slashedPrice = "Rp100.000",
+        discountPercentage = 10,
+        isAds = true,
+        labelGroupList = listOf(
+            reimagineBenefitLabel,
+            reimagineCredibilityLabel,
+        ),
+        rating = "4.5",
+        shopBadge = shopBadge,
+        freeShipping = ProductCardModel.FreeShipping(
+            imageUrl = freeOngkirImageUrl,
+        ),
+        isSafeProduct = true,
+        videoUrl = productVideoUrl,
+    )
+
+    val matcher = mapOf<Int, Matcher<View?>>(
+        R.id.productCardImage to isDisplayed(),
+        R.id.productCardName to isDisplayedWithText(""),
+        R.id.productCardPrice to isDisplayedWithText(model.price),
+        R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
+        R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
+
+        R.id.productCardLabelBenefit to isDisplayed(),
+        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
+
+        R.id.productCardCredibility to isDisplayed(),
+        R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
+        R.id.productCardRatingIcon to isDisplayed(),
+        R.id.productCardRating to isDisplayedWithText(model.rating),
+        R.id.productCardRatingDots to isDisplayed(),
+        R.id.productCardShopSection to isDisplayed(),
+        R.id.productCardShopBadge to isDisplayed(),
+        R.id.productCardShopNameLocation to isDisplayed(),
+        R.id.productCardFreeShipping to isDisplayed(),
+
+        R.id.productCardSafeDivider to isDisplayed(),
+        R.id.productCardSafeIcon to isDisplayed(),
+        R.id.productCardSafeTitle to isDisplayed(),
+        R.id.productCardSafeDescription to isDisplayed(),
+        R.id.productCardSafeCheckInfo to isDisplayed(),
+    )
+
+    return Triple(model, matcher, "Blur")
 }
