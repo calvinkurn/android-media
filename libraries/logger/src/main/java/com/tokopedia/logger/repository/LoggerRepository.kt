@@ -3,6 +3,8 @@ package com.tokopedia.logger.repository
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.analyticsdebugger.debugger.ServerLogLogger
+import com.tokopedia.analyticsdebugger.debugger.ServerLogLoggerInterface
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicApiImpl
@@ -33,10 +35,12 @@ class LoggerRepository(
     private val scalyrConfigs: List<ScalyrConfig>,
     private val encrypt: ((String) -> (String))? = null,
     val decrypt: ((String) -> (String))? = null,
-    private val decryptNrKey: ((String) -> (String))? = null
+    private val decryptNrKey: ((String) -> (String))? = null,
+    val internalLogger: ServerLogLoggerInterface? = null
 ) : LoggerRepositoryContract, CoroutineScope {
 
     override suspend fun insert(logger: Logger) {
+        internalLogger?.putServerLoggerEvent(logger)
         var encryptedLogger = logger
         if (encrypt != null) {
             encryptedLogger = logger.copy(message = encrypt.invoke(logger.message))

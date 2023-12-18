@@ -15,10 +15,10 @@ interface ServerLogDao {
     fun insertAll(vararg serverLogDB: ServerLogDB)
 
     @get:Query("SELECT * FROM $SERVER_LOG_TABLE_NAME LIMIT 100")
-    val data: List<ServerLogDao?>?
+    val data: List<ServerLogDB?>?
 
     @Query("SELECT * FROM $SERVER_LOG_TABLE_NAME WHERE data LIKE :keyword ORDER BY timestamp DESC LIMIT 100 OFFSET :offset")
-    fun getData(keyword: String?, offset: Int): List<ServerLogDao?>?
+    fun getData(keyword: String?, offset: Int): List<ServerLogDB?>?
 
     @get:Query("SELECT COUNT(timestamp) FROM $SERVER_LOG_TABLE_NAME")
     val count: Int

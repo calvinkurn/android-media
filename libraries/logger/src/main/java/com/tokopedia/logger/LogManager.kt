@@ -3,6 +3,7 @@ package com.tokopedia.logger
 import android.app.Application
 import android.content.Context
 import com.google.gson.Gson
+import com.tokopedia.analyticsdebugger.debugger.ServerLogLogger
 import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicApiDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicSdkDataSource
@@ -33,8 +34,9 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
             loggerReporting.partDeviceId = getPartDeviceId(application)
             loggerReporting.versionName = loggerProxy.versionName
             loggerReporting.versionCode = loggerProxy.versionCode
-            val installer: String = application.packageManager.getInstallerPackageName(application.packageName)
-                ?: ""
+            val installer: String =
+                application.packageManager.getInstallerPackageName(application.packageName)
+                    ?: ""
             loggerReporting.installer = installer
             loggerReporting.packageName = application.packageName
             loggerReporting.debug = loggerProxy.isDebug
@@ -51,7 +53,8 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
             val logNewRelicConfigString: String = loggerProxy.newRelicConfig
             val logEmbraceConfigString: String = loggerProxy.embraceConfig
             if (logScalyrConfigString.isNotEmpty()) {
-                val dataLogConfigScalyr = Gson().fromJson(logScalyrConfigString, DataLogConfig::class.java)
+                val dataLogConfigScalyr =
+                    Gson().fromJson(logScalyrConfigString, DataLogConfig::class.java)
                 if (dataLogConfigScalyr != null && dataLogConfigScalyr.isEnabled && loggerProxy.versionCode >= dataLogConfigScalyr.appVersionMin && dataLogConfigScalyr.tags != null) {
                     val queryLimit = dataLogConfigScalyr.queryLimits
                     if (queryLimit != null) {
@@ -61,7 +64,8 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
                 }
             }
             if (logNewRelicConfigString.isNotEmpty()) {
-                val dataLogConfigNewRelic = Gson().fromJson(logNewRelicConfigString, DataLogConfig::class.java)
+                val dataLogConfigNewRelic =
+                    Gson().fromJson(logNewRelicConfigString, DataLogConfig::class.java)
                 if (dataLogConfigNewRelic != null && dataLogConfigNewRelic.tags != null &&
                     dataLogConfigNewRelic.isEnabled && loggerProxy.versionCode >= dataLogConfigNewRelic.appVersionMin
                 ) {
@@ -83,7 +87,8 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
             }
 
             if (logEmbraceConfigString.isNotEmpty()) {
-                val dataLogConfigEmbrace = Gson().fromJson(logEmbraceConfigString, DataLogConfig::class.java)
+                val dataLogConfigEmbrace =
+                    Gson().fromJson(logEmbraceConfigString, DataLogConfig::class.java)
                 if (dataLogConfigEmbrace != null && dataLogConfigEmbrace.tags != null &&
                     dataLogConfigEmbrace.isEnabled && loggerProxy.versionCode >= dataLogConfigEmbrace.appVersionMin
                 ) {
@@ -119,7 +124,8 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
                 getScalyrConfigList(context),
                 loggerProxy.encrypt,
                 loggerProxy.decrypt,
-                loggerProxy.decryptNrKey
+                loggerProxy.decryptNrKey,
+                ServerLogLogger.getInstance(application)
             )
             loggerRepository = loggerRepoNew
             return loggerRepoNew
