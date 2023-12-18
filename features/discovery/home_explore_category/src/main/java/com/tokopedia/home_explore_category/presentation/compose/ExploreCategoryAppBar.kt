@@ -68,6 +68,6 @@ fun ExploreCategoryAppBar(
 fun ExploreCategoryAppBarPreview() {
     ExploreCategoryAppBar(
         backgroundColor = NestNN.light._50,
-        title = stringResource(id = R.string.title_browse_all_category)
+        title = stringResource(id = R.string.title_home_browse_all_category)
     )
 }

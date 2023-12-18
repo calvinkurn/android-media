@@ -82,7 +82,7 @@ class ExploreCategoryActivity : BaseActivity(), HasComponent<ExploreCategoryComp
                     topBar = {
                         ExploreCategoryAppBar(
                             modifier = Modifier.height(48.dp),
-                            title = stringResource(id = home_explore_categoryR.string.title_browse_all_category),
+                            title = stringResource(id = home_explore_categoryR.string.title_home_browse_all_category),
                             navigationClick = {
                                 finish()
                             },

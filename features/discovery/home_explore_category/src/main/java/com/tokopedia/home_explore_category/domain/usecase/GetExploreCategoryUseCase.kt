@@ -43,7 +43,7 @@ class GetExploreCategoryUseCase @Inject constructor(
 
     suspend fun execute(): ExploreCategoryResultUiModel {
         graphqlUseCase.setRequestParams(createRequestParams())
-        return exploreCategoryMapper.mapToExploreCategoryUiModelList(
+        return exploreCategoryMapper.mapToExploreCategoryUiModelListTemp(
             graphqlUseCase.executeOnBackground()
         )
     }

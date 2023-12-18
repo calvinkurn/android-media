@@ -32,7 +32,7 @@ import javax.inject.Inject
 
 class ExploreCategoryAnalytics @Inject constructor(
     private val userSession: UserSessionInterface
-) {
+): BaseTrackerConst() {
 
     private fun createEventMap(
         event: String,
@@ -108,17 +108,17 @@ class ExploreCategoryAnalytics @Inject constructor(
             val creativeSlot = (position + Int.ONE).toString()
 
             putParcelableArrayList(
-                BaseTrackerConst.Promotion.KEY,
+                Promotion.KEY,
                 arrayListOf(
                     Bundle().also {
                         it.putString(
                             CREATIVE_NAME,
                             subExploreCategory.name
                         )
-                        it.putString(BaseTrackerConst.Promotion.CREATIVE_SLOT, creativeSlot)
-                        it.putString(BaseTrackerConst.Promotion.ITEM_ID, subExploreCategory.id)
+                        it.putString(Promotion.CREATIVE_SLOT, creativeSlot)
+                        it.putString(Promotion.ITEM_ID, subExploreCategory.id)
                         it.putString(
-                            BaseTrackerConst.Promotion.ITEM_NAME,
+                            Promotion.ITEM_NAME,
                             categoryName
                         )
                     }
@@ -141,21 +141,23 @@ class ExploreCategoryAnalytics @Inject constructor(
         val trackingBuilder = BaseTrackerBuilder()
         val creativeSlot = (position + Int.ONE).toString()
 
-        val listPromotions = arrayListOf(
-            BaseTrackerConst.Promotion(
+        val promotionList = listOf(
+            Promotion(
                 creative = subExploreCategory.name,
                 position = creativeSlot,
                 id = subExploreCategory.id,
-                name = categoryName
+                name = categoryName,
+                promoIds = Label.NONE,
+                promoCodes = Label.NONE,
             )
         )
 
         return trackingBuilder.constructBasicPromotionView(
             event = PROMO_VIEW,
-            eventCategory = "impression ${subExploreCategory.name}",
-            eventAction = ALL_CATEGORY_PAGE,
+            eventAction = "impression $categoryName",
+            eventCategory = ALL_CATEGORY_PAGE,
             eventLabel = subExploreCategory.id,
-            promotions = listPromotions
+            promotions = promotionList
         ).appendBusinessUnit(
             HOME_AND_BROWSE
         ).appendCurrentSite(

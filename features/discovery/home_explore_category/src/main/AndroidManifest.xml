@@ -5,7 +5,7 @@
     <application>
         <activity
             android:name=".presentation.activity.ExploreCategoryActivity"
-            android:label="@string/title_browse_all_category"
+            android:label="@string/title_home_browse_all_category"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
             android:windowSoftInputMode="adjustNothing"
