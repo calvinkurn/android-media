@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -150,7 +151,9 @@ fun ExploreCategoryListGrid(
             .fillMaxSize()
             .padding(start = horizontalPadding, end = horizontalPadding, bottom = 8.dp)
     ) {
-        itemsIndexed(categories) { groupIndex, row ->
+        itemsIndexed(categories, key = { groupIndex, row ->
+            groupIndex.toString()
+        }) { groupIndex, row ->
 
             var categoryName by remember {
                 mutableStateOf("")
@@ -237,8 +240,10 @@ fun ExploreCategoryListGrid(
                 }
             }
 
-            val selectedCategory = remember(row) {
-                row.find { it.isSelected }
+            val selectedCategory by remember(row) {
+                derivedStateOf {
+                    row.find { it.isSelected }
+                }
             }
 
             val categoryIndex by remember(selectedCategory?.id) {
@@ -267,11 +272,9 @@ fun ExploreCategoryListGrid(
                     exit = exitShrinkVertical
                 ) {
                     LaunchedEffect(isSubCategoryVisible) {
-
                         when {
                             isEligibleScrollToTopSide && isTopSideNotVisible -> {
                                 if (categoryIndex != -1) {
-                                    println("isEligibleScrollToTopSide: $isEligibleScrollToTopSide")
                                     delay(DELAY_SCROLL_ANIMATION)
                                     lazyListState.animateScrollToItem(categoryIndex)
                                 }
@@ -298,7 +301,7 @@ fun ExploreCategoryListGrid(
 
                                 val remainSubItemsHeight =
                                     if (nestCardHeight < subCategoriesHeight) {
-                                        Math.abs(subCategoriesHeight - nestCardHeight) + verticalMargin
+                                        Math.abs(subCategoriesHeight - nestCardHeight)
                                     } else {
                                         nestCardHeight
                                     }
@@ -314,59 +317,60 @@ fun ExploreCategoryListGrid(
                     NestCard(
                         modifier = Modifier
                             .createNestCardModifier { nestCardDimens ->
-                            nestCardDimensions = nestCardDimens
-                        },
+                                nestCardDimensions = nestCardDimens
+                            },
                         type = NestCardType.NoBorder
                     ) {
-
                         Column {
                             it?.subExploreCategoryList?.forEachIndexed { index, subcategory ->
                                 val subCategoryKey = subcategory.name + index.toString()
 
-                                SubExploreCategoryItem(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            uiEvent(
-                                                ExploreCategoryUiEvent.OnSubExploreCategoryItemClicked(
-                                                    subExploreCategoryUiModel = subcategory,
-                                                    position = index,
-                                                    categoryName = categoryName
-                                                )
-                                            )
-                                        }
-                                        .onGloballyPositioned { layoutCoordinates ->
-                                            val viewTop =
-                                                layoutCoordinates.localToRoot(Offset.Zero).y
-
-                                            val viewBottom =
-                                                viewTop + layoutCoordinates.size.height.toFloat()
-
-                                            subCategoryItemDimensions = Pair(
-                                                viewTop,
-                                                viewBottom
-                                            )
-                                        }
-                                        .padding(
-                                            top = 12.dp,
-                                            start = 16.dp,
-                                            end = 16.dp,
-                                            bottom = if (index == it.subExploreCategoryList.size.orZero() - 1) 8.dp else 0.dp
-                                        )
-                                        .impression(
-                                            key = subCategoryKey,
-                                            onImpression = {
-                                                uiEvent.invoke(
-                                                    ExploreCategoryUiEvent.OnSubExploreCategoryItemImpressed(
-                                                        categoryName,
-                                                        subcategory,
-                                                        index
+                                key(subCategoryKey) {
+                                    SubExploreCategoryItem(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable {
+                                                uiEvent(
+                                                    ExploreCategoryUiEvent.OnSubExploreCategoryItemClicked(
+                                                        subExploreCategoryUiModel = subcategory,
+                                                        position = index,
+                                                        categoryName = categoryName
                                                     )
                                                 )
                                             }
-                                        ),
-                                    subExploreCategoryUiModel = subcategory
-                                )
+                                            .onGloballyPositioned { layoutCoordinates ->
+                                                val viewTop =
+                                                    layoutCoordinates.localToRoot(Offset.Zero).y
+
+                                                val viewBottom =
+                                                    viewTop + layoutCoordinates.size.height.toFloat()
+
+                                                subCategoryItemDimensions = Pair(
+                                                    viewTop,
+                                                    viewBottom
+                                                )
+                                            }
+                                            .padding(
+                                                top = 12.dp,
+                                                start = 16.dp,
+                                                end = 16.dp,
+                                                bottom = if (index == it.subExploreCategoryList.size.orZero() - 1) 8.dp else 0.dp
+                                            )
+                                            .impression(
+                                                key = subCategoryKey,
+                                                onImpression = {
+                                                    uiEvent.invoke(
+                                                        ExploreCategoryUiEvent.OnSubExploreCategoryItemImpressed(
+                                                            categoryName,
+                                                            subcategory,
+                                                            index
+                                                        )
+                                                    )
+                                                }
+                                            ),
+                                        subExploreCategoryUiModel = subcategory
+                                    )
+                                }
                             }
                         }
                     }
