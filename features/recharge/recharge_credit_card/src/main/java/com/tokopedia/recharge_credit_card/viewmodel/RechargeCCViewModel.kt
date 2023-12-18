@@ -25,7 +25,6 @@ import com.tokopedia.recharge_credit_card.datamodel.RechargeCCCatalogPrefix
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCDppoConsentUimodel
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetail
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetailResponse
-import com.tokopedia.recharge_credit_card.datamodel.RechargeCreditCard
 import com.tokopedia.recharge_credit_card.isMasked
 import com.tokopedia.recharge_credit_card.util.RechargeCCConst
 import com.tokopedia.usecase.coroutines.Fail
@@ -50,7 +49,6 @@ class RechargeCCViewModel @Inject constructor(
     val rechargeCCBankList = MutableLiveData<RechargeCCBankList>()
     val errorCCBankList = MutableLiveData<Throwable>()
 
-    private val _rechargeCreditCard = MutableLiveData<RechargeCreditCard>()
     private val _prefixSelect = MutableLiveData<RechargeNetworkResult<RechargeCCCatalogPrefix>>()
     private val _prefixValidation = MutableLiveData<Boolean>()
     private val _favoriteChipsData = MutableLiveData<RechargeNetworkResult<List<FavoriteChipModel>>>()
@@ -59,7 +57,6 @@ class RechargeCCViewModel @Inject constructor(
     private val _menuDetail = MutableLiveData<RechargeNetworkResult<RechargeCCMenuDetail>>()
     private val _dppoConsent = MutableLiveData<Result<RechargeCCDppoConsentUimodel>>()
 
-    val creditCardSelected: LiveData<RechargeCreditCard> = _rechargeCreditCard
     val prefixSelect: LiveData<RechargeNetworkResult<RechargeCCCatalogPrefix>> = _prefixSelect
     val prefixValidation: LiveData<Boolean> = _prefixValidation
     val favoriteChipsData: LiveData<RechargeNetworkResult<List<FavoriteChipModel>>> = _favoriteChipsData
@@ -176,28 +173,6 @@ class RechargeCCViewModel @Inject constructor(
             _dppoConsent.postValue(Success(uiData))
         }) {
             _dppoConsent.postValue(Fail(it))
-        }
-    }
-
-    fun checkPrefixNumber(creditCard: String) {
-        var isPrefixFound = false
-        if (prefixData.prefixSelect.prefixes.isNotEmpty()) {
-            prefixData.prefixSelect.prefixes.map {
-                if (creditCard.startsWith(it.value)) {
-                    isPrefixFound = true
-                    _rechargeCreditCard.postValue(
-                        RechargeCreditCard(
-                            it.operator.id,
-                            it.operator.attribute.defaultProductId,
-                            it.operator.attribute.imageUrl,
-                            it.operator.attribute.name
-                        )
-                    )
-                }
-            }
-        }
-        if (!isPrefixFound) {
-            _rechargeCreditCard.postValue(RechargeCreditCard())
         }
     }
 

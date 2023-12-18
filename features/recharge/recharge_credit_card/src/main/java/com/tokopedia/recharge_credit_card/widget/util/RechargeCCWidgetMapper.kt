@@ -8,21 +8,23 @@ import com.tokopedia.recharge_credit_card.toEditable
 import com.tokopedia.recharge_credit_card.util.RechargeCCConst.DIVIDER
 import com.tokopedia.recharge_credit_card.util.RechargeCCConst.TOTAL_DIGITS
 import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
-import com.tokopedia.recharge_credit_card.widget.RechargeCCClientNumberWidget
 
 object RechargeCCWidgetMapper {
     fun mapFavoriteChipsToWidgetModels(favoriteChipModels: List<FavoriteChipModel>): List<RechargeClientNumberChipModel> {
         return favoriteChipModels.map { chip ->
             val formattedClientNumber = RechargeCCUtil.concatStringWith16D(
-                RechargeCCUtil.getDigitArray(chip.clientNumber.toEditable(),
+                RechargeCCUtil.getDigitArray(
+                    chip.clientNumber.toEditable(),
                     TOTAL_DIGITS
-                ), DIVIDER
+                ),
+                DIVIDER
             )
             RechargeClientNumberChipModel(
                 clientName = chip.clientName,
                 clientNumber = formattedClientNumber,
                 operatorId = chip.operatorId,
-                token = chip.token,
+                operatorName = chip.operatorName,
+                token = chip.token
             )
         }
     }
@@ -30,14 +32,17 @@ object RechargeCCWidgetMapper {
     fun mapAutoCompletesToWidgetModels(autoCompleteModels: List<AutoCompleteModel>): List<RechargeClientNumberAutoCompleteModel> {
         return autoCompleteModels.map { autoComplete ->
             val formattedClientNumber = RechargeCCUtil.concatStringWith16D(
-                RechargeCCUtil.getDigitArray(autoComplete.clientNumber.toEditable(),
+                RechargeCCUtil.getDigitArray(
+                    autoComplete.clientNumber.toEditable(),
                     TOTAL_DIGITS
-                ), DIVIDER
+                ),
+                DIVIDER
             )
             RechargeClientNumberAutoCompleteModel(
                 clientName = autoComplete.clientName,
                 clientNumber = formattedClientNumber,
-                token = autoComplete.token,
+                operatorName = autoComplete.operatorName,
+                token = autoComplete.token
             )
         }
     }

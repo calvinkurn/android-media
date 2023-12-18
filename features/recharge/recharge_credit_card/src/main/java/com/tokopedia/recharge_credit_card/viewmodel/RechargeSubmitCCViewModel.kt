@@ -13,16 +13,16 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recharge_credit_card.datamodel.CCRedirectUrl
 import com.tokopedia.recharge_credit_card.datamodel.CCRedirectUrlResponse
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCSignatureReponse
-import com.tokopedia.recharge_credit_card.usecase.RechargeSubmitCcUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
 import javax.inject.Inject
 
-class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                    private val dispatcher: CoroutineDispatcher,
-                                                    private val submitCCUseCase: RechargeSubmitCcUseCase)
-    : BaseViewModel(dispatcher) {
+class RechargeSubmitCCViewModel @Inject constructor(
+    private val graphqlRepository: GraphqlRepository,
+    private val dispatcher: CoroutineDispatcher
+) :
+    BaseViewModel(dispatcher) {
 
     private val _signature = MutableLiveData<String>()
     private val _errorSubmitCreditCard = MutableLiveData<Throwable>()
@@ -36,7 +36,7 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
 
     fun postCreditCard(
         rawQuery: String,
-        categoryId: String,
+        categoryId: String
     ) {
         launchCatchError(block = {
             val mapParam = mutableMapOf<String, Any>()
@@ -49,8 +49,6 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
 
             if (data.rechargeSignature.messageError.isEmpty()) {
                 _signature.postValue(data.rechargeSignature.signature)
-//                paramSubmitCC[PARAM_PCIDSS] = data.rechargeSignature.signature
-//                submitCreditCard(paramSubmitCC)
             } else {
                 _errorSignature.postValue(MessageErrorException(data.rechargeSignature.messageError))
             }
@@ -58,30 +56,12 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
             _errorSignature.postValue(it)
         }
     }
-
-//    fun submitCreditCard(mapParam: HashMap<String, String>) {
-//        launchCatchError(block = {
-//            val data = withContext(dispatcher) {
-//                submitCCUseCase.setMapParam(mapParam)
-//                convertCCResponse(submitCCUseCase.executeOnBackground())
-//            }
-//
-//            val ccRedirectUrl = data?.data ?: CCRedirectUrl()
-//            if (ccRedirectUrl.redirectUrl != "") {
-//                ccRedirectUrl.clientNumber = mapParam[PARAM_CLIENT_NUMBER] ?: ""
-//                ccRedirectUrl.operatorId = mapParam[PARAM_OPERATOR_ID] ?: ""
-//                ccRedirectUrl.productId = mapParam[PARAM_PRODUCT_ID] ?: ""
-//                _redirectUrl.postValue(ccRedirectUrl)
-//            } else {
-//                _errorSubmitCreditCard.postValue(MessageErrorException(ccRedirectUrl.messageError))
-//            }
-//        }) {
-//            _errorSubmitCreditCard.postValue(it)
-//        }
-//    }
-
-    fun createMapParam(clientNumber: String, operatorId: String,
-                       productId: String, userId: String): HashMap<String, String> {
+    fun createMapParam(
+        clientNumber: String,
+        operatorId: String,
+        productId: String,
+        userId: String
+    ): HashMap<String, String> {
         val mapParam = HashMap<String, String>()
         mapParam[PARAM_ACTION] = VALUE_ACTION
         mapParam[PARAM_CLIENT_NUMBER] = clientNumber
@@ -91,8 +71,13 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
         return mapParam
     }
 
-    fun createMaskedMapParam(clientNumber: String, operatorId: String,
-                       productId: String, userId: String, token: String): HashMap<String, String> {
+    fun createMaskedMapParam(
+        clientNumber: String,
+        operatorId: String,
+        productId: String,
+        userId: String,
+        token: String
+    ): HashMap<String, String> {
         val mapParam = HashMap<String, String>()
         mapParam[PARAM_ACTION] = VALUE_ACTION
         mapParam[PARAM_MASKED_NUMBER] = clientNumber
@@ -103,8 +88,14 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
         return mapParam
     }
 
-    fun createPcidssParamFromApplink(clientNumber: String, operatorId: String,
-                                     productId: String, userId: String, signature: String, token: String): HashMap<String, String> {
+    fun createPcidssParamFromApplink(
+        clientNumber: String,
+        operatorId: String,
+        productId: String,
+        userId: String,
+        signature: String,
+        token: String
+    ): HashMap<String, String> {
         val mapParam = HashMap<String, String>()
         mapParam[PARAM_ACTION] = VALUE_ACTION
         mapParam[PARAM_MASKED_NUMBER] = clientNumber

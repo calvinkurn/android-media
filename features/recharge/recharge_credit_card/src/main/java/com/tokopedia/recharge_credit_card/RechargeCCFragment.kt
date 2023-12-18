@@ -51,6 +51,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -68,7 +69,6 @@ import com.tokopedia.recharge_credit_card.bottomsheet.CCBankListBottomSheet
 import com.tokopedia.recharge_credit_card.databinding.FragmentRechargeCcBinding
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCPromo
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCRecommendation
-import com.tokopedia.recharge_credit_card.datamodel.RechargeCreditCard
 import com.tokopedia.recharge_credit_card.datamodel.TickerCreditCard
 import com.tokopedia.recharge_credit_card.di.RechargeCCInstance
 import com.tokopedia.recharge_credit_card.pcidss.model.PcidssOperator
@@ -636,20 +636,20 @@ class RechargeCCFragment :
     }
 
     private fun onSuccessGetFavoriteChips(favoriteChips: List<FavoriteChipModel>) {
-        val favoriteChips = listOf(
-            FavoriteChipModel(
-                clientName = "Credit Card A - 1",
-                clientNumber = "4111 11** **** 4444",
-                token = "Token A - 1",
-                operatorId = "856"
-            ),
-            FavoriteChipModel(
-                clientName = "Credit Card B - 1",
-                clientNumber = "4111 11** **** 9999",
-                token = "Token B - 1",
-                operatorId = "856"
-            )
-        )
+//        val favoriteChips = listOf(
+//            FavoriteChipModel(
+//                clientName = "Credit Card A - 1",
+//                clientNumber = "4111 11** **** 4444",
+//                token = "Token A - 1",
+//                operatorId = "856"
+//            ),
+//            FavoriteChipModel(
+//                clientName = "Credit Card B - 1",
+//                clientNumber = "4111 11** **** 9999",
+//                token = "Token B - 1",
+//                operatorId = "856"
+//            )
+//        )
         binding?.ccWidgetClientNumber?.run {
             setFilterChipShimmer(false, favoriteChips.isEmpty())
             setFavoriteNumber(
@@ -659,18 +659,18 @@ class RechargeCCFragment :
     }
 
     private fun onSuccessGetAutoComplete(autoComplete: List<AutoCompleteModel>) {
-        val autoComplete = listOf(
-            AutoCompleteModel(
-                clientName = "Credit Card A - 2",
-                clientNumber = "4111 11** **** 4444",
-                token = "Token A - 2"
-            ),
-            AutoCompleteModel(
-                clientName = "Credit Card B - 2",
-                clientNumber = "4111 11** **** 9999",
-                token = "Token B - 2"
-            )
-        )
+//        val autoComplete = listOf(
+//            AutoCompleteModel(
+//                clientName = "Credit Card A - 2",
+//                clientNumber = "4111 11** **** 4444",
+//                token = "Token A - 2"
+//            ),
+//            AutoCompleteModel(
+//                clientName = "Credit Card B - 2",
+//                clientNumber = "4111 11** **** 9999",
+//                token = "Token B - 2"
+//            )
+//        )
         binding?.ccWidgetClientNumber?.setAutoCompleteList(
             RechargeCCWidgetMapper.mapAutoCompletesToWidgetModels(autoComplete)
         )
@@ -700,25 +700,20 @@ class RechargeCCFragment :
         binding?.ccProgressBar?.visibility = View.VISIBLE
     }
 
-    private fun navigateToCart(passData: DigitalCheckoutPassData) {
-        trackAddToCartEvent()
+    private fun navigateToCart(passData: DigitalCheckoutPassData, operatorName: String) {
+        creditCardAnalytics.addToCart(
+            userSession.userId,
+            rechargeCCViewModel.categoryName,
+            categoryId,
+            operatorName,
+            passData.operatorId.toEmptyStringIfNull()
+        )
+
         context?.let {
             val intent = RouteManager.getIntent(it, ApplinkConsInternalDigital.CHECKOUT_DIGITAL)
             intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData)
             startActivityForResult(intent, REQUEST_CODE_CART)
         }
-    }
-
-    private fun trackAddToCartEvent() {
-        val creditCardSelected = rechargeCCViewModel.creditCardSelected.value
-            ?: RechargeCreditCard()
-        creditCardAnalytics.addToCart(
-            userSession.userId,
-            rechargeCCViewModel.categoryName,
-            categoryId,
-            creditCardSelected.prefixName,
-            creditCardSelected.operatorId
-        )
     }
 
     //region RechargeCCBankListListener
@@ -779,14 +774,14 @@ class RechargeCCFragment :
         if (isLabeled) {
             creditCardAnalytics.clickFavoriteContactChips(
                 rechargeCCViewModel.categoryName,
-                rechargeCCViewModel.creditCardSelected.value?.prefixName ?: "",
+                favorite.operatorName,
                 rechargeCCViewModel.loyaltyStatus,
                 userSession.userId
             )
         } else {
             creditCardAnalytics.clickFavoriteNumberChips(
                 rechargeCCViewModel.categoryName,
-                rechargeCCViewModel.creditCardSelected.value?.prefixName ?: "",
+                favorite.operatorName,
                 rechargeCCViewModel.loyaltyStatus,
                 userSession.userId
             )
@@ -804,19 +799,19 @@ class RechargeCCFragment :
         binding?.ccWidgetClientNumber?.disablePrimaryButton()
     }
 
-    override fun onClickAutoCompleteItem(name: String) {
+    override fun onClickAutoCompleteItem(name: String, operatorName: String) {
         binding?.ccWidgetClientNumber?.setContactName(name)
         if (name.isNotEmpty()) {
             creditCardAnalytics.clickFavoriteContactAutoComplete(
                 rechargeCCViewModel.categoryName,
-                rechargeCCViewModel.creditCardSelected.value?.prefixName ?: "",
+                operatorName,
                 rechargeCCViewModel.loyaltyStatus,
                 userSession.userId
             )
         } else {
             creditCardAnalytics.clickFavoriteNumberAutoComplete(
                 rechargeCCViewModel.categoryName,
-                rechargeCCViewModel.creditCardSelected.value?.prefixName ?: "",
+                operatorName,
                 rechargeCCViewModel.loyaltyStatus,
                 userSession.userId
             )
@@ -845,7 +840,7 @@ class RechargeCCFragment :
         )
     }
 
-    override fun onSuccessSubmitCreditCard(productId: String, operatorId: String) {
+    override fun onSuccessSubmitCreditCard(productId: String, operatorId: String, operatorName: String) {
         hideLoading()
         val passData = DigitalCheckoutPassData.Builder()
             .action(DigitalCheckoutPassData.DEFAULT_ACTION)
@@ -861,7 +856,7 @@ class RechargeCCFragment :
             .build()
         checkoutPassDataState = passData
 
-        navigateToCart(passData)
+        navigateToCart(passData, operatorName)
     }
 
     override fun onFailSubmitCreditCard(errorMessage: String) {

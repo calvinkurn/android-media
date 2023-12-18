@@ -20,9 +20,7 @@ import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberAutoCompleteModel
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
-import com.tokopedia.recharge_component.widget.hideClearIconUnify
 import com.tokopedia.recharge_component.widget.setMainPadding
-import com.tokopedia.recharge_component.widget.showClearIconUnify
 import com.tokopedia.recharge_credit_card.R
 import com.tokopedia.recharge_credit_card.databinding.WidgetClientNumberWidgetCcBinding
 import com.tokopedia.recharge_credit_card.pcidss.model.PcidssAutoCompleteNumberModel
@@ -141,7 +139,12 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
         token: String
     ) {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetPcidss.pcidssInstantCheckout(
-            clientNumber, operatorId, productId, userId, signature, token
+            clientNumber,
+            operatorId,
+            productId,
+            userId,
+            signature,
+            token
         )
     }
 
@@ -156,7 +159,10 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
         userId: String
     ) {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetPcidss.submitCreditCard(
-            signature, operatorId, productId, userId
+            signature,
+            operatorId,
+            productId,
+            userId
         )
     }
 
@@ -168,7 +174,12 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
         binding.clientNumberWidgetMainLayout.clientNumberWidgetPcidss
             .setInputFieldAutoCompleteList(
                 suggestions.map {
-                    PcidssAutoCompleteNumberModel(it.clientName, it.clientNumber, it.token)
+                    PcidssAutoCompleteNumberModel(
+                        it.clientName,
+                        it.clientNumber,
+                        it.operatorName,
+                        it.token
+                    )
                 }
             )
     }

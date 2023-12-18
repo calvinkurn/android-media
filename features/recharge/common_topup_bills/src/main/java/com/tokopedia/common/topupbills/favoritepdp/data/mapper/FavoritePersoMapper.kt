@@ -11,11 +11,11 @@ import javax.inject.Inject
 class FavoritePersoMapper @Inject constructor() {
 
     fun mapDigiPersoFavoriteToModel(data: PersoFavNumberGroup): FavoriteGroupModel {
-         return FavoriteGroupModel(
-             prefill = mapDigiPersoPrefillToModel(data.favoriteNumberPrefill),
-             autoCompletes = mapDigiPersoListToModel(data.favoriteNumberList),
-             favoriteChips = mapDigiPersoChipsToModel(data.favoriteNumberChips)
-         )
+        return FavoriteGroupModel(
+            prefill = mapDigiPersoPrefillToModel(data.favoriteNumberPrefill),
+            autoCompletes = mapDigiPersoListToModel(data.favoriteNumberList),
+            favoriteChips = mapDigiPersoChipsToModel(data.favoriteNumberChips)
+        )
     }
 
     private fun mapDigiPersoPrefillToModel(data: TopupBillsPersoFavNumberData): PrefillModel {
@@ -27,37 +27,41 @@ class FavoritePersoMapper @Inject constructor() {
             clientNumber = persoPrefillData.title,
             token = persoPrefillData.token,
             operatorId = persoPrefillData.operatorId,
-            productId = persoPrefillData.productId,
+            productId = persoPrefillData.productId
         )
     }
 
     private fun mapDigiPersoListToModel(data: TopupBillsPersoFavNumberData): List<AutoCompleteModel> {
         return data.persoFavoriteNumber.items.map {
-
-            val (clientName, clientNumber) = if (it.subtitle.isNotEmpty())
+            val (clientName, clientNumber) = if (it.subtitle.isNotEmpty()) {
                 it.title to it.subtitle
-            else "" to it.title
+            } else {
+                "" to it.title
+            }
 
             AutoCompleteModel(
                 clientName = clientName,
                 clientNumber = clientNumber,
-                token = it.token,
+                operatorName = it.trackingData.operatorName,
+                token = it.token
             )
         }
     }
 
     private fun mapDigiPersoChipsToModel(data: TopupBillsPersoFavNumberData): List<FavoriteChipModel> {
         return data.persoFavoriteNumber.items.map {
-
-            val (clientName, clientNumber) = if (it.subtitle.isNotEmpty())
+            val (clientName, clientNumber) = if (it.subtitle.isNotEmpty()) {
                 it.title to it.subtitle
-            else "" to it.title
+            } else {
+                "" to it.title
+            }
 
             FavoriteChipModel(
                 clientName = clientName,
                 clientNumber = clientNumber,
                 operatorId = it.trackingData.operatorId,
-                token = it.token,
+                operatorName = it.trackingData.operatorName,
+                token = it.token
             )
         }
     }
