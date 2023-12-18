@@ -1279,6 +1279,7 @@ class ShopPageReimagineHeaderFragment :
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun renderPrefetchData(prefetchData: ShopPrefetchData?) {
         if (prefetchData == null) return
 
