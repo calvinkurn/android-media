@@ -2172,12 +2172,12 @@ open class DiscoveryFragment :
     private fun getTabTextColor(context: Context, textColor: String?): Int {
         return try {
             if (textColor.isNullOrEmpty()) {
-                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_G500)
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500)
             } else {
                 Color.parseColor(textColor)
             }
         } catch (exception: Exception) {
-            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_G500)
+            ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500)
         }
     }
 
