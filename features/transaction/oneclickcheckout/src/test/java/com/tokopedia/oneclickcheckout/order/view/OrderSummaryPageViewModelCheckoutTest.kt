@@ -1608,4 +1608,46 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
             )
         }
     }
+
+    @Test
+    fun `Checkout Success With Blacklisted Promo Entry Point`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = false,
+                statusCode = "42003"
+            )
+        )
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
+        coEvery {
+            checkoutOccUseCase.executeSuspend(any())
+        } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 1,
+                paymentParameter = CheckoutOccPaymentParameter(
+                    redirectParam = CheckoutOccRedirectParam(
+                        url = "testurl"
+                    )
+                )
+            )
+        )
+
+        // When
+        var isOnSuccessCalled = false
+        orderSummaryPageViewModel.finalUpdate({
+            isOnSuccessCalled = true
+        }, false)
+
+        // Then
+        assertEquals(true, isOnSuccessCalled)
+    }
 }
