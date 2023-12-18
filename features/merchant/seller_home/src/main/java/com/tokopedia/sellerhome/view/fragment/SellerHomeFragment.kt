@@ -704,6 +704,10 @@ class SellerHomeFragment :
         SellerHomeTracking.sendTableSeeMoreClickEvent(element, isEmpty)
     }
 
+    override fun onHtmlMetaClick(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) {
+        TODO("Not yet implemented")
+    }
+
     override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
         SellerHomeTracking.sendPieChartImpressionEvent(model)
     }

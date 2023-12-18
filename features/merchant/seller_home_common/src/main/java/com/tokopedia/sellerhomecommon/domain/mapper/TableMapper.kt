@@ -40,6 +40,7 @@ class TableMapper @Inject constructor(
         private const val COLUMN_IMAGE = 2
         private const val COLUMN_HTML = 4
         private const val COLUMN_HTML_WITH_ICON = 8
+        private const val COLUMN_HTML_WITH_META = 10
 
         private const val MAX_ROWS_PER_PAGE = 5
     }
@@ -105,13 +106,30 @@ class TableMapper @Inject constructor(
                         }
                         COLUMN_IMAGE -> TableRowsUiModel.RowColumnImage(col.value, width)
                         COLUMN_HTML -> {
-                            TableRowsUiModel.RowColumnHtml(
+
+                            TableRowsUiModel.RowColumnHtmlWithMeta(
+                                valueStr = "Mumpung Murah",
+                                width = width,
+                                htmlMeta = TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta(
+                                    label = "Mumpung Murah"
+                                ),
+                                isLeftAlign = true
+                            )
+//                            TableRowsUiModel.RowColumnHtml(
+//                                valueStr = valueStr,
+//                                width = width,
+//                                meta = getTableRowMeta(col.meta),
+//                                isLeftAlign = firstTextColumn == col,
+//                                colorInt = getColorFromHtml(valueStr),
+//                                additionalValueString = col.additionalValue
+//                            )
+                        }
+                        COLUMN_HTML_WITH_META -> {
+                            TableRowsUiModel.RowColumnHtmlWithMeta(
                                 valueStr = valueStr,
                                 width = width,
-                                meta = getTableRowMeta(col.meta),
-                                isLeftAlign = firstTextColumn == col,
-                                colorInt = getColorFromHtml(valueStr),
-                                additionalValueString = col.additionalValue
+                                htmlMeta = getHtmlMeta(col.meta),
+                                isLeftAlign = firstTextColumn == col
                             )
                         }
                         else -> {
@@ -180,5 +198,13 @@ class TableMapper @Inject constructor(
             return null
         }
         return null
+    }
+
+    private fun getHtmlMeta(meta: String): TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta? {
+        return try {
+             Gson().fromJson(meta, TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta::class.java)
+        } catch (ex: Exception) {
+            null
+        }
     }
 }
