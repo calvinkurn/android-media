@@ -20,4 +20,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout="@layout/widget_campaign_ribbon_type_3_layout"/>
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/campaign_ribbon_compose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </FrameLayout>

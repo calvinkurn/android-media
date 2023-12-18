@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
@@ -83,7 +84,8 @@ class CampaignRibbon @JvmOverloads constructor(
     private var trackDataModel: ComponentTrackDataModel? = null
 
     init {
-        val view = inflate(context, R.layout.widget_campaign_ribbon_layout, this)
+        val inflater = LayoutInflater.from(context)
+        val view =inflater.inflate(R.layout.widget_campaign_ribbon_layout, this, true)
         _rootBinding = WidgetCampaignRibbonLayoutBinding.bind(view)
     }
 
