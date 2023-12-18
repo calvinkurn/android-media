@@ -15,8 +15,8 @@ import com.tokopedia.unifycomponents.BaseCustomView
 /**
  * @author by jessica on 03/11/20
  */
-class HotelHomepagePopularCitiesWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    :BaseCustomView(context, attrs, defStyleAttr){
+class HotelHomepagePopularCitiesWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    BaseCustomView(context, attrs, defStyleAttr) {
 
     private val binding = LayoutHotelHomepagePopularCityBinding.inflate(
         LayoutInflater.from(context),
@@ -37,28 +37,33 @@ class HotelHomepagePopularCitiesWidget @JvmOverloads constructor(context: Contex
 
     fun addPopularCities(popularCities: List<PopularSearch>) {
         with(binding) {
-            rvPopularCities.layoutManager = GridLayoutManager(context, 2)
+            rvPopularCities.layoutManager = GridLayoutManager(context, RV_SPAN)
             adapter = HotelHomepagePopularCitiesAdapter(popularCities, listener)
             rvPopularCities.adapter = adapter
 
-            //init recycler view
+            // init recycler view
             if (popularCities.size > HotelHomepagePopularCitiesAdapter.MIN_ITEM_SHOW) {
                 btnHomepagePopularCitiesSeeMore.show()
                 btnHomepagePopularCitiesSeeMore.setOnClickListener {
                     if (adapter.itemShowCount > HotelHomepagePopularCitiesAdapter.MIN_ITEM_SHOW) {
                         adapter.minimizeItems()
                         btnHomepagePopularCitiesSeeMore.text = resources.getString(R.string.hotel_homepage_popular_city_button_see_less)
-                    }
-                    else {
+                    } else {
                         adapter.maximizeItems()
                         btnHomepagePopularCitiesSeeMore.text = resources.getString(R.string.hotel_homepage_popular_city_button_see_less)
                     }
                 }
-            } else btnHomepagePopularCitiesSeeMore.hide()
+            } else {
+                btnHomepagePopularCitiesSeeMore.hide()
+            }
         }
     }
 
     interface ActionListener {
         fun onPopularCityClicked(popularSearch: PopularSearch)
+    }
+
+    companion object {
+        private const val RV_SPAN = 2
     }
 }
