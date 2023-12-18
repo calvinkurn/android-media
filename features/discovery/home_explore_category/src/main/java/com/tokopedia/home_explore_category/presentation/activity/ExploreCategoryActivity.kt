@@ -23,9 +23,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_explore_category.analytic.ExploreCategoryAnalytics
-import com.tokopedia.home_explore_category.analytic.ExploreCategoryConstants.Companion.EXTRA_TITLE
-import com.tokopedia.home_explore_category.analytic.ExploreCategoryConstants.Companion.EXTRA_TYPE
-import com.tokopedia.home_explore_category.analytic.ExploreCategoryConstants.Companion.TYPE_LAYANAN
 import com.tokopedia.home_explore_category.di.DaggerExploreCategoryComponent
 import com.tokopedia.home_explore_category.di.ExploreCategoryComponent
 import com.tokopedia.home_explore_category.presentation.compose.ExploreCategoryAppBar
@@ -61,12 +58,9 @@ class ExploreCategoryActivity : BaseActivity(), HasComponent<ExploreCategoryComp
         ).get(ExploreCategoryViewModel::class.java)
     }
 
-    private var title: String = ""
-
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         super.onCreate(savedInstanceState)
-        handleIntentFromDeeplink()
 
         setContent {
             NestTheme {
@@ -129,11 +123,6 @@ class ExploreCategoryActivity : BaseActivity(), HasComponent<ExploreCategoryComp
         super.onBackPressed()
     }
 
-    override fun onPause() {
-        super.onPause()
-        trackingQueue.sendAll()
-    }
-
     private fun initInjector() {
         component.inject(this)
     }
@@ -181,19 +170,5 @@ class ExploreCategoryActivity : BaseActivity(), HasComponent<ExploreCategoryComp
     private fun goToNetworkSetting() {
         val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
         startActivity(intent)
-    }
-
-    private fun handleIntentFromDeeplink() {
-        val data = intent.data
-
-        if (data?.getQueryParameter(EXTRA_TITLE) == null) {
-            if (data?.getQueryParameter(EXTRA_TYPE)?.toInt() == TYPE_LAYANAN) {
-                title = TITLE_LAYANAN
-            }
-        }
-    }
-
-    companion object {
-        const val TITLE_LAYANAN = "Jelajah Tokopedia"
     }
 }
