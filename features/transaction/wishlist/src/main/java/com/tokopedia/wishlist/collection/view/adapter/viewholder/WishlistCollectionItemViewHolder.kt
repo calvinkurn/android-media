@@ -11,14 +11,14 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.wishlist.R
-import com.tokopedia.wishlist.databinding.CollectionWishlistItemBinding
-import com.tokopedia.wishlist.detail.util.WishlistConsts.SPEC_0
-import com.tokopedia.wishlist.detail.util.WishlistConsts.SPEC_2
-import com.tokopedia.wishlist.detail.util.WishlistUtils
 import com.tokopedia.wishlist.collection.data.model.WishlistCollectionTypeLayoutData
 import com.tokopedia.wishlist.collection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlist.collection.util.WishlistCollectionUtils.clickWithDebounce
 import com.tokopedia.wishlist.collection.view.adapter.WishlistCollectionAdapter
+import com.tokopedia.wishlist.databinding.CollectionWishlistItemBinding
+import com.tokopedia.wishlist.detail.util.WishlistConsts.SPEC_0
+import com.tokopedia.wishlist.detail.util.WishlistConsts.SPEC_2
+import com.tokopedia.wishlist.detail.util.WishlistUtils
 
 class WishlistCollectionItemViewHolder(
     private val binding: CollectionWishlistItemBinding,
@@ -33,7 +33,7 @@ class WishlistCollectionItemViewHolder(
             binding.cardCollectionItem.clickWithDebounce {
                 actionListener?.onCollectionItemClicked(item.dataObject.id)
             }
-            binding.cardCollectionItem.cardType = CardUnify2.TYPE_SHADOW
+            binding.cardCollectionItem.cardType = CardUnify2.TYPE_CLEAR
             binding.collectionTitle.text = item.dataObject.name
             binding.collectionDesc.text = "${item.dataObject.totalItem} ${item.dataObject.itemText}"
             if (item.dataObject.indicator.title.isNotEmpty()) {

@@ -27,12 +27,13 @@ object WishlistCollectionUtils {
     ) == RollenceKey.WISHLIST_AFFILIATE_TICKER
 
     fun mapCollection(
-            data: GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData,
-            recomm: WishlistRecommendationDataModel
+        data: GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData,
+        recomm: WishlistRecommendationDataModel = WishlistRecommendationDataModel()
     ): List<WishlistCollectionTypeLayoutData> {
         val listCollection = arrayListOf<WishlistCollectionTypeLayoutData>()
         if ((data.ticker.title.isNotEmpty() && data.ticker.description.isNotEmpty()) || isAffiliateTickerEnabled()) {
             val tickerObject = WishlistCollectionTypeLayoutData(
+                TYPE_COLLECTION_TICKER,
                 data.ticker,
                 TYPE_COLLECTION_TICKER
             )
@@ -44,6 +45,7 @@ object WishlistCollectionUtils {
         } else {
             data.collections.forEach { item ->
                 val collectionItemObject = WishlistCollectionTypeLayoutData(
+                    "${TYPE_COLLECTION_ITEM}_${item.id}",
                     item,
                     TYPE_COLLECTION_ITEM
                 )
@@ -52,30 +54,38 @@ object WishlistCollectionUtils {
 
             val createNewItem =
                 WishlistCollectionTypeLayoutData(
+                    TYPE_COLLECTION_CREATE,
                     data.placeholder,
                     TYPE_COLLECTION_CREATE
                 )
             listCollection.add(createNewItem)
 
-            listCollection.add(
-                WishlistCollectionTypeLayoutData("", TYPE_COLLECTION_DIVIDER)
-            )
-
-            listCollection.add(
-                WishlistCollectionTypeLayoutData(
-                    recomm.title,
-                        WishlistConsts.TYPE_RECOMMENDATION_TITLE
-                )
-            )
-            recomm.recommendationProductCardModelData.forEachIndexed { index, productCardModel ->
-                if (recomm.listRecommendationItem.isNotEmpty()) {
-                    listCollection.add(
-                        WishlistCollectionTypeLayoutData(
-                            productCardModel,
-                                WishlistConsts.TYPE_RECOMMENDATION_LIST,
-                            recommItem = recomm.listRecommendationItem[index]
-                        )
+            if (recomm.listRecommendationItem.isNotEmpty()) {
+                listCollection.add(
+                    WishlistCollectionTypeLayoutData(
+                        TYPE_COLLECTION_DIVIDER,
+                        "",
+                        TYPE_COLLECTION_DIVIDER
                     )
+                )
+                listCollection.add(
+                    WishlistCollectionTypeLayoutData(
+                        WishlistConsts.TYPE_RECOMMENDATION_TITLE,
+                        recomm.title,
+                        WishlistConsts.TYPE_RECOMMENDATION_TITLE
+                    )
+                )
+                recomm.recommendationProductCardModelData.forEachIndexed { index, productCardModel ->
+                    if (recomm.listRecommendationItem.isNotEmpty()) {
+                        listCollection.add(
+                            WishlistCollectionTypeLayoutData(
+                                "${WishlistConsts.TYPE_RECOMMENDATION_LIST}_${productCardModel.productName}",
+                                productCardModel,
+                                WishlistConsts.TYPE_RECOMMENDATION_LIST,
+                                recommItem = recomm.listRecommendationItem[index]
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -84,12 +94,13 @@ object WishlistCollectionUtils {
     }
 
     private fun mapToEmptyState(
-            collectionEmptyState: GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.EmptyState,
-            listData: ArrayList<WishlistCollectionTypeLayoutData>,
-            recomm: WishlistRecommendationDataModel
+        collectionEmptyState: GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.EmptyState,
+        listData: ArrayList<WishlistCollectionTypeLayoutData>,
+        recomm: WishlistRecommendationDataModel
     ): ArrayList<WishlistCollectionTypeLayoutData> {
         listData.add(
             WishlistCollectionTypeLayoutData(
+                TYPE_COLLECTION_EMPTY_CAROUSEL,
                 collectionEmptyState,
                 TYPE_COLLECTION_EMPTY_CAROUSEL
             )
@@ -97,16 +108,18 @@ object WishlistCollectionUtils {
 
         listData.add(
             WishlistCollectionTypeLayoutData(
+                WishlistConsts.TYPE_RECOMMENDATION_TITLE,
                 recomm.title,
-                    WishlistConsts.TYPE_RECOMMENDATION_TITLE
+                WishlistConsts.TYPE_RECOMMENDATION_TITLE
             )
         )
         recomm.recommendationProductCardModelData.forEachIndexed { index, productCardModel ->
             if (recomm.listRecommendationItem.isNotEmpty()) {
                 listData.add(
                     WishlistCollectionTypeLayoutData(
+                        "${WishlistConsts.TYPE_RECOMMENDATION_LIST}_$index",
                         productCardModel,
-                            WishlistConsts.TYPE_RECOMMENDATION_LIST,
+                        WishlistConsts.TYPE_RECOMMENDATION_LIST,
                         recommItem = recomm.listRecommendationItem[index]
                     )
                 )
