@@ -7,19 +7,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryUiModel
 import com.tokopedia.nest.components.NestImage
-import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.components.card.NestCard
 import com.tokopedia.nest.components.card.NestCardType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.nest.principles.utils.ImageSource
 
 @Composable
 fun SubExploreCategoryItem(
@@ -30,14 +30,12 @@ fun SubExploreCategoryItem(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        // the reason using old approach, we need to avoid the intermittent crash causes coil-compose
         NestImage(
-            source = ImageSource.Remote(
-                subExploreCategoryUiModel.imageUrl,
-                shouldRetried = true
-            ),
-            type = NestImageType.Rect(8.dp),
-            modifier = Modifier.size(42.dp),
-            contentDescription = null
+            imageUrl = subExploreCategoryUiModel.imageUrl,
+            modifier = Modifier
+                .clip(RoundedCornerShape(12.dp))
+                .size(42.dp)
         )
         NestTypography(
             text = subExploreCategoryUiModel.name,

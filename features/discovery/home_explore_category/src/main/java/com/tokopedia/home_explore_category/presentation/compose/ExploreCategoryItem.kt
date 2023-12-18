@@ -9,17 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryUiModel
 import com.tokopedia.nest.components.NestImage
-import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.components.card.NestCard
 import com.tokopedia.nest.components.card.NestCardType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.nest.principles.utils.ImageSource
 
 @Composable
 fun ExploreCategoryItem(
@@ -65,17 +62,13 @@ fun ExploreCategoryItem(
                     modifier = Modifier.padding(8.dp)
                 )
             }
+
+            // the reason using old approach, we need to avoid the intermittent crash causes coil-compose
             NestImage(
-                source = ImageSource.Remote(
-                    source = exploreCategoryUiModel.categoryImageUrl,
-                    shouldRetried = true
-                ),
-                type = NestImageType.Rect(0.dp),
+                imageUrl = exploreCategoryUiModel.categoryImageUrl,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(84.dp),
-                contentScale = ContentScale.Crop,
-                contentDescription = null
+                    .height(84.dp)
             )
         }
     }
