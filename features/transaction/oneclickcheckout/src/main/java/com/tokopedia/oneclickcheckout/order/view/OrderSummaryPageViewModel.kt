@@ -1362,10 +1362,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             ResultStatus.STATUS_COUPON_LIST_EMPTY
         )
         val isValidPromoStatusCode = orderPromo.entryPointInfo.isSuccess ||
-            (
-                !orderPromo.entryPointInfo.isSuccess &&
-                    validStatusCodes.any { code -> code == orderPromo.entryPointInfo.statusCode }
-                )
+            (!orderPromo.entryPointInfo.isSuccess && validStatusCodes.any { code -> code == orderPromo.entryPointInfo.statusCode })
         val isValidPromo = isValidPromoState && isValidPromoStatusCode
         // check valid shipment
         val isValidShipment = !orderShipment.isLoading
