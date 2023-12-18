@@ -417,7 +417,7 @@ class MiniCartProductViewHolder(
 
     private fun renderActionDelete(element: MiniCartProductUiModel) {
         with(viewBinding) {
-            if (!element.isNeededToAddVerticalLine() || element.isLastProductItem) {
+            if (!element.isBundlingItem || element.isLastProductItem) {
                 adjustButtonDeleteConstraint(element)
                 buttonDeleteCart.setOnClickListener {
                     if (adapterPosition != RecyclerView.NO_POSITION) {
@@ -446,7 +446,7 @@ class MiniCartProductViewHolder(
                     constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.text_notes_filled, ConstraintSet.BOTTOM, marginTop)
                 }
                 constraintSet.applyTo(containerProduct)
-            } else if (element.isBundlingItem && element.isLastProductItem) {
+            } else if (element.isNeededToAddVerticalLine() && element.isLastProductItem) {
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProduct)
                 constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.text_notes, ConstraintSet.BOTTOM, margin16dp)
@@ -722,7 +722,11 @@ class MiniCartProductViewHolder(
     private fun renderBottomDivider(element: MiniCartProductUiModel) {
         with(viewBinding) {
             if (element.showBottomDivider) {
-                dividerBottom.show()
+                if (element.isBmgm) {
+                    dividerBottom.invisible()
+                } else {
+                    dividerBottom.show()
+                }
             } else {
                 dividerBottom.hide()
             }
@@ -732,25 +736,32 @@ class MiniCartProductViewHolder(
 
     private fun adjustVerticalLine(element: MiniCartProductUiModel) {
         with(viewBinding) {
+            val constraint = ConstraintSet()
+            constraint.clone(containerProduct)
             if (element.isLastProductItem) {
-                val constraint = ConstraintSet()
-                constraint.clone(containerProduct)
                 constraint.connect(
                     R.id.vertical_line,
                     ConstraintSet.BOTTOM,
                     R.id.text_notes,
                     ConstraintSet.BOTTOM
                 )
-                constraint.applyTo(containerProduct)
+            } else {
+                constraint.connect(
+                    R.id.vertical_line,
+                    ConstraintSet.BOTTOM,
+                    ConstraintSet.PARENT_ID,
+                    ConstraintSet.BOTTOM
+                )
             }
+            constraint.applyTo(containerProduct)
         }
     }
 
     private fun adjustTextNotesConstraint(element: MiniCartProductUiModel) {
-        if (element.isNeededToAddVerticalLine() && element.isLastProductItem) {
-            with(viewBinding) {
-                val constraintSet = ConstraintSet()
-                constraintSet.clone(containerProduct)
+        with(viewBinding) {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(containerProduct)
+            if (element.isNeededToAddVerticalLine() && element.isLastProductItem) {
                 constraintSet.connect(
                     R.id.text_notes,
                     ConstraintSet.TOP,
@@ -763,8 +774,21 @@ class MiniCartProductViewHolder(
                     R.id.button_delete_cart,
                     ConstraintSet.TOP
                 )
-                constraintSet.applyTo(containerProduct)
+            } else {
+                constraintSet.connect(
+                    R.id.text_notes,
+                    ConstraintSet.TOP,
+                    R.id.image_product,
+                    ConstraintSet.BOTTOM
+                )
+                constraintSet.connect(
+                    R.id.text_notes,
+                    ConstraintSet.TOP,
+                    R.id.button_delete_cart,
+                    ConstraintSet.TOP
+                )
             }
+            constraintSet.applyTo(containerProduct)
         }
     }
 
@@ -828,7 +852,7 @@ class MiniCartProductViewHolder(
     }
 
     private fun adjustButtonDeleteVisibility(element: MiniCartProductUiModel) {
-        if (element.isNeededToAddVerticalLine() && !element.isLastProductItem) {
+        if (element.isBundlingItem && !element.isLastProductItem) {
             with(viewBinding) {
                 if (textFieldNotes.isVisible || textNotesFilled.isVisible) {
                     buttonDeleteCart.gone()
@@ -836,6 +860,8 @@ class MiniCartProductViewHolder(
                     buttonDeleteCart.invisible()
                 }
             }
+        } else {
+            viewBinding.buttonDeleteCart.show()
         }
     }
 
