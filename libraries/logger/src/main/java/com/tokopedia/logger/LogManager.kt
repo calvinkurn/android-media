@@ -10,6 +10,7 @@ import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicSdkDataSource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudScalyrDataSource
 import com.tokopedia.logger.datasource.db.LoggerRoomDatabase
 import com.tokopedia.logger.model.scalyr.ScalyrConfig
+import com.tokopedia.logger.repository.InternalLoggerInterface
 import com.tokopedia.logger.repository.LoggerRepository
 import com.tokopedia.logger.service.LogWorker
 import com.tokopedia.logger.utils.*
@@ -125,7 +126,7 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
                 loggerProxy.encrypt,
                 loggerProxy.decrypt,
                 loggerProxy.decryptNrKey,
-                ServerLogLogger.getInstance(application)
+                loggerProxy.internalLogger
             )
             loggerRepository = loggerRepoNew
             return loggerRepoNew
@@ -208,4 +209,5 @@ interface LoggerProxy {
     val decrypt: ((String) -> (String))?
     val decryptNrKey: ((String) -> (String))?
     val activityName: String
+    val internalLogger: InternalLoggerInterface?
 }

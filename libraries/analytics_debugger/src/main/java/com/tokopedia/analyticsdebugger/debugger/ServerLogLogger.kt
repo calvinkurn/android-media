@@ -2,20 +2,14 @@ package com.tokopedia.analyticsdebugger.debugger
 
 import android.content.Context
 import com.google.gson.GsonBuilder
-import com.google.gson.JsonParser
 import com.tokopedia.analyticsdebugger.database.ServerLogDB
 import com.tokopedia.analyticsdebugger.debugger.data.source.ServerLogDBSource
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.ServerLogDebuggerActivity
 import com.tokopedia.config.GlobalConfig
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import rx.Subscriber
 import rx.schedulers.Schedulers
-import kotlin.coroutines.CoroutineContext
 
-class ServerLogLogger private constructor(private val context: Context) : ServerLogLoggerInterface, CoroutineScope {
+class ServerLogLogger private constructor(private val context: Context) : ServerLogLoggerInterface {
 
     private val serverLogDBSource: ServerLogDBSource = ServerLogDBSource(context)
 
@@ -36,15 +30,13 @@ class ServerLogLogger private constructor(private val context: Context) : Server
     }
 
     override fun putServerLoggerEvent(data: Any) {
-        launch {
-            try {
-                val serverLogDB = ServerLogDB()
-                serverLogDB.data = prettify(data)
-                serverLogDB.timestamp = System.currentTimeMillis()
-                serverLogDBSource.insertAll(serverLogDB)
-                    .subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber())
-            } catch (ignored: Exception) {
-            }
+        try {
+            val serverLogDB = ServerLogDB()
+            serverLogDB.data = prettify(data)
+            serverLogDB.timestamp = System.currentTimeMillis()
+            serverLogDBSource.insertAll(serverLogDB)
+                .subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber())
+        } catch (ignored: Exception) {
         }
     }
 
@@ -92,6 +84,4 @@ class ServerLogLogger private constructor(private val context: Context) : Server
         }
     }
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO + CoroutineExceptionHandler { _, _ -> }
 }

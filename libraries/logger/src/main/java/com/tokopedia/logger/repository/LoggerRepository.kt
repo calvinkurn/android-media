@@ -36,7 +36,7 @@ class LoggerRepository(
     private val encrypt: ((String) -> (String))? = null,
     val decrypt: ((String) -> (String))? = null,
     private val decryptNrKey: ((String) -> (String))? = null,
-    val internalLogger: ServerLogLoggerInterface? = null
+    val internalLogger: InternalLoggerInterface? = null
 ) : LoggerRepositoryContract, CoroutineScope {
 
     override suspend fun insert(logger: Logger) {
