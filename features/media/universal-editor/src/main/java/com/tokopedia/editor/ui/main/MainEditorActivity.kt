@@ -3,6 +3,9 @@
 
 package com.tokopedia.editor.ui.main
 
+import android.animation.Animator
+import android.animation.Animator.AnimatorListener
+import android.animation.AnimatorSet
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -35,6 +38,9 @@ import com.tokopedia.editor.ui.placement.PlacementImageActivity
 import com.tokopedia.editor.ui.text.InputTextActivity
 import com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout
 import com.tokopedia.editor.util.safeLoadNativeLibrary
+import com.tokopedia.editor.util.slideDown
+import com.tokopedia.editor.util.slideOriginalPos
+import com.tokopedia.editor.util.slideTop
 import com.tokopedia.picker.common.EXTRA_UNIVERSAL_EDITOR_PARAM
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.RESULT_UNIVERSAL_EDITOR
@@ -46,6 +52,7 @@ import com.tokopedia.picker.common.types.ToolType
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifyprinciples.UnifyMotion
 import javax.inject.Inject
 
 /**
@@ -60,9 +67,8 @@ import javax.inject.Inject
  *
  * @applink tokopedia-android-internal://global/universal-editor
  */
-open class MainEditorActivity : AppCompatActivity()
-    , NavToolbarComponent.Listener
-    , DynamicTextCanvasLayout.Listener {
+open class MainEditorActivity : AppCompatActivity(), NavToolbarComponent.Listener,
+    DynamicTextCanvasLayout.Listener {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
@@ -102,13 +108,16 @@ open class MainEditorActivity : AppCompatActivity()
     private val audioMuteState by uiComponent { AudioStateUiComponent(it) }
 
     private val inputTextIntent = registerForActivityResult(StartActivityForResult()) {
+        animateSlide(isShow = true) {}
         val result = InputTextActivity.result(it)
         viewModel.onEvent(MainEditorEvent.InputTextResult(result))
     }
 
     private val placementIntent = registerForActivityResult(StartActivityForResult()) {
-        val result = PlacementImageActivity.result(it)
-        viewModel.onEvent(MainEditorEvent.PlacementImageResult(result))
+        animateSlide(isShow = true) {
+            val result = PlacementImageActivity.result(it)
+            viewModel.onEvent(MainEditorEvent.PlacementImageResult(result))
+        }
     }
 
     private val viewModel: MainEditorViewModel by viewModels { viewModelFactory }
@@ -147,11 +156,18 @@ open class MainEditorActivity : AppCompatActivity()
         exportFinalResult()
     }
 
-    override fun onTextClick(text: View, model: InputTextModel?) {
+    override fun onTextViewClick(text: View, model: InputTextModel?) {
         if (model == null) return
 
-        binding?.container?.setTextVisibility(text.id, false)
         viewModel.onEvent(MainEditorEvent.EditInputTextPage(text.id, model))
+    }
+
+    override fun startViewDrag() {
+        navigationTool.container().slideDown().start()
+    }
+
+    override fun endViewDrag() {
+        navigationTool.container().slideOriginalPos().start()
     }
 
     override fun onBackPressed() {
@@ -219,32 +235,46 @@ open class MainEditorActivity : AppCompatActivity()
 
     private fun onEffectHandler(effect: MainEditorEffect) {
         when (effect) {
-            is MainEditorEffect.ParentToolbarVisibility -> {
-                toolbar.setVisibility(effect.visible)
-                navigationTool.setVisibility(effect.visible)
-            }
             is MainEditorEffect.CloseMainEditorPage -> {
                 viewModel.onEvent(MainEditorEvent.DisposeRemainingTasks)
                 finish()
             }
+
             is MainEditorEffect.ShowCloseDialogConfirmation -> {
                 confirmationDialog.show(this@MainEditorActivity) {
                     viewModel.onEvent(MainEditorEvent.ClickHeaderCloseButton(true))
                 }
             }
+
             is MainEditorEffect.UpdateTextAddedState -> {
                 val hasTextAdded = binding?.container?.hasTextAdded() ?: return
                 viewModel.onEvent(MainEditorEvent.HasTextAdded(hasTextAdded))
             }
+
             is MainEditorEffect.RemoveAudioState -> {
                 navigationTool.setRemoveAudioUiState(effect.isRemoved)
                 audioMuteState.onShowOrHideAudioState(effect.isRemoved)
             }
-            is MainEditorEffect.OpenPlacementPage -> navigateToPlacementImagePage(effect.sourcePath, effect.model)
+
+            is MainEditorEffect.OpenPlacementPage -> {
+                animateSlide {
+                    navigateToPlacementImagePage(effect.sourcePath, effect.model)
+                }
+            }
+
             is MainEditorEffect.UpdatePagerSourcePath -> pagerContainer.updateView(effect.newSourcePath)
             is MainEditorEffect.FinishEditorPage -> navigateBackToPickerAndFinishIntent(effect.filePath)
             is MainEditorEffect.ShowToastErrorMessage -> onShowToastErrorMessage(effect.message)
-            is MainEditorEffect.OpenInputText -> navigateToInputTextTool(effect.model)
+            is MainEditorEffect.OpenInputText -> {
+                animateSlide {
+                    // hide clicked text view when open InputText page
+                    effect.textViewId?.let {
+                        binding?.container?.setTextVisibility(it, false)
+                    }
+                    navigateToInputTextTool(effect.model)
+                }
+            }
+
             is MainEditorEffect.ShowLoading -> globalLoader.showLoading()
             is MainEditorEffect.HideLoading -> globalLoader.hideLoading()
         }
@@ -263,6 +293,31 @@ open class MainEditorActivity : AppCompatActivity()
         val intent = InputTextActivity.create(this, model)
         inputTextIntent.launch(intent)
         overridePendingTransition(0, 0)
+    }
+
+    private fun animateSlide(isShow: Boolean = false, onFinish: () -> Unit) {
+        val animatorSet = AnimatorSet()
+
+        if (!isShow) {
+            animatorSet.playTogether(toolbar.container().slideTop())
+            animatorSet.playTogether(navigationTool.container().slideDown())
+        } else {
+            animatorSet.playTogether(toolbar.container().slideOriginalPos())
+            animatorSet.playTogether(navigationTool.container().slideOriginalPos())
+        }
+
+        animatorSet.apply {
+            addListener(object : AnimatorListener {
+                override fun onAnimationStart(p0: Animator) {}
+                override fun onAnimationCancel(p0: Animator) {}
+                override fun onAnimationRepeat(p0: Animator) {}
+                override fun onAnimationEnd(p0: Animator) {
+                    onFinish()
+                }
+            })
+            duration = UnifyMotion.T4
+            start()
+        }
     }
 
     private fun navigateToPlacementImagePage(sourcePath: String, model: ImagePlacementModel?) {

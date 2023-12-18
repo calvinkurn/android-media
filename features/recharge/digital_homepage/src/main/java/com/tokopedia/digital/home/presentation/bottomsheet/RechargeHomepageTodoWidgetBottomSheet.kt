@@ -36,6 +36,7 @@ class RechargeHomepageTodoWidgetBottomSheet : BottomSheetUnify(), BottomSheetTod
 
     override fun onClickBottomSheetTodoWidget(applink: String) {
         listener?.onClickBottomSheetTodoWidget(applink)
+        dismiss()
     }
 
     private fun initView() {
