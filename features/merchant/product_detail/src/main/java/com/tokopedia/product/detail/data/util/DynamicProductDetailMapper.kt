@@ -24,7 +24,6 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.pdplayout.OneLinersContent
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMediaRecomBasicInfo
-import com.tokopedia.product.detail.common.data.model.pdplayout.PromoPriceResponse
 import com.tokopedia.product.detail.common.data.model.pdplayout.Wholesale
 import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
@@ -98,7 +97,6 @@ import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
 import com.tokopedia.product.detail.view.viewholder.promo_price.ProductPromoPriceUiModel
-import com.tokopedia.product.detail.view.viewholder.promo_price.PromoPriceUiModel
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst
@@ -1271,20 +1269,4 @@ object DynamicProductDetailMapper {
             items = data.socialProof.asUiModel()
         )
     }
-
-    fun PromoPriceResponse.mapIntoPromoPriceUiModel(
-        slashPriceFmt: String
-    ) = PromoPriceUiModel(
-        priceAdditionalFmt = priceAdditionalFmt,
-        promoPriceFmt = promoPriceFmt,
-        promoSubtitle = promoSubtitle,
-        slashPriceFmt = slashPriceFmt,
-        separatorColor = separatorColor,
-        mainTextColor = mainTextColor,
-        cardBackgroundColor = backgroundColor,
-        mainIconUrl = iconUrl,
-        boIconUrl = "",
-        superGraphicIconUrl = superGraphicUrl,
-        applink = applink
-    )
 }

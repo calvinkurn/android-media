@@ -37,7 +37,9 @@ import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.nest.principles.utils.ImageSource.Remote
+import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
+import com.tokopedia.product.detail.common.data.model.promoprice.PromoPriceUiModel
 
 private const val NORMAL_PROMO_UI = 1
 
@@ -165,7 +167,7 @@ fun PromoPriceFooter(
         val (normalPrice, slashPrice, boImage) = createRefs()
 
         NestTypography(
-            priceAdditionalFmt,
+            priceAdditionalFmt.toAnnotatedString(),
             modifier = Modifier.constrainAs(normalPrice) {
                 top.linkTo(parent.top)
                 start.linkTo(parent.start)

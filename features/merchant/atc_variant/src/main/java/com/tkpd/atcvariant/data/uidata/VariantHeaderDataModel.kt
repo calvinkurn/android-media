@@ -5,6 +5,7 @@ import com.tkpd.atcvariant.util.PAYLOAD_UPDATE_IMAGE_ONLY
 import com.tkpd.atcvariant.util.PAYLOAD_UPDATE_PRICE_ONLY
 import com.tkpd.atcvariant.view.adapter.AtcVariantTypeFactory
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
+import com.tokopedia.product.detail.common.data.model.promoprice.PromoPriceUiModel
 
 /**
  * Created by Yehezkiel on 06/05/21
@@ -60,12 +61,13 @@ data class VariantHeaderDataModel(
 }
 
 data class ProductHeaderData(
-        val productMainPrice: String = "",
-        val productDiscountedPercentage: String = "",
-        val isCampaignActive: Boolean = false,
-        val productSlashPrice: String = "",
-        val productStockFmt: String = "",
-        val hideGimmick: Boolean = false
+    val productMainPrice: String = "",
+    val productDiscountedPercentage: String = "",
+    val isCampaignActive: Boolean = false,
+    val productSlashPrice: String = "",
+    val productStockFmt: String = "",
+    val hideGimmick: Boolean = false,
+    val promoPrice: PromoPriceUiModel? = null
 ) {
 
     val shouldShowDiscPercentage
