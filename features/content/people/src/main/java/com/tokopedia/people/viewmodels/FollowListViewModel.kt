@@ -11,13 +11,16 @@ import com.tokopedia.people.views.uimodel.state.FollowListState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+private typealias DataWithCursor<T> = Pair<List<T>, String>
 internal class FollowListViewModel @AssistedInject constructor(
     @Assisted private val type: FollowListType,
     @Assisted private val profileIdentifier: String,
@@ -30,13 +33,17 @@ internal class FollowListViewModel @AssistedInject constructor(
     }
 
     private val _followList = MutableStateFlow<List<PeopleUiModel>>(emptyList())
+    private val _nextCursor = MutableStateFlow<String?>(null)
+
+    private var loadDataJob: Job? = null
 
     val state = combine(
         _followList,
-        flow { emit("a") }
-    ) { followList, _ ->
+        _nextCursor
+    ) { followList, nextCursor ->
         FollowListState(
-            followList = followList
+            followList = followList,
+            hasNextPage = nextCursor == null || nextCursor.isNotBlank()
         )
     }.stateIn(
         viewModelScope,
@@ -47,44 +54,65 @@ internal class FollowListViewModel @AssistedInject constructor(
     fun onAction(action: FollowListAction) {
         when (action) {
             FollowListAction.Init -> onInit()
+            FollowListAction.LoadMore -> onLoadMore()
+            is FollowListAction.Follow -> onFollow(action.people)
         }
     }
 
     private fun onInit() {
-        viewModelScope.launch {
-            val followList = when (type) {
-                FollowListType.Follower -> getFollowers("")
-                FollowListType.Following -> getFollowings("")
-            }
-            _followList.value = followList
+        loadData(cursor = "")
+    }
+
+    private fun onLoadMore() {
+        val lastCursor = _nextCursor.value ?: return
+        loadData(cursor = lastCursor)
+    }
+
+    private fun onFollow(people: PeopleUiModel) {
+        when (people) {
+            is PeopleUiModel.ShopUiModel -> {}
+            is PeopleUiModel.UserUiModel -> {}
         }
     }
 
-    private suspend fun getFollowers(cursor: String): List<PeopleUiModel> {
+    private suspend fun getFollowers(cursor: String): DataWithCursor<PeopleUiModel> {
+        var nextCursor = cursor
         return try {
             var result: FollowListUiModel.Follower
-            var nextCursor = cursor
 
             do {
-                result = userRepo.getMyFollowers(profileIdentifier, nextCursor, 10)
-                nextCursor = cursor
+                result = userRepo.getFollowers(profileIdentifier, nextCursor, 10)
+                nextCursor = result.nextCursor
             } while (result.followers.isEmpty() && nextCursor.isNotEmpty())
 
-            result.followers
-        } catch (e: Throwable) { emptyList() }
+            result.followers to nextCursor
+        } catch (e: Throwable) { emptyList<PeopleUiModel>() to nextCursor }
     }
 
-    private suspend fun getFollowings(cursor: String): List<PeopleUiModel> {
+    private suspend fun getFollowings(cursor: String): DataWithCursor<PeopleUiModel> {
+        var nextCursor = cursor
         return try {
             var result: FollowListUiModel.Following
-            var nextCursor = cursor
 
             do {
-                result = userRepo.getMyFollowing(profileIdentifier, nextCursor, 10)
-                nextCursor = cursor
+                result = userRepo.getFollowing(profileIdentifier, nextCursor, 10)
+                nextCursor = result.nextCursor
             } while (result.followingList.isEmpty() && nextCursor.isNotEmpty())
 
-            result.followingList
-        } catch (e: Throwable) { emptyList() }
+            result.followingList to nextCursor
+        } catch (e: Throwable) { emptyList<PeopleUiModel>() to nextCursor }
+    }
+
+    private fun loadData(cursor: String = "") {
+        if (loadDataJob?.isActive == true) return
+        loadDataJob = viewModelScope.launch {
+            delay(1500)
+            val (followList, nextCursor) = when (type) {
+                FollowListType.Follower -> getFollowers(cursor)
+                FollowListType.Following -> getFollowings(cursor)
+            }
+            _followList.update { it + followList }
+            _nextCursor.value = nextCursor
+        }
     }
 }

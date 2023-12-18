@@ -51,7 +51,17 @@ class FollowListFragment @Inject internal constructor(
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 val state: FollowListState by viewModel.state.collectAsStateWithLifecycle()
-                FollowListScreen(people = state.followList.toPersistentList(), Modifier.fillMaxSize())
+                FollowListScreen(
+                    people = state.followList.toPersistentList(),
+                    hasNextPage = state.hasNextPage,
+                    onLoadMore = {
+                        viewModel.onAction(FollowListAction.LoadMore)
+                    },
+                    onFollowClicked = {
+                        viewModel.onAction(FollowListAction.Follow(it))
+                    },
+                    Modifier.fillMaxSize()
+                )
             }
         }
     }
@@ -105,7 +115,7 @@ class FollowListFragment @Inject internal constructor(
             ) as FollowListFragment
 
             fragment.setArgsType(param.type)
-            fragment.setArgsProfileIdentifier(param.profileIdentifier)
+            fragment.setArgsProfileIdentifier(param.profileId)
 
             return fragment
         }
@@ -121,6 +131,6 @@ class FollowListFragment @Inject internal constructor(
 
     data class Param(
         val type: FollowListType,
-        val profileIdentifier: String
+        val profileId: String
     )
 }

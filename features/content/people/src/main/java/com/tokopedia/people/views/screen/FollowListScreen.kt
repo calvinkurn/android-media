@@ -4,6 +4,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,7 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,10 +25,14 @@ import com.tokopedia.nest.components.ButtonSize
 import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.components.NestImage
+import com.tokopedia.nest.components.loader.NestLoader
+import com.tokopedia.nest.components.loader.NestLoaderType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.nest.principles.utils.noRippleClickable
+import com.tokopedia.people.utils.itemsLoadMore
+import com.tokopedia.people.utils.onLoadMore
 import com.tokopedia.people.views.uimodel.PeopleUiModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
@@ -38,34 +43,62 @@ import kotlinx.collections.immutable.toPersistentList
 @Composable
 internal fun FollowListScreen(
     people: ImmutableList<PeopleUiModel>,
+    hasNextPage: Boolean,
+    onLoadMore: () -> Unit,
+    onFollowClicked: (PeopleUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(modifier) {
-        items(people) {
+    val listState = rememberLazyListState()
+
+    LazyColumn(modifier, listState) {
+        itemsLoadMore(
+            people,
+            hasNextPage = hasNextPage,
+            key = {
+                when (it) {
+                    is PeopleUiModel.ShopUiModel -> "shop_${it.id}"
+                    is PeopleUiModel.UserUiModel -> "user_${it.id}"
+                }
+            },
+            loadingContent = {
+                Box(Modifier.fillParentMaxWidth()) {
+                    NestLoader(
+                        variant = NestLoaderType.Circular(),
+                        Modifier
+                            .padding(8.dp)
+                            .requiredSize(40.dp)
+                            .align(Alignment.Center)
+                    )
+                }
+            }
+        ) {
             when (it) {
                 is PeopleUiModel.ShopUiModel -> {
                     ShopFollowListItemRow(
                         it,
-                        onFollowClicked = {},
+                        onFollowClicked = onFollowClicked,
                         onItemClicked = {}
                     )
                 }
+
                 is PeopleUiModel.UserUiModel -> {
                     UserFollowListItemRow(
                         it,
-                        onFollowClicked = {},
+                        onFollowClicked = onFollowClicked,
                         onItemClicked = {}
                     )
                 }
             }
         }
     }
+
+    listState.onLoadMore { onLoadMore() }
 }
 
 @Composable
 private fun ShopFollowListItemRow(
     item: PeopleUiModel.ShopUiModel,
-    onFollowClicked: (Boolean) -> Unit,
+    onFollowClicked: (PeopleUiModel) -> Unit,
     onItemClicked: (PeopleUiModel.ShopUiModel) -> Unit
 ) {
     Row(
@@ -107,7 +140,7 @@ private fun ShopFollowListItemRow(
             text = if (item.isFollowed) "Following" else "Follow",
             variant = if (item.isFollowed) ButtonVariant.GHOST_ALTERNATE else ButtonVariant.FILLED,
             size = ButtonSize.MICRO,
-            onClick = { onFollowClicked(item.isFollowed) }
+            onClick = { onFollowClicked(item) }
         )
     }
 }
@@ -115,7 +148,7 @@ private fun ShopFollowListItemRow(
 @Composable
 private fun UserFollowListItemRow(
     item: PeopleUiModel.UserUiModel,
-    onFollowClicked: (Boolean) -> Unit,
+    onFollowClicked: (PeopleUiModel) -> Unit,
     onItemClicked: (PeopleUiModel.UserUiModel) -> Unit
 ) {
     Row(
@@ -162,7 +195,7 @@ private fun UserFollowListItemRow(
             text = if (item.isFollowed) "Following" else "Follow",
             variant = if (item.isFollowed) ButtonVariant.GHOST_ALTERNATE else ButtonVariant.FILLED,
             size = ButtonSize.MICRO,
-            onClick = { onFollowClicked(item.isFollowed) }
+            onClick = { onFollowClicked(item) }
         )
     }
 }
@@ -246,6 +279,9 @@ private fun FollowListScreenPreview() {
                     )
                 }
             }.toPersistentList(),
+            hasNextPage = false,
+            {},
+            {},
             Modifier.background(NestTheme.colors.NN._0)
         )
     }

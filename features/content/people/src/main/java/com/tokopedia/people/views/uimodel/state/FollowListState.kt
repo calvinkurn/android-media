@@ -5,11 +5,13 @@ import com.tokopedia.people.views.uimodel.PeopleUiModel
 
 @Immutable
 data class FollowListState(
-    val followList: List<PeopleUiModel>
+    val followList: List<PeopleUiModel>,
+    val hasNextPage: Boolean
 ) {
     companion object {
         val Empty = FollowListState(
-            followList = emptyList()
+            followList = emptyList(),
+            hasNextPage = false
         )
     }
 }
