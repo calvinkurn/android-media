@@ -189,10 +189,10 @@
 /features/salam/umrah                                   @tokopedia/android-minionoscar-dev
 /libraries/travel_calendar                              @tokopedia/android-minionoscar-dev
 
-/features/promo/promo_checkout/                 		@tokopedia/android-minionkevin-dev
-/features/promo/promo_checkout_common/          		@tokopedia/android-minionkevin-dev
+/features/promo/promo_checkout/                 		@tokopedia/android-minionoscar-dev
+/features/promo/promo_checkout_common/          		@tokopedia/android-minionoscar-dev
 
-/testing/joint/dg_transaction/                          @tokopedia/android-minionkevin-dev
+/testing/joint/dg_transaction/                          @tokopedia/android-minionoscar-dev
 /features/transaction/buyerorder/                       @tokopedia/android-minionkevin-dev
 
 /features/transaction/atc_common/               		@tokopedia/android-minionbob-dev
