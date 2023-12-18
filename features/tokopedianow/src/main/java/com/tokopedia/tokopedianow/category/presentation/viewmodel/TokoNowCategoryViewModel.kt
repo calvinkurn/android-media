@@ -49,6 +49,7 @@ import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType.
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowStaticLayoutType.Companion.PRODUCT_ADS_CAROUSEL
 import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.addProductAdsCarousel
 import com.tokopedia.tokopedianow.common.domain.mapper.ProductAdsMapper.findAdsProductCarousel
 import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
@@ -408,7 +409,7 @@ class TokoNowCategoryViewModel @Inject constructor(
         launchCatchError(block = {
             val response = getAnnotationWidget(AnnotationType.BRAND)
 
-            if(response.showWidget()) {
+            if (response.showWidget()) {
                 visitableList.mapBrandWidget(response)
             } else {
                 visitableList.removeBrandWidget()
@@ -426,7 +427,7 @@ class TokoNowCategoryViewModel @Inject constructor(
     ): GetAnnotationListResponse {
         return getAnnotationWidgetUseCase.execute(
             categoryId = categoryIdL1,
-            warehouseIds = getWarehouseIds(),
+            warehouses = getWarehouses(),
             annotationType = annotationType,
             pageSource = AnnotationPageSource.CLP_L1
         )
@@ -453,29 +454,33 @@ class TokoNowCategoryViewModel @Inject constructor(
 
     private fun trackCategoryShowCase(product: ProductCardCompactUiModel, quantity: Int) {
         visitableList.findCategoryShowcaseItem(product.productId)?.let { item ->
-            _atcDataTracker.postValue(CategoryAtcTrackerModel(
-                categoryIdL1 = categoryIdL1,
-                index = item.index,
-                headerName = item.headerName,
-                quantity = quantity,
-                product = product,
-                layoutType = CATEGORY_SHOWCASE.name
-            ))
+            _atcDataTracker.postValue(
+                CategoryAtcTrackerModel(
+                    categoryIdL1 = categoryIdL1,
+                    index = item.index,
+                    headerName = item.headerName,
+                    quantity = quantity,
+                    product = product,
+                    layoutType = CATEGORY_SHOWCASE.name
+                )
+            )
         }
     }
 
     private fun trackProductAdsAddToCart(product: ProductCardCompactUiModel, quantity: Int) {
         visitableList.findAdsProductCarousel(product.productId).let { item ->
-            _atcDataTracker.postValue(CategoryAtcTrackerModel(
-                index = item.position,
-                quantity = quantity,
-                shopId = item.shopId,
-                shopName = item.shopName,
-                shopType = item.shopType,
-                categoryBreadcrumbs = item.categoryBreadcrumbs,
-                product = item.productCardModel,
-                layoutType = PRODUCT_ADS_CAROUSEL
-            ))
+            _atcDataTracker.postValue(
+                CategoryAtcTrackerModel(
+                    index = item.position,
+                    quantity = quantity,
+                    shopId = item.shopId,
+                    shopName = item.shopName,
+                    shopType = item.shopType,
+                    categoryBreadcrumbs = item.categoryBreadcrumbs,
+                    product = item.productCardModel,
+                    layoutType = PRODUCT_ADS_CAROUSEL
+                )
+            )
         }
     }
 
@@ -487,14 +492,16 @@ class TokoNowCategoryViewModel @Inject constructor(
         val deepLinkParam = "$DEFAULT_DEEPLINK_PARAM/$categoryIdL1"
         val utmCampaignList = getUtmCampaignList()
 
-        _shareLiveData.postValue(CategorySharingModel(
-            categoryIdLvl2 = "",
-            categoryIdLvl3 = "",
-            title = title,
-            deeplinkParam = deepLinkParam,
-            url = url,
-            utmCampaignList = utmCampaignList
-        ))
+        _shareLiveData.postValue(
+            CategorySharingModel(
+                categoryIdLvl2 = "",
+                categoryIdLvl3 = "",
+                title = title,
+                deeplinkParam = deepLinkParam,
+                url = url,
+                utmCampaignList = utmCampaignList
+            )
+        )
     }
 
     private fun getUtmCampaignList(): List<String> {
@@ -507,5 +514,10 @@ class TokoNowCategoryViewModel @Inject constructor(
             name = detailResponse.categoryDetail.data.name,
             url = detailResponse.categoryDetail.data.url
         )
+    }
+
+    private fun getWarehouses(): String {
+        val addressLocalCacheModel = addressData.getAddressData()
+        return AddressMapper.mapToWarehouses(addressLocalCacheModel)
     }
 }

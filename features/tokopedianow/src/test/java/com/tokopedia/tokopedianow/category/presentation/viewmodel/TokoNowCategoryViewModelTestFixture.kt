@@ -21,6 +21,8 @@ import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlRespo
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.annotation.domain.model.TokoNowGetAnnotationListResponse
 import com.tokopedia.tokopedianow.annotation.domain.model.TokoNowGetAnnotationListResponse.GetAnnotationListResponse
+import com.tokopedia.tokopedianow.annotation.domain.param.AnnotationPageSource
+import com.tokopedia.tokopedianow.annotation.domain.param.AnnotationType
 import com.tokopedia.tokopedianow.annotation.domain.usecase.GetAnnotationWidgetUseCase
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToCategoryTitle
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToChooseAddress
@@ -32,8 +34,8 @@ import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMa
 import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryDetailUseCase
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
-import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationItemUiModel
 import com.tokopedia.tokopedianow.category.mapper.MiniCartMapper
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationItemUiModel
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel.Companion.BATCH_SHOWCASE_TOTAL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
@@ -413,6 +415,17 @@ open class TokoNowCategoryViewModelTestFixture {
         coVerify { getProductAdsUseCase.execute(expectedParam) }
     }
 
+    protected fun verifyGetAnnotationWidgetUseCaseCalled(
+        categoryId: String,
+        warehouses: String,
+        annotationType: AnnotationType,
+        pageSource: AnnotationPageSource
+    ) {
+        coVerify {
+            getAnnotationWidgetUseCase.execute(categoryId, warehouses, annotationType, pageSource)
+        }
+    }
+
     /**
      * protected other function section
      */
@@ -536,7 +549,7 @@ open class TokoNowCategoryViewModelTestFixture {
             productRecommendationUiModel
         )
     }
-    
+
     private fun createGetProductQueryParams(srpPageId: String): Map<String?, Any?> {
         return mutableMapOf<String?, Any?>().apply {
             put(SearchApiConst.USER_CITY_ID, addressData.city_id)

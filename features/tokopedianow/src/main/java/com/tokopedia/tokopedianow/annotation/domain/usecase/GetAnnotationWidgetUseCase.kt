@@ -11,7 +11,7 @@ import com.tokopedia.tokopedianow.annotation.domain.query.GetAnnotationWidgetQue
 import com.tokopedia.tokopedianow.annotation.domain.query.GetAnnotationWidgetQuery.PARAM_ANNOTATION_TYPE
 import com.tokopedia.tokopedianow.annotation.domain.query.GetAnnotationWidgetQuery.PARAM_CATEGORY_ID
 import com.tokopedia.tokopedianow.annotation.domain.query.GetAnnotationWidgetQuery.PARAM_PAGE_SOURCE
-import com.tokopedia.tokopedianow.annotation.domain.query.GetAnnotationWidgetQuery.PARAM_WAREHOUSE_IDS
+import com.tokopedia.tokopedianow.annotation.domain.query.GetAnnotationWidgetQuery.PARAM_WAREHOUSES
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
@@ -23,14 +23,14 @@ class GetAnnotationWidgetUseCase @Inject constructor(
 
     suspend fun execute(
         categoryId: String,
-        warehouseIds: String,
+        warehouses: String,
         annotationType: AnnotationType,
         pageSource: AnnotationPageSource
     ): GetAnnotationListResponse {
         graphql.apply {
             val requestParams = RequestParams().apply {
                 putString(PARAM_CATEGORY_ID, categoryId)
-                putString(PARAM_WAREHOUSE_IDS, warehouseIds)
+                putString(PARAM_WAREHOUSES, warehouses)
                 putString(PARAM_ANNOTATION_TYPE, annotationType.name)
                 putString(PARAM_PAGE_SOURCE, pageSource.name)
             }.parameters

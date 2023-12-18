@@ -1,5 +1,8 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
+import com.tokopedia.tokopedianow.annotation.domain.param.AnnotationPageSource
+import com.tokopedia.tokopedianow.annotation.domain.param.AnnotationType
+import com.tokopedia.tokopedianow.common.util.AddressMapper
 import com.tokopedia.tokopedianow.common.util.BrandWidgetMapper
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
@@ -8,8 +11,10 @@ class CategoryBrandWidgetTest : TokoNowCategoryViewModelTestFixture() {
 
     @Test
     fun `given get brand widget success when getFirstPage should add brand widget to visitableList`() {
-        val getBrandWidgetResponse = getBrandWidgetResponse.response
         setupAddressAndUserData()
+
+        val getBrandWidgetResponse = getBrandWidgetResponse.response
+        val warehouses = AddressMapper.mapToWarehouses(addressData)
 
         onCategoryDetail_thenReturns()
         onTargetedTicker_thenReturns()
@@ -22,6 +27,13 @@ class CategoryBrandWidgetTest : TokoNowCategoryViewModelTestFixture() {
 
         val expectedVisitableList = createVisitableList()
         expectedVisitableList.add(brandWidgetUiModel)
+
+        verifyGetAnnotationWidgetUseCaseCalled(
+            categoryId = categoryIdL1,
+            warehouses = warehouses,
+            annotationType = AnnotationType.BRAND,
+            pageSource = AnnotationPageSource.CLP_L1
+        )
 
         viewModel.visitableListLiveData
             .verifyValueEquals(expectedVisitableList)
