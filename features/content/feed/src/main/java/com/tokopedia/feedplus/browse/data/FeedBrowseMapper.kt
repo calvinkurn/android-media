@@ -212,7 +212,7 @@ class FeedBrowseMapper @Inject constructor() {
         /**
          * Recommendation Identifier
          */
-        private const val IDENTIFIER_UGC_WIDGET = "ugc_widget"
-        private const val IDENTIFIER_INSPIRATIONAL_WIDGET = "inspirational_widget"
+        private const val IDENTIFIER_UGC_WIDGET = "content_browse_ugc"
+        private const val IDENTIFIER_INSPIRATIONAL_WIDGET = "content_browse_inspirational"
     }
 }
