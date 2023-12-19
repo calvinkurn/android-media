@@ -739,12 +739,21 @@ class MiniCartProductViewHolder(
             val constraint = ConstraintSet()
             constraint.clone(containerProduct)
             if (element.isLastProductItem) {
-                constraint.connect(
-                    R.id.vertical_line,
-                    ConstraintSet.BOTTOM,
-                    R.id.text_notes,
-                    ConstraintSet.BOTTOM
-                )
+                if (element.isBundlingItem) {
+                    constraint.connect(
+                        R.id.vertical_line,
+                        ConstraintSet.BOTTOM,
+                        R.id.text_notes,
+                        ConstraintSet.BOTTOM
+                    )
+                } else {
+                    constraint.connect(
+                        R.id.vertical_line,
+                        ConstraintSet.BOTTOM,
+                        R.id.divider_bottom,
+                        ConstraintSet.BOTTOM
+                    )
+                }
             } else {
                 constraint.connect(
                     R.id.vertical_line,
