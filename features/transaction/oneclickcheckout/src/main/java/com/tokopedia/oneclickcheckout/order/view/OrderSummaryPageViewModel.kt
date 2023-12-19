@@ -1355,15 +1355,19 @@ class OrderSummaryPageViewModel @Inject constructor(
         // check valid total
         val isValidTotal = orderTotal.buttonState == OccButtonState.NORMAL
         // check valid promo
-        val isValidPromoState = orderPromo.state != OccButtonState.LOADING
-        val validStatusCodes = listOf(
-            ResultStatus.STATUS_USER_BLACKLISTED,
-            ResultStatus.STATUS_PHONE_NOT_VERIFIED,
-            ResultStatus.STATUS_COUPON_LIST_EMPTY
-        )
-        val isValidPromoStatusCode = orderPromo.entryPointInfo.isSuccess ||
-            (!orderPromo.entryPointInfo.isSuccess && validStatusCodes.any { code -> code == orderPromo.entryPointInfo.statusCode })
-        val isValidPromo = isValidPromoState && isValidPromoStatusCode
+        val isValidPromo = if (orderPromo.isCartCheckoutRevamp) {
+            val isValidPromoState = orderPromo.state != OccButtonState.LOADING
+            val validStatusCodes = listOf(
+                ResultStatus.STATUS_USER_BLACKLISTED,
+                ResultStatus.STATUS_PHONE_NOT_VERIFIED,
+                ResultStatus.STATUS_COUPON_LIST_EMPTY
+            )
+            val isValidPromoStatusCode = orderPromo.entryPointInfo.isSuccess ||
+                (!orderPromo.entryPointInfo.isSuccess && validStatusCodes.any { code -> code == orderPromo.entryPointInfo.statusCode })
+            isValidPromoState && isValidPromoStatusCode
+        } else {
+            orderPromo.state == OccButtonState.NORMAL
+        }
         // check valid shipment
         val isValidShipment = !orderShipment.isLoading
 
