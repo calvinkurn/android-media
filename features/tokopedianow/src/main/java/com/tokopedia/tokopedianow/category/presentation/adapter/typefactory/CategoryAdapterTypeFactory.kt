@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokopedianow.annotation.presentation.adapter.typefactory.BrandWidgetTypeFactory
 import com.tokopedia.tokopedianow.annotation.presentation.uimodel.BrandWidgetUiModel
 import com.tokopedia.tokopedianow.annotation.presentation.viewholder.BrandWidgetViewHolder
+import com.tokopedia.tokopedianow.annotation.presentation.viewholder.BrandWidgetViewHolder.BrandWidgetListener
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.listener.CategoryTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
@@ -44,7 +45,7 @@ class CategoryAdapterTypeFactory(
     private var categoryShowcaseHeaderListener: TokoNowDynamicHeaderListener? = null,
     private var tokoNowCategoryMenuListener: TokoNowCategoryMenuListener? = null,
     private var tokoNowProductRecommendationListener: TokoNowProductRecommendationListener? = null,
-    private var brandHeaderListener: TokoNowDynamicHeaderListener? = null,
+    private var brandWidgetListener: BrandWidgetListener? = null,
     private var recycledViewPool: RecyclerView.RecycledViewPool? = null,
     private val lifecycleOwner: LifecycleOwner? = null,
     tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetListener,
@@ -109,7 +110,7 @@ class CategoryAdapterTypeFactory(
             )
             BrandWidgetViewHolder.LAYOUT -> BrandWidgetViewHolder(
                 itemView = view,
-                headerListener = brandHeaderListener
+                listener = brandWidgetListener
             )
             else -> super.createViewHolder(view, type)
         }
@@ -123,6 +124,6 @@ class CategoryAdapterTypeFactory(
         categoryShowcaseHeaderListener = null
         tokoNowCategoryMenuListener = null
         tokoNowProductRecommendationListener = null
-        brandHeaderListener = null
+        brandWidgetListener = null
     }
 }

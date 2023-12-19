@@ -8,6 +8,7 @@ import com.tokopedia.tokopedianow.annotation.presentation.uimodel.BrandWidgetSee
 import com.tokopedia.tokopedianow.annotation.presentation.uimodel.BrandWidgetUiModel
 import com.tokopedia.tokopedianow.annotation.presentation.uimodel.BrandWidgetUiModel.BrandWidgetState
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getVisitableId
 
 object BrandWidgetMapper {
 
@@ -52,6 +53,26 @@ object BrandWidgetMapper {
 
         val index = indexOf(item)
         this[index] = visitable
+    }
+
+    fun MutableList<Visitable<*>>.mapBrandWidgetLoading(id: String) {
+        firstOrNull { it.getVisitableId() == id }?.let {
+            val item = it as BrandWidgetUiModel
+            val index = indexOf(it)
+            this[index] = item.copy(
+                state = BrandWidgetState.LOADING
+            )
+        }
+    }
+
+    fun MutableList<Visitable<*>>.mapBrandWidgetError() {
+        firstOrNull { it is BrandWidgetUiModel }?.let {
+            val item = it as BrandWidgetUiModel
+            val index = indexOf(it)
+            this[index] = item.copy(
+                state = BrandWidgetState.ERROR
+            )
+        }
     }
 
     fun MutableList<Visitable<*>>.removeBrandWidget() {

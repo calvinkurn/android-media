@@ -137,8 +137,8 @@ class HomeClaimCouponWidgetViewHolder(
     ) {
         localLoad.showIfWithBlock(isError) {
             progressState = false
-            title?.text = context.getString(R.string.tokopedianow_claim_coupon_widget_local_load_title)
-            description?.text = context.getString(R.string.tokopedianow_claim_coupon_widget_local_load_description)
+            title?.text = context.getString(R.string.tokopedianow_widget_local_load_title)
+            description?.text = context.getString(R.string.tokopedianow_widget_local_load_description)
             refreshBtn?.setOnClickListener {
                 progressState = true
                 claimCouponWidgetListener?.onClickRefreshButton(id, slugs)

@@ -15,6 +15,8 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.tokopedianow.annotation.domain.mapper.BrandWidgetMapper.addBrandWidget
 import com.tokopedia.tokopedianow.annotation.domain.mapper.BrandWidgetMapper.mapBrandWidget
+import com.tokopedia.tokopedianow.annotation.domain.mapper.BrandWidgetMapper.mapBrandWidgetError
+import com.tokopedia.tokopedianow.annotation.domain.mapper.BrandWidgetMapper.mapBrandWidgetLoading
 import com.tokopedia.tokopedianow.annotation.domain.mapper.BrandWidgetMapper.removeBrandWidget
 import com.tokopedia.tokopedianow.annotation.domain.model.TokoNowGetAnnotationListResponse.GetAnnotationListResponse
 import com.tokopedia.tokopedianow.annotation.domain.param.AnnotationPageSource
@@ -405,6 +407,12 @@ class TokoNowCategoryViewModel @Inject constructor(
         )
     }
 
+    fun retryGetBrandWidget(id: String) {
+        visitableList.mapBrandWidgetLoading(id)
+        updateVisitableListLiveData()
+        getBrandWidget()
+    }
+
     private fun getBrandWidget() {
         launchCatchError(block = {
             val response = getAnnotationWidget(AnnotationType.BRAND)
@@ -417,7 +425,7 @@ class TokoNowCategoryViewModel @Inject constructor(
 
             updateVisitableListLiveData()
         }) {
-            visitableList.removeBrandWidget()
+            visitableList.mapBrandWidgetError()
             updateVisitableListLiveData()
         }
     }

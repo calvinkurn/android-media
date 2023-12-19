@@ -13,6 +13,17 @@
         android:layout_marginStart="16dp"
         android:visibility="gone" />
 
+    <com.tokopedia.unifycomponents.LocalLoad
+        android:id="@+id/local_load"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_local_load_description="@string/tokopedianow_widget_local_load_description"
+        app:unify_local_load_title="@string/tokopedianow_widget_local_load_title" />
+
     <com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
         android:id="@+id/header"
         android:layout_width="match_parent"

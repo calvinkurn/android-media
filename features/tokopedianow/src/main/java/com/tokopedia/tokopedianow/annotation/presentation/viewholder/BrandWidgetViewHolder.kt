@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.annotation.presentation.viewholder
 
+import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,8 +18,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class BrandWidgetViewHolder(
     itemView: View,
-    private val headerListener: TokoNowDynamicHeaderListener?
-) : AbstractViewHolder<BrandWidgetUiModel>(itemView) {
+    private val listener: BrandWidgetListener?
+) : AbstractViewHolder<BrandWidgetUiModel>(itemView), TokoNowDynamicHeaderListener {
 
     companion object {
         @LayoutRes
@@ -38,15 +39,17 @@ class BrandWidgetViewHolder(
             BrandWidgetState.LOADING -> {
                 showLoading()
                 hideWidget()
+                hideError()
             }
             BrandWidgetState.LOADED -> {
-                hideLoading()
                 showWidget(uiModel)
+                hideLoading()
+                hideError()
             }
             BrandWidgetState.ERROR -> {
+                showError(uiModel)
                 hideLoading()
                 hideWidget()
-                showError()
             }
         }
     }
@@ -54,7 +57,7 @@ class BrandWidgetViewHolder(
     private fun showWidget(uiModel: BrandWidgetUiModel) {
         binding?.apply {
             header.setModel(uiModel.header)
-            header.setListener(headerListener)
+            header.setListener(this@BrandWidgetViewHolder)
             adapter.setVisitables(uiModel.items)
             widgetGroup.show()
         }
@@ -68,8 +71,17 @@ class BrandWidgetViewHolder(
         binding?.loadingShimmer?.root?.hide()
     }
 
-    private fun showError() {
+    private fun showError(uiModel: BrandWidgetUiModel) {
+        binding?.apply {
+            localLoad.refreshBtn?.setOnClickListener {
+                listener?.clickRetryButton(uiModel.id)
+            }
+            localLoad.show()
+        }
+    }
 
+    private fun hideError() {
+        binding?.localLoad?.hide()
     }
 
     private fun hideWidget() {
@@ -86,5 +98,33 @@ class BrandWidgetViewHolder(
             )
             addItemDecoration(BrandWidgetItemDecoration())
         }
+    }
+
+    override fun onSeeAllClicked(
+        context: Context,
+        channelId: String,
+        headerName: String,
+        appLink: String,
+        widgetId: String
+    ) {
+        listener?.onSeeAllClicked(context, channelId, headerName, appLink, widgetId)
+    }
+
+    override fun onChannelExpired() {
+        listener?.onChannelExpired()
+    }
+
+    interface BrandWidgetListener {
+        fun clickRetryButton(id: String)
+
+        fun onSeeAllClicked(
+            context: Context,
+            channelId: String,
+            headerName: String,
+            appLink: String,
+            widgetId: String
+        )
+
+        fun onChannelExpired()
     }
 }

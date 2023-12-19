@@ -28,6 +28,8 @@ import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.annotation.presentation.viewholder.BrandWidgetViewHolder
+import com.tokopedia.tokopedianow.annotation.presentation.viewholder.BrandWidgetViewHolder.BrandWidgetListener
 import com.tokopedia.tokopedianow.category.di.component.DaggerCategoryComponent
 import com.tokopedia.tokopedianow.category.di.module.CategoryContextModule
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryDiffer
@@ -119,7 +121,7 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
             tokoNowCategoryMenuListener = createTokoNowCategoryMenuCallback(),
             tokoNowProductRecommendationListener = createProductRecommendationCallback(),
             productAdsCarouselListener = createProductCardAdsCallback(),
-            brandHeaderListener = createBrandHeaderListener(),
+            brandWidgetListener = createBrandWidgetListener(),
             recycledViewPool = recycledViewPool,
             lifecycleOwner = viewLifecycleOwner
         )
@@ -648,8 +650,12 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
         override fun onProductCardAddToCartBlocked() = showToasterWhenAddToCartBlocked()
     }
 
-    private fun createBrandHeaderListener(): TokoNowDynamicHeaderListener? {
-        return object: TokoNowDynamicHeaderListener {
+    private fun createBrandWidgetListener(): BrandWidgetListener {
+        return object: BrandWidgetListener {
+            override fun clickRetryButton(id: String) {
+                viewModel.retryGetBrandWidget(id)
+            }
+
             override fun onSeeAllClicked(
                 context: Context,
                 channelId: String,
