@@ -33,6 +33,8 @@ class SwitcherCustomView @JvmOverloads constructor(
                 tvSwitcherRightSubtitle.text = attributeArray.getString(R.styleable.SwitcherCustomView_rightSubtitleText)
                 tvSwitcherRightTitle.text = attributeArray.getString(R.styleable.SwitcherCustomView_rightTitleText)
             }
+
+            attributeArray.recycle()
         }
     }
 
@@ -53,7 +55,5 @@ class SwitcherCustomView @JvmOverloads constructor(
     }
 
     private fun init(attrs: AttributeSet? = null) {
-
     }
-
 }

@@ -16,9 +16,9 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
  * @author by jessica on 12/08/20
  */
 
-class FilterSelectionViewHolder(view: View, val listener: OnSelectedFilterChangedListener, var isOverFlowLayout: Boolean = false)
-    : HotelSearchResultFilterV2Adapter.FilterBaseViewHolder(view),
-        HotelSearchResultFilterAdapter.ActionListener {
+class FilterSelectionViewHolder(view: View, val listener: OnSelectedFilterChangedListener, var isOverFlowLayout: Boolean = false) :
+    HotelSearchResultFilterV2Adapter.FilterBaseViewHolder(view),
+    HotelSearchResultFilterAdapter.ActionListener {
 
     private val binding = LayoutHotelFilterSelectionBinding.bind(view)
 
@@ -34,36 +34,47 @@ class FilterSelectionViewHolder(view: View, val listener: OnSelectedFilterChange
         with(binding) {
             hotelFilterSelectionTitle.text = filter.displayName
             var hotelFilterItems = filter.options.map {
-                HotelSearchResultFilterAdapter.HotelFilterItem(it, it, filter.name == SELECTION_STAR_TYPE) }
+                HotelSearchResultFilterAdapter.HotelFilterItem(it, it, filter.name == SELECTION_STAR_TYPE)
+            }
 
             if (filter.name == SELECTION_STAR_TYPE) {
                 if (hotelFilterItems.isEmpty()) {
-                    hotelFilterItems = listOf(FilterStarEnum.STAR_ONE.value,
-                            FilterStarEnum.STAR_TWO.value,
-                            FilterStarEnum.STAR_THREE.value,
-                            FilterStarEnum.STAR_FOUR.value,
-                            FilterStarEnum.STAR_FIVE.value).map {
+                    hotelFilterItems = listOf(
+                        FilterStarEnum.STAR_ONE.value,
+                        FilterStarEnum.STAR_TWO.value,
+                        FilterStarEnum.STAR_THREE.value,
+                        FilterStarEnum.STAR_FOUR.value,
+                        FilterStarEnum.STAR_FIVE.value
+                    ).map {
                         HotelSearchResultFilterAdapter.HotelFilterItem(it, it, filter.name == SELECTION_STAR_TYPE)
                     }
                 }
-                hotelFilterSelectionRv.layoutManager = SpanningLinearLayoutManager(root.context, LinearLayoutManager.HORIZONTAL,
-                        false, root.resources.getDimensionPixelSize(unifyprinciplesR.dimen.spacing_lvl2))
+                hotelFilterSelectionRv.layoutManager = SpanningLinearLayoutManager(
+                    root.context,
+                    LinearLayoutManager.HORIZONTAL,
+                    false,
+                    root.resources.getDimensionPixelSize(unifyprinciplesR.dimen.spacing_lvl2)
+                )
             } else {
                 if (!isOverFlowLayout) {
                     hotelFilterSelectionRv.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.HORIZONTAL, false)
                 } else {
                     hotelFilterSelectionRv.layoutManager = ChipsLayoutManager.newBuilder(root.context)
-                            .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                            .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                            .build()
+                        .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                        .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                        .build()
                 }
             }
 
             while (hotelFilterSelectionRv.itemDecorationCount > 0) {
                 hotelFilterSelectionRv.removeItemDecorationAt(0)
             }
-            hotelFilterSelectionRv.addItemDecoration(SpaceItemDecoration(root.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1),
-                    LinearLayoutManager.HORIZONTAL))
+            hotelFilterSelectionRv.addItemDecoration(
+                SpaceItemDecoration(
+                    root.resources.getDimensionPixelSize(unifyprinciplesR.dimen.layout_lvl1),
+                    LinearLayoutManager.HORIZONTAL
+                )
+            )
 
             hotelFilterSelectionRv.adapter = adapter
             adapter.updateItems(hotelFilterItems, filter.optionSelected.toSet())
