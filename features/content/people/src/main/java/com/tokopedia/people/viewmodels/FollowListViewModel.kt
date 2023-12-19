@@ -2,6 +2,8 @@ package com.tokopedia.people.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.people.data.UserFollowRepository
 import com.tokopedia.people.views.uimodel.FollowListType
 import com.tokopedia.people.views.uimodel.FollowListUiModel
@@ -70,8 +72,8 @@ internal class FollowListViewModel @AssistedInject constructor(
 
     private fun onFollow(people: PeopleUiModel) {
         when (people) {
-            is PeopleUiModel.ShopUiModel -> {}
-            is PeopleUiModel.UserUiModel -> {}
+            is PeopleUiModel.ShopUiModel -> followShop(people)
+            is PeopleUiModel.UserUiModel -> followUser(people)
         }
     }
 
@@ -113,6 +115,38 @@ internal class FollowListViewModel @AssistedInject constructor(
             }
             _followList.update { it + followList }
             _nextCursor.value = nextCursor
+        }
+    }
+
+    private fun followUser(user: PeopleUiModel.UserUiModel) {
+        viewModelScope.launch {
+            val shouldFollow = !user.isFollowed
+            val result = userRepo.followUser(user.encryptedId, shouldFollow)
+            if (result !is MutationUiModel.Success) return@launch
+
+            _followList.update {
+                it.map { people ->
+                    if (people is PeopleUiModel.UserUiModel && people.id == user.id) {
+                        people.copy(isFollowed = shouldFollow)
+                    } else { people }
+                }
+            }
+        }
+    }
+
+    private fun followShop(shop: PeopleUiModel.ShopUiModel) {
+        viewModelScope.launch {
+            val shouldFollow = !shop.isFollowed
+            val result = userRepo.followShop(shop.id, ShopFollowAction.getActionByState(!shouldFollow))
+            if (result !is MutationUiModel.Success) return@launch
+
+            _followList.update {
+                it.map { people ->
+                    if (people is PeopleUiModel.ShopUiModel && people.id == shop.id) {
+                        people.copy(isFollowed = shouldFollow)
+                    } else { people }
+                }
+            }
         }
     }
 }
