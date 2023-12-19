@@ -5,12 +5,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -159,7 +156,7 @@ fun TrackingHistory() {
 
 @Composable
 fun TrackingHistoryItem() {
-    ConstraintLayout(modifier = Modifier.height(IntrinsicSize.Min)) {
+    ConstraintLayout {
         val (day, time, description, courier, circle, line) = createRefs()
         Box(
             Modifier
@@ -216,12 +213,11 @@ fun TrackingHistoryItem() {
                     top.linkTo(circle.bottom)
                     start.linkTo(circle.start)
                     end.linkTo(circle.end)
-                    height = Dimension.matchParent
+                    bottom.linkTo(courier.bottom)
+                    height = Dimension.fillToConstraints
                 }
                 .width(1.dp)
                 .background(NestTheme.colors.NN._950)
-                .fillMaxHeight()
-
         )
     }
 }
@@ -294,39 +290,63 @@ fun TippingLayout() {
 
 @Composable
 fun DriverInfoLayout() {
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Row {
+    ConstraintLayout(Modifier.fillMaxWidth()) {
+        val (driverImage, driverName, driverPhone, driverInfo, callButton) = createRefs()
+        NestImage(
+            modifier = Modifier
+                .size(48.dp, 48.dp)
+                .constrainAs(driverImage) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(driverName.start)
+                },
+            type = NestImageType.Circle,
+            source = ImageSource.Remote("https://images.tokopedia.net/img/tokofood/gofood.png")
+        ) {
             NestImage(
-                modifier = Modifier.size(48.dp, 48.dp),
+                modifier = Modifier
+                    .padding(start = 12.dp)
+                    .size(48.dp, 48.dp),
                 type = NestImageType.Circle,
-                source = ImageSource.Remote("https://images.tokopedia.net/img/tokofood/gofood.png")
-            ) {
-                NestImage(
-                    modifier = Modifier
-                        .padding(start = 12.dp)
-                        .size(48.dp, 48.dp),
-                    type = NestImageType.Circle,
-                    source = ImageSource.Painter(logisticorderR.drawable.ic_find_driver)
-                )
-            }
-            Column(modifier = Modifier.padding(start = 8.dp)) {
-                Row {
-                    NestTypography(text = "Nama driver")
-                    NestIcon(
-                        modifier = Modifier
-                            .padding(start = 6.dp)
-                            .size(13.dp, 13.dp),
-                        iconId = IconUnify.INFORMATION
-                    )
-                }
-                NestTypography(text = "Driver phone")
-            }
+                source = ImageSource.Painter(logisticorderR.drawable.ic_find_driver)
+            )
         }
-
+        NestTypography(
+            modifier = Modifier.constrainAs(driverName) {
+                top.linkTo(parent.top)
+                start.linkTo(driverImage.end)
+                end.linkTo(driverInfo.start)
+            },
+            text = "Nama driver"
+        )
+        NestIcon(
+            modifier = Modifier
+                .padding(start = 6.dp)
+                .size(13.dp, 13.dp)
+                .constrainAs(driverInfo) {
+                    start.linkTo(driverName.end)
+                    top.linkTo(driverName.top)
+                    end.linkTo(callButton.start)
+                },
+            iconId = IconUnify.INFORMATION
+        )
+        NestTypography(
+            modifier = Modifier.constrainAs(driverPhone) {
+                top.linkTo(driverName.bottom)
+                start.linkTo(driverName.start)
+                end.linkTo(callButton.start)
+                width = Dimension.fillToConstraints
+            },
+            text = "Driver phone"
+        )
         Box(
             modifier = Modifier
                 .size(36.dp, 36.dp)
-                .border(1.dp, NestTheme.colors.NN._300, CircleShape),
+                .border(1.dp, NestTheme.colors.NN._300, CircleShape)
+                .constrainAs(callButton) {
+                    end.linkTo(parent.end)
+                    top.linkTo(parent.top)
+                },
             contentAlignment = Alignment.Center
         ) {
             NestIcon(modifier = Modifier.size(20.dp, 20.dp), iconId = IconUnify.CALL)
