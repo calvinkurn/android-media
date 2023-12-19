@@ -1,7 +1,10 @@
 package com.tokopedia.content.product.preview.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
 import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction
@@ -9,10 +12,6 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAc
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.ProductSelected
 import com.tokopedia.content.product.preview.viewmodel.state.ProductPreviewUiState
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
-import androidx.lifecycle.viewModelScope
-import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
-import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
-import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
@@ -23,13 +22,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 
-/**
- * @author by astidhiyaa on 06/12/23
- */
 class ProductPreviewViewModel @AssistedInject constructor(
     @Assisted private val param: EntrySource,
     private val repo: ProductPreviewRepository,
-    private val userSessionInterface: UserSessionInterface,
+    private val userSessionInterface: UserSessionInterface
 ) : ViewModel() {
 
     @AssistedFactory
@@ -37,25 +33,9 @@ class ProductPreviewViewModel @AssistedInject constructor(
         fun create(param: EntrySource): ProductPreviewViewModel
     }
 
-    //TODO: add uiState
-    //TODO: add uiEvent
-
     private val _review = MutableStateFlow(emptyList<ReviewUiModel>())
-    val review : Flow<List<ReviewUiModel>>
-        get() = _review //TODO: add state
-
-    fun onAction(action: ProductPreviewAction) {
-        when(action) {
-            ProductPreviewAction.FetchReview -> getReview()
-            else -> {}
-        }
-    }
-
-    private fun getReview() {
-        viewModelScope.launchCatchError(block = {
-            _review.value = repo.getReview(param.productId, 1) //TODO: add pagination
-        }) {}
-    }
+    val review: Flow<List<ReviewUiModel>>
+        get() = _review
 
     private val _productContentState = MutableStateFlow(emptyList<ContentUiModel>())
     private val _productIndicatorState = MutableStateFlow(emptyList<ProductIndicatorUiModel>())
@@ -75,12 +55,19 @@ class ProductPreviewViewModel @AssistedInject constructor(
         when (action) {
             is InitializeProductMainData -> handleInitializeProductMainData(action.data)
             is ProductSelected -> handleProductSelected(action.position)
+            ProductPreviewUiAction.FetchReview -> getReview()
         }
     }
 
     private fun handleInitializeProductMainData(data: ProductContentUiModel) {
         _productContentState.value = data.content
         _productIndicatorState.value = data.indicator
+    }
+
+    private fun getReview() {
+        viewModelScope.launchCatchError(block = {
+            _review.value = repo.getReview(param.productId, 1) // TODO: add pagination
+        }) {}
     }
 
     private fun handleProductSelected(position: Int) {
