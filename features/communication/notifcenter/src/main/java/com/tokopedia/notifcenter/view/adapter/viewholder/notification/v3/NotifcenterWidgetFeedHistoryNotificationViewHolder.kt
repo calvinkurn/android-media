@@ -139,7 +139,7 @@ class NotifcenterWidgetFeedHistoryNotificationViewHolder constructor(
         val triggerText = if (element.isHistoryVisible) {
             R.string.cta_widget_notifcenter_close_previous
         } else {
-            R.string.cta_widget_notifcenter_see_previous
+            R.string.notifcenter_cta_widget_see_others
         }
         textToggleHistory?.setText(triggerText)
     }
@@ -233,11 +233,13 @@ class NotifcenterWidgetFeedHistoryNotificationViewHolder constructor(
 
     private fun bindMultipleImageThumbnails(listImageUrl: List<String>) {
         constraintLayoutImageThumbnails?.show()
+        // We have checker before calling this method
+        firstCircleImageThumbnails?.loadImage(listImageUrl[0])
+        secondCircleImageThumbnails?.loadImage(listImageUrl[1])
         firstCircleImageThumbnails?.show()
         secondCircleImageThumbnails?.show()
 
-        firstCircleImageThumbnails?.loadImage(listImageUrl[0])
-        secondCircleImageThumbnails?.loadImage(listImageUrl[1])
+        singleImageThumbnails?.hide()
     }
 
     companion object {

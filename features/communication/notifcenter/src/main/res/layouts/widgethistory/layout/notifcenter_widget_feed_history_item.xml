@@ -51,37 +51,48 @@
         android:visibility="gone"
         tools:visibility="visible"/>
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txt_notification_title"
-        style="@style/BaseNotification_Title"
-        app:layout_constraintTop_toBottomOf="@id/txt_notification_type"
-        app:layout_constraintStart_toEndOf="@id/iv_icon"
-        app:layout_constraintEnd_toStartOf="@id/notifcenter_cl_feed_images"
-        android:ellipsize="end"
-        android:maxLines="2"
-        app:typographyWeight="reguler"
-        tools:text="Lorem mengomentari postinganmu: " />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/notifcenter_tv_feed_description"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/notifcenter_cl_notification_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/txt_notification_title"
-        app:layout_constraintStart_toStartOf="@id/txt_notification_title"
-        app:layout_constraintEnd_toEndOf="@id/txt_notification_title"
-        android:ellipsize="end"
-        android:maxLines="2"
-        app:typographyType="body_2"
-        app:typographyWeight="reguler"
-        tools:text="“Mantap banget gan!!”" />
+        app:layout_constraintTop_toBottomOf="@id/txt_notification_type"
+        app:layout_constraintStart_toEndOf="@id/iv_icon"
+        app:layout_constraintEnd_toStartOf="@id/notifcenter_cl_feed_images">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_notification_title"
+            style="@style/BaseNotification_Title"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:ellipsize="end"
+            android:maxLines="2"
+            app:typographyWeight="reguler"
+            tools:text="Lorem mengomentari postinganmu: " />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/notifcenter_tv_feed_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/txt_notification_title"
+            app:layout_constraintLeft_toLeftOf="@id/txt_notification_title"
+            app:layout_constraintRight_toRightOf="@id/txt_notification_title"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"
+            tools:text="“Mantap banget gan!!”"
+            tools:visibility="visible"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/notifcenter_iv_title_progress_indicator_circle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/txt_notification_title"
+        app:layout_constraintTop_toBottomOf="@id/iv_icon"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/notifcenter_tv_feed_description"
+        app:layout_constraintBottom_toBottomOf="@id/notifcenter_cl_notification_text"
         android:layout_marginStart="22dp"
         android:contentDescription="@null"
         app:srcCompat="@drawable/notifcenter_ic_gray_circle_history" />
@@ -153,7 +164,7 @@
         android:id="@+id/notifcenter_rv_feed_history"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/notifcenter_tv_feed_description"
+        app:layout_constraintTop_toBottomOf="@id/notifcenter_cl_notification_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp"
@@ -184,7 +195,7 @@
             app:typographyType="body_3"
             app:typographyWeight="bold"
             android:textColor="@color/Unify_NN600"
-            android:text="@string/cta_widget_notifcenter_see_previous" />
+            android:text="@string/notifcenter_cta_widget_see_others" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/notifcenter_icon_toggle_history"
