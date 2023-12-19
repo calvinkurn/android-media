@@ -9,6 +9,7 @@ import com.tokopedia.content.product.preview.view.uimodel.product.ProductContent
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.InitializeProductMainData
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.InitializeReviewMainData
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.ProductSelected
 import com.tokopedia.content.product.preview.viewmodel.state.ProductPreviewUiState
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
@@ -53,8 +54,8 @@ class ProductPreviewViewModel @AssistedInject constructor(
     fun submitAction(action: ProductPreviewUiAction) {
         when (action) {
             is InitializeProductMainData -> handleInitializeProductMainData(action.data)
+            is InitializeReviewMainData -> handleInitializeReviewMainData(action.page)
             is ProductSelected -> handleProductSelected(action.position)
-            ProductPreviewUiAction.FetchReview -> getReview()
         }
     }
 
@@ -63,9 +64,9 @@ class ProductPreviewViewModel @AssistedInject constructor(
         _productIndicatorState.value = data.indicator
     }
 
-    private fun getReview() {
+    private fun handleInitializeReviewMainData(page: Int) {
         viewModelScope.launchCatchError(block = {
-            _reviewContentState.value = repo.getReview(param.productId, 1) // TODO: add pagination
+            _reviewContentState.value = repo.getReview(param.productId, page) // TODO: add pagination
         }) {}
     }
 

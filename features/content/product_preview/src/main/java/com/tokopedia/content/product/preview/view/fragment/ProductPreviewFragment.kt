@@ -10,13 +10,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.product.preview.databinding.FragmentProductPreviewBinding
-import com.tokopedia.content.product.preview.view.activity.ProductPreviewActivity
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter.Companion.TAB_PRODUCT_POS
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter.Companion.TAB_REVIEW_POS
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.InitializeProductMainData
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -26,16 +25,17 @@ class ProductPreviewFragment @Inject constructor(
     private val viewModelFactory: ProductPreviewViewModelFactory.Creator
 ) : TkpdBaseV4Fragment() {
 
-    val viewModelProvider get() = viewModelFactory.create(EntrySource("123"))
-    private val viewModel by activityViewModels<ProductPreviewViewModel> {
-        viewModelProvider
-    }
-
     private var _binding: FragmentProductPreviewBinding? = null
     private val binding: FragmentProductPreviewBinding
         get() = _binding!!
 
-    private val mProductPreviewData: ProductContentUiModel by lazyThreadSafetyNone {
+    private val viewModel by activityViewModels<ProductPreviewViewModel> {
+        viewModelFactory.create(
+            EntrySource(productId = "4937529690") // TODO: Testing purpose, change from arguments
+        )
+    }
+
+    private val productPreviewData: ProductContentUiModel by lazyThreadSafetyNone {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arguments?.getParcelable(
                 PRODUCT_DATA,
@@ -78,9 +78,7 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private fun initData() {
-        viewModel.submitAction(
-            ProductPreviewUiAction.InitializeProductMainData(mProductPreviewData)
-        )
+        viewModel.submitAction(InitializeProductMainData(productPreviewData))
     }
 
     private fun initViews() = with(binding) {

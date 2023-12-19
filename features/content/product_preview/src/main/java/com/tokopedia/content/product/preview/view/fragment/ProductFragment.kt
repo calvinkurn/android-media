@@ -26,6 +26,8 @@ import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction
+import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
+import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -33,17 +35,18 @@ import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.content.product.preview.R as contentproductpreviewR
 
-class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
-
-    private val mParentPage: ProductPreviewFragment
-        get() = (requireParentFragment() as ProductPreviewFragment)
+class ProductFragment @Inject constructor(
+    private val viewModelFactory: ProductPreviewViewModelFactory.Creator
+) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentProductBinding? = null
     private val binding: FragmentProductBinding
         get() = _binding!!
 
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
-        mParentPage.viewModelProvider
+        viewModelFactory.create(
+            EntrySource(productId = "4937529690") // TODO: Testing purpose, change from arguments
+        )
     }
 
     private var snapHelperContent: PagerSnapHelper = PagerSnapHelper()
