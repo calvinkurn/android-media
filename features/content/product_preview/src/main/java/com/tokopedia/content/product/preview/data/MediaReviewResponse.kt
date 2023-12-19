@@ -6,112 +6,103 @@ import com.google.gson.annotations.SerializedName
  * @author by astidhiyaa on 05/12/23
  */
 data class MediaReviewResponse(
-    @SerializedName("productrevGetReviewImage")
+    @SerializedName("productrevGetProductReviewList")
     val data: ProductRevGetReviewMedia = ProductRevGetReviewMedia(),
 ) {
     data class ProductRevGetReviewMedia(
         @SerializedName("list")
-        val reviewMedia: List<ReviewMedia> = emptyList(),
-        @SerializedName("detail")
-        val detail: Detail = Detail(),
+        val review: List<ReviewDetail> = emptyList(),
+
+        @SerializedName("shop")
+        val shop: Shop = Shop(),
+
         @SerializedName("hasNext")
         val hasNext: Boolean = false,
-        @SerializedName("hasPrev")
-        val hasPrev: Boolean = false,
     )
 
-    data class ReviewMedia(
-        @SerializedName("imageID")
-        val imageId: String = "",
-        @SerializedName("videoID")
-        val videoId: String = "",
-        @SerializedName("feedbackID")
-        val feedbackId: String = "",
-        @SerializedName("ImageSiblings")
-        val mediaSiblings: List<String> = emptyList(),
-        @SerializedName("imageNumber")
-        val mediaNumber: Int = 0,
-    )
-
-    data class Detail(
-        @SerializedName("review")
-        val reviewDetail: List<ReviewDetail> = emptyList(),
+    data class Shop(
+        @SerializedName("shopID")
+        val shopId: String = "",
+        @SerializedName("name")
+        val name: String = "",
+        @SerializedName("url")
+        val url: String = "",
         @SerializedName("image")
-        val reviewGalleryImages: List<ReviewGalleryImage> = emptyList(),
-        @SerializedName("video")
-        val reviewGalleryVideos: List<ReviewGalleryVideo> = emptyList(),
-        @SerializedName("imageCountFmt")
-        val mediaCountFmt: String = "",
-        @SerializedName("imageCount")
-        val mediaCount: Long = 0L,
+        val image: String = "",
     )
 
     data class ReviewDetail(
-        @SerializedName("shopID")
-        val shopId: String = "",
         @SerializedName("user")
         val user: ReviewerUserInfo = ReviewerUserInfo(),
+
         @SerializedName("feedbackID")
         val feedbackId: String = "",
+
         @SerializedName("variantName")
         val variantName: String = "",
-        @SerializedName("description")
-        val description: String = "",
-        @SerializedName("rating")
+
+        @SerializedName("productRating")
         val rating: Int = 0,
-        @SerializedName("review")
+
+        @SerializedName("message")
         val review: String = "",
-        @SerializedName("createTimestamp")
+
+        @SerializedName("reviewCreateTimestamp")
         val createTimestamp: String = "",
-        @SerializedName("updateTimestamp")
-        val updateTime: String = "",
-        @SerializedName("isUpdated")
-        val isUpdated: Boolean = false,
-        @SerializedName("isReportable")
-        val isReportable: Boolean = false,
+
         @SerializedName("isAnonymous")
         val isAnonymous: Boolean = false,
-        @SerializedName("isLiked")
-        val isLiked: Boolean = false,
-        @SerializedName("totalLike")
-        val totalLike: Int = 0,
+
+        @SerializedName("isReportable")
+        val isReportable: Boolean = false,
+
         @SerializedName("userStats")
         val userStats: List<UserReviewStats> = emptyList(),
+
         @SerializedName("badRatingReasonFmt")
         val badRatingReasonFmt: String = "",
+
+        @SerializedName("likeDislike")
+        val likeStats: LikeStats = LikeStats(),
+
+        @SerializedName("imageAttachments")
+        val images: List<ReviewGalleryImage> = emptyList(),
+
+        @SerializedName("videoAttachments")
+        val videos: List<ReviewGalleryVideo> = emptyList(),
     )
 
     data class ReviewGalleryImage(
         @SerializedName("attachmentID")
         val attachmentId: String = "",
-        @SerializedName("thumbnailURL")
+
+        @SerializedName("imageThumbnailUrl")
         val thumbnailUrl: String = "",
-        @SerializedName("fullsizeURL")
+
+        @SerializedName("imageUrl")
         val fullSizeUrl: String = "",
-        @SerializedName("description")
-        val description: String = "",
-        @SerializedName("feedbackID")
-        val feedbackId: String = "",
     )
 
     data class ReviewGalleryVideo(
         @SerializedName("attachmentID")
         val attachmentId: String = "",
-        @SerializedName("url")
+        @SerializedName("videoUrl")
         val url: String = "",
-        @SerializedName("feedbackID")
-        val feedbackId: String = "",
     )
 
     data class ReviewerUserInfo(
         @SerializedName("userID")
         val userId: String = "",
+
         @SerializedName("fullName")
         val fullName: String = "",
+
         @SerializedName("image")
         val image: String = "",
+
         @SerializedName("url")
         val url: String = "",
+
         @SerializedName("label")
         val label: String = "",
     )
@@ -123,5 +114,13 @@ data class MediaReviewResponse(
         val formatted: String = "",
         @SerializedName("count")
         val count: Int = 0
+    )
+
+    data class LikeStats(
+        @SerializedName("totalLike")
+        val totalLike: Int = 0,
+
+        @SerializedName("likeStatus")
+        val likeStatus: Int = 0,
     )
 }

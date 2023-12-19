@@ -1,11 +1,13 @@
 package com.tokopedia.content.product.preview.data.repository
 
+import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
+
 /**
  * @author by astidhiyaa on 06/12/23
  */
 interface ProductPreviewRepository {
     suspend fun getProductMiniInfo(productId: String) //TODO: return MediaBottomNavUiModel
-    suspend fun getReview(productId: String, page: Int) //TODO: return UiModel
+    suspend fun getReview(productId: String, page: Int): List<ReviewUiModel>
     suspend fun addToCart(
         productId: String,
         productName: String,
