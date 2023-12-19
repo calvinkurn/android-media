@@ -1200,7 +1200,8 @@ object DynamicProductDetailMapper {
             price = data.price,
             stockWording = data.stock.stockWording,
             isVariant = data.variant.isVariant,
-            productName = data.name
+            productName = data.name,
+            isShowPrice = data.isShowPrice
         )
         return OngoingCampaignDataModel(
             type = type,

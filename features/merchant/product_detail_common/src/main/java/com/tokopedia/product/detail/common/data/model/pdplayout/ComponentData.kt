@@ -81,6 +81,9 @@ data class ComponentData(
     val preOrder: PreOrder = PreOrder(),
     @SerializedName("isCOD")
     val isCod: Boolean = false,
+    //to show hide price in product content
+    @SerializedName("isShowPrice")
+    val isShowPrice: Boolean = true,
     //endregion
     //region Variant data
     @SerializedName("parentID")

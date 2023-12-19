@@ -314,7 +314,11 @@ fun PromoPriceCardPreview() {
                 )
 
                 NormalPriceComponent(
-                    Price()
+                    Price(
+                        priceFmt = "Rp.9.000.000",
+                        slashPriceFmt = "Rp.12.000.000",
+                        discPercentage = "30%"
+                    )
                 )
             }
         }
