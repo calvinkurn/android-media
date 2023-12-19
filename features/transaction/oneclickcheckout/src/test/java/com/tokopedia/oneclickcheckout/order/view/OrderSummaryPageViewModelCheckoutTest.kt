@@ -1612,13 +1612,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     @Test
     fun `Checkout Success With Blacklisted Promo Entry Point`() {
         // Given
-        orderSummaryPageViewModel.isCartCheckoutRevamp = true
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(
-            state = OccButtonState.NORMAL,
+            isCartCheckoutRevamp = true,
+            state = OccButtonState.DISABLE,
             entryPointInfo = PromoEntryPointInfo(
                 isSuccess = false,
                 statusCode = "42003"
