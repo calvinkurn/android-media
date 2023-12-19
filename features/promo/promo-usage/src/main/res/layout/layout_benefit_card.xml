@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    app:contentPadding="16dp"
-    app:cardCornerRadius="16dp"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="8dp"
+    app:contentPaddingBottom="16dp"
+    app:contentPaddingTop="16dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,19 +17,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Perkiraan harga terhemat"
+            android:text="@string/perkiraan_harga_terhemat"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_2" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="TextView"
             app:layout_constraintStart_toStartOf="@+id/typography"
             app:layout_constraintTop_toBottomOf="@+id/typography"
-            tools:text="Rp 800,000" />
+            app:typographyType="display_1"
+            app:typographyWeight="bold"
+            tools:text="Rp 9,000,000" />
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/dividerUnify"
@@ -38,24 +41,60 @@
             app:layout_constraintTop_toBottomOf="@+id/textView"
             tools:layout_editor_absoluteX="0dp" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:text="@string/harga_tanpa_promo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dividerUnify"
-            tools:text="Harga sebelum promo" />
+            app:typographyType="display_3" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            tools:text="9,500,000"
             app:layout_constraintBaseline_toBaselineOf="@+id/textView4"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            tools:text="Rp9,500,000" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView4"
+            app:typographyType="display_3"
+            tools:text="Promo yang bisa dipakai" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView6"
+            app:typographyType="display_3"
+            tools:text="Cashback GoPay Coins" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_gopay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView7"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            tools:text="Rp300,000" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>
