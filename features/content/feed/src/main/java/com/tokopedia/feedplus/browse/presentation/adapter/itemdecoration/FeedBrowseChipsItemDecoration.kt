@@ -4,14 +4,13 @@ import android.content.res.Resources
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.feedplus.presentation.util.getChildValidPositionInfo
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by kenny.hadisaputra on 17/10/23
  */
 class FeedBrowseChipsItemDecoration(
-    resources: Resources,
+    resources: Resources
 ) : RecyclerView.ItemDecoration() {
 
     private val offset4 = resources.getDimensionPixelOffset(
@@ -28,7 +27,7 @@ class FeedBrowseChipsItemDecoration(
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
-        val position = parent.getChildValidPositionInfo(view, state).position
+        val position = parent.getChildLayoutPosition(view)
 
         if (position == 0) {
             outRect.left = offset16
@@ -36,7 +35,7 @@ class FeedBrowseChipsItemDecoration(
             outRect.left = offset4
         }
 
-        if (position == parent.adapter!!.itemCount - 1) {
+        if (position == state.itemCount - 1) {
             outRect.right = offset16
         }
     }

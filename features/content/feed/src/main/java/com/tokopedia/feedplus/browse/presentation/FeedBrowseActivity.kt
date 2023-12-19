@@ -31,11 +31,14 @@ class FeedBrowseActivity : BaseActivity() {
         setupStatusBar()
         setContentView(R.layout.activity_feed_browse)
 
-        supportFragmentManager.commit {
-            replace(
-                R.id.feed_browse_container,
-                FeedBrowseFragment.create(supportFragmentManager, classLoader, intent.extras)
-            )
+        if (supportFragmentManager.findFragmentByTag(TAG_BROWSE_FRAGMENT) == null) {
+            supportFragmentManager.commit {
+                replace(
+                    R.id.feed_browse_container,
+                    FeedBrowseFragment.create(supportFragmentManager, classLoader, intent.extras),
+                    TAG_BROWSE_FRAGMENT
+                )
+            }
         }
     }
 
@@ -57,5 +60,9 @@ class FeedBrowseActivity : BaseActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.statusBarColor =
             ContextCompat.getColor(this, unifyprinciplesR.color.Unify_Background)
+    }
+
+    companion object {
+        private const val TAG_BROWSE_FRAGMENT = "feed_browse"
     }
 }

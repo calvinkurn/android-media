@@ -29,7 +29,7 @@ internal abstract class FeedBrowseItemAdapter<Input : Any>(
     private val channelListener: FeedBrowseHorizontalChannelsViewHolder.Listener = FeedBrowseHorizontalChannelsViewHolder.Listener.Default,
     private val creatorListener: FeedBrowseHorizontalAuthorsViewHolder.Listener = FeedBrowseHorizontalAuthorsViewHolder.Listener.Default,
     private val inspirationCardListener: InspirationCardViewHolder.Item.Listener = InspirationCardViewHolder.Item.Listener.Default,
-    private val spanSize: Int = 2
+    val spanCount: Int = 2
 ) : ListAdapter<FeedBrowseItemListModel, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<FeedBrowseItemListModel>() {
         override fun areItemsTheSame(
@@ -187,7 +187,7 @@ internal abstract class FeedBrowseItemAdapter<Input : Any>(
                     is Banner.Item,
                     Banner.Placeholder,
                     is InspirationCard -> 1
-                    else -> spanSize
+                    else -> spanCount
                 }
             }
         }

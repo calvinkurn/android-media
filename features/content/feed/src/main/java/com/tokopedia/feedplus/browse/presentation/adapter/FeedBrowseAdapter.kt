@@ -2,6 +2,8 @@ package com.tokopedia.feedplus.browse.presentation.adapter
 
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.types.isFailed
+import com.tokopedia.content.common.util.WindowSizeClass
+import com.tokopedia.content.common.util.WindowWidthSizeClass
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
@@ -21,6 +23,7 @@ import kotlinx.coroutines.CoroutineScope
  */
 internal class FeedBrowseAdapter(
     scope: CoroutineScope,
+    sizeClass: WindowSizeClass,
     chipsListener: ChipsViewHolder.Listener,
     bannerListener: FeedBrowseBannerViewHolder.Item.Listener,
     channelListener: FeedBrowseHorizontalChannelsViewHolder.Listener,
@@ -30,7 +33,12 @@ internal class FeedBrowseAdapter(
     chipsListener = chipsListener,
     bannerListener = bannerListener,
     channelListener = channelListener,
-    creatorListener = creatorListener
+    creatorListener = creatorListener,
+    spanCount = when (sizeClass.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> 2
+        WindowWidthSizeClass.Medium -> 3
+        WindowWidthSizeClass.Expanded -> 4
+    }
 ) {
 
     fun setPlaceholder() {

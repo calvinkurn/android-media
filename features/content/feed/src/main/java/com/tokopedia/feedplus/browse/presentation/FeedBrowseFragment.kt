@@ -19,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.calculateWindowSizeClass
 import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseImpressionManager
@@ -206,6 +207,7 @@ internal class FeedBrowseFragment @Inject constructor(
         {
             FeedBrowseAdapter(
                 it.viewLifecycleOwner.lifecycleScope,
+                requireActivity().calculateWindowSizeClass(),
                 chipsListener,
                 bannerListener,
                 channelListener,
@@ -246,7 +248,9 @@ internal class FeedBrowseFragment @Inject constructor(
         setupView()
         observeUiState()
 
-        viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
+        if (savedInstanceState == null) {
+            viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
+        }
     }
 
     override fun getScreenName(): String {
@@ -301,7 +305,7 @@ internal class FeedBrowseFragment @Inject constructor(
             onBackPressedCallback.handleOnBackPressed()
         }
 
-        val layoutManager = GridLayoutManager(context, 2).apply {
+        val layoutManager = GridLayoutManager(context, adapter.spanCount).apply {
             spanSizeLookup = adapter.getSpanSizeLookup()
         }
         binding.feedBrowseList.layoutManager = layoutManager

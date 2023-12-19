@@ -1,6 +1,8 @@
 package com.tokopedia.feedplus.browse.presentation.adapter
 
 import com.tokopedia.content.common.types.ResultState
+import com.tokopedia.content.common.util.WindowSizeClass
+import com.tokopedia.content.common.util.WindowWidthSizeClass
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.InspirationCardViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationMap
@@ -17,12 +19,18 @@ import kotlinx.coroutines.CoroutineScope
  */
 internal class CategoryInspirationAdapter(
     scope: CoroutineScope,
+    sizeClass: WindowSizeClass,
     chipsListener: ChipsViewHolder.Listener,
     cardListener: InspirationCardViewHolder.Item.Listener
 ) : FeedBrowseItemAdapter<CategoryInspirationUiState>(
     scope,
     chipsListener = chipsListener,
-    inspirationCardListener = cardListener
+    inspirationCardListener = cardListener,
+    spanCount = when (sizeClass.widthSizeClass) {
+        WindowWidthSizeClass.Compact -> 2
+        WindowWidthSizeClass.Medium -> 3
+        WindowWidthSizeClass.Expanded -> 4
+    }
 ) {
 
     fun setList(

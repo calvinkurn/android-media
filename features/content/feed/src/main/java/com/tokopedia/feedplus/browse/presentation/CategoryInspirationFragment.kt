@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.content.common.util.calculateWindowSizeClass
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseImpressionManager
 import com.tokopedia.feedplus.browse.data.tracker.FeedBrowseTrackerImpl
@@ -131,6 +132,7 @@ internal class CategoryInspirationFragment @Inject constructor(
         {
             CategoryInspirationAdapter(
                 it.viewLifecycleOwner.lifecycleScope,
+                requireActivity().calculateWindowSizeClass(),
                 chipsListener,
                 inspirationCardListener
             )
@@ -200,7 +202,7 @@ internal class CategoryInspirationFragment @Inject constructor(
             onBackPressedCallback.handleOnBackPressed()
         }
 
-        val layoutManager = GridLayoutManager(context, 2).apply {
+        val layoutManager = GridLayoutManager(context, adapter.spanCount).apply {
             spanSizeLookup = adapter.getSpanSizeLookup()
         }
         binding.rvCategoryInspiration.layoutManager = layoutManager
