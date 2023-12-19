@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.tokopedia.header.compose.HeaderActionButton
 import com.tokopedia.header.compose.HeaderIconSource.Painter
 import com.tokopedia.header.compose.NestHeader
@@ -173,11 +174,13 @@ fun TrackingHistoryItem() {
             NestIcon(iconId = IconUnify.CHECK)
         }
         NestTypography(
-            modifier = Modifier.fillMaxWidth().constrainAs(day) {
-                start.linkTo(circle.end)
-                top.linkTo(circle.top)
-                bottom.linkTo(circle.bottom)
-            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(day) {
+                    start.linkTo(circle.end)
+                    top.linkTo(circle.top)
+                    bottom.linkTo(circle.bottom)
+                },
             text = "Rabu"
         )
         NestTypography(
@@ -189,18 +192,22 @@ fun TrackingHistoryItem() {
         )
 
         NestTypography(
-            modifier = Modifier.fillMaxWidth().constrainAs(description) {
-                start.linkTo(day.start)
-                top.linkTo(day.bottom)
-            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(description) {
+                    start.linkTo(day.start)
+                    top.linkTo(day.bottom)
+                },
             text = "Transit di DC Cakung"
         )
 
         NestTypography(
-            modifier = Modifier.fillMaxWidth().constrainAs(courier) {
-                start.linkTo(day.start)
-                top.linkTo(description.bottom)
-            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(courier) {
+                    start.linkTo(day.start)
+                    top.linkTo(description.bottom)
+                },
             text = "Kurir: "
         )
         Box(
@@ -328,39 +335,73 @@ fun DriverInfoLayout() {
 
 @Composable
 fun TrackingDetail() {
-    // todo i think this one need to be constraint layout
-    Column(
+    ConstraintLayout(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+            .padding(horizontal = 20.dp)
     ) {
+        val (ref, shippingDate, serviceCode, seller, buyer, eta) = createRefs()
+        val startGuideline = createGuidelineFromStart(0.5f)
         TrackingDetailsItem(
+            modifier = Modifier.constrainAs(ref) {
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                width = Dimension.fillToConstraints
+            },
             title = stringResource(id = logisticorderR.string.label_reference_number),
             "486118",
             valueStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._950)
         )
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            TrackingDetailsItem(
-                stringResource(logisticorderR.string.label_delivery_date),
-                "1 February 2020"
-            )
-            TrackingDetailsItem(stringResource(logisticorderR.string.label_service_code), "REG15")
-        }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            // this one need html parser
-            TrackingDetailsItem(
-                stringResource(logisticorderR.string.label_seller_courier_tracking),
-                "Nama Penjual",
-                "Bandung"
-            )
-            TrackingDetailsItem(
-                stringResource(logisticorderR.string.label_buyer),
-                "Saiful Jamil",
-                "Grogol Petamburan Jakarta"
-            )
-        }
         TrackingDetailsItem(
+            modifier = Modifier.constrainAs(shippingDate) {
+                top.linkTo(ref.bottom, margin = 8.dp)
+                start.linkTo(parent.start)
+                end.linkTo(startGuideline)
+                width = Dimension.fillToConstraints
+            },
+            stringResource(logisticorderR.string.label_delivery_date),
+            "1 February 2020"
+        )
+        TrackingDetailsItem(
+            modifier = Modifier.constrainAs(serviceCode) {
+                top.linkTo(shippingDate.top)
+                start.linkTo(startGuideline)
+                end.linkTo(parent.end)
+                width = Dimension.fillToConstraints
+            },
+            stringResource(logisticorderR.string.label_service_code), "REG15"
+        )
+        // this one need html parser
+        TrackingDetailsItem(
+            modifier = Modifier.constrainAs(seller) {
+                top.linkTo(shippingDate.bottom, margin = 8.dp)
+                start.linkTo(parent.start)
+                end.linkTo(startGuideline)
+                width = Dimension.fillToConstraints
+            },
+            stringResource(logisticorderR.string.label_seller_courier_tracking),
+            "Nama Penjual",
+            "Bandung"
+        )
+        TrackingDetailsItem(
+            modifier = Modifier.constrainAs(buyer) {
+                top.linkTo(seller.top)
+                start.linkTo(startGuideline)
+                end.linkTo(parent.end)
+                width = Dimension.fillToConstraints
+            },
+            stringResource(logisticorderR.string.label_buyer),
+            "Saiful Jamil",
+            "Grogol Petamburan Jakarta"
+        )
+        TrackingDetailsItem(
+            modifier = Modifier.constrainAs(eta) {
+                top.linkTo(seller.bottom, margin = 8.dp)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                width = Dimension.fillToConstraints
+            },
             stringResource(logisticorderR.string.tracking_label_eta),
             "17 - 19 April 2020"
         )
@@ -369,17 +410,19 @@ fun TrackingDetail() {
 
 @Composable
 fun TrackingDetailsItem(
+    modifier: Modifier,
     title: String,
     vararg value: String,
     valueStyle: TextStyle = NestTheme.typography.heading6.copy(color = NestTheme.colors.NN._950)
 ) {
-    Column {
+    Column(modifier = modifier) {
         NestTypography(
+            modifier = Modifier.fillMaxWidth(),
             text = title,
             textStyle = NestTheme.typography.body3.copy(color = NestTheme.colors.NN._950)
         )
         value.forEach {
-            NestTypography(text = it, textStyle = valueStyle)
+            NestTypography(modifier = Modifier.fillMaxWidth(), text = it, textStyle = valueStyle)
         }
     }
 }
