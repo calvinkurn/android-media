@@ -1,4 +1,4 @@
-package com.tokopedia.shareexperience.ui.view
+package com.tokopedia.shareexperience.ui.view.channel
 
 import android.content.Context
 import android.util.AttributeSet
@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.shareexperience.ui.adapter.ShareExHorizontalSpacingItemDecoration
-import com.tokopedia.shareexperience.ui.adapter.ShareExImageCarouselAdapter
+import com.tokopedia.shareexperience.ui.adapter.channel.ShareExBaseChannelAdapter
 
-class ShareExCarouselImageRecyclerView: RecyclerView {
+abstract class ShareExBaseChannelRecyclerView: RecyclerView {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -21,18 +21,14 @@ class ShareExCarouselImageRecyclerView: RecyclerView {
     private val horizontalSpacingItemDecoration = ShareExHorizontalSpacingItemDecoration(
         8.dpToPx(context.resources.displayMetrics)
     )
-    private val imageChipsAdapter = ShareExImageCarouselAdapter()
+    protected abstract fun getChannelAdapter(): ShareExBaseChannelAdapter
 
-    init {
+    protected open fun init() {
         setHasFixedSize(true)
         layoutManager = linearLayoutManager
-        adapter = imageChipsAdapter
+        adapter = getChannelAdapter()
         isNestedScrollingEnabled = false
         itemAnimator = null
         addItemDecoration(horizontalSpacingItemDecoration)
-    }
-
-    fun updateData(newList: List<String>) {
-        imageChipsAdapter.updateData(newList)
     }
 }
