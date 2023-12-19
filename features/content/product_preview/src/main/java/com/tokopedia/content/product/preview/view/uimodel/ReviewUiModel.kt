@@ -1,7 +1,5 @@
 package com.tokopedia.content.product.preview.view.uimodel
 
-import com.tokopedia.content.common.report_content.model.ContentMenuItem
-
 /**
  * @author by astidhiyaa on 06/12/23
  */
@@ -11,15 +9,15 @@ data class ReviewUiModel(
     val menus: MenuStatus,
     val likeState: LikeUiState,
     val author: AuthorUiModel,
-    val description: DescriptionUiModel,
+    val description: DescriptionUiModel
 )
 
 data class MediaUiModel(
     val type: String,
-    val url: String,
+    val url: String
 ) {
     enum class MediaType(val value: String) {
-        Image(""), Video("") //check response
+        Image(""), Video("") // check response
     }
 }
 
@@ -50,17 +48,16 @@ data class AuthorUiModel(
     val type: String,
     val id: String,
     val avatarUrl: String,
-    val appLink: String,
+    val appLink: String
 )
 
 data class DescriptionUiModel(
     val stars: Int,
     val productType: String,
     val timestamp: String,
-    val description: String,
+    val description: String
 )
 
 data class MenuStatus(
-    val isReportable: Boolean,
+    val isReportable: Boolean
 )
-

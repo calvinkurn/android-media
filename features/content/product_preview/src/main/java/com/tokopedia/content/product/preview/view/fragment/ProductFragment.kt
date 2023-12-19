@@ -131,7 +131,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
     private fun setupObservers() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.productUiState.withCache().collectLatest { (prevState, currState) ->
+            viewModel.productReviewUiState.withCache().collectLatest { (prevState, currState) ->
                 renderContent(prevState?.productContent, currState.productContent)
                 renderIndicator(prevState?.productIndicator, currState.productIndicator)
             }
@@ -166,7 +166,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
                     text = String.format(
                         getString(contentproductpreviewR.string.text_label_place_holder_empty_variant),
                         position.plus(1),
-                        state.size,
+                        state.size
                     )
                 }
             } else {

@@ -33,21 +33,20 @@ class ProductPreviewViewModel @AssistedInject constructor(
         fun create(param: EntrySource): ProductPreviewViewModel
     }
 
-    private val _review = MutableStateFlow(emptyList<ReviewUiModel>())
-    val review: Flow<List<ReviewUiModel>>
-        get() = _review
-
     private val _productContentState = MutableStateFlow(emptyList<ContentUiModel>())
     private val _productIndicatorState = MutableStateFlow(emptyList<ProductIndicatorUiModel>())
+    private val _reviewContentState = MutableStateFlow(emptyList<ReviewUiModel>())
 
-    val productUiState: Flow<ProductPreviewUiState>
+    val productReviewUiState: Flow<ProductPreviewUiState>
         get() = combine(
             _productContentState,
-            _productIndicatorState
-        ) { productContent, productIndicator ->
+            _productIndicatorState,
+            _reviewContentState
+        ) { productContent, productIndicator, reviewContentState ->
             ProductPreviewUiState(
                 productContent = productContent,
-                productIndicator = productIndicator
+                productIndicator = productIndicator,
+                reviewContent = reviewContentState
             )
         }
 
@@ -66,7 +65,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private fun getReview() {
         viewModelScope.launchCatchError(block = {
-            _review.value = repo.getReview(param.productId, 1) // TODO: add pagination
+            _reviewContentState.value = repo.getReview(param.productId, 1) // TODO: add pagination
         }) {}
     }
 
