@@ -47,6 +47,7 @@ class PageLoadLogger(val context:Context) {
 
     fun stop() {
         checkLoadJob?.cancel()
+        checkLoadJob = null
     }
 
 }
