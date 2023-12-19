@@ -50,7 +50,7 @@ internal class FeedBrowseHorizontalChannelsViewHolder private constructor(
     )
 
     private val adapter = FeedBrowseChannelAdapter(
-        object : FeedBrowseChannelViewHolder2.Channel.Listener {
+        object : FeedBrowseChannelViewHolder.Channel.Listener {
             override fun onCardImpressed(item: PlayWidgetChannelUiModel, position: Int) {
                 val data = mData ?: return
                 listener.onCardImpressed(

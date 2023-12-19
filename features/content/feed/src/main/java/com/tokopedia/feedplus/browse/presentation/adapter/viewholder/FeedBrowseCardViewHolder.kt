@@ -15,7 +15,7 @@ import com.tokopedia.play_common.util.removeImpressionListener
 /**
  * Created by meyta.taliti on 11/08/23.
  */
-internal class FeedBrowseChannelViewHolder2 private constructor() {
+internal class FeedBrowseChannelViewHolder private constructor() {
 
     internal class Channel private constructor(
         binding: ItemFeedBrowseCardBinding,

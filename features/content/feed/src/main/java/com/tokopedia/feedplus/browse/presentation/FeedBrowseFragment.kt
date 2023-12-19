@@ -189,7 +189,7 @@ internal class FeedBrowseFragment @Inject constructor(
             authorWidgetPosition: Int
         ) {
             tracker.clickChannelCard(item, widgetModel.slotInfo, authorWidgetPosition)
-            router.route(context, item.appLink)
+            router.route(context, item.contentAppLink)
         }
 
         override fun onAuthorClicked(

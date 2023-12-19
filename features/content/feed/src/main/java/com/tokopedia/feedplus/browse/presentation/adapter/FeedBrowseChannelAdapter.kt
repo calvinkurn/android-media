@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChannelViewHolder2
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseChannelViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.LoadingModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 
@@ -13,7 +13,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
  * Created by meyta.taliti on 11/08/23.
  */
 internal class FeedBrowseChannelAdapter(
-    private val channelListener: FeedBrowseChannelViewHolder2.Channel.Listener
+    private val channelListener: FeedBrowseChannelViewHolder.Channel.Listener
 ) : ListAdapter<Any, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<Any>() {
         override fun areItemsTheSame(
@@ -48,8 +48,8 @@ internal class FeedBrowseChannelAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            TYPE_LOADING -> FeedBrowseChannelViewHolder2.Loading.create(parent)
-            TYPE_CHANNEL -> FeedBrowseChannelViewHolder2.Channel.create(parent, channelListener)
+            TYPE_LOADING -> FeedBrowseChannelViewHolder.Loading.create(parent)
+            TYPE_CHANNEL -> FeedBrowseChannelViewHolder.Channel.create(parent, channelListener)
             else -> error("No ViewHolder found for view type $viewType")
         }
     }
@@ -57,7 +57,7 @@ internal class FeedBrowseChannelAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position)
         when {
-            holder is FeedBrowseChannelViewHolder2.Channel && item is PlayWidgetChannelUiModel -> {
+            holder is FeedBrowseChannelViewHolder.Channel && item is PlayWidgetChannelUiModel -> {
                 holder.bind(item)
             }
         }
@@ -74,7 +74,7 @@ internal class FeedBrowseChannelAdapter(
         val payload = payloads.filterIsInstance<FeedBrowsePayloads>().combine()
         val item = getItem(position)
         when {
-            holder is FeedBrowseChannelViewHolder2.Channel && item is PlayWidgetChannelUiModel -> {
+            holder is FeedBrowseChannelViewHolder.Channel && item is PlayWidgetChannelUiModel -> {
                 holder.bindPayloads(item, payload)
             }
         }
