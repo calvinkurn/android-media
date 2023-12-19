@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--Bottom Sheet Header (Title, Close Icon)-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
+        android:id="@+id/top_section"
+        tools:background="@drawable/bottomsheet_gradient">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/btnBottomSheetHeaderClose"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="CLOSE"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgBottomSheetHeaderTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@color/Unify_Static_White"
+            android:text="Detail Harga"
+            app:layout_constraintBottom_toBottomOf="@+id/btnBottomSheetHeaderClose"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnBottomSheetHeaderClose"
+            app:layout_constraintTop_toTopOf="@+id/btnBottomSheetHeaderClose"
+            app:typographyType="heading_3" />
+
+        <include
+            layout="@layout/layout_benefit_card"
+            android:id="@+id/typography"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Perkiraan harga terhemat"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnBottomSheetHeaderClose" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:background="@color/Unify_Background"
+        android:layout_height="200dp">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Yang harus kamu tahu"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.appcompat.widget.LinearLayoutCompat>
