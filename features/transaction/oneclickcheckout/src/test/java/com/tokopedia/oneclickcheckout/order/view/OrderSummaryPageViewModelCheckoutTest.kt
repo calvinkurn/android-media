@@ -1617,7 +1617,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
         orderSummaryPageViewModel.orderPromo.value = OrderPromo(
-            state = OccButtonState.NORMAL,
+            state = OccButtonState.DISABLE,
             entryPointInfo = PromoEntryPointInfo(
                 isSuccess = false,
                 statusCode = "42003"
