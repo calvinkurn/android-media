@@ -31,6 +31,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.tokopedia.header.compose.HeaderActionButton
 import com.tokopedia.header.compose.HeaderIconSource.Painter
 import com.tokopedia.header.compose.NestHeader
@@ -82,7 +83,7 @@ fun TrackingPageScreen() {
                 thickness = 4.dp
             )
             TrackingHistory()
-            EmptyTracking()
+//            EmptyTracking()
             LiveTrackingButton()
             FindNewDriverSection()
         }
@@ -91,9 +92,19 @@ fun TrackingPageScreen() {
 
 @Composable
 fun ShippingStatusSection() {
-    Column {
-        NestTypography(text = stringResource(logisticorderR.string.label_tracking_status))
-        NestTypography(text = "Shipping")
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+    ) {
+        NestTypography(
+            text = stringResource(logisticorderR.string.label_tracking_status),
+            textStyle = NestTheme.typography.body3.copy(color = NestTheme.colors.NN._950)
+        )
+        NestTypography(
+            text = "Shipping",
+            textStyle = NestTheme.typography.heading4.copy(color = NestTheme.colors.NN._950)
+        )
     }
 }
 
@@ -139,7 +150,7 @@ fun EmptyTracking() {
 @Composable
 fun TrackingHistory() {
     Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-        repeat(3) {
+        repeat(1) {
             TrackingHistoryItem()
         }
     }
@@ -147,35 +158,63 @@ fun TrackingHistory() {
 
 @Composable
 fun TrackingHistoryItem() {
-    Column(Modifier.height(IntrinsicSize.Max), verticalArrangement = Arrangement.Center) {
-        Row {
-            Box(
-                Modifier
-                    .clip(CircleShape)
-                    .size(24.dp, 24.dp)
-                    .background(NestTheme.colors.GN._500)
-            ) {
-                NestIcon(iconId = IconUnify.CHECK)
-            }
-            NestTypography(text = "Senin")
-            NestTypography(text = "14.30 WIB")
+    ConstraintLayout(modifier = Modifier.height(IntrinsicSize.Min)) {
+        val (day, time, description, courier, circle, line) = createRefs()
+        Box(
+            Modifier
+                .clip(CircleShape)
+                .size(24.dp, 24.dp)
+                .background(NestTheme.colors.GN._500)
+                .constrainAs(circle) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                }
+        ) {
+            NestIcon(iconId = IconUnify.CHECK)
         }
-        Row {
-            // line 2
-            Box(
-                Modifier
-                    .padding(start = 12.dp)
-                    .width(1.dp)
-                    .fillMaxHeight()
-                    .background(NestTheme.colors.GN._500)
-            )
-            Column {
-                NestTypography(text = "Senin")
-                NestTypography(text = "Senin")
-                NestTypography(text = "14.30 WIB")
-                NestTypography(text = "14.30 WIB")
-            }
-        }
+        NestTypography(
+            modifier = Modifier.fillMaxWidth().constrainAs(day) {
+                start.linkTo(circle.end)
+                top.linkTo(circle.top)
+                bottom.linkTo(circle.bottom)
+            },
+            text = "Rabu"
+        )
+        NestTypography(
+            modifier = Modifier.constrainAs(time) {
+                end.linkTo(parent.end)
+                top.linkTo(day.top)
+            },
+            text = "14.30 WIB"
+        )
+
+        NestTypography(
+            modifier = Modifier.fillMaxWidth().constrainAs(description) {
+                start.linkTo(day.start)
+                top.linkTo(day.bottom)
+            },
+            text = "Transit di DC Cakung"
+        )
+
+        NestTypography(
+            modifier = Modifier.fillMaxWidth().constrainAs(courier) {
+                start.linkTo(day.start)
+                top.linkTo(description.bottom)
+            },
+            text = "Kurir: "
+        )
+        Box(
+            Modifier
+                .constrainAs(line) {
+                    top.linkTo(circle.bottom)
+                    start.linkTo(circle.start)
+                    end.linkTo(circle.end)
+                }
+                .width(1.dp)
+                .background(NestTheme.colors.NN._950)
+                .fillMaxHeight()
+
+        )
     }
 }
 
@@ -223,7 +262,10 @@ fun TippingLayout() {
                     Column(modifier = Modifier.padding(start = 12.dp)) {
                         NestTypography(
                             text = "tipping text",
-                            textStyle = NestTheme.typography.display2.copy(color = NestTheme.colors.NN._0, fontWeight = FontWeight.Bold)
+                            textStyle = NestTheme.typography.display2.copy(
+                                color = NestTheme.colors.NN._0,
+                                fontWeight = FontWeight.Bold
+                            )
                         )
                         NestTypography(
                             text = "tipping description",
