@@ -216,6 +216,7 @@ fun TrackingHistoryItem() {
                     top.linkTo(circle.bottom)
                     start.linkTo(circle.start)
                     end.linkTo(circle.end)
+                    height = Dimension.matchParent
                 }
                 .width(1.dp)
                 .background(NestTheme.colors.NN._950)
@@ -370,7 +371,8 @@ fun TrackingDetail() {
                 end.linkTo(parent.end)
                 width = Dimension.fillToConstraints
             },
-            stringResource(logisticorderR.string.label_service_code), "REG15"
+            stringResource(logisticorderR.string.label_service_code),
+            "REG15"
         )
         // this one need html parser
         TrackingDetailsItem(
