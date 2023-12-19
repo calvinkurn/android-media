@@ -27,17 +27,27 @@ class BrandWidgetViewHolder(
 
     private val binding: ItemTokopedianowBrandWidgetBinding? by viewBinding()
 
-    private val adapter by lazy { BrandWidgetItemAdapter()  }
+    private val adapter by lazy { BrandWidgetItemAdapter() }
 
     init {
         setupRecyclerView()
     }
 
     override fun bind(uiModel: BrandWidgetUiModel) {
-        when(uiModel.state) {
-            BrandWidgetState.LOADING -> showLoading()
-            BrandWidgetState.LOADED -> showWidget(uiModel)
-            BrandWidgetState.ERROR -> showError()
+        when (uiModel.state) {
+            BrandWidgetState.LOADING -> {
+                showLoading()
+                hideWidget()
+            }
+            BrandWidgetState.LOADED -> {
+                hideLoading()
+                showWidget(uiModel)
+            }
+            BrandWidgetState.ERROR -> {
+                hideLoading()
+                hideWidget()
+                showError()
+            }
         }
     }
 
@@ -46,12 +56,16 @@ class BrandWidgetViewHolder(
             header.setModel(uiModel.header)
             header.setListener(headerListener)
             adapter.setVisitables(uiModel.items)
-            root.show()
+            widgetGroup.show()
         }
     }
 
     private fun showLoading() {
+        binding?.loadingShimmer?.root?.show()
+    }
 
+    private fun hideLoading() {
+        binding?.loadingShimmer?.root?.hide()
     }
 
     private fun showError() {
@@ -59,7 +73,7 @@ class BrandWidgetViewHolder(
     }
 
     private fun hideWidget() {
-        binding?.root?.hide()
+        binding?.widgetGroup?.hide()
     }
 
     private fun setupRecyclerView() {
