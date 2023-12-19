@@ -69,10 +69,11 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/typography2"
+            app:typographyType="heading_4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Yang harus kamu tahu"
+            android:text="@string/cek_info_tentang_promonya_dulu_yuk"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -88,7 +89,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
-                app:typographyType="body_2"
+                app:typographyType="display_3"
                 android:layout_height="wrap_content"
                 tools:text="- Nominal promo bisa berubah dikarenakan waktu pembelian, ketersediaan produk, periode promosi, ketentuan promo. " />
 
