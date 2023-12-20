@@ -26,7 +26,7 @@ class ShareExLoadingActivity: BaseActivity() {
         handler.postDelayed({
             bottomSheet.show(supportFragmentManager, "")
             findViewById<View>(R.id.shareex_dim_overlay).hide()
-        }, 5000)
+        }, 1000)
     }
 
     private fun finishActivityWithoutAnimation() {

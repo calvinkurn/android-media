@@ -1,4 +1,4 @@
-package com.tokopedia.shareexperience.ui.view
+package com.tokopedia.shareexperience.ui
 
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -104,9 +104,11 @@ class ShareExViewModel @Inject constructor(
 
         val shareLinkCard = ShareExLinkShareUiModel(
             "Jual Xiaomi Smart TV Android 10 M...",
-            "<b>Komisi Rp50.000</b>/barang dijual",
+            "<b>Komisi Rp50.000</b> / barang dijual",
             "tokopedia.link",
-            "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/7/6/69b75de5-b8b1-4d3f-9b10-3a1db5e1913a.jpg"
+            "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/7/6/69b75de5-b8b1-4d3f-9b10-3a1db5e1913a.jpg",
+            "Komisi Extra",
+            "Hingga 31 Des 2024"
         )
         dummyList.add(shareLinkCard)
 

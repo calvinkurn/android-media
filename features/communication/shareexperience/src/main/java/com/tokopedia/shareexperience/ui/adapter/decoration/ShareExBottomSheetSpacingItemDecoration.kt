@@ -11,8 +11,6 @@ class ShareExBottomSheetSpacingItemDecoration(
 ) : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-        val position = parent.getChildAdapterPosition(view)
-        val itemCount = parent.adapter?.itemCount ?: 0
         val viewType = parent.adapter?.getItemViewType(parent.getChildAdapterPosition(view))
 
         /**
@@ -20,21 +18,8 @@ class ShareExBottomSheetSpacingItemDecoration(
          */
         if (viewType != ShareExLineSeparatorViewHolder.LAYOUT) {
             outRect.apply {
-                when (position) {
-                    0 -> {
-                        top = verticalSpacing * 2
-                        bottom = verticalSpacing
-                    }
-                    itemCount -> {
-                        // Last Item
-                        top = verticalSpacing
-                        bottom = verticalSpacing * 2
-                    }
-                    else -> {
-                        top = verticalSpacing
-                        bottom = verticalSpacing
-                    }
-                }
+                top = verticalSpacing
+                bottom = verticalSpacing
                 left = horizontalSpacing
                 right = horizontalSpacing
             }
