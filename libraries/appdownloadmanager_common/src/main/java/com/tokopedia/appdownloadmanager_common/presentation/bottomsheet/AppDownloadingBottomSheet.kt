@@ -2,6 +2,7 @@ package com.tokopedia.appdownloadmanager_common.presentation.bottomsheet
 
 import android.app.DownloadManager
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -34,8 +35,8 @@ import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.appdownloadmanager_common.R as appdownloadmanager_commonR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class AppDownloadingBottomSheet :
     BottomSheetUnify(),
@@ -100,8 +101,8 @@ class AppDownloadingBottomSheet :
                         AppDownloadInsufficientSpaceScreen(onTryAgainClicked = {
                             viewModel.updateDownloadingState()
                         }, onGoToStorageClicked = {
-                            goToStorageSettings()
-                        })
+                                goToStorageSettings()
+                            })
                     }
                 }
             }
@@ -149,9 +150,11 @@ class AppDownloadingBottomSheet :
     }
 
     private fun goToStorageSettings() {
-        startActivity(Intent(android.provider.Settings.ACTION_INTERNAL_STORAGE_SETTINGS).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        })
+        startActivity(
+            Intent(android.provider.Settings.ACTION_INTERNAL_STORAGE_SETTINGS).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+        )
     }
 
     private fun hideKnobDownloadingUiState(view: View) {
@@ -182,7 +185,7 @@ class AppDownloadingBottomSheet :
                 } else {
                     val errorMessage = try {
                         getString(appdownloadmanager_commonR.string.app_download_error_network_message)
-                    } catch (e: Exception) {
+                    } catch (e: Resources.NotFoundException) {
                         uiEvent.reason
                     }
                     onDownloadFailed(errorMessage)

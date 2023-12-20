@@ -15,6 +15,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.File
 import java.lang.Long.numberOfLeadingZeros
+import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -177,7 +178,7 @@ class DownloadManagerService @Inject constructor(
         val versionCode = uri.getQueryParameter(VERSION_CODE_PARAM)?.takeLast(TWO_LAST_DIGIT).orEmpty()
         val versionName = uri.getQueryParameter(VERSION_PARAM)
 
-        return "${versionName}-${versionCode}.apk"
+        return "$versionName-$versionCode.apk"
     }
 
     private fun getDownloadRequest(
@@ -222,7 +223,6 @@ class DownloadManagerService @Inject constructor(
         }
     }
 
-
     private fun convertToHumanReadableSize(bytes: Long): String {
         // If the size is less than 1024 bytes, return the size in bytes
         if (bytes < 1024) return "$bytes B"
@@ -230,7 +230,7 @@ class DownloadManagerService @Inject constructor(
         // Calculate the appropriate unit (KB, MB, GB, TB, PB, or EB) for better readability
         val z = (63 - numberOfLeadingZeros(bytes)) / 10
         // Format the result using the appropriate unit
-        return String.format("%.1f %sB", bytes.toDouble() / (1L shl (z * 10)), " KMGTPE"[z])
+        return String.format(Locale.getDefault(), "%.1f %sB", bytes.toDouble() / (1L shl (z * 10)), " KMGTPE"[z])
     }
 
     interface DownloadManagerListener {
