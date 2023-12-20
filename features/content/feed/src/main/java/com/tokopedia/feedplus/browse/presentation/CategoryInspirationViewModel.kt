@@ -54,11 +54,7 @@ internal class CategoryInspirationViewModel @AssistedInject constructor(
             _uiState.update { it.copy(state = ResultState.Loading) }
 
             loadContent(
-                WidgetMenuModel.Empty.copy(
-//                group = "browse_channel_slot_channelBlock:content_browse_promo",
-//                    group = "browse_channel_slot_tabMenu:content_browse_category"
-                    group = source
-                )
+                WidgetMenuModel.Empty.copy(group = source)
             )
 
             _uiState.update { it.copy(state = ResultState.Success) }

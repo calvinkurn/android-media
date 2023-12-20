@@ -74,23 +74,6 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
             val response = feedXHomeUseCase(
                 feedXHomeUseCase.createParams(source = FeedXHomeUseCase.SOURCE_BROWSE)
             )
-//            // TODO("Remove this mock data")
-//            listOf(
-//                FeedBrowseSlotUiModel.InspirationBanner(
-//                    slotId = "item.id",
-//                    title = "Ini Banner",
-//                    identifier = "content_browse_inspirational",
-//                    bannerList = emptyList()
-//                ),
-//                FeedBrowseSlotUiModel.Authors(
-//                    slotId = "random.slot.id",
-//                    title = "Video asik dari kreator ",
-//                    identifier = "content_browse_ugc",
-//                    authorList = emptyList()
-//                )
-//            ) + mapper.mapSlotsResponse(response).ifEmpty {
-//                throw IllegalStateException("no slots available")
-//            }
             mapper.mapSlotsResponse(response).ifEmpty {
                 error("no slots available")
             }

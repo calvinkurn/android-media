@@ -79,6 +79,12 @@ internal class CategoryInspirationAdapter(
             if (menuItem.isLoading && menuItem.isEmpty()) {
                 addAll(List(6) { FeedBrowseItemListModel.InspirationCard.Placeholder })
             } else {
+                add(
+                    FeedBrowseItemListModel.Title(
+                        slotInfo = SlotInfo.Empty,
+                        title = "Konten paling menarik",
+                    )
+                )
                 addAll(
                     menuItem.items.mapIndexed { index, data ->
                         FeedBrowseItemListModel.InspirationCard.Item(

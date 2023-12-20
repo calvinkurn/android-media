@@ -27,11 +27,8 @@ internal class FeedBrowseBannerViewHolder private constructor() {
         }
 
         fun bind(item: FeedBrowseItemListModel.Banner.Item) {
-            binding.imgBanner.scaleType = ImageView.ScaleType.FIT_CENTER
             binding.imgBanner.loadImage(item.banner.imageUrl) {
-                listener(
-                    onSuccess = { _, _ -> binding.imgBanner.scaleType = ImageView.ScaleType.CENTER_CROP }
-                )
+                centerCrop()
             }
             binding.tvInspiration.text = item.banner.title
 

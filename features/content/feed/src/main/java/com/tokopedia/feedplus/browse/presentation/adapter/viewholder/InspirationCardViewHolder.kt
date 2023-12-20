@@ -23,19 +23,12 @@ internal class InspirationCardViewHolder private constructor() {
         private val listener: Listener
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        init {
-            binding.root.animateOnPress = CardUnify2.ANIMATE_BOUNCE
-        }
-
         fun bind(item: FeedBrowseItemListModel.InspirationCard.Item) {
             binding.tvTitle.text = item.item.title
             binding.totalView.setTotalWatch(item.item.totalView.totalViewFmt)
 
-            binding.imgCover.scaleType = ImageView.ScaleType.FIT_CENTER
             binding.imgCover.loadImage(item.item.video.coverUrl) {
-                listener(
-                    onSuccess = { _, _ -> binding.imgCover.scaleType = ImageView.ScaleType.CENTER_CROP }
-                )
+                centerCrop()
             }
 
             binding.tvPartnerName.text = item.item.partner.name
@@ -49,6 +42,10 @@ internal class InspirationCardViewHolder private constructor() {
 
             binding.root.setOnClickListener {
                 listener.onClicked(this, item)
+            }
+
+            binding.llPartner.setOnClickListener {
+                listener.onAuthorClicked(this, item)
             }
         }
 
@@ -74,6 +71,8 @@ internal class InspirationCardViewHolder private constructor() {
             fun onImpressed(viewHolder: Item, model: FeedBrowseItemListModel.InspirationCard.Item)
             fun onClicked(viewHolder: Item, model: FeedBrowseItemListModel.InspirationCard.Item)
 
+            fun onAuthorClicked(viewHolder: Item, model: FeedBrowseItemListModel.InspirationCard.Item)
+
             companion object {
                 val Default get() = object : Listener {
                     override fun onImpressed(
@@ -82,6 +81,11 @@ internal class InspirationCardViewHolder private constructor() {
                     ) {}
 
                     override fun onClicked(
+                        viewHolder: Item,
+                        model: FeedBrowseItemListModel.InspirationCard.Item
+                    ) {}
+
+                    override fun onAuthorClicked(
                         viewHolder: Item,
                         model: FeedBrowseItemListModel.InspirationCard.Item
                     ) {}

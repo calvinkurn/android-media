@@ -100,6 +100,7 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
                           name
                           type
                           thumbnail_url
+                          app_link
                         }
                         app_link
                         web_link

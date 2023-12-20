@@ -115,6 +115,13 @@ internal class CategoryInspirationFragment @Inject constructor(
             )
             router.route(context, model.item.appLink)
         }
+
+        override fun onAuthorClicked(
+            viewHolder: InspirationCardViewHolder.Item,
+            model: FeedBrowseItemListModel.InspirationCard.Item
+        ) {
+            router.route(context, model.item.partner.appLink)
+        }
     }
 
     private val loadMoreListener = object : RecyclerView.OnScrollListener() {

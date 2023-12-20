@@ -15,10 +15,6 @@ internal class FeedBrowseTitleViewHolder(
     private val binding: ItemFeedBrowseTitleBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: FeedBrowseUiModel.Title) {
-//        binding.root.text = item.title
-    }
-
     fun bind(item: FeedBrowseItemListModel.Title) {
         binding.tvTitle.text = item.title
         binding.tvTitle.showWithCondition(!item.isLoading)
