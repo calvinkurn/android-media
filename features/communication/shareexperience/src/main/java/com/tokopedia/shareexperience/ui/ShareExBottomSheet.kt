@@ -48,7 +48,7 @@ class ShareExBottomSheet: BottomSheetUnify() {
     private fun setupBottomSheet(inflater: LayoutInflater) {
         viewBinding = ShareexperienceBottomSheetBinding.inflate(inflater)
         setChild(viewBinding?.root)
-        isFullpage = true
+        clearContentPadding = true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

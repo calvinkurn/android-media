@@ -7,6 +7,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shareexperience.ui.model.ShareExLinkShareUiModel
 import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.databinding.ShareexperienceShareLinkItemBinding
+import com.tokopedia.utils.htmltags.HtmlUtil
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShareExLinkShareViewHolder(
@@ -17,11 +18,14 @@ class ShareExLinkShareViewHolder(
 
     override fun bind(element: ShareExLinkShareUiModel) {
         binding?.shareexTvTitleLink?.text = element.title
-        binding?.shareexTvCommisionLink?.text = element.commissionText
+        setCommissionHtmlText(element.commissionText)
         binding?.shareexTvLink?.text = element.link
         binding?.shareexIvImageThumbnailLink?.loadImage(element.imageThumbnailUrl)
-        binding?.shareexLabelLink?.text = element.label
-        binding?.shareexTvDate?.text = element.date
+    }
+
+    private fun setCommissionHtmlText(commissionText: String) {
+        val htmlCommissionText = HtmlUtil.fromHtml(commissionText)
+        binding?.shareexTvCommisionLink?.text = htmlCommissionText
     }
 
     companion object {

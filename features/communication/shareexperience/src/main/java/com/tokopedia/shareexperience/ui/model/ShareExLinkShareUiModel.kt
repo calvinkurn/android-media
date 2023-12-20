@@ -7,9 +7,7 @@ class ShareExLinkShareUiModel(
     val title: String,
     val commissionText: String,
     val link: String,
-    val imageThumbnailUrl: String,
-    val label: String,
-    val date: String
+    val imageThumbnailUrl: String
 ): Visitable<ShareExTypeFactory> {
     override fun type(typeFactory: ShareExTypeFactory): Int {
         return typeFactory.type(this)

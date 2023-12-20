@@ -5,8 +5,8 @@ import android.util.AttributeSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.shareexperience.ui.adapter.decoration.ShareExHorizontalSpacingItemDecoration
 import com.tokopedia.shareexperience.ui.adapter.channel.ShareExBaseChannelAdapter
+import com.tokopedia.shareexperience.ui.adapter.decoration.ShareExHorizontalSpacingItemDecoration
 
 abstract class ShareExBaseChannelRecyclerView: RecyclerView {
     constructor(context: Context) : super(context)

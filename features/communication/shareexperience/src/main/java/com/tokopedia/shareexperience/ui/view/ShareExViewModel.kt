@@ -94,12 +94,10 @@ class ShareExViewModel @Inject constructor(
         dummyList.add(image)
 
         val shareLinkCard = ShareExLinkShareUiModel(
-            "Samsung Official Store",
-            "Komisi hingga 10%/barang terjual",
+            "Jual Xiaomi Smart TV Android 10 M...",
+            "<b>Komisi Rp50.000</b>/barang dijual",
             "tokopedia.link",
-            "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png",
-            "Komisi Ekstra",
-            "Hingga 31 Des 2022"
+            "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/7/6/69b75de5-b8b1-4d3f-9b10-3a1db5e1913a.jpg"
         )
         dummyList.add(shareLinkCard)
 
