@@ -19,6 +19,7 @@ import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.product.detail.view.widget.campaign.component.CampaignStockPercentage
 import com.tokopedia.product.detail.view.widget.campaign.component.CampaignTimer
+import com.tokopedia.product.detail.view.widget.campaign.component.asHtmlLink
 import com.tokopedia.product.detail.view.widget.campaign.component.backgroundColor
 import com.tokopedia.product.detail.view.widget.campaign.timebased.TimeBasedCampaignTitle
 import com.tokopedia.product.detail.view.widget.campaign.timebased.upcoming.OngoingCampaignUiModel
@@ -89,7 +90,7 @@ private fun CampaignStock(uiModel: OngoingCampaignUiModel) {
             value = uiModel.stockPercentage
         )
         NestTypography(
-            text = uiModel.stockLabel,
+            text = uiModel.stockLabel.asHtmlLink,
             textStyle = NestTheme.typography.small.copy(
                 color = Color.White
             ),

@@ -25,10 +25,20 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class PartialContentView(
     private val view: View,
     private val listener: DynamicProductDetailListener
-) : CampaignRibbon.CampaignCountDownCallback {
+) {
 
     private val context = view.context
     private val binding = ItemProductContentBinding.bind(view)
+
+    init {
+        binding.campaignRibbon.init(
+            onCampaignEnded = {
+                hideProductCampaign(campaign = it)
+                listener.showAlertCampaignEnded()
+            },
+            onRefreshPage = listener::refreshPage
+        )
+    }
 
     fun renderData(
         data: ProductContentMainData,
@@ -36,18 +46,22 @@ class PartialContentView(
         freeOngkirImgUrl: String,
         shouldShowCampaign: Boolean
     ) = with(binding) {
-        txtMainPrice.contentDescription = context.getString(R.string.content_desc_txt_main_price, data.price.value)
-        productName.contentDescription = context.getString(R.string.content_desc_product_name, MethodChecker.fromHtml(data.productName))
+        txtMainPrice.contentDescription =
+            context.getString(R.string.content_desc_txt_main_price, data.price.value)
+        productName.contentDescription = context.getString(
+            R.string.content_desc_product_name,
+            MethodChecker.fromHtml(data.productName)
+        )
         productName.text = MethodChecker.fromHtml(data.productName)
 
         renderFreeOngkir(freeOngkirImgUrl)
 
         textCashbackGreen.shouldShowWithAction(data.cashbackPercentage > 0) {
-            textCashbackGreen.text = context.getString(productdetailcommonR.string.template_cashback, data.cashbackPercentage.toString())
+            textCashbackGreen.text = context.getString(
+                productdetailcommonR.string.template_cashback,
+                data.cashbackPercentage.toString()
+            )
         }
-
-        campaignRibbon.setCampaignCountDownCallback(this@PartialContentView)
-        campaignRibbon.setDynamicProductDetailListener(listener)
 
         when {
             isUpcomingNplType -> {
@@ -163,9 +177,5 @@ class PartialContentView(
         tradeinHeaderContainer.shouldShowWithAction(showTradein) {
             tradeinHeaderContainer.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, common_tradeinR.drawable.tradein_white), null, null, null)
         }
-    }
-
-    override fun onOnGoingCampaignEnded(campaign: CampaignModular) {
-        hideProductCampaign(campaign = campaign)
     }
 }

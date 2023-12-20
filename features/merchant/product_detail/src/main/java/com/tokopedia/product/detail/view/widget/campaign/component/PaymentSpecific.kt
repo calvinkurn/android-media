@@ -21,7 +21,7 @@ fun PaymentSpecific(description: String, modifier: Modifier = Modifier) {
             .wrapContentHeight()
             .background(color = NestNN.light._900.copy(alpha = 0.48f))
             .padding(horizontal = 16.dp, vertical = 4.dp),
-        text = description,
+        text = description.asHtmlLink,
         textStyle = NestTheme.typography.small.copy(
             color = Color.White
         ),

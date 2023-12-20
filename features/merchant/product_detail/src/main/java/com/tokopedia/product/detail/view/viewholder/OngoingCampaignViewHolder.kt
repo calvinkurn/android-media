@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
 import com.tokopedia.product.detail.databinding.ItemCampaignBinding
@@ -13,7 +12,7 @@ import com.tokopedia.product.detail.view.widget.CampaignRibbon
 class OngoingCampaignViewHolder(
     view: View,
     private val listener: DynamicProductDetailListener
-) : ProductDetailPageViewHolder<OngoingCampaignDataModel>(view), CampaignRibbon.CampaignCountDownCallback {
+) : ProductDetailPageViewHolder<OngoingCampaignDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_campaign
@@ -22,11 +21,18 @@ class OngoingCampaignViewHolder(
     private val binding = ItemCampaignBinding.bind(view)
     private val campaignRibbon = binding.pdpCampaignRibbon
 
+    init {
+        campaignRibbon.init(
+            onCampaignEnded = {
+                campaignRibbon.hide()
+                listener.showAlertCampaignEnded()
+            },
+            onRefreshPage = listener::refreshPage
+        )
+    }
+
     override fun bind(element: OngoingCampaignDataModel) = with(campaignRibbon) {
         val data = element.data ?: return
-
-        setCampaignCountDownCallback(this@OngoingCampaignViewHolder)
-        setDynamicProductDetailListener(listener)
 
         if (element.isNpl()) {
             campaignRibbon.hide()
@@ -46,9 +52,5 @@ class OngoingCampaignViewHolder(
         ) {
             listener.onImpressComponent(getComponentTrackData(element))
         }
-    }
-
-    override fun onOnGoingCampaignEnded(campaign: CampaignModular) {
-        campaignRibbon.hide()
     }
 }

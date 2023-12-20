@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -27,22 +26,18 @@ import com.tokopedia.product.detail.databinding.WidgetCampaignRibbonLayoutBindin
 import com.tokopedia.product.detail.databinding.WidgetCampaignRibbonType1LayoutBinding
 import com.tokopedia.product.detail.databinding.WidgetCampaignRibbonType2LayoutBinding
 import com.tokopedia.product.detail.databinding.WidgetCampaignRibbonType3LayoutBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.isInflated
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CampaignRibbon @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
-
-    interface CampaignCountDownCallback {
-        fun onOnGoingCampaignEnded(campaign: CampaignModular)
-    }
 
     companion object {
 
@@ -53,11 +48,15 @@ class CampaignRibbon @JvmOverloads constructor(
         const val NPL = 3
         const val NEW_USER = 4
         const val THEMATIC_CAMPAIGN = 5
+        const val ONGOING_CAMPAIGN = 7 // new type for ongoing campaign
 
         // time unit
         private const val ONE_THOUSAND = 1000L
     }
 
+    private var onCampaignEnded: (campaign: CampaignModular) -> Unit = {}
+    private var onRefreshPage: () -> Unit = {}
+    private var onRemindMeClick: (ProductNotifyMeDataModel, ComponentTrackDataModel) -> Unit = { _, _ -> }
     private var _rootBinding: WidgetCampaignRibbonLayoutBinding? = null
 
     private val campaignType1Binding by lazy {
@@ -79,22 +78,22 @@ class CampaignRibbon @JvmOverloads constructor(
     }
 
     // listeners , callback properties
-    private var callback: CampaignCountDownCallback? = null
-    private var listener: DynamicProductDetailListener? = null
     private var trackDataModel: ComponentTrackDataModel? = null
 
     init {
         val inflater = LayoutInflater.from(context)
-        val view =inflater.inflate(R.layout.widget_campaign_ribbon_layout, this, true)
+        val view = inflater.inflate(R.layout.widget_campaign_ribbon_layout, this, true)
         _rootBinding = WidgetCampaignRibbonLayoutBinding.bind(view)
     }
 
-    fun setCampaignCountDownCallback(callback: CampaignCountDownCallback) {
-        this.callback = callback
-    }
-
-    fun setDynamicProductDetailListener(listener: DynamicProductDetailListener) {
-        this.listener = listener
+    fun init(
+        onCampaignEnded: (campaign: CampaignModular) -> Unit = {},
+        onRefreshPage: () -> Unit = {},
+        onRemindMeClick: (ProductNotifyMeDataModel, ComponentTrackDataModel) -> Unit = { _, _ -> }
+    ) {
+        this.onCampaignEnded = onCampaignEnded
+        this.onRefreshPage = onRefreshPage
+        this.onRemindMeClick = onRemindMeClick
     }
 
     fun setComponentTrackDataModel(trackDataModel: ComponentTrackDataModel) {
@@ -109,6 +108,36 @@ class CampaignRibbon @JvmOverloads constructor(
             SLASH_PRICE -> renderSlashPriceCampaignRibbon(onGoingData = onGoingData)
             THEMATIC_CAMPAIGN -> renderThematicCampaignRibbon(onGoingData = onGoingData)
         }
+    }
+
+    // UPCOMING CAMPAIGN -  use campaign ribbon structure type 1
+    fun renderUpComingCampaignRibbon(
+        isOwner: Boolean,
+        upcomingData: ProductNotifyMeDataModel?,
+        upcomingIdentifier: String
+    ) {
+        showCampaignRibbonType1()
+        renderUpcomingBackground(upcomingData, upcomingIdentifier)
+        renderTimerUpcoming(upcomingData)
+        val campaignTypeName = upcomingData?.upcomingNplData?.ribbonCopy ?: ""
+        campaignType1Binding?.tpgCampaignNameS1?.text =
+            campaignTypeName.ifEmpty { context.getString(R.string.notify_me_title) }
+        updateRemindMeButton(isOwner, upcomingData, upcomingIdentifier)
+    }
+
+    fun updateRemindMeButton(
+        isOwner: Boolean,
+        upComingData: ProductNotifyMeDataModel?,
+        upcomingIdentifier: String
+    ) {
+        val data = upComingData ?: return
+
+        renderUpComingRemindMeButton(
+            isOwner = isOwner,
+            upComingData = data,
+            remindMeButton = campaignType1Binding?.remindMeButtonS1,
+            upcomingIdentifier = upcomingIdentifier
+        )
     }
 
     // FLASH SALE - use campaign ribbon structure type 2
@@ -140,7 +169,9 @@ class CampaignRibbon @JvmOverloads constructor(
                     // show campaign ribbon type 3
                     showCampaignRibbonType3()
                 }
-            } else this.hide()
+            } else {
+                this.hide()
+            }
         } else {
             // if thematic have value, render thematic instead of slash price
             renderThematicCampaignRibbon(onGoingData)
@@ -216,20 +247,6 @@ class CampaignRibbon @JvmOverloads constructor(
         root.showCampaignType3()
     }
 
-    // UPCOMING CAMPAIGN -  use campaign ribbon structure type 1
-    fun renderUpComingCampaignRibbon(
-        upcomingData: ProductNotifyMeDataModel?,
-        upcomingIdentifier: String
-    ) {
-        showCampaignRibbonType1()
-        renderUpcomingBackground(upcomingData, upcomingIdentifier)
-        renderTimerUpcoming(upcomingData)
-        val campaignTypeName = upcomingData?.upcomingNplData?.ribbonCopy ?: ""
-        campaignType1Binding?.tpgCampaignNameS1?.text =
-            campaignTypeName.ifEmpty { context.getString(R.string.notify_me_title) }
-        updateRemindMeButton(listener, upcomingData, upcomingIdentifier)
-    }
-
     private fun renderTimerUpcoming(upcomingData: ProductNotifyMeDataModel?) {
         val upComing = upcomingData ?: return
         val campaignType1 = campaignType1Binding ?: return
@@ -278,9 +295,7 @@ class CampaignRibbon @JvmOverloads constructor(
             timerView?.isShowClockIcon = false
 
             timerView?.timerFormat = TimerUnifySingle.FORMAT_AUTO
-            timerView?.onFinish = {
-                listener?.refreshPage()
-            }
+            timerView?.onFinish = onRefreshPage
             timerView?.show()
         } catch (e: Throwable) {
             this.hide()
@@ -300,7 +315,7 @@ class CampaignRibbon @JvmOverloads constructor(
                 remindMeButton?.setTextColor(
                     ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                        unifyprinciplesR.color.Unify_Static_White
                     )
                 )
                 remindMeButton?.background =
@@ -308,29 +323,13 @@ class CampaignRibbon @JvmOverloads constructor(
             }
             false -> {
                 remindMeButton?.text = context.getString(R.string.notify_me_inactive)
-                remindMeButton?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+                remindMeButton?.setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White))
                 remindMeButton?.background = ContextCompat.getDrawable(context, R.drawable.bg_remind_me_btn_inactive)
             }
         }
         remindMeButton?.setOnClickListener {
-            listener?.onNotifyMeClicked(upComingData, this.trackDataModel
-                    ?: ComponentTrackDataModel())
+            onRemindMeClick(upComingData, trackDataModel ?: ComponentTrackDataModel())
         }
-    }
-
-    fun updateRemindMeButton(
-        listener: DynamicProductDetailListener?,
-        upComingData: ProductNotifyMeDataModel?,
-        upcomingIdentifier: String
-    ) {
-        val data = upComingData ?: return
-
-        renderUpComingRemindMeButton(
-            isOwner = listener?.isOwner().orFalse(),
-            upComingData = data,
-            remindMeButton = campaignType1Binding?.remindMeButtonS1,
-            upcomingIdentifier = upcomingIdentifier
-        )
     }
 
     // ONGOING CAMPAIGN - use campaign ribbon structure type 2
@@ -346,7 +345,9 @@ class CampaignRibbon @JvmOverloads constructor(
             if (thematicCampaign.icon.isNotBlank()) {
                 iuCampaignLogoS2.loadImage(thematicCampaign.icon) {}
                 showLogoView2()
-            } else hideLogoView2()
+            } else {
+                hideLogoView2()
+            }
 
             // render campaign name
             val campaignName = if (thematicCampaign.campaignName.isNotBlank()) thematicCampaign.campaignName else campaign.campaignTypeName
@@ -408,10 +409,7 @@ class CampaignRibbon @JvmOverloads constructor(
                 timerView?.isShowClockIcon = false
 
                 timerView?.timerFormat = TimerUnifySingle.FORMAT_AUTO
-                timerView?.onFinish = {
-                    callback?.onOnGoingCampaignEnded(campaign)
-                    listener?.showAlertCampaignEnded()
-                }
+                timerView?.onFinish = { onCampaignEnded(campaign) }
                 timerView?.show()
             }
         } catch (ex: Exception) {
@@ -457,7 +455,6 @@ class CampaignRibbon @JvmOverloads constructor(
             GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(firstColor, secondColor))
         }
     }
-
 
     private fun WidgetCampaignRibbonLayoutBinding.showCampaignType1(show: Boolean = true) {
         if (campaignRibbonType1.isInflated()) {
