@@ -27,6 +27,7 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
 
     private var binding by autoClearedNullable<PromoBenefitBottomsheetBinding>()
     private lateinit var model: Param
+    private val usablePromoAdapter = UsablePromoAdapter()
 
     private var infoStateIsShown = true
 
@@ -96,6 +97,10 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
             icClose.setOnClickListener {
                 dismiss()
             }
+            layoutBenefit.rvUsablePromo.run {
+                adapter = usablePromoAdapter
+                usablePromoAdapter.submitList(model.usablePromo)
+            }
             toggleInfo.setOnClickListener {
                 val start = if (infoStateIsShown) 0f else 180f
                 val end = if (infoStateIsShown) 180f else 0f
@@ -120,9 +125,10 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
 
     @Parcelize
     data class Param(
+        val headerColor: String = "#FFF5F6",
         val estimatePrice: String = "Rp0",
         val basePrice: String = "Rp0",
-        val headerColor: String = "#FFF5F6",
+        val usablePromo: List<UsablePromoModel> = listOf(),
         val promoInfo: List<String> = listOf()
     ) : Parcelable
 
