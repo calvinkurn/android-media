@@ -1,4 +1,4 @@
-package com.tokopedia.shareexperience.ui.adapter
+package com.tokopedia.shareexperience.ui.adapter.decoration
 
 import android.graphics.Rect
 import android.view.View

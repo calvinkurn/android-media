@@ -10,9 +10,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
 import com.tokopedia.shareexperience.databinding.ShareexperienceBottomSheetBinding
 import com.tokopedia.shareexperience.ui.adapter.ShareExBottomSheetAdapter
+import com.tokopedia.shareexperience.ui.adapter.decoration.ShareExVerticalSpacingItemDecoration
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactoryImpl
 import com.tokopedia.shareexperience.ui.view.ShareExViewModel
@@ -75,10 +77,19 @@ class ShareExBottomSheet: BottomSheetUnify() {
     }
 
     private fun initializeRecyclerView() {
-        viewBinding?.shareexRvBottomSheet?.adapter = adapter
-        viewBinding?.shareexRvBottomSheet?.itemAnimator = null
-        viewBinding?.shareexRvBottomSheet?.isNestedScrollingEnabled = false
-        viewBinding?.shareexRvBottomSheet?.layoutManager = LinearLayoutManager(requireContext())
+        context?.let {
+            viewBinding?.shareexRvBottomSheet?.adapter = adapter
+            viewBinding?.shareexRvBottomSheet?.itemAnimator = null
+            viewBinding?.shareexRvBottomSheet?.isNestedScrollingEnabled = false
+            viewBinding?.shareexRvBottomSheet?.layoutManager = LinearLayoutManager(it)
+            viewBinding?.shareexRvBottomSheet?.addItemDecoration(
+                ShareExVerticalSpacingItemDecoration(
+                    8.dpToPx(it.resources.displayMetrics),
+                    doubleTopItemSpacing = true,
+                    doubleBottomItemSpacing = true
+                )
+            )
+        }
     }
 
     private fun initObservers() {

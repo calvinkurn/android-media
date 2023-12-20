@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.shareexperience.ui.adapter.ShareExHorizontalSpacingItemDecoration
+import com.tokopedia.shareexperience.ui.adapter.decoration.ShareExHorizontalSpacingItemDecoration
 import com.tokopedia.shareexperience.ui.adapter.ShareExImageCarouselAdapter
 import com.tokopedia.shareexperience.ui.listener.ShareExCarouselImageListener
 import com.tokopedia.shareexperience.ui.model.image.ShareExImageUiModel

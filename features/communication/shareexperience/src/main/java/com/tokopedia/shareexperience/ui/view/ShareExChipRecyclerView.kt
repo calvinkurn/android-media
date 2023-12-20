@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.shareexperience.domain.model.property.ShareExChipModel
 import com.tokopedia.shareexperience.ui.adapter.ShareExChipsAdapter
-import com.tokopedia.shareexperience.ui.adapter.ShareExHorizontalSpacingItemDecoration
+import com.tokopedia.shareexperience.ui.adapter.decoration.ShareExHorizontalSpacingItemDecoration
 
 class ShareExChipRecyclerView: RecyclerView {
     constructor(context: Context) : super(context)
