@@ -14,8 +14,10 @@ data class ColumnedInfoUiModel(
     override var darkMode: Boolean = false,
     val sectionTitle: String = "",
     val widgetContent: ColumnData = ColumnData(),
+    val widgetContentThreeColumn: List<ColumnData> = listOf(),
     val fullContent: List<ColumnData> = emptyList(),
-    val hasMoreData: Boolean = false
+    val hasMoreData: Boolean = false,
+    val columnType: String = ""
 ) : BaseCatalogUiModel(
     idWidget,
     widgetType,
@@ -36,7 +38,7 @@ data class ColumnedInfoUiModel(
     data class ColumnData(
         val title: String = "",
         val rowData: List<Pair<String, String>> = emptyList(),
-        val rowColor: Pair<Int, Int> = Pair(Int.ZERO, Int.ZERO)
+        val rowColor: Pair<Int, Int> = Pair(Int.ZERO, Int.ZERO) // pair of title color and value color
     ) : Parcelable
 
     override fun type(typeFactory: CatalogAdapterFactory): Int {

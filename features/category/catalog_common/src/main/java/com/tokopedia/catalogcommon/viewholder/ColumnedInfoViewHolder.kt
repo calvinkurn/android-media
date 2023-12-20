@@ -53,8 +53,8 @@ class ColumnedInfoViewHolder(
     override fun bind(element: ColumnedInfoUiModel) {
         binding?.apply {
             tfTitle.text = element.sectionTitle
-            rvColumnInfo.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
-            rvColumnInfo.adapter = ColumnedInfoListItemAdapter(element.widgetContent)
+            renderColumnItem(element)
+
             btnSeeMore.isVisible = element.hasMoreData
             btnSeeMore.setOnClickListener {
                 columnedInfoListener?.onColumnedInfoSeeMoreClicked(element.sectionTitle, element.fullContent)

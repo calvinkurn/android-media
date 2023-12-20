@@ -57,7 +57,6 @@ class CatalogDetailUiMapper @Inject constructor(
         private const val COLUMN_INFO_3_COLUMN_DATA_LIMIT = 9
         private const val COLUMN_INFO_3_COLUMN_ROW_LIMIT = 3
         private const val INVALID_CATALOG_ID = "0"
-        private const val FALLBACK_COLUMN_TYPE = "title_value_on_2"
     }
 
     fun mapToWidgetVisitables(
