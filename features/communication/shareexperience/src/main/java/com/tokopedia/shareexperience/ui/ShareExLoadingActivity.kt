@@ -1,14 +1,15 @@
 package com.tokopedia.shareexperience.ui
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.shareexperience.R
+import com.tokopedia.unifycomponents.LoaderUnify
 
 class ShareExLoadingActivity: BaseActivity() {
+
+    private var bottomSheet: ShareExBottomSheet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,15 +19,20 @@ class ShareExLoadingActivity: BaseActivity() {
     }
 
     private fun initBottomSheet() {
-        val bottomSheet = ShareExBottomSheet()
-        bottomSheet.setOnDismissListener {
-            finishActivityWithoutAnimation()
+        if (bottomSheet == null) {
+            bottomSheet = ShareExBottomSheet()
+            bottomSheet?.setOnDismissListener {
+                finishActivityWithoutAnimation()
+            }
+            //TODO: Add viewmodel, hit BE, then open BS after get data
+            openBottomSheet()
         }
-        val handler = Handler(Looper.getMainLooper())
-        handler.postDelayed({
-            bottomSheet.show(supportFragmentManager, "")
-            findViewById<View>(R.id.shareex_dim_overlay).hide()
-        }, 1000)
+    }
+
+    private fun openBottomSheet() {
+        findViewById<LoaderUnify>(R.id.shareex_loader).hide()
+        findViewById<View>(R.id.shareex_dim_overlay).hide()
+        bottomSheet?.show(supportFragmentManager, "")
     }
 
     private fun finishActivityWithoutAnimation() {

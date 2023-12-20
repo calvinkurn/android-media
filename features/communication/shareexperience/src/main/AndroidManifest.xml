@@ -9,7 +9,8 @@
             android:name=".ui.ShareExLoadingActivity"
             android:screenOrientation="portrait"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar.ShareExLoading">
+            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar.ShareExLoading"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
