@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
 import com.tokopedia.shareexperience.databinding.ShareexperienceBottomSheetBinding
 import com.tokopedia.shareexperience.ui.adapter.ShareExBottomSheetAdapter
-import com.tokopedia.shareexperience.ui.adapter.decoration.ShareExVerticalSpacingItemDecoration
+import com.tokopedia.shareexperience.ui.adapter.decoration.ShareExBottomSheetSpacingItemDecoration
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactoryImpl
 import com.tokopedia.shareexperience.ui.view.ShareExViewModel
@@ -83,10 +83,9 @@ class ShareExBottomSheet: BottomSheetUnify() {
             viewBinding?.shareexRvBottomSheet?.isNestedScrollingEnabled = false
             viewBinding?.shareexRvBottomSheet?.layoutManager = LinearLayoutManager(it)
             viewBinding?.shareexRvBottomSheet?.addItemDecoration(
-                ShareExVerticalSpacingItemDecoration(
+                ShareExBottomSheetSpacingItemDecoration(
                     8.dpToPx(it.resources.displayMetrics),
-                    doubleTopItemSpacing = true,
-                    doubleBottomItemSpacing = true
+                    16.dpToPx(it.resources.displayMetrics)
                 )
             )
         }
