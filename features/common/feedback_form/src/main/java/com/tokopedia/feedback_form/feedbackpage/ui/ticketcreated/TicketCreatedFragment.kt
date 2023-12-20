@@ -25,9 +25,9 @@ class TicketCreatedFragment : Fragment() {
         }
     }
 
-    private lateinit var imageCreated: AppCompatImageView
-    private lateinit var ticketText1: Typography
-    private lateinit var backButton: View
+    private var imageCreated: AppCompatImageView? = null
+    private var ticketText1: Typography? = null
+    private var backButton: View? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,11 +47,11 @@ class TicketCreatedFragment : Fragment() {
         ticketText1 = mainView.findViewById(R.id.ticket_text_1)
         backButton = mainView.findViewById(R.id.button_back)
 
-        ticketText1.text = MethodChecker.fromHtml(
+        ticketText1?.text = MethodChecker.fromHtml(
             mainView.context.getString(R.string.ticket_text_new)
         )
-        imageCreated.loadImage(FEEDBACK_TICKET_CREATED_THANK_YOU)
-        backButton.setOnClickListener {
+        imageCreated?.loadImage(FEEDBACK_TICKET_CREATED_THANK_YOU)
+        backButton?.setOnClickListener {
             activity?.finish()
         }
     }
