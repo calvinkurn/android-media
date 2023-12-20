@@ -12,14 +12,22 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsFeature
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_INACTIVE
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_IN_PROGRESS_ACTIVE
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_IN_PROGRESS_AUTOMANAGE
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.AD_TYPE_SHOP_ADS
 import com.tokopedia.topads.common.data.model.WhiteListUserResponse
+import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.recommendation.RecommendationWidget
+import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
@@ -61,7 +69,12 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     private var headlineTabLayout: TabsUnify? = null
     private var noTabSpace: View? = null
     private var recommendationWidget: RecommendationWidget? = null
+    private var autoadsEditWidget: AutoAdsWidgetCommon? = null
+    private var autoadsDeactivationProgress: CardUnify? = null
     private var recommendationWidgetCTAListener: RecommendationWidgetCTAListener? = null
+
+    private val autoAdsWidget: AutoAdsWidgetCommon?
+        get() = autoadsEditWidget
 
     @Inject
     lateinit var presenter: TopAdsDashboardPresenter
@@ -99,6 +112,8 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         hariIni = view.findViewById(R.id.hari_ini)
         pager = view.findViewById(R.id.pager)
         recommendationWidget = view.findViewById(R.id.insightCentreEntryPointHeadline)
+        autoadsDeactivationProgress = view.findViewById(R.id.autoadsDeactivationProgress)
+        autoadsEditWidget = view.findViewById(R.id.autoads_edit_widget)
     }
 
     override fun getChildScreenName(): String {
@@ -133,6 +148,30 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         }
     }
 
+    private fun getAutoAdsStatus() {
+        try {
+            presenter.getAutoAdsStatus(requireContext().resources, ::setAutoAds)
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun setAutoAds(data: AutoAdsResponse.TopAdsGetAutoAds.Data) {
+        when (data.status) {
+            STATUS_INACTIVE -> {
+                autoadsDeactivationProgress?.gone()
+                autoAdsWidget?.gone()
+                recommendationWidget?.show()
+            }
+            else -> {
+                autoadsDeactivationProgress?.gone()
+                autoAdsWidget?.show()
+                recommendationWidget?.gone()
+                autoAdsWidget?.loadData(0)
+            }
+        }
+    }
+
     override fun renderGraph() {
         currentStatisticsFragment?.showLineGraph(dataStatistic)
     }
@@ -145,6 +184,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         super.onViewCreated(view, savedInstanceState)
         loader?.visibility = View.VISIBLE
         loadStatisticsData()
+        getAutoAdsStatus()
         swipeRefreshLayout?.setOnRefreshListener {
             loadChildStatisticsData()
         }

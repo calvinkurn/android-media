@@ -204,7 +204,8 @@ class TopAdsDashboardActivity :
                             ivEducationTopAdsActionBar.show()
                             ivCalendarTopAdsActionBar.show()
                             txtBuatIklan.hide()
-                            bottom?.visible()
+//                            bottom?.visible()
+                            bottom?.gone()
                             multiActionBtn?.buttonSize = UnifyButton.Size.LARGE
                             multiActionBtn?.text =
                                 getString(R.string.topads_dash_button_submit_beranda)
