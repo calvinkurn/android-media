@@ -58,11 +58,24 @@ class ProductCardListCarouselView: ConstraintLayout {
     fun setProductModel(productCardModel: ProductCardModel) {
         renderer.setProductModel(productCardModel)
 
+        renderAddToCart(productCardModel)
         stockInfo.render(productCardModel)
+    }
+
+    private fun renderAddToCart(productCardModel: ProductCardModel) {
+        val cardConstraintLayout = cardConstraintLayout ?: return
+
+        showView(R.id.productCardAddToCart, productCardModel.hasAddToCart) {
+            AddToCartButton(cardConstraintLayout)
+        }
     }
 
     fun addOnImpressionListener(holder: ImpressHolder, onView: () -> Unit) {
         imageView?.addOnImpressionListener(holder, onView)
+    }
+
+    fun setAddToCartOnClickListener(onClickListener: OnClickListener) {
+        findViewById<View?>(R.id.productCardAddToCart)?.setOnClickListener(onClickListener)
     }
 
     override fun setOnClickListener(l: OnClickListener?) {

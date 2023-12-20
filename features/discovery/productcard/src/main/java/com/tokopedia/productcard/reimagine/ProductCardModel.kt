@@ -11,7 +11,6 @@ data class ProductCardModel(
     val rating: String = "",
     val shopBadge: ShopBadge = ShopBadge(),
     val freeShipping: FreeShipping = FreeShipping(),
-    val hasMultilineName: Boolean = false,
     val hasAddToCart: Boolean = false,
     val videoUrl: String = "",
     val hasThreeDots: Boolean = false,
@@ -36,6 +35,12 @@ data class ProductCardModel(
 
     fun hasRibbon() = ribbon() != null
 
+    fun showVideoIdentifier() = videoUrl.isNotBlank() && !isSafeProduct
+
+    fun labelGroupOverlayList() = labelGroupList
+        .filter { it.position.startsWith(LABEL_OVERLAY_) }
+        .sortedBy { it.position }
+
     private fun labelGroup(position: String) = labelGroupList.find { it.position == position }
 
     fun stockInfo() : StockInfo? = stockInfo.takeIf { it.hasTitle() }
@@ -49,15 +54,7 @@ data class ProductCardModel(
         val imageUrl: String = "",
         val styles: List<Style> = listOf(),
     ) {
-//        private val style = style()
         private val style = styles.associate { it.key to it.value }
-
-        private fun style() =
-            type.split(STYLE_SEPARATOR)
-                .associate {
-                    val keyValue = it.split(STYLE_VALUE_SEPARATOR)
-                    keyValue.first() to keyValue.last()
-                }
 
         fun hasTitle() = title.isNotBlank()
         fun hasImage() = imageUrl.isNotBlank()
@@ -68,11 +65,6 @@ data class ProductCardModel(
         fun width(): Int = style[LabelGroupStyle.WIDTH]?.toIntOrNull() ?: 0
 
         data class Style(val key: String = "", val value: String = "")
-
-        companion object {
-            private const val STYLE_SEPARATOR = "&"
-            private const val STYLE_VALUE_SEPARATOR = "="
-        }
     }
 
     data class ShopBadge(

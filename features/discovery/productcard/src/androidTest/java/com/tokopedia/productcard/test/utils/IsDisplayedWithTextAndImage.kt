@@ -25,7 +25,7 @@ private class IsDisplayedWithTextAndImage(
         val currentText = item.text
         return if (currentText is Spannable) {
             currentText.getSpans<Any>().any { it is ImageSpan }
-                && currentText.substring(1) == text
+                && currentText.substring(2) == text
         } else {
             withText(text).matches(item)
         }

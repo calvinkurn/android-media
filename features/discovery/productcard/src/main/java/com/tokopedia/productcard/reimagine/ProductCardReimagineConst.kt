@@ -6,6 +6,7 @@ const val LABEL_REIMAGINE_CREDIBILITY = "ri_product_credibility"
 const val LABEL_REIMAGINE_ASSIGNED_VALUE = "assigned_value"
 const val LABEL_REIMAGINE_RIBBON = "ri_ribbon"
 const val LABEL_REIMAGINE_PRODUCT_OFFER = "ri_product_offer"
+const val LABEL_OVERLAY_ = "overlay_"
 
 /** Label Group Style **/
 object LabelGroupStyle {

@@ -203,33 +203,6 @@ internal fun ImageView.loadImageRounded(
         .into(this)
 }
 
-internal fun ImageView.loadImageRoundedBlurred(
-    url: String,
-    roundingRadius: Int,
-    cornerType: CornerType= CornerType.TOP,
-    listenerOnSuccessLoad: (Bitmap?, MediaDataSource?) -> Unit = { _, _ -> },
-){
-    val transformation = MultiTransformation(
-        RoundedCornersTransformation(roundingRadius, cornerType)
-    )
-
-    val transcodingCoverTarget: CustomTarget<Bitmap> = object : CustomTarget<Bitmap>() {
-        override fun onLoadCleared(placeholder: Drawable?) {
-
-        }
-
-        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-            listenerOnSuccessLoad(resource, null)
-        }
-    }
-
-    Glide.with(context)
-        .asBitmap()
-        .load(url)
-        .transform(CenterCrop(), transformation)
-        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-        .into(transcodingCoverTarget)
-}
 internal fun Label.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
     if (labelGroup == null) {
         hide()

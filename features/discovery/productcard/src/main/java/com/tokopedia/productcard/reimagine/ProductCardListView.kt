@@ -72,7 +72,7 @@ class ProductCardListView: ConstraintLayout {
     }
 
     private fun renderVideo(productCardModel: ProductCardModel) {
-        videoIdentifier?.showWithCondition(productCardModel.videoUrl.isNotBlank())
+        videoIdentifier?.showWithCondition(productCardModel.showVideoIdentifier())
         video.setVideoURL(productCardModel.videoUrl)
     }
 

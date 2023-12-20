@@ -23,6 +23,8 @@ internal val productCardReimagineGridTestData =
         ribbon(GOLD),
         video(),
         threeDots(),
+        overlay(),
+        blur(),
     )
 
 private fun benefitWithOffers(): ProductCardReimagineMatcher {
@@ -236,4 +238,121 @@ private fun threeDots(): ProductCardReimagineMatcher {
     )
 
     return Triple(model, matcher, "Three Dots")
+}
+
+private fun overlay(): ProductCardReimagineMatcher {
+    val reimagineProductOffers = labelGroupProductOffers()
+    val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
+        position = LABEL_REIMAGINE_CREDIBILITY,
+        title = "10 rb+ terjual",
+        type = TEXT_DARK_GREY,
+    )
+    val shopBadge = ProductCardModel.ShopBadge(
+        imageUrl = officialStoreBadgeImageUrl,
+        title = "Shop Name paling panjang",
+    )
+    val model = ProductCardModel(
+        imageUrl = productImageUrl,
+        name = longProductName,
+        price = "Rp79.000",
+        slashedPrice = "Rp100.000",
+        discountPercentage = 10,
+        labelGroupList = listOf(
+            reimagineProductOffers,
+            reimagineCredibilityLabel,
+            labelGroupOverlay1(56),
+            labelGroupOverlay2(45),
+            labelGroupOverlay3(32),
+        ),
+        rating = "4.5",
+        shopBadge = shopBadge,
+        freeShipping = ProductCardModel.FreeShipping(
+            imageUrl = freeOngkirImageUrl,
+        ),
+    )
+
+    val matcher = mapOf<Int, Matcher<View?>>(
+        R.id.productCardImage to isDisplayed(),
+        R.id.productCardOverlay1 to isDisplayed(),
+        R.id.productCardOverlay2 to isDisplayed(),
+        R.id.productCardOverlay3 to isDisplayed(),
+        R.id.productCardName to isDisplayedWithText(model.name),
+        R.id.productCardPrice to isDisplayedWithText(model.price),
+        R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
+        R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
+        R.id.productCardLabelOffer to isDisplayedWithText(reimagineProductOffers.title),
+        R.id.productCardCredibility to isDisplayed(),
+        R.id.productCardRatingIcon to isDisplayed(),
+        R.id.productCardRating to isDisplayedWithText(model.rating),
+        R.id.productCardRatingDots to isDisplayed(),
+        R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
+        R.id.productCardShopSection to isDisplayed(),
+        R.id.productCardShopBadge to isDisplayed(),
+        R.id.productCardShopNameLocation to isDisplayed(),
+        R.id.productCardFreeShipping to isDisplayed(),
+    )
+
+    return Triple(model, matcher, "Label Overlay")
+}
+
+private fun blur(): ProductCardReimagineMatcher {
+    val reimagineBenefitLabel = labelGroupBenefit()
+    val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
+        position = LABEL_REIMAGINE_CREDIBILITY,
+        title = "10 rb+ terjual",
+        type = TEXT_DARK_GREY,
+    )
+    val shopBadge = ProductCardModel.ShopBadge(
+        imageUrl = officialStoreBadgeImageUrl,
+        title = "Shop Name paling panjang",
+    )
+
+    val model = ProductCardModel(
+        imageUrl = productImageUrl,
+        name = longProductName,
+        price = "Rp79.000",
+        slashedPrice = "Rp100.000",
+        discountPercentage = 10,
+        isAds = true,
+        labelGroupList = listOf(
+            reimagineBenefitLabel,
+            reimagineCredibilityLabel,
+        ),
+        rating = "4.5",
+        shopBadge = shopBadge,
+        freeShipping = ProductCardModel.FreeShipping(
+            imageUrl = freeOngkirImageUrl,
+        ),
+        isSafeProduct = true,
+        videoUrl = productVideoUrl,
+    )
+
+    val matcher = mapOf<Int, Matcher<View?>>(
+        R.id.productCardImage to isDisplayed(),
+        R.id.productCardName to isDisplayedWithText(""),
+        R.id.productCardPrice to isDisplayedWithText(model.price),
+        R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
+        R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
+
+        R.id.productCardLabelBenefit to isDisplayed(),
+        R.id.productCardLabelBenefitText to isDisplayedWithText(reimagineBenefitLabel.title),
+
+        R.id.productCardCredibility to isDisplayed(),
+        R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
+        R.id.productCardRatingIcon to isDisplayed(),
+        R.id.productCardRating to isDisplayedWithText(model.rating),
+        R.id.productCardRatingDots to isDisplayed(),
+        R.id.productCardShopSection to isDisplayed(),
+        R.id.productCardShopBadge to isDisplayed(),
+        R.id.productCardShopNameLocation to isDisplayed(),
+        R.id.productCardFreeShipping to isDisplayed(),
+
+        R.id.productCardSafeDivider to isDisplayed(),
+        R.id.productCardSafeIcon to isDisplayed(),
+        R.id.productCardSafeTitle to isDisplayed(),
+        R.id.productCardSafeDescription to isDisplayed(),
+        R.id.productCardSafeCheckInfo to isDisplayed(),
+    )
+
+    return Triple(model, matcher, "Blur")
 }

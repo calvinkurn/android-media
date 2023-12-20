@@ -21,7 +21,7 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridCarouselView(
                 productImageWidth,
                 gridCarouselCardPaddingBottom(context),
                 gridCarouselStockInfoHeight(context, productCardModel),
-                gridCarouselNameHeight(context, productCardModel),
+                gridCarouselNameHeight(context),
                 gridCarouselPriceHeight(context, productCardModel),
                 gridCarouselDiscountBelowPriceHeight(context, productCardModel),
                 gridCarouselLabelBenefitHeight(context, productCardModel),
@@ -55,10 +55,8 @@ private fun gridCarouselStockInfoHeight(context: Context?, productCardModel: Pro
         context.getPixel(productcardR.dimen.product_card_reimagine_stock_bar_background_height)
     else 0
 
-private fun gridCarouselNameHeight(context: Context?, productCardModel: ProductCardModel): Int {
-    val nameLineHeight =
-        if (productCardModel.hasMultilineName) productcardR.dimen.product_card_reimagine_name_2_line_height
-        else productcardR.dimen.product_card_reimagine_name_1_line_height
+private fun gridCarouselNameHeight(context: Context?): Int {
+    val nameLineHeight = productcardR.dimen.product_card_reimagine_name_1_line_height
 
     return context.getPixel(productcardR.dimen.product_card_reimagine_name_image_margin_top)
         .plus(context.getPixel(nameLineHeight))

@@ -22,6 +22,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.assignedvalue.renderProductNameWithAssignedValue
 import com.tokopedia.productcard.reimagine.benefit.LabelBenefitView
+import com.tokopedia.productcard.reimagine.overlay.LabelOverlay
 import com.tokopedia.productcard.reimagine.ribbon.RibbonView
 import com.tokopedia.productcard.utils.RoundedCornersTransformation
 import com.tokopedia.productcard.utils.RoundedCornersTransformation.CornerType.ALL
@@ -31,7 +32,6 @@ import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.productcard.R as productcardR
 
 internal class ProductCardRenderer(
     private val view: View,
@@ -42,6 +42,7 @@ internal class ProductCardRenderer(
 
     private val cardContainer by view.lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val imageView by view.lazyView<ImageUnify?>(R.id.productCardImage)
+    private val labelOverlay = LabelOverlay(view)
     private val adsText by view.lazyView<Typography?>(R.id.productCardAds)
     private val nameText by lazyThreadSafetyNone { initNameText() }
     private val priceText by view.lazyView<Typography?>(R.id.productCardPrice)
@@ -64,6 +65,7 @@ internal class ProductCardRenderer(
 
     fun setProductModel(productCardModel: ProductCardModel) {
         renderImage(productCardModel)
+        renderOverlay(productCardModel)
         renderAds(productCardModel)
         renderName(productCardModel)
         renderPrice(productCardModel)
@@ -90,7 +92,7 @@ internal class ProductCardRenderer(
             setColorFilter(
                 ContextCompat.getColor(
                     context,
-                    productcardR.color.dms_product_card_reimagine_image_overlay,
+                    R.color.dms_product_card_reimagine_image_overlay,
                 ),
                 PorterDuff.Mode.SRC_OVER
             )
@@ -116,6 +118,10 @@ internal class ProductCardRenderer(
         )
     }
 
+    private fun renderOverlay(productCardModel: ProductCardModel) {
+        labelOverlay.render(productCardModel)
+    }
+
     private fun renderAds(productCardModel: ProductCardModel) {
         val isSafeProduct = productCardModel.isSafeProduct
         adsText?.showWithCondition(productCardModel.isAds && !isSafeProduct)
@@ -126,7 +132,7 @@ internal class ProductCardRenderer(
 
         nameText?.background = nameTextBackground(isSafeProduct)
         nameText?.shouldShowWithAction(productCardModel.name.isNotEmpty()) {
-            it.maxLines = maxLinesName(productCardModel)
+            it.maxLines = maxLinesName()
 
             if (isSafeProduct) {
                 it.setText(SpannableString(""), TextView.BufferType.SPANNABLE)
@@ -140,13 +146,8 @@ internal class ProductCardRenderer(
         }
     }
 
-    private fun maxLinesName(productCardModel: ProductCardModel): Int {
-        val hasMultilineName = when (type) {
-            ProductCardType.GridCarousel,
-            ProductCardType.ListCarousel -> productCardModel.hasMultilineName
-            ProductCardType.Grid,
-            ProductCardType.List -> true
-        }
+    private fun maxLinesName(): Int {
+        val hasMultilineName = type != ProductCardType.GridCarousel
 
         return if (hasMultilineName) 2 else 1
     }
@@ -191,7 +192,8 @@ internal class ProductCardRenderer(
     }
 
     private fun showDiscountAsInline(productCardModel: ProductCardModel): Boolean =
-        type == ProductCardType.GridCarousel && productCardModel.ribbon() != null
+        (type == ProductCardType.GridCarousel || type == ProductCardType.ListCarousel)
+            && productCardModel.ribbon() != null
 
     private fun renderDiscountPercentage(productCardModel: ProductCardModel) {
         val hasDiscountPercentage = productCardModel.discountPercentage != 0
@@ -231,7 +233,8 @@ internal class ProductCardRenderer(
             offerLabel.hide()
         } else {
             val hasLabelBenefit = productCardModel.labelBenefit() != null
-            val showLabelProductOffer = !hasLabelBenefit || type != ProductCardType.GridCarousel
+            val isNotCarousel = type != ProductCardType.GridCarousel && type != ProductCardType.ListCarousel
+            val showLabelProductOffer = !hasLabelBenefit || isNotCarousel
 
             offerLabel.shouldShowWithAction(showLabelProductOffer) {
                 ProductCardLabel(it.background, it).render(labelProductOffer)
