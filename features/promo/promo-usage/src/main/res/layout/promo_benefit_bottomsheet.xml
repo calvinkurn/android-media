@@ -12,12 +12,12 @@
         android:id="@+id/top_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="16dp"
         android:clipToPadding="false"
+        android:paddingBottom="16dp"
         tools:background="@drawable/background_bottomsheet_promo">
 
         <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/btnBottomSheetHeaderClose"
+            android:id="@+id/ic_close"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="16dp"
@@ -39,14 +39,14 @@
             android:singleLine="true"
             android:text="@string/detail_harga"
             android:textColor="@color/Unify_Static_Black"
-            app:layout_constraintBottom_toBottomOf="@+id/btnBottomSheetHeaderClose"
+            app:layout_constraintBottom_toBottomOf="@+id/ic_close"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btnBottomSheetHeaderClose"
-            app:layout_constraintTop_toTopOf="@+id/btnBottomSheetHeaderClose"
+            app:layout_constraintStart_toEndOf="@+id/ic_close"
+            app:layout_constraintTop_toTopOf="@+id/ic_close"
             app:typographyType="heading_3" />
 
         <include
-            android:id="@+id/typography"
+            android:id="@+id/layout_benefit"
             layout="@layout/layout_benefit_card"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -55,51 +55,48 @@
             android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnBottomSheetHeaderClose" />
+            app:layout_constraintTop_toBottomOf="@+id/ic_close" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="16dp"
+        android:background="@color/Unify_Background"
         android:paddingTop="16dp"
-        android:background="@color/Unify_Background">
+        android:paddingBottom="16dp">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/typography2"
-            app:typographyType="heading_4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="@string/cek_info_tentang_promonya_dulu_yuk"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_4" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/ll_info"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:orientation="vertical"
-            android:id="@+id/ll_info"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/typography2"
             app:layout_constraintTop_toBottomOf="@+id/typography2">
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:layout_width="wrap_content"
-                app:typographyType="display_3"
-                android:layout_height="wrap_content"
-                tools:text="\u2022  Nominal promo bisa berubah dikarenakan waktu pembelian, ketersediaan produk, periode promosi, ketentuan promo. " />
-
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <com.tokopedia.iconunify.IconUnify
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:id="@+id/toggle_info"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:padding="4dp"
             android:layout_marginEnd="16dp"
-            app:icon_name="CHEVRON_DOWN"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:icon_name="CHEVRON_UP"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
