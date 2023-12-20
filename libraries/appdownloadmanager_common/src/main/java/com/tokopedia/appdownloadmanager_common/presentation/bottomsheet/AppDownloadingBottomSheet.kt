@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -186,6 +187,7 @@ class AppDownloadingBottomSheet :
                     val errorMessage = try {
                         getString(appdownloadmanager_commonR.string.app_download_error_network_message)
                     } catch (e: Resources.NotFoundException) {
+                        FirebaseCrashlytics.getInstance().recordException(e)
                         uiEvent.reason
                     }
                     onDownloadFailed(errorMessage)
