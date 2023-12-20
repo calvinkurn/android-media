@@ -31,7 +31,7 @@
             app:layout_constraintTop_toBottomOf="@+id/typography"
             app:typographyType="display_1"
             app:typographyWeight="bold"
-            tools:text="Rp 9,000,000" />
+            tools:text="Rp9,000,000" />
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/dividerUnify"

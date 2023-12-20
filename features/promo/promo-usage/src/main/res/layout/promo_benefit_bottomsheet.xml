@@ -37,7 +37,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:singleLine="true"
-            android:text="Detail Harga"
+            android:text="@string/detail_harga"
             android:textColor="@color/Unify_Static_Black"
             app:layout_constraintBottom_toBottomOf="@+id/btnBottomSheetHeaderClose"
             app:layout_constraintEnd_toEndOf="parent"
