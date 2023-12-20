@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.product.detail.view.widget.campaign.component.CampaignImage
+import com.tokopedia.product.detail.view.widget.campaign.component.CampaignName
 import com.tokopedia.product.detail.view.widget.campaign.component.backgroundColor
 
 /**
@@ -22,6 +23,7 @@ import com.tokopedia.product.detail.view.widget.campaign.component.backgroundCol
 
 @Composable
 fun MegaCampaign(
+    title: String,
     logoUrl: String,
     superGraphicUrl: String,
     backgroundColorString: String
@@ -46,10 +48,11 @@ fun MegaCampaign(
                 }
         )
 
-        CampaignImage(
-            url = logoUrl,
+        CampaignName(
+            title = title,
+            logoUrl = logoUrl,
+            logoHeight = 16.dp,
             modifier = Modifier
-                .height(16.dp)
                 .wrapContentWidth()
                 .constrainAs(logo) {
                     top.linkTo(parent.top)
@@ -68,7 +71,15 @@ fun MegaCampaignPreview() {
     NestTheme {
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
             MegaCampaign(
+                title = "Ramadhan Extra",
                 logoUrl = logoUrl,
+                superGraphicUrl = logoUrl,
+                backgroundColorString = "16754E, 47DB6D"
+            )
+
+            MegaCampaign(
+                title = "Ramadhan Extra",
+                logoUrl = "",
                 superGraphicUrl = logoUrl,
                 backgroundColorString = "16754E, 47DB6D"
             )

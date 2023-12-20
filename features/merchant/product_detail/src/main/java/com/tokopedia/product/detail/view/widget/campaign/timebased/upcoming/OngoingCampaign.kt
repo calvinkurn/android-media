@@ -17,11 +17,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.product.detail.view.widget.campaign.component.CampaignName
 import com.tokopedia.product.detail.view.widget.campaign.component.CampaignStockPercentage
 import com.tokopedia.product.detail.view.widget.campaign.component.CampaignTimer
 import com.tokopedia.product.detail.view.widget.campaign.component.asHtmlLink
 import com.tokopedia.product.detail.view.widget.campaign.component.backgroundColor
-import com.tokopedia.product.detail.view.widget.campaign.timebased.TimeBasedCampaignTitle
 import com.tokopedia.product.detail.view.widget.campaign.timebased.upcoming.OngoingCampaignUiModel
 
 /**
@@ -44,7 +44,7 @@ fun OngoingCampaign(uiModel: OngoingCampaignUiModel, onTimerFinish: () -> Unit) 
             modifier = Modifier.weight(1f, true),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            TimeBasedCampaignTitle(title = uiModel.title, logoUrl = uiModel.logoUrl)
+            CampaignName(title = uiModel.title, logoUrl = uiModel.logoUrl, logoHeight = 14.dp)
 
             CampaignStock(uiModel)
         }

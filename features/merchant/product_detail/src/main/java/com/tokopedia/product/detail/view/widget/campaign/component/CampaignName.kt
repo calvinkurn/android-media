@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.widget.campaign.timebased
+package com.tokopedia.product.detail.view.widget.campaign.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -10,14 +10,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.product.detail.view.widget.campaign.component.CampaignImage
 
 @Composable
-fun TimeBasedCampaignTitle(title: String, logoUrl: String) {
+fun CampaignName(
+    title: String,
+    logoUrl: String,
+    modifier: Modifier = Modifier,
+    logoHeight: Dp = 16.dp,
+    textColor: Color = Color.White
+) {
     Row(
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
@@ -25,15 +32,15 @@ fun TimeBasedCampaignTitle(title: String, logoUrl: String) {
             CampaignImage(
                 url = logoUrl,
                 modifier = Modifier
-                    .height(16.dp)
+                    .height(logoHeight)
                     .wrapContentWidth()
             )
         } else {
             NestTypography(
                 text = title,
-                textStyle = NestTheme.typography.body2.copy(
+                textStyle = NestTheme.typography.display3.copy(
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = textColor
                 ),
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1
