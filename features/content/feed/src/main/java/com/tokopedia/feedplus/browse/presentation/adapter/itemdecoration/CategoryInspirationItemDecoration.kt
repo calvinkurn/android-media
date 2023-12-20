@@ -56,6 +56,7 @@ internal class CategoryInspirationItemDecoration(
                 FeedBrowseItemAdapter.TYPE_LOADING -> {
                     outRect.itemOffsetsLoading()
                 }
+                FeedBrowseItemAdapter.TYPE_TITLE -> outRect.itemOffsetsTitle()
                 else -> {
                     outRect.itemOffsetsElse()
                 }
@@ -99,6 +100,12 @@ internal class CategoryInspirationItemDecoration(
 
     private fun Rect.itemOffsetsLoading() {
         top = offset12
+    }
+
+    private fun Rect.itemOffsetsTitle() {
+        left = offset16
+        right = offset16
+        top = offset24
     }
 
     private fun Rect.itemOffsetsElse() {

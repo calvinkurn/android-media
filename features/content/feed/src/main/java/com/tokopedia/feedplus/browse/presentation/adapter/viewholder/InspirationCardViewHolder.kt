@@ -2,7 +2,6 @@ package com.tokopedia.feedplus.browse.presentation.adapter.viewholder
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
 import com.tokopedia.feedplus.databinding.ItemFeedBrowseInspirationCardBinding
@@ -11,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.play_common.util.addImpressionListener
-import com.tokopedia.unifycomponents.CardUnify2
 
 /**
  * Created by kenny.hadisaputra on 21/09/23

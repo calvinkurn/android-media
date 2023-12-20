@@ -63,9 +63,10 @@ internal class CategoryInspirationViewModel @AssistedInject constructor(
 
     private fun fetchTitle() {
         viewModelScope.launch {
-            val title = repository.getCategoryInspirationTitle(source)
-            _uiState.update {
-                it.copy(title = title)
+            runCatching {
+                repository.getCategoryInspirationTitle(source)
+            }.onSuccess { title ->
+                _uiState.update { it.copy(title = title) }
             }
         }
     }
@@ -110,47 +111,52 @@ internal class CategoryInspirationViewModel @AssistedInject constructor(
         }
 
         val nextCursor = data?.items?.nextCursor.orEmpty()
-        when (val response = repository.getWidgetContentSlot(menu.toRequest(nextCursor))) {
-            is ContentSlotModel.TabMenus -> {
-                _uiState.update {
-                    it.copy(
-                        items = response.menu.associate { menu ->
-                            menu.id to
-                                CategoryInspirationData(menu, FeedBrowseChannelListState.initSuccess(emptyList()))
-                        },
-                        selectedMenuId = response.menu.firstOrNull()?.id.orEmpty()
-                    )
+
+        runCatching {
+            repository.getWidgetContentSlot(menu.toRequest(nextCursor))
+        }.onSuccess { response ->
+            when (response) {
+                is ContentSlotModel.TabMenus -> {
+                    _uiState.update {
+                        it.copy(
+                            items = response.menu.associate { menu ->
+                                menu.id to
+                                    CategoryInspirationData(menu, FeedBrowseChannelListState.initSuccess(emptyList()))
+                            },
+                            selectedMenuId = response.menu.firstOrNull()?.id.orEmpty()
+                        )
+                    }
                 }
-            }
-            is ContentSlotModel.ChannelBlock -> {
-                _uiState.update {
-                    it.copy(
-                        items = it.items.updateById(menu.id) { data ->
-                            data.copy(
-                                items = FeedBrowseChannelListState.initSuccess(
-                                    items = data.items.items + response.channels,
-                                    nextCursor = response.nextCursor,
-                                    hasNextPage = response.hasNextPage,
-                                    config = response.config
+                is ContentSlotModel.ChannelBlock -> {
+                    _uiState.update {
+                        it.copy(
+                            items = it.items.updateById(menu.id) { data ->
+                                data.copy(
+                                    items = FeedBrowseChannelListState.initSuccess(
+                                        items = data.items.items + response.channels,
+                                        nextCursor = response.nextCursor,
+                                        hasNextPage = response.hasNextPage,
+                                        config = response.config
+                                    )
                                 )
-                            )
-                        }
-                    )
+                            }
+                        )
+                    }
                 }
-            }
-            is ContentSlotModel.NoData -> {
-                _uiState.update {
-                    it.copy(
-                        items = it.items.updateById(menu.id) { data ->
-                            data.copy(
-                                items = FeedBrowseChannelListState.initSuccess(
-                                    data.items.items,
-                                    nextCursor = response.nextCursor,
-                                    hasNextPage = response.hasNextPage
+                is ContentSlotModel.NoData -> {
+                    _uiState.update {
+                        it.copy(
+                            items = it.items.updateById(menu.id) { data ->
+                                data.copy(
+                                    items = FeedBrowseChannelListState.initSuccess(
+                                        data.items.items,
+                                        nextCursor = response.nextCursor,
+                                        hasNextPage = response.hasNextPage
+                                    )
                                 )
-                            )
-                        }
-                    )
+                            }
+                        )
+                    }
                 }
             }
         }
