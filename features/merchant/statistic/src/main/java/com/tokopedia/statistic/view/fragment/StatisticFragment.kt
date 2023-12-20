@@ -59,6 +59,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TickerDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
@@ -66,6 +67,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.TickerWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.FilterTabBottomSheet
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.HtmlMetaBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -94,8 +96,8 @@ import com.tokopedia.statistic.view.bottomsheet.ActionMenuBottomSheet
 import com.tokopedia.statistic.view.bottomsheet.DateFilterBottomSheet
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.statistic.view.viewhelper.FragmentListener
-import com.tokopedia.statistic.view.viewhelper.RejectedOrderRateCoachMark
 import com.tokopedia.statistic.view.viewhelper.MultiComponentTabUiInteractor
+import com.tokopedia.statistic.view.viewhelper.RejectedOrderRateCoachMark
 import com.tokopedia.statistic.view.viewhelper.StatisticItemDecoration
 import com.tokopedia.statistic.view.viewhelper.StatisticLayoutManager
 import com.tokopedia.statistic.view.viewmodel.StatisticViewModel
@@ -623,6 +625,18 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun setCoachMarkView(dataKey: String, view: View) {
         rejectedOrderRateCoachMark.setAnchor(dataKey, view)
         rejectedOrderRateCoachMark.show()
+    }
+
+    override fun onHtmlMetaClick(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) {
+        HtmlMetaBottomSheet.createInstance(meta).apply {
+            setOnMetaLinkClicked(::goToHtmlMetaLink)
+        }.show(childFragmentManager)
+    }
+
+    override fun onUnificationHtmlMetaClick(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) {
+        HtmlMetaBottomSheet.createInstance(meta).apply {
+            setOnMetaLinkClicked(::goToHtmlMetaLink)
+        }.show(childFragmentManager)
     }
 
     fun setSelectedWidget(widget: String) {
@@ -1410,4 +1424,9 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             }
         }
     }
+
+    private fun goToHtmlMetaLink(appLink: String) {
+        RouteManager.route(context, appLink)
+    }
+
 }

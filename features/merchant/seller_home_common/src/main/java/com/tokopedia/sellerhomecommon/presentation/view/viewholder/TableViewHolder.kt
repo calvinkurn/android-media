@@ -103,7 +103,7 @@ class TableViewHolder(
                         listener.sendTableHyperlinkClickEvent(element.dataKey, url, isEmpty)
                     }
                     shcTableView.addOnMetaLabelClickListener { meta ->
-
+                        listener.onHtmlMetaClick(meta)
                     }
                 }
                 setupLastUpdatedInfo(element)

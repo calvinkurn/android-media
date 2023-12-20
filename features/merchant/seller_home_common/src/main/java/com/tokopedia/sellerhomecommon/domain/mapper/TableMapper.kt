@@ -106,23 +106,14 @@ class TableMapper @Inject constructor(
                         }
                         COLUMN_IMAGE -> TableRowsUiModel.RowColumnImage(col.value, width)
                         COLUMN_HTML -> {
-
-                            TableRowsUiModel.RowColumnHtmlWithMeta(
-                                valueStr = "Mumpung Murah",
+                            TableRowsUiModel.RowColumnHtml(
+                                valueStr = valueStr,
                                 width = width,
-                                htmlMeta = TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta(
-                                    label = "Mumpung Murah"
-                                ),
-                                isLeftAlign = true
+                                meta = getTableRowMeta(col.meta),
+                                isLeftAlign = firstTextColumn == col,
+                                colorInt = getColorFromHtml(valueStr),
+                                additionalValueString = col.additionalValue
                             )
-//                            TableRowsUiModel.RowColumnHtml(
-//                                valueStr = valueStr,
-//                                width = width,
-//                                meta = getTableRowMeta(col.meta),
-//                                isLeftAlign = firstTextColumn == col,
-//                                colorInt = getColorFromHtml(valueStr),
-//                                additionalValueString = col.additionalValue
-//                            )
                         }
                         COLUMN_HTML_WITH_META -> {
                             TableRowsUiModel.RowColumnHtmlWithMeta(

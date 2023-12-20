@@ -1,10 +1,12 @@
 package com.tokopedia.sellerhomecommon.presentation.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.presentation.adapter.factory.TableItemFactory
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created By @ilhamsuaib on 10/06/20
@@ -115,6 +117,7 @@ sealed class TableRowsUiModel(
             return typeFactory.type(this)
         }
 
+        @Parcelize
         data class HtmlMeta(
             @SerializedName("label")
             val label: String = String.EMPTY,
@@ -128,7 +131,7 @@ sealed class TableRowsUiModel(
             val cta: String = String.EMPTY,
             @SerializedName("url")
             val url: String = String.EMPTY
-        )
+        ): Parcelable
     }
 
     data class Meta(

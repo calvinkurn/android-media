@@ -228,6 +228,9 @@ class UnificationViewHolder(
                 openAppLink(url)
                 listener.sendUnificationTableItemClickEvent(element, text, meta, isEmpty)
             }
+            tableShcUnification.addOnMetaLabelClickListener { meta ->
+                listener.onUnificationHtmlMetaClick(meta)
+            }
             tableShcUnification.addOnImpressionListener(tab.impressHolder) {
                 listener.sendUnificationTabImpressionEvent(element)
             }
@@ -339,5 +342,7 @@ class UnificationViewHolder(
         ) {}
 
         fun showUnificationWidgetCoachMark(anchor: View) {}
+        fun onUnificationHtmlMetaClick(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta)
+
     }
 }

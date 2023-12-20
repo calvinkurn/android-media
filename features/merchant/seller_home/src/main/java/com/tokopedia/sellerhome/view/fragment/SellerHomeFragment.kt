@@ -150,6 +150,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiMode
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetDismissalResultUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.CalendarWidgetDateFilterBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.FeedbackLoopOptionsBottomSheet
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.HtmlMetaBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.PostMoreOptionBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.UnificationTabBottomSheet
@@ -705,7 +706,9 @@ class SellerHomeFragment :
     }
 
     override fun onHtmlMetaClick(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) {
-        TODO("Not yet implemented")
+        HtmlMetaBottomSheet.createInstance(meta).apply {
+            setOnMetaLinkClicked(::goToHtmlMetaLink)
+        }.show(childFragmentManager)
     }
 
     override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
@@ -807,6 +810,12 @@ class SellerHomeFragment :
                 showUnificationCoachMarkWhenVisible()
             }
         }
+    }
+
+    override fun onUnificationHtmlMetaClick(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) {
+        HtmlMetaBottomSheet.createInstance(meta).apply {
+            setOnMetaLinkClicked(::goToHtmlMetaLink)
+        }.show(childFragmentManager)
     }
 
     override fun sendUnificationSeeMoreClickEvent(dataKey: String, tab: UnificationTabUiModel) {
@@ -2929,6 +2938,10 @@ class SellerHomeFragment :
                 }
             }
         }
+    }
+
+    private fun goToHtmlMetaLink(appLink: String) {
+        RouteManager.route(context, appLink)
     }
 
     interface Listener {
