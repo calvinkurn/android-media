@@ -56,8 +56,7 @@ import java.net.UnknownHostException
 
 const val GRID_COLUMN = 3
 const val MINIMUM_3_SUB_CAT = 3
-const val DELAY_SCROLL_ANIMATION = 300L
-const val DELAY_STATE_CHANGE_ANIMATION = 150L
+const val DELAY_SCROLL_ANIMATION = 325L
 
 @Composable
 fun ExploreCategoryScreen(
@@ -128,7 +127,15 @@ fun ExploreCategoryListGrid(
     }
 
     val verticalMargin = with(localDensity) {
-        8.dp.toPx()
+        16.dp.toPx()
+    }
+
+    val bottomSideListNotVisible by remember(lazyListState) {
+        derivedStateOf {
+            lazyListState.layoutInfo.visibleItemsInfo
+                .filter { it.offset + it.size > lazyListState.layoutInfo.viewportEndOffset }
+                .map { it.index }
+        }
     }
 
     LazyColumn(
@@ -144,6 +151,10 @@ fun ExploreCategoryListGrid(
             groupIndex.toString()
         }) { groupIndex, row ->
 
+            val selectedCategory = remember(row) {
+                row.find { it.isSelected }
+            }
+
             val isTopSideNotVisible by remember(groupIndex, lazyListState) {
                 derivedStateOf {
                     groupIndex in lazyListState.layoutInfo.visibleItemsInfo
@@ -152,16 +163,20 @@ fun ExploreCategoryListGrid(
                 }
             }
 
-            val isBottomSideNotVisible by remember(groupIndex, lazyListState) {
+            val isBottomSideNotVisible by remember(
+                selectedCategory,
+                groupIndex,
+                bottomSideListNotVisible
+            ) {
                 derivedStateOf {
-                    groupIndex in lazyListState.layoutInfo.visibleItemsInfo
-                        .filter { it.offset + it.size > lazyListState.layoutInfo.viewportEndOffset }
-                        .map { it.index }
+                    if (selectedCategory != null) {
+                        groupIndex in lazyListState.layoutInfo.visibleItemsInfo
+                            .filter { it.offset + it.size > lazyListState.layoutInfo.viewportEndOffset }
+                            .map { it.index }
+                    } else {
+                        false
+                    }
                 }
-            }
-
-            val selectedCategory = remember(row) {
-                row.find { it.isSelected }
             }
 
             val nestCardHeight by remember(
@@ -178,27 +193,40 @@ fun ExploreCategoryListGrid(
                         nestCardDimensions.second - lazyListState.layoutInfo.viewportStartOffset
                     )
 
-                    val visibleHeight = maxOf(0f, visibleBottom - visibleTop)
-
-                    visibleHeight
+                    maxOf(0f, visibleBottom - visibleTop)
                 }
             }
 
             val isNestCardNotMinimumVisible by remember(
-                nestCardHeight,
+                selectedCategory,
+                nestCardDimensions,
                 subCategoryItemDimensions
             ) {
                 derivedStateOf {
-                    val subCategoriesHeight =
-                        (((subCategoryItemDimensions.second - subCategoryItemDimensions.first)) * MINIMUM_3_SUB_CAT)
+                    if (selectedCategory != null) {
+                        val visibleTop = maxOf(
+                            0f,
+                            nestCardDimensions.first - lazyListState.layoutInfo.viewportStartOffset
+                        )
+                        val visibleBottom = minOf(
+                            screenHeight,
+                            nestCardDimensions.second - lazyListState.layoutInfo.viewportStartOffset
+                        )
 
-                    val nestCardHeightActual = nestCardHeight - verticalMargin
+                        val nestCardHeight = maxOf(0f, visibleBottom - visibleTop)
 
-                    nestCardHeight > 0f && (nestCardHeightActual < subCategoriesHeight)
+                        val subCategoriesHeight =
+                            (((subCategoryItemDimensions.second - subCategoryItemDimensions.first)) * MINIMUM_3_SUB_CAT) - verticalMargin
+
+                        (nestCardHeight < subCategoriesHeight)
+                    } else {
+                        false
+                    }
                 }
             }
 
             val categoryItemHeight by remember(
+                selectedCategory,
                 lazyListState,
                 groupIndex
             ) {
@@ -208,7 +236,7 @@ fun ExploreCategoryListGrid(
                     val lazyItemInfo =
                         lazyListState.layoutInfo.visibleItemsInfo.find { it.index == groupIndex }
 
-                    if (lazyItemInfo != null) {
+                    if (selectedCategory != null && lazyItemInfo != null) {
                         val itemTop = lazyItemInfo.offset
                         val itemBottom = itemTop + lazyItemInfo.size
                         val viewportBottom = layoutInfo.viewportEndOffset
@@ -237,22 +265,25 @@ fun ExploreCategoryListGrid(
                         }
 
                         isBottomSideNotVisible -> {
+                            delay(DELAY_SCROLL_ANIMATION)
+
                             val subCategoriesHeight =
                                 ((subCategoryItemDimensions.second - subCategoryItemDimensions.first) * MINIMUM_3_SUB_CAT)
 
-                            val remainSubItemsHeight =
-                                (categoryItemHeight + subCategoriesHeight) - verticalMargin
+                            if (nestCardHeight < subCategoriesHeight) {
+                                val remainSubItemsHeight =
+                                    (categoryItemHeight + subCategoriesHeight) - verticalMargin
 
-                            delay(DELAY_SCROLL_ANIMATION)
-                            lazyListState.animateScrollBy(remainSubItemsHeight)
+                                lazyListState.animateScrollBy(remainSubItemsHeight)
+                            }
                         }
 
                         else -> {
-                            delay(DELAY_STATE_CHANGE_ANIMATION)
+                            delay(DELAY_SCROLL_ANIMATION)
 
                             if (isNestCardNotMinimumVisible) {
                                 val subCategoriesHeight =
-                                    ((subCategoryItemDimensions.second - subCategoryItemDimensions.first) * MINIMUM_3_SUB_CAT)
+                                    ((subCategoryItemDimensions.second - subCategoryItemDimensions.first) * MINIMUM_3_SUB_CAT) - verticalMargin
 
                                 val remainSubItemsHeight =
                                     if (nestCardHeight < subCategoriesHeight) {
@@ -261,7 +292,6 @@ fun ExploreCategoryListGrid(
                                         nestCardHeight
                                     }
 
-                                delay(DELAY_SCROLL_ANIMATION)
                                 lazyListState.animateScrollBy(remainSubItemsHeight)
                             }
                         }
