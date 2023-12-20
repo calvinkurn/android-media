@@ -4,11 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.shareexperience.databinding.ShareexperienceChipItemBinding
-import com.tokopedia.shareexperience.domain.model.property.ShareExChipModel
 import com.tokopedia.shareexperience.ui.adapter.diffutil.ShareExChipsItemCallback
 import com.tokopedia.shareexperience.ui.adapter.viewholder.chip.ShareExChipViewHolder
+import com.tokopedia.shareexperience.ui.listener.ShareExChipsListener
+import com.tokopedia.shareexperience.ui.model.chip.ShareExChipUiModel
 
-class ShareExChipsAdapter: ListAdapter<ShareExChipModel, ShareExChipViewHolder>(
+class ShareExChipsAdapter(
+    private val listener: ShareExChipsListener
+) : ListAdapter<ShareExChipUiModel, ShareExChipViewHolder>(
     ShareExChipsItemCallback()
 ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShareExChipViewHolder {
@@ -17,7 +20,7 @@ class ShareExChipsAdapter: ListAdapter<ShareExChipModel, ShareExChipViewHolder>(
             parent,
             false
         )
-        return ShareExChipViewHolder(binding.root)
+        return ShareExChipViewHolder(binding.root, listener)
     }
 
     override fun getItemCount(): Int = currentList.size
@@ -26,7 +29,7 @@ class ShareExChipsAdapter: ListAdapter<ShareExChipModel, ShareExChipViewHolder>(
         holder.bind(currentList[position])
     }
 
-    fun updateData(newList: List<ShareExChipModel>) {
+    fun updateData(newList: List<ShareExChipUiModel>) {
         this.submitList(newList)
     }
 }

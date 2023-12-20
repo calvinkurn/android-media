@@ -5,12 +5,12 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.databinding.ShareexperienceSocialChannelsItemBinding
-import com.tokopedia.shareexperience.ui.model.ShareExSocialChannelUiModel
+import com.tokopedia.shareexperience.ui.model.channel.ShareExSocialChannelUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShareExSocialChannelsViewHolder(
     itemView: View
-): AbstractViewHolder<ShareExSocialChannelUiModel>(itemView) {
+) : AbstractViewHolder<ShareExSocialChannelUiModel>(itemView) {
 
     private val binding: ShareexperienceSocialChannelsItemBinding? by viewBinding()
 

@@ -1,5 +1,5 @@
 package com.tokopedia.shareexperience.ui.adapter.diffutil
 
-import com.tokopedia.shareexperience.domain.model.property.ShareExChipModel
+import com.tokopedia.shareexperience.ui.model.chip.ShareExChipUiModel
 
-class ShareExChipsItemCallback: ShareExBaseItemCallback<ShareExChipModel>()
+class ShareExChipsItemCallback : ShareExBaseItemCallback<ShareExChipUiModel>()

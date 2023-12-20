@@ -11,12 +11,14 @@ import com.tokopedia.shareexperience.ui.ShareExBottomSheetAction
 import com.tokopedia.shareexperience.ui.ShareExBottomSheetUiState
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.model.ShareExAffiliateRegistrationUiModel
-import com.tokopedia.shareexperience.ui.model.ShareExCommonChannelUiModel
-import com.tokopedia.shareexperience.ui.model.image.ShareExImageCarouselUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExLinkShareUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExSeparatorUiModel
-import com.tokopedia.shareexperience.ui.model.ShareExSocialChannelUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExSubtitleUiModel
+import com.tokopedia.shareexperience.ui.model.channel.ShareExCommonChannelUiModel
+import com.tokopedia.shareexperience.ui.model.channel.ShareExSocialChannelUiModel
+import com.tokopedia.shareexperience.ui.model.chip.ShareExChipUiModel
+import com.tokopedia.shareexperience.ui.model.chip.ShareExChipsUiModel
+import com.tokopedia.shareexperience.ui.model.image.ShareExImageCarouselUiModel
 import com.tokopedia.shareexperience.ui.model.image.ShareExImageUiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -30,7 +32,7 @@ import javax.inject.Inject
 
 class ShareExViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
-): BaseViewModel(dispatchers.main) {
+) : BaseViewModel(dispatchers.main) {
 
     private val _actionFlow =
         MutableSharedFlow<ShareExBottomSheetAction>(extraBufferCapacity = 16)
@@ -62,10 +64,17 @@ class ShareExViewModel @Inject constructor(
         val dummyList = arrayListOf<Visitable<in ShareExTypeFactory>>()
         dummyList.add(ShareExSubtitleUiModel("Mau kasih liat foto yang mana?"))
 
-//        val chip = ShareExChipsUiModel(
-//            listOf(ShareExChipModel("Chip 1"), ShareExChipModel("Chip 2"), ShareExChipModel("Chip 3"))
-//        )
-//        dummyList.add(chip)
+        val chip = ShareExChipsUiModel(
+            listOf(
+                ShareExChipUiModel("Chip 1", true),
+                ShareExChipUiModel("Chip Chip 2", false),
+                ShareExChipUiModel("Chip 3", false),
+                ShareExChipUiModel("Chip Chip 4", false),
+                ShareExChipUiModel("Chip 5", false),
+                ShareExChipUiModel("Chip Chip Chip 6", false)
+            )
+        )
+        dummyList.add(chip)
 
         val image = ShareExImageCarouselUiModel(
             listOf(
@@ -119,7 +128,7 @@ class ShareExViewModel @Inject constructor(
                     ShareExChannelItemModel("WhatsApp", IconUnify.WHATSAPP),
                     ShareExChannelItemModel("FB Feed", IconUnify.FACEBOOK),
                     ShareExChannelItemModel("FB Story", IconUnify.FACEBOOK_STORY),
-                    ShareExChannelItemModel("IG Feed", IconUnify.INSTAGRAM),
+                    ShareExChannelItemModel("IG Feed", IconUnify.INSTAGRAM)
                 )
             )
         )
@@ -132,7 +141,7 @@ class ShareExViewModel @Inject constructor(
                     ShareExChannelItemModel("Salin Link", IconUnify.LINK),
                     ShareExChannelItemModel("SMS", IconUnify.CHAT),
                     ShareExChannelItemModel("E-mail", IconUnify.MESSAGE),
-                    ShareExChannelItemModel("Lainnya", IconUnify.MENU_KEBAB_HORIZONTAL),
+                    ShareExChannelItemModel("Lainnya", IconUnify.MENU_KEBAB_HORIZONTAL)
                 )
             )
         )
