@@ -40,6 +40,7 @@ class ProductNotifyMeViewHolder(
             showContainer()
             // render upcoming campaign ribbon
             val trackDataModel = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
+            campaignRibbon.setComponentTrackDataModel(trackDataModel)
             campaignRibbon.renderUpComingCampaignRibbon(listener.isOwner().orFalse(), element, element.upcomingNplData.upcomingType)
             view.addOnImpressionListener(
                 holder = element.impressHolder,
