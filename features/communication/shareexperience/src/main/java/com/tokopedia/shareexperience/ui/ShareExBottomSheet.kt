@@ -39,10 +39,14 @@ class ShareExBottomSheet: BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setupBottomSheet(inflater)
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun setupBottomSheet(inflater: LayoutInflater) {
         viewBinding = ShareexperienceBottomSheetBinding.inflate(inflater)
         setChild(viewBinding?.root)
         isFullpage = true
-        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,9 +64,14 @@ class ShareExBottomSheet: BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setTitle()
         initializeRecyclerView()
         initObservers()
         viewModel.processAction(ShareExBottomSheetAction.InitializePage)
+    }
+
+    private fun setTitle() {
+        bottomSheetTitle.text = "Bagikan ke teman kamu" //TODO: change to data from BE
     }
 
     private fun initializeRecyclerView() {

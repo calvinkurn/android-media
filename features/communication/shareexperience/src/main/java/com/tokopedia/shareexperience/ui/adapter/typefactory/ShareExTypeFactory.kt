@@ -5,7 +5,7 @@ import com.tokopedia.shareexperience.ui.model.ShareExAffiliateRegistrationUiMode
 import com.tokopedia.shareexperience.ui.model.ShareExChipsUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExCommonChannelUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExErrorUiModel
-import com.tokopedia.shareexperience.ui.model.ShareExImageCarouselUiModel
+import com.tokopedia.shareexperience.ui.model.image.ShareExImageCarouselUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExLinkShareUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExSeparatorUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExSocialChannelUiModel

@@ -7,8 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.shareexperience.ui.adapter.ShareExHorizontalSpacingItemDecoration
 import com.tokopedia.shareexperience.ui.adapter.ShareExImageCarouselAdapter
+import com.tokopedia.shareexperience.ui.listener.ShareExCarouselImageListener
+import com.tokopedia.shareexperience.ui.model.image.ShareExImageUiModel
 
-class ShareExCarouselImageRecyclerView: RecyclerView {
+class ShareExCarouselImageRecyclerView: RecyclerView, ShareExCarouselImageListener {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -19,20 +21,27 @@ class ShareExCarouselImageRecyclerView: RecyclerView {
 
     private val linearLayoutManager = LinearLayoutManager(context, HORIZONTAL, false)
     private val horizontalSpacingItemDecoration = ShareExHorizontalSpacingItemDecoration(
-        8.dpToPx(context.resources.displayMetrics)
+        4.dpToPx(context.resources.displayMetrics)
     )
-    private val imageChipsAdapter = ShareExImageCarouselAdapter()
+    private val imageAdapter = ShareExImageCarouselAdapter(this)
 
     init {
         setHasFixedSize(true)
         layoutManager = linearLayoutManager
-        adapter = imageChipsAdapter
+        adapter = imageAdapter
         isNestedScrollingEnabled = false
         itemAnimator = null
         addItemDecoration(horizontalSpacingItemDecoration)
     }
 
-    fun updateData(newList: List<String>) {
-        imageChipsAdapter.updateData(newList)
+    fun updateData(newList: List<ShareExImageUiModel>) {
+        imageAdapter.updateData(newList)
+    }
+
+    override fun onClickImage(position: Int) {
+        val newList = imageAdapter.currentList.mapIndexed { index, item ->
+            item.copy(isSelected = index == position)
+        }
+        updateData(newList)
     }
 }

@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.databinding.ShareexperienceImageCarouselItemBinding
-import com.tokopedia.shareexperience.ui.model.ShareExImageCarouselUiModel
+import com.tokopedia.shareexperience.ui.model.image.ShareExImageCarouselUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShareExImageCarouselViewHolder(

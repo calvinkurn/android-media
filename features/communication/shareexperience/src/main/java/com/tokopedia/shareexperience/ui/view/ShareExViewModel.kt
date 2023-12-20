@@ -7,18 +7,17 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelModel
-import com.tokopedia.shareexperience.domain.model.property.ShareExChipModel
 import com.tokopedia.shareexperience.ui.ShareExBottomSheetAction
 import com.tokopedia.shareexperience.ui.ShareExBottomSheetUiState
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.model.ShareExAffiliateRegistrationUiModel
-import com.tokopedia.shareexperience.ui.model.ShareExChipsUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExCommonChannelUiModel
-import com.tokopedia.shareexperience.ui.model.ShareExImageCarouselUiModel
+import com.tokopedia.shareexperience.ui.model.image.ShareExImageCarouselUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExLinkShareUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExSeparatorUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExSocialChannelUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExSubtitleUiModel
+import com.tokopedia.shareexperience.ui.model.image.ShareExImageUiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -61,15 +60,36 @@ class ShareExViewModel @Inject constructor(
 
     private fun setDummyData() {
         val dummyList = arrayListOf<Visitable<in ShareExTypeFactory>>()
-        dummyList.add(ShareExSubtitleUiModel("Mau kasih liat foto yang mana"))
+        dummyList.add(ShareExSubtitleUiModel("Mau kasih liat foto yang mana?"))
 
-        val chip = ShareExChipsUiModel(
-            listOf(ShareExChipModel("Chip 1"), ShareExChipModel("Chip 2"), ShareExChipModel("Chip 3"))
-        )
-        dummyList.add(chip)
+//        val chip = ShareExChipsUiModel(
+//            listOf(ShareExChipModel("Chip 1"), ShareExChipModel("Chip 2"), ShareExChipModel("Chip 3"))
+//        )
+//        dummyList.add(chip)
 
         val image = ShareExImageCarouselUiModel(
-            listOf("https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png", "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png", "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png")
+            listOf(
+                ShareExImageUiModel(
+                    "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png",
+                    true
+                ),
+                ShareExImageUiModel(
+                    "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/10/18/999822bb-f444-4602-9203-1643d3f2393a.jpg",
+                    false
+                ),
+                ShareExImageUiModel(
+                    "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/7/13/a0a46e5a-c3de-4c73-b25f-35d8a52dafc3.jpg",
+                    false
+                ),
+                ShareExImageUiModel(
+                    "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/5/31/82f8d445-615a-49d0-a567-bc9ab6f75195.png",
+                    false
+                ),
+                ShareExImageUiModel(
+                    "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/7/6/69b75de5-b8b1-4d3f-9b10-3a1db5e1913a.jpg",
+                    false
+                )
+            )
         )
         dummyList.add(image)
 

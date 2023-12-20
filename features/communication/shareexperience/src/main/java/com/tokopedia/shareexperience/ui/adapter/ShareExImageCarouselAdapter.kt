@@ -6,8 +6,12 @@ import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.shareexperience.databinding.ShareexperienceImageItemBinding
 import com.tokopedia.shareexperience.ui.adapter.diffutil.ShareExImageCarouselItemCallback
 import com.tokopedia.shareexperience.ui.adapter.viewholder.image.ShareExImageViewHolder
+import com.tokopedia.shareexperience.ui.listener.ShareExCarouselImageListener
+import com.tokopedia.shareexperience.ui.model.image.ShareExImageUiModel
 
-class ShareExImageCarouselAdapter: ListAdapter<String, ShareExImageViewHolder>(
+class ShareExImageCarouselAdapter(
+    private val listener: ShareExCarouselImageListener
+): ListAdapter<ShareExImageUiModel, ShareExImageViewHolder>(
     ShareExImageCarouselItemCallback()
 ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShareExImageViewHolder {
@@ -16,7 +20,7 @@ class ShareExImageCarouselAdapter: ListAdapter<String, ShareExImageViewHolder>(
             parent,
             false
         )
-        return ShareExImageViewHolder(binding.root)
+        return ShareExImageViewHolder(binding.root, listener)
     }
 
     override fun getItemCount(): Int = currentList.size
@@ -25,7 +29,7 @@ class ShareExImageCarouselAdapter: ListAdapter<String, ShareExImageViewHolder>(
         holder.bind(currentList[position])
     }
 
-    fun updateData(newList: List<String>) {
+    fun updateData(newList: List<ShareExImageUiModel>) {
         this.submitList(newList)
     }
 }

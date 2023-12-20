@@ -1,3 +1,5 @@
 package com.tokopedia.shareexperience.ui.adapter.diffutil
 
-class ShareExImageCarouselItemCallback: ShareExBaseItemCallback<String>()
+import com.tokopedia.shareexperience.ui.model.image.ShareExImageUiModel
+
+class ShareExImageCarouselItemCallback: ShareExBaseItemCallback<ShareExImageUiModel>()
