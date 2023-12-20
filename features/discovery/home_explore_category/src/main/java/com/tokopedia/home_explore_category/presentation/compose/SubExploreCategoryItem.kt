@@ -34,8 +34,8 @@ fun SubExploreCategoryItem(
         NestImage(
             imageUrl = subExploreCategoryUiModel.imageUrl,
             modifier = Modifier
-                .clip(RoundedCornerShape(12.dp))
                 .size(42.dp)
+                .clip(RoundedCornerShape(8.dp))
         )
         NestTypography(
             text = subExploreCategoryUiModel.name,

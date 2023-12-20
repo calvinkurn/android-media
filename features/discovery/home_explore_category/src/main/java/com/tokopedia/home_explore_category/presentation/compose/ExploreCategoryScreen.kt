@@ -56,7 +56,6 @@ import java.net.UnknownHostException
 
 const val GRID_COLUMN = 3
 const val MINIMUM_3_SUB_CAT = 3
-const val HEIGHT_SUB_CAT = 62.18182
 const val DELAY_SCROLL_ANIMATION = 300L
 const val DELAY_STATE_CHANGE_ANIMATION = 150L
 
@@ -129,7 +128,7 @@ fun ExploreCategoryListGrid(
     }
 
     val verticalMargin = with(localDensity) {
-        16.dp.toPx()
+        8.dp.toPx()
     }
 
     LazyColumn(
@@ -144,10 +143,6 @@ fun ExploreCategoryListGrid(
         itemsIndexed(categories, key = { groupIndex, row ->
             groupIndex.toString()
         }) { groupIndex, row ->
-
-            var categoryName by remember {
-                mutableStateOf("")
-            }
 
             val isTopSideNotVisible by remember(groupIndex, lazyListState) {
                 derivedStateOf {
@@ -194,9 +189,12 @@ fun ExploreCategoryListGrid(
                 subCategoryItemDimensions
             ) {
                 derivedStateOf {
-                    val subCategoriesHeight = ((subCategoryItemDimensions.second - subCategoryItemDimensions.first) * MINIMUM_3_SUB_CAT) - verticalMargin
+                    val subCategoriesHeight =
+                        (((subCategoryItemDimensions.second - subCategoryItemDimensions.first)) * MINIMUM_3_SUB_CAT)
 
-                    if (nestCardHeight == 0f) false else nestCardHeight < subCategoriesHeight
+                    val nestCardHeightActual = nestCardHeight - verticalMargin
+
+                    nestCardHeight > 0f && (nestCardHeightActual < subCategoriesHeight)
                 }
             }
 
@@ -226,118 +224,112 @@ fun ExploreCategoryListGrid(
                 getGroupIndexToScrollTo(categories, selectedCategory?.id.orEmpty())
             }
 
-            CategoryRowItem(
-                row,
-                uiEvent,
-                categoryName = { categoryName = it }
-            )
+            CategoryRowItem(row, uiEvent)
 
-            selectedCategory.let {
-                val isSubCategoryVisible = it != null
+            val isSubCategoryVisible = selectedCategory != null
 
-                LaunchedEffect(isSubCategoryVisible) {
-                    if (isSubCategoryVisible) {
-                        when {
-                            isTopSideNotVisible && categoryIndex != -1 -> {
-                                delay(DELAY_SCROLL_ANIMATION)
-                                lazyListState.animateScrollToItem(categoryIndex)
-                            }
+            LaunchedEffect(isSubCategoryVisible) {
+                if (isSubCategoryVisible) {
+                    when {
+                        isTopSideNotVisible && categoryIndex != -1 -> {
+                            delay(DELAY_SCROLL_ANIMATION)
+                            lazyListState.animateScrollToItem(categoryIndex)
+                        }
 
-                            isBottomSideNotVisible -> {
+                        isBottomSideNotVisible -> {
+                            val subCategoriesHeight =
+                                ((subCategoryItemDimensions.second - subCategoryItemDimensions.first) * MINIMUM_3_SUB_CAT)
+
+                            val remainSubItemsHeight =
+                                (categoryItemHeight + subCategoriesHeight) - verticalMargin
+
+                            delay(DELAY_SCROLL_ANIMATION)
+                            lazyListState.animateScrollBy(remainSubItemsHeight)
+                        }
+
+                        else -> {
+                            delay(DELAY_STATE_CHANGE_ANIMATION)
+
+                            if (isNestCardNotMinimumVisible) {
                                 val subCategoriesHeight =
                                     ((subCategoryItemDimensions.second - subCategoryItemDimensions.first) * MINIMUM_3_SUB_CAT)
 
                                 val remainSubItemsHeight =
-                                    (categoryItemHeight + subCategoriesHeight) - verticalMargin
+                                    if (nestCardHeight < subCategoriesHeight) {
+                                        Math.abs(subCategoriesHeight - nestCardHeight)
+                                    } else {
+                                        nestCardHeight
+                                    }
 
                                 delay(DELAY_SCROLL_ANIMATION)
                                 lazyListState.animateScrollBy(remainSubItemsHeight)
                             }
-
-                            else -> {
-                                delay(DELAY_STATE_CHANGE_ANIMATION)
-
-                                if (isNestCardNotMinimumVisible) {
-                                    val subCategoriesHeight =
-                                        ((subCategoryItemDimensions.second - subCategoryItemDimensions.first) * MINIMUM_3_SUB_CAT)
-
-                                    val remainSubItemsHeight =
-                                        if (nestCardHeight < subCategoriesHeight) {
-                                            Math.abs(subCategoriesHeight - nestCardHeight)
-                                        } else {
-                                            nestCardHeight
-                                        }
-
-                                    delay(DELAY_SCROLL_ANIMATION)
-                                    lazyListState.animateScrollBy(remainSubItemsHeight)
-                                }
-                            }
                         }
                     }
                 }
+            }
 
-                AnimatedVisibility(
-                    visible = isSubCategoryVisible,
-                    enter = enterExpandVertical,
-                    exit = exitShrinkVertical
+            AnimatedVisibility(
+                visible = isSubCategoryVisible,
+                enter = enterExpandVertical,
+                exit = exitShrinkVertical
+            ) {
+                NestCard(
+                    modifier = Modifier
+                        .createNestCardModifier { nestCardDimens ->
+                            nestCardDimensions = nestCardDimens
+                        },
+                    type = NestCardType.NoBorder
                 ) {
-                    NestCard(
-                        modifier = Modifier
-                            .createNestCardModifier { nestCardDimens ->
-                                nestCardDimensions = nestCardDimens
-                            },
-                        type = NestCardType.NoBorder
-                    ) {
-                        Column {
-                            it?.subExploreCategoryList?.forEachIndexed { index, subcategory ->
-                                val subCategoryKey = subcategory.name + index.toString()
+                    Column {
+                        selectedCategory?.subExploreCategoryList?.forEachIndexed { index, subcategory ->
+                            val subCategoryKey = subcategory.name + index.toString()
 
-                                key(subCategoryKey) {
-                                    SubExploreCategoryItem(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clickable {
-                                                uiEvent(
-                                                    ExploreCategoryUiEvent.OnSubExploreCategoryItemClicked(
-                                                        subExploreCategoryUiModel = subcategory,
-                                                        position = index,
-                                                        categoryName = categoryName
-                                                    )
+                            key(subCategoryKey) {
+                                SubExploreCategoryItem(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            uiEvent(
+                                                ExploreCategoryUiEvent.OnSubExploreCategoryItemClicked(
+                                                    subExploreCategoryUiModel = subcategory,
+                                                    position = index,
+                                                    categoryName = selectedCategory.categoryTitle
                                                 )
-                                            }
-                                            .onGloballyPositioned { layoutCoordinates ->
-                                                val viewTop =
-                                                    layoutCoordinates.localToRoot(Offset.Zero).y
-
-                                                val viewBottom =
-                                                    viewTop + layoutCoordinates.size.height.toFloat()
-
-                                                subCategoryItemDimensions = Pair(
-                                                    viewTop,
-                                                    viewBottom
-                                                )
-                                            }
-                                            .padding(
-                                                top = 12.dp,
-                                                start = 16.dp,
-                                                end = 16.dp,
-                                                bottom = if (index == it.subExploreCategoryList.size.orZero() - 1) 8.dp else 0.dp
                                             )
-                                            .impression(
-                                                key = subCategoryKey,
-                                                onImpression = {
-                                                    uiEvent.invoke(
-                                                        ExploreCategoryUiEvent.OnSubExploreCategoryItemImpressed(
-                                                            categoryName,
-                                                            subcategory,
-                                                            index
-                                                        )
+                                        }
+                                        .onGloballyPositioned { layoutCoordinates ->
+                                            val viewTop =
+                                                layoutCoordinates.localToRoot(Offset.Zero).y
+
+                                            val viewBottom =
+                                                viewTop + layoutCoordinates.size.height.toFloat()
+
+                                            subCategoryItemDimensions = Pair(
+                                                viewTop,
+                                                viewBottom
+                                            )
+                                        }
+                                        .padding(
+                                            top = 12.dp,
+                                            start = 16.dp,
+                                            end = 16.dp,
+                                            bottom = if (index == selectedCategory.subExploreCategoryList.size.orZero() - 1) 8.dp else 0.dp
+                                        )
+                                        .impression(
+                                            key = subCategoryKey,
+                                            onImpression = {
+                                                uiEvent.invoke(
+                                                    ExploreCategoryUiEvent.OnSubExploreCategoryItemImpressed(
+                                                        selectedCategory.categoryTitle,
+                                                        subcategory,
+                                                        index
                                                     )
-                                                }
-                                            ),
-                                        subExploreCategoryUiModel = subcategory
-                                    )
-                                }
+                                                )
+                                            }
+                                        ),
+                                    subExploreCategoryUiModel = subcategory
+                                )
                             }
                         }
                     }
@@ -351,6 +343,7 @@ fun Modifier.createNestCardModifier(
     nestCardDimensions: (Pair<Float, Float>) -> Unit
 ) = this
     .fillMaxWidth()
+    .padding(top = 8.dp)
     .animateContentSize(
         animationSpec = categoryToggleTween(DURATION_CATEGORY_EASING)
     )
@@ -370,16 +363,14 @@ fun updateNestCardDimensions(
 @Composable
 fun CategoryRowItem(
     row: List<ExploreCategoryUiModel>,
-    uiEvent: (ExploreCategoryUiEvent) -> Unit,
-    categoryName: (String) -> Unit
+    uiEvent: (ExploreCategoryUiEvent) -> Unit
 ) {
     Row(
-        modifier = Modifier.padding(vertical = 8.dp),
+        modifier = Modifier.padding(top = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         row.forEach { category ->
-            categoryName.invoke(category.categoryTitle)
 
             val categoryKey = "${category.categoryTitle}_${category.categoryImageUrl}"
             key(categoryKey) {

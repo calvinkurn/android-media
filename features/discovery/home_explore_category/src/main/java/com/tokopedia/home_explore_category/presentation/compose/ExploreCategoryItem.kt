@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryUiModel
 import com.tokopedia.nest.components.NestImage
@@ -25,12 +26,14 @@ fun ExploreCategoryItem(
 ) {
     val nonSelectedColor = NestTheme.typography.display3.copy(
         fontWeight = FontWeight.Normal,
-        color = NestTheme.colors.NN._950
+        color = NestTheme.colors.NN._950,
+        textAlign = TextAlign.Center
     )
 
     val selectedColor = NestTheme.typography.display3.copy(
         fontWeight = FontWeight.Bold,
-        color = NestTheme.colors.GN._500
+        color = NestTheme.colors.GN._500,
+        textAlign = TextAlign.Center
     )
 
     val (nestCardType, titleTextStyle) = remember(exploreCategoryUiModel.isSelected) {
@@ -43,8 +46,8 @@ fun ExploreCategoryItem(
 
     NestCard(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(147.dp),
+            .height(147.dp)
+            .fillMaxWidth(),
         enableBounceAnimation = true,
         type = nestCardType,
         onClick = onClick
@@ -67,8 +70,8 @@ fun ExploreCategoryItem(
             NestImage(
                 imageUrl = exploreCategoryUiModel.categoryImageUrl,
                 modifier = Modifier
-                    .fillMaxWidth()
                     .height(84.dp)
+                    .fillMaxWidth()
             )
         }
     }

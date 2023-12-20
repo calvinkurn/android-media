@@ -78,6 +78,7 @@ class ExploreCategoryActivity : BaseActivity(), HasComponent<ExploreCategoryComp
                             modifier = Modifier.height(48.dp),
                             title = stringResource(id = home_explore_categoryR.string.title_home_browse_all_category),
                             navigationClick = {
+                                exploreCategoryAnalytics.sendBackButtonClicked()
                                 finish()
                             },
                             backgroundColor = backgroundColor
@@ -116,11 +117,6 @@ class ExploreCategoryActivity : BaseActivity(), HasComponent<ExploreCategoryComp
             .builder()
             .baseAppComponent((application as? BaseMainApplication)?.baseAppComponent)
             .build()
-    }
-
-    override fun onBackPressed() {
-        exploreCategoryAnalytics.sendBackButtonClicked()
-        super.onBackPressed()
     }
 
     private fun initInjector() {
