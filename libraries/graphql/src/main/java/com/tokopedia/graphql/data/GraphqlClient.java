@@ -149,10 +149,7 @@ public class GraphqlClient {
 
         tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
 
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            tkpdOkHttpBuilder.addInterceptor(new BannerEnvironmentInterceptor(context));
-        }
-
+        addBannerEnvironmentInterceptor(tkpdOkHttpBuilder, context);
 
         sRetrofit = CommonNetwork.createRetrofit(
                 GraphqlUrl.BASE_URL,
@@ -177,7 +174,7 @@ public class GraphqlClient {
         }
         tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
 
-        addEnvironmentInterceptor(tkpdOkHttpBuilder, context);
+        addBannerEnvironmentInterceptor(tkpdOkHttpBuilder, context);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
@@ -190,7 +187,7 @@ public class GraphqlClient {
         return tkpdOkHttpBuilder;
     }
 
-    public static void addEnvironmentInterceptor(TkpdOkHttpBuilder tkpdOkHttpBuilder, @NonNull Context context) {
+    public static void addBannerEnvironmentInterceptor(TkpdOkHttpBuilder tkpdOkHttpBuilder, @NonNull Context context) {
         tkpdOkHttpBuilder.addInterceptor(new BannerEnvironmentInterceptor(context));
     }
 
