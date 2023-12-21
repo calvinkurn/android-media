@@ -12,6 +12,7 @@ import com.tokopedia.digital.home.presentation.adapter.RechargeItemCategoryAdapt
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
@@ -53,6 +54,10 @@ class RechargeHomepageCategoryViewHolder(
 
                 root.addOnImpressionListener(section) {
                     listener.onRechargeSectionItemImpression(section)
+                }
+
+                rvRechargeHomeCategory.addOneTimeGlobalLayoutListener {
+                    listener.onEndPerformanceMonitoring(section)
                 }
             } else {
                 viewRechargeHomeCategoryShimmering.show()

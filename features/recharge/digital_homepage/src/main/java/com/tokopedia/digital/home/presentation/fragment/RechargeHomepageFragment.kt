@@ -45,10 +45,12 @@ import com.tokopedia.digital.home.presentation.listener.RechargeHomepageDynamicL
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminderWidgetCallback
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageTodoWidgetListener
+import com.tokopedia.digital.home.presentation.monitoring.callback.RechargeHomepagePerformanceCallback
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel
 import com.tokopedia.digital.home.widget.RechargeSearchBarWidget
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -77,6 +79,9 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var rechargeHomepageAnalytics: RechargeHomepageAnalytics
+
+    @Inject
+    lateinit var performanceMonitoring: RechargeHomepagePerformanceCallback
 
     lateinit var adapter: RechargeHomepageAdapter
     private lateinit var localCacheHandler: LocalCacheHandler
@@ -133,6 +138,11 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         context?.let {
             searchBarTransitionRange = TOOLBAR_TRANSITION_RANGE_DP.dpToPx(it.resources.displayMetrics)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        stopPrepareMonitoring()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -327,6 +337,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     override fun loadData() {
         adapter.showLoading()
         binding.digitalHomepageToolbar.hide()
+        startNetworkMonitoring()
         viewModel.getRechargeHomepageSectionSkeleton(
             viewModel.createRechargeHomepageSectionSkeletonParams(platformId, enablePersonalize)
         )
@@ -635,6 +646,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     }
 
     private fun renderSearchBarView(rechargeHomepageSectionSkeleton: RechargeHomepageSectionSkeleton) {
+        startRenderMonitoring()
         binding.digitalHomepageToolbar.show()
         binding.digitalHomepageSearchView.setSearchHint(rechargeHomepageSectionSkeleton.searchBarPlaceholder)
         binding.digitalHomepageOrderList.setOnClickListener {
@@ -668,6 +680,37 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
             displayMetrics.widthPixels
         }
+    }
+
+    private fun stopPrepareMonitoring() {
+        performanceMonitoring.stopPreparePagePerformanceMonitoring()
+    }
+
+    private fun startNetworkMonitoring() {
+        stopPrepareMonitoring()
+        performanceMonitoring.startNetworkRequestPerformanceMonitoring()
+    }
+
+    private fun stopNetworkMonitoring() {
+        performanceMonitoring.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    private fun stopPageMonitoring() {
+        performanceMonitoring.stopMonitoring()
+    }
+
+    override fun onEndPerformanceMonitoring(element: RechargeHomepageSections.Section) {
+        stopRenderMonitoring()
+    }
+
+    private fun startRenderMonitoring() {
+        stopNetworkMonitoring()
+        performanceMonitoring.startRenderPerformanceMonitoring()
+    }
+
+    private fun stopRenderMonitoring() {
+        performanceMonitoring.stopRenderPerformanceMonitoring()
+        stopPageMonitoring()
     }
 
     companion object {
