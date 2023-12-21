@@ -17,8 +17,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -297,7 +295,7 @@ fun UohBuyAgainCard(
                 imageSource = ImageSource.Remote(recommItem.imageUrl),
                 modifier = Modifier.padding(start = 8.dp, top = 8.dp, bottom = 8.dp)
             )
-            Column {
+            Column(modifier = if (isSingleCard) Modifier.weight(1f) else modifier) {
                 NestTypography(
                     text = recommItem.name,
                     modifier = Modifier
@@ -347,10 +345,15 @@ fun UohBuyAgainCard(
                 onClick = { onBuyAgainButtonClicked.invoke(recommItem, index) },
                 variant = ButtonVariant.GHOST,
                 size = ButtonSize.MICRO,
-                modifier = Modifier
-                    .padding(start = 8.dp, end = 8.dp)
-                    .align(Alignment.CenterVertically)
-                    .weight(1f)
+                modifier = if (isSingleCard) {
+                    Modifier.padding(start = 8.dp, end = 12.dp)
+                        .align(Alignment.CenterVertically)
+                        .width(85.dp)
+                } else {
+                    Modifier.padding(start = 8.dp, end = 8.dp)
+                        .align(Alignment.CenterVertically)
+                        .weight(1f)
+                }
             )
         }
     }
