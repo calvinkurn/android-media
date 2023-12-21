@@ -5,10 +5,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.shareexperience.data.dto.request.ShareExProductRequest
+import com.tokopedia.shareexperience.data.util.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelModel
-import com.tokopedia.shareexperience.ui.ShareExBottomSheetAction
-import com.tokopedia.shareexperience.ui.ShareExBottomSheetUiState
+import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.model.ShareExAffiliateRegistrationUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExLinkShareUiModel
@@ -20,6 +21,8 @@ import com.tokopedia.shareexperience.ui.model.chip.ShareExChipUiModel
 import com.tokopedia.shareexperience.ui.model.chip.ShareExChipsUiModel
 import com.tokopedia.shareexperience.ui.model.image.ShareExImageCarouselUiModel
 import com.tokopedia.shareexperience.ui.model.image.ShareExImageUiModel
+import com.tokopedia.shareexperience.ui.util.map
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,9 +31,11 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class ShareExViewModel @Inject constructor(
+    private val getSharePropertiesUseCase: ShareExGetSharePropertiesUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -152,6 +157,30 @@ class ShareExViewModel @Inject constructor(
         viewModelScope.launch {
             _bottomSheetUiState.update {
                 it.copy(uiModelList = dummyList)
+            }
+            delay(5000)
+            getShareBottomSheetData()
+        }
+    }
+
+    private fun getShareBottomSheetData() {
+        viewModelScope.launch {
+            try {
+                getSharePropertiesUseCase.getData(
+                    ShareExProductRequest(
+                        pageType = ShareExPageTypeEnum.PDP.value,
+                        id = 2150412049
+                    )
+                ).collect {
+                    val uiResult = it.map()
+                    _bottomSheetUiState.update { uiState ->
+                        uiState.copy(
+                            uiModelList = uiResult
+                        )
+                    }
+                }
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
             }
         }
     }

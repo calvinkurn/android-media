@@ -7,7 +7,11 @@ import dagger.Component
 
 @ActivityScope
 @Component(
-    modules = [ShareExViewModelModule::class],
+    modules = [
+        ShareExViewModelModule::class,
+        ShareExUseCaseModule::class,
+        ShareExModule::class
+    ],
     dependencies = [BaseAppComponent::class]
 )
 interface ShareExComponent {
