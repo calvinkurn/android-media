@@ -1,5 +1,6 @@
 package com.tokopedia.editor.util.delegate
 
+import android.view.View
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -8,16 +9,17 @@ import com.tokopedia.foldable.FoldableSupportManager
 
 interface ScalableCanvasViewDelegate {
 
-    fun scalableCanvasRegister(activity: AppCompatActivity, canvas: RelativeLayout?)
+    fun scalableCanvasRegister(activity: AppCompatActivity, canvas: View?)
 }
 
 internal class ScalableCanvasViewDelegateImpl : ScalableCanvasViewDelegate, FoldableSupportManager.FoldableInfoCallback {
 
-    private var canvasContainer: RelativeLayout? = null
+    private var canvasContainer: View? = null
 
-    override fun scalableCanvasRegister(activity: AppCompatActivity, canvas: RelativeLayout?) {
+    override fun scalableCanvasRegister(activity: AppCompatActivity, canvas: View?) {
         canvasContainer = canvas
 
+        // register the adaptive layout with lifecycle-aware
         FoldableSupportManager(this, activity)
     }
 

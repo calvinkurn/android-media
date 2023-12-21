@@ -9,25 +9,22 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.editor.R
 import com.tokopedia.editor.databinding.ActivityMainEditorBinding
 import com.tokopedia.editor.di.ModuleInjector
 import com.tokopedia.editor.ui.EditorFragmentProvider
 import com.tokopedia.editor.ui.EditorFragmentProviderImpl
-import com.tokopedia.editor.ui.dialog.ConfirmationDialog
 import com.tokopedia.editor.ui.component.AudioStateUiComponent
 import com.tokopedia.editor.ui.component.GlobalLoaderUiComponent
 import com.tokopedia.editor.ui.component.NavigationToolUiComponent
 import com.tokopedia.editor.ui.component.PagerContainerUiComponent
+import com.tokopedia.editor.ui.dialog.ConfirmationDialog
 import com.tokopedia.editor.ui.main.uimodel.InputTextParam
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEffect
 import com.tokopedia.editor.ui.main.uimodel.MainEditorEvent
@@ -36,9 +33,9 @@ import com.tokopedia.editor.ui.model.InputTextModel
 import com.tokopedia.editor.ui.placement.PlacementImageActivity
 import com.tokopedia.editor.ui.text.InputTextActivity
 import com.tokopedia.editor.ui.widget.DynamicTextCanvasLayout
-import com.tokopedia.editor.util.safeLoadNativeLibrary
-import com.tokopedia.foldable.FoldableInfo
-import com.tokopedia.foldable.FoldableSupportManager
+import com.tokopedia.editor.util.delegate.ScalableCanvasViewDelegate
+import com.tokopedia.editor.util.delegate.ScalableCanvasViewDelegateImpl
+import com.tokopedia.editor.util.lib.SafeNativeLoader
 import com.tokopedia.picker.common.EXTRA_UNIVERSAL_EDITOR_PARAM
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.RESULT_UNIVERSAL_EDITOR
@@ -67,7 +64,7 @@ import javax.inject.Inject
 open class MainEditorActivity : AppCompatActivity(),
     NavToolbarComponent.Listener,
     DynamicTextCanvasLayout.Listener,
-    FoldableSupportManager.FoldableInfoCallback {
+    ScalableCanvasViewDelegate by ScalableCanvasViewDelegateImpl() {
 
     @Inject
     lateinit var fragmentFactory: FragmentFactory
@@ -121,7 +118,7 @@ open class MainEditorActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
-        loadNativeLibrary(this)
+        SafeNativeLoader.load(this)
         supportFragmentManager.fragmentFactory = fragmentFactory
 
         super.onCreate(savedInstanceState)
@@ -132,14 +129,6 @@ open class MainEditorActivity : AppCompatActivity(),
         initObserver()
     }
 
-    override fun onChangeLayout(foldableInfo: FoldableInfo) {
-        if (foldableInfo.isFoldableDevice() && foldableInfo.isTableTopMode()) {
-            setLargeScreenMode()
-        } else {
-            setCompactMode()
-        }
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         binding = null
@@ -147,8 +136,9 @@ open class MainEditorActivity : AppCompatActivity(),
 
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(newBase)
-        if (isSplitInstallEnabled() && newBase != null) {
-            loadNativeLibrary(newBase)
+
+        if (newBase != null) {
+            SafeNativeLoader.load(newBase)
         }
     }
 
@@ -189,30 +179,8 @@ open class MainEditorActivity : AppCompatActivity(),
         viewModel.onEvent(MainEditorEvent.SetupView(param))
     }
 
-    private fun loadNativeLibrary(context: Context) {
-        if (isSplitInstallEnabled()) {
-            SplitCompat.installActivity(context)
-
-            safeLoadNativeLibrary(context, "c++_shared")
-
-            // FFMPEG
-            safeLoadNativeLibrary(context, "mobileffmpeg")
-            safeLoadNativeLibrary(context, "mobileffmpeg_abidetect")
-
-            // Common
-            safeLoadNativeLibrary(context, "avutil")
-            safeLoadNativeLibrary(context, "swscale")
-            safeLoadNativeLibrary(context, "swresample")
-            safeLoadNativeLibrary(context, "avcodec")
-            safeLoadNativeLibrary(context, "avformat")
-            safeLoadNativeLibrary(context, "avdevice")
-            safeLoadNativeLibrary(context, "avfilter")
-        }
-    }
-
     private fun initObserver() {
-        // observe the configuration device mode adaptively
-        FoldableSupportManager(this, this)
+        scalableCanvasRegister(this, binding?.canvasContainer)
 
         lifecycleScope.launchWhenCreated {
             viewModel.mainEditorState.collect(::initView)
@@ -356,20 +324,6 @@ open class MainEditorActivity : AppCompatActivity(),
         return getString(R.string.universal_editor_toolbar_action_button)
     }
 
-    private fun setCompactMode() {
-        val layoutParams = binding?.canvasContainer?.layoutParams as ConstraintLayout.LayoutParams
-        layoutParams.dimensionRatio = "H,9:16"
-        layoutParams.height = 0
-        binding?.canvasContainer?.layoutParams = layoutParams
-    }
-
-    private fun setLargeScreenMode() {
-        val layoutParams = binding?.canvasContainer?.layoutParams as ConstraintLayout.LayoutParams
-        layoutParams.dimensionRatio = "W,9:16"
-        layoutParams.height = RelativeLayout.LayoutParams.MATCH_PARENT
-        binding?.canvasContainer?.layoutParams = layoutParams
-    }
-
     private fun fragmentProvider(): EditorFragmentProvider {
         return EditorFragmentProviderImpl(
             supportFragmentManager,
@@ -381,18 +335,5 @@ open class MainEditorActivity : AppCompatActivity(),
         ModuleInjector
             .get(this)
             .inject(this)
-    }
-
-    /**
-     * A hansel-able feature toggle.
-     *
-     * If the SplitCompat.install(...) won't work properly,
-     * we are able to disable by patching it through Hansel.
-     *
-     * This temporary method, this LOC will be deleted in
-     * upcoming two versions after this editor got released.
-     */
-    private fun isSplitInstallEnabled(): Boolean {
-        return true
     }
 }
