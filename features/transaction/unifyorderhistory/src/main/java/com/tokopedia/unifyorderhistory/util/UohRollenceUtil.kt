@@ -8,7 +8,8 @@ object UohRollenceUtil {
 
     fun isEnableAutoRedirectionToCartOnRepurchase(): Boolean {
         return try {
-            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.UOH_REPURCHASE, RollenceKey.CONTROL_VARIANT)
+            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().
+            abTestPlatform.getString(RollenceKey.UOH_REPURCHASE, RollenceKey.CONTROL_VARIANT)
             return (remoteConfigRollenceValue == RollenceKey.EXPERIMENT_VARIANT)
         } catch (e: Exception) {
             true

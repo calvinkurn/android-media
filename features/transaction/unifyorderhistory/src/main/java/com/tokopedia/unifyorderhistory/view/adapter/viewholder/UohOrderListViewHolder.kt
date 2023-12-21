@@ -3,7 +3,6 @@ package com.tokopedia.unifyorderhistory.view.adapter.viewholder
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.imageassets.utils.loadProductImage
 import com.tokopedia.kotlin.extensions.view.gone
@@ -11,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.clearImage
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -41,7 +41,7 @@ class UohOrderListViewHolder(
             binding.clDataProduct.visible()
 
             binding.icUohVertical.clearImage()
-            binding.icUohVertical.load(item.dataObject.metadata.verticalLogo)
+            binding.icUohVertical.loadImage(item.dataObject.metadata.verticalLogo)
 
             binding.tvUohCategories.text = item.dataObject.metadata.verticalLabel
             binding.tvUohDate.text = item.dataObject.metadata.paymentDateStr

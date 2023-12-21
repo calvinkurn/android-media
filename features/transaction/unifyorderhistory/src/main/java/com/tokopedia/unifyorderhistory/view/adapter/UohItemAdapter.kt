@@ -98,39 +98,39 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 UohLoaderItemViewHolder(binding)
             }
             LAYOUT_TICKER -> {
-                val binding = UohTickerItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                val binding = UohTickerItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 UohTickerItemViewHolder(binding, actionListener)
             }
             LAYOUT_ORDER_LIST -> {
-                val binding = UohListItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
-                UohOrderListViewHolder(binding, actionListener)
+                val binding = UohListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return UohOrderListViewHolder(binding, actionListener)
             }
             LAYOUT_EMPTY_STATE -> {
-                val binding = UohEmptyStateBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                val binding = UohEmptyStateBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 UohEmptyStateViewHolder(binding, actionListener)
             }
             LAYOUT_RECOMMENDATION_TITLE -> {
-                val binding = UohRecommendationTitleBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                val binding = UohRecommendationTitleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 UohRecommendationTitleViewHolder(binding)
             }
             LAYOUT_RECOMMENDATION_LIST -> {
-                val binding = UohRecommendationItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                val binding = UohRecommendationItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 UohRecommendationItemViewHolder(binding, actionListener)
             }
             LAYOUT_BANNER -> {
-                val binding = UohTdnBannerLayoutBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                val binding = UohTdnBannerLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 UohTdnBannerViewHolder(binding)
             }
             LAYOUT_PMS_BUTTON -> {
-                val binding = UohPmsButtonItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                val binding = UohPmsButtonItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 UohPmsButtonViewHolder(binding, actionListener)
             }
             LAYOUT_LOADER_PMS_BUTTON -> {
-                val binding = UohLoaderPmsButtonItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                val binding = UohLoaderPmsButtonItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 UohLoaderPmsButtonItemViewHolder(binding)
             }
             LAYOUT_BUY_AGAIN -> {
-                val binding = UohBuyAgainBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                val binding = UohBuyAgainBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 UohBuyAgainViewHolder(binding, actionListener)
             }
             else -> throw IllegalArgumentException("Invalid view type")
