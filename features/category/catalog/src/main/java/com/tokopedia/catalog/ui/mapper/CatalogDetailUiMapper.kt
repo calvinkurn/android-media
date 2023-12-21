@@ -737,13 +737,13 @@ class CatalogDetailUiMapper @Inject constructor(
     )
 
     private fun getColumnInfoBottomSheetTextColor() = Pair(
-        MethodChecker.getColor(context, catalogR.color.catalog_dms_light_color_text_description),
-        MethodChecker.getColor(context, catalogR.color.catalog_dms_column_info_value_color_light)
+        MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN600),
+        MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN950)
     )
 
     private fun getColumnInfoBottomSheetValueOnlyTextColor() = Pair(
-        MethodChecker.getColor(context, catalogR.color.catalog_dms_column_info_value_color_light),
-        MethodChecker.getColor(context, catalogR.color.catalog_dms_column_info_value_color_light)
+        MethodChecker.getColor(context, unifyprinciplesR.color.Unify_N700_96),
+        MethodChecker.getColor(context, unifyprinciplesR.color.Unify_N700_96)
     )
 
     fun isUsingAboveV4Layout(version: Int): Boolean {
