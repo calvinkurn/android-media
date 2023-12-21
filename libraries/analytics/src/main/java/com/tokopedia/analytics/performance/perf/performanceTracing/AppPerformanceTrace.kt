@@ -198,7 +198,7 @@ class AppPerformanceTrace {
                                         performanceTrace?.recordPerformanceData(result)
                                     }
                                 },
-                                performanceRepository = AppPerformanceRepository(traceName),
+                                performanceRepository = AppPerformanceRepository(traceName, rootView.context.applicationContext),
                                 loadableComponentFlow = loadableComponentFlow,
                                 parsingStrategy = strategy
                             ).apply {

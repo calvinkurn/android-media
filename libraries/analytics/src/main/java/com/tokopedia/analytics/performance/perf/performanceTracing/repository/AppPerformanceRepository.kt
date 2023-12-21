@@ -1,13 +1,17 @@
 package com.tokopedia.analytics.performance.perf.performanceTracing.repository
 
+import android.content.Context
 import android.os.Build
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
 import com.tokopedia.analytics.performance.perf.BlocksPerformanceTrace
 import com.tokopedia.analytics.performance.perf.performanceTracing.data.PerformanceTraceData
+import com.tokopedia.iris.IrisAnalytics
+import com.tokopedia.iris.IrisPerformanceData
 
 class AppPerformanceRepository(
-    val name: String
+    val name: String,
+    val appContext: Context
 ) : PerformanceRepository {
     var firebasePerformance: FirebasePerformance? = null
     var trace: Trace? = null
@@ -20,12 +24,12 @@ class AppPerformanceRepository(
 
     private fun beginTrace() {
         beginAsyncSystraceSection(
-                "AppPerfTrace.AsyncTTFL$name",
-                COOKIE_TTFL
+            "AppPerfTrace.AsyncTTFL$name",
+            COOKIE_TTFL
         )
         beginAsyncSystraceSection(
-                "AppPerfTrace.AsyncTTIL$name",
-                COOKIE_TTIL
+            "AppPerfTrace.AsyncTTIL$name",
+            COOKIE_TTIL
         )
     }
 
@@ -47,11 +51,21 @@ class AppPerformanceRepository(
     }
 
     override fun recordPerfData(performanceTraceData: PerformanceTraceData) {
-        // no op
+        trackIris(performanceTraceData)
     }
 
     override fun getTraceName(): String {
         return name
+    }
+
+    private fun trackIris(performanceTraceData: PerformanceTraceData) {
+        val ctx = appContext ?: return
+        val ttfl = performanceTraceData.timeToFirstLayout
+        val ttil = performanceTraceData.timeToInitialLoad
+        if (ttfl > 0 && ttil > 0) {
+            IrisAnalytics.getInstance(ctx)
+                .trackPerformance(IrisPerformanceData(name, ttfl, ttil))
+        }
     }
 
     private fun stopRecordFirebase() {
@@ -74,7 +88,6 @@ class AppPerformanceRepository(
         } catch (ignored: Exception) {
         }
     }
-
 
     private fun beginAsyncSystraceSection(methodName: String, cookie: Int) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -100,7 +113,7 @@ class AppPerformanceRepository(
             android.os.Trace.endSection()
         }
     }
-    
+
     companion object {
         const val COOKIE_TTFL = 77
         const val COOKIE_TTIL = 78

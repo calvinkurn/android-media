@@ -3,7 +3,6 @@ package com.tokopedia.analytics.performance.perf.performanceTracing.strategy.par
 import android.graphics.Rect
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analytics.performance.perf.performanceTracing.strategy.ViewInfo
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
@@ -13,7 +12,7 @@ class XmlViewInfoParser() : ViewInfoParser<View> {
     override suspend fun parse(view: View): ViewInfo {
         val tag = (view.tag as? String) ?: ""
 
-        val height = getViewHeight(view)
+        val height = view.height
         val isVisible = view.visibility == View.VISIBLE && view.isShown && height != 0 && isViewInViewport(view)
         val location = IntArray(2)
         view.getLocationOnScreen(location)
@@ -50,33 +49,5 @@ class XmlViewInfoParser() : ViewInfoParser<View> {
         val Y = location[1] + offset
         return screen.top <= Y && screen.bottom >= Y &&
             screen.left <= X && screen.right >= X
-    }
-
-    private fun RecyclerView.calculateRecyclerViewHeight(): Int {
-//        var totalHeight = 0
-//
-//        for (i in 0 until this.childCount) {
-//            val child: View? = this.getChildAt(i)
-//            child?.let { totalHeight += child.height }
-//        }
-//
-//        // Add the height of the RecyclerView's padding
-//        totalHeight += this.paddingTop + this.paddingBottom
-
-        return this.height
-    }
-
-    private fun getViewHeight(view: View): Int {
-        return when (view) {
-            is RecyclerView -> view.calculateRecyclerViewHeight()
-            else -> view.height
-        }
-    }
-
-    private fun getChildCount(view: View): Int {
-        return when (view) {
-            is ViewGroup -> view.childCount
-            else -> 0
-        }
     }
 }
