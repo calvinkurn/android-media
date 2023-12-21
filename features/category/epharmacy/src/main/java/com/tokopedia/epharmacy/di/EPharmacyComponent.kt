@@ -8,6 +8,7 @@ import com.tokopedia.epharmacy.ui.activity.EPharmacyCommonBsActivity
 import com.tokopedia.epharmacy.ui.activity.EPharmacyChatLoadingActivity
 import com.tokopedia.epharmacy.ui.activity.EPharmacyOrderDetailActivity
 import com.tokopedia.epharmacy.ui.activity.EPharmacyReminderActivity
+import com.tokopedia.epharmacy.ui.activity.EPharmacyViewPrescriptionActivity
 import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyChooserBottomSheet
 import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyReminderScreenBottomSheet
 import com.tokopedia.epharmacy.ui.bottomsheet.MiniConsultationMasterBottomSheetInfo
@@ -38,6 +39,8 @@ interface EPharmacyComponent {
     fun inject(ePharmacyChatLoadingActivity: EPharmacyChatLoadingActivity) {}
 
     fun inject(ePharmacyCommonBsActivity: EPharmacyCommonBsActivity) {}
+
+    fun inject(ePharmacyViewPrescriptionActivity: EPharmacyViewPrescriptionActivity) {}
 
     fun inject(ePharmacyOrderDetailActivity: EPharmacyOrderDetailActivity) {}
 
