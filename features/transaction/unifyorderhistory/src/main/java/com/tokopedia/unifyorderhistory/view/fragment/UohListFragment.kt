@@ -2935,7 +2935,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
 
     private fun restoreScrollPositionAfterAdAdded() {
         val layoutManager = binding?.rvOrderList?.layoutManager as LinearLayoutManager
-        val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+        val firstVisibleItemPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
         if (firstVisibleItemPosition == 0) {
             layoutManager.scrollToPosition(0)
         }

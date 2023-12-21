@@ -173,36 +173,39 @@ fun UohBuyAgainWidget(
             )
         }
 
-        NestIcon(
-            iconId = IconUnify.CHEVRON_RIGHT,
-            modifier = Modifier
-                .constrainAs(chevron) {
-                    top.linkTo(title.top)
-                    bottom.linkTo(title.bottom)
-                    end.linkTo(parent.end, margin = 16.dp)
-                }
-                .width(20.dp)
-                .height(20.dp)
-                .clickable { onChevronClicked.invoke() }
-        )
-
         if (recom.recommendationItemList.size == 1) {
             UohBuyAgainCard(
                 index = 0,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(0.95f)
                     .constrainAs(uohCard) {
                         top.linkTo(title.bottom, margin = 4.dp)
-                        start.linkTo(parent.start, margin = 30.dp)
-                        end.linkTo(parent.end, margin = 30.dp)
+                        start.linkTo(parent.start, margin = 35.dp)
+                        end.linkTo(parent.end, margin = 38.dp)
                         bottom.linkTo(bottomDivider.top, margin = 10.dp)
                     },
                 recommItem = recom.recommendationItemList[0],
                 onProductCardClick = onProductCardClick,
                 onBuyAgainButtonClicked = onButtonBuyAgainClick,
-                onItemScrolled = onItemScrolled
+                onItemScrolled = onItemScrolled,
+                isSingleCard = true
             )
         } else {
+            if (recom.recommendationItemList.size > 3) {
+                NestIcon(
+                    iconId = IconUnify.CHEVRON_RIGHT,
+                    modifier = Modifier
+                        .constrainAs(chevron) {
+                            top.linkTo(title.top)
+                            bottom.linkTo(title.bottom)
+                            end.linkTo(parent.end, margin = 16.dp)
+                        }
+                        .width(20.dp)
+                        .height(20.dp)
+                        .clickable { onChevronClicked.invoke() }
+                )
+            }
+
             UohBuyAgainList(
                 listBuyAgain = recom.recommendationItemList,
                 modifier = Modifier.constrainAs(list) {
@@ -250,7 +253,8 @@ fun UohBuyAgainList(
                     recommItem = item,
                     onProductCardClick = onProductCardClick,
                     onBuyAgainButtonClicked = onButtonBuyAgainClick,
-                    onItemScrolled = onItemScrolled
+                    onItemScrolled = onItemScrolled,
+                    isSingleCard = false
                 )
             } else if (index == LIMIT_BUY_AGAIN_WIDGET_PRODUCT) {
                 NestViewAllCard(
@@ -275,14 +279,15 @@ fun UohBuyAgainCard(
     modifier: Modifier = Modifier,
     onProductCardClick: (RecommendationItem, Int) -> Unit,
     onBuyAgainButtonClicked: (RecommendationItem, Int) -> Unit,
-    onItemScrolled: (RecommendationItem, Int) -> Unit
+    onItemScrolled: (RecommendationItem, Int) -> Unit,
+    isSingleCard: Boolean
 ) {
     onItemScrolled(recommItem, index)
 
     NestCard(
         modifier = modifier
             .heightIn(min = 56.dp)
-            .widthIn(max = 325.dp)
+            .widthIn(max = if (isSingleCard) 350.dp else 325.dp)
             .padding(start = 8.dp, top = 6.dp, bottom = 6.dp),
         type = NestCardType.Shadow,
         onClick = { onProductCardClick.invoke(recommItem, index) }
@@ -297,7 +302,7 @@ fun UohBuyAgainCard(
                     text = recommItem.name,
                     modifier = Modifier
                         .padding(start = 8.dp, top = 8.dp)
-                        .widthIn(max = 142.dp),
+                        .widthIn(max = if (isSingleCard) 220.dp else 142.dp),
                     textStyle = NestTheme.typography.paragraph3,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
