@@ -58,8 +58,11 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 // Internal applink : ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
 
-class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
-    FragmentListener, StatisticPerformanceMonitoringListener {
+class StatisticActivity :
+    BaseActivity(),
+    HasComponent<StatisticComponent>,
+    FragmentListener,
+    StatisticPerformanceMonitoringListener {
 
     companion object {
         private const val FIRST_TAB_INDEX = 0
@@ -95,6 +98,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     private var selectedPageSource = ""
     private var selectedWidget = ""
+    private var customSort = ""
     private var binding: ActivityStcStatisticBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -225,8 +229,10 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
             viewPagerAdapter?.addFragment(
                 StatisticFragment.newInstance(
                     page,
-                    shouldLoadDataOnCreate
-                ), page.pageTitle
+                    shouldLoadDataOnCreate,
+                    customSort
+                ),
+                page.pageTitle
             )
         }
 
@@ -358,9 +364,10 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     }
 
     private fun handleAppLink(intent: Intent?) {
-        StatisticAppLinkHandler.handleAppLink(intent) { page, widget ->
+        StatisticAppLinkHandler.handleAppLink(intent) { page, widget, sort ->
             selectedPageSource = page
             selectedWidget = widget
+            customSort = sort
             selectTabByPageSource()
         }
     }
