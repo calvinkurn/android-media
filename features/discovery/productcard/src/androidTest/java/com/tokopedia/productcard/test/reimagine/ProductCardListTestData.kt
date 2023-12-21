@@ -269,7 +269,6 @@ private fun overlay(): ProductCardReimagineMatcher {
         R.id.productCardImage to isDisplayed(),
         R.id.productCardOverlay1 to isDisplayed(),
         R.id.productCardOverlay2 to isDisplayed(),
-        R.id.productCardOverlay3 to isDisplayed(),
         R.id.productCardName to isDisplayedWithText(model.name),
         R.id.productCardPrice to isDisplayedWithText(model.price),
         R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),

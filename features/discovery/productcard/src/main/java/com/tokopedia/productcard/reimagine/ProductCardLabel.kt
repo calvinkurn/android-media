@@ -83,7 +83,7 @@ internal class ProductCardLabel(
         )
 
         setTextColor(context, labelGroup)
-        setTextPadding(labelGroup)
+//        setTextPadding(labelGroup)
     }
 
     private fun setTextColor(
@@ -98,10 +98,6 @@ internal class ProductCardLabel(
         val textColor =
             if (labelGroupTextColor == null) defaultColor
             else safeParseColor(labelGroupTextColor, defaultColor)
-//            else {
-//                val color = context.resources.getIdentifier(labelGroupTextColor, "color", context.packageName)
-//                ContextCompat.getColor(context, color)
-//            }
 
         typography?.setTextColor(textColor)
     }
@@ -118,7 +114,7 @@ internal class ProductCardLabel(
     }
 
     private fun padding(labelGroup: ProductCardModel.LabelGroup) =
-        if (labelGroup.backgroundOpacity() == DEFAULT_OPACITY) PADDING_HORIZONTAL to PADDING_VERTICAL
+        if (labelGroup.backgroundOpacity() == Float.ZERO) PADDING_HORIZONTAL to PADDING_VERTICAL
         else Int.ZERO to Int.ZERO
 
     companion object {

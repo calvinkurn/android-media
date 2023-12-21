@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.strikethrough
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -46,6 +47,8 @@ internal class ProductCardRenderer(
     private val adsText by view.lazyView<Typography?>(R.id.productCardAds)
     private val nameText by lazyThreadSafetyNone { initNameText() }
     private val priceText by view.lazyView<Typography?>(R.id.productCardPrice)
+    private val nettPriceIcon by view.lazyView<ImageView?>(R.id.productCardNettPriceIcon)
+    private val nettPriceText by view.lazyView<Typography?>(R.id.productCardNettPrice)
     private val slashedPriceText by view.lazyView<Typography?>(R.id.productCardSlashedPrice)
     private val discountText by view.lazyView<Typography?>(R.id.productCardDiscount)
     private val slashedPriceInlineText by view.lazyView<Typography?>(R.id.productCardSlashedPriceInline)
@@ -69,6 +72,7 @@ internal class ProductCardRenderer(
         renderAds(productCardModel)
         renderName(productCardModel)
         renderPrice(productCardModel)
+        renderNettPrice(productCardModel)
         renderSlashedPrice(productCardModel)
         renderDiscountPercentage(productCardModel)
         renderLabelBenefit(productCardModel)
@@ -158,11 +162,26 @@ internal class ProductCardRenderer(
         else null
 
     private fun renderPrice(productCardModel: ProductCardModel) {
-        priceText?.shouldShowWithAction(productCardModel.price.isNotEmpty()) {
+        priceText?.shouldShowWithAction(productCardModel.showPrice()) {
             it.setTextAndContentDescription(
                 productCardModel.price,
                 R.string.content_desc_textViewPrice
             )
+        }
+    }
+
+    private fun renderNettPrice(productCardModel: ProductCardModel) {
+        val nettPriceLabel = productCardModel.labelNettPrice()
+
+        if (nettPriceLabel == null) {
+            nettPriceIcon?.hide()
+            nettPriceText?.hide()
+        } else {
+            nettPriceIcon?.show()
+            nettPriceIcon?.loadImage(nettPriceLabel.imageUrl)
+
+            nettPriceText?.show()
+            ProductCardLabel(nettPriceText?.background, nettPriceText).render(nettPriceLabel)
         }
     }
 

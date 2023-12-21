@@ -7,6 +7,7 @@ const val LABEL_REIMAGINE_ASSIGNED_VALUE = "assigned_value"
 const val LABEL_REIMAGINE_RIBBON = "ri_ribbon"
 const val LABEL_REIMAGINE_PRODUCT_OFFER = "ri_product_offer"
 const val LABEL_OVERLAY_ = "overlay_"
+const val LABEL_NETT_PRICE = "nett_price"
 
 /** Label Group Style **/
 object LabelGroupStyle {

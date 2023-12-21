@@ -10,7 +10,7 @@ import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.reimagine.ProductCardModel.ShopBadge
 import com.tokopedia.productcard.test.utils.freeOngkirImageUrl
 import com.tokopedia.productcard.test.utils.isDisplayedWithText
-import com.tokopedia.productcard.test.utils.isDisplayedWithTextAndImage
+import com.tokopedia.productcard.test.utils.isDisplayedContainingText
 import com.tokopedia.productcard.test.utils.longProductName
 import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
 import com.tokopedia.productcard.test.utils.productImageUrl
@@ -36,6 +36,7 @@ internal val productCardReimagineTestData = listOf(
     bebasOngkir(),
     labelAssignedValue(),
     productOffers(),
+    nettPrice(),
 )
 
 private fun imageNamePrice(): ProductCardReimagineMatcher {
@@ -450,7 +451,7 @@ private fun labelAssignedValue(): ProductCardReimagineMatcher {
 
     val matcher = mapOf<Int, Matcher<View?>>(
         R.id.productCardImage to isDisplayed(),
-        R.id.productCardName to isDisplayedWithTextAndImage(model.name),
+        R.id.productCardName to isDisplayedContainingText(model.name),
         R.id.productCardPrice to isDisplayedWithText(model.price),
         R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
         R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
@@ -516,4 +517,50 @@ private fun productOffers(): ProductCardReimagineMatcher {
     )
 
     return Triple(model, matcher, "Product Offers")
+}
+
+private fun nettPrice(): ProductCardReimagineMatcher {
+    val nettPriceLabel = labelGroupNettPrice()
+    val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
+        position = LABEL_REIMAGINE_CREDIBILITY,
+        title = "10 rb+ terjual",
+        type = TEXT_DARK_GREY,
+    )
+    val shopBadge = ProductCardModel.ShopBadge(
+        imageUrl = officialStoreBadgeImageUrl,
+        title = "Shop Name paling panjang",
+    )
+    val model = ProductCardModel(
+        imageUrl = productImageUrl,
+        name = longProductName,
+        price = "Rp79.000",
+        slashedPrice = "Rp100.000",
+        discountPercentage = 10,
+        labelGroupList = listOf(reimagineCredibilityLabel, nettPriceLabel),
+        rating = "4.5",
+        shopBadge = shopBadge,
+        freeShipping = ProductCardModel.FreeShipping(
+            imageUrl = freeOngkirImageUrl,
+        ),
+    )
+
+    val matcher = mapOf<Int, Matcher<View?>>(
+        R.id.productCardImage to isDisplayed(),
+        R.id.productCardName to isDisplayedWithText(model.name),
+        R.id.productCardNettPrice to isDisplayedWithText(nettPriceLabel.title),
+        R.id.productCardNettPriceIcon to isDisplayed(),
+        R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
+        R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
+        R.id.productCardCredibility to isDisplayed(),
+        R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
+        R.id.productCardRatingIcon to isDisplayed(),
+        R.id.productCardRating to isDisplayedWithText(model.rating),
+        R.id.productCardRatingDots to isDisplayed(),
+        R.id.productCardShopSection to isDisplayed(),
+        R.id.productCardShopBadge to isDisplayed(),
+        R.id.productCardShopNameLocation to isDisplayed(),
+        R.id.productCardFreeShipping to isDisplayed(),
+    )
+
+    return Triple(model, matcher, "Nett Price")
 }

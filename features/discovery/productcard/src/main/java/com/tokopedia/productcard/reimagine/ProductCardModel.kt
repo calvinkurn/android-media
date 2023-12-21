@@ -27,11 +27,14 @@ data class ProductCardModel(
     fun labelAssignedValue(): LabelGroup? =
         labelGroup(LABEL_REIMAGINE_ASSIGNED_VALUE)?.takeIf(LabelGroup::hasImage)
 
-    fun ribbon(): LabelGroup? =
-        labelGroup(LABEL_REIMAGINE_RIBBON)?.takeIf(LabelGroup::hasTitle)
-
     fun labelProductOffer(): LabelGroup? =
         labelGroup(LABEL_REIMAGINE_PRODUCT_OFFER)?.takeIf(LabelGroup::hasTitle)
+
+    fun labelNettPrice(): LabelGroup? =
+        labelGroup(LABEL_NETT_PRICE)?.takeIf(LabelGroup::hasTitle)
+
+    fun ribbon(): LabelGroup? =
+        labelGroup(LABEL_REIMAGINE_RIBBON)?.takeIf(LabelGroup::hasTitle)
 
     fun hasRibbon() = ribbon() != null
 
@@ -41,9 +44,11 @@ data class ProductCardModel(
         .filter { it.position.startsWith(LABEL_OVERLAY_) }
         .sortedBy { it.position }
 
-    private fun labelGroup(position: String) = labelGroupList.find { it.position == position }
-
     fun stockInfo() : StockInfo? = stockInfo.takeIf { it.hasTitle() }
+
+    fun showPrice() = price.isNotBlank() && labelNettPrice() == null
+
+    private fun labelGroup(position: String) = labelGroupList.find { it.position == position }
 
     data class FreeShipping(val imageUrl: String = "")
 

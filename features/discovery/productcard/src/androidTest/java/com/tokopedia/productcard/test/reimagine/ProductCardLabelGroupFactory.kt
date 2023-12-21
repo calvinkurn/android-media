@@ -1,5 +1,6 @@
 package com.tokopedia.productcard.test.reimagine
 
+import com.tokopedia.productcard.reimagine.LABEL_NETT_PRICE
 import com.tokopedia.productcard.reimagine.LABEL_OVERLAY_
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_ASSIGNED_VALUE
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_BENEFIT
@@ -64,4 +65,16 @@ internal fun labelGroupOverlay3(width: Int) = LabelGroup(
     styles = listOf(
         LabelGroup.Style(LabelGroupStyle.WIDTH, width.toString()),
     ),
+)
+
+internal fun labelGroupNettPrice() = LabelGroup(
+    position = LABEL_NETT_PRICE,
+    title = "Rp9.000.000",
+    imageUrl = "https://images.tokopedia.net/img/jbZAUJ/2023/12/19/36c06351-769f-4cae-941f-9b9586a43acf.png",
+    styles = listOf(
+        LabelGroup.Style(key = LabelGroupStyle.BACKGROUND_COLOR, value = "#FFF5F6"),
+        LabelGroup.Style(key = LabelGroupStyle.BACKGROUND_OPACITY, value = "1"),
+        LabelGroup.Style(key = LabelGroupStyle.OUTLINE_COLOR, value = "#FFB2C2"),
+        LabelGroup.Style(key = LabelGroupStyle.TEXT_COLOR, value = "#F94D63")
+    )
 )
