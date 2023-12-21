@@ -21,7 +21,10 @@ import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant
 import com.tokopedia.catalog.databinding.FragmentCatalogComparisonDetailBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
+import com.tokopedia.catalog.ui.activity.CatalogComparisonDetailActivity
+import com.tokopedia.catalog.ui.activity.CatalogSwitchingComparisonActivity
 import com.tokopedia.catalog.ui.adapter.ComparisonHeaderAdapter
+import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment.Companion.CATALOG_CAMPARE_SWITCHING_REQUEST_CODE
 import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
@@ -43,6 +46,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.catalog.R as catalogR
 
 class CatalogComparisonDetailFragment :
     BaseDaggerFragment(),
@@ -192,17 +196,12 @@ class CatalogComparisonDetailFragment :
                     activity?.finish()
                 }
                 editButton?.setOnClickListener {
-                    /*
-                    TODO: implement redirection to switch catalog activity
-                    CatalogComponentBottomSheet.newInstance(
-                        "",
-                        catalogId,
-                        "",
-                        categoryId,
-                        compareCatalogIds,
-                        CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,
-                        this
-                    ).show(childFragmentManager, "")*/
+                    Intent(activity, CatalogSwitchingComparisonActivity::class.java).apply {
+                        putExtra(CatalogSwitchingComparisonFragment.ARG_CATALOG_ID, catalogId)
+                        putStringArrayListExtra(CatalogSwitchingComparisonFragment.ARG_COMPARISON_CATALOG_ID, ArrayList(compareCatalogIds))
+                        putExtra(CatalogSwitchingComparisonFragment.ARG_EXTRA_CATALOG_CATEGORY_ID, categoryId)
+                        startActivityForResult(this, CATALOG_CAMPARE_SWITCHING_REQUEST_CODE)
+                    }
                 }
             }
         }
@@ -254,7 +253,7 @@ class CatalogComparisonDetailFragment :
     private fun setupContentHeader(compareCatalogIds: List<String>) {
         val comparisonAdapter = ComparisonHeaderAdapter(
             List(compareCatalogIds.size) { index ->
-                getString(R.string.catalog_title_comparison, index + START_INDEX_HEADER)
+                getString(catalogR.string.catalog_title_comparison, index + START_INDEX_HEADER)
             }
         )
         binding?.rvHeader?.apply {
@@ -327,5 +326,13 @@ class CatalogComparisonDetailFragment :
         }
         activity?.setResult(Activity.RESULT_OK, intent)
         return super.onFragmentBackPressed()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == CatalogDetailPageFragment.CATALOG_CAMPARE_SWITCHING_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val newComparedCatalogId = data?.getStringArrayListExtra(CatalogSwitchingComparisonFragment.ARG_COMPARISON_CATALOG_ID)
+            if (!newComparedCatalogId.isNullOrEmpty()) changeComparison(newComparedCatalogId)
+        }
     }
 }

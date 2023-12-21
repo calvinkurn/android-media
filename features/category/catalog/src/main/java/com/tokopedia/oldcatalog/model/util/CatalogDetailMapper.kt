@@ -134,6 +134,7 @@ object CatalogDetailMapper {
                             catalogGetDetailModular.basicInfo.catalogImage?.firstOrNull()?.imageURL,""
                         ),
                         ComparisonNewModel(
+
                             comparisonComponentDataNew.comparedData?.id ?: "",
                             comparisonComponentDataNew.comparedData?.brand ?: "",
                             comparisonComponentDataNew.comparedData?.name ?: "",

@@ -1,6 +1,7 @@
 package com.tokopedia.catalog.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.catalog.ui.fragment.CatalogSwitchingComparisonFragment
 import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment
 import com.tokopedia.oldcatalog.ui.fragment.CatalogAllReviewFragment
 import com.tokopedia.oldcatalog.ui.fragment.CatalogDetailPageFragment as OldCatalogDetailPageFragment
@@ -31,6 +32,8 @@ interface CatalogComponent {
     fun inject(catalogLandingPageFragment: CatalogLandingPageFragment)
     fun inject(catalogComparisonDetailFragment: CatalogComparisonDetailFragment)
     fun inject(catalogProductListImprovementFragment: CatalogProductListImprovementFragment)
+
+    fun inject(catalogSwitchingComparisonFragment: CatalogSwitchingComparisonFragment)
 
 
 }
