@@ -10,7 +10,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 class ProductPromoPriceViewHolder(
     view: View,
     private val listener: DynamicProductDetailListener
-) : ProductDetailPageViewHolder<ProductPromoPriceUiModel>(view) {
+) : ProductDetailPageViewHolder<ProductPriceUiModel>(view) {
 
     private val binding by lazyThreadSafetyNone {
         ProductPromoPriceViewHolderBinding.bind(view)
@@ -20,12 +20,13 @@ class ProductPromoPriceViewHolder(
         val LAYOUT = R.layout.product_promo_price_view_holder
     }
 
-    override fun bind(element: ProductPromoPriceUiModel) {
+    override fun bind(element: ProductPriceUiModel) {
         binding.pdpPromoPriceComposeView.setContent {
             ProductDetailPriceComponent(
                 element.promoPriceData,
                 element.normalPromoUiModel,
-                element.priceComponentType
+                element.priceComponentType,
+                element.normalPriceBoUrl
             )
         }
     }

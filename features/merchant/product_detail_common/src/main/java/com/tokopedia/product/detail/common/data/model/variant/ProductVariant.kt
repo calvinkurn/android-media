@@ -21,6 +21,8 @@ data class ProductVariant(
     val variants: List<Variant> = listOf(),
     @SerializedName("children")
     val children: List<VariantChild> = listOf(),
+    @SerializedName("componentPriceType")
+    val componentPriceType: Int = 0,
     /**
      * used when landing on pdp, if it is empty use hardcode FE
      * and if there’s a user activity for choosing the variant, use children.subText below

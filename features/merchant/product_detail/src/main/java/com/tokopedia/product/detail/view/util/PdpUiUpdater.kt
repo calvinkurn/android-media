@@ -80,7 +80,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.VIEW_TO_VIEW
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.model.BMGMWidgetUiState
-import com.tokopedia.product.detail.view.viewholder.promo_price.ProductPromoPriceUiModel
+import com.tokopedia.product.detail.view.viewholder.promo_price.ProductPriceUiModel
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.extension.toViewToViewItemModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -200,8 +200,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val bmgmSneakPeak: BMGMUiModel?
         get() = mapOfData[ProductDetailConstant.BMGM_SNEAK_PEEK_NAME] as? BMGMUiModel
 
-    val promoPrice: ProductPromoPriceUiModel?
-        get() = mapOfData[ProductDetailConstant.PRICE] as? ProductPromoPriceUiModel
+    val promoPrice: ProductPriceUiModel?
+        get() = mapOfData[ProductDetailConstant.PRICE] as? ProductPriceUiModel
 
     fun updateDataP1(
         dataP1: DynamicProductInfoP1?,
@@ -751,11 +751,12 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
         }
 
-        updateData(ProductDetailConstant.ONGOING_CAMPAIGN) {
+        updateData(ProductDetailConstant.PRICE) {
             promoPrice?.run {
                 promoPriceData = promoPriceData?.copy(
                     boIconUrl = freeOngkirImgUrl
                 )
+                normalPriceBoUrl = freeOngkirImgUrl
             }
         }
     }

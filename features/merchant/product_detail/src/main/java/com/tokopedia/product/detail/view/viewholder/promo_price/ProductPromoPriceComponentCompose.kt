@@ -10,9 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material.Card
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,8 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,6 +39,7 @@ import com.tokopedia.nest.principles.utils.ImageSource.Remote
 import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
 import com.tokopedia.product.detail.common.data.model.promoprice.PromoPriceUiModel
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 private const val NORMAL_PROMO_UI = 1
 
@@ -48,21 +48,33 @@ fun ProductDetailPriceComponent(
     promoPriceData: PromoPriceUiModel?,
     normalPromoUiModel: Price?,
     priceComponentType: Int,
+    normalPriceBoUrl: String,
     onPromoPriceClicked: () -> Unit = {}
 ) {
-    if (priceComponentType == NORMAL_PROMO_UI) {
-        NormalPriceComponent(normalPromoUiModel)
-    } else {
-        PromoPriceCard(promoPriceData, onPromoPriceClicked)
+    NestTheme {
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            if (priceComponentType == NORMAL_PROMO_UI) {
+                NormalPriceComponent(normalPromoUiModel, normalPriceBoUrl)
+            } else {
+                PromoPriceCard(promoPriceData, onPromoPriceClicked)
+            }
+        }
     }
 }
 
 @Composable
 fun NormalPriceComponent(
-    uiModel: Price?
+    uiModel: Price?,
+    freeOngkirImageUrl: String = ""
 ) {
     val data = uiModel ?: return
-    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 16.dp)) {
+    Column(
+        modifier = Modifier.fillMaxWidth()
+            .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+    ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             NestTypography(
                 data.priceFmt,
@@ -72,10 +84,11 @@ fun NormalPriceComponent(
                 )
             )
 
-            //todo
-            if (data.priceFmt.isNotEmpty()) {
+            if (freeOngkirImageUrl.isNotEmpty()) {
                 NestImage(
-                    source = ImageSource.Remote("https://images.tokopedia.net/img/shop-page-reimagined/bo-normal.png"),
+                    source = ImageSource.Remote(freeOngkirImageUrl, customUIError = {
+
+                    }),
                     modifier = Modifier.height(20.dp).wrapContentWidth().padding(start = 8.dp)
                 )
             }
@@ -165,9 +178,9 @@ fun PromoPriceFooter(
 ) {
     ConstraintLayout(modifier = Modifier.padding(8.dp).fillMaxWidth()) {
         val (normalPrice, slashPrice, boImage) = createRefs()
-
+        val context = LocalContext.current
         NestTypography(
-            priceAdditionalFmt.toAnnotatedString(),
+            HtmlLinkHelper(context, priceAdditionalFmt).spannedString?.toAnnotatedString() ?: "",
             modifier = Modifier.constrainAs(normalPrice) {
                 top.linkTo(parent.top)
                 start.linkTo(parent.start)
@@ -194,15 +207,19 @@ fun PromoPriceFooter(
             overflow = TextOverflow.Ellipsis
         )
 
-        NestImage(
-            source = Remote(source = boLogo),
-            modifier = Modifier.constrainAs(boImage) {
-                top.linkTo(normalPrice.top)
-                bottom.linkTo(normalPrice.bottom)
-                end.linkTo(parent.absoluteRight)
-                height = Dimension.fillToConstraints
-            }
-        )
+        if (boLogo.isNotEmpty()) {
+            NestImage(
+                source = Remote(source = boLogo, customUIError = {
+
+                }),
+                modifier = Modifier.constrainAs(boImage) {
+                    top.linkTo(normalPrice.top)
+                    bottom.linkTo(normalPrice.bottom)
+                    end.linkTo(parent.absoluteRight)
+                    height = Dimension.fillToConstraints
+                }
+            )
+        }
     }
 }
 
@@ -212,50 +229,47 @@ fun PromoPriceCard(
     onPromoPriceClicked: () -> Unit = {}
 ) {
     val data = uiModel ?: return
-    Card(
+    ConstraintLayout(
         modifier = Modifier
-            .wrapContentHeight(),
-        backgroundColor = data.cardBackgroundColor.color
-    ) {
-
-        ConstraintLayout {
-            val (mainContent, superGraphic) = createRefs()
-
-            NestImage(
-                source = Remote(source = data.superGraphicIconUrl),
-                modifier = Modifier.constrainAs(superGraphic) {
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.absoluteRight)
-                    bottom.linkTo(parent.bottom)
-                    height = Dimension.fillToConstraints
-                }.graphicsLayer {
-                    scaleX = 1.2F
-                    scaleY = 1.2F
-                },
-                contentScale = ContentScale.None
+            .padding(8.dp)
+            .background(
+                data.cardBackgroundColor.color,
+                RoundedCornerShape(10.dp)
             )
+    ) {
+        val (mainContent, superGraphic) = createRefs()
 
-            Column(modifier = Modifier.constrainAs(mainContent) {
+        NestImage(
+            source = Remote(source = data.superGraphicIconUrl),
+            modifier = Modifier.constrainAs(superGraphic) {
                 top.linkTo(parent.top)
-                start.linkTo(parent.start)
+                end.linkTo(parent.absoluteRight)
                 bottom.linkTo(parent.bottom)
-                end.linkTo(parent.end)
-            }) {
-                PromoPriceHeader(
-                    mainIconUrl = data.mainIconUrl,
-                    promoPriceFmt = data.promoPriceFmt,
-                    promoSubtitle = data.promoSubtitle,
-                    mainTextColor = data.mainTextColor
-                )
-                DashDivider(
-                    separatorColor = data.separatorColor
-                )
-                PromoPriceFooter(
-                    priceAdditionalFmt = data.priceAdditionalFmt,
-                    slashPriceFmt = data.slashPriceFmt,
-                    boLogo = data.boIconUrl
-                )
-            }
+                height = Dimension.fillToConstraints
+            },
+            contentScale = ContentScale.Fit
+        )
+
+        Column(modifier = Modifier.constrainAs(mainContent) {
+            top.linkTo(parent.top)
+            start.linkTo(parent.start)
+            bottom.linkTo(parent.bottom)
+            end.linkTo(parent.end)
+        }) {
+            PromoPriceHeader(
+                mainIconUrl = data.mainIconUrl,
+                promoPriceFmt = data.promoPriceFmt,
+                promoSubtitle = data.promoSubtitle,
+                mainTextColor = data.mainTextColor
+            )
+            DashDivider(
+                separatorColor = data.separatorColor
+            )
+            PromoPriceFooter(
+                priceAdditionalFmt = data.priceAdditionalFmt,
+                slashPriceFmt = data.slashPriceFmt,
+                boLogo = data.boIconUrl
+            )
         }
     }
 }
@@ -277,7 +291,12 @@ fun DashDivider(separatorColor: String) {
 }
 
 val String.color
-    get() = Color(android.graphics.Color.parseColor(this))
+    @Composable
+    get() = try {
+        Color(android.graphics.Color.parseColor(this))
+    } catch (e: Throwable) {
+        NestTheme.colors.NN._0
+    }
 
 @Composable
 @Preview
@@ -286,8 +305,7 @@ fun PromoPriceCardPreview() {
         Surface(
             modifier = Modifier
                 .background(NestTheme.colors.NN._0)
-                .fillMaxSize()
-                .padding(16.dp),
+                .fillMaxSize(),
             contentColor = NestTheme.colors.NN._0
         ) {
             val egSuperGraphic =
@@ -310,14 +328,6 @@ fun PromoPriceCardPreview() {
                         boIconUrl = boLogo,
                         superGraphicIconUrl = egSuperGraphic,
                         applink = ""
-                    )
-                )
-
-                NormalPriceComponent(
-                    Price(
-                        priceFmt = "Rp.9.000.000",
-                        slashPriceFmt = "Rp.12.000.000",
-                        discPercentage = "30%"
                     )
                 )
             }

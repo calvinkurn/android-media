@@ -89,10 +89,6 @@ data class VariantChild(
     @Expose
     val subText: String = "",
 
-    @SerializedName("componentPriceType")
-    @Expose
-    val componentPriceType: Int = 0,
-
     @SerializedName("promo")
     @Expose
     val promoPrice: PromoPriceResponse = PromoPriceResponse(),

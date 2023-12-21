@@ -46,7 +46,7 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.Pro
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
-import com.tokopedia.product.detail.view.viewholder.promo_price.ProductPromoPriceUiModel
+import com.tokopedia.product.detail.view.viewholder.promo_price.ProductPriceUiModel
 
 interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductMostHelpfulReviewUiModel): Int
@@ -92,7 +92,7 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: APlusImageUiModel): Int
     fun type(data: BMGMUiModel): Int
     fun type(data: ShipmentUiModel): Int
-    fun type(data: ProductPromoPriceUiModel): Int
+    fun type(data: ProductPriceUiModel): Int
 
     // This is the new centralized recom widget model.
     // After migration, all recom widgets will only be mapped into this model

@@ -174,6 +174,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       name
                       parentName
                       isCOD
+                      isShowPrice
                       price {
                         value
                         priceFmt
@@ -293,6 +294,20 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         icon
                         text
                       }
+                    }
+                    ... on pdpDataComponentPromoPrice {
+                      promo {
+                        value
+                        iconURL
+                        productID
+                        promoPriceFmt
+                        subtitle
+                        applink
+                        color
+                        background
+                        superGraphicURL
+                      }
+                      componentPriceType
                     }
                     ... on pdpDataCategoryCarousel {
                         titleCarousel

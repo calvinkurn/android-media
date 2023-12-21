@@ -96,6 +96,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CARO
 import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
+import com.tokopedia.product.detail.view.viewholder.promo_price.ProductPriceUiModel
 import com.tokopedia.product.detail.view.viewholder.promo_price.ProductPromoPriceUiModel
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import com.tokopedia.product.share.ProductData
@@ -136,6 +137,14 @@ object DynamicProductDetailMapper {
         var firstAPlusMedia = true
         data.forEachIndexed { index, component ->
             when (component.type) {
+                ProductDetailConstant.PRICE -> {
+                    listOfComponent.add(
+                        ProductPriceUiModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
+                }
                 ProductDetailConstant.NOTIFY_ME -> {
                     listOfComponent.add(
                         ProductNotifyMeDataModel(
@@ -496,15 +505,6 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.SHIPMENT_V3 -> {
                     listOfComponent.add(
                         ShipmentUiModel(type = component.type, name = component.componentName)
-                    )
-                }
-
-                ProductDetailConstant.PRICE -> {
-                    listOfComponent.add(
-                        ProductPromoPriceUiModel(
-                            type = component.type,
-                            name = component.componentName
-                        )
                     )
                 }
             }

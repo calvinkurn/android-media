@@ -88,7 +88,7 @@ object ProductDetailConstant {
     const val PRODUCT_CONTENT = "product_content"
     const val ONGOING_CAMPAIGN = "ongoing_campaign"
     const val MEDIA = "product_media"
-    const val PRICE = "price"
+    const val PRICE = "promo_price"
     const val TOP_ADS = "banner_ads"
     const val REPORT = "report"
     const val MVC = "mvc"

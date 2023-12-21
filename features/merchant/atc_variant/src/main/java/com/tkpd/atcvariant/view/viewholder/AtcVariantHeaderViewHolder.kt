@@ -1,6 +1,5 @@
 package com.tkpd.atcvariant.view.viewholder
 
-import android.graphics.Paint
 import android.view.View
 import com.tkpd.atcvariant.R
 import com.tkpd.atcvariant.data.uidata.ProductHeaderData
@@ -37,10 +36,7 @@ class AtcVariantHeaderViewHolder(
     }
 
     private val productImage = view.findViewById<ImageUnify>(R.id.img_header_main)
-    private val productPrice = view.findViewById<Typography>(R.id.txt_header_main_price)
-    private val productSlashPrice = view.findViewById<Typography>(R.id.txt_header_slash_price)
     private val productStock = view.findViewById<Typography>(R.id.txt_header_stock)
-    private val labelDiscount = view.findViewById<Label>(R.id.lbl_header_discounted_percentage)
     private val iconEnlarge = view.findViewById<IconUnify>(R.id.ic_enlarge_img_header)
     private val widgetNormalPrice =
         view.findViewById<AtcVariantNormalPriceWidget>(R.id.widget_header_normal_price)
@@ -83,18 +79,21 @@ class AtcVariantHeaderViewHolder(
         cashbackPercentage: Int
     ) {
         if (headerData.promoPrice != null) {
-            renderPromoPriceWidget(headerData.promoPrice)
+            renderPromoPriceWidget(headerData.promoPrice, headerData.productMainPrice)
         } else {
             renderNormalPriceWidget(headerData, cashbackPercentage)
         }
     }
 
-    private fun renderPromoPriceWidget(promoPriceUiModel: PromoPriceUiModel) {
+    private fun renderPromoPriceWidget(promoPriceUiModel: PromoPriceUiModel,
+                                       originalPriceFmt: String
+    ) {
         widgetNormalPrice.hide()
         widgetPromoPrice.run {
             show()
             renderView(
-                promoPriceData = promoPriceUiModel
+                promoPriceData = promoPriceUiModel,
+                originalPriceFmt = originalPriceFmt
             )
         }
     }
@@ -147,26 +146,6 @@ class AtcVariantHeaderViewHolder(
             setOnClickListener {
                 listener.onVariantImageClicked(imgUrl)
             }
-        }
-    }
-
-    private fun renderNoCampaign(price: String) = with(view) {
-        labelDiscount?.hide()
-        productSlashPrice?.hide()
-        productPrice.text = price
-    }
-
-    private fun renderCampaignActive(headerData: ProductHeaderData) = with(view) {
-        productPrice.text = headerData.productMainPrice
-
-        productSlashPrice.shouldShowWithAction(headerData.productSlashPrice.isNotBlank()) {
-            productSlashPrice?.text = headerData.productSlashPrice
-            productSlashPrice.paintFlags =
-                productSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-        }
-
-        labelDiscount.shouldShowWithAction(headerData.shouldShowDiscPercentage) {
-            labelDiscount.text = headerData.productDiscountedPercentage
         }
     }
 }
