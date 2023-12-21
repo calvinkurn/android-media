@@ -36,7 +36,7 @@ class UsablePromoAdapter :
             oldItem: UsablePromoModel,
             newItem: UsablePromoModel
         ): Boolean {
-            return oldItem.icon == newItem.icon
+            return oldItem.text == newItem.text
         }
 
         override fun areContentsTheSame(

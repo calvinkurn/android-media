@@ -1,6 +1,7 @@
 package com.tokopedia.promousage.view.benefit
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
 import android.graphics.Color
@@ -15,8 +16,6 @@ import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.tokopedia.promousage.R
-import com.tokopedia.promousage.databinding.LayoutItemInfoBinding
 import com.tokopedia.promousage.databinding.PromoBenefitBottomsheetBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.parcelize.Parcelize
@@ -24,10 +23,10 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
 
-
     private var binding by autoClearedNullable<PromoBenefitBottomsheetBinding>()
     private lateinit var model: Param
     private val usablePromoAdapter = UsablePromoAdapter()
+    private val infoAdapter = AdditionalInfoAdapter()
 
     private var infoStateIsShown = true
 
@@ -49,18 +48,9 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
         return binding?.root
     }
 
+    @SuppressLint("DeprecatedMethod")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        val gradientDrawable = GradientDrawable().apply {
-//            shape = GradientDrawable.RECTANGLE
-//            cornerRadii =
-//                floatArrayOf(20f, 20f, 20f, 20f, 0f, 0f, 0f, 0f) // Top corners are rounded
-//            colors = intArrayOf(
-//                0xFFE53935.toInt(),
-//                0xFFFFCDD2.toInt(),
-//            ) // Red to Orange to White
-//            orientation = GradientDrawable.Orientation.BL_TR // 45-degree angle
-//        }
         binding?.run {
             val frameDialogView = container.parent as FrameLayout
             frameDialogView.setBackgroundColor(Color.TRANSPARENT)
@@ -83,16 +73,10 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
             topSection.background = drawable
             layoutBenefit.tvEstimate.text = model.estimatePrice
             layoutBenefit.tvBasePrice.text = model.basePrice
-            model.promoInfo.forEach {
-                val v = LayoutInflater.from(requireContext()).inflate(
-                    R.layout.layout_item_info, llInfo, false
-                )
-                val tv = LayoutItemInfoBinding.bind(v)
-                tv.text.text = buildString {
-                    append("• ")
-                    append(it)
-                }
-                llInfo.addView(tv.root)
+
+            rvInfo.run {
+                adapter = infoAdapter
+                infoAdapter.submitList(model.promoInfo)
             }
             icClose.setOnClickListener {
                 dismiss()
@@ -109,7 +93,7 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
                 animator.start()
 
                 infoStateIsShown = !infoStateIsShown
-                llInfo.isVisible = infoStateIsShown
+                rvInfo.isVisible = infoStateIsShown
             }
         }
     }

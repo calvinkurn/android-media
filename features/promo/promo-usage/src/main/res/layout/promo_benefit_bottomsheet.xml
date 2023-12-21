@@ -76,26 +76,26 @@
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_4" />
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/ll_info"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_info"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/typography2"
             app:layout_constraintTop_toBottomOf="@+id/typography2">
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.recyclerview.widget.RecyclerView>
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/toggle_info"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:padding="4dp"
             android:layout_marginEnd="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
             app:icon_name="CHEVRON_UP"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
