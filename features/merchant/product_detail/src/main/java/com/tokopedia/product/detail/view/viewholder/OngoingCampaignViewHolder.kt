@@ -1,7 +1,9 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
@@ -35,22 +37,18 @@ class OngoingCampaignViewHolder(
         val data = element.data ?: return
 
         if (element.isNpl()) {
-            campaignRibbon.hide()
+            campaignRibbon.setLayoutHeight(Int.ZERO)
         } else {
-            when (data.campaign.campaignIdentifier) {
-                CampaignRibbon.NO_CAMPAIGN -> campaignRibbon.hide()
-                CampaignRibbon.THEMATIC_CAMPAIGN -> campaignRibbon.renderOnGoingCampaign(data)
-                else -> campaignRibbon.renderOnGoingCampaign(data)
-            }
-        }
+            campaignRibbon.renderOnGoingCampaign(data)
 
-        itemView.addOnImpressionListener(
-            holder = element.impressHolder,
-            holders = listener.getImpressionHolders(),
-            name = element.data?.hashCode().toString(),
-            useHolders = listener.isRemoteCacheableActive()
-        ) {
-            listener.onImpressComponent(getComponentTrackData(element))
+            itemView.addOnImpressionListener(
+                holder = element.impressHolder,
+                holders = listener.getImpressionHolders(),
+                name = element.data?.hashCode().toString(),
+                useHolders = listener.isRemoteCacheableActive()
+            ) {
+                listener.onImpressComponent(getComponentTrackData(element))
+            }
         }
     }
 }

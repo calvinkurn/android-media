@@ -1,12 +1,14 @@
-package com.tokopedia.product.detail.view.widget.campaign.component
+package com.tokopedia.product.detail.view.util
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 /**
- * Created by yovi.putra on 20/12/23"
+ * Created by yovi.putra on 21/12/23"
  * Project name: android-tokopedia-core
  **/
 

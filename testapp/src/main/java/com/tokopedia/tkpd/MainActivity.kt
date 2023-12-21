@@ -157,6 +157,9 @@ class MainActivity : BaseActivity() {
     private fun getDefaultAppLink(): String {
         /*
          * Put your default applink here
+         * productID modulo 3 == 0 -> gaada promo ->
+         * productID modulo 3 == 1 -> promo merah -> 2150935267
+         * productID modulo 3 == 2 -> promo hijau -> 2150931887
          */
         return ""
     }

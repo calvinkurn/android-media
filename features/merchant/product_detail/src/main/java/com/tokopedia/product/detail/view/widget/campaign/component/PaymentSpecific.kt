@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestNN
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.product.detail.view.util.asHtmlLink
 
 @Composable
 fun PaymentSpecific(description: String, modifier: Modifier = Modifier) {

@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
@@ -16,6 +17,9 @@ data class CampaignModular(
     val campaignType: String = "",
     @SerializedName("campaignTypeName")
     val campaignTypeName: String = "",
+    @SerializedName("campaignLogo")
+    @Expose
+    val campaignLogo: String = "",
     @SerializedName("discountedPrice")
     val discountedPrice: Double = 0.0,
     @SerializedName("endDate")

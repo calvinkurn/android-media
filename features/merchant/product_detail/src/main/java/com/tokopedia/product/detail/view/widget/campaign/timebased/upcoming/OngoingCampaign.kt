@@ -20,7 +20,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.product.detail.view.widget.campaign.component.CampaignName
 import com.tokopedia.product.detail.view.widget.campaign.component.CampaignStockPercentage
 import com.tokopedia.product.detail.view.widget.campaign.component.CampaignTimer
-import com.tokopedia.product.detail.view.widget.campaign.component.asHtmlLink
+import com.tokopedia.product.detail.view.util.asHtmlLink
 import com.tokopedia.product.detail.view.widget.campaign.component.backgroundColor
 import com.tokopedia.product.detail.view.widget.campaign.timebased.upcoming.OngoingCampaignUiModel
 
