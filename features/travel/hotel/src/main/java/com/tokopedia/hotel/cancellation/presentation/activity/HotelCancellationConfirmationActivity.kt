@@ -13,7 +13,7 @@ import com.tokopedia.hotel.cancellation.di.DaggerHotelCancellationComponent
 import com.tokopedia.hotel.cancellation.di.HotelCancellationComponent
 import com.tokopedia.hotel.cancellation.presentation.fragment.HotelCancellationConfirmationFragment
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
-import kotlinx.android.synthetic.main.activity_hotel_cancellation_confirmation.*
+import com.tokopedia.hotel.databinding.ActivityHotelCancellationConfirmationBinding
 
 /**
  * @author by jessica on 08/05/20
@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.activity_hotel_cancellation_confirmation.*
 
 class HotelCancellationConfirmationActivity : HotelBaseActivity(), HasComponent<HotelCancellationComponent> {
 
+    private var binding: ActivityHotelCancellationConfirmationBinding? = null
     private var cancellationSubmitParam: HotelCancellationSubmitParam? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,12 +29,18 @@ class HotelCancellationConfirmationActivity : HotelBaseActivity(), HasComponent<
             cancellationSubmitParam = getParcelableExtra(EXTRA_HOTEL_CANCELLATION_SUBMIT_PARAM)
         }
         super.onCreate(savedInstanceState)
+        setupViewBinding()
 
-        hotel_cancellation_confirmation_header.isShowBackButton = false
+        binding?.hotelCancellationConfirmationHeader?.isShowBackButton = false
+    }
+
+    private fun setupViewBinding() {
+        binding = ActivityHotelCancellationConfirmationBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
     }
 
     fun setPageTitle(title: String) {
-        hotel_cancellation_confirmation_header.title = title
+        binding?.hotelCancellationConfirmationHeader?.title = title
     }
 
     override fun shouldShowOptionMenu(): Boolean = false

@@ -85,7 +85,6 @@ import com.tokopedia.home_account.ui.accountsettings.AccountSettingActivity
 import com.tokopedia.home_account.ui.fundsAndInvestment.FundsAndInvestmentComposeActivity
 import com.tokopedia.home_account.ui.mediaquality.MediaQualitySettingActivity
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
-import com.tokopedia.home_account.view.activity.FundsAndInvestmentActivity
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
@@ -1284,15 +1283,7 @@ open class HomeAccountUserFragment :
     }
 
     private fun goToFundsAndInvestment() {
-        val fundsInvestmentComposeRollence = abTest
-            .getString(DeeplinkMapperUser.ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE).isNotEmpty()
-        val directionActivity = if (fundsInvestmentComposeRollence) {
-            FundsAndInvestmentComposeActivity::class.java
-        } else {
-            FundsAndInvestmentActivity::class.java
-        }
-
-        val intent = Intent(activity, directionActivity)
+        val intent = Intent(activity, FundsAndInvestmentComposeActivity::class.java)
         startActivity(intent)
     }
 

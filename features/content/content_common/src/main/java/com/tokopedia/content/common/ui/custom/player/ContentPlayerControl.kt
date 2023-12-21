@@ -1,15 +1,15 @@
-package com.tokopedia.feedplus.presentation.customview
+package com.tokopedia.content.common.ui.custom.player
 
 import android.content.Context
 import android.util.AttributeSet
 import com.google.android.exoplayer2.ui.PlayerControlView
-import com.google.android.exoplayer2.ui.R
+import com.google.android.exoplayer2.ui.R as exoplayeruiR
 import com.google.android.exoplayer2.ui.TimeBar
 
 /**
  * Created by kenny.hadisaputra on 04/04/23
  */
-class FeedPlayerControl : PlayerControlView {
+class ContentPlayerControl : PlayerControlView {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -26,36 +26,36 @@ class FeedPlayerControl : PlayerControlView {
         playbackAttrs: AttributeSet?
     ) : super(context, attrs, defStyleAttr, playbackAttrs)
 
-    private val timeBar: FeedTimeBar = findViewById(R.id.exo_progress)
+    private val timeBar: ContentTimeBar = findViewById(exoplayeruiR.id.exo_progress)
 
     private var mListener: Listener? = null
 
     init {
         timeBar.addListener(object : TimeBar.OnScrubListener {
             override fun onScrubStart(timeBar: TimeBar, position: Long) {
-                val player = this@FeedPlayerControl.player ?: return
+                val player = this@ContentPlayerControl.player ?: return
 
                 mListener?.onScrubbing(
-                    this@FeedPlayerControl,
+                    this@ContentPlayerControl,
                     position,
                     player.contentDuration,
                 )
             }
 
             override fun onScrubMove(timeBar: TimeBar, position: Long) {
-                val player = this@FeedPlayerControl.player ?: return
+                val player = this@ContentPlayerControl.player ?: return
 
                 mListener?.onScrubbing(
-                    this@FeedPlayerControl,
+                    this@ContentPlayerControl,
                     position,
                     player.contentDuration,
                 )
             }
 
             override fun onScrubStop(timeBar: TimeBar, position: Long, canceled: Boolean) {
-                val player = this@FeedPlayerControl.player ?: return
+                val player = this@ContentPlayerControl.player ?: return
                 mListener?.onStopScrubbing(
-                    this@FeedPlayerControl,
+                    this@ContentPlayerControl,
                     position,
                     player.contentDuration,
                 )
