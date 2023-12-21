@@ -18,7 +18,7 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.Editor.Main"
             android:name="com.tokopedia.editor.ui.main.MainEditorActivity"
             android:exported="false"
-            android:label="Preview"
+            android:label="Universal Editor"
             android:screenOrientation="portrait">
 
             <intent-filter>
@@ -36,19 +36,17 @@
 
         <activity
             android:windowSoftInputMode="stateAlwaysVisible"
-            android:noHistory="true"
             android:name="com.tokopedia.editor.ui.text.InputTextActivity"
             android:exported="false"
-            android:label="Preview"
+            android:label="Input Text"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.Editor.InputText"/>
 
         <activity
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.Editor.Main"
-            android:noHistory="true"
             android:name="com.tokopedia.editor.ui.placement.PlacementImageActivity"
             android:exported="false"
-            android:label="Preview"
+            android:label="Placement Media"
             android:screenOrientation="portrait"/>
     </application>
 
