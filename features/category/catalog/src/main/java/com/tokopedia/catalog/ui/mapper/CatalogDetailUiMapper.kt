@@ -188,7 +188,9 @@ class CatalogDetailUiMapper @Inject constructor(
                 heroSlide.subtitle
             }.orEmpty(),
             brandIconUrl = data?.hero?.brandLogoUrl.orEmpty(),
-            widgetTextColor = getColorDarkMode(context, darkMode,
+            widgetTextColor = getColorDarkMode(
+                context,
+                darkMode,
                 catalogR.color.catalog_dms_dark_color_banner,
                 catalogR.color.catalog_dms_light_color_banner
             )
@@ -204,10 +206,13 @@ class CatalogDetailUiMapper @Inject constructor(
                     id = it.desc,
                     icon = it.iconUrl,
                     name = it.desc,
-                    backgroundColor = getColorDarkMode(context, isDarkMode,
+                    backgroundColor = getColorDarkMode(
+                        context,
+                        isDarkMode,
                         catalogR.color.catalog_dms_dark_color,
                         catalogR.color.catalog_dms_light_color,
-                        20),
+                        20
+                    ),
                     textColor = getTextColor(isDarkMode)
                 )
             }.orEmpty()
@@ -259,9 +264,12 @@ class CatalogDetailUiMapper @Inject constructor(
     private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToCharacteristic(
         isDarkMode: Boolean
     ): CharacteristicUiModel {
-        val textColor = getColorDarkMode(context, isDarkMode,
+        val textColor = getColorDarkMode(
+            context,
+            isDarkMode,
             catalogR.color.catalog_dms_dark_color_text_description,
-            catalogR.color.catalog_dms_light_color_text_description)
+            catalogR.color.catalog_dms_light_color_text_description
+        )
         return CharacteristicUiModel(
             items = data?.characteristic.orEmpty().map {
                 CharacteristicUiModel.ItemCharacteristicUiModel(
@@ -284,18 +292,24 @@ class CatalogDetailUiMapper @Inject constructor(
                     textHighlight = it.subtitle,
                     textTitle = it.title,
                     textDescription = it.desc,
-                    textHighlightColor = getColorDarkMode(context, isDarkMode,
+                    textHighlightColor = getColorDarkMode(
+                        context,
+                        isDarkMode,
                         catalogR.color.catalog_dms_dark_color_banner,
-                        catalogR.color.catalog_dms_light_color_banner),
+                        catalogR.color.catalog_dms_light_color_banner
+                    ),
                     textTitleColor = getColorDarkMode(
                         context,
                         isDarkMode,
                         catalogR.color.catalog_dms_dark_color_image_text,
                         catalogR.color.catalog_dms_light_color_image_text
                     ),
-                    textDescriptionColor = getColorDarkMode(context, isDarkMode,
+                    textDescriptionColor = getColorDarkMode(
+                        context,
+                        isDarkMode,
                         catalogR.color.catalog_dms_dark_color_banner,
-                        catalogR.color.catalog_dms_light_color_banner)
+                        catalogR.color.catalog_dms_light_color_banner
+                    )
                 )
             }
         )
@@ -432,12 +446,14 @@ class CatalogDetailUiMapper @Inject constructor(
                         isDarkMode,
                         catalogR.color.catalog_dms_dark_color,
                         catalogR.color.catalog_dms_light_color,
-                        20),
+                        20
+                    ),
                     descColor = getColorDarkMode(
                         context,
                         isDarkMode,
                         catalogR.color.catalog_dms_dark_color_text_description,
-                        catalogR.color.catalog_dms_light_color_text_description),
+                        catalogR.color.catalog_dms_light_color_text_description
+                    ),
                     titleColor = getColorDarkMode(
                         context,
                         isDarkMode,
@@ -474,9 +490,11 @@ class CatalogDetailUiMapper @Inject constructor(
                                 isSpecCategoryTitle = false,
                                 specTitle = if (isFirstData) rowItem.key else "",
                                 specValue = rowItem.value.ifEmpty { "-" },
-                                specTextTitleColor = getTextColor(isDarkMode,
+                                specTextTitleColor = getTextColor(
+                                    isDarkMode,
                                     lightModeColor = catalogR.color.catalog_dms_light_color_text_description,
-                                    darkModeColor = catalogR.color.catalog_dms_dark_color_text_description),
+                                    darkModeColor = catalogR.color.catalog_dms_dark_color_text_description
+                                ),
                                 isDarkMode = isDarkMode
                             )
                             comparisonSpecs.add(insertedItem)
@@ -534,6 +552,7 @@ class CatalogDetailUiMapper @Inject constructor(
             .orEmpty()
             .flatMap { it.row }
 
+        // Map column info based on their type
         return if (infoColumn.isEmpty()) {
             BlankUiModel()
         } else if (columnType == COLUMN_TITLE_ON_3_COLUMN_TYPE || columnType == CELL_TITLE_ON_3_COLUMN_TYPE) {
@@ -571,7 +590,7 @@ class CatalogDetailUiMapper @Inject constructor(
                         rowData = it.row.map { row ->
                             Pair(row.key, row.value)
                         },
-                        rowColor = getColumnInfoTextColor(darkMode)
+                        rowColor = getColumnInfoBottomSheetTextColor()
                     )
                 }
         )
@@ -613,7 +632,7 @@ class CatalogDetailUiMapper @Inject constructor(
                         rowData = it.row.map { row ->
                             Pair(row.value, "")
                         },
-                        rowColor = getColumnInfoTextColor(darkMode)
+                        rowColor = getColumnInfoBottomSheetValueOnlyTextColor()
                     )
                 }
         )
@@ -652,7 +671,11 @@ class CatalogDetailUiMapper @Inject constructor(
                                 Pair(row.key, row.value)
                             }
                         },
-                        rowColor = getColumnInfoTextColor(darkMode)
+                        rowColor = if (columnType == COLUMN_TITLE_ON_3_COLUMN_TYPE) {
+                            getColumnInfoBottomSheetValueOnlyTextColor()
+                        } else {
+                            getColumnInfoBottomSheetTextColor()
+                        }
                     )
                 }
         )
@@ -711,6 +734,16 @@ class CatalogDetailUiMapper @Inject constructor(
                 catalogR.color.catalog_dms_column_info_value_color_light
             }
         )
+    )
+
+    private fun getColumnInfoBottomSheetTextColor() = Pair(
+        MethodChecker.getColor(context, catalogR.color.catalog_dms_light_color_text_description),
+        MethodChecker.getColor(context, catalogR.color.catalog_dms_column_info_value_color_light)
+    )
+
+    private fun getColumnInfoBottomSheetValueOnlyTextColor() = Pair(
+        MethodChecker.getColor(context, catalogR.color.catalog_dms_column_info_value_color_light),
+        MethodChecker.getColor(context, catalogR.color.catalog_dms_column_info_value_color_light)
     )
 
     fun isUsingAboveV4Layout(version: Int): Boolean {
