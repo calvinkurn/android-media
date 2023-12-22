@@ -45,9 +45,7 @@ fun ExploreCategoryItem(
     }
 
     NestCard(
-        modifier = Modifier
-            .height(147.dp)
-            .fillMaxWidth(),
+        modifier = Modifier.height(147.dp),
         enableBounceAnimation = true,
         type = nestCardType,
         onClick = onClick
@@ -69,9 +67,7 @@ fun ExploreCategoryItem(
             // the reason using old approach, we need to avoid the intermittent crash causes coil-compose
             NestImage(
                 imageUrl = exploreCategoryUiModel.categoryImageUrl,
-                modifier = Modifier
-                    .height(84.dp)
-                    .fillMaxWidth()
+                modifier = Modifier.height(84.dp)
             )
         }
     }

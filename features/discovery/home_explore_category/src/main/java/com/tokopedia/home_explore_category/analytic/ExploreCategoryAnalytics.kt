@@ -32,7 +32,7 @@ import javax.inject.Inject
 
 class ExploreCategoryAnalytics @Inject constructor(
     private val userSession: UserSessionInterface
-): BaseTrackerConst() {
+) : BaseTrackerConst() {
 
     private fun createEventMap(
         event: String,
@@ -148,13 +148,13 @@ class ExploreCategoryAnalytics @Inject constructor(
                 id = subExploreCategory.id,
                 name = categoryName,
                 promoIds = Label.NONE,
-                promoCodes = Label.NONE,
+                promoCodes = Label.NONE
             )
         )
 
         return trackingBuilder.constructBasicPromotionView(
             event = PROMO_VIEW,
-            eventAction = "impression $categoryName",
+            eventAction = "impression - $categoryName",
             eventCategory = ALL_CATEGORY_PAGE,
             eventLabel = subExploreCategory.id,
             promotions = promotionList
