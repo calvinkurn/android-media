@@ -3,6 +3,7 @@ package com.tokopedia.shareexperience.ui.adapter.viewholder.chip
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.shareexperience.databinding.ShareexperienceChipItemBinding
+import com.tokopedia.shareexperience.ui.listener.ShareExBottomSheetListener
 import com.tokopedia.shareexperience.ui.listener.ShareExChipsListener
 import com.tokopedia.shareexperience.ui.model.chip.ShareExChipUiModel
 import com.tokopedia.unifycomponents.ChipsUnify.Companion.TYPE_NORMAL
@@ -11,14 +12,16 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShareExChipViewHolder(
     itemView: View,
-    private val listener: ShareExChipsListener
+    private val chipsListener: ShareExChipsListener,
+    private val bottomSheetListener: ShareExBottomSheetListener
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val binding: ShareexperienceChipItemBinding? by viewBinding()
 
     init {
         binding?.shareexChip?.setOnClickListener {
-            listener.onClickChip(bindingAdapterPosition)
+            chipsListener.onClickChip(bindingAdapterPosition)
+            bottomSheetListener.updateShareBody(bindingAdapterPosition)
         }
     }
 

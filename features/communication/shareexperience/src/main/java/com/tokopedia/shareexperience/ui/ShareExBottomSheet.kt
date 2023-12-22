@@ -17,13 +17,14 @@ import com.tokopedia.shareexperience.ui.adapter.ShareExBottomSheetAdapter
 import com.tokopedia.shareexperience.ui.adapter.decoration.ShareExBottomSheetSpacingItemDecoration
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactoryImpl
+import com.tokopedia.shareexperience.ui.listener.ShareExBottomSheetListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ShareExBottomSheet: BottomSheetUnify() {
+class ShareExBottomSheet : BottomSheetUnify(), ShareExBottomSheetListener {
 
     @Inject
     lateinit var viewModel: ShareExViewModel
@@ -31,7 +32,7 @@ class ShareExBottomSheet: BottomSheetUnify() {
     private var viewBinding by autoClearedNullable<ShareexperienceBottomSheetBinding>()
     private val adapter by lazy {
         ShareExBottomSheetAdapter(
-            ShareExTypeFactoryImpl()
+            ShareExTypeFactoryImpl(this)
         )
     }
 
@@ -72,7 +73,7 @@ class ShareExBottomSheet: BottomSheetUnify() {
     }
 
     private fun setTitle() {
-        bottomSheetTitle.text = "Bagikan ke teman kamu" //TODO: change to data from BE
+        bottomSheetTitle.text = "Bagikan ke teman kamu" // TODO: change to data from BE
     }
 
     private fun initializeRecyclerView() {
@@ -111,5 +112,9 @@ class ShareExBottomSheet: BottomSheetUnify() {
 
     private fun setBottomSheetData(newList: List<Visitable<in ShareExTypeFactory>>) {
         adapter.updateItems(newList)
+    }
+
+    override fun updateShareBody(position: Int) {
+        viewModel.processAction(ShareExBottomSheetAction.UpdateShareBody(position))
     }
 }

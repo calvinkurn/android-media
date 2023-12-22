@@ -8,8 +8,8 @@ import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import timber.log.Timber
 
 class ShareExBottomSheetAdapter(
-    private val typeFactory: ShareExTypeFactory
-): BaseListAdapter<Visitable<in ShareExTypeFactory>, ShareExTypeFactory>(typeFactory) {
+    typeFactory: ShareExTypeFactory
+) : BaseListAdapter<Visitable<in ShareExTypeFactory>, ShareExTypeFactory>(typeFactory) {
 
     fun updateItems(newList: List<Visitable<in ShareExTypeFactory>>) {
         try {

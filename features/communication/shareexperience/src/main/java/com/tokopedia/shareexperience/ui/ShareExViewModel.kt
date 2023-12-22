@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shareexperience.data.dto.request.ShareExProductRequest
 import com.tokopedia.shareexperience.data.util.ShareExPageTypeEnum
+import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.model.ShareExAffiliateRegistrationUiModel
@@ -37,6 +38,7 @@ class ShareExViewModel @Inject constructor(
     private val _actionFlow =
         MutableSharedFlow<ShareExBottomSheetAction>(extraBufferCapacity = 16)
 
+    private var _bottomSheetModel: ShareExBottomSheetModel? = null // Cache the model for body switching
     private val _bottomSheetUiState = MutableStateFlow(ShareExBottomSheetUiState())
     val bottomSheetUiState = _bottomSheetUiState.asStateFlow()
 
@@ -55,6 +57,9 @@ class ShareExViewModel @Inject constructor(
             when (it) {
                 is ShareExBottomSheetAction.InitializePage -> {
                     setDummyData()
+                }
+                is ShareExBottomSheetAction.UpdateShareBody -> {
+                    updateShareBottomSheetBody(it.position)
                 }
             }
         }.launchIn(viewModelScope)
@@ -150,10 +155,11 @@ class ShareExViewModel @Inject constructor(
 //        dummyList.add(commonChannel)
 
         viewModelScope.launch {
+            _bottomSheetModel = ShareExBottomSheetModel()
             _bottomSheetUiState.update {
                 it.copy(uiModelList = dummyList)
             }
-            delay(5000)
+            delay(10000)
             getShareBottomSheetData()
         }
     }
@@ -167,10 +173,28 @@ class ShareExViewModel @Inject constructor(
                         id = 2150412049
                     )
                 ).collect {
+                    _bottomSheetModel = it
                     val uiResult = it.map()
                     _bottomSheetUiState.update { uiState ->
                         uiState.copy(
                             uiModelList = uiResult
+                        )
+                    }
+                }
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+            }
+        }
+    }
+
+    private fun updateShareBottomSheetBody(position: Int) {
+        viewModelScope.launch {
+            try {
+                _bottomSheetModel?.let { bottomSheetModel ->
+                    val updatedUiResult = bottomSheetModel.map(position = position)
+                    _bottomSheetUiState.update { uiState ->
+                        uiState.copy(
+                            uiModelList = updatedUiResult
                         )
                     }
                 }
