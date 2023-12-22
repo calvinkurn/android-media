@@ -250,19 +250,19 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
-    <com.tokopedia.feedplus.presentation.customview.FeedPlayerControl
+    <com.tokopedia.content.common.ui.custom.player.ContentPlayerControl
         android:id="@+id/player_control"
         android:layout_width="0dp"
         android:layout_height="16dp"
         android:layout_marginBottom="2dp"
         android:translationY="6dp"
-        app:controller_layout_id="@layout/feed_video_player_control"
+        app:controller_layout_id="@layout/content_video_player_control"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:show_timeout="-1" />
 
-    <com.tokopedia.feedplus.presentation.customview.FeedVideoTimeView
+    <com.tokopedia.content.common.ui.custom.player.ContentVideoTimeView
         android:id="@+id/video_time_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

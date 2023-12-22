@@ -183,6 +183,8 @@ class DigitalPDPPulsaFragment :
     private var loader: LoaderDialog? = null
     private var isAlreadyTrackImpressionMultiButton: Boolean = false
 
+    private var onRenderProductsGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener? = null
+
     private val remoteConfig: RemoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
     }
@@ -1364,8 +1366,6 @@ class DigitalPDPPulsaFragment :
         performanceMonitoring.stopRenderPerformanceMonitoring()
         stopPageMonitoring()
     }
-
-    private var onRenderProductsGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener? = null
 
     private fun startProductsRenderMonitoring() {
         startRenderMonitoring()

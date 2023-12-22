@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="16dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/searchInappropriateImage"
+        android:layout_width="220dp"
+        android:layout_height="165dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/searchInappropriateTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchInappropriateImage"
+        app:typographyType="heading_2"
+        android:textColor="@color/Unify_NN950"
+        android:gravity="center"
+        android:text="@string/search_result_product_inappropriate_title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/searchInappropriateDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchInappropriateTitle"
+        app:typographyType="paragraph_2"
+        android:textColor="@color/Unify_NN600"
+        android:text="@string/search_result_product_inappropriate_description_twenty_one" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/searchInappropriateNonActiveButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/search_result_product_inappropriate_button_inactive"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchInappropriateDescription"
+        app:unifyButtonSize="medium" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

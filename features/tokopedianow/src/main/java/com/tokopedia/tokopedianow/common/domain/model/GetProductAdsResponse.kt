@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.common.domain.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.data.model.response.Header
 
@@ -123,7 +124,7 @@ data class GetProductAdsResponse(
         val priceFormat: String,
         @SerializedName("price_range")
         val priceRange: String,
-        @SerializedName("wholesale_price")
+        @SuppressLint("Invalid Data Type") @SerializedName("wholesale_price")
         val wholesalePrice: List<String> = emptyList(),
         @SerializedName("count_talk_format")
         val countTalkFormat: String,
@@ -163,6 +164,8 @@ data class GetProductAdsResponse(
         val parentId: String,
         @SerializedName("max_order")
         val maxOrder: Int,
+        @SerializedName("warehouse_id")
+        val warehouseId: String,
         @SerializedName("stock")
         val stock: Int
     )

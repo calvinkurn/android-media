@@ -45,6 +45,8 @@ import com.tokopedia.discovery2.repository.section.SectionGQLRepository
 import com.tokopedia.discovery2.repository.section.SectionRepository
 import com.tokopedia.discovery2.repository.shopcard.ShopCardGQLRepository
 import com.tokopedia.discovery2.repository.shopcard.ShopCardRepository
+import com.tokopedia.discovery2.repository.supportingbrand.SupportingBrandGQLRepository
+import com.tokopedia.discovery2.repository.supportingbrand.SupportingBrandRepository
 import com.tokopedia.discovery2.repository.tabs.TabsGQLRepository
 import com.tokopedia.discovery2.repository.tabs.TabsRepository
 import com.tokopedia.discovery2.repository.topads.TopAdsHeadlineRepository
@@ -252,4 +254,9 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     fun provideRemoteConfig(
         @ApplicationContext context: Context
     ): RemoteConfig = FirebaseRemoteConfigImpl(context)
+
+    @Provides
+    fun provideSupportingBrandRepository(): SupportingBrandRepository {
+        return SupportingBrandGQLRepository()
+    }
 }

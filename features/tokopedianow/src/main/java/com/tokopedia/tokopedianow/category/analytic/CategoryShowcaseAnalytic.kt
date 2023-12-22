@@ -215,7 +215,7 @@ class CategoryShowcaseAnalytic(
     fun sendClickArrowButtonShowcaseLEvent(
         categoryIdL1: String,
         categoryIdL2: String,
-        warehouseId: String,
+        warehouseIds: String,
         headerName: String
     ) {
         Tracker.Builder()
@@ -224,7 +224,7 @@ class CategoryShowcaseAnalytic(
             .setEventCategory(EVENT_CATEGORY_PAGE_L1)
             .setEventLabel(joinDash(categoryIdL1, categoryIdL2, headerName.trim()))
             .setCustomProperty(KEY_TRACKER_ID, ID_CLICK_ARROW_BUTTON_SHOWCASE)
-            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseId)
+            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseIds)
             .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
             .build()

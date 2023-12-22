@@ -1,7 +1,5 @@
 package com.tokopedia.home_component.util
 
-import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
-
 object ChannelStyleUtil {
     private const val KEY_DIVIDER_SIZE = "dividerSize"
     const val DEFAULT_DIVIDER_SIZE = 1
@@ -15,6 +13,8 @@ object ChannelStyleUtil {
     const val IMAGE_STYLE_DEFAULT = ""
 
     private const val KEY_WITH_SUBTITLE = "withSubtitle"
+
+    private const val KEY_HIDE_TIMER = "hideTimer"
 
     private fun String.parseStyleParamAsMap(): Map<String, String> {
         return split("&").associate {
@@ -66,6 +66,15 @@ object ChannelStyleUtil {
         return try {
             val map = this.parseStyleParamAsMap()
             map[KEY_WITH_SUBTITLE].toBoolean()
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    fun String.isHideTimer(): Boolean {
+        return try {
+            val map = this.parseStyleParamAsMap()
+            map[KEY_HIDE_TIMER].toBoolean()
         } catch (_: Exception) {
             false
         }

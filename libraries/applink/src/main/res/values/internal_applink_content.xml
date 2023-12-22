@@ -20,6 +20,7 @@
     <string name="path_profile_detail" translatable="false">/.*\</string>
     <string name="path_profile_following" translatable="false">/.*/following\</string>
     <string name="path_profile_followers" translatable="false">/.*/followers\</string>
+    <string name="path_stories_creation" translatable="false">/creation</string>
 
     <string name="host_stories" translatable="false">stories</string>
     <string name="path_stories_shop" translatable="false">/shop/.*\</string>

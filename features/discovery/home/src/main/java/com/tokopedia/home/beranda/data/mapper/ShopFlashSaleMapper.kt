@@ -11,11 +11,13 @@ import com.tokopedia.home_component.model.TrackingAttributionModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselProductCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselViewAllCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
+import com.tokopedia.home_component.util.ChannelStyleUtil.isHideTimer
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleTimerDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleErrorDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleProductGridShimmerDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabDataModel
+import com.tokopedia.home_component.widget.shop_tab.ShopTabDataModel
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.unifycomponents.CardUnify2
@@ -32,6 +34,11 @@ object ShopFlashSaleMapper {
         channel: DynamicHomeChannel.Channels,
         verticalPosition: Int,
     ): ShopFlashSaleWidgetDataModel {
+        val timer = if(channel.styleParam.isHideTimer()) {
+            null
+        } else {
+            ShopFlashSaleTimerDataModel(isLoading = true)
+        }
         return ShopFlashSaleWidgetDataModel(
             id = channel.id,
             channelHeader = channel.header.mapToHomeComponentHeader(),
@@ -41,14 +48,35 @@ object ShopFlashSaleMapper {
                 mapGrids = false
             ),
             tabList = channel.grids.mapIndexed { index, grid ->
-                ShopFlashSaleTabDataModel(
-                    grid.mapToChannelGrid(index),
-                    channel.mapToTrackingAttributionModel(verticalPosition),
-                    index == 0
-                )
+                mapShopFlashSaleTabModel(channel, verticalPosition, grid, index)
             },
-            timer = ShopFlashSaleTimerDataModel(isLoading = true),
+            timer = timer,
             itemList = ShopFlashSaleProductGridShimmerDataModel.getAsList(),
+        )
+    }
+
+    private fun mapShopFlashSaleTabModel(
+        channel: DynamicHomeChannel.Channels,
+        verticalPosition: Int,
+        grid: DynamicHomeChannel.Grid,
+        index: Int
+    ): ShopFlashSaleTabDataModel {
+        val isActivated = index == 0
+        return ShopFlashSaleTabDataModel(
+            grid.mapToChannelGrid(index, useDtAsShopBadge = true),
+            channel.mapToTrackingAttributionModel(verticalPosition),
+            isActivated,
+            mapShopTabModel(grid, isActivated)
+        )
+    }
+
+    private fun mapShopTabModel(grid: DynamicHomeChannel.Grid, isActivated: Boolean): ShopTabDataModel {
+        return ShopTabDataModel(
+            id = grid.id,
+            shopName = grid.name,
+            imageUrl = grid.imageUrl,
+            badgesUrl = grid.badges.getOrNull(0)?.imageUrl.orEmpty(),
+            isActivated = isActivated
         )
     }
 
@@ -66,9 +94,14 @@ object ShopFlashSaleMapper {
                 addAll(getProducts(recomWidget, trackingModel))
                 add(getViewAllCard(trackingModel, recomWidget.seeMoreAppLink, currentDataModel))
             }
+            val timer = if(currentDataModel.channelModel.channelConfig.styleParam.isHideTimer()) {
+                null
+            } else {
+                ShopFlashSaleTimerDataModel(recomWidget.endDate, isLoading = false)
+            }
             currentDataModel.copy(
                 itemList = carouselList,
-                timer = ShopFlashSaleTimerDataModel(recomWidget.endDate, isLoading = false),
+                timer = timer
             )
         } else {
             getLoadingShopFlashSale(currentDataModel)
@@ -78,7 +111,7 @@ object ShopFlashSaleMapper {
     fun getLoadingShopFlashSale(currentDataModel: ShopFlashSaleWidgetDataModel): ShopFlashSaleWidgetDataModel {
         return currentDataModel.copy(
             itemList = ShopFlashSaleProductGridShimmerDataModel.getAsList(),
-            timer = ShopFlashSaleTimerDataModel(isLoading = true)
+            timer = currentDataModel.timer?.copy(isLoading = true)
         )
     }
 

@@ -14,6 +14,7 @@ import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 
 interface FeedListener {
     fun isMuted(): Boolean
+    fun checkLiveStatus(channelId: String)
 
     fun onMenuClicked(
         id: String,
@@ -108,6 +109,8 @@ interface FeedListener {
      * Video
      */
     fun getVideoPlayer(id: String): FeedExoPlayer
+
+    fun isAllowedToPlayVideo(): Boolean
 
     fun detachPlayer(player: FeedExoPlayer)
     fun onPauseVideoPost(trackerModel: FeedTrackerDataModel)

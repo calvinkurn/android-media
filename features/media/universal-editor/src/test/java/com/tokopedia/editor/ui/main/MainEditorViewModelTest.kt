@@ -106,7 +106,6 @@ class MainEditorViewModelTest {
 
         val effects = expectAllEffects()
         assertTrue(effects[0] is MainEditorEffect.OpenInputText)
-        assertTrue(effects[1] is MainEditorEffect.ParentToolbarVisibility)
 
         // Verify
         onEvent(MainEditorEvent.InputTextResult(model))
@@ -125,7 +124,6 @@ class MainEditorViewModelTest {
 
         val effects = expectAllEffects()
         assertTrue(effects[0] is MainEditorEffect.OpenInputText)
-        assertTrue(effects[1] is MainEditorEffect.ParentToolbarVisibility)
 
         // Verify
         val newModel = InputTextModel(text = "a new text")

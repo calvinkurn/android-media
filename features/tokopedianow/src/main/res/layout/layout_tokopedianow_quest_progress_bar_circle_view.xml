@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:background="@color/Unify_Static_Black"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_border"
+        android:layout_width="17dp"
+        android:layout_height="17dp"
+        app:srcCompat="@drawable/tokopedianow_quest_circle_border_default" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/inner_circle"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:padding="1dp"
+        android:layout_gravity="center"
+        app:shapeAppearanceOverlay="@style/circleImageDisplay"
+        app:srcCompat="@color/Unify_BN700" />
+</FrameLayout>

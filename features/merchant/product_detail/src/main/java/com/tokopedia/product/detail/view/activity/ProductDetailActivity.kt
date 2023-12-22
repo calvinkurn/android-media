@@ -377,9 +377,6 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
                 p1PrefetchPerformanceMonitoring?.putCustomAttribute(P1_state, state.name)
                 p1CachePerformanceMonitoring?.putCustomAttribute(P1_state, state.name)
                 p1NetworkPerformanceMonitoring?.putCustomAttribute(P1_state, state.name)
-                p1PrefetchPerformanceMonitoring?.stopTrace()
-                p1CachePerformanceMonitoring?.stopTrace()
-                p1NetworkPerformanceMonitoring?.stopTrace()
             }
         ) { summaryModel, capturedBlocks -> }
 

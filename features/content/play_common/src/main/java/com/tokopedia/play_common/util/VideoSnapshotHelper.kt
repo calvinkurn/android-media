@@ -2,12 +2,8 @@ package com.tokopedia.play_common.util
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.FutureTarget
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play_common.view.getBitmapFromUrl
 import com.tokopedia.utils.image.ImageProcessingUtil
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -27,15 +23,20 @@ class VideoSnapshotHelper @Inject constructor(
         filePath: String,
     ): File? {
         return withContext(dispatchers.io) {
-            val bitmap = Glide.with(context)
-                .asBitmap()
-                .load(filePath)
-                .submit()
-                .get()
+            val bitmap = snapVideoBitmap(context, filePath) ?: return@withContext null
 
             ImageProcessingUtil.writeImageToTkpdPath(bitmap, Bitmap.CompressFormat.JPEG).also { file ->
                 tempFile = file
             }
+        }
+    }
+
+    suspend fun snapVideoBitmap(
+        context: Context,
+        filePath: String,
+    ): Bitmap? {
+        return withContext(dispatchers.io) {
+            context.getBitmapFromUrl(filePath)
         }
     }
 

@@ -959,10 +959,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             URL obtainedURL = new URL(uriData.toString());
             Map<String, String> customDimension = new HashMap<>();
             customDimension.put(Authenticated.KEY_DEEPLINK_URL, obtainedURL.toString());
-            String utmSource = (String) campaignMap.get(AppEventTracking.GTM.UTM_SOURCE);
-            String utmMedium = (String) campaignMap.get(AppEventTracking.GTM.UTM_MEDIUM);
-            customDimension.put("utmSource", utmSource);
-            customDimension.put("utmMedium", utmMedium);
 
             if (extraReferrer != null)
                 customDimension.put("extra_referrer", extraReferrer.toString());

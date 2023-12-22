@@ -108,16 +108,6 @@ class ProductDetailInfoViewHolder(
     private fun renderDescription(element: ProductDetailInfoDataModel) = with(binding) {
         val descFormatted = element.getDescription()
 
-        productDetailInfoDescriptionTitle.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-            val marginTop = if (element.isCatalog) {
-                MARGIN_TOP_DESC_TITLE_WHEN_CATALOG
-            } else {
-                MARGIN_TOP_DESC_TITLE_WHEN_NON_CATALOG
-            }
-
-            this?.topMargin = marginTop.toPx()
-        }
-
         productDetailInfoDescription.apply {
             if (descFormatted.isNotEmpty()) {
                 text = descFormatted.parseAsHtmlLink(root.context, replaceNewLine = false)

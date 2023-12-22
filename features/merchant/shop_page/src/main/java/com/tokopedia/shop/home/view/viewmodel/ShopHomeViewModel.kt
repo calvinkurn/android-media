@@ -1285,14 +1285,16 @@ class ShopHomeViewModel @Inject constructor(
         shopId: String,
         extParam: String,
         locData: LocalCacheModel,
-        tabName: String
+        tabName: String,
+        connectionType: String
     ) {
         launchCatchError(dispatcherProvider.io, block = {
             val shopHomeWidgetData = getShopDynamicHomeTabWidgetData(
                 shopId,
                 extParam,
                 locData,
-                tabName
+                tabName,
+                connectionType
             )
             _latestShopHomeWidgetLayoutData.postValue(Success(shopHomeWidgetData))
         }) {
@@ -1306,7 +1308,8 @@ class ShopHomeViewModel @Inject constructor(
         shopId: String,
         extParam: String,
         locData: LocalCacheModel,
-        tabName: String
+        tabName: String,
+        connectionType: String
     ): ShopPageLayoutUiModel {
         val useCase = getShopDynamicTabUseCase.get()
         useCase.isFromCacheFirst = false
@@ -1318,7 +1321,8 @@ class ShopHomeViewModel @Inject constructor(
                 locData.city_id,
                 locData.lat,
                 locData.long,
-                tabName
+                tabName,
+                connectionType
             ).parameters
         )
         val layoutData = useCase.executeOnBackground().shopPageGetDynamicTab.tabData.firstOrNull {
@@ -1479,20 +1483,20 @@ class ShopHomeViewModel @Inject constructor(
         selectedEtalaseIndex: Int,
         errorMessage: String = ""
     ) {
-        val position = visitable.indexOfFirst { it is ShopDirectPurchaseByEtalaseUiModel }.orZero()
+        val position = visitable.indexOfFirst { it is ShopDirectPurchaseByEtalaseUiModel }
         val curModel = visitable.getOrNull(position) as? ShopDirectPurchaseByEtalaseUiModel
-        curModel?.widgetData?.titleList?.forEachIndexed { index, title ->
-            if (index == selectedSwitcherIndex) {
-                title.etalaseList.forEachIndexed { index2, etalase ->
-                    if (index2 == selectedEtalaseIndex) {
+        curModel?.widgetData?.titleList?.forEachIndexed { titleItemIndex, title ->
+            if (titleItemIndex == selectedSwitcherIndex) {
+                title.etalaseList.forEachIndexed { etalaseItemIndex, etalase ->
+                    if (etalaseItemIndex == selectedEtalaseIndex) {
                         etalase.productList = listProductData.map {
                             ProductCardDirectPurchaseDataModel(
                                 productId = it.id,
-                                imageUrl = it.imageUrl.orEmpty(),
+                                imageUrl = it.imageUrl,
                                 name = it.name,
                                 price = it.displayedPrice,
-                                discount = it.discountPercentage.orEmpty(),
-                                slashPrice = it.originalPrice.orEmpty(),
+                                discount = it.discountPercentage,
+                                slashPrice = it.originalPrice,
                                 ratingAverage = it.averageRating,
                                 isVariant = it.isVariant,
                                 minimumOrder = it.minimumOrder,

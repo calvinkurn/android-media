@@ -6,6 +6,7 @@ apply from: 'tools/version/version_module.gradle'
 
 buildscript {
     ext.kotlin_version = '1.7.10'
+    ext.kspVersion = "1.7.10-1.0.6"
     ext.jacocoVersion = '0.8.7'
     repositories {
         gradlePluginPortal()
@@ -38,26 +39,17 @@ buildscript {
         }
     }
     dependencies {
-        classpath ('com.android.tools.build:gradle:7.4.2') {
-            exclude module: 'proguard-gradle'
-        }
+        classpath ('com.android.tools.build:gradle:8.0.1')
         classpath "org.jacoco:org.jacoco.core:$jacocoVersion"
-        classpath('net.sf.proguard:proguard-gradle:6.0.3') {
-            force = true
-        }
         classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.18.2") {
             exclude group: 'org.codehaus.groovy', module: 'groovy-all'
-        }
-        if (!project.hasProperty("disable-performance-plugin")) {
-            classpath('com.google.firebase:firebase-plugins:1.1.1') {
-                exclude group: 'com.google.guava', module: 'guava-jdk5'
-            }
         }
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.gms:google-services:4.3.14"
         classpath "io.fabric.tools:gradle:1.28.0"
         classpath "com.vanniktech:gradle-code-quality-tools-plugin:0.17.0"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.8"
+        classpath "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:$kspVersion"
     }
 }
 

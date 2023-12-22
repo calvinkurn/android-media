@@ -1,5 +1,6 @@
 package com.tokopedia.content.common.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.content.common.model.FeedXHeaderRequestFields
 import com.tokopedia.content.common.model.FeedXHeaderResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
@@ -11,7 +12,7 @@ import javax.inject.Inject
 
 @GqlQuery(FeedXHeaderUseCase.QUERY_NAME, FeedXHeaderUseCase.QUERY)
 class FeedXHeaderUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository
+    @ApplicationContext graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<FeedXHeaderResponse>(graphqlRepository) {
 
     init {
@@ -94,6 +95,7 @@ class FeedXHeaderUseCase @Inject constructor(
             type
             title
             key
+            newContentExists
             __typename
           }
           meta {

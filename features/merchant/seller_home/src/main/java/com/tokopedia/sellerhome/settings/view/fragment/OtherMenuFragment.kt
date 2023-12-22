@@ -30,6 +30,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
 import com.tokopedia.linker.LinkerManager
@@ -199,6 +200,7 @@ class OtherMenuFragment :
 
     private var multipleErrorSnackbar: Snackbar? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private var topAdsView: View? = null
 
     private var canShowErrorToaster = true
     private var hasShownMultipleErrorToaster = false
@@ -206,6 +208,7 @@ class OtherMenuFragment :
     private var shopShareInfo: OtherMenuShopShareData? = null
     private var shopSnippetImageUrl: String = ""
     private var shopShareImagePath: String = ""
+    private var topAdsMenuName: String = String.EMPTY
     private var canShowShareBottomSheet = true
     private var binding: FragmentNewOtherMenuBinding? = null
 
@@ -549,6 +552,10 @@ class OtherMenuFragment :
 
     override fun onImpressionTokoMember() {
         SettingTokoMemberTracker.trackTokoMemberImpression()
+    }
+
+    override fun onFinishTransition() {
+        showCoachMarkTopAdsMenuItem(topAdsMenuName, topAdsView)
     }
 
     private fun observeLiveData() {
@@ -1037,7 +1044,8 @@ class OtherMenuFragment :
     override fun onViewReadyForCoachMark(menuName: String, targetView: View?) {
         view?.post {
             if (menuName == context?.getString(R.string.setting_menu_iklan_topads)) {
-                showCoachMarkTopAdsMenuItem(menuName, targetView)
+                topAdsView = targetView
+                topAdsMenuName = menuName
             }
         }
     }

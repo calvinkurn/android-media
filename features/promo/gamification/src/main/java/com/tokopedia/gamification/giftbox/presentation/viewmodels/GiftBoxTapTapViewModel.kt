@@ -23,15 +23,18 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
                                                  val homeUseCase: GiftBoxTapTapHomeUseCase,
                                                  val couponDetailUseCase: CouponDetailUseCase
 ) : BaseViewModel(workerDispatcher) {
+    companion object {
+        private const val CRACK_GIFT_TIME_OUT = 3000L
+        private const val GET_COUPON_DETAIL_TIME_OUT = 4000L
+    }
 
     @Volatile
     var tokenId: String = ""
 
     @Volatile
     var campaignId: Long = 0
+
     var waitingForCrackResult = false
-    private val CRACK_GIFT_TIME_OUT = 3000L
-    private val GET_COUPON_DETAIL_TIME_OUT = 4000L
     var canShowLoader = true
 
     val giftHomeLiveData: MutableLiveData<LiveDataResult<TapTapBaseEntity>> = MutableLiveData()
@@ -50,62 +53,29 @@ class GiftBoxTapTapViewModel @Inject constructor(@Named(IO) workerDispatcher: Co
     }
 
     fun crackGiftBox() {
-
         waitingForCrackResult = true
         launchCatchError(block = {
-            var responseReceived = false
             withTimeout(CRACK_GIFT_TIME_OUT) {
                 val response = crackUseCase.getResponse(crackUseCase.getQueryParams(tokenId, campaignId))
-                responseReceived = true
                 giftCrackLiveData.postValue(LiveDataResult.success(response))
-            }
-            if (!responseReceived) {
-                giftCrackLiveData.postValue(LiveDataResult.error(RuntimeException("Timeout exception")))
             }
         }, onError = {
             giftCrackLiveData.postValue(LiveDataResult.error(it))
         })
     }
 
-    fun getCouponDetails(benfitItems: List<CrackBenefitEntity>) {
+    fun getCouponDetails(benefitItems: List<CrackBenefitEntity>) {
         launchCatchError(block = {
-            var responseReceived = false
             withTimeout(GET_COUPON_DETAIL_TIME_OUT) {
-                val ids = benfitItems.filter { it.benefitType == BenefitType.COUPON && !it.referenceID.isNullOrEmpty() }
-                        .map { it.referenceID }
-                val data = getCatalogDetail(ids)
-                responseReceived = true
+                val data = couponDetailUseCase.getResponse(mapBenefitsToIds(benefitItems))
                 couponLiveData.postValue(LiveDataResult.success(data))
             }
-            if (!responseReceived) {
-                couponLiveData.postValue(LiveDataResult.error(RuntimeException("Timeout exception")))
-            }
-
         }, onError = {
             couponLiveData.postValue(LiveDataResult.error(it))
         })
     }
 
-    suspend fun composeApi(entity: ResponseCrackResultEntity): CouponDetailResponse? {
-        val ids = mapperGratificationResponseToCouponIds(entity)
-        if (ids.isEmpty()) {
-            return null
-        }
-        return getCatalogDetail(ids)
+    fun mapBenefitsToIds(benefitItems: List<CrackBenefitEntity>): List<String> {
+        return benefitItems.filter { it.benefitType == BenefitType.COUPON && it.referenceID.isNotEmpty() }.map { it.referenceID }
     }
-
-    private fun mapperGratificationResponseToCouponIds(response: ResponseCrackResultEntity): List<String> {
-        var ids = arrayListOf<String>()
-        response.crackResultEntity.benefits?.forEach {
-            if (!it.referenceID.isNullOrEmpty()) {
-                ids.add(it.referenceID.toString())
-            }
-        }
-        return ids
-    }
-
-    private suspend fun getCatalogDetail(ids: List<String>): CouponDetailResponse {
-        return couponDetailUseCase.getResponse(ids)
-    }
-
 }

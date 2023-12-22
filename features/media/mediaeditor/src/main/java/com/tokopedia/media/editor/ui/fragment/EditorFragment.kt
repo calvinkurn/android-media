@@ -18,7 +18,6 @@ import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
 import com.tokopedia.media.editor.analytics.getToolEditorText
 import com.tokopedia.media.editor.base.BaseEditorFragment
-import com.tokopedia.media.editor.data.FeatureToggleManager
 import com.tokopedia.media.editor.databinding.FragmentMainEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.main.EditorViewModel
@@ -43,8 +42,7 @@ import javax.inject.Inject
 import com.tokopedia.media.editor.R as mediaeditorR
 
 class EditorFragment @Inject constructor(
-    private val editorHomeAnalytics: EditorHomeAnalytics,
-    private val featureToggleManager: FeatureToggleManager
+    private val editorHomeAnalytics: EditorHomeAnalytics
 ) : BaseEditorFragment(), ToolsUiComponent.Listener,
     DrawerUiComponent.Listener {
 
@@ -65,13 +63,18 @@ class EditorFragment @Inject constructor(
     }
 
     override fun onPause() {
-        viewBinding?.viewPager?.releaseImage()
+        viewBinding?.viewPager?.releaseImageVideo()
         super.onPause()
     }
 
     override fun onResume() {
-        viewBinding?.viewPager?.reloadImage()
+        viewBinding?.viewPager?.reloadImageVideo()
         super.onResume()
+    }
+
+    override fun onDestroyView() {
+        viewBinding?.viewPager?.clearPlayer()
+        super.onDestroyView()
     }
 
     override fun onCreateView(
@@ -96,9 +99,7 @@ class EditorFragment @Inject constructor(
         viewBinding?.btnRedo?.setOnClickListener {
             forwardState()
         }
-    }
 
-    private fun startAutoCrop() {
         loader = LoaderDialog(requireContext()).apply {
             setLoadingText("")
             customView = View.inflate(
@@ -108,7 +109,9 @@ class EditorFragment @Inject constructor(
             ) as LinearLayout
             show()
         }
+    }
 
+    private fun startAutoCrop() {
         autoCropStartTime = System.nanoTime()
         iterateCrop(viewModel.editStateList.values.toList(), 0)
     }
@@ -181,7 +184,6 @@ class EditorFragment @Inject constructor(
     override fun initObserver() {
         observeEditorParam()
         observeUpdateIndex()
-        observeEditorResult()
     }
 
     private fun imageCrop(bitmap: Bitmap, originalPath: String) {
@@ -376,7 +378,21 @@ class EditorFragment @Inject constructor(
 
     private fun observeEditorParam() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
-            // show/hide add logo base on rollence
+            viewModel.compressImage(it) { // on compress done
+                thumbnailDrawerComponent.setupView(viewModel.editStateList.values.toList())
+
+                if (it.autoCropRatio() != null) {
+                    startAutoCrop()
+                } else {
+                    viewBinding?.viewPager?.apply {
+                        setAdapter(viewModel.editStateList.values.toList())
+                        setPagerPageChangeListener(this)
+                    }
+                    loader?.dismiss()
+                }
+            }
+
+            // show/hide add logo base on user shop
             if (!viewModel.isShopAvailable()) {
                 it.editorToolsList().apply {
                     val removeIndex = find { toolId -> toolId == EditorToolType.ADD_LOGO }
@@ -384,25 +400,7 @@ class EditorFragment @Inject constructor(
                 }
             }
 
-            // show/hide add text base on rollence
-            if (!featureToggleManager.isAddTextEnable()) {
-                it.editorToolsList().apply {
-                    val removeIndex = find { toolId -> toolId == EditorToolType.ADD_TEXT }
-                    remove(removeIndex)
-                }
-            }
-
             editorToolComponent.setupView(it.editorToolsList())
-            thumbnailDrawerComponent.setupView(viewModel.editStateList.values.toList())
-
-            if (it.autoCropRatio() != null) {
-                startAutoCrop()
-            } else {
-                viewBinding?.viewPager?.apply {
-                    setAdapter(viewModel.editStateList.values.toList())
-                    setPagerPageChangeListener(this)
-                }
-            }
         }
     }
 
@@ -430,20 +428,6 @@ class EditorFragment @Inject constructor(
                     overlayImageUrl = editorUiModel.getOverlayLogoValue()?.overlayLogoUrl ?: "",
                     overlaySecondaryImageUrl = editorUiModel.getOverlayTextValue()?.textImagePath ?: ""
                 )
-            }
-        }
-    }
-
-    // need to stop all video when editor trigger finish
-    private fun observeEditorResult() {
-        viewModel.isVideoStop.observe(viewLifecycleOwner) {
-            if (it) {
-                viewBinding?.viewPager?.let {
-                    val totalItem = it.adapter?.count ?: -1
-                    for (i in 0 until totalItem) {
-                        it.stopVideoPlayer(i)
-                    }
-                }
             }
         }
     }

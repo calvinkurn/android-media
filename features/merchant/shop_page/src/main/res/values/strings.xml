@@ -141,14 +141,6 @@
     <string name="shop_page_play_widget_sgc_video_saved_fail">Ada sedikit kendala pada sistem.</string>
     <string name="shop_page_play_widget_sgc_try_again">Coba Lagi</string>
     <string name="shop_page_play_widget_sgc_link_copied">Link disalin!</string>
-    <string name="shop_page_play_widget_sgc_performance_dashboard">Pelajari Wawasan Video</string>
-    <string name="shop_page_broadcast_creation_label">Buat Live</string>
-    <string name="shop_page_shorts_creation_label">Buat Shorts Video</string>
-    <string name="shop_page_start_create_content">Yuk, Mulai</string>
-    <string name="shop_page_play_widget_beta_template">[beta]</string>
-    <string name="shop_page_play_widget_livestream_only_label"><![CDATA[Ayo cobain <b>live streaming</b> [beta]<br />dan bikin tokomu makin terkenal!]]></string>
-    <string name="shop_page_play_widget_livestream_and_shorts_label"><![CDATA[Promosikan produkmu dengan<br /><b>Live</b> atau <b>Shorts Video</b> [beta]]]></string>
-    <string name="shop_page_play_widget_shorts_only_label"><![CDATA[Promosikan produkmu dengan<br /><b>Shorts Video</b> [beta]]]></string>
 
     <string name="shop_sort_filter_default_label">Urutkan</string>
     <string name="shop_etalase_filter_default_label">Etalase Toko</string>
@@ -257,5 +249,78 @@
     <string name="shop_home_showcase_navigation_top_main_banner_content_description">imgBackgroundGradient</string>
 
     <string name="shop_content_description_gradient_black">Background Etalase Utama</string>
+    
+    <!--Shop Info Reimagine-->
+    <string name="shop_info_shop_profile">Profil Toko</string>
+
+    <!--Informasi Toko-->
+    <string name="shop_info_shop_information">Informasi Toko</string>
+    <string name="shop_info_location">Lokasi</string>
+    <string name="shop_info_placeholder_other_location">%d lainnya</string>
+    <string name="shop_info_ops_hour">Jam Operasional</string>
+    <string name="shop_info_placeholder_ops_hour_template">%s:%s</string>
+    <string name="shop_info_join_date">Tanggal Bergabung</string>
+    <string name="shop_info_licensed_pharmacy">Apotek Berlisensi</string>
+    <string name="shop_info_total_product">Total produk</string>
+    <string name="shop_info_placeholder_operational_hour_around_minute">±%d menit</string>
+    <string name="shop_info_placeholder_operational_hour_around_hour">±%d jam</string>
+    <string name="shop_info_placeholder_operational_hour_around_day">±%d hari</string>
+    <string name="shop_info_placeholder_operational_hour_more_than_day">>%d hari</string>
+    <string name="shop_info_ops_hour_monday">Senin</string>
+    <string name="shop_info_ops_hour_tuesday">Selasa</string>
+    <string name="shop_info_ops_hour_wednesday">Rabu</string>
+    <string name="shop_info_ops_hour_thursday">Kamis</string>
+    <string name="shop_info_ops_hour_friday">Jumat</string>
+    <string name="shop_info_ops_hour_saturday">Sabtu</string>
+    <string name="shop_info_ops_hour_sunday">Minggu</string>
+    <string name="shop_info_ops_hour_open_24_hours">Senin-Minggu: 24 jam</string>
+    <string name="shop_info_ops_hour_monday_to_sunday">Senin-Minggu</string>
+    <string name="shop_info_ops_hour_open_twenty_four_hour">24 Jam</string>
+    <string name="shop_info_ops_hour_closed">Libur</string>
+    <string name="shop_info_ops_hour_placeholder_open_range">%s-%s WIB</string>
+    
+    <!--Informasi Apotek-->
+    <string name="shop_info_pharmacy_information">Informasi apotek</string>
+    <string name="shop_info_nearest_pickup_point">Lokasi Pickup Terdekat</string>
+    <string name="shop_info_view_location">Lihat Lokasi</string>
+    <string name="shop_info_view_more">Lihat Selengkapnya</string>
+    <string name="shop_info_pharmacist_ops_hour">Jam Kerja Apoteker</string>
+    <string name="shop_info_pharmacist_name">Apotek Jaga</string>
+    <string name="shop_info_sia_number">Nomor SIA</string>
+    <string name="shop_info_sipa_number">Nomor SIPA</string>
+
+    <!--Ulasan Pembeli-->
+    <string name="shop_info_buyer_review">Ulasan Pembeli</string>
+    <string name="shop_info_placeholder_discount_percentage">%d%%</string>
+    <string name="shop_info_rating">rating</string>
+    <string name="shop_info_review">ulasan</string>
+    <string name="shop_info_buyer_satisfied">pembeli puas</string>
+    <string name="shop_info_placeholder_complete_review">%d ulasan lengkap</string>
+    <string name="shop_info_placeholder_useful_review">%d terbantu</string>
+    <string name="shop_info_more">Selengkapnya</string>
+    <string name="shop_info_placeholder_rating">(%s rating)</string>
+    <string name="shop_info_placeholder_review">(%s ulasan)</string>
+    <string name="shop_info_placeholder_rating_and_review">(%s rating • %s ulasan)</string>
+    <string name="shop_info_placeholder_attachment_text">Lainnya +%s</string>
+
+    <!--Performa Toko-->
+    <string name="shop_info_shop_performance">Performa toko</string>
+    <string name="shop_info_product_sold_count">Produk terjual</string>
+    <string name="shop_info_chat_performance">Performa chat</string>
+    <string name="shop_info_process_time">Pesanan diproses</string>
+
+    <!--Catatan Toko-->
+    <string name="shop_info_shop_note">Catatan toko</string>
+    
+    <!--Deskripsi Toko-->
+    <string name="shop_info_shop_description">Deskripsi toko</string>
+    
+    <!--Dukungan pengiriman-->
+    <string name="shop_info_supported_shipment">Dukungan pengiriman</string>
+    <string name="shop_info_delivery_duration">Durasi dihitung sejak barang diserahkan ke kurir</string>
+    
+    <!--Report Shop-->
+    <string name="shop_info_report_shop">Toko ini bermasalah? Laporkan Di Sini</string>
+    <string name="shop_info_report_here">Laporkan Di Sini</string>
     
 </resources>

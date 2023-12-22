@@ -43,6 +43,7 @@ import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.applink.AppUtil;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -268,8 +269,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     protected abstract String getOriginalPackageApp();
 
     private void initCacheManager() {
-        PersistentCacheManager.init(this);
-        cacheManager = PersistentCacheManager.instance;
+        cacheManager = PersistentCacheManager.init(this);
     }
 
     public void registerActivityLifecycleCallbacks() {
@@ -541,6 +541,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             @Override
             public int getVersionCode() {
                 return GlobalConfig.VERSION_CODE;
+            }
+
+            @NonNull
+            @Override
+            public String getActivityName() {
+                return AppUtil.currentActivityName;
             }
 
             @NotNull

@@ -27,8 +27,8 @@
         android:id="@+id/see_more_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="8dp"
         android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="4dp"
         android:contentDescription="@string/content_desc_claim_btn"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,6 +37,17 @@
         app:unifyButtonSize="medium"
         app:unifyButtonVariant="ghost"
         tools:text="Lihat Semua Kupon"
+        tools:visibility="visible" />
+
+    <Space
+        android:id="@+id/see_more_btn_space"
+        android:layout_width="0dp"
+        android:layout_height="16dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/see_more_btn"
         tools:visibility="visible" />
 
 
