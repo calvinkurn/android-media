@@ -26,6 +26,7 @@ class UsablePromoAdapter :
     class ItemViewHolder(private val binding: LayoutItemUsablePromoBinding) :
         ViewHolder(binding.root) {
         fun bind(item: UsablePromoModel) {
+            binding.ivIcon.urlSrc = item.icon
             binding.tvName.text = item.text
             binding.tvValue.text = item.value
         }
