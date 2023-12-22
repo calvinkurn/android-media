@@ -14,7 +14,7 @@ data class ProductNotifyMeDataModel(
     var startDate: String = "",
     var notifyMe: Boolean = false,
     var bgColorUpcoming: String = "",
-    var logoUrl: String,
+    var logoUrl: String = "",
     var upcomingNplData: UpcomingNplDataModel = UpcomingNplDataModel()
 ) : DynamicPdpDataModel {
     override val impressHolder: ImpressHolder = ImpressHolder()
