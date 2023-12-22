@@ -37,6 +37,7 @@ import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isEven
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isOdd
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.oldcatalog.model.raw.CatalogResponseData
@@ -58,6 +59,7 @@ class CatalogDetailUiMapper @Inject constructor(
         private const val COLUMN_INFO_3_COLUMN_DATA_LIMIT = 9
         private const val COLUMN_INFO_3_COLUMN_ROW_LIMIT = 3
         private const val INVALID_CATALOG_ID = "0"
+        private const val BACKGROUND_ALPHA = 20
     }
 
     fun mapToWidgetVisitables(
@@ -212,7 +214,7 @@ class CatalogDetailUiMapper @Inject constructor(
                         isDarkMode,
                         catalogR.color.catalog_dms_dark_color,
                         catalogR.color.catalog_dms_light_color,
-                        20
+                        BACKGROUND_ALPHA
                     ),
                     textColor = getTextColor(isDarkMode)
                 )
@@ -227,12 +229,12 @@ class CatalogDetailUiMapper @Inject constructor(
         val textColor = getTextColorNav(isDarkMode)
         return StickyNavigationUiModel(
             content = data?.navigation?.map { nav ->
-                val eligibleName = nav.eligibleNames.filter { eligble ->
+                val eligibleName = nav.eligibleNames.firstOrNull { eligble ->
                     val found = remoteModel.layouts?.indexOfFirst {
                         it.name == eligble && !it.data?.style?.isHidden.orFalse()
                     }
-                    found != -1
-                }.firstOrNull().orEmpty()
+                    !found.isLessThanZero()
+                }.orEmpty()
                 StickyNavigationUiModel.StickyNavigationItemData(
                     nav.title,
                     eligibleName,
@@ -447,7 +449,7 @@ class CatalogDetailUiMapper @Inject constructor(
                         isDarkMode,
                         catalogR.color.catalog_dms_dark_color,
                         catalogR.color.catalog_dms_light_color,
-                        20
+                        BACKGROUND_ALPHA
                     ),
                     descColor = getColorDarkMode(
                         context,
