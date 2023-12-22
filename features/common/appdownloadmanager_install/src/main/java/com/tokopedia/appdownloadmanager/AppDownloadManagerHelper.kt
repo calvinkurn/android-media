@@ -101,5 +101,5 @@ class AppDownloadManagerHelper(
     }
 
     override val coroutineContext: CoroutineContext
-        get() = SupervisorJob() + Dispatchers.Main
+        get() = SupervisorJob() + Dispatchers.Main.immediate
 }
