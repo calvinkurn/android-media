@@ -11,10 +11,10 @@ data class ProductNotifyMeDataModel(
     var campaignID: String = "",
     var campaignType: String = "",
     var campaignTypeName: String = "",
+    var campaignLogo: String = "",
     var startDate: String = "",
     var notifyMe: Boolean = false,
     var bgColorUpcoming: String = "",
-    var logoUrl: String = "",
     var upcomingNplData: UpcomingNplDataModel = UpcomingNplDataModel()
 ) : DynamicPdpDataModel {
     override val impressHolder: ImpressHolder = ImpressHolder()
@@ -35,7 +35,7 @@ data class ProductNotifyMeDataModel(
                 startDate == newData.startDate &&
                 notifyMe == newData.notifyMe &&
                 bgColorUpcoming == newData.bgColorUpcoming &&
-                logoUrl == newData.logoUrl
+                campaignLogo == newData.campaignLogo
         } else {
             false
         }
@@ -50,7 +50,7 @@ data class ProductNotifyMeDataModel(
         return if (newData is ProductNotifyMeDataModel) {
             if (campaignID != newData.campaignID && startDate != newData.startDate &&
                 campaignTypeName != newData.campaignTypeName && campaignType != newData.campaignType &&
-                logoUrl != newData.logoUrl
+                campaignLogo != newData.campaignLogo
             ) {
                 // Update the whole data
                 return null

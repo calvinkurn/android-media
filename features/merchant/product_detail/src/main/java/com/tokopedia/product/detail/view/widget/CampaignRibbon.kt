@@ -594,7 +594,7 @@ class CampaignRibbon @JvmOverloads constructor(
 
         val type = CampaignType.UpComing(
             data = UpcomingCampaignUiModel(
-                logoUrl = data.logoUrl,
+                logoUrl = data.campaignLogo,
                 title = data.upcomingNplData.ribbonCopy.ifBlank {
                     context.getString(R.string.notify_me_title)
                 },
