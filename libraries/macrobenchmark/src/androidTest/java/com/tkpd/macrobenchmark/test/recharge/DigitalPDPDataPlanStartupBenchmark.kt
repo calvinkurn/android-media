@@ -13,8 +13,8 @@ import org.junit.runners.Parameterized
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
-class DigitalPDPPulsaStartupBenchmark(startupMode: StartupMode) : BaseStartupBenchmark(startupMode) {
-    override fun getIntent(): Intent = MacroIntent.DigitalProductDetail.getPulsaPdpIntent()
+class DigitalPDPDataPlanStartupBenchmark(startupMode: StartupMode) : BaseStartupBenchmark(startupMode) {
+    override fun getIntent(): Intent = MacroIntent.DigitalProductDetail.getDataPlanPdpIntent()
 
     override fun setupEnvironment() {
         // no-op
@@ -27,7 +27,7 @@ class DigitalPDPPulsaStartupBenchmark(startupMode: StartupMode) : BaseStartupBen
     override fun waitUntil() {
         MacroInteration.waitForRecyclerViewContent(
             MacroIntent.TKPD_PACKAGE_NAME,
-            MacroIntent.DigitalProductDetail.RV_DENOM_GRID
+            MacroIntent.DigitalProductDetail.RV_DENOM_FULL
         )
     }
 
