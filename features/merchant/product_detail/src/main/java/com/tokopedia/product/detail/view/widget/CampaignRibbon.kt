@@ -594,14 +594,13 @@ class CampaignRibbon @JvmOverloads constructor(
 
         val type = CampaignType.UpComing(
             data = UpcomingCampaignUiModel(
-                logoUrl = "",
+                logoUrl = data.logoUrl,
                 title = data.upcomingNplData.ribbonCopy.ifBlank {
                     context.getString(R.string.notify_me_title)
                 },
                 endTimeUnix = data.startDate.toLongOrZero(),
                 timerLabel = context.getString(R.string.notify_me_subtitle_main),
                 labelButton = labelButton,
-                paymentSpecific = "",
                 backgroundColorString = data.bgColorUpcoming
             ),
             onTimerFinish = onRefreshPage,

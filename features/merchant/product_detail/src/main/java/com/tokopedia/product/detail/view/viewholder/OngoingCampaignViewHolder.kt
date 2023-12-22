@@ -2,14 +2,12 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
 import com.tokopedia.product.detail.databinding.ItemCampaignBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.product.detail.view.widget.CampaignRibbon
 
 class OngoingCampaignViewHolder(
     view: View,
@@ -26,7 +24,7 @@ class OngoingCampaignViewHolder(
     init {
         campaignRibbon.init(
             onCampaignEnded = {
-                campaignRibbon.hide()
+                campaignRibbon.setLayoutHeight(Int.ZERO)
                 listener.showAlertCampaignEnded()
             },
             onRefreshPage = listener::refreshPage

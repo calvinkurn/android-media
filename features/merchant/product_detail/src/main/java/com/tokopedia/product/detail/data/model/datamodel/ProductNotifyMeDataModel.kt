@@ -6,15 +6,16 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 data class ProductNotifyMeDataModel(
-        val type: String = "",
-        val name: String = "",
-        var campaignID: String = "",
-        var campaignType: String = "",
-        var campaignTypeName: String = "",
-        var startDate: String = "",
-        var notifyMe: Boolean = false,
-        var bgColorUpcoming: String = "",
-        var upcomingNplData: UpcomingNplDataModel = UpcomingNplDataModel()
+    val type: String = "",
+    val name: String = "",
+    var campaignID: String = "",
+    var campaignType: String = "",
+    var campaignTypeName: String = "",
+    var startDate: String = "",
+    var notifyMe: Boolean = false,
+    var bgColorUpcoming: String = "",
+    var logoUrl: String,
+    var upcomingNplData: UpcomingNplDataModel = UpcomingNplDataModel()
 ) : DynamicPdpDataModel {
     override val impressHolder: ImpressHolder = ImpressHolder()
 
@@ -28,12 +29,13 @@ data class ProductNotifyMeDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductNotifyMeDataModel) {
-            campaignID == newData.campaignID
-                    && campaignType == newData.campaignType
-                    && campaignTypeName == newData.campaignTypeName
-                    && startDate == newData.startDate
-                    && notifyMe == newData.notifyMe
-                    && bgColorUpcoming == newData.bgColorUpcoming
+            campaignID == newData.campaignID &&
+                campaignType == newData.campaignType &&
+                campaignTypeName == newData.campaignTypeName &&
+                startDate == newData.startDate &&
+                notifyMe == newData.notifyMe &&
+                bgColorUpcoming == newData.bgColorUpcoming &&
+                logoUrl == newData.logoUrl
         } else {
             false
         }
@@ -46,8 +48,11 @@ data class ProductNotifyMeDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         val bundle = Bundle()
         return if (newData is ProductNotifyMeDataModel) {
-            if (campaignID != newData.campaignID && startDate != newData.startDate && campaignTypeName != newData.campaignTypeName && campaignType != newData.campaignType) {
-                //Update the whole data
+            if (campaignID != newData.campaignID && startDate != newData.startDate &&
+                campaignTypeName != newData.campaignTypeName && campaignType != newData.campaignType &&
+                logoUrl != newData.logoUrl
+            ) {
+                // Update the whole data
                 return null
             }
 
