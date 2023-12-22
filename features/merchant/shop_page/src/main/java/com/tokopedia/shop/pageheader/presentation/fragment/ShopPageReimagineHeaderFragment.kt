@@ -55,6 +55,7 @@ import com.tokopedia.creation.common.presentation.bottomsheet.ViewContentInfoBot
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
 import com.tokopedia.creation.common.presentation.utils.ContentCreationEntryPointSharedPref
+import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -1428,6 +1429,7 @@ class ShopPageReimagineHeaderFragment :
             widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
             extParam = extParam,
             tabName = getSelectedTabName().takeIf { it.isNotEmpty() } ?: queryParamTab,
+            connectionType = activity?.let { DeviceConnectionInfo.getConnectionType(it) }.orEmpty(),
             shopPageColorSchemaDefaultConfigColor = getShopPageColorSchemaDefaultConfigColor(),
             isEnableShopReimagined = ShopUtil.isEnableShopPageReImagined(context)
         )

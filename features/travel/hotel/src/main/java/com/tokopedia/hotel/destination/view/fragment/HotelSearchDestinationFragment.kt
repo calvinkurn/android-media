@@ -30,7 +30,6 @@ import com.tokopedia.hotel.destination.view.viewmodel.Shimmering
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.android.synthetic.main.activity_hotel_destination.*
 import javax.inject.Inject
 
 /**
@@ -116,7 +115,7 @@ class HotelSearchDestinationFragment :
     }
 
     override fun getFilterText(): String {
-        return (activity as HotelDestinationActivity).search_input_view.searchBarEditText.text.toString()
+        return (activity as HotelDestinationActivity).getFilterText()
     }
 
     fun onSearchQueryChange(keyword: String) {

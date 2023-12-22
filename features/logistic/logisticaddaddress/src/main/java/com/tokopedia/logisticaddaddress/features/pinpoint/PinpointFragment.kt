@@ -50,6 +50,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.locationmanager.DeviceLocation
+import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_CITY_NAME
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_DISTRICT_NAME
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY
@@ -201,6 +203,12 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     locationResult.lastLocation.latitude,
                     locationResult.lastLocation.longitude
                 )
+                context?.let { ctx ->
+                    LocationDetectorHelper(ctx).saveToCache(
+                        locationResult.lastLocation.latitude,
+                        locationResult.lastLocation.longitude
+                    )
+                }
             }
         }
 
@@ -634,6 +642,11 @@ class PinpointFragment : BaseDaggerFragment(), OnMapReadyCallback {
             if (data != null) {
                 moveMap(getLatLng(data.latitude, data.longitude))
                 viewModel.getDistrictData(data.latitude, data.longitude)
+                context?.let { ctx ->
+                    LocationDetectorHelper(ctx).saveToCache(
+                        data.latitude, data.longitude
+                    )
+                }
             } else {
                 fusedLocationClient?.requestLocationUpdates(
                     AddNewAddressUtils.getLocationRequest(),
