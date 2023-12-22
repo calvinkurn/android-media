@@ -14,7 +14,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.product.detail.view.widget.campaign.component.CampaignImage
 import com.tokopedia.product.detail.view.widget.campaign.component.CampaignName
-import com.tokopedia.product.detail.view.widget.campaign.component.backgroundColor
+import com.tokopedia.product.detail.view.widget.campaign.component.campaignBackgroundColor
 
 /**
  * Created by yovi.putra on 20/12/23"
@@ -32,7 +32,7 @@ fun MegaCampaign(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .backgroundColor(colorString = backgroundColorString)
+            .campaignBackgroundColor(colorString = backgroundColorString)
     ) {
         val (logo, superGraphic) = createRefs()
 

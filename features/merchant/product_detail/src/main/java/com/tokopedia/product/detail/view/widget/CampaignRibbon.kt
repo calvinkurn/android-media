@@ -520,7 +520,8 @@ class CampaignRibbon @JvmOverloads constructor(
             timerLabel = context.getString(R.string.label_ends_in),
             stockPercentage = data.stockSoldPercentage,
             stockLabel = stockWording,
-            backgroundColorString = data.background
+            backgroundColorString = data.background,
+            paymentSpecific = data.paymentInfoWording
         )
         val onGoing = CampaignType.OnGoing(data = onGoingCampaign) {
             onCampaignEnded.invoke(data)

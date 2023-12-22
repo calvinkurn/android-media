@@ -17,11 +17,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.product.detail.view.util.asHtmlLink
 import com.tokopedia.product.detail.view.widget.campaign.component.CampaignName
 import com.tokopedia.product.detail.view.widget.campaign.component.CampaignStockPercentage
 import com.tokopedia.product.detail.view.widget.campaign.component.CampaignTimer
-import com.tokopedia.product.detail.view.util.asHtmlLink
-import com.tokopedia.product.detail.view.widget.campaign.component.backgroundColor
+import com.tokopedia.product.detail.view.widget.campaign.component.PaymentSpecific
+import com.tokopedia.product.detail.view.widget.campaign.component.campaignBackgroundColor
 import com.tokopedia.product.detail.view.widget.campaign.timebased.upcoming.OngoingCampaignUiModel
 
 /**
@@ -31,11 +32,26 @@ import com.tokopedia.product.detail.view.widget.campaign.timebased.upcoming.Ongo
 
 @Composable
 fun OngoingCampaign(uiModel: OngoingCampaignUiModel, onTimerFinish: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .campaignBackgroundColor(colorString = uiModel.backgroundColorString)
+    ) {
+        OngoingContent(uiModel = uiModel, onTimerFinish = onTimerFinish)
+
+        if (uiModel.paymentSpecific.isNotBlank()) {
+            PaymentSpecific(description = uiModel.paymentSpecific)
+        }
+    }
+}
+
+@Composable
+private fun OngoingContent(uiModel: OngoingCampaignUiModel, onTimerFinish: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .backgroundColor(colorString = uiModel.backgroundColorString)
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -109,7 +125,8 @@ fun OngoingCampaignPreview() {
         timerLabel = "Berakhir dalam",
         stockPercentage = 30,
         stockLabel = "Habiss",
-        backgroundColorString = "#862E31"
+        backgroundColorString = "#862E31",
+        paymentSpecific = "Kusus bayar dengan OVO"
     )
 
     NestTheme {
@@ -117,6 +134,7 @@ fun OngoingCampaignPreview() {
             OngoingCampaign(data.copy(stockPercentage = 30)) {}
             OngoingCampaign(data.copy(stockPercentage = 75)) {}
             OngoingCampaign(data.copy(logoUrl = "")) {}
+            OngoingCampaign(data.copy(paymentSpecific = "")) {}
         }
     }
 }

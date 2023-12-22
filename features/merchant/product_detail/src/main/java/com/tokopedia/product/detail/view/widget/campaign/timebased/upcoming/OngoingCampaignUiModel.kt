@@ -10,5 +10,6 @@ data class OngoingCampaignUiModel(
     val timerLabel: String = "",
     val stockPercentage: Int = 0,
     val stockLabel: String = "",
+    val paymentSpecific: String = "",
     val backgroundColorString: String = ""
 )

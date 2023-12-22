@@ -21,7 +21,7 @@ import com.tokopedia.product.detail.view.widget.campaign.component.CampaignName
 import com.tokopedia.product.detail.view.widget.campaign.component.CampaignTimer
 import com.tokopedia.product.detail.view.widget.campaign.component.PaymentSpecific
 import com.tokopedia.product.detail.view.widget.campaign.component.RemindMeButton
-import com.tokopedia.product.detail.view.widget.campaign.component.backgroundColor
+import com.tokopedia.product.detail.view.widget.campaign.component.campaignBackgroundColor
 import com.tokopedia.product.detail.view.widget.campaign.timebased.ongoing.UpcomingCampaignUiModel
 import com.tokopedia.product.detail.view.widget.campaign.timebased.ongoing.secondToMs
 
@@ -40,7 +40,7 @@ fun UpcomingCampaign(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .backgroundColor(colorString = uiModel.backgroundColorString)
+            .campaignBackgroundColor(colorString = uiModel.backgroundColorString)
     ) {
         UpcomingContent(uiModel, onTimerFinish, onClickRemindMe)
 

@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.principles.ui.NestNN
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.product.detail.view.widget.campaign.component.CampaignName
-import com.tokopedia.product.detail.view.widget.campaign.component.backgroundColor
+import com.tokopedia.product.detail.view.widget.campaign.component.campaignBackgroundColor
 
 /**
  * Created by yovi.putra on 20/12/23"
@@ -30,7 +30,7 @@ fun RegularCampaign(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .backgroundColor(colorString = backgroundColorString)
+            .campaignBackgroundColor(colorString = backgroundColorString)
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         CampaignName(title = title, logoUrl = logoUrl, logoHeight = 14.dp, textColor = NestNN.light._950)

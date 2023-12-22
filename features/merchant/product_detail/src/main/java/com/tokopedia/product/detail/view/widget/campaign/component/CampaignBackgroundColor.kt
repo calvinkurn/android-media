@@ -15,8 +15,7 @@ import androidx.compose.ui.graphics.Color
 
 private const val CAMPAIGN_COLOR = 0xFFD72C2C
 
-@Composable
-internal fun Modifier.backgroundColor(colors: List<Color>) = this.then(
+private fun Modifier.campaignBackgroundColor(colors: List<Color>) = this.then(
     when (colors.size) {
         0 -> background(color = Color(CAMPAIGN_COLOR))
         1 -> background(color = colors.first())
@@ -28,7 +27,7 @@ internal fun Modifier.backgroundColor(colors: List<Color>) = this.then(
 )
 
 @Composable
-internal fun Modifier.backgroundColor(colorString: String): Modifier {
+internal fun Modifier.campaignBackgroundColor(colorString: String): Modifier {
     val color = remember(colorString) {
         derivedStateOf {
             val listOfColor = colorString.split(",")
@@ -39,7 +38,7 @@ internal fun Modifier.backgroundColor(colorString: String): Modifier {
         }
     }
 
-    return backgroundColor(colors = color.value)
+    return campaignBackgroundColor(colors = color.value)
 }
 
 private fun parseColor(colorString: String): Color = runCatching {
