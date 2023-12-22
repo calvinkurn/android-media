@@ -47,6 +47,8 @@
         android:layout_marginStart="14dp"
         android:layout_marginEnd="12dp"
         app:typographyType="body_3"
+        android:ellipsize="end"
+        android:maxLines="1"
         tools:text="Lorem mengomentari postinganmu." />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -55,8 +57,11 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/notifcenter_tv_history_title"
         app:layout_constraintStart_toStartOf="@id/notifcenter_tv_history_title"
+        app:layout_constraintEnd_toEndOf="@id/notifcenter_tv_history_title"
         android:textColor="@color/Unify_NN950_68"
         app:typographyType="display_3"
+        android:ellipsize="end"
+        android:maxLines="1"
         tools:text="“ada paket bundling gak?”" />
 
     <com.tokopedia.unifyprinciples.Typography
