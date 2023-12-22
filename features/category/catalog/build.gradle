@@ -79,9 +79,6 @@ dependencies {
     implementation project(rootProject.ext.features.atcVariant)
     implementation project(rootProject.ext.features.productDetailCommon)
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.10.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidxTest

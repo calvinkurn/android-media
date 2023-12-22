@@ -23,7 +23,6 @@ class CatalogSwitchingComparisonActivity : BaseSimpleActivity() {
         val brand =
             intent.getStringExtra(CatalogSwitchingComparisonFragment.ARG_EXTRA_CATALOG_BRAND).orEmpty()
 
-        Log.d("TESSS",compareCatalogId.toString())
         val fragment = CatalogSwitchingComparisonFragment.newInstance(
             catalogId,
             compareCatalogId,

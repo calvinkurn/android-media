@@ -54,7 +54,6 @@
     <string name="catalog_error_message_inactive">1 katalog gagal ditampilkan. Perbandingan produk diubah ke semula, ya.</string>
     <string name="catalog_title_first_comparison">Main Katalog 1</string>
     <string name="catalog_title_comparison">Katalog %d</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="catalog_title_change_comparison">Ubah Perbandingan</string>
     <string name="catalog_subtitle_change_comparison">Bandingkan min. 2 dan maks. 4 katalog</string>
     <string name="catalog_text_title_catalog_listing">Daftar Catalog</string>

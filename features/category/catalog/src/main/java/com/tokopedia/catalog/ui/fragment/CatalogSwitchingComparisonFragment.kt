@@ -8,7 +8,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,6 +36,7 @@ import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -82,7 +82,9 @@ class CatalogSwitchingComparisonFragment :
         const val ARG_EXTRA_CATALOG_CATEGORY_ID = "ARG_EXTRA_CATALOG_CATEGORY_ID"
         const val LIMIT_SELECT_PRODUCT = 5
         const val MINIMUM_SELECT_PRODUCT = 2
+        private const val LIMIT = 10
         private const val DELAY_DEBOUNCE_SEARCH = 500L
+        private const val DELAY_TOASTER = 1500L
         fun newInstance(
             catalogId: String,
             comparisonCatalogId: List<String>,
@@ -107,7 +109,6 @@ class CatalogSwitchingComparisonFragment :
         mutableListOf<CatalogComparisonProductsUiModel.CatalogComparisonUIModel>()
     private var brand = ""
     private var categoryId = ""
-    private val LIMIT = 10
     private var searchKeyword = ""
     private val itemList =
         mutableListOf<CatalogComparisonProductsUiModel.CatalogComparisonUIModel>()
@@ -123,9 +124,11 @@ class CatalogSwitchingComparisonFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setInitialPage(Int.ONE)
         if (arguments != null) {
             catalogId = requireArguments().getString(ARG_CATALOG_ID, "")
-            compareCatalogId = requireArguments().getStringArrayList(ARG_COMPARISON_CATALOG_ID).orEmpty()
+            compareCatalogId =
+                requireArguments().getStringArrayList(ARG_COMPARISON_CATALOG_ID).orEmpty()
             brand = requireArguments().getString(ARG_EXTRA_CATALOG_BRAND, "")
             categoryId = requireArguments().getString(ARG_EXTRA_CATALOG_CATEGORY_ID, "")
             defaultComparison = compareCatalogId
@@ -234,9 +237,9 @@ class CatalogSwitchingComparisonFragment :
     }
 
     override fun onDataEmpty() {
-        if (binding?.vsEmptyState == null){
+        if (binding?.vsEmptyState == null) {
             binding?.vsEmptyState?.inflate()
-        }else{
+        } else {
             binding?.vsEmptyState?.show()
         }
     }
@@ -412,6 +415,7 @@ class CatalogSwitchingComparisonFragment :
                 is UnknownHostException, is SocketTimeoutException -> {
                     binding?.globalError?.setType(NO_CONNECTION)
                 }
+
                 else -> {
                     binding?.globalError?.setType(SERVER_ERROR)
                 }
@@ -483,10 +487,10 @@ class CatalogSwitchingComparisonFragment :
                 )
                 toasterInfo.show()
 
-                Handler(Looper.getMainLooper()).postDelayed({
+                handlerDelayToaster.postDelayed({
                     toasterInfo.dismiss()
                     toasterUnselect.show()
-                }, 1500)
+                }, DELAY_TOASTER)
             } else {
                 toasterUnselect.show()
             }
@@ -528,17 +532,12 @@ class CatalogSwitchingComparisonFragment :
         loaderCatalogSelection.showWithCondition(isShow)
     }
 
-    private fun showCancelSwitch() {
+    private fun showCancelSwitch(
+        title: String = getString(catalogR.string.catalog_switching_confirm_exit_title),
+        description: String = getString(catalogR.string.catalog_switching_confirm_desc_title)
+    ) {
         context?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                val title =
-                    getString(catalogR.string.catalog_switching_confirm_exit_title)
-
-
-                val description =
-                    getString(catalogR.string.catalog_switching_confirm_desc_title)
-
-
                 setTitle(title)
                 setDescription(description)
                 setPrimaryCTAText(it.resources.getString(catalogR.string.catalog_cancel))
