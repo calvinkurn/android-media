@@ -297,15 +297,15 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     }
                     ... on pdpDataComponentPromoPrice {
                       promo {
-                        value
                         iconURL
-                        productID
                         promoPriceFmt
                         subtitle
                         applink
                         color
                         background
                         superGraphicURL
+                        priceAdditionalFmt
+                        separatorColor
                       }
                       componentPriceType
                     }
@@ -373,6 +373,18 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         productURL
                         isCOD
                         isWishlist
+                        promo {
+                          iconURL
+                          promoPriceFmt
+                          subtitle
+                          applink
+                          color
+                          background
+                          superGraphicURL
+                          priceAdditionalFmt
+                          separatorColor
+                        }
+                        componentPriceType
                         picture {
                           url
                           url200
