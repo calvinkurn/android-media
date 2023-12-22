@@ -35,6 +35,7 @@ import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isEven
 import com.tokopedia.kotlin.extensions.view.isOdd
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -738,13 +739,10 @@ class CatalogDetailUiMapper @Inject constructor(
 
     private fun getColumnInfoBottomSheetTextColor() = Pair(
         MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN600),
-        MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN950)
+        Int.ZERO
     )
 
-    private fun getColumnInfoBottomSheetValueOnlyTextColor() = Pair(
-        MethodChecker.getColor(context, unifyprinciplesR.color.Unify_N700_96),
-        MethodChecker.getColor(context, unifyprinciplesR.color.Unify_N700_96)
-    )
+    private fun getColumnInfoBottomSheetValueOnlyTextColor() = Pair(Int.ZERO, Int.ZERO)
 
     fun isUsingAboveV4Layout(version: Int): Boolean {
         return version >= LAYOUT_VERSION_4_VALUE
