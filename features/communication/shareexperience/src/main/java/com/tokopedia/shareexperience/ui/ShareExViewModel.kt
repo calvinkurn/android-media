@@ -4,19 +4,14 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.shareexperience.data.dto.request.ShareExProductRequest
 import com.tokopedia.shareexperience.data.util.ShareExPageTypeEnum
-import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
-import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelModel
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.model.ShareExAffiliateRegistrationUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExLinkShareUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExSeparatorUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExSubtitleUiModel
-import com.tokopedia.shareexperience.ui.model.channel.ShareExCommonChannelUiModel
-import com.tokopedia.shareexperience.ui.model.channel.ShareExSocialChannelUiModel
 import com.tokopedia.shareexperience.ui.model.chip.ShareExChipUiModel
 import com.tokopedia.shareexperience.ui.model.chip.ShareExChipsUiModel
 import com.tokopedia.shareexperience.ui.model.image.ShareExImageCarouselUiModel
@@ -128,31 +123,31 @@ class ShareExViewModel @Inject constructor(
         )
         dummyList.add(affiliateRegistration)
 
-        val socialChannel = ShareExSocialChannelUiModel(
-            ShareExChannelModel(
-                "",
-                listOf(
-                    ShareExChannelItemModel("WhatsApp", IconUnify.WHATSAPP),
-                    ShareExChannelItemModel("FB Feed", IconUnify.FACEBOOK),
-                    ShareExChannelItemModel("FB Story", IconUnify.FACEBOOK_STORY),
-                    ShareExChannelItemModel("IG Feed", IconUnify.INSTAGRAM)
-                )
-            )
-        )
-        dummyList.add(socialChannel)
-
-        val commonChannel = ShareExCommonChannelUiModel(
-            ShareExChannelModel(
-                "",
-                listOf(
-                    ShareExChannelItemModel("Salin Link", IconUnify.LINK),
-                    ShareExChannelItemModel("SMS", IconUnify.CHAT),
-                    ShareExChannelItemModel("E-mail", IconUnify.MESSAGE),
-                    ShareExChannelItemModel("Lainnya", IconUnify.MENU_KEBAB_HORIZONTAL)
-                )
-            )
-        )
-        dummyList.add(commonChannel)
+//        val socialChannel = ShareExSocialChannelUiModel(
+//            ShareExChannelModel(
+//                "",
+//                listOf(
+//                    ShareExChannelItemModel("WhatsApp", IconUnify.WHATSAPP),
+//                    ShareExChannelItemModel("FB Feed", IconUnify.FACEBOOK),
+//                    ShareExChannelItemModel("FB Story", IconUnify.FACEBOOK_STORY),
+//                    ShareExChannelItemModel("IG Feed", IconUnify.INSTAGRAM)
+//                )
+//            )
+//        )
+//        dummyList.add(socialChannel)
+//
+//        val commonChannel = ShareExCommonChannelUiModel(
+//            ShareExChannelModel(
+//                "",
+//                listOf(
+//                    ShareExChannelItemModel("Salin Link", IconUnify.LINK),
+//                    ShareExChannelItemModel("SMS", IconUnify.CHAT),
+//                    ShareExChannelItemModel("E-mail", IconUnify.MESSAGE),
+//                    ShareExChannelItemModel("Lainnya", IconUnify.MENU_KEBAB_HORIZONTAL)
+//                )
+//            )
+//        )
+//        dummyList.add(commonChannel)
 
         viewModelScope.launch {
             _bottomSheetUiState.update {
