@@ -8,7 +8,7 @@
 
     <string name="thank_instant_payment_total_pay">Total Bayar</string>
     <string name="thank_payment_method">Metode Pembayaran</string>
-    <string name="thank_see_transaction_list">Lihat Daftar Transaksi</string>
+    <string name="thank_see_transaction_list">Daftar Transaksi</string>
     <string name="thankyou_rp">Rp %s</string>
     <string name="thankyou_rp_without_space">Rp%s</string>
     <string name="thankyou_discounted_rp">- Rp%s</string>
@@ -28,7 +28,9 @@
     <string name="thank_order_will_be_deliver_after_payment">Pesananmu baru diteruskan ke penjual setelah pembayaran terverifikasi.</string>
     <string name="thank_check_payment_status">Cek Status Bayar</string>
     <string name="thank_shop_again">Belanja Lagi</string>
-
+    <string name="thank_dan_lainnya">dan Lainnya.</string>
+    <string name="thank_benefit_with_plus"><![CDATA[🎉 Asyik, kamu <b><span style="color:#04837E">Hemat %s</span></b> dari]]></string>
+    <string name="thank_benefit_without_plus"><![CDATA[🎉 Asyik, kamu <b><span style="color:#04837E">Hemat %s</span></b> di transaksi ini]]></string>
 
     <string name="thank_payment_success">Pembayaran Berhasil</string>
     <string name="thank_payment_success_description">Pembayaranmu telah terverifikasi. Silakan lihat status pesananmu di daftar transaksi.</string>

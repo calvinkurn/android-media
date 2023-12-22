@@ -282,6 +282,7 @@ class ThankYouPageActivity :
 
     private fun initializeGlobalNav(title: String) {
         globalNabToolbar?.apply {
+            alpha = 0f
             var hideSearchBar = false
             var hideGlobalMenu = false
             if (::thanksPageData.isInitialized) {

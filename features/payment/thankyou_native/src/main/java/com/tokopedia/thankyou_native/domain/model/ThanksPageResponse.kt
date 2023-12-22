@@ -9,7 +9,7 @@ import kotlinx.android.parcel.RawValue
 
 
 data class ThanksPageResponse(
-    @SerializedName("thanksPageData")
+    @SerializedName("thanksPageData", alternate = ["thanksPageDataV2"])
     val thanksPageData: ThanksPageData
 )
 
@@ -581,7 +581,7 @@ data class CustomDataMessageV2(
     @SerializedName("custom_subtitle_v2")
     val customSubtitleV2: String?,
     @SerializedName("custom_notes")
-    val customNotes: List<String>?
+    val customNotes: String?
 ) : Parcelable
 
 @Parcelize
@@ -598,6 +598,8 @@ data class CustomDataOtherV2(
     val customIllustration: String?,
     @SerializedName("validate_engine_data")
     val gyroData: String?,
+    @SerializedName("promo_flags")
+    val promoFlags: String?,
     @SerializedName("tickers")
     val tickers: String?
 ) : Parcelable

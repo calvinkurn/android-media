@@ -16,6 +16,10 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.GetDefaultChosenAddressParam
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetDefaultChosenAddressUseCase
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
+import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey.CASHBACK_STACKED
+import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey.CASH_BACK_OVO_POINT
+import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey.TOTAL_DISCOUNT
+import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey.TOTAL_SHIPPING_DISCOUNT
 import com.tokopedia.thankyou_native.data.mapper.PaymentPageMapper
 import com.tokopedia.thankyou_native.data.mapper.ShopFlashSaleMapper
 import com.tokopedia.thankyou_native.data.mapper.ShopFlashSaleMapper.mapShopFlashSaleItemList
@@ -111,7 +115,7 @@ class ThanksPageDataViewModel @Inject constructor(
 
     fun getThanksPageData(paymentId: String, merchant: String) {
         thanksPageDataUseCase.cancelJobs()
-//        if (IS_V2) {
+        if (IS_V2) {
 //            thanksPageDataV2UseCase.getThankPageData(
 //                ::onThanksPageDataSuccess,
 //                ::onThanksPageDataError,
@@ -119,7 +123,7 @@ class ThanksPageDataViewModel @Inject constructor(
 //                merchant
 //            )
 //            return
-//        }
+        }
         thanksPageDataUseCase.getThankPageData(
             ::onThanksPageDataSuccess,
             ::onThanksPageDataError,

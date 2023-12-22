@@ -17,8 +17,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:card_type="border"/>
-
+        app:card_type="border">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Unify_Background"/>
+    </com.tokopedia.unifycomponents.CardUnify2>
     <Space
         android:id="@+id/spaceTop"
         android:layout_width="match_parent"
@@ -47,6 +51,7 @@
         android:id="@+id/headerIcon"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:scaleType="fitCenter"
         app:layout_constraintStart_toEndOf="@id/spaceStart"
         app:layout_constraintTop_toBottomOf="@id/spaceTop"
         app:layout_constraintBottom_toBottomOf="@id/headerDescription"/>
@@ -95,17 +100,50 @@
         app:layout_constraintTop_toBottomOf="@id/headerDescription"
         android:layout_marginTop="12dp" />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <com.tokopedia.thankyou_native.presentation.views.ShimmerView
         android:id="@+id/shimmerView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="28dp"
         app:layout_constraintStart_toEndOf="@id/spaceStart"
         app:layout_constraintEnd_toStartOf="@id/spaceEnd"
         app:layout_constraintTop_toBottomOf="@id/headerTips"
-        android:layout_marginTop="12dp"
-        app:typographyType="display_1"
-        app:typographyWeight="bold"
-        tools:text="Shimmer View"/>
+        android:layout_marginTop="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/totalDeductionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_NN950"
+                android:paddingStart="16dp"
+                android:paddingEnd="6dp"
+                android:layout_gravity="center_vertical"
+                app:typographyType="paragraph_3" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/plusBenefitIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:adjustViewBounds="true"
+                android:layout_gravity="center_vertical"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/etcBenefitText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_NN950"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                app:typographyType="paragraph_3"
+                android:text="@string/thank_dan_lainnya"
+                android:layout_gravity="center_vertical"/>
+        </LinearLayout>
+    </com.tokopedia.thankyou_native.presentation.views.ShimmerView>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/secondaryButton"

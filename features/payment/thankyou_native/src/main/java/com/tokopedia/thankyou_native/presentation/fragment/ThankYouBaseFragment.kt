@@ -105,6 +105,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import kotlinx.android.synthetic.main.thank_base_layout.*
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
+import org.json.JSONArray
 import javax.inject.Inject
 
 open class ThankYouBaseFragment :
@@ -237,10 +238,11 @@ open class ThankYouBaseFragment :
         getBottomContentRecyclerView()?.animate()?.alpha(1f)?.setDuration(UnifyMotion.T5)?.start()
         getBottomContentRecyclerView()?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (recyclerView.scrollY == 0) {
-                    (activity as ThankYouPageActivity).globalNabToolbar.hideShadow()
+                (activity as ThankYouPageActivity).lottieSuccess.translationY = recyclerView.computeVerticalScrollOffset().toFloat() * -0.5F
+                if (recyclerView.computeVerticalScrollOffset() < 5.toPx()) {
+                    (activity as ThankYouPageActivity).toolbarBackground.hide()
                 } else {
-                    (activity as ThankYouPageActivity).globalNabToolbar.showShadow()
+                    (activity as ThankYouPageActivity).toolbarBackground.show()
                 }
             }
         })
@@ -395,7 +397,9 @@ open class ThankYouBaseFragment :
             viewLifecycleOwner,
             Observer {
                 when (it) {
-                    is Success -> onThankYouPageDataReLoaded(it.data)
+                    is Success -> {
+                        onThankYouPageDataReLoaded(it.data)
+                    }
                     is Fail -> onThankYouPageDataLoadingFail(it.throwable)
                 }
             }

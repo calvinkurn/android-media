@@ -1,6 +1,7 @@
 package com.tokopedia.thankyou_native.presentation.adapter.model
 
 import android.content.Context
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.data.mapper.BankTransfer
@@ -46,11 +47,7 @@ data class WaitingHeaderUiModel(
                 else -> "Nomor Virtual Account"
             }
 
-            val note = if (thanksPageData.customDataMessage == null || thanksPageData.customDataMessage.customNotes.isNullOrEmpty()) {
-                listOf(context?.getString(R.string.thank_processing_payment_check_order).orEmpty())
-            } else {
-                thanksPageData.customDataMessage.customNotes
-            }
+            val note = Gson().fromJson(thanksPageData.customDataMessage?.customNotes, Array<String>::class.java)
 
             val primaryButtonText = if (thanksPageData.customDataMessage?.titleHomeButton.isNullOrEmpty()) context?.getString(R.string.thank_check_payment_status) else thanksPageData.customDataMessage?.titleHomeButton
             val secondaryButtonText = if (thanksPageData.customDataMessage?.titleOrderButton.isNullOrEmpty()) context?.getString(R.string.thank_see_payment_methods) else thanksPageData.customDataMessage?.titleOrderButton
@@ -64,7 +61,7 @@ data class WaitingHeaderUiModel(
                 thanksPageData.gatewayImage,
                 "Total Tagihan",
                 thanksPageData.amount,
-                note,
+                note.orEmpty().toList(),
                 thanksPageData.paymentType == "BANKTRANSFER",
                 thanksPageData.configFlagData?.shouldHideHomeButton == true,
                 primaryButtonText.orEmpty(),

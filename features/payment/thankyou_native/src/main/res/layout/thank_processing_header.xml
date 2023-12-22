@@ -160,7 +160,7 @@
         app:layout_constraintEnd_toStartOf="@id/spaceEnd"
         app:layout_constraintTop_toBottomOf="@id/amount"/>
 
-    <com.tokopedia.unifyprinciples.Typography
+    <com.tokopedia.thankyou_native.presentation.views.BulletsView
         android:id="@+id/info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -168,8 +168,7 @@
         app:layout_constraintStart_toEndOf="@id/spaceStart"
         app:layout_constraintEnd_toStartOf="@id/spaceEnd"
         app:layout_constraintTop_toBottomOf="@id/infoDivider"
-        app:typographyType="paragraph_3"
-        tools:text="Tidak disarankan transfer Virtual Account dari bank selain yang dipilih. Transaksi kamu baru akan diteruskan ke penjual setelah pembayaran berhasil diverifikasi."/>
+        app:typographyType="paragraph_3"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/secondaryButton"

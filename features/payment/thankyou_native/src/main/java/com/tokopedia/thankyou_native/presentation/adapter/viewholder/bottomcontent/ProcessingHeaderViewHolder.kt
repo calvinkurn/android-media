@@ -26,7 +26,7 @@ class ProcessingHeaderViewHolder(
         binding?.methodImage?.setImageUrl(data.methodImage)
         binding?.amountLabel?.text = data.amountLabel
         binding?.amount?.text = data.amount
-        binding?.info?.text = data.note
+        binding?.info?.setText(data.note)
         binding?.primaryButton?.shouldShowWithAction(!data.shouldHidePrimaryButton) {
             binding?.primaryButton?.text = data.primaryButtonText
         }

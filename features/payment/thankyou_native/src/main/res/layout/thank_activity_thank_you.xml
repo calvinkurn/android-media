@@ -20,6 +20,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <View
+        android:id="@+id/toolbarBackground"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        android:background="@color/Unify_Background"
+        app:layout_constraintTop_toTopOf="@id/globalNabToolbar"
+        app:layout_constraintBottom_toBottomOf="@id/globalNabToolbar"/>
+
     <com.tokopedia.searchbar.navigation_component.NavToolbar
         android:id="@+id/globalNabToolbar"
         android:layout_width="match_parent"

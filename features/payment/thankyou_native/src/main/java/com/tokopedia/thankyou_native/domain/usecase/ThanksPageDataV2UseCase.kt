@@ -46,7 +46,7 @@ class ThanksPageDataV2UseCase @Inject constructor(
             query ThanksPageDataV2(${'$'}paymentIDStr : String!, ${'$'}merchant: String!, ${'$'}lang: String!){
               thanksPageDataV2(paymentIDStr: ${'$'}paymentIDStr, merchant: ${'$'}merchant, lang: ${'$'}lang){
                 current_site
-                business_unit
+                business_unit   
                 merchant_code
                 profile_code
                 payment_id
