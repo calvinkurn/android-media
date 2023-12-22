@@ -206,7 +206,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateData(ProductDetailConstant.PRODUCT_CONTENT, loadInitialData) {
                 basicContentMap?.run {
                     data = it.createProductContentData()
-                    shouldShowCampaign = ongoingCampaignData == null
                     isWishlisted = it.data.isWishlist
                 }
             }
@@ -656,14 +655,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateData(ProductDetailConstant.PRODUCT_CONTENT) {
             basicContentMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
-                upcomingNplData = UpcomingNplDataModel(
-                    selectedUpcoming?.upcomingType.orEmpty(),
-                    selectedUpcoming?.campaignTypeName.orEmpty(),
-                    selectedUpcoming?.startDate.orEmpty()
-                )
-                shouldShowTradein = if (productTradeinMap == null) false else eligibleTradein
+                this.isNpl = !selectedUpcoming?.upcomingType.isNullOrBlank()
+                this.shouldShowTradein = if (productTradeinMap == null) false else eligibleTradein
                 this.freeOngkirImgUrl = freeOngkirImgUrl
-                shouldShowShareWidget = true
+                this.shouldShowShareWidget = true
             }
         }
 
@@ -714,11 +709,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateData(ProductDetailConstant.PRODUCT_CONTENT) {
             basicContentMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
-                upcomingNplData = UpcomingNplDataModel(
-                    selectedUpcoming?.upcomingType.orEmpty(),
-                    selectedUpcoming?.campaignTypeName.orEmpty(),
-                    selectedUpcoming?.startDate.orEmpty()
-                )
+                this.isNpl = !selectedUpcoming?.upcomingType.isNullOrBlank()
                 this.freeOngkirImgUrl = freeOngkirImgUrl
             }
         }

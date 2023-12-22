@@ -23,10 +23,7 @@ data class ProductContentDataModel(
 
     // Ribbon Data
     var shouldShowTradein: Boolean = false,
-
-    // Upcoming Data
-    var upcomingNplData: UpcomingNplDataModel = UpcomingNplDataModel(),
-    var shouldShowCampaign: Boolean = false,
+    var isNpl: Boolean = false,
     var shouldShowShareWidget: Boolean = false,
 ) : DynamicPdpDataModel,
     LoadableComponent by BlocksLoadableComponent(
@@ -39,10 +36,6 @@ data class ProductContentDataModel(
     override fun name(): String = name
 
     override fun type(): String = type
-
-    fun isNpl(): Boolean {
-        return upcomingNplData.upcomingType.isNotEmpty()
-    }
 
     fun showTradeIn(): Boolean {
         return shouldShowTradein && !campaignWillShowRibbon()
@@ -65,7 +58,7 @@ data class ProductContentDataModel(
         return if (newData is ProductContentDataModel) {
             data?.hashCode() == newData.data?.hashCode() &&
                 shouldShowTradein == newData.shouldShowTradein &&
-                upcomingNplData.hashCode() == newData.upcomingNplData.hashCode() &&
+                isNpl == newData.isNpl &&
                 isWishlisted == newData.isWishlisted &&
                 freeOngkirImgUrl == newData.freeOngkirImgUrl &&
                 data?.thematicCampaign?.campaignName == newData.data?.thematicCampaign?.campaignName
@@ -81,9 +74,7 @@ data class ProductContentDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
 
         return if (newData is ProductContentDataModel) {
-            if (data?.hashCode() != newData.data?.hashCode() ||
-                upcomingNplData.hashCode() != newData.upcomingNplData.hashCode()
-            ) {
+            if (data?.hashCode() != newData.data?.hashCode() || isNpl != newData.isNpl) {
                 // Update the whole component
                 return null
             }

@@ -30,21 +30,10 @@ class PartialContentView(
     private val context = view.context
     private val binding = ItemProductContentBinding.bind(view)
 
-    init {
-        binding.campaignRibbon.init(
-            onCampaignEnded = {
-                hideProductCampaign(campaign = it)
-                listener.showAlertCampaignEnded()
-            },
-            onRefreshPage = listener::refreshPage
-        )
-    }
-
     fun renderData(
         data: ProductContentMainData,
         isUpcomingNplType: Boolean,
-        freeOngkirImgUrl: String,
-        shouldShowCampaign: Boolean
+        freeOngkirImgUrl: String
     ) = with(binding) {
         txtMainPrice.contentDescription =
             context.getString(R.string.content_desc_txt_main_price, data.price.value)
@@ -70,29 +59,21 @@ class PartialContentView(
                 } else {
                     setTextCampaignActive(data.campaign)
                 }
-                campaignRibbon.hide()
             }
             // no campaign
             data.campaign.campaignIdentifier == CampaignRibbon.NO_CAMPAIGN -> {
                 renderCampaignInactive(data.price.priceFmt)
-                campaignRibbon.hide()
             }
             // thematic only
             data.campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN -> {
-                campaignRibbon.renderOnGoingCampaign(data)
                 renderCampaignInactive(data.price.priceFmt)
             }
             else -> {
-                campaignRibbon.renderOnGoingCampaign(data)
                 setTextCampaignActive(data.campaign)
             }
         }
 
         renderStockAvailable(data.campaign, data.isVariant, data.stockWording, data.isProductActive)
-
-        if (!shouldShowCampaign) {
-            campaignRibbon.hide()
-        }
     }
 
     fun updateWishlist(wishlisted: Boolean, shouldShowWishlist: Boolean) = with(binding.fabDetailPdp) {
@@ -128,7 +109,6 @@ class PartialContentView(
         txtMainPrice.text = price
         textSlashPrice.gone()
         textDiscountRed.gone()
-        campaignRibbon.show()
     }
 
     private fun setTextCampaignActive(campaign: CampaignModular) = with(binding) {
@@ -163,14 +143,6 @@ class PartialContentView(
             textSlashPrice.visibility = View.VISIBLE
             textDiscountRed.visibility = View.VISIBLE
         }
-    }
-
-    private fun hideProductCampaign(campaign: CampaignModular) = with(binding) {
-        txtMainPrice.text = campaign.slashPriceFmt
-        campaignRibbon.hide()
-        textDiscountRed.gone()
-        textSlashPrice.gone()
-        textStockAvailable.show()
     }
 
     fun renderTradein(showTradein: Boolean) = with(binding) {

@@ -36,7 +36,7 @@ class ProductContentViewHolder(
             ) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
-            header.renderData(it, element.isNpl(), element.freeOngkirImgUrl, element.shouldShowCampaign)
+            header.renderData(it, element.isNpl, element.freeOngkirImgUrl)
         }
 
         header.updateWishlist(element.isWishlisted, listener.shouldShowWishlist())

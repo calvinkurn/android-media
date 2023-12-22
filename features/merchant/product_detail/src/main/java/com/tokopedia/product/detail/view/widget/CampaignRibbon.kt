@@ -34,6 +34,7 @@ import com.tokopedia.product.detail.databinding.WidgetCampaignRibbonType1LayoutB
 import com.tokopedia.product.detail.databinding.WidgetCampaignRibbonType2LayoutBinding
 import com.tokopedia.product.detail.databinding.WidgetCampaignRibbonType3LayoutBinding
 import com.tokopedia.product.detail.view.util.isInflated
+import com.tokopedia.product.detail.view.util.setContentSafety
 import com.tokopedia.product.detail.view.widget.campaign.CampaignRibbonCompose
 import com.tokopedia.product.detail.view.widget.campaign.CampaignType
 import com.tokopedia.product.detail.view.widget.campaign.timebased.ongoing.UpcomingCampaignUiModel
@@ -645,7 +646,7 @@ class CampaignRibbon @JvmOverloads constructor(
     private fun renderCampaignRibbonCompose(type: CampaignType) {
         val binding = _rootBinding ?: return
         binding.campaignRibbonCompose.show()
-        binding.campaignRibbonCompose.setContent {
+        binding.campaignRibbonCompose.setContentSafety {
             NestTheme {
                 CampaignRibbonCompose(type = type)
             }
