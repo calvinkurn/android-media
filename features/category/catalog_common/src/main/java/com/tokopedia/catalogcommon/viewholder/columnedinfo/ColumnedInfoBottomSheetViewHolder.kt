@@ -12,7 +12,8 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ColumnedInfoBottomSheetViewHolder(
-    itemView: View
+    itemView: View,
+    private val showAccordion: Boolean
 ) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -28,6 +29,7 @@ class ColumnedInfoBottomSheetViewHolder(
 
     fun bind(item: ColumnedInfoUiModel.ColumnData) {
         binding?.apply {
+            headerColumnInfo.isVisible = showAccordion
             tfTitle.text = item.title
             icChevron.setOnClickListener {
                 isExtended = !isExtended

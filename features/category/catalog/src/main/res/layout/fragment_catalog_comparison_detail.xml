@@ -25,7 +25,6 @@
         android:background="@color/Unify_NN0"
         android:elevation="5dp"
         android:gravity="center"
-        android:text="@string/catalog_title_first_comparison"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
@@ -71,12 +70,13 @@
 
     <View
         android:id="@+id/viewComparisonShadow"
-        android:layout_width="3dp"
+        android:layout_width="6dp"
         android:layout_height="0dp"
         android:elevation="6dp"
         android:layout_marginStart="148dp"
         android:background="@drawable/catalog_vertical_gradient_bg"
         android:visibility="gone"
+        android:alpha="0.4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
