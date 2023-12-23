@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,8 +14,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.deals.R
-import com.tokopedia.deals.brand.model.DealsEmptyDataView
-import com.tokopedia.deals.brand.ui.activity.DealsBrandActivity
 import com.tokopedia.deals.category.di.DealsCategoryComponent
 import com.tokopedia.deals.category.listener.DealsCategoryFilterBottomSheetListener
 import com.tokopedia.deals.category.ui.activity.DealsCategoryActivity
@@ -44,6 +41,8 @@ import com.tokopedia.deals.home.ui.fragment.DealsHomeFragment
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.model.response.Category
 import com.tokopedia.deals.search.ui.activity.DealsSearchActivity
+import com.tokopedia.deals.ui.brand.model.DealsEmptyDataView
+import com.tokopedia.deals.ui.brand.ui.activity.DealsBrandActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition

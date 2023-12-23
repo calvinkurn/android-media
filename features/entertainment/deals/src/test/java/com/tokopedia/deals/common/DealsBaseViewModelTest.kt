@@ -1,13 +1,13 @@
 package com.tokopedia.deals.common
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.deals.common.domain.GetNearestLocationUseCase
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.utils.DealsLocationUtils
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.deals.domain.GetNearestLocationUseCase
 import com.tokopedia.deals.location_picker.model.response.EventLocationSearch
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.location_picker.model.response.LocationData
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.coEvery
 import io.mockk.mockk
 import junit.framework.Assert.assertEquals

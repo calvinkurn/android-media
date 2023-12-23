@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
@@ -22,7 +21,6 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.deals.R
-import com.tokopedia.deals.brand.ui.activity.DealsBrandActivity
 import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.listener.CurrentLocationCallback
 import com.tokopedia.deals.common.model.response.Brand
@@ -44,6 +42,7 @@ import com.tokopedia.deals.search.model.visitor.MoreBrandModel
 import com.tokopedia.deals.search.model.visitor.VoucherModel
 import com.tokopedia.deals.search.ui.typefactory.DealsSearchTypeFactory
 import com.tokopedia.deals.search.ui.typefactory.DealsSearchTypeFactoryImpl
+import com.tokopedia.deals.ui.brand.ui.activity.DealsBrandActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

@@ -3,11 +3,11 @@ package com.tokopedia.deals.home.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.deals.common.data.DealsNearestLocationParam
-import com.tokopedia.deals.common.domain.GetNearestLocationUseCase
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.deals.domain.GetNearestLocationUseCase
 import com.tokopedia.deals.home.data.DealsEventHome
 import com.tokopedia.deals.home.data.EventHomeLayout
 import com.tokopedia.deals.home.domain.GetEventHomeBrandPopularUseCase
@@ -30,7 +30,8 @@ class DealsHomeViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                              private val dealsHomeMapper: DealsHomeMapper,
                                              private val getEventHomeLayoutUseCase: GetEventHomeLayoutUseCase,
                                              private val getEventHomeBrandPopularUseCase: GetEventHomeBrandPopularUseCase,
-                                             private val getNearestLocationUseCase: GetNearestLocationUseCase)
+                                             private val getNearestLocationUseCase: GetNearestLocationUseCase
+)
     : BaseViewModel(dispatcher.main) {
 
     private val _observableEventHomeLayout = MutableLiveData<Result<List<DealsBaseItemDataView>>>()
@@ -86,7 +87,8 @@ class DealsHomeViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         return try {
             if (location.locType.name != LANDMARK) {
                 val data = getNearestLocationUseCase.apply {
-                    useParams(GetNearestLocationUseCase.createParams(
+                    useParams(
+                        GetNearestLocationUseCase.createParams(
                             DealsNearestLocationParam.VALUE_LOCATION_TYPE_LANDMARK,
                             location.coordinates, NEAREST_LOCATION_SIZE_NUM_VALUE,
                             NEAREST_LOCATION_PAGE_NUM_VALUE,

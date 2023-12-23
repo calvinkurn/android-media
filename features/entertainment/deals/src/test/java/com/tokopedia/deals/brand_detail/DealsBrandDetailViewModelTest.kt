@@ -3,9 +3,9 @@ package com.tokopedia.deals.brand_detail
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.deals.DealsJsonMapper
-import com.tokopedia.deals.brand_detail.data.DealsBrandDetail
-import com.tokopedia.deals.brand_detail.ui.viewmodel.DealsBrandDetailViewModel
 import com.tokopedia.deals.common.data.DealsNearestLocationParam
+import com.tokopedia.deals.ui.brand_detail.data.DealsBrandDetail
+import com.tokopedia.deals.ui.brand_detail.ui.viewmodel.DealsBrandDetailViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -100,7 +100,8 @@ class DealsBrandDetailViewModelTest {
         val actual = viewModel.createParams(coordinates, seoUrl)
 
         //then
-        assertEquals(actual, mapOf(DealsBrandDetailViewModel.PARAM_BRAND_DETAIL to arrayListOf(
+        assertEquals(actual, mapOf(
+            DealsBrandDetailViewModel.PARAM_BRAND_DETAIL to arrayListOf(
                 DealsNearestLocationParam(DealsNearestLocationParam.PARAM_SEO_URL, seoUrl),
                 DealsNearestLocationParam(DealsNearestLocationParam.PARAM_COORDINATES, coordinates),
                 DealsNearestLocationParam(DealsNearestLocationParam.PARAM_SIZE, DealsNearestLocationParam.VALUE_SIZE_PRODUCT),

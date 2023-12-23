@@ -3,25 +3,25 @@ package com.tokopedia.deals.search.domain.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.deals.common.model.response.EventSearch
+import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.common.utils.DealsLocationUtils
+import com.tokopedia.deals.domain.DealsSearchUseCase
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.DealsSearchConstants
 import com.tokopedia.deals.search.domain.DealsSearchGqlQueries
-import com.tokopedia.deals.search.model.response.*
 import com.tokopedia.deals.search.domain.usecase.DealsSearchInitialLoadUseCase
-import com.tokopedia.deals.common.domain.DealsSearchUseCase
-import com.tokopedia.deals.common.model.response.EventSearch
-import com.tokopedia.deals.common.model.response.SearchData
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.deals.search.model.response.InitialLoadData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class DealsSearchViewModel @Inject constructor (
-        private val dealsLoadInitialData: DealsSearchInitialLoadUseCase,
-        private val dealsSearchUseCase: DealsSearchUseCase,
-        dispatcher: CoroutineDispatchers
+    private val dealsLoadInitialData: DealsSearchInitialLoadUseCase,
+    private val dealsSearchUseCase: DealsSearchUseCase,
+    dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
     private val _dealsSearchResponse = MutableLiveData<Result<EventSearch>>()

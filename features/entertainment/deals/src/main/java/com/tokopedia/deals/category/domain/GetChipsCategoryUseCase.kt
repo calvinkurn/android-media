@@ -1,6 +1,6 @@
 package com.tokopedia.deals.category.domain
 
-import com.tokopedia.deals.common.domain.DealsGqlQueries
+import com.tokopedia.deals.domain.DealsGqlQueries
 import com.tokopedia.deals.search.model.response.CuratedData
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase

@@ -1,7 +1,7 @@
 package com.tokopedia.deals.location_picker.domain.usecase
 
-import com.tokopedia.deals.common.domain.DealsGqlQueries
 import com.tokopedia.deals.common.model.request.RequestParam
+import com.tokopedia.deals.domain.DealsGqlQueries
 import com.tokopedia.deals.location_picker.DealsLocationConstants
 import com.tokopedia.deals.location_picker.model.response.LocationData
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase

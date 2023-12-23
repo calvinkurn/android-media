@@ -3,30 +3,30 @@ package com.tokopedia.deals.category
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
+import com.tokopedia.deals.DealsJsonMapper
 import com.tokopedia.deals.category.domain.GetChipsCategoryUseCase
 import com.tokopedia.deals.category.ui.dataview.ProductListDataView
 import com.tokopedia.deals.category.ui.viewmodel.DealCategoryViewModel
 import com.tokopedia.deals.category.utils.MapperCategoryLayout
 import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
+import com.tokopedia.deals.domain.DealsSearchUseCase
+import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.model.response.CuratedData
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.runs
+import io.mockk.verify
+import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import com.tokopedia.deals.DealsJsonMapper
-import com.tokopedia.deals.common.domain.DealsSearchUseCase
-import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
-import com.tokopedia.deals.location_picker.model.response.Location
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.verify
-import io.mockk.mockk
-import io.mockk.just
-import io.mockk.runs
-import junit.framework.Assert.assertEquals
 
 @RunWith(JUnit4::class)
 class DealsCategoryViewModelTest {

@@ -3,8 +3,6 @@ package com.tokopedia.deals.common.analytics
 import android.os.Bundle
 import android.util.Log
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.deals.brand_detail.data.Category
-import com.tokopedia.deals.brand_detail.data.Product
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.CART_PAGE_LOADED
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.CHECKOUT_STEP_1
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.CHECKOUT_STEP_2
@@ -65,6 +63,8 @@ import com.tokopedia.deals.home.ui.dataview.CuratedCategoryDataView
 import com.tokopedia.deals.home.ui.dataview.VoucherPlaceCardDataView
 import com.tokopedia.deals.home.ui.dataview.VoucherPlacePopularDataView
 import com.tokopedia.deals.search.model.visitor.VoucherModel
+import com.tokopedia.deals.ui.brand_detail.data.Category
+import com.tokopedia.deals.ui.brand_detail.data.Product
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -72,7 +72,6 @@ import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.HashMap
 import javax.inject.Inject
 
 class DealsAnalytics @Inject constructor(

@@ -5,10 +5,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.deals.brand.domain.viewmodel.DealsBrandViewModel
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.ui.viewmodel.DealsBrandCategoryActivityViewModel
 import com.tokopedia.deals.home.ui.viewmodel.DealsHomeViewModel
+import com.tokopedia.deals.ui.brand.domain.viewmodel.DealsBrandViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

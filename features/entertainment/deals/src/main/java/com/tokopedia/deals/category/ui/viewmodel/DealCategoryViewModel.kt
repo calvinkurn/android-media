@@ -3,15 +3,15 @@ package com.tokopedia.deals.category.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.deals.category.domain.GetChipsCategoryUseCase
 import com.tokopedia.deals.category.ui.dataview.ProductListDataView
 import com.tokopedia.deals.category.utils.MapperCategoryLayout
-import com.tokopedia.deals.common.domain.DealsSearchUseCase
 import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.common.ui.dataview.ChipDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.deals.domain.DealsSearchUseCase
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.DealsSearchConstants
 import com.tokopedia.deals.search.domain.DealsSearchGqlQueries
@@ -23,10 +23,10 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class DealCategoryViewModel @Inject constructor(
-        private val mapCategoryLayout: MapperCategoryLayout,
-        private val chipsCategoryUseCase: GetChipsCategoryUseCase,
-        private val dealsSearchUseCase: DealsSearchUseCase,
-        private val dispatcher: CoroutineDispatchers
+    private val mapCategoryLayout: MapperCategoryLayout,
+    private val chipsCategoryUseCase: GetChipsCategoryUseCase,
+    private val dealsSearchUseCase: DealsSearchUseCase,
+    private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     override val coroutineContext: CoroutineContext

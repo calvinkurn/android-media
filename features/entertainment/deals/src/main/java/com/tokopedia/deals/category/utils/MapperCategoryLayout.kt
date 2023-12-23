@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.deals.R
-import com.tokopedia.deals.brand.model.DealsEmptyDataView
 import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.common.ui.dataview.ChipDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
@@ -15,6 +14,7 @@ import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.common.utils.DealsUtils.getLabelColor
 import com.tokopedia.deals.search.model.response.Category
+import com.tokopedia.deals.ui.brand.model.DealsEmptyDataView
 import javax.inject.Inject
 
 class MapperCategoryLayout @Inject constructor(@ApplicationContext private val context: Context) {
@@ -33,10 +33,12 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
             isFilter: Boolean
     ): List<DealsBaseItemDataView> {
         layout.clear()
-        layout.add(DealsEmptyDataView(getString(EMPTY_TITLE),
+        layout.add(
+            DealsEmptyDataView(getString(EMPTY_TITLE),
                 if (isFilter) getString(EMPTY_DESC_FILTER) else getString(EMPTY_DESC),
                 isFilter
-        ))
+        )
+        )
         return layout
     }
 
