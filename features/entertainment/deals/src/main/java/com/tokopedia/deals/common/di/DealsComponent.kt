@@ -3,8 +3,9 @@ package com.tokopedia.deals.common.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.iris.util.IrisSession
@@ -14,13 +15,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.logging.HttpLoggingInterceptor
 
-/**
- * @author by jessica on 11/06/20
- */
-
-@DealsScope
-@Component(modules = [DealsModule::class, DealsViewModelModule::class],
-        dependencies = [BaseAppComponent::class])
+@ActivityScope
+@Component(
+    modules = [DealsModule::class, DealsViewModelModule::class],
+    dependencies = [BaseAppComponent::class]
+)
 interface DealsComponent {
 
     @ApplicationContext

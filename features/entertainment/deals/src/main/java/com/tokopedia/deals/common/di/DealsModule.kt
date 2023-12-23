@@ -3,6 +3,7 @@ package com.tokopedia.deals.common.di
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.utils.DealsLocationUtils
@@ -14,14 +15,12 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -43,42 +42,35 @@ class DealsModule(val context: Context) {
     @Provides
     fun provideDealsContext() = context
 
-    @DealsScope
+    @ActivityScope
     @Provides
     fun provideDispatcher(): Dispatchers = Dispatchers
 
-    @DealsScope
+    @ActivityScope
     @Provides
     fun provideMainDispacther(): CoroutineDispatcher = Dispatchers.Main
 
-    @DealsScope
+    @ActivityScope
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
-    @DealsScope
-    @Provides
-    fun provideWsV4RetrofitWithErrorHandler(okHttpClient: OkHttpClient,
-                                            retrofitBuilder: Retrofit.Builder): Retrofit {
-        return retrofitBuilder.baseUrl(TokopediaUrl.getInstance().BOOKING).client(okHttpClient).build()
-    }
-
-    @DealsScope
+    @ActivityScope
     @Provides
     fun okHttpRetryPolicy(): OkHttpRetryPolicy {
         return OkHttpRetryPolicy(NET_READ_TIMEOUT, NET_WRITE_TIMEOUT, NET_CONNECT_TIMEOUT, NET_RETRY)
     }
 
-    @DealsScope
+    @ActivityScope
     @Provides
     fun provideGson(): Gson {
         return GsonBuilder()
-                .setDateFormat(GSON_DATE_FORMAT)
-                .setPrettyPrinting()
-                .serializeNulls()
-                .create()
+            .setDateFormat(GSON_DATE_FORMAT)
+            .setPrettyPrinting()
+            .serializeNulls()
+            .create()
     }
 
-    @DealsScope
+    @ActivityScope
     @DealsQualifier
     @Provides
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
@@ -92,46 +84,48 @@ class DealsModule(val context: Context) {
     }
 
     @Provides
-    @DealsScope
+    @ActivityScope
     fun provideNetworkRouter(@DealsQualifier context: Context): NetworkRouter {
         return context as NetworkRouter
     }
 
-    @DealsScope
+    @ActivityScope
     @Provides
-    fun provideTkpdOldAuthInterceptor(@DealsQualifier context: Context,
-                                   networkRouter: NetworkRouter,
-                                   userSessionInterface: UserSessionInterface): TkpdOldAuthInterceptor {
+    fun provideTkpdOldAuthInterceptor(
+        @DealsQualifier context: Context,
+        networkRouter: NetworkRouter,
+        userSessionInterface: UserSessionInterface
+    ): TkpdOldAuthInterceptor {
         return TkpdOldAuthInterceptor(context, networkRouter, userSessionInterface)
     }
 
-    @DealsScope
+    @ActivityScope
     @Provides
     fun provideRetrofitBuilder(gson: Gson): Retrofit.Builder {
         return Retrofit.Builder()
-                .addConverterFactory(StringResponseConverter())
-                .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(StringResponseConverter())
+            .addConverterFactory(GsonConverterFactory.create(gson))
     }
 
-    @DealsScope
+    @ActivityScope
     @Provides
     fun provideUserSessionInterface(@DealsQualifier context: Context): UserSessionInterface = UserSession(context)
 
-    @DealsScope
+    @ActivityScope
     @Provides
-    fun provideIrisSession(@DealsQualifier context: Context): IrisSession  = IrisSession(context)
+    fun provideIrisSession(@DealsQualifier context: Context): IrisSession = IrisSession(context)
 
-    @DealsScope
+    @ActivityScope
     @Provides
-    fun provideDealsLocationUtil(@DealsQualifier context: Context): DealsLocationUtils  = DealsLocationUtils(context)
+    fun provideDealsLocationUtil(@DealsQualifier context: Context): DealsLocationUtils = DealsLocationUtils(context)
 
-    @DealsScope
+    @ActivityScope
     @Provides
     fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase =
-            MultiRequestGraphqlUseCase(graphqlRepository)
+        MultiRequestGraphqlUseCase(graphqlRepository)
 
-    @DealsScope
+    @ActivityScope
     @Provides
     fun provideDealsAnalytics(irisSession: IrisSession, userSessionInterface: UserSessionInterface): DealsAnalytics =
-            DealsAnalytics(irisSession, userSessionInterface)
+        DealsAnalytics(irisSession, userSessionInterface)
 }
