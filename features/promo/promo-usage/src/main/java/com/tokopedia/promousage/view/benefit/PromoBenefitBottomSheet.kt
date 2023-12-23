@@ -15,20 +15,33 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.promousage.databinding.PromoBenefitBottomsheetBinding
+import com.tokopedia.promousage.di.DaggerPromoUsageComponent
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
+import javax.inject.Inject
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
 
     private var binding by autoClearedNullable<PromoBenefitBottomsheetBinding>()
-    private lateinit var model: Param
     private val usablePromoAdapter = UsablePromoAdapter()
     private val infoAdapter = AdditionalInfoAdapter()
 
     private var infoStateIsShown = true
+
+    @Inject
+    lateinit var vmFactory: ViewModelFactory
+
+    private val viewModel: PromoBenefitViewModel by viewModels { vmFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +49,13 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
 //            DialogFragment.STYLE_NORMAL,
 //            unifycomponentsR.style.UnifyBottomSheetOverlapStyle
 //        )
-        model = arguments?.getParcelable(ARG_BOTTOM_SHEET) ?: Param()
+        val baseAppComponent = (activity?.application as BaseMainApplication).baseAppComponent
+        DaggerPromoUsageComponent.builder()
+            .baseAppComponent(baseAppComponent)
+            .build()
+            .inject(this)
+        val id = arguments?.getString(ARG_BOTTOM_SHEET) ?: "-1"
+        viewModel.setId(id)
     }
 
     override fun onCreateView(
@@ -60,30 +79,39 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
                 requireContext(),
                 unifycomponentsR.drawable.bottomsheet_background
             )
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                drawable?.colorFilter = BlendModeColorFilter(
-                    Color.parseColor(model.headerColor), BlendMode.SRC_ATOP
-                )
-            } else {
-                drawable?.setColorFilter(
-                    Color.parseColor(model.headerColor),
-                    PorterDuff.Mode.SRC_ATOP
-                )
+
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                    viewModel.state.collect { model ->
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            drawable?.colorFilter = BlendModeColorFilter(
+                                Color.parseColor(model.headerColor),
+                                BlendMode.SRC_ATOP
+                            )
+                        } else {
+                            drawable?.setColorFilter(
+                                Color.parseColor(model.headerColor),
+                                PorterDuff.Mode.SRC_ATOP
+                            )
+                        }
+                        topSection.background = drawable
+                        layoutBenefit.tvEstimate.text = model.estimatePrice
+                        layoutBenefit.tvBasePrice.text = model.basePrice
+
+                        usablePromoAdapter.submitList(model.usablePromo)
+                        infoAdapter.submitList(model.promoInfo)
+                    }
+                }
             }
-            topSection.background = drawable
-            layoutBenefit.tvEstimate.text = model.estimatePrice
-            layoutBenefit.tvBasePrice.text = model.basePrice
 
             rvInfo.run {
                 adapter = infoAdapter
-                infoAdapter.submitList(model.promoInfo)
             }
             icClose.setOnClickListener {
                 dismiss()
             }
             layoutBenefit.rvUsablePromo.run {
                 adapter = usablePromoAdapter
-                usablePromoAdapter.submitList(model.usablePromo)
             }
             toggleInfo.setOnClickListener {
                 val start = if (infoStateIsShown) 0f else 180f
@@ -100,20 +128,19 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
 
     companion object {
         const val ARG_BOTTOM_SHEET = "ARG_BOTTOM_SHEET"
-        fun newInstance(param: Param) = PromoBenefitBottomSheet().apply {
+        fun newInstance(variantId: String) = PromoBenefitBottomSheet().apply {
             arguments = Bundle().apply {
-                putParcelable(ARG_BOTTOM_SHEET, param)
+                putString(ARG_BOTTOM_SHEET, variantId)
             }
         }
     }
-
-    @Parcelize
-    data class Param(
-        val headerColor: String = "#FFF5F6",
-        val estimatePrice: String = "Rp0",
-        val basePrice: String = "Rp0",
-        val usablePromo: List<UsablePromoModel> = listOf(),
-        val promoInfo: List<String> = listOf()
-    ) : Parcelable
-
 }
+
+@Parcelize
+data class UiModel(
+    val headerColor: String = "#FFF5F6",
+    val estimatePrice: String = "Rp0",
+    val basePrice: String = "Rp0",
+    val usablePromo: List<UsablePromoModel> = listOf(),
+    val promoInfo: List<String> = listOf()
+) : Parcelable
