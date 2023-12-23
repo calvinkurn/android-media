@@ -324,6 +324,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
     implementation projectOrAar(rootProject.ext.features.commonDigital)
     implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)
+
     implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.features.productManageCommon)
@@ -338,8 +339,12 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.youtubePlayer)
 
+    implementation projectOrAar(rootProject.ext.libraries.appDownloadManagerCommon)
     if (project.hasProperty('nakamaVersion') ?: false) {
         implementation projectOrAar(rootProject.ext.features.feedbackForm)
+        implementation projectOrAar(rootProject.ext.features.appDownloadManagerInstall)
+    } else {
+        implementation projectOrAar(rootProject.ext.features.appDownloadManagerNoInstall)
     }
 
     implementation rootProject.ext.playServicesDependencies.maps
