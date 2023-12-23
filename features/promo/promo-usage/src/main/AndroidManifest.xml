@@ -20,7 +20,6 @@
                     android:pathPattern="@string/path_promo_benefit"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
-            >
 
         </activity>
     </application>
