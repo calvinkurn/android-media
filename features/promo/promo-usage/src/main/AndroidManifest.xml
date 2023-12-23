@@ -7,7 +7,7 @@
         <activity
             android:name=".view.benefit.PromoBenefitActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:theme="@style/Theme.AppCompat.DayNight.Translucent">
 
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
