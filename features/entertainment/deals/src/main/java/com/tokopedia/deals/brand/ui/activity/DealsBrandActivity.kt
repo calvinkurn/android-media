@@ -9,18 +9,17 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.deals.R
-import com.tokopedia.deals.brand.di.component.DaggerDealsBrandComponent
-import com.tokopedia.deals.brand.di.component.DealsBrandComponent
 import com.tokopedia.deals.brand.listener.DealsBrandSearchTabListener
 import com.tokopedia.deals.category.ui.activity.DealsCategoryActivity
 import com.tokopedia.deals.common.analytics.DealsAnalytics
+import com.tokopedia.deals.common.di.DaggerDealsComponent
+import com.tokopedia.deals.common.di.DealsComponent
+import com.tokopedia.deals.common.di.DealsModule
 import com.tokopedia.deals.common.ui.activity.DealsBaseBrandCategoryActivity
 import com.tokopedia.deals.search.DealsSearchConstants
-import com.tokopedia.unifycomponents.SearchBarUnify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -28,7 +27,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class DealsBrandActivity: DealsBaseBrandCategoryActivity(), HasComponent<DealsBrandComponent>, CoroutineScope {
+class DealsBrandActivity :
+    DealsBaseBrandCategoryActivity(),
+    HasComponent<DealsComponent>,
+    CoroutineScope {
 
     private val listeners: ArrayList<DealsBrandSearchTabListener> = arrayListOf()
     var userTyped = false
@@ -39,10 +41,12 @@ class DealsBrandActivity: DealsBaseBrandCategoryActivity(), HasComponent<DealsBr
 
     override fun isSearchAble(): Boolean = true
 
-    override fun getComponent(): DealsBrandComponent {
-        return DaggerDealsBrandComponent.builder()
-                .dealsComponent(getDealsComponent())
-                .build()
+    override fun getComponent(): DealsComponent {
+        val appComponent = (application as BaseMainApplication).baseAppComponent
+        return DaggerDealsComponent.builder()
+            .baseAppComponent(appComponent)
+            .dealsModule(DealsModule(this))
+            .build()
     }
 
     private fun initInjector() {
@@ -53,7 +57,10 @@ class DealsBrandActivity: DealsBaseBrandCategoryActivity(), HasComponent<DealsBr
         val uri = intent.data
         uri?.let {
             if (!uri.getQueryParameter(DealsCategoryActivity.PARAM_CATEGORY_ID).isNullOrEmpty()) {
-                intent.putExtra(DealsCategoryActivity.EXTRA_CATEGORY_ID, uri.getQueryParameter(DealsCategoryActivity.PARAM_CATEGORY_ID))
+                intent.putExtra(
+                    DealsCategoryActivity.EXTRA_CATEGORY_ID,
+                    uri.getQueryParameter(DealsCategoryActivity.PARAM_CATEGORY_ID)
+                )
             }
         }
 
@@ -65,7 +72,9 @@ class DealsBrandActivity: DealsBaseBrandCategoryActivity(), HasComponent<DealsBr
 
     private fun setKeywordFromPreviousPage() {
         val keyword = intent.getStringExtra(DealsSearchConstants.KEYWORD_EXTRA)
-        binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.searchBarTextField.setText(keyword)
+        binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.searchBarTextField.setText(
+            keyword
+        )
     }
 
     @Synchronized
@@ -93,17 +102,18 @@ class DealsBrandActivity: DealsBaseBrandCategoryActivity(), HasComponent<DealsBr
     }
 
     private fun setupListener() {
-        binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.searchBarTextField.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
-            KeyboardHandler.showSoftKeyboard(this)
-            if(this::analytics.isInitialized) {
-                analytics.eventClickSearchBrandPage()
+        binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.searchBarTextField.onFocusChangeListener =
+            View.OnFocusChangeListener { v, hasFocus ->
+                KeyboardHandler.showSoftKeyboard(this)
+                if (this::analytics.isInitialized) {
+                    analytics.eventClickSearchBrandPage()
+                }
             }
-        }
         binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.searchBarTextField.afterTextChangedDelayed {
             onSearchTextChanged()
         }
         binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.searchBarTextField.setOnEditorActionListener { textView, i, keyEvent ->
-            if(i == EditorInfo.IME_ACTION_SEARCH || keyEvent.action == KeyEvent.KEYCODE_ENTER){
+            if (i == EditorInfo.IME_ACTION_SEARCH || keyEvent.action == KeyEvent.KEYCODE_ENTER) {
                 onSearchSubmitted()
                 return@setOnEditorActionListener true
             }
@@ -113,8 +123,9 @@ class DealsBrandActivity: DealsBaseBrandCategoryActivity(), HasComponent<DealsBr
 
     fun getSearchKeyword(): String {
         var query = ""
-        if(binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.searchBarTextField.text?.isNotEmpty() == true) {
-            query = binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.searchBarTextField.text.toString()
+        if (binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.searchBarTextField.text?.isNotEmpty() == true) {
+            query =
+                binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.searchBarTextField.text.toString()
         }
         return query
     }
@@ -141,7 +152,7 @@ class DealsBrandActivity: DealsBaseBrandCategoryActivity(), HasComponent<DealsBr
                     delay(DELAY)
                     userTyped = searchText.isNotEmpty()
                     searchNotFound = false
-                    if(!userTyped) {
+                    if (!userTyped) {
                         queryUpdated()
                     } else {
                         afterTextChanged.invoke(searchText)
@@ -150,17 +161,18 @@ class DealsBrandActivity: DealsBaseBrandCategoryActivity(), HasComponent<DealsBr
             }
 
             override fun afterTextChanged(s: Editable?) = Unit
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
+                Unit
         })
     }
 
-    override fun getPageTAG(): String = TAG?: "DealsBrandActivity"
+    override fun getPageTAG(): String = TAG ?: "DealsBrandActivity"
     override fun showAllItemPage(): Boolean = true
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
 
     override fun tabAnalytics(categoryName: String, position: Int) {
-        if(this::analytics.isInitialized) {
+        if (this::analytics.isInitialized) {
             analytics.eventClickCategoryTabBrandPage(categoryName, position)
         }
     }
@@ -169,9 +181,13 @@ class DealsBrandActivity: DealsBaseBrandCategoryActivity(), HasComponent<DealsBr
         val TAG = DealsBrandActivity::class.simpleName
         private const val DELAY: Long = 1000
 
-        fun getCallingIntent(context: Context, keyword: String?, categoryId: String? = null): Intent {
+        fun getCallingIntent(
+            context: Context,
+            keyword: String?,
+            categoryId: String? = null
+        ): Intent {
             val intent = Intent(context, DealsBrandActivity::class.java)
-            if(keyword != null) {
+            if (keyword != null) {
                 intent.putExtra(DealsSearchConstants.KEYWORD_EXTRA, keyword)
             }
             intent.putExtra(DealsCategoryActivity.EXTRA_CATEGORY_ID, categoryId)

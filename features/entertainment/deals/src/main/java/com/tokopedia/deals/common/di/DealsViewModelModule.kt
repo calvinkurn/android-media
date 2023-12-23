@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.deals.brand.domain.viewmodel.DealsBrandViewModel
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.ui.viewmodel.DealsBrandCategoryActivityViewModel
 import com.tokopedia.deals.home.ui.viewmodel.DealsHomeViewModel
@@ -37,4 +38,9 @@ abstract class DealsViewModelModule {
     @IntoMap
     @ViewModelKey(DealsHomeViewModel::class)
     abstract fun dealsHomeViewModel(viewModel: DealsHomeViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DealsBrandViewModel::class)
+    abstract fun dealsBrandViewModel(viewModel: DealsBrandViewModel): ViewModel
 }

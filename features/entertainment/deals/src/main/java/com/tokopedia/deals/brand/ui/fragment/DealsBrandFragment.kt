@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.deals.R
-import com.tokopedia.deals.brand.di.component.DealsBrandComponent
 import com.tokopedia.deals.brand.domain.viewmodel.DealsBrandViewModel
 import com.tokopedia.deals.brand.listener.DealsBrandSearchTabListener
 import com.tokopedia.deals.brand.mapper.DealsBrandMapper.mapBrandListToBaseItemView
@@ -21,6 +20,7 @@ import com.tokopedia.deals.brand.model.DealsEmptyDataView
 import com.tokopedia.deals.brand.ui.activity.DealsBrandActivity
 import com.tokopedia.deals.brand.ui.adapter.DealsBrandAdapter
 import com.tokopedia.deals.common.analytics.DealsAnalytics
+import com.tokopedia.deals.common.di.DealsComponent
 import com.tokopedia.deals.common.listener.DealsBrandActionListener
 import com.tokopedia.deals.common.listener.EmptyStateListener
 import com.tokopedia.deals.common.listener.OnBaseLocationActionListener
@@ -41,9 +41,13 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
-class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
-        DealsBrandSearchTabListener, OnBaseLocationActionListener, EmptyStateListener,
-        SearchBarActionListener {
+class DealsBrandFragment :
+    DealsBaseFragment(),
+    DealsBrandActionListener,
+    DealsBrandSearchTabListener,
+    OnBaseLocationActionListener,
+    EmptyStateListener,
+    SearchBarActionListener {
 
     private var binding by autoCleared<FragmentDealsBrandBinding>()
 
@@ -53,10 +57,11 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
         savedInstanceState: Bundle?,
         x: (inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) -> View
     ): View {
-        val view =  super.inflate_tmp(inflater, container, savedInstanceState, x)
+        val view = super.inflate_tmp(inflater, container, savedInstanceState, x)
         binding = FragmentDealsBrandBinding.bind(view)
         return view
     }
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
@@ -93,41 +98,50 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
     }
 
     private fun setupObserver() {
-        viewModel.dealsShimmerData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    isShimerring = true
-                    renderList(it.data, false)
-                }
-                is Fail -> {
-                    renderList(listOf(getErrorNetworkModel()), false)
-                }
-            }
-        })
-
-        viewModel.dealsSearchResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    checkIfShimmering()
-                    val totalItem = it.data.brands.size
-                    if (totalItem == 0 && currentPage == 1) {
-                        toggleNotFound()
-                    } else {
-                        showTitle(it.data)
-                        val nextPage = totalItem >= DEFAULT_MIN_ITEMS
-                        renderList(mapBrandListToBaseItemView(it.data.brands, showTitle()), nextPage)
-                        cacheData(nextPage)
+        viewModel.dealsShimmerData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        isShimerring = true
+                        renderList(it.data, false)
+                    }
+                    is Fail -> {
+                        renderList(listOf(getErrorNetworkModel()), false)
                     }
                 }
-                is Fail -> {
-                    renderList(listOf(getErrorNetworkModel()), false)
+            }
+        )
+
+        viewModel.dealsSearchResponse.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        checkIfShimmering()
+                        val totalItem = it.data.brands.size
+                        if (totalItem == 0 && currentPage == 1) {
+                            toggleNotFound()
+                        } else {
+                            showTitle(it.data)
+                            val nextPage = totalItem >= DEFAULT_MIN_ITEMS
+                            renderList(mapBrandListToBaseItemView(it.data.brands, showTitle()), nextPage)
+                            cacheData(nextPage)
+                        }
+                    }
+                    is Fail -> {
+                        renderList(listOf(getErrorNetworkModel()), false)
+                    }
                 }
             }
-        })
+        )
 
-        baseViewModel.observableCurrentLocation.observe(viewLifecycleOwner, Observer {
-            onBaseLocationChanged(it)
-        })
+        baseViewModel.observableCurrentLocation.observe(
+            viewLifecycleOwner,
+            Observer {
+                onBaseLocationChanged(it)
+            }
+        )
     }
 
     private fun checkIfShimmering() {
@@ -150,8 +164,11 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
         if ((activity as DealsBrandActivity).searchNotFound) {
             renderNotFound()
             if (isAnalyticsInitialized) {
-                analytics.eventViewSearchNoResultBrandPage((activity as DealsBrandActivity).getSearchKeyword(),
-                        tabName, getCurrentLocation().name)
+                analytics.eventViewSearchNoResultBrandPage(
+                    (activity as DealsBrandActivity).getSearchKeyword(),
+                    tabName,
+                    getCurrentLocation().name
+                )
             }
         }
     }
@@ -191,7 +208,7 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
     override fun getScreenName(): String = TAG
 
     override fun initInjector() {
-        getComponent(DealsBrandComponent::class.java).inject(this)
+        getComponent(DealsComponent::class.java).inject(this)
     }
 
     override fun hasInitialLoadingModel(): Boolean = false
@@ -245,8 +262,12 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
 
     override fun onImpressionBrand(brand: DealsBrandsDataView.Brand, position: Int) {
         if ((activity as DealsBrandActivity).getSearchKeyword().isNotEmpty()) {
-            analytics.eventViewSearchResultBrandPage((activity as DealsBrandActivity).getSearchKeyword(),
-                    getCurrentLocation().name, listOf(brand), tabName)
+            analytics.eventViewSearchResultBrandPage(
+                (activity as DealsBrandActivity).getSearchKeyword(),
+                getCurrentLocation().name,
+                listOf(brand),
+                tabName
+            )
         } else {
             analytics.eventViewPopularBrandBrandPage(listOf(brand), tabName)
         }
@@ -257,7 +278,6 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
     }
 
     override fun afterSearchBarTextChanged(text: String) {
-
     }
 
     private fun getCurrentLocation() = (activity as DealsBaseActivity).currentLoc
