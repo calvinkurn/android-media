@@ -15,10 +15,10 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.deals.brand.listener.DealsBrandSearchTabListener
 import com.tokopedia.deals.category.ui.activity.DealsCategoryActivity
 import com.tokopedia.deals.common.analytics.DealsAnalytics
-import com.tokopedia.deals.common.di.DaggerDealsComponent
-import com.tokopedia.deals.common.di.DealsComponent
-import com.tokopedia.deals.common.di.DealsModule
 import com.tokopedia.deals.common.ui.activity.DealsBaseBrandCategoryActivity
+import com.tokopedia.deals.di.DaggerDealsComponent
+import com.tokopedia.deals.di.DealsComponent
+import com.tokopedia.deals.di.DealsModule
 import com.tokopedia.deals.search.DealsSearchConstants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

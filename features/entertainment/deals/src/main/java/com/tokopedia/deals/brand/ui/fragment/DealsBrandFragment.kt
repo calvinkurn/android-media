@@ -20,7 +20,6 @@ import com.tokopedia.deals.brand.model.DealsEmptyDataView
 import com.tokopedia.deals.brand.ui.activity.DealsBrandActivity
 import com.tokopedia.deals.brand.ui.adapter.DealsBrandAdapter
 import com.tokopedia.deals.common.analytics.DealsAnalytics
-import com.tokopedia.deals.common.di.DealsComponent
 import com.tokopedia.deals.common.listener.DealsBrandActionListener
 import com.tokopedia.deals.common.listener.EmptyStateListener
 import com.tokopedia.deals.common.listener.OnBaseLocationActionListener
@@ -32,6 +31,7 @@ import com.tokopedia.deals.common.ui.fragment.DealsBaseFragment
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsBrandBinding
+import com.tokopedia.deals.di.DealsComponent
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.DealsSearchConstants
 import com.tokopedia.kotlin.extensions.view.hide

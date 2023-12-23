@@ -1,4 +1,4 @@
-package com.tokopedia.deals.common.di
+package com.tokopedia.deals.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

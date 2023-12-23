@@ -21,12 +21,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.deals.DealsComponentInstance
 import com.tokopedia.deals.R
 import com.tokopedia.deals.common.analytics.DealsAnalytics
-import com.tokopedia.deals.common.di.DealsComponent
 import com.tokopedia.deals.common.listener.CurrentLocationCallback
 import com.tokopedia.deals.common.listener.SearchBarActionListener
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.ActivityBaseDealsBinding
+import com.tokopedia.deals.di.DealsComponent
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.location_picker.ui.customview.SelectLocationBottomSheet
 import com.tokopedia.kotlin.extensions.view.hide
@@ -35,15 +35,13 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 import kotlin.math.abs
 
-
 /**
  * @author by jessica on 11/06/20
  */
 
 abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback {
 
-
-    lateinit var viewGroup : ViewGroup
+    lateinit var viewGroup: ViewGroup
     private lateinit var binding: ActivityBaseDealsBinding
     private lateinit var dealsComponent: DealsComponent
     private var permissionCheckerHelper = PermissionCheckerHelper()
@@ -109,8 +107,8 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
 
         binding = ActivityBaseDealsBinding.bind(viewGroup)
 
-        val nestedScrollView =  NestedScrollView(this)
-        nestedScrollView.layoutParams  = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        val nestedScrollView = NestedScrollView(this)
+        nestedScrollView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         nestedScrollView.isFillViewport = true
         nestedScrollView.id = R.id.containerBaseDealsParentView
         binding.baseDealsCoor.addView(nestedScrollView)
@@ -126,22 +124,22 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     }
 
     private fun setUpScrollView() {
-
-
-        binding.appBarLayoutSearchContent.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-            if (abs(verticalOffset) - appBarLayout.totalScrollRange >= -binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.height) {
-                //collapse
-                binding.contentBaseToolbar.imgDealsSearchIcon.show()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    binding.appBarLayoutSearchContent.elevation = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-                }
-            } else {
-                binding.contentBaseToolbar.imgDealsSearchIcon.hide()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    binding.appBarLayoutSearchContent.elevation = resources.getDimension(R.dimen.deals_dp_0)
+        binding.appBarLayoutSearchContent.addOnOffsetChangedListener(
+            AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+                if (abs(verticalOffset) - appBarLayout.totalScrollRange >= -binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.height) {
+                    // collapse
+                    binding.contentBaseToolbar.imgDealsSearchIcon.show()
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        binding.appBarLayoutSearchContent.elevation = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
+                    }
+                } else {
+                    binding.contentBaseToolbar.imgDealsSearchIcon.hide()
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        binding.appBarLayoutSearchContent.elevation = resources.getDimension(R.dimen.deals_dp_0)
+                    }
                 }
             }
-        })
+        )
 
         binding.contentBaseToolbar.imgDealsSearchIcon.setOnClickListener {
             searchBarActionListener?.onClickSearchBar()
@@ -149,7 +147,6 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     }
 
     private fun setupLocation() {
-
         if (isHomePage()) {
             setUpPermissionChecker()
         } else {
@@ -163,10 +160,13 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     }
 
     private fun observeLocation() {
-        baseViewModel.observableCurrentLocation.observe(this, Observer {
-            handleToolbarVisibilityWihLocName(it.name)
-            dealsLocationUtils.updateLocation(it)
-        })
+        baseViewModel.observableCurrentLocation.observe(
+            this,
+            Observer {
+                handleToolbarVisibilityWihLocName(it.name)
+                dealsLocationUtils.updateLocation(it)
+            }
+        )
     }
 
     fun renderLocationName(name: String) {
@@ -174,25 +174,30 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     }
 
     private fun setUpPermissionChecker() {
-        permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION,
-                object : PermissionCheckerHelper.PermissionCheckListener {
-                    override fun onNeverAskAgain(permissionText: String) {}
+        permissionCheckerHelper.checkPermission(
+            this,
+            PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION,
+            object : PermissionCheckerHelper.PermissionCheckListener {
+                override fun onNeverAskAgain(permissionText: String) {}
 
-                    override fun onPermissionDenied(permissionText: String) {
-                        val defaultLocation = dealsLocationUtils.updateLocationToDefault()
-                        baseViewModel.setCurrentLocation(defaultLocation)
+                override fun onPermissionDenied(permissionText: String) {
+                    val defaultLocation = dealsLocationUtils.updateLocationToDefault()
+                    baseViewModel.setCurrentLocation(defaultLocation)
+                }
+
+                override fun onPermissionGranted() {
+                    if (isHomePage()) {
+                        dealsLocationUtils.detectAndSendLocation(
+                            this@DealsBaseActivity,
+                            permissionCheckerHelper,
+                            this@DealsBaseActivity
+                        )
+                    } else {
+                        handleToolbarVisibilityWihLocName(dealsLocationUtils.getLocation().name)
                     }
-
-                    override fun onPermissionGranted() {
-                        if (isHomePage()) {
-                            dealsLocationUtils.detectAndSendLocation(this@DealsBaseActivity,
-                                    permissionCheckerHelper, this@DealsBaseActivity)
-                        } else {
-                            handleToolbarVisibilityWihLocName(dealsLocationUtils.getLocation().name)
-                        }
-                    }
-
-                })
+                }
+            }
+        )
     }
 
     override fun setCurrentLocation(location: Location) {
@@ -210,8 +215,12 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            permissionCheckerHelper.onRequestPermissionsResult(this,
-                    requestCode, permissions, grantResults)
+            permissionCheckerHelper.onRequestPermissionsResult(
+                this,
+                requestCode,
+                permissions,
+                grantResults
+            )
         }
     }
 
@@ -241,7 +250,6 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
                 })
             }
         }
-
     }
 
     private fun setupBackButton() {

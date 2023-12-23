@@ -1,6 +1,6 @@
 package com.tokopedia.deals.pdp.di
 
-import com.tokopedia.deals.common.di.DealsComponent
+import com.tokopedia.deals.di.DealsComponent
 import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity
 import com.tokopedia.deals.pdp.ui.fragment.DealsPDPAllLocationFragment
 import com.tokopedia.deals.pdp.ui.fragment.DealsPDPDescFragment

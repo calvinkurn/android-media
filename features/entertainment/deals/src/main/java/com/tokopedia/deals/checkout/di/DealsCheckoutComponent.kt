@@ -2,7 +2,7 @@ package com.tokopedia.deals.checkout.di
 
 import com.tokopedia.deals.checkout.ui.fragment.DealsCheckoutFragment
 import com.tokopedia.deals.checkout.ui.fragment.DealsCheckoutLocationsFragment
-import com.tokopedia.deals.common.di.DealsComponent
+import com.tokopedia.deals.di.DealsComponent
 import dagger.Component
 
 @DealsCheckoutScope

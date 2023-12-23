@@ -1,4 +1,4 @@
-package com.tokopedia.deals.common.di
+package com.tokopedia.deals.di
 
 import android.content.Context
 import com.google.gson.Gson

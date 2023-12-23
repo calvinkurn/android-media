@@ -17,7 +17,6 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.deals.R
 import com.tokopedia.deals.brand.ui.activity.DealsBrandActivity
 import com.tokopedia.deals.common.analytics.DealsAnalytics
-import com.tokopedia.deals.common.di.DealsComponent
 import com.tokopedia.deals.common.listener.CuratedProductCategoryListener
 import com.tokopedia.deals.common.listener.DealsBrandActionListener
 import com.tokopedia.deals.common.listener.OnBaseLocationActionListener
@@ -29,6 +28,7 @@ import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
 import com.tokopedia.deals.common.ui.fragment.DealsBaseFragment
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
+import com.tokopedia.deals.di.DealsComponent
 import com.tokopedia.deals.home.listener.DealsBannerActionListener
 import com.tokopedia.deals.home.listener.DealsCategoryListener
 import com.tokopedia.deals.home.listener.DealsFavouriteCategoriesListener
