@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -18,6 +17,7 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.deals.R
 import com.tokopedia.deals.brand.ui.activity.DealsBrandActivity
 import com.tokopedia.deals.common.analytics.DealsAnalytics
+import com.tokopedia.deals.common.di.DealsComponent
 import com.tokopedia.deals.common.listener.CuratedProductCategoryListener
 import com.tokopedia.deals.common.listener.DealsBrandActionListener
 import com.tokopedia.deals.common.listener.OnBaseLocationActionListener
@@ -29,14 +29,18 @@ import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
 import com.tokopedia.deals.common.ui.fragment.DealsBaseFragment
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
-import com.tokopedia.deals.home.di.DealsHomeComponent
 import com.tokopedia.deals.home.listener.DealsBannerActionListener
 import com.tokopedia.deals.home.listener.DealsCategoryListener
 import com.tokopedia.deals.home.listener.DealsFavouriteCategoriesListener
 import com.tokopedia.deals.home.listener.DealsVoucherPlaceCardListener
 import com.tokopedia.deals.home.ui.activity.DealsHomeActivity
 import com.tokopedia.deals.home.ui.adapter.DealsHomeAdapter
-import com.tokopedia.deals.home.ui.dataview.*
+import com.tokopedia.deals.home.ui.dataview.BannersDataView
+import com.tokopedia.deals.home.ui.dataview.CoachMarkPositionDataView
+import com.tokopedia.deals.home.ui.dataview.CuratedCategoryDataView
+import com.tokopedia.deals.home.ui.dataview.DealsCategoryDataView
+import com.tokopedia.deals.home.ui.dataview.VoucherPlaceCardDataView
+import com.tokopedia.deals.home.ui.dataview.VoucherPlacePopularDataView
 import com.tokopedia.deals.home.ui.viewmodel.DealsHomeViewModel
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.ui.activity.DealsSearchActivity
@@ -49,11 +53,16 @@ import javax.inject.Inject
  * @author by jessica on 16/06/20
  */
 
-class DealsHomeFragment : DealsBaseFragment(),
-        OnBaseLocationActionListener, SearchBarActionListener,
-        DealsVoucherPlaceCardListener, DealsCategoryListener,
-        CuratedProductCategoryListener, DealsBannerActionListener,
-        DealsBrandActionListener, DealsFavouriteCategoriesListener {
+class DealsHomeFragment :
+    DealsBaseFragment(),
+    OnBaseLocationActionListener,
+    SearchBarActionListener,
+    DealsVoucherPlaceCardListener,
+    DealsCategoryListener,
+    CuratedProductCategoryListener,
+    DealsBannerActionListener,
+    DealsBrandActionListener,
+    DealsFavouriteCategoriesListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -81,20 +90,26 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     private fun observeLayout() {
-        homeViewModel.observableEventHomeLayout.observe(viewLifecycleOwner, Observer {
-            isLoadingInitialData = true
-            when (it) {
-                is Success -> {
-                    renderList(it.data, false)
-                    checkCoachMark(it.data)
+        homeViewModel.observableEventHomeLayout.observe(
+            viewLifecycleOwner,
+            Observer {
+                isLoadingInitialData = true
+                when (it) {
+                    is Success -> {
+                        renderList(it.data, false)
+                        checkCoachMark(it.data)
+                    }
+                    is Fail -> renderList(listOf(getErrorNetworkModel()), false)
                 }
-                is Fail -> renderList(listOf(getErrorNetworkModel()), false)
             }
-        })
+        )
 
-        baseViewModel.observableCurrentLocation.observe(viewLifecycleOwner, Observer {
-            onBaseLocationChanged(it)
-        })
+        baseViewModel.observableCurrentLocation.observe(
+            viewLifecycleOwner,
+            Observer {
+                onBaseLocationChanged(it)
+            }
+        )
     }
 
     private fun getErrorNetworkModel(): ErrorNetworkModel {
@@ -130,8 +145,8 @@ class DealsHomeFragment : DealsBaseFragment(),
         if (shouldShowCoachMark && homeLayout.isNotEmpty() && homeLayout.first().isLoaded) {
             recyclerView.smoothScrollToPosition(adapter.lastIndex)
             Handler().postDelayed(
-                    { showCoachMark(getCoachMarkPosition(homeLayout)) },
-                    COACH_MARK_START_DELAY
+                { showCoachMark(getCoachMarkPosition(homeLayout)) },
+                COACH_MARK_START_DELAY
             )
         }
     }
@@ -156,9 +171,9 @@ class DealsHomeFragment : DealsBaseFragment(),
             }
         }
         coachMark.show(
-                activity,
-                DealsHomeFragment::class.java.simpleName,
-                getCoachMarkItems(coachMarkPosition)
+            activity,
+            DealsHomeFragment::class.java.simpleName,
+            getCoachMarkItems(coachMarkPosition)
         )
         localCacheHandler.apply {
             putBoolean(SHOW_COACH_MARK_KEY, false)
@@ -170,24 +185,24 @@ class DealsHomeFragment : DealsBaseFragment(),
         activity?.let { _activity ->
             if (isAdded) {
                 val orderListCoachMark = CoachMarkItem(
-                        _activity.findViewById<AppCompatImageView>(R.id.imgDealsOrderListMenu),
-                        _activity.resources.getString(R.string.deals_menu_coach_mark_title),
-                        _activity.resources.getString(R.string.deals_menu_coach_mark_description)
+                    _activity.findViewById<AppCompatImageView>(R.id.imgDealsOrderListMenu),
+                    _activity.resources.getString(R.string.deals_menu_coach_mark_title),
+                    _activity.resources.getString(R.string.deals_menu_coach_mark_description)
                 )
 
                 val popularPlacesCoachMark = coachMarkPosition.popularPlacesPosition?.let {
                     CoachMarkItem(
-                            recyclerView.findViewHolderForAdapterPosition(it)?.itemView?.findViewById(R.id.lst_voucher_popular_place_card),
-                            _activity.resources.getString(R.string.deals_popular_place_coach_mark_title),
-                            _activity.resources.getString(R.string.deals_popular_places_coach_mark_description)
+                        recyclerView.findViewHolderForAdapterPosition(it)?.itemView?.findViewById(R.id.lst_voucher_popular_place_card),
+                        _activity.resources.getString(R.string.deals_popular_place_coach_mark_title),
+                        _activity.resources.getString(R.string.deals_popular_places_coach_mark_description)
                     )
                 }
 
                 val favoriteCategoriesCoachMark = coachMarkPosition.favouriteCategoriesPosition?.let {
                     CoachMarkItem(
-                            recyclerView.findViewHolderForAdapterPosition(it)?.itemView?.findViewById(R.id.lst_voucher_popular_place_card),
-                            _activity.resources.getString(R.string.deals_favorite_categories_coach_mark_title),
-                            _activity.resources.getString(R.string.deals_favorite_categories_coach_mark_description)
+                        recyclerView.findViewHolderForAdapterPosition(it)?.itemView?.findViewById(R.id.lst_voucher_popular_place_card),
+                        _activity.resources.getString(R.string.deals_favorite_categories_coach_mark_title),
+                        _activity.resources.getString(R.string.deals_favorite_categories_coach_mark_description)
                     )
                 }
 
@@ -201,12 +216,18 @@ class DealsHomeFragment : DealsBaseFragment(),
     }
 
     override fun initInjector() {
-        getComponent(DealsHomeComponent::class.java).inject(this)
+        getComponent(DealsComponent::class.java).inject(this)
     }
 
     override fun createAdapterInstance(): BaseCommonAdapter {
-        return DealsHomeAdapter(this, this, this,
-                this, this, this)
+        return DealsHomeAdapter(
+            this,
+            this,
+            this,
+            this,
+            this,
+            this
+        )
     }
 
     override fun loadData(page: Int) {
@@ -238,7 +259,7 @@ class DealsHomeFragment : DealsBaseFragment(),
         startActivityForResult(Intent(activity, DealsSearchActivity::class.java), DEALS_SEARCH_REQUEST_CODE)
     }
 
-    override fun afterSearchBarTextChanged(text: String) {/* do nothing */
+    override fun afterSearchBarTextChanged(text: String) { /* do nothing */
     }
 
     /* BANNER SECTION ACTION */
