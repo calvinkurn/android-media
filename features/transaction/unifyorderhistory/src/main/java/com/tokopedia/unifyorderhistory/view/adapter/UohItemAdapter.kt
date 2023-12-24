@@ -94,7 +94,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             LAYOUT_LOADER -> {
-                val binding = UohLoaderItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                val binding = UohLoaderItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 UohLoaderItemViewHolder(binding)
             }
             LAYOUT_TICKER -> {

@@ -971,6 +971,20 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                             )
                         }
                         startActivity(intent)
+                    } else {
+                        var errorMessage = ""
+                        if (result.atcResponse.data.atcMulti.errorMessage.isNotEmpty()) {
+                            errorMessage = result.atcResponse.data.atcMulti.errorMessage
+                        } else if (result.atcResponse.data.atcMulti.buyAgainData.message.isNotEmpty()) {
+                            errorMessage = result.atcResponse.data.atcMulti.buyAgainData.message.firstOrNull() ?: ""
+                        }
+
+                        if (errorMessage.isEmpty()) {
+                            context?.getString(R.string.fail_cancellation)
+                                ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                        } else {
+                            showToaster(errorMessage, Toaster.TYPE_ERROR)
+                        }
                     }
                 }
 
