@@ -16,12 +16,13 @@ object GetDownloadVersionList {
         return withContext(Dispatchers.IO) {
             val urlConnection = URL(apiUrl).openConnection() as? HttpURLConnection
             val response = try {
+                urlConnection?.useCaches = false
                 val inputStream = urlConnection?.inputStream
                 val reader = BufferedReader(InputStreamReader(inputStream))
                 val stringBuilder = StringBuilder()
                 var line: String?
                 while (reader.readLine().also { line = it } != null) {
-                    stringBuilder.append(line).append("\n")
+                    stringBuilder.append(line)
                 }
                 stringBuilder.toString()
             } catch (e: Exception) {

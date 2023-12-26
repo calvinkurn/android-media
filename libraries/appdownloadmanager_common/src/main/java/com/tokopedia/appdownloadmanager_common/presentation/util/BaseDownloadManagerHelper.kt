@@ -19,6 +19,9 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import java.lang.ref.WeakReference
 
 abstract class BaseDownloadManagerHelper(
@@ -44,10 +47,15 @@ abstract class BaseDownloadManagerHelper(
     suspend fun isEnableShowBottomSheet(): Boolean {
         val canShowToday = isExpired()
 
-        return isAppDownloadingBottomSheetNotShow() && isNeedToUpgradeVersion() &&
-            isBetaNetwork() &&
-            downloadManagerUpdateModel?.isEnabled == true && isWhitelistByRollence() &&
-            canShowToday
+        val shouldUpgradeVersion = coroutineScope {
+            async(Dispatchers.IO) {
+                isNeedToUpgradeVersion()
+            }
+        }.await()
+
+        return isAppDownloadingBottomSheetNotShow() && shouldUpgradeVersion &&
+            isBetaNetwork() && downloadManagerUpdateModel?.isEnabled == true && isWhitelistByRollence()
+            && canShowToday
     }
 
     protected fun isExpired(): Boolean {
