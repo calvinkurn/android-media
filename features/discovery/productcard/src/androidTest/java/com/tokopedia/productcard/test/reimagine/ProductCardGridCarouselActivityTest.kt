@@ -73,12 +73,9 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
         private val productCardView: ProductCardGridCarouselView? by lazy {
             itemView.findViewById(productcardtestR.id.productCardReimagineGridCarouselView)
         }
-        private val productCardReimagineTestContainer : ConstraintLayout by lazy {
-            itemView.findViewById(productcardtestR.id.productCardReimagineTestContainer)
-        }
 
         fun bind(productCardModel: ProductCardModel, description: String) {
-            setBackgroundContainer(productCardModel, productCardReimagineTestContainer)
+            setBackgroundContainer(productCardModel, itemView)
             testDescription?.text = description
 
             productCardView?.findViewById<CardUnify2?>(
@@ -104,7 +101,7 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
         fun recycle() {
         }
 
-        private fun setBackgroundContainer(productCardModel: ProductCardModel, view: ConstraintLayout) {
+        private fun setBackgroundContainer(productCardModel: ProductCardModel, view: View) {
             val contextResource = view.context
             if(productCardModel.isInBackground) {
                 view.setBackgroundColor(contextResource.getColor(unifycomponentsR.color.Unify_GN100))

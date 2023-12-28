@@ -58,10 +58,6 @@ class ProductCardGridCarouselView: ConstraintLayout {
                 ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
             )
         }
-
-        cardConstraintLayout?.run {
-            layoutParams = layoutParams?.apply { height = MATCH_PARENT }
-        }
     }
 
     fun setProductModel(productCardModel: ProductCardModel) {
@@ -69,11 +65,10 @@ class ProductCardGridCarouselView: ConstraintLayout {
 
         renderAddToCart(productCardModel)
         stockInfo.render(productCardModel)
-        renderMarginContent(productCardModel)
+        renderGuidelineContent(productCardModel)
         setContainerProductHeightCard(productCardModel)
         renderOutlineProductCard(productCardModel)
     }
-
 
     private fun renderAddToCart(productCardModel: ProductCardModel) {
         val cardConstraintLayout = cardConstraintLayout ?: return
@@ -96,25 +91,25 @@ class ProductCardGridCarouselView: ConstraintLayout {
         cardContainer?.setOnClickListener(l)
     }
 
-    private fun renderMarginContent(productCardModel: ProductCardModel){
+    private fun renderGuidelineContent(productCardModel: ProductCardModel) {
         if (productCardModel.isInBackground) {
-            setMarginItemInBackground()
+            setGuidelineItemInBackground()
         } else {
-            setMarginItemNotInBackground()
+            setGuidelineItemNotInBackground()
         }
     }
 
-    private fun setMarginItemNotInBackground() {
+    private fun setGuidelineItemNotInBackground() {
         productCardGuidelineStartContent?.setGuidelineBegin(0)
         productCardGuidelineEndContent?.setGuidelineEnd(0)
     }
 
-    private fun setMarginItemInBackground() {
+    private fun setGuidelineItemInBackground() {
         val contextResource = context.resources
-        val dimensMarginStart =
-            contextResource.getDimensionPixelSize(R.dimen.product_card_reimagine_content_padding_in_background)
-        productCardGuidelineStartContent?.setGuidelineBegin(dimensMarginStart)
-        productCardGuidelineEndContent?.setGuidelineEnd(dimensMarginStart)
+        val dimensGuideline =
+            contextResource.getDimensionPixelSize(R.dimen.product_card_reimagine_content_guideline_pading_in_background)
+        productCardGuidelineStartContent?.setGuidelineBegin(dimensGuideline)
+        productCardGuidelineEndContent?.setGuidelineEnd(dimensGuideline)
     }
 
     private fun renderOutlineProductCard(productCardModel: ProductCardModel) {
@@ -126,11 +121,11 @@ class ProductCardGridCarouselView: ConstraintLayout {
         val dimensMarginBottom =
             contextResource.getDimensionPixelSize(R.dimen.product_card_reimagine_carousel_padding_bottom)
         val isInBackground = productCardModel.isInBackground
-        val marginBottom = if(isInBackground) 0 else dimensMarginBottom
+        val marginBottom = if (isInBackground) 0 else dimensMarginBottom
 
         cardConstraintLayout?.run {
             setPadding(0,0,0, marginBottom)
-            layoutParams = layoutParams?.apply { height = if(isInBackground) MATCH_PARENT else WRAP_CONTENT }
+            layoutParams = layoutParams?.apply { height = if (isInBackground) MATCH_PARENT else WRAP_CONTENT }
         }
     }
 }

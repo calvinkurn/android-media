@@ -22,7 +22,6 @@ import com.tokopedia.productcard.utils.RoundedCornersTransformation.CornerType.A
 import com.tokopedia.productcard.utils.RoundedCornersTransformation.CornerType.TOP
 import com.tokopedia.productcard.utils.imageRounded
 import com.tokopedia.productcard.utils.shouldShowWithAction
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.productcard.R as productcardR
@@ -34,7 +33,6 @@ internal class ProductCardRenderer(
 
     private val context = view.context
 
-    private val cardContainer by view.lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val imageView by view.lazyView<ImageUnify?>(R.id.productCardImage)
     private val adsText by view.lazyView<Typography?>(R.id.productCardAds)
     private val nameText by view.lazyView<Typography?>(R.id.productCardName)
@@ -52,14 +50,8 @@ internal class ProductCardRenderer(
     private val productCardSafeContainer by view.lazyView<Group?>(R.id.productCardSafeContainer)
     private val productCardSafeNameBackground by view.lazyView<View?>(R.id.productCardSafeNameBackground)
 
-    private val cornerRadiusCard by lazy {
-        context.resources.getDimensionPixelSize(
-            R.dimen.product_card_reimagine_carousel_image_radius
-        )
-    }
 
     fun setProductModel(productCardModel: ProductCardModel) {
-        renderRadiusCard()
         renderImage(productCardModel)
         renderAds(productCardModel)
         renderName(productCardModel)
@@ -73,10 +65,6 @@ internal class ProductCardRenderer(
         renderFreeShipping(productCardModel)
         ribbon.render(productCardModel.ribbon())
         renderSafeContainer(productCardModel)
-    }
-
-    private fun renderRadiusCard() {
-        cardContainer?.radius = cornerRadiusCard.toFloat()
     }
 
     private fun renderImage(productCardModel: ProductCardModel) {
@@ -102,28 +90,11 @@ internal class ProductCardRenderer(
         productCardModel: ProductCardModel,
         cornerType: RoundedCornersTransformation.CornerType,
     ) {
-
-        if (productCardModel.isSafeProduct) {
-            imageBlurredImage(productCardModel, cornerType)
-        } else {
-            imageRounded(
-                productCardModel.imageUrl,
-                cornerRadiusCard.toFloat(),
-                cornerType
-            )
-        }
-    }
-
-    private fun ImageView.imageBlurredImage(
-        productCardModel: ProductCardModel,
-        cornerType: RoundedCornersTransformation.CornerType,
-    ) {
-
-        loadImageRoundedBlurred(
+        imageRounded(
             productCardModel.imageUrl,
             context.resources.getDimensionPixelSize(
                 R.dimen.product_card_reimagine_carousel_image_radius
-            ),
+            ).toFloat(),
             cornerType
         )
     }
