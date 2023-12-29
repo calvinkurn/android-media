@@ -194,9 +194,8 @@ class DownloadManagerService @Inject constructor(
             file.delete()
         }
 
-        val uri = Uri.fromFile(file)
-
-        return DownloadManager.Request(Uri.parse(apkUrl)).setDestinationUri(uri)
+        return DownloadManager.Request(Uri.parse(apkUrl))
+            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "$TOKOPEDIA_APK_PATH/$fileName")
             .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
             .setTitle(fileName).setAllowedOverRoaming(true).setAllowedOverMetered(true)
             .setDescription(fileName)

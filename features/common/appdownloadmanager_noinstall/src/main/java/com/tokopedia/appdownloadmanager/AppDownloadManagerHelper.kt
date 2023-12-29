@@ -1,6 +1,7 @@
 package com.tokopedia.appdownloadmanager
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -66,8 +67,7 @@ class AppDownloadManagerHelper(
 
                 try {
                     it.startActivity(intent)
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                } catch (e: ActivityNotFoundException) {
                     FirebaseCrashlytics.getInstance().recordException(e)
                 }
             }
@@ -85,7 +85,7 @@ class AppDownloadManagerHelper(
                 putExtra(DocumentsContract.EXTRA_INITIAL_URI, uri)
             }
 
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
     }
 
