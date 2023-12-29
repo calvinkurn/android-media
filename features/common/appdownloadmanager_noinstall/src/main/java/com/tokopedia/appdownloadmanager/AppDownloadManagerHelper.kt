@@ -39,6 +39,9 @@ class AppDownloadManagerHelper(
                         },
                         this@AppDownloadManagerHelper
                     )
+                    onBoardingBottomSheet.setOnDismissListener {
+                        setCacheExpire()
+                    }
                     onBoardingBottomSheet.showBottomSheet(it.supportFragmentManager)
                 }
             }

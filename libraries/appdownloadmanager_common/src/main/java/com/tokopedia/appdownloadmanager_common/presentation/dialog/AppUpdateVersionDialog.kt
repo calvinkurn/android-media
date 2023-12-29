@@ -120,6 +120,10 @@ class AppUpdateVersionDialog(
                     dismiss()
                 }
 
+                setOnDismissListener {
+                    setCacheExpire()
+                }
+
                 if (dialog?.isShowing == false) {
                     dialog?.show()
                 }
