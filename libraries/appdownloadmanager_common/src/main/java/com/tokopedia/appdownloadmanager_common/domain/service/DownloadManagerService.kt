@@ -190,14 +190,13 @@ class DownloadManagerService @Inject constructor(
 
         val file = File(fileNamePath)
 
-        val uri = Uri.fromFile(file)
-
         if (file.exists()) {
             file.delete()
         }
 
-        return DownloadManager.Request(Uri.parse(apkUrl))
-            .setDestinationUri(uri)
+        val uri = Uri.fromFile(file)
+
+        return DownloadManager.Request(Uri.parse(apkUrl)).setDestinationUri(uri)
             .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
             .setTitle(fileName).setAllowedOverRoaming(true).setAllowedOverMetered(true)
             .setDescription(fileName)

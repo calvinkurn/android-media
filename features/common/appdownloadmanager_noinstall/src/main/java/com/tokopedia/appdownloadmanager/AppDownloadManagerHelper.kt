@@ -85,7 +85,7 @@ class AppDownloadManagerHelper(
                 putExtra(DocumentsContract.EXTRA_INITIAL_URI, uri)
             }
 
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
     }
 
