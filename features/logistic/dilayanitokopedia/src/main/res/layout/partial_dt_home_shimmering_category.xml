@@ -23,7 +23,7 @@
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="2"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/siv_category"
         app:layout_constraintStart_toStartOf="@+id/siv_category"

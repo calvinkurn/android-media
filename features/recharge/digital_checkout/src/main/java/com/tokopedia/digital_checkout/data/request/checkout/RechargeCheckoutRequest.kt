@@ -50,7 +50,9 @@ class RechargeCheckoutRequest(
     @SerializedName("fingerprint_hash")
     val fingerprintHash: String = "",
     @SerializedName("third_party_data")
-    val thirdPartyData: ThirdPartyData = ThirdPartyData()
+    val thirdPartyData: ThirdPartyData = ThirdPartyData(),
+    @SerializedName("consent_payload")
+    val consentPayload: String = ""
 )
 
 class RechargeCheckoutFintechProduct(

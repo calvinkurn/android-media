@@ -10,6 +10,7 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.recom.BannedUiModel
+import com.tokopedia.play.view.uimodel.recom.CategoryWidgetConfig
 import com.tokopedia.play.view.uimodel.recom.ExploreWidgetConfig
 import com.tokopedia.play.view.uimodel.recom.FreezeUiModel
 import com.tokopedia.play.view.uimodel.recom.LikeSource
@@ -17,6 +18,7 @@ import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayChannelRecommendationConfig
 import com.tokopedia.play.view.uimodel.recom.PlayChannelReportUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelStatus
 import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
@@ -80,7 +82,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     videoInfo = mapVideoInfo(it.video),
                     emptyBottomSheetInfo = mapEmptyBottomSheet(it),
                     popupConfig = mapPopUp(it),
-                    exploreWidgetConfig = mapExploreWidgetConfig(it.config.exploreWidgetConfig),
+                    channelRecomConfig = mapChannelRecomConfig(it.config.categoryWidgetConfig, it.config.exploreWidgetConfig),
                     showCart = it.config.showCart,
                 ),
                 partnerInfo = partnerInfo,
@@ -327,9 +329,31 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     }
 
     private fun mapExploreWidgetConfig(
-        config: ChannelDetailsWithRecomResponse.ExploreWidgetConfig
+        config: ChannelDetailsWithRecomResponse.ExploreWidgetConfig,
     ) = ExploreWidgetConfig(
-       group = config.group, sourceType = config.sourceType, sourceId = config.sourceId,
+       group = config.group,
+        sourceType = config.sourceType,
+        sourceId = config.sourceId,
+    )
+
+    private fun mapCategoryWidgetConfig(
+        categoryConfig: ChannelDetailsWithRecomResponse.ExploreWidgetConfig
+    ) = CategoryWidgetConfig(
+        categoryGroup = categoryConfig.group,
+        hasCategory = categoryConfig.hasCategory,
+        categoryName = categoryConfig.categoryName.ifBlank { "Eksplor" },
+        categorySourceType = categoryConfig.sourceType,
+        categorySourceId = categoryConfig.sourceId,
+        categoryLevel = categoryConfig.categoryLvl,
+        categoryId = categoryConfig.categoryId,
+    )
+
+    private fun mapChannelRecomConfig(
+        categoryConfig: ChannelDetailsWithRecomResponse.ExploreWidgetConfig,
+        exploreConfig: ChannelDetailsWithRecomResponse.ExploreWidgetConfig,
+    ) = PlayChannelRecommendationConfig(
+        categoryWidgetConfig = mapCategoryWidgetConfig(categoryConfig),
+        exploreWidgetConfig = mapExploreWidgetConfig(exploreConfig)
     )
 
     private fun mapArchived(archiveData: ChannelDetailsWithRecomResponse.ArchivedData) = with(archiveData) {

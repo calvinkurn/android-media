@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:letterSpacing="-0.01"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:textSize="@dimen/fontSize_lvl5"
             app:typographyType="heading_4"
             tools:text="Asuransi Perjalanan" />
@@ -31,14 +31,14 @@
             android:layout_height="wrap_content"
             android:drawablePadding="@dimen/spacing_lvl2"
             android:text="@string/flight_detail_order_protection_label"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             android:textSize="@dimen/fontSize_lvl5"
             app:typographyType="heading_4" />
     </LinearLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         app:typographyType="body_2"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         android:id="@+id/tv_tagline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -46,7 +46,7 @@
     <com.tokopedia.unifyprinciples.Typography
         app:typographyType="body_3"
         android:background="@drawable/bg_flight_insurance_card_success"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"

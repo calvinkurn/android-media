@@ -1,6 +1,11 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
+android {
+    namespace 'com.tokopedia.analyti_constant'
+    testNamespace 'com.tokopedia.analyti_constant.test'
+}
+
 dependencies {
     implementation rootProject.ext.playServicesDependencies.measurementApi
 }

@@ -14,16 +14,18 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.device.info'
+    testNamespace 'com.tokopedia.device.info.test'
     defaultConfig {
         multiDexEnabled true
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
+        jvmTarget = JavaVersion.VERSION_17
     }
 }
 
@@ -33,7 +35,8 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.appCompactV7
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation rootProject.ext.firebase.core
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 }
 
 project.ext {

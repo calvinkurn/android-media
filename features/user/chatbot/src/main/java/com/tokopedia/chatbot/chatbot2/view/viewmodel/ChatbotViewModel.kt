@@ -19,6 +19,7 @@ import com.tokopedia.chat_common.data.WebsocketEvent
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.SESSION_CHANGE
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_CHAT_SEPARATOR
@@ -35,11 +36,13 @@ import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.DynamicAttachmentBo
 import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.SmallReplyBoxAttribute
 import com.tokopedia.chatbot.chatbot2.data.inboxTicketList.InboxTicketListResponse
 import com.tokopedia.chatbot.chatbot2.data.livechatdivider.LiveChatDividerAttributes
+import com.tokopedia.chatbot.chatbot2.data.newchatbotsession.DynamicAttachmentNewChatbotSession
 import com.tokopedia.chatbot.chatbot2.data.newsession.TopBotNewSessionResponse
 import com.tokopedia.chatbot.chatbot2.data.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.chatbot2.data.quickreply.QuickReplyPojo
 import com.tokopedia.chatbot.chatbot2.data.ratinglist.ChipGetChatRatingListInput
 import com.tokopedia.chatbot.chatbot2.data.ratinglist.ChipGetChatRatingListResponse
+import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
 import com.tokopedia.chatbot.chatbot2.data.replybubble.ReplyBubbleAttributes
 import com.tokopedia.chatbot.chatbot2.data.resolink.ResoLinkResponse
 import com.tokopedia.chatbot.chatbot2.data.submitchatcsat.ChipSubmitChatCsatInput
@@ -48,6 +51,8 @@ import com.tokopedia.chatbot.chatbot2.data.uploadsecure.CheckUploadSecureRespons
 import com.tokopedia.chatbot.chatbot2.data.uploadsecure.UploadSecureResponse
 import com.tokopedia.chatbot.chatbot2.domain.mapper.ChatbotGetExistingChatMapper
 import com.tokopedia.chatbot.chatbot2.domain.socket.ChatbotSendableWebSocketParam
+import com.tokopedia.chatbot.chatbot2.domain.socket.ChatbotSendableWebSocketParam.generateParamDynamicAttachment108
+import com.tokopedia.chatbot.chatbot2.domain.socket.ChatbotSendableWebSocketParam.generateParamDynamicAttachment108ForAcknowledgement
 import com.tokopedia.chatbot.chatbot2.domain.socket.ChatbotSendableWebSocketParam.generateParamDynamicAttachmentText
 import com.tokopedia.chatbot.chatbot2.domain.usecase.ChatBotSecureImageUploadUseCase
 import com.tokopedia.chatbot.chatbot2.domain.usecase.ChatbotCheckUploadSecureUseCase
@@ -83,6 +88,7 @@ import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotChatSeparatorS
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotDynamicAttachmentMediaButtonState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotImageUploadFailureState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotOpenCsatState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotRejectReasonsState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSendChatRatingState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSocketErrorState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSocketReceiveEvent
@@ -112,10 +118,10 @@ import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor
+import com.tokopedia.universal_sharing.domain.usecase.ExtractBranchLinkUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.isActive
@@ -152,6 +158,7 @@ class ChatbotViewModel @Inject constructor(
     private val chatbotWebSocket: ChatbotWebSocket,
     private val chatbotWebSocketStateHandler: ChatbotWebSocketStateHandler,
     private val chatBotSecureImageUploadUseCase: ChatBotSecureImageUploadUseCase,
+    private val extractBranchLinkUseCase: ExtractBranchLinkUseCase,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -224,6 +231,12 @@ class ChatbotViewModel @Inject constructor(
     private val _dynamicAttachmentMediaUploadState = MutableLiveData<ChatbotDynamicAttachmentMediaButtonState>()
     val dynamicAttachmentMediaUploadState: LiveData<ChatbotDynamicAttachmentMediaButtonState>
         get() = _dynamicAttachmentMediaUploadState
+    private val _dynamicAttachmentRejectReasonState = MutableLiveData<ChatbotRejectReasonsState>()
+    val dynamicAttachmentRejectReasonState: LiveData<ChatbotRejectReasonsState>
+        get() = _dynamicAttachmentRejectReasonState
+    private val _dynamicAttachmentNewChatbotSession = MutableLiveData<Boolean>()
+    val dynamicAttachmentNewChatbotSession: LiveData<Boolean>
+        get() = _dynamicAttachmentNewChatbotSession
 
     // Video Upload Related
     @VisibleForTesting
@@ -265,8 +278,24 @@ class ChatbotViewModel @Inject constructor(
 
     var pageSourceAccess = ""
 
+    private val _applink = MutableLiveData<String>()
+    val applink: LiveData<String>
+        get() = _applink
+
     init {
         observeMediaUrisForUpload()
+    }
+
+    fun extractBranchLink(branchLink: String) {
+        launchCatchError(
+            block = {
+                val deeplink = extractBranchLinkUseCase.invoke(branchLink).android_deeplink
+                _applink.value = deeplink
+            },
+            onError = {
+                _applink.value = ""
+            }
+        )
     }
 
     // Get Ticket List for Showing Contact Us Bottom Sheet
@@ -542,6 +571,7 @@ class ChatbotViewModel @Inject constructor(
                         ChatDataState.SuccessChatDataState(mappedResponse, chatReplies)
                     )
                 }
+                checkForAttachmentDirectActionFromExistingChat(response)
             },
             onError = {
                 _existingChatData.postValue(
@@ -551,6 +581,36 @@ class ChatbotViewModel @Inject constructor(
                 )
             }
         )
+    }
+
+    @VisibleForTesting
+    fun checkForAttachmentDirectActionFromExistingChat(data: GetExistingChatPojo) {
+        data.chatReplies.list.forEach { chatRepliesItem ->
+            chatRepliesItem.chats.forEach { chat ->
+                chat.replies.forEach { reply ->
+                    when (reply.attachment.type.toString()) {
+                        DYNAMIC_ATTACHMENT -> {
+                            val dynamicAttachment = GsonBuilder().create().fromJson(
+                                reply.attachment.attributes,
+                                DynamicAttachment::class.java
+                            )
+                            val contentCode =
+                                dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.contentCode
+                            when (contentCode) {
+                                ChatbotConstant.DynamicAttachment.DYNAMIC_NEW_CHATBOT_SESSION -> {
+                                    val dynamicAttachmentNewChatbotSession = GsonBuilder().create().fromJson(
+                                        dynamicAttachment.dynamicAttachmentAttribute.dynamicAttachmentBodyAttributes.dynamicContent,
+                                        DynamicAttachmentNewChatbotSession::class.java
+                                    )
+
+                                    handleDynamicAttachmentNewChatbotSession(dynamicAttachmentNewChatbotSession.isNewChatbotSession)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     fun getBottomChat(
@@ -1104,6 +1164,12 @@ class ChatbotViewModel @Inject constructor(
                 ChatbotConstant.DynamicAttachment.MEDIA_BUTTON_TOGGLE -> {
                     convertToMediaButtonToggleData(dynamicAttachmentAttribute.dynamicContent)
                 }
+                ChatbotConstant.DynamicAttachment.DYNAMIC_REJECT_REASON -> {
+                    convertToRejectReasonsData(dynamicAttachmentAttribute.dynamicContent)
+                }
+                ChatbotConstant.DynamicAttachment.DYNAMIC_NEW_CHATBOT_SESSION -> {
+                    convertToDynamicAttachmentNewChatbotSession(dynamicAttachmentAttribute.dynamicContent)
+                }
                 else -> {
                     // need to show fallback message
                     mapToVisitable(pojo)
@@ -1147,6 +1213,27 @@ class ChatbotViewModel @Inject constructor(
         handleMediaButtonWS(mediaButtonToggleContent)
     }
 
+    private fun convertToRejectReasonsData(dynamicContent: String?) {
+        if (dynamicContent == null) {
+            return
+        }
+        val rejectReasonData = Gson().fromJson(
+            dynamicContent,
+            DynamicAttachmentRejectReasons::class.java
+        )
+
+        handleDynamicAttachmentRejectReasons(rejectReasonData)
+    }
+
+    private fun convertToDynamicAttachmentNewChatbotSession(dynamicContent: String?) {
+        if (dynamicContent == null) {
+            return
+        }
+
+        val newChatbotSession = Gson().fromJson(dynamicContent, DynamicAttachmentNewChatbotSession::class.java)
+        handleDynamicAttachmentNewChatbotSession(newChatbotSession.isNewChatbotSession)
+    }
+
     private fun handleMediaButtonWS(mediaButtonToggleContent: MediaButtonAttribute) {
         if (mediaButtonToggleContent.isMediaButtonEnabled) {
             _dynamicAttachmentMediaUploadState.postValue(
@@ -1165,6 +1252,18 @@ class ChatbotViewModel @Inject constructor(
                 )
             )
         }
+    }
+
+    fun handleDynamicAttachmentNewChatbotSession(isNewChatbotSession: Boolean) {
+        _dynamicAttachmentNewChatbotSession.postValue(isNewChatbotSession)
+    }
+
+    fun handleDynamicAttachmentRejectReasons(rejectReasonData: DynamicAttachmentRejectReasons) {
+        _dynamicAttachmentRejectReasonState.postValue(
+            ChatbotRejectReasonsState.ChatbotRejectReasonData(
+                rejectReasonData
+            )
+        )
     }
 
     private fun handleBigReplyBoxWS(bigReplyBoxContent: BigReplyBoxAttribute) {
@@ -1236,14 +1335,16 @@ class ChatbotViewModel @Inject constructor(
         messageId: String,
         selected: ChatActionBubbleUiModel,
         startTime: String,
-        opponentId: String
+        opponentId: String,
+        isTypingBlocked: Boolean
     ) {
         chatbotWebSocket.send(
             ChatbotSendableWebSocketParam.generateParamSendBubbleAction(
                 messageId,
                 selected,
                 startTime,
-                opponentId
+                opponentId,
+                isTypingBlocked
             ),
             listInterceptor
         )
@@ -1294,14 +1395,16 @@ class ChatbotViewModel @Inject constructor(
         messageId: String,
         quickReply: QuickReplyUiModel,
         startTime: String,
-        opponentId: String
+        opponentId: String,
+        isTypingBlocked: Boolean
     ) {
         chatbotWebSocket.send(
             ChatbotSendableWebSocketParam.generateParamSendQuickReply(
                 messageId,
                 quickReply,
                 startTime,
-                opponentId
+                opponentId,
+                isTypingBlocked
             ),
             listInterceptor
         )
@@ -1313,7 +1416,8 @@ class ChatbotViewModel @Inject constructor(
         startTime: String,
         opponentId: String,
         event: String,
-        usedBy: String
+        usedBy: String,
+        isTypingBlocked: Boolean
     ) {
         chatbotWebSocket.send(
             ChatbotSendableWebSocketParam.generateParamSendQuickReplyEventArticle(
@@ -1321,7 +1425,8 @@ class ChatbotViewModel @Inject constructor(
                 quickReply,
                 startTime,
                 event,
-                usedBy
+                usedBy,
+                isTypingBlocked
             ),
             listInterceptor
         )
@@ -1362,6 +1467,52 @@ class ChatbotViewModel @Inject constructor(
     }
 
     private fun isValidReply(message: String) = message.isNotBlank()
+
+    fun sendDynamicAttachment108(
+        reasonCodeList: List<Long>,
+        reason: String,
+        messageId: String,
+        toUid: String,
+        startTime: String,
+        helpfulQuestion: DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion?,
+        index: Int,
+        isSubmitAfterOpenForm: Boolean
+    ) {
+        chatbotWebSocket.send(
+            generateParamDynamicAttachment108(
+                reasonCodeList,
+                reason,
+                messageId,
+                toUid,
+                startTime,
+                helpfulQuestion,
+                index,
+                isSubmitAfterOpenForm
+            ),
+            listInterceptor
+        )
+    }
+
+    fun sendDynamicAttachment108ForAcknowledgement(
+        messageId: String,
+        toUid: String,
+        model: QuickReplyUiModel,
+        startTime: String,
+        index: Int,
+        isSubmitAfterOpenForm: Boolean
+    ) {
+        chatbotWebSocket.send(
+            generateParamDynamicAttachment108ForAcknowledgement(
+                messageId,
+                toUid,
+                model,
+                startTime,
+                index,
+                isSubmitAfterOpenForm
+            ),
+            listInterceptor
+        )
+    }
 
     fun sendMessage(
         messageId: String,

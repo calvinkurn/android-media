@@ -8,6 +8,7 @@ enum class PlayWidgetType(val typeString: String) {
     Medium("MEDIUM"),
     Large("LARGE"),
     Jumbo("JUMBO"),
+    Carousel("CAROUSEL"),
     Unknown("");
 
     companion object {

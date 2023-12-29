@@ -9,5 +9,5 @@ data class ShipmentStateShippingInfoData(
     @SerializedName("sp_id")
     var spId: Long = 0,
     @SerializedName("rates_feature")
-    var ratesFeature: RatesFeature? = null
+    var ratesFeature: RatesFeature = RatesFeature()
 )

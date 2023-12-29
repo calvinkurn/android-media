@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             tools:text="00:30"
-            android:textColor="@color/Unify_R500" />
+            android:textColor="@color/Unify_RN500" />
 
     </LinearLayout>
 

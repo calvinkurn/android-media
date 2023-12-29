@@ -18,5 +18,7 @@ data class VariantDetailInputLayoutModel(
         var isSkuFieldVisible: Boolean = false,
         var priceEditEnabled: Boolean = true,
         var isPrimary: Boolean = false,
-        var combination: List<Int> = listOf()
+        var combination: List<Int> = listOf(),
+        var hasDTStock: Boolean = false,
+        var isCampaignActive: Boolean = false
 )

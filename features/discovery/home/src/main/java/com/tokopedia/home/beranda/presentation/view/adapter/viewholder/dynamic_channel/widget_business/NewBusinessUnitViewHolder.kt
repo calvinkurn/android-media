@@ -11,14 +11,17 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.LocalLoad
 
-class NewBusinessUnitViewHolder (view: View, private val listener: BusinessUnitListener,
-                                 private val cardInteraction: Boolean = false): RecyclerView.ViewHolder(view) {
+class NewBusinessUnitViewHolder(
+    view: View,
+    private val listener: BusinessUnitListener,
+    private val cardInteraction: Boolean = false,
+) : RecyclerView.ViewHolder(view) {
     private val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
     private val loadingView = view.findViewById<View>(R.id.loading_layout)
     private val errorView = view.findViewById<LocalLoad>(R.id.error_bu_unit_widget)
     private var adapter: BusinessUnitItemAdapter? = null
     private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
-    private val listenerBusinessUnitItemTrackerListener = object : BusinessUnitItemTrackerListener{
+    private val listenerBusinessUnitItemTrackerListener = object : BusinessUnitItemTrackerListener {
         override fun onClickTracking(tracker: HashMap<String, Any>) {
             listener.sendEnhanceEcommerce(tracker)
         }
@@ -38,42 +41,53 @@ class NewBusinessUnitViewHolder (view: View, private val listener: BusinessUnitL
         startSnapHelper.attachToRecyclerView(recyclerView)
     }
 
-    fun onBind(model: BusinessUnitDataModel?, positionWidget: Int){
+    fun onBind(model: BusinessUnitDataModel?, positionWidget: Int) {
         loadingView.hide()
         recyclerView.hide()
         errorView.hide()
-        if(recyclerView.adapter == null) {
-            adapter = BusinessUnitItemAdapter(model?.tabPosition ?: -1, model?.tabName ?: "", listenerBusinessUnitItemTrackerListener, cardInteraction)
-            recyclerView.adapter = adapter
+        if (recyclerView.adapter == null) {
+            adapter = BusinessUnitItemAdapter()
         }
+        recyclerView.adapter = adapter
         adapter?.setPositionWidgetOnHome(positionWidget)
-        if(model?.list != null){
+        if (model?.list != null) {
             recyclerView.show()
             loadingView.hide()
-            if(model.list.isEmpty()){
+            if (model.list.isEmpty()) {
                 errorView.show()
             }
-            adapter?.submitList(model.list)
+            adapter?.submitList(
+                model,
+                listenerBusinessUnitItemTrackerListener,
+                cardInteraction,
+                listener.userId
+            )
         } else {
             loadingView.show()
             listener.getBusinessUnit(adapterPosition)
         }
     }
 
-    fun onBind(model: BusinessUnitDataModel?, payload: List<Any>, positionWidget: Int){
-        if(model?.list != null){
+    fun onBind(model: BusinessUnitDataModel?, payload: List<Any>, positionWidget: Int) {
+        if (model?.list != null) {
             adapter?.setPositionWidgetOnHome(positionWidget)
-            adapter?.submitList(model.list)
+            adapter?.submitList(
+                model,
+                listenerBusinessUnitItemTrackerListener,
+                cardInteraction,
+                listener.userId
+            )
         }
     }
 
-    interface BusinessUnitListener{
+    interface BusinessUnitListener {
         fun getBusinessUnit(position: Int)
         fun sendEnhanceEcommerce(tracker: HashMap<String, Any>)
         fun putEnhanceEcommerce(tracker: HashMap<String, Any>)
+        val userId: String
     }
 
-    interface BusinessUnitItemTrackerListener{
+    interface BusinessUnitItemTrackerListener {
         fun onClickTracking(tracker: HashMap<String, Any>)
         fun onImpressTracking(tracker: HashMap<String, Any>)
     }

@@ -1622,6 +1622,13 @@ class DigitalCartViewModelTest {
         }
     }
 
+    @Test
+    fun updateProductConsentPayload_shouldUpdateRequestCheckoutParam() {
+        val consentPayload = "{\"tokopedia\":\"tower\"}"
+        digitalCartViewModel.updateProductConsentPayload(consentPayload)
+        assert(digitalCartViewModel.requestCheckoutParam.productConsentPayload == consentPayload)
+    }
+
     private fun generateCrossSellHashMap(): HashMap<String, DigitalCrossSellData> {
         return hashMapOf(
             "First" to DigitalCrossSellData(

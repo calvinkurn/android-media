@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull
  */
 class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
                                                              defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+    : BaseCustomView(context, attrs, defStyleAttr), ETollCardInfoView.OnClickCardInfoListener {
 
     private val eTollCardInfoView: ETollCardInfoView
     private val tickerTapcash: Ticker
@@ -42,6 +42,10 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
         this.listener = listener
     }
 
+    override fun onClickExtraPendingBalance() {
+         listener.onClickExtraPendingBalance()
+    }
+
     init {
         val view = View.inflate(context, R.layout.view_emoney_update_balance_result, this)
 
@@ -53,6 +57,7 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
     }
 
     fun showCardInfoFromApi(inquiryBalanceModel: EmoneyInquiry) {
+        eTollCardInfoView.setListener(this)
         textLabelProgressTitle.visibility = View.GONE
         textLabelProgressMessage.visibility = View.GONE
         tickerTapcash.visibility = if(inquiryBalanceModel.isCheckSaldoTapcash) View.VISIBLE else View.GONE
@@ -65,7 +70,9 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
             if (::listener.isInitialized) {
                 buttonTopup.setOnClickListener {
                     listener.onClick(inquiryBalanceModel.attributesEmoneyInquiry.operatorId,
-                            inquiryBalanceModel.attributesEmoneyInquiry.issuer_id)
+                            inquiryBalanceModel.attributesEmoneyInquiry.issuer_id,
+                        inquiryBalanceModel.isBCAGenOne
+                    )
                 }
             }
 
@@ -86,10 +93,10 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
     fun showError(errorMessage: String) {
         textLabelProgressTitle.visibility = View.VISIBLE
         textLabelProgressTitle.text = resources.getString(R.string.emoney_nfc_update_card_balance_failed_title)
-        textLabelProgressTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_R600))
+        textLabelProgressTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_RN500))
         textLabelProgressMessage.visibility = View.VISIBLE
         textLabelProgressMessage.text = errorMessage
-        textLabelProgressMessage.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N300))
+        textLabelProgressMessage.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN500))
         eTollCardInfoView.visibility = View.VISIBLE
         eTollCardInfoView.removeCardInfo()
         buttonTopup.visibility = View.GONE
@@ -97,10 +104,10 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
 
     fun showLoading() {
         textLabelProgressTitle.visibility = View.VISIBLE
-        textLabelProgressTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700))
+        textLabelProgressTitle.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
         textLabelProgressTitle.text = resources.getString(R.string.emoney_nfc_update_card_balance_progress_label_title)
         textLabelProgressMessage.visibility = View.VISIBLE
-        textLabelProgressMessage.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N300))
+        textLabelProgressMessage.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN500))
         textLabelProgressMessage.text = resources.getString(R.string.emoney_nfc_update_card_balance_progress_label_message)
         eTollCardInfoView.visibility = View.VISIBLE
         eTollCardInfoView.showLoading()
@@ -116,7 +123,9 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
     }
 
     interface OnTopupETollClickListener {
-        fun onClick(operatorId: String, issuerId: Int)
+        fun onClick(operatorId: String, issuerId: Int, isBcaGenOne: Boolean)
         fun onClickTickerTapcash()
+
+        fun onClickExtraPendingBalance()
     }
 }

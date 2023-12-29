@@ -1,0 +1,609 @@
+package com.tokopedia.catalog.ui.mapper
+
+import android.content.Context
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
+import com.tokopedia.catalog.ui.model.NavigationProperties
+import com.tokopedia.catalog.ui.model.PriceCtaProperties
+import com.tokopedia.catalog.ui.model.ShareProperties
+import com.tokopedia.catalog.ui.model.WidgetTypes
+import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
+import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
+import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
+import com.tokopedia.catalogcommon.uimodel.BlankUiModel
+import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
+import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel
+import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
+import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
+import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
+import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
+import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
+import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
+import com.tokopedia.catalogcommon.uimodel.SupportFeaturesUiModel
+import com.tokopedia.catalogcommon.uimodel.TextDescriptionUiModel
+import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
+import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
+import com.tokopedia.catalogcommon.uimodel.VideoUiModel
+import com.tokopedia.catalogcommon.util.colorMapping
+import com.tokopedia.catalogcommon.util.getColorDarkMode
+import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.oldcatalog.model.raw.CatalogResponseData
+import javax.inject.Inject
+import com.tokopedia.catalog.R as catalogR
+import com.tokopedia.catalogcommon.R as catalogcommonR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+
+class CatalogDetailUiMapper @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
+    companion object {
+        private const val LAYOUT_VERSION_4_VALUE = 4
+        private const val COMPARISON_COUNT = 2
+        private const val TOP_COMPARISON_SPEC_COUNT = 5
+        private const val COLUMN_INFO_SPEC_COUNT = 5
+        private const val INVALID_CATALOG_ID = "0"
+        private const val FALLBACK_COLUMN_TYPE = "title_value_on_2"
+    }
+
+    fun mapToWidgetVisitables(
+        remoteModel: CatalogResponseData.CatalogGetDetailModular
+    ): List<Visitable<*>> {
+        val isDarkMode = remoteModel.globalStyle?.darkMode.orFalse()
+        return remoteModel.layouts?.filter {
+            !it.data?.style?.isHidden.orTrue()
+        }?.map {
+            when (it.type) {
+                WidgetTypes.CATALOG_HERO.type -> it.mapToHeroBanner(isDarkMode)
+                WidgetTypes.CATALOG_FEATURE_TOP.type -> it.mapToTopFeature(remoteModel)
+                WidgetTypes.CATALOG_TRUSTMAKER.type -> it.mapToTrustMaker(isDarkMode)
+                WidgetTypes.CATALOG_CHARACTERISTIC.type -> it.mapToCharacteristic(isDarkMode)
+                WidgetTypes.CATALOG_BANNER_SINGLE.type -> it.mapToBannerImage(isDarkMode)
+                WidgetTypes.CATALOG_BANNER_DOUBLE.type -> it.mapToDoubleBannerImage(isDarkMode)
+                WidgetTypes.CATALOG_NAVIGATION.type -> it.mapToStickyNavigation(remoteModel)
+                WidgetTypes.CATALOG_SLIDER_IMAGE.type -> it.mapToSliderImageText(isDarkMode)
+                WidgetTypes.CATALOG_TEXT.type -> it.mapToTextDescription(isDarkMode)
+                WidgetTypes.CATALOG_REVIEW_EXPERT.type -> it.mapToExpertReview(isDarkMode)
+                WidgetTypes.CATALOG_FEATURE_SUPPORT.type -> it.mapToSupportFeature(remoteModel)
+                WidgetTypes.CATALOG_ACCORDION.type -> it.mapToAccordion(isDarkMode)
+                WidgetTypes.CATALOG_COMPARISON.type -> it.mapToComparison(isDarkMode)
+                WidgetTypes.CATALOG_VIDEO.type -> it.mapToVideo(isDarkMode)
+                WidgetTypes.CATALOG_COLUMN_INFO.type -> it.mapToColumnInfo(isDarkMode)
+                else -> {
+                    BlankUiModel()
+                }
+            }.applyGlobalProperies(remoteModel, it)
+        }.orEmpty()
+    }
+
+    fun mapToCatalogDetailUiModel(
+        remoteModel: CatalogResponseData.CatalogGetDetailModular
+    ): CatalogDetailUiModel {
+        val widgets = mapToWidgetVisitables(remoteModel)
+        return CatalogDetailUiModel(
+            widgets = widgets,
+            navigationProperties = mapToNavigationProperties(remoteModel, widgets),
+            priceCtaProperties = mapToPriceCtaProperties(remoteModel),
+            remoteModel.basicInfo.productSortingStatus.orZero(),
+            catalogUrl = remoteModel.basicInfo.url.orEmpty(),
+            shareProperties = mapToShareProperties(remoteModel, widgets)
+        )
+    }
+
+    private fun mapToPriceCtaProperties(remoteModel: CatalogResponseData.CatalogGetDetailModular): PriceCtaProperties {
+        val bgColor = remoteModel.globalStyle?.secondaryColor
+        val textColorRes = if (remoteModel.globalStyle?.darkMode == true) {
+            unifycomponentsR.color.Unify_Static_White
+        } else {
+            unifycomponentsR.color.Unify_Static_Black
+        }
+        return remoteModel.layouts?.firstOrNull {
+            it.type == WidgetTypes.CATALOG_CTA_PRICE.type
+        }?.data?.run {
+            val marketPrice = priceCta.marketPrice.firstOrNull()
+            val minFmt = marketPrice?.minFmt.orEmpty()
+            val maxFmt = marketPrice?.maxFmt.orEmpty()
+            val displayedPrice = if (minFmt == maxFmt) {
+                maxFmt
+            } else {
+                listOf(minFmt, maxFmt).joinToString(" - ")
+            }
+
+            PriceCtaProperties(
+                catalogId = remoteModel.basicInfo.id,
+                departmentId = remoteModel.basicInfo.departmentID.orEmpty(),
+                price = displayedPrice,
+                productName = priceCta.name,
+                bgColor = "#$bgColor".stringHexColorParseToInt(),
+                MethodChecker.getColor(context, textColorRes)
+            )
+        } ?: PriceCtaProperties()
+    }
+
+    private fun mapToNavigationProperties(
+        remoteModel: CatalogResponseData.CatalogGetDetailModular,
+        widgets: List<Visitable<*>>
+    ): NavigationProperties {
+        val heroImage = widgets.firstOrNull { it is HeroBannerUiModel } as? HeroBannerUiModel
+        return NavigationProperties(
+            isDarkMode = remoteModel.globalStyle?.darkMode.orFalse(),
+            isPremium = heroImage?.isPremium.orFalse(),
+            bgColor = "#${remoteModel.globalStyle?.bgColor}".stringHexColorParseToInt(),
+            title = remoteModel.basicInfo.name.orEmpty()
+        )
+    }
+
+    private fun mapToShareProperties(
+        remoteModel: CatalogResponseData.CatalogGetDetailModular,
+        widgets: List<Visitable<*>>
+    ): ShareProperties {
+        val heroImage = widgets.firstOrNull { it is HeroBannerUiModel } as? HeroBannerUiModel
+        return ShareProperties(
+            catalogId = remoteModel.basicInfo.id,
+            title = remoteModel.basicInfo.name.orEmpty(),
+            images = heroImage?.brandImageUrls.orEmpty(),
+            catalogUrl = remoteModel.basicInfo.mobileURL.orEmpty()
+        )
+    }
+
+    private fun BaseCatalogUiModel.applyGlobalProperies(
+        remoteModel: CatalogResponseData.CatalogGetDetailModular,
+        layout: CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout
+    ): BaseCatalogUiModel {
+        val isDarkMode = remoteModel.globalStyle?.darkMode.orFalse()
+        val bgColor = remoteModel.globalStyle?.bgColor
+        return apply {
+            idWidget = layout.type + layout.name
+            widgetType = layout.type
+            widgetName = layout.name
+            widgetBackgroundColor = "#$bgColor".stringHexColorParseToInt()
+            widgetTextColor = getTextColor(isDarkMode)
+            darkMode = isDarkMode
+        }
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToHeroBanner(
+        darkMode: Boolean
+    ) =
+        HeroBannerUiModel(
+            isPremium = data?.style?.isPremium.orFalse(),
+            brandTitle = data?.hero?.name.orEmpty(),
+            brandImageUrls = data?.hero?.heroSlide?.map { heroSlide ->
+                heroSlide.imageUrl
+            }.orEmpty(),
+            brandDescriptions = data?.hero?.heroSlide?.map { heroSlide ->
+                heroSlide.subtitle
+            }.orEmpty(),
+            brandIconUrl = data?.hero?.brandLogoUrl.orEmpty(),
+            widgetTextColor = getColorDarkMode(context, darkMode,
+                catalogR.color.catalog_dms_dark_color_banner,
+                catalogR.color.catalog_dms_light_color_banner
+            )
+        )
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToTopFeature(
+        remoteModel: CatalogResponseData.CatalogGetDetailModular
+    ): TopFeaturesUiModel {
+        val isDarkMode = remoteModel.globalStyle?.darkMode.orFalse()
+        return TopFeaturesUiModel(
+            items = data?.topFeature?.map {
+                TopFeaturesUiModel.ItemTopFeatureUiModel(
+                    id = it.desc,
+                    icon = it.iconUrl,
+                    name = it.desc,
+                    backgroundColor = getColorDarkMode(context, isDarkMode,
+                        catalogR.color.catalog_dms_dark_color,
+                        catalogR.color.catalog_dms_light_color,
+                        20),
+                    textColor = getTextColor(isDarkMode)
+                )
+            }.orEmpty()
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToStickyNavigation(
+        remoteModel: CatalogResponseData.CatalogGetDetailModular
+    ): StickyNavigationUiModel {
+        val isDarkMode = remoteModel.globalStyle?.darkMode.orFalse()
+        val textColor = getTextColorNav(isDarkMode)
+        return StickyNavigationUiModel(
+            content = data?.navigation?.map { nav ->
+                val eligibleName = nav.eligibleNames.filter { eligble ->
+                    val found = remoteModel.layouts?.indexOfFirst {
+                        it.name == eligble && !it.data?.style?.isHidden.orFalse()
+                    }
+                    found != -1
+                }.firstOrNull().orEmpty()
+                StickyNavigationUiModel.StickyNavigationItemData(
+                    nav.title,
+                    eligibleName,
+                    nav.eligibleNames.joinToString(","),
+                    textColor
+                )
+            }.orEmpty()
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToTrustMaker(
+        isDarkMode: Boolean
+    ): TrustMakerUiModel {
+        val textColorSubtitle = getTextColorTrustmaker(isDarkMode)
+        val textColor = getTextColor(isDarkMode)
+        return TrustMakerUiModel(
+            items = data?.trustmaker.orEmpty().map {
+                TrustMakerUiModel.ItemTrustMakerUiModel(
+                    id = "",
+                    icon = it.imageUrl,
+                    title = it.title,
+                    subTitle = it.subtitle,
+                    textColorTitle = textColor,
+                    textColorSubTitle = textColorSubtitle
+                )
+            }
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToCharacteristic(
+        isDarkMode: Boolean
+    ): CharacteristicUiModel {
+        val textColor = getColorDarkMode(context, isDarkMode,
+            catalogR.color.catalog_dms_dark_color_text_description,
+            catalogR.color.catalog_dms_light_color_text_description)
+        return CharacteristicUiModel(
+            items = data?.characteristic.orEmpty().map {
+                CharacteristicUiModel.ItemCharacteristicUiModel(
+                    id = "",
+                    icon = it.iconUrl,
+                    title = it.desc,
+                    textColorTitle = textColor
+                )
+            }
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToSliderImageText(
+        isDarkMode: Boolean
+    ): SliderImageTextUiModel {
+        return SliderImageTextUiModel(
+            items = data?.imageSlider.orEmpty().map {
+                SliderImageTextUiModel.ItemSliderImageText(
+                    image = it.imageUrl,
+                    textHighlight = it.subtitle,
+                    textTitle = it.title,
+                    textDescription = it.desc,
+                    textHighlightColor = getColorDarkMode(context, isDarkMode,
+                        catalogR.color.catalog_dms_dark_color_banner,
+                        catalogR.color.catalog_dms_light_color_banner),
+                    textTitleColor = getColorDarkMode(
+                        context,
+                        isDarkMode,
+                        catalogR.color.catalog_dms_dark_color_image_text,
+                        catalogR.color.catalog_dms_light_color_image_text
+                    ),
+                    textDescriptionColor = getColorDarkMode(context, isDarkMode,
+                        catalogR.color.catalog_dms_dark_color_banner,
+                        catalogR.color.catalog_dms_light_color_banner)
+                )
+            }
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToAccordion(
+        isDarkMode: Boolean
+    ): AccordionInformationUiModel {
+        return AccordionInformationUiModel(
+            titleWidget = data?.section?.title.orEmpty(),
+            widgetTextColor = getColorDarkMode(
+                context,
+                isDarkMode,
+                catalogR.color.catalog_dms_dark_color_accordion_title,
+                catalogR.color.catalog_dms_light_color_accordion_title
+            ),
+            contents = data?.accordion.orEmpty().map {
+                AccordionInformationUiModel.ItemAccordionInformationUiModel(
+                    title = it.title,
+                    description = it.desc,
+                    arrowColor = getColorDarkMode(
+                        context,
+                        isDarkMode,
+                        catalogR.color.catalog_dms_dark_color_accordion_arrow,
+                        catalogR.color.catalog_dms_light_color_accordion_arrow
+                    ),
+                    textTitleColor = getColorDarkMode(
+                        context,
+                        isDarkMode,
+                        catalogR.color.catalog_dms_dark_color_accordion_title,
+                        catalogR.color.catalog_dms_light_color_accordion_title
+                    ),
+                    textDescriptionColor = getColorDarkMode(
+                        context,
+                        isDarkMode,
+                        catalogR.color.catalog_dms_dark_color_accordion_description,
+                        catalogR.color.catalog_dms_light_color_accordion_description
+                    )
+                )
+            }
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToTextDescription(
+        isDarkMode: Boolean
+    ): TextDescriptionUiModel {
+        return TextDescriptionUiModel(
+            item = TextDescriptionUiModel.ItemTextDescriptionUiModel(
+                highlight = data?.text?.subtitle.orEmpty(),
+                title = data?.text?.title.orEmpty(),
+                description = data?.text?.desc.orEmpty()
+            ),
+            isDarkMode = isDarkMode
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToBannerImage(
+        darkMode: Boolean
+    ): BannerCatalogUiModel {
+        return BannerCatalogUiModel(
+            darkMode = darkMode,
+            imageUrl = data?.singleBanner?.imageUrl.orEmpty(),
+            ratio = BannerCatalogUiModel.Ratio.values().firstOrNull {
+                it.ratioName == data?.style?.bannerRatio.orEmpty()
+            } ?: BannerCatalogUiModel.Ratio.TWO_BY_ONE
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToDoubleBannerImage(
+        darkMode: Boolean
+    ): DoubleBannerCatalogUiModel {
+        return DoubleBannerCatalogUiModel(
+            darkMode = darkMode,
+            imageUrls = data?.doubleBanner?.map { it.imageUrl }.orEmpty()
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToExpertReview(
+        isDarkMode: Boolean
+    ): ExpertReviewUiModel {
+        return ExpertReviewUiModel(
+            content = data?.expertReview.orEmpty().map {
+                ExpertReviewUiModel.ItemExpertReviewUiModel(
+                    imageReviewer = it.imageUrl,
+                    reviewText = it.review,
+                    title = it.name,
+                    subTitle = it.title,
+                    videoLink = it.videoUrl,
+                    textReviewColor = getTextColor(isDarkMode),
+                    textTitleColor = getTextColor(isDarkMode),
+                    textSubTitleColor = getTextColorTrustmaker(isDarkMode),
+                    backgroundColor = colorMapping(
+                        isDarkMode,
+                        catalogcommonR.drawable.bg_rounded_border_dark,
+                        catalogcommonR.drawable.bg_rounded_border_light
+                    ),
+                    styleIconPlay = ExpertReviewUiModel.StyleIconPlay(
+                        iconColor = colorMapping(
+                            isDarkMode,
+                            unifyprinciplesR.color.Unify_Static_White,
+                            unifyprinciplesR.color.Unify_Static_Black
+                        ),
+                        background = colorMapping(
+                            isDarkMode,
+                            catalogcommonR.drawable.bg_circle_border_dark,
+                            catalogcommonR.drawable.bg_circle_border_light
+                        )
+                    )
+                )
+            }
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToSupportFeature(
+        remoteModel: CatalogResponseData.CatalogGetDetailModular
+    ): SupportFeaturesUiModel {
+        val isDarkMode = remoteModel.globalStyle?.darkMode.orFalse()
+        return SupportFeaturesUiModel(
+            titleSection = data?.section?.title.orEmpty(),
+            widgetTextColor = getColorDarkMode(
+                context,
+                isDarkMode,
+                catalogR.color.catalog_dms_dark_color_support_feature,
+                catalogR.color.catalog_dms_light_color_support_feature
+            ),
+            items = data?.supportFeature?.map {
+                SupportFeaturesUiModel.ItemSupportFeaturesUiModel(
+                    id = it.desc,
+                    icon = it.iconUrl,
+                    title = it.title,
+                    description = it.desc,
+                    backgroundColor = getColorDarkMode(
+                        context,
+                        isDarkMode,
+                        catalogR.color.catalog_dms_dark_color,
+                        catalogR.color.catalog_dms_light_color,
+                        20),
+                    descColor = getColorDarkMode(
+                        context,
+                        isDarkMode,
+                        catalogR.color.catalog_dms_dark_color_text_description,
+                        catalogR.color.catalog_dms_light_color_text_description),
+                    titleColor = getColorDarkMode(
+                        context,
+                        isDarkMode,
+                        catalogR.color.catalog_dms_dark_color_support_feature,
+                        catalogR.color.catalog_dms_light_color_support_feature
+                    )
+                )
+            }.orEmpty()
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToComparison(
+        isDarkMode: Boolean
+    ): BaseCatalogUiModel {
+        var isFirstData = true
+        val displayedComparisons = data?.comparison.orEmpty()
+            .filter { it.id != INVALID_CATALOG_ID }
+            .take(COMPARISON_COUNT)
+        return if (displayedComparisons.size <= Int.ONE) {
+            BlankUiModel()
+        } else {
+            ComparisonUiModel(
+                content = displayedComparisons.map {
+                    val comparisonSpecs = mutableListOf<ComparisonUiModel.ComparisonSpec>()
+                    it.fullSpec.forEach { spec ->
+                        comparisonSpecs.add(
+                            ComparisonUiModel.ComparisonSpec(
+                                isSpecCategoryTitle = true,
+                                specCategoryTitle = if (isFirstData) spec.name else "",
+                                isDarkMode = isDarkMode
+                            )
+                        )
+                        spec.row.forEach { rowItem ->
+                            val insertedItem = ComparisonUiModel.ComparisonSpec(
+                                isSpecCategoryTitle = false,
+                                specTitle = if (isFirstData) rowItem.key else "",
+                                specValue = rowItem.value.ifEmpty { "-" },
+                                specTextTitleColor = getTextColor(isDarkMode,
+                                    lightModeColor = catalogR.color.catalog_dms_light_color_text_description,
+                                    darkModeColor = catalogR.color.catalog_dms_dark_color_text_description),
+                                isDarkMode = isDarkMode
+                            )
+                            comparisonSpecs.add(insertedItem)
+                        }
+                    }
+                    isFirstData = false
+                    ComparisonUiModel.ComparisonContent(
+                        id = it.id,
+                        imageUrl = it.catalogImage.firstOrNull { image -> image.isPrimary }?.imageUrl.orEmpty(),
+                        productTitle = it.name,
+                        price = it.marketPrice.firstOrNull()?.let { marketPrice ->
+                            marketPrice.minFmt + " - " + marketPrice.maxFmt
+                        }.orEmpty(),
+                        comparisonSpecs = comparisonSpecs,
+                        topComparisonSpecs = comparisonSpecs
+                            .filter { comparisonSpec -> !comparisonSpec.isSpecCategoryTitle }
+                            .take(TOP_COMPARISON_SPEC_COUNT)
+                    )
+                }.toMutableList()
+            )
+        }
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToVideo(
+        darkMode: Boolean
+    ): VideoUiModel {
+        return VideoUiModel(
+            content = data?.video.orEmpty().map {
+                VideoUiModel.ItemVideoUiModel(
+                    thumbnailUrl = it.thumbnail,
+                    title = it.title,
+                    author = it.author,
+                    videoLink = it.url,
+                    textTitleColor = getTextColor(darkMode),
+                    textSubTitleColor = getTextColor(darkMode)
+                )
+            }
+        )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToColumnInfo(
+        darkMode: Boolean
+    ): BaseCatalogUiModel {
+        val columnType = data?.style?.columnType.orEmpty()
+        val infoColumn = data?.infoColumn.orEmpty()
+        val flattenDataRows = data?.infoColumn
+            .orEmpty()
+            .flatMap { it.row }
+        return if (columnType != FALLBACK_COLUMN_TYPE || infoColumn.isEmpty()) {
+            BlankUiModel()
+        } else {
+            ColumnedInfoUiModel(
+                sectionTitle = data?.section?.title.orEmpty(),
+                hasMoreData = flattenDataRows.size > COLUMN_INFO_SPEC_COUNT,
+                widgetContent = ColumnedInfoUiModel.ColumnData(
+                    rowData = flattenDataRows
+                        .take(COLUMN_INFO_SPEC_COUNT)
+                        .map {
+                            Pair(it.key, it.value)
+                        },
+                    rowColor = getColumnInfoTextColor(darkMode)
+                ),
+                fullContent = data?.infoColumn
+                    .orEmpty()
+                    .map {
+                        ColumnedInfoUiModel.ColumnData(
+                            title = it.name,
+                            rowData = it.row.map { row ->
+                                Pair(row.key, row.value)
+                            },
+                            rowColor = getColumnInfoTextColor(darkMode)
+                        )
+                    }
+            )
+        }
+    }
+
+    private fun getTextColor(darkMode: Boolean): Int {
+        val textColorRes = if (darkMode) {
+            catalogR.color.catalog_dms_dark_color_text_common
+        } else {
+            catalogR.color.catalog_dms_light_color_text_common
+        }
+        return MethodChecker.getColor(context, textColorRes)
+    }
+
+    private fun getTextColor(darkMode: Boolean, darkModeColor: Int, lightModeColor: Int): Int {
+        val textColorRes = if (darkMode) {
+            darkModeColor
+        } else {
+            lightModeColor
+        }
+        return MethodChecker.getColor(context, textColorRes)
+    }
+
+    private fun getTextColorTrustmaker(darkMode: Boolean): Int {
+        val textColorRes = if (darkMode) {
+            catalogR.color.catalog_dms_dark_color_text_common
+        } else {
+            catalogR.color.catalog_dms_light_color_text_common
+        }
+        return MethodChecker.getColor(context, textColorRes)
+    }
+
+    private fun getTextColorNav(darkMode: Boolean): Int {
+        val textColorRes = if (darkMode) {
+            unifycomponentsR.color.Unify_Static_White
+        } else {
+            unifycomponentsR.color.Unify_Static_Black
+        }
+        return MethodChecker.getColor(context, textColorRes)
+    }
+
+    private fun getColumnInfoTextColor(darkMode: Boolean) = Pair(
+        MethodChecker.getColor(
+            context,
+            if (darkMode) {
+                catalogR.color.catalog_dms_dark_color_text_description
+            } else {
+                catalogR.color.catalog_dms_light_color_text_description
+            }
+        ),
+        MethodChecker.getColor(
+            context,
+            if (darkMode) {
+                catalogR.color.catalog_dms_column_info_value_color_dark
+            } else {
+                catalogR.color.catalog_dms_column_info_value_color_light
+            }
+        )
+    )
+
+    fun isUsingAboveV4Layout(version: Int): Boolean {
+        return version >= LAYOUT_VERSION_4_VALUE
+    }
+}

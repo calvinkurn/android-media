@@ -459,7 +459,7 @@ class HotelSearchMapFragment :
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentHotelSearchMapBinding.inflate(inflater, container, false)
-        binding?.root?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        binding?.root?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         return binding?.root
     }
 
@@ -753,7 +753,7 @@ class HotelSearchMapFragment :
                 setBackgroundColor(
                     ContextCompat.getColor(
                         it,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
                 layoutParams = param
@@ -770,7 +770,7 @@ class HotelSearchMapFragment :
             textView.setTextColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
             )
 
@@ -782,7 +782,7 @@ class HotelSearchMapFragment :
             binding?.headerHotelSearchMap?.headerView?.setTextColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                 )
             )
             binding?.headerHotelSearchMap?.addCustomRightContent(wrapper)
@@ -967,7 +967,7 @@ class HotelSearchMapFragment :
                 view.subheaderView?.setTextColor(
                     ContextCompat.getColor(
                         it,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
                     )
                 )
             }
@@ -1309,7 +1309,7 @@ class HotelSearchMapFragment :
                 setTextColor(
                     color = ContextCompat.getColor(
                         context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
                 setWeight(Typography.BOLD)
@@ -1701,11 +1701,7 @@ class HotelSearchMapFragment :
     }
 
     private fun getCurrentLocation() {
-        val locationDetectorHelper = LocationDetectorHelper(
-            permissionCheckerHelper,
-            fusedLocationClient,
-            requireActivity().applicationContext
-        )
+        val locationDetectorHelper = LocationDetectorHelper(requireActivity().applicationContext)
 
         activity?.let {
             permissionCheckerHelper.checkPermission(
@@ -1726,6 +1722,7 @@ class HotelSearchMapFragment :
                             requireActivity(),
                             LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
                             RequestLocationType.APPROXIMATE,
+                            permissionCheckerHelper,
                             requireActivity().getString(R.string.hotel_destination_need_permission)
                         )
                     }
@@ -1793,7 +1790,7 @@ class HotelSearchMapFragment :
                 setTextColor(
                     ContextCompat.getColor(
                         it,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
                 text = getString(R.string.hotel_search_map_search_with_map)

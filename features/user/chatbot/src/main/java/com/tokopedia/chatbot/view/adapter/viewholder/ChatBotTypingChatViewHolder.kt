@@ -20,12 +20,12 @@ class ChatBotTypingChatViewHolder(itemView: View) : AbstractViewHolder<TypingCha
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
         typingDotContainer,
-        com.tokopedia.unifyprinciples.R.color.Unify_N0,
+        com.tokopedia.unifyprinciples.R.color.Unify_NN0,
         R.dimen.dp_chatbot_0,
         R.dimen.dp_chatbot_20,
         R.dimen.dp_chatbot_20,
         R.dimen.dp_chatbot_20,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        com.tokopedia.unifyprinciples.R.color.Unify_NN950_20,
         R.dimen.dp_chatbot_2,
         R.dimen.dp_chatbot_1,
         Gravity.CENTER

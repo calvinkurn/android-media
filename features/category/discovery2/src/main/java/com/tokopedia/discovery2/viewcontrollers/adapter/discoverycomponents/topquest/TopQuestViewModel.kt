@@ -16,23 +16,24 @@ class TopQuestViewModel(
     val components: ComponentsItem,
     val position: Int
 ) : DiscoveryBaseViewModel() {
+    @JvmField
     @Inject
-    lateinit var hideSectionUseCase: HideSectionUseCase
+    var hideSectionUseCase: HideSectionUseCase? = null
 
     private val _hideSection = SingleLiveEvent<String>()
     val hideSectionLD: LiveData<String> = _hideSection
 
-    var shouldUpdate:Boolean = false
-    var loggedInUpdate:Boolean = false
+    var shouldUpdate: Boolean = false
+    var loggedInUpdate: Boolean = false
 
     private val _shouldHideWidget: MutableLiveData<Boolean> = MutableLiveData()
     val shouldHideWidget: LiveData<Boolean> = _shouldHideWidget
 
-    private val _updateQuestData:SingleLiveEvent<Boolean> = SingleLiveEvent()
-    val updateQuestData:LiveData<Boolean> = _updateQuestData
+    private val _updateQuestData: SingleLiveEvent<Boolean> = SingleLiveEvent()
+    val updateQuestData: LiveData<Boolean> = _updateQuestData
 
-    private val _navigateData:SingleLiveEvent<String> = SingleLiveEvent()
-    val navigateData:LiveData<String> = _navigateData
+    private val _navigateData: SingleLiveEvent<String> = SingleLiveEvent()
+    val navigateData: LiveData<String> = _navigateData
 
     override fun onResume() {
         super.onResume()
@@ -53,17 +54,18 @@ class TopQuestViewModel(
     }
 
     private fun hideIfPresentInSection() {
-        val response = hideSectionUseCase.checkForHideSectionHandling(components)
-        if(response.shouldHideSection){
-            if(response.sectionId.isNotEmpty())
+        val response = hideSectionUseCase?.checkForHideSectionHandling(components)
+        if (response?.shouldHideSection == true) {
+            if (response.sectionId.isNotEmpty()) {
                 _hideSection.value = response.sectionId
+            }
             syncData.value = true
         }
     }
 
     fun handleWidgetStatus(status: LiveDataResult.STATUS) {
-        when(status){
-            LiveDataResult.STATUS.ERROR,LiveDataResult.STATUS.EMPTY_DATA -> {
+        when (status) {
+            LiveDataResult.STATUS.ERROR, LiveDataResult.STATUS.EMPTY_DATA -> {
                 _shouldHideWidget.value = true
                 hideIfPresentInSection()
             }

@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:lineSpacingExtra="8sp"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 android:maxLines="1"
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
@@ -82,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:gravity="center_vertical"
-                android:textColor="@color/Unify_N0"
+                android:textColor="@color/Unify_NN0"
                 tools:text="@string/already_favorite"
                 app:typographyType="body_3"
                 />
@@ -102,7 +102,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_half"
-        android:background="@color/Unify_N100"
+        android:background="@color/Unify_NN200"
         />
 
     <LinearLayout
@@ -118,7 +118,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@color/Unify_R100"
+            android:background="@color/Unify_RN100"
             android:gravity="center"
             android:paddingTop="@dimen/dp_3"
             android:paddingBottom="@dimen/dp_3"
@@ -139,7 +139,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dp_5"
                 android:layout_toRightOf="@id/icon_deadline"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 android:gravity="center_vertical"
                 app:typographyType="body_3"
                 tools:text="Batas memberikan penilaian 3 hari lagi"/>
@@ -149,7 +149,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_half"
-            android:background="@color/Unify_N100"
+            android:background="@color/Unify_NN200"
             />
     </LinearLayout>
 
@@ -167,7 +167,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:background="@color/Unify_N50"
+            android:background="@color/Unify_NN50"
             android:gravity="center"
             android:paddingTop="@dimen/dp_3"
             android:paddingBottom="@dimen/dp_3"
@@ -187,7 +187,7 @@
                 android:layout_height="30dp"
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 android:layout_marginLeft="@dimen/dp_5"
                 android:layout_toRightOf="@id/icon_locked"
                 app:typographyType="body_3"
@@ -198,7 +198,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_half"
-            android:background="@color/Unify_N100"
+            android:background="@color/Unify_NN200"
             />
     </LinearLayout>
 
@@ -220,7 +220,7 @@
             tools:text="Bagaimana pen"
             android:layout_marginTop="@dimen/dp_8"
             app:typographyType="body_3"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -230,7 +230,7 @@
             android:layout_alignParentRight="true"
             android:lineSpacingExtra="7sp"
             android:text="@string/change"
-            android:textColor="@color/Unify_G400"
+            android:textColor="@color/Unify_GN500"
             app:typographyType="body_3"
             android:layout_marginTop="@dimen/dp_8"
             />
@@ -245,7 +245,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_half"
-        android:background="@color/Unify_N100"
+        android:background="@color/Unify_NN200"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         />
@@ -267,7 +267,7 @@
             android:layout_marginRight="@dimen/dp_5"
             android:gravity="center_vertical"
             android:lineSpacingExtra="6sp"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             tools:text="Penjual Belum Menilai"
             app:typographyType="body_3"
             android:layout_marginTop="@dimen/dp_4"

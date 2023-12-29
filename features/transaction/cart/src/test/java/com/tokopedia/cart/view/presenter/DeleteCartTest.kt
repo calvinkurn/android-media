@@ -31,10 +31,7 @@ class DeleteCartTest : BaseCartTest() {
             )
         }
 
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(CartData())
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns CartData()
 
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(1)
 

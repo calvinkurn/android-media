@@ -20,7 +20,7 @@
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/iconunify_close"
-            app:tint="@color/Unify_N400" />
+            app:tint="@color/Unify_NN600" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"

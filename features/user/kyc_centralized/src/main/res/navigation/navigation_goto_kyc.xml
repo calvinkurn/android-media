@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_goto_kyc"
+    app:startDestination="@id/routerFragment">
+
+    <fragment
+        android:id="@+id/routerFragment"
+        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.router.GotoKycRouterFragment"
+        android:label="RouterFragment"
+        tools:layout="@layout/fragment_goto_kyc_loader">
+        <action
+            android:id="@+id/action_routerFragment_to_statusSubmissionFragment"
+            app:destination="@id/statusSubmissionFragment" />
+        <action
+            android:id="@+id/action_routerFragment_to_bridgingAccountLinkingFragment"
+            app:destination="@id/bridgingAccountLinkingFragment" />
+        <action
+            android:id="@+id/action_routerFragment_to_dobChallengeFragment"
+            app:destination="@id/dobChallengeFragment" />
+        <action
+            android:id="@+id/action_routerFragment_to_gotoKycOnboardBenefitFragment"
+            app:destination="@id/onboardBenefitFragment" />
+        <action
+            android:id="@+id/action_routerFragment_to_captureKycDocumentsFragment"
+            app:destination="@id/captureKycDocumentsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/statusSubmissionFragment"
+        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.status.StatusSubmissionFragment"
+        android:label="StatusSubmissionFragment"
+        tools:layout="@layout/fragment_goto_kyc_status_submission">
+        <argument
+            android:name="parameter"
+            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.status.StatusSubmissionParam"/>
+    </fragment>
+    <fragment
+        android:id="@+id/bridgingAccountLinkingFragment"
+        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.bridging.BridgingAccountLinkingFragment"
+        android:label="BridgingAccountLinkingFragment"
+        tools:layout="@layout/fragment_goto_kyc_bridging_account_linking">
+        <argument
+            android:name="parameter"
+            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.bridging.BridgingAccountLinkingParam" />
+        <action
+            android:id="@+id/action_bridgingAccountLinkingFragment_to_dobChallengeFragment"
+            app:destination="@id/dobChallengeFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"/>
+        <action
+            android:id="@+id/action_bridgingAccountLinkingFragment_to_statusSubmissionFragment"
+            app:destination="@id/statusSubmissionFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"/>
+        <action
+            android:id="@+id/action_bridgingAccountLinkingFragment_to_captureKycDocumentsFragment"
+            app:destination="@id/captureKycDocumentsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/dobChallengeFragment"
+        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.challenge.DobChallengeFragment"
+        android:label="DobChallengeFragment"
+        tools:layout="@layout/fragment_goto_kyc_dob_challenge">
+        <argument
+            android:name="parameter"
+            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.challenge.DobChallengeParam"/>
+        <action
+            android:id="@+id/action_dobChallengeFragment_to_finalLoaderFragment"
+            app:destination="@id/finalLoaderFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"/>
+    </fragment>
+    <fragment
+        android:id="@+id/onboardBenefitFragment"
+        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.onboard.OnboardBenefitFragment"
+        android:label="OnboardBenefitFragment"
+        tools:layout="@layout/fragment_goto_kyc_onboard_benefit">
+        <argument
+            android:name="parameter"
+            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.onboard.OnboardBenefitParam"/>
+    </fragment>
+    <fragment
+        android:id="@+id/finalLoaderFragment"
+        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.submit.FinalLoaderFragment"
+        android:label="FinalLoaderFragment"
+        tools:layout="@layout/fragment_goto_kyc_final_loader">
+        <argument
+            android:name="parameter"
+            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.submit.FinalLoaderParam"/>
+        <action
+            android:id="@+id/action_finalLoaderFragment_to_statusSubmissionFragment"
+            app:destination="@id/statusSubmissionFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"/>
+        <action
+            android:id="@+id/action_finalLoaderFragment_to_dobChallengeFragment"
+            app:destination="@id/dobChallengeFragment"
+            app:popUpTo="@+id/dobChallengeFragment"
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"/>
+    </fragment>
+    <fragment
+        android:id="@+id/captureKycDocumentsFragment"
+        android:name="com.tokopedia.kyc_centralized.ui.gotoKyc.main.capture.CaptureKycDocumentsFragment"
+        android:label="CaptureKycDocumentsFragment"
+        tools:layout="@layout/fragment_goto_kyc_loader">
+        <argument
+            android:name="parameter"
+            app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.capture.CaptureKycDocumentsParam"/>
+        <action
+            android:id="@+id/action_captureKycDocumentsFragment_to_finalLoaderFragment"
+            app:destination="@id/finalLoaderFragment" />
+    </fragment>
+
+</navigation>

@@ -161,7 +161,7 @@
             android:layout_width="match_parent"
             android:layout_height="8dp"
             android:layout_marginTop="20dp"
-            android:background="@color/Unify_N50"
+            android:background="@color/Unify_NN50"
             app:layout_constraintTop_toBottomOf="@id/tv_tip_result_desc"/>
 
         <com.tokopedia.unifyprinciples.Typography

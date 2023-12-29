@@ -7,8 +7,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 
 class ComingSoonViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
-
-    private lateinit var comingSoonViewModel: ComingSoonViewModel
+    private var comingSoonViewModel: ComingSoonViewModel? = null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         comingSoonViewModel = discoveryBaseViewModel as ComingSoonViewModel

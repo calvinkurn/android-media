@@ -16,6 +16,7 @@ import com.tokopedia.logisticorder.uimodel.EtaModel
 import com.tokopedia.logisticorder.uimodel.LastDriverModel
 import com.tokopedia.logisticorder.uimodel.PageModel
 import com.tokopedia.logisticorder.uimodel.ProofModel
+import com.tokopedia.logisticorder.uimodel.TickerUnificationTargets
 import com.tokopedia.logisticorder.uimodel.TippingModel
 import com.tokopedia.logisticorder.uimodel.TrackHistoryModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
@@ -94,6 +95,13 @@ class TrackingPageMapperNew @Inject constructor() {
     private fun mapPage(page: Page): PageModel {
         return PageModel().apply {
             additionalInfo = mapAdditionalInfo(page.additionalInfo)
+            contactUsUrl = page.helpPageUrl
+            tickerUnificationTargets = page.tickerUnificationTargets.map {
+                TickerUnificationTargets(
+                    it.type,
+                    it.values
+                )
+            }
         }
     }
 

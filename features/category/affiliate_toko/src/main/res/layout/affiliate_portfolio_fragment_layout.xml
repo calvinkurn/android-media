@@ -27,7 +27,7 @@
     <View
         android:layout_width="0dp"
         android:layout_height="@dimen/spacing_lvl2"
-        android:background="@color/Unify_G500"
+        android:background="@color/Unify_GN500"
         app:layout_constraintEnd_toEndOf="@id/vertical_guide"
         app:layout_constraintTop_toBottomOf="@id/affiliate_portfolio_toolbar" />
 

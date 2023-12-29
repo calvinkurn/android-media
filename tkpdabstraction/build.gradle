@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.abstraction'
+    testNamespace 'com.tokopedia.abstraction.test'
+}
+
 project.ext {
     artifactId = 'abstraction'
     groupId = 'com.tokopedia.abstraction'

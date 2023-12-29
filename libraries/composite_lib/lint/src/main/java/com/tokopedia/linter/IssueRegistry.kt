@@ -13,13 +13,19 @@ import com.tokopedia.linter.detectors.ImageUrlDeclarationDetector
 import com.tokopedia.linter.detectors.ResourceFragmentDetector
 import com.tokopedia.linter.detectors.ResourcePackageDetector
 import com.tokopedia.linter.detectors.SerializedNameAnnotationDetector
+import com.tokopedia.linter.detectors.TkpdDesignAttributeDetector
+import com.tokopedia.linter.detectors.TkpdDesignComponentDetector
 import com.tokopedia.linter.detectors.UnifyBackgroundDetector
 import com.tokopedia.linter.detectors.UnsafeFragmentConstructorDetector
 import com.tokopedia.linter.detectors.UnsupportedColorDetector
+import com.tokopedia.linter.detectors.UnsupportedNestColorDetector
 import com.tokopedia.linter.detectors.VectorDrawableDetector
 import com.tokopedia.linter.detectors.gradle.BannedDependencyDetector.DEPENDENCY_BANNED
 import com.tokopedia.linter.detectors.gradle.DeprecatedDependencyDetector.DEPENDENCY_DEPRECATED
-import com.tokopedia.linter.detectors.gradle.HANSEL_REQUIRED
+import com.tokopedia.linter.detectors.resources.FullyQualifiedResourceDetector
+import com.tokopedia.linter.detectors.resources.MissingResourceImportAliasDetector
+import com.tokopedia.linter.detectors.resources.TkpdDesignResourceImportAliasDetector
+import com.tokopedia.linter.detectors.resources.WrongResourceImportAliasDetector
 import com.tokopedia.linter.detectors.sourcescanner.elements.ImportDetector.CLASS_IMPORT
 import com.tokopedia.linter.detectors.sourcescanner.elements.annotation.ServerResponseDataTypeDetector.WRONG_DATA_TYPE
 import com.tokopedia.linter.detectors.sourcescanner.method.MethodCallDetector
@@ -53,7 +59,14 @@ class IssueRegistry : IssueRegistry() {
             DimenUsageDetector.XML_ISSUE,
             UnsafeFragmentConstructorDetector.ISSUE,
             ImageUrlDeclarationDetector.JAVA_ISSUE,
-            HANSEL_REQUIRED
+            UnsupportedNestColorDetector.XML_ISSUE,
+            UnsupportedNestColorDetector.JAVA_ISSUE,
+            FullyQualifiedResourceDetector.ISSUE,
+            MissingResourceImportAliasDetector.ISSUE,
+            WrongResourceImportAliasDetector.ISSUE,
+            TkpdDesignResourceImportAliasDetector.ISSUE,
+            TkpdDesignComponentDetector.ISSUE,
+            TkpdDesignAttributeDetector.ISSUE
         )
 
     override val minApi: Int

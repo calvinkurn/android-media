@@ -110,7 +110,7 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
                 val tpNoteLastUpdated = binding?.itemNote?.tvLastUpdate
                 val ivReorder = binding?.itemNote?.ivReorder
                 val divider = binding?.divider
-                itemNoteReorder?.background = context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N700_20)
+                itemNoteReorder?.background = context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_NN950_20)
 
                 if (terms) {
                     shopNoteModels?.size?.let {

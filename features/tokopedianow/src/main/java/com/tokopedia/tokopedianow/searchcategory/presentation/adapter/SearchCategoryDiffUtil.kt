@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.searchcategory.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
+import com.tokopedia.tokopedianow.common.model.TokoNowAdsCarouselUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
@@ -66,10 +67,22 @@ open class SearchCategoryDiffUtil: BaseTokopediaNowDiffer() {
                     oldItem.serviceType == newItem.serviceType && oldItem.is15mAvailable == newItem.is15mAvailable
                 } else if (oldItem is TokoNowProductRecommendationOocUiModel && newItem is TokoNowProductRecommendationOocUiModel) {
                     oldItem.pageName == newItem.pageName
+                } else if (oldItem is TokoNowAdsCarouselUiModel && newItem is TokoNowAdsCarouselUiModel) {
+                    oldItem.items == newItem.items
                 } else {
                     oldItem == newItem
                 }
             }
+
+    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newList[newItemPosition]
+        return if (oldItem is TokoNowAdsCarouselUiModel && newItem is TokoNowAdsCarouselUiModel) {
+            oldItem.getChangePayload(newItem)
+        } else {
+            super.getChangePayload(oldItemPosition, newItemPosition)
+        }
+    }
 
     private fun areGridContentTheSame(
         oldItem: TokoNowCategoryMenuUiModel,

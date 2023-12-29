@@ -1,6 +1,7 @@
 package com.tokopedia.common_electronic_money.util
 
 import android.annotation.SuppressLint
+import com.tokopedia.kotlin.extensions.view.isZero
 import java.math.BigInteger
 
 /**
@@ -59,6 +60,14 @@ class NFCUtils {
             return str.chunked(CHUNK_2)
                     .map { it.toInt(RADIX_16).toByte() }
                     .toByteArray()
+        }
+
+        @JvmStatic
+        fun isCommandFailed(byteArray: ByteArray): Boolean {
+            val len: Int = byteArray.size
+            return if (len.isZero()) true
+            else ((byteArray[len - 2].compareTo(0x90.toByte())) != 0) ||
+                (byteArray[len - 1].compareTo(0x00.toByte()) != 0)
         }
     }
 }

@@ -1,0 +1,49 @@
+{
+  "recommendationFilterChips": {
+    "data": {
+      "filter": [
+        {
+          "title": "Susu Bayi di Atas 1 Tahun",
+          "name": "Susu Bayi di Atas 1 Tahun",
+          "templateName": "",
+          "isActivated": true,
+          "value": "\u0026category_id\u003d4651",
+          "options": []
+        },
+        {
+          "title": "Beras Putih",
+          "name": "Beras Putih",
+          "templateName": "",
+          "isActivated": false,
+          "value": "\u0026category_id\u003d5006",
+          "options": []
+        },
+        {
+          "title": "Ayam Utuh dan Tulang",
+          "name": "Ayam Utuh dan Tulang",
+          "templateName": "",
+          "isActivated": false,
+          "value": "\u0026category_id\u003d5082",
+          "options": []
+        },
+        {
+          "title": "Minyak Goreng",
+          "name": "Minyak Goreng",
+          "templateName": "",
+          "isActivated": false,
+          "value": "\u0026category_id\u003d4953",
+          "options": []
+        },
+        {
+          "title": "Susu Bayi di Bawah 1 Tahun",
+          "name": "Susu Bayi di Bawah 1 Tahun",
+          "templateName": "",
+          "isActivated": false,
+          "value": "\u0026category_id\u003d4650",
+          "options": []
+        }
+      ],
+      "sort": []
+    }
+  }
+}

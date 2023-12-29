@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.product.manage.common.util.ProductManageConfig
 import com.tokopedia.product.manage.databinding.BottomSheetProductManageAddEditMenuBinding
 import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
@@ -59,7 +59,7 @@ class ProductManageAddEditMenuBottomSheet(
     }
 
     fun show() {
-        if (!GlobalConfig.isSellerApp()) {
+        if (!ProductManageConfig.IS_SELLER_APP) {
             sellerFeatureCarousel?.setItems(listOf(
                     SellerFeatureUiModel.ProductManageSetVariantFeatureWithDataUiModel(Any())
             ))
@@ -70,7 +70,7 @@ class ProductManageAddEditMenuBottomSheet(
 
     private fun setupView() {
         binding?.sellerFeatureCarousel?.run {
-            if (!GlobalConfig.isSellerApp()) {
+            if (!ProductManageConfig.IS_SELLER_APP) {
                 show()
                 setListener(sellerFeatureCarouselListener)
                 this.addItemDecoration()

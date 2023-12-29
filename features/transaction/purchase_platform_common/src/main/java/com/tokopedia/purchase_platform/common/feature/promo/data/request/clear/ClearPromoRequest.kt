@@ -32,5 +32,7 @@ data class ClearPromoOrder(
     @SerializedName("duration")
     val poDuration: String = "0",
     @SerializedName("warehouseID")
-    val warehouseId: Long = 0
+    val warehouseId: Long = 0,
+    @SerializedName("cartStringGroup")
+    val cartStringGroup: String = ""
 )

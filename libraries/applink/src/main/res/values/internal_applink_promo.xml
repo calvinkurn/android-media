@@ -56,4 +56,10 @@
     <!--promo checkout-->
     <string name="title_promo_checkout">Promo Checkout</string>
 
+    <!--scp-rewards-->
+    <string name="host_scp_rewards">scp-rewards</string>
+    <string name="path_scp_rewards_medal_cabinet">/medali/cabinet</string>
+    <string name="path_scp_rewards_medal_cabinet_see_more">/medali/cabinet/more</string>
+    <string name="path_scp_rewards_medal_detail">/medali/detail/.*</string>
+    <string name="path_scp_rewards_celebration">/celebration/.*</string>
 </resources>

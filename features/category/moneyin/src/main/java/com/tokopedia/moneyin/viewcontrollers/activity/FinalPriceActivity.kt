@@ -15,13 +15,14 @@ import androidx.lifecycle.Observer
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common_tradein.model.AddressResult
 import com.tokopedia.common_tradein.model.DeviceDataResponse
 import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
 import com.tokopedia.moneyin.MoneyInGTMConstants
 import com.tokopedia.moneyin.R
-import com.tokopedia.moneyin.viewcontrollers.activity.MoneyInCheckoutActivity
 import com.tokopedia.moneyin.viewmodel.FinalPriceViewModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
@@ -85,7 +86,7 @@ class FinalPriceActivity : BaseMoneyInActivity<FinalPriceViewModel>(), Observer<
         viewModel.addressLiveData.observe(this, { result: AddressResult? ->
             if (result != null) {
                 if (result.defaultAddress != null) {
-                    //start money in checkout with address object
+                    // start money in checkout with address object
                     val goToCheckout = Intent(this, MoneyInCheckoutActivity::class.java)
                     goToCheckout.putExtra(MoneyInCheckoutActivity.MONEY_IN_DEFAULT_ADDRESS, result.defaultAddress)
                     goToCheckout.putExtra(MoneyInCheckoutActivity.MONEY_IN_ORDER_VALUE, orderValue)
@@ -93,8 +94,11 @@ class FinalPriceActivity : BaseMoneyInActivity<FinalPriceViewModel>(), Observer<
                     navigateToActivityRequest(goToCheckout, MoneyInCheckoutActivity.MONEY_IN_REQUEST_CHECKOUT)
                 } else {
                     val intent = RouteManager.getIntent(
-                            this, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+                        this,
+                        ApplinkConstInternalLogistic.ADD_ADDRESS_V3
+                    )
                     intent.putExtra(KERO_TOKEN, result.token)
+                    intent.putExtra(PARAM_SOURCE, AddEditAddressSource.MONEY_IN.source)
                     startActivityForResult(intent, PINPOINT_ACTIVITY_REQUEST_CODE)
                 }
             }
@@ -150,7 +154,7 @@ class FinalPriceActivity : BaseMoneyInActivity<FinalPriceViewModel>(), Observer<
             hideProgressBar()
             sendGeneralEvent(MoneyInGTMConstants.ACTION_VIEW_MONEYIN,
                     category,
-                    MoneyInGTMConstants.ACTION_VIEW_HARGA_FINAL, String.format("diagnostic id - %s", deviceId))
+                    MoneyInGTMConstants.ACTION_VIEW_HARGA_FINAL, "diagnostic id - $deviceId")
         }
     }
 
@@ -192,7 +196,7 @@ class FinalPriceActivity : BaseMoneyInActivity<FinalPriceViewModel>(), Observer<
                         "")
             }
         }
-        val greenColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)
+        val greenColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         val foregroundColorSpan = ForegroundColorSpan(greenColor)
         spannableString.setSpan(clickableSpan, 43, 61, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(foregroundColorSpan, 43, 61, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)

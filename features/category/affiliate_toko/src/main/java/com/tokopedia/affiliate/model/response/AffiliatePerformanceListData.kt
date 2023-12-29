@@ -8,11 +8,11 @@ data class AffiliatePerformanceListData(
 ) {
     data class GetAffiliatePerformanceList(
         @SerializedName("Data")
-        var `data`: Data?
+        var performanceList: Data?
     ) {
         data class Data(
             @SerializedName("Data")
-            var `data`: Data?,
+            var performanceListData: Data?,
             @SerializedName("Error")
             var error: Error?,
             @SerializedName("Status")
@@ -41,6 +41,8 @@ data class AffiliatePerformanceListData(
                     var defaultLinkURL: String?,
                     @SerializedName("Image")
                     var image: Image?,
+                    @SerializedName("ImageArray")
+                    var imageArray: List<Image?>?,
                     @SerializedName("ItemID")
                     var itemID: String?,
                     @SerializedName("LinkGeneratedAt")

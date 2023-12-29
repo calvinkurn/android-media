@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="path_login_helper_accounts_settings" translatable="false">/login-helper-accounts-settings</string>
+    <string name="path_login_helper_add_edit_account" translatable="false">/login-helper-add-edit-account</string>
+    <string name="path_login_helper_search_account" translatable="false">/login-helper-search-account</string>
+</resources>

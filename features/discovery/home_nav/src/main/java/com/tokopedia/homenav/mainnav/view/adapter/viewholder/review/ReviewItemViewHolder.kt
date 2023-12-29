@@ -2,23 +2,24 @@ package com.tokopedia.homenav.mainnav.view.adapter.viewholder.review
 
 import android.net.Uri
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.homenav.MePage
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderReviewBinding
-import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.datamodel.review.ReviewModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by dhaba
  */
+
+@MePage(MePage.Widget.REVIEW)
 class ReviewItemViewHolder(itemView: View, val mainNavListener: MainNavListener) :
     AbstractViewHolder<ReviewModel>(itemView) {
     private var binding: HolderReviewBinding? by viewBinding()
@@ -36,25 +37,18 @@ class ReviewItemViewHolder(itemView: View, val mainNavListener: MainNavListener)
         private const val RATE_STARS_5 = "5"
     }
 
-    private fun setLayoutFullWidth(element: ReviewModel) {
-        val layoutParams = binding?.orderReviewCard?.layoutParams
-        if (element.navReviewModel.fullWidth) {
-            layoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT
-        } else {
-            layoutParams?.width =
-                itemView.resources.getDimension(com.tokopedia.homenav.R.dimen.nav_card_me_page_size).toInt()
-        }
-        binding?.orderReviewCard?.layoutParams = layoutParams
-    }
-
     override fun bind(element: ReviewModel, payloads: MutableList<Any>) {
         bind(element)
     }
 
-    private fun clickReviewCard(element: ReviewModel, rateStars: String) {
-        val tracking = TrackingTransactionSection.getClickReviewStars(adapterPosition, mainNavListener.getUserId(), element.navReviewModel, rateStars)
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.first, tracking.second)
-        mainNavListener.showReviewProduct(generateUriShowBottomSheetReview(element, rateStars))
+    private fun clickReviewStars(element: ReviewModel, rateStars: String) {
+        mainNavListener.onReviewCardClicked(
+            element.navReviewModel,
+            element.position,
+            true,
+            rateStars,
+            generateUriShowBottomSheetReview(element, rateStars)
+        )
     }
 
     private fun generateUriShowBottomSheetReview(element: ReviewModel, rateStars: String) : String {
@@ -76,7 +70,8 @@ class ReviewItemViewHolder(itemView: View, val mainNavListener: MainNavListener)
     }
 
     override fun bind(element: ReviewModel) {
-        setLayoutFullWidth(element)
+        binding?.orderReviewCard?.animateOnPress = CardUnify2.ANIMATE_OVERLAY
+
         binding?.orderReviewProductName?.text = element.navReviewModel.productName
 
         if (element.navReviewModel.imageUrl.isNotEmpty()) {
@@ -84,33 +79,31 @@ class ReviewItemViewHolder(itemView: View, val mainNavListener: MainNavListener)
         }
 
         binding?.orderReviewContainer?.setOnClickListener {
-            val tracking = TrackingTransactionSection.getClickReviewCard(adapterPosition, mainNavListener.getUserId(), element.navReviewModel)
-            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(tracking.first, tracking.second)
-            mainNavListener.showReviewProduct(generateUriShowBottomSheetReview(element, RATE_STARS_5))
+            mainNavListener.onReviewCardClicked(
+                element.navReviewModel,
+                element.position,
+                false,
+                RATE_STARS_5,
+                generateUriShowBottomSheetReview(element, RATE_STARS_5)
+            )
         }
         binding?.layoutReviewStars?.star1?.setOnClickListener {
-            clickReviewCard(element, RATE_STARS_1)
+            clickReviewStars(element, RATE_STARS_1)
         }
         binding?.layoutReviewStars?.star2?.setOnClickListener {
-            clickReviewCard(element, RATE_STARS_2)
+            clickReviewStars(element, RATE_STARS_2)
         }
         binding?.layoutReviewStars?.star3?.setOnClickListener {
-            clickReviewCard(element, RATE_STARS_3)
+            clickReviewStars(element, RATE_STARS_3)
         }
         binding?.layoutReviewStars?.star4?.setOnClickListener {
-            clickReviewCard(element, RATE_STARS_4)
+            clickReviewStars(element, RATE_STARS_4)
         }
         binding?.layoutReviewStars?.star5?.setOnClickListener {
-            clickReviewCard(element, RATE_STARS_5)
+            clickReviewStars(element, RATE_STARS_5)
         }
         itemView.addOnImpressionListener(element) {
-            mainNavListener.putEEToTrackingQueue(
-                TrackingTransactionSection.getImpressionOnReviewProduct(
-                    userId = mainNavListener.getUserId(),
-                    element = element.navReviewModel,
-                    position = adapterPosition
-                )
-            )
+            mainNavListener.onReviewCardImpressed(element.navReviewModel, element.position)
         }
     }
 }

@@ -71,6 +71,12 @@ class TapcashBalanceViewModelTest {
         {"rechargeUpdateBalanceEmoneyBniTapcash":{"attributes":{"cryptogram":"0600271031CADAAE000000000000000085A00E33BD0F26DFDB71CA6C6CBCE500","rrn":0,"amount":20000,"button_text":"Top-up Sekarang","image_issuer":"https://images.tokopedia.net/img/attachment/2020/11/12/66301108/66301108_3bd5585d-f39b-4d62-b7da-fe677b200e1a.png","card_number":"7546130000056854"},"error":{"id":0,"title":"Ini saldo kamu yang paling baru, ya.","status":0}}}
     """.trimIndent()
 
+    val emoneyInquiryLogRequest = RechargeEmoneyInquiryLogRequest(
+        EmoneyInquiryLogRequest(
+            3, 0, "7546130000056854", "Message Network Logger: Error get balance", 0.0
+        )
+    )
+
     @Before
     fun setUp(){
         MockKAnnotations.init(this)
@@ -391,7 +397,8 @@ class TapcashBalanceViewModelTest {
         tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
         //then
-        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.message, "Error get balance")
+        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.first?.message, "Error get balance")
+        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.second, emoneyInquiryLogRequest)
     }
 
     @Test
@@ -422,7 +429,8 @@ class TapcashBalanceViewModelTest {
         tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
         //then
-        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.message, "Error get balance")
+        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.first?.message, "Error get balance")
+        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.second, emoneyInquiryLogRequest)
     }
 
     @Test
@@ -453,7 +461,8 @@ class TapcashBalanceViewModelTest {
         tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
         //then
-        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.message, "Error get balance")
+        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.first?.message, "Error get balance")
+        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.second, emoneyInquiryLogRequest)
     }
 
     @Test
@@ -482,7 +491,8 @@ class TapcashBalanceViewModelTest {
         tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
         //then
-        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.message, "Error get balance")
+        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.first?.message, "Error get balance")
+        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.second, emoneyInquiryLogRequest)
     }
 
     @Test
@@ -738,6 +748,30 @@ class TapcashBalanceViewModelTest {
 
         assertEquals((((tapcashBalanceViewModel.tapcashLogError.value) as Pair<Result<RechargeEmoneyInquiryLogResponse>, RechargeEmoneyInquiryLogRequest>).first as Fail).throwable.message, errorMessage)
         assertEquals(((tapcashBalanceViewModel.tapcashLogError.value) as Pair<Result<RechargeEmoneyInquiryLogResponse>, RechargeEmoneyInquiryLogRequest>).second , tapcashLogRequest)
+    }
+
+    @Test
+    fun getCardNumber_ExpectedFailed_PurseEmpty() {
+        //given
+        val successCardNumber = ""
+
+        //when
+        val expectedCardNumber = tapcashBalanceViewModel.getCardNumber("")
+
+        //then
+        assertEquals(successCardNumber, expectedCardNumber)
+    }
+
+    @Test
+    fun getCardNumber_ExpectedFailed_PurseLength() {
+        //given
+        val successCardNumber = ""
+
+        //when
+        val expectedCardNumber = tapcashBalanceViewModel.getCardNumber("0701004E200000007546130000056854")
+
+        //then
+        assertEquals(successCardNumber, expectedCardNumber)
     }
 
     private fun checkAssertEmoneyInquiry(expected: EmoneyInquiry, actual: EmoneyInquiry){

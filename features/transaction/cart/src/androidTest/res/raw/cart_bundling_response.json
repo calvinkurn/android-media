@@ -1,10 +1,9 @@
 [
   {
     "data": {
-      "status": "OK",
-      "cart_revamp_v3": {
-        "error_message": [],
+      "cart_revamp_v4": {
         "status": "OK",
+        "error_message": [],
         "data": {
           "coachmark": {
             "Plus": {
@@ -126,6 +125,338 @@
             ],
             "available_group": [
               {
+                "group_type": 0,
+                "ui_group_type": 0,
+                "group_information": {
+                  "name": "st4g1ng store",
+                  "badge_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro.png"
+                },
+                "group_shop_v2_cart": [
+                  {
+                    "cart_string_order": "6552689-0-342768-0-KEY_OWOC",
+                    "shop": {
+                      "shop_ticker": "",
+                      "maximum_weight_wording": "",
+                      "maximum_shipping_weight": 0,
+                      "is_tokonow": false,
+                      "shop_alert_message": "",
+                      "shop_id": 6552689,
+                      "admin_ids": [],
+                      "shop_name": "st4g1ng store",
+                      "shop_image": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/12/1062ee78-1718-41cd-8383-564d46ac280e.jpg",
+                      "shop_url": "https://staging.tokopedia.com/st4g1ngstore",
+                      "shop_status": 1,
+                      "postal_code": "40376",
+                      "latitude": "-7.575488599999986",
+                      "longitude": "110.82432599999999",
+                      "district_name": "",
+                      "district_id": 2841,
+                      "origin": 0,
+                      "address_street": "",
+                      "city_name": "Kota Surakarta",
+                      "province_name": "",
+                      "country_name": "",
+                      "is_allow_manage": false,
+                      "shop_domain": "st4g1ngstore",
+                      "is_gold": 1,
+                      "is_official": 0,
+                      "shop_type_info": {
+                        "shop_tier": 3,
+                        "shop_grade": 24,
+                        "badge": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro.png",
+                        "badge_svg": "https://assets.tokopedia.net/asts/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro.svg",
+                        "title": "Power Merchant PRO"
+                      },
+                      "shop_shipments": [
+                        {
+                          "ship_id": 11,
+                          "ship_name": "SiCepat",
+                          "ship_code": "sicepat",
+                          "ship_logo": "https://images.tokopedia.net/img/kurir-sicepat.png",
+                          "ship_prods": [
+                            {
+                              "ship_prod_id": 44,
+                              "ship_prod_name": "REG",
+                              "ship_group_id": 0,
+                              "ship_group_name": "",
+                              "minimum_weight": 0,
+                              "additional_fee": 0
+                            },
+                            {
+                              "ship_prod_id": 18,
+                              "ship_prod_name": "Regular Package",
+                              "ship_group_id": 0,
+                              "ship_group_name": "",
+                              "minimum_weight": 0,
+                              "additional_fee": 0
+                            }
+                          ],
+                          "is_dropship_enabled": 0
+                        },
+                        {
+                          "ship_id": 23,
+                          "ship_name": "AnterAja",
+                          "ship_code": "anteraja",
+                          "ship_logo": "https://images.tokopedia.net/img/kurir-anteraja.png",
+                          "ship_prods": [
+                            {
+                              "ship_prod_id": 49,
+                              "ship_prod_name": "Same Day",
+                              "ship_group_id": 0,
+                              "ship_group_name": "",
+                              "minimum_weight": 0,
+                              "additional_fee": 0
+                            }
+                          ],
+                          "is_dropship_enabled": 0
+                        },
+                        {
+                          "ship_id": 10,
+                          "ship_name": "GoSend",
+                          "ship_code": "gojek",
+                          "ship_logo": "https://images.tokopedia.net/img/kurir-gosend.png",
+                          "ship_prods": [
+                            {
+                              "ship_prod_id": 20,
+                              "ship_prod_name": "Same Day",
+                              "ship_group_id": 0,
+                              "ship_group_name": "",
+                              "minimum_weight": 0,
+                              "additional_fee": 0
+                            }
+                          ],
+                          "is_dropship_enabled": 0
+                        },
+                        {
+                          "ship_id": 13,
+                          "ship_name": "GrabExpress",
+                          "ship_code": "grab",
+                          "ship_logo": "https://images.tokopedia.net/img/kurir-grab.png",
+                          "ship_prods": [
+                            {
+                              "ship_prod_id": 24,
+                              "ship_prod_name": "Same Day",
+                              "ship_group_id": 0,
+                              "ship_group_name": "",
+                              "minimum_weight": 0,
+                              "additional_fee": 0
+                            }
+                          ],
+                          "is_dropship_enabled": 0
+                        },
+                        {
+                          "ship_id": 1,
+                          "ship_name": "JNE",
+                          "ship_code": "jne",
+                          "ship_logo": "https://images.tokopedia.net/img/kurir-jne.png",
+                          "ship_prods": [
+                            {
+                              "ship_prod_id": 2,
+                              "ship_prod_name": "OKE",
+                              "ship_group_id": 0,
+                              "ship_group_name": "",
+                              "minimum_weight": 0,
+                              "additional_fee": 0
+                            },
+                            {
+                              "ship_prod_id": 22,
+                              "ship_prod_name": "Trucking",
+                              "ship_group_id": 0,
+                              "ship_group_name": "",
+                              "minimum_weight": 0,
+                              "additional_fee": 0
+                            },
+                            {
+                              "ship_prod_id": 1,
+                              "ship_prod_name": "Reguler",
+                              "ship_group_id": 0,
+                              "ship_group_name": "",
+                              "minimum_weight": 0,
+                              "additional_fee": 0
+                            },
+                            {
+                              "ship_prod_id": 6,
+                              "ship_prod_name": "YES",
+                              "ship_group_id": 0,
+                              "ship_group_name": "",
+                              "minimum_weight": 0,
+                              "additional_fee": 0
+                            }
+                          ],
+                          "is_dropship_enabled": 0
+                        }
+                      ],
+                      "enabler_data": {
+                        "label_name": "",
+                        "show_label": false
+                      }
+                    },
+                    "cart_details": [
+                      {
+                        "bundle_detail": {
+                          "bundle_description": "",
+                          "bundle_group_id": "",
+                          "bundle_id": 0,
+                          "bundle_max_order": 0,
+                          "bundle_min_order": 0,
+                          "bundle_name": "",
+                          "bundle_original_price": 0,
+                          "bundle_original_price_fmt": "",
+                          "bundle_price": 0,
+                          "bundle_price_fmt": "",
+                          "bundle_qty": 0,
+                          "bundle_quota": 0,
+                          "bundle_status": "",
+                          "bundle_type": "",
+                          "edit_app_link": "",
+                          "slash_price_label": "",
+                          "bundle_icon_url": "",
+                          "bundle_grayscale_icon_url": ""
+                        },
+                        "products": [
+                          {
+                            "checkbox_state": true,
+                            "cart_id": 2166576341,
+                            "product_information": [],
+                            "product_information_with_icon": [],
+                            "product_tracker_data": {
+                              "attribution": "",
+                              "tracker_list_name": ""
+                            },
+                            "isWishlist": false,
+                            "product_id": 2150835408,
+                            "product_name": "Snack Tempe Enak",
+                            "product_price_fmt": "Rp23.400",
+                            "product_price": 23400,
+                            "parent_id": 0,
+                            "category_id": 1155,
+                            "category": "Makanan & Minuman / Makanan Kering / Makanan Ringan",
+                            "catalog_id": 0,
+                            "wholesale_price": [],
+                            "product_weight": 1000,
+                            "product_weight_fmt": "1000gr",
+                            "product_condition": 1,
+                            "product_status": 1,
+                            "product_url": "https://staging.tokopedia.com/st4g1ngstore/snack-tempe-enak",
+                            "product_returnable": 0,
+                            "is_freereturns": 0,
+                            "is_preorder": 0,
+                            "product_cashback": "",
+                            "product_min_order": 1,
+                            "product_max_order": 3,
+                            "product_rating": "0.000000",
+                            "product_invenage_value": 3,
+                            "product_invenage_total": {
+                              "by_user": {
+                                "in_cart": 0,
+                                "last_stock_less_than": 0
+                              },
+                              "by_user_text": {
+                                "in_cart": "",
+                                "last_stock_less_than": "",
+                                "complete": ""
+                              },
+                              "is_counted_by_user": false,
+                              "by_product": {
+                                "in_cart": 0,
+                                "last_stock_less_than": 0
+                              },
+                              "by_product_text": {
+                                "in_cart": "",
+                                "last_stock_less_than": "",
+                                "complete": ""
+                              },
+                              "is_counted_by_product": false
+                            },
+                            "product_switch_invenage": 1,
+                            "price_changes": {
+                              "changes_state": 0,
+                              "amount_difference": 0,
+                              "original_amount": 0,
+                              "description": ""
+                            },
+                            "product_price_currency": 1,
+                            "product_image": {
+                              "image_src": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/25/bcedcada-ea2b-48bb-b51a-46b07e846541.jpg",
+                              "image_src_100_square": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2022/11/25/bcedcada-ea2b-48bb-b51a-46b07e846541.jpg",
+                              "image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/25/bcedcada-ea2b-48bb-b51a-46b07e846541.jpg",
+                              "image_src_300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/11/25/bcedcada-ea2b-48bb-b51a-46b07e846541.jpg",
+                              "image_src_square": "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2022/11/25/bcedcada-ea2b-48bb-b51a-46b07e846541.jpg"
+                            },
+                            "product_all_images": "[{\"file_name\":\"bcedcada-ea2b-48bb-b51a-46b07e846541.jpg\",\"file_path\":\"VqbcmM/2022/11/25\",\"status\":2}]",
+                            "product_notes": "",
+                            "product_quantity": 1,
+                            "product_weight_unit_code": 1,
+                            "product_weight_unit_text": "gr",
+                            "last_update_price": "-25200",
+                            "is_update_price": false,
+                            "product_preorder": {
+                              "duration_day": "0",
+                              "duration_text": "",
+                              "duration_unit_code": "0",
+                              "duration_unit_text": "",
+                              "duration_value": "0"
+                            },
+                            "product_showcase": {
+                              "name": "",
+                              "id": 0
+                            },
+                            "product_alias": "snack-tempe-enak",
+                            "sku": "",
+                            "campaign_id": 56692,
+                            "product_original_price": 30000,
+                            "product_price_original_fmt": "Rp30.000",
+                            "is_slash_price": false,
+                            "free_returns": {
+                              "free_returns_logo": ""
+                            },
+                            "product_finsurance": 1,
+                            "is_wishlisted": false,
+                            "is_ppp": false,
+                            "is_cod": false,
+                            "warehouse_id": 342768,
+                            "is_parent": false,
+                            "is_campaign_error": false,
+                            "is_blacklisted": false,
+                            "ethical_drug": {
+                              "need_prescription": false,
+                              "icon_url": "https://images.tokopedia.net/img/cartapp/icons/ethical_drug.png",
+                              "text": "Butuh Resep"
+                            },
+                            "free_shipping": {
+                              "eligible": false,
+                              "badge_url": ""
+                            },
+                            "free_shipping_extra": {
+                              "eligible": false,
+                              "badge_url": ""
+                            },
+                            "free_shipping_general": {
+                              "bo_name": "none / other",
+                              "bo_type": 0,
+                              "badge_url": ""
+                            },
+                            "booking_stock": 3,
+                            "is_product_volume_weight": true,
+                            "initial_price": 0,
+                            "initial_price_fmt": "Rp0",
+                            "slash_price_label": "22%",
+                            "product_warning_message": "Sisa 3",
+                            "product_alert_message": "",
+                            "variant_description_detail": {
+                              "variant_name": [],
+                              "variant_description": ""
+                            },
+                            "bundle_ids": []
+                          }
+                        ],
+                        "errors": [],
+                        "messages": []
+                      }
+                    ]
+                  }
+                ],
+                "cart_string": "6552689-0-342768-0",
                 "add_on": {
                   "ticker_text": "",
                   "icon_url": "",
@@ -167,328 +498,7 @@
                   "bo_type": 0,
                   "bo_eligibilities": []
                 },
-                "shop": {
-                  "shop_ticker": "",
-                  "maximum_weight_wording": "",
-                  "maximum_shipping_weight": 0,
-                  "is_tokonow": false,
-                  "shop_alert_message": "",
-                  "shop_id": 6552689,
-                  "admin_ids": [],
-                  "shop_name": "st4g1ng store",
-                  "shop_image": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/12/12/1062ee78-1718-41cd-8383-564d46ac280e.jpg",
-                  "shop_url": "https://staging.tokopedia.com/st4g1ngstore",
-                  "shop_status": 1,
-                  "postal_code": "40376",
-                  "latitude": "-7.575488599999986",
-                  "longitude": "110.82432599999999",
-                  "district_name": "",
-                  "district_id": 2841,
-                  "origin": 0,
-                  "address_street": "",
-                  "city_name": "Kota Surakarta",
-                  "province_name": "",
-                  "country_name": "",
-                  "is_allow_manage": false,
-                  "shop_domain": "st4g1ngstore",
-                  "is_gold": 1,
-                  "is_official": 0,
-                  "shop_type_info": {
-                    "shop_tier": 3,
-                    "shop_grade": 24,
-                    "badge": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro.png",
-                    "badge_svg": "https://assets.tokopedia.net/asts/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro.svg",
-                    "title": "Power Merchant PRO"
-                  },
-                  "shop_shipments": [
-                    {
-                      "ship_id": 11,
-                      "ship_name": "SiCepat",
-                      "ship_code": "sicepat",
-                      "ship_logo": "https://images.tokopedia.net/img/kurir-sicepat.png",
-                      "ship_prods": [
-                        {
-                          "ship_prod_id": 44,
-                          "ship_prod_name": "REG",
-                          "ship_group_id": 0,
-                          "ship_group_name": "",
-                          "minimum_weight": 0,
-                          "additional_fee": 0
-                        },
-                        {
-                          "ship_prod_id": 18,
-                          "ship_prod_name": "Regular Package",
-                          "ship_group_id": 0,
-                          "ship_group_name": "",
-                          "minimum_weight": 0,
-                          "additional_fee": 0
-                        }
-                      ],
-                      "is_dropship_enabled": 0
-                    },
-                    {
-                      "ship_id": 23,
-                      "ship_name": "AnterAja",
-                      "ship_code": "anteraja",
-                      "ship_logo": "https://images.tokopedia.net/img/kurir-anteraja.png",
-                      "ship_prods": [
-                        {
-                          "ship_prod_id": 49,
-                          "ship_prod_name": "Same Day",
-                          "ship_group_id": 0,
-                          "ship_group_name": "",
-                          "minimum_weight": 0,
-                          "additional_fee": 0
-                        }
-                      ],
-                      "is_dropship_enabled": 0
-                    },
-                    {
-                      "ship_id": 10,
-                      "ship_name": "GoSend",
-                      "ship_code": "gojek",
-                      "ship_logo": "https://images.tokopedia.net/img/kurir-gosend.png",
-                      "ship_prods": [
-                        {
-                          "ship_prod_id": 20,
-                          "ship_prod_name": "Same Day",
-                          "ship_group_id": 0,
-                          "ship_group_name": "",
-                          "minimum_weight": 0,
-                          "additional_fee": 0
-                        }
-                      ],
-                      "is_dropship_enabled": 0
-                    },
-                    {
-                      "ship_id": 13,
-                      "ship_name": "GrabExpress",
-                      "ship_code": "grab",
-                      "ship_logo": "https://images.tokopedia.net/img/kurir-grab.png",
-                      "ship_prods": [
-                        {
-                          "ship_prod_id": 24,
-                          "ship_prod_name": "Same Day",
-                          "ship_group_id": 0,
-                          "ship_group_name": "",
-                          "minimum_weight": 0,
-                          "additional_fee": 0
-                        }
-                      ],
-                      "is_dropship_enabled": 0
-                    },
-                    {
-                      "ship_id": 1,
-                      "ship_name": "JNE",
-                      "ship_code": "jne",
-                      "ship_logo": "https://images.tokopedia.net/img/kurir-jne.png",
-                      "ship_prods": [
-                        {
-                          "ship_prod_id": 2,
-                          "ship_prod_name": "OKE",
-                          "ship_group_id": 0,
-                          "ship_group_name": "",
-                          "minimum_weight": 0,
-                          "additional_fee": 0
-                        },
-                        {
-                          "ship_prod_id": 22,
-                          "ship_prod_name": "Trucking",
-                          "ship_group_id": 0,
-                          "ship_group_name": "",
-                          "minimum_weight": 0,
-                          "additional_fee": 0
-                        },
-                        {
-                          "ship_prod_id": 1,
-                          "ship_prod_name": "Reguler",
-                          "ship_group_id": 0,
-                          "ship_group_name": "",
-                          "minimum_weight": 0,
-                          "additional_fee": 0
-                        },
-                        {
-                          "ship_prod_id": 6,
-                          "ship_prod_name": "YES",
-                          "ship_group_id": 0,
-                          "ship_group_name": "",
-                          "minimum_weight": 0,
-                          "additional_fee": 0
-                        }
-                      ],
-                      "is_dropship_enabled": 0
-                    }
-                  ],
-                  "enabler_data": {
-                    "label_name": "",
-                    "show_label": false
-                  }
-                },
                 "promo_codes": [],
-                "cart_string": "6552689-0-342768-0",
-                "cart_details": [
-                  {
-                    "bundle_detail": {
-                      "bundle_description": "",
-                      "bundle_group_id": "",
-                      "bundle_id": 0,
-                      "bundle_max_order": 0,
-                      "bundle_min_order": 0,
-                      "bundle_name": "",
-                      "bundle_original_price": 0,
-                      "bundle_original_price_fmt": "",
-                      "bundle_price": 0,
-                      "bundle_price_fmt": "",
-                      "bundle_qty": 0,
-                      "bundle_quota": 0,
-                      "bundle_status": "",
-                      "bundle_type": "",
-                      "edit_app_link": "",
-                      "slash_price_label": "",
-                      "bundle_icon_url": "",
-                      "bundle_grayscale_icon_url": ""
-                    },
-                    "products": [
-                      {
-                        "checkbox_state": true,
-                        "cart_id": 2166576341,
-                        "product_information": [],
-                        "product_information_with_icon": [],
-                        "product_tracker_data": {
-                          "attribution": "",
-                          "tracker_list_name": ""
-                        },
-                        "isWishlist": false,
-                        "product_id": 2150835408,
-                        "product_name": "Snack Tempe Enak",
-                        "product_price_fmt": "Rp23.400",
-                        "product_price": 23400,
-                        "parent_id": 0,
-                        "category_id": 1155,
-                        "category": "Makanan \u0026 Minuman / Makanan Kering / Makanan Ringan",
-                        "catalog_id": 0,
-                        "wholesale_price": [],
-                        "product_weight": 1000,
-                        "product_weight_fmt": "1000gr",
-                        "product_condition": 1,
-                        "product_status": 1,
-                        "product_url": "https://staging.tokopedia.com/st4g1ngstore/snack-tempe-enak",
-                        "product_returnable": 0,
-                        "is_freereturns": 0,
-                        "is_preorder": 0,
-                        "product_cashback": "",
-                        "product_min_order": 1,
-                        "product_max_order": 3,
-                        "product_rating": "0.000000",
-                        "product_invenage_value": 3,
-                        "product_invenage_total": {
-                          "by_user": {
-                            "in_cart": 0,
-                            "last_stock_less_than": 0
-                          },
-                          "by_user_text": {
-                            "in_cart": "",
-                            "last_stock_less_than": "",
-                            "complete": ""
-                          },
-                          "is_counted_by_user": false,
-                          "by_product": {
-                            "in_cart": 0,
-                            "last_stock_less_than": 0
-                          },
-                          "by_product_text": {
-                            "in_cart": "",
-                            "last_stock_less_than": "",
-                            "complete": ""
-                          },
-                          "is_counted_by_product": false
-                        },
-                        "product_switch_invenage": 1,
-                        "price_changes": {
-                          "changes_state": 0,
-                          "amount_difference": 0,
-                          "original_amount": 0,
-                          "description": ""
-                        },
-                        "product_price_currency": 1,
-                        "product_image": {
-                          "image_src": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/25/bcedcada-ea2b-48bb-b51a-46b07e846541.jpg",
-                          "image_src_100_square": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2022/11/25/bcedcada-ea2b-48bb-b51a-46b07e846541.jpg",
-                          "image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/25/bcedcada-ea2b-48bb-b51a-46b07e846541.jpg",
-                          "image_src_300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/11/25/bcedcada-ea2b-48bb-b51a-46b07e846541.jpg",
-                          "image_src_square": "https://images.tokopedia.net/img/cache/500-square/VqbcmM/2022/11/25/bcedcada-ea2b-48bb-b51a-46b07e846541.jpg"
-                        },
-                        "product_all_images": "[{\"file_name\":\"bcedcada-ea2b-48bb-b51a-46b07e846541.jpg\",\"file_path\":\"VqbcmM/2022/11/25\",\"status\":2}]",
-                        "product_notes": "",
-                        "product_quantity": 1,
-                        "product_weight_unit_code": 1,
-                        "product_weight_unit_text": "gr",
-                        "last_update_price": "-25200",
-                        "is_update_price": false,
-                        "product_preorder": {
-                          "duration_day": "0",
-                          "duration_text": "",
-                          "duration_unit_code": "0",
-                          "duration_unit_text": "",
-                          "duration_value": "0"
-                        },
-                        "product_showcase": {
-                          "name": "",
-                          "id": 0
-                        },
-                        "product_alias": "snack-tempe-enak",
-                        "sku": "",
-                        "campaign_id": 56692,
-                        "product_original_price": 30000,
-                        "product_price_original_fmt": "Rp30.000",
-                        "is_slash_price": false,
-                        "free_returns": {
-                          "free_returns_logo": ""
-                        },
-                        "product_finsurance": 1,
-                        "is_wishlisted": false,
-                        "is_ppp": false,
-                        "is_cod": false,
-                        "warehouse_id": 342768,
-                        "is_parent": false,
-                        "is_campaign_error": false,
-                        "is_blacklisted": false,
-                        "ethical_drug": {
-                          "need_prescription": false,
-                          "icon_url": "https://images.tokopedia.net/img/cartapp/icons/ethical_drug.png",
-                          "text": "Butuh Resep"
-                        },
-                        "free_shipping": {
-                          "eligible": false,
-                          "badge_url": ""
-                        },
-                        "free_shipping_extra": {
-                          "eligible": false,
-                          "badge_url": ""
-                        },
-                        "free_shipping_general": {
-                          "bo_name": "none / other",
-                          "bo_type": 0,
-                          "badge_url": ""
-                        },
-                        "booking_stock": 3,
-                        "is_product_volume_weight": true,
-                        "initial_price": 0,
-                        "initial_price_fmt": "Rp0",
-                        "slash_price_label": "22%",
-                        "product_warning_message": "Sisa 3",
-                        "product_alert_message": "",
-                        "variant_description_detail": {
-                          "variant_name": [],
-                          "variant_description": ""
-                        },
-                        "bundle_ids": []
-                      }
-                    ],
-                    "errors": [],
-                    "messages": []
-                  }
-                ],
                 "total_cart_details_error": 0,
                 "total_cart_price": 23400,
                 "errors": [],
@@ -519,6 +529,313 @@
                 "checkbox_state": true
               },
               {
+                "group_type": 0,
+                "ui_group_type": 0,
+                "group_information": {
+                  "name": "Dilayani Tokopedia",
+                  "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png"
+                },
+                "group_shop_v2_cart": [
+                  {
+                    "cart_string_order": "6554529-0-346185-0-KEY_OWOC",
+                    "shop": {
+                      "shop_ticker": "",
+                      "maximum_weight_wording": "",
+                      "maximum_shipping_weight": 0,
+                      "is_tokonow": false,
+                      "shop_alert_message": "",
+                      "shop_id": 6554529,
+                      "admin_ids": [],
+                      "shop_name": "byshopsell16",
+                      "shop_image": "https://images.tokopedia.net/img/seller_no_logo_1.png",
+                      "shop_url": "https://staging.tokopedia.com/byshopsell16",
+                      "shop_status": 1,
+                      "postal_code": "12520",
+                      "latitude": "",
+                      "longitude": "",
+                      "district_name": "",
+                      "district_id": 2268,
+                      "origin": 0,
+                      "address_street": "",
+                      "city_name": "Jakarta Selatan",
+                      "province_name": "",
+                      "country_name": "",
+                      "is_allow_manage": false,
+                      "shop_domain": "byshopsell16",
+                      "is_gold": 1,
+                      "is_official": 1,
+                      "shop_type_info": {
+                        "shop_tier": 2,
+                        "shop_grade": 0,
+                        "badge": "https://images.tokopedia.net/img/official_store/badge_os.png",
+                        "badge_svg": "https://images.tokopedia.net/img/official_store/badge_official.svg",
+                        "title": "Official Store"
+                      },
+                      "shop_shipments": [
+                        {
+                          "ship_id": 11,
+                          "ship_name": "SiCepat",
+                          "ship_code": "sicepat",
+                          "ship_logo": "https://images.tokopedia.net/img/kurir-sicepat.png",
+                          "ship_prods": [
+                            {
+                              "ship_prod_id": 18,
+                              "ship_prod_name": "Regular Package",
+                              "ship_group_id": 0,
+                              "ship_group_name": "",
+                              "minimum_weight": 0,
+                              "additional_fee": 0
+                            },
+                            {
+                              "ship_prod_id": 44,
+                              "ship_prod_name": "REG",
+                              "ship_group_id": 0,
+                              "ship_group_name": "",
+                              "minimum_weight": 0,
+                              "additional_fee": 0
+                            },
+                            {
+                              "ship_prod_id": 51,
+                              "ship_prod_name": "HALU",
+                              "ship_group_id": 0,
+                              "ship_group_name": "",
+                              "minimum_weight": 0,
+                              "additional_fee": 0
+                            },
+                            {
+                              "ship_prod_id": 33,
+                              "ship_prod_name": "BEST",
+                              "ship_group_id": 0,
+                              "ship_group_name": "",
+                              "minimum_weight": 0,
+                              "additional_fee": 0
+                            },
+                            {
+                              "ship_prod_id": 43,
+                              "ship_prod_name": "GOKIL",
+                              "ship_group_id": 0,
+                              "ship_group_name": "",
+                              "minimum_weight": 0,
+                              "additional_fee": 0
+                            }
+                          ],
+                          "is_dropship_enabled": 0
+                        },
+                        {
+                          "ship_id": 1,
+                          "ship_name": "JNE",
+                          "ship_code": "jne",
+                          "ship_logo": "https://images.tokopedia.net/img/kurir-jne.png",
+                          "ship_prods": [
+                            {
+                              "ship_prod_id": 1,
+                              "ship_prod_name": "Reguler",
+                              "ship_group_id": 0,
+                              "ship_group_name": "",
+                              "minimum_weight": 0,
+                              "additional_fee": 0
+                            },
+                            {
+                              "ship_prod_id": 2,
+                              "ship_prod_name": "OKE",
+                              "ship_group_id": 0,
+                              "ship_group_name": "",
+                              "minimum_weight": 0,
+                              "additional_fee": 0
+                            },
+                            {
+                              "ship_prod_id": 6,
+                              "ship_prod_name": "YES",
+                              "ship_group_id": 0,
+                              "ship_group_name": "",
+                              "minimum_weight": 0,
+                              "additional_fee": 0
+                            },
+                            {
+                              "ship_prod_id": 22,
+                              "ship_prod_name": "Trucking",
+                              "ship_group_id": 0,
+                              "ship_group_name": "",
+                              "minimum_weight": 0,
+                              "additional_fee": 0
+                            }
+                          ],
+                          "is_dropship_enabled": 0
+                        }
+                      ],
+                      "enabler_data": {
+                        "label_name": "",
+                        "show_label": false
+                      }
+                    },
+                    "cart_details": [
+                      {
+                        "bundle_detail": {
+                          "bundle_description": "",
+                          "bundle_group_id": "",
+                          "bundle_id": 0,
+                          "bundle_max_order": 0,
+                          "bundle_min_order": 0,
+                          "bundle_name": "",
+                          "bundle_original_price": 0,
+                          "bundle_original_price_fmt": "",
+                          "bundle_price": 0,
+                          "bundle_price_fmt": "",
+                          "bundle_qty": 0,
+                          "bundle_quota": 0,
+                          "bundle_status": "",
+                          "bundle_type": "",
+                          "edit_app_link": "",
+                          "slash_price_label": "",
+                          "bundle_icon_url": "",
+                          "bundle_grayscale_icon_url": ""
+                        },
+                        "products": [
+                          {
+                            "checkbox_state": true,
+                            "cart_id": 2166569272,
+                            "product_information": [],
+                            "product_information_with_icon": [],
+                            "product_tracker_data": {
+                              "attribution": "",
+                              "tracker_list_name": ""
+                            },
+                            "isWishlist": false,
+                            "product_id": 2150866124,
+                            "product_name": "Makanan_Kucing_Whiscat_MultBun_Reg_Satu",
+                            "product_price_fmt": "Rp250.000",
+                            "product_price": 250000,
+                            "parent_id": 0,
+                            "category_id": 2098,
+                            "category": "Fashion Wanita / Perhiasan / Logam Mulia",
+                            "catalog_id": 0,
+                            "wholesale_price": [],
+                            "product_weight": 250,
+                            "product_weight_fmt": "250gr",
+                            "product_condition": 1,
+                            "product_status": 1,
+                            "product_url": "https://staging.tokopedia.com/byshopsell16/makanan-kucing-whiscat-multbun-reg-satu",
+                            "product_returnable": 0,
+                            "is_freereturns": 0,
+                            "is_preorder": 0,
+                            "product_cashback": "",
+                            "product_min_order": 1,
+                            "product_max_order": 30000,
+                            "product_rating": "0.000000",
+                            "product_invenage_value": 500,
+                            "product_invenage_total": {
+                              "by_user": {
+                                "in_cart": 0,
+                                "last_stock_less_than": 0
+                              },
+                              "by_user_text": {
+                                "in_cart": "",
+                                "last_stock_less_than": "",
+                                "complete": ""
+                              },
+                              "is_counted_by_user": false,
+                              "by_product": {
+                                "in_cart": 0,
+                                "last_stock_less_than": 0
+                              },
+                              "by_product_text": {
+                                "in_cart": "",
+                                "last_stock_less_than": "",
+                                "complete": ""
+                              },
+                              "is_counted_by_product": false
+                            },
+                            "product_switch_invenage": 1,
+                            "price_changes": {
+                              "changes_state": 0,
+                              "amount_difference": 0,
+                              "original_amount": 0,
+                              "description": ""
+                            },
+                            "product_price_currency": 1,
+                            "product_image": {
+                              "image_src": "https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/2/9/98bfd86f-e679-4b96-a50d-70b37698f127.jpg",
+                              "image_src_100_square": "https://images.tokopedia.net/img/cache/100-square/hDjmkQ/2023/2/9/98bfd86f-e679-4b96-a50d-70b37698f127.jpg",
+                              "image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/2/9/98bfd86f-e679-4b96-a50d-70b37698f127.jpg",
+                              "image_src_300": "https://images.tokopedia.net/img/cache/300/hDjmkQ/2023/2/9/98bfd86f-e679-4b96-a50d-70b37698f127.jpg",
+                              "image_src_square": "https://images.tokopedia.net/img/cache/500-square/hDjmkQ/2023/2/9/98bfd86f-e679-4b96-a50d-70b37698f127.jpg"
+                            },
+                            "product_all_images": "[{\"file_name\":\"98bfd86f-e679-4b96-a50d-70b37698f127.jpg\",\"file_path\":\"hDjmkQ/2023/2/9\",\"status\":2}]",
+                            "product_notes": "",
+                            "product_quantity": 2,
+                            "product_weight_unit_code": 1,
+                            "product_weight_unit_text": "gr",
+                            "last_update_price": "1675937367",
+                            "is_update_price": false,
+                            "product_preorder": {
+                              "duration_day": "0",
+                              "duration_text": "",
+                              "duration_unit_code": "0",
+                              "duration_unit_text": "",
+                              "duration_value": "0"
+                            },
+                            "product_showcase": {
+                              "name": "",
+                              "id": 0
+                            },
+                            "product_alias": "makanan-kucing-whiscat-multbun-reg-satu",
+                            "sku": "",
+                            "campaign_id": 0,
+                            "product_original_price": 0,
+                            "product_price_original_fmt": "",
+                            "is_slash_price": false,
+                            "free_returns": {
+                              "free_returns_logo": ""
+                            },
+                            "product_finsurance": 1,
+                            "is_wishlisted": false,
+                            "is_ppp": false,
+                            "is_cod": true,
+                            "warehouse_id": 346185,
+                            "is_parent": false,
+                            "is_campaign_error": false,
+                            "is_blacklisted": false,
+                            "ethical_drug": {
+                              "need_prescription": false,
+                              "icon_url": "https://images.tokopedia.net/img/cartapp/icons/ethical_drug.png",
+                              "text": "Butuh Resep"
+                            },
+                            "free_shipping": {
+                              "eligible": true,
+                              "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+                            },
+                            "free_shipping_extra": {
+                              "eligible": false,
+                              "badge_url": ""
+                            },
+                            "free_shipping_general": {
+                              "bo_name": "bebas ongkir",
+                              "bo_type": 1,
+                              "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
+                            },
+                            "booking_stock": 0,
+                            "is_product_volume_weight": false,
+                            "initial_price": 0,
+                            "initial_price_fmt": "Rp0",
+                            "slash_price_label": "",
+                            "product_warning_message": "",
+                            "product_alert_message": "",
+                            "variant_description_detail": {
+                              "variant_name": [],
+                              "variant_description": ""
+                            },
+                            "bundle_ids": [
+                              61888
+                            ]
+                          }
+                        ],
+                        "errors": [],
+                        "messages": []
+                      }
+                    ]
+                  }
+                ],
+                "cart_string": "6554529-0-346185-0",
                 "add_on": {
                   "ticker_text": "",
                   "icon_url": "",
@@ -573,303 +890,7 @@
                     }
                   ]
                 },
-                "shop": {
-                  "shop_ticker": "",
-                  "maximum_weight_wording": "",
-                  "maximum_shipping_weight": 0,
-                  "is_tokonow": false,
-                  "shop_alert_message": "",
-                  "shop_id": 6554529,
-                  "admin_ids": [],
-                  "shop_name": "byshopsell16",
-                  "shop_image": "https://images.tokopedia.net/img/seller_no_logo_1.png",
-                  "shop_url": "https://staging.tokopedia.com/byshopsell16",
-                  "shop_status": 1,
-                  "postal_code": "12520",
-                  "latitude": "",
-                  "longitude": "",
-                  "district_name": "",
-                  "district_id": 2268,
-                  "origin": 0,
-                  "address_street": "",
-                  "city_name": "Jakarta Selatan",
-                  "province_name": "",
-                  "country_name": "",
-                  "is_allow_manage": false,
-                  "shop_domain": "byshopsell16",
-                  "is_gold": 1,
-                  "is_official": 1,
-                  "shop_type_info": {
-                    "shop_tier": 2,
-                    "shop_grade": 0,
-                    "badge": "https://images.tokopedia.net/img/official_store/badge_os.png",
-                    "badge_svg": "https://images.tokopedia.net/img/official_store/badge_official.svg",
-                    "title": "Official Store"
-                  },
-                  "shop_shipments": [
-                    {
-                      "ship_id": 11,
-                      "ship_name": "SiCepat",
-                      "ship_code": "sicepat",
-                      "ship_logo": "https://images.tokopedia.net/img/kurir-sicepat.png",
-                      "ship_prods": [
-                        {
-                          "ship_prod_id": 18,
-                          "ship_prod_name": "Regular Package",
-                          "ship_group_id": 0,
-                          "ship_group_name": "",
-                          "minimum_weight": 0,
-                          "additional_fee": 0
-                        },
-                        {
-                          "ship_prod_id": 44,
-                          "ship_prod_name": "REG",
-                          "ship_group_id": 0,
-                          "ship_group_name": "",
-                          "minimum_weight": 0,
-                          "additional_fee": 0
-                        },
-                        {
-                          "ship_prod_id": 51,
-                          "ship_prod_name": "HALU",
-                          "ship_group_id": 0,
-                          "ship_group_name": "",
-                          "minimum_weight": 0,
-                          "additional_fee": 0
-                        },
-                        {
-                          "ship_prod_id": 33,
-                          "ship_prod_name": "BEST",
-                          "ship_group_id": 0,
-                          "ship_group_name": "",
-                          "minimum_weight": 0,
-                          "additional_fee": 0
-                        },
-                        {
-                          "ship_prod_id": 43,
-                          "ship_prod_name": "GOKIL",
-                          "ship_group_id": 0,
-                          "ship_group_name": "",
-                          "minimum_weight": 0,
-                          "additional_fee": 0
-                        }
-                      ],
-                      "is_dropship_enabled": 0
-                    },
-                    {
-                      "ship_id": 1,
-                      "ship_name": "JNE",
-                      "ship_code": "jne",
-                      "ship_logo": "https://images.tokopedia.net/img/kurir-jne.png",
-                      "ship_prods": [
-                        {
-                          "ship_prod_id": 1,
-                          "ship_prod_name": "Reguler",
-                          "ship_group_id": 0,
-                          "ship_group_name": "",
-                          "minimum_weight": 0,
-                          "additional_fee": 0
-                        },
-                        {
-                          "ship_prod_id": 2,
-                          "ship_prod_name": "OKE",
-                          "ship_group_id": 0,
-                          "ship_group_name": "",
-                          "minimum_weight": 0,
-                          "additional_fee": 0
-                        },
-                        {
-                          "ship_prod_id": 6,
-                          "ship_prod_name": "YES",
-                          "ship_group_id": 0,
-                          "ship_group_name": "",
-                          "minimum_weight": 0,
-                          "additional_fee": 0
-                        },
-                        {
-                          "ship_prod_id": 22,
-                          "ship_prod_name": "Trucking",
-                          "ship_group_id": 0,
-                          "ship_group_name": "",
-                          "minimum_weight": 0,
-                          "additional_fee": 0
-                        }
-                      ],
-                      "is_dropship_enabled": 0
-                    }
-                  ],
-                  "enabler_data": {
-                    "label_name": "",
-                    "show_label": false
-                  }
-                },
                 "promo_codes": [],
-                "cart_string": "6554529-0-346185-0",
-                "cart_details": [
-                  {
-                    "bundle_detail": {
-                      "bundle_description": "",
-                      "bundle_group_id": "",
-                      "bundle_id": 0,
-                      "bundle_max_order": 0,
-                      "bundle_min_order": 0,
-                      "bundle_name": "",
-                      "bundle_original_price": 0,
-                      "bundle_original_price_fmt": "",
-                      "bundle_price": 0,
-                      "bundle_price_fmt": "",
-                      "bundle_qty": 0,
-                      "bundle_quota": 0,
-                      "bundle_status": "",
-                      "bundle_type": "",
-                      "edit_app_link": "",
-                      "slash_price_label": "",
-                      "bundle_icon_url": "",
-                      "bundle_grayscale_icon_url": ""
-                    },
-                    "products": [
-                      {
-                        "checkbox_state": true,
-                        "cart_id": 2166569272,
-                        "product_information": [],
-                        "product_information_with_icon": [],
-                        "product_tracker_data": {
-                          "attribution": "",
-                          "tracker_list_name": ""
-                        },
-                        "isWishlist": false,
-                        "product_id": 2150866124,
-                        "product_name": "Makanan_Kucing_Whiscat_MultBun_Reg_Satu",
-                        "product_price_fmt": "Rp250.000",
-                        "product_price": 250000,
-                        "parent_id": 0,
-                        "category_id": 2098,
-                        "category": "Fashion Wanita / Perhiasan / Logam Mulia",
-                        "catalog_id": 0,
-                        "wholesale_price": [],
-                        "product_weight": 250,
-                        "product_weight_fmt": "250gr",
-                        "product_condition": 1,
-                        "product_status": 1,
-                        "product_url": "https://staging.tokopedia.com/byshopsell16/makanan-kucing-whiscat-multbun-reg-satu",
-                        "product_returnable": 0,
-                        "is_freereturns": 0,
-                        "is_preorder": 0,
-                        "product_cashback": "",
-                        "product_min_order": 1,
-                        "product_max_order": 30000,
-                        "product_rating": "0.000000",
-                        "product_invenage_value": 500,
-                        "product_invenage_total": {
-                          "by_user": {
-                            "in_cart": 0,
-                            "last_stock_less_than": 0
-                          },
-                          "by_user_text": {
-                            "in_cart": "",
-                            "last_stock_less_than": "",
-                            "complete": ""
-                          },
-                          "is_counted_by_user": false,
-                          "by_product": {
-                            "in_cart": 0,
-                            "last_stock_less_than": 0
-                          },
-                          "by_product_text": {
-                            "in_cart": "",
-                            "last_stock_less_than": "",
-                            "complete": ""
-                          },
-                          "is_counted_by_product": false
-                        },
-                        "product_switch_invenage": 1,
-                        "price_changes": {
-                          "changes_state": 0,
-                          "amount_difference": 0,
-                          "original_amount": 0,
-                          "description": ""
-                        },
-                        "product_price_currency": 1,
-                        "product_image": {
-                          "image_src": "https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/2/9/98bfd86f-e679-4b96-a50d-70b37698f127.jpg",
-                          "image_src_100_square": "https://images.tokopedia.net/img/cache/100-square/hDjmkQ/2023/2/9/98bfd86f-e679-4b96-a50d-70b37698f127.jpg",
-                          "image_src_200_square": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2023/2/9/98bfd86f-e679-4b96-a50d-70b37698f127.jpg",
-                          "image_src_300": "https://images.tokopedia.net/img/cache/300/hDjmkQ/2023/2/9/98bfd86f-e679-4b96-a50d-70b37698f127.jpg",
-                          "image_src_square": "https://images.tokopedia.net/img/cache/500-square/hDjmkQ/2023/2/9/98bfd86f-e679-4b96-a50d-70b37698f127.jpg"
-                        },
-                        "product_all_images": "[{\"file_name\":\"98bfd86f-e679-4b96-a50d-70b37698f127.jpg\",\"file_path\":\"hDjmkQ/2023/2/9\",\"status\":2}]",
-                        "product_notes": "",
-                        "product_quantity": 2,
-                        "product_weight_unit_code": 1,
-                        "product_weight_unit_text": "gr",
-                        "last_update_price": "1675937367",
-                        "is_update_price": false,
-                        "product_preorder": {
-                          "duration_day": "0",
-                          "duration_text": "",
-                          "duration_unit_code": "0",
-                          "duration_unit_text": "",
-                          "duration_value": "0"
-                        },
-                        "product_showcase": {
-                          "name": "",
-                          "id": 0
-                        },
-                        "product_alias": "makanan-kucing-whiscat-multbun-reg-satu",
-                        "sku": "",
-                        "campaign_id": 0,
-                        "product_original_price": 0,
-                        "product_price_original_fmt": "",
-                        "is_slash_price": false,
-                        "free_returns": {
-                          "free_returns_logo": ""
-                        },
-                        "product_finsurance": 1,
-                        "is_wishlisted": false,
-                        "is_ppp": false,
-                        "is_cod": true,
-                        "warehouse_id": 346185,
-                        "is_parent": false,
-                        "is_campaign_error": false,
-                        "is_blacklisted": false,
-                        "ethical_drug": {
-                          "need_prescription": false,
-                          "icon_url": "https://images.tokopedia.net/img/cartapp/icons/ethical_drug.png",
-                          "text": "Butuh Resep"
-                        },
-                        "free_shipping": {
-                          "eligible": true,
-                          "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
-                        },
-                        "free_shipping_extra": {
-                          "eligible": false,
-                          "badge_url": ""
-                        },
-                        "free_shipping_general": {
-                          "bo_name": "bebas ongkir",
-                          "bo_type": 1,
-                          "badge_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png"
-                        },
-                        "booking_stock": 0,
-                        "is_product_volume_weight": false,
-                        "initial_price": 0,
-                        "initial_price_fmt": "Rp0",
-                        "slash_price_label": "",
-                        "product_warning_message": "",
-                        "product_alert_message": "",
-                        "variant_description_detail": {
-                          "variant_name": [],
-                          "variant_description": ""
-                        },
-                        "bundle_ids": [
-                          61888
-                        ]
-                      }
-                    ],
-                    "errors": [],
-                    "messages": []
-                  }
-                ],
                 "total_cart_details_error": 0,
                 "total_cart_price": 500000,
                 "errors": [],

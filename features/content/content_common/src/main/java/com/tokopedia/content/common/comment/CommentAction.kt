@@ -25,7 +25,7 @@ sealed interface CommentAction {
     data class EditTextClicked(val item: CommentUiModel.Item): CommentAction
     object RequestReportAction : CommentAction
 
-    data class SelectComment(val comment: CommentUiModel.Item) : CommentAction
+    data class SelectComment(val id: String) : CommentAction
 
     data class OpenAppLinkAction(val appLink: String) : CommentAction
 }

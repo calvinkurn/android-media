@@ -1,6 +1,6 @@
 package com.tokopedia.product.manage.feature.filter
 
-import com.tokopedia.core.common.category.domain.model.CategoriesResponse
+import com.tokopedia.product.manage.common.feature.category.model.CategoriesResponse
 import com.tokopedia.product.manage.data.*
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionsResponse

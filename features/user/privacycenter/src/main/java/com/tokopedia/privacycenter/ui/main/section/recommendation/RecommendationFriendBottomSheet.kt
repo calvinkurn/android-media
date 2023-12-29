@@ -86,7 +86,7 @@ class RecommendationFriendBottomSheet : BottomSheetUnify() {
                         ds.isFakeBoldText = true
                         ds.color = MethodChecker.getColor(
                             context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
                     }
                 },
@@ -104,7 +104,7 @@ class RecommendationFriendBottomSheet : BottomSheetUnify() {
                         ds.isFakeBoldText = true
                         ds.color = MethodChecker.getColor(
                             context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
                     }
                 },
@@ -152,6 +152,6 @@ class RecommendationFriendBottomSheet : BottomSheetUnify() {
         private const val TERM_AND_CONDITION_PATH = "help/article/syarat-dan-ketentuan-kupon-megacashback"
         private const val PRIVACY_POLICY_PATH = "privacy"
         private const val TERM_AND_CONDITION = "Syarat & Ketentuan"
-        private const val PRIVACY_POLICY = "Kebijakan Privasi"
+        private const val PRIVACY_POLICY = "Pemberitahuan Privasi"
     }
 }

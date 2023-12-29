@@ -17,8 +17,9 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class MerchantVoucherListViewModel(application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+    @JvmField
     @Inject
-    lateinit var merchantVoucherUseCase: MerchantVoucherUseCase
+    var merchantVoucherUseCase: MerchantVoucherUseCase? = null
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
@@ -30,11 +31,11 @@ class MerchantVoucherListViewModel(application: Application, val components: Com
 
     private fun fetchCouponData() {
         launchCatchError(block = {
-            val shouldSync = merchantVoucherUseCase.loadFirstPageComponents(
+            val shouldSync = merchantVoucherUseCase?.loadFirstPageComponents(
                 components.id,
                 components.pageEndPoint
             )
-            if (shouldSync) {
+            if (shouldSync == true) {
                 getComponent(components.id, components.pageEndPoint)?.let {
                     if (it.getComponentsItem().isNullOrEmpty() && !it.areFiltersApplied()) {
                         it.verticalProductFailState = true
@@ -46,13 +47,13 @@ class MerchantVoucherListViewModel(application: Application, val components: Com
             }
             this@MerchantVoucherListViewModel.syncData.value = shouldSync
         }, onError = {
-            getComponent(components.id, components.pageEndPoint)?.let { comp ->
-                if (it is UnknownHostException || it is SocketTimeoutException) {
-                    comp.errorState = ErrorState.NetworkErrorState
+                getComponent(components.id, components.pageEndPoint)?.let { comp ->
+                    if (it is UnknownHostException || it is SocketTimeoutException) {
+                        comp.errorState = ErrorState.NetworkErrorState
+                    }
+                    comp.verticalProductFailState = true
                 }
-                comp.verticalProductFailState = true
-            }
-            this@MerchantVoucherListViewModel.syncData.value = true
-        })
+                this@MerchantVoucherListViewModel.syncData.value = true
+            })
     }
 }

@@ -34,5 +34,4 @@ public class BaseSessionWebViewFragment extends BaseWebViewFragment {
         fragment.setArguments(args);
         return fragment;
     }
-
 }

@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 data class EventVerifyResponseV2(
         @SerializedName("event_verify")
@@ -65,7 +65,10 @@ data class MetaDataResponse(
         @SuppressLint("Invalid Data Type")
         @SerializedName("total_price")
         @Expose
-        val totalPrice: Long = 0
+        val totalPrice: Long = 0,
+        @SerializedName("tx_expired_time")
+        @Expose
+        val txExpiredTime: String = ""
 
 ) : Parcelable
 

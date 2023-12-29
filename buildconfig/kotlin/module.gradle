@@ -1,7 +1,8 @@
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-
+apply plugin: "com.google.devtools.ksp"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/composeCompilerReport.gradle"
 
 kapt {
     correctErrorTypes = true
@@ -25,7 +26,7 @@ android {
     lintOptions {
         checkReleaseBuilds false
         checkDependencies false
-        htmlReport false
+        htmlReport true
         warningsAsErrors false
         abortOnError false
     }
@@ -42,12 +43,12 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
+        jvmTarget = JavaVersion.VERSION_17
     }
 
     testOptions {
@@ -70,7 +71,15 @@ android {
     lintOptions {
         abortOnError false
         xmlReport true
-        htmlReport false
+        htmlReport true
+    }
+    kotlin {
+        sourceSets.main {
+            kotlin.srcDir("build/generated/ksp/main/kotlin")
+        }
+        sourceSets.test {
+            kotlin.srcDir("build/generated/ksp/test/kotlin")
+        }
     }
 }
 
@@ -98,7 +107,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
-    implementation rootProject.ext.miscDependencies.autopatchbase
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger

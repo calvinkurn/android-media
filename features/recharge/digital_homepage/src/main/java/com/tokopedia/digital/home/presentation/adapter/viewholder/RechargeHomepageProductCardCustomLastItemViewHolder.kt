@@ -45,7 +45,7 @@ class RechargeHomepageProductCardCustomLastItemViewHolder(
 
         } else {
             showLoading()
-            listener.loadRechargeSectionData(element.visitableId())
+            listener.loadRechargeSectionData(element.visitableId(), element.section.name)
         }
     }
 
@@ -59,7 +59,7 @@ class RechargeHomepageProductCardCustomLastItemViewHolder(
                     containerRechargeCustomLastItem.setBackgroundColor(
                         MethodChecker.getColor(
                             root.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N0
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN0
                         )
                     )
             } catch (t: Throwable) {

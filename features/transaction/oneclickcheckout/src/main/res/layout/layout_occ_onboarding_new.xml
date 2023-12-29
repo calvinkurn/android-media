@@ -31,7 +31,7 @@
             android:layout_gravity="center"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="16dp"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
@@ -41,5 +41,5 @@
         android:id="@+id/divider_occ_onboarding"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        android:background="@color/Unify_N50" />
+        android:background="@color/Unify_NN50" />
 </LinearLayout>

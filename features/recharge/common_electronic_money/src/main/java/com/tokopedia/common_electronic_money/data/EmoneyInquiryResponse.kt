@@ -9,7 +9,7 @@ class EmoneyInquiryResponse(
         val emoneyInquiry: EmoneyInquiry
 )
 
-class EmoneyInquiry(
+data class EmoneyInquiry(
         @SerializedName("id")
         @Expose
         val id: String = "",
@@ -22,10 +22,11 @@ class EmoneyInquiry(
         @SerializedName("error")
         @Expose
         val error: EmoneyInquiryError? = null,
-        val isCheckSaldoTapcash : Boolean = false
+        val isCheckSaldoTapcash : Boolean = false,
+        val isBCAGenOne: Boolean = false,
 )
 
-class AttributesEmoneyInquiry(
+data class AttributesEmoneyInquiry(
         @SerializedName("button_text")
         @Expose
         val buttonText: String = "",
@@ -47,11 +48,12 @@ class AttributesEmoneyInquiry(
         var formattedCardNumber: String = "",
         var issuer_id: Int = 0,
         var operatorId: String = "",
-        var pendingBalance: Int = 0
-
+        var pendingBalance: Int = 0,
+        var extraPendingBalance: Boolean = false,
+        var showAdditionalBalance: Boolean = false
 )
 
-class EmoneyInquiryError(
+data class EmoneyInquiryError(
         @SerializedName("id")
         @Expose
         val id: String = "",

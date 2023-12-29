@@ -36,7 +36,7 @@
                     android:gravity="right"
                     android:letterSpacing="0.02"
                     android:maxLines="1"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     android:textSize="10sp"
                     tools:text="EVENTS" />
 
@@ -67,7 +67,7 @@
                         android:layout_marginBottom="2dp"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         android:textSize="12sp"
                         tools:text="Nilai investasi" />
 
@@ -83,7 +83,7 @@
                         android:ellipsize="end"
                         android:gravity="end"
                         android:maxLines="1"
-                        android:textColor="@color/Unify_N700_96"
+                        android:textColor="@color/Unify_NN950_96"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         tools:text="Rp999.000.000" />
@@ -98,7 +98,7 @@
                         android:ellipsize="end"
                         android:lineSpacingExtra="6sp"
                         android:maxLines="1"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         android:textSize="12sp"
                         tools:text="Keuntungan Harian" />
 
@@ -114,7 +114,7 @@
                         android:ellipsize="end"
                         android:gravity="end"
                         android:maxLines="1"
-                        android:textColor="@color/Unify_N700_96"
+                        android:textColor="@color/Unify_NN950_96"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         tools:text="+Rp432" />

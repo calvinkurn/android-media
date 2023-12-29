@@ -1,6 +1,5 @@
 package com.tokopedia.sessioncommon.data
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -9,19 +8,15 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class GenerateKeyPojo(
-        @SerializedName("generate_key")
-        @Expose
-        var keyData: KeyData = KeyData()
+    @SerializedName("generate_key")
+    var keyData: KeyData = KeyData()
 )
 
 data class KeyData(
-        @SerializedName("key")
-        @Expose
-        var key: String = "",
-        @SerializedName("server_timestamp")
-        @Expose
-        var timestamp: String = "",
-        @SerializedName("h")
-        @Expose
-        var hash: String = ""
+    @SerializedName("key")
+    var key: String = "",
+    @SerializedName("server_timestamp")
+    var timestamp: String = "",
+    @SerializedName("h")
+    var hash: String = ""
 )

@@ -66,7 +66,7 @@ class OrderHistoryAdapter(private val historyListDatas: List<OrderHistoryListDat
                 holder.orderHistoryTitle.setTextColor(Color.parseColor(it))
             }
         } else holder.orderHistoryTitle.setTextColor(
-                holder.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                holder.context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
     }
 
     override fun getItemCount(): Int {

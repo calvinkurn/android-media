@@ -10,28 +10,30 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class CalendarWidgetGridViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
-    private lateinit var calendarWidgetGridViewModel: CalendarWidgetGridViewModel
+    private var calendarWidgetGridViewModel: CalendarWidgetGridViewModel? = null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         calendarWidgetGridViewModel = discoveryBaseViewModel as CalendarWidgetGridViewModel
-        getSubComponent().inject(calendarWidgetGridViewModel)
+        calendarWidgetGridViewModel?.let {
+            getSubComponent().inject(it)
+        }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            calendarWidgetGridViewModel.getSyncPageLiveData().observe(it, { needResync ->
+            calendarWidgetGridViewModel?.getSyncPageLiveData()?.observe(it) { needResync ->
                 if (needResync) {
                     (fragment as DiscoveryFragment).reSync()
                 }
-            })
+            }
         }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            calendarWidgetGridViewModel.getSyncPageLiveData().removeObservers(it)
+            calendarWidgetGridViewModel?.getSyncPageLiveData()?.removeObservers(it)
         }
     }
 }

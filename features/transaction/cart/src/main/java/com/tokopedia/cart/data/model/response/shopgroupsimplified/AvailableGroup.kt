@@ -5,8 +5,6 @@ import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyConsultationInfoResponse
 
 data class AvailableGroup(
-    @SerializedName("user_address_id")
-    val userAddressId: String = "",
     @SerializedName("shipment_information")
     val shipmentInformation: ShipmentInformation = ShipmentInformation(),
     @SerializedName("cart_string")
@@ -17,26 +15,31 @@ data class AvailableGroup(
     val giftingAddOn: GiftingAddOn = GiftingAddOn(),
     @SerializedName("epharmacy_consultation")
     val epharmacyConsultationInfo: EpharmacyConsultationInfoResponse = EpharmacyConsultationInfoResponse(),
-    @SerializedName("shop")
-    val shop: Shop = Shop(),
     @SerializedName("is_fulfillment_service")
     val isFulfillment: Boolean = false,
     @SerializedName("warehouse")
     val warehouse: Warehouse = Warehouse(),
-    @SerializedName("cart_details")
-    val cartDetails: List<CartDetail> = emptyList(),
-    @SerializedName("total_cart_details_error")
-    val totalCartDetailsError: Int = 0,
-    @SerializedName("errors")
-    val errors: List<String> = emptyList(),
-    @SerializedName("sort_key")
-    val sortKey: Long = 0,
-    @SerializedName("has_promo_list")
-    val hasPromoList: Boolean = false,
     @SerializedName("checkbox_state")
     val checkboxState: Boolean = false,
     @SerializedName("promo_codes")
     val promoCodes: List<String> = emptyList(),
     @SerializedName("bo_metadata")
-    val boMetadata: BoMetadata = BoMetadata()
-)
+    val boMetadata: BoMetadata = BoMetadata(),
+    @SerializedName("group_type")
+    val groupType: Int = 0,
+    @SerializedName("ui_group_type")
+    val uiGroupType: Int = 0,
+    @SerializedName("group_information")
+    val groupInformation: GroupInformation = GroupInformation(),
+    @SerializedName("group_shop_v2_cart")
+    val groupShopCartData: List<GroupShopCart> = emptyList()
+) {
+    fun isUsingOWOCDesign(): Boolean = uiGroupType == UI_GROUP_TYPE_OWOC
+
+    fun isTypeOWOC(): Boolean = groupType == GROUP_TYPE_OWOC
+
+    companion object {
+        private const val UI_GROUP_TYPE_OWOC = 1
+        private const val GROUP_TYPE_OWOC = 2
+    }
+}

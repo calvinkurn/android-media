@@ -19,7 +19,7 @@ import com.tokopedia.product.share.ekstensions.ProductShareConstant.VALUE_BUSINE
 import com.tokopedia.product.share.ekstensions.ProductShareConstant.VALUE_CURRENT_SITE
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.util.UniversalShareConst
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet.Companion.CUSTOM_SHARE_SHEET
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet.Companion.SCREENSHOT_SHARE_SHEET
 
@@ -28,37 +28,56 @@ import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomShee
  */
 object ProductShareTracking {
 
-    fun onClickChannelWidgetClicked(type: Int, channel: String, userId: String, productId: String,
-                                    campaignId: String, bundleId: String) {
+    fun onClickChannelWidgetClicked(
+        type: Int,
+        channel: String,
+        userId: String,
+        productId: String,
+        campaignId: String,
+        bundleId: String,
+        userType: String
+    ) {
         if (type == CUSTOM_SHARE_SHEET) {
-            onClickNormalShareChannel(userId, productId, channel, campaignId, bundleId)
+            onClickNormalShareChannel(userId, productId, channel, campaignId, bundleId, userType)
         } else {
-            onClickScreenshotShareChannel(userId, productId, channel, campaignId, bundleId)
+            onClickScreenshotShareChannel(userId, productId, channel, campaignId, bundleId, userType)
         }
     }
 
     fun onCloseShareWidgetClicked(
-        type: Int, userId: String, productId: String,
-        campaignId: String, bundleId: String
+        type: Int,
+        userId: String,
+        productId: String,
+        campaignId: String,
+        bundleId: String,
+        userType: String
     ) {
         if (type == CUSTOM_SHARE_SHEET) {
-            onCloseNormalShareClicked(userId, productId, campaignId, bundleId)
+            onCloseNormalShareClicked(userId, productId, campaignId, bundleId, userType)
         } else {
-            onCloseScreenshotShareClicked(userId, productId, campaignId, bundleId)
+            onCloseScreenshotShareClicked(userId, productId, campaignId, bundleId, userType)
         }
     }
 
-    fun onImpressShareWidget(type: Int, userId: String, productId: String,
-                             campaignId: String, bundleId: String) {
-        val eventAction = if (type == SCREENSHOT_SHARE_SHEET)
+    fun onImpressShareWidget(
+        type: Int,
+        userId: String,
+        productId: String,
+        campaignId: String,
+        bundleId: String,
+        userType: String
+    ) {
+        val eventAction = if (type == SCREENSHOT_SHARE_SHEET) {
             EVENT_ACTION_VIEW_SCREENSHOT_SHARE_BOTTOMSHEET
-        else EVENT_ACTION_VIEW_SHARE_BOTTOMSHEET
+        } else {
+            EVENT_ACTION_VIEW_SHARE_BOTTOMSHEET
+        }
 
         val mapEvent = TrackAppUtils.gtmData(
             EVENT_VIEW_IRIS_PDP_SHARING,
             EVENT_CATEGORY_PDP_SHARING,
             eventAction,
-            UniversalShareBottomSheet.getUserType()+" - "+productId+" - "+campaignId+" - "+bundleId,
+            "$userType - $productId - $campaignId - $bundleId"
         )
         mapEvent.appendDefaultTracker(userId, productId)
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
@@ -69,55 +88,80 @@ object ProductShareTracking {
             EVENT_CLICK_PDP_SHARING,
             EVENT_CATEGORY_PDP_SHARING,
             EVENT_ACTION_CLICK_ACCESS_PHOTO_MEDIA_AND_FILES,
-            label+" - "+productId
+            "$label - $productId"
         )
         mapEvent.appendDefaultTracker(userId, productId)
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
-    private fun onClickNormalShareChannel(userId: String, productId: String, channel: String,
-                                          campaignId: String, bundleId: String) {
+    private fun onClickNormalShareChannel(
+        userId: String,
+        productId: String,
+        channel: String,
+        campaignId: String,
+        bundleId: String,
+        userType: String
+    ) {
         val mapEvent = TrackAppUtils.gtmData(
-                EVENT_CLICK_PDP_SHARING,
-                EVENT_CATEGORY_PDP_SHARING,
-                EVENT_ACTION_CLICK_CHANNEL_SHARE_BOTTOMSHEET,
-                channel+" - "+UniversalShareBottomSheet.getUserType()+" - "+productId+" - "+campaignId+" - "
-                        +bundleId+" - "+UniversalShareBottomSheet.Companion.KEY_IMAGE_DEFAULT)
+            EVENT_CLICK_PDP_SHARING,
+            EVENT_CATEGORY_PDP_SHARING,
+            EVENT_ACTION_CLICK_CHANNEL_SHARE_BOTTOMSHEET,
+            "$channel - $userType - $productId - $campaignId - $bundleId - ${UniversalShareConst.ImageType.KEY_IMAGE_DEFAULT}"
+        )
         mapEvent.appendDefaultTracker(userId, productId)
         mapEvent[ProductShareConstant.TRACKER_ID] = ProductShareConstant.TRACKER_ID_CLICK_SHARING_CHANNEL
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
-    private fun onClickScreenshotShareChannel(userId: String, productId: String, channel: String,
-                                              campaignId: String, bundleId: String) {
+    private fun onClickScreenshotShareChannel(
+        userId: String,
+        productId: String,
+        channel: String,
+        campaignId: String,
+        bundleId: String,
+        userType: String
+    ) {
         val mapEvent = TrackAppUtils.gtmData(
-                EVENT_CLICK_PDP_SHARING,
-                EVENT_CATEGORY_PDP_SHARING,
-                EVENT_ACTION_CLICK_CHANNEL_SCREENSHOT_SHARE_BOTTOMSHEET,
-            channel+" - "+UniversalShareBottomSheet.getUserType()+" - "+productId+" - "+campaignId+" - "+bundleId)
+            EVENT_CLICK_PDP_SHARING,
+            EVENT_CATEGORY_PDP_SHARING,
+            EVENT_ACTION_CLICK_CHANNEL_SCREENSHOT_SHARE_BOTTOMSHEET,
+            "$channel - $userType - $productId - $campaignId - $bundleId"
+        )
         mapEvent.appendDefaultTracker(userId, productId)
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
-    private fun onCloseNormalShareClicked(userId: String, productId: String,
-                                          campaignId: String, bundleId: String) {
+    private fun onCloseNormalShareClicked(
+        userId: String,
+        productId: String,
+        campaignId: String,
+        bundleId: String,
+        userType: String
+    ) {
         val mapEvent = TrackAppUtils.gtmData(
-                EVENT_CLICK_PDP_SHARING,
-                EVENT_CATEGORY_PDP_SHARING,
-                EVENT_ACTION_SHARE_BOTTOMSHEET,
-            UniversalShareBottomSheet.getUserType()+" - "+productId+" - "+campaignId+" - "+bundleId)
+            EVENT_CLICK_PDP_SHARING,
+            EVENT_CATEGORY_PDP_SHARING,
+            EVENT_ACTION_SHARE_BOTTOMSHEET,
+            "$userType - $productId - $campaignId - $bundleId"
+        )
 
         mapEvent.appendDefaultTracker(userId, productId)
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
-    private fun onCloseScreenshotShareClicked(userId: String, productId: String,
-                                              campaignId: String, bundleId: String) {
+    private fun onCloseScreenshotShareClicked(
+        userId: String,
+        productId: String,
+        campaignId: String,
+        bundleId: String,
+        userType: String
+    ) {
         val mapEvent = TrackAppUtils.gtmData(
-                EVENT_CLICK_PDP_SHARING,
-                EVENT_CATEGORY_PDP_SHARING,
-                EVENT_ACTION_SCREENSHOT_SHARE_BOTTOMSHEET,
-            UniversalShareBottomSheet.getUserType()+" - "+productId+" - "+campaignId+" - "+bundleId)
+            EVENT_CLICK_PDP_SHARING,
+            EVENT_CATEGORY_PDP_SHARING,
+            EVENT_ACTION_SCREENSHOT_SHARE_BOTTOMSHEET,
+            "$userType - $productId - $campaignId - $bundleId"
+        )
 
         mapEvent.appendDefaultTracker(userId, productId)
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)

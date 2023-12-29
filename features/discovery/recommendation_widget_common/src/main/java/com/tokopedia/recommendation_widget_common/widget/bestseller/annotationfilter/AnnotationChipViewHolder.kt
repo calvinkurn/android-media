@@ -3,6 +3,8 @@ package com.tokopedia.recommendation_widget_common.widget.bestseller.annotationf
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.databinding.AnnotationFilterChipViewHolderBinding
@@ -20,6 +22,11 @@ class AnnotationChipViewHolder(
     private var binding: AnnotationFilterChipViewHolderBinding? by viewBinding()
     fun bind(element: RecommendationFilterChipsEntity.RecommendationFilterChip) {
         binding?.annotationChip?.chipText = element.title
+        binding?.annotationChip?.addOnImpressionListener(element, object: ViewHintListener {
+            override fun onViewHint() {
+                listener.onFilterAnnotationImpressed(element)
+            }
+        })
         view.setOnClickListener {
             listener.onFilterAnnotationClicked(element, adapterPosition)
         }

@@ -25,7 +25,7 @@ class RightChatMessageUnifyViewHolder(
     private val backgroundChatWithReplyBubble = generateRightMessageBackground(
         customChatLayout?.fxChat,
         com.tokopedia.unifyprinciples.R.color.Unify_GN50,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20
+        com.tokopedia.unifyprinciples.R.color.Unify_NN950_20
     )
 
     override fun bind(message: MessageUiModel) {

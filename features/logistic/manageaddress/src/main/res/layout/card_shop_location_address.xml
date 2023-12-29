@@ -13,27 +13,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/img_location_state"
-            android:layout_width="14dp"
+            android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginStart="18dp"
             android:layout_marginTop="18dp"
             android:layout_marginBottom="18dp"
+            app:icon_enable_state="true"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_address_zipcode"
-            app:srcCompat="@drawable/ic_pinpoint_green"
-            android:contentDescription="null" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_address_zipcode" />
 
-        <ImageView
-            android:id="@+id/img_mark_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_mark_ico"
-            app:layout_constraintTop_toTopOf="@id/tv_shop_label"
-            app:layout_constraintBottom_toBottomOf="@id/tv_shop_label"
-            app:layout_constraintStart_toStartOf="parent"
-            android:contentDescription="null"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shop_label"
@@ -42,35 +32,47 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="12dp"
             android:text="@string/shop_label"
-            app:typographyWeight="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3" />
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/img_mark_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="null"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="12dp"
+            app:srcCompat="@drawable/ic_mark_ico"
+            tools:visibility="gone" />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/lbl_main_shop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="12dp"
+            app:layout_goneMarginStart="16dp"
             android:text="@string/address_label"
             android:visibility="visible"
             app:labelType="general_light_green"
-            app:layout_constraintTop_toTopOf="@id/tv_shop_label"
-            app:layout_constraintBottom_toBottomOf="@id/tv_shop_label"
-            app:layout_constraintStart_toEndOf="@+id/tv_shop_label" />
-
+            app:layout_constraintStart_toEndOf="@+id/tv_shop_label"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/img_info_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
-            app:srcCompat="@drawable/ic_information_ico"
-            app:layout_constraintTop_toTopOf="@id/lbl_main_shop"
+            android:layout_marginTop="12dp"
+            android:contentDescription="null"
             app:layout_constraintBottom_toBottomOf="@id/lbl_main_shop"
             app:layout_constraintStart_toEndOf="@+id/lbl_main_shop"
-            android:contentDescription="null"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_information_ico" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shop_name"
@@ -81,9 +83,9 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:text="@string/shop_name"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_shop_label"
+            app:layout_constraintTop_toBottomOf="@id/header_shop_location_item"
             app:typographyType="heading_5" />
 
         <com.tokopedia.iconunify.IconUnify
@@ -106,7 +108,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:text="@string/shop_address_detail"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_shop_name"
@@ -122,7 +124,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:text="@string/shop_address_city"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_address_detail"
@@ -139,7 +141,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="6dp"
             android:text="@string/shop_address_zipcode"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_address_city"
@@ -152,7 +154,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:gravity="center_vertical"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintBottom_toBottomOf="@+id/img_location_state"
             app:layout_constraintStart_toEndOf="@+id/img_location_state"
             app:typographyType="body_3"
@@ -175,25 +177,29 @@
             app:layout_constraintTop_toBottomOf="@id/tv_pinpoint_state"
             app:tickerShapeType="loose" />
 
-        <com.tokopedia.unifyprinciples.Typography
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/action_edit"
-            android:background="@drawable/bg_button_ubah"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:layout_marginTop="18dp"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="alternate"
             android:text="@string/ubah_detail_lokasi"
-            android:textAlignment="center"
-            android:textColor="@color/Unify_N700_68"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ticker_address_info"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:gravity="center_horizontal" />
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/header_shop_location_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="img_info_icon,tv_shop_label,img_mark_icon,lbl_main_shop" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

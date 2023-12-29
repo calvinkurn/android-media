@@ -4,14 +4,56 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvInstallmentDetail"
+    <View
+        android:id="@+id/bgTicker"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_ticker_fee_bottomsheet"
+        app:layout_constraintStart_toStartOf="@id/ivTicker"
+        app:layout_constraintEnd_toEndOf="@id/tvTicker"
+        app:layout_constraintTop_toTopOf="@id/ivTicker"
+        app:layout_constraintBottom_toBottomOf="@id/ivTicker"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivTicker"
+        android:layout_width="60dp"
+        android:layout_height="48dp"
+        android:paddingStart="6dp"
+        android:paddingEnd="6dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTicker"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        android:paddingEnd="12dp"
+        app:layout_constraintStart_toEndOf="@id/ivTicker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ivTicker"
+        app:layout_constraintBottom_toBottomOf="@id/ivTicker"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="reguler"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupTicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:constraint_referenced_ids="bgTicker,ivTicker,tvTicker"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvInstallmentDetail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/unify_space_12"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/bgTicker" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

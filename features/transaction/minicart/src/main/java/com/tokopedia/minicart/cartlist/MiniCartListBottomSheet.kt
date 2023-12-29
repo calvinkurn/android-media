@@ -289,8 +289,7 @@ class MiniCartListBottomSheet @Inject constructor(
                     bundleType = bundleType,
                     bundlePosition = bundlePosition,
                     priceCut = selectedMultipleBundle.displayPrice,
-                    productDetails = productDetails,
-                    productQuantity = selectedMultipleBundle.minOrder
+                    productDetails = productDetails
                 )
             }
         }

@@ -3,6 +3,7 @@ package com.tokopedia.deals.common.analytics
 import android.os.Bundle
 import android.util.Log
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.deals.brand_detail.data.Category
 import com.tokopedia.deals.brand_detail.data.Product
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.CART_PAGE_LOADED
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.CHECKOUT_STEP_1
@@ -15,6 +16,7 @@ import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.BRAND
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.BUSINESS_UNIT
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CART_ID
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CATEGORY_ID
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CATEGORY_LABEL
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CHECKOUT_OPTION
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CHECKOUT_STEP
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CURRENT_SITE
@@ -30,6 +32,7 @@ import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_BRAND
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_CATEGORY
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_ID
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_LIST
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_LIST_NAME
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_NAME
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_VARIANT
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Item.none
@@ -41,6 +44,7 @@ import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PRICE
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PRODUCT_CARD
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PROMO
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.QUANTITY
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SCREEN_NAME
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SCREEN_NAME_DEALS_CHECKOUT
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SCREEN_NAME_DEALS_PDP
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SHOP_ID
@@ -936,18 +940,34 @@ class DealsAnalytics @Inject constructor(
     }
 
     fun eventBrandDetailImpressionProduct(brandName: String, positionAdapter: Int, product: Product) {
-        val map = getTrackingBrandDetailWithHeader() as MutableMap<String, Any>
         val position = positionAdapter + 1
-        map.addGeneralEvent(
-                DealsAnalyticsConstants.Event.PRODUCT_VIEW,
-                DealsAnalyticsConstants.Action.IMPRESSION_PRODUCT_BRAND,
-                String.format(TWO_STRING_PATTERN, brandName, position.toString())
+        val eventDataLayer = Bundle()
+        eventDataLayer.generalTracker(
+            DealsAnalyticsConstants.Event.VIEW_ITEM_LIST,
+            DealsAnalyticsConstants.Action.IMPRESSION_PRODUCT_BRAND,
+            String.format(TWO_STRING_PATTERN, brandName, position.toString()
+        ))
+        eventDataLayer.generalBusiness()
+        val category = product.category.firstOrNull() ?: Category()
+        val itemBundles = arrayListOf<Bundle>()
+        itemBundles.add(
+            Bundle().apply {
+                putString(ITEM_NAME, product.displayName)
+                putString(ITEM_ID, product.id)
+                putLong(DealsAnalyticsConstants.Item.price, product.salesPrice)
+                putString(ITEM_BRAND, brandName)
+                putString(ITEM_CATEGORY, category.title)
+                putString(ITEM_VARIANT, DealsAnalyticsConstants.NONE)
+                putString(DIMENSION_40, String.format(DealsAnalyticsConstants.Label.SEARCH_RESULT_BRAND_CLICK, position.toString(), product.displayName))
+                putInt(INDEX, position)
+            }
         )
-        map[DealsAnalyticsConstants.ECOMMERCE_LABEL] = DataLayer.mapOf(
-                DealsAnalyticsConstants.CURRENCY_CODE, DealsAnalyticsConstants.IDR,
-                DealsAnalyticsConstants.IMPRESSIONS, getECommerceDataProductBrandDetailImpression(brandName, product, position)
-        )
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+        eventDataLayer.putString(ITEM_LIST, String.format(DealsAnalyticsConstants.Label.SEARCH_RESULT_BRAND_CLICK, position.toString(), product.displayName))
+        eventDataLayer.putString(ITEM_LIST_NAME, String.format(DealsAnalyticsConstants.Label.SEARCH_RESULT_BRAND_CLICK, position.toString(), product.displayName))
+        eventDataLayer.putString(CATEGORY_LABEL, DEALS)
+        eventDataLayer.putString(SCREEN_NAME, "")
+        eventDataLayer.putParcelableArrayList(ITEMS, itemBundles)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DealsAnalyticsConstants.Event.VIEW_ITEM_LIST, eventDataLayer)
     }
 
     fun eventBrandDetailClickProduct(brandName: String, positionAdapter: Int, product: Product) {

@@ -56,7 +56,7 @@ class PmActiveTermAdapter(
         private fun setupTermDescription(term: PmActiveTermUiModel) {
             with(binding) {
                 if (!term.clickableText.isNullOrBlank() && !term.appLinkOrUrl.isNullOrBlank()) {
-                    val ctaTextColor = com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    val ctaTextColor = com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     val termDescription = SpannableUtil.createSpannableString(
                         text = term.descriptionHtml.parseAsHtml(),
                         highlightText = term.clickableText.orEmpty(),

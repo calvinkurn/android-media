@@ -11,7 +11,7 @@
     android:layout_marginEnd="@dimen/layout_lvl2"
     android:layout_marginRight="@dimen/layout_lvl2"
     android:layout_marginBottom="@dimen/layout_lvl1"
-    app:cardBackgroundColor="@color/Unify_N0"
+    app:cardBackgroundColor="@color/Unify_NN0"
     app:cardCornerRadius="@dimen/layout_lvl1"
     app:cardElevation="@dimen/hotel_3dp"
     app:cardPreventCornerOverlap="false">
@@ -24,7 +24,7 @@
             android:id="@+id/room_image_view_pager"
             android:layout_width="match_parent"
             android:layout_height="@dimen/hotel_room_list_image_height"
-            android:background="@color/Unify_N100"
+            android:background="@color/Unify_NN200"
             app:layout_constraintTop_toTopOf="parent" />
 
         <include
@@ -54,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:lines="1"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     app:layout_constraintEnd_toStartOf="@+id/arrow_right"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toLeftOf="@+id/arrow_right"
@@ -81,7 +81,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/hotel_10dp"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:layout_constraintTop_toBottomOf="@+id/room_name_text_view"
                     app:typographyType="body_3"
                     tools:text="Maksimum: 2 dewasa, 1 anak" />
@@ -91,7 +91,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/hotel_3dp"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:layout_constraintTop_toBottomOf="@+id/max_occupancy_text_view"
                     app:typographyType="body_3"
                     tools:text="27 m² • 1 super-king atau 2 single" />
@@ -160,7 +160,7 @@
                         android:paddingRight="@dimen/spacing_lvl2"
                         android:paddingBottom="@dimen/spacing_lvl1"
                         android:singleLine="true"
-                        android:textColor="@color/Unify_R400"
+                        android:textColor="@color/Unify_RN400"
                         android:visibility="gone"
                         app:typographyType="small"
                         app:typographyWeight="bold"
@@ -171,7 +171,7 @@
                         android:id="@+id/room_list_slash_price_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/Unify_N700_44"
+                        android:textColor="@color/Unify_NN950_44"
                         android:visibility="gone"
                         app:typographyType="body_3"
                         tools:text="Rp 500.000"
@@ -181,7 +181,7 @@
                         android:id="@+id/room_price_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/Unify_N700_96"
+                        android:textColor="@color/Unify_NN950_96"
                         app:typographyType="body_2"
                         app:typographyWeight="bold"
                         tools:text="Rp 50.000.000"
@@ -194,7 +194,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_lvl2"
                         android:text="@string/hotel_room_list_per_room_per_night"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         app:typographyType="small" />
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -202,7 +202,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/hotel_room_list_include_tax"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         app:typographyType="small" />
 
                 </LinearLayout>
@@ -221,7 +221,7 @@
                     android:id="@+id/room_left_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_R500"
+                    android:textColor="@color/Unify_RN500"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:typographyType="body_3"
@@ -255,7 +255,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         tools:text="@string/hotel_room_list_pay_in_hotel"
-                        android:textColor="@color/Unify_N700_96"
+                        android:textColor="@color/Unify_NN950_96"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:typographyType="body_2"
@@ -268,7 +268,7 @@
                         android:layout_marginEnd="8dp"
                         android:layout_marginRight="8dp"
                         tools:text="@string/hotel_room_list_without_credit_card"
-                        android:textColor="@color/Unify_N700_68"
+                        android:textColor="@color/Unify_NN950_68"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/pay_hotel_text_view"

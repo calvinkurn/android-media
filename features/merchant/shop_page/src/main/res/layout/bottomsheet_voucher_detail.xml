@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/card"
+        android:fillViewport="true"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:scrollbars="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/imgVoucher"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpgVoucherName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imgVoucher"
+                app:typographyType="heading_3"
+                tools:text="Cashback 20% s.d. 100.000 Gopay Coins" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/iconClock"
+                app:icon_name="CLOCK"
+                app:icon_color_light_enable="@color/Unify_GN500"
+                app:icon_color_night_enable="@color/Unify_GN500"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="14dp"
+                android:contentDescription="@string/shop_page_clock_icon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tpgVoucherName" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/labelPromoPeriod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@string/shop_page_active_until"
+                app:layout_constraintBottom_toBottomOf="@+id/iconClock"
+                app:layout_constraintStart_toEndOf="@+id/iconClock"
+                app:layout_constraintTop_toTopOf="@+id/iconClock"
+                app:typographyType="display_2" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpgPromoPeriod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/labelPromoPeriod"
+                app:layout_constraintTop_toTopOf="@+id/iconClock"
+                app:typographyType="display_2"
+                tools:text="30 Mar - 30 Apr 2023" />
+
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/iconMinPurchase"
+                app:icon_name="SALDO"
+                app:icon_color_light_enable="@color/Unify_GN500"
+                app:icon_color_night_enable="@color/Unify_GN500"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:contentDescription="@string/shop_page_rupiah_icon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/iconClock" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/labelMinPurchase"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@string/shop_page_min_transaction"
+                app:layout_constraintBottom_toBottomOf="@+id/iconMinPurchase"
+                app:layout_constraintStart_toEndOf="@+id/iconClock"
+                app:layout_constraintTop_toTopOf="@+id/iconMinPurchase"
+                app:typographyType="display_2" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpgMinPurchase"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/labelMinPurchase"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/tpgPromoPeriod"
+                app:layout_constraintTop_toTopOf="@+id/labelMinPurchase"
+                app:typographyType="display_2"
+                tools:text="Rp300.000" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/Unify_NN50"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/iconMinPurchase" />
+
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/labelTnc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/shop_page_tnc"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider"
+                app:typographyType="display_1"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.webview.TkpdWebView
+                android:id="@+id/webViewTnc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/labelTnc" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:cardBackgroundColor="@color/Unify_NN0"
+        app:cardElevation="16dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnUsePromoVoucher"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/shop_page_use_promo"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpgVoucherPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/btnClaimPromoVoucher"
+                app:layout_constraintEnd_toStartOf="@+id/btnClaimPromoVoucher"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/btnClaimPromoVoucher"
+                app:typographyType="display_1"
+                app:typographyWeight="bold"
+                tools:text="Gratis" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnClaimPromoVoucher"
+                android:layout_width="96dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:unifyButtonSize="large"
+                app:unifyButtonType="transaction"
+                tools:text="@string/shop_page_claim" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_centerInParent="true"
+        tools:visibility="visible" />
+
+</RelativeLayout>

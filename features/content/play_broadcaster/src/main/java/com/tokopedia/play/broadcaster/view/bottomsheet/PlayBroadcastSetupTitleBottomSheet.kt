@@ -48,6 +48,12 @@ class PlayBroadcastSetupTitleBottomSheet @Inject constructor(): BottomSheetUnify
         _binding = BottomSheetPlayBroSetupTitleBinding.inflate(
             LayoutInflater.from(requireContext())
         )
+
+        setCloseClickListener {
+            if (!binding.btnSetupTitle.isLoading)
+                dismiss()
+        }
+
         setChild(binding.root)
     }
 
@@ -130,6 +136,7 @@ class PlayBroadcastSetupTitleBottomSheet @Inject constructor(): BottomSheetUnify
 
     private fun setLoading(isLoading: Boolean) {
         binding.btnSetupTitle.isLoading = isLoading
+        isCancelable = !isLoading
     }
 
     private fun hideSetupTitleKeyboard() {

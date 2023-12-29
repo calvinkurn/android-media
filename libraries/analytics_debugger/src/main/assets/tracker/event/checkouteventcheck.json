@@ -6,7 +6,7 @@
       "businessUnit": "travel & entertainment",
       "clientId": ".*",
       "eventCategory": "digital - event",
-      "checkout_step": "1",
+      "checkout_step": "0",
       "currentSite": "tokopediadigitalEvent",
       "event": "checkout_progress",
       "userId": ".*",

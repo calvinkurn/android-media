@@ -1,6 +1,7 @@
 package com.tokopedia.sellerorder.list.presentation.models
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 import com.tokopedia.sellerorder.common.presenter.model.PopUp
@@ -14,6 +15,7 @@ data class SomListOrderUiModel(
     val cancelRequestStatus: Int = 0,
     val deadlineColor: String = "",
     val deadlineText: String = "",
+    val deadlineStyle: Int = Int.ZERO,
     val orderId: String = "",
     val orderProduct: List<OrderProduct> = listOf(),
     val productCount: Int = 0,

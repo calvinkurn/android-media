@@ -15,38 +15,40 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.multishopmvc.MvcMultiShopView
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.user.session.UserSession
 
 const val RATIO_FOR_CAROUSEL = 0.85
 
-class MerchantVoucherCarouselItemViewHolder (itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
-    private val mvcMultiShopView:MvcMultiShopView = itemView.findViewById(R.id.mvc_multi_view)
-    private val parentView:ConstraintLayout = itemView.findViewById(R.id.multishop_parent_view)
-    private lateinit var merchantVoucherCarouselItemViewModel:MerchantVoucherCarouselItemViewModel
+class MerchantVoucherCarouselItemViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+    private val mvcMultiShopView: MvcMultiShopView = itemView.findViewById(R.id.mvc_multi_view)
+    private val parentView: ConstraintLayout = itemView.findViewById(R.id.multishop_parent_view)
+    private var merchantVoucherCarouselItemViewModel: MerchantVoucherCarouselItemViewModel? = null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         merchantVoucherCarouselItemViewModel = discoveryBaseViewModel as MerchantVoucherCarouselItemViewModel
-        setupView(merchantVoucherCarouselItemViewModel.components.design)
-        setupMargins(merchantVoucherCarouselItemViewModel.components.name)
+        merchantVoucherCarouselItemViewModel?.let {
+            setupView(it.components.design)
+            setupMargins(it.components.name)
+        }
     }
 
     private fun setupView(design: String) {
         val params = parentView.layoutParams
-        if(design == CAROUSEL_ITEM_DESIGN){
+        if (design == CAROUSEL_ITEM_DESIGN) {
             val width = Resources.getSystem().displayMetrics.widthPixels
-            params.width = (width*RATIO_FOR_CAROUSEL).toInt()
+            params.width = (width * RATIO_FOR_CAROUSEL).toInt()
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT
-        }else{
+        } else {
             params.width = ViewGroup.LayoutParams.MATCH_PARENT
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT
         }
         parentView.layoutParams = params
     }
 
-    private fun setupMargins(componentName:String?){
-        if(ComponentNames.MerchantVoucherListItem.componentName == componentName){
+    private fun setupMargins(componentName: String?) {
+        if (ComponentNames.MerchantVoucherListItem.componentName == componentName) {
             fragment.context?.let {
                 parentView.setMargin(
                     it.resources.getDimensionPixelOffset(R.dimen.dp_12),
@@ -55,40 +57,44 @@ class MerchantVoucherCarouselItemViewHolder (itemView: View, val fragment: Fragm
                     0
                 )
             }
-        }else{
-                parentView.setMargin(0,0,0,0)
+        } else {
+            parentView.setMargin(0, 0, 0, 0)
         }
     }
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let { lifecycle ->
-            merchantVoucherCarouselItemViewModel.multiShopModel.observe(lifecycle,{
+            merchantVoucherCarouselItemViewModel?.multiShopModel?.observe(lifecycle) {
                 mvcMultiShopView.show()
-                merchantVoucherCarouselItemViewModel.syncParentPosition()
-                mvcMultiShopView.setTracker(getMerchantAnalytics())
+                merchantVoucherCarouselItemViewModel?.syncParentPosition()
+                getMerchantAnalytics()?.let { it1 -> mvcMultiShopView.setTracker(it1) }
                 mvcMultiShopView.setMultiShopModel(it, MvcSource.DISCO)
-                (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-                    .trackMerchantVoucherMultipleImpression(
-                        merchantVoucherCarouselItemViewModel.components,
-                        UserSession(fragment.context).userId,
-                        merchantVoucherCarouselItemViewModel.position
-                    )
-            })
+                merchantVoucherCarouselItemViewModel?.let { viewModel ->
+                    (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                        .trackMerchantVoucherMultipleImpression(
+                            viewModel.components,
+                            UserSession(fragment.context).userId,
+                            viewModel.position
+                        )
+                }
+            }
         }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
-        lifecycleOwner?.let {merchantVoucherCarouselItemViewModel.multiShopModel.removeObservers(it)}
+        lifecycleOwner?.let { merchantVoucherCarouselItemViewModel?.multiShopModel?.removeObservers(it) }
     }
 
-    private fun getMerchantAnalytics(): DiscoMerchantAnalytics {
-        return DiscoMerchantAnalytics(
-            (fragment as DiscoveryFragment).getDiscoveryAnalytics(),
-            merchantVoucherCarouselItemViewModel.components,
-            merchantVoucherCarouselItemViewModel.components.parentComponentPosition,
-            "",
-            merchantVoucherCarouselItemViewModel.position
-        )
+    private fun getMerchantAnalytics(): DiscoMerchantAnalytics? {
+        return merchantVoucherCarouselItemViewModel?.let { viewModel ->
+            DiscoMerchantAnalytics(
+                (fragment as DiscoveryFragment).getDiscoveryAnalytics(),
+                viewModel.components,
+                viewModel.components.parentComponentPosition,
+                "",
+                viewModel.position
+            )
+        }
     }
 }

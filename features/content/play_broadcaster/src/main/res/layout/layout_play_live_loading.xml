@@ -35,7 +35,7 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:text="@string/play_loader_live_paused"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

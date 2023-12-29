@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_weight="1"
-        android:background="@color/Unify_N0">
+        android:background="@color/Unify_NN0">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,7 +34,7 @@
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/switch_pay_at_hotel"
                     android:text="@string/hotel_search_filter_only_show_pay_at_hotel"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     app:typographyType="body_2"
                     app:typographyWeight="bold" />
 
@@ -53,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_1dp"
                 android:layout_marginTop="@dimen/layout_lvl2"
-                android:background="@color/Unify_N75" />
+                android:background="@color/Unify_NN50" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/hotel_filter_rating_title"
@@ -61,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:text="@string/hotel_search_filter_star_title"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="body_2"
                 app:typographyWeight="bold" />
 
@@ -79,14 +79,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_1dp"
                 android:layout_marginTop="@dimen/layout_lvl2"
-                android:background="@color/Unify_N75" />
+                android:background="@color/Unify_NN50" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:text="@string/hotel_search_filter_range_price_title"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="body_2"
                 app:typographyWeight="bold" />
 
@@ -102,14 +102,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_1dp"
                 android:layout_marginTop="@dimen/layout_lvl2"
-                android:background="@color/Unify_N75" />
+                android:background="@color/Unify_NN50" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:text="@string/hotel_search_filter_rating_title"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="body_2"
                 app:typographyWeight="bold" />
 
@@ -146,14 +146,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_1dp"
                 android:layout_marginTop="@dimen/layout_lvl2"
-                android:background="@color/Unify_N75" />
+                android:background="@color/Unify_NN50" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:text="@string/hotel_search_filter_accomodation_type_title"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="body_2"
                 app:typographyWeight="bold" />
 
@@ -173,7 +173,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         android:elevation="@dimen/spacing_lvl2"
         android:padding="@dimen/layout_lvl2">
 

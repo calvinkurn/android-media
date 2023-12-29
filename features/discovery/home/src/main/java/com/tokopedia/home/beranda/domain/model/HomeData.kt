@@ -18,12 +18,6 @@ data class HomeData(
     @SerializedName("dynamicHomeIcon")
     @Expose
     var dynamicHomeIcon: DynamicHomeIcon = DynamicHomeIcon(),
-    @SerializedName("spotlight")
-    @Expose
-    val spotlight: Spotlight = Spotlight(),
-    @SerializedName("homeFlag")
-    @Expose
-    var homeFlag: HomeFlag = HomeFlag(),
     @SerializedName("token")
     @Expose
     var token: String = "",

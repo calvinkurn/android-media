@@ -11,7 +11,8 @@ import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.Var
 
 class VariantDetailInputTypeFactoryImpl(
     private val onCollapsibleHeaderClickListener: VariantDetailHeaderViewHolder.OnCollapsibleHeaderClickListener,
-    private val variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolder.VariantDetailFieldsViewHolderListener
+    private val variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolder.VariantDetailFieldsViewHolderListener,
+    private val enableVariantStatusChange: Boolean
 ) : BaseAdapterTypeFactory(), VariantDetailInputTypeFactory {
 
     override fun type(variantDetailHeaderUiModel: VariantDetailHeaderUiModel): Int {
@@ -30,7 +31,8 @@ class VariantDetailInputTypeFactoryImpl(
             )
             VariantDetailFieldsViewHolder.LAYOUT -> VariantDetailFieldsViewHolder(
                 parent,
-                variantDetailFieldsViewHolderListener
+                variantDetailFieldsViewHolderListener,
+                enableVariantStatusChange
             )
             else -> return super.createViewHolder(parent, type)
         }

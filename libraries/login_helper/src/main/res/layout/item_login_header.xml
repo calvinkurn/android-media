@@ -14,7 +14,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="@string/login_helper_total_users"
         android:padding="8dp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:layout_marginStart="16dp"
         app:typographyType="display_1"/>
 

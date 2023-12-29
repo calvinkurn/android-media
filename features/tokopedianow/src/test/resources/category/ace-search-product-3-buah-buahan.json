@@ -1,0 +1,241 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 70,
+      "totalDataText": "70",
+      "responseCode": 0,
+      "keywordProcess": "0"
+    },
+    "data": {
+      "isQuerySafe": true,
+      "suggestion": {
+        "suggestion": "",
+        "query": "",
+        "text": ""
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "otherRelated": []
+      },
+      "products": [
+        {
+          "id": 7029764088,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/11/22/c79df332-0cef-458a-add7-2a3d989c3a3a.jpg",
+          "name": "flash_sale_salak",
+          "price": "Rp85.000",
+          "priceInt": 85000,
+          "discountPercentage": 15,
+          "originalPrice": "Rp100.000",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 5,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 5,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "100 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        },
+        {
+          "id": 5208528902,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/8/4/57731708-34a7-4f8e-9a3d-a267e8675028.jpg",
+          "name": "multiple_lemon",
+          "price": "Rp4.000",
+          "priceInt": 4000,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 499,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 499,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "Terjual 7",
+              "type": "textDarkGrey",
+              "position": "integrity"
+            },
+            {
+              "url": "",
+              "title": "100 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        },
+        {
+          "id": 6269646235,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/9/19/2a3025a0-c767-40da-8f03-17aacd3a90b4.jpg",
+          "name": "wms_jambu_kristal",
+          "price": "Rp15.000",
+          "priceInt": 15000,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 98,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 98,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "Terjual 19",
+              "type": "textDarkGrey",
+              "position": "integrity"
+            },
+            {
+              "url": "",
+              "title": "450 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        },
+        {
+          "id": 5208528992,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/8/4/e5ac14c0-efea-4a24-bd4b-e4165e2d61dc.jpg",
+          "name": "multiple_nangka",
+          "price": "Rp1.500",
+          "priceInt": 1500,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 499,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 499,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "Terjual 1",
+              "type": "textDarkGrey",
+              "position": "integrity"
+            },
+            {
+              "url": "",
+              "title": "100 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        },
+        {
+          "id": 5208529146,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/8/4/d455d380-3476-43f8-ae5d-9000f39cf6a2.jpg",
+          "name": "multiple_strawberry",
+          "price": "Rp3.000",
+          "priceInt": 3000,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 499,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 499,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "Terjual 9",
+              "type": "textDarkGrey",
+              "position": "integrity"
+            },
+            {
+              "url": "",
+              "title": "100 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        },
+        {
+          "id": 5208528831,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/8/4/150379d2-c847-491d-bfab-a80646f7d891.jpg",
+          "name": "multiple_blueberry",
+          "price": "Rp1.000",
+          "priceInt": 1000,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 499,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 499,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "Terjual 3",
+              "type": "textDarkGrey",
+              "position": "integrity"
+            },
+            {
+              "url": "",
+              "title": "100 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        }
+      ]
+    }
+  }
+}

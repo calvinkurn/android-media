@@ -64,6 +64,7 @@ class TableViewHolder(
     }
 
     private fun setOnSuccess(element: TableWidgetUiModel) {
+        removeWidgetWithCondition(element)
         val dataSet = element.data?.dataSet.orEmpty()
         itemView.addOnImpressionListener(element.impressHolder) {
             listener.sendTableImpressionEvent(
@@ -119,6 +120,13 @@ class TableViewHolder(
             setupCta(element)
 
             horLineShcTableBtm.isVisible = btnTableCta.isVisible || luvShcTable.isVisible
+        }
+    }
+
+    private fun removeWidgetWithCondition(element: TableWidgetUiModel) {
+        val shouldRemove = !element.data?.showWidget.orFalse()
+        if (shouldRemove) {
+            listener.removeWidget(absoluteAdapterPosition, element)
         }
     }
 
@@ -211,7 +219,7 @@ class TableViewHolder(
 
             if (isCtaVisible) {
                 val iconColor = root.context.getResColor(
-                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
                 val iconWidth = root.context.resources.getDimension(
                     com.tokopedia.unifyprinciples.R.dimen.layout_lvl3

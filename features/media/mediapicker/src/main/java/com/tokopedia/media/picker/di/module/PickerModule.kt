@@ -24,10 +24,6 @@ abstract class PickerModule {
 
     @Binds
     @ActivityScope
-    abstract fun provideFeatureToggleManager(source: FeatureToggleManagerImpl) : FeatureToggleManager
-
-    @Binds
-    @ActivityScope
     abstract fun provideMediaQueryDataSource(source: MediaQueryDataSourceImpl) : MediaQueryDataSource
 
     @Binds
@@ -57,4 +53,8 @@ abstract class PickerModule {
     @Binds
     @ActivityScope
     abstract fun provideResourceManager(manager: ResourceManagerImpl): ResourceManager
+
+    @Binds
+    @ActivityScope
+    abstract fun provideFeatureToggleManager(manager: FeatureToggleManagerImpl): FeatureToggleManager
 }

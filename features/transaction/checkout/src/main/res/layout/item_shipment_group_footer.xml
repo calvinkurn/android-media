@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_footer_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_Background"
+    android:orientation="vertical">
+
+    <!--Gifting: Gifting Experience - Order Level-->
+    <include
+        android:id="@+id/container_gifting_addon_order_level"
+        layout="@layout/item_shipment_gifting_addon_order_level"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        tools:visibility="visible" />
+
+    <!--Shipping: Shipping Experience-->
+    <com.tokopedia.logisticcart.shipping.features.shippingwidget.ShippingWidget
+        android:id="@+id/shipping_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!--Shipping: Option (Insurance, dropshipper, etc)-->
+    <include
+        android:id="@+id/container_shipping_options"
+        layout="@layout/item_shipment_shipping_options"
+        tools:visibility="gone" />
+
+    <include
+        android:id="@+id/container_subtotal"
+        layout="@layout/item_shipment_subtotal"
+        tools:visibility="visible" />
+</LinearLayout>

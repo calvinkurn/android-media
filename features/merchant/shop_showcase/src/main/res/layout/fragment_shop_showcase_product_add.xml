@@ -107,7 +107,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:elevation="16dp"
-        app:cardBackgroundColor="@color/Unify_N0"
+        app:cardBackgroundColor="@color/Unify_NN0"
         app:cardCornerRadius="0dp"
         app:cardElevation="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -140,7 +140,7 @@
                 android:layout_marginStart="16dp"
                 app:typographyType="heading_5"
                 android:layout_marginTop="13dp"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                  />
 
         </RelativeLayout>

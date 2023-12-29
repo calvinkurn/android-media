@@ -20,10 +20,11 @@
         android:paddingTop="@dimen/unify_space_8"
         android:paddingBottom="@dimen/unify_space_4"
         android:paddingEnd="@dimen/unify_space_16"
+        app:tint="@color/Unify_N400"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/content_detail_back_button" />
+        app:srcCompat="@drawable/iconunify_arrow_back" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/pageHeader"

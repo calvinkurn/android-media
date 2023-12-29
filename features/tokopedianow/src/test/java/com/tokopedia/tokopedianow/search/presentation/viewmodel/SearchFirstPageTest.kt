@@ -1,14 +1,16 @@
 package com.tokopedia.tokopedianow.search.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.remoteconfig.RollenceKey.TOKOPEDIA_NOW_PAGINATION
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_DISABLED
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.EXPERIMENT_ENABLED
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
-import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.search.presentation.model.CTATokopediaNowHomeDataView
-import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
 import com.tokopedia.tokopedianow.searchcategory.assertBannerDataView
 import com.tokopedia.tokopedianow.searchcategory.assertCategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.assertChooseAddressDataView
+import com.tokopedia.tokopedianow.searchcategory.assertProductAdsCarousel
 import com.tokopedia.tokopedianow.searchcategory.assertProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.assertQuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
@@ -34,6 +36,11 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
         `Given choose address data`()
         `Given search view model`()
+        `Given remote config`(
+            defaultValue = EXPERIMENT_DISABLED,
+            key = TOKOPEDIA_NOW_PAGINATION,
+            value = EXPERIMENT_DISABLED
+        )
 
         `When view created`()
 
@@ -45,6 +52,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert visitable list does not end with loading more model`(visitableList)
         `Then assert has next page value`(false)
         `Then assert get first page success interactions`(searchModel)
+        `Then assert first page success trigger is Unit`()
     }
 
     @Test
@@ -54,6 +62,11 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
         `Given choose address data`(dummyChooseAddressData.copy(service_type = NOW_15M))
         `Given search view model`()
+        `Given remote config`(
+            defaultValue = EXPERIMENT_DISABLED,
+            key = TOKOPEDIA_NOW_PAGINATION,
+            value = EXPERIMENT_ENABLED
+        )
 
         `When view created`()
 
@@ -65,6 +78,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert visitable list does not end with loading more model`(visitableList)
         `Then assert has next page value`(false)
         `Then assert get first page success interactions`(searchModel)
+        `Then assert first page success trigger is Unit`()
     }
 
     private fun `Then assert first page visitables`(
@@ -104,7 +118,15 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         val expectedProductList = searchModel.searchProduct.data.productList
         val actualProductItemDataViewList = visitableList.filterIsInstance<ProductItemDataView>()
 
+        verifyProductAdsCarousel(visitableList, searchModel)
         verifyProductItemDataViewList(expectedProductList, actualProductItemDataViewList, 1)
+    }
+
+    private fun verifyProductAdsCarousel(
+        visitableList: List<Visitable<*>>,
+        searchModel: SearchModel
+    ) {
+        visitableList[6].assertProductAdsCarousel(searchModel.productAds)
     }
 
     private fun `Then assert visitable list footer 2h`(
@@ -115,7 +137,6 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         val footerStartIndex = lastProductIndex + 1
         val footerList = visitableList.subList(footerStartIndex, visitableList.size)
 
-        footerList.first().assertCategoryJumperDataView(searchModel.searchCategoryJumper)
         footerList.last().assertCTATokopediaNowHomeDataView()
     }
 
@@ -128,26 +149,6 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         val footerList = visitableList.subList(footerStartIndex, visitableList.size)
 
         footerList.first().assertSwitcherWidgetDataView()
-        footerList.last().assertCategoryJumperDataView(searchModel.searchCategoryJumper)
-    }
-
-    private fun Visitable<*>.assertCategoryJumperDataView(
-            searchCategoryJumper: SearchCategoryJumperData
-    ) {
-        assertThat(this, instanceOf(CategoryJumperDataView::class.java))
-
-        val categoryJumperDataView = this as CategoryJumperDataView
-        assertThat(categoryJumperDataView.title, shouldBe(searchCategoryJumper.getTitle()))
-
-        val expectedItemList = searchCategoryJumper.getJumperItemList()
-        assertThat(categoryJumperDataView.itemList.size, shouldBe(expectedItemList.size))
-
-        categoryJumperDataView.itemList.forEachIndexed { index, actualItem ->
-            val expectedItem = expectedItemList[index]
-
-            assertThat(actualItem.title, shouldBe(expectedItem.title))
-            assertThat(actualItem.applink, shouldBe(expectedItem.applink))
-        }
     }
 
     private fun Visitable<*>.assertCTATokopediaNowHomeDataView() {
@@ -194,5 +195,9 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert visitable list end with loading more model`(visitableList)
         `Then assert has next page value`(true)
         `Then assert get first page success interactions`(searchModel)
+    }
+
+    private fun `Then assert first page success trigger is Unit`() {
+        assertThat(tokoNowSearchViewModel.firstPageSuccessTriggerLiveData.value, shouldBe(Unit))
     }
 }

@@ -8,27 +8,28 @@ object RollenceKey {
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG = "follow_green_big"
     const val AB_TEST_SHOP_AFFILIATE_SHARE_ICON = "shareIconShopAff"
+    const val AB_TEST_SHOP_RE_IMAGINED = "shop_page_reimagined"
 
+    const val AB_TEST_GRADUAL_ROLLOUT_KEY_SHOP_INFO_REIMAGINED = "an_shop_info_revamp"
+
+    // home rollence section
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
-    const val HOME_COMPONENT_ATF = "revamp_atf"
-    const val HOME_COMPONENT_ATF_2 = "home_atf2"
+    const val HOME_COMPONENT_ATF = "test_atf"
+    const val HOME_COMPONENT_ATF_2 = "control_atf2"
+    const val HOME_COMPONENT_ATF_3 = "exp_atf3"
+    const val HOME_LOAD_TIME_KEY = "load_time"
+    const val HOME_LOAD_TIME_CONTROL = "control_variant"
+    const val HOME_LOAD_ATF_CACHE_ROLLENCE_KEY = "loadtime_homepage_an"
+    const val HOME_LOAD_ATF_CACHE_ROLLENCE_CONTROL = "control_variant"
+    const val HOME_LOAD_ATF_CACHE_ROLLENCE_EXP = "experiment_variant"
+    // end of home rollence section
 
-    // home component rollence section
-    const val HOME_COMPONENT_HPB_DURATION_EXP = "hpb_scroll_duration"
-    const val HOME_COMPONENT_HPB_DURATION_CONTROL = "control_scroll_5s"
-    const val HOME_COMPONENT_HPB_DURATION_VARIANT_4S = "scroll_4s"
-    const val HOME_COMPONENT_HPB_DURATION_VARIANT_6S = "scroll_6s"
-    const val HOME_COMPONENT_HPB_DOTS_INFINITE_EXP = "hpb_dots_infinite_2"
-    const val HOME_COMPONENT_HPB_DOTS_INFINITE_CONTROL = "control_variant"
-    const val HOME_COMPONENT_HPB_DOTS_INFINITE_VARIANT = "new_dots_scroll"
-    const val HOME_COMPONENT_DYNAMIC_ICON_EXP = "icon_animation"
-    const val HOME_COMPONENT_DYNAMIC_ICON_VARIANT = "exp_icon"
-    const val HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_EXP = "btf_revamp_header"
-    const val HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_VARIANT = "header_variant"
-    // end of home component rollence section
-
+    // navigation rollence section
+    const val ME_PAGE_EXP = "GlobalMenuRV"
+    const val ME_PAGE_VARIANT = "Varian1"
+    // end of navigation rollence section
 
     // TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
@@ -39,6 +40,11 @@ object RollenceKey {
     const val RECOM_PAGE_CPM_VARIANT = "ShopAdsIMVariant"
     // end of Recommendation page section
 
+    // Icon Jumper For You
+    const val ICON_JUMPER_DEFAULT = "control_variant"
+    const val ICON_JUMPER_EXP = "VariantA"
+    const val ICON_JUMPER = "IconJumper"
+
     // Auto Complete
     const val SEARCH_BROAD_MATCH_TRACKER_UNIFICATION = "keyword_track_broad"
 
@@ -47,37 +53,36 @@ object RollenceKey {
     const val EXPERIMENT_VARIANT = "experiment_variant"
     const val TREATMENT_VARIANT = "treatment_variant"
     const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
-    const val CHECKOUT_PLUS_NEW_UPSELL_IMPROVEMENT = "plus_xsell_pg_ui_an"
+    const val CART_CHECKOUT_REVAMP = "cartcheckout_revamp"
+    const val CART_CHECKOUT_NEW = "cart_checkout_new"
+    const val PROMO_ENTRY_POINT_IMPROVEMENT = "promowidget_cartco"
+    const val PROMO_ENTRY_POINT_NEW = "new_promowidget"
 
     // SRP Video Sneak Peek Autoplay
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY = "srp_prodvideo_3"
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_VARIANT = "experiment_variant"
     const val SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_OTHER_VARIANT = "exp_variant"
 
+    // SRP Similar Search Coachmark
+    const val SEARCH_SIMILAR_SEARCH_COACHMARK = "coachmark_similar"
+    const val SEARCH_SIMILAR_SEARCH_COACHMARK_VARIANT = "experiment_variant"
+
     // Product Card Experiment
-    const val PRODUCT_CARD_EXPERIMENT = "newcard1"
+    const val PRODUCT_CARD_EXPERIMENT = "newcard2"
     const val PRODUCT_CARD_EXPERIMENT_GIMMICK = "gimmick"
     const val PRODUCT_CARD_EXPERIMENT_PORTRAIT = "portrait"
     const val PRODUCT_CARD_EXPERIMENT_ETA = "eta"
 
-    // Global Menu (Me Page)
-    const val ME_PAGE_EXP = "mepage_secondexp"
-    const val ME_PAGE_CONTROL = "control_variant"
-    const val ME_PAGE_VARIANT_1 = "Mepage_1"
-    const val ME_PAGE_VARIANT_2 = "Mepage_2"
+    // For You Rollence
+    const val FOR_YOU_FEATURE_FLAG = "foryou_feature_flag"
 
     // PDP
-    const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
-    const val PDP_SHOW_THUMBNAIL = "pdp_show_thumbnail"
-    const val PDP_HIDE_THUMBNAIL = "pdp_hide_thumbnail"
-    const val PDP_SHOW_SHARE_AFFILIATE = "pdp_share_icon"
+    const val PDP_PREFETCH = "prefetch_pdp_android"
+    const val PDP_PREFETCH_ENABLE = "variant_prefetch"
+    const val PDP_PREFETCH_DISABLE = "control_prefetch"
 
     // Review
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
-
-    // Logistic
-    const val KEY_SHARE_ADDRESS_LOGI = "share_address_logi"
-    const val KEY_ADDRESS_IMPROVEMENTS = "address_improvements"
 
     // Fulfillment
     const val KEY_DISABLE_DILAYANI_TOKOPEDIA_HOMEPAGE = "disabledthomepage"
@@ -85,13 +90,45 @@ object RollenceKey {
     // DG SBM Transition
     const val KEY_SBM_TRANSITION = "sbm_ticker_mybills"
 
+    // BCA Rollence
+    const val BCA_ROLLENCE = "android_flazzrollout"
+
     // Payment
     const val THANKYOU_PAGE_WIDGET_ORDERING = "android_thankyou_v0"
+    const val THANKYOU_PAGE_WIDGET_VARIANT = "TYP_Exp_PG_DG"
 
     // TokopediaNOW
     const val TOKOPEDIA_NOW_AFFILIATE = "aff_now_att"
-    const val TOKOPEDIA_NOW_REPURCHASE = "now_repurchase"
+    const val TOKOPEDIA_NOW_PAGINATION = "now_pagination"
+    const val TOKOPEDIA_NOW_EXPERIMENT = "now_experiment"
 
-    //Feed
-    const val AB_TEST_IMMERSIVE_FEED = "immersive_feed"
+    // FS Toko OOS Gradual Rollout
+    const val FLASH_SALE_OUT_OF_STOCK_GRADUAL_ROLLOUT = "fst_oosimprovement"
+
+    // Seller Order Management
+    const val KEY_SOM_OG = "android_som_og"
+
+    // Share affiliate
+    const val AFFILIATE_SHARE_ICON = "ShareAff_pdpshop"
+
+    // Wishlist
+    const val WISHLIST_AFFILIATE_TICKER = "aff_ticker_col"
+
+    // Search Reimagine
+    const val SEARCH_1_INST_AUTO = "search_1_inst_auto"
+    const val SEARCH_1_INST_AUTO_CONTROL = "control_variant"
+    const val SEARCH_1_INST_AUTO_VARIANT_1 = "variant_1"
+    const val SEARCH_1_INST_AUTO_VARIANT_2 = "variant_2"
+    const val SEARCH_1_INST_AUTO_VARIANT_3 = "variant_3"
+    const val SEARCH_1_INST_AUTO_VARIANT_4 = "variant_4"
+    const val SEARCH_2_COMPONENT = "search_2_component"
+    const val SEARCH_2_COMPONENT_CONTROL = "control_variant"
+    const val SEARCH_2_COMPONENT_CAROUSEL_VAR = "ads_crsl_var"
+    const val SEARCH_2_COMPONENT_QF_VAR = "ads_crsl_qf_var"
+    const val SEARCH_3_PRODUCT_CARD = "search_3_pc"
+    const val SEARCH_3_PRODUCT_CARD_CONTROL = "control_variant"
+    const val SEARCH_3_PRODUCT_CARD_VAR_1A = "var_1a"
+    const val SEARCH_3_PRODUCT_CARD_VAR_1B = "var_1b"
+    const val SEARCH_3_PRODUCT_CARD_VAR_2A = "var_2a"
+    const val SEARCH_3_PRODUCT_CARD_VAR_2B = "var_2b"
 }

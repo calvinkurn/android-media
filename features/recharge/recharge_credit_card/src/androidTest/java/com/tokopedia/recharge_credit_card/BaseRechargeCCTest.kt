@@ -21,6 +21,7 @@ import com.tokopedia.test.application.espresso_component.CommonActions
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.core.AllOf
+import com.tokopedia.recharge_component.R as recharge_componentR
 
 abstract class BaseRechargeCCTest {
 
@@ -28,7 +29,7 @@ abstract class BaseRechargeCCTest {
         onView(
             allOf(
                 supportsInputMethods(),
-                isDescendantOfA(withId(R.id.cc_widget_client_number))
+                isDescendantOfA(withId(recharge_componentR.id.client_number_widget_input_field))
             )
         ).perform(typeText(ccNumber))
     }
@@ -56,7 +57,7 @@ abstract class BaseRechargeCCTest {
     }
 
     protected fun bankListBottomSheet_clickCloseButton() {
-        onView(withId(R.id.bottom_sheet_close)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(click())
     }
 
     protected fun clientNumberWidget_checkIsButtonDisabled() {
@@ -68,7 +69,7 @@ abstract class BaseRechargeCCTest {
     }
 
     protected fun clientNumberWidget_clickClearIcon() {
-        onView(withId(R.id.text_field_icon_close)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_close)).perform(click())
     }
 
     protected fun clientNumberWidget_checkIsShowInvalidNumberError() {
@@ -88,15 +89,15 @@ abstract class BaseRechargeCCTest {
     }
 
     protected fun clientNumberWidget_checkIsLoadingStateShown() {
-        onView(withId(R.id.text_field_loader)).check(matches(isDisplayed()))
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_loader)).check(matches(isDisplayed()))
     }
 
     protected fun clientNumberWidget_checkIsLoadingStateHidden() {
-        onView(withId(R.id.text_field_loader)).check(matches(not(isDisplayed())))
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_loader)).check(matches(not(isDisplayed())))
     }
 
     protected fun tabLayout_clickTabWithText(text: String) {
-        onView(AllOf.allOf(withId(R.id.tab_item_text_id), ViewMatchers.withText(text))).perform(
+        onView(AllOf.allOf(withId(com.tokopedia.unifycomponents.R.id.tab_item_text_id), ViewMatchers.withText(text))).perform(
             click()
         )
     }
@@ -104,8 +105,8 @@ abstract class BaseRechargeCCTest {
     protected fun recentTransaction_scrollToPosition(position: Int) {
         val viewInteraction = onView(
             AllOf.allOf(
-                isDescendantOfA(withId(R.id.layout_widget)),
-                withId(R.id.recycler_view_menu_component),
+                isDescendantOfA(withId(com.tokopedia.common.topupbills.R.id.layout_widget)),
+                withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component),
                 isDisplayed()
             )
         )
@@ -117,8 +118,8 @@ abstract class BaseRechargeCCTest {
     protected fun promo_scrollToPosition(position: Int) {
         val viewInteraction = onView(
             AllOf.allOf(
-                isDescendantOfA(withId(R.id.layout_widget)),
-                withId(R.id.recycler_view_menu_component),
+                isDescendantOfA(withId(com.tokopedia.common.topupbills.R.id.layout_widget)),
+                withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component),
                 isDisplayed()
             )
         )
@@ -130,8 +131,8 @@ abstract class BaseRechargeCCTest {
     protected fun recentTransaction_clickItemWithPosition(position: Int) {
         val viewInteraction = onView(
             AllOf.allOf(
-                isDescendantOfA(withId(R.id.layout_widget)),
-                withId(R.id.recycler_view_menu_component),
+                isDescendantOfA(withId(com.tokopedia.common.topupbills.R.id.layout_widget)),
+                withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component),
                 isDisplayed()
             )
         )
@@ -147,8 +148,8 @@ abstract class BaseRechargeCCTest {
     protected fun promo_clickCopyPromoWithPosition(position: Int) {
         val viewInteraction = onView(
             AllOf.allOf(
-                isDescendantOfA(withId(R.id.layout_widget)),
-                withId(R.id.recycler_view_menu_component),
+                isDescendantOfA(withId(com.tokopedia.common.topupbills.R.id.layout_widget)),
+                withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component),
                 isDisplayed()
             )
         )

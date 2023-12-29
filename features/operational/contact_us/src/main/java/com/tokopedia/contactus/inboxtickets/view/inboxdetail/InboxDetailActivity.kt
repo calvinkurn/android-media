@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
@@ -43,11 +44,6 @@ class InboxDetailActivity : BaseSimpleActivity() {
         return TicketFragment.newInstance(ticketId, isOfficialStore.orFalse())
     }
 
-    override fun onBackPressed() {
-        val fragment = supportFragmentManager.findFragmentById(R.id.container)
-        (fragment as BackTicketListener).onDeviceBackPress()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
         uri?.let {
@@ -59,6 +55,19 @@ class InboxDetailActivity : BaseSimpleActivity() {
         }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.contact_us_activity_inbox_detail)
+        initOnBackPressCallback()
+    }
+
+    private fun initOnBackPressCallback() {
+        onBackPressedDispatcher.addCallback(this, getBackPressCallback())
+    }
+    private fun getBackPressCallback(): OnBackPressedCallback {
+        return object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val fragment = supportFragmentManager.findFragmentById(R.id.container)
+                (fragment as BackTicketListener).onDeviceBackPress()
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

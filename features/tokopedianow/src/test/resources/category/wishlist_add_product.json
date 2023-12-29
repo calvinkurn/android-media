@@ -1,0 +1,14 @@
+{
+  "wishlist_add_v2": {
+    "id": "5194296203",
+    "success": true,
+    "message": "Barang berhasil disimpan di Wishlist!",
+    "toaster_color": "black",
+    "button": {
+      "text": "Lihat",
+      "action": "OPEN_WISHLIST",
+      "url": ""
+    },
+    "error_type": 0
+  }
+}

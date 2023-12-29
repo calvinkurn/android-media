@@ -257,7 +257,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(
                 ContextCompat.getColor(
                     activityContext,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
             )
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).isAllCaps = false
@@ -267,7 +267,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(
                 ContextCompat.getColor(
                     activityContext,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N200
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN500
                 )
             )
         }

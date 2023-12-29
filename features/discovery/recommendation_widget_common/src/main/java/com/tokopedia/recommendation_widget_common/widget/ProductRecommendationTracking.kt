@@ -255,7 +255,8 @@ object ProductRecommendationTracking : BaseTrackerConst() {
             shopName = it.shopName,
             shopType = it.shopType,
             quantity = if (it.quantity > 0) it.quantity.toString() else "",
-            cartId = it.cartId
+            cartId = it.cartId,
+            warehouseId = it.warehouseId.toString()
         )
     }
 }

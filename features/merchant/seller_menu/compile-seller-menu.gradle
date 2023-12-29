@@ -17,7 +17,8 @@ include "libraries:cache_manager"
 //include "libraries:image_picker"
 //include "libraries:image_preview"
 //include 'libraries:imageuploader'
-include "libraries:kotlin_extensions"
+
+
 //include 'libraries:locationmanager'
 include "libraries:logger"
 //include 'libraries:iris'

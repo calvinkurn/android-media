@@ -11,6 +11,7 @@ import com.tokopedia.picker.common.EXTRA_PICKER_PARAM
 import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.ImageRatioType
+import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.R
@@ -65,14 +66,20 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
                                 if (contains(EditorToolType.ADD_LOGO)) {
                                     withAddLogo()
                                 }
+
+                                if (contains(EditorToolType.ADD_TEXT)) {
+                                    withAddText()
+                                }
                             }
 
                             when (fromEditorJson.autoCropRatio()) {
                                 ImageRatioType.RATIO_1_1 -> autoCrop1to1()
                                 ImageRatioType.RATIO_3_4 -> autoCrop3to4()
                                 ImageRatioType.RATIO_2_1 -> autoCrop2to1()
-                                else -> autoCrop1to1()
+                                else -> {}
                             }
+
+                            setCustomCtaText(fromEditorJson.getCustomCtaText() ?: "Upload")
                         }
                     }
                 }
@@ -132,12 +139,18 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
 
     private fun initConfig() {
         val gson = GsonBuilder().setPrettyPrinting().create()
-        val pickerConfigJson = gson.toJson(PickerParam().apply { })
+        val pickerConfigJson = gson.toJson(PickerParam().apply {
+            withEditor()
+            pageSource(PageSource.Play)
+            pageType(PageType.GALLERY)
+        })
         val editorConfigJson = gson.toJson(
             EditorParam().apply {
+                setCustomCtaText("Upload")
                 withRemoveBackground()
                 withWatermark()
                 autoCrop1to1()
+                setCustomCtaText("Upload")
             }
         )
 

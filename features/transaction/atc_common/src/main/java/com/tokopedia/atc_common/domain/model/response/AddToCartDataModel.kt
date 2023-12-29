@@ -41,69 +41,78 @@ data class AddToCartDataModel(
 
 @Parcelize
 data class DataModel(
-        var success: Int = 0,
-        var cartId: String = "",
-        var productId: String = "",
-        var quantity: Int = 0,
-        var notes: String = "",
-        var shopId: String = "",
-        var customerId: String = "",
-        var warehouseId: String = "",
-        var trackerAttribution: String = "",
-        var trackerListName: String = "",
-        var ucUtParam: String = "",
-        var isTradeIn: Boolean = false,
-        var message: ArrayList<String> = arrayListOf(),
-        var ovoValidationDataModel: OvoValidationDataModel = OvoValidationDataModel(),
-        var refreshPrerequisitePage: Boolean = false
+    var success: Int = 0,
+    var cartId: String = "",
+    var productId: String = "",
+    var quantity: Int = 0,
+    var notes: String = "",
+    var shopId: String = "",
+    var customerId: String = "",
+    var warehouseId: String = "",
+    var trackerAttribution: String = "",
+    var trackerListName: String = "",
+    var ucUtParam: String = "",
+    var isTradeIn: Boolean = false,
+    var message: ArrayList<String> = arrayListOf(),
+    var ovoValidationDataModel: OvoValidationDataModel = OvoValidationDataModel(),
+    var refreshPrerequisitePage: Boolean = false,
+    var addOns: List<AddOn> = emptyList(),
+    var isFulfillment: Boolean = false
 ) : Parcelable
 
 @Parcelize
 data class ErrorReporterModel(
-        var eligible: Boolean = false,
-        var texts: ErrorReporterTextModel = ErrorReporterTextModel()
-): Parcelable
+    var eligible: Boolean = false,
+    var texts: ErrorReporterTextModel = ErrorReporterTextModel()
+) : Parcelable
 
 @Parcelize
 data class ErrorReporterTextModel(
-        var submitTitle: String = "",
-        var submitDescription: String = "",
-        var submitButton: String = "",
-        var cancelButton: String = ""
-): Parcelable
+    var submitTitle: String = "",
+    var submitDescription: String = "",
+    var submitButton: String = "",
+    var cancelButton: String = ""
+) : Parcelable
 
 @Parcelize
 data class OvoValidationDataModel(
-        var status: Int = 0,
-        var applink: String = "",
-        var ovoInsufficientBalance: OvoInsufficientBalance = OvoInsufficientBalance()
-): Parcelable
+    var status: Int = 0,
+    var applink: String = "",
+    var ovoInsufficientBalance: OvoInsufficientBalance = OvoInsufficientBalance()
+) : Parcelable
 
 @Parcelize
 data class OvoInsufficientBalance(
-        var title: String = "",
-        var description: String = "",
-        var details: OvoInsufficientDetails = OvoInsufficientDetails(),
-        var buttons: OvoInsufficientButton = OvoInsufficientButton()
-): Parcelable
+    var title: String = "",
+    var description: String = "",
+    var details: OvoInsufficientDetails = OvoInsufficientDetails(),
+    var buttons: OvoInsufficientButton = OvoInsufficientButton()
+) : Parcelable
 
 @Parcelize
 data class OvoInsufficientDetails(
-        var productPrice: Long = 0,
-        var shippingEstimation: Int = 0,
-        var ovoBalance: Int = 0,
-        var topupBalance: Int = 0
-): Parcelable
+    var productPrice: Long = 0,
+    var shippingEstimation: Int = 0,
+    var ovoBalance: Int = 0,
+    var topupBalance: Int = 0
+) : Parcelable
 
 @Parcelize
 data class OvoInsufficientButton(
-        var topupButton: OvoInsufficientTopup = OvoInsufficientTopup(),
-        var otherMethodButton: OvoInsufficientTopup = OvoInsufficientTopup()
-): Parcelable
+    var topupButton: OvoInsufficientTopup = OvoInsufficientTopup(),
+    var otherMethodButton: OvoInsufficientTopup = OvoInsufficientTopup()
+) : Parcelable
 
 @Parcelize
 data class OvoInsufficientTopup(
-        var text: String = "",
-        var applink: String = "",
-        var enable: Boolean = false
-): Parcelable
+    var text: String = "",
+    var applink: String = "",
+    var enable: Boolean = false
+) : Parcelable
+
+@Parcelize
+data class AddOn(
+    var id: String = "",
+    var uniqueId: String = "",
+    var status: Int = 0
+) : Parcelable

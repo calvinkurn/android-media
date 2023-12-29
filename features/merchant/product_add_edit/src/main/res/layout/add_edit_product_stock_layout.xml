@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_product_stock_header"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         android:textSize="14sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_asterisk"
-        android:textColor="@color/Unify_R600_96"
+        android:textColor="@color/Unify_RN500_96"
         app:layout_constraintLeft_toRightOf="@id/tv_product_stock_header"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4"

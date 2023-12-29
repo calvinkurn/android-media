@@ -1,40 +1,34 @@
 package com.tokopedia.checkout.domain.usecase
 
-import com.tokopedia.checkout.data.model.response.ReleaseBookingResponse
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.checkout.data.model.response.releasebookingstock.ReleaseBookingResponse
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.network.exception.MessageErrorException
-import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
 
-class ReleaseBookingUseCase @Inject constructor(private val gql: GraphqlUseCase) {
+class ReleaseBookingUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+) : CoroutineUseCase<Long, ReleaseBookingResponse>(dispatchers.io) {
 
-    fun execute(productId: Long): Observable<ReleaseBookingResponse> {
+    override fun graphqlQuery(): String {
+        return QUERY
+    }
+
+    override suspend fun execute(params: Long): ReleaseBookingResponse {
         val param = mapOf(
             "params" to arrayOf(
                 mapOf(
-                    "product_id" to productId
+                    "product_id" to params
                 )
             )
         )
         val gqlRequest = GraphqlRequest(QUERY, ReleaseBookingResponse::class.java, param)
-
-        gql.clearCache()
-        gql.addRequest(gqlRequest)
-        return gql.getExecuteObservable(null)
-            .map {
-                val response: ReleaseBookingResponse? = it.getData<ReleaseBookingResponse>(ReleaseBookingResponse::class.java)
-                response
-                    ?: throw MessageErrorException(it.getError(ReleaseBookingResponse::class.java)[0].message)
-            }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-    }
-
-    fun unsubscribe() {
-        gql.unsubscribe()
+        val response = repository.response(listOf(gqlRequest))
+        return response.getSuccessData()
     }
 }
 

@@ -11,17 +11,41 @@ import javax.inject.Inject
 class PushStatusGQLRepository @Inject constructor(val getGQLString: (Int) -> String) : BaseRepository(), PushStatusRepository {
 
     override suspend fun checkPushStatus(compaignId: Long): PushStatusResponse {
-        return getGQLData(getGQLString(R.raw.check_push_reminder_gql),
-                PushStatusResponse::class.java, mapOf("campaignID" to compaignId))
+        return getGQLData(queryCheckPushReminderGql,
+            PushStatusResponse::class.java, mapOf("campaignID" to compaignId))
     }
 
     override suspend fun subscribeToPush(compaignId: Long): PushSubscriptionResponse {
-        return getGQLData(getGQLString(R.raw.set_push_reminder_gql),
-                PushSubscriptionResponse::class.java, mapOf("campaignID" to compaignId))
+        return getGQLData(querySetPushReminderGql,
+            PushSubscriptionResponse::class.java, mapOf("campaignID" to compaignId))
     }
 
     override suspend fun unsSubscribeToPush(compaignId: Long): PushUnSubscriptionResponse {
-        return getGQLData(getGQLString(R.raw.unset_push_reminder_gql),
+        return getGQLData(queryUnsetPushReminderGql,
             PushUnSubscriptionResponse::class.java, mapOf("campaignID" to compaignId))
     }
+
+    private val queryCheckPushReminderGql: String = """query reminderCheck(${'$'}campaignID: Int!) {
+  notifier_checkReminder(campaign: ${'$'}campaignID) {
+    is_success
+    status
+    error_message
+  }
+}""".trimIndent()
+
+    private val querySetPushReminderGql: String = """query setReminder(${'$'}campaignID: Int!) {
+  notifier_setReminder(campaign: ${'$'}campaignID) {
+    is_success
+    error_message
+  }
+}
+""".trimIndent()
+
+    private val queryUnsetPushReminderGql: String = """query unsetReminder(${'$'}campaignID: Int!) {
+  notifier_unsetReminder(campaign: ${'$'}campaignID) {
+    is_success
+    error_message
+  }
+}
+""".trimIndent()
 }

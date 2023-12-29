@@ -1,7 +1,5 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.animation.LayoutTransition
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -14,6 +12,7 @@ import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.adapter.ProductBundlingItemAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.itemdecoration.ProductBundlingItemDecoration
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -87,6 +86,15 @@ class ProductBundlingViewHolder(
         }
     }
 
+    override fun onBundleWarrantyClaim(uiModel: ProductListUiModel.ProductUiModel) {
+        navigator.openAppLink(uiModel.button.url, true)
+        BuyerOrderDetailTracker.eventClickWarrantyClaim(uiModel.orderId)
+    }
+
+    override fun onImpressed(uiModel: ProductListUiModel.ProductUiModel) {
+        listener.onProductImpressed(uiModel)
+    }
+
     override fun onBundleItemAddToCart(uiModel: ProductListUiModel.ProductUiModel) {
         listener.onPurchaseAgainButtonClicked(uiModel)
     }
@@ -116,6 +124,10 @@ class ProductBundlingViewHolder(
         }
     }
 
+    private fun setupBundleTotalPrice(price: String) {
+        bundlingPriceText?.text = price
+    }
+
     private fun setupBundleHeader(bundleName: String, bundleIconUrl: String) {
         bundlingNameText?.text = bundleName
         val iconUrl =
@@ -131,11 +143,8 @@ class ProductBundlingViewHolder(
         bundleItemAdapter.setItems(bundleItemList)
     }
 
-    private fun setupBundleTotalPrice(price: String) {
-        bundlingPriceText?.text = price
-    }
-
     interface Listener {
         fun onPurchaseAgainButtonClicked(uiModel: ProductListUiModel.ProductUiModel)
+        fun onProductImpressed(product: ProductListUiModel.ProductUiModel)
     }
 }

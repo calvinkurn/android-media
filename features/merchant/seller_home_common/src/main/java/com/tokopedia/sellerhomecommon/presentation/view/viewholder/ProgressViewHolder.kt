@@ -70,7 +70,6 @@ class ProgressViewHolder(
 
     private fun onSuccessLoadData(element: ProgressWidgetUiModel) {
         showSuccessState(element)
-        listener.showProgressBarCoachMark(element.dataKey, itemView)
     }
 
     private fun showLoadingState() {
@@ -250,7 +249,5 @@ class ProgressViewHolder(
         fun sendProgressImpressionEvent(dataKey: String, stateColor: String, valueScore: Long) {}
 
         fun sendProgressCtaClickEvent(dataKey: String, stateColor: String, valueScore: Long) {}
-
-        fun showProgressBarCoachMark(dataKey: String, view: View) {}
     }
 }

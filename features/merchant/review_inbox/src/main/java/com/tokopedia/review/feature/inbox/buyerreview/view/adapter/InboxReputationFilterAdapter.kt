@@ -83,14 +83,14 @@ class InboxReputationFilterAdapter private constructor(
             if (listOption.getOrNull(position)?.isSelected == true) {
                 holder.filter?.setTextColor(
                     MethodChecker.getColor(
-                        holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400
+                        holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500
                     )
                 )
                 holder.check?.show()
             } else {
                 holder.filter?.setTextColor(
                     MethodChecker.getColor(
-                        holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                        holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44
                     )
                 )
                 holder.check?.hide()

@@ -3,9 +3,7 @@ package com.tokopedia.editshipping.ui.shippingeditor.adapter
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.databinding.ItemWarehouseInactiveBinding
 import com.tokopedia.editshipping.domain.model.shippingEditor.WarehousesModel
 
@@ -48,8 +46,6 @@ class WarehouseInactiveAdapter :
         }
 
         private fun setItemData(data: WarehousesModel) {
-            val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_location_warehouse)
-            binding.imgLocation.setImageDrawable(icon)
             binding.tvWarehouseName.text = data.warehouseName
             binding.tvWarehouseDistrict.text = data.districtName
             binding.tvWarehousePostalCode.text = data.postalCode

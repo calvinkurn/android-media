@@ -26,7 +26,7 @@ class CategoryMenuCallback(
         analytics.trackClickCategoryMenu(
             categoryId = data.id,
             categoryName = data.title,
-            warehouseId = viewModel.warehouseId,
+            warehouseId = viewModel.getWarehouseId(),
             position = itemPosition
         )
     }
@@ -38,7 +38,7 @@ class CategoryMenuCallback(
         analytics.trackImpressCategoryMenu(
             categoryId = data.id,
             categoryName = data.title,
-            warehouseId = viewModel.warehouseId,
+            warehouseId = viewModel.getWarehouseId(),
             position = itemPosition
         )
     }

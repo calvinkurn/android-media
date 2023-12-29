@@ -14,6 +14,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.ordermanagement.orderhistory'
+    testNamespace 'com.tokopedia.ordermanagement.orderhistory.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.coreNetwork)
@@ -24,9 +29,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
 
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation (rootProject.ext.firebase.crashlytics) {

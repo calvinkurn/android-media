@@ -67,7 +67,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         topRightRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_0,
         bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950_20,
         elevation = R.dimen.dp_chatbot_2,
         shadowRadius = R.dimen.dp_chatbot_1,
         shadowGravity = Gravity.CENTER,
@@ -77,16 +77,16 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
 
     private val bgLeft = ViewUtil.generateBackgroundWithShadow(
         view = this,
-        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N50,
+        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_NN50,
         topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_0,
         topRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4,
         bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_0,
         bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_0,
-        shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950_20,
         elevation = R.dimen.dp_chatbot_2,
         shadowRadius = R.dimen.dp_chatbot_1,
         shadowGravity = Gravity.CENTER,
-        strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+        strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_NN0,
         strokeWidth = getStrokeWidthSenderDimenRes()
     )
 

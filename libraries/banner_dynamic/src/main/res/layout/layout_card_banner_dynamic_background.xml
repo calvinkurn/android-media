@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/banner_dynamic_background_height"
             android:scaleType="centerCrop"
-            android:background="@color/Unify_N700"
+            android:background="@color/Unify_NN950"
             android:alpha="0.32" />
 
         <View
@@ -45,7 +45,7 @@
         android:id="@+id/white_space"
         android:layout_width="match_parent"
         android:layout_height="20dp"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/container_background" />

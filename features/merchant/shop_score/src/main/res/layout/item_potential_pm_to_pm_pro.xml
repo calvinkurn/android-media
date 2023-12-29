@@ -45,7 +45,7 @@
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="12dp"
                 android:text="@string/title_header_pm_section"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ic_pm_badge_current_status"
                 app:layout_constraintTop_toTopOf="parent"
@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="2dp"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintEnd_toStartOf="@id/ic_pm_reputation_right"
                 app:layout_constraintStart_toEndOf="@id/ic_pm_badge_current_status"
                 app:layout_constraintTop_toBottomOf="@id/tv_pm_reputation_score_label"
@@ -104,7 +104,7 @@
                 app:typographyType="display_2"
                 app:typographyWeight="bold"
                 android:text="@string/title_content_pm_section"
-                android:textColor="@color/Unify_N700_96" />
+                android:textColor="@color/Unify_NN950_96" />
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/barrierTitleContentPMSection"
@@ -126,7 +126,7 @@
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="12dp"
                 android:layout_marginStart="12dp"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/barrierTitleContentPMSection"
@@ -151,7 +151,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/text_see_all_benefit_pm_pro"
-                android:textColor="@color/Unify_G500"
+                android:textColor="@color/Unify_GN500"
                 app:layout_constraintStart_toStartOf="@id/rv_pm_to_pm_pro_potential_benefit"
                 app:layout_constraintTop_toBottomOf="@id/rv_pm_to_pm_pro_potential_benefit"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -164,7 +164,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginStart="8dp"
-                app:icon_color_light_enable="@color/Unify_G500"
+                app:icon_color_light_enable="@color/Unify_GN500"
                 app:icon_name="CHEVRON_RIGHT"
                 app:layout_constraintBottom_toBottomOf="@id/tv_see_all_benefit_pm_to_pm_pro"
                 app:layout_constraintStart_toEndOf="@id/tv_see_all_benefit_pm_to_pm_pro"

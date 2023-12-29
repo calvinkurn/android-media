@@ -57,7 +57,7 @@ open class GraphqlUseCase<T : Any> constructor(private val graphqlRepository: Gr
     }
 
     fun setQueryHashFlag(doQueryHash: Boolean) {
-        this.doQueryHash = doQueryHash;
+        this.doQueryHash = doQueryHash
     }
 
     fun clearCache() {
@@ -82,14 +82,13 @@ open class GraphqlUseCase<T : Any> constructor(private val graphqlRepository: Gr
                     )
                 }
             }.subscribeOn(Schedulers.io()).subscribe({
-                //no op
+                // no op
             }, {
-                //ignore error
+                // ignore error
             })
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
     }
 
     private fun initCacheManager() {

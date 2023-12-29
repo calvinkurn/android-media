@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:typographyType="body_2"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         tools:text="Aesthetic Wall Hanging Mirror New 2021"
         android:ellipsize="end"
         android:singleLine="true"

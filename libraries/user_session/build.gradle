@@ -1,8 +1,3 @@
-apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
-apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'com.google.protobuf'
-
 buildscript {
     repositories {
         google()
@@ -11,11 +6,22 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.protobuf
+//        classpath rootProject.ext.miscDependencies.protobuf
     }
 }
 
+plugins {
+    id 'com.android.library'
+    id 'com.google.protobuf'  version "0.9.3"
+}
+
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+
 android {
+    namespace 'com.tokopedia.user.session'
+    testNamespace 'com.tokopedia.user.session.test'
     defaultConfig {
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         testInstrumentationRunnerArguments clearPackageData: 'true'
@@ -25,6 +31,11 @@ android {
     }
     testOptions {
         execution 'ANDROIDX_TEST_ORCHESTRATOR'
+    }
+
+    sourceSets.each {
+        it.java.srcDirs += "$buildDir/generated/source/proto/debug/main/java"
+        it.kotlin.srcDirs +=  "$buildDir/generated/source/proto/debug/main/java"
     }
 }
 
@@ -62,6 +73,7 @@ protobuf {
 
 // https://youtrack.jetbrains.com/issue/KT-52761/Kotlin-170-breaks-kapt-processing-for-protobuf-generated-java-sources
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KaptGenerateStubs).configureEach {
+    kotlinOptions.jvmTarget = '17'
     source("$buildDir/generated/source/proto/debug/main/java")
     source("$buildDir/generated/source/proto/release/main/java")
     source("$buildDir/generated/source/proto/debug/java")
@@ -69,6 +81,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KaptGenerateStubs).configureEac
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.internal.KaptWithoutKotlincTask$KaptExecutionWorkAction).configureEach {
+    kotlinOptions.jvmTarget = '17'
     source("$buildDir/generated/source/proto/debug/main/java")
     source("$buildDir/generated/source/proto/release/main/java")
     source("$buildDir/generated/source/proto/debug/java")

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/carouselPagingShimmeringImage"
+        android:layout_width="108dp"
+        android:layout_height="108dp"
+        app:loader_type="rect"
+        app:loader_corner_radius="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/carouselPagingShimmeringName"
+        android:layout_width="188dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="12dp"
+        app:loader_type="rect"
+        app:loader_corner_radius="8dp"
+        app:layout_constraintStart_toEndOf="@id/carouselPagingShimmeringImage"
+        app:layout_constraintTop_toTopOf="@id/carouselPagingShimmeringImage"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/carouselPagingShimmeringPrice"
+        android:layout_width="106dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        app:loader_type="rect"
+        app:loader_corner_radius="8dp"
+        app:layout_constraintStart_toEndOf="@id/carouselPagingShimmeringImage"
+        app:layout_constraintTop_toBottomOf="@id/carouselPagingShimmeringName" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/carouselPagingShimmeringDiscountLabel"
+        android:layout_width="30dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        app:loader_type="rect"
+        app:loader_corner_radius="48dp"
+        app:layout_constraintStart_toEndOf="@id/carouselPagingShimmeringImage"
+        app:layout_constraintTop_toBottomOf="@id/carouselPagingShimmeringPrice" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/carouselPagingShimmeringOriginalPrice"
+        android:layout_width="106dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="8dp"
+        app:loader_type="rect"
+        app:loader_corner_radius="8dp"
+        app:layout_constraintStart_toEndOf="@id/carouselPagingShimmeringDiscountLabel"
+        app:layout_constraintTop_toTopOf="@id/carouselPagingShimmeringDiscountLabel"
+        app:layout_constraintBottom_toBottomOf="@id/carouselPagingShimmeringDiscountLabel" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/carouselPagingShimmeringIntegrity"
+        android:layout_width="106dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        app:loader_type="rect"
+        app:loader_corner_radius="8dp"
+        app:layout_constraintStart_toEndOf="@id/carouselPagingShimmeringImage"
+        app:layout_constraintTop_toBottomOf="@id/carouselPagingShimmeringDiscountLabel" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/carouselPagingShimmeringBebasOngkir"
+        android:layout_width="48dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        app:loader_type="rect"
+        app:loader_corner_radius="8dp"
+        app:layout_constraintStart_toEndOf="@id/carouselPagingShimmeringImage"
+        app:layout_constraintTop_toBottomOf="@id/carouselPagingShimmeringIntegrity" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

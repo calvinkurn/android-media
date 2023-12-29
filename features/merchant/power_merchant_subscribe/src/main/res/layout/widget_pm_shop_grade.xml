@@ -205,7 +205,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_2"
-            tools:textColor="@color/Unify_N0" />
+            tools:textColor="@color/Unify_NN0" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvPmShopGradeStatus"
@@ -264,7 +264,7 @@
             android:id="@+id/tvPmShopGradeScore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700"
+            android:textColor="@color/Unify_NN950"
             app:typographyType="heading_3"
             tools:text="Performa Toko : 75" />
 
@@ -273,7 +273,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="top"
-            android:textColor="@color/Unify_N400"
+            android:textColor="@color/Unify_NN600"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             tools:text="/100" />
@@ -291,7 +291,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/guidelinePmShopGradeRight"
         app:layout_constraintHorizontal_bias="0.0"
@@ -321,7 +321,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:visibility="gone"
-        app:icon_color_light_enable="@color/Unify_G500"
+        app:icon_color_light_enable="@color/Unify_GN500"
         app:icon_name="LIGHT_BULB"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guidelinePmShopGradeLeft"
@@ -334,7 +334,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="@string/power_merchant_performance_tips"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/icPmShopScoreTips"
         app:layout_constraintEnd_toEndOf="@+id/guidelinePmShopGradeRight"

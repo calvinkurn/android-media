@@ -9,6 +9,7 @@ data class ProductCardCompactCarouselItemUiModel(
     /**
      * Optional params
      */
+    val channelId: String = "",
     val recomType: String = "",
     val pageName: String = "",
     val shopId: String = "",
@@ -21,6 +22,7 @@ data class ProductCardCompactCarouselItemUiModel(
     val headerName: String = "",
     val recommendationType: String = "",
     val categoryBreadcrumbs: String = "",
+    val position: Int = 0,
 
     /**
      * Mandatory params

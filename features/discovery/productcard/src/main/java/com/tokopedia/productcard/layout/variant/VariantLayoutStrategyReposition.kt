@@ -92,8 +92,6 @@ internal class VariantLayoutStrategyReposition: VariantLayoutStrategy {
         else 0
     }
 
-    override fun isSingleLine(willShowVariant: Boolean): Boolean = false
-
     private fun Typography.renderLabelVariantSize(
         listLabelVariant: List<ProductCardModel.LabelGroupVariant>,
         hiddenSizeCount: Int,

@@ -14,27 +14,28 @@ import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.show
 
-
 class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
-    private lateinit var mProductRevampComponentViewModel: ProductCardRevampViewModel
+    private var mProductRevampComponentViewModel: ProductCardRevampViewModel? = null
     private var mHeaderView: FrameLayout = itemView.findViewById(R.id.header_view)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mProductRevampComponentViewModel = discoveryBaseViewModel as ProductCardRevampViewModel
-        getSubComponent().inject(mProductRevampComponentViewModel)
+        mProductRevampComponentViewModel?.let {
+            getSubComponent().inject(it)
+        }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         lifecycleOwner?.let {
-            mProductRevampComponentViewModel.getSyncPageLiveData().observe(it, { needResync ->
+            mProductRevampComponentViewModel?.getSyncPageLiveData()?.observe(it) { needResync ->
                 if (needResync) {
                     (fragment as DiscoveryFragment).reSync()
                 }
-            })
-            mProductRevampComponentViewModel.getProductCarouselHeaderData().observe(it, { component ->
+            }
+            mProductRevampComponentViewModel?.getProductCarouselHeaderData()?.observe(it) { component ->
                 addCardHeader(component)
-            })
+            }
         }
     }
 
@@ -47,7 +48,7 @@ class ProductCardRevampViewHolder(itemView: View, private val fragment: Fragment
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            mProductRevampComponentViewModel.getSyncPageLiveData().removeObservers(it)
+            mProductRevampComponentViewModel?.getSyncPageLiveData()?.removeObservers(it)
         }
     }
 }

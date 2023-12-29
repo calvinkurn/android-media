@@ -194,7 +194,7 @@ open class TemplateChatFragment : BaseDaggerFragment(), TemplateChatContract.Vie
             bundle.putBoolean(TemplateChatActivity.PARAM_IS_SELLER, isSeller)
             intent.putExtras(bundle)
             startActivityForResult(intent, 100)
-            activity?.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out)
+            activity?.overridePendingTransition(R.anim.topchat_template_pull_up, android.R.anim.fade_out)
         }
     }
 

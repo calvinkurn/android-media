@@ -16,11 +16,13 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
+import com.tokopedia.abstraction.base.view.bannerenvironment.BannerEnvironment;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.DebugVolumeListener;
 import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
@@ -54,6 +56,8 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
     public static final String INAPP_UPDATE = "inappupdate";
     private static final long DISMISS_TIME = 10000;
+
+    public BannerEnvironment bannerEnv = null;
 
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private BroadcastReceiver inappReceiver;
@@ -90,6 +94,10 @@ public abstract class BaseActivity extends AppCompatActivity implements
                 Log.d("force_logout_v2", intent.getStringExtra("title"));
             }
         };
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            bannerEnv = new BannerEnvironment();
+        }
     }
 
     @Override
@@ -140,6 +148,8 @@ public abstract class BaseActivity extends AppCompatActivity implements
         registerInAppReceiver();
         registerForceLogoutV2Receiver();
         checkIfForceLogoutMustShow();
+
+        bannerEnvironmentVisibility();
     }
 
     protected void sendScreenAnalytics() {
@@ -336,5 +346,10 @@ public abstract class BaseActivity extends AppCompatActivity implements
             }
         }
         super.onBackPressed();
+    }
+    private void bannerEnvironmentVisibility() {
+        if (bannerEnv != null) {
+            bannerEnv.initializeBannerEnvironment(this);
+        }
     }
 }

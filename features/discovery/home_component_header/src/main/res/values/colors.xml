@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="dms_header_cta_inverted_border">#F0F3F7</color>
+    <color name="dms_header_cta_inverted_icon">#2E3137</color>
+</resources>

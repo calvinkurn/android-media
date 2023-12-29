@@ -3,19 +3,17 @@ package com.tokopedia.play.view.viewcomponent
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.OnLifecycleEvent
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.ui.userreport.adapter.UserReportReasoningAdapter
-import com.tokopedia.play.ui.userreport.itemdecoration.ReasoningListItemDecoration
-import com.tokopedia.play.ui.userreport.viewholder.UserReportReasoningViewHolder
-import com.tokopedia.play.view.type.PlayUserReportSectionType
-import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
-import com.tokopedia.play.view.uimodel.PlayUserReportSection
+import com.tokopedia.content.common.R as commonR
+import com.tokopedia.content.common.report_content.adapter.UserReportReasoningAdapter
+import com.tokopedia.content.common.report_content.adapter.itemdecoration.ReasoningListItemDecoration
+import com.tokopedia.content.common.report_content.adapter.viewholder.UserReportReasoningViewHolder
+import com.tokopedia.content.common.report_content.model.PlayUserReportSectionType
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.report_content.model.PlayUserReportSection
 import com.tokopedia.play.view.uimodel.PlayUserReportUiModel
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -26,20 +24,20 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
 class PlayUserReportSheetViewComponent(
     container: ViewGroup,
     listener: Listener
-) : ViewComponent(container,  R.id.cl_user_report_sheet) {
+) : ViewComponent(container,  commonR.id.cl_user_report_sheet) {
 
-    private val globalError: GlobalError = findViewById(R.id.global_error_user_report)
-    private val rvCategory: RecyclerView = findViewById(R.id.rv_category)
+    private val globalError: GlobalError = findViewById(commonR.id.global_error_user_report)
+    private val rvCategory: RecyclerView = findViewById(commonR.id.rv_category)
 
     private val tvHeader = PlayUserReportSection(
         type = PlayUserReportSectionType.Header,
-        title = R.string.play_user_report_header,
+        title = commonR.string.play_user_report_header,
         isUrl = false
     )
 
     private val tvFooter = PlayUserReportSection(
         type = PlayUserReportSectionType.Footer,
-        title = R.string.play_user_report_footer,
+        title = commonR.string.content_user_report_footer,
         isUrl = true,
         onClick = { listener.onFooterClicked(this@PlayUserReportSheetViewComponent) }
     )
@@ -50,19 +48,8 @@ class PlayUserReportSheetViewComponent(
         }
     })
 
-    private val layoutManagerCategoryList = object : LinearLayoutManager(rvCategory.context, RecyclerView.VERTICAL, false) {
-        override fun onLayoutCompleted(state: RecyclerView.State?) {
-            super.onLayoutCompleted(state)
-        }
-    }
-
-    private val categoryScrollListener = object: RecyclerView.OnScrollListener(){
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-        }
-    }
-
     init {
-        findViewById<ImageView>(com.tokopedia.play_common.R.id.iv_sheet_close)
+        findViewById<ImageView>(commonR.id.iv_sheet_close)
             .setOnClickListener {
                 listener.onCloseButtonClicked(this@PlayUserReportSheetViewComponent)
             }
@@ -71,9 +58,7 @@ class PlayUserReportSheetViewComponent(
 
         rvCategory.apply {
             adapter = categoryAdapter
-            layoutManager = layoutManagerCategoryList
             addItemDecoration(ReasoningListItemDecoration(rvCategory.context))
-            addOnScrollListener(categoryScrollListener)
         }
     }
 
@@ -109,14 +94,9 @@ class PlayUserReportSheetViewComponent(
     }
 
     private fun getPlaceholderModel() = PlayUserReportUiModel.Loaded(
-        reasoningList = List(5){PlayUserReportReasoningUiModel.Placeholder},
+        reasoningList = List(5){ PlayUserReportReasoningUiModel.Placeholder},
         resultState = ResultState.Loading
     )
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
-        rvCategory.removeOnScrollListener(categoryScrollListener)
-    }
 
     interface Listener{
         fun onCloseButtonClicked(view: PlayUserReportSheetViewComponent)

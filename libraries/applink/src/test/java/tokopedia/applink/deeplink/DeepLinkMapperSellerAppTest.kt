@@ -2,15 +2,20 @@ package tokopedia.applink.deeplink
 
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.DeeplinkMapper
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.applink.model.Always
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.config.GlobalConfig
 import io.mockk.every
+import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -18,14 +23,57 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
 
+    companion object {
+        // This a reminder to developer.
+        // If this size is modified, please also add unit test for the added deeplink.
+        const val SIZE_HOST = 32
+        const val SIZE_PATH = 73
+    }
+
+    @Throws(RuntimeException::class)
+    @Test
+    fun `deeplinkPatternTokopediaSchemeList check`() {
+        // This test is a reminder for developer.
+        // If there is any mapping changed/added/deleted, developer should change the SIZE_MAPPER
+        // also there developer should also add the corresponding unit test for the deeplink.
+        Assert.assertEquals(
+            SIZE_HOST,
+            DeeplinkMapper.getSellerappSchemeList().size
+        )
+        var totalPath = 0
+        var key = ""
+        var alphabeticalOrder = true
+        val entryKeyNotAlphabetical = mutableListOf<String>()
+        DeeplinkMapper.getSellerappSchemeList().forEach { entry ->
+            if (entry.key < key) {
+                entryKeyNotAlphabetical.add(entry.key)
+                alphabeticalOrder = false
+            } else if (entry.key == key) {
+                throw RuntimeException("There is duplicate key: " + entry.key)
+            }
+            key = entry.key
+            totalPath += entry.value.size
+
+            var alwaysLogicFound = false
+            for (value in entry.value) {
+                if (value.logic !is Always && alwaysLogicFound) {
+                    throw RuntimeException("Logic goTo should always in bottom. Key: " + entry.key)
+                }
+                if (value.logic is Always) {
+                    alwaysLogicFound = true
+                }
+            }
+        }
+        Assert.assertEquals(SIZE_PATH, totalPath)
+        // alphabetical order improve readability in code
+        if (!alphabeticalOrder) {
+            throw RuntimeException(entryKeyNotAlphabetical.joinToString(", ") + " is not alphabetical")
+        }
+    }
+
     override fun setup() {
         super.setup()
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
-    }
-
-    override fun finish() {
-        super.finish()
-        GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
     }
 
     @Test
@@ -106,6 +154,12 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check top ads product recommendation applink then should return tokopedia internal top ads product recommendation in sellerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://topads/product-recommendation"
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.TOPADS_PRODUCT_RECOMMENDATION, expectedDeepLink)
+    }
+
+    @Test
     fun `check gold merchant appLink then should return empty in sellerapp`() {
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.GOLD_MERCHANT, "")
     }
@@ -175,9 +229,11 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-mvc/create/shop/"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.CREATE_VOUCHER, expectedDeepLink)
     }
+
     @Test
     fun `check seller search appLink then should return tokopedia internal seller search in sellerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-search"
+        setRemoteConfig(true)
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/seller-search-compose"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.SELLER_SEARCH, expectedDeepLink)
     }
 
@@ -191,6 +247,32 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
     fun `check centralized promo appLink then should return tokopedia internal centralized promo in sellerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://sellerapp/centralized-promo"
         assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.CENTRALIZED_PROMO, expectedDeepLink)
+    }
+
+    @Test
+    fun `check centralized promo appLink and remote config true then should return tokopedia internal centralized promo in sellerapp`() {
+        setRemoteConfig(true)
+        assertEqualsDeepLinkMapper(ApplinkConst.SellerApp.CENTRALIZED_PROMO,
+            ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_COMPOSE
+        )
+    }
+
+    @Test
+    fun `check centralized promo internal appLink and remote config true then should return tokopedia internal centralized promo compose in sellerapp`() {
+        setRemoteConfig(true)
+        assertEqualsDeepLinkMapper(
+            ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
+            ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_COMPOSE
+        )
+    }
+
+    @Test
+    fun `check centralized promo internal appLink and remote config false then should return tokopedia internal centralized promo compose in sellerapp`() {
+        setRemoteConfig(false)
+        assertEqualsDeepLinkMapper(
+            ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
+            ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
+        )
     }
 
     @Test
@@ -458,5 +540,20 @@ class DeepLinkMapperSellerAppTest : DeepLinkMapperTestFixture() {
         val appLink = ApplinkConst.SellerApp.SELLER_PERSONA
         val expectedDeepLink = ApplinkConstInternalSellerapp.SELLER_PERSONA
         assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check topads dashboard applink should return topads internal applink`() {
+        val expectedDeepLink = ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
+        val actualDeeplink = ApplinkConst.SellerApp.TOPADS_DASH_BOARD
+        assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller partial order fulfillment appLink then should return tokopedia internal seller partial order fulfillment in customerapp`() {
+        val orderId = "123456789"
+        val pofStatus = "1"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://seller/seller-partial-order-fulfillment?${ApplinkConstInternalOrder.PARAM_ORDER_ID}=$orderId&${ApplinkConstInternalOrder.PARAM_POF_STATUS}=$pofStatus&${RouteManager.KEY_REDIRECT_TO_SELLER_APP}=true"
+        assertEqualsDeepLinkMapperApp(AppType.SELLER_APP, "${ApplinkConst.SELLER_PARTIAL_ORDER_FULFILLMENT}?${ApplinkConstInternalOrder.PARAM_ORDER_ID}=$orderId&${ApplinkConstInternalOrder.PARAM_POF_STATUS}=$pofStatus&${RouteManager.KEY_REDIRECT_TO_SELLER_APP}=true", expectedDeepLink)
     }
 }

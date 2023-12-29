@@ -23,7 +23,7 @@
                 android:id="@+id/deferred_image_view"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_200"
-                android:background="@color/Unify_N0"
+                android:background="@color/Unify_NN0"
                 app:layout_constraintTop_toTopOf="parent"
                 android:scaleType="fitCenter"
                 app:imageDpiSupportType="singleDpi"
@@ -38,7 +38,7 @@
                 android:paddingLeft="@dimen/spacing_lvl8"
                 android:paddingRight="@dimen/spacing_lvl8"
                 android:text="@string/tradein_outside_coverage_heading"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintTop_toBottomOf="@id/deferred_image_view"
                 app:typographyType="heading_2"
                 app:typographyWeight="bold" />
@@ -52,7 +52,7 @@
                 android:paddingLeft="@dimen/spacing_lvl8"
                 android:paddingRight="@dimen/spacing_lvl8"
                 android:text="@string/tradein_outside_coverage_description"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintTop_toBottomOf="@id/heading"
                 app:typographyType="body_2" />
 

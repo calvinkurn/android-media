@@ -15,19 +15,21 @@ import com.tokopedia.test.application.espresso_component.CommonActions.takeScree
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 
 /**
  * Created by devarafikry on 12/04/21.
  */
+@Ignore("Ignored due to time-consuming when ran on automation. Comment this annotation if need to run locally")
 @ScreenshotTest
 class HomeScreenshotNonLoggedInTest {
     private val TAG = "HomeScreenshotTest"
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @get:Rule
-    var activityRule = object: ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
+    var activityRule = object : ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             InstrumentationAuthHelper.clearUserSession()
             super.beforeActivityLaunched()
@@ -44,9 +46,9 @@ class HomeScreenshotNonLoggedInTest {
         turnOffAnimation(activityRule.activity)
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             takeScreenShotVisibleViewInScreen(
-                    activityRule.activity.window.decorView,
-                    fileName(),
-                    "dc".name(false, darkMode = true)
+                activityRule.activity.window.decorView,
+                fileName(),
+                "dc".name(false, darkMode = true)
             )
         }
         activityRule.activity.finishAndRemoveTask()
@@ -62,7 +64,8 @@ class HomeScreenshotNonLoggedInTest {
 
     private fun setupAbTestRemoteConfig() {
         RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                BALANCE_EXP,
-                BALANCE_VARIANT_NEW)
+            BALANCE_EXP,
+            BALANCE_VARIANT_NEW
+        )
     }
 }

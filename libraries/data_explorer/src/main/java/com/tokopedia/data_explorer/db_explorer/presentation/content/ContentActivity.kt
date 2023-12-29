@@ -48,7 +48,7 @@ class ContentActivity : BaseSimpleActivity(), HasComponent<DataExplorerComponent
             headerSubTitle = schemaName
             addRightIcon(0).apply {
                 clearImage()
-                setImageDrawable(getIconUnifyDrawable(context, IconUnify.DELETE, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)))
+                setImageDrawable(getIconUnifyDrawable(context, IconUnify.DELETE, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)))
                 setOnClickListener {
                     clearContents()
                 }

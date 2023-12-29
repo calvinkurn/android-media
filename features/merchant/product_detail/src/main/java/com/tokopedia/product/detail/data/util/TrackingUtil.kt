@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Category.ITEM_CATEGORY_BUILDER
@@ -17,6 +16,7 @@ import com.tokopedia.product.detail.tracking.TrackingConstant
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.constant.TrackerConstant
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -96,6 +96,9 @@ object TrackingUtil {
         return mapEvent as HashMap<String, Any>?
     }
 
+    fun generateLayoutValue(productInfo: DynamicProductInfoP1?) =
+        "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
+
     fun getTradeInString(isTradein: Boolean, isDiagnosed: Boolean): String {
         return if (isTradein && isDiagnosed) {
             ProductTrackingConstant.Tracking.TRADEIN_TRUE_DIAGNOSTIC
@@ -139,6 +142,7 @@ object TrackingUtil {
     fun createLinkerDataForViewItem(productInfo: DynamicProductInfoP1, userId: String?): LinkerData {
         val linkerData = LinkerData()
         linkerData.shopId = productInfo.basic.shopID
+        linkerData.shopName = productInfo.basic.shopName
         linkerData.price = productInfo.finalPrice.toString()
         linkerData.productName = productInfo.getProductName
         linkerData.sku = productInfo.basic.productID
@@ -175,17 +179,24 @@ object TrackingUtil {
         componentTrackDataModel: ComponentTrackDataModel?,
         elementName: String
     ) {
-        mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productInfo?.basic?.productID
-            ?: ""
-        mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
+        val map = mapEvent + getComponentTracker(productInfo, componentTrackDataModel, elementName)
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
 
-        if (componentTrackDataModel != null) {
-            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:$elementName;cpos:${componentTrackDataModel.adapterPosition};"
-        } else {
-            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = ""
-        }
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    fun getComponentTracker(
+        productInfo: DynamicProductInfoP1?,
+        componentTrackDataModel: ComponentTrackDataModel?,
+        elementName: String
+    ): Map<String, Any> {
+        return mapOf(
+            ProductTrackingConstant.Tracking.KEY_PRODUCT_ID to productInfo?.basic?.productID.orEmpty(),
+            ProductTrackingConstant.Tracking.KEY_LAYOUT to "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};",
+            ProductTrackingConstant.Tracking.KEY_COMPONENT to if (componentTrackDataModel != null) {
+                 "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:$elementName;cpos:${componentTrackDataModel.adapterPosition};"
+            } else {
+                ""
+            }
+        )
     }
 
     fun addClickEvent(

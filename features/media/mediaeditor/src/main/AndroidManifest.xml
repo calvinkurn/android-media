@@ -28,6 +28,10 @@
             android:name=".ui.activity.detail.DetailEditorActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tokopedia.media.editor.ui.activity.addtext.AddTextActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

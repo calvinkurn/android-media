@@ -17,9 +17,9 @@ public class TabLayoutImagePickerAdapter {
     private TabLayout tabLayout;
 
     public static @ColorRes
-    int SELECTED_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_N700_68;
+    int SELECTED_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_NN950_68;
     public static @ColorRes
-    int UNSELECTED_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_N200;
+    int UNSELECTED_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_NN500;
 
     public TabLayoutImagePickerAdapter(
             TabLayout tabLayout,

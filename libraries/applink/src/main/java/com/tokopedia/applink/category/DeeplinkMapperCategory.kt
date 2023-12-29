@@ -9,6 +9,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 object DeeplinkMapperCategory {
     fun getRegisteredCategoryNavigation(uri: Uri): String {
         val segmentList = uri.pathSegments
+        if (segmentList.size == 0) return ""
         var identifier: String? = null
         for (segment in segmentList.indices) {
             identifier = if (segment == 0) {
@@ -43,6 +44,10 @@ object DeeplinkMapperCategory {
         return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
     }
 
+    fun getRegisteredNavigationCatalogProductList(deeplink: String): String {
+        return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
+    }
+
     fun getRegisteredNavigationAffiliate(deeplink: String): String {
         return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
     }
@@ -58,11 +63,4 @@ object DeeplinkMapperCategory {
         return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
     }
 
-    fun getRegisteredCategoryNavigation(deeplink: String, uri: Uri): String {
-        return if (deeplink.startsWith(ApplinkConst.TRADEIN)) {
-            getRegisteredTradeinNavigation(deeplink)
-        } else {
-            getRegisteredCategoryNavigation(uri)
-        }
-    }
 }

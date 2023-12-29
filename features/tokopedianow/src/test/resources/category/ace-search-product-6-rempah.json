@@ -1,0 +1,24 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 2,
+      "totalDataText": "2",
+      "responseCode": 0,
+      "keywordProcess": "0"
+    },
+    "data": {
+      "isQuerySafe": true,
+      "suggestion": {
+        "suggestion": "",
+        "query": "",
+        "text": ""
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "otherRelated": []
+      },
+      "products": []
+    }
+  }
+}

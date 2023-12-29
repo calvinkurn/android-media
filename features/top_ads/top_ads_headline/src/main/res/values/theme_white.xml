@@ -23,10 +23,10 @@
     </style>
 
     <style name="Toolbar.White" parent="Base.Toolbar.Theme">
-        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/Unify_G600</item>
-        <item name="android:background">@color/Unify_N0</item>
-        <item name="actionModeBackground">@color/Unify_N0</item>
-        <item name="android:actionModeBackground">@color/Unify_N0</item>
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/Unify_GN600</item>
+        <item name="android:background">@color/Unify_NN0</item>
+        <item name="actionModeBackground">@color/Unify_NN0</item>
+        <item name="android:actionModeBackground">@color/Unify_NN0</item>
         <item name="android:textColorPrimary">@color/Unify_NN1000</item>
         <item name="android:actionMenuTextColor">@color/Unify_NN1000</item>
         <item name="android:textColorSecondary">@color/Unify_NN1000</item>

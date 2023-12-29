@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="16dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:layout_width="80dp"
+        android:layout_height="64dp"
+        android:id="@+id/sender_icon"
+        tools:src="@drawable/ic_tanya_dark_mode"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/reason_title_text"
+        app:typographyType="display_2"
+        tools:text="Test Test RTest"
+        android:textColor="@color/Unify_NN950"
+        android:layout_marginTop="16dp"
+        app:typographyWeight="bold"
+        app:layout_constraintTop_toBottomOf="@id/sender_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:id="@+id/reasons_list"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/reason_title_text"/>
+
+    <com.tokopedia.unifycomponents.TextAreaUnify2
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/reason_text"
+        android:layout_marginTop="16dp"
+        app:unify_text_field_label_static="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/reasons_list"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_submit"
+        android:text="@string/chatbot_csat_ok"
+        android:layout_marginTop="32dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/reason_text"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

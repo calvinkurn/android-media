@@ -97,6 +97,59 @@ class DataStoreMigrationWorkerTest {
         }
     }
 
+    /**
+     * solve issue difference on token type after user migration on datastore
+     */
+    @Test
+    fun whenTokenTypeIsSetFromUserSession_DataStoreShopIdShouldBeSet() {
+        runBlocking {
+            val userSession = UserSession(context, spykedPref, AeadEncryptorImpl(context).getAead())
+            every { spykedPref.isDataStoreEnabled() } returns true
+            val dataStore = UserSessionDataStoreClient.getInstance(context)
+
+            assertEquals(userSession.tokenType, dataStore.getTokenType().first())
+
+            userSession.setToken("abc", "xyz")
+            UserSessionMap.map.clear()
+            assertEquals(userSession.tokenType, dataStore.getTokenType().first())
+
+            userSession.setToken("", "")
+            UserSessionMap.map.clear()
+            assertEquals(userSession.tokenType, dataStore.getTokenType().first())
+
+            userSession.setToken("0", "0")
+            UserSessionMap.map.clear()
+            assertEquals(userSession.tokenType, dataStore.getTokenType().first())
+
+            userSession.setToken("-1", "-1")
+            UserSessionMap.map.clear()
+            assertEquals(userSession.tokenType, dataStore.getTokenType().first())
+
+            userSession.setToken(null, null)
+            UserSessionMap.map.clear()
+            assertEquals(userSession.tokenType, dataStore.getTokenType().first())
+        }
+    }
+
+    @Test
+    fun whenIsMultiLocationShopIsSetFromUserSession_DataStoreShouldBeSet() {
+        runBlocking {
+            val userSession = UserSession(context, spykedPref, AeadEncryptorImpl(context).getAead())
+            every { spykedPref.isDataStoreEnabled() } returns true
+            val dataStore = UserSessionDataStoreClient.getInstance(context)
+
+            assertEquals(userSession.tokenType, dataStore.getTokenType().first())
+
+            userSession.setIsMultiLocationShop(true)
+            UserSessionMap.map.clear()
+            assertEquals(userSession.isMultiLocationShop, dataStore.isMultiLocationShop().first())
+
+            userSession.setIsMultiLocationShop(false)
+            UserSessionMap.map.clear()
+            assertEquals(userSession.isMultiLocationShop, dataStore.isMultiLocationShop().first())
+        }
+    }
+
     @Test
     fun whenLoginMethodIsSetFromUserSession_DataStoreLoginMethodShouldBeSet() {
         runBlocking {
@@ -202,4 +255,26 @@ class DataStoreMigrationWorkerTest {
             assertThat(secondResult, `is`(Result.success(workDataOf(OPERATION_KEY to NO_OPS))))
         }
     }
+
+    @Test
+    fun when_cleared_data_logout_migration_data_remains_synced() {
+        runBlocking {
+            val sample = UserSessionModel()
+            val userSession = UserSession(context, spykedPref, AeadEncryptorImpl(context).getAead())
+            userSession.setModel(sample)
+            every { spykedPref.isDataStoreEnabled() } returns true
+
+            val worker = TestListenableWorkerBuilder<DataStoreMigrationWorker>(context).build()
+            val result = worker.doWork()
+            assertThat(result, `is`(Result.success(workDataOf(OPERATION_KEY to MIGRATED))))
+
+            val dataStore = UserSessionDataStoreClient.getInstance(context)
+            userSession.logoutUserSession()
+            dataStore.logoutSession()
+
+            assertThat(DataStoreMigrationHelper.checkDataSync(dataStore, userSession), `is`(empty()))
+            assertThat(dataStore.getUserModel(), equalTo(userSession.getUserModel()))
+        }
+    }
+
 }

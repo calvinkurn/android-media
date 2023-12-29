@@ -16,6 +16,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.example.screenshot_observer'
+    testNamespace 'com.example.screenshot_observer.test'
+}
+
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.unifyDependencies.components

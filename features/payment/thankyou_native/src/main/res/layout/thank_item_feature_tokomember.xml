@@ -41,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl3"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintEnd_toStartOf="@+id/tvFeatureItemIconToko"
                 app:layout_constraintStart_toEndOf="@id/ivFeatureItemToko"
                 app:layout_constraintTop_toTopOf="parent"
@@ -57,8 +57,8 @@
                 app:icon_name="STAR_FILLED"
                 android:visibility="visible"
                 android:layout_marginStart="@dimen/unify_space_2"
-                app:icon_color_light_enable="@color/Unify_Y300"
-                app:icon_color_night_enable="@color/Unify_Y300"
+                app:icon_color_light_enable="@color/Unify_YN300"
+                app:icon_color_night_enable="@color/Unify_YN300"
                 />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginTop="@dimen/spacing_lvl1"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ivFeatureItemToko"
                 app:layout_constraintTop_toBottomOf="@id/tvFeatureItemTitleToko"

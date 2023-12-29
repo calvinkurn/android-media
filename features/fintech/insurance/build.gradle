@@ -15,15 +15,18 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.insurance'
+    testNamespace 'com.tokopedia.insurance.test'
     buildFeatures {
         viewBinding true
     }
 }
 
 dependencies {
+	implementation rootProject.ext.unifyDependencies.principles
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.webview)

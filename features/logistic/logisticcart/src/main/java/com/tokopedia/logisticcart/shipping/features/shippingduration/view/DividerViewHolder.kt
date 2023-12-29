@@ -1,11 +1,10 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.logisticcart.R
+import com.tokopedia.logisticcart.databinding.ItemDividerLogisticCartBinding
 
-class DividerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class DividerViewHolder(val binding: ItemDividerLogisticCartBinding) : RecyclerView.ViewHolder(binding.root) {
     companion object {
-        @JvmStatic val LAYOUT = R.layout.item_divider_logistic_cart
+        @JvmStatic val LAYOUT = 3
     }
 }

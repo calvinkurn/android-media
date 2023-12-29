@@ -7,37 +7,45 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bann
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.explicitwidget.ExplicitWidgetViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.flashsaletoko.FlashSaleTokoTabViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore.LoadMoreViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.EmptyStateViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsprintsalecarousel.ProductCardSprintSaleCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopoffersupportingbrand.ShopOfferSupportingBrandItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopoffersupportingbrand.ShopOfferSupportingBrandViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.viewallcard.ViewAllCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryExtensibleFragment
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule
 import com.tokopedia.usercomponents.explicit.di.ExplicitViewModule
 import dagger.Component
 
-
 @DiscoveryScope
-@Component(modules = [DiscoveryModule::class,
-    DiscoveryViewModelModule::class,
-    TopAdsUrlHitterModule::class,
-    AffiliateCommonSdkModule::class,
-    ExplicitViewModule::class], dependencies = [BaseAppComponent::class])
+@Component(
+    modules = [
+        DiscoveryModule::class,
+        DiscoveryViewModelModule::class,
+        TopAdsUrlHitterModule::class,
+        AffiliateCommonSdkModule::class,
+        ExplicitViewModule::class
+    ],
+    dependencies = [BaseAppComponent::class]
+)
 interface DiscoveryComponent {
     fun inject(discoveryActivity: DiscoveryActivity)
     fun inject(discoveryExtensibleFragment: DiscoveryExtensibleFragment)
     fun inject(discoveryFragment: DiscoveryFragment)
     fun inject(mutliViewModel: MultiBannerViewModel)
     fun inject(productCardCarouselViewModel: ProductCardCarouselViewModel)
-    fun inject(productCardSprintSaleCarouselViewModel: ProductCardSprintSaleCarouselViewModel)
     fun inject(productCardRevampViewModel: ProductCardRevampViewModel)
     fun inject(tabsViewModel: TabsViewModel)
     fun inject(claimCouponViewModel: ClaimCouponViewModel)
@@ -50,5 +58,11 @@ interface DiscoveryComponent {
     fun inject(myCouponViewModel: MyCouponViewModel)
     fun inject(myCouponItemViewModel: MyCouponItemViewModel)
     fun inject(explicitWidgetViewModel: ExplicitWidgetViewModel)
-    fun provideSubComponent() : UIWidgetComponent
+    fun inject(flashSaleTokoTabViewModel: FlashSaleTokoTabViewModel)
+    fun inject(viewAllCarouselViewModel: ViewAllCarouselViewModel)
+    fun inject(merchantVoucherGridViewModel: MerchantVoucherGridViewModel)
+    fun inject(merchantVoucherGridItemViewModel: MerchantVoucherGridItemViewModel)
+    fun inject(shopOfferSupportingBrandViewModel: ShopOfferSupportingBrandViewModel)
+    fun inject(shopOfferSupportingBrandItemViewModel: ShopOfferSupportingBrandItemViewModel)
+    fun provideSubComponent(): UIWidgetComponent
 }

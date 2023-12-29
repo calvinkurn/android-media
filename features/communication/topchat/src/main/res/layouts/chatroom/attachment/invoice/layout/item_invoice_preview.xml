@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_chat_bubble"
+    android:layout_width="@dimen/dp_topchat_240"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/dp_topchat_1"
+    android:layout_marginTop="@dimen/dp_topchat_6"
+    android:layout_marginBottom="@dimen/unify_space_2">
+
+    <ImageView
+        android:id="@+id/iv_thumbnail"
+        android:layout_width="@dimen/spacing_lvl8"
+        android:layout_height="@dimen/spacing_lvl8"
+        android:layout_marginStart="@dimen/dp_topchat_12"
+        android:layout_marginTop="@dimen/dp_topchat_12"
+        android:layout_marginBottom="@dimen/dp_topchat_12"
+        android:contentDescription="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars[0]" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/tv_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:maxLines="1"
+        android:paddingStart="@dimen/spacing_lvl3"
+        android:paddingEnd="@dimen/spacing_lvl3"
+        android:textSize="@dimen/fontSize_lvl1"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+        app:layout_constraintTop_toTopOf="@+id/iv_thumbnail"
+        tools:labelType="general_light_red"
+        tools:text="Pesanan Dibatalkan" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_invoice_id"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginEnd="@dimen/dp_topchat_34"
+        android:ellipsize="end"
+        android:gravity="start"
+        android:maxLines="1"
+        android:textColor="@color/Unify_NN950_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+        app:layout_constraintTop_toBottomOf="@+id/tv_status"
+        app:typographyType="heading_6"
+        app:typographyWeight="bold"
+        tools:text="INV/20190212/XIX/II/271200396" />
+
+    <ImageView
+        android:id="@+id/iv_close"
+        android:layout_width="@dimen/spacing_lvl5"
+        android:layout_height="@dimen/spacing_lvl5"
+        android:layout_marginTop="@dimen/dp_topchat_6"
+        android:layout_marginEnd="@dimen/dp_topchat_10"
+        android:contentDescription="@string/topchat_desc_close_invoice_preview"
+        android:padding="@dimen/dp_topchat_6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/topchat_ic_close" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

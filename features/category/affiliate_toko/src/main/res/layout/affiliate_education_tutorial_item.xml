@@ -11,24 +11,29 @@
         android:layout_height="match_parent"
         android:layout_marginHorizontal="4dp"
         android:layout_marginVertical="8dp"
-        android:background="@drawable/affiliate_education_tutorial_card_bg"
         app:cardBackgroundColor="@color/Unify_NN0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <com.tkpd.remoteresourcerequest.view.DeferredImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="26dp"
+            app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_education_tutorial_card_bg.webp" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/tutorial_content_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <View
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/tutorial_cover_bg"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:background="@drawable/affiliate_education_tutorial_cover_bg"
                 android:visibility="gone"
+                app:unify_image_url_src="https://images.tokopedia.net/img/https:/images.tokopedia.net/img/android/res/singleDpi/affiliate/education_tutorial_background.png"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

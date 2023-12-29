@@ -239,7 +239,7 @@ class HotelCancellationFragment : HotelBaseFragment() {
                         typography.setTextColor(
                             ContextCompat.getColor(
                                 requireContext(),
-                                com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                                com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                             )
                         )
                         cancelInfoBottomSheet.setChild(typography)
@@ -330,6 +330,15 @@ class HotelCancellationFragment : HotelBaseFragment() {
         binding?.hotelCancellationContainer?.visible()
         binding?.containerError?.root?.gone()
     }
+
+    private fun showLoadingState() {
+        binding?.containerLoadingState?.mainLoading?.show()
+    }
+
+    private fun hideLoadingState() {
+        binding?.containerLoadingState?.mainLoading?.hide()
+    }
+
     companion object {
         const val HOTEL_CANCELLATION_SCREEN_NAME = "/hotel/ordercancel"
         const val ADD_LINE_SPACING = 6f

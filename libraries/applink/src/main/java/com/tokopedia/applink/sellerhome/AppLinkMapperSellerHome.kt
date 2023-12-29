@@ -36,7 +36,7 @@ object AppLinkMapperSellerHome {
                 param
             )
         } else {
-            getRegisteredNavigationMainAppSellerNewOrder()
+            getRegisteredNavigationMainAppSellerNewOrder(uri)
         }
     }
 
@@ -51,14 +51,14 @@ object AppLinkMapperSellerHome {
                 param
             )
         } else {
-            getRegisteredNavigationMainAppSellerReadyToShip()
+            getRegisteredNavigationMainAppSellerReadyToShip(uri)
         }
     }
 
     fun getSomShippedAppLink(uri: Uri): String {
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
         return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(uri)) {
-            if(searchKeyword.isNotBlank()) {
+            if (searchKeyword.isNotBlank()) {
                 val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
                 UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_SHIPPED, param)
             } else {
@@ -72,7 +72,7 @@ object AppLinkMapperSellerHome {
     fun getSomDoneAppLink(uri: Uri): String {
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
         return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(uri)) {
-            if(searchKeyword.isNotBlank()) {
+            if (searchKeyword.isNotBlank()) {
                 val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
                 UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_DONE, param)
             } else {
@@ -86,7 +86,7 @@ object AppLinkMapperSellerHome {
     fun getSomCancelledAppLink(uri: Uri): String {
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
         return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(uri)) {
-            if(searchKeyword.isNotBlank()) {
+            if (searchKeyword.isNotBlank()) {
                 val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
                 UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_CANCELLED, param)
             } else {
@@ -101,7 +101,7 @@ object AppLinkMapperSellerHome {
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
         return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(uri)) {
             val param = mutableMapOf<String, Any>(FILTER_ORDER_TYPE to FILTER_CANCELLATION_REQUEST)
-            if(searchKeyword.isNotBlank()) {
+            if (searchKeyword.isNotBlank()) {
                 param[QUERY_PARAM_SEARCH] = searchKeyword
                 UriUtil.buildUriAppendParams(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_CANCELLATION_REQUEST, param)
             } else {
@@ -115,15 +115,17 @@ object AppLinkMapperSellerHome {
     fun getSomAllOrderAppLink(uri: Uri): String {
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
         val orderId = uri.getQueryParameter(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID).orEmpty()
+        val coachMark = uri.getQueryParameter(DeeplinkMapperOrder.QUERY_COACHMARK).orEmpty()
         return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(uri)) {
             val param = mutableMapOf<String, Any>().apply {
                 if (searchKeyword.isNotEmpty()) put(QUERY_PARAM_SEARCH, searchKeyword)
                 if (orderId.isNotEmpty()) put(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID, orderId)
                 if (shouldRedirectToSellerApp(uri)) put(RouteManager.KEY_REDIRECT_TO_SELLER_APP, true)
+                if (coachMark.isNotBlank()) put(DeeplinkMapperOrder.QUERY_COACHMARK, coachMark)
             }
             UriUtil.buildUriAppendParams(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_ALL, param)
         } else {
-            getRegisteredNavigationMainAppSellerHistory(orderId)
+            getRegisteredNavigationMainAppSellerHistory(orderId, coachMark)
         }
     }
 

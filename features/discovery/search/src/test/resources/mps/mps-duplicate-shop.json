@@ -1,0 +1,304 @@
+{
+  "ace_search_shop_mps": {
+    "data": [
+      {
+        "id": 6550478,
+        "name": "KirinStarOS",
+        "location": "Senen",
+        "applink": "tokopedia://shop/6550478",
+        "image_url": "https://images.tokopedia.net/img/cache/215-square/default_v3-shopnophoto.png",
+        "component_id": "03.45.02.00",
+        "tracking_option": 3,
+        "badges": [],
+        "products": [
+          {
+            "id": 2150685064,
+            "name": "Boneka_Beruang_Besar - Coklat",
+            "applink": "tokopedia:///kirinstaros/boneka-beruang-besar-coklat",
+            "image_url": "https://images.tokopedia.net/img/VqbcmM/2022/9/23/821f274e-3518-4cbb-8dc3-345342c5d5aa.jpg",
+            "price": 350000,
+            "price_format": "Rp 350,000",
+            "original_price": "",
+            "discount_percentage": 0,
+            "rating_average": 0,
+            "parent_id": 0,
+            "stock": 50,
+            "min_order": 1,
+            "component_id": "03.46.02.01",
+            "tracking_option": 3,
+            "label_groups": [
+              {
+                "position": "integrity",
+                "title": "Terjual 10",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Waktu Indonesia Belanja",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
+              }
+            ],
+            "buttons": [
+              {
+                "name": "primary",
+                "applink": "",
+                "text": "+ Keranjang",
+                "is_cta": false,
+                "component_id": "03.46.02.01",
+                "tracking_option": 2
+              },
+              {
+                "name": "secondary",
+                "applink": "https://tokopedia.com/kirinstaros/boneka-beruang-besar-coklat&source=Search-SRP.46.02.01&source=Search-SRP.46.02.01",
+                "text": "Lihat Lainnya",
+                "is_cta": false,
+                "component_id": "03.46.02.01",
+                "tracking_option": 2
+              }
+            ]
+          },
+          {
+            "id": 2150685049,
+            "name": "Kalender_Tembok_Besar_Variant_Produk - coklat",
+            "applink": "tokopedia:///kirinstaros/kalender-tembok-besar-variant-produk-coklat",
+            "image_url": "https://images.tokopedia.net/img/hDjmkQ/2022/9/23/c790ae7f-ba56-4f8c-9ca8-0cbe94dcebb8.jpg",
+            "price": 500000,
+            "price_format": "Rp 500,000",
+            "original_price": "",
+            "discount_percentage": 0,
+            "rating_average": 0,
+            "parent_id": 0,
+            "stock": 100,
+            "min_order": 1,
+            "component_id": "03.46.02.02",
+            "tracking_option": 3,
+            "label_groups": [
+              {
+                "position": "integrity",
+                "title": "Terjual 10",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Waktu Indonesia Belanja",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
+              }
+            ],
+            "buttons": [
+              {
+                "name": "primary",
+                "applink": "",
+                "text": "+ Keranjang",
+                "is_cta": false,
+                "component_id": "03.46.02.02",
+                "tracking_option": 2
+              },
+              {
+                "name": "secondary",
+                "applink": "https://tokopedia.com/kirinstaros/kalender-tembok-besar-variant-produk-coklat&source=Search-SRP.46.02.02&source=Search-SRP.46.02.02",
+                "text": "Lihat Lainnya",
+                "is_cta": false,
+                "component_id": "03.46.02.02",
+                "tracking_option": 2
+              }
+            ]
+          },
+          {
+            "id": 0,
+            "name": "",
+            "applink": "",
+            "image_url": "",
+            "price": 0,
+            "price_format": "",
+            "original_price": "",
+            "discount_percentage": 0,
+            "rating_average": 0,
+            "parent_id": 0,
+            "stock": 0,
+            "min_order": 0,
+            "component_id": "",
+            "tracking_option": 0,
+            "label_groups": [
+              {
+                "position": "integrity",
+                "title": "Terjual 10",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Waktu Indonesia Belanja",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
+              }
+            ],
+            "buttons": [
+              {
+                "name": "primary",
+                "applink": "",
+                "text": "",
+                "is_cta": true,
+                "component_id": "",
+                "tracking_option": 0
+              }
+            ]
+          }
+        ],
+        "buttons": []
+      },
+      {
+        "id": 6550480,
+        "name": "KirinStar OS 3",
+        "location": "Senen",
+        "applink": "tokopedia://shop/6550478",
+        "image_url": "https://images.tokopedia.net/img/cache/215-square/default_v3-shopnophoto.png",
+        "component_id": "03.45.04.00",
+        "tracking_option": 3,
+        "badges": [],
+        "products": [
+          {
+            "id": 2150685064,
+            "name": "Boneka_Beruang_Besar - Coklat",
+            "applink": "tokopedia:///kirinstaros/boneka-beruang-besar-coklat",
+            "image_url": "https://images.tokopedia.net/img/VqbcmM/2022/9/23/821f274e-3518-4cbb-8dc3-345342c5d5aa.jpg",
+            "price": 350000,
+            "price_format": "Rp 350,000",
+            "original_price": "",
+            "discount_percentage": 0,
+            "rating_average": 0,
+            "parent_id": 0,
+            "stock": 50,
+            "min_order": 1,
+            "component_id": "03.46.02.01",
+            "tracking_option": 3,
+            "label_groups": [
+              {
+                "position": "integrity",
+                "title": "Terjual 10",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Waktu Indonesia Belanja",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
+              }
+            ],
+            "buttons": [
+              {
+                "name": "primary",
+                "applink": "",
+                "text": "+ Keranjang",
+                "is_cta": false,
+                "component_id": "03.46.02.01",
+                "tracking_option": 2
+              },
+              {
+                "name": "secondary",
+                "applink": "https://tokopedia.com/kirinstaros/boneka-beruang-besar-coklat&source=Search-SRP.46.02.01&source=Search-SRP.46.02.01",
+                "text": "Lihat Lainnya",
+                "is_cta": false,
+                "component_id": "03.46.02.01",
+                "tracking_option": 2
+              }
+            ]
+          },
+          {
+            "id": 2150685049,
+            "name": "Kalender_Tembok_Besar_Variant_Produk - coklat",
+            "applink": "tokopedia:///kirinstaros/kalender-tembok-besar-variant-produk-coklat",
+            "image_url": "https://images.tokopedia.net/img/hDjmkQ/2022/9/23/c790ae7f-ba56-4f8c-9ca8-0cbe94dcebb8.jpg",
+            "price": 500000,
+            "price_format": "Rp 500,000",
+            "original_price": "",
+            "discount_percentage": 0,
+            "rating_average": 0,
+            "parent_id": 0,
+            "stock": 100,
+            "min_order": 1,
+            "component_id": "03.46.02.02",
+            "tracking_option": 3,
+            "label_groups": [
+              {
+                "position": "integrity",
+                "title": "Terjual 10",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Waktu Indonesia Belanja",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
+              }
+            ],
+            "buttons": [
+              {
+                "name": "primary",
+                "applink": "",
+                "text": "+ Keranjang",
+                "is_cta": false,
+                "component_id": "03.46.02.02",
+                "tracking_option": 2
+              },
+              {
+                "name": "secondary",
+                "applink": "https://tokopedia.com/kirinstaros/kalender-tembok-besar-variant-produk-coklat&source=Search-SRP.46.02.02&source=Search-SRP.46.02.02",
+                "text": "Lihat Lainnya",
+                "is_cta": false,
+                "component_id": "03.46.02.02",
+                "tracking_option": 2
+              }
+            ]
+          },
+          {
+            "id": 0,
+            "name": "",
+            "applink": "",
+            "image_url": "",
+            "price": 0,
+            "price_format": "",
+            "original_price": "",
+            "discount_percentage": 0,
+            "rating_average": 0,
+            "parent_id": 0,
+            "stock": 0,
+            "min_order": 0,
+            "component_id": "",
+            "tracking_option": 0,
+            "label_groups": [
+              {
+                "position": "integrity",
+                "title": "Terjual 10",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "campaign",
+                "title": "Waktu Indonesia Belanja",
+                "type": "",
+                "url": "https://images.tokopedia.net/img/jbZAUJ/2020/10/13/c8eb8cd6-3c12-4659-a290-bb0555d64e3f.png"
+              }
+            ],
+            "buttons": [
+              {
+                "name": "primary",
+                "applink": "",
+                "text": "",
+                "is_cta": true,
+                "component_id": "",
+                "tracking_option": 0
+              }
+            ]
+          }
+        ],
+        "buttons": []
+      }
+    ]
+  }
+}

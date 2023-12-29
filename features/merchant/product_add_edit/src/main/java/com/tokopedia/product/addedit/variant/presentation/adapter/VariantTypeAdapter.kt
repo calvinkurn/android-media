@@ -16,11 +16,14 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         fun onVariantTypeSelected(adapterPosition: Int, variantDetail: VariantDetail)
         fun onVariantTypeDeselected(adapterPosition: Int, variantDetail: VariantDetail): Boolean
         fun onCustomVariantTypeCountChanged(count: Int)
+        fun onVariantTypeDisabledSelected(adapterPosition: Int)
+        fun onVariantTypeDisabledDeselected(adapterPosition: Int)
     }
 
     private var items: MutableList<VariantDetail> = mutableListOf()
     private var maxSelectedItems = 0
     private var selectedItems: ArrayList<ViewHolderState> = arrayListOf()
+    private var isEnabledSelection = true
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VariantTypeViewHolder {
         val rootView = LayoutInflater.from(parent.context).inflate(R.layout.item_variant_type, parent, false)
@@ -37,6 +40,10 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
 
     override fun onVariantTypeSelected(position: Int) {
         if (position < 0 || position > selectedItems.lastIndex) return
+        if (!isEnabledSelection) {
+            clickListener.onVariantTypeDisabledSelected(position)
+            return
+        }
         // from normal to selected
         selectedItems[position] = ViewHolderState.SELECTED
         // disable unselected items when maximum selected items reached
@@ -47,6 +54,10 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
 
     override fun onVariantTypeDeselected(position: Int): Boolean {
         if (position < 0 || position > selectedItems.lastIndex) return false
+        if (!isEnabledSelection) {
+            clickListener.onVariantTypeDisabledDeselected(position)
+            return false
+        }
         // execute the callback function
         val isConfirmed = clickListener.onVariantTypeDeselected(position, items[position])
         // from selected to normal if confirmed
@@ -165,6 +176,10 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
 
     fun getSelectedCount(): Int {
         return selectedItems.count { it == ViewHolderState.SELECTED }
+    }
+
+    fun setEnabledSelection(enabled: Boolean) {
+        isEnabledSelection = enabled
     }
 
     private fun manageUnselectedItems(selectedCount: Int) {

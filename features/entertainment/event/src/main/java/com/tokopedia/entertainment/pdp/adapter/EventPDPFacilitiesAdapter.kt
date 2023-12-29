@@ -1,24 +1,22 @@
 package com.tokopedia.entertainment.pdp.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.databinding.ItemEventPdpFacilitiesBinding
 import com.tokopedia.entertainment.pdp.data.Facilities
-import com.tokopedia.kotlin.extensions.view.loadImage
-import kotlinx.android.synthetic.main.item_event_pdp_facilities.view.*
+import com.tokopedia.media.loader.loadImage
 
 class EventPDPFacilitiesAdapter: RecyclerView.Adapter<EventPDPFacilitiesAdapter.EventPDPFacilitiesViewHolder>() {
 
     private var listFacilities = emptyList<Facilities>()
 
-    inner class EventPDPFacilitiesViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class EventPDPFacilitiesViewHolder(val binding: ItemEventPdpFacilitiesBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(facilities: Facilities) {
-            with(itemView) {
-                tg_event_pdp_facilitites.text = facilities.title
-                iv_event_pdp_facilities.loadImage(facilities.iconUrl)
+            with(binding) {
+                tgEventPdpFacilitites.text = facilities.title
+                ivEventPdpFacilities.loadImage(facilities.iconUrl)
             }
         }
     }
@@ -29,8 +27,12 @@ class EventPDPFacilitiesAdapter: RecyclerView.Adapter<EventPDPFacilitiesAdapter.
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): EventPDPFacilitiesViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_event_pdp_facilities, parent, false)
-        return EventPDPFacilitiesViewHolder(itemView)
+        val binding = ItemEventPdpFacilitiesBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return EventPDPFacilitiesViewHolder(binding)
     }
 
     fun setList(list: List<Facilities>) {

@@ -367,14 +367,14 @@ class ShopAdsWithThreeProducts : BaseCustomView {
             shopAdsText?.setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
                 )
             )
         } else {
             shopAdsText?.setTextColor(
                 ContextCompat.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                 )
             )
         }
@@ -431,9 +431,9 @@ class ShopAdsWithThreeProducts : BaseCustomView {
     private fun getTextColor(variant: Int): Int {
         return if (variant == LAYOUT_8) ContextCompat.getColor(
             context,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0
+            com.tokopedia.unifyprinciples.R.color.Unify_NN0
         )
-        else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+        else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
 
     }
 }

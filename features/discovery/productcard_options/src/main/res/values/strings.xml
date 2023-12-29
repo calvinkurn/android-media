@@ -2,4 +2,6 @@
     <string name="title_product_card_options">Product Card Options</string>
 
     <string name="bottom_sheet_show">BottomSheet Show</string>
+
+    <string name="productcard_options_similar_search_coachmark_description">Klik di sini untuk lihat produk lain yang serupa dengan pilihanmu. Semoga ketemu yang cocok!</string>
 </resources>

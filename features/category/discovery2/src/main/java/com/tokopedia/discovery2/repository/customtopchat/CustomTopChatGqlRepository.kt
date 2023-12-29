@@ -8,7 +8,13 @@ import javax.inject.Inject
 open class CustomTopChatGqlRepository @Inject constructor(val getGQLString: (Int) -> String) : BaseRepository(), CustomTopChatRepository {
 
     override suspend fun getMessageId(queryParameterMap: MutableMap<String, Any>): CustomChatResponse? {
-        return getGQLData(getGQLString(R.raw.query_custom_topchat_message),
-                CustomChatResponse::class.java, queryParameterMap) as CustomChatResponse
+        return getGQLData(queryCustomTopchatGql,
+            CustomChatResponse::class.java, queryParameterMap) as CustomChatResponse
     }
+
+    private val queryCustomTopchatGql: String = """query getMessage(${'$'}fabShopId: Int!, ${'$'}source: String) {
+    chatExistingChat(toShopId: ${'$'}fabShopId, source: ${'$'}source) {
+      messageId
+    }
+}""".trimIndent()
 }

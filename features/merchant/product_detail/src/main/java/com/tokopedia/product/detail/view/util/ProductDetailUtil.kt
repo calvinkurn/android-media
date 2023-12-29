@@ -99,7 +99,7 @@ fun String.boldOrLinkText(isLink: Boolean, context: Context,
                     override fun updateDrawState(ds: TextPaint) {
                         super.updateDrawState(ds)
                         ds.isUnderlineText = false
-                        val textColor = if (isLink) com.tokopedia.unifyprinciples.R.color.Unify_G500 else com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                        val textColor = if (isLink) com.tokopedia.unifyprinciples.R.color.Unify_GN500 else com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                         ds.color = MethodChecker.getColor(context, textColor)
                     }
                 }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -112,7 +112,7 @@ fun String.boldOrLinkText(isLink: Boolean, context: Context,
 
 fun String.renderHtmlBold(
     context: Context,
-    boldColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+    boldColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
 ): CharSequence? {
     if (this.isEmpty()) return null
     val spannedHtmlString: Spanned = MethodChecker.fromHtml(this)
@@ -189,31 +189,31 @@ internal fun String.getRelativeDate(context: Context): String {
     val yearDivider = monthDivider * ProductDetailUtil.MONTHS_IN_A_YEAR
 
     return if (diff / yearDivider > 0) {
-        context.getString(R.string.shop_online_last_date, getYear)
+        context.getString(R.string.pdp_shop_online_last_date, getYear)
     } else if (diff / monthDivider >= ProductDetailUtil.LAST_ONLINE_MONTH_THRESHOLD) {
-        context.getString(R.string.shop_online_last_date, getMonthAndYear)
+        context.getString(R.string.pdp_shop_online_last_date, getMonthAndYear)
     } else if (diff / dayDivider > 0) {
         val days = diff / dayDivider
         when {
             days <= 1 -> {
-                context.getString(R.string.shop_online_yesterday)
+                context.getString(R.string.pdp_shop_online_yesterday)
             }
             days in IntRange(
                 ProductDetailUtil.LAST_ONLINE_DAYS_RANGE_START,
                 ProductDetailUtil.LAST_ONLINE_DAYS_RANGE_END
             ) -> {
-                context.getString(R.string.shop_online_days_ago, diff / dayDivider)
+                context.getString(R.string.pdp_shop_online_days_ago, diff / dayDivider)
             }
             else -> {
-                context.getString(R.string.shop_online_last_date, getDaysAndMonth)
+                context.getString(R.string.pdp_shop_online_last_date, getDaysAndMonth)
             }
         }
     } else if (diff / hourDivider > 0) {
-        context.getString(R.string.shop_online_hours_ago, diff / hourDivider)
+        context.getString(R.string.pdp_shop_online_hours_ago, diff / hourDivider)
     } else {
         val minutes = diff / minuteDivider
-        if (minutes in 0..ProductDetailUtil.LAST_ONLINE_MINUTES_RANGE_END) context.getString(R.string.shop_online) else
-            context.getString(R.string.shop_online_minute_ago, minutes)
+        if (minutes in 0..ProductDetailUtil.LAST_ONLINE_MINUTES_RANGE_END) context.getString(R.string.pdp_shop_online) else
+            context.getString(R.string.pdp_shop_online_minute_ago, minutes)
     }
 }
 

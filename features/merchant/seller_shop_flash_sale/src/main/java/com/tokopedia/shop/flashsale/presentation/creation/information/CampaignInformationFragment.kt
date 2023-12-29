@@ -160,7 +160,8 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             defaultGradientColor.second,
             PaymentType.INSTANT,
             Int.ZERO,
-            VPS_PACKAGE_ID_NOT_SELECTED
+            VPS_PACKAGE_ID_NOT_SELECTED,
+            isOosImprovement = true
         )
     }
 
@@ -748,18 +749,20 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val paymentType = viewModel.getPaymentType()
         val remainingQuota = viewModel.getRemainingQuota()
         val vpsPackageId = viewModel.getSelectedVpsPackage()?.packageId.orZero()
+        val isEnableOosTransaction = viewModel.getOosState()
 
         return CampaignInformationViewModel.Selection(
-            binding?.tauCampaignName?.editText?.text.toString(),
-            startDate,
-            endDate,
-            showTeaser,
-            teaserDate,
-            firstColor,
-            secondColor,
-            paymentType,
-            remainingQuota,
-            vpsPackageId
+            campaignName = binding?.tauCampaignName?.editText?.text.toString(),
+            startDate = startDate,
+            endDate = endDate,
+            showTeaser = showTeaser,
+            teaserDate = teaserDate,
+            firstColor = firstColor,
+            secondColor = secondColor,
+            paymentType = paymentType,
+            remainingQuota = remainingQuota,
+            vpsPackageId = vpsPackageId,
+            isOosImprovement = isEnableOosTransaction
         )
     }
 
@@ -792,7 +795,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
-                ds.color = MethodChecker.getColor(requireContext(),com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                ds.color = MethodChecker.getColor(requireContext(),com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 ds.isUnderlineText = false
             }
         }
@@ -907,21 +910,23 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         viewModel.setSelectedEndDate(campaignEndDate)
         viewModel.setSelectedColor(campaign.gradientColor)
         viewModel.setPaymentType(campaign.paymentType)
+        viewModel.setOosState(campaign.isOosImprovement)
         viewModel.storeVpsPackage(campaignWithSelectedVpsPackage.vpsPackages)
         viewModel.setSelectedVpsPackage(updatedVpsPackage)
 
         viewModel.storeAsDefaultSelection(
             CampaignInformationViewModel.Selection(
-                campaign.campaignName,
-                campaignStartDate,
-                campaignEndDate,
-                campaign.useUpcomingWidget,
-                campaignUpcomingDate,
-                campaign.gradientColor.first,
-                campaign.gradientColor.second,
-                campaign.paymentType,
-                Int.ZERO,
-                campaign.packageInfo.packageId
+                campaignName = campaign.campaignName,
+                startDate = campaignStartDate,
+                endDate = campaignEndDate,
+                showTeaser = campaign.useUpcomingWidget,
+                teaserDate = campaignUpcomingDate,
+                firstColor = campaign.gradientColor.first,
+                secondColor = campaign.gradientColor.second,
+                paymentType = campaign.paymentType,
+                remainingQuota = Int.ZERO,
+                vpsPackageId = campaign.packageInfo.packageId,
+                isOosImprovement = campaign.isOosImprovement
             )
         )
     }

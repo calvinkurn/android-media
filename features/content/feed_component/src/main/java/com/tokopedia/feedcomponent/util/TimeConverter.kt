@@ -1,7 +1,6 @@
 package com.tokopedia.feedcomponent.util
 
 import android.content.Context
-import com.tokopedia.feedcomponent.R
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import timber.log.Timber
 import java.text.ParseException
@@ -101,19 +100,19 @@ object TimeConverter {
         /*less than a minute*/
         return when {
             getDifference(currentTime, postDate) < SECONDS_IN_MINUTE -> {
-                context.getString(R.string.post_time_just_now_new)
+                context.getString(com.tokopedia.content.common.R.string.post_time_just_now_new)
 
                 /*less than 1 hour*/
             }
             getDifference(currentTime, postDate) / SECONDS_IN_MINUTE < SECONDS_IN_MINUTE -> {
                 (getDifference(currentTime, postDate) / SECONDS_IN_MINUTE).toString().plus(" ")
-                    .plus(context.getString(R.string.post_time_minutes_ago_new))
+                    .plus(context.getString(com.tokopedia.content.common.R.string.post_time_minutes_ago_new))
 
                 /*less than 1 day*/
             }
             getDifference(currentTime, postDate) / MINUTES_IN_HOUR < HOURS_IN_A_DAY -> {
                 (getDifference(currentTime, postDate) / MINUTES_IN_HOUR).toString().plus(" ")
-                    .plus(context.getString(R.string.post_time_hours_ago_new))
+                    .plus(context.getString(com.tokopedia.content.common.R.string.post_time_hours_ago_new))
 
                 /*less than 7 day*/
             }
@@ -122,7 +121,7 @@ object TimeConverter {
                     currentTime,
                     postDate
                 ) / (MINUTES_IN_HOUR * HOURS_IN_A_DAY)).toString().plus(" ")
-                    .plus(context.getString(R.string.post_time_days_ago))
+                    .plus(context.getString(com.tokopedia.content.common.R.string.post_time_days_ago))
 
                 /*less than 1 year*/
             }
@@ -151,19 +150,19 @@ object TimeConverter {
         /*less than a minute*/
         return when {
             getDifference(currentTime, postDate) < SECONDS_IN_MINUTE -> {
-                context.getString(R.string.post_time_few_moments_ago)
+                context.getString(com.tokopedia.content.common.R.string.post_time_few_moments_ago)
 
                 /*less than 1 hour*/
             }
             getDifference(currentTime, postDate) / SECONDS_IN_MINUTE < SECONDS_IN_MINUTE -> {
                 (getDifference(currentTime, postDate) / SECONDS_IN_MINUTE).toString().plus(" ")
-                        .plus(context.getString(R.string.post_comment_time_minute_ago_new))
+                        .plus(context.getString(com.tokopedia.content.common.R.string.post_comment_time_minute_ago_new))
 
                 /*less than 1 day*/
             }
             getDifference(currentTime, postDate) / MINUTES_IN_HOUR < HOURS_IN_A_DAY -> {
                 (getDifference(currentTime, postDate) / MINUTES_IN_HOUR).toString().plus(" ")
-                        .plus(context.getString(R.string.post_comment_time_hours_ago_new))
+                        .plus(context.getString(com.tokopedia.content.common.R.string.post_comment_time_hours_ago_new))
 
                 /*less than 7 day*/
             }
@@ -172,7 +171,7 @@ object TimeConverter {
                         currentTime,
                         postDate
                 ) / (MINUTES_IN_HOUR * HOURS_IN_A_DAY)).toString().plus(" ")
-                        .plus(context.getString(R.string.post_comment_time_days_ago))
+                        .plus(context.getString(com.tokopedia.content.common.R.string.post_comment_time_days_ago))
 
                 /*less than 1 year*/
             }
@@ -200,11 +199,11 @@ object TimeConverter {
         val sdfYear = SimpleDateFormat(DAY_MONTH_YEAR_FORMAT, localeID)
 
         return if (getDifference(currentTime, postDate) < SECONDS_IN_MINUTE) {
-            context.getString(R.string.post_time_just_now)
+            context.getString(com.tokopedia.content.common.R.string.post_time_just_now)
 
         } else if (getDifference(currentTime, postDate) / SECONDS_IN_MINUTE < SECONDS_IN_MINUTE) {
             (getDifference(currentTime, postDate) / SECONDS_IN_MINUTE).toString()
-                .plus(context.getString(R.string.post_time_minutes_ago))
+                .plus(context.getString(com.tokopedia.content.common.R.string.post_time_minutes_ago))
 
         } else if (getDifference(currentTime, postDate) / MINUTES_IN_HOUR < HOURS_IN_A_DAY
             && calCurrentTime.get(Calendar.DAY_OF_MONTH) == calPostDate.get(Calendar.DAY_OF_MONTH)
@@ -212,7 +211,7 @@ object TimeConverter {
             && calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR)
         ) {
             (getDifference(currentTime, postDate) / MINUTES_IN_HOUR).toString()
-                .plus(context.getString(R.string.post_time_hours_ago))
+                .plus(context.getString(com.tokopedia.content.common.R.string.post_time_hours_ago))
 
         } else if (calCurrentTime.get(Calendar.MONTH) == calPostDate.get(Calendar.MONTH)
             && calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR)
@@ -221,12 +220,12 @@ object TimeConverter {
                 calPostDate.get(Calendar.DAY_OF_MONTH)
             )
         ) {
-            context.getString(R.string.post_time_yesterday_at)
+            context.getString(com.tokopedia.content.common.R.string.post_time_yesterday_at)
                 .plus(sdfHour.format(postDate))
 
         } else if (calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR))
             sdfDay.format(postDate)
-                .plus(context.getString(R.string.post_time_hour))
+                .plus(context.getString(com.tokopedia.content.common.R.string.content_common_post_time_hour))
                 .plus(sdfHour.format(postDate))
         else {
             sdfYear.format(postDate)

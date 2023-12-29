@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/seller_direct_login"
-            android:textColor="@color/Unify_N700"
+            android:textColor="@color/Unify_NN950"
             app:layout_constraintBottom_toTopOf="@+id/typography"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"

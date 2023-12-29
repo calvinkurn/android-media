@@ -3,7 +3,7 @@ package com.tokopedia.recharge_pdp_emoney.presentation.adapter.viewholder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.databinding.ItemEmoneyRecentTransactionBinding
 
@@ -11,9 +11,11 @@ import com.tokopedia.recharge_pdp_emoney.databinding.ItemEmoneyRecentTransaction
  * @author by jessica on 05/04/21
  */
 
-class RecentTransactionViewHolder(itemView: View,
-                                  private val listener: ActionListener)
-    : RecyclerView.ViewHolder(itemView) {
+class RecentTransactionViewHolder(
+    itemView: View,
+    private val listener: ActionListener
+) :
+    RecyclerView.ViewHolder(itemView) {
 
     fun bind(item: TopupBillsRecommendation) {
         val bind = ItemEmoneyRecentTransactionBinding.bind(itemView)

@@ -2,11 +2,11 @@ package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.atc_common.domain.model.response.atcexternal.AddToCartExternalModel
 import com.tokopedia.network.exception.MessageErrorException
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Test
-import rx.Observable
 
 class AddToCartExternalTest : BaseCartTest() {
 
@@ -20,7 +20,7 @@ class AddToCartExternalTest : BaseCartTest() {
             }
         }
 
-        every { addToCartExternalUseCase.createObservable(any()) } returns Observable.just(addToCartExternalModel)
+        coEvery { addToCartExternalUseCase(any()) } returns addToCartExternalModel
         every { userSessionInterface.userId } returns "123"
 
         // When
@@ -40,7 +40,7 @@ class AddToCartExternalTest : BaseCartTest() {
         val errorMessage = "Error message"
         val exception = MessageErrorException(errorMessage)
 
-        every { addToCartExternalUseCase.createObservable(any()) } returns Observable.error(exception)
+        coEvery { addToCartExternalUseCase(any()) } throws exception
         every { userSessionInterface.userId } returns "123"
 
         // When
@@ -64,7 +64,7 @@ class AddToCartExternalTest : BaseCartTest() {
             }
         }
 
-        every { addToCartExternalUseCase.createObservable(any()) } returns Observable.just(addToCartExternalModel)
+        coEvery { addToCartExternalUseCase(any()) } returns addToCartExternalModel
         every { userSessionInterface.userId } returns "123"
 
         cartListPresenter.detachView()

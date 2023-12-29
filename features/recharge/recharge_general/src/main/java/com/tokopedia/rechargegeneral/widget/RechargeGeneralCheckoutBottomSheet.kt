@@ -51,7 +51,19 @@ class RechargeGeneralCheckoutBottomSheet @JvmOverloads constructor(
         listener?.onClickCheckout(binding.enquiryDataView.enquiryData)
     }
 
+    override fun onClickMultiCheckout() {
+        listener?.onClickMultiCheckout(binding.enquiryDataView.enquiryData)
+    }
+
+    override fun onCloseCoachMark() {
+        listener?.onCloseCoachMark()
+    }
+
     interface CheckoutListener {
         fun onClickCheckout(data: TopupBillsEnquiry)
+
+        fun onClickMultiCheckout(data: TopupBillsEnquiry)
+
+        fun onCloseCoachMark()
     }
 }

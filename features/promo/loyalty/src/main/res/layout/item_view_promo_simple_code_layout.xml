@@ -30,7 +30,7 @@
             android:layout_toEndOf="@id/iv_promo_code_icon"
             android:layout_toRightOf="@id/iv_promo_code_icon"
             android:text="@string/label_promo_code_loyalty_module"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:textSize="14sp"
             tools:ignore="SmallSp" />
 
@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:textColor="@color/Unify_Y500"
+                android:textColor="@color/Unify_YN500"
                 tools:text="BRIG6P" />
 
         </RelativeLayout>
@@ -86,7 +86,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:text="@string/label_copy_promo_code_loyalty_module"
-                android:textColor="@color/Unify_N700_44" />
+                android:textColor="@color/Unify_NN950_44" />
 
         </RelativeLayout>
 

@@ -41,7 +41,7 @@ class CsatOptionListViewHolder(
     private val bg = generateLeftMessageBackground(
         customChatLayout,
         R.color.chatbot_dms_left_message_bg,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20
+        com.tokopedia.unifyprinciples.R.color.Unify_NN950_20
     )
 
     init {

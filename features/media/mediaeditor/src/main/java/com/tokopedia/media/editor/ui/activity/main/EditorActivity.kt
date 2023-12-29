@@ -1,16 +1,14 @@
 package com.tokopedia.media.editor.ui.activity.main
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
 import com.tokopedia.media.editor.base.BaseEditorActivity
 import com.tokopedia.media.editor.di.EditorInjector
@@ -54,15 +52,37 @@ class EditorActivity : BaseEditorActivity() {
         supportFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
 
+        val ctaText = editorParam.get().getCustomCtaText()
+
         setHeader(
             getString(editorR.string.editor_main_header_title_text),
-            getString(editorR.string.editor_main_header_action_text)
+            ctaText.ifNullOrBlank {
+                getString(editorR.string.editor_main_header_action_text)
+            }
         )
 
         InternalStorageCleaner.cleanUpInternalStorageIfNeeded(
             this,
             getEditorSaveFolderPath()
         )
+
+        viewModel.editorResult.observe(this) { imageResultList ->
+            filteredEditorResult(imageResultList).let { filteredResult ->
+                val listImageEditState = viewModel.editStateList.values.toList()
+                val result = EditorResult(
+                    originalPaths = listImageEditState.map { it.getOriginalUrl() },
+                    editedImages = filteredResult
+                )
+
+                editorHomeAnalytics.clickUpload()
+
+                val intent = Intent()
+                intent.putExtra(RESULT_INTENT_EDITOR, result)
+                setResult(Activity.RESULT_OK, intent)
+
+                finish()
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -118,67 +138,17 @@ class EditorActivity : BaseEditorActivity() {
     }
 
     override fun onHeaderActionClick() {
-        if (!isGranted(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) &&
-            Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE
-            )
-        } else {
-            saveImageToGallery()
-        }
+        finishPage()
     }
 
     override fun onBackClicked() {
         editorHomeAnalytics.clickBackButton()
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (permissions.isNotEmpty() && grantResults.isNotEmpty()) {
-            if (
-                requestCode == PERMISSION_REQUEST_CODE &&
-                permissions.first() == Manifest.permission.WRITE_EXTERNAL_STORAGE &&
-                grantResults.first() != -1) {
-                saveImageToGallery()
-            }
-        }
-    }
-
-    private fun saveImageToGallery() {
-        val listImageEditState = viewModel.editStateList.values.toList()
-        viewModel.saveToGallery(
-            listImageEditState
-        ) { imageResultList, exception ->
-            imageResultList?.let {
-                val result = EditorResult(
-                    originalPaths = listImageEditState.map { it.getOriginalUrl() },
-                    editedImages = imageResultList
-                )
-
-                editorHomeAnalytics.clickUpload()
-
-                val intent = Intent()
-                intent.putExtra(RESULT_INTENT_EDITOR, result)
-                setResult(Activity.RESULT_OK, intent)
-            }
-
-            exception?.let {
-                showErrorGeneralToaster(this)
-                newRelicLog(
-                    mapOf(
-                        FAILED_SAVE_FIELD to "${it.message}"
-                    )
-                )
-            }
-
-            finish()
-        }
+    private fun finishPage() {
+        viewModel.finishPage(
+            viewModel.editStateList.values.toList()
+        )
     }
 
     private fun showBackDialogConfirmation() {
@@ -204,9 +174,20 @@ class EditorActivity : BaseEditorActivity() {
         }
     }
 
+    // filter editor result, null -> failed to save image || "" (empty string) -> image not edited
+    private fun filteredEditorResult(editorResult: List<String?>): List<String> {
+        return editorResult.mapNotNull {
+            if (it == null) {
+                showErrorGeneralToaster(this, null)
+                String.EMPTY
+            } else {
+                it
+            }
+        }
+    }
+
     companion object {
         private const val CACHE_PARAM_INTENT_DATA = "intent_data.param_editor"
-        private const val PERMISSION_REQUEST_CODE = 197
     }
 
 }

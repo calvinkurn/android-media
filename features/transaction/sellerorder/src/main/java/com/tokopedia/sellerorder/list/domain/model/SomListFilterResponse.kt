@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder.list.domain.model
 
-
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -24,7 +23,10 @@ data class SomListFilterResponse(
             val statusList: List<Status> = listOf(),
             @SerializedName("sort_by")
             @Expose
-            val sortByList: List<SortBy> = listOf()
+            val sortByList: List<SortBy> = listOf(),
+            @Expose
+            @SerializedName("highlighted_status_key")
+            val highLightedStatusKey: String? = ""
         ) {
             data class QuickFilter(
                 @SerializedName("id")

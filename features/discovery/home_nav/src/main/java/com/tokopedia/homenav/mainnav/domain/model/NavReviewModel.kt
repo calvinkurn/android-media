@@ -5,5 +5,4 @@ data class NavReviewModel(
     val productName: String = "",
     val imageUrl: String = "",
     val reputationId: String = "",
-    var fullWidth: Boolean = false
 )

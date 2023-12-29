@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifycomponents.SearchBarUnify
+        android:id="@+id/search_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:search_bar_placeholder="@string/mp_ad_group_list_search_hint"
+        app:search_bar_clearable="true"
+        app:search_bar_show_icon="false"
+        app:search_bar_enable="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="visible"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="8dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_schedule_slot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constrainedHeight="true"
+        tools:itemCount="15"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/topads_insight_centre_insight_selection_item"
+        app:layout_constraintTop_toBottomOf="@id/search_group"
+        app:layout_constraintBottom_toTopOf="@id/save_cta_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0"
+        android:layout_marginTop="8dp" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/save_cta_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unifyButtonType="main"
+        app:unifyButtonSize="medium"
+        android:text="@string/topads_common_save_butt"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
+        android:layout_margin="16dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

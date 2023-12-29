@@ -21,7 +21,7 @@ import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterAnalytics.trackClearCacheClicked
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterAnalytics.trackImpression
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterTimber
-import com.tokopedia.troubleshooter.notification.data.entity.NotificationSendTroubleshoot
+import com.tokopedia.troubleshooter.notification.data.service.googleplay.PlayServicesManager
 import com.tokopedia.troubleshooter.notification.databinding.FragmentNotifTroubleshooterBinding
 import com.tokopedia.troubleshooter.notification.di.DaggerTroubleshootComponent
 import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule
@@ -41,7 +41,7 @@ import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewMo
 import com.tokopedia.troubleshooter.notification.util.CacheManager.saveLastCheckedDate
 import com.tokopedia.troubleshooter.notification.util.ClearCacheUtil.showClearCache
 import com.tokopedia.troubleshooter.notification.util.TroubleshooterDialog.showInformationDialog
-import com.tokopedia.troubleshooter.notification.util.combineFourth
+import com.tokopedia.troubleshooter.notification.util.combine
 import com.tokopedia.troubleshooter.notification.util.isNotNull
 import com.tokopedia.troubleshooter.notification.util.isTrue
 import com.tokopedia.troubleshooter.notification.util.prefixToken
@@ -58,12 +58,13 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var fcmManager: FirebaseMessagingManager
     @Inject lateinit var userSession: UserSessionInterface
+    @Inject lateinit var playServicesManager: PlayServicesManager
 
     private lateinit var viewModel: TroubleshootViewModel
     private val binding by viewBinding(FragmentNotifTroubleshooterBinding::bind)
 
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
-        TroubleshooterAdapter(TroubleshooterItemFactory(this, this))
+        TroubleshooterAdapter(TroubleshooterItemFactory(this, this, playServicesManager))
     }
 
     override fun onCreateView(
@@ -141,6 +142,10 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
             ringtoneSetting(it)
         })
 
+        viewModel.playServicesSetting.observe(viewLifecycleOwner, {
+            playServicesSetting(it)
+        })
+
         viewModel.troubleshootSuccess.observe(viewLifecycleOwner, {
             val isSuccess = StatusState(it.isTroubleshootSuccess())
             adapter.updateStatus(PushNotification, isSuccess)
@@ -157,16 +162,18 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     }
 
     private fun troubleshooterStatus() {
-        combineFourth(
+        combine(
                 viewModel.token,
                 viewModel.notificationSetting,
                 viewModel.deviceSetting,
-                viewModel.notificationRingtoneUri
+                viewModel.notificationRingtoneUri,
+                viewModel.playServicesSetting
         ).observe(viewLifecycleOwner, Observer {
             val token = it.first
             val notification = it.second
             val device = it.third
             val ringtone = it.fourth?.second
+            val playServices = it.fifth
 
             if (viewModel.tickerItems.isNotEmpty()) {
                 adapter.addWarningTicker(TickerUIView(viewModel.tickerItems))
@@ -177,7 +184,8 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
             if (notification.isNotNull() && device.isNotNull() && ringtone.isNotNull() && token.isNotNull()) {
                 TroubleshooterTimber.combine(token, notification, device)
 
-                if (notification.isTrue() && device.isTrue() && !isSilent(ringtone) && token.isTrue()) {
+                if (notification.isTrue() && device.isTrue() && !isSilent(ringtone)
+                    && token.isTrue() && playServices.isTrue()) {
                     adapter.status(StatusState.Success)
                 } else {
                     adapter.status(StatusState.Warning)
@@ -263,6 +271,20 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         }
     }
 
+    private fun playServicesSetting(result: Result<Boolean>) {
+        when (result) {
+            is Fail -> {
+                adapter.updateStatus(GooglePlayServices, StatusState.Error)
+            }
+            is Success -> {
+                if (result.data) {
+                    adapter.updateStatus(GooglePlayServices, StatusState.Success)
+                }
+            }
+        }
+
+    }
+
     private fun ringtoneSetting(status: Pair<Uri?, RingtoneState>) {
         if (status.second == Normal) {
             adapter.setRingtoneStatus(status.first, StatusState.Success)
@@ -317,6 +339,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     private fun showToastError() {
         view?.let {
             val errorMessage = getString(R.string.notif_network_issue)
+
             Toaster.make(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }

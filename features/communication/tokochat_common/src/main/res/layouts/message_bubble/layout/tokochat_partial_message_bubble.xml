@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    tools:parentTag="com.tokopedia.tokochat_common.view.customview.TokoChatMessageBubbleLayout">
+    tools:parentTag="com.tokopedia.tokochat.common.view.chatroom.customview.TokoChatMessageBubbleLayout">
 
-    <com.tokopedia.tokochat_common.view.customview.TokoChatMessageChatLayout
+    <com.tokopedia.tokochat.common.view.chatroom.customview.TokoChatMessageChatLayout
         android:id="@+id/tokochat_layout_message_chat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

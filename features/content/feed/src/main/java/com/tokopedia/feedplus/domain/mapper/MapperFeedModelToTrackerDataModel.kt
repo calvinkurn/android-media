@@ -3,15 +3,22 @@ package com.tokopedia.feedplus.domain.mapper
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedFollowRecommendationModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
+import com.tokopedia.feedplus.presentation.model.type.AuthorType
 
 /**
  * Created By : Muhammad Furqan on 03/05/23
  */
 class MapperFeedModelToTrackerDataModel(
     val tabType: String,
-    val entryPoint: String
+    val entrySource: FeedEntrySource,
 ) {
+
+    data class FeedEntrySource(
+        val widgetId: String,
+        val entryPoint: String,
+    )
 
     companion object {
         private const val DEFAULT_CAMPAIGN_NO_STATUS = "no"
@@ -46,7 +53,7 @@ class MapperFeedModelToTrackerDataModel(
                         else -> it
                     }
                 },
-            entryPoint = entryPoint
+            entrySource = entrySource,
         )
 
     fun transformImageContentToTrackerModel(
@@ -75,7 +82,7 @@ class MapperFeedModelToTrackerDataModel(
                         else -> it
                     }
                 },
-            entryPoint = entryPoint
+            entrySource = entrySource,
         )
 
     fun transformLiveContentToTrackerModel(
@@ -104,6 +111,23 @@ class MapperFeedModelToTrackerDataModel(
                         else -> it
                     }
                 },
-            entryPoint = entryPoint
+            entrySource = entrySource,
         )
+
+    fun transformProfileRecommendationToTrackerModel(
+        profile: FeedFollowRecommendationModel.Profile
+    ) = FeedTrackerDataModel(
+        activityId = "",
+        authorId = profile.id,
+        tabType = tabType,
+        typename = "",
+        type = "",
+        authorType = if (profile.isShop) AuthorType.Shop else AuthorType.User,
+        mediaType = "",
+        isFollowing = profile.isFollowed,
+        contentScore = "",
+        hasVoucher = false,
+        campaignStatus = "",
+        entrySource = entrySource,
+    )
 }

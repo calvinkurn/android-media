@@ -2,7 +2,6 @@ package com.tokopedia.entertainment.search.data
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
-import javax.annotation.Generated
 
 data class EventDetailResponse(
 

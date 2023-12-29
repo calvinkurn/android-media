@@ -9,6 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/cd_img_preview"
+        android:elevation="3dp"
+        android:scaleType="fitCenter" />
+
+    <ImageView
+        android:id="@+id/img_secondary_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/cd_img_preview"
         android:elevation="2dp"
         android:scaleType="fitCenter" />
 

@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
@@ -91,6 +92,15 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
 
     private var binding by autoCleared<FragmentDealsSearchBinding>()
     private var binding2 by autoCleared<LayoutDealsSearchBarBinding>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            if (fragment is SelectLocationBottomSheet) {
+                fragment.setCallback(this)
+            }
+        }
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentDealsSearchBinding.inflate(inflater, container, false)
@@ -267,8 +277,9 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
         setSearchBarListener()
         binding2.ivButtonBack.setOnClickListener { activity?.onBackPressed() }
         binding2.tvLocation.setOnClickListener {
-            bottomSheet = SelectLocationBottomSheet(binding2.tvLocation.text.toString(), currentLocation, false, this)
-            fragmentManager?.let { fm -> bottomSheet?.show(fm, BOTTOM_SHEET_TAG) }
+            bottomSheet = SelectLocationBottomSheet.createInstance(binding2.tvLocation.text.toString(), currentLocation, false)
+            bottomSheet?.setCallback(this)
+            childFragmentManager?.let { fm -> bottomSheet?.show(fm, BOTTOM_SHEET_TAG) }
         }
     }
 

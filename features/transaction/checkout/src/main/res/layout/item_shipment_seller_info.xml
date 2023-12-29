@@ -14,10 +14,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="12dp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_6"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
         tools:text="Pesanan 1"
         tools:visibility="visible" />
 
@@ -32,7 +33,7 @@
         android:paddingRight="8dp"
         android:paddingBottom="4dp"
         android:text="@string/label_ticker_trade_in"
-        android:textColor="@color/Unify_B500"
+        android:textColor="@color/Unify_BN500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_order_number"
         app:typographyType="small"
@@ -40,11 +41,10 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_shop_badge"
-        android:layout_width="@dimen/dp_22"
-        android:layout_height="@dimen/dp_18"
+        android:layout_width="20dp"
+        android:layout_height="16dp"
         android:layout_below="@+id/tv_trade_in_label"
         android:paddingEnd="4dp"
-        android:paddingRight="4dp"
         app:layout_constraintBottom_toBottomOf="@+id/tv_shop_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_shop_name"
@@ -61,13 +61,14 @@
         android:ellipsize="end"
         android:lineSpacingExtra="5sp"
         android:lines="1"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toStartOf="@id/label_epharmacy"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@+id/img_shop_badge"
         app:layout_constraintTop_toBottomOf="@+id/tv_trade_in_label"
         app:layout_constraintWidth_default="wrap"
-        app:typographyType="body_2"
+        app:typographyType="display_3"
         app:typographyWeight="bold"
         tools:text="Toko Adidas"
         tools:visibility="visible" />
@@ -110,10 +111,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_shop_name"
             android:gravity="center_vertical"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN600"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_shop_name"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="reguler"
             tools:text="Tangerang Selatan"
             tools:visibility="visible" />
@@ -126,7 +127,7 @@
             android:paddingLeft="@dimen/spacing_lvl2"
             android:paddingRight="@dimen/spacing_lvl2"
             android:text="@string/label_separator_line"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN600"
             app:typographyType="small" />
 
         <com.tokopedia.unifycomponents.Label
@@ -145,7 +146,7 @@
             android:paddingLeft="@dimen/spacing_lvl2"
             android:paddingRight="@dimen/spacing_lvl2"
             android:text="@string/label_separator_line"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN600"
             app:typographyType="small" />
 
         <com.tokopedia.unifycomponents.Label
@@ -164,7 +165,7 @@
             android:paddingLeft="@dimen/spacing_lvl2"
             android:paddingRight="@dimen/spacing_lvl2"
             android:text="@string/label_separator_line"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN600"
             app:typographyType="small" />
 
         <com.tokopedia.unifycomponents.ImageUnify
@@ -175,7 +176,7 @@
             android:gravity="center_vertical"
             android:scaleType="fitStart"
             app:layout_maxWidth="100dp"
-            tools:src="@color/Unify_G500" />
+            tools:src="@color/Unify_GN500" />
 
     </com.google.android.flexbox.FlexboxLayout>
 

@@ -10,7 +10,7 @@
         android:id="@+id/tokonow_feedback_widget_divider"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        android:background="@color/Unify_N50"
+        android:background="@color/Unify_NN50"
         />
 
     <com.tokopedia.tokopedianow.common.view.ProductFeedbackView

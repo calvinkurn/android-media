@@ -27,14 +27,18 @@ import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.tokopedianow.buyercomm.domain.model.GetBuyerCommunication.GetBuyerCommunicationResponse
+import com.tokopedia.tokopedianow.buyercomm.domain.usecase.GetBuyerCommunicationUseCase
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse.CategoryListResponse
+import com.tokopedia.tokopedianow.common.domain.model.GetHomeBannerV2DataResponse.GetHomeBannerV2Response
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
+import com.tokopedia.tokopedianow.common.domain.usecase.GetHomeBannerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
@@ -62,10 +66,11 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestFinishedWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestReloadWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel
 import com.tokopedia.tokopedianow.util.TestUtils.getPrivateField
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
-import com.tokopedia.unit.test.rule.CoroutineTestRule
-import com.tokopedia.unit.test.rule.StandardTestRule
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -76,7 +81,11 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -87,6 +96,10 @@ import org.mockito.ArgumentMatchers.anyString
 
 @ExperimentalCoroutinesApi
 abstract class TokoNowHomeViewModelTestFixture {
+
+    protected companion object {
+        const val EXPERIMENT_VARIANT = "experiment_variant"
+    }
 
     @RelaxedMockK
     lateinit var getHomeLayoutDataUseCase: GetHomeLayoutDataUseCase
@@ -126,6 +139,7 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var getProductBundleRecomUseCase: GetProductBundleRecomUseCase
+
     @RelaxedMockK
     lateinit var setUserPreferenceUseCase: SetUserPreferenceUseCase
 
@@ -142,10 +156,19 @@ abstract class TokoNowHomeViewModelTestFixture {
     lateinit var redeemCouponUseCase: RedeemCouponUseCase
 
     @RelaxedMockK
+    lateinit var getBuyerCommunicationUseCase: GetBuyerCommunicationUseCase
+
+    @RelaxedMockK
+    lateinit var getHomeBannerUseCase: GetHomeBannerUseCase
+
+    @RelaxedMockK
     lateinit var playWidgetTools: PlayWidgetTools
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
+
+    @RelaxedMockK
+    lateinit var abTestPlatform: AbTestPlatform
 
     @RelaxedMockK
     lateinit var affiliateService: NowAffiliateService
@@ -159,7 +182,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     @get:Rule
     val coroutineTestRule = UnconfinedTestRule()
 
-    protected lateinit var viewModel : TokoNowHomeViewModel
+    protected lateinit var viewModel: TokoNowHomeViewModel
 
     private val privateHomeLayoutItemList by lazy {
         viewModel.getPrivateField<MutableList<HomeLayoutItemUiModel?>>("homeLayoutItemList")
@@ -183,19 +206,24 @@ abstract class TokoNowHomeViewModelTestFixture {
             getCatalogCouponListUseCase,
             redeemCouponUseCase,
             getProductBundleRecomUseCase,
+            getBuyerCommunicationUseCase,
+            getHomeBannerUseCase,
             playWidgetTools,
+            addressData,
             userSession,
+            abTestPlatform,
             coroutineTestRule.dispatchers,
             addToCartUseCase,
             updateCartUseCase,
             deleteCartUseCase,
             affiliateService,
-            getTargetedTickerUseCase,
-            addressData,
+            getTargetedTickerUseCase
         )
+
+        onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
     }
 
-    protected fun verifyGetHomeLayoutResponseSuccess(expectedResponse: HomeLayoutListUiModel) {
+    protected fun verifyGetHomeLayoutListSuccess(expectedResponse: HomeLayoutListUiModel) {
         val actualResponse = viewModel.homeLayoutList.value
         Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
     }
@@ -225,7 +253,7 @@ abstract class TokoNowHomeViewModelTestFixture {
         Assert.assertEquals(HOMEPAGE_TOKONOW, actualResponse)
     }
 
-    protected fun verfifyGetChooseAddressSuccess(expectedResponse: GetStateChosenAddressResponse) {
+    protected fun verifyGetChooseAddressSuccess(expectedResponse: GetStateChosenAddressResponse) {
         val actualResponse = viewModel.chooseAddress.value
         Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
     }
@@ -235,22 +263,40 @@ abstract class TokoNowHomeViewModelTestFixture {
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
-    protected fun verifyGetCategoryListResponseSuccess(expectedResponse: Visitable<*>) {
+    protected fun verifyCategoryMenuItem(expectedResponse: Visitable<*>) {
         val homeLayoutList = viewModel.homeLayoutList.value
         val actualResponse = (homeLayoutList as Success).data.items.find { it is TokoNowCategoryMenuUiModel }
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
-    protected fun verifyGetBannerResponseSuccess(expectedResponse: Visitable<*>) {
+    protected fun verifyGetBannerItem(expectedResponse: Visitable<*>?) {
         val homeLayoutList = viewModel.homeLayoutList.value
         val actualResponse = (homeLayoutList as Success).data.items.find { it is BannerDataModel }
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
-    protected fun verifyGetQuestListResponseSuccess(expectedResponse: Visitable<*>?) {
+    protected fun verifyQuestWidgetItem(expectedVisitableItem: Visitable<*>?) {
         val homeLayoutList = viewModel.homeLayoutList.value
-        val actualResponse = (homeLayoutList as Success).data.items.find { it is HomeQuestSequenceWidgetUiModel }
-        Assert.assertEquals(expectedResponse, actualResponse)
+        val actualVisitableItem = (homeLayoutList as Success).data.items.find { it is HomeQuestSequenceWidgetUiModel }
+        Assert.assertEquals(expectedVisitableItem, actualVisitableItem)
+    }
+
+    protected fun verifyQuestWidgetVisitableItem(expectedVisitableItem: Visitable<*>?) {
+        val homeLayoutList = viewModel.homeLayoutList.value
+        val actualVisitableItem = (homeLayoutList as Success).data.items.find { it is HomeQuestWidgetUiModel }
+        Assert.assertEquals(expectedVisitableItem, actualVisitableItem)
+    }
+
+    protected fun verifyFinishedQuestWidgetItem(expectedVisitableItem: Visitable<*>?) {
+        val homeLayoutList = viewModel.homeLayoutList.value
+        val actualVisitableItem = (homeLayoutList as Success).data.items.find { it is HomeQuestFinishedWidgetUiModel }
+        Assert.assertEquals(expectedVisitableItem, actualVisitableItem)
+    }
+
+    protected fun verifyReloadQuestWidgetItem(expectedVisitableItem: Visitable<*>?) {
+        val homeLayoutList = viewModel.homeLayoutList.value
+        val actualVisitableItem = (homeLayoutList as Success).data.items.find { it is HomeQuestReloadWidgetUiModel }
+        Assert.assertEquals(expectedVisitableItem, actualVisitableItem)
     }
 
     protected fun verifyGetCatalogCouponListResponseSuccess(expectedResponse: Visitable<*>?) {
@@ -285,25 +331,36 @@ abstract class TokoNowHomeViewModelTestFixture {
         coVerify(exactly = times) { getHomeLayoutDataUseCase.execute(any(), any(), localCacheModel) }
     }
 
-    protected fun verifyGetCarouselChipsRecomCalled(times: Int = 1, pageName: String) {
+    protected fun verifyGetCarouselChipsRecomCalled(
+        times: Int = 1,
+        pageName: String,
+        categoryIDs: List<String> = emptyList()
+    ) {
         coVerify(exactly = times) {
             getRecommendationUseCase.getData(
                 GetRecommendationRequestParam(
                     pageName = pageName,
+                    categoryIds = categoryIDs,
                     xSource = "recom_widget",
-                    xDevice = "android"
+                    xDevice = "android",
+                    isTokonow = true
                 )
             )
         }
     }
 
-    protected fun verifyGetCarouselChipsRecomNotCalled(pageName: String = anyString()) {
+    protected fun verifyGetCarouselChipsRecomNotCalled(
+        pageName: String = anyString(),
+        categoryIDs: List<String> = emptyList()
+    ) {
         coVerify(exactly = 0) {
             getRecommendationUseCase.getData(
                 GetRecommendationRequestParam(
                     pageName = pageName,
+                    categoryIds = categoryIDs,
                     xSource = "recom_widget",
-                    xDevice = "android"
+                    xDevice = "android",
+                    isTokonow = true
                 )
             )
         }
@@ -340,19 +397,19 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun verifyGetChooseAddress() {
-        coVerify { getChooseAddressWarehouseLocUseCase.getStateChosenAddress(any(), any(), any()) }
+        coVerify { getChooseAddressWarehouseLocUseCase(any()) }
     }
 
     protected fun verifyGetKeywordSearchUseCaseCalled() {
         coVerify { getKeywordSearchUseCase.execute(anyBoolean(), anyString(), anyString()) }
     }
 
-    protected fun verifyGetCategoryListUseCaseCalled(count: Int = 1) {
-        coVerify(exactly = count) { getCategoryListUseCase.execute("1", 1) }
+    protected fun verifyGetCategoryListUseCaseCalled(warehouses: List<WarehouseData>, count: Int = 1) {
+        coVerify(exactly = count) { getCategoryListUseCase.execute(warehouses, 1) }
     }
 
     protected fun verifyGetCategoryListUseCaseNotCalled() {
-        coVerify(exactly = 0) { getCategoryListUseCase.execute(anyString(), anyInt()) }
+        coVerify(exactly = 0) { getCategoryListUseCase.execute(any(), anyInt()) }
     }
 
     protected fun verifyGetCatalogCouponListUseCaseCalled() {
@@ -449,10 +506,8 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected fun onGetChooseAddress_thenReturn(getStateChosenAddressResponse: GetStateChosenAddressQglResponse) {
         coEvery {
-            getChooseAddressWarehouseLocUseCase.getStateChosenAddress(any(), any(), any())
-        } answers {
-            firstArg<(GetStateChosenAddressResponse) -> Unit>().invoke(getStateChosenAddressResponse.response)
-        }
+            getChooseAddressWarehouseLocUseCase(any())
+        } returns getStateChosenAddressResponse.response
     }
 
     protected fun onGetTicker_thenReturn(errorThrowable: Throwable) {
@@ -460,11 +515,15 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun onGetCategoryList_thenReturn(errorThrowable: Throwable) {
-        coEvery { getCategoryListUseCase.execute("1", 1) } throws errorThrowable
+        coEvery { getCategoryListUseCase.execute(any(), 1) } throws errorThrowable
     }
 
     protected fun onGetCategoryList_thenReturn(categoryListResponse: CategoryListResponse) {
-        coEvery { getCategoryListUseCase.execute("1", 1) } returns categoryListResponse
+        coEvery { getCategoryListUseCase.execute(any(), 1) } returns categoryListResponse
+    }
+
+    protected fun onGetBuyerCommunication_thenReturn(response: GetBuyerCommunicationResponse) {
+        coEvery { getBuyerCommunicationUseCase.execute(any()) } returns response
     }
 
     protected fun onGetProductBundleRecom_thenReturn(productBundleRecomResponse: ProductBundleRecomResponse) {
@@ -472,7 +531,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun onGetProductBundleRecom_thenReturn(errorThrowable: Throwable) {
-        coEvery { getProductBundleRecomUseCase.execute(productIds = any(), excludeBundleIds = any(), queryParam = any()) } throws  errorThrowable
+        coEvery { getProductBundleRecomUseCase.execute(productIds = any(), excludeBundleIds = any(), queryParam = any()) } throws errorThrowable
     }
 
     protected fun onGetCatalogCouponList_thenReturn(catalogCouponList: GetCatalogCouponListResponse.TokopointsCatalogWithCouponList) {
@@ -525,10 +584,8 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected fun onGetChooseAddress_thenReturn(errorThrowable: Throwable) {
         coEvery {
-            getChooseAddressWarehouseLocUseCase.getStateChosenAddress(any(), any(), any())
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(errorThrowable)
-        }
+            getChooseAddressWarehouseLocUseCase(any())
+        } throws errorThrowable
     }
 
     protected fun onGetMiniCart_thenReturn(miniCartSimplifiedData: MiniCartSimplifiedData) {
@@ -615,6 +672,10 @@ abstract class TokoNowHomeViewModelTestFixture {
         }
     }
 
+    protected fun onGetWarehouseData_thenReturn(warehouses: List<WarehouseData>) {
+        coEvery { addressData.getWarehousesData() } returns warehouses
+    }
+
     protected fun addHomeLayoutItem(item: HomeLayoutItemUiModel?) {
         privateHomeLayoutItemList.add(item)
     }
@@ -625,6 +686,11 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected fun onGetUserSession_returnNull() {
         viewModel.mockPrivateField("userSession", null)
+    }
+
+    protected fun mockGetHomeLayoutJobActive() {
+        val job = CoroutineScope(Dispatchers.IO).launch { delay(5000) }
+        viewModel.mockPrivateField("getHomeLayoutJob", job)
     }
 
     protected fun onGetReferralEvalute_thenReturn(response: ReferralEvaluateJoinResponse) {
@@ -639,11 +705,22 @@ abstract class TokoNowHomeViewModelTestFixture {
         } throws error
     }
 
-    protected fun getOldRepurchaseProduct(): List<TokoNowProductCardUiModel> {
-        val items = (viewModel.homeLayoutList.value as? Success<HomeLayoutListUiModel>)?.data?.items.orEmpty()
-        val item = items.firstOrNull { it is com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel }
-        val repurchase = item as? com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel
-        return repurchase?.productList.orEmpty()
+    protected fun onGetHomeBannerUseCase_thenReturn(response: GetHomeBannerV2Response) {
+        coEvery {
+            getHomeBannerUseCase.execute(any())
+        } returns response
+    }
+
+    protected fun onGetHomeBannerUseCase_thenThrows(error: Throwable) {
+        coEvery {
+            getHomeBannerUseCase.execute(any())
+        } throws error
+    }
+
+    protected fun onGetQuestWidgetAbTest_thenReturn(value: String) {
+        coEvery {
+            abTestPlatform.getString("now_experiment")
+        } returns value
     }
 
     object UnknownHomeLayout : HomeLayoutUiModel("1") {

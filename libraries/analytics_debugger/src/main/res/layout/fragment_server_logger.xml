@@ -43,7 +43,7 @@
         android:text="@string/server_logger_no_data"
         android:visibility="gone"
         tools:visibility="visible"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="body_1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

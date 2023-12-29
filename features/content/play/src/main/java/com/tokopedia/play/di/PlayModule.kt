@@ -19,6 +19,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.play.analytic.CastAnalyticHelper
 import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.analytic.PlayDimensionTrackingHelper
 import com.tokopedia.play.util.PlayCastHelper
 import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.util.share.PlayShareExperienceImpl
@@ -142,8 +143,8 @@ class PlayModule {
 
     @Provides
     @PlayScope
-    fun providePlayAnalytic(userSession: UserSessionInterface, trackingQueue: TrackingQueue): PlayAnalytic {
-        return PlayAnalytic(userSession, trackingQueue)
+    fun providePlayAnalytic(userSession: UserSessionInterface, trackingQueue: TrackingQueue, dimensionTrackingHelper: PlayDimensionTrackingHelper): PlayAnalytic {
+        return PlayAnalytic(userSession, trackingQueue, dimensionTrackingHelper)
     }
 
     @PlayScope

@@ -37,7 +37,7 @@
         android:background="@drawable/rounded_rectangle_green_solid"
         android:paddingVertical="@dimen/spacing_lvl3"
         android:paddingHorizontal="@dimen/spacing_lvl4"
-        android:textColor="@color/Unify_N0"/>
+        android:textColor="@color/Unify_NN0"/>
 
     <FrameLayout
         android:id="@+id/loading_view_retry"

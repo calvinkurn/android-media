@@ -1,6 +1,7 @@
 package com.tokopedia.homenav.mainnav.interactor
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.homenav.MePageRollenceController
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
@@ -11,12 +12,9 @@ import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFilteredPojo
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
-import com.tokopedia.homenav.mainnav.domain.model.NavFavoriteShopModel
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
-import com.tokopedia.homenav.mainnav.domain.model.NavWishlistModel
 import com.tokopedia.homenav.mainnav.domain.usecases.GetAffiliateUserUseCase
 import com.tokopedia.homenav.mainnav.domain.usecases.GetCategoryGroupUseCase
-import com.tokopedia.homenav.mainnav.domain.usecases.GetFavoriteShopsNavUseCase
 import com.tokopedia.homenav.mainnav.domain.usecases.GetNavNotification
 import com.tokopedia.homenav.mainnav.domain.usecases.GetPaymentOrdersNavUseCase
 import com.tokopedia.homenav.mainnav.domain.usecases.GetProfileDataUseCase
@@ -47,6 +45,7 @@ import dagger.Lazy
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.spyk
 
 fun createViewModel(
@@ -61,7 +60,6 @@ fun createViewModel(
     getShopInfoUseCase: GetShopInfoUseCase? = null,
     accountAdminInfoUseCase: AccountAdminInfoUseCase? = null,
     getAffiliateUserUseCase: GetAffiliateUserUseCase? = null,
-    getFavoriteShopsNavUseCase: GetFavoriteShopsNavUseCase? = null,
     getWishlistNavUseCase: GetWishlistNavUseCase? = null,
     getReviewProductUseCase: GetReviewProductUseCase? = null,
     getTokopediaPlusUseCase: TokopediaPlusUseCase? = null
@@ -71,8 +69,8 @@ fun createViewModel(
         every { it.hasShop() } returns true
     }
     val clientMenuGeneratorMock = getOrUseDefault(clientMenuGenerator) {
-        every { it.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
-            .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+        every { it.getMenu(menuId = any(), notifCount = any(), sectionId = any(), showCta = any()) }
+            .answers { HomeNavMenuDataModel(id = arg(0), notifCount = arg(1), sectionId = arg(2), showCta = arg(3)) }
         every { it.getTicker(menuId = any()) }
             .answers { HomeNavTickerDataModel() }
         every { it.getSectionTitle(identifier = any()) }
@@ -104,20 +102,12 @@ fun createViewModel(
         coEvery { it.executeOnBackground() }.answers { Success(AffiliateUserDetailData()) }
     }
 
-    val getFavoriteShopUseCaseMock = getOrUseDefault(getFavoriteShopsNavUseCase) {
-        coEvery { it.executeOnBackground() }.answers { Pair(listOf(NavFavoriteShopModel()), true) }
-    }
-
-    val getWishlistUseCaseMock = getOrUseDefault(getWishlistNavUseCase) {
-        coEvery { it.executeOnBackground() }.answers { Triple(listOf(NavWishlistModel()), true, true) }
+    val getTokopediaPlusUseCaseMock = getOrUseDefault(getTokopediaPlusUseCase) {
+        coEvery { it.invoke(any()) }.answers { TokopediaPlusResponseDataModel() }
     }
 
     val getReviewProductUseCaseMock = getOrUseDefault(getReviewProductUseCase) {
         coEvery { it.executeOnBackground() }.answers { listOf() }
-    }
-
-    val getTokopediaPlusUseCaseMock = getOrUseDefault(getTokopediaPlusUseCase) {
-        coEvery { it.invoke(any()) }.answers { TokopediaPlusResponseDataModel() }
     }
 
     return spyk(
@@ -133,10 +123,8 @@ fun createViewModel(
             getShopInfoUseCase = getShopInfoUseCaseMock,
             accountAdminInfoUseCase = accountAdminInfoUseCaseMock,
             getAffiliateUserUseCase = getAffiliateUserUseCaseMock,
-            getFavoriteShopsNavUseCase = getFavoriteShopUseCaseMock,
-            getWishlistNavUseCase = getWishlistUseCaseMock,
-            getReviewProductUseCase = getReviewProductUseCaseMock,
-            getTokopediaPlusUseCase = getTokopediaPlusUseCaseMock
+            getTokopediaPlusUseCase = getTokopediaPlusUseCaseMock,
+            getReviewProductUseCase = getReviewProductUseCaseMock
         ),
         recordPrivateCalls = true
     )
@@ -219,4 +207,13 @@ fun getDefaultClientGeneratorMockValue(clientMenuGenerator: ClientMenuGenerator)
         .answers { HomeNavTickerDataModel() }
     every { clientMenuGenerator.getSectionTitle(identifier = any()) }
         .answers { (HomeNavTitleDataModel(identifier = firstArg())) }
+}
+
+internal fun setIsMePageRollence(isMePage: Boolean) {
+    mockkObject(MePageRollenceController)
+    every { MePageRollenceController.isUsingMePageRollenceVariant() } returns isMePage
+}
+
+internal fun getUserSession(login: Boolean): UserSessionInterface = mockk<UserSessionInterface>().apply {
+    every { isLoggedIn } returns login
 }

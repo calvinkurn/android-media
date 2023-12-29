@@ -16,5 +16,4 @@ abstract class FeedComponentViewModelModule {
     @IntoMap
     @ViewModelKey(FeedProductItemInfoViewModel::class)
     abstract fun feedProductItemInfoViewModel(viewModel: FeedProductItemInfoViewModel): ViewModel
-
 }

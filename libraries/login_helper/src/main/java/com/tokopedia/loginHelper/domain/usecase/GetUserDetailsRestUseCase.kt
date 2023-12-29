@@ -1,32 +1,24 @@
 package com.tokopedia.loginHelper.domain.usecase
 
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.common.network.coroutines.usecase.RestRequestUseCase
-import com.tokopedia.common.network.data.model.RequestType
-import com.tokopedia.common.network.data.model.RestRequest
-import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.loginHelper.data.repository.LoginHelperRepositoryImpl
 import com.tokopedia.loginHelper.data.response.LoginDataResponse
-import com.tokopedia.usecase.RequestParams
-import java.lang.reflect.Type
+import com.tokopedia.loginHelper.domain.LoginHelperEnvType
+import com.tokopedia.loginHelper.domain.uiModel.UnifiedLoginHelperData
+import com.tokopedia.loginHelper.domain.uiModel.users.LoginDataUiModel
+import com.tokopedia.usecase.coroutines.Result
 import javax.inject.Inject
 
-class GetUserDetailsRestUseCase @Inject constructor(private val repository: RestRepository) :
-    RestRequestUseCase(repository) {
+class GetUserDetailsRestUseCase @Inject constructor(private val repository: LoginHelperRepositoryImpl) {
 
-    private val url = "http://172.21.56.230:3123/users?env=staging"
-    var requestParams = RequestParams()
+    suspend fun makeNetworkCall(envType: LoginHelperEnvType): UnifiedLoginHelperData {
+        return repository.getUnifiedLoginData(envType)
+    }
 
-    override suspend fun executeOnBackground(): Map<Type, RestResponse?> {
-        val token = object : TypeToken<LoginDataResponse>() {}.type
+    fun getUserDataFromLocalAssets(loginData: LoginDataResponse): Result<UnifiedLoginHelperData> {
+        return repository.getLoginDataFromAssets(loginData)
+    }
 
-        val restRequest = RestRequest.Builder(url, token)
-            .setRequestType(RequestType.GET)
-            .setHeaders(mapOf(Pair("Content-Type", "application/x-www-form-urlencoded")))
-            .build()
-
-        restRequestList.clear()
-        restRequestList.add(restRequest)
-        return repository.getResponses(restRequestList)
+    suspend fun getRemoteOnlyLoginData(envType: LoginHelperEnvType): LoginDataUiModel? {
+        return repository.getRemoteOnlyData(envType)
     }
 }

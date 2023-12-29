@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toEndOf="@id/ic_uoh_vertical"
             app:layout_constraintTop_toTopOf="@id/ic_uoh_vertical"
             app:typographyType="small"
@@ -40,7 +40,7 @@
             android:id="@+id/tv_uoh_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:textSize="@dimen/sp_10"
             app:layout_constraintBottom_toBottomOf="@id/ic_uoh_vertical"
             app:layout_constraintStart_toStartOf="@id/tv_uoh_categories"
@@ -71,12 +71,12 @@
             app:layout_constraintTop_toTopOf="@id/iv_kebab_menu"
             tools:text="Butuh Revisi" />
 
-        <View
+        <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/divider_uoh_order_1"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
             android:layout_marginTop="12dp"
-            android:background="@color/Unify_N50"
+            android:background="@color/dms_uoh_order_list_divider_color"
             app:layout_constraintTop_toBottomOf="@id/tv_uoh_date" />
 
         <com.tokopedia.unifycomponents.ticker.Ticker
@@ -117,7 +117,7 @@
                 android:layout_toEndOf="@id/iv_uoh_product"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold"
                 tools:text="Kartu Nama Standar" />
@@ -128,7 +128,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_uoh_product_name"
                 android:layout_toEndOf="@id/iv_uoh_product"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:typographyType="body_3"
                 app:typographyWeight="reguler"
                 tools:text="1 Barang (0.100 kg)" />
@@ -140,7 +140,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rl_uoh_product"
             app:typographyType="body_3"
@@ -152,7 +152,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/label_other_info"
             app:typographyType="small"
@@ -163,8 +163,10 @@
             android:id="@+id/tv_uoh_total_belanja_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_96"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:textColor="@color/Unify_NN950_96"
+            app:layout_constraintBottom_toTopOf="@id/layout_review_rating"
+            android:layout_marginBottom="12dp"
+            app:layout_goneMarginBottom="0dp"
             app:layout_constraintStart_toStartOf="@id/tv_uoh_total_belanja"
             app:layout_constraintTop_toBottomOf="@id/tv_uoh_total_belanja"
             app:typographyType="body_3"
@@ -179,10 +181,12 @@
             android:layout_marginEnd="16dp"
             app:layout_goneMarginEnd="0dp"
             android:minWidth="80dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/layout_review_rating"
             app:layout_constraintEnd_toStartOf="@+id/uoh_btn_action_2"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/tv_uoh_total_belanja_value"
+            android:layout_marginBottom="12dp"
+            app:layout_goneMarginBottom="0dp"
             app:unifyButtonSize="micro"
             app:unifyButtonType="main"
             app:unifyButtonVariant="filled"
@@ -193,14 +197,23 @@
             android:layout_width="wrap_content"
             android:layout_height="24dp"
             android:minWidth="80dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/layout_review_rating"
             app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="12dp"
+            app:layout_goneMarginBottom="0dp"
             app:unifyButtonSize="micro"
             app:unifyButtonType="main"
             app:unifyButtonVariant="ghost"
             android:visibility="gone"
             tools:visibility="visible"
             tools:text="action 2" />
+
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/layout_review_rating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

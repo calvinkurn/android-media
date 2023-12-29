@@ -1,50 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/form_account"
-    android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/et_nama_penerima"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:text_field_label="@string/field_nama_penerima"
-        app:text_field_counter="50"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:text_field_counter="50"
+        app:text_field_label="@string/field_nama_penerima" />
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.Group
         android:id="@+id/info_name_layout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="visible">
+        app:constraint_referenced_ids="tv_address, btn_info" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:typographyType="body_3"
-            android:textColor="@color/Unify_N700_68"
-            android:text="@string/tv_info_lebih_lanjut"/>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_info_lebih_lanjut"
+        android:textColor="@color/Unify_NN950_68"
+        app:layout_constraintTop_toBottomOf="@id/et_nama_penerima"
+        app:typographyType="body_3" />
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/btn_info"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:layout_marginStart="5dp"
-            app:icon_name="INFORMATION"
-            android:layout_gravity="center"/>
-
-    </LinearLayout>
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/btn_info"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="5dp"
+        app:icon_name="INFORMATION"
+        app:layout_constraintBottom_toBottomOf="@id/tv_address"
+        app:layout_constraintStart_toEndOf="@id/tv_address"
+        app:layout_constraintTop_toTopOf="@id/tv_address" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/et_nomor_hp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        app:text_field_label="@string/field_nomor_hp"
+        app:layout_constraintTop_toBottomOf="@id/tv_address"
         app:text_field_counter="15"
-        app:text_field_input_type="number"/>
+        app:text_field_input_type="number"
+        app:text_field_label="@string/field_nomor_hp" />
 
-</LinearLayout>
+</merge>

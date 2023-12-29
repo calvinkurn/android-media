@@ -13,6 +13,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import javax.inject.Inject
 
+@Deprecated("Please use RevGeocodeCoroutineUseCase")
 class RevGeocodeUseCase @Inject constructor(
     @ApplicationContext val context: Context,
     val gql: GraphqlUseCase

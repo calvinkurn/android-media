@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.common.data.model.variant
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.product.detail.common.data.model.product.PostAtcLayout
 
 /**
  * Created by Yehezkiel on 04/05/21
@@ -18,12 +17,17 @@ data class ProductVariant(
     val defaultChild: String = "",
     @SerializedName("maxFinalPrice")
     val maxFinalPrice: Float = 0F,
-    @SerializedName("postATCLayout")
-    val postAtcLayout: PostAtcLayout = PostAtcLayout(),
     @SerializedName(value = "variants", alternate = ["variant"])
     val variants: List<Variant> = listOf(),
     @SerializedName("children")
-    val children: List<VariantChild> = listOf()
+    val children: List<VariantChild> = listOf(),
+    /**
+     * used when landing on pdp, if it is empty use hardcode FE
+     * and if there’s a user activity for choosing the variant, use children.subText below
+     * Details: https://tokopedia.atlassian.net/wiki/spaces/PDP/pages/2245002923/PDP+P1+Product+Variant+Partial+OOS
+     */
+    @SerializedName("landingSubText")
+    val landingSubText: String = ""
 ) {
     fun isOneOfTheChildBuyablePartial(optionId: String): Boolean {
         var result = false

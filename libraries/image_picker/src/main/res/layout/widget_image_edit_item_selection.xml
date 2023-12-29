@@ -27,7 +27,7 @@
         android:layout_marginTop="@dimen/unify_space_4"
         android:gravity="center_horizontal"
         android:visibility="gone"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

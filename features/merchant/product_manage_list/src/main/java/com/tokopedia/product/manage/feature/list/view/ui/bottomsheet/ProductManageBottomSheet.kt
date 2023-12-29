@@ -17,6 +17,7 @@ import com.tokopedia.product.manage.feature.list.view.adapter.ProductMenuAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder.ProductMenuListener
 import com.tokopedia.product.manage.feature.list.view.model.ProductItemDivider
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
+import com.tokopedia.product.manage.common.util.ProductManageConfig
 import com.tokopedia.product.manage.databinding.BottomSheetProductManageBinding
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -139,7 +140,7 @@ class ProductManageBottomSheet : BottomSheetUnify() {
                 isProductCouponEnabled
             )
 
-            if (!GlobalConfig.isSellerApp()) {
+            if (!ProductManageConfig.IS_SELLER_APP) {
                 val sellerFeatureList = createSellerFeatureList(product)
                 sellerFeatureCarousel.setItems(sellerFeatureList)
             }
@@ -153,7 +154,7 @@ class ProductManageBottomSheet : BottomSheetUnify() {
     private fun setupSellerCarousel(binding: BottomSheetProductManageBinding) =
         binding.sellerFeatureCarousel.run {
             this@ProductManageBottomSheet.sellerFeatureCarousel = this
-            if (!GlobalConfig.isSellerApp()) {
+            if (!ProductManageConfig.IS_SELLER_APP) {
                 show()
                 setListener(sellerFeatureCarouselListener)
                 this.addItemDecoration()
@@ -190,7 +191,7 @@ class ProductManageBottomSheet : BottomSheetUnify() {
                     add(Duplicate(product))
                 }
 
-                if (GlobalConfig.isSellerApp() && setStockReminder) {
+                if (ProductManageConfig.IS_SELLER_APP && setStockReminder) {
                     add(StockReminder(product))
                 }
 
@@ -198,7 +199,7 @@ class ProductManageBottomSheet : BottomSheetUnify() {
                     add(Delete(product))
                 }
 
-                if (GlobalConfig.isSellerApp()) {
+                if (ProductManageConfig.IS_SELLER_APP) {
                     add(ProductItemDivider)
 
                     if (setTopAds) {

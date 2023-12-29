@@ -15,13 +15,16 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.R
@@ -31,6 +34,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_TRACE
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.util.DialogUtil
 import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil.getFirstTimeWeightPerVariant
 import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil.setFirstTimeWeightPerVariant
 import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
@@ -52,11 +56,13 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditListener
 import com.tokopedia.product.addedit.variant.presentation.dialog.MultipleVariantEditSelectBottomSheet
 import com.tokopedia.product.addedit.variant.presentation.dialog.SelectVariantMainBottomSheet
+import com.tokopedia.product.addedit.variant.presentation.extension.getValueOrDefault
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantDetailViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -65,6 +71,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.math.BigInteger
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.product.manage.common.R as productManageR
 
 class AddEditProductVariantDetailFragment :
     BaseDaggerFragment(),
@@ -166,12 +173,14 @@ class AddEditProductVariantDetailFragment :
 
         val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this, viewModel.isMultiLocationShop)
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
+        val hasDTStock = viewModel.productInputModel.value?.hasDTStock.orFalse()
         multipleVariantEditSelectBottomSheet.setData(variantInputModel)
 
         variantDetailFieldsAdapter = VariantDetailFieldsAdapter(
             VariantDetailInputTypeFactoryImpl(
                 this,
-                this
+                this,
+                !hasDTStock
             )
         )
         recyclerViewVariantDetailFields?.adapter = variantDetailFieldsAdapter
@@ -192,14 +201,10 @@ class AddEditProductVariantDetailFragment :
             showSelectPrimaryBottomSheet()
         }
 
-        buttonSave?.setOnClickListener {
-            submitVariantInput()
-            sendTrackerSaveVariantDetailData()
-        }
-
         observeSelectedVariantSize()
         observeHasWholesale()
         observeMaxStockThreshold()
+        observeIsSingleProductVariant()
 
         enableSku()
         setupToolbarActions()
@@ -260,6 +265,23 @@ class AddEditProductVariantDetailFragment :
 
     override fun onCoachmarkDismissed() {
         setFirstTimeWeightPerVariant(activity, false)
+    }
+
+    override fun onDisablingVariantDT(position: Int) {
+        showDTNotAllowedChangeStatusDialog(position)
+    }
+
+    override fun onDisablingVariantCampaign(position: Int) {
+        val toaster = Toaster.build(
+            requireView(),
+            getString(R.string.product_add_edit_cannot_deactivate_variant_campaign),
+            actionText = getString(R.string.action_oke),
+            type = Toaster.TYPE_ERROR,
+            duration = Toaster.LENGTH_LONG
+        ).apply {
+            anchorView = buttonSave
+        }
+        toaster.show()
     }
 
     override fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
@@ -363,28 +385,54 @@ class AddEditProductVariantDetailFragment :
     }
 
     private fun observeSelectedVariantSize() {
-        viewModel.selectedVariantSize.observe(viewLifecycleOwner, { size ->
+        viewModel.selectedVariantSize.observe(viewLifecycleOwner) { size ->
             // clear old elements before rendering new elements
             variantDetailFieldsAdapter?.clearAllElements()
             // have 2 selected variant detail
             val hasVariantCombination = viewModel.hasVariantCombination(size)
             // with collapsible header
             if (hasVariantCombination) {
-                val selectedVariantList = viewModel.productInputModel.value?.variantInputModel?.selections
+                val selectedVariantList =
+                    viewModel.productInputModel.value?.variantInputModel?.selections
                 selectedVariantList?.run { setupVariantDetailCombinationFields(selectedVariantList) }
             } else {
-                val selectedVariant = viewModel.productInputModel.value?.variantInputModel?.selections?.firstOrNull()
+                val selectedVariant =
+                    viewModel.productInputModel.value?.variantInputModel?.selections?.firstOrNull()
                 val selectedUnitValues = selectedVariant?.options
                 selectedUnitValues?.run { setupVariantDetailFields(selectedUnitValues) }
             }
-        })
+        }
     }
 
     private fun observeHasWholesale() {
-        viewModel.hasWholesale.observe(viewLifecycleOwner, {
+        viewModel.hasWholesale.observe(viewLifecycleOwner) {
             variantDetailFieldsAdapter?.updatePriceEditingStatus(!it)
             tickerVariantWholesale?.isVisible = it
-        })
+        }
+    }
+
+    private fun observeIsSingleProductVariant() {
+        viewModel.isSingleProductVariant.observe(viewLifecycleOwner) {
+            if (it) {
+                buttonSave?.setOnClickListener {
+                    invokeFieldsValidation()
+                    if (viewModel.getInputDataValidStatus()) {
+                        DialogUtil.showSingleProductVariantDialog(
+                            context ?: return@setOnClickListener
+                        ) {
+                            viewModel.updateProductInputModel()
+                            viewModel.productInputModel.getValueOrDefault().convertToNonVariant()
+                            sendResultData()
+                        }
+                    }
+                }
+            } else {
+                buttonSave?.setOnClickListener {
+                    submitVariantInput()
+                    sendTrackerSaveVariantDetailData()
+                }
+            }
+        }
     }
 
     private fun observeMaxStockThreshold() {
@@ -483,24 +531,48 @@ class AddEditProductVariantDetailFragment :
         bottomSheet.show(childFragmentManager)
     }
 
+    private fun showDTNotAllowedChangeStatusDialog(position: Int) {
+        val dialog = DialogUnify(context ?: return, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        val descriptionText = getString(R.string.product_add_edit_text_description_product_dt_cannot_deactivate).parseAsHtml()
+        dialog.apply {
+            setTitle(getString(R.string.product_add_edit_text_title_product_dt_cannot_deactivate))
+            setDescription(descriptionText)
+            setPrimaryCTAText(getString(productManageR.string.product_manage_confirm_inactive_dt_product_positive_button))
+            setSecondaryCTAText(getString(productManageR.string.product_manage_confirm_dt_product_cancel_button))
+            setPrimaryCTAClickListener {
+                viewModel.updateSwitchStatus(false, position)
+                variantDetailFieldsAdapter?.deactivateVariantStatus(position)
+                dismiss()
+            }
+            setSecondaryCTAClickListener {
+                dismiss()
+            }
+        }
+        dialog.show()
+    }
+
     private fun submitVariantInput() {
         invokeFieldsValidation()
         if (viewModel.getInputDataValidStatus()) {
             viewModel.updateProductInputModel()
-            viewModel.productInputModel.value?.apply {
-                val cacheManagerId = arguments?.getString(
-                    AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
-                ).orEmpty()
-                SaveInstanceCacheManager(requireContext(), cacheManagerId)
-                    .put(EXTRA_PRODUCT_INPUT_MODEL, this)
+            sendResultData()
+        }
+    }
 
-                val intent = Intent().putExtra(
-                    AddEditProductConstants.EXTRA_CACHE_MANAGER_ID,
-                    cacheManagerId
-                )
-                activity?.setResult(Activity.RESULT_OK, intent)
-                activity?.finish()
-            }
+    private fun sendResultData() {
+        viewModel.productInputModel.value?.apply {
+            val cacheManagerId = arguments?.getString(
+                AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
+            ).orEmpty()
+            SaveInstanceCacheManager(requireContext(), cacheManagerId)
+                .put(EXTRA_PRODUCT_INPUT_MODEL, this)
+
+            val intent = Intent().putExtra(
+                AddEditProductConstants.EXTRA_CACHE_MANAGER_ID,
+                cacheManagerId
+            )
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
         }
     }
 

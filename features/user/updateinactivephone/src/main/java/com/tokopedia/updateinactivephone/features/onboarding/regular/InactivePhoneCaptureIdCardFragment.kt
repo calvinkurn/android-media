@@ -23,7 +23,6 @@ import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.REQUEST_CA
 import com.tokopedia.updateinactivephone.common.cameraview.CameraViewMode
 import com.tokopedia.updateinactivephone.features.imagepicker.InactivePhoneImagePickerActivity
 import com.tokopedia.updateinactivephone.features.onboarding.BaseInactivePhoneOnboardingFragment
-import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request
 import kotlin.math.roundToInt
@@ -116,7 +115,7 @@ class InactivePhoneCaptureIdCardFragment : BaseInactivePhoneOnboardingFragment()
                 val gapWidth = DP_12.pxToDp(resources.displayMetrics)
                 val margin = DP_8.pxToDp(resources.displayMetrics)
                 val span = SpannableString(text)
-                val color = MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N100)
+                val color = MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
 
                 val bulletSpan: BulletSpan = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     BulletSpan(gapWidth, color, radius)

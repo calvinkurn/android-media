@@ -193,7 +193,7 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
                 val margin = DP_8.dpToPx(resources.displayMetrics)
                 val span = SpannableString(text)
                 val color =
-                    MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N100)
+                    MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
 
                 val bulletSpan: BulletSpan = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     BulletSpan(gapWidth, color, radius)

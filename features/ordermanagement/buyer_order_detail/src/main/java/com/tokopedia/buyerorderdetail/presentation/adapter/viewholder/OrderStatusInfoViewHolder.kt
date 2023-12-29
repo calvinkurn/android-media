@@ -110,12 +110,12 @@ class OrderStatusInfoViewHolder(
             showWithCondition(deadline.label.isNotBlank())
         }
         icBuyerOrderDetailDeadline?.apply {
-            setColorFilter(Utils.parseColorHex(context, deadline.color, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            setColorFilter(Utils.parseColorHex(context, deadline.color, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
             showWithCondition(deadline.label.isNotBlank())
         }
         tvBuyerOrderDetailDeadlineValue?.apply {
             text = deadline.value
-            setTextColor(Utils.parseColorHex(context, deadline.color, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            setTextColor(Utils.parseColorHex(context, deadline.color, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
             showWithCondition(deadline.label.isNotBlank())
         }
     }

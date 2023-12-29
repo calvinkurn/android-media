@@ -26,7 +26,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.filterIsInstance
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.suspendCoroutine
 
 class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), CoroutineScope {
 
@@ -129,30 +128,23 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), CoroutineScope {
     private inner class UiStateHandler {
         private fun collectTextAreaUiState() {
             collectLatestWhenResumed(viewModel.textAreaUiState) {
-                suspendCoroutine { continuation ->
-                    binding?.textAreaExpandedCreateReviewBottomSheet?.updateUi(
-                        it,
-                        CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_EXPANDED_TEXT_AREA,
-                        continuation
-                    )
-                    binding?.helperTextAreaExpandedCreateReviewBottomSheet?.updateUi(it)
-                }
+                binding?.textAreaExpandedCreateReviewBottomSheet?.updateUi(
+                    uiState = it,
+                    source = CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_EXPANDED_TEXT_AREA
+                )
+                binding?.helperTextAreaExpandedCreateReviewBottomSheet?.updateUi(it)
             }
         }
 
         private fun collectReviewTemplateUiState() {
             collectLatestWhenResumed(viewModel.templateUiState) {
-                suspendCoroutine { continuation ->
-                    binding?.reviewTemplateExpandedCreateReviewBottomSheet?.updateUi(it, continuation)
-                }
+                binding?.reviewTemplateExpandedCreateReviewBottomSheet?.updateUi(it)
             }
         }
 
         private fun collectTopicsUiState() {
             collectLatestWhenResumed(viewModel.topicsUiState) {
-                suspendCoroutine { continuation ->
-                    binding?.topicsExpandedCreateReviewBottomSheet?.updateUI(it, continuation)
-                }
+                binding?.topicsExpandedCreateReviewBottomSheet?.updateUI(it)
             }
         }
 

@@ -27,9 +27,13 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_NAME_ADD_TO_CART = "add_to_cart"
     const val EVENT_NAME_CLICK_PG = "clickPG"
     const val EVENT_NAME_VIEW_PG_IRIS = "viewPGIris"
+    const val EVENT_NAME_CLICK_COMMUNICATION = "clickCommunication"
+    const val EVENT_NAME_VIEW_COMMUNICATION_IRIS = "viewCommunicationIris"
 
     // event categories
     const val EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP = "my purchase list detail - mp"
+    const val EVENT_ORDER_DETAIL_HISTORY = "order detail history"
+    const val EVENT_CATEGORY_PG_ORDER_DETAIL = "pg order detail"
 
     // event actions
     const val EVENT_ACTION_PARTIAL_CLICK = "click"
@@ -49,6 +53,8 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_ACTION_CLICK_SEE_COMPLAINT = "click on lihat complain"
     const val EVENT_ACTION_CLICK_SIMILAR_PRODUCT = "click on product serupa"
     const val EVENT_ACTION_CLICK_BUY_AGAIN = "attempt click beli lagi"
+    const val EVENT_ACTION_CLICK_CLAIM_WARRANTY = "click klaim garansi"
+    const val EVENT_ACTION_IMPRESSION_CLAIM_WARRANTY = "impression klaim garansi"
     const val EVENT_ACTION_CLICK_BUY_AGAIN_SUCCESS = "click beli lagi success"
     const val EVENT_ACTION_IMPRESSION_INSURANCE_WIDGET = "impression - proteksi transaksi"
     const val EVENT_ACTION_CLICK_INSURANCE_WIDGET = "click on insurance button"
@@ -56,6 +62,15 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_ACTION_CLICK_SEE_ALL_PRODUCTS = "click lihat semua produk"
     const val EVENT_ACTION_CLICK_SEE_LESS_PRODUCTS = "click lihat lebih sedikit"
     const val EVENT_ACTION_CLICK_ESTIMATE_ICON_POF_BOM_DETAIL = "click icon estimasi dana dikembalikan"
+    const val EVENT_ACTION_CLICK_ON_ORDER_WIDGET = "click on order group widget"
+    const val EVENT_ACTION_CLICK_VIEW_DETAIL_ORDER_GROUP = "click lihat detail on order group detail"
+    const val EVENT_ACTION_CLICK_SHARE_BUTTON = "click - share button"
+    const val EVENT_ACTION_CLICK_CLOSE_SHARE_BOTTOM_SHEET = "click - close share bottom sheet"
+    const val EVENT_ACTION_CLICK_SHARING_CHANNEL = "click - sharing channel"
+    const val EVENT_ACTION_IMPRESSION_SHARE_BOTTOM_SHEET = "view on sharing channel"
+    const val EVENT_ACTION_CLICK_SAVING_WIDGET = "click savings widget - "
+    const val EVENT_ACTION_IMPRESSION_SAVING_WIDGET = "impression savings widget - "
+    const val EVENT_ACTION_CLICK_CHAT = "click chat from order detail"
 
     // pof
     const val EVENT_ACTION_CLICK_TOTAL_AVAILABLE_ITEM_POF = "click jumlah barang tersedia - popup pof"
@@ -73,6 +88,8 @@ object BuyerOrderDetailTrackerConstant {
     // business unit
     const val BUSINESS_UNIT_MARKETPLACE = "Seller Order Management"
     const val BUSINESS_UNIT_PHYSICAL_GOODS = "Physical Goods"
+    const val BUSINESS_UNIT_SHARING_EXPERIENCE = "sharingexperience"
+    const val BUSINESS_UNIT_COMMMUNICATION = "communication"
 
     // current site
     const val CURRENT_SITE_TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
@@ -114,9 +131,19 @@ object BuyerOrderDetailTrackerConstant {
     const val TRACKER_ID_41154 = "41154"
     const val TRACKER_ID_41155 = "41155"
     const val TRACKER_ID_41156 = "41156"
+    const val TRACKER_ID_44136 = "44136"
+    const val TRACKER_ID_44137 = "44137"
+    const val TRACKER_ID_45653 = "45653"
+    const val TRACKER_ID_45654 = "45654"
+    const val TRACKER_ID_45655 = "45655"
+    const val TRACKER_ID_45656 = "45656"
+    const val TRACKER_ID_47433 = "47433"
+    const val TRACKER_ID_48377 = "48377"
+    const val TRACKER_ID_48479 = "48479"
 
     // others
     const val MARKER_ORDER_LIST_DETAIL_MARKETPLACE = "/order list detail - marketplace"
+    const val ROLE_BUYER = "buyer"
 
     // buyer order extension
     const val EVENT_ACTION_CONFIRMATION_ORDER_EXTENSION =

@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.BebasOngkirInfo
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSpId
 
 data class AdditionalInfo(
@@ -24,6 +25,8 @@ data class AdditionalInfo(
     val promoSpIds: List<PromoSpId> = emptyList(),
 
     @field:SerializedName("poml_auto_applied")
-    val pomlAutoApplied: Boolean = false
+    val pomlAutoApplied: Boolean = false,
 
+    @field:SerializedName("bebas_ongkir_info")
+    val bebasOngkirInfo: BebasOngkirInfo = BebasOngkirInfo()
 )

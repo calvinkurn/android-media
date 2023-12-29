@@ -6,10 +6,8 @@ import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.data.model.response.promo.VoucherOrders
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.network.exception.ResponseErrorException
-import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
-import io.mockk.just
 import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Test
@@ -22,10 +20,7 @@ class GetCartListTest : BaseCartTest() {
         // GIVEN
         val cartData = CartData()
 
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(cartData)
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns cartData
 
         every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
 
@@ -45,10 +40,7 @@ class GetCartListTest : BaseCartTest() {
         // GIVEN
         val exception = ResponseErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
 
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(exception)
-        }
+        coEvery { getCartRevampV4UseCase(any()) } throws exception
 
         every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
 
@@ -67,10 +59,7 @@ class GetCartListTest : BaseCartTest() {
         // GIVEN
         val cartData = CartData()
 
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(cartData)
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns cartData
 
         every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
 
@@ -90,10 +79,7 @@ class GetCartListTest : BaseCartTest() {
         // GIVEN
         val exception = ResponseErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
 
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            secondArg<(Throwable) -> Unit>().invoke(exception)
-        }
+        coEvery { getCartRevampV4UseCase(any()) } throws exception
 
         every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
 
@@ -112,10 +98,7 @@ class GetCartListTest : BaseCartTest() {
         // GIVEN
         val cartData = CartData(promo = CartPromoData(lastApplyPromo = LastApplyPromo(lastApplyPromoData = LastApplyPromoData(codes = listOf("ABC"), listVoucherOrders = listOf(VoucherOrders())))))
 
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(cartData)
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns cartData
 
         every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
 
@@ -135,10 +118,7 @@ class GetCartListTest : BaseCartTest() {
         // GIVEN
         val cartData = CartData(promo = CartPromoData(lastApplyPromo = LastApplyPromo(lastApplyPromoData = LastApplyPromoData(codes = listOf("ABC"), listVoucherOrders = listOf(VoucherOrders())))))
 
-        coEvery { getCartRevampV3UseCase.setParams(any(), any()) } just Runs
-        coEvery { getCartRevampV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartData) -> Unit>().invoke(cartData)
-        }
+        coEvery { getCartRevampV4UseCase(any()) } returns cartData
 
         every { updateCartCounterUseCase.createObservable(any()) } answers { Observable.just(1) }
 
@@ -146,7 +126,7 @@ class GetCartListTest : BaseCartTest() {
         cartListPresenter.processInitialGetCartData("", true, false)
 
         // THEN
-        assert(cartListPresenter.isLastApplyValid() == true)
+        assert(cartListPresenter.isLastApplyValid())
     }
 
     @Test

@@ -46,7 +46,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/deals_dp_1"
                     android:layout_marginTop="@dimen/spacing_lvl4"
-                    android:background="@color/Unify_N100" />
+                    android:background="@color/Unify_NN200" />
 
                 <ImageView
                     android:id="@+id/img_current_location"
@@ -64,7 +64,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:typographyType="body_2"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     android:gravity="center"
                     android:layout_marginLeft="@dimen/deals_dp_10"
                     app:layout_constraintTop_toTopOf="@+id/img_current_location"
@@ -80,7 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/deals_dp_1"
                     android:layout_marginTop="@dimen/spacing_lvl4"
-                    android:background="@color/Unify_N100" />
+                    android:background="@color/Unify_NN200" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

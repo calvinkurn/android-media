@@ -19,13 +19,13 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl1"
-        android:background="@color/Unify_N50"/>
+        android:background="@color/Unify_NN50"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/topupbills_search_number_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         tools:listitem="@layout/item_autocomplete_fav_num" />
 
 </LinearLayout>

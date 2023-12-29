@@ -59,7 +59,7 @@
         android:layout_height="wrap_content"
         app:typographyType="display_2"
         app:typographyWeight="bold"
-        android:textColor="@color/Unify_N600"
+        android:textColor="@color/Unify_NN800"
         android:text="@string/home_back_to_home"
         android:layout_gravity="center"
         android:gravity="center"

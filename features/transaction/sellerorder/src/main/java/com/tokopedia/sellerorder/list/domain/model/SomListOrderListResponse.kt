@@ -21,8 +21,37 @@ data class SomListOrderListResponse(
             val cursorOrderId: String = "0",
             @SerializedName("list")
             @Expose
-            val list: List<Order> = listOf()
+            val list: List<Order> = listOf(),
+            @Expose
+            @SerializedName("empty_state")
+            val emptyState: EmptyState? = null
         ) {
+            data class EmptyState(
+                @Expose
+                @SerializedName("title")
+                val title: String = "",
+                @Expose
+                @SerializedName("subtitle")
+                val subTitle: String = "",
+                @Expose
+                @SerializedName("image_url")
+                val imageUrl: String = "",
+                @Expose
+                @SerializedName("cta")
+                val cta: Cta? = null
+            ) {
+                data class Cta(
+                    @Expose
+                    @SerializedName("cta_text")
+                    val ctaText: String = "",
+                    @Expose
+                    @SerializedName("cta_action_type")
+                    val ctaActionType: String = "",
+                    @Expose
+                    @SerializedName("cta_action_value")
+                    val ctaActionValue: String = ""
+                )
+            }
             data class Order(
                 @SerializedName("cancel_request")
                 @Expose
@@ -45,6 +74,8 @@ data class SomListOrderListResponse(
                 @SerializedName("deadline_text")
                 @Expose
                 val deadlineText: String = "",
+                @SerializedName("deadline_style")
+                val deadlineStyle: Int = 0,
                 @SerializedName("order_id")
                 @Expose
                 val orderId: String = "",

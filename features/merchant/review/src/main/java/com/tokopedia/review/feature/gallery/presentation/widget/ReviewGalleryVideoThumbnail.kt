@@ -8,8 +8,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.utils.RemoteConfig
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.getReviewStar
@@ -18,6 +18,7 @@ import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewG
 import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryMediaThumbnailListener
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.widget.ReviewVideoPlayer
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.widget.ReviewVideoPlayerListener
+import com.tokopedia.reviewcommon.util.FeatureToggle
 import com.tokopedia.unifycomponents.BaseCustomView
 
 class ReviewGalleryVideoThumbnail @JvmOverloads constructor(
@@ -65,9 +66,16 @@ class ReviewGalleryVideoThumbnail @JvmOverloads constructor(
         reviewGalleryMediaThumbnailListener = newListener
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        element?.let { element -> bind(element) }
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        if (!RemoteConfig.glideM3U8ThumbnailLoaderEnabled(context)) {
+        if (FeatureToggle.glideM3U8ThumbnailLoaderEnabled(context)) {
+            binding.ivReviewGalleryVideoThumbnail.clearImage()
+        } else {
             reviewVideoPlayer.cleanupVideoPlayer()
         }
     }
@@ -86,7 +94,7 @@ class ReviewGalleryVideoThumbnail @JvmOverloads constructor(
     }
 
     private fun WidgetReviewGalleryVideoThumbnailBinding.setupThumbnail(videoUrl: String) {
-        if (RemoteConfig.glideM3U8ThumbnailLoaderEnabled(context)) {
+        if (FeatureToggle.glideM3U8ThumbnailLoaderEnabled(context)) {
             setupThumbnailWithGlide(videoUrl)
             playerViewReviewGalleryVideoThumbnail.gone()
             ivReviewGalleryVideoThumbnail.show()
@@ -103,11 +111,11 @@ class ReviewGalleryVideoThumbnail @JvmOverloads constructor(
             listener(onSuccess = { _, _ ->
                 onReviewVideoPlayerIsPaused()
             }, onError = { throwable ->
-                    val errorCode = throwable?.let {
-                        ErrorHandler.getErrorMessagePair(context, it, ErrorHandler.Builder()).second
-                    }.orEmpty()
-                    onReviewVideoPlayerError(errorCode)
-                })
+                val errorCode = throwable?.let {
+                    ErrorHandler.getErrorMessagePair(context, it, ErrorHandler.Builder()).second
+                }.orEmpty()
+                onReviewVideoPlayerError(errorCode)
+            })
         }
     }
 

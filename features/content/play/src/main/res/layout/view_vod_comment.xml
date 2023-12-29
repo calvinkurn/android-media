@@ -8,4 +8,4 @@
     app:icon_color_light_enable="@color/Unify_Static_White"
     app:icon_color_night_enable="@color/Unify_Static_White"
     app:icon_name="CHAT"
-    tools:background="@color/Unify_N700_96"/>
+    tools:background="@color/Unify_NN950_96"/>

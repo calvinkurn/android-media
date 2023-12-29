@@ -76,7 +76,14 @@
                       "title": "Khusus <b>pengguna baru</b>",
                       "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
                     }
-                  ]
+                  ],
+                  "cta": {
+                    "text": "Aktivasi GoPay Cicil",
+                    "app_link": "tokopedia://applink",
+                    "url": "",
+                    "type": "register_gpl_cicil",
+                    "json_metadata": ""
+                  }
                 }
               ]
             },

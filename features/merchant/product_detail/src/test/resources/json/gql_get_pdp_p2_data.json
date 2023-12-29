@@ -853,6 +853,10 @@
           "usedPrice": "0",
           "widgetString": ""
         },
-        "wishlistCount": "360"
+        "wishlistCount": "360",
+        "bottomSheetEdu": {
+          "isShow": false,
+          "appLink": "tokopedia://product-edu/1"
+        }
       }
  }

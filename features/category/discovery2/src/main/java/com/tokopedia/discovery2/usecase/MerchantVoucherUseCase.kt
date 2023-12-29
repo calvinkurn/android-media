@@ -10,8 +10,9 @@ import javax.inject.Inject
 
 class MerchantVoucherUseCase @Inject constructor(private val repository: MerchantVoucherRepository) {
     companion object {
-        private const val VOUCHER_PER_PAGE = 10
         private const val PAGE_START = 1
+
+        const val VOUCHER_PER_PAGE = 10
     }
     suspend fun loadFirstPageComponents(componentId: String, pageEndPoint: String, productsLimit: Int = VOUCHER_PER_PAGE): Boolean {
         val component = getComponent(componentId, pageEndPoint)
@@ -176,7 +177,7 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
         queryParameterMapWithoutRpc?.let {
             queryParameterMap.putAll(it)
         }
-        queryParameterMap.putAll(Utils.addAddressQueryMap(userAddressData))
+        queryParameterMap.putAll(Utils.addAddressQueryMapWithWareHouse(userAddressData))
         return queryParameterMap
     }
 }

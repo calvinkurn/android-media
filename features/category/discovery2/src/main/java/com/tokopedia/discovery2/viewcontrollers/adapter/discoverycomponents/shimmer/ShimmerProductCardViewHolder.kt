@@ -10,7 +10,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 
 class ShimmerProductCardViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
-    private lateinit var shimmerProductViewModel: ShimmerViewModel
+    private var shimmerProductViewModel: ShimmerViewModel? = null
     private var parentLayout: ConstraintLayout = itemView.findViewById(R.id.parentLayout)
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         shimmerProductViewModel = discoveryBaseViewModel as ShimmerViewModel
@@ -19,7 +19,7 @@ class ShimmerProductCardViewHolder(itemView: View, private val fragment: Fragmen
 
     private fun setProductShimmerView() {
         val layoutParams: ViewGroup.LayoutParams = parentLayout.layoutParams
-        if (shimmerProductViewModel.getTemplateType() == LIST) {
+        if (shimmerProductViewModel?.getTemplateType() == LIST) {
             layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
         } else {
             layoutParams.width = parentLayout.context.resources.getDimensionPixelSize(R.dimen.dp_200)

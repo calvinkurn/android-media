@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-parcelize'
 
 buildscript {
     repositories {
@@ -10,6 +11,14 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+android {
+    namespace 'com.tokopedia.topads.common'
+    testNamespace 'com.tokopedia.topads.common.test'
+    buildFeatures {
+        viewBinding true
     }
 }
 
@@ -23,6 +32,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
@@ -33,15 +43,17 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+    implementation project(path: ':libraries:base_list')
 
     testImplementation rootProject.ext.testDependencies.junit
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
     implementation rootProject.ext.unifyDependencies.datepicker
 }

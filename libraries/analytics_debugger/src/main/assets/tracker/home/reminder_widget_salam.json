@@ -16,7 +16,9 @@
       "event": "view_item",
       "eventAction": "impression on salam",
       "sessionIris": ".+",
-      "eventLabel": ".+"
+      "eventLabel": ".+",
+      "userId": ".*",
+      "hits_time": ".*"
     },
     {
       "promotions": [

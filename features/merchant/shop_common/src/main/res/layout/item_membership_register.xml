@@ -3,9 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="14dp"
-    android:layout_marginRight="14dp"
     app:cardCornerRadius="8dp"
+    app:cardElevation="0dp"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -17,7 +16,7 @@
             android:id="@+id/bg_image_register"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            tools:background="@color/Unify_N100"
+            tools:background="@color/Unify_NN200"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:contentDescription="@string/register_membership_background_content_description"

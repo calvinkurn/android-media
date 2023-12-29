@@ -2,8 +2,8 @@ package com.tokopedia.tokochat.domain.usecase
 
 import com.gojek.conversations.babble.message.data.SendMessageMetaData
 import com.gojek.conversations.extensions.ExtensionMessage
-import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
-import com.tokochat.tokochat_config_common.repository.TokoChatRepository
+import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
+import com.tokopedia.tokochat.config.repository.TokoChatRepository
 import javax.inject.Inject
 
 open class TokoChatSendMessageUseCase @Inject constructor(
@@ -14,7 +14,7 @@ open class TokoChatSendMessageUseCase @Inject constructor(
         text: String,
         sendMessageMetaData: SendMessageMetaData
     ) {
-        repository.getConversationRepository().sendTextMessage(
+        repository.getConversationRepository()?.sendTextMessage(
             channelUrl,
             text,
             sendMessageMetaData
@@ -25,7 +25,7 @@ open class TokoChatSendMessageUseCase @Inject constructor(
         channel: String,
         extensionMessage: ExtensionMessage
     ) {
-        repository.getConversationRepository().addTransientMessage(
+        repository.getConversationRepository()?.addTransientMessage(
             channel,
             extensionMessage
         )
@@ -35,14 +35,14 @@ open class TokoChatSendMessageUseCase @Inject constructor(
         channel: String,
         extensionMessage: ExtensionMessage
     ) {
-        repository.getConversationRepository().sendTransientMessage(
+        repository.getConversationRepository()?.sendTransientMessage(
             channel,
             extensionMessage
         )
     }
 
     open fun setTransientMessageFailed(messageId: String) {
-        repository.getConversationRepository().setTransientMessageFailed(
+        repository.getConversationRepository()?.setTransientMessageFailed(
             messageId = messageId
         )
     }

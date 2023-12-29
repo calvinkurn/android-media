@@ -1,17 +1,12 @@
 package com.tokopedia.common.topupbills.view.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-
 import androidx.recyclerview.widget.RecyclerView
-
-
-import com.tokopedia.common.topupbills.R
+import com.tokopedia.common.topupbills.databinding.ItemAutocompleteFavNumBinding
 import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.item_autocomplete_fav_num.view.*
 
 /**
  * @author rizkyfadillah on 10/4/2017.
@@ -20,8 +15,8 @@ import kotlinx.android.synthetic.main.item_autocomplete_fav_num.view.*
 class NumberListAdapter(private val callback: OnClientNumberClickListener, var clientNumbers: List<TopupBillsSearchNumberDataModel>) : RecyclerView.Adapter<NumberListAdapter.ItemHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_autocomplete_fav_num, parent, false)
-        return ItemHolder(view)
+        val binding = ItemAutocompleteFavNumBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ItemHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ItemHolder, position: Int) {
@@ -44,21 +39,21 @@ class NumberListAdapter(private val callback: OnClientNumberClickListener, var c
         fun onClientNumberClicked(orderClientNumber: TopupBillsSearchNumberDataModel)
     }
 
-    inner class ItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ItemHolder(
+        private val binding: ItemAutocompleteFavNumBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(orderClientNumber: TopupBillsSearchNumberDataModel) {
-            with (itemView) {
-                text_name.text = orderClientNumber.clientNumber
+            with(binding) {
+                textName.text = orderClientNumber.clientNumber
                 if (orderClientNumber.clientName.isNotEmpty()) {
-                    text_number.text = orderClientNumber.clientName
-                    text_number.show()
+                    textNumber.text = orderClientNumber.clientName
+                    textNumber.show()
                 } else {
-                    text_number.hide()
+                    textNumber.hide()
                 }
-                setOnClickListener { callback.onClientNumberClicked(orderClientNumber) }
+                root.setOnClickListener { callback.onClientNumberClicked(orderClientNumber) }
             }
         }
-
     }
-
 }

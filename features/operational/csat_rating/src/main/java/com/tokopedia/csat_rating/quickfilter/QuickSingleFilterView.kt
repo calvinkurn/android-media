@@ -1,5 +1,6 @@
 package com.tokopedia.csat_rating.quickfilter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Handler
 import android.util.AttributeSet
@@ -34,10 +35,6 @@ open class QuickSingleFilterView : FrameLayout {
         this.listener = listener
     }
 
-    fun setquickFilterListener(listener: QuickFilterAnalytics?) {
-        quickFilterAnalytics = listener
-    }
-
     protected fun init() {
         val rootView = inflate(context, layoutRes, this)
         recyclerView = rootView.findViewById<View>(R.id.rv_filter) as RecyclerView
@@ -59,7 +56,7 @@ open class QuickSingleFilterView : FrameLayout {
 
     @get:LayoutRes
     protected val layoutRes: Int
-        protected get() = R.layout.csat_rating_widget_quick_filter
+        get() = R.layout.csat_rating_widget_quick_filter
 
     protected open fun initialAdapter() {
         adapterFilter = QuickSingleFilterAdapter(quickSingleFilterListener())
@@ -73,6 +70,7 @@ open class QuickSingleFilterView : FrameLayout {
 
     protected fun quickSingleFilterListener(): QuickSingleFilterListener {
         return object : QuickSingleFilterListener {
+            @SuppressLint("NotifyDataSetChanged")
             override fun selectFilter(quickFilterItem: QuickFilterItem?) {
                 var totalFalse = 0
                 val items = adapterFilter?.dataList
@@ -130,22 +128,6 @@ open class QuickSingleFilterView : FrameLayout {
 
     protected fun getDefaultSelectedFilterType(quickFilterItem: QuickFilterItem?): String? {
         return quickFilterItem?.type
-    }
-
-    fun setDefaultItem(defaultItem: QuickFilterItem?) {
-        this.defaultItem = defaultItem
-    }
-
-    fun actionSelect(position: Int) {
-        Handler().postDelayed({
-            if (recyclerView != null) {
-                val holder = recyclerView?.findViewHolderForAdapterPosition(position)
-                if (holder != null) {
-                    val holderItem = holder.itemView
-                    holderItem.performClick()
-                }
-            }
-        }, 100)
     }
 
     var selectedFilter: String?

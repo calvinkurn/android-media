@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
     android:animateLayoutChanges="true"
-    android:background="@color/white">
+    android:background="@color/Unify_NN0">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -39,7 +39,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="4dp"
             android:gravity="center"
-            android:textColor="@color/t_promo_grey96"
+            android:textColor="@color/Unify_NN950"
             app:layout_constraintBottom_toTopOf="@+id/tvSubTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +57,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="24dp"
             android:gravity="center"
-            android:textColor="@color/t_promo_grey68"
+            android:textColor="@color/Unify_NN500"
             app:layout_constraintBottom_toTopOf="@+id/btnAction"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -79,7 +79,7 @@
             android:gravity="center"
             android:text="@string/t_promo_lanjut_berbelanja"
             android:textAllCaps="false"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_NN0"
             app:layout_constraintBottom_toTopOf="@+id/space"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -93,7 +93,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:indeterminate="true"
-            android:indeterminateTint="@color/white"
+            android:indeterminateTint="@color/Unify_NN0"
             android:indeterminateTintMode="src_atop"
             android:max="100"
             android:progress="100"
@@ -102,7 +102,6 @@
             app:layout_constraintEnd_toEndOf="@+id/btnAction"
             app:layout_constraintStart_toStartOf="@+id/btnAction"
             app:layout_constraintTop_toTopOf="@+id/btnAction"
-            tools:background="@color/red_30"
             tools:visibility="visible" />
 
         <Space

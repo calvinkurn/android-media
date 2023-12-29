@@ -6,15 +6,16 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.homenav.MePage
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderTransactionProductRevampBinding
-import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OrderProductRevampModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
+@MePage(MePage.Widget.TRANSACTION)
 class OrderProductRevampViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<OrderProductRevampModel>(itemView) {
     private var binding: HolderTransactionProductRevampBinding? by viewBinding()
     companion object {
@@ -26,29 +27,18 @@ class OrderProductRevampViewHolder(itemView: View, val mainNavListener: MainNavL
         bind(element)
     }
 
-    private fun setLayoutFullWidth(element: OrderProductRevampModel) {
-        val layoutParams = binding?.orderProductCard?.layoutParams
-        if (element.navProductModel.fullWidth) {
-            layoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT
-        } else {
-            layoutParams?.width =
-                itemView.resources.getDimension(com.tokopedia.homenav.R.dimen.nav_card_me_page_size).toInt()
-        }
-        binding?.orderProductCard?.layoutParams = layoutParams
-    }
-
     override fun bind(productRevampModel: OrderProductRevampModel) {
         val context = itemView.context
-        setLayoutFullWidth(productRevampModel)
         itemView.addOnImpressionListener(productRevampModel)  {
-            mainNavListener.putEEToTrackingQueue(
-                    TrackingTransactionSection.getImpressionOnOrderStatus(
-                        userId = mainNavListener.getUserId(),
-                        orderLabel = productRevampModel.navProductModel.statusText,
-                        position = adapterPosition,
-                        orderId = productRevampModel.navProductModel.id)
+            mainNavListener.onOrderCardImpressed(
+                productRevampModel.navProductModel.statusText,
+                productRevampModel.navProductModel.id,
+                productRevampModel.position
             )
         }
+
+        binding?.orderProductCard?.animateOnPress = CardUnify2.ANIMATE_OVERLAY
+
         //title
         binding?.orderProductName?.text = productRevampModel.navProductModel.productNameText
 
@@ -71,7 +61,9 @@ class OrderProductRevampViewHolder(itemView: View, val mainNavListener: MainNavL
         binding?.orderProductStatus?.text = productRevampModel.navProductModel.statusText
         var productStatusColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN500)
         if (productRevampModel.navProductModel.statusTextColor.isNotEmpty()) {
-            productStatusColor = Color.parseColor(productRevampModel.navProductModel.statusTextColor)
+            try {
+                productStatusColor = Color.parseColor(productRevampModel.navProductModel.statusTextColor)
+            } catch (_: Exception) { }
         }
         binding?.orderProductStatus?.setTextColor(productStatusColor)
 
@@ -89,10 +81,12 @@ class OrderProductRevampViewHolder(itemView: View, val mainNavListener: MainNavL
         }
 
         binding?.orderProductContainer?.setOnClickListener {
-            TrackingTransactionSection.clickOnOrderStatus(
-                    mainNavListener.getUserId(),
-                    productRevampModel.navProductModel.statusText)
-            RouteManager.route(context, productRevampModel.navProductModel.applink)
+            mainNavListener.onOrderCardClicked(
+                productRevampModel.navProductModel.applink,
+                productRevampModel.navProductModel.statusText,
+                productRevampModel.navProductModel.id,
+                productRevampModel.position
+            )
         }
     }
 }

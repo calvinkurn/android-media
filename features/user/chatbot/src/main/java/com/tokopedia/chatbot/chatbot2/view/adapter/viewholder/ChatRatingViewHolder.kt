@@ -75,7 +75,7 @@ class ChatRatingViewHolder(
         thumbsDown.setColorFilter(
             ContextCompat.getColor(
                 itemView.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_R500
+                com.tokopedia.unifyprinciples.R.color.Unify_RN500
             )
         )
         thumbsDown.show()

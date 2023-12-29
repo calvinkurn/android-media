@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.con
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.databinding.DiscoContentCardEmptyStateBinding
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -15,10 +16,17 @@ class ContentCardEmptyStateViewHolder(itemView: View, private val fragment: Frag
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         emptyStateViewModel = discoveryBaseViewModel as ContentCardEmptyStateViewModel
-        val emptyStateTexts = emptyStateViewModel?.getToastMessage((fragment as? DiscoveryFragment)?.getItemCount())
-        binding.errorContentCardTitle.text = emptyStateTexts?.first
+        val discoItemCount = (fragment as? DiscoveryFragment)?.getItemCount()
+        val emptyStateText = emptyStateViewModel?.getToastMessage(discoItemCount)
+        binding.errorContentCardTitle.text = emptyStateText
         binding.contentEmptyCardImageContainer.setOnClickListener {
-            emptyStateTexts?.second?.let { it1 -> Toaster.build(itemView, it1, Toast.LENGTH_SHORT).show() }
+            if (discoItemCount != null) {
+                if (emptyStateViewModel?.position == discoItemCount - 1) {
+                    itemView.context?.getString(R.string.card_empty_toast_lc)?.let { it1 -> Toaster.build(itemView, it1, Toast.LENGTH_SHORT).show() }
+                } else {
+                    (fragment as? DiscoveryFragment)?.scrollToNextComponent(emptyStateViewModel?.position)
+                }
+            }
         }
     }
 }

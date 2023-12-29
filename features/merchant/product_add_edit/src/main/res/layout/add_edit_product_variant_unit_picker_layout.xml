@@ -2,7 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.TipsUnify
+        android:id="@+id/tipsDTDeletion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        app:unify_tips_description="@string/message_tips_variant_unit_cannot_changed" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -16,6 +24,11 @@
             android:layout_marginBottom="32dp"
             android:choiceMode="singleChoice" />
     </ScrollView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvDisabledVariantUnits"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/buttonSave"

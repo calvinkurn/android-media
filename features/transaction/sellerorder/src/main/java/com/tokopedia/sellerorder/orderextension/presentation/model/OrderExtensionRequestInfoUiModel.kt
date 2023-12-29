@@ -73,7 +73,7 @@ data class OrderExtensionRequestInfoUiModel(
 
     data class DescriptionUiModel(
         val alignment: DescriptionAlignment = DescriptionAlignment.TEXT_ALIGNMENT_INHERIT,
-        @ColorRes val fontColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_N700_68,
+        @ColorRes val fontColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_NN950_68,
         val typographyType: DescriptionTextType = DescriptionTextType.BODY_3,
         val description: StringComposer,
         override var show: Boolean = true,

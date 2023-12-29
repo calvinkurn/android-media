@@ -17,6 +17,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.fakeresponse'
+    testNamespace 'com.tokopedia.fakeresponse.test'
+}
+
 dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.supportLibDependencies.kotlinSupport

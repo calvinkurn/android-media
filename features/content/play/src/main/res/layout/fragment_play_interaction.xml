@@ -221,10 +221,11 @@
         layout="@layout/view_explore_widget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/play_dp_20"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/view_partner_info"
+        app:layout_constraintBottom_toBottomOf="@+id/view_stats_info"
         app:layout_constraintEnd_toEndOf="@id/view_size"
-        app:layout_constraintTop_toTopOf="@+id/view_partner_info"
+        app:layout_constraintTop_toTopOf="@+id/view_stats_info"
         tools:visibility="visible" />
 
     <include
@@ -247,7 +248,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/play_offset_12"
         android:layout_marginEnd="@dimen/play_offset_12"
-        app:layout_constraintEnd_toStartOf="@id/view_explore_widget"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/view_toolbar_room"
         app:layout_constraintTop_toBottomOf="@id/view_toolbar_room"
@@ -271,12 +272,13 @@
         layout="@layout/view_game_interactive_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/view_size"
-        app:layout_constraintTop_toBottomOf="@id/scrollable_host_engagement"
-        />
+        app:layout_constraintBottom_toBottomOf="@id/view_explore_widget"
+        app:layout_constraintEnd_toStartOf="@id/view_explore_widget"
+        app:layout_constraintTop_toTopOf="@+id/view_explore_widget"
+        app:layout_constraintVertical_bias="0.0"
+        tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_quick_reply"
@@ -366,10 +368,10 @@
         android:id="@+id/scrollable_host_engagement"
         android:layout_width="wrap_content"
         android:layout_height="110dp"
-        android:layout_marginEnd="4dp"
         android:maxHeight="110dp"
+        android:layout_marginEnd="@dimen/unify_space_16"
         app:layout_constraintEnd_toEndOf="@id/view_size"
-        app:layout_constraintTop_toTopOf="@id/view_stats_info"
+        app:layout_constraintTop_toBottomOf="@id/view_explore_widget"
         app:lockScroll="true"
         >
 

@@ -9,17 +9,20 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.uimodel.ToolUiModel
 import com.tokopedia.picker.common.types.EditorToolType
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class EditorToolAdapter constructor(
     private val tools: MutableList<ToolUiModel> = mutableListOf(),
-    private val listener: EditorToolViewHolder.Listener
+    private val listener: EditorToolViewHolder.Listener,
+    private var newLabelShow: Int
 ) : RecyclerView.Adapter<EditorToolViewHolder>() {
 
     private var stateList: List<EditorDetailUiModel>? = null
@@ -62,6 +65,7 @@ class EditorToolAdapter constructor(
                         else
                             editorDetailUiModel.cropRotateValue.isCrop
                     }
+                    EditorToolType.ADD_TEXT -> editorDetailUiModel.addTextValue?.textImagePath?.isNotEmpty() == true
                     else -> false
                 }
 
@@ -70,10 +74,19 @@ class EditorToolAdapter constructor(
             }
         }
 
-        holder.bind(toolModel, isActive)
+        holder.bind(
+            toolModel,
+            isActive,
+            toolModel.id == newLabelShow,
+            newLabelShow > EMPTY_LABEL_STATE
+        )
     }
 
     override fun getItemCount() = tools.size
+
+    companion object {
+        const val EMPTY_LABEL_STATE = -1
+    }
 }
 
 class EditorToolViewHolder(
@@ -84,10 +97,11 @@ class EditorToolViewHolder(
     private val icTool: IconUnify = view.findViewById(R.id.ic_tool)
     private val txtName: Typography = view.findViewById(R.id.txt_name)
     private val toolNotification: NotificationUnify = view.findViewById(R.id.ic_tool_notification)
+    private val newLabel: Label = view.findViewById(R.id.new_label)
 
     private val context = view.context
 
-    fun bind(tool: ToolUiModel, isActive: Boolean = false) {
+    fun bind(tool: ToolUiModel, isActive: Boolean = false, isShowNewLabel: Boolean = false, isLabeledSize: Boolean) {
         txtName.text = context.getString(tool.name)
         icTool.setImage(tool.icon)
 
@@ -96,6 +110,12 @@ class EditorToolViewHolder(
         }
 
         toolNotification.showWithCondition(isActive)
+
+        if (isLabeledSize) {
+            newLabel.visibleWithCondition(isShowNewLabel)
+        } else {
+            newLabel.showWithCondition(isShowNewLabel)
+        }
     }
 
     companion object {

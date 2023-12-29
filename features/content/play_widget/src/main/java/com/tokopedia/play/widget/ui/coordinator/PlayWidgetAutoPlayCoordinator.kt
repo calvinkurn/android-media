@@ -16,6 +16,7 @@ import com.tokopedia.play.widget.ui.autoplay.DefaultAutoPlayReceiverDecider
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetType
+import com.tokopedia.play.widget.ui.model.WidgetInList
 import kotlinx.coroutines.*
 
 /**
@@ -34,8 +35,19 @@ class PlayWidgetAutoPlayCoordinator(
 
     private lateinit var mConfig: PlayWidgetConfigUiModel
 
+    private var mIsVisible: Boolean = false
+
     override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
-        startAutoPlay(widgetCardsContainer)
+        val visibleCards = getVisibleWidgetInRecyclerView(widgetCardsContainer)
+        startAutoPlay(
+            visibleCards.map {
+                WidgetInList(it.card, it.position)
+            }
+        )
+    }
+
+    override fun onFocusedWidgetsChanged(focusedWidgets: List<WidgetInList>) {
+        startAutoPlay(focusedWidgets)
     }
 
     override fun onWidgetDetached(widget: View) {
@@ -54,7 +66,23 @@ class PlayWidgetAutoPlayCoordinator(
     }
 
     fun onResume() {
+        if (!mIsVisible) return
         videoPlayerMap.keys.forEach { it.restart() }
+    }
+
+    fun onVisible() {
+        mIsVisible = true
+        videoPlayerMap.keys.forEach {
+            if (it.getPlayer().isPlaying) return@forEach
+            it.start()
+        }
+    }
+
+    fun onNotVisible() {
+        mIsVisible = false
+        videoPlayerMap.keys.forEach {
+            it.stop()
+        }
     }
 
     private fun setupAutoplay(context: Context, config: PlayWidgetConfigUiModel, type: PlayWidgetType) {
@@ -81,6 +109,7 @@ class PlayWidgetAutoPlayCoordinator(
 
         videoPlayerMap.keys.forEach {
             it.maxDurationCellularInSeconds = config.maxAutoPlayCellularDuration
+            it.maxDurationWifiInSeconds = config.maxAutoPlayWifiDuration
         }
     }
 
@@ -104,23 +133,24 @@ class PlayWidgetAutoPlayCoordinator(
         setupAutoplay(widget.context, config, type)
     }
 
-    private fun startAutoPlay(widgetCardsContainer: RecyclerView) {
-        val visibleCards = getVisibleWidgetInRecyclerView(widgetCardsContainer)
-        if (visibleCards.isEmpty()) return
-
+    private fun startAutoPlay(focusedWidgets: List<WidgetInList>) {
         autoPlayJob?.cancel()
-        autoPlayJob = scope.launch(mainCoroutineDispatcher) {
-            delay(MAX_DELAY)
-            val autoPlayEligibleReceivers = autoPlayReceiverDecider.getEligibleAutoPlayReceivers(
-                visibleCards = visibleCards,
-                itemCount = widgetCardsContainer.layoutManager?.itemCount ?: 0,
-                maxAutoPlay = getMaxAutoPlayCard()
-            )
 
+        val autoPlayEligibleReceivers = autoPlayReceiverDecider.getEligibleAutoPlayReceivers(
+            visibleCards = focusedWidgets.map {
+                AutoPlayModel(it.widget, it.position)
+            },
+            itemCount = focusedWidgets.size,
+            maxAutoPlay = getMaxAutoPlayCard()
+        )
+
+        autoPlayJob = scope.launch(mainCoroutineDispatcher) {
+            delay(DELAY_BEFORE_PAUSE)
             videoPlayerMap.entries.forEach {
                 if (it.value !in autoPlayEligibleReceivers) clearPlayerEntry(it)
             }
 
+            delay(DELAY_BEFORE_PLAY)
             autoPlayEligibleReceivers
                 .filter { it.getPlayer() == null }
                 .forEach {
@@ -135,6 +165,8 @@ class PlayWidgetAutoPlayCoordinator(
     }
 
     private fun clearPlayerEntry(entry: MutableMap.MutableEntry<PlayVideoPlayer, PlayVideoPlayerReceiver?>) {
+        entry.key.repeat(false)
+        entry.key.mute(true)
         entry.key.stop()
         entry.key.listener = null
         entry.value?.setPlayer(null)
@@ -173,6 +205,7 @@ class PlayWidgetAutoPlayCoordinator(
     }
 
     companion object {
-        private const val MAX_DELAY = 2000L // set delay before play to 2s
+        private const val DELAY_BEFORE_PAUSE = 200L
+        private const val DELAY_BEFORE_PLAY = 1500L
     }
 }

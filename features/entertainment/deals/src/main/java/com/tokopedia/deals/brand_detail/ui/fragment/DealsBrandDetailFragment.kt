@@ -160,13 +160,13 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
                                 it.collapsingToolbarBrandDetail.title = title
                                 colorInt = ContextCompat.getColor(
                                     context,
-                                    com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                                 )
                             } else if (verticalOffset == 0) {
                                 it.collapsingToolbarBrandDetail.title = ""
                                 colorInt = ContextCompat.getColor(
                                     context,
-                                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
                                 )
                             }
 

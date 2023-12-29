@@ -2,7 +2,7 @@
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:card_background_color="@color/Unify_T100"
+    app:card_background_color="@color/Unify_TN50"
     app:card_type="border_disabled"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -31,7 +31,7 @@
             android:layout_marginEnd="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/spacing_lvl3"
-            android:textColorLink="@color/Unify_G500"
+            android:textColorLink="@color/Unify_GN500"
             tools:text="Transaksi selama 23:40-00:20 WIB baru akan diproses pada 00:45 WIB. Selengkapnya"
             app:typographyType="body_3"
             app:layout_constraintTop_toTopOf="parent"

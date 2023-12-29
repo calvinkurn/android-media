@@ -33,7 +33,7 @@
             android:layout_marginEnd="8dp"
             android:gravity="center"
             android:text="@string/product_card_compact_see_more_products"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

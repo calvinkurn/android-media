@@ -4,9 +4,11 @@ import android.os.Bundle
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.universal_sharing.view.customview.UniversalShareWidget
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
-class UniversalSharebottomSheetTracker(private val userSession: UserSession) {
+class UniversalSharebottomSheetTracker @Inject constructor(private val userSession: UserSessionInterface) {
 
     companion object {
         private const val EVENT_BUSINESS_UNIT = "businessUnit"
@@ -27,18 +29,37 @@ class UniversalSharebottomSheetTracker(private val userSession: UserSession) {
         private const val VALUE_ACTION_CLOSE_SHARE = "click - close share bottom sheet"
         private const val VALUE_ACTION_VIEW_SHARE = "view on sharing channel"
         private const val VALUE_ACTION_CLICK_CHANNEL = "click - sharing channel"
+        private const val VALUE_ACTION_VIEW_PRODUCT_LIST = "view on share product list sheet"
+        private const val VALUE_ACTION_CLICK_CLOSE_SHARE_PRODUCT_LIST = "click - close share product list sheet"
+        private const val VALUE_ACTION_VIEW_SHARE_WIDGET = "impression - new share button"
+        const val VALUE_ACTION_CLICK_SHARE_WIDGET = "click - new share button"
+        const val VALUE_ACTION_CLICK_DIRECT_CHANNEL = "click - direct sharing channel"
+
+        private const val VALUE_CATEGORY_THANKYOU = "share - thank you page"
+        const val VALUE_CATEGORY_PRODUCT_DETAIL_PAGE = "product detail page"
+
         private const val VALUE_EVENT_VIEW = "view_item"
-        private const val VALUE_EVENT_CLICK = "clickCommunication"
-        private const val VALUE_EVENT_VIEW_COMMUNICATION = "viewCommunicationIris"
+        const val VALUE_EVENT_CLICK = "clickCommunication"
+        const val VALUE_EVENT_VIEW_COMMUNICATION = "viewCommunicationIris"
         private const val VALUE_CURRENT_SITE = "tokopediamarketplace"
-        private const val VALUE_BUSINESS_UNIT = "sharingexperience"
+        const val VALUE_BUSINESS_UNIT = "sharingexperience"
 
         private const val VALUE_TRACKER_ID_VIEW_AFFILIATE = "36616"
         private const val VALUE_TRACKER_ID_CLICK_AFFILIATE = "36617"
+        private const val VALUE_TRACKER_ID_VIEW_SHARE_WIDGET = "48000"
+
+        private const val VALUE_TRACKER_ID_45899 = "45899"
+        private const val VALUE_TRACKER_ID_45898 = "45898"
+        private const val VALUE_TRACKER_ID_45900 = "45900"
+        private const val VALUE_TRACKER_ID_45901 = "45901"
+        private const val VALUE_TRACKER_ID_46219 = "46219"
+        private const val VALUE_TRACKER_ID_46220 = "46220"
 
         private const val TICKER_TYPE_AFFILIATE = "is_affiliate"
         private const val TICKER_TYPE_NON_AFFILIATE = "non_affiliate"
         private const val NOT_SET = "notset"
+
+        const val TYPE_GENERAL = "general"
     }
 
     fun trackClickShare(id: String, eventCategory: String, trackerId: String, currentSite: String) {
@@ -95,6 +116,96 @@ class UniversalSharebottomSheetTracker(private val userSession: UserSession) {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
+    fun onClickShareProductPostPurchase(
+        userShareType: String,
+        productId: String,
+        orderId: String
+    ) {
+        trackShare(
+            eventLabel = "$userShareType - $productId - $orderId",
+            event = VALUE_EVENT_CLICK,
+            eventCategory = VALUE_CATEGORY_THANKYOU,
+            eventAction = VALUE_ACTION_CLICK_SHARE,
+            trackerId = VALUE_TRACKER_ID_45898,
+            currentSite = VALUE_CURRENT_SITE
+        )
+    }
+
+    fun onClickCloseBottomSheetSharePostPurchase(
+        userShareType: String,
+        productId: String,
+        orderId: String
+    ) {
+        trackShare(
+            eventLabel = "$userShareType - $productId - $orderId",
+            event = VALUE_EVENT_CLICK,
+            eventCategory = VALUE_CATEGORY_THANKYOU,
+            eventAction = VALUE_ACTION_CLOSE_SHARE,
+            trackerId = VALUE_TRACKER_ID_45899,
+            currentSite = VALUE_CURRENT_SITE
+        )
+    }
+
+    fun onClickSharingChannelBottomSheetSharePostPurchase(
+        channel: String,
+        userShareType: String,
+        productId: String,
+        orderId: String,
+    ) {
+        trackShare(
+            eventLabel = "$channel - $userShareType - $productId - $orderId",
+            event = VALUE_EVENT_CLICK,
+            eventCategory = VALUE_CATEGORY_THANKYOU,
+            eventAction = VALUE_ACTION_CLICK_CHANNEL,
+            trackerId = VALUE_TRACKER_ID_45900,
+            currentSite = VALUE_CURRENT_SITE
+        )
+    }
+
+    fun onViewSharingChannelBottomSheetSharePostPurchase(
+        userShareType: String,
+        productId: String,
+        orderId: String
+    ) {
+        trackShare(
+            eventLabel = "$userShareType - $productId - $orderId",
+            event = VALUE_EVENT_VIEW_COMMUNICATION,
+            eventCategory = VALUE_CATEGORY_THANKYOU,
+            eventAction = VALUE_ACTION_VIEW_SHARE,
+            trackerId = VALUE_TRACKER_ID_45901,
+            currentSite = VALUE_CURRENT_SITE
+        )
+    }
+
+    fun onViewProductListPostPurchase(
+        userShareType: String,
+        productIdList: String,
+        orderIdList: String
+    ) {
+        trackShare(
+            eventLabel = "$userShareType - $productIdList - $orderIdList",
+            event = VALUE_EVENT_VIEW_COMMUNICATION,
+            eventCategory = VALUE_CATEGORY_THANKYOU,
+            eventAction = VALUE_ACTION_VIEW_PRODUCT_LIST,
+            trackerId = VALUE_TRACKER_ID_46219,
+            currentSite = VALUE_CURRENT_SITE
+        )
+    }
+
+    fun onClickCloseProductListPostPurchase(
+        userShareType: String,
+        orderIdList: String
+    ) {
+        trackShare(
+            eventLabel = "$userShareType - $orderIdList",
+            event = VALUE_EVENT_CLICK,
+            eventCategory = VALUE_CATEGORY_THANKYOU,
+            eventAction = VALUE_ACTION_CLICK_CLOSE_SHARE_PRODUCT_LIST,
+            trackerId = VALUE_TRACKER_ID_46220,
+            currentSite = VALUE_CURRENT_SITE
+        )
+    }
+
     private fun getTickerType(isAffiliate: Boolean): String {
         return if (isAffiliate) {
             TICKER_TYPE_AFFILIATE
@@ -135,5 +246,21 @@ class UniversalSharebottomSheetTracker(private val userSession: UserSession) {
             this[EVENT_CURRENT_SITE] = VALUE_CURRENT_SITE
             this[EVENT_USER_ID] = userSession.userId
         }
+    }
+
+    fun viewShareWidget(shareIconId: String, productId: String) {
+        val buttonType = if (shareIconId == UniversalShareWidget.EMPTY_ATTRS) {
+            "share button"
+        } else {
+            shareIconId
+        }
+        trackShare(
+            eventLabel = "$buttonType - $productId",
+            event = VALUE_EVENT_VIEW_COMMUNICATION,
+            eventCategory = VALUE_CATEGORY_PRODUCT_DETAIL_PAGE,
+            eventAction = VALUE_ACTION_VIEW_SHARE_WIDGET,
+            trackerId = VALUE_TRACKER_ID_VIEW_SHARE_WIDGET,
+            currentSite = VALUE_CURRENT_SITE
+        )
     }
 }

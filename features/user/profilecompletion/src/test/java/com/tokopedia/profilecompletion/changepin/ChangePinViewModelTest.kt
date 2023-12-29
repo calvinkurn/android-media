@@ -536,7 +536,7 @@ class ChangePinViewModelTest {
 
         /* When */
         every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase.invoke(any()) } returns generateKeyPojo
         coEvery { validatePinV2UseCase(any()) } returns validatePinV2Response
 
         viewModel.validatePinV2("123456")
@@ -547,13 +547,12 @@ class ChangePinViewModelTest {
 
     @Test
     fun `validatePinV2 - exception`() {
-
         val keydata = KeyData(hash = "abc123")
         val generateKeyPojo = GenerateKeyPojo(keydata)
 
         /* When */
         every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase.invoke() } returns generateKeyPojo
         coEvery { validatePinV2UseCase(any()) } throws mockThrowable
 
         viewModel.validatePinV2("123456")
@@ -567,20 +566,15 @@ class ChangePinViewModelTest {
         val data = AddChangePinData(success = true)
         val response = UpdatePinV2Response(data)
 
-
         val keydata = KeyData(hash = "abc123")
         val generateKeyPojo = GenerateKeyPojo(keydata)
 
         /* When */
         every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase.invoke(any()) } returns generateKeyPojo
         coEvery { updatePinV2UseCase(any()) } returns response
 
         viewModel.changePinV2("", "")
-
-        coVerify {
-            generatePublicKeyUseCase.executeOnBackground()
-        }
         val result = viewModel.changePinResponse.getOrAwaitValue()
         assertEquals(Success(data), result)
     }
@@ -601,7 +595,7 @@ class ChangePinViewModelTest {
 
         /* When */
         every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase.invoke(any()) } returns generateKeyPojo
         coEvery { updatePinV2UseCase(any()) } returns response
 
         viewModel.changePinV2("", "")
@@ -638,7 +632,7 @@ class ChangePinViewModelTest {
 
         /* When */
         every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase.invoke(any()) } returns generateKeyPojo
         coEvery { updatePinV2UseCase(any()) } returns response
 
         viewModel.changePinV2("", "")
@@ -708,7 +702,6 @@ class ChangePinViewModelTest {
 
     @Test
     fun `validate pin v2 success`() {
-
         val data = ValidatePinV2Data()
         val response = ValidatePinV2Response(data)
 
@@ -717,7 +710,7 @@ class ChangePinViewModelTest {
 
         /* When */
         every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase.invoke(any()) } returns generateKeyPojo
         coEvery { validatePinV2UseCase(any()) } returns response
 
         viewModel.validatePinV2("")
@@ -729,7 +722,7 @@ class ChangePinViewModelTest {
     @Test
     fun `validate pin v2 throw exception`() {
         /* When */
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } throws mockThrowable
+        coEvery { generatePublicKeyUseCase.invoke(any()) } throws mockThrowable
 
         viewModel.validatePinV2("")
 
@@ -747,7 +740,7 @@ class ChangePinViewModelTest {
 
         /* When */
         every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase.invoke(any()) } returns generateKeyPojo
         coEvery { checkPinV2UseCase(any()) } returns response
 
         viewModel.checkPinV2("")
@@ -766,7 +759,7 @@ class ChangePinViewModelTest {
 
         /* When */
         every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase.invoke(any()) } returns generateKeyPojo
         coEvery { checkPinV2UseCase(any()) } returns response
 
         viewModel.checkPinV2("")
@@ -778,7 +771,7 @@ class ChangePinViewModelTest {
     @Test
     fun `check pin v2 throw exception`() {
         /* When */
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } throws mockThrowable
+        coEvery { generatePublicKeyUseCase.invoke(any()) } throws mockThrowable
 
         viewModel.checkPinV2("")
 
@@ -796,7 +789,7 @@ class ChangePinViewModelTest {
 
         /* When */
         every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase.invoke(any()) } returns generateKeyPojo
         coEvery { checkPinV2UseCase(any()) } returns response
 
         viewModel.checkPinV2("")
@@ -821,7 +814,7 @@ class ChangePinViewModelTest {
         coEvery { checkPinHashV2UseCase(any()) } returns pinResp
 
         every { RsaUtils.encryptWithSalt(any(), any(), any()) } returns hashedPin
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase.invoke(any()) } returns generateKeyPojo
         coEvery { validatePinV2UseCase(any()) } returns response
 
         viewModel.validatePinMediator(pin)
@@ -865,5 +858,4 @@ class ChangePinViewModelTest {
         val result = viewModel.validatePinResponse.getOrAwaitValue()
         assertEquals((result as Fail).throwable, mockThrowable)
     }
-
 }

@@ -12,6 +12,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import rx.Observable
 import javax.inject.Inject
 
+@Deprecated("please use coroutine use case GetRatesCoroutineUseCase")
 class GetRatesUseCase @Inject constructor(
     private val converter: ShippingDurationConverter,
     private val scheduler: SchedulerProvider

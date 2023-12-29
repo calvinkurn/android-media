@@ -85,8 +85,10 @@ class WithdrawActivity : BaseSimpleActivity(), WithdrawalFragmentCallback,
         return false
     }
 
-    override fun openThankYouFragment(withdrawalRequest: WithdrawalRequest,
-                                     submitWithdrawalResponse: SubmitWithdrawalResponse) {
+    override fun openThankYouFragment(
+        withdrawalRequest: WithdrawalRequest,
+        submitWithdrawalResponse: SubmitWithdrawalResponse
+    ) {
         swd_header.setNavigationIcon(RUnifyComp.drawable.unify_bottomsheet_close)
         updateHeaderTitle(submitWithdrawalResponse.header ?: "")
         val thankYouFragment = ThankYouFragmentWithdrawal.getInstance(withdrawalRequest, submitWithdrawalResponse)

@@ -18,7 +18,7 @@
         app:toolbarAlwaysShowShadow="false"
         app:toolbarBackButton="back"
         app:toolbarContentType="typeTitle"
-        app:toolbarInitialFillColor="@color/Unify_N0"
+        app:toolbarInitialFillColor="@color/Unify_NN0"
         app:toolbarInitialTheme="light"/>
     <androidx.constraintlayout.widget.Group
         android:id="@+id/details_view"
@@ -33,7 +33,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginRight="16dp"
-        app:card_background_color="@color/Unify_N0"
+        app:card_background_color="@color/Unify_NN0"
         app:card_type="shadow"
         app:layout_constraintTop_toBottomOf="@id/transaction_navToolbar">
 
@@ -214,7 +214,7 @@
         android:id="@+id/commision_global_error"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         android:gravity="center"
         android:visibility="gone"
         app:globalerrors_type="SERVER_ERROR"

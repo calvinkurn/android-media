@@ -28,9 +28,9 @@ class DateTextFieldView(
         set(value) {
             field = value
             val color = if (value) {
-                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)
+                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             } else {
-                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N150)
+                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN400)
             }
             binding.horLineDtf.setBackgroundColor(color)
         }
@@ -46,7 +46,7 @@ class DateTextFieldView(
             field = value
             binding.tvStcDateText.text = value
             binding.tvStcDateText.setTextColor(
-                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
+                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_32)
             )
         }
 
@@ -55,7 +55,7 @@ class DateTextFieldView(
             field = value
             binding.tvStcDateText.text = value
             binding.tvStcDateText.setTextColor(
-                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
             )
         }
 

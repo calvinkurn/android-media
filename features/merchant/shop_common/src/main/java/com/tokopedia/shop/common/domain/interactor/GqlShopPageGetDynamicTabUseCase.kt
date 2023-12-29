@@ -53,6 +53,8 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
         private const val KEY_CITY_ID = "cityId"
         private const val KEY_LATITUDE = "latitude"
         private const val KEY_LONGITUDE = "longitude"
+        private const val KEY_TAB_NAME = "tabName"
+        private const val KEY_CONNECTION_TYPE = "network"
 
         @JvmStatic
         fun createParams(
@@ -61,7 +63,9 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
             districtId: String,
             cityId: String,
             latitude: String,
-            longitude: String
+            longitude: String,
+            tabName: String = "",
+            connectionType: String = ""
         ): RequestParams =
             RequestParams.create().apply {
                 putObject(PARAM_SHOP_ID, shopId)
@@ -70,17 +74,20 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                 putObject(KEY_CITY_ID, cityId)
                 putObject(KEY_LATITUDE, latitude)
                 putObject(KEY_LONGITUDE, longitude)
+                putObject(KEY_TAB_NAME, tabName)
+                putObject(KEY_CONNECTION_TYPE, connectionType)
             }
 
         const val QUERY = """
-            query shopPageGetDynamicTab(${'$'}shopID: Int!, ${'$'}extParam: String!, ${'$'}districtId: String,${'$'}cityId: String,${'$'}latitude: String,${'$'}longitude: String){
+            query shopPageGetDynamicTab(${'$'}shopID: Int!, ${'$'}extParam: String!, ${'$'}districtId: String,${'$'}cityId: String,${'$'}latitude: String,${'$'}longitude: String,${'$'}tabName: String){
               shopPageGetDynamicTab(
                 shopID: ${'$'}shopID,
                 extParam: ${'$'}extParam,
                 districtID: ${'$'}districtId,
                 cityID: ${'$'}cityId,
                 latitude: ${'$'}latitude,
-                longitude: ${'$'}longitude
+                longitude: ${'$'}longitude,
+                tabName: ${'$'}tabName
               ){
                 tabData {
                   name
@@ -96,6 +103,12 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                   textColor
                   bgImage
                   imgLottie
+                  bgImages
+                  isDark
+                  chipWording
+                  shareWording
+                  widgetHeaderStyle
+                  widgetHeaderBgColors
                   shopLayoutFeatures {
                     name
                     isActive
@@ -124,9 +137,11 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                             errMsgBrokenLink
                             etalaseID
                             isShowEtalaseName
+                            widgetStyle
                             data {
                                 linkID
                                 linkType
+                                link
                             }
                           }
                         }

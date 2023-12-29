@@ -21,7 +21,6 @@ import com.tokopedia.buyerorder.ORDER_ID_VALUE
 import com.tokopedia.buyerorder.common.idling.OmsIdlingResource
 import com.tokopedia.buyerorder.detail.view.activity.environment.InstrumentTestOrderListDetailActivity
 import com.tokopedia.buyerorder.disableCoachMark
-import com.tokopedia.buyerorder.setupRemoteConfig
 import com.tokopedia.buyerorder.test.R
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
@@ -58,7 +57,6 @@ class RevampOrderListDetailActivityDoubleTicker {
                 )
             }
 
-            setupRemoteConfig(context, true)
             disableCoachMark(context)
 
             InstrumentationAuthHelper.loginInstrumentationTestUser1()

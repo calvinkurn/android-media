@@ -53,7 +53,7 @@ object InstallUtils {
         if(context!= null) {
             val map = HashMap<String, Any>()
             map[InstallUtils.IRIS_ANALYTICS_EVENT_KEY] = InstallUtils.IRIS_ANALYTICS_APP_INSTALL
-            IrisAnalytics(context).sendEvent(map)
+            IrisAnalytics.getInstance(context).sendEvent(map)
         }
     }
 }

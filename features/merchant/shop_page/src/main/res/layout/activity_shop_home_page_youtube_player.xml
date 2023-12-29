@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/Unify_N700">
+    android:background="@color/Unify_NN950">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarVideo"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/Unify_N600"
+        android:background="@color/Unify_NN800"
         app:titleTextColor="@color/Unify_Background"/>
 
     <fragment

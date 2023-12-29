@@ -20,7 +20,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class EmptyStateViewModelTest{
+class EmptyStateViewModelTest {
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
@@ -57,7 +57,7 @@ class EmptyStateViewModelTest{
     }
 
     @Test
-    fun `test for application`(){
+    fun `test for application`() {
         assert(viewModel.application === application)
     }
 
@@ -68,28 +68,25 @@ class EmptyStateViewModelTest{
         viewModel.emptyStateUseCase = emptyStateUseCase
         viewModel.emptyStateRepository = emptyStateRepository
         val emptyStateModel = mockk<EmptyStateModel>(relaxed = true)
-        every { viewModel.emptyStateRepository.getEmptyStateData(any()) } returns emptyStateModel
+        every { viewModel.emptyStateRepository?.getEmptyStateData(any()) } returns emptyStateModel
 
         assertEquals(viewModel.getEmptyStateData(), emptyStateModel)
-
     }
     /**************************** getEmptyStateData() *******************************************/
-
-
 
     /**************************** handleEmptyStateReset() *******************************************/
 
     @Test
     fun handleEmptyStateReset() {
-        every { viewModel.emptyStateUseCase.resetChildComponents(any()) } returns true
+        viewModel.emptyStateUseCase = emptyStateUseCase
+        every { viewModel.emptyStateUseCase?.resetChildComponents(any()) } returns true
 
         viewModel.handleEmptyStateReset()
 
         assertEquals(viewModel.syncData.value, true)
-
     }
-    /**************************** handleEmptyStateReset() *******************************************/
 
+    /**************************** handleEmptyStateReset() *******************************************/
 
     @After
     fun shutDown() {

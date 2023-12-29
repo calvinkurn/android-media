@@ -268,19 +268,6 @@ class MediaLoaderTransformationTest : BaseTest() {
         }
     }
 
-    @Test
-    fun loadImage_withEmptyTarget() {
-        // When
-        loadImageWithEmptyTarget(applicationContext, publicImageUrl, mediaTarget = MediaBitmapEmptyTarget(
-            onReady = { bitmap ->
-                countingIdlingResource.decrement()
-
-                // Then
-                assert(bitmap.width.isMoreThanZero())
-            }
-        ))
-    }
-
     private fun View.takeScreenshot(caseName: String) {
         takeEagerScreenshot(caseName)
     }

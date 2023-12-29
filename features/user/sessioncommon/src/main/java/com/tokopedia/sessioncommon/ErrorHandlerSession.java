@@ -49,7 +49,7 @@ public class ErrorHandlerSession {
     }
 
     public static String getDefaultErrorCodeMessage(int errorCode, Context context) {
-        return context.getString(R.string.default_request_error_unknown)
+        return context.getString(com.tokopedia.network.R.string.default_request_error_unknown)
                 + " (" + errorCode + ")";
     }
 

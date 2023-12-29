@@ -41,7 +41,7 @@
             android:lineSpacingExtra="@dimen/spacing_lvl1"
             android:lines="2"
             android:maxLines="2"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="small"
             tools:text="Carls \n oo" />
 

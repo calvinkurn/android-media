@@ -19,8 +19,11 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
@@ -29,10 +32,9 @@ import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExten
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
+import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.loginregister.stub.Config
-import com.tokopedia.sessioncommon.data.GenerateKeyPojo
-import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
@@ -159,20 +161,7 @@ class LoginNormalCase : LoginBase() {
         fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
-            intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWith(
-                Instrumentation.ActivityResult(
-                    Activity.RESULT_OK,
-                    Intent().apply {
-                        putExtras(
-                            Bundle().apply {
-                                putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
-                                putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
-                                putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@gmail.com")
-                            }
-                        )
-                    }
-                )
-            )
+            mockOtpPageRegisterEmail()
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             clickSubmit()
 
@@ -181,7 +170,34 @@ class LoginNormalCase : LoginBase() {
                 .check(matches(isDisplayed()))
                 .perform(click())
 
-            intended(hasData(ApplinkConstInternalUserPlatform.COTP))
+            intended(hasData(UriUtil.buildUri(ApplinkConstInternalUserPlatform.COTP, RegisterConstants.OtpType.OTP_TYPE_REGISTER.toString()).toString()))
+        }
+    }
+
+    @Test
+    fun goToRegisterInitial_IfNotRegistered_WhenRollenceScpCvsdkActive() {
+        val data = RegisterCheckPojo(
+            RegisterCheckData(
+                isExist = false,
+                userID = "0",
+                registerType = "email",
+                view = "yoris.prayogo@tokopedia.com"
+            )
+        )
+        fakeRepo.registerCheckConfig = Config.WithResponse(data)
+
+        runTest {
+            setupRollence(isScpActive = true)
+            mockOtpPageRegisterEmail()
+            inputEmailOrPhone("yoris.prayogo@tokopedia.com")
+            clickSubmit()
+
+            onView(withText("Ya, Daftar"))
+                .inRoot(isDialog())
+                .check(matches(isDisplayed()))
+                .perform(click())
+
+            intended(hasData(ApplinkConstInternalUserPlatform.SCP_OTP))
         }
     }
 
@@ -228,10 +244,6 @@ class LoginNormalCase : LoginBase() {
         val loginToken = LoginToken(accessToken = "abc123")
         val loginPojo = LoginTokenPojo(loginToken)
         loginTokenUseCaseStub.response = loginPojo
-
-        val keyData = KeyData(key = "abc1234", hash = "1234")
-        val keyResponse = GenerateKeyPojo(keyData = keyData)
-        generatePublicKeyUseCaseStub.response = keyResponse
 
         val profileInfo = ProfileInfo(userId = "123456", fullName = "CHARACTER_NOT_ALLOWED")
         val profilePojo = ProfilePojo(profileInfo)

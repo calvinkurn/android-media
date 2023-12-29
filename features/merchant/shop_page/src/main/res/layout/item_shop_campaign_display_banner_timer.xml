@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="2dp"
+    android:layout_marginLeft="@dimen/dp_minus12"
+    android:layout_marginTop="16dp"
+    android:layout_marginRight="@dimen/dp_minus12"
+    android:layout_marginBottom="8dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/image_banner"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            app:layout_constraintDimensionRatio="2:1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_corner_radius="0" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/timer_section_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/image_banner">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/timer_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintVertical_bias="0"
+                app:layout_constraintBottom_toTopOf="@id/text_timer_more_than_1_day"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler"
+                tools:text="Launching dimulai" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_timer_more_than_1_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/timer_description"
+                app:layout_constraintVertical_bias="0"
+                app:typographyType="paragraph_3"
+                app:typographyWeight="bold"
+                tools:text="Launching dimulai"
+                android:layout_marginTop="2dp"
+                tools:visibility="visible" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/timer_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/timer_description"
+                tools:visibility="visible">
+
+                <com.tokopedia.unifycomponents.timer.TimerUnifyHighlight
+                    android:id="@+id/timer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_marginTop="2dp"
+                    android:layout_span="0"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:timer_unify_highlight_remainingDays="0"
+                    app:timer_unify_highlight_remainingHours="3"
+                    app:timer_unify_highlight_show_text="false" />
+
+                <LinearLayout
+                    android:id="@+id/time_description_container"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintLeft_toLeftOf="@id/timer"
+                    app:layout_constraintRight_toRightOf="@id/timer"
+                    app:layout_constraintTop_toBottomOf="@id/timer">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.22"
+                        android:gravity="start"
+                        android:paddingStart="3dp"
+                        android:text="@string/shop_campaign_tab_timer_days"
+                        app:typographyType="small" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.28"
+                        android:gravity="center"
+                        android:text="@string/shop_campaign_tab_timer_hours"
+                        app:typographyType="small" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.28"
+                        android:gravity="center"
+                        android:text="@string/shop_campaign_tab_timer_minutes"
+                        app:typographyType="small" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.22"
+                        android:gravity="end"
+                        android:text="@string/shop_campaign_tab_timer_seconds"
+                        app:typographyType="small" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/button_remind_me"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:cardCornerRadius="18dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="10dp">
+
+                    <com.tokopedia.unifycomponents.LoaderUnify
+                        android:id="@+id/loader_remind_me"
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.tokopedia.iconunify.IconUnify
+                        android:id="@+id/iv_remind_me_bell"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        app:icon_name="BELL_RING"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/text_remind_me"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="@string/shop_page_label_remind_me"
+                        android:textColor="@color/Unify_NN950"
+                        app:layout_constraintBottom_toBottomOf="@id/iv_remind_me_bell"
+                        app:layout_constraintLeft_toRightOf="@id/iv_remind_me_bell"
+                        app:layout_constraintTop_toTopOf="@id/iv_remind_me_bell"
+                        app:typographyType="paragraph_3"
+                        app:typographyWeight="bold"
+                        tools:text="Ingatkan" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</com.tokopedia.unifycomponents.CardUnify2>

@@ -28,7 +28,7 @@ import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.Rew
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.COUPON_WITH_POINTS
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.POINTS_ONLY
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.RewardState.Companion.RP_0_ONLY
-import com.tokopedia.utils.image.ImageUtils
+import com.tokopedia.media.loader.loadImage
 
 class RewardContainer @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -119,7 +119,7 @@ class RewardContainer @JvmOverloads constructor(
         if (hasPoints && hasCoupons) {
             rewardState = RewardState.COUPON_WITH_POINTS
             if (!iconUrl.isNullOrEmpty()) {
-                ImageUtils.loadImage(imageSmallReward, iconUrl!!)
+                imageSmallReward.loadImage(iconUrl!!)
             }
         } else if (hasPoints) {
             //only points

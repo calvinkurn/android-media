@@ -5,9 +5,9 @@ import android.text.InputFilter.LengthFilter
 import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.product.manage.common.R
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.product.manage.common.R
 import com.tokopedia.product.manage.common.databinding.ItemProductVariantStockBinding
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
@@ -24,7 +24,8 @@ import kotlinx.coroutines.delay
 class ProductVariantStockViewHolder(
     itemView: View,
     private val listener: ProductVariantStockListener,
-    private val campaignListener: ProductCampaignInfoListener
+    private val campaignListener: ProductCampaignInfoListener,
+    private val onClickDilayaniTokopediaIdentifier: () -> Unit
 ) : AbstractViewHolder<ProductVariant>(itemView) {
 
     companion object {
@@ -54,6 +55,15 @@ class ProductVariantStockViewHolder(
 
     private fun setProductName(variant: ProductVariant) {
         binding?.textProductName?.text = variant.name
+        if (variant.hasDTStock) {
+            binding?.textProductName?.setCompoundDrawablesWithIntrinsicBounds(Int.ZERO, Int.ZERO, R.drawable.ic_dilayani_tokopedia, Int.ZERO)
+            binding?.textProductName?.setOnClickListener {
+                onClickDilayaniTokopediaIdentifier.invoke()
+            }
+        } else {
+            binding?.textProductName?.setCompoundDrawablesWithIntrinsicBounds(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
+            binding?.textProductName?.setOnClickListener(null)
+        }
     }
 
     private fun setupStockQuantityEditor(variant: ProductVariant) {
@@ -64,7 +74,6 @@ class ProductVariantStockViewHolder(
         setSubtractButtonClickListener(variant)
         setupStockEditor(variant)
         addStockEditorTextChangedListener(variant)
-
     }
 
     private fun setupStockEditor(variant: ProductVariant) {
@@ -128,7 +137,7 @@ class ProductVariantStockViewHolder(
             variant.isEmpty() || currentStock == Int.ZERO -> {
                 setupEmptyStockInfo(variant)
             }
-            variant.isBelowStockAlert ||
+            variant.isBelowStockAlert &&
                     (currentStock < variant.stockAlertCount && variant.haveStockAlertActive()) -> {
                 setupStockAlertActiveInfo(variant)
             }
@@ -269,7 +278,6 @@ class ProductVariantStockViewHolder(
                 )
                 listener.onStockBtnClicked()
                 setupIconInfo(variant, stock)
-
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -353,7 +361,7 @@ class ProductVariantStockViewHolder(
 
     private fun getInactivityByStock(variant: ProductVariant): Boolean {
         val stock = getCurrentStockInput()
-        return stock == 0 && !variant.isAllStockEmpty
+        return stock == 0 && !variant.isAllStockEmpty && binding?.switchStatus?.isChecked == false
     }
 
     private fun getInactivityByStatus(): Boolean {

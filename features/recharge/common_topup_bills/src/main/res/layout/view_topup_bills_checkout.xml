@@ -32,7 +32,7 @@
         android:ellipsize="end"
         android:lines="1"
         android:text="@string/common_topup_checkout_view_total_value_label"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintEnd_toStartOf="@id/btn_recharge_checkout_next"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recharge_checkout_promo_ticker"
@@ -45,7 +45,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:ellipsize="end"
         android:lines="1"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintEnd_toStartOf="@id/btn_recharge_checkout_next"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_recharge_checkout_label"
@@ -53,9 +53,24 @@
         app:typographyWeight="bold"
         tools:text="Rp 25.200" />
 
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_recharge_multi_checkout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/common_topup_enquiry_default_label"
+        app:layout_constraintBottom_toBottomOf="@id/txt_recharge_checkout_price"
+        app:layout_constraintRight_toLeftOf="@id/btn_recharge_checkout_next"
+        app:layout_constraintTop_toTopOf="@id/txt_recharge_checkout_label"
+        android:layout_marginEnd="4dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonSize="medium" />
+
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_recharge_checkout_next"
-        android:layout_width="@dimen/layout_lvl9"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/common_topup_enquiry_default_label"
         app:layout_constraintBottom_toBottomOf="@id/txt_recharge_checkout_price"

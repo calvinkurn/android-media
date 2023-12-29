@@ -12,7 +12,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         android:paddingLeft="@dimen/spacing_lvl4"
         android:paddingTop="@dimen/spacing_lvl4"
         android:paddingRight="@dimen/spacing_lvl4"
@@ -30,7 +30,7 @@
         <View
             android:layout_width="1dp"
             android:layout_height="@dimen/layout_lvl0"
-            android:background="@color/Unify_N700_20"
+            android:background="@color/Unify_NN950_20"
             app:layout_constraintBottom_toTopOf="@+id/arrival_time_circle"
             app:layout_constraintLeft_toLeftOf="@+id/departure_time_circle"
             app:layout_constraintRight_toRightOf="@+id/departure_time_circle"
@@ -68,7 +68,7 @@
                     android:id="@+id/departure_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     app:typographyType="heading_5"
                     tools:text="14:25" />
 
@@ -76,7 +76,7 @@
                     android:id="@+id/departure_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="body_3"
                     tools:text="Min, 27 Agu 2020" />
 
@@ -92,7 +92,7 @@
                     android:id="@+id/departure_airport_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     app:typographyType="heading_5"
                     tools:text="Jakarta (CGK)" />
 
@@ -100,7 +100,7 @@
                     android:id="@+id/departure_desc_airport_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="body_3"
                     tools:text="Soekarno Hatta International Airport" />
 
@@ -108,7 +108,7 @@
                     android:id="@+id/departure_terminal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="body_3"
                     tools:text="Terminal 1*" />
 
@@ -136,7 +136,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl2"
                 android:layout_marginLeft="@dimen/spacing_lvl2"
-                android:textColor="@color/Unify_N700_44"
+                android:textColor="@color/Unify_NN950_44"
                 app:typographyType="body_3"
                 tools:text="8j 20m" />
 
@@ -152,7 +152,7 @@
             android:paddingTop="@dimen/spacing_lvl1"
             android:paddingRight="@dimen/spacing_lvl2"
             android:paddingBottom="@dimen/spacing_lvl1"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:layout_constraintLeft_toLeftOf="@+id/container_departure_time"
             app:layout_constraintTop_toBottomOf="@+id/container_departure_time"
             app:typographyType="small"
@@ -180,7 +180,7 @@
                     android:id="@+id/arrival_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     app:typographyType="heading_5"
                     tools:text="06:30" />
 
@@ -188,7 +188,7 @@
                     android:id="@+id/arrival_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="body_3"
                     tools:text="Sen, 28 Agu 2020" />
 
@@ -204,7 +204,7 @@
                     android:id="@+id/arrival_airport_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_NN950_96"
                     app:typographyType="heading_5"
                     tools:text="Banda Aceh (BTJ)" />
 
@@ -212,7 +212,7 @@
                     android:id="@+id/arrival_desc_airport_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="body_3"
                     tools:text="Sultan Iskandar Muda International Airport" />
 
@@ -220,7 +220,7 @@
                     android:id="@+id/arrival_terminal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Unify_N700_68"
+                    android:textColor="@color/Unify_NN950_68"
                     app:typographyType="body_3"
                     tools:text="Terminal 1*" />
 

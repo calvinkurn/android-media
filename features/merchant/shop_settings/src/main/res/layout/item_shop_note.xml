@@ -35,7 +35,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvLastUpdate"
-                android:textColor="@color/Unify_N700_32"
+                android:textColor="@color/Unify_NN950_32"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_32"

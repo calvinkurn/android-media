@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:visibility="gone"
-        app:backgroundColorPlaceHolder="@color/Unify_N0"
+        app:backgroundColorPlaceHolder="@color/Unify_NN0"
         app:draggable="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

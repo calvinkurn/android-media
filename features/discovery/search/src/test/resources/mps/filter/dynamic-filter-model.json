@@ -1,0 +1,107 @@
+{
+  "data": {
+    "filter": [
+      {
+        "title": "Lokasi",
+        "search": {
+          "searchable": 1,
+          "placeholder": "Cari Lokasi"
+        },
+        "template_name": "template_location",
+        "options": [
+          {
+            "name": "DKI Jakarta",
+            "key": "fcity",
+            "icon": "",
+            "Description": "",
+            "value": "174,175,176,177,178,179",
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": true,
+            "isNew": false,
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Jabodetabek",
+            "key": "fcity",
+            "icon": "",
+            "Description": "",
+            "value": "144,146,150,151,167,168,171,174,175,176,177,178,179,463",
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": true,
+            "isNew": false,
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Kota Bandung",
+            "key": "fcity",
+            "icon": "",
+            "Description": "",
+            "value": "165",
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": true,
+            "isNew": false,
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Kota Surabaya",
+            "key": "fcity",
+            "icon": "",
+            "Description": "",
+            "value": "252",
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "isPopular": true,
+            "isNew": false,
+            "hexColor": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Jenis toko",
+        "subTitle": "",
+        "template_name": "",
+        "options": [
+          {
+            "name": "Official Store",
+            "key": "shop_tier",
+            "value": "2",
+            "inputType": "checkbox",
+            "isNew": false,
+            "isPopular": true
+          },
+          {
+            "name": "Power Merchant",
+            "key": "shop_tier",
+            "value": "1",
+            "inputType": "checkbox",
+            "isNew": false,
+            "isPopular": true
+          },
+          {
+            "name": "Power Merchant Pro",
+            "key": "shop_tier",
+            "value": "3",
+            "inputType": "checkbox",
+            "isNew": false,
+            "isPopular": true
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -10,22 +10,14 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.newrelic.agent.android.NewRelic;
 import com.tokopedia.app.common.SplashScreen;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst;
 import com.tokopedia.applink.sellermigration.SellerMigrationRedirectionUtil;
-import com.tokopedia.core.gcm.FCMCacheManager;
-import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
-import com.tokopedia.keys.Keys;
-import com.tokopedia.logger.LogManager;
-import com.tokopedia.notifications.CMPushNotificationManager;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
-import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -40,25 +32,6 @@ public class SplashScreenActivity extends SplashScreen {
     private static String KEY_AUTO_LOGIN = "is_auto_login";
 
     private UserSessionInterface userSession;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_SA)
-                .start(this.getApplication());
-        setUserIdNewRelic();
-        super.onCreate(savedInstanceState);
-        CMPushNotificationManager.getInstance()
-                .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this.getApplicationContext()), false);
-
-        syncFcmToken();
-    }
-
-    private void setUserIdNewRelic() {
-        userSession = new UserSession(this);
-        if (userSession.isLoggedIn()) {
-            NewRelic.setUserId(userSession.getUserId());
-        }
-    }
 
     /**
      * handle/forward app link redirection from customer app to seller app
@@ -91,10 +64,6 @@ public class SplashScreenActivity extends SplashScreen {
         return false;
     }
 
-    private void syncFcmToken() {
-        SyncFcmTokenService.Companion.startService(this);
-    }
-
     @Override
     public void finishSplashScreen() {
 
@@ -108,7 +77,7 @@ public class SplashScreenActivity extends SplashScreen {
         }
 
         if (userSession.hasShop()) {
-            startActivity(SellerHomeActivity.createIntent(this));
+            RouteManager.route(this, ApplinkConst.SellerApp.SELLER_APP_HOME);
         } else if (!TextUtils.isEmpty(userSession.getUserId())) {
             Intent intent = moveToCreateShop(this);
             startActivity(intent);

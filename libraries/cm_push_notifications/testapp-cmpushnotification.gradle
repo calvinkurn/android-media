@@ -10,7 +10,8 @@ include "libraries:track"
 include "libraries:remote_config"
 include "libraries:iris_session"
 include "libraries:base_list"
-include "libraries:kotlin_extensions"
+
+
 include "libraries:analytics_debugger_noop"
 include "features:user:sessioncommon"
 include "libraries:common_network"

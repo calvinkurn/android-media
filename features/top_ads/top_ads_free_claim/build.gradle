@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.topads.freeclaim'
+    testNamespace 'com.tokopedia.topads.freeclaim.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.utils)

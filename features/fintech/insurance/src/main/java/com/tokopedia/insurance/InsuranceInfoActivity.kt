@@ -22,7 +22,8 @@ class InsuranceInfoActivity : BaseSimpleActivity() {
         intent.extras?.let {
             val url = it.getString(ApplinkConstInternalFintech.PARAM_INSURANCE_INFO_URL) ?: ""
             if (url.isNotBlank()) {
-                InsuranceInfoBottomSheet(url).show(supportFragmentManager, "")
+                val bottomSheet = InsuranceInfoBottomSheet.newInstance(url)
+                bottomSheet.show(supportFragmentManager, "")
             } else {
                 finish()
             }

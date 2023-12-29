@@ -1,5 +1,10 @@
 package com.tokopedia.play.widget.util
 
+import android.net.Uri
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.ENTRY_POINT
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.SOURCE_TYPE
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.SOURCE_TYPE_HOME
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
@@ -20,12 +25,12 @@ import kotlin.coroutines.CoroutineContext
  * Created by jegul on 08/10/20
  */
 class PlayWidgetTools @Inject constructor(
-        private val useCase: PlayWidgetUseCase,
-        private val lazyReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
-        private val lazyUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
-        private val mapper: PlayWidgetUiMapper,
-        private val connectionUtil: PlayWidgetConnectionUtil,
-){
+    private val useCase: PlayWidgetUseCase,
+    private val lazyReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
+    private val lazyUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
+    private val mapper: PlayWidgetUiMapper,
+    private val connectionUtil: PlayWidgetConnectionUtil,
+) {
 
     private val reminderUseCase: PlayWidgetReminderUseCase
         get() = lazyReminderUseCase.get()
@@ -42,16 +47,20 @@ class PlayWidgetTools @Inject constructor(
         }
     }
 
-    suspend fun mapWidgetToModel(widgetResponse: PlayWidget, prevState: PlayWidgetState? = null, coroutineContext: CoroutineContext = Dispatchers.Default): PlayWidgetState {
+    suspend fun mapWidgetToModel(
+        widgetResponse: PlayWidget,
+        prevState: PlayWidgetState? = null,
+        coroutineContext: CoroutineContext = Dispatchers.Default,
+        extraInfo: PlayWidgetUiMapper.ExtraInfo = PlayWidgetUiMapper.ExtraInfo(),
+    ): PlayWidgetState {
         return withContext(coroutineContext) {
-            val model = mapper.mapWidget(widgetResponse, prevState)
+            val model = mapper.mapWidget(widgetResponse, prevState, extraInfo)
             PlayWidgetState(
                 model = model,
                 widgetType = PlayWidgetType.getByTypeString(widgetResponse.meta.template),
                 isLoading = false,
             )
         }
-
     }
 
     suspend fun updateToggleReminder(channelId: String,
@@ -108,6 +117,27 @@ class PlayWidgetTools @Inject constructor(
         return state.copy(
             model = updateWidgetActionReminder(state.model, channelId, reminderType)
         )
+    }
+
+    fun isAppLinkSourceFromHome(appLink: String): Boolean {
+        val uri = Uri.parse(appLink)
+        return uri.getQueryParameter(SOURCE_TYPE) == SOURCE_TYPE_HOME || uri.getQueryParameter(ENTRY_POINT).equals(SOURCE_TYPE_HOME, ignoreCase = true)
+    }
+
+    fun reconstructAppLink(appLink: String, queryMap: Map<String, String>): String {
+        val uri = Uri.parse(appLink)
+
+        val newUri = uri
+            .buildUpon()
+            .apply {
+                queryMap.forEach {
+                    val (key, value) = it
+                    this.appendQueryParameter(key, value)
+                }
+            }
+            .build()
+
+        return newUri.toString()
     }
 
     /**

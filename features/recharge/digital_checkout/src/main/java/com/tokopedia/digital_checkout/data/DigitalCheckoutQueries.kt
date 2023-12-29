@@ -100,6 +100,11 @@ object DigitalCheckoutQueries {
             admin_fee_included
             channel_id
             collection_point_id
+            collection_point_version
+            collection_data_elements {
+              key
+              value
+            }
           }
         }
     """

@@ -18,6 +18,7 @@
         app:toolbarBackButton="back"
         app:toolbarContentType="typeCustom"
         app:toolbarCustomContent="@layout/affiliate_navbar_custom_content"
+        app:toolbarInitialFillColor="@color/Unify_NN0"
         app:toolbarInitialTheme="light" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -52,7 +53,60 @@
                         android:layout_marginBottom="6dp"
                         android:background="@drawable/affiliate_promo_bg_gradient"
                         app:layout_constraintBottom_toTopOf="@id/view_guideline"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="@id/affiliate_greeting" />
+
+                    <com.tokopedia.unifycomponents.ticker.Ticker
+                        android:id="@+id/affiliate_announcement_ticker"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tickerType="announcement" />
+
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/user_image"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="16dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/affiliate_announcement_ticker"
+                        app:layout_goneMarginTop="16dp" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/affiliate_greeting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="16dp"
+                        android:textColor="@color/Unify_NN600"
+                        app:layout_constraintBottom_toTopOf="@id/user_name"
+                        app:layout_constraintLeft_toRightOf="@id/user_image"
+                        app:layout_constraintTop_toTopOf="@id/user_image"
+                        app:typographyType="display_3"
+                        app:typographyWeight="reguler"
+                        tools:text="@string/affiliate_morning" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/user_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        app:layout_constraintBottom_toBottomOf="@id/user_image"
+                        app:layout_constraintLeft_toRightOf="@id/user_image"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/affiliate_greeting"
+                        app:typographyType="heading_3"
+                        app:typographyWeight="bold"
+                        tools:text="Ana Putri" />
+
+                    <androidx.constraintlayout.widget.Group
+                        android:id="@+id/nav_header_group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:constraint_referenced_ids="affiliate_greeting, user_name, user_image" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/promotion_info_title"
@@ -60,9 +114,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="16dp"
                         android:layout_marginTop="12dp"
+                        app:layout_goneMarginTop="12dp"
                         android:text="@string/promo_info_title"
                         android:textColor="@color/Unify_NN950"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/affiliate_announcement_ticker"
                         app:typographyType="display_1"
                         app:typographyWeight="bold" />
 
@@ -78,6 +133,13 @@
                         app:typographyType="display_3"
                         app:typographyWeight="reguler" />
 
+                    <androidx.constraintlayout.widget.Barrier
+                        android:id="@+id/promotion_card_banner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:barrierDirection="bottom"
+                        app:constraint_referenced_ids="user_image, promotion_info_desc" />
+
                     <com.tokopedia.unifycomponents.CardUnify2
                         android:id="@+id/promotion_info_card"
                         android:layout_width="match_parent"
@@ -86,7 +148,7 @@
                         android:layout_marginTop="12dp"
                         app:cardCornerRadius="8dp"
                         app:layout_constraintBottom_toTopOf="@id/view_guideline"
-                        app:layout_constraintTop_toBottomOf="@id/promotion_info_desc"
+                        app:layout_constraintTop_toBottomOf="@id/promotion_card_banner"
                         app:layout_goneMarginBottom="16dp">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -157,7 +219,7 @@
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
-                                app:srcCompat="@drawable/ic_promo_bs_action" />
+                                app:unify_image_url_src="https://images.tokopedia.net/img/android/res/singleDpi/affliate/ic_promo_bs_action.webp" />
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </com.tokopedia.unifycomponents.CardUnify2>
@@ -282,9 +344,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:layout_marginBottom="8dp"
-                        android:paddingHorizontal="12dp"
                         android:clipToPadding="false"
                         android:orientation="horizontal"
+                        android:paddingHorizontal="12dp"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintTop_toBottomOf="@id/ssa_title"
                         tools:listitem="@layout/affiliate_ssa_shop_item_layout" />
@@ -415,19 +477,11 @@
                 app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
                 app:tabTextColor="@color/Unify_NN600" />
 
-            <com.tokopedia.unifycomponents.ticker.Ticker
-                android:id="@+id/affiliate_announcement_ticker"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tab_layout_recommended"
-                android:visibility="gone"
-                app:tickerType="announcement" />
-
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/view_pager_recommended"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/affiliate_announcement_ticker" />
+                android:layout_below="@id/tab_layout_recommended" />
         </RelativeLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

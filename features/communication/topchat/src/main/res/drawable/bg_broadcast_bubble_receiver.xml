@@ -2,5 +2,5 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <solid android:color="@color/Unify_NN0"/>
     <corners android:radius="@dimen/layout_lvl1"/>
-    <stroke android:width="@dimen/dp_topchat_1" android:color="@color/Unify_N75"/>
+    <stroke android:width="@dimen/dp_topchat_1" android:color="@color/Unify_NN50"/>
 </shape>

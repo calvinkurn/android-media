@@ -95,6 +95,7 @@ interface InitialStateContract {
         )
 
         fun trackEventClickSearchBarEducation(item: BaseItemInitialStateSearch)
+
     }
 
     interface Presenter : CustomerPresenter<View> {

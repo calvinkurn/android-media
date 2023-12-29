@@ -27,7 +27,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="4dp"
-                android:textColor="@color/Unify_N700"
+                android:textColor="@color/Unify_NN950"
                 app:typographyType="heading_4" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -37,7 +37,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
-                android:textColor="@color/Unify_N700_44"
+                android:textColor="@color/Unify_NN950_44"
                 app:typographyType="body_3" />
 
             <com.tokopedia.unifycomponents.DividerUnify
@@ -54,7 +54,7 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="8dp"
                 android:text="@string/action_product_limitation_item"
-                android:textColor="@color/Unify_G500"
+                android:textColor="@color/Unify_GN500"
                 app:typographyType="body_3"
                 app:typographyWeight="bold" />
 

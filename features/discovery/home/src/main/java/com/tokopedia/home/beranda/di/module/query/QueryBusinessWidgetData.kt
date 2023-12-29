@@ -25,6 +25,11 @@ internal object QueryBusinessWidgetData {
             "      original_price\n" +
             "      price_prefix\n" +
             "      template_id\n" +
+            "      widget_tracking {\n" +
+            "         business_unit\n" +
+            "         user_type\n" +
+            "         item_type\n" +
+            "      }\n" +
             "    }\n" +
             "  }\n" +
             "}\n" +

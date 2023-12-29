@@ -17,6 +17,8 @@
         "dimension96": ".*",
         "price": ".*",
         "dimension40": ".*",
+        "dimension56": ".*",
+        "dimension58": "true|false",
         "dimension84": ".*",
         "index": ".*",
         "item_name": ".*",
@@ -48,6 +50,8 @@
         "dimension96": ".*",
         "price": "\\d*.\\d*|\\d.\\d+E\\d",
         "dimension40": ".*",
+        "dimension56": ".*",
+        "dimension58": "true|false",
         "dimension84": ".*",
         "index": "\\d*.\\d*",
         "item_name": ".*",
@@ -57,7 +61,8 @@
       }],
       "eventLabel": "",
       "channelId": ".*",
-      "userId": ".*"
+      "userId": ".*",
+      "hits_time": ".*"
     },
     {
       "eventCategory": "homepage",
@@ -99,7 +104,8 @@
       "eventAction": "impression on banner dynamic channel left carousel",
       "sessionIris": ".*",
       "eventLabel": ".*",
-      "userId": ".*"
+      "userId": ".*",
+      "hits_time": ".*"
     },
     {
       "businessUnit": "home & browse",

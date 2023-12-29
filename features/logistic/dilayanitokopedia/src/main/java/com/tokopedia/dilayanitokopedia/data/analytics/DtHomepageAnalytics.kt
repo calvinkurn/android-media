@@ -37,6 +37,7 @@ object DtHomepageAnalytics : BaseTrackerConst() {
     private const val KEY_PRICE = "price"
     private const val KEY_ITEM_CATEGORY = "item_category"
     private const val KEY_DIMENSION_40 = "dimension40"
+    const val DEFAULT_EMPTY_VALUE_ITEM_CATEGORY = "none / none / none"
 
     private const val DIMENSION40 = "/dilayanitokopedia - home - product card"
 
@@ -71,12 +72,12 @@ object DtHomepageAnalytics : BaseTrackerConst() {
                 productName = product?.productName.orEmpty(),
                 price = product?.price?.filter { it.isDigit() }.toLongOrZero(),
                 productBrand = product?.productBrand.orEmpty(),
-                productCategory = product?.productCategory.orEmpty(),
+                itemCategory = product?.categoryBreadcrumbs.orEmpty(),
                 productVariant = product?.productVariant.orEmpty()
             )
         )
 
-        val itemList = "/product - dilayani tokopedia"
+        val itemList = "/product - homepage dilayani tokopedia"
         val dataLayer = getMarketplaceDataLayer(
             event = EVENT_CLICK_PRODUCT_CARD_DT,
             action = ACTION_CLICK_PRODUCT_CARD_DT,
@@ -99,7 +100,7 @@ object DtHomepageAnalytics : BaseTrackerConst() {
                 productName = product?.productName.orEmpty(),
                 price = product?.price?.filter { it.isDigit() }.toLongOrZero(),
                 productBrand = product?.productBrand.orEmpty(),
-                productCategory = product?.productCategory.orEmpty()
+                itemCategory = product?.categoryBreadcrumbs.orEmpty()
             )
         )
 
@@ -136,15 +137,22 @@ object DtHomepageAnalytics : BaseTrackerConst() {
         productName: String = "",
         price: Long = 0L,
         productBrand: String = "",
-        productCategory: String = "",
+        itemCategory: String = "",
         productVariant: String = ""
     ): Bundle {
         return Bundle().apply {
             if (index.isNotBlank()) {
                 putString(KEY_INDEX, index)
             }
+
+            val category = if (itemCategory != "") {
+                itemCategory
+            } else {
+                DEFAULT_EMPTY_VALUE_ITEM_CATEGORY
+            }
+
             putString(KEY_ITEM_BRAND, productBrand)
-            putString(KEY_ITEM_CATEGORY, productCategory)
+            putString(KEY_ITEM_CATEGORY, category)
             putString(KEY_ITEM_ID, productId)
             putString(KEY_ITEM_NAME, productName)
             putString(KEY_ITEM_VARIANT, productVariant)

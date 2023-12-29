@@ -4,9 +4,15 @@ import com.tokopedia.digital.digital_recommendation.data.DigitalRecommendationRe
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationItemUnifyModel
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationTrackingModel
-import com.tokopedia.recharge_component.digital_card.presentation.model.*
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalCardActionModel
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalCardCampaignModel
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalCardInfoModel
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalCardPriceModel
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalCardRatingModel
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalCardSoldPercentageModel
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalUnifyConst
+import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalUnifyModel
 import com.tokopedia.unifycomponents.Label
-import java.util.*
 
 /**
  * @author by furqan on 20/09/2021
@@ -15,9 +21,7 @@ class DigitalRecommendationMapper {
     companion object {
 
         fun transform(response: DigitalRecommendationResponse): DigitalRecommendationModel {
-
             val items = response.personalizedItems.recommendationItems.map {
-
                 val discountLabel = when {
                     it.cashback.isNotEmpty() -> it.cashback
                     it.specialDiscount.isNotEmpty() -> it.specialDiscount
@@ -112,7 +116,7 @@ class DigitalRecommendationMapper {
             return DigitalRecommendationModel(
                 userType = response.personalizedItems.trackingData.userType,
                 title = response.personalizedItems.title,
-                items = items,
+                items = items
             )
         }
     }

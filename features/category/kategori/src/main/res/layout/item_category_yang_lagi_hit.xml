@@ -28,7 +28,7 @@
         android:lines="2"
         android:maxLines="2"
         android:padding="10dp"
-        android:textColor="@color/Unify_N0"
+        android:textColor="@color/Unify_NN0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_icon"
@@ -36,6 +36,6 @@
         app:typographyType="heading_6"
         app:typographyWeight="bold"
         tools:text="kesehatan"
-        tools:textColor="@color/Unify_N700" />
+        tools:textColor="@color/Unify_NN950" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

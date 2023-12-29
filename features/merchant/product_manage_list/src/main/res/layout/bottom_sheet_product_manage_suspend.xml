@@ -12,7 +12,7 @@
         android:id="@+id/tv_product_manage_suspend_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
         android:text="@string/product_manage_title_detail_product_suspend"
@@ -31,7 +31,7 @@
             android:id="@+id/tv_product_manage_suspend_reason"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:typographyType="heading_5"
             tools:text="Berupa pakaian dalam bekas" />
 
@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintTop_toBottomOf="@id/layout_product_manage_suspend_reason"
         app:typographyType="body_2"
         tools:text="Stok produkmu otomatis menjadi kosong, sehingga pembeli tidak bisa memesannya." />
@@ -51,7 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintTop_toBottomOf="@id/tv_product_manage_suspend_info_impact"
         app:typographyType="body_2"
         android:text="@string/product_manage_step_detail_product_suspend"
@@ -71,7 +71,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintTop_toBottomOf="@id/rv_product_manage_suspend_step"
         app:typographyType="body_2"
         tools:text="Jika pembatalan terus terjadi, produk akan dihapus." />

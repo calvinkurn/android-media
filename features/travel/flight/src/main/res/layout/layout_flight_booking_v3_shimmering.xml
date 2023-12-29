@@ -53,7 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_lvl4"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         app:layout_constraintTop_toBottomOf="@+id/shimmering_layout_2">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -115,7 +115,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:background="@color/Unify_N50"
+        android:background="@color/Unify_NN50"
         app:layout_constraintTop_toBottomOf="@+id/shimmering_layout_card_1" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -172,21 +172,21 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl1"
-            android:background="@color/Unify_N50" />
+            android:background="@color/Unify_NN50" />
 
         <include layout="@layout/item_flight_booking_insurance_shimmering" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl1"
-            android:background="@color/Unify_N50" />
+            android:background="@color/Unify_NN50" />
 
         <include layout="@layout/item_flight_booking_insurance_shimmering" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl1"
-            android:background="@color/Unify_N50" />
+            android:background="@color/Unify_NN50" />
     </LinearLayout>
 
     <com.tokopedia.unifycomponents.CardUnify
@@ -235,7 +235,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:background="@color/Unify_N50"
+        android:background="@color/Unify_NN50"
         app:layout_constraintTop_toBottomOf="@+id/shimmering_layout_11" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -289,7 +289,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:background="@color/Unify_N50"
+        android:background="@color/Unify_NN50"
         app:layout_constraintTop_toBottomOf="@+id/shimmering_layout_13" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

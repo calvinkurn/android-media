@@ -5,13 +5,15 @@ import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_POF_STATUS
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
 import java.net.URLDecoder
 
 /**
@@ -42,10 +44,14 @@ object DeeplinkMapperOrder {
     const val PATH_ORDER_DETAIL_ID = "order_detail_id"
     const val QUERY_PARAM_ORDER_ID = "order_id"
     const val QUERY_PARAM_DTL_ID = "dtl_id"
+    const val QUERY_COACHMARK = "coachmark"
 
     fun getRegisteredNavigationOrder(context: Context, uri: Uri, deeplink: String): String {
-        return if (deeplink.startsWithPattern(ApplinkConst.SELLER_ORDER_DETAIL)) getRegisteredNavigationOrderInternal(context, uri)
-        else deeplink
+        return if (deeplink.startsWithPattern(ApplinkConst.SELLER_ORDER_DETAIL)) {
+            getRegisteredNavigationOrderInternal(context, uri)
+        } else {
+            deeplink
+        }
     }
 
     /**
@@ -80,14 +86,24 @@ object DeeplinkMapperOrder {
         }
     }
 
-    fun getRegisteredNavigationMainAppSellerNewOrder(): String {
-        val param = mapOf(QUERY_TAB_ACTIVE to NEW_ORDER)
-        return UriUtil.buildUriAppendParam(ApplinkConstInternalOrder.NEW_ORDER, param)
+    fun getRegisteredNavigationMainAppSellerNewOrder(uri: Uri): String {
+        val coachMark = uri.getQueryParameter(QUERY_COACHMARK).orEmpty()
+        val queryParam = mutableMapOf(QUERY_TAB_ACTIVE to NEW_ORDER).apply {
+            if (coachMark.isNotBlank()) {
+                put(QUERY_COACHMARK, coachMark)
+            }
+        }.toMap()
+        return UriUtil.buildUriAppendParam(ApplinkConstInternalOrder.NEW_ORDER, queryParam)
     }
 
-    fun getRegisteredNavigationMainAppSellerReadyToShip(): String {
-        val param = mapOf(QUERY_TAB_ACTIVE to CONFIRM_SHIPPING)
-        return UriUtil.buildUriAppendParam(ApplinkConstInternalOrder.READY_TO_SHIP, param)
+    fun getRegisteredNavigationMainAppSellerReadyToShip(uri: Uri): String {
+        val coachMark = uri.getQueryParameter(QUERY_COACHMARK).orEmpty()
+        val queryParam = mutableMapOf(QUERY_TAB_ACTIVE to CONFIRM_SHIPPING).apply {
+            if (coachMark.isNotBlank()) {
+                put(QUERY_COACHMARK, coachMark)
+            }
+        }.toMap()
+        return UriUtil.buildUriAppendParam(ApplinkConstInternalOrder.READY_TO_SHIP, queryParam)
     }
 
     fun getRegisteredNavigationMainAppSellerInShipping(): String {
@@ -112,16 +128,17 @@ object DeeplinkMapperOrder {
 
     fun getRegisteredNavigationMainAppSellerCancellationRequest(): String {
         val param = mapOf(
-                QUERY_TAB_ACTIVE to ALL_ORDER,
-                FILTER_ORDER_TYPE to FILTER_CANCELLATION_REQUEST
+            QUERY_TAB_ACTIVE to ALL_ORDER,
+            FILTER_ORDER_TYPE to FILTER_CANCELLATION_REQUEST
         )
         return UriUtil.buildUriAppendParams(ApplinkConstInternalOrder.CANCELLATION_REQUEST, param)
     }
 
-    fun getRegisteredNavigationMainAppSellerHistory(orderId: String): String {
+    fun getRegisteredNavigationMainAppSellerHistory(orderId: String, coachMark: String): String {
         val param = mutableMapOf<String, Any>().apply {
             if (orderId.isNotEmpty()) put(QUERY_PARAM_ORDER_ID, orderId)
             put(QUERY_TAB_ACTIVE, ALL_ORDER)
+            if (coachMark.isNotBlank()) put(QUERY_COACHMARK, coachMark)
         }
         return UriUtil.buildUriAppendParams(ApplinkConstInternalOrder.HISTORY, param)
     }
@@ -161,7 +178,7 @@ object DeeplinkMapperOrder {
      * @return tokopedia-android-internal://snapshot/order?order_id=166497971&order_detail_id=20370225
      * or will return empty string if given invalid deep link
      * */
-    fun getSnapshotOrderInternalAppLink(context: Context, deepLink: String): String {
+    fun getSnapshotOrderInternalAppLink(deepLink: String): String {
         val uri = Uri.parse(deepLink)
         return when {
             uri.pathSegments.size == 3 && uri.pathSegments[0] == PATH_ORDER -> {
@@ -180,11 +197,11 @@ object DeeplinkMapperOrder {
                 val internalApplink = ApplinkConstInternalOrder.INTERNAL_ORDER_SNAPSHOT
 
                 Uri.parse(internalApplink)
-                        .buildUpon()
-                        .appendQueryParameter(PATH_ORDER_ID, orderId)
-                        .appendQueryParameter(PATH_ORDER_DETAIL_ID, orderDetailId)
-                        .build()
-                        .toString()
+                    .buildUpon()
+                    .appendQueryParameter(PATH_ORDER_ID, orderId)
+                    .appendQueryParameter(PATH_ORDER_DETAIL_ID, orderDetailId)
+                    .build()
+                    .toString()
             }
             else -> ""
         }
@@ -233,5 +250,17 @@ object DeeplinkMapperOrder {
 
     fun getBuyerCancellationRequestInternalAppLink(): String {
         return ApplinkConstInternalOrder.INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE
+    }
+
+    fun getRegisteredNavigationSellerPartialOrderFulfillment(uri: Uri): String {
+        val redirectToSellerApp = uri.getBooleanQueryParameter(RouteManager.KEY_REDIRECT_TO_SELLER_APP, false)
+        val orderId = uri.getQueryParameter(PARAM_ORDER_ID).toZeroStringIfNull()
+        val pofStatus = uri.getQueryParameter(PARAM_POF_STATUS).toZeroStringIfNull()
+        val params = mapOf<String, Any>(
+            PARAM_ORDER_ID to orderId,
+            PARAM_POF_STATUS to pofStatus,
+            RouteManager.KEY_REDIRECT_TO_SELLER_APP to redirectToSellerApp
+        )
+        return UriUtil.buildUriAppendParams(ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_PARTIAL_ORDER_FULFILLMENT, params)
     }
 }

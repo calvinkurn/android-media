@@ -3,7 +3,6 @@ package com.tokopedia.home_component.viewholders
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
@@ -25,8 +24,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class DealsWidgetViewHolder(
     itemView: View,
     val dealsWidgetListener: VpsWidgetListener?,
-    val homeComponentListener: HomeComponentListener?,
-    val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null
+    val homeComponentListener: HomeComponentListener?
 ) : AbstractViewHolder<DealsDataModel>(itemView) {
     companion object {
         @LayoutRes
@@ -83,7 +81,6 @@ class DealsWidgetViewHolder(
     }
 
     private fun initRV() {
-        parentRecyclerViewPool?.let { recyclerView?.setRecycledViewPool(parentRecyclerViewPool) }
         recyclerView?.layoutManager = layoutManager
     }
 

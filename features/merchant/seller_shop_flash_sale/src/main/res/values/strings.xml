@@ -225,6 +225,7 @@
     <string name="campaign_rule_unique_account_tips_point_1">Pembeli yang sama hanya dapat melakukan transaksi dengan <b>satu akun.</b></string>
     <string name="campaign_rule_unique_account_tips_point_2">Pembeli hanya dapat menggunakan <b>satu kali transaksi</b> dengan campaign ini.</string>
     <string name="campaign_rule_campaign_relation">Apakah pembeli dari campaign sebelumnya dapat mengikuti campaign ini?</string>
+    <string name="campaign_rule_fs_out_of_stock_title">Apakah pembeli dapat membeli produk dengan harga normal setelah stok campaign habis? Lihat Ilustrasi </string>
     <string name="campaign_rule_choose_previous_campaign_title">Pilih Campaign Sebelumnya</string>
     <string name="campaign_rule_choose_previous_campaign_subtitle">(Maks. 10 campaign)</string>
     <string name="campaign_rule_choose_previous_campaign_button">+ Campaign</string>

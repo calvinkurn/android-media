@@ -70,7 +70,7 @@
         android:id="@+id/cc_progress_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N0_68"
+        android:background="@color/Unify_NN0_68"
         android:visibility="gone">
 
         <com.tokopedia.unifycomponents.LoaderUnify

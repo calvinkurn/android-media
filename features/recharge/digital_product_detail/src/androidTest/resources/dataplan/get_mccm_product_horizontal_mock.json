@@ -1,0 +1,144 @@
+[
+  {
+    "data": {
+      "digiPersoGetPersonalizedItems": {
+        "title": "Spesial untuk kamu aja nih! 💎",
+        "textLink": "Lihat lebih banyak",
+        "tracking": [],
+        "trackingData": {
+          "userType": "new user"
+        },
+        "items": [
+          {
+            "id": 1,
+            "title": "Simpati OMG Unlimited for 1 Year, bonus telepon.",
+            "mediaURL": "",
+            "mediaUrlType": "horizontal",
+            "mediaURLDarkMode": "",
+            "label1": "5GB",
+            "label2": "30 Days",
+            "appLink": "",
+            "webLink": "",
+            "slashedPrice": "Rp50.000",
+            "campaignLabelText": "",
+            "discount": "20%",
+            "price": "Rp40.000",
+            "descriptions": [
+              "<p>Kuota Utama 1 GB berlaku secara Nasional&nbsp;</p>\n",
+              "<p>Masa Aktif 2 hari.&nbsp;</p>\n",
+              "<p>Paket Blue hanya berlaku untuk pelanggan XL Prepaid</p>\n"
+            ],
+            "pricePlain": 40000,
+            "slashedPricePlain": 50000,
+            "tracking": [],
+            "trackingData": {
+              "productID": "10255",
+              "operatorID": "5",
+              "businessUnit": "recharge",
+              "categoryName": "Paket Data",
+              "categoryID": "55",
+              "itemType": "mccm paket data dropdown",
+              "itemLabel": "product"
+            }
+          },
+          {
+            "id": 2,
+            "title": "Simpati ah ah Unlimited for 1 Year, bonus telepon.",
+            "mediaURL": "",
+            "mediaUrlType": "dropdown",
+            "mediaURLDarkMode": "",
+            "label1": "15GB",
+            "label2": "30 Days",
+            "appLink": "",
+            "webLink": "",
+            "slashedPrice": "Rp150.000",
+            "campaignLabelText": "Special",
+            "discount": "20%",
+            "price": "Rp120.000",
+            "descriptions": [
+              "<p>Kuota Utama 1 GB berlaku secara Nasional&nbsp;</p>\n",
+              "<p>Masa Aktif 2 hari.&nbsp;</p>\n",
+              "<p>Paket Blue hanya berlaku untuk pelanggan XL Prepaid</p>\n"
+            ],
+            "pricePlain": 120000,
+            "slashedPricePlain": 150000,
+            "tracking": [],
+            "trackingData": {
+              "productID": "10255",
+              "operatorID": "5",
+              "businessUnit": "recharge",
+              "categoryName": "Paket Data",
+              "categoryID": "55",
+              "itemType": "mccm paket data dropdown",
+              "itemLabel": "product"
+            }
+          },
+          {
+            "id": 3,
+            "title": "Simpati auouo Unlimited for 1 Year, bonus telepon.",
+            "mediaURL": "",
+            "mediaUrlType": "dropdown",
+            "mediaURLDarkMode": "",
+            "label1": "7GB",
+            "label2": "30 Days",
+            "appLink": "",
+            "webLink": "",
+            "slashedPrice": "Rp75.000",
+            "campaignLabelText": "",
+            "discount": "10%",
+            "price": "Rp67.500",
+            "descriptions": [
+              "<p>Kuota Utama 1 GB berlaku secara Nasional&nbsp;</p>\n",
+              "<p>Masa Aktif 2 hari.&nbsp;</p>\n",
+              "<p>Paket Blue hanya berlaku untuk pelanggan XL Prepaid</p>\n"
+            ],
+            "pricePlain": 67500,
+            "slashedPricePlain": 75000,
+            "tracking": [],
+            "trackingData": {
+              "productID": "10255",
+              "operatorID": "5",
+              "businessUnit": "recharge",
+              "categoryName": "Paket Data",
+              "categoryID": "55",
+              "itemType": "mccm paket data dropdown",
+              "itemLabel": "product"
+            }
+          },
+          {
+            "id": 4,
+            "title": "Simpati BAHAHAHA Unlimited for 1 Year",
+            "mediaURL": "",
+            "mediaUrlType": "dropdown",
+            "mediaURLDarkMode": "",
+            "label1": "7GB",
+            "label2": "30 Days",
+            "appLink": "",
+            "webLink": "",
+            "slashedPrice": "Rp75.000",
+            "campaignLabelText": "",
+            "discount": "10%",
+            "price": "Rp67.500",
+            "descriptions": [
+              "<p>Kuota Utama 1 GB berlaku secara Nasional&nbsp;</p>\n",
+              "<p>Masa Aktif 2 hari.&nbsp;</p>\n",
+              "<p>Paket Blue hanya berlaku untuk pelanggan XL Prepaid</p>\n"
+            ],
+            "pricePlain": 67500,
+            "slashedPricePlain": 75000,
+            "tracking": [],
+            "trackingData": {
+              "productID": "10255",
+              "operatorID": "5",
+              "businessUnit": "recharge",
+              "categoryName": "Paket Data",
+              "categoryID": "55",
+              "itemType": "mccm paket data dropdown",
+              "itemLabel": "product"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

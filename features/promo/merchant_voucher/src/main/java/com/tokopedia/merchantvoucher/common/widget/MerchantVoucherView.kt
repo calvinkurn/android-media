@@ -147,7 +147,7 @@ open class MerchantVoucherView : CustomVoucherView {
                     context,
                     ivVoucherType,
                     voucherImageUrl,
-                    R.drawable.ic_loading_image
+                com.tokopedia.design.R.drawable.ic_loading_image
             )
             val voucherTitle = context.getString(R.string.voucher_title_x_x,
                     merchantVoucherViewModel.getTypeString(context),
@@ -155,7 +155,7 @@ open class MerchantVoucherView : CustomVoucherView {
             val spannedVoucherTitle = SpanText(
                     voucherTitle,
                     merchantVoucherViewModel.getAmountShortString()
-            ).addBoldSpanWithFontFamily("sans-serif").changeTextSize(resources.getDimensionPixelSize(R.dimen.sp_20)).getCharSequence()
+            ).addBoldSpanWithFontFamily("sans-serif").changeTextSize(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.sp_20)).getCharSequence()
             tvVoucherTitle?.text = spannedVoucherTitle
             val voucherDesc = merchantVoucherViewModel
                 .getMinSpendLongString(context)
@@ -199,7 +199,7 @@ open class MerchantVoucherView : CustomVoucherView {
                             MethodChecker.getDrawable(context, R.drawable.bg_voucher_button_in_use)
                     )
                     btnUseVoucher?.setTextColor(
-                            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
                     )
                     btnUseVoucher?.visibility = View.VISIBLE
                     btnUseVoucher?.isEnabled = false

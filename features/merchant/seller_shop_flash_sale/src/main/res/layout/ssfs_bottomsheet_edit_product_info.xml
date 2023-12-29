@@ -209,6 +209,6 @@
         android:gravity="center"
         app:layout_constraintTop_toBottomOf="@+id/btnSave"
         app:typographyType="paragraph_3"
-        android:textColor="@color/Unify_G500"/>
+        android:textColor="@color/Unify_GN500"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,4 +10,5 @@ data class BundleUiModel(
         var bundleDetails: List<BundleDetailUiModel> = listOf(),
         var selectedBundleId: String = "0",
         var selectedBundleApplink: String = "",
+        var isShimmering: Boolean = false
 ): ImpressHolder()

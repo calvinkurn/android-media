@@ -54,6 +54,8 @@ object ProductManageVariantMapper {
                 it.stockAlertStatus,
                 stockAlertCount,
                 it.isBelowStockAlert,
+                it.hasDTStock,
+                it.isTokoCabang
             )
         }
 
@@ -82,20 +84,31 @@ object ProductManageVariantMapper {
         var editStock = false
         var editStatus = false
 
+        val variantNamesUpdate = arrayListOf<String>()
         currentProductVariantList.forEachIndexed { index, variant ->
             val variantStockInput = variants.getOrNull(index)?.stock
             val variantStatusInput = variants.getOrNull(index)?.status
 
             if (variantStockInput != variant.stock) {
                 editStock = true
+                variantNamesUpdate.add(
+                    variants.getOrNull(index)?.name.orEmpty()
+                )
             }
 
             if (variantStatusInput != variant.status) {
                 editStatus = true
+                variantNamesUpdate.add(
+                    variants.getOrNull(index)?.name.orEmpty()
+                )
             }
         }
 
-        return copy(editStock = editStock, editStatus = editStatus)
+        return copy(
+            editStock = editStock,
+            editStatus = editStatus,
+            variantNameUpdates = variantNamesUpdate
+        )
     }
 
     fun mapResultToUpdateParam(
@@ -122,7 +135,7 @@ object ProductManageVariantMapper {
         }
 
         val selectionInput = result.selections.map {
-            VariantSelectionInput(it.variantID, it.unitID, it.options)
+            VariantSelectionInput(it.variantID, it.variantName, it.unitID, it.options)
         }
 
         val sizeChartInput = result.sizeCharts.map {
@@ -160,7 +173,7 @@ object ProductManageVariantMapper {
         }
     }
 
-    private fun getVariantName(optionIndexList: List<Int>, selections: List<Selection>): String {
+    fun getVariantName(optionIndexList: List<Int>, selections: List<Selection>): String {
         var variantName = ""
         val firstIndex = 0
         val firstOptionIndex = optionIndexList.firstOrNull()

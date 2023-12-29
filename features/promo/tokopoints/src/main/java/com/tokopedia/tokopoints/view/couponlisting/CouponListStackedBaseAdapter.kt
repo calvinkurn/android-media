@@ -140,9 +140,9 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
         ImageHandler.loadImageFitCenter(holder.imgBanner.context, holder.imgBanner, item.imageUrlMobile)
 
         if (item.isNewCoupon) {
-            holder.itemView.setBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_G200))
-            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_G200))
-            holder.cv2.setCardBackgroundColor(itemContext.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G200))
+            holder.itemView.setBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_GN100))
+            holder.cv1.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_GN100))
+            holder.cv2.setCardBackgroundColor(itemContext.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN100))
         } else {
             holder.cv1.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_Background))
             holder.cv2.setCardBackgroundColor(MethodChecker.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_Background))
@@ -215,12 +215,12 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
             }
 
             if (TextUtils.isEmpty(item.upperLeftSection.textAttributes[0].color)) {
-                holder.tvStackCount.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                holder.tvStackCount.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             } else {
                 try {
                     holder.tvStackCount.setTextColor(Color.parseColor(item.upperLeftSection.textAttributes[0].color))
                 } catch (iae: IllegalArgumentException) {
-                    holder.tvStackCount.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                    holder.tvStackCount.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 }
             }
 
@@ -255,7 +255,7 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
                             val seconds = timeToExpire.third
                             holder.value.text = String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds)
                             try {
-                                holder.value.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_R500))
+                                holder.value.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
                             } catch (e: Exception) {
                             }
                             holder.progressTimer.progress = l.toInt() / 1000
@@ -277,11 +277,11 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
                 } else {
                     holder.progressTimer.hide()
                     holder.value.setPadding(0, 0, 0, 0)
-                    holder.value.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                    holder.value.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
                 }
             } else {
                 holder.progressTimer.hide()
-                holder.value.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                holder.value.setTextColor(ContextCompat.getColor(itemContext, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
             }
             holder.itemView?.let {
                 holder.itemView.setOnClickListener {
@@ -317,13 +317,13 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
     }
 
     private fun disableImages(holder: ViewHolder) {
-        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N100), android.graphics.PorterDuff.Mode.SRC_IN)
-        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N100), android.graphics.PorterDuff.Mode.SRC_IN)
+        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN200), android.graphics.PorterDuff.Mode.SRC_IN)
+        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN200), android.graphics.PorterDuff.Mode.SRC_IN)
     }
 
     private fun enableImages(holder: ViewHolder) {
-        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400), android.graphics.PorterDuff.Mode.SRC_IN)
-        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400), android.graphics.PorterDuff.Mode.SRC_IN)
+        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500), android.graphics.PorterDuff.Mode.SRC_IN)
+        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500), android.graphics.PorterDuff.Mode.SRC_IN)
     }
 
     private fun getShape(hex: String, context: Context): GradientDrawable? {

@@ -15,6 +15,7 @@ data class RechargeOrderDetailPaymentModel(
         val paymentDetails: List<RechargeOrderDetailSimpleModel>,
         val totalPriceLabel: String,
         val totalPrice: String,
+        val paymentInfoMessage: RechargePaymentInfoMessage?,
         val additionalTicker: RechargeOrderDetailTickerModel?
 ) : Parcelable, Visitable<RechargeOrderDetailTypeFactory> {
     override fun type(typeFactory: RechargeOrderDetailTypeFactory?): Int =

@@ -2,15 +2,13 @@ package com.tokopedia.tokopoints.view.tokopointhome.topads
 
 import android.text.TextUtils
 import android.view.View
-import android.widget.TextView
-import android.widget.ViewFlipper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.tokopoints.R
+import com.tokopedia.tokopoints.databinding.TpTopadsRewardLayoutBinding
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
@@ -20,11 +18,12 @@ import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import kotlinx.android.synthetic.main.tp_topads_reward_layout.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import org.json.JSONObject
-import java.util.*
 
 class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
+
+    private var binding: TpTopadsRewardLayoutBinding? by viewBinding()
 
     fun bind(content: SectionContent) {
 
@@ -32,87 +31,88 @@ class SectionTopadsVH(val view: View) : RecyclerView.ViewHolder(view) {
             view.visibility = View.GONE
         }
 
-        val title = view.findViewById<View>(R.id.tv_topad_title)
-        val subtitle = view.findViewById<View>(R.id.tv_topads_sub_title)
-        ImageHandler.loadBackgroundImage(view, content.backgroundImgURLMobile)
-        val btnSeeAll = view.findViewById<TextView>(R.id.tv_topads_see_all)
-        if (!content.cta.isEmpty) {
-            btnSeeAll.visibility = View.VISIBLE
-            btnSeeAll.text = content.cta.text
-            btnSeeAll.setOnClickListener {
-                handledClick(content.cta.appLink, content.cta.url,
+        binding?.apply {
+            val title = tvTopadTitle
+            val subtitle = tvTopadsSubTitle
+            ImageHandler.loadBackgroundImage(view, content.backgroundImgURLMobile)
+            val btnSeeAll = tvTopadsSeeAll
+            if (!content.cta.isEmpty) {
+                btnSeeAll.visibility = View.VISIBLE
+                btnSeeAll.text = content.cta.text
+                btnSeeAll.setOnClickListener {
+                    handledClick(content.cta.appLink, content.cta.url,
                         AnalyticsTrackerUtil.ActionKeys.CLICK_SEE_ALL_EXPLORE_BANNER, "")
+                }
             }
-        }
-        if (!TextUtils.isEmpty(content.sectionTitle)) {
-            title.show()
-            (title as TextView).text = content.sectionTitle
-        }
-        if (!TextUtils.isEmpty(content.sectionSubTitle)) {
-            subtitle.show()
-            (subtitle as TextView).text = content.sectionSubTitle
-        }
-        val containerTopads = view.findViewById<ViewFlipper>(R.id.container_topads)
+            if (!TextUtils.isEmpty(content.sectionTitle)) {
+                title.show()
+                title.text = content.sectionTitle
+            }
+            if (!TextUtils.isEmpty(content.sectionSubTitle)) {
+                subtitle.show()
+                subtitle.text = content.sectionSubTitle
+            }
 
-        view.topads_reward.setApiResponseListener(object : TopAdsImageVieWApiResponseListener {
-            override fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageViewModel>) {
-                if (imageDataList.isNotEmpty()) {
-                    val topadsBannerData = imageDataList.last()
-                    view.topads_reward.loadImage(topadsBannerData, convertDpToPixel(10, view.context))
-                    containerTopads.displayedChild = 1
-                    view.topads_reward.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
-                        override fun onTopAdsImageViewImpression(viewUrl: String) {
-                            sendBannerImpression(content.sectionTitle)
-                            TopAdsUrlHitter(packageName).hitImpressionUrl(
+            topadsReward.setApiResponseListener(object : TopAdsImageVieWApiResponseListener {
+                override fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageViewModel>) {
+                    if (imageDataList.isNotEmpty()) {
+                        val topadsBannerData = imageDataList.last()
+                        topadsReward.loadImage(topadsBannerData, convertDpToPixel(10, view.context))
+                        containerTopads.displayedChild = 1
+                        topadsReward.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
+                            override fun onTopAdsImageViewImpression(viewUrl: String) {
+                                sendBannerImpression(content.sectionTitle)
+                                TopAdsUrlHitter(packageName).hitImpressionUrl(
                                     view.context,
                                     viewUrl,
                                     topadsBannerData.bannerId,
                                     topadsBannerData.bannerName,
                                     topadsBannerData.imageUrl
-                            )
-                        }
-                    })
+                                )
+                            }
+                        })
 
-                    view.topads_reward.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
-                        override fun onTopAdsImageViewClicked(applink: String?) {
-                            RouteManager.route(view.context, applink)
-                            TopAdsUrlHitter(itemView.context).hitClickUrl(
+                        topadsReward.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
+                            override fun onTopAdsImageViewClicked(applink: String?) {
+                                RouteManager.route(view.context, applink)
+                                TopAdsUrlHitter(itemView.context).hitClickUrl(
                                     this::class.java.simpleName,
                                     topadsBannerData.adClickUrl,
                                     topadsBannerData.bannerId,
                                     topadsBannerData.bannerName,
                                     topadsBannerData.imageUrl,
                                     ""
-                            )
-                            sendBannerClick(content.sectionTitle)
-                        }
-                    })
-                } else {
-                    hideView()
+                                )
+                                sendBannerClick(content.sectionTitle)
+                            }
+                        })
+                    } else {
+                        hideView()
 
+                    }
                 }
-            }
 
-            override fun onError(t: Throwable) {
-                hideView()
-            }
+                override fun onError(t: Throwable) {
+                    hideView()
+                }
 
-            fun hideView() {
-                title.hide()
-                subtitle.hide()
-                btnSeeAll.hide()
-                containerTopads.hide()
-            }
-        })
+                fun hideView() {
+                    title.hide()
+                    subtitle.hide()
+                    btnSeeAll.hide()
+                    containerTopads.hide()
+                }
+            })
 
-        val jObject = JSONObject(content.layoutTopAdsAttr.jsonTopAdsDisplayParam)
-        view.topads_reward.getImageData(
+            val jObject = JSONObject(content.layoutTopAdsAttr.jsonTopAdsDisplayParam)
+            topadsReward.getImageData(
                 jObject.getString(INVENTORY_ID),
                 jObject.getInt(ITEM),
                 TOPADS_BANNER_DIMENSION,
                 "",
                 ""
-        )
+            )
+        }
     }
 
     private fun sendBannerImpression(bannerName: String) {

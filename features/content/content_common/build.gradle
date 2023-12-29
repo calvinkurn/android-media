@@ -21,12 +21,14 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.content.common'
+    testNamespace 'com.tokopedia.content.common.test'
     packagingOptions {
         exclude 'META-INF/**'
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
+        jvmTarget = JavaVersion.VERSION_17
     }
 
     defaultConfig {
@@ -50,10 +52,8 @@ android {
     }
 
     compileOptions {
-        coreLibraryDesugaringEnabled = true
-
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
@@ -72,7 +72,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.iris)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
@@ -104,9 +103,11 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
+    implementation rootProject.ext.miscDependencies.exoPlayer
     implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.miscDependencies.lottie
 
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
@@ -139,8 +140,6 @@ dependencies {
 
     androidTestImplementation rootProject.ext.unifyDependencies.sortFilter
     androidTestImplementation projectOrAar(rootProject.ext.features.filter)
-
-    coreLibraryDesugaring rootProject.ext.miscDependencies.desugarJdk
 }
 
 project.ext {

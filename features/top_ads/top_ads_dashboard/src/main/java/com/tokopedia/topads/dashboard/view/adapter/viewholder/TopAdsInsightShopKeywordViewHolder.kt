@@ -90,10 +90,10 @@ class TopAdsInsightShopKeywordViewHolder(private val context: Context, private v
         text = message
         item.isError = isError
         if (isError) {
-            setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_R600))
+            setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_RN500))
             item.errorMessage = message
         } else {
-            setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
             item.errorMessage = null
         }
     }

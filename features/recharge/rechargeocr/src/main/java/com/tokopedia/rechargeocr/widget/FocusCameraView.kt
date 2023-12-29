@@ -54,7 +54,7 @@ class FocusCameraView @JvmOverloads constructor(context: Context, attrs: Attribu
                 mTransparentPaint)
         canvas.drawPath(mPath, mSemiBlackPaint)
         canvas.clipPath(mPath)
-        canvas.drawColor(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G400_68))
+        canvas.drawColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500_68))
     }
 
     companion object {

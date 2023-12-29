@@ -150,7 +150,7 @@
     <string name="add_pin_success_heading">PIN Tokopedia kamu berhasil disimpan</string>
     <string name="add_pin_success_body">Jangan bagikan PIN Tokopedia kamu kepada pihak mana pun.</string>
     <string name="add_pin_success_button_title">Selesai</string>
-    <string name="profile_completion_detail_term_and_privacy">Dengan mendaftar, saya menyetujui Syarat dan Ketentuan serta Kebijakan Privasi.</string>
+    <string name="profile_completion_detail_term_and_privacy">Dengan mendaftar, saya menyetujui Syarat dan Ketentuan serta Pemberitahuan Privasi.</string>
     <string name="text_change_name_warning_message">Ubah nama akunmu jadi nama asli untuk meningkatkan keamanan akun.</string>
     <string name="change_username">Username</string>
     <string name="change_profile_info_title">Ubah Info Profil</string>
@@ -190,5 +190,9 @@
     <string name="close_account_requirement_check">Belum Terpenuhi</string>
     <string name="close_account_oke">Oke</string>
     <string name="close_account_failed">Yaah, lagi ada gangguan. Tunggu sebentar &amp; coba lagi, ya.</string>
+
+    <!--Profile Management-->
+    <string name="profile_management_entry_point_subtitle">Lihat info akun GoTo Anda dalam satu tempat.</string>
+    <string name="profile_management_webview_loader">Memuat data profilmu…</string>
 </resources>
 

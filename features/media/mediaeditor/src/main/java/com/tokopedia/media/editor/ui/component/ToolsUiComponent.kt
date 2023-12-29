@@ -2,6 +2,8 @@ package com.tokopedia.media.editor.ui.component
 
 import android.annotation.SuppressLint
 import android.view.ViewGroup
+import android.widget.RelativeLayout
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.editor.R
@@ -12,6 +14,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.uimodel.ToolUiModel.Companion.create
 import com.tokopedia.picker.common.basecomponent.UiComponent
 import com.tokopedia.picker.common.types.EditorToolType
+import com.tokopedia.unifycomponents.toPx
 
 class ToolsUiComponent constructor(
     viewGroup: ViewGroup,
@@ -20,8 +23,14 @@ class ToolsUiComponent constructor(
 
     private val lstTool: RecyclerView = findViewById(R.id.lst_tool)
 
+    // set to EditorToolAdapter.EMPTY_LABEL_STATE to clear label "Baru"
+    private val newLabelShow = EditorToolType.ADD_TEXT
+
     private val adapter by lazy {
-        EditorToolAdapter(listener = this)
+        EditorToolAdapter(
+            listener = this,
+            newLabelShow = newLabelShow
+        )
     }
 
     fun setupView(tools: List<Int>) {
@@ -34,6 +43,12 @@ class ToolsUiComponent constructor(
         lstTool.adapter = adapter
 
         adapter.addItem(tools.create())
+
+        if (newLabelShow != EditorToolAdapter.EMPTY_LABEL_STATE) {
+            findViewById<RelativeLayout>(R.id.uc_editor_tool_container).apply {
+                updatePadding(bottom = TOOL_LABEL_PADDING.toPx())
+            }
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -49,4 +64,7 @@ class ToolsUiComponent constructor(
         fun onEditorToolClicked(@EditorToolType type: Int)
     }
 
+    companion object {
+        private const val TOOL_LABEL_PADDING = 10
+    }
 }

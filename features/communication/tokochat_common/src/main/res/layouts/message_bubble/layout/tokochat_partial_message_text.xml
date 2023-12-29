@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    tools:parentTag="com.tokopedia.tokochat_common.view.customview.TokoChatMessageChatLayout">
+    tools:parentTag="com.tokopedia.tokochat.common.view.chatroom.customview.TokoChatMessageChatLayout">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tokochat_tv_msg"

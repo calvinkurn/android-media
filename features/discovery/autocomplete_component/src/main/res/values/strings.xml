@@ -49,4 +49,24 @@
     <string name="universal_search_see_more">Lihat Semua</string>
     <string name="universal_search_toolbar_title">\"%1$s\"</string>
     <string name="universal_search_toolbar_subtitle">Semua Promo, Produk Pilihan, dsb.</string>
+
+    <string name="searchbar_mps_placeholder_text">Cari maks. 3 produk</string>
+
+    <string name="searchbar_empty_keyword_error_message">Ketik dulu minimal 1 produk di kolom pencarian, ya!</string>
+    <string name="searchbar_duplicate_keyword_error_message">Kata kunci yang kamu ketik sama dengan yang lain, coba ketik yang lain ya!</string>
+    <string name="searchbar_duplicate_keyword_error_action">Oke</string>
+
+    <string name="searchbar_plus_icon_coach_mark_title">Coba cari lebih dari 1 produk, yuk!</string>
+    <string name="searchbar_plus_icon_coach_mark_message">Kini kamu bisa cari maks. 3 produk yang tersedia sekaligus dalam 1 toko.</string>
+
+    <string name="searchbar_added_keyword_coach_mark_title">Kata kuncinya ditambahkan di sini</string>
+    <string name="searchbar_added_keyword_coach_mark_message">Kamu bisa lihat daftar kata kunci yang ingin kamu cari. Bisa dihapus juga, kok.</string>
+
+    <string name="suggestion_keyword_coach_mark_title">Tips biar pencarianmu lebih cepat</string>
+    <string name="suggestion_keyword_coach_mark_message">Pilih aja kata kunci yang disaranin. Kamu bakal langsung diarahin ke hasil pencarian.</string>
+
+    <string name="suggestion_keyword_arrow_coach_mark_title">Klik biar nggak capek ngetik</string>
+    <string name="suggestion_keyword_arrow_coach_mark_message">Kamu bisa klik ↖ biar kata kunci pilihanmu langsung masuk ke kolom pencarian.</string>
+
+    <string name="suggestion_exceed_keyword_limit_message">Cari maks. 3 produk, jika lebih dari itu nggak akan muncul di hasil pencarianmu.</string>
 </resources>

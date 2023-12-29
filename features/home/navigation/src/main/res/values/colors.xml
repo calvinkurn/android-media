@@ -10,4 +10,6 @@
     <color name="navigation_dms_tkpd_main_green">#42b549</color>
     <color name="navigation_dms_tkpd_dark_green">#5eba46</color>
     <color name="navigation_dms_green_600">#0a8f08</color>
+
+    <color name="navigation_dms_line_bottom_nav_darkmode">#31353B</color>
 </resources>

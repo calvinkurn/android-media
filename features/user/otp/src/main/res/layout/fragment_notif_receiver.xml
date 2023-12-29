@@ -157,7 +157,7 @@
             android:layout_marginTop="@dimen/spacing_lvl5"
             android:layout_marginRight="@dimen/spacing_lvl4"
             android:text="@string/subtitle_push_notif_receiver"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_location"

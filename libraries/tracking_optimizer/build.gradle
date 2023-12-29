@@ -24,13 +24,18 @@ project.ext {
     artifactName = "tracking_optimizer-release"
 }
 
+android {
+    namespace 'com.tokopedia.trackingoptimizer'
+    testNamespace 'com.tokopedia.trackingoptimizer.test'
+}
+
 dependencies {
     implementation rootProject.ext.miscDependencies.gson
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.track)
 
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
-    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    ksp rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 }
 

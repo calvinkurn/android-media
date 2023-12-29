@@ -1,16 +1,14 @@
 package com.tokopedia.play.broadcaster.analytic.ugc
 
+import com.tokopedia.content.analytic.Event
+import com.tokopedia.content.analytic.Key
 import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.ProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.SearchHeaderUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.SearchParamUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.ShopUiModel
-import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.play.broadcaster.analytic.KEY_SESSION_IRIS
 import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CATEGORY_PLAY
-import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_CLICK_EVENT_SELLER
-import com.tokopedia.play.broadcaster.analytic.KEY_TRACK_VIEW_EVENT_SELLER
 import com.tokopedia.play.broadcaster.analytic.currentSite
 import com.tokopedia.play.broadcaster.analytic.sessionIris
 import com.tokopedia.track.builder.Tracker
@@ -21,7 +19,7 @@ import javax.inject.Inject
  * Created by kenny.hadisaputra on 12/09/22
  */
 class ProductPickerUGCAnalytic @Inject constructor(
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : ContentProductTagAnalytic {
 
     private val userId: String
@@ -35,13 +33,13 @@ class ProductPickerUGCAnalytic @Inject constructor(
 
     override fun clickBreadcrumb(isOnShop: Boolean) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEvent(Event.clickContent)
             .setEventAction("click - product tagging source")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
             .setEventLabel("$userId - user")
             .setBusinessUnit("content")
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -53,13 +51,13 @@ class ProductPickerUGCAnalytic @Inject constructor(
         authorType: String
     ) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEvent(Event.clickContent)
             .setEventAction("click - product source ${source.labelAnalytic}")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
             .setEventLabel("$userId - user")
             .setBusinessUnit("content")
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -72,13 +70,13 @@ class ProductPickerUGCAnalytic @Inject constructor(
     ) {
         products.forEach { (product, _) ->
             Tracker.Builder()
-                .setEvent(KEY_TRACK_VIEW_EVENT_SELLER)
+                .setEvent(Event.viewContentIris)
                 .setEventAction("impression - product card ${source.labelAnalytic}")
                 .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
                 .setEventLabel("$userId - user - ${product.id}")
                 .setBusinessUnit("content")
                 .setCurrentSite(currentSite)
-                .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+                .setCustomProperty(Key.sessionIris, sessionIris)
                 .setUserId(userId)
                 .build()
                 .send()
@@ -92,13 +90,13 @@ class ProductPickerUGCAnalytic @Inject constructor(
         isEntryPoint: Boolean
     ) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEvent(Event.clickContent)
             .setEventAction("click - product card ${source.labelAnalytic}")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
             .setEventLabel("$userId - user - ${product.id}")
             .setBusinessUnit("content")
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -106,13 +104,13 @@ class ProductPickerUGCAnalytic @Inject constructor(
 
     override fun clickSearchBar(source: ProductTagSource) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEvent(Event.clickContent)
             .setEventAction("click - cari di ${source.labelAnalytic}")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
             .setEventLabel("$userId - user")
             .setBusinessUnit("content")
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -120,13 +118,13 @@ class ProductPickerUGCAnalytic @Inject constructor(
 
     override fun clickGlobalSearchTab(tabName: String) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEvent(Event.clickContent)
             .setEventAction("click - barang atau toko tab")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
             .setEventLabel("$userId - user")
             .setBusinessUnit("content")
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -134,13 +132,13 @@ class ProductPickerUGCAnalytic @Inject constructor(
 
     override fun clickBackButton(source: ProductTagSource) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEvent(Event.clickContent)
             .setEventAction("click - back pilih produk dari ${source.labelAnalytic}")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
             .setEventLabel("$userId - user")
             .setBusinessUnit("content")
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -149,13 +147,13 @@ class ProductPickerUGCAnalytic @Inject constructor(
     override fun impressShopCard(source: ProductTagSource, shops: List<Pair<ShopUiModel, Int>>) {
         shops.forEach { (shop, _) ->
             Tracker.Builder()
-                .setEvent(KEY_TRACK_VIEW_EVENT_SELLER)
+                .setEvent(Event.viewContentIris)
                 .setEventAction("impression - toko")
                 .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
                 .setEventLabel("$userId - user - ${shop.shopId}")
                 .setBusinessUnit("content")
                 .setCurrentSite(currentSite)
-                .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+                .setCustomProperty(Key.sessionIris, sessionIris)
                 .setUserId(userId)
                 .build()
                 .send()
@@ -164,13 +162,13 @@ class ProductPickerUGCAnalytic @Inject constructor(
 
     override fun clickShopCard(shop: ShopUiModel, position: Int) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEvent(Event.clickContent)
             .setEventAction("click - toko")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
             .setEventLabel("$userId - user - ${shop.shopId}")
             .setBusinessUnit("content")
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -190,13 +188,13 @@ class ProductPickerUGCAnalytic @Inject constructor(
 
     override fun clickSaveProduct(source: ProductTagSource) {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEvent(Event.clickContent)
             .setEventAction("click - simpan produk ${source.labelAnalytic}")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
             .setEventLabel("$userId - user")
             .setBusinessUnit("content")
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -204,13 +202,13 @@ class ProductPickerUGCAnalytic @Inject constructor(
 
     override fun clickAdvancedProductFilter() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEvent(Event.clickContent)
             .setEventAction("click - filter produk")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
             .setEventLabel("$userId - user")
             .setBusinessUnit("content")
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -218,13 +216,13 @@ class ProductPickerUGCAnalytic @Inject constructor(
 
     override fun clickSaveAdvancedProductFilter() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEvent(Event.clickContent)
             .setEventAction("click - simpan filter produk")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
             .setEventLabel("$userId - user")
             .setBusinessUnit("content")
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()
@@ -232,13 +230,13 @@ class ProductPickerUGCAnalytic @Inject constructor(
 
     override fun clickProductFilterChips() {
         Tracker.Builder()
-            .setEvent(KEY_TRACK_CLICK_EVENT_SELLER)
+            .setEvent(Event.clickContent)
             .setEventAction("click - chips di filter produk")
             .setEventCategory(KEY_TRACK_CATEGORY_PLAY)
             .setEventLabel("$userId - user")
             .setBusinessUnit("content")
             .setCurrentSite(currentSite)
-            .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(Key.sessionIris, sessionIris)
             .setUserId(userId)
             .build()
             .send()

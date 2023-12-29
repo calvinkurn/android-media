@@ -18,10 +18,12 @@ class PayLaterSimulationV3UseCase @Inject constructor(graphqlRepository: Graphql
         amount: Double,
         productId: String,
         shopId: String,
+        parentId: String,
+        categoryId: String,
     ) {
         try {
             this.setTypeClass(PayLaterSimulationData::class.java)
-            this.setRequestParams(getRequestParams(amount, productId, shopId))
+            this.setRequestParams(getRequestParams(amount, productId, shopId, parentId, categoryId))
             this.setGraphqlQuery(PayLaterSimulationDataQuery.GQL_QUERY)
             this.execute(
                 { result ->
@@ -35,12 +37,20 @@ class PayLaterSimulationV3UseCase @Inject constructor(graphqlRepository: Graphql
         }
     }
 
-    private fun getRequestParams(amount: Double, productId: String, shopId: String): MutableMap<String, Any?> {
+    private fun getRequestParams(
+        amount: Double,
+        productId: String,
+        shopId: String,
+        parentId: String,
+        categoryId: String
+    ): MutableMap<String, Any?> {
         return mutableMapOf(
             "request" to mutableMapOf(
                 PARAM_PRODUCT_AMOUNT to amount,
                 PARAM_PRODUCT_ID to productId,
                 PARAM_SHOP_ID_V2 to shopId,
+                PARAM_PARENT_PRODUCT_ID to parentId,
+                PARAM_CATEGORY_ID to categoryId
             )
         )
     }
@@ -49,5 +59,7 @@ class PayLaterSimulationV3UseCase @Inject constructor(graphqlRepository: Graphql
         const val PARAM_PRODUCT_AMOUNT = "amount"
         const val PARAM_PRODUCT_ID = "product_id"
         const val PARAM_SHOP_ID_V2 = "shop_id_v2"
+        const val PARAM_PARENT_PRODUCT_ID = "parent_product_id"
+        const val PARAM_CATEGORY_ID = "category_id"
     }
 }

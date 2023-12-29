@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/item_count"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@drawable/editshipping_circle_border"
+        android:gravity="center"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/item_validation_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        app:typographyType="body_3"
+        android:paddingBottom="16dp"
+        tools:text="Dengan SiCepat atau AntarAja, kamu bisa dapat cashback sebesar 20% dan beragam keuntungan khusus lainnya."/>
+
+</LinearLayout>

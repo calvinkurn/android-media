@@ -78,7 +78,7 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
         }
     }
 
-    override fun getPassData(operatorId: String, issuerId: Int): DigitalCategoryDetailPassData {
+    override fun getPassData(operatorId: String, issuerId: Int, isBCAGenOne: Boolean): DigitalCategoryDetailPassData {
         return DigitalCategoryDetailPassData.Builder()
                 .categoryId(ETOLL_CATEGORY_ID)
                 .menuId(DeeplinkMapperDigitalConst.MENU_ID_ELECTRONIC_MONEY)
@@ -108,7 +108,11 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
     }
 
     fun processBrizzi(intent: Intent) {
-        if (CardUtils.isEmoneyCard(intent) || CardUtils.isTapcashCard(intent)) {
+        if (CardUtils.isEmoneyCard(intent)
+            || CardUtils.isTapcashCard(intent)
+            || CardUtils.isJakCard(intent)
+            || CardUtils.isJakCardDev(intent)
+        ) {
             processEmoney(intent)
         } else if (CardUtils.isBrizziCard(intent)) {
             executeBrizzi(false, intent)

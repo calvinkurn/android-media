@@ -6,7 +6,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.universal_sharing.tracker.PageType
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.PageDetail
 import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
@@ -18,7 +18,7 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class BaseTokoNowViewModelTestAffiliate : BaseTokoNowViewModelTestFixture() {
-    
+
     companion object {
         private const val CHANGE_QUANTITY_DELAY = 700L
     }
@@ -191,7 +191,7 @@ class BaseTokoNowViewModelTestAffiliate : BaseTokoNowViewModelTestFixture() {
 
         val pageDetail = PageDetail(
             pageId = shopId,
-            pageType =  "shop",
+            pageType = "shop",
             siteId = "1",
             verticalId = "1"
         )
@@ -203,7 +203,7 @@ class BaseTokoNowViewModelTestAffiliate : BaseTokoNowViewModelTestFixture() {
             isPM = false
         )
 
-        val expectedShareInput = AffiliatePDPInput(
+        val expectedShareInput = AffiliateInput(
             pageDetail = pageDetail,
             pageType = PageType.SHOP.value,
             product = Product(),

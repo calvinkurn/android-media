@@ -17,7 +17,7 @@ class ShopPenaltyDetailViewModelTest : ShopPenaltyDetailViewModelTestFixture() {
                 reasonPenalty = "Seller melakukan cash advance pada transaksi INV/20210126/XX/V/553738330"
         )
 
-        val expectedResult = penaltyMapper.mapToPenaltyDetail(itemPenaltyUiModel)
+        val expectedResult = penaltyDetailMapper.mapToPenaltyDetail(itemPenaltyUiModel)
 
         shopPenaltyDetailViewModel.getPenaltyDetailData(itemPenaltyUiModel)
 

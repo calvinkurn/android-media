@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap
  * Created by kenny.hadisaputra on 03/04/23
  */
 class VideoPlayerManager(
-    private val context: Context,
+    private val context: Context
 ) {
 
     private val videoMap = ConcurrentHashMap<FeedExoPlayer, String>()
@@ -19,7 +19,7 @@ class VideoPlayerManager(
 
         return player
     }
-    
+
     fun detach(player: FeedExoPlayer) {
         player.stop()
         videoMap[player] = ""
@@ -48,6 +48,12 @@ class VideoPlayerManager(
         }?.key?.resume(shouldReset = false)
     }
 
+    fun setMuteStatus(id: String, isMuted: Boolean) {
+        videoMap.entries.firstOrNull {
+            it.value == id
+        }?.key?.toggleVideoVolume(isMuted)
+    }
+
     private fun getOrCreatePlayer(): FeedExoPlayer {
         return getUnoccupiedPlayer() ?: run {
             val player = createPlayer()
@@ -64,4 +70,9 @@ class VideoPlayerManager(
         return FeedExoPlayer(context)
     }
 
+    fun getPlayerById(id: String): FeedExoPlayer? {
+        return videoMap.entries.firstOrNull {
+            it.value == id
+        }?.key
+    }
 }

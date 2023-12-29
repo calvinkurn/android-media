@@ -32,8 +32,10 @@ class SectionViewModel(
 
     private val _hideSection = SingleLiveEvent<Boolean>()
     val hideSection: LiveData<Boolean> = _hideSection
+
+    @JvmField
     @Inject
-    lateinit var sectionUseCase: SectionUseCase
+    var sectionUseCase: SectionUseCase? = null
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
@@ -44,23 +46,24 @@ class SectionViewModel(
     private fun fetchChildComponents() {
         launchCatchError(block = {
             val shouldRefresh =
-                sectionUseCase.getChildComponents(components.id, components.pageEndPoint)
-            if (shouldRefresh) {
-                if (components.getComponentsItem().isNullOrEmpty())
+                sectionUseCase?.getChildComponents(components.id, components.pageEndPoint)
+            if (shouldRefresh == true) {
+                if (components.getComponentsItem().isNullOrEmpty()) {
                     _hideSection.value = true
+                }
                 syncData.value = true
                 components.shouldRefreshComponent = true
             }
         }, onError = {
-            components.noOfPagesLoaded = 1
-            if (it is UnknownHostException || it is SocketTimeoutException) {
-                components.verticalProductFailState = true
-                _showErrorState.value  = true
-            } else {
-                _hideSection.value = true
-                _hideShimmer.value = true
-            }
-        })
+                components.noOfPagesLoaded = 1
+                if (it is UnknownHostException || it is SocketTimeoutException) {
+                    components.verticalProductFailState = true
+                    _showErrorState.value = true
+                } else {
+                    _hideSection.value = true
+                    _hideShimmer.value = true
+                }
+            })
     }
 
     fun shouldShowShimmer(): Boolean {
@@ -79,5 +82,4 @@ class SectionViewModel(
     fun getSectionID(): String {
         return components.sectionId
     }
-
 }

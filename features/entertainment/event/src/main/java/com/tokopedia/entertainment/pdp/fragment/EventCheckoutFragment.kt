@@ -33,6 +33,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA
+import com.tokopedia.common.payment.PaymentConstant.PAYMENT_CANCELLED
+import com.tokopedia.common.payment.PaymentConstant.PAYMENT_FAILED
 import com.tokopedia.common.payment.PaymentConstant.PAYMENT_SUCCESS
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.entertainment.R
@@ -40,15 +42,19 @@ import com.tokopedia.entertainment.common.util.EventGlobalError
 import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
 import com.tokopedia.entertainment.common.util.EventQuery.eventPDPV3
+import com.tokopedia.entertainment.databinding.BottomSheetEventCheckoutBinding
+import com.tokopedia.entertainment.databinding.FragmentEventCheckoutBinding
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_GATEWAY_CODE
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_META_DATA
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_PACKAGE_ID
+import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_SOFTBOOK_EXPIRE_TIME
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_URL_PDP
 import com.tokopedia.entertainment.pdp.adapter.EventCheckoutAdditionalAdapter
 import com.tokopedia.entertainment.pdp.adapter.EventCheckoutPassengerDataAdapter
 import com.tokopedia.entertainment.pdp.adapter.EventCheckoutPriceAdapter
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
+import com.tokopedia.entertainment.pdp.bottomsheet.EventSoftbookEndedBottomSheet
 import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter.getRupiahFormat
 import com.tokopedia.entertainment.pdp.common.util.EventDateUtil.getDateString
 import com.tokopedia.entertainment.pdp.data.EventProductDetailEntity
@@ -70,6 +76,7 @@ import com.tokopedia.entertainment.pdp.data.pdp.MetaDataResponse
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.listener.OnAdditionalListener
 import com.tokopedia.entertainment.pdp.viewmodel.EventCheckoutViewModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
@@ -79,32 +86,20 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.bottom_sheet_event_checkout.view.*
-import kotlinx.android.synthetic.main.fragment_event_checkout.*
-import kotlinx.android.synthetic.main.fragment_event_pdp.*
-import kotlinx.android.synthetic.main.item_checkout_event_data_tambahan_package_filled.*
-import kotlinx.android.synthetic.main.partial_event_checkout_additional_item.*
-import kotlinx.android.synthetic.main.partial_event_checkout_additional_package.*
-import kotlinx.android.synthetic.main.partial_event_checkout_desc.*
-import kotlinx.android.synthetic.main.partial_event_checkout_footer.*
-import kotlinx.android.synthetic.main.partial_event_checkout_passenger.*
-import kotlinx.android.synthetic.main.partial_event_checkout_summary.*
-import kotlinx.android.synthetic.main.widget_event_checkout_passenger.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.io.Serializable
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
-
 
 class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
 
     private var urlPDP: String = ""
     private var metadata = MetaDataResponse()
-    private var amount: Int = 0
     private var packageID: String = ""
     private var gatewayCode: String = ""
-
-    private var name: String = ""
-    private var email: String = ""
-    private var promoCode: String = ""
+    private var softbookExpireTime: String = ""
 
     private var forms: List<Form> = emptyList()
     private var listAdditionalItem: MutableList<EventCheckoutAdditionalData> = mutableListOf()
@@ -128,6 +123,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
 
     private lateinit var saveInstanceManager: SaveInstanceCacheManager
 
+    private var binding by autoClearedNullable<FragmentEventCheckoutBinding>()
 
     override fun initInjector() {
         getComponent(EventPDPComponent::class.java).inject(this)
@@ -139,18 +135,19 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        TimeZone.setDefault(TimeZone.getTimeZone(GMT))
         initializePerformance()
-        activity?.let{
+        activity?.let {
             saveInstanceManager = SaveInstanceCacheManager(it, savedInstanceState)
-            if(saveInstanceManager!=null){
-                saveInstanceManager.get(EXTRA_SAVED_DATA_ADDITIONAL_PACKAGE,EventCheckoutAdditionalData::class.java, EventCheckoutAdditionalData())?.let {
-                    if(it.listForm.isNotEmpty()){
+            if (saveInstanceManager != null) {
+                saveInstanceManager.get(EXTRA_SAVED_DATA_ADDITIONAL_PACKAGE, EventCheckoutAdditionalData::class.java, EventCheckoutAdditionalData())?.let {
+                    if (it.listForm.isNotEmpty()) {
                         eventCheckoutAdditionalDataPackage = it
                     }
                 }
 
                 saveInstanceManager.get(EXTRA_SAVED_DATA_ADDITIONAL_ITEM, object : TypeToken<MutableList<EventCheckoutAdditionalData>>() {}.type, mutableListOf<EventCheckoutAdditionalData>())?.let {
-                    if(it.isNotEmpty()) {
+                    if (it.isNotEmpty()) {
                         listAdditionalItem = it
                     }
                 }
@@ -160,6 +157,12 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                         forms = it
                     }
                 }
+
+                saveInstanceManager.getString(EXTRA_SAVED_DATA_SOFTBOOK_EXPIRE_TIME, "")?.let {
+                    if (it.isNotEmpty()) {
+                        softbookExpireTime = it
+                    }
+                }
             }
         }
         arguments?.let {
@@ -167,108 +170,151 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
             metadata = it.getParcelable(EXTRA_META_DATA) ?: MetaDataResponse()
             packageID = it.getString(EXTRA_PACKAGE_ID, "")
             gatewayCode = it.getString(EXTRA_GATEWAY_CODE, "")
+            softbookExpireTime = it.getString(EXTRA_SOFTBOOK_EXPIRE_TIME, "")
         }
     }
 
     override fun getScreenName(): String = ""
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_event_checkout, container, false)
-
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentEventCheckoutBinding.inflate(inflater)
+        return binding?.root
+    }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        eventCheckoutViewModel.eventProductDetail.observe(viewLifecycleOwner, Observer {
-            it.run {
-                renderLayout(it)
-                global_error_checkout_event.hide()
-                container_error_event_checkout.hide()
-                performanceMonitoring.stopTrace()
+        eventCheckoutViewModel.eventProductDetail.observe(
+            viewLifecycleOwner,
+            Observer {
+                it.run {
+                    renderLayout(it)
+                    binding?.globalErrorCheckoutEvent?.hide()
+                    binding?.containerErrorEventCheckout?.hide()
+                    performanceMonitoring.stopTrace()
+                }
             }
-        })
+        )
 
-        eventCheckoutViewModel.eventTNCPDP.observe(viewLifecycleOwner, Observer {
-            showTNC(it)
-        })
+        eventCheckoutViewModel.eventTNCPDP.observe(
+            viewLifecycleOwner,
+            Observer {
+                showTNC(it)
+            }
+        )
 
-        eventCheckoutViewModel.isError.observe(viewLifecycleOwner, Observer {
-            it?.let { error ->
-                if (it.error) {
-                    pg_event_checkout.gone()
-                    context?.let {
-                    EventGlobalError.errorEventHandlerGlobalError(it, error.throwable, container_error_event_checkout,
-                            global_error_checkout_event, { requestData() })
+        eventCheckoutViewModel.isError.observe(
+            viewLifecycleOwner,
+            Observer {
+                it?.let { error ->
+                    if (it.error) {
+                        binding?.run {
+                            pgEventCheckout.gone()
+                            context?.let {
+                                EventGlobalError.errorEventHandlerGlobalError(
+                                    it,
+                                    error.throwable,
+                                    containerErrorEventCheckout,
+                                    globalErrorCheckoutEvent,
+                                    { requestData() }
+                                )
+                            }
+                        }
                     }
                 }
             }
-        })
+        )
 
-        eventCheckoutViewModel.errorGeneralValue.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                val error = it
-                view?.let {
-                    progressDialog.dismiss()
-                    Toaster.build(it, ErrorHandler.getErrorMessage(context, error), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                            it.context.getString(R.string.ent_checkout_error)).show()
+        eventCheckoutViewModel.errorGeneralValue.observe(
+            viewLifecycleOwner,
+            Observer {
+                it?.let {
+                    val error = it
+                    view?.let {
+                        progressDialog.dismiss()
+                        Toaster.build(
+                            it,
+                            ErrorHandler.getErrorMessage(context, error),
+                            Snackbar.LENGTH_LONG,
+                            Toaster.TYPE_ERROR,
+                            it.context.getString(R.string.ent_checkout_error)
+                        ).show()
+                    }
                 }
             }
-        })
+        )
 
-        eventCheckoutViewModel.eventCheckoutResponse.observe(viewLifecycleOwner, Observer {
-            it?.let {
+        eventCheckoutViewModel.eventCheckoutResponse.observe(
+            viewLifecycleOwner,
+            Observer {
+                it?.let {
+                    val data = it
+                    context?.let {
+                        progressDialog.dismiss()
+                        val context = it
+                        if (data.checkout.data.success == 0) {
+                            view?.let {
+                                Toaster.build(
+                                    it,
+                                    data.checkout.data.message,
+                                    Snackbar.LENGTH_LONG,
+                                    Toaster.TYPE_ERROR,
+                                    context.getString(R.string.ent_checkout_error)
+                                ).show()
+                            }
+                        } else {
+                            val paymentData = data.checkout.data.data.queryString
+                            val paymentURL: String = data.checkout.data.data.redirectUrl
+
+                            if (!paymentData.isNullOrEmpty() || !paymentURL.isNullOrEmpty()) {
+                                val checkoutResultData = PaymentPassData()
+                                checkoutResultData.queryString = paymentData
+                                checkoutResultData.redirectUrl = paymentURL
+                                checkoutResultData.callbackSuccessUrl = ORDER_LIST_EVENT
+
+                                val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
+                                val intent = RouteManager.getIntent(context, paymentCheckoutString)
+                                intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
+                                startActivityForResult(intent, PAYMENT_SUCCESS)
+                            } else {
+                                view?.let {
+                                    Toaster.build(
+                                        it,
+                                        data.checkout.data.error,
+                                        Snackbar.LENGTH_LONG,
+                                        Toaster.TYPE_ERROR,
+                                        context.getString(R.string.ent_checkout_error)
+                                    ).show()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        )
+
+        eventCheckoutViewModel.eventCheckoutInstantResponse.observe(
+            viewLifecycleOwner,
+            Observer {
                 val data = it
                 context?.let {
                     progressDialog.dismiss()
                     val context = it
                     if (data.checkout.data.success == 0) {
                         view?.let {
-                            Toaster.build(it, data.checkout.data.message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                                    context.getString(R.string.ent_checkout_error)).show()
+                            Toaster.build(
+                                it,
+                                data.checkout.data.message,
+                                Snackbar.LENGTH_LONG,
+                                Toaster.TYPE_ERROR,
+                                context.getString(R.string.ent_checkout_error)
+                            ).show()
                         }
                     } else {
-                        val paymentData = data.checkout.data.data.queryString
-                        val paymentURL: String = data.checkout.data.data.redirectUrl
-
-                        if (!paymentData.isNullOrEmpty() || !paymentURL.isNullOrEmpty()) {
-
-                            val checkoutResultData = PaymentPassData()
-                            checkoutResultData.queryString = paymentData
-                            checkoutResultData.redirectUrl = paymentURL
-                            checkoutResultData.callbackSuccessUrl = ORDER_LIST_EVENT
-
-                            val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
-                            val intent = RouteManager.getIntent(context, paymentCheckoutString)
-                            intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
-                            intent.putExtra(ApplinkConstInternalPayment.CHECKOUT_TIMESTAMP, System.currentTimeMillis())
-                            startActivityForResult(intent, PAYMENT_SUCCESS)
-
-                        } else {
-                            view?.let {
-                                Toaster.build(it, data.checkout.data.error, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                                        context.getString(R.string.ent_checkout_error)).show()
-                            }
-                        }
+                        RouteManager.route(context, data.checkout.data.data.redirectUrl)
                     }
                 }
             }
-        })
-
-
-        eventCheckoutViewModel.eventCheckoutInstantResponse.observe(viewLifecycleOwner, Observer {
-            val data = it
-            context?.let {
-                progressDialog.dismiss()
-                val context = it
-                if (data.checkout.data.success == 0) {
-                    view?.let {
-                        Toaster.build(it, data.checkout.data.message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                                context.getString(R.string.ent_checkout_error)).show()
-                    }
-                } else {
-                    RouteManager.route(context, data.checkout.data.data.redirectUrl)
-                }
-            }
-        })
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -277,13 +323,60 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         requestData()
     }
 
+    override fun onResume() {
+        super.onResume()
+        initTimerCountdown()
+    }
+
+    private fun initTimerCountdown() {
+        try {
+            val dateFormat = SimpleDateFormat(COUNTDOWN_DATE_FORMAT, Locale.getDefault())
+            val date = dateFormat.parse(softbookExpireTime)
+            val nowDate = Date().time
+            val countdownDuration = date.time - nowDate
+
+            if (countdownDuration < Int.ZERO) {
+                binding?.partialEventCheckoutCountdown?.root?.hide()
+                showSoftbookEndedBottomSheet()
+            } else {
+                renderCountdownTimer(date)
+            }
+        } catch (e: ParseException) {
+            binding?.partialEventCheckoutCountdown?.root?.hide()
+        }
+    }
+
+    private fun renderCountdownTimer(date: Date) {
+        binding?.partialEventCheckoutCountdown?.timerEventCheckoutCountdownValue?.run {
+            targetDate = Calendar.getInstance().apply {
+                time = date
+            }
+            onFinish = {
+                showSoftbookEndedBottomSheet()
+            }
+        }
+    }
+
+    private fun showSoftbookEndedBottomSheet() {
+        val bottomSheet = EventSoftbookEndedBottomSheet()
+        bottomSheet.setOnClickSoftbookEndedButton {
+            activity?.finish()
+        }
+        bottomSheet.show(childFragmentManager)
+    }
+
     private fun requestData() {
-        urlPDP.let {
-            pg_event_checkout.show()
-            global_error_checkout_event.hide()
-            container_error_event_checkout.hide()
-            eventCheckoutViewModel.getDataProductDetail(eventPDPV3(),
-                    eventContentById(), it)
+        binding?.run {
+            urlPDP.let {
+                pgEventCheckout.show()
+                globalErrorCheckoutEvent.hide()
+                containerErrorEventCheckout.hide()
+                eventCheckoutViewModel.getDataProductDetail(
+                    eventPDPV3(),
+                    eventContentById(),
+                    it
+                )
+            }
         }
     }
 
@@ -294,8 +387,8 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     }
 
     private fun renderLayout(eventProductDetailEntity: EventProductDetailEntity) {
-        pg_event_checkout.gone()
-        container_checkout.show()
+        binding?.pgEventCheckout?.gone()
+        binding?.containerCheckout?.show()
         (activity as EventCheckoutActivity).supportActionBar?.title = getString(R.string.ent_event_checkout_title_page)
         eventProductDetailEntity.eventProductDetail.productDetailData.apply {
             renderDesc(this)
@@ -305,34 +398,36 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
             renderAdditionalPackage(this)
             renderFooter(this)
         }
-
     }
 
     private fun renderDesc(pdp: ProductDetailData) {
-        tg_event_checkout_date.text = getDateString(DATE_FORMAT, getItemMap(metadata).scheduleTimestamp.toIntSafely())
-        tg_event_checkout_name.text = pdp.displayName
-        tg_event_checkout_packet.text = getPackage(pdp, packageID).name
-        iv_event_checkout_image.loadImageRounded(pdp.imageApp, ROUND_VALUE)
+        binding?.partialEventCheckoutDesc?.run {
+            tgEventCheckoutDate.text =
+                getDateString(DATE_FORMAT, getItemMap(metadata).scheduleTimestamp.toIntSafely())
+            tgEventCheckoutName.text = pdp.displayName
+            tgEventCheckoutPacket.text = getPackage(pdp, packageID).name
+            ivEventCheckoutImage.loadImageRounded(pdp.imageApp, ROUND_VALUE)
+        }
     }
 
     private fun renderPassenger(pdp: ProductDetailData) {
-        if(forms.isNullOrEmpty()){
+        if (forms.isNullOrEmpty()) {
             forms = initialListForm(pdp.forms, userSessionInterface, getString(R.string.ent_checkout_data_nullable_form))
         }
         if (!forms.isNullOrEmpty()) {
             setPassengerData(forms)
         }
-        ticker_event_checkout.setTextDescription(context?.resources?.getString(R.string.ent_event_checkout_pessanger_ticker).orEmpty())
+        binding?.partialEventCheckoutPassenger?.tickerEventCheckout?.setTextDescription(context?.resources?.getString(R.string.ent_event_checkout_pessanger_ticker).orEmpty())
         if (!forms.isNullOrEmpty()) {
-            btn_event_checkout_passenger.setOnClickListener {
+            binding?.partialEventCheckoutPassenger?.widgetEventCheckoutPessanger?.clickEditPassenger {
                 goToPageForm()
             }
-            widget_event_checkout_pessangers.setOnClickListener {
+            binding?.partialEventCheckoutPassenger?.widgetEventCheckoutPessanger?.setOnClickListener {
                 goToPageForm()
             }
         } else {
-            btn_event_checkout_passenger.hide()
-            widget_event_checkout_pessangers.hide()
+            binding?.partialEventCheckoutPassenger?.widgetEventCheckoutPessanger?.hideBtnCheckoutPassenger()
+            binding?.partialEventCheckoutPassenger?.widgetEventCheckoutPessanger?.hide()
         }
     }
 
@@ -348,121 +443,132 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         val adapterItemPrice = EventCheckoutPriceAdapter()
         adapterItemPrice.setList(metadata.itemMap)
 
-        rv_event_checkout_price.apply {
+        binding?.partialEventCheckoutSummary?.rvEventCheckoutPrice?.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = adapterItemPrice
         }
 
-
-        tg_event_checkout_summary_price_price.text = if(metadata.totalPrice != ZERO_PRICE) getRupiahFormat(metadata.totalPrice) else getString(R.string.ent_free_price)
+        binding?.partialEventCheckoutSummary?.tgEventCheckoutSummaryPricePrice?.text = if (metadata.totalPrice != ZERO_PRICE) getRupiahFormat(metadata.totalPrice) else getString(R.string.ent_free_price)
 
         eventPDPTracking.onViewCheckoutPage(pdp, metadata.itemMap, userSessionInterface.userId)
     }
 
-    private fun showTNC(tnc: String){
+    private fun showTNC(tnc: String) {
         context?.let {
-            tg_event_checkout_tnc.makeLinks(
-                Pair(getString(R.string.ent_event_checkout_summary_tnc_click), View.OnClickListener {
-                    showBottomSheetTnc(it.context, tnc)
-                })
+            binding?.partialEventCheckoutSummary?.tgEventCheckoutTnc?.makeLinks(
+                Pair(
+                    getString(R.string.ent_event_checkout_summary_tnc_click),
+                    View.OnClickListener {
+                        showBottomSheetTnc(it.context, tnc)
+                    }
+                )
             )
         }
     }
 
     private fun renderAdditionalItem(pdp: ProductDetailData) {
-        if(listAdditionalItem.isEmpty()) {
+        if (listAdditionalItem.isEmpty()) {
             listAdditionalItem = getAdditionalList(metadata.itemMap, pdp, packageID)
         }
         if (!listAdditionalItem.isNullOrEmpty()) {
             isItemFormActive = true
             adapterAdditional.setList(listAdditionalItem)
-            rv_event_checkout_additional.apply {
+            binding?.partialEventCheckoutAdditionalItem?.rvEventCheckoutAdditional?.apply {
                 layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
                 adapter = adapterAdditional
             }
         } else {
-            partial_event_checkout_additional_item.gone()
+            binding?.partialEventCheckoutAdditionalItem?.root?.gone()
         }
     }
 
     private fun renderAdditionalPackage(pdp: ProductDetailData) {
-        if(eventCheckoutAdditionalDataPackage.listForm.isNullOrEmpty()){
+        if (eventCheckoutAdditionalDataPackage.listForm.isNullOrEmpty()) {
             eventCheckoutAdditionalDataPackage = getAdditionalPackage(pdp, packageID)
         }
         if (eventCheckoutAdditionalDataPackage.additionalType.equals(AdditionalType.NULL_DATA)) {
-            partial_event_checkout_additional_package.gone()
+            binding?.partialEventCheckoutAdditionalPackage?.root?.gone()
         } else {
             isPackageFormActive = true
             updateAdditionalPackage()
-            item_checkout_event_data_tambahan_package.setOnClickListener {
+            binding?.partialEventCheckoutAdditionalPackage?.itemCheckoutEventDataTambahanPackage?.root?.setOnClickListener {
                 clickAdditional(eventCheckoutAdditionalDataPackage, REQUEST_CODE_ADDITIONAL_PACKAGE)
             }
-            img_event_package_additional.setOnClickListener {
+            binding?.partialEventCheckoutAdditionalPackage?.itemCheckoutEventDataTambahanPackage?.imgEventPackageAdditional?.setOnClickListener {
                 clickAdditional(eventCheckoutAdditionalDataPackage, REQUEST_CODE_ADDITIONAL_PACKAGE)
             }
         }
     }
 
     private fun updateAdditionalPackage() {
-        if (eventCheckoutAdditionalDataPackage.additionalType.equals(AdditionalType.PACKAGE_FILLED)
-                && eventCheckoutAdditionalDataPackage.listForm.isNotEmpty()) {
-            item_checkout_event_data_tambahan_package.gone()
-            item_checkout_event_data_tambahan_package_filled.show()
+        if (eventCheckoutAdditionalDataPackage.additionalType.equals(AdditionalType.PACKAGE_FILLED) &&
+            eventCheckoutAdditionalDataPackage.listForm.isNotEmpty()
+        ) {
+            binding?.partialEventCheckoutAdditionalPackage?.itemCheckoutEventDataTambahanPackage?.root?.gone()
+            binding?.partialEventCheckoutAdditionalPackage?.itemCheckoutEventDataTambahanPackageFilled?.root?.show()
             val adapter = EventCheckoutPassengerDataAdapter()
             adapter.setList(mapFormToString(eventCheckoutAdditionalDataPackage.listForm))
-            rv_event_checkout_additional_package_filled.apply {
+            binding?.partialEventCheckoutAdditionalPackage?.itemCheckoutEventDataTambahanPackageFilled?.rvEventCheckoutAdditionalPackageFilled?.apply {
                 layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
                 this.adapter = adapter
             }
-            item_checkout_event_additional_package_filled.setOnClickListener {
+            binding?.partialEventCheckoutAdditionalPackage?.itemCheckoutEventDataTambahanPackageFilled?.root?.setOnClickListener {
                 clickAdditional(eventCheckoutAdditionalDataPackage, REQUEST_CODE_ADDITIONAL_PACKAGE)
             }
         }
-
     }
 
     private fun renderFooter(productDetailData: ProductDetailData) {
-        cb_event_checkout.setOnCheckedChangeListener { _, isChecked ->
-            btn_event_checkout.isEnabled = isChecked
+        binding?.partialEventCheckoutSummary?.cbEventCheckout?.setOnCheckedChangeListener { _, isChecked ->
+            binding?.partialEventCheckoutFooter?.btnEventCheckout?.isEnabled = isChecked
         }
-        btn_event_checkout.text = if(metadata.totalPrice == ZERO_PRICE) getString(R.string.ent_event_checkout_footer_button_free)
-                    else getString(R.string.ent_event_checkout_footer_button)
+        binding?.partialEventCheckoutFooter?.btnEventCheckout?.text = if (metadata.totalPrice == ZERO_PRICE) {
+            getString(R.string.ent_event_checkout_footer_button_free)
+        } else {
+            getString(R.string.ent_event_checkout_footer_button)
+        }
 
-        btn_event_checkout.setOnClickListener {
-
-            view?.let {
-                val view = it
+        binding?.partialEventCheckoutFooter?.btnEventCheckout?.setOnClickListener {
+            binding?.let { binding ->
                 context?.let {
-                    when{
+                    when {
                         !userSessionInterface.isLoggedIn -> {
-                            Toaster.build(view, it.getString(R.string.ent_event_checkout_submit_login), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error)).show()
+                            Toaster.build(binding.root, it.getString(R.string.ent_event_checkout_submit_login), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error)).show()
                         }
                         !forms.isNullOrEmpty() && isEmptyForms(forms, getString(R.string.ent_checkout_data_nullable_form)) -> {
-                            Toaster.build(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_event_checkout_passenger_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error)).show()
-                            scroll_view_event_checkout.focusOnView(partial_event_checkout_passenger)
-                            widget_event_checkout_pessangers.startAnimationWiggle()
+                            Toaster.build(binding.root, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_event_checkout_passenger_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error)).show()
+                            binding.scrollViewEventCheckout.focusOnView(binding.partialEventCheckoutPassenger.root)
+                            binding.partialEventCheckoutPassenger.widgetEventCheckoutPessanger.startAnimationWiggle()
                         }
                         isAdditionalItemFormNull() && isItemFormActive -> {
-                            Toaster.build(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_checkout_data_pengunjung_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error)).show()
-                            scroll_view_event_checkout.focusOnView(partial_event_checkout_additional_item)
+                            Toaster.build(binding.root, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_checkout_data_pengunjung_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error)).show()
+                            binding.scrollViewEventCheckout.focusOnView(binding.partialEventCheckoutAdditionalItem.root)
                             getRecycleViewWidgetAnimator()
                         }
                         eventCheckoutAdditionalDataPackage.listForm.isEmpty() && isPackageFormActive -> {
-                            Toaster.build(view, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_checkout_data_tambahan_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error)).show()
-                            scroll_view_event_checkout.focusOnView(partial_event_checkout_additional_package)
-                            item_checkout_event_data_tambahan_package.startAnimationWiggle()
+                            Toaster.build(binding.root, it.getString(R.string.ent_event_checkout_submit_name, it.getString(R.string.ent_checkout_data_tambahan_title).toLowerCase()), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, it.getString(R.string.ent_checkout_error)).show()
+                            binding.scrollViewEventCheckout.focusOnView(binding.partialEventCheckoutAdditionalPackage.root)
+                            binding.partialEventCheckoutAdditionalPackage.itemCheckoutEventDataTambahanPackage.root.startAnimationWiggle()
                         }
                         else -> {
                             progressDialog.show()
                             eventPDPTracking.onClickCheckoutButton(productDetailData, metadata.itemMap, userSessionInterface.userId)
-                            metadata = getPassengerMetaData(metadata, forms, listAdditionalItem, eventCheckoutAdditionalDataPackage,
-                                    it.getString(R.string.ent_checkout_data_nullable_form))
-                            if(gatewayCode.isNullOrEmpty()) {
-                                eventCheckoutViewModel.checkoutEvent(EventQuery.mutationEventCheckoutV2(),
-                                        getCheckoutParam(metadata, productDetailData, getPackage(productDetailData, packageID)))
+                            metadata = getPassengerMetaData(
+                                metadata,
+                                forms,
+                                listAdditionalItem,
+                                eventCheckoutAdditionalDataPackage,
+                                it.getString(R.string.ent_checkout_data_nullable_form)
+                            )
+                            if (gatewayCode.isNullOrEmpty()) {
+                                eventCheckoutViewModel.checkoutEvent(
+                                    EventQuery.mutationEventCheckoutV2(),
+                                    getCheckoutParam(metadata, productDetailData, getPackage(productDetailData, packageID))
+                                )
                             } else {
                                 eventCheckoutViewModel.checkoutEventInstant(
-                                        getCheckoutParamInstant(gatewayCode, metadata, productDetailData, getPackage(productDetailData, packageID)))
+                                    getCheckoutParamInstant(gatewayCode, metadata, productDetailData, getPackage(productDetailData, packageID))
+                                )
                             }
                         }
                     }
@@ -472,19 +578,19 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     }
 
     private fun showBottomSheetTnc(context: Context, tnc: String) {
-        val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_checkout, null)
+        val bindingBottomsheet = BottomSheetEventCheckoutBinding.inflate(
+            LayoutInflater.from(context)
+        )
         val bottomSheets = BottomSheetUnify()
         bottomSheets.apply {
-            setChild(view)
+            setChild(bindingBottomsheet.root)
             setTitle(context.getString(R.string.ent_event_checkout_summary_tnc_bottom_sheet))
             setCloseClickListener { bottomSheets.dismiss() }
         }
-        view.tg_event_checkout_tnc_bottom_sheet.apply {
+        bindingBottomsheet.tgEventCheckoutTncBottomSheet.apply {
             text = tnc
         }
-        fragmentManager?.let {
-            bottomSheets.show(it, "")
-        }
+        bottomSheets.show(childFragmentManager, "")
     }
 
     fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>) {
@@ -503,9 +609,12 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                 }
             }
             val startIndexOfLink = this.text.toString().indexOf(link.first)
-            spannableString.setSpan(clickableSpan, startIndexOfLink, startIndexOfLink + link.first.length,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
+            spannableString.setSpan(
+                clickableSpan,
+                startIndexOfLink,
+                startIndexOfLink + link.first.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
         }
         this.movementMethod = LinkMovementMethod.getInstance()
         this.setText(spannableString, TextView.BufferType.SPANNABLE)
@@ -531,6 +640,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                     }
                 }
             }
+            initTimerCountdown()
         } else if (resultCode == PAYMENT_SUCCESS) {
             val taskStackBuilder = TaskStackBuilder.create(context)
             val intentHomeEvent = RouteManager.getIntent(context, ApplinkConstInternalEntertainment.EVENT_HOME)
@@ -542,13 +652,15 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                 taskStackBuilder.addNextIntent(this)
                 taskStackBuilder.startActivities()
             }
+        } else if (resultCode == PAYMENT_FAILED || resultCode == PAYMENT_CANCELLED) {
+            initTimerCountdown()
         }
 
         super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun setPassengerData(list: List<Form>) {
-        widget_event_checkout_pessanger.renderRecycleView(list)
+        binding?.partialEventCheckoutPassenger?.widgetEventCheckoutPessanger?.renderRecycleView(list)
     }
 
     override fun onClickAdditional(additonal: EventCheckoutAdditionalData) {
@@ -564,7 +676,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     }
 
     private fun getRecycleViewWidgetAnimator() {
-        val itemView = rv_event_checkout_additional.layoutManager?.findViewByPosition(positionAdditionalItemFormNull())
+        val itemView = binding?.partialEventCheckoutAdditionalItem?.rvEventCheckoutAdditional?.layoutManager?.findViewByPosition(positionAdditionalItemFormNull())
         itemView?.startAnimationWiggle()
     }
 
@@ -600,9 +712,11 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     }
 
     private fun NestedScrollView.focusOnView(toView: View) {
-        Handler().post(Runnable {
-            this.smoothScrollTo(0, toView.y.toIntSafely())
-        })
+        Handler().post(
+            Runnable {
+                this.smoothScrollTo(0, toView.y.toIntSafely())
+            }
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -611,12 +725,14 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
             put(EXTRA_SAVED_DATA_ADDITIONAL_PACKAGE, eventCheckoutAdditionalDataPackage)
             put(EXTRA_SAVED_DATA_FORM, forms)
             put(EXTRA_SAVED_DATA_ADDITIONAL_ITEM, listAdditionalItem)
+            put(EXTRA_SAVED_DATA_SOFTBOOK_EXPIRE_TIME, softbookExpireTime)
         }
     }
 
-
     companion object {
+        const val GMT = "GMT+7"
         const val DATE_FORMAT = "EEE, d MMM yyyy"
+        const val COUNTDOWN_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
         const val REQUEST_CODE_FORM = 100
         const val REQUEST_CODE_ADDITIONAL_ITEM = 101
         const val REQUEST_CODE_ADDITIONAL_PACKAGE = 102
@@ -630,17 +746,25 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
         const val EXTRA_SAVED_DATA_ADDITIONAL_PACKAGE = "EXTRA_SAVED_DATA_ADDITIONAL_PACKAGE"
         const val EXTRA_SAVED_DATA_ADDITIONAL_ITEM = "EXTRA_SAVED_DATA_ADDITIONAL_ITEM"
         const val EXTRA_SAVED_DATA_FORM = "EXTRA_SAVED_DATA_FORM"
+        const val EXTRA_SAVED_DATA_SOFTBOOK_EXPIRE_TIME = "EXTRA_SAVED_DATA_SOFTBOOK_EXPIRE_TIME"
 
         const val ENT_CHECKOUT_PERFORMANCE = "et_event_checkout"
 
         const val ORDER_LIST_EVENT = "/order-list"
 
-        fun newInstance(urlPDP: String, metadata: MetaDataResponse, packageID: String, gatewayCode: String) = EventCheckoutFragment().also {
+        fun newInstance(
+            urlPDP: String,
+            metadata: MetaDataResponse,
+            packageID: String,
+            gatewayCode: String,
+            softbookExpireTime: String
+        ) = EventCheckoutFragment().also {
             it.arguments = Bundle().apply {
                 putString(EXTRA_URL_PDP, urlPDP)
                 putParcelable(EXTRA_META_DATA, metadata)
                 putString(EXTRA_PACKAGE_ID, packageID)
                 putString(EXTRA_GATEWAY_CODE, gatewayCode)
+                putString(EXTRA_SOFTBOOK_EXPIRE_TIME, softbookExpireTime)
             }
         }
     }

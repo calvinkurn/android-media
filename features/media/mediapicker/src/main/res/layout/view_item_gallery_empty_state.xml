@@ -74,8 +74,8 @@
                 android:clickable="true"
                 android:focusable="true"
                 app:icon_name="CAMERA"
-                app:icon_color_light_enable="@color/Unify_G500"
-                app:icon_color_night_enable="@color/Unify_G500"
+                app:icon_color_light_enable="@color/Unify_GN500"
+                app:icon_color_night_enable="@color/Unify_GN500"
                 android:layout_width="24dp"
                 android:layout_height="24dp"/>
 

@@ -16,13 +16,21 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
  * @author by jessica on 09/04/21
  */
 
-class EmoneyProductDetailBottomSheet(val product: CatalogProduct) : BottomSheetUnify() {
+class EmoneyProductDetailBottomSheet : BottomSheetUnify() {
 
     init {
         isFullpage = false
         isDragable = false
     }
 
+    private var product: CatalogProduct? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            product = it.getParcelable(EXTRA_CATALOG_PRODUCT)
+        }
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initChildLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -38,10 +46,23 @@ class EmoneyProductDetailBottomSheet(val product: CatalogProduct) : BottomSheetU
 
     private fun initView(view: WidgetEmoneyProductDetailBottomSheetBinding) {
         with(view) {
-            emoneyBottomSheetProductTitle.text = product.attributes.desc
-            emoneyBottomSheetProductDescription.text = MethodChecker.fromHtml(product.attributes.detail)
-            emoneyBottomSheetProductPrice.text = CurrencyFormatUtil
-                .convertPriceValueToIdrFormatNoSpace(product.attributes.pricePlain.toIntSafely())
+            product?.let { product ->
+                emoneyBottomSheetProductTitle.text = product.attributes.desc
+                emoneyBottomSheetProductDescription.text = MethodChecker.fromHtml(product.attributes.detail)
+                emoneyBottomSheetProductPrice.text = CurrencyFormatUtil
+                    .convertPriceValueToIdrFormatNoSpace(product.attributes.pricePlain.toIntSafely())
+            }
+        }
+    }
+
+    companion object {
+        private const val EXTRA_CATALOG_PRODUCT = "EXTRA_CATALOG_PRODUCT"
+        fun newBottomSheet(product: CatalogProduct): BottomSheetUnify {
+            val bottomSheet = EmoneyProductDetailBottomSheet()
+            val bundle = Bundle()
+            bundle.putParcelable(EXTRA_CATALOG_PRODUCT, product)
+            bottomSheet.arguments = bundle
+            return bottomSheet
         }
     }
 }

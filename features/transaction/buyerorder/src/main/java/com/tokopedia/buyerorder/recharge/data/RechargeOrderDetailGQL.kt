@@ -104,6 +104,7 @@ class RechargeOrderDetailGQL {
                 detail {
                   label
                   value
+                  copyable
                 }
                 paymentData {
                   label
@@ -179,6 +180,12 @@ class RechargeOrderDetailGQL {
                   notes
                   urlDetail
                   urlText
+                }
+                digitalPaymentInfoMessage {
+                  message
+                  urlText
+                  appLink
+                  webLink
                 }
               }
             }

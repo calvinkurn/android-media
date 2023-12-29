@@ -92,7 +92,7 @@ class ChooseAddressViewComponent(
     private fun setupButtonView() {
         val bg = GradientDrawable().apply {
             cornerRadius = ctx.resources.getDimensionPixelSize(unifyR.dimen.layout_lvl1).toFloat()
-            setStroke(ctx.resources.getDimensionPixelSize(unifyCompR.dimen.button_stroke_width), MethodChecker.getColor(ctx, unifyR.color.Unify_G500))
+            setStroke(ctx.resources.getDimensionPixelSize(unifyCompR.dimen.button_stroke_width), MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
         }
         btnChoose.background = bg
     }

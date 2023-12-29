@@ -10,7 +10,12 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Created By : Jonathan Darwin on June 27, 2022
@@ -33,9 +38,9 @@ class FeedFloatingButton : LinearLayout, View.OnClickListener {
 
     private fun initAttrs(context: Context, attrs: AttributeSet?) {
         if (attrs != null) {
-            val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.FeedFloatingButton)
+            val attributeArray = context.obtainStyledAttributes(attrs, com.tokopedia.content.common.R.styleable.FeedFloatingButton)
 
-             tvFab.text = attributeArray.getString(R.styleable.FeedFloatingButton_fab_text) ?: context.getString(R.string.feed_fab_create_content)
+             tvFab.text = attributeArray.getString(com.tokopedia.content.common.R.styleable.FeedFloatingButton_fab_text) ?: context.getString(com.tokopedia.content.common.R.string.feed_fab_create_content)
             attributeArray.recycle()
         }
     }

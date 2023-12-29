@@ -4,12 +4,13 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.recommendation_widget_common.di.RecommendationModule
 import com.tokopedia.search.di.module.FilterControllerModule
 import com.tokopedia.search.di.module.IrisModule
+import com.tokopedia.search.di.module.ProductGridLayoutManagerModule
 import com.tokopedia.search.di.module.RecycledViewPoolModule
+import com.tokopedia.search.di.module.ReimagineRollenceModule
 import com.tokopedia.search.di.module.RemoteConfigModule
 import com.tokopedia.search.di.module.SearchContextModule
 import com.tokopedia.search.di.module.SearchNavigationListenerModule
 import com.tokopedia.search.di.module.SearchOnBoardingLocalCacheModule
-import com.tokopedia.search.di.module.StaggeredGridLayoutManagerModule
 import com.tokopedia.search.di.module.TrackingQueueModule
 import com.tokopedia.search.di.module.UserSessionModule
 import com.tokopedia.search.di.scope.SearchScope
@@ -25,15 +26,21 @@ import com.tokopedia.search.result.product.banned.BannedProductsViewModule
 import com.tokopedia.search.result.product.broadmatch.BroadMatchModule
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressViewModule
 import com.tokopedia.search.result.product.cpm.TopAdsHeadlineModule
+import com.tokopedia.search.result.product.deduplication.DeduplicationModule
+import com.tokopedia.search.result.product.dialog.BottomSheetInappropriateModule
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterModule
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselModule
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcModule
 import com.tokopedia.search.result.product.lastfilter.LastFilterModule
 import com.tokopedia.search.result.product.pagination.PaginationModule
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
+import com.tokopedia.search.result.product.requestparamgenerator.LastClickProductProviderModule
 import com.tokopedia.search.result.product.responsecode.ResponseCodeProviderModule
 import com.tokopedia.search.result.product.safesearch.SafeSearchModule
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationModule
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordModule
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductModule
+import com.tokopedia.search.result.product.similarsearch.SimilarSearchModule
 import com.tokopedia.search.result.product.ticker.TickerModule
 import com.tokopedia.search.result.product.video.VideoModule
 import com.tokopedia.search.result.product.wishlist.WishlistModule
@@ -68,7 +75,7 @@ import dagger.Component
     ProductListProvidersModule::class,
     FilterControllerModule::class,
     ProductListPresenterModule::class,
-    StaggeredGridLayoutManagerModule::class,
+    ProductGridLayoutManagerModule::class,
     BannedProductsViewModule::class,
     RecycledViewPoolModule::class,
     SearchNavigationListenerModule::class,
@@ -83,6 +90,13 @@ import dagger.Component
     LastFilterModule::class,
     BottomSheetFilterModule::class,
     ResponseCodeProviderModule::class,
+    SimilarSearchModule::class,
+    InspirationKeywordModule::class,
+    InspirationProductModule::class,
+    ReimagineRollenceModule::class,
+    LastClickProductProviderModule::class,
+    DeduplicationModule::class,
+    BottomSheetInappropriateModule::class,
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {
 

@@ -23,7 +23,7 @@ open class SellerReviewListViewHolder(val view: View,
     private val binding = ItemRatingProdukBinding.bind(view)
 
     override fun bind(element: ProductReviewUiModel) {
-        binding.itemRatingProduct.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        binding.itemRatingProduct.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
 
         bindProductImage(element.productImageUrl.orEmpty())
         binding.tgTitleProduct.text = element.productName

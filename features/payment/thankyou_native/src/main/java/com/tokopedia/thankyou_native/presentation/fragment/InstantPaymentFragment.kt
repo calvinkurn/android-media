@@ -193,7 +193,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
                     detailText.text = info.ctaText
                     detailText.setType(Typography.SMALL)
                     detailText.setWeight(Typography.BOLD)
-                    detailText.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                    detailText.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
 
                     val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                     detailText.setOnClickListener {

@@ -22,7 +22,7 @@
             android:id="@+id/keyword_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"

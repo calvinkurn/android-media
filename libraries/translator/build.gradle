@@ -15,6 +15,11 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
+android {
+    namespace 'com.tokopedia.translator'
+    testNamespace 'com.tokopedia.translator.test'
+}
+
 dependencies {
     //retrofit
     implementation 'com.squareup.retrofit2:converter-scalars:2.5.0'

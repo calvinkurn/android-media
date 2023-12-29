@@ -5,17 +5,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.tokopedia.sortfilter.SortFilter
-        android:id="@+id/search_product_quick_sort_filter"
+    <ViewStub
+        android:id="@+id/viewStubSortFilter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="16dp"
-        android:paddingLeft="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        app:sort_filter_relationship="AND"
-        app:sort_filter_type="advanced"
-        android:visibility="gone" />
+        android:inflatedId="@+id/search_product_quick_sort_filter"
+        android:layout="@layout/search_sort_filter" />
+
+    <ViewStub
+        android:id="@+id/viewStubSortFilterReimagine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inflatedId="@+id/search_product_quick_sort_filter_reimagine"
+        android:layout="@layout/search_sort_filter_reimagine" />
 
     <include
         android:id="@+id/shimmeringView"

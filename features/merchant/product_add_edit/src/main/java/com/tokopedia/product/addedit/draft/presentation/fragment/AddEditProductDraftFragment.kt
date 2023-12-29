@@ -28,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.DRAFT_ERROR_LOG_KEY
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
 import com.tokopedia.product.addedit.databinding.FragmentAddEditProductDraftBinding
@@ -37,6 +38,7 @@ import com.tokopedia.product.addedit.draft.presentation.listener.ProductDraftLis
 import com.tokopedia.product.addedit.draft.presentation.viewmodel.AddEditProductDraftViewModel
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.tracking.ProductDraftTracking
+import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -166,7 +168,7 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
     }
 
     private fun setupToolbarActions() {
-        val color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N500)
+        val color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN600)
         activity?.findViewById<HeaderUnify>(R.id.toolbar_draft)?.apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 overflowIcon?.colorFilter = BlendModeColorFilter(color, BlendMode.SRC_IN)
@@ -216,6 +218,7 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
                     binding?.geDraft?.hide()
                     draftListAdapter?.setDrafts(it.data)
                     displayEmptyListLayout()
+                    logCorruptDataToCrashlytics(it.data)
                 }
                 is Fail -> {
                     binding?.rvDraft?.hide()
@@ -269,6 +272,13 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
                     }
                 }
             }
+        }
+    }
+
+    private fun logCorruptDataToCrashlytics(data: List<ProductDraft>) {
+        val corruptedData = data.filter { it.isCorrupt }.map { it.corruptedData }
+        if (corruptedData.isNotEmpty()) {
+            AddEditProductErrorHandler.logMessage("$DRAFT_ERROR_LOG_KEY: ${corruptedData.joinToString()}")
         }
     }
 

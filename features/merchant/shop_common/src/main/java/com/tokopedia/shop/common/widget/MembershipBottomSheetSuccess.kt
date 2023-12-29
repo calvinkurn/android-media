@@ -85,7 +85,7 @@ class MembershipBottomSheetSuccess : BottomSheetUnify() {
 
             if (resultCode != CODE_SUCCESS) {
                 ImageHandler.LoadImage(findViewById(R.id.img_membership_success), IMG_BS_MEMBERSHIP_FAIL)
-                btnClaim.text = context?.getString(R.string.title_try_again)
+                btnClaim.text = context?.getString(com.tokopedia.abstraction.R.string.title_try_again)
                 btnClaim.setOnClickListener {
                     listener?.onButtonClaimClicked(questId)
                     dismiss()

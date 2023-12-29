@@ -39,6 +39,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import com.tokopedia.home_component.R as home_componentR
 
 class SpecialReleaseViewHolder(
     itemView: View,
@@ -96,8 +97,8 @@ class SpecialReleaseViewHolder(
                 itemView.context
             ) || isUsingPadding
         ) {
-            val specialReleaseRvPaddingStyleBottom = itemView.resources.getDimensionPixelSize(com.tokopedia.home_component.R.dimen.special_release_rv_padding_style_bottom)
-            binding?.homeComponentSpecialReleaseRv?.translationY = itemView.context.resources.getDimensionPixelSize(R.dimen.special_release_padding_card_compat_padding).toFloat()
+            val specialReleaseRvPaddingStyleBottom = itemView.resources.getDimensionPixelSize(home_componentR.dimen.home_component_padding_bottom_with_compat_padding_translated)
+            binding?.homeComponentSpecialReleaseRv?.translationY = itemView.context.resources.getDimensionPixelSize(R.dimen.home_component_card_compat_padding_translation_y).toFloat()
             binding?.homeComponentSpecialReleaseRv?.setPadding(
                 Int.ZERO,
                 Int.ZERO,
@@ -106,7 +107,7 @@ class SpecialReleaseViewHolder(
             )
             binding?.background?.gone()
         } else {
-            val specialReleaseRvPadding = itemView.resources.getDimensionPixelSize(com.tokopedia.home_component.R.dimen.special_release_rv_padding)
+            val specialReleaseRvPadding = itemView.resources.getDimensionPixelSize(home_componentR.dimen.home_component_padding_bottom_with_compat_padding)
             binding?.homeComponentSpecialReleaseRv?.translationY = Float.ZERO
             binding?.homeComponentSpecialReleaseRv?.setPadding(
                 Int.ZERO,
@@ -143,7 +144,6 @@ class SpecialReleaseViewHolder(
             channelModel = element.channelModel,
             dividerTop = binding?.homeComponentDividerHeader,
             dividerBottom = binding?.homeComponentDividerFooter,
-            useBottomPadding = element.channelModel.channelConfig.borderStyle == ChannelStyleUtil.BORDER_STYLE_BLEEDING
         )
     }
 

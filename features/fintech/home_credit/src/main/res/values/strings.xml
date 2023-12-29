@@ -14,4 +14,12 @@
     <string name="homecredit_ktp_overlay_content_description">Camera Overlay</string>
     <string name="homecredit_ktp_image_border">Image Border</string>
     <string name="homecredit_display_captured">Placeholder for Captured Image</string>
+
+    <string name="hc_camera_selfie_title">Foto Wajah &amp; KTP</string>
+    <string name="hc_camera_ktp_title">Foto KTP</string>
+    <string name="hc_camera_selfie_tips">Pastikan wajah dan KTP asli kamu terlihat jelas di dalam bingkai foto ini.</string>
+    <string name="hc_camera_ktp_tips">Pastikan KTP asli kamu terlihat jelas di dalam bingkai foto ini.</string>
+    <string name="hc_camera_tips_review">Pastikan informasi di foto ini sudah terlihat jelas, ya.</string>
+    <string name="hc_camera_label_foto_ulang">Foto Ulang</string>
+    <string name="hc_camera_label_pakai_foto_ini">Pakai Foto Ini</string>
 </resources>

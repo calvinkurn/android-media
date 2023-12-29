@@ -285,10 +285,10 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
     override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
         if (charSequence.length == 0) {
             mBtnSendGift!!.isEnabled = false
-            mBtnSendGift!!.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+            mBtnSendGift!!.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_32))
         } else {
             mBtnSendGift!!.isEnabled = true
-            mBtnSendGift!!.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y500))
+            mBtnSendGift!!.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_YN500))
         }
     }
 

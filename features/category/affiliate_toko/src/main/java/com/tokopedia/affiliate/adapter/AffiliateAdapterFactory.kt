@@ -44,8 +44,8 @@ import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationSocialVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationTutorialRVVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateEducationTutorialVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateHeaderItemVH
-import com.tokopedia.affiliate.ui.viewholder.AffiliateHomeUserDataVH
-import com.tokopedia.affiliate.ui.viewholder.AffiliateHomeUserListDataVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateAdpUserDataVH
+import com.tokopedia.affiliate.ui.viewholder.AffiliateAdpUserListDataVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliateNoPromoItemFoundVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliatePerformaSharedProductCardsItemVH
 import com.tokopedia.affiliate.ui.viewholder.AffiliatePerformanceChipRVVH
@@ -153,8 +153,8 @@ class AffiliateAdapterFactory(
             AffiliateTransactionHistoryItemVH.LAYOUT -> AffiliateTransactionHistoryItemVH(parent)
             AffiliateCommissionDetailsItemVH.LAYOUT -> AffiliateCommissionDetailsItemVH(parent, affiliateInfoClickInterfaces)
             AffiliateCommisionDivderItemVH.LAYOUT -> AffiliateCommisionDivderItemVH(parent)
-            AffiliateHomeUserDataVH.LAYOUT -> AffiliateHomeUserDataVH(parent, onPerformaGridClick)
-            AffiliateHomeUserListDataVH.LAYOUT -> AffiliateHomeUserListDataVH(parent, onPerformaGridClick)
+            AffiliateAdpUserDataVH.LAYOUT -> AffiliateAdpUserDataVH(parent, onPerformaGridClick)
+            AffiliateAdpUserListDataVH.LAYOUT -> AffiliateAdpUserListDataVH(parent, onPerformaGridClick)
             AffiliateDateFilterVH.LAYOUT -> AffiliateDateFilterVH(parent, onDateRangeClickInterface)
             AffiliateNoPromoItemFoundVH.LAYOUT -> AffiliateNoPromoItemFoundVH(parent, bottomNavBarClickListener)
             AffiliateCommisionThickDivderItemVH.LAYOUT -> AffiliateCommisionThickDivderItemVH(parent)
@@ -226,11 +226,11 @@ class AffiliateAdapterFactory(
     }
 
     override fun type(viewModel: AffiliateUserPerformanceModel): Int {
-        return AffiliateHomeUserDataVH.LAYOUT
+        return AffiliateAdpUserDataVH.LAYOUT
     }
 
     override fun type(viewModel: AffiliateUserPerformanceListModel): Int {
-        return AffiliateHomeUserListDataVH.LAYOUT
+        return AffiliateAdpUserListDataVH.LAYOUT
     }
 
     override fun type(viewModel: AffiliateDateFilterModel): Int {

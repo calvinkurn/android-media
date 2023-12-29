@@ -17,6 +17,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface
+import com.tokopedia.test.application.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -65,7 +66,7 @@ internal fun createFakeBaseAppComponent(context: Context) = object : BaseAppComp
     }
 
     override fun coroutineDispatchers(): CoroutineDispatchers {
-        TODO("Not yet implemented")
+        return CoroutineTestDispatchersProvider
     }
 
     override fun graphqlRepository(): GraphqlRepository {

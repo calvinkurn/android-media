@@ -13,12 +13,9 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.chatbot2.view.listener.ChatbotSendButtonListener
 import com.tokopedia.chatbot.databinding.BottomsheetChatbotBigReplyBoxBinding
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.item_chatbot_quick_reply_view.view.*
-
 class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     private var isSendButtonActivated: Boolean = false
     private var labelText = ""
@@ -54,6 +51,9 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         setUpEditText()
         getBindingView().chatText.icon1.showWithCondition(shouldShowAddAttachmentButton)
         changeSendButtonIcon(isEnabled = true)
+        if (isError) {
+            setWordLengthError()
+        }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -63,11 +63,12 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
             minLine = MINIMUM_NUMBER_OF_LINES
             maxLine = MAXIMUM_NUMBER_OF_LINES
             labelText.text = this@BigReplyBoxBottomSheet.labelText
+            context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                ?.let { labelText.setTextColor(it) }
             setPlaceholder(hintText)
             if (messageText.isNotEmpty()) {
                 editText.setText(messageText)
             }
-            labelText.hide()
             editText.setHintTextColor(
                 ContextCompat.getColor(
                     context,
@@ -143,6 +144,8 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
                 if (getWordCount() >= MINIMUM_NUMBER_OF_WORDS) {
                     enableSendButton()
                 }
+                context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                    ?.let { _viewBinding?.chatText?.labelText?.setTextColor(it) }
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -211,6 +214,8 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
             )
             setMessage(message)
             isInputError = true
+            context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+                ?.let { labelText.setTextColor(it) }
         }
     }
 

@@ -1,6 +1,6 @@
 package com.tokopedia.promogamification.common.floating
 
-import com.tokopedia.promogamification.common.CoreGamificationEventTracking
+import com.tokopedia.promogamification.common.applink.CoreGamificationEventTracking
 import com.tokopedia.promogamification.common.constants.TrackerConstants
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils

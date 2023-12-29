@@ -45,7 +45,7 @@
             app:layout_constraintBottom_toTopOf="@id/tg_denom_full_quota"
             android:layout_marginTop="@dimen/spacing_lvl2"
             app:typographyType="body_3"
-            android:textColor="@color/Unify_N600"
+            android:textColor="@color/Unify_NN800"
             tools:text="The description related to the product, max 1 line"
             tools:visibility="visible" />
 
@@ -63,7 +63,7 @@
             android:layout_marginTop="@dimen/spacing_lvl1"
             tools:text="3 GB"
             app:typographyType="body_1"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             />
 
         <View
@@ -76,7 +76,7 @@
             android:layout_height="@dimen/widget_view_separator_recommendation_big_card_height"
             android:visibility="gone"
             tools:visibility="visible"
-            android:background="@color/Unify_N700_96"
+            android:background="@color/Unify_NN950_96"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -146,7 +146,7 @@
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_lvl2"
-            android:textColor="@color/Unify_N400"
+            android:textColor="@color/Unify_NN600"
             android:visibility="gone"
             app:layout_constraintLeft_toRightOf="@+id/label_denom_full_discount"
             app:layout_constraintTop_toTopOf="@+id/tg_denom_full_price"

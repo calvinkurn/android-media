@@ -143,6 +143,13 @@ class TopupBillsPersoFavoriteNumberFragment :
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        childFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            if (fragment is PersoFavoriteNumberMenuBottomSheet) {
+                fragment.setListener(this)
+            } else if(fragment is PersoFavoriteNumberModifyBottomSheet) {
+                fragment.setListener(this)
+            }
+        }
         super.onCreate(savedInstanceState)
         setupArguments(arguments)
         localCacheHandler = LocalCacheHandler(context, CACHE_PREFERENCES_NAME)
@@ -533,8 +540,9 @@ class TopupBillsPersoFavoriteNumberFragment :
         val shouldShowDelete = clientNumbers.size > MIN_TOTAL_FAV_NUMBER
 
         val bottomSheet = PersoFavoriteNumberMenuBottomSheet.newInstance(
-            favNumberItem, this, shouldShowDelete
+            favNumberItem, shouldShowDelete
         )
+        bottomSheet.setListener(this)
         bottomSheet.show(childFragmentManager, "")
     }
 
@@ -567,7 +575,8 @@ class TopupBillsPersoFavoriteNumberFragment :
             currentCategoryName, favNumberItem.operatorName, loyaltyStatus, userSession.userId
         )
 
-        val bottomSheet = PersoFavoriteNumberModifyBottomSheet.newInstance(favNumberItem, this)
+        val bottomSheet = PersoFavoriteNumberModifyBottomSheet.newInstance(favNumberItem)
+        bottomSheet.setListener(this)
         bottomSheet.show(childFragmentManager, "")
     }
 

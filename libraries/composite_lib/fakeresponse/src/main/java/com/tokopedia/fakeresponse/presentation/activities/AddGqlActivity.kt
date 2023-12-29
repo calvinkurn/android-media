@@ -107,6 +107,9 @@ class AddGqlActivity : BaseActivity() {
                         ex.printStackTrace()
                     }
                 }
+                else -> {
+                    // no-op
+                }
             }
         })
 
@@ -135,6 +138,9 @@ class AddGqlActivity : BaseActivity() {
                 }
                 is Loading -> {
                 }
+                else -> {
+                    // no-op
+                }
             }
         })
 
@@ -146,6 +152,9 @@ class AddGqlActivity : BaseActivity() {
                 is Fail -> {
                     toast(it.ex.message)
                 }
+                else -> {
+                    // no-op
+                }
             }
         })
 
@@ -153,6 +162,9 @@ class AddGqlActivity : BaseActivity() {
             when (it) {
                 is Success<String> -> sendData(it.data)
                 is Fail -> toast(it.ex.message)
+                else -> {
+                    // no-op
+                }
             }
         })
 
@@ -160,6 +172,9 @@ class AddGqlActivity : BaseActivity() {
             when (it) {
                 is Success<Boolean> -> finish()
                 is Fail -> toast(it.ex.message)
+                else -> {
+                    // no-op
+                }
             }
         })
     }

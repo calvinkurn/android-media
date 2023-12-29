@@ -305,4 +305,6 @@ object OptionHelper {
         map(Option::value)
             .toSet()
             .joinToString(separator = OPTION_SEPARATOR)
+
+    fun List<Option>.hasKey(key: String): Boolean = any { it.key == key }
 }

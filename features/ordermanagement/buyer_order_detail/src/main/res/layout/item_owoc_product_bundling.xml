@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/buyer_order_detail_card_horizontal_margin"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_owoc_bundling"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_owoc_bundling_icon"
+            android:layout_width="@dimen/buyer_order_detail_bundling_icon_size"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginVertical="@dimen/buyer_order_detail_bundling_info_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/divider_owoc_bundling_top"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_owoc_bundling_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/buyer_order_detail_bundling_info_margin"
+            app:layout_constraintStart_toEndOf="@id/iv_owoc_bundling_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/divider_owoc_bundling_top"
+            app:typographyType="heading_6"
+            tools:text="Paket Tahun Baru"/>
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/divider_owoc_bundling_top"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/buyer_order_detail_divider_height"
+            android:layout_marginTop="40dp"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_owoc_bundling"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider_owoc_bundling_top"
+            tools:listitem="@layout/item_owoc_product_bundling_list_item"
+            tools:itemCount="3"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

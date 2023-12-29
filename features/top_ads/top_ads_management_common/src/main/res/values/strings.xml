@@ -20,6 +20,8 @@
     <string name="add_product">Tambah Produk</string>
     <string name="product_count">%d Produk</string>
     <string name="keyword_count">%d Kata Kunci</string>
+    <string name="topads_common_product_count_with_bold_value"><![CDATA[<b>%d</b> Produk]]></string>
+    <string name="topads_common_keyword_count_with_bold_value"><![CDATA[<b>%d</b> Kata Kunci]]></string>
     <string name="add_keyword">Tambah Kata Kunci</string>
     <string name="add_keyword_positif">Tambah Kata Kunci Positif</string>
     <string name="add_keyword_negatif">Tambah Kata Kunci Negatif</string>
@@ -29,14 +31,14 @@
     <string name="error_max_selected_keyword">Batas maksimum 50 kata kunci</string>
     <string name="error_max_length">Maksimum 70 karakter</string>
     <string name="format_selected_keyword" tools:ignore="PluralsCandidate">%d kata kunci dipilih</string>
-    <string name="format_selected_produk">%d produk dipilih</string>
+    <string name="format_selected_produk"><![CDATA[<b>%d</b> produk dipilih]]></string>
     <string name="topads_common_selected_product">Produk dipilih (%d)</string>
     <string name="no_promoted_product">Semua produk sudah diiklankan</string>
     <string name="recommendated_bid_message">Biaya rata-rata kompetitor Rp %s</string>
     <string name="recommendated_bid_message_new">Rekomendasi Rp%s</string>
     <string name="min_bid_error">Biaya minimum Rp%s</string>
-    <string name="angarran_harrian_min_bid_error">Angaran harian min. Rp%s</string>
-    <string name="angarran_harrian_max_bid_error">Angaran harian maks. Rp%s</string>
+    <string name="topads_common_angarran_harrian_min_bid_error">Anggaran harian min. Rp%s</string>
+    <string name="topads_common_angarran_harrian_max_bid_error">Anggaran harian maks. Rp%s</string>
     <string name="max_bid_error">Biaya maksimum Rp%s</string>
     <string name="min_bid_error_new">Biaya min. Rp%s</string>
     <string name="max_bid_error_new">Biaya maks. Rp%s</string>
@@ -278,4 +280,56 @@
     <string name="topads_autoads_advantage_body_3">Kamu masih bisa atur sendiri produk yang ingin diiklankan dan anggaran harianmu.</string>
     <string name="topads_autoads_advantage_body_4">Dengan dukungan sistem pintar TopAds, produk tampil lebih sering &amp; tepat sasaran.</string>
     <string name="topads_autoads_advantage_cta">Ya, Aktifkan</string>
+    <string name="topads_common_group">Grup</string>
+    <string name="mp_ad_group_list_search_hint">Cari grup iklan di sini</string>
+    <string name="topads_common_create_group_budget_help_desc">Semakin tinggi anggaran harian, durasi tampil iklanmu akan semakin lama dan dapat menjangkau semakin banyak pembeli.</string>
+    <string name="topads_common_daily_budget_tips">Tips Anggaran Harian</string>
+    <string name="topads_common_create_group_daily_budget_desc">Untuk memaksimalkan penjualanmu, biaya iklan akan diatur otomatis dulu ya. Kamu bisa atur lagi nanti.</string>
+    <string name="topads_common_create_group_success_dailog_desc">Kamu bisa tambah produk, atur biaya iklan, kata kunci, dan anggaran harian dengan klik tombol Atur Grup Iklan.</string>
+    <string name="topads_common_product_successfully_advertised">Produk berhasil diiklankan!</string>
+    <string name="topads_common_manage_ads_group">Atur Grup Iklan</string>
+    <string name="topads_common_stay_here">Tetap di Sini</string>
+    <string name="topads_commong_ad_group_search_error_title">Oops, grup tidak ditemukan</string>
+    <string name="topads_common_ad_group_search_error_desc">Coba cek lagi nama grup yang kamu cari atau coba buat grup iklan baru.</string>
+    <string name="topads_common_insufficient_credits_error_desc">Saat ini, Kredit TopAds-mu Rpx.xxx dan belum cukup untuk beriklan. Tambah Kredit TopAds dulu, yuk.</string>
+    <string name="topads_common_ads_created_successfully_but_cant_appear_yet">Iklan berhasil dibuat, tapi belum bisa tampil nih</string>
+    <string name="topads_common_add_credit">Tambah Kredit</string>
+    <string name="topads_common_later_keyword">Nanti Saja</string>
+    <string name="topads_common_failed_to_create_ads_toast_msg">Oops, iklan gagal dibuat. Coba beberapa saat lagi, ya.</string>
+    <string name="topads_common_try_again">Coba Lagi</string>
+    <string name="topads_common_the_group_name_is_already_in_use">Nama grup sudah digunakan.</string>
+    <string name="topads_common_ad_groups_character_limit_error_msg">Grup iklan maksimal 70 karakter</string>
+    <string name="top_ads_create_text_caption_one"><![CDATA[Iklan Dengan klik Iklankan, kamu menyetujui <strong><span style="color:#00AA5B">Syarat dan Ketentuan .</span></strong>]]></string>
+    <string name="top_ads_create_text_caption_two"><![CDATA[serta <strong><span style="color:#00AA5B">Pemberitahuan Privasi Tokopedia.</span></strong>]]></string>
+    <string name="top_ads_create_edit_ad_group_name_bottom_sheet_title">Ubah nama grup</string>
+    <string name="top_ads_create_edit_ad_group_name_bottom_sheet_label">Nama grup iklan</string>
+    <string name="top_ads_create_edit_ad_group_name_bottom_sheet_cta">Ubah Nama</string>
+    <string name="topads_commom_recommended_bid_apply">Disarankan Rp%d. Terapkan</string>
+    <string name="top_ads_common_text_info_search_bid"><![CDATA[Iklan di Pencarian adalah iklan yang tampil di halaman Pencarian calon pembeli <strong><span style="color:#00AA5B">Pelajari</span></strong>]]></string>
+    <string name="toapds_common_tooltip_text">Untuk menjaga iklanmu tetap aktif.</string>
+
+    <string name="topads_ads_optimal_bid">Biaya optimal ✔️</string>
+    <string name="topads_ads_error_multiple_fifty">Biaya harus kelipatan 50</string>
+    <string name="topads_ads_search_bid_tooltip_title">Biaya Iklan di Pencarian</string>
+    <string name="topads_ads_search_bid_tooltip_description">Biaya iklan baru akan dikenakan setiap ada calon pembeli yang klik iklan produkmu baik itu secara organik ataupun saat iklanmu tampil sesuai dengan kata kunci pilihanmu.\n\nTips:\nSemakin tinggi biaya iklanmu, maka semakin tinggi peluang iklanmu ditampilkan.</string>
+    <string name="topads_ads_performance_search_stats">Di Pencarian</string>
+    <string name="topads_ads_performance_browse_stats">Di Rekomendasi</string>
+    <string name="topads_ads_performance_total_stats">Total Tampil </string>
+    <string name="topads_ads_default_performance">0x</string>
+    <string name="topads_ads_performance_per_day">/minggu</string>
+    <string name="topads_ads_minimum_budget">Minimum Rp%s</string>
+    <string name="topads_ads_maximum_budget">Maksimum Rp%s</string>
+    <string name="topads_ads_potential_performance_per_day">%sx/minggu</string>
+    <string name="top_ads_performce_count_prefix">%sx</string>
+    <string name="topads_ads_unlimited_daily_budget">Tidak dibatasi</string>
+    <string name="topads_ads_browse_bid_item_prefix">Biaya iklan Rp.%s</string>
+    <string name="topads_ads_performance_sheet_title">Potensi tampil</string>
+    <string name="topads_ads_create_product_group_button">Iklankan Sekarang</string>
+    <string name="topads_ads_load_performance_data">Muat Ulang</string>
+    <string name="topads_ads_currency_prefix">Rp. %s</string>
+    <string name="topads_ads_currency_prefix_without_dot">Rp %s</string>
+    <string name="topads_ads_performance_sheet_footer">Perkiraan seberapa sering iklanmu tampil berdasarkan produk yang dipilih, biaya grup iklan, dan anggaran harian.</string>
+
+
+
 </resources>

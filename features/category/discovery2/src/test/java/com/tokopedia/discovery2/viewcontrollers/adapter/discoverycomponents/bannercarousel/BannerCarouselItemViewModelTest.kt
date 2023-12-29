@@ -2,17 +2,17 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ban
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.discovery2.Constant.CompType.SHOP_CARD
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.Properties
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -51,26 +51,30 @@ class BannerCarouselItemViewModelTest {
     }
 
     @Test
-    fun `test image click url`() {
-        every { componentsItem.data } returns null
-        assert(viewModel.getNavigationUrl() == null)
-        every { componentsItem.data } returns ArrayList()
-        assert(viewModel.getNavigationUrl() == null)
-        val list = ArrayList<DataItem>()
-        val dataItem = DataItem()
-        list.add(dataItem)
-        every { componentsItem.data } returns list
-        assert(viewModel.getNavigationUrl() == "")
-        dataItem.imageClickUrl = null
-        assert(viewModel.getNavigationUrl() == null)
-        dataItem.imageClickUrl = "testUrl"
-        assert(viewModel.getNavigationUrl() == "testUrl")
-    }
-
-    @Test
-    fun `test for position passed`(){
+    fun `test for position passed`() {
         assert(viewModel.position == 99)
     }
 
+    @Test
+    fun `test for component type`() {
+        // properties has shop card comp type
+        val propertiesShopCardCompType = Properties(compType = SHOP_CARD)
+        every { componentsItem.properties } returns propertiesShopCardCompType
+        assertEquals(propertiesShopCardCompType.compType, viewModel.getCompType())
+        assertTrue(viewModel.isCompTypeShopCard())
 
+        // properties has empty comp type
+        val propertiesEmptyCompType = Properties(compType = String.EMPTY)
+        every { componentsItem.properties } returns propertiesEmptyCompType
+        assertEquals(propertiesEmptyCompType.compType, viewModel.getCompType())
+
+        // properties has null comp type
+        val propertiesNullCompType = Properties(compType = null)
+        every { componentsItem.properties } returns propertiesNullCompType
+        assertEquals(String.EMPTY, viewModel.getCompType())
+
+        // properties is null
+        every { componentsItem.properties } returns null
+        assertEquals(String.EMPTY, viewModel.getCompType())
+    }
 }

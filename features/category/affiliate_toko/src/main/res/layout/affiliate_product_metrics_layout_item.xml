@@ -32,7 +32,7 @@
         android:layout_height="12dp"
         android:layout_marginStart="6dp"
         android:rotation="90"
-        app:icon_color_light_enable="@color/Unify_G500"
+        app:icon_color_light_enable="@color/Unify_GN500"
         app:icon_name="ARROW_BACK"
         app:layout_constraintBottom_toBottomOf="@+id/metric_value"
         app:layout_constraintStart_toEndOf="@+id/metric_value"

@@ -1,7 +1,6 @@
 package com.tokopedia.productcard.test
 
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.FreeOngkir
@@ -10,6 +9,7 @@ import com.tokopedia.productcard.ProductCardModel.LabelGroupVariant
 import com.tokopedia.productcard.ProductCardModel.NonVariant
 import com.tokopedia.productcard.ProductCardModel.ShopBadge
 import com.tokopedia.productcard.ProductCardModel.Variant
+import com.tokopedia.productcard.R
 import com.tokopedia.productcard.test.utils.campaignLabelUrl
 import com.tokopedia.productcard.test.utils.freeOngkirImageUrl
 import com.tokopedia.productcard.test.utils.fulfillmentBadgeImageUrl
@@ -21,6 +21,7 @@ import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
 import com.tokopedia.productcard.test.utils.productImageUrl
 import com.tokopedia.productcard.test.utils.withDrawable
 import com.tokopedia.productcard.utils.DARK_GREY
+import com.tokopedia.productcard.utils.GOLD
 import com.tokopedia.productcard.utils.LABEL_BEST_SELLER
 import com.tokopedia.productcard.utils.LABEL_CAMPAIGN
 import com.tokopedia.productcard.utils.LABEL_CATEGORY
@@ -33,15 +34,18 @@ import com.tokopedia.productcard.utils.LABEL_GIMMICK
 import com.tokopedia.productcard.utils.LABEL_INTEGRITY
 import com.tokopedia.productcard.utils.LABEL_PRICE
 import com.tokopedia.productcard.utils.LABEL_PRODUCT_STATUS
+import com.tokopedia.productcard.utils.LABEL_RIBBON
 import com.tokopedia.productcard.utils.LABEL_SHIPPING
 import com.tokopedia.productcard.utils.LIGHT_GREEN
 import com.tokopedia.productcard.utils.LIGHT_GREY
+import com.tokopedia.productcard.utils.RED
 import com.tokopedia.productcard.utils.TEXT_DARK_GREY
 import com.tokopedia.productcard.utils.TEXT_GREEN
 import com.tokopedia.productcard.utils.TRANSPARENT_BLACK
 import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
 import com.tokopedia.productcard.utils.TYPE_VARIANT_CUSTOM
 import com.tokopedia.productcard.utils.TYPE_VARIANT_SIZE
+import com.tokopedia.unifycomponents.CardUnify2
 
 private const val PLUS_VARIAN_LAIN_TEXT = "+ Keranjang"
 
@@ -117,6 +121,13 @@ internal fun getProductCardModelMatcherData(useViewStub: Boolean): List<ProductC
         testAddToCartButtonWishlist(useViewStub),
         testSeeSimilarProductButtonWishlist(useViewStub),
         testOutOfStock(),
+        testSeeOtherProductButton(),
+        testCardBorder(),
+        testCardClear(),
+        testRibbonCardBorder(),
+        testRibbonCardShadow(),
+        testRibbonCardClear(),
+        testRibbonGoldCardClear(),
     )
 }
 
@@ -409,7 +420,7 @@ private fun testLabelDiscountAndSlashPrice(): ProductCardModelMatcher {
     val productCardMatcher = mapOf(
         R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
-        R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
+        R.id.textViewDiscount to isDisplayedWithText(productCardModel.discountPercentage),
         R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
@@ -484,7 +495,7 @@ private fun testLabelDiscountWithoutSlashPrice(): ProductCardModelMatcher {
     val productCardMatcher = mapOf(
         R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
-        R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
+        R.id.textViewDiscount to isDisplayedWithText(productCardModel.discountPercentage),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
@@ -506,7 +517,7 @@ private fun testLabelPriceAndSlashPrice(): ProductCardModelMatcher {
     val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN)
 
     val productCardModel = ProductCardModel(
-            productName = "Slash Price prioritized over Label Price",
+            productName = "Slash Price with Label Price",
             productImageUrl = productImageUrl,
             discountPercentage = "20%",
             slashedPrice = "Rp8.499.000",
@@ -525,9 +536,10 @@ private fun testLabelPriceAndSlashPrice(): ProductCardModelMatcher {
     val productCardMatcher = mapOf(
         R.id.productCardImage to isDisplayed(),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
-        R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
+        R.id.textViewDiscount to isDisplayedWithText(productCardModel.discountPercentage),
         R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.labelPrice to isDisplayedWithText(labelPrice.title),
         R.id.imageShopBadge to isDisplayed(),
         R.id.textViewShopLocation to isDisplayedWithText(productCardModel.shopLocation),
         R.id.imageFreeOngkirPromo to isDisplayed(),
@@ -2667,6 +2679,179 @@ private fun testOutOfStock(): ProductCardModelMatcher {
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testSeeOtherProductButton(): ProductCardModelMatcher {
+    val labelIntegrity = LabelGroup(
+        position = LABEL_INTEGRITY,
+        title = "Terjual 8",
+        type = TEXT_DARK_GREY,
+    )
+
+    val productCardModel = ProductCardModel(
+        productName = "See other Product Button",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        discountPercentage = "20%",
+        slashedPrice = "Rp5.000.000",
+        countSoldRating = "4.5",
+        labelGroupList = listOf(labelIntegrity),
+        hasAddToCartButton = true,
+        seeOtherProductText = "Lihat 5 Lainnya",
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.textViewDiscount to isDisplayedWithText(productCardModel.discountPercentage),
+        R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.salesRatingFloatLine to isDisplayed(),
+        R.id.textViewSales to isDisplayedWithText(labelIntegrity.title),
+        R.id.buttonAddToCart to isDisplayed(),
+        R.id.buttonSeeOtherProduct to isDisplayed(),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testCardBorder(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+        productName = "Card with border",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        slashedPrice = "Rp8.000.000",
+        cardType = CardUnify2.TYPE_BORDER,
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testCardClear(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+        productName = "Card with clear border",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        slashedPrice = "Rp8.000.000",
+        cardType = CardUnify2.TYPE_CLEAR,
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testRibbonCardBorder(): ProductCardModelMatcher {
+    val labelRibbon = LabelGroup(position = LABEL_RIBBON, type = RED, title = "90% OFF")
+
+    val productCardModel = ProductCardModel(
+        productName = "Ribbon with Border Card",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        labelGroupList = listOf(labelRibbon),
+        slashedPrice = "Rp8.000.000",
+        cardType = CardUnify2.TYPE_BORDER,
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+        R.id.imageRibbonArch to isDisplayed(),
+        R.id.imageRibbonContent to isDisplayed(),
+        R.id.textRibbon to isDisplayedWithText(labelRibbon.title),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testRibbonCardShadow(): ProductCardModelMatcher {
+    val labelRibbon = LabelGroup(position = LABEL_RIBBON, type = RED, title = "90% OFF")
+
+    val productCardModel = ProductCardModel(
+        productName = "Ribbon with Shadow Card",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        labelGroupList = listOf(labelRibbon),
+        slashedPrice = "Rp8.000.000",
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+        R.id.imageRibbonArch to isDisplayed(),
+        R.id.imageRibbonContent to isDisplayed(),
+        R.id.textRibbon to isDisplayedWithText(labelRibbon.title),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testRibbonCardClear(): ProductCardModelMatcher {
+    val labelRibbon = LabelGroup(position = LABEL_RIBBON, type = RED, title = "90% OFF")
+
+    val productCardModel = ProductCardModel(
+        productName = "Ribbon with clear border",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        labelGroupList = listOf(labelRibbon),
+        slashedPrice = "Rp8.000.000",
+        cardType = CardUnify2.TYPE_CLEAR,
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+        R.id.imageRibbonArch to isDisplayed(),
+        R.id.imageRibbonContent to isDisplayed(),
+        R.id.textRibbon to isDisplayedWithText(labelRibbon.title),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testRibbonGoldCardClear(): ProductCardModelMatcher {
+    val labelRibbon = LabelGroup(position = LABEL_RIBBON, type = GOLD, title = "#1")
+
+    val productCardModel = ProductCardModel(
+        productName = "Ribbon with clear border",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        labelGroupList = listOf(labelRibbon),
+        slashedPrice = "Rp8.000.000",
+        cardType = CardUnify2.TYPE_CLEAR,
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+        R.id.imageRibbonArch to isDisplayed(),
+        R.id.imageRibbonContent to isDisplayed(),
+        R.id.textRibbon to isDisplayedWithText(labelRibbon.title),
     )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

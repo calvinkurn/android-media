@@ -176,7 +176,7 @@ public class FragmentReferral extends BaseDaggerFragment implements ReferralView
         presenter.copyVoucherCode(referralCodeTextView.getText().toString());
         if (!TextUtils.isEmpty(referralCodeTextView.getText().toString())) {
             btnCopyReferralCode.setText(R.string.copied);
-            btnCopyReferralCode.setTextColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400));
+            btnCopyReferralCode.setTextColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500));
             imgTick.setVisibility(View.VISIBLE);
         }
     }

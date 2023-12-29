@@ -30,13 +30,15 @@ class AffiliateDatePickerBottomSheetViewModel @Inject constructor(
         launchCatchError(block = {
             shimmerVisibility.value = true
             affiliateUserPerformanceUseCase.getAffiliateFilter().let { response ->
-                response.data?.ticker?.let { ticker ->
-                    if (ticker.isNotEmpty()) tickerInformation.value =
-                        ticker.first()?.tickerDescription
+                response.dateFilterData?.ticker?.let { ticker ->
+                    if (ticker.isNotEmpty()) {
+                        tickerInformation.value =
+                            ticker.first()?.tickerDescription.orEmpty()
+                    }
                 }
 
                 affiliateFilterList.value =
-                    convertFilterToVisitable(response.data?.getAffiliateDateFilter)
+                    convertFilterToVisitable(response.dateFilterData?.getAffiliateDateFilter)
             }
             shimmerVisibility.value = false
         }, onError = {

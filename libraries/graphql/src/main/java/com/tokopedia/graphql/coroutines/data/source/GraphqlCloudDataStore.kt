@@ -17,14 +17,17 @@ import com.tokopedia.graphql.data.model.GraphqlResponseInternal
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend
 import com.tokopedia.graphql.util.CacheHelper
 import com.tokopedia.graphql.util.Const
-import com.tokopedia.graphql.util.registeredGqlForTopAds
-import com.tokopedia.graphql.util.STATUS_QUERY
-import com.tokopedia.graphql.util.TOP_ADS_TRACKING_KEY
 import com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER
 import com.tokopedia.graphql.util.Const.QUERY_HASHING_HEADER
 import com.tokopedia.graphql.util.Const.TKPD_AKAMAI
+import com.tokopedia.graphql.util.IRIS_SESSION_ID_KEY
 import com.tokopedia.graphql.util.LoggingUtils
 import com.tokopedia.graphql.util.LoggingUtils.logGqlErrorSsl
+import com.tokopedia.graphql.util.RemoteConfigHelper
+import com.tokopedia.graphql.util.STATUS_QUERY
+import com.tokopedia.graphql.util.TOP_ADS_TRACKING_KEY
+import com.tokopedia.graphql.util.registeredGqlForTopAds
+import com.tokopedia.graphql.util.registeredGqlForTopAdsTdn
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.*
@@ -58,6 +61,7 @@ class GraphqlCloudDataStore @Inject constructor(
 
         putAkamaiHeader(header, requests)
         putTopAdsTrackingHeader(header, requests)
+        putTopAdsTDNBannerHeader(header, requests)
 
         if (requests[0].isDoQueryHash) {
             val queryHashingHeaderValue = StringBuilder()
@@ -94,6 +98,25 @@ class GraphqlCloudDataStore @Inject constructor(
             api.getResponseSuspendWithPath(url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
         } else {
             api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
+        }
+    }
+
+    private fun putTopAdsTDNBannerHeader(
+        header: MutableMap<String, String>,
+        requests: List<GraphqlRequest>
+    ) {
+        if (!RemoteConfigHelper.isEnableTdnHeader()) return
+        for (req in requests) {
+            val list: List<String> = getQueryListFromQueryString(req.query)
+            for (temp in list) {
+                if (temp.equals(registeredGqlForTopAdsTdn, true)) {
+                    val newHeader = GraphqlClient.getFunction().topAdsTDNHeader
+                    if (!newHeader.isNullOrEmpty()) {
+                        header[IRIS_SESSION_ID_KEY] = newHeader
+                    }
+                    break
+                }
+            }
         }
     }
 

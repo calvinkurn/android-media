@@ -2,9 +2,8 @@ package com.tokopedia.gm.common.constant
 
 import com.tokopedia.imageassets.TokopediaImageUrl
 
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.user.DeeplinkMapperUser
 
 /**
  * Created By @ilhamsuaib on 21/03/21
@@ -36,9 +35,9 @@ object PMConstant {
     }
 
     object AppLink {
+        private const val SOURCE_POWER_MERCHANT = "Power Merchant"
         private const val MERCHANT_KYC_PROJECT_ID = 10
-        private const val APPLINK_PARAMS_KYC_PM = "${ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID}=${MERCHANT_KYC_PROJECT_ID}"
-        const val KYC_POWER_MERCHANT = "${ApplinkConst.KYC_NO_PARAM}?$APPLINK_PARAMS_KYC_PM"
+        val KYC_POWER_MERCHANT = ApplinkConstInternalUserPlatform.getGotoKYCApplink(MERCHANT_KYC_PROJECT_ID.toString(), SOURCE_POWER_MERCHANT)
     }
 
     object PMTierType {

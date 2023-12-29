@@ -17,28 +17,29 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
 import com.tokopedia.media.editor.analytics.getToolEditorText
-import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.databinding.FragmentMainEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.main.EditorViewModel
 import com.tokopedia.media.editor.ui.component.DrawerUiComponent
-import com.tokopedia.media.editor.ui.widget.EditorViewPager
 import com.tokopedia.media.editor.ui.component.ToolsUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
-import com.tokopedia.media.editor.utils.*
+import com.tokopedia.media.editor.ui.widget.EditorViewPager
+import com.tokopedia.media.editor.utils.cropCenterImage
+import com.tokopedia.media.editor.utils.getImageSize
+import com.tokopedia.media.editor.utils.showErrorLoadToaster
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
-import com.tokopedia.picker.common.EDITOR_ADD_LOGO_TOOL
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.picker.common.utils.isVideoFormat
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
+import com.tokopedia.media.editor.R as mediaeditorR
 
 class EditorFragment @Inject constructor(
     private val editorHomeAnalytics: EditorHomeAnalytics
@@ -61,13 +62,28 @@ class EditorFragment @Inject constructor(
         return viewModel.getEditState(activeImageUrl)?.editList?.isNotEmpty() ?: false
     }
 
+    override fun onPause() {
+        viewBinding?.viewPager?.releaseImageVideo()
+        super.onPause()
+    }
+
+    override fun onResume() {
+        viewBinding?.viewPager?.reloadImageVideo()
+        super.onResume()
+    }
+
+    override fun onDestroyView() {
+        viewBinding?.viewPager?.clearPlayer()
+        super.onDestroyView()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(
-            editorR.layout.fragment_main_editor,
+            mediaeditorR.layout.fragment_main_editor,
             container,
             false
         )
@@ -83,19 +99,19 @@ class EditorFragment @Inject constructor(
         viewBinding?.btnRedo?.setOnClickListener {
             forwardState()
         }
-    }
 
-    private fun startAutoCrop() {
         loader = LoaderDialog(requireContext()).apply {
             setLoadingText("")
             customView = View.inflate(
                 requireContext(),
-                editorR.layout.fragment_main_crop_loader_layout,
+                mediaeditorR.layout.fragment_main_crop_loader_layout,
                 null
             ) as LinearLayout
             show()
         }
+    }
 
+    private fun startAutoCrop() {
         autoCropStartTime = System.nanoTime()
         iterateCrop(viewModel.editStateList.values.toList(), 0)
     }
@@ -123,9 +139,20 @@ class EditorFragment @Inject constructor(
         if (data.editList.size == 0 && !data.isVideo) {
             val filePath = data.getOriginalUrl()
 
+            getImageSize(filePath).let {
+                val (width, height) = it
+                if (viewModel.isMemoryOverflow(width, height)) {
+                    loader?.dismiss()
+                    activity?.finish()
+                    return
+                }
+            }
+
             loadImageWithEmptyTarget(requireContext(),
                 filePath,
                 properties = {
+                    useCache(IS_USING_CACHE)
+                    setCacheStrategy(CACHE_STRATEGY)
                     listener(
                         onError = {
                             it?.let { exception ->
@@ -162,23 +189,25 @@ class EditorFragment @Inject constructor(
     private fun imageCrop(bitmap: Bitmap, originalPath: String) {
         val cropRatio = viewModel.editorParam.value?.autoCropRatio() ?: ImageRatioType.RATIO_1_1
         val imageRatio = bitmap.width.toFloat() / bitmap.height
-        if (viewModel.isMemoryOverflow(bitmap.width, bitmap.height)) {
-            activity?.finish()
-        }
-        cropCenterImage(bitmap, cropRatio)?.apply {
-            viewModel.saveToCache(
-                first,
-                sourcePath = originalPath
-            )?.apply {
-                val newEditorDetailUiModel = EditorDetailUiModel(
-                    originalUrl = originalPath,
-                    editorToolType = EditorToolType.CROP,
-                    resultUrl = this.absolutePath,
-                    originalRatio = imageRatio
-                )
 
-                newEditorDetailUiModel.cropRotateValue = second
-                viewModel.addEditState(originalPath, newEditorDetailUiModel, false)
+        cropCenterImage(bitmap, cropRatio)?.let { cropRotateData ->
+            viewModel.cropImage(bitmap, cropRotateData)?.let { croppedBitmap ->
+                viewModel.saveToCache(
+                    croppedBitmap,
+                    sourcePath = originalPath
+                )?.let {
+                    croppedBitmap.recycle()
+
+                    val newEditorDetailUiModel = EditorDetailUiModel(
+                        originalUrl = originalPath,
+                        editorToolType = EditorToolType.CROP,
+                        resultUrl = it.absolutePath,
+                        originalRatio = imageRatio
+                    )
+
+                    newEditorDetailUiModel.cropRotateValue = cropRotateData
+                    viewModel.addEditState(originalPath, newEditorDetailUiModel, false)
+                }
             }
         }
     }
@@ -191,7 +220,8 @@ class EditorFragment @Inject constructor(
             EditorToolType.CROP -> editorHomeAnalytics.clickCrop()
             EditorToolType.REMOVE_BACKGROUND -> editorHomeAnalytics.clickRemoveBackground()
             EditorToolType.WATERMARK -> editorHomeAnalytics.clickWatermark()
-            EditorToolType.ADD_LOGO -> editorHomeAnalytics.clickAddLogo()
+            EditorToolType.ADD_LOGO -> editorHomeAnalytics.clickToolAddLogo()
+            EditorToolType.ADD_TEXT -> editorHomeAnalytics.clickToolAddText()
         }
     }
 
@@ -212,6 +242,7 @@ class EditorFragment @Inject constructor(
                     paramData.removeBackgroundUrl = item.removeBackgroundUrl
                     paramData.cropRotateValue = item.cropRotateValue
                     paramData.addLogoValue = item.addLogoValue
+                    paramData.addTextValue = item.addTextValue
 
                     // need to store brightness / contrast implement sequence (result will be diff)
                     // if contrast is latest filter then isContrastExecuteFirst = false
@@ -264,7 +295,8 @@ class EditorFragment @Inject constructor(
             viewBinding?.viewPager?.updateImage(
                 thumbnailDrawerComponent.getCurrentIndex(),
                 this.getImageUrl(),
-                overlayImageUrl = this.getOverlayLogoValue()?.overlayLogoUrl ?: ""
+                overlayImageUrl = this.getOverlayLogoValue()?.overlayLogoUrl ?: "",
+                overlaySecondaryImageUrl = this.getOverlayTextValue()?.textImagePath ?: ""
             )
 
             renderUndoButton(this)
@@ -285,7 +317,8 @@ class EditorFragment @Inject constructor(
             viewBinding?.viewPager?.updateImage(
                 thumbnailDrawerComponent.getCurrentIndex(),
                 this.getImageUrl(),
-                overlayImageUrl = this.getOverlayLogoValue()?.overlayLogoUrl ?: ""
+                overlayImageUrl = this.getOverlayLogoValue()?.overlayLogoUrl ?: "",
+                overlaySecondaryImageUrl = this.getOverlayTextValue()?.textImagePath ?: ""
             )
 
             renderUndoButton(this)
@@ -327,9 +360,9 @@ class EditorFragment @Inject constructor(
 
         val toastEditText = getString(sourceInt)
         val toastStateChangeText = if (toastKey == TOAST_UNDO)
-            getString(editorR.string.editor_undo_state_format, toastEditText)
+            getString(mediaeditorR.string.editor_undo_state_format, toastEditText)
         else
-            getString(editorR.string.editor_redo_state_format, toastEditText)
+            getString(mediaeditorR.string.editor_redo_state_format, toastEditText)
 
 
         viewBinding?.undoRedoToast?.let {
@@ -345,9 +378,22 @@ class EditorFragment @Inject constructor(
 
     private fun observeEditorParam() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
-            val isAddLogoEnable =
-                RemoteConfigInstance.getInstance().abTestPlatform.getString(EDITOR_ADD_LOGO_TOOL) == EDITOR_ADD_LOGO_TOOL
-            if (!isAddLogoEnable || !viewModel.isShopAvailable()) {
+            viewModel.compressImage(it) { // on compress done
+                thumbnailDrawerComponent.setupView(viewModel.editStateList.values.toList())
+
+                if (it.autoCropRatio() != null) {
+                    startAutoCrop()
+                } else {
+                    viewBinding?.viewPager?.apply {
+                        setAdapter(viewModel.editStateList.values.toList())
+                        setPagerPageChangeListener(this)
+                    }
+                    loader?.dismiss()
+                }
+            }
+
+            // show/hide add logo base on user shop
+            if (!viewModel.isShopAvailable()) {
                 it.editorToolsList().apply {
                     val removeIndex = find { toolId -> toolId == EditorToolType.ADD_LOGO }
                     remove(removeIndex)
@@ -355,16 +401,6 @@ class EditorFragment @Inject constructor(
             }
 
             editorToolComponent.setupView(it.editorToolsList())
-            thumbnailDrawerComponent.setupView(viewModel.editStateList.values.toList())
-
-            if (it.autoCropRatio() != null) {
-                startAutoCrop()
-            } else {
-                viewBinding?.viewPager?.apply {
-                    setAdapter(viewModel.editStateList.values.toList())
-                    setPagerPageChangeListener(this)
-                }
-            }
         }
     }
 
@@ -389,7 +425,8 @@ class EditorFragment @Inject constructor(
                 viewBinding?.viewPager?.updateImage(
                     it,
                     editorUiModel.getImageUrl(),
-                    overlayImageUrl = editorUiModel.getOverlayLogoValue()?.overlayLogoUrl ?: ""
+                    overlayImageUrl = editorUiModel.getOverlayLogoValue()?.overlayLogoUrl ?: "",
+                    overlaySecondaryImageUrl = editorUiModel.getOverlayTextValue()?.textImagePath ?: ""
                 )
             }
         }
@@ -406,7 +443,7 @@ class EditorFragment @Inject constructor(
             toaster = Toaster.build(
                 editorFragmentContainer,
                 getString(
-                    editorR.string.editor_auto_crop_format,
+                    mediaeditorR.string.editor_auto_crop_format,
                     ratioWidth.toInt(),
                     ratioHeight.toInt()
                 ),
@@ -434,7 +471,9 @@ class EditorFragment @Inject constructor(
         private const val TOAST_REDO = 1
         private const val UNDO_REDO_NOTIFY_TIME = 1500L
         private const val NANO_DIVIDER = 1000000
-        private const val PIXEL_BYTE_SIZE = 4
+
+        const val IS_USING_CACHE = false
+        val CACHE_STRATEGY = MediaCacheStrategy.NONE
     }
 
 }

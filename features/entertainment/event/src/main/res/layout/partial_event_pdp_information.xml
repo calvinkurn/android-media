@@ -20,7 +20,7 @@
             android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl5"
             android:text="@string/ent_pdp_information"
-            android:textColor="@color/Unify_N700"
+            android:textColor="@color/Unify_NN950"
             app:typographyType="body_1"
             app:typographyWeight="bold" />
 

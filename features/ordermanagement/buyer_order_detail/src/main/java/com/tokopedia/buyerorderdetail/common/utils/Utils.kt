@@ -58,7 +58,7 @@ object Utils {
     }
 
     fun getColoredIndicator(context: Context, colorHex: String): Drawable? {
-        val color = parseUnifyColorHex(context, colorHex, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        val color = parseUnifyColorHex(context, colorHex, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         val drawable = MethodChecker.getDrawable(context, R.drawable.ic_buyer_order_status_indicator)
         val filter: ColorFilter = LightingColorFilter(
             ContextCompat.getColor(

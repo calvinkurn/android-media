@@ -82,7 +82,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
                 android:alpha="0"
-                android:background="@color/Unify_G500"
+                android:background="@color/Unify_GN500"
                 android:visibility="visible"
                 app:layout_anchor="@id/list"
                 app:layout_collapseMode="pin" />

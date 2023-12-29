@@ -1,5 +1,0 @@
-query getMessage($fabShopId: Int!, $source: String) {
-    chatExistingChat(toShopId: $fabShopId, source: $source) {
-      messageId
-    }
-}

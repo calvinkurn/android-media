@@ -25,6 +25,7 @@ import com.tokopedia.autocompletecomponent.suggestion.singleline.SuggestionSingl
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopWidgetViewHolder
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
+import com.tokopedia.autocompletecomponent.util.SharedPrefsCoachMarkLocalCache
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.MatcherAssert.assertThat
@@ -59,9 +60,16 @@ internal class AutocompleteSuggestionTrackingTest {
 
         activityRule.launchActivity(createIntent(keyword))
 
+        disableSuggestionCoachMark()
+
         setupIdlingResource()
 
         intending(isInternal()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+    }
+
+    private fun disableSuggestionCoachMark() {
+        SharedPrefsCoachMarkLocalCache(activityRule.activity.applicationContext)
+            .markShowSuggestionCoachMark()
     }
 
     private fun setupIdlingResource() {

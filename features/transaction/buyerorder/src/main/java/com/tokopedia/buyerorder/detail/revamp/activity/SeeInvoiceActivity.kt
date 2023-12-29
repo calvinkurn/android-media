@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.print.PrintAttributes
+import android.print.PrintJob
 import android.print.PrintManager
 import android.view.Menu
 import android.view.MenuItem
@@ -41,7 +42,9 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
 
     private var mHandler: Handler? = null
     private var mRunnable: Runnable? = null
-    private val delay = 500
+    private val delay = 1000
+
+    private var printJob: PrintJob? = null
 
     @Volatile
     private var lastTimestampCalled: Long = 0
@@ -100,33 +103,40 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
         cancelJob()
         mHandler = Handler(Looper.getMainLooper())
         mRunnable = Runnable {
-            webView?.let {
-                // debounce
-                val currentTimestamp = System.currentTimeMillis()
-                if (lastTimestampCalled + delay >= currentTimestamp) {
-                    return@Runnable
-                }
-                lastTimestampCalled = System.currentTimeMillis()
-
-                val printManager = ContextCompat.getSystemService(this, PrintManager::class.java)
-
-                var lastNoInvoice = ""
-                val invoiceRefNum = intent?.getStringExtra(INVOICE_REF_NUM) ?: ""
-                if (invoiceRefNum.isNotEmpty()) {
-                    val splitInvoice = invoiceRefNum.split("/")
-                    if (splitInvoice.isNotEmpty()) {
-                        lastNoInvoice = splitInvoice[splitInvoice.size - 1]
-                    }
-                }
-                val jobName = "Invoice $lastNoInvoice"
-
-                val printAdapter = it.createPrintDocumentAdapter(jobName)
-                val prinAttr = PrintAttributes.Builder()
-                    .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
-                    .build()
+            webView?.let { it ->
                 try {
-                    printManager?.print(jobName, printAdapter, prinAttr)
-                } catch (e: Throwable) {
+                    // debounce
+                    val currentTimestamp = System.currentTimeMillis()
+                    if (lastTimestampCalled + delay >= currentTimestamp) {
+                        return@Runnable
+                    }
+                    lastTimestampCalled = System.currentTimeMillis()
+
+                    // checking current job
+                    if (printJob == null ||
+                        printJob?.isCompleted == true ||
+                        printJob?.isFailed == true ||
+                        printJob?.isCancelled == true
+                    ) {
+                        val printManager = ContextCompat.getSystemService(this@SeeInvoiceActivity, PrintManager::class.java)
+
+                        var lastNoInvoice = ""
+                        val invoiceRefNum = intent?.getStringExtra(INVOICE_REF_NUM) ?: ""
+                        if (invoiceRefNum.isNotEmpty()) {
+                            val splitInvoice = invoiceRefNum.split("/")
+                            if (splitInvoice.isNotEmpty()) {
+                                lastNoInvoice = splitInvoice[splitInvoice.size - 1]
+                            }
+                        }
+                        val jobName = "Invoice $lastNoInvoice"
+
+                        val printAdapter = it.createPrintDocumentAdapter(jobName)
+                        val prinAttr = PrintAttributes.Builder()
+                            .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
+                            .build()
+                        printJob = printManager?.print(jobName, printAdapter, prinAttr)
+                    }
+                } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }

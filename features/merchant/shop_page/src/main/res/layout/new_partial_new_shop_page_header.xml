@@ -22,7 +22,7 @@
         android:id="@+id/choosee_address_widget_bottom_shadow"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/Unify_N75"
+        android:background="@color/Unify_NN50"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toTopOf="@id/shop_page_header_content" />
 

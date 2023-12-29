@@ -3,9 +3,7 @@ package com.tokopedia.report.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
 import android.text.InputFilter
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,12 +37,13 @@ class ReportInputDetailFragment : BaseDaggerFragment() {
             value = it.getString(ARG_VALUE, "")
         }
         with(binding) {
-            input.hint = getString(R.string.product_hint_product_report, minChar.toString())
-            input.setText(value)
+            input.editText.apply {
+                setText(value)
+                hint = getString(R.string.product_hint_product_report, minChar.toString())
+                if (maxChar != -1)
+                    filters = arrayOf(InputFilter.LengthFilter(maxChar))
+            }
             btnCont.isEnabled = true
-            if (maxChar != -1)
-                input.filters = arrayOf(InputFilter.LengthFilter(maxChar))
-
             btnCont.setOnClickListener {
                 sendInputResult()
                 activity?.finish()
@@ -53,7 +52,7 @@ class ReportInputDetailFragment : BaseDaggerFragment() {
     }
 
     fun sendInputResult() {
-        val inputText = binding.input.text.toString()
+        val inputText = binding.input.editText.text.toString()
         val intent = Intent().putExtra(INPUT_VALUE, inputText)
                 .putExtra(VALID_VALUE, inputText.length in minChar..maxChar)
         activity?.run {

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.listener.VpsWidgetListener
 import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.util.recordCrashlytics
 import com.tokopedia.home_component.viewholders.DealsWidgetItemViewHolder
 import com.tokopedia.home_component.visitable.DealsDataModel
 
@@ -34,8 +35,12 @@ class DealsWidgetAdapter(
     }
 
     override fun onBindViewHolder(holder: DealsWidgetItemViewHolder, position: Int) {
-        dataModel?.let {
-            holder.bind(itemList[position], positionInWidget, listener, it.channelModel, isCacheData)
+        try{
+            dataModel?.let {
+                holder.bind(itemList[position], positionInWidget, listener, it.channelModel, isCacheData)
+            }
+        } catch (e: Exception) {
+            e.recordCrashlytics()
         }
     }
 

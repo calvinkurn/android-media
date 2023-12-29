@@ -8,8 +8,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
-import com.tokopedia.feedcomponent.R.string.btn_text_follow
-import com.tokopedia.feedcomponent.R.string.btn_text_following
 import com.tokopedia.feedcomponent.databinding.ItemShopRecommendationBinding
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
@@ -20,6 +18,7 @@ import com.tokopedia.unifycomponents.UnifyButton.Type.ALTERNATE
 import com.tokopedia.unifycomponents.UnifyButton.Type.MAIN
 import com.tokopedia.unifycomponents.UnifyButton.Variant.FILLED
 import com.tokopedia.unifycomponents.UnifyButton.Variant.GHOST
+import com.tokopedia.content.common.R as contentCommonR
 
 /**
  * created by fachrizalmrsln on 07/07/22
@@ -72,7 +71,7 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
         when (state) {
             ShopRecomFollowState.FOLLOW -> {
                 btnItemShop.apply {
-                    text = context.getString(btn_text_following)
+                    text = context.getString(contentCommonR.string.btn_text_following)
                     buttonVariant = GHOST
                     buttonType = ALTERNATE
                     isLoading = false
@@ -80,7 +79,7 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
             }
             ShopRecomFollowState.UNFOLLOW -> {
                 btnItemShop.apply {
-                    text = context.getString(btn_text_follow)
+                    text = context.getString(contentCommonR.string.btn_text_follow)
                     buttonVariant = FILLED
                     buttonType = MAIN
                     isLoading = false
@@ -88,7 +87,7 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
             }
             ShopRecomFollowState.LOADING_FOLLOW -> {
                 btnItemShop.apply {
-                    text = context.getString(btn_text_following)
+                    text = context.getString(contentCommonR.string.btn_text_following)
                     buttonVariant = GHOST
                     buttonType = ALTERNATE
                     isLoading = true
@@ -96,7 +95,7 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
             }
             ShopRecomFollowState.LOADING_UNFOLLOW -> {
                 btnItemShop.apply {
-                    text = context.getString(btn_text_follow)
+                    text = context.getString(contentCommonR.string.btn_text_follow)
                     buttonVariant = FILLED
                     buttonType = MAIN
                     isLoading = true

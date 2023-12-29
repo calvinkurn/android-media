@@ -27,7 +27,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
-import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
+import com.tokopedia.content.product.picker.ProductSetupFragment
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
 import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
@@ -42,18 +42,19 @@ import com.tokopedia.play.broadcaster.shorts.view.manager.idle.PlayShortsIdleMan
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayBroadcastPreparationBannerItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS_AFFILIATE
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.view.adapter.PlayBroadcastPreparationBannerAdapter
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.DataSource
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupTitleBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayShortsAffiliateSuccessBottomSheet
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayShortsAffiliateTnCBottomSheet
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.content.common.R as contentCommonR
@@ -188,8 +189,12 @@ class PlayShortsPreparationFragment @Inject constructor(
                         return viewModel.maxProduct
                     }
 
-                    override fun getPageSource(): PlayBroPageSource {
-                        return PlayBroPageSource.Shorts
+                    override fun isNumerationShown(): Boolean {
+                        return false
+                    }
+
+                    override fun fetchCommissionProduct(): Boolean {
+                        return viewModel.isSelectedAccountAffiliate
                     }
                 })
 
@@ -204,6 +209,10 @@ class PlayShortsPreparationFragment @Inject constructor(
                         )
                         toaster.showToaster(productSetupPendingToaster.orEmpty())
                         productSetupPendingToaster = null
+                    }
+
+                    override fun onProductSummaryCommissionShown() {
+                        analytic.sendImpressionTagProductCommissionEvent(viewModel.selectedAccount.id)
                     }
                 })
             }
@@ -264,6 +273,25 @@ class PlayShortsPreparationFragment @Inject constructor(
                     }
                 })
             }
+            is PlayShortsAffiliateTnCBottomSheet -> {
+                childFragment.setListener(object: PlayShortsAffiliateTnCBottomSheet.Listener {
+                    override fun onCheckBoxChecked() {
+                        analytic.sendClickAcceptTcAffiliateEvent(viewModel.selectedAccount.id)
+                    }
+                    override fun onSubmitTnc() {
+                        analytic.sendClickNextRegisterAffiliateEvent(viewModel.selectedAccount.id)
+                        viewModel.submitAction(PlayShortsAction.SubmitOnboardAffiliateTnc)
+                    }
+                })
+            }
+            is PlayShortsAffiliateSuccessBottomSheet -> {
+                childFragment.setupData(viewModel.selectedAccount.name)
+                childFragment.setListener(object: PlayShortsAffiliateSuccessBottomSheet.Listener{
+                    override fun onClickNext() {
+                        analytic.sendClickNextCreateContentEvent(viewModel.selectedAccount.id)
+                    }
+                })
+            }
         }
     }
 
@@ -273,6 +301,13 @@ class PlayShortsPreparationFragment @Inject constructor(
     }
 
     override fun onBannerClick(data: PlayBroadcastPreparationBannerModel) {
+        when (data.type) {
+            TYPE_SHORTS_AFFILIATE -> {
+                analytic.sendClickRegisterAffiliateCardEvent(viewModel.selectedAccount.id)
+                openShortsAffiliateTncBottomSheet()
+            }
+            else -> return
+        }
     }
 
     private fun setupView() {
@@ -345,21 +380,22 @@ class PlayShortsPreparationFragment @Inject constructor(
             preparationMenu.setOnMenuClickListener {
                 coachMark?.dismissCoachMark()
 
-                when (it.menuId) {
-                    DynamicPreparationMenu.TITLE -> {
+                when (it.menu) {
+                    DynamicPreparationMenu.Menu.Title -> {
                         viewModel.submitAction(PlayShortsAction.OpenTitleForm)
                         analytic.clickMenuTitle(viewModel.selectedAccount)
                         openSetupTitleBottomSheet()
                     }
-                    DynamicPreparationMenu.PRODUCT -> {
+                    DynamicPreparationMenu.Menu.Product -> {
                         analytic.clickMenuProduct(viewModel.selectedAccount)
                         openProductPicker()
                     }
-                    DynamicPreparationMenu.COVER -> {
+                    DynamicPreparationMenu.Menu.Cover -> {
                         viewModel.submitAction(PlayShortsAction.OpenCoverForm)
                         analytic.clickMenuCover(viewModel.selectedAccount)
                         openSetupCoverBottomSheet()
                     }
+                    else -> {}
                 }
             }
 
@@ -379,6 +415,8 @@ class PlayShortsPreparationFragment @Inject constructor(
                 renderToolbar(it.prevValue, it.value)
                 renderPreparationMenu(it.prevValue, it.value)
                 renderNextButton(it.prevValue, it.value)
+                renderBannerPreparationPage(it.prevValue?.bannerPreparation, it.value.bannerPreparation)
+                renderCoachMarkProductCommission(it.prevValue?.isAffiliate, it.value.isAffiliate)
             }
         }
 
@@ -397,12 +435,26 @@ class PlayShortsPreparationFragment @Inject constructor(
                     is PlayShortsUiEvent.SwitchAccount -> {
                         showSwitchAccountBottomSheet()
                     }
+                    is PlayShortsUiEvent.ErrorOnboardAffiliate -> {
+                        if (event.error == null) return@collect
+                        val currentBottomSheet = getShortsAffiliateTncBottomSheet()
+                        currentBottomSheet.showErrorToast(event.error)
+                    }
+                    is PlayShortsUiEvent.SuccessOnboardAffiliate -> {
+                        val currentBottomSheet = getShortsAffiliateTncBottomSheet()
+                        currentBottomSheet.dismiss()
+                        openShortsAffiliateSuccessBottomSheet()
+                    }
                     is PlayShortsUiEvent.AutoGeneratedCoverToaster -> {
                         productSetupPendingToaster = if (event.isToasterUpdate) {
                             getString(R.string.play_setup_cover_auto_generated_toaster_update_cover_from_product)
                         } else {
                             getString(R.string.play_setup_cover_auto_generated_toaster_delete_cover_from_product)
                         }
+                    }
+                    is PlayShortsUiEvent.ResetForm -> {
+                        coachMark = null
+                        coachMarkItems.clear()
                     }
                     else -> {}
                 }
@@ -414,9 +466,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                 when (it) {
                     PlayShortsIdleManager.State.StandBy -> setupUiStandby()
                     PlayShortsIdleManager.State.Idle -> setupUiIdle()
-                    else -> {
-                        //no-op
-                    }
+                    else -> return@collectLatest
                 }
             }
         }
@@ -434,6 +484,37 @@ class PlayShortsPreparationFragment @Inject constructor(
         }
     }
 
+    private fun renderBannerPreparationPage(
+        prev: List<PlayBroadcastPreparationBannerModel>?,
+        curr: List<PlayBroadcastPreparationBannerModel>
+    ) {
+        if (prev == curr) return
+
+        adapterBanner.setItemsAndAnimateChanges(curr)
+        if (curr.size > 1) binding.pcBannerPreparation.setIndicator(curr.size)
+        else binding.pcBannerPreparation.setIndicator(0)
+    }
+
+    private fun renderCoachMarkProductCommission(prev: Boolean?, curr: Boolean) {
+        if (prev == curr || !curr || coachMarkSharedPref.hasBeenShown(Key.ProductCommission)) return
+
+        analytic.sendImpressionCekProductCommissionEvent(viewModel.selectedAccount.id)
+        binding.preparationMenu.getMenuView(
+            menu = DynamicPreparationMenu.Menu.Product,
+            menuView = { menuView ->
+                setupCoachMark(
+                    CoachMark2Item(
+                        menuView,
+                        getString(R.string.play_shorts_affiliate_coach_mark_product_commission_title),
+                        getString(R.string.play_shorts_affiliate_coach_mark_product_commission_subtitle),
+                        CoachMark2.POSITION_TOP,
+                    )
+                )
+            }
+        )
+        coachMarkSharedPref.setHasBeenShown(Key.ProductCommission)
+    }
+
     private fun setupCoachMark(coachMarkItem: CoachMark2Item) {
         fun onDismissCoachMark() {
             analytic.clickCloseCoachMarkOnPreparationPage(viewModel.selectedAccount)
@@ -445,7 +526,7 @@ class PlayShortsPreparationFragment @Inject constructor(
         coachMarkItems.add(coachMarkItem)
 
         if (coachMark == null) coachMark = CoachMark2(requireContext())
-        coachMark?.showCoachMark(java.util.ArrayList(coachMarkItems))
+        coachMark?.showCoachMark(ArrayList(coachMarkItems))
 
         if (coachMarkItems.size == 1) {
             coachMark?.simpleCloseIcon?.setOnClickListener { onDismissCoachMark() }
@@ -602,6 +683,19 @@ class PlayShortsPreparationFragment @Inject constructor(
         analytic.viewSwitchAccountBottomSheet(viewModel.selectedAccount)
 
         ContentAccountTypeBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .show(childFragmentManager)
+    }
+
+    private fun getShortsAffiliateTncBottomSheet() = PlayShortsAffiliateTnCBottomSheet
+        .getFragment(childFragmentManager, requireActivity().classLoader)
+
+    private fun openShortsAffiliateTncBottomSheet() {
+        getShortsAffiliateTncBottomSheet().show(childFragmentManager)
+    }
+
+    private fun openShortsAffiliateSuccessBottomSheet() {
+        PlayShortsAffiliateSuccessBottomSheet
             .getFragment(childFragmentManager, requireActivity().classLoader)
             .show(childFragmentManager)
     }

@@ -184,28 +184,28 @@ open class EditTemplateChatFragment : BaseDaggerFragment() {
             proceed?.background?.setColorFilter(
                 MethodChecker.getColor(
                     activity,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 ),
                 PorterDuff.Mode.SRC_IN
             )
             proceed?.setTextColor(
                 MethodChecker.getColor(
                     activity,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
                 )
             )
         } else {
             proceed?.background?.setColorFilter(
                 MethodChecker.getColor(
                     activity,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N50
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN50
                 ),
                 PorterDuff.Mode.SRC_IN
             )
             proceed?.setTextColor(
                 MethodChecker.getColor(
                     activity,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_20
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_20
                 )
             )
         }

@@ -19,6 +19,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.loyalty'
+    testNamespace 'com.tokopedia.loyalty.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)

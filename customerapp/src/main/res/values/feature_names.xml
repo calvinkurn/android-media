@@ -64,7 +64,7 @@
     <string name="title_privacy_center">Privacy Center</string>
     <string name="dsar_activity_title">Download Data</string>
     <string name="privacy_center_search_history_title">Riwayat Pencarian</string>
-    <string name="privacy_policy_label">Privacy Policy</string>
+    <string name="privacy_policy_label">Privacy Notice</string>
 
     <!--    Dynamic feature for Login Fingerprint-->
     <string name="title_feature_login_fingerprint_setting">Sidik Jari</string>
@@ -177,9 +177,9 @@
     <string name="label_kategori">Belanja di Tokopedia</string>
     <string name="label_category">category</string>
     <string name="hotlist_label">hotlist</string>
-    <string name="label_affiliate">Affiliate</string>
+    <string name="title_category_affiliate">Affiliate</string>
     <string name="title_category_epharmacy">E-Pharmacy</string>
-
+    <string name="title_category_catalog_library">Katalog Tokopedia</string>
 
     <!--Contact Us-->
     <string name="title_module_contact_us">Pusat Bantuan</string>
@@ -333,6 +333,9 @@
     <string name="title_play_df">Play</string>
     <string name="title_play_broadcaster_df">Play Broadcaster</string>
 
+    <!-- Stories Creation -->
+    <string name="title_stories_creation_df">Stories Creation</string>
+
     <!--Interest Pick-->
     <string name="ip_title">Pilih Inspirasi Kamu</string>
 
@@ -342,6 +345,7 @@
     <string name="title_promo_checkout_df">Promo Checkout</string>
     <string name="title_promo_checkout_list">Gunakan Promo/Kupon</string>
     <string name="title_promo_checkout_detail">Detail Kupon</string>
+    <string name="title_scp_rewards_df">SCP Rewards</string>
 
     <string name="title_favorite_page">Favorit</string>
 
@@ -359,6 +363,7 @@
     <string name="page_name_wishlist_collection_detail">Wishlist Collection Detail</string>
     <string name="page_name_wishlist_edit">Ubah Wishlist</string>
     <string name="page_name_wishlist_collection_host_bottomsheet">Wishlist Collection Host BottomSheet Activity</string>
+    <string name="page_name_wishlist_collection_create_host_bottomsheet">Wishlist Collection Create Host BottomSheet Activity</string>
 
     <string name="add_on_gifting_module_title_activity_add_on_selection">Atur pelengkap produk</string>
     <string name="add_on_gifting_module_title_activity_gallery">Pelengkap produk</string>

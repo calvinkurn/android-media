@@ -70,6 +70,9 @@ class ComparisonBpcWidgetView :
 
     private var lifecycleOwner: LifecycleOwner? = null
 
+    override val layoutId: Int
+        get() = LAYOUT
+
     override fun bind(model: RecommendationComparisonBpcModel) {
         setupRecyclerView()
         setComparisonWidgetData(model.recommendationWidget, model)
@@ -148,5 +151,9 @@ class ComparisonBpcWidgetView :
             anchorProductId
         )
         RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, recommendationItem.productId.toString())
+    }
+
+    override fun recycle() {
+
     }
 }

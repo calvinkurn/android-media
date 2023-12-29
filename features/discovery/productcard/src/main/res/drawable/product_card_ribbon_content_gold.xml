@@ -1,0 +1,8 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <gradient
+      android:startColor="@color/dms_gold_ribbon_gradient_dark"
+      android:endColor="@color/dms_gold_ribbon_gradient_light" />
+
+  <corners android:topRightRadius="12dp" android:bottomRightRadius="12dp"/>
+</shape>

@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 
 android {
+    namespace 'com.tokopedia.prereleaseinspector'
+    testNamespace 'com.tokopedia.prereleaseinspector.test'
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {

@@ -1,8 +1,9 @@
 package com.tokopedia.tokochat.stub.di
 
-import com.tokochat.tokochat_config_common.di.module.TokoChatConfigContextModule
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.tokochat.config.di.module.TokoChatConfigContextModule
 import com.tokopedia.tokochat.di.TokoChatComponent
+import com.tokopedia.tokochat.di.TokoChatFragmentModule
 import com.tokopedia.tokochat.di.TokoChatViewModelModule
 import com.tokopedia.tokochat.stub.di.base.FakeBaseAppComponent
 import com.tokopedia.tokochat.test.base.BaseTokoChatTest
@@ -19,7 +20,8 @@ import dagger.Component
 
         // Real modules
         TokoChatViewModelModule::class,
-        TokoChatConfigContextModule::class
+        TokoChatConfigContextModule::class,
+        TokoChatFragmentModule::class
     ],
     dependencies = [FakeBaseAppComponent::class]
 )

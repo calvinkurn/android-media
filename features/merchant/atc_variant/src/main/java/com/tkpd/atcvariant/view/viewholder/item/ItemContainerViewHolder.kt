@@ -177,7 +177,7 @@ class ItemContainerViewHolder(
         } else {
             txtVariantSelectedOption.text = data.getSelectedOption()?.variantName
             txtVariantSelectedOption.setTextColor(
-                context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
             )
         }
     }

@@ -1,30 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="16dp">
 
-    <com.tokopedia.design.component.EditTextCompat
+    <com.tokopedia.unifycomponents.TextAreaUnify2
         android:id="@+id/input"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@null"
-        android:gravity="top"
-        tools:hint="Min. 30 Karakter"/>
+        app:unify_text_field_maxline="100" />
 
-    <com.tokopedia.design.component.ButtonCompat
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_cont"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="@string/save"
         android:enabled="false"
-        app:buttonCompatType="primary"
-        app:buttonCompatSize="big"
-        app:buttonCompatTextAllCaps="false"/>
+        android:text="@string/save"
+        app:unifyButtonSize="large"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
 
 </LinearLayout>

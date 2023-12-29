@@ -3,6 +3,7 @@ package com.tokopedia.chatbot.chatbot2.domain.socket
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.tokopedia.chat_common.data.AttachmentType
@@ -10,6 +11,7 @@ import com.tokopedia.chat_common.data.WebsocketEvent
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceLinkPojo
+import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
 import com.tokopedia.chatbot.chatbot2.util.convertMessageIdToLong
 import com.tokopedia.chatbot.chatbot2.view.uimodel.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.quickreply.QuickReplyUiModel
@@ -34,7 +36,8 @@ object ChatbotSendableWebSocketParam {
         messageId: String,
         chatActionBubbleViewModel: ChatActionBubbleUiModel,
         startTime: String,
-        toUid: String
+        toUid: String,
+        isTypingBlocked: Boolean
     ): JsonObject {
         val json = JsonObject().apply {
             addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
@@ -62,6 +65,7 @@ object ChatbotSendableWebSocketParam {
             addProperty("action", chatActionBubbleViewModel.action)
         }
         selectedOption.add("button_actions", buttonActions)
+        selectedOption.addProperty("is_typing_blocked", isTypingBlocked)
         payload.add("selected_option", selectedOption)
         data.add("payload", payload)
         data.addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
@@ -207,7 +211,8 @@ object ChatbotSendableWebSocketParam {
         messageId: String,
         quickReplyViewModel: QuickReplyUiModel,
         startTime: String,
-        toUid: String
+        toUid: String,
+        isTypingBlocked: Boolean
     ): JsonObject {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
@@ -236,6 +241,7 @@ object ChatbotSendableWebSocketParam {
         }
 
         selectedOption.add("quick_replies", quickReplies)
+        selectedOption.addProperty("is_typing_blocked", isTypingBlocked)
         payload.add("selected_option", selectedOption)
         data.add("payload", payload)
 
@@ -250,7 +256,8 @@ object ChatbotSendableWebSocketParam {
         quickReplyViewModel: QuickReplyUiModel,
         startTime: String,
         event: String,
-        usedBy: String
+        usedBy: String,
+        isTypingBlocked: Boolean
     ): JsonObject {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
@@ -278,6 +285,7 @@ object ChatbotSendableWebSocketParam {
             add("button_actions", buttonActions)
             addProperty("used_by", usedBy)
             addProperty("event", event)
+            addProperty("is_typing_blocked", isTypingBlocked)
         }
 
         payload.add("selected_option", selectedOption)
@@ -387,6 +395,180 @@ object ChatbotSendableWebSocketParam {
         val content = JsonObject().apply {
             add("button_action", buttonActionContent)
         }
+        return try {
+            Gson().toJson(content)
+        } catch (e: JSONException) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            ""
+        }
+    }
+
+    fun generateParamDynamicAttachment108(
+        reasonCodeList: List<Long>,
+        reasonText: String,
+        messageId: String,
+        toUid: String,
+        startTime: String,
+        helpfulQuestion: DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion?,
+        index: Int = 0,
+        isSubmitAfterOpenForm: Boolean
+    ): JsonObject {
+        val json = JsonObject()
+        json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
+
+        val dynamicContent = generateDynamicContent108(reasonCodeList, reasonText, helpfulQuestion, index, isSubmitAfterOpenForm)
+
+        val attribute = JsonObject().apply {
+            addProperty(
+                "content_code",
+                ChatbotConstant.DynamicAttachment.DYNAMIC_REJECT_REASON_SEND
+            )
+            addProperty("dynamic_content", dynamicContent)
+            addProperty("user_id", toUid.toLongOrZero())
+        }
+
+        val payload = JsonObject().apply {
+            add("attribute", attribute)
+            addProperty("is_log_history", true)
+        }
+
+        val data = JsonObject().apply {
+            addProperty("message_id", messageId.convertMessageIdToLong())
+            if ((helpfulQuestion?.quickReplies?.size ?: 0) >= (index + 1)) {
+                addProperty("message", helpfulQuestion?.quickReplies?.get(index)?.message)
+            }
+            addProperty("attachment_type", ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMENT.toIntOrZero())
+            add("payload", payload)
+            addProperty("start_time", startTime)
+            addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
+        }
+
+        json.add("data", data)
+
+        return json
+    }
+
+    private fun generateDynamicContent108(
+        reasonCodeList: List<Long>,
+        reasonText: String,
+        helpfulQuestion: DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion?,
+        index: Int,
+        isSubmitAfterOpenForm: Boolean
+    ): String {
+        val newQuickRepliesBody = JsonObject().apply {
+            if ((helpfulQuestion?.newQuickRepliesList?.size ?: 0) >= (index + 1)) {
+                helpfulQuestion?.newQuickRepliesList?.get(index)?.let {
+                    addProperty("action", it.action)
+                    addProperty("text", it.text)
+                    addProperty("value", it.value)
+                }
+            }
+        }
+
+        val newQuickRepliesArray = JsonArray()
+        newQuickRepliesArray.add(newQuickRepliesBody)
+
+        val newQuickReplies = JsonObject().apply {
+            add("new_quick_replies", newQuickRepliesArray)
+        }
+
+        val reasonsJsonArray = JsonArray()
+        reasonCodeList.forEach {
+            reasonsJsonArray.add(it)
+        }
+
+        val feedbackFormBody = JsonObject().apply {
+            addProperty("reason", reasonText)
+            add("reason_chip_code_list", reasonsJsonArray)
+        }
+
+        val helpfulQuestions = JsonObject().apply {
+            add("helpful_question", newQuickReplies)
+            add("feedback_form", feedbackFormBody)
+            addProperty("is_submit_after_open_form", isSubmitAfterOpenForm)
+        }
+
+        val content = JsonObject().apply {
+            add("helpful_question_feedback_form", helpfulQuestions)
+        }
+
+        return try {
+            Gson().toJson(content)
+        } catch (e: JSONException) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            ""
+        }
+    }
+
+    fun generateParamDynamicAttachment108ForAcknowledgement(
+        messageId: String,
+        toUid: String,
+        model: QuickReplyUiModel,
+        startTime: String,
+        index: Int = 1,
+        isSubmitAfterOpenForm: Boolean
+    ): JsonObject {
+        val json = JsonObject()
+        json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
+
+        val dynamicContent = generateDynamicContent108ForYa(model, index, isSubmitAfterOpenForm)
+
+        val attribute = JsonObject().apply {
+            addProperty(
+                "content_code",
+                ChatbotConstant.DynamicAttachment.DYNAMIC_REJECT_REASON_SEND
+            )
+            addProperty("dynamic_content", dynamicContent)
+            addProperty("user_id", toUid.toLongOrZero())
+        }
+
+        val payload = JsonObject().apply {
+            add("attribute", attribute)
+            addProperty("is_log_history", true)
+        }
+
+        val data = JsonObject().apply {
+            addProperty("message_id", messageId.convertMessageIdToLong())
+            addProperty("message", model.value)
+            addProperty("attachment_type", ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMENT.toIntOrZero())
+            add("payload", payload)
+            addProperty("start_time", startTime)
+            addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
+        }
+
+        json.add("data", data)
+
+        return json
+    }
+
+    private fun generateDynamicContent108ForYa(
+        helpfulQuestion: QuickReplyUiModel,
+        index: Int,
+        isSubmitAfterOpenForm: Boolean
+    ): String {
+        val newQuickRepliesBody = JsonObject().apply {
+            addProperty("action", helpfulQuestion.action)
+            addProperty("text", helpfulQuestion.text)
+            addProperty("value", helpfulQuestion.value)
+        }
+
+        val newQuickRepliesArray = JsonArray()
+        newQuickRepliesArray.add(newQuickRepliesBody)
+
+        val newQuickReplies = JsonObject().apply {
+            add("new_quick_replies", newQuickRepliesArray)
+        }
+
+        val helpfulQuestions = JsonObject().apply {
+            add("helpful_question", newQuickReplies)
+            add("feedback_form", JsonObject())
+            addProperty("is_submit_after_open_form", isSubmitAfterOpenForm)
+        }
+
+        val content = JsonObject().apply {
+            add("helpful_question_feedback_form", helpfulQuestions)
+        }
+
         return try {
             Gson().toJson(content)
         } catch (e: JSONException) {

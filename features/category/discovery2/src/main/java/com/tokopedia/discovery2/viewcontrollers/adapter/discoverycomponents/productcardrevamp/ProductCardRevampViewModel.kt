@@ -16,22 +16,24 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-
 class ProductCardRevampViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val productCarouselHeaderData: MutableLiveData<ComponentsItem> = MutableLiveData()
 
+    @JvmField
     @Inject
-    lateinit var productCardsUseCase: ProductCardsUseCase
+    var productCardsUseCase: ProductCardsUseCase? = null
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-
     init {
         components.lihatSemua?.run {
             val lihatSemuaDataItem = DataItem(title = header, subtitle = subheader, btnApplink = applink)
-            val lihatSemuaComponentData = ComponentsItem(name = ComponentsList.ProductCardCarousel.componentName, data = listOf(lihatSemuaDataItem),
-                    creativeName = components.creativeName)
+            val lihatSemuaComponentData = ComponentsItem(
+                name = ComponentsList.ProductCardCarousel.componentName,
+                data = listOf(lihatSemuaDataItem),
+                creativeName = components.creativeName
+            )
             productCarouselHeaderData.value = lihatSemuaComponentData
         }
     }
@@ -39,12 +41,12 @@ class ProductCardRevampViewModel(val application: Application, val components: C
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         launchCatchError(block = {
-            this@ProductCardRevampViewModel.syncData.value = productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)
+            this@ProductCardRevampViewModel.syncData.value = productCardsUseCase?.loadFirstPageComponents(components.id, components.pageEndPoint)
         }, onError = {
-            getComponent(components.id, components.pageEndPoint)?.verticalProductFailState = true
-            this@ProductCardRevampViewModel.syncData.value = true
-        })
+                getComponent(components.id, components.pageEndPoint)?.verticalProductFailState = true
+                this@ProductCardRevampViewModel.syncData.value = true
+            })
     }
 
-    fun getProductCarouselHeaderData():LiveData<ComponentsItem> = productCarouselHeaderData
+    fun getProductCarouselHeaderData(): LiveData<ComponentsItem> = productCarouselHeaderData
 }

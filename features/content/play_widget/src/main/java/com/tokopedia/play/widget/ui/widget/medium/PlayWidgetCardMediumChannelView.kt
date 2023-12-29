@@ -26,8 +26,8 @@ import com.tokopedia.play.widget.util.PlayWidgetCompositeTouchDelegate
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.play_common.R as playCommonR
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * Created by kenny.hadisaputra on 24/01/22
@@ -118,13 +118,15 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
         tvAuthor.visibility = if (data.partner.name.isNotEmpty()) View.VISIBLE else View.GONE
         tvStartTime.visibility = if (data.startTime.isNotEmpty() && data.channelType == PlayWidgetChannelType.Upcoming) {
             View.VISIBLE
-        } else View.GONE
+        } else {
+            View.GONE
+        }
 
         tvAuthor.text = data.partner.name
         tvTitle.text = data.title
         tvStartTime.text = data.startTime
         tvTotalView.text = data.totalView.totalViewFmt
-        ivGiveaway.visibility = if(data.hasGame) View.VISIBLE else View.GONE
+        ivGiveaway.visibility = if (data.hasGame) View.VISIBLE else View.GONE
 
         setIconToggleReminder(data.reminderType)
         reminderBadge.setOnClickListener {
@@ -144,7 +146,9 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
         ivAction.visibility = if (model.hasAction) View.VISIBLE else View.GONE
         liveBadge.visibility = if (model.video.isLive && model.channelType == PlayWidgetChannelType.Live) {
             View.VISIBLE
-        } else View.GONE
+        } else {
+            View.GONE
+        }
         reminderBadge.visibility = View.GONE
         totalViewBadge.visibility = if (model.totalView.isVisible) View.VISIBLE else View.GONE
         llLoadingContainer.visibility = View.GONE
@@ -162,7 +166,9 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
         ivAction.visibility = View.GONE
         liveBadge.visibility = if (model.video.isLive && model.channelType == PlayWidgetChannelType.Live) {
             View.VISIBLE
-        } else View.GONE
+        } else {
+            View.GONE
+        }
         reminderBadge.visibility = View.GONE
         totalViewBadge.visibility = if (model.totalView.isVisible) View.VISIBLE else View.GONE
         llLoadingContainer.visibility = View.VISIBLE
@@ -198,9 +204,12 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
         }.exhaustive
     }
 
-    private fun setPromoLabelIcon(isRilisanSpesial: Boolean){
-        if(isRilisanSpesial) ivPromoLabel.setImage(newIconId = IconUnify.ROCKET, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
-        else ivPromoLabel.setImage(newIconId = IconUnify.PROMO, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
+    private fun setPromoLabelIcon(isRilisanSpesial: Boolean) {
+        if (isRilisanSpesial) {
+            ivPromoLabel.setImage(newIconId = IconUnify.ROCKET, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
+        } else {
+            ivPromoLabel.setImage(newIconId = IconUnify.PROMO, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
+        }
     }
 
     override fun setPlayer(player: PlayVideoPlayer?) {
@@ -212,7 +221,7 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
         } else {
             if (::mModel.isInitialized) {
                 player.videoUrl = mModel.video.videoUrl
-                player.shouldCache = !mModel.video.isLive
+                player.isLive = mModel.video.isLive
                 player.start()
             }
             player.listener = playerListener
@@ -225,7 +234,7 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
     override fun isPlayable(): Boolean {
         return mModel.channelType == PlayWidgetChannelType.Live ||
-                mModel.channelType == PlayWidgetChannelType.Vod
+            mModel.channelType == PlayWidgetChannelType.Vod
     }
 
     override fun onAttachedToWindow() {

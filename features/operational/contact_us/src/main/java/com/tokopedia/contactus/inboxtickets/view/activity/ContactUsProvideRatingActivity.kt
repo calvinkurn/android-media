@@ -20,6 +20,7 @@ import com.tokopedia.contactus.R
 import com.tokopedia.contactus.inboxtickets.di.DaggerInboxComponent
 import com.tokopedia.contactus.inboxtickets.di.InboxModule
 import com.tokopedia.contactus.inboxtickets.view.customview.CustomQuickOptionView
+import com.tokopedia.contactus.inboxtickets.view.utils.parcelableArrayListExtra
 import com.tokopedia.contactus.inboxtickets.view.viewModel.ContactUsRatingViewModel
 import com.tokopedia.contactus.utils.CommonConstant.INDEX_ONE
 import com.tokopedia.contactus.utils.CommonConstant.INDEX_ZERO
@@ -92,7 +93,7 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
         val question =
             intent.getStringArrayExtra(BaseFragmentProvideRating.QUESTION_LIST).orEmpty().toList()
         viewModel.setQuestion(question)
-        val reasonItemList: ArrayList<BadCsatReasonListItem> = intent?.getParcelableArrayListExtra(
+        val reasonItemList: ArrayList<BadCsatReasonListItem> = intent?.parcelableArrayListExtra(
             BaseFragmentProvideRating.PARAM_OPTIONS_CSAT
         ) ?: ArrayList()
         viewModel.setReasonList(reasonItemList)
@@ -339,19 +340,20 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
         }
     }
 
-    fun onSuccessSubmit(intent: Intent) {
+    private fun onSuccessSubmit(intent: Intent) {
         setResult(Activity.RESULT_OK, intent)
         finish()
     }
 
     private fun onSubmitClick() {
         val intent = Intent()
-        intent.putExtra(BaseFragmentProvideRating.EMOJI_STATE, viewModel.emojiState.orZero())
+        val rating = viewModel.emojiState
+        intent.putExtra(BaseFragmentProvideRating.EMOJI_STATE, rating)
         intent.putExtra(BaseFragmentProvideRating.SELECTED_ITEM, getSelectedItem())
         onSuccessSubmit(intent)
     }
 
-    fun getSelectedItem(): String {
+    private fun getSelectedItem(): String {
         var filters = ""
         for (filter in selectedOption) {
             filters += "$filter;"

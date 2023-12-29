@@ -4,37 +4,37 @@
     <item>
         <shape>
             <padding android:top="1dp" android:bottom="2dp"/>
-            <solid android:color="@color/Unify_N200"/>
+            <solid android:color="@color/Unify_NN500"/>
         </shape>
     </item>
     <item>
         <shape>
             <padding android:top="1dp" android:bottom="2dp"/>
-            <solid android:color="@color/Unify_N200"/>
+            <solid android:color="@color/Unify_NN500"/>
         </shape>
     </item>
     <item>
         <shape>
             <padding android:top="0.5dp" android:bottom="1dp"/>
-            <solid android:color="@color/Unify_N200"/>
+            <solid android:color="@color/Unify_NN500"/>
         </shape>
     </item>
     <item>
         <shape>
             <padding android:top="0.5dp" android:bottom="1dp"/>
-            <solid android:color="@color/Unify_N200"/>
+            <solid android:color="@color/Unify_NN500"/>
         </shape>
     </item>
     <item>
         <shape>
             <padding android:top="0.5dp" android:bottom="1dp"/>
-            <solid android:color="@color/Unify_N200"/>
+            <solid android:color="@color/Unify_NN500"/>
         </shape>
     </item>
 <!--Background-->
     <item>
         <shape>
-            <solid android:color="@color/Unify_N0"/>
+            <solid android:color="@color/Unify_NN0"/>
         </shape>
     </item>
 </layer-list>

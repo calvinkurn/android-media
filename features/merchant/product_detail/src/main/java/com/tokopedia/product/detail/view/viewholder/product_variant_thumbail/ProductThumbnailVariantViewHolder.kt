@@ -3,10 +3,10 @@ package com.tokopedia.product.detail.view.viewholder.product_variant_thumbail
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.databinding.ItemThumbnailVariantViewHolderBinding
@@ -61,20 +61,17 @@ class ProductThumbnailVariantViewHolder(
     }
 
     override fun bind(element: ProductSingleVariantDataModel) {
-        binding.setTitle()
-        binding.setThumbnailItems(element = element)
+        binding.thumbVariantTitle.text = element.title
+        setThumbnailItems(element = element)
         setOnClick()
         setImpression(element = element)
     }
 
     override fun bind(element: ProductSingleVariantDataModel, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty()) {
-            binding.setThumbnailItems(element = element)
+            binding.thumbVariantTitle.text = element.title
+            setThumbnailItems(element = element)
         }
-    }
-
-    private fun ItemThumbnailVariantViewHolderBinding.setTitle() {
-        thumbVariantTitle.text = pdpListener.getVariantString()
     }
 
     private fun setOnClick() {
@@ -85,7 +82,12 @@ class ProductThumbnailVariantViewHolder(
     }
 
     private fun setImpression(element: ProductSingleVariantDataModel) {
-        view.addOnImpressionListener(element.impressHolder) {
+        view.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = pdpListener.getImpressionHolders(),
+            name = element.name,
+            useHolders = pdpListener.isRemoteCacheableActive()
+        ) {
             val trackData = getComponentTrackData(element)
             pdpListener.onImpressComponent(
                 trackData.copy(componentName = element.getComponentNameAsThumbnail())
@@ -93,12 +95,10 @@ class ProductThumbnailVariantViewHolder(
         }
     }
 
-    private fun ItemThumbnailVariantViewHolderBinding.setThumbnailItems(
+    private fun setThumbnailItems(
         element: ProductSingleVariantDataModel
     ) {
-        thumbVariantList.post {
-            containerAdapter.submitList(element.variantLevelOne?.variantOptions)
-        }
+        containerAdapter.submitList(element.variantLevelOne?.variantOptions)
 
         if (element.mapOfSelectedVariant.isEmpty()) {
             scrollToPosition(0)

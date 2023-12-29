@@ -1,0 +1,56 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 1,
+      "totalDataText": "1",
+      "responseCode": 0,
+      "keywordProcess": "0"
+    },
+    "data": {
+      "isQuerySafe": true,
+      "suggestion": {
+        "suggestion": "",
+        "query": "",
+        "text": ""
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "otherRelated": []
+      },
+      "products": [
+        {
+          "id": 4208745365,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/6/10/e81b29a2-1133-44d9-a69e-b12b374dd197.jpg",
+          "name": "Frisian_Flag_Kental_Manis_Cokelat_Pouch_560_g",
+          "price": "Rp15.300",
+          "priceInt": 15300,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 99,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 99,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "150 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        }
+      ]
+    }
+  }
+}

@@ -47,7 +47,7 @@
                 android:drawablePadding="@dimen/spacing_lvl2"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/Unify_N700"
+                android:textColor="@color/Unify_NN950"
                 app:typographyType="heading_3"
                 app:typographyWeight="bold"
                 tools:text="Toko Saya ini" />
@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 android:maxLines="1"
-                android:textColor="@color/Unify_N700"
+                android:textColor="@color/Unify_NN950"
                 app:typographyType="display_2"
                 tools:text="Albert Wesker" />
 
@@ -67,7 +67,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl1"
-                android:textColor="@color/Unify_N700"
+                android:textColor="@color/Unify_NN950"
                 app:typographyType="display_2"
                 app:typographyWeight="reguler"
                 tools:text="y***********@g****.com" />

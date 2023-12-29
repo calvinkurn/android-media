@@ -62,11 +62,6 @@ class WholesaleActivity : BaseSimpleActivity() {
         wholesaleAdapter!!.setData(productWholesalePrices)
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        this@WholesaleActivity.overridePendingTransition(0, com.tokopedia.design.R.anim.push_down)
-    }
-
     override fun getNewFragment(): Fragment? {
         return null
     }

@@ -101,6 +101,7 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
     @Test
     fun `Test click Show More Recent Search`() {
+        `Given rollance is off`()
         `Given view already get initial state`(initialStateWithSeeMoreRecentSearch)
 
         `When recent search see more button is clicked`()

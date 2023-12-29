@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class ChangeShippingAddressResponse(
     @SerializedName("data")
-    val dataResponse: ChangeShippingAddressDataResponse
+    val dataResponse: ChangeShippingAddressDataResponse = ChangeShippingAddressDataResponse()
 )

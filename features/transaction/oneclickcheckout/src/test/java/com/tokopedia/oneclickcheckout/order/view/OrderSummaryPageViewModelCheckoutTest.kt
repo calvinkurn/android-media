@@ -162,7 +162,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
             payment = OrderProfilePayment(
                 gatewayName = paymentType,
-                gatewayCode = "payment"
+                gatewayCode = "payment",
+                metadata = """
+                    {
+                        "gateway_code": "payment",
+                        "express_checkout_param" : {}
+                    }
+                """.trimIndent()
             )
         )
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
@@ -397,7 +403,13 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
             payment = OrderProfilePayment(
                 gatewayName = paymentType,
-                gatewayCode = "payment"
+                gatewayCode = "payment",
+                metadata = """
+                    {
+                        "gateway_code": "payment",
+                        "express_checkout_param" : {}
+                    }
+                """.trimIndent()
             )
         )
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
@@ -460,7 +472,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         val selectedTenure = 3
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
             payment = OrderProfilePayment(
-                metadata = """{"express_checkout_param":{"installment_term":"3"}}""",
+                metadata = """{"gateway_code":"payment", "express_checkout_param":{"installment_term":"3"}}""",
                 gatewayName = paymentType,
                 gatewayCode = "payment"
             )
@@ -1099,7 +1111,6 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
             status = "",
             headerMessage = responseMessage
         )
-
         // When
         orderSummaryPageViewModel.finalUpdate({
             // do nothing
@@ -1168,7 +1179,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
             payment = OrderProfilePayment(
-                metadata = """{"express_checkout_param":{"installment_term":"3"}}""",
+                metadata = """{"gateway_code":"payment", "express_checkout_param":{"installment_term":"3"}}""",
                 gatewayCode = "payment"
             )
         )
@@ -1226,7 +1237,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
             payment = OrderProfilePayment(
-                metadata = """{"express_checkout_param":{"installment_term":"3"}}""",
+                metadata = """{"gateway_code":"payment", "express_checkout_param":{"installment_term":"3"}}""",
                 gatewayCode = "payment"
             )
         )

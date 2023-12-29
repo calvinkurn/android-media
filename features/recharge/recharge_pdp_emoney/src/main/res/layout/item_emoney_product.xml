@@ -28,7 +28,7 @@
             app:layout_constraintTop_toBottomOf="@id/emoneyProductTitle"
             app:typographyType="body_3"
             tools:text="Maksimal saldo tersimpan di kartu 2 juta.....Maksimal saldo tersimpan di kartu 2 juta.....Maksimal saldo tersimpan di kartu 2 juta....."
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             android:lines="1"
             android:maxLines="1"
             android:ellipsize="end" />
@@ -52,7 +52,7 @@
             app:layout_constraintBottom_toBottomOf="@id/emoneyProductPrice"
             android:text="@string/recharge_pdp_emoney_product_see_details"
             app:typographyWeight="bold"
-            android:textColor="@color/Unify_G500"
+            android:textColor="@color/Unify_GN500"
             app:typographyType="body_3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

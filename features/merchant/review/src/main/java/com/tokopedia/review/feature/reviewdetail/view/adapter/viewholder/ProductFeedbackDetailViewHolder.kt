@@ -83,10 +83,10 @@ class ProductFeedbackDetailViewHolder(
             replyFeedbackState.background = ContextCompat.getDrawable(root.context, R.drawable.rectangle_8)
             if (feedbackText.isEmpty()) {
                 tvFeedbackReview.text = getString(R.string.review_not_found)
-                tvFeedbackReview.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+                tvFeedbackReview.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
             } else {
                 tvFeedbackReview.apply {
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
                     text = feedbackText.toReviewDescriptionFormatted(FEEDBACK_MAX_CHAR, root.context)
                     setOnClickListener {
                         productFeedbackDetailListener.onFeedbackMoreReplyClicked(feedbackId)

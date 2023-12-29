@@ -40,7 +40,7 @@ class ReadReviewRatingBar : BaseCustomView {
         ratingTypography = findViewById(R.id.review_reading_rating)
         ratingCountTypography = findViewById(R.id.review_reading_rating_count)
         progressBar = findViewById(R.id.review_reading_progress_bar)
-        progressBar?.progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y300), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_Y300))
+        progressBar?.progressBarColor = intArrayOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN300), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN300))
     }
 
     private fun setStar(attrs: AttributeSet, defStyleAttr: Int = 0) {

@@ -16,6 +16,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.*
+import com.tokopedia.topads.common.view.sheet.CreateGroupBudgetHelpSheet
 import com.tokopedia.topads.constants.MpTopadsConst.AUTO_BID_CONST
 import com.tokopedia.topads.constants.MpTopadsConst.BASIC_DATE_FORMAT
 import com.tokopedia.topads.constants.MpTopadsConst.CONST_2
@@ -23,13 +24,13 @@ import com.tokopedia.topads.constants.MpTopadsConst.GROUP_DETAIL_PAGE
 import com.tokopedia.topads.constants.MpTopadsConst.IDR_CONST
 import com.tokopedia.topads.constants.MpTopadsConst.PRODUCT_ID_PARAM
 import com.tokopedia.topads.create.R
+import com.tokopedia.topads.common.R as topadscommonR
 import com.tokopedia.topads.create.databinding.FragmentMpCreateAdGroupBinding
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.trackers.MpTracker
 import com.tokopedia.topads.view.model.MpAdsCreateGroupViewModel
-import com.tokopedia.topads.view.sheet.MpCreateGroupBudgetHelpSheet
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
@@ -111,7 +112,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
 
     private fun attachClickListeners() {
         binding?.dailyBudget?.iconContainer?.setOnClickListener {
-            MpCreateGroupBudgetHelpSheet().show(
+            CreateGroupBudgetHelpSheet().show(
                 childFragmentManager,
                 MpCreateAdGroupFragment::class.java.name
             )
@@ -141,7 +142,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
                 binding?.groupName?.setMessage("")
                 if (p0 != null && !p0.isEmpty()) {
                     if (p0.toString().length > 70) {
-                        binding?.groupName?.setMessage(getString(R.string.ad_groups_character_limit_error_msg))
+                        binding?.groupName?.setMessage(getString(topadscommonR.string.topads_common_ad_groups_character_limit_error_msg))
                         binding?.groupName?.isInputError = true
                         validGroupName = false
                         checkAllFieldsValidations()
@@ -211,7 +212,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
     private fun onSuccessNameSuggestion(response: TopAdsProductResponse) {
         response.product.let {
             var groupName: String =
-                (if (it.category?.name.isNullOrEmpty()) getString(R.string.group) else it.category?.name) + " " + DateUtil.getCurrentDate()
+                (if (it.category?.name.isNullOrEmpty()) getString(topadscommonR.string.topads_common_group) else it.category?.name) + " " + DateUtil.getCurrentDate()
                     .formatTo(BASIC_DATE_FORMAT)
             autofillGroupName = groupName
             createGroupViewModel.validateGroup(groupName, this::checkAutofillGroupNameValidation)
@@ -262,7 +263,7 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
             checkAllFieldsValidations()
         } else {
             binding?.groupName?.isInputError = true
-            binding?.groupName?.setMessage(getString(R.string.the_group_name_is_already_in_use))
+            binding?.groupName?.setMessage(getString(topadscommonR.string.topads_common_the_group_name_is_already_in_use))
             validGroupName = false
             checkAllFieldsValidations()
         }
@@ -280,10 +281,10 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
             DialogUnify.WITH_ILLUSTRATION
         )
         dialog.setImageUrl(successImageUrl)
-        dialog.setDescription(getString(R.string.success_dailog_description))
-        dialog.setTitle(getString(R.string.product_successfully_advertised))
-        dialog.setPrimaryCTAText(getString(R.string.manage_ads_group))
-        dialog.setSecondaryCTAText(getString(R.string.stay_here))
+        dialog.setDescription(getString(topadscommonR.string.topads_common_create_group_success_dailog_desc))
+        dialog.setTitle(getString(topadscommonR.string.topads_common_product_successfully_advertised))
+        dialog.setPrimaryCTAText(getString(topadscommonR.string.topads_common_manage_ads_group))
+        dialog.setSecondaryCTAText(getString(topadscommonR.string.topads_common_stay_here))
         dialog.setPrimaryCTAClickListener {
             MpTracker.clickAdGroupCreatedManageCta()
             val intent =
@@ -304,17 +305,17 @@ class MpCreateAdGroupFragment : BaseDaggerFragment() {
     }
 
     private fun openInsufficientCreditsDialog(data: DepositAmount) {
-        var dialog =
+        val dialog =
             DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setDescription(
-            getString(R.string.success_group_creation_insufficient_credits_text).replace(
+            getString(topadscommonR.string.topads_common_insufficient_credits_error_desc).replace(
                 IDR_CONST,
                 "Rp${data.amount}"
             )
         )
-        dialog.setTitle(getString(R.string.ads_created_successfully_but_cant_appear_yet))
-        dialog.setPrimaryCTAText(getString(R.string.add_credit))
-        dialog.setSecondaryCTAText(getString(R.string.later))
+        dialog.setTitle(getString(topadscommonR.string.topads_common_ads_created_successfully_but_cant_appear_yet))
+        dialog.setPrimaryCTAText(getString(topadscommonR.string.topads_common_add_credit))
+        dialog.setSecondaryCTAText(getString(topadscommonR.string.topads_common_later_keyword))
         dialog.setPrimaryCTAClickListener {
             MpTracker.clickAddCreditCta()
             val intent = Intent(activity, TopAdsAddCreditActivity::class.java)

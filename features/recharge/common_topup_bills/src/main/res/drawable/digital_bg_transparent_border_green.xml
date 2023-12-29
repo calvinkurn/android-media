@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="rectangle">
-            <stroke android:width="@dimen/separator_size" android:color="@color/Unify_G400"/>
+            <stroke android:width="@dimen/separator_size" android:color="@color/Unify_GN500"/>
             <corners android:radius="@dimen/spacing_lvl3"/>
         </shape>
     </item>

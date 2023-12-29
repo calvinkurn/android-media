@@ -19,6 +19,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.model.WidgetInList
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -65,6 +66,10 @@ class PlayWidgetCoordinator constructor(
          */
         override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
             autoPlayCoordinator.onWidgetCardsScrollChanged(widgetCardsContainer)
+        }
+
+        override fun onFocusedWidgetsChanged(focusedWidgets: List<WidgetInList>) {
+            autoPlayCoordinator.onFocusedWidgetsChanged(focusedWidgets)
         }
 
         override fun onWidgetDetached(widget: View) {
@@ -117,6 +122,14 @@ class PlayWidgetCoordinator constructor(
     fun onDestroy() {
         autoPlayCoordinator.onDestroy()
         scope.coroutineContext.cancelChildren()
+    }
+
+    fun onNotVisible() {
+        autoPlayCoordinator.onNotVisible()
+    }
+
+    fun onVisible() {
+        autoPlayCoordinator.onVisible()
     }
 
     override fun onWidgetShouldRefresh() {

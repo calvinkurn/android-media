@@ -14,16 +14,22 @@
         android:layout_marginTop="12dp"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_bulk_review_mini_action"
-        android:layout_width="match_parent"
+    <com.tokopedia.review.feature.bulk_write_review.presentation.widget.WidgetBulkReviewMiniAction
+        android:id="@+id/bulk_review_mini_action_testimony"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:nestedScrollingEnabled="false"
+        android:layout_margin="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider_bulk_write_review_form_actions"
-        tools:listitem="@layout/item_bulk_review_mini_action" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider_bulk_write_review_form_actions" />
+
+    <com.tokopedia.review.feature.bulk_write_review.presentation.widget.WidgetBulkReviewMiniAction
+        android:id="@+id/bulk_review_mini_action_attachment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/bulk_review_mini_action_testimony"
+        app:layout_constraintTop_toBottomOf="@id/divider_bulk_write_review_form_actions" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

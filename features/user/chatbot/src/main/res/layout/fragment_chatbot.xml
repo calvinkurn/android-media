@@ -76,7 +76,7 @@
                 android:id="@+id/floating_invoice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_N50"
+                android:background="@color/Unify_NN50"
                 android:visibility="gone"
                 tools:visibility="visible"/>
 
@@ -228,7 +228,7 @@
             android:id="@+id/notifier"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N700"
+            android:background="@color/Unify_NN950"
             android:gravity="center_vertical"
             android:minHeight="56dp"
             android:orientation="horizontal"
@@ -241,7 +241,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="@color/Unify_N0"
+                android:textColor="@color/Unify_NN0"
                 app:typographyType="body_2"
                 tools:text="JJJJ" />
 

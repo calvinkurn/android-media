@@ -20,7 +20,14 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.mockkStatic
+import io.mockk.verify
 import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -55,17 +62,16 @@ class AddPasswordViewModelTestJunit {
         mockkObject(EncoderDecoder())
 
         viewModel = AddPasswordViewModel(
-                addPasswordUseCase,
-                addPasswordv2UseCase,
-                getProfileCompletionUseCase,
-                generatePublicKeyUseCase,
-                dispatcherProviderTest
+            addPasswordUseCase,
+            addPasswordv2UseCase,
+            getProfileCompletionUseCase,
+            generatePublicKeyUseCase,
+            dispatcherProviderTest
         )
         viewModel.response.observeForever(observer)
         viewModel.validatePassword.observeForever(validatePasswordObserver)
         viewModel.validatePasswordConfirmation.observeForever(validateConfirmPasswordObserver)
         viewModel.profileDataModel.observeForever(hasPasswordObserver)
-
     }
 
     var password = "abc1234567"
@@ -109,10 +115,12 @@ class AddPasswordViewModelTestJunit {
     fun `createPassword v2 Success`() {
         val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
         val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
-        val mockAddPasswordV2Response = AddPasswordV2Response(AddPasswordData(
-            isSuccess = true,
-            errorMessage = ""
-        ))
+        val mockAddPasswordV2Response = AddPasswordV2Response(
+            AddPasswordData(
+                isSuccess = true,
+                errorMessage = ""
+            )
+        )
 
         mockkStatic("android.util.Base64")
         mockkStatic(EncoderDecoder::class)
@@ -121,7 +129,7 @@ class AddPasswordViewModelTestJunit {
         every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "encrypted"
 
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
         coEvery { addPasswordv2UseCase(any()) } returns mockAddPasswordV2Response
 
         viewModel.createPasswordV2(password, confirmPassword)
@@ -134,10 +142,12 @@ class AddPasswordViewModelTestJunit {
     fun `createPassword v2 isSuccess = false`() {
         val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
         val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
-        val mockAddPasswordV2Response = AddPasswordV2Response(AddPasswordData(
-            isSuccess = false,
-            errorMessage = "Opps!"
-        ))
+        val mockAddPasswordV2Response = AddPasswordV2Response(
+            AddPasswordData(
+                isSuccess = false,
+                errorMessage = "Opps!"
+            )
+        )
 
         mockkStatic("android.util.Base64")
         mockkStatic(EncoderDecoder::class)
@@ -146,7 +156,7 @@ class AddPasswordViewModelTestJunit {
         every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "encrypted"
 
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
         coEvery { addPasswordv2UseCase(any()) } returns mockAddPasswordV2Response
 
         viewModel.createPasswordV2(password, confirmPassword)
@@ -161,7 +171,7 @@ class AddPasswordViewModelTestJunit {
     fun `createPassword v2 - hash empty`() {
         val generateKeyPojo = GenerateKeyPojo()
 
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
 
         viewModel.createPasswordV2(password, confirmPassword)
 
@@ -170,7 +180,7 @@ class AddPasswordViewModelTestJunit {
 
     @Test
     fun `createPassword v2 - fail`() {
-        coEvery { generatePublicKeyUseCase.executeOnBackground() }.throws(mockThrowable)
+        coEvery { generatePublicKeyUseCase() }.throws(mockThrowable)
         coEvery { addPasswordv2UseCase(any()) }.throws(mockThrowable)
 
         viewModel.createPasswordV2(password, confirmPassword)
@@ -237,7 +247,8 @@ class AddPasswordViewModelTestJunit {
         confirmPassword = "111111"
         viewModel.validatePasswordConfirmation(confirmPassword)
         /* Then */
-        assertEquals((viewModel.validatePasswordConfirmation.value as Fail).throwable.message, "Minimum 8 karakter") }
+        assertEquals((viewModel.validatePasswordConfirmation.value as Fail).throwable.message, "Minimum 8 karakter")
+    }
 
     @Test
     fun `Execute confirmValidatePassword (Pass more than 32 char)`() {
@@ -267,4 +278,4 @@ class AddPasswordViewModelTestJunit {
 
         coVerify { hasPasswordObserver.onChanged(Fail(mockThrowable)) }
     }
- }
+}

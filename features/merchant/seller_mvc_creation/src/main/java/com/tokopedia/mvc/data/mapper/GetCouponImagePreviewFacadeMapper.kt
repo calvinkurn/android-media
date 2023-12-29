@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mvc.data.request.GenerateImageParams
 import com.tokopedia.mvc.data.source.ImageGeneratorRemoteDataSource
 import com.tokopedia.mvc.domain.entity.CreateCouponProductParams
+import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.UpdateCouponRequestParams
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
@@ -114,6 +115,8 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
             val endDate = voucherConfiguration.endPeriod.formatTo(YYYY_MM_DD)
             val endHour = voucherConfiguration.endPeriod.formatTo(HH_MM)
             val benefitType = voucherConfiguration.getBenefitTypeConst()
+            val selectedProductIds = populateSelectedProductIds(couponProducts)
+            val joinedSelectedProductIds = selectedProductIds.joinToString(DEFAULT_DELIMITER)
 
             return UpdateCouponRequestParams(
                 voucherId = couponId,
@@ -138,7 +141,7 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
                 source = Source.SOURCE,
                 targetBuyer = voucherConfiguration.targetBuyer.id,
                 isLockToProduct = isVoucherProduct,
-                productIds = couponProducts.joinToString(DEFAULT_DELIMITER) { it.parentProductId.toString() },
+                productIds = joinedSelectedProductIds,
                 warehouseId = warehouseId.toLongOrZero()
             )
         }
@@ -155,6 +158,8 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
             val endDate = voucherConfiguration.endPeriod.formatTo(YYYY_MM_DD)
             val endHour = voucherConfiguration.endPeriod.formatTo(HH_MM)
             val benefitType = voucherConfiguration.getBenefitTypeConst()
+            val selectedProductIds = populateSelectedProductIds(couponProducts)
+            val joinedSelectedProductIds = selectedProductIds.joinToString(DEFAULT_DELIMITER)
 
             return CreateCouponProductParams(
                 benefitIdr = voucherConfiguration.benefitIdr,
@@ -178,15 +183,30 @@ class GetCouponImagePreviewFacadeMapper @Inject constructor() {
                 source = Source.SOURCE,
                 targetBuyer = voucherConfiguration.targetBuyer.id,
                 isLockToProduct = isVoucherProduct,
-                productIds = couponProducts.joinToString(DEFAULT_DELIMITER) { it.parentProductId.toString() },
+                productIds = joinedSelectedProductIds,
                 warehouseId = warehouseId.toLongOrZero(),
                 isPeriod = voucherConfiguration.isPeriod,
                 periodRepeat = voucherConfiguration.periodRepeat,
                 periodType = voucherConfiguration.periodType,
                 totalPeriod = voucherConfiguration.totalPeriod,
-                productIdsImage = couponProducts.joinToString(DEFAULT_DELIMITER) { it.parentProductId.toString() }
+                productIdsImage = joinedSelectedProductIds
             )
         }
+    }
+
+    private fun populateSelectedProductIds(couponProducts: List<SelectedProduct>): List<Long> {
+        val selectedProductIds = mutableListOf<Long>()
+
+        couponProducts.forEach { selectedProduct ->
+            val parentProductId = selectedProduct.parentProductId
+            selectedProductIds.add(parentProductId)
+
+            selectedProduct.variantProductIds.forEach { variantProductId ->
+                selectedProductIds.add(variantProductId)
+            }
+        }
+
+        return selectedProductIds
     }
 
     fun GetCouponImagePreviewFacadeUseCase.GenerateCouponImageParam.toPreviewImageParam(): ImageGeneratorRemoteDataSource.PreviewImageParam {

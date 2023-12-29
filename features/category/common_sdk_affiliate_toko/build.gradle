@@ -18,6 +18,11 @@ buildscript {
 }
 
 
+android {
+    namespace 'com.tokopedia.common_sdk_affiliate_toko'
+    testNamespace 'com.tokopedia.common_sdk_affiliate_toko.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
@@ -32,7 +37,7 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting

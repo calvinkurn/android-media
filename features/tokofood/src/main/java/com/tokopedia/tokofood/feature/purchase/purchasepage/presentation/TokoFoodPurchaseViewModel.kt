@@ -10,15 +10,18 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.domain.param.GetDetailAddressParam
+import com.tokopedia.logisticCommon.domain.param.KeroEditAddressParam
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailByIdUseCase
+import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointWithAddressIdUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.domain.param.UpdateQuantityTokofoodParam
 import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
 import com.tokopedia.tokofood.common.domain.response.CartListBusinessData
 import com.tokopedia.tokofood.common.domain.response.CartListCartGroupCart
 import com.tokopedia.tokofood.common.domain.response.CartListData
-import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
-import com.tokopedia.tokofood.common.domain.usecase.KeroGetAddressUseCase
 import com.tokopedia.tokofood.common.presentation.mapper.CustomOrderDetailsMapper
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
@@ -36,6 +39,7 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.Visitab
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.isLastAvailableProduct
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.setCartId
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.setCollapsedUnavailableProducts
+import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.VisitableDataHelper.setQuantityChanged
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper.updatePromoData
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper.updateShippingData
@@ -56,7 +60,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
@@ -65,9 +68,9 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @FlowPreview
-class TokoFoodPurchaseViewModel @Inject constructor(
-    private val keroEditAddressUseCase: Lazy<KeroEditAddressUseCase>,
-    private val keroGetAddressUseCase: Lazy<KeroGetAddressUseCase>,
+open class TokoFoodPurchaseViewModel @Inject constructor(
+    private val keroEditAddressUseCase: Lazy<UpdatePinpointWithAddressIdUseCase>,
+    private val getAddressDetailByIdUseCase: Lazy<GetAddressDetailByIdUseCase>,
     private val cartListTokofoodUseCase: Lazy<CheckoutTokoFoodUseCase>,
     private val checkoutGeneralTokoFoodUseCase: Lazy<CheckoutGeneralTokoFoodUseCase>,
     val dispatcher: CoroutineDispatchers
@@ -111,6 +114,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     private val _trackerPaymentCheckoutData = MutableSharedFlow<CartListData>()
     val trackerPaymentCheckoutData = _trackerPaymentCheckoutData.asSharedFlow()
 
+    private val _isPaymentButtonLoading = MutableSharedFlow<Boolean>()
+    val isPaymentButtonLoading = _isPaymentButtonLoading.asSharedFlow()
+
     init {
         viewModelScope.launch {
             _updateQuantityState
@@ -122,9 +128,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                     }
                 }
                 .collect {
-                    _visitables.value?.filterIsInstance<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>()?.forEach { productUiModel ->
-                        productUiModel.isQuantityChanged = false
-                    }
+                    _visitables.value.setQuantityChanged()
                     _updateQuantityStateFlow.emit(it)
                 }
         }
@@ -158,6 +162,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
 
     fun loadData() {
         launchCatchError(block = {
+            _isPaymentButtonLoading.emit(false)
             withContext(dispatcher.io) {
                 cartListTokofoodUseCase.get().execute(SOURCE)
             }.let {
@@ -192,9 +197,16 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                     val cacheAddressId = _isAddressHasPinpoint.value.first
                     if (cacheAddressId.isEmpty()) {
                         // Check pinpoint remotely if cache address id is empty
-                        val remoteAddressId = businessData.customResponse.userAddress.addressId.toString()
-                        val addressResult = keroGetAddressUseCase.get().execute(remoteAddressId)
-                        val secondAddress = addressResult?.secondAddress
+                        val remoteAddressId =
+                            businessData.customResponse.userAddress.addressId.toString()
+                        val addressResult = getAddressDetailByIdUseCase.get()(
+                            GetDetailAddressParam(
+                                remoteAddressId,
+                                source = ManageAddressSource.TOKOFOOD.source,
+                                isManageAddressFlow = false
+                            )
+                        )
+                        val secondAddress = addressResult.address2
                         secondAddress?.isNotEmpty().let { hasPinpointRemotely ->
                             if (hasPinpointRemotely == true) {
                                 _uiEvent.value = PurchaseUiEvent(
@@ -211,20 +223,20 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 }
             }
         }, onError = {
-            if (_isAddressHasPinpoint.value.second) {
-                _uiEvent.value = PurchaseUiEvent(
-                    state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE,
-                    throwable = it
-                )
-                _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(
-                    isLastLoadStateSuccess = false,
-                    shopName = "",
-                    shopLocation = ""
-                )
-            } else {
-                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_NO_PINPOINT)
-            }
-        })
+                if (_isAddressHasPinpoint.value.second) {
+                    _uiEvent.value = PurchaseUiEvent(
+                        state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE,
+                        throwable = it
+                    )
+                    _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(
+                        isLastLoadStateSuccess = false,
+                        shopName = "",
+                        shopLocation = ""
+                    )
+                } else {
+                    _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_NO_PINPOINT)
+                }
+            })
     }
 
     fun loadDataPartial() {
@@ -486,12 +498,12 @@ class TokoFoodPurchaseViewModel @Inject constructor(
             } else {
                 launchCatchError(
                     block = {
-                        val isSuccess = withContext(dispatcher.io) {
-                            keroEditAddressUseCase.get().execute(addressId, latitude, longitude)
+                        val result = withContext(dispatcher.io) {
+                            keroEditAddressUseCase.get()(KeroEditAddressParam(addressId, latitude, longitude, ManageAddressSource.TOKOFOOD))
                         }
-                        if (isSuccess) {
+                        if (result.success) {
                             _isAddressHasPinpoint.value = addressId to (latitude.isNotEmpty() && longitude.isNotEmpty())
-                            _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT, data = Pair(latitude, longitude))
+                            _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT, data = result)
                         } else {
                             _isAddressHasPinpoint.value = addressId to false
                             _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
@@ -540,6 +552,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
 
     fun checkoutGeneral() {
         launchCatchError(block = {
+            _isPaymentButtonLoading.emit(true)
             checkoutTokoFoodResponse.value?.let { checkoutResponse ->
                 withContext(dispatcher.io) {
                     checkoutGeneralTokoFoodUseCase.get().execute(checkoutResponse)
@@ -559,6 +572,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                             throwable = MessageErrorException(errorMessage)
                         )
                     }
+                    _isPaymentButtonLoading.emit(false)
                 }
             }
         }, onError = {
@@ -567,6 +581,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                     data = it.getGlobalErrorType(),
                     throwable = it
                 )
+                _isPaymentButtonLoading.emit(false)
             })
     }
 

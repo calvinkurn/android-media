@@ -20,4 +20,5 @@ object BundleConstant {
     const val BUNDLE_KEY_VOUCHER_CREATION_STEP_ONE = "voucher_type"
     const val BUNDLE_KEY_VOUCHER_CREATION_STEP_TWO = "voucher_information"
     const val BUNDLE_KEY_VOUCHER_CREATION_STEP_THREE = "voucher_setting"
+    const val BUNDLE_KEY_IS_VOUCHER_APPROVED = "is_voucher_approved"
 }

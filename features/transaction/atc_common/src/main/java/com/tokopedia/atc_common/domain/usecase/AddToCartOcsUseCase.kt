@@ -21,11 +21,13 @@ import kotlin.math.roundToLong
  * Created by Irfan Khoirul on 2019-07-10.
  */
 
-open class AddToCartOcsUseCase @Inject constructor(@Named("atcOcsMutation") private val queryString: String,
-                                                   private val gson: Gson,
-                                                   private val graphqlUseCase: GraphqlUseCase,
-                                                   private val addToCartDataMapper: AddToCartDataMapper,
-                                                   private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper) : UseCase<AddToCartDataModel>() {
+open class AddToCartOcsUseCase @Inject constructor(
+    @Named("atcOcsMutation") private val queryString: String,
+    private val gson: Gson,
+    private val graphqlUseCase: GraphqlUseCase,
+    private val addToCartDataMapper: AddToCartDataMapper,
+    private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper
+) : UseCase<AddToCartDataModel>() {
 
     companion object {
         const val REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST = "REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST"
@@ -46,20 +48,20 @@ open class AddToCartOcsUseCase @Inject constructor(@Named("atcOcsMutation") priv
 
     private fun getParams(ocsRequestParams: AddToCartOcsRequestParams): Map<String, Any?> {
         return mapOf(
-                PARAM_ATC to mapOf(
-                        PARAM_PRODUCT_ID to ocsRequestParams.productId,
-                        PARAM_SHOP_ID to ocsRequestParams.shopId,
-                        PARAM_QUANTITY to ocsRequestParams.quantity,
-                        PARAM_NOTES to ocsRequestParams.notes,
-                        PARAM_WAREHOUSE_ID to ocsRequestParams.warehouseId,
-                        PARAM_CUSTOMER_ID to ocsRequestParams.customerId,
-                        PARAM_TRACKER_ATTRIBUTION to ocsRequestParams.trackerAttribution,
-                        PARAM_TRACKER_LIST_NAME to ocsRequestParams.trackerListName,
-                        PARAM_UC_UT to ocsRequestParams.utParam,
-                        PARAM_IS_TRADE_IN to ocsRequestParams.isTradeIn,
-                        PARAM_SHIPPING_PRICE to ocsRequestParams.shippingPrice.roundToLong(),
-                        KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
-                )
+            PARAM_ATC to mapOf(
+                PARAM_PRODUCT_ID to ocsRequestParams.productId,
+                PARAM_SHOP_ID to ocsRequestParams.shopId,
+                PARAM_QUANTITY to ocsRequestParams.quantity,
+                PARAM_NOTES to ocsRequestParams.notes,
+                PARAM_WAREHOUSE_ID to ocsRequestParams.warehouseId,
+                PARAM_CUSTOMER_ID to ocsRequestParams.customerId,
+                PARAM_TRACKER_ATTRIBUTION to ocsRequestParams.trackerAttribution,
+                PARAM_TRACKER_LIST_NAME to ocsRequestParams.trackerListName,
+                PARAM_UC_UT to ocsRequestParams.utParam,
+                PARAM_IS_TRADE_IN to ocsRequestParams.isTradeIn,
+                PARAM_SHIPPING_PRICE to ocsRequestParams.shippingPrice.roundToLong(),
+                KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
+            )
         )
     }
 
@@ -73,13 +75,18 @@ open class AddToCartOcsUseCase @Inject constructor(@Named("atcOcsMutation") priv
             val result = addToCartDataMapper.mapAddToCartOcsResponse(addToCartOcsGqlResponse)
             if (!result.isStatusError()) {
                 AddToCartBaseAnalytics.sendAppsFlyerTracking(
-                    addToCartRequest.productId, addToCartRequest.productName, addToCartRequest.price,
-                        addToCartRequest.quantity.toString(), addToCartRequest.category)
+                    addToCartRequest.productId,
+                    addToCartRequest.productName,
+                    addToCartRequest.price,
+                    addToCartRequest.quantity.toString(),
+                    addToCartRequest.category
+                )
                 AddToCartBaseAnalytics.sendBranchIoTracking(
                     addToCartRequest.productId, addToCartRequest.productName, addToCartRequest.price,
-                        addToCartRequest.quantity.toString(), addToCartRequest.category, addToCartRequest.categoryLevel1Id,
-                        addToCartRequest.categoryLevel1Name, addToCartRequest.categoryLevel2Id, addToCartRequest.categoryLevel2Name,
-                        addToCartRequest.categoryLevel3Id, addToCartRequest.categoryLevel3Name, addToCartRequest.userId)
+                    addToCartRequest.quantity.toString(), addToCartRequest.category, addToCartRequest.categoryLevel1Id,
+                    addToCartRequest.categoryLevel1Name, addToCartRequest.categoryLevel2Id, addToCartRequest.categoryLevel2Name,
+                    addToCartRequest.categoryLevel3Id, addToCartRequest.categoryLevel3Name, addToCartRequest.userId
+                )
             }
             result
         }

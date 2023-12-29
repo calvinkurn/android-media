@@ -1,13 +1,10 @@
 package com.tokopedia.trackingoptimizer.db
 
+import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import android.content.Context
 import com.tokopedia.trackingoptimizer.db.dao.TrackingEEDatabaseDao
-import com.tokopedia.trackingoptimizer.db.dao.TrackingEEFullDatabaseDao
-import com.tokopedia.trackingoptimizer.db.dao.TrackingRegularDatabaseDao
-import com.tokopedia.trackingoptimizer.db.dao.TrackingScreenNameDatabaseDao
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingEEFullDbModel
 import com.tokopedia.trackingoptimizer.db.model.TrackingRegularDbModel
@@ -20,9 +17,6 @@ import com.tokopedia.trackingoptimizer.db.model.TrackingScreenNameDbModel
 abstract class TrackingDatabase : RoomDatabase() {
 
     abstract fun getTrackingEEDao(): TrackingEEDatabaseDao
-    abstract fun getTrackingEEFullDao(): TrackingEEFullDatabaseDao
-    abstract fun getTrackingRegularDao(): TrackingRegularDatabaseDao
-    abstract fun getTrackingScreenNameDao(): TrackingScreenNameDatabaseDao
 
     companion object {
         @Volatile

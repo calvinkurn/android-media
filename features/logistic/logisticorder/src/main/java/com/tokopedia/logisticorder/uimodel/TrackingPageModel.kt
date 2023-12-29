@@ -61,7 +61,15 @@ data class TrackHistoryModel(
 
 @Parcelize
 data class PageModel(
-    var additionalInfo: List<AdditionalInfoModel> = listOf()
+    var additionalInfo: List<AdditionalInfoModel> = listOf(),
+    var contactUsUrl: String = "",
+    var tickerUnificationTargets: List<TickerUnificationTargets> = listOf()
+) : Parcelable
+
+@Parcelize
+data class TickerUnificationTargets(
+    val type: String = "",
+    val values: List<String> = listOf()
 ) : Parcelable
 
 @Parcelize

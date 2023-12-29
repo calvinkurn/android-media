@@ -10,7 +10,7 @@
         android:id="@+id/statusbar"
         android:layout_width="match_parent"
         android:layout_height="24dp"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         android:visibility="invisible"
         app:layout_collapseMode="pin" />
 
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
@@ -35,14 +35,14 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N0">
+        android:background="@color/Unify_NN0">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_NN0"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -56,9 +56,9 @@
                     android:id="@+id/tablayout"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_70"
-                    android:background="@color/Unify_N0"
+                    android:background="@color/Unify_NN0"
                     app:layout_collapseMode="pin"
-                    app:tabIndicatorColor="@color/Unify_P600"
+                    app:tabIndicatorColor="@color/Unify_PN600"
                     app:tabMode="scrollable" />
 
                 <include

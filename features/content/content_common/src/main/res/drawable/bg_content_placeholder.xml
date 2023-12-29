@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <solid android:color="@color/Unify_NN50"/>
+            <corners android:radius="@dimen/unify_space_8"/>
+        </shape>
+    </item>
+</layer-list>

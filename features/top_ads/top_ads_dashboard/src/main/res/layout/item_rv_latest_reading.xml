@@ -34,7 +34,7 @@
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline"
         app:layout_constraintTop_toBottomOf="@id/txtTitle"

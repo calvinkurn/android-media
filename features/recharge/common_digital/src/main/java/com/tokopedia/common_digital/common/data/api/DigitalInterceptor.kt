@@ -21,10 +21,10 @@ import java.io.IOException
 /**
  * Created by Rizky on 16/08/18.
  */
-class DigitalInterceptor(@ApplicationContext context: Context,
+class DigitalInterceptor(@ApplicationContext val context: Context,
                          networkRouter: NetworkRouter,
                          userSessionInterface: UserSessionInterface) : TkpdOldAuthInterceptor(context, networkRouter, userSessionInterface) {
-    private val context: Context
+
     private val digitalAuthKey: String
         get() = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
             AuthKeyExt.RECHARGE_HMAC_API_KEY_STAGING
@@ -75,9 +75,11 @@ class DigitalInterceptor(@ApplicationContext context: Context,
             path: String, strParam: String, method: String, authKey: String, contentTypeHeader: String
     ): Map<String, String> {
         val header = AuthUtil.generateHeadersWithXUserId(
-                path, strParam, method, authKey, contentTypeHeader, userSession.userId, userSession)
+            path, strParam, method, authKey, contentTypeHeader, userSession.userId, userSession,
+            headerTheme
+        )
 
-        //replace with Digital's auth organization key
+        // replace with Digital's auth organization key
         header[AuthUtil.HEADER_AUTHORIZATION] = header[AuthUtil.HEADER_AUTHORIZATION]?.replace(DEFAULT_TOKOPEDIA_ORGANIZATION_NAME, digitalAuthOrganization)
         return header
     }
@@ -96,6 +98,5 @@ class DigitalInterceptor(@ApplicationContext context: Context,
 
     init {
         authKey = digitalAuthKey
-        this.context = context
     }
 }

@@ -38,7 +38,9 @@ class ReplyBubbleOnBoarding @Inject constructor(
             coachMark = CoachMark2(it)
             coachMarkItem.add(
                 CoachMark2Item(
-                    anchor!!, title, desc
+                    anchor!!,
+                    title,
+                    desc
                 )
             )
             coachMark?.showCoachMark(coachMarkItem)
@@ -65,7 +67,7 @@ class ReplyBubbleOnBoarding @Inject constructor(
     }
 
     fun hasBeenShown(): Boolean {
-        return cacheManager.getPreviousState(KEY_REPLY_BUBBLE_ONBOARDING)
+        return cacheManager.getPreviousState(KEY_REPLY_BUBBLE_ONBOARDING, false)
     }
 
     fun flush() {

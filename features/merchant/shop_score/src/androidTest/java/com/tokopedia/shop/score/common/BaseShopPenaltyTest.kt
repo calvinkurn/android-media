@@ -12,10 +12,11 @@ import com.tokopedia.shop.score.stub.common.graphql.repository.GraphqlRepository
 import com.tokopedia.shop.score.stub.common.util.AndroidTestUtil
 import com.tokopedia.shop.score.stub.common.util.ShopPenaltyComponentStubInstance
 import com.tokopedia.shop.score.stub.penalty.domain.mapper.PenaltyMapperStub
+import com.tokopedia.shop.score.stub.penalty.domain.usecase.GetNotYetDeductedPenaltyUseCaseStub
 import com.tokopedia.shop.score.stub.penalty.domain.usecase.GetShopPenaltyDetailMergeUseCaseStub
 import com.tokopedia.shop.score.stub.penalty.domain.usecase.GetShopPenaltyDetailUseCaseStub
+import com.tokopedia.shop.score.stub.penalty.domain.usecase.ShopPenaltyTickerUseCaseStub
 import com.tokopedia.shop.score.stub.penalty.presentation.activity.ShopPenaltyPageActivityStub
-import com.tokopedia.shop.score.stub.performance.domain.response.ShopScoreResponseStub
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -33,6 +34,8 @@ abstract class BaseShopPenaltyTest {
     protected lateinit var graphqlRepositoryStub: GraphqlRepositoryStub
     protected lateinit var getShopPenaltyDetailUseCaseStub: GetShopPenaltyDetailUseCaseStub
     protected lateinit var getShopPenaltyDetailMergeUseCaseStub: GetShopPenaltyDetailMergeUseCaseStub
+    protected lateinit var getNotYetDeductedPenaltyUseCaseStub: GetNotYetDeductedPenaltyUseCaseStub
+    protected lateinit var shopPenaltyTickerUseCaseStub: ShopPenaltyTickerUseCaseStub
     protected lateinit var penaltyMapper: PenaltyMapper
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -58,6 +61,10 @@ abstract class BaseShopPenaltyTest {
             getShopPenaltyComponentStub.getShopPenaltyDetailUseCaseStub() as GetShopPenaltyDetailUseCaseStub
         getShopPenaltyDetailMergeUseCaseStub =
             getShopPenaltyComponentStub.getShopPenaltyDetailMergeUseCaseStub() as GetShopPenaltyDetailMergeUseCaseStub
+        getNotYetDeductedPenaltyUseCaseStub =
+            getShopPenaltyComponentStub.getNotYetDeductedPenaltyUseCaseStub() as GetNotYetDeductedPenaltyUseCaseStub
+        shopPenaltyTickerUseCaseStub =
+            getShopPenaltyComponentStub.getShopPenaltyTickerUseCaseStub() as ShopPenaltyTickerUseCaseStub
         penaltyMapper =
             getShopPenaltyComponentStub.penaltyMapperStub() as PenaltyMapperStub
     }

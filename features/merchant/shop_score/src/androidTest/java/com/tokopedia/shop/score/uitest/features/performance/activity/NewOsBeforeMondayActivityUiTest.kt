@@ -1,15 +1,12 @@
 package com.tokopedia.shop.score.uitest.features.performance.activity
 
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.performance.presentation.activity.ShopPerformanceYoutubeActivity
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
-import com.tokopedia.shop.score.uitest.features.performance.base.ShopScoreUiTest
 import com.tokopedia.shop.score.stub.common.util.onClick
 import com.tokopedia.shop.score.stub.common.util.onIdView
 import com.tokopedia.shop.score.stub.common.util.scrollTo
+import com.tokopedia.shop.score.uitest.features.performance.base.ShopScoreUiTest
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
 
@@ -33,7 +30,7 @@ class NewOsBeforeMondayActivityUiTest: ShopScoreUiTest() {
     fun intended_youtube_page_click_btn_timer_new_os_before_monday() {
         activityRule.launchActivity(getShopPerformancePageIntent())
         onIdView(R.id.ic_video_shop_performance_learn).onClick()
-        intended(hasComponent(ShopPerformanceYoutubeActivity::class.java.name))
+        intendingIntent()
     }
 
     @Test

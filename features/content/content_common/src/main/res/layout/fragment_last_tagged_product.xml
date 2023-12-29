@@ -42,7 +42,7 @@
             android:layout_marginRight="@dimen/spacing_lvl3"
             android:background="@android:color/transparent"
             android:text="@string/cc_product_tag_search_hint"
-            android:textColor="@color/Unify_N700_32"
+            android:textColor="@color/Unify_NN950_32"
             app:layout_constraintBottom_toBottomOf="@id/iv_search"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_search"

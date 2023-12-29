@@ -2,18 +2,14 @@ package com.tokopedia.videoTabComponent.domain.model.data
 
 import com.google.gson.annotations.SerializedName
 
-data class ContentSlotResponseDummy(
-        val data : Data
-)
-
 data class Data(
-        val playGetContentSlot : PlayGetContentSlotResponse
+    val playGetContentSlot: PlayGetContentSlotResponse
 )
 data class PlayGetContentSlotResponse(
-        @SerializedName("data")
-        var data: List<PlaySlot> = mutableListOf(),
-        @SerializedName("meta")
-        var meta: PlayPagingProperties = PlayPagingProperties(),
+    @SerializedName("data")
+    var data: List<PlaySlot> = mutableListOf(),
+    @SerializedName("meta")
+    var meta: PlayPagingProperties = PlayPagingProperties(),
 
-        var appendeList: List<PlaySlot> = mutableListOf(),
+    var appendeList: List<PlaySlot> = mutableListOf()
 )

@@ -1,0 +1,89 @@
+{
+  "tokofoodOrderDetail": {
+    "orderStatus": {
+      "status": "COMPLETED",
+      "title": "Pesanan Selesai",
+      "subtitle": "",
+      "iconName": "",
+      "enableChatButton": true
+    },
+    "eta": {
+      "label": "",
+      "time": ""
+    },
+    "merchant": {
+      "merchantId": "fe0c2ab2-b7ad-4b36-8d14-4ef093da608e",
+      "displayName": "Testing Bakso Pojok Salatiga",
+      "distanceInKm": "0.1 km dari tujuan"
+    },
+    "destination": {
+      "label": "Sukakarya, Kota Sabang, D.I. Aceh",
+      "phone": "99900000056",
+      "info": "sabang (sabang)"
+    },
+    "items": [
+      {
+        "cartId": "0",
+        "categoryId": "015248f6-7c56-4559-ac62-72f6cd52325a",
+        "categoryName": "Minuman",
+        "itemId": "79b0c026-d209-44f7-94a4-85dfe23748d1",
+        "displayName": "Milk Tea",
+        "price": "Rp10.000",
+        "quantity": "1",
+        "variants": null,
+        "notes": null
+      }
+    ],
+    "additionalTickerInfo": null,
+    "actionButtons": [
+      {
+        "label": "Beli Lagi",
+        "actionType": "link",
+        "appUrl": "tokopedia://food/merchant/fe0c2ab2-b7ad-4b36-8d14-4ef093da608e"
+      }
+    ],
+    "dotMenus": [
+      {
+        "label": "Bantuan",
+        "actionType": "link",
+        "appUrl": "https://www.tokopedia.com/help/reference-article?uoh=true&refnum=IVG/20230417/GFD/857377027920207020&refnum_id=507bd71e-d10a-4f01-a106-6ee63464161a&transaction_type_id=2&invoice_type_id=12"
+      }
+    ],
+    "driverDetails": {
+      "name": "Fitri Juliana",
+      "photoUrl": "https://driver-image-preprocessed-production.s3.amazonaws.com/public/e55194996ce744d0a67188019a6490e7.jpg",
+      "licensePlateNumber": "B3399OK",
+      "karma": null
+    },
+    "invoice": {
+      "invoiceNumber": "IVG/20230417/GFD/857377027920207020",
+      "invoiceURL": "https://www.tokopedia.com/order/invoice/507bd71e-d10a-4f01-a106-6ee63464161a",
+      "gofoodOrderNumber": "F-2074821256"
+    },
+    "payment": {
+      "paymentMethod": {
+        "label": "Metode Pembayaran",
+        "value": "Saldo Tokopedia"
+      },
+      "paymentDetails": [
+        {
+          "label": "Total Harga (1 item)",
+          "value": "Rp10.000"
+        },
+        {
+          "label": "Total Ongkos Kirim",
+          "value": "Rp13.500"
+        },
+        {
+          "label": "Biaya Layanan GoFood",
+          "value": "Rp3.000"
+        }
+      ],
+      "paymentAmount": {
+        "label": "Total Belanja",
+        "value": "Rp26.500"
+      },
+      "paymentDate": "17 Apr 2023, 15:45 WIB"
+    }
+  }
+}

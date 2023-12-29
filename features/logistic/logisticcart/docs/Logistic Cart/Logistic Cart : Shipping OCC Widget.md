@@ -39,20 +39,20 @@ This custom view has functionality to select shipping `duration` and `courier` w
 
 - Use Bebas Ongkir
 
-![](../res/shippingoccwidget/bebas_ongkir.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingoccwidget/bebas_ongkir.png)
 - Use delivery arrived 4 hours (Dilayani Tokopedia)
 
-![](../res/shippingoccwidget/delivery_four_hours.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingoccwidget/delivery_four_hours.png)
 - Normal Shipping
 
-![](../res/shippingoccwidget/normal_shipping.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingoccwidget/normal_shipping.png)
 - Normal Shipping With Bebas Ongkir Ticker
 
-![](../res/shippingoccwidget/bebas_ongkir_ticker.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingoccwidget/bebas_ongkir_ticker.png)
 
 ## Flow Diagram
 
-![](../res/shippingoccwidget/shipping_widget_occ_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingoccwidget/shipping_widget_occ_drawio.png)
 
 ## How-to
 

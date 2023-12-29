@@ -53,7 +53,7 @@ class ItemListViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT_RES = com.tokopedia.topads.create.R.layout.viewholder_item_list
+        val LAYOUT_RES =com.tokopedia.topads.dashboard.R.layout.topads_insight_centre_insight_selection_item
 
     }
 }

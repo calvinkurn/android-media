@@ -5,6 +5,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -12,9 +13,10 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
-import org.junit.Test
 import org.junit.Rule
+import org.junit.Test
 import kotlin.reflect.KClass
 
 @ExperimentalCoroutinesApi
@@ -32,7 +34,6 @@ class CatalogListItemViewModelTest {
         viewModel = CatalogListItemViewModel(repository)
     }
 
-
     @After
     fun tearDown() {
         Dispatchers.resetMain()
@@ -40,16 +41,17 @@ class CatalogListItemViewModelTest {
 
     @Test
     fun `get catalog list item success`() {
-        val observer = mockk<Observer<Resources<CatalogEntity>>>(){
-            every { onChanged(any())  } just runs
+        val observer = mockk<Observer<Resources<CatalogEntity>>>() {
+            every { onChanged(any()) } just runs
         }
         val listItem = mockk<CatalogEntity> ()
         coEvery {
-            repository.getListOfCatalog(1, 1, 0) } returns mockk {
+            repository.getListOfCatalog(1, 1, 0)
+        } returns mockk {
             every { catalog } returns listItem
         }
         viewModel.listCatalogItem.observeForever(observer)
-        viewModel.getCataloglistItem(1,1,0)
+        viewModel.getCataloglistItem(1, 1, 0)
 
         verify(ordering = Ordering.ORDERED) {
             observer.onChanged(ofType(Loading::class as KClass<Loading<CatalogEntity>>))
@@ -59,22 +61,20 @@ class CatalogListItemViewModelTest {
         assert(listItem == (viewModel.listCatalogItem.value as Success).data)
     }
 
-//    @Test
-//    fun `get catalog list item error`() {
-//        val observer = mockk<Observer<Resources<CatalogEntity>>>(){
-//            every { onChanged(any())  } just runs
-//        }
-//        coEvery {
-//            repository.getListOfCatalog(1, 1, 0) } returns mockk {
-//            every { catalog } returns null
-//        }
-//        viewModel.listCatalogItem.observeForever(observer)
-//        viewModel.getCataloglistItem(1,1,0)
-//
-//        verify(ordering = Ordering.ORDERED) {
-//            observer.onChanged(ofType(Loading::class as KClass<Loading<CatalogEntity>>))
-//        }
-//    }
+    @Test
+    fun `get catalog list item error`() {
+        val categoryId = 1152
+        val subCategoryId = 5223
+        val pointsRange = 2
+        val exception = NullPointerException()
+
+        coEvery { repository.getListOfCatalog(categoryId, subCategoryId, pointsRange) } throws exception
+
+        viewModel.getCataloglistItem(categoryId, subCategoryId, pointsRange)
+
+        viewModel.listCatalogItem
+            .verifyValueEquals(ErrorMessage<NullPointerException>(data = "java.lang.NullPointerException"))
+    }
 
     @Test
     fun `redeem Coupon success`() {
@@ -110,9 +110,9 @@ class CatalogListItemViewModelTest {
             every { id } returns 1
         }
         val dummyCouponData = ArrayList<CouponDetailEntity>()
-        val couponDetailEntity = CouponDetailEntity(code = "200",cta = "cta" ,title = "title" , description = "description")
+        val couponDetailEntity = CouponDetailEntity(code = "200", cta = "cta", title = "title", description = "description")
         dummyCouponData.add(couponDetailEntity)
-        val data = RedeemCouponEntity(coupons=dummyCouponData,redeemMessage = "claim success")
+        val data = RedeemCouponEntity(coupons = dummyCouponData, redeemMessage = "claim success")
         coEvery { repository.startSaveCoupon(1) } returns mockk {
             every { hachikoRedeem } returns data
         }
@@ -126,7 +126,6 @@ class CatalogListItemViewModelTest {
         assert(result.title == data.coupons?.get(0)?.title)
         assert(result.description == data.coupons?.get(0)?.description)
         assert(result.redeemMessage == data.redeemMessage)
-
     }
 
     @Test
@@ -137,10 +136,10 @@ class CatalogListItemViewModelTest {
         }
 
         coEvery { repository.startSaveCoupon(1) } throws mockk<CatalogGqlError> {
-            every { messageErrorException } returns  mockk{
+            every { messageErrorException } returns mockk {
                 every { message } returns "message"
             }
-            every { developerMessage } returns  "title|message|300"
+            every { developerMessage } returns "title|message|300"
         }
         viewModel.startSaveCouponLiveData.observeForever(observer)
         viewModel.startSaveCoupon(item)
@@ -170,19 +169,27 @@ class CatalogListItemViewModelTest {
 
     @Test
     fun `fetch Latest Status success case`() {
-        val observer = mockk<Observer<List<CatalogStatusItem>>>()
-        val data = mockk<List<CatalogStatusItem>>()
-        coEvery { repository.fetchLatestStatus(any()) } returns mockk {
-            every { catalogStatus } returns mockk {
-                every { catalogs } returns data
-            }
-        }
-        viewModel.latestStatusLiveData.observeForever(observer)
-        viewModel.fetchLatestStatus(listOf())
+        val catalogsIds = listOf(1)
 
-        verify(exactly = 1) { observer.onChanged(any()) }
+        val catalogStatusResponse = CatalogStatusOuter(
+            catalogStatus = CatalogStatusBase(
+                catalogs = listOf(
+                    CatalogStatusItem(
+                        catalogID = 1,
+                        upperTextDesc = mutableListOf("Description")
+                    )
+                )
+            )
+        )
 
-        assert(viewModel.latestStatusLiveData.value == data)
+        coEvery { repository.fetchLatestStatus(catalogsIds) } returns catalogStatusResponse
+
+        viewModel.fetchLatestStatus(catalogsIds)
+
+        val expectedStatusLiveData = catalogStatusResponse.catalogStatus.catalogs
+
+        viewModel.latestStatusLiveData
+            .verifyValueEquals(expectedStatusLiveData)
     }
 
     @Test
@@ -195,6 +202,15 @@ class CatalogListItemViewModelTest {
         viewModel.fetchLatestStatus(listOf())
 
         verify(exactly = 0) { observer.onChanged(any()) }
+    }
 
+    @Test
+    fun `when set pointRange variable should update pointRange data`() {
+        viewModel.pointRange = 2
+
+        val expected = 2
+        val actual = viewModel.pointRange
+
+        assertEquals(expected, actual)
     }
 }

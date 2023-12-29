@@ -4,14 +4,16 @@ import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.network.exception.ResponseErrorException
 
 data class AddToCartBundleModel(
-        var status: String = "",
-        var errorMessage: String = "",
-        var addToCartBundleDataModel: AddToCartBundleDataModel = AddToCartBundleDataModel()
+    var status: String = "",
+    var errorMessage: String = "",
+    var addToCartBundleDataModel: AddToCartBundleDataModel = AddToCartBundleDataModel()
 ) {
 
-    fun validateResponse(onSuccess: () -> Unit,
-                         onFailedWithMessages: (messages: List<String>) -> Unit,
-                         onFailedWithException: (throwable: Throwable) -> Unit) {
+    fun validateResponse(
+        onSuccess: () -> Unit,
+        onFailedWithMessages: (messages: List<String>) -> Unit,
+        onFailedWithException: (throwable: Throwable) -> Unit
+    ) {
         if (status == "OK") {
             if (addToCartBundleDataModel.success == 1) {
                 // ATC success
@@ -32,17 +34,17 @@ data class AddToCartBundleModel(
 }
 
 data class AddToCartBundleDataModel(
-        var success: Int = 0,
-        var message: List<String> = emptyList(),
-        var data: List<ProductDataModel> = emptyList()
+    var success: Int = 0,
+    var message: List<String> = emptyList(),
+    var data: List<ProductDataModel> = emptyList()
 )
 
 data class ProductDataModel(
-        var cartId: String = "",
-        var customerId: String = "",
-        var notes: String = "",
-        var productId: String = "",
-        var quantity: Int = 0,
-        var shopId: String = "",
-        var warehouseId: String = ""
+    var cartId: String = "",
+    var customerId: String = "",
+    var notes: String = "",
+    var productId: String = "",
+    var quantity: Int = 0,
+    var shopId: String = "",
+    var warehouseId: String = ""
 )

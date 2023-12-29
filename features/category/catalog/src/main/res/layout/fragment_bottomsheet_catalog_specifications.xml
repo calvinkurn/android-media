@@ -22,12 +22,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="4dp"
-                app:tabIndicatorColor="@color/Unify_G500"
+                app:tabIndicatorColor="@color/Unify_GN500"
                 app:tabIndicatorFullWidth="true"
                 app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/Unify_G500"
+                app:tabSelectedTextColor="@color/Unify_GN500"
                 app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-                app:tabTextColor="@color/Unify_N700_68" />
+                app:tabTextColor="@color/Unify_NN950_68" />
 
 
             <androidx.viewpager2.widget.ViewPager2

@@ -41,7 +41,6 @@ class PartialCentralizedPromoOnGoingPromoView(
             rvCentralizedPromoOnGoingPromo.hide()
             layoutOnGoingPromoShimmer.layoutCentralizedPromoOnGoingPromoShimmering.hide()
             layoutOnGoingPromoError.layoutCentralizedPromoOnGoingPromoError.show()
-            onGoingPromoLayoutDivider.show()
 
             layoutOnGoingPromoError.localLoadOnGoingPromo.progressState = false
             layoutOnGoingPromoError.localLoadOnGoingPromo.description?.text =
@@ -67,7 +66,6 @@ class PartialCentralizedPromoOnGoingPromoView(
         rvCentralizedPromoOnGoingPromo.hide()
         layoutOnGoingPromoError.layoutCentralizedPromoOnGoingPromoError.hide()
         layoutOnGoingPromoShimmer.layoutCentralizedPromoOnGoingPromoShimmering.show()
-        onGoingPromoLayoutDivider.show()
     }
 
     override fun bindSuccessData(data: OnGoingPromoListUiModel) {}
@@ -76,14 +74,12 @@ class PartialCentralizedPromoOnGoingPromoView(
         rvCentralizedPromoOnGoingPromo.hide()
         layoutOnGoingPromoShimmer.layoutCentralizedPromoOnGoingPromoShimmering.hide()
         layoutOnGoingPromoError.layoutCentralizedPromoOnGoingPromoError.hide()
-        onGoingPromoLayoutDivider.hide()
         layoutOnGoingPromoError.localLoadOnGoingPromo.progressState = false
         tvOnGoingPromo.hide()
     }
 
     override fun onRecyclerViewResultDispatched() = with(ongoingPromoBinding) {
         rvCentralizedPromoOnGoingPromo.show()
-        onGoingPromoLayoutDivider.show()
         layoutOnGoingPromoShimmer.layoutCentralizedPromoOnGoingPromoShimmering.hide()
         layoutOnGoingPromoError.layoutCentralizedPromoOnGoingPromoError.hide()
         layoutOnGoingPromoError.localLoadOnGoingPromo.progressState = false
@@ -94,7 +90,7 @@ class PartialCentralizedPromoOnGoingPromoView(
 
     override fun getCoachMarkItem() = with(ongoingPromoBinding) {
         rvCentralizedPromoOnGoingPromo.setBackgroundColor(
-            root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         )
         CoachMarkItem(
             rvCentralizedPromoOnGoingPromo,

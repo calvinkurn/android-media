@@ -48,6 +48,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
         const val PLACEHOLDER_OVERWEIGHT_VALUE = "{{weight}}"
 
         private const val BUNDLE_NO_VARIANT_CONST = -1
+        private const val BUNDLE_MIN_ORDER_CONST = 1
     }
 
     fun mapUiModel(miniCartData: MiniCartData): MiniCartListUiModel {
@@ -103,12 +104,13 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     }
                 }
                 bundleProducts = it.bundleProducts.map { bundleProduct ->
-                    ShopHomeBundleProductUiModel().apply {
-                        productId = bundleProduct.productID
-                        productName = bundleProduct.productName
-                        productImageUrl = bundleProduct.imageUrl
-                        productAppLink = bundleProduct.appLink
-                    }
+                    ShopHomeBundleProductUiModel(
+                        productId = bundleProduct.productID,
+                        productName = bundleProduct.productName,
+                        productImageUrl = bundleProduct.imageUrl,
+                        productAppLink = bundleProduct.appLink,
+                        minOrder = bundleProduct.minOrder
+                    )
                 }
             }
         }
@@ -128,11 +130,11 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
     }
 
-    fun mapToAddToCartBundleProductDetailParam(productDetails: List<ShopHomeBundleProductUiModel>, quantity: Int, shopId: String, userId: String): List<ProductDetail> {
+    fun mapToAddToCartBundleProductDetailParam(productDetails: List<ShopHomeBundleProductUiModel>, quantity: Int?, shopId: String, userId: String): List<ProductDetail> {
         return productDetails.map {
             ProductDetail(
                 productId = it.productId,
-                quantity = quantity,
+                quantity = quantity ?: it.minOrder ?: BUNDLE_MIN_ORDER_CONST,
                 shopId = shopId,
                 customerId = userId
             )
@@ -205,7 +207,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             val groupCount = availableSection.availableGroup.count()
             availableSection.availableGroup.forEachIndexed { groupIndex, availableGroup ->
                 // Add shop
-                miniCartShopUiModel = mapShopUiModel(availableGroup.shop, availableGroup.shipmentInformation)
+                // miniCartShopUiModel = mapShopUiModel(availableGroup.shop, availableGroup.shipmentInformation)
 
                 // Add available product
                 val miniCartProductUiModels = mutableListOf<MiniCartProductUiModel>()
@@ -384,6 +386,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             productInitialPriceBeforeDrop = product.initialPrice
             productPrice = product.productPrice
             productInformation = product.productInformation
+            productTagInfo = product.productTagInfo
             productNotes = product.productNotes
             productQty = if (product.productSwitchInvenage == 0) {
                 productQuantity
@@ -545,6 +548,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     productParentId = visitable.parentId
                     quantity = visitable.productQty
                     notes = visitable.productNotes
+                    productTagInfo = visitable.productTagInfo
                     cartString = visitable.cartString
                     campaignId = visitable.campaignId
                     attribution = visitable.attribution

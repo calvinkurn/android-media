@@ -81,7 +81,7 @@ class FlightOrderDetailJourneyView @JvmOverloads constructor(context: Context, a
             if (onwardJourney.refundableInfo) {
                 tgFlightOrderDepartureTicketRefundableStatus.visibility = View.VISIBLE
                 try {
-                    refundableColor = "#" + Integer.toHexString(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50) and  HEX_CODE_TRANSPARENCY)
+                    refundableColor = "#" + Integer.toHexString(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN50) and  HEX_CODE_TRANSPARENCY)
                     OrderDetailUtils.changeShapeColor(tgFlightOrderDepartureTicketRefundableStatus.background, refundableColor)
                 }catch (e: Throwable){
                     e.printStackTrace()

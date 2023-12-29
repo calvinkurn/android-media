@@ -10,7 +10,7 @@
         android:id="@+id/couponView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N0">
+        android:background="@color/Unify_NN0">
 
         <com.tokopedia.promoui.common.CouponImageView
             android:id="@+id/appCompatImageView"
@@ -44,7 +44,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginTop="10dp"
             android:text="@string/gami_min_transaction"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintStart_toEndOf="@+id/icon"
             app:layout_constraintTop_toBottomOf="@+id/appCompatImageView"
             app:typographyType="small" />
@@ -56,7 +56,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginBottom="8dp"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/icon"

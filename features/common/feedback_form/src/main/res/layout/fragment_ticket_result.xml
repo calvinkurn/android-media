@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_NN0"
     android:orientation="vertical">
 
     <com.tkpd.remoteresourcerequest.view.DeferredImageView
@@ -28,7 +28,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginRight="40dp"
         android:text="@string/link_ticket"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintTop_toBottomOf="@id/iv_ticket_created"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,7 +43,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginRight="40dp"
         android:text="@string/link_ticket"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintTop_toBottomOf="@id/ticket_text_1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -70,7 +70,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginRight="40dp"
         android:text="@string/link_ticket"
-        android:textColor="@color/Unify_N700"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintTop_toBottomOf="@id/openLink"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

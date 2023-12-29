@@ -9,14 +9,22 @@ class ContentModelBuilder {
         tabs = if (!showTabs) emptyList() else listOf(
             ProfileTabUiModel.Tab(
                 title = "Feed",
-                key = "feeds",
+                ProfileTabUiModel.Key.Feeds,
                 position = 0,
+                isNew = false,
             ),
             ProfileTabUiModel.Tab(
                 title = "Video",
-                key = "video",
+                ProfileTabUiModel.Key.Video,
                 position = 1,
-            )
+                isNew = false,
+            ),
+            ProfileTabUiModel.Tab(
+                title = "Review",
+                ProfileTabUiModel.Key.Review,
+                position = 2,
+                isNew = false,
+            ),
         )
     )
 

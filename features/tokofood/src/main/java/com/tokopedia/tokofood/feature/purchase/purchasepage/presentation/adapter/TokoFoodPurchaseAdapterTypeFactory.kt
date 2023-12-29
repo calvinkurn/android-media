@@ -14,15 +14,12 @@ import com.tokopedia.tokofood.databinding.ItemPurchaseGeneralTickerBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseLoadingBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseProductBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseProductListHeaderBinding
-import com.tokopedia.tokofood.databinding.ItemPurchaseProductOldBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseProductUnavailableReasonBinding
 import com.tokopedia.tokofood.databinding.ItemPurchasePromoBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseShippingBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseSummaryTransactionBinding
-import com.tokopedia.tokofood.databinding.ItemPurchaseSummaryTransactionOldBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseTickerErrorShopLevelBinding
 import com.tokopedia.tokofood.databinding.ItemPurchaseTotalAmountBinding
-import com.tokopedia.tokofood.databinding.ItemPurchaseTotalAmountOldBinding
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseAddressTokoFoodPurchaseUiModel
@@ -30,15 +27,12 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchasePromoTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseShippingTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModelOld
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModelOld
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.viewholder.TokoFoodPurchaseAccordionViewHolder
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.viewholder.TokoFoodPurchaseAddressViewHolder
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.viewholder.TokoFoodPurchaseDividerViewHolder
@@ -47,14 +41,11 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.viewhol
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.viewholder.TokoFoodPurchaseProductListHeaderViewHolder
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.viewholder.TokoFoodPurchaseProductUnavailableReasonViewHolder
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.viewholder.TokoFoodPurchaseProductViewHolder
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.viewholder.TokoFoodPurchaseProductViewHolderOld
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.viewholder.TokoFoodPurchasePromoViewHolder
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.viewholder.TokoFoodPurchaseShippingViewHolder
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.viewholder.TokoFoodPurchaseSummaryTransactionViewHolder
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.viewholder.TokoFoodPurchaseSummaryTransactionViewHolderOld
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.viewholder.TokoFoodPurchaseTickerErrorShopLevelViewHolder
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.viewholder.TokoFoodPurchaseTotalAmountViewHolder
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.viewholder.TokoFoodPurchaseTotalAmountViewHolderOld
 
 class TokoFoodPurchaseAdapterTypeFactory(private val listener: TokoFoodPurchaseActionListener)
     : BaseAdapterTypeFactory(), TokoFoodPurchaseTypeFactory {
@@ -83,10 +74,6 @@ class TokoFoodPurchaseAdapterTypeFactory(private val listener: TokoFoodPurchaseA
         return TokoFoodPurchaseProductViewHolder.LAYOUT
     }
 
-    override fun type(uiModel: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld): Int {
-        return TokoFoodPurchaseProductViewHolderOld.LAYOUT
-    }
-
     override fun type(uiModel: TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel): Int {
         return TokoFoodPurchaseProductUnavailableReasonViewHolder.LAYOUT
     }
@@ -103,20 +90,12 @@ class TokoFoodPurchaseAdapterTypeFactory(private val listener: TokoFoodPurchaseA
         return TokoFoodPurchaseSummaryTransactionViewHolder.LAYOUT
     }
 
-    override fun type(uiModel: TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModelOld): Int {
-        return TokoFoodPurchaseSummaryTransactionViewHolderOld.LAYOUT
-    }
-
     override fun type(uiModel: TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel): Int {
         return TokoFoodPurchaseTickerErrorShopLevelViewHolder.LAYOUT
     }
 
     override fun type(uiModel: TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel): Int {
         return TokoFoodPurchaseTotalAmountViewHolder.LAYOUT
-    }
-
-    override fun type(uiModel: TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModelOld): Int {
-        return TokoFoodPurchaseTotalAmountViewHolderOld.LAYOUT
     }
 
     override fun type(uiModel: LoadingModel): Int {
@@ -149,10 +128,6 @@ class TokoFoodPurchaseAdapterTypeFactory(private val listener: TokoFoodPurchaseA
                 val viewBinding = ItemPurchaseProductBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
                 TokoFoodPurchaseProductViewHolder(viewBinding, listener)
             }
-            TokoFoodPurchaseProductViewHolderOld.LAYOUT -> {
-                val viewBinding = ItemPurchaseProductOldBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
-                TokoFoodPurchaseProductViewHolderOld(viewBinding, listener)
-            }
             TokoFoodPurchaseProductUnavailableReasonViewHolder.LAYOUT -> {
                 val viewBinding = ItemPurchaseProductUnavailableReasonBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
                 TokoFoodPurchaseProductUnavailableReasonViewHolder(viewBinding)
@@ -169,10 +144,6 @@ class TokoFoodPurchaseAdapterTypeFactory(private val listener: TokoFoodPurchaseA
                 val viewBinding = ItemPurchaseSummaryTransactionBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
                 TokoFoodPurchaseSummaryTransactionViewHolder(viewBinding, listener)
             }
-            TokoFoodPurchaseSummaryTransactionViewHolderOld.LAYOUT -> {
-                val viewBinding = ItemPurchaseSummaryTransactionOldBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
-                TokoFoodPurchaseSummaryTransactionViewHolderOld(viewBinding, listener)
-            }
             TokoFoodPurchaseTickerErrorShopLevelViewHolder.LAYOUT -> {
                 val viewBinding = ItemPurchaseTickerErrorShopLevelBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
                 TokoFoodPurchaseTickerErrorShopLevelViewHolder(viewBinding, listener)
@@ -180,10 +151,6 @@ class TokoFoodPurchaseAdapterTypeFactory(private val listener: TokoFoodPurchaseA
             TokoFoodPurchaseTotalAmountViewHolder.LAYOUT -> {
                 val viewBinding = ItemPurchaseTotalAmountBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
                 TokoFoodPurchaseTotalAmountViewHolder(viewBinding, listener)
-            }
-            TokoFoodPurchaseTotalAmountViewHolderOld.LAYOUT -> {
-                val viewBinding = ItemPurchaseTotalAmountOldBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
-                TokoFoodPurchaseTotalAmountViewHolderOld(viewBinding, listener)
             }
             TokoFoodPurchaseLoadingViewHolder.LAYOUT -> {
                 val viewBinding = ItemPurchaseLoadingBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)

@@ -26,7 +26,7 @@ import kotlin.math.abs
 class AspectFrameLayout : FrameLayout {
 
     companion object {
-        const val DEFAULT_RATIO_WINDOW_SIZE = -1.0
+        const val DEFAULT_RATIO_WINDOW_SIZE = 0.5625
     }
 
     private var mTargetAspect = DEFAULT_RATIO_WINDOW_SIZE // initially use default window size

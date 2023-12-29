@@ -46,7 +46,7 @@ class PromoCheckoutDetailFlightFragment : BasePromoCheckoutDetailFragment() {
 
     override fun onClickUse() {
         context?.run {
-            promoCheckoutDetailFlightPresenter.checkVoucher(codeCoupon, cartID, ColorUtil.getColorFromResToString(this,com.tokopedia.unifyprinciples.R.color.Unify_G200))
+            promoCheckoutDetailFlightPresenter.checkVoucher(codeCoupon, cartID, ColorUtil.getColorFromResToString(this,com.tokopedia.unifyprinciples.R.color.Unify_GN100))
         }
     }
 

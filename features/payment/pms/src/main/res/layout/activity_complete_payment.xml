@@ -34,7 +34,7 @@
             android:paddingStart="?android:actionBarSize"
             android:paddingEnd="?android:actionBarSize"
             android:text="@string/app_name"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

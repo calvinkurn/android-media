@@ -26,6 +26,10 @@ import com.tokopedia.search.result.product.inspirationwidget.filter.InspirationF
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordCardView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductItemDataView
+import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproducttitle.InspirationProductTitleDataView
+import com.tokopedia.search.result.product.separator.VerticalSeparatorDataView
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.result.product.violation.ViolationDataView
 
@@ -56,5 +60,9 @@ interface ProductListTypeFactory {
     fun type(sameSessionRecommendationDataView: SameSessionRecommendationDataView) : Int
     fun type(inspirationListAtcDataView: InspirationListAtcDataView): Int
     fun type(adsLowOrganicTitleDataView: AdsLowOrganicTitleDataView): Int
+    fun type(inspirationKeywordCardView: InspirationKeywordCardView): Int
+    fun type(inspirationProductCardView: InspirationProductItemDataView): Int
+    fun type(inspirationCarouselSeamlessProductTitle: InspirationProductTitleDataView): Int
+    fun type(separatorDataView: VerticalSeparatorDataView): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

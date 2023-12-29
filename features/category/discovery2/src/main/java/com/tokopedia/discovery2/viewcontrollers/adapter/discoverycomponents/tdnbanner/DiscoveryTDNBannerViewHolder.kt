@@ -1,175 +1,222 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tdnbanner
 
 import android.view.View
-import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.discovery2.Constant.TopAdsSdk.TOP_ADS_GSLP_TDN
-import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.analytics.BaseDiscoveryAnalytics
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.databinding.DiscoveryTdnBannerViewBinding
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
-import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.topads.sdk.domain.model.ImageShop
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
-import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
-import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.topads.sdk.widget.TopAdsImageView
-import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.view.binding.viewBinding
 
-class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), TopAdsImageVieWApiResponseListener, TopAdsImageViewClickListener, TopAdsImageViewImpressionListener {
-    private val tdnImageView: TopAdsImageView? = itemView.findViewById(R.id.tdn_view)
-    private val mHeaderView: FrameLayout? = itemView.findViewById(R.id.header_view)
-    private val shimmerView: LoaderUnify? = itemView.findViewById(R.id.shimmer_view)
-    private lateinit var viewModel: DiscoveryTDNBannerViewModel
+class DiscoveryTDNBannerViewHolder(
+    itemView: View,
+    private val fragment: Fragment
+) : AbstractViewHolder(
+    itemView = itemView,
+    lifecycleOwner = fragment.viewLifecycleOwner
+), TdnBannerResponseListener {
+    companion object {
+        private const val BANNER_CORNER_RADIUS_DP = 8
+    }
 
-    private val inventoryID = "13"
-    private val inventoryIDGslp = "22"
-    private val adCount = 1
-    private val dimenID = 3
-    private var shouldHitService = true
-    private var isTopAdsGlsp = false
-    private lateinit var topAdsModel: TopAdsImageViewModel
-    private var impressHolder: ImageShop? = null
+    private val binding: DiscoveryTdnBannerViewBinding?
+        by viewBinding()
+
+    private val userSession: UserSession
+        by lazy { UserSession(itemView.context) }
+
+    private val analytics: BaseDiscoveryAnalytics?
+        by lazy { (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics() }
+
+    private var viewModel: DiscoveryTDNBannerViewModel? = null
+    private var tdnBannerUiModels: MutableList<TdnBannerUiModel> = ArrayList()
 
     init {
-        tdnImageView?.setApiResponseListener(this)
-        tdnImageView?.setTopAdsImageViewClick(this)
-        tdnImageView?.setTopAdsImageViewImpression(this)
-    }
-
-
-    override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
-        viewModel = discoveryBaseViewModel as DiscoveryTDNBannerViewModel
-    }
-
-    override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
-        if (lifecycleOwner != null) {
-            itemView.context?.let { context ->
-                if (UserSession(context).isLoggedIn) {
-                    viewModel.componentLiveData.observe(lifecycleOwner, {
-                        val temp = it.design == TOP_ADS_GSLP_TDN
-                        if (isTopAdsGlsp != temp){
-                            isTopAdsGlsp = temp
-                            if (isTopAdsGlsp) {
-                                if (shouldHitService){
-                                    tdnImageView?.getImageData(inventoryIDGslp, adCount, dimenID, productID = it.recomQueryProdId
-                                        ?: "")
-                                }
-                                itemView.rootView.setMargin(
-                                    itemView.getDimens(R.dimen.dp_12),
-                                    itemView.getDimens(R.dimen.dp_12),
-                                    itemView.getDimens(R.dimen.dp_12),
-                                    itemView.getDimens(R.dimen.dp_12)
-                                )
-
-                            } else if (shouldHitService){
-                                addCardHeader(it)
-                                tdnImageView?.getImageData(inventoryID, adCount, dimenID, depId = it.data?.firstOrNull()?.depID
-                                    ?: "")
-                                itemView.rootView.setMargin(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
-                            }
-                        }else if (shouldHitService){
-                            addCardHeader(it)
-                            tdnImageView?.getImageData(inventoryID, adCount, dimenID, depId = it.data?.firstOrNull()?.depID
-                                ?: "")
-                            itemView.rootView.setMargin(Int.ZERO, Int.ZERO, Int.ZERO, Int.ZERO)
-                        }
-                    })
-                } else {
-                    handleError()
-                }
-            }
+        binding?.apply {
+            tdnBannerView.setTdnResponseListener(this@DiscoveryTDNBannerViewHolder)
+            tdnBannerUiModels.clear()
         }
-
     }
 
-    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+    override fun bindView(
+        discoveryBaseViewModel: DiscoveryBaseViewModel
+    ) {
+        viewModel = discoveryBaseViewModel as? DiscoveryTDNBannerViewModel
+        binding?.showWidget()
+    }
+
+    override fun setUpObservers(
+        lifecycleOwner: LifecycleOwner?
+    ) {
+        super.setUpObservers(lifecycleOwner)
+        lifecycleOwner?.let { owner ->
+            binding?.setupLayout(owner)
+        }
+    }
+
+    override fun removeObservers(
+        lifecycleOwner: LifecycleOwner?
+    ) {
         super.removeObservers(lifecycleOwner)
-        lifecycleOwner?.let {
-            viewModel.componentLiveData.removeObservers(it)
+        lifecycleOwner?.let { owner ->
+            viewModel?.componentLiveData?.removeObservers(owner)
         }
     }
 
-    private fun addCardHeader(componentsItem: ComponentsItem?) {
-        mHeaderView?.removeAllViews()
-        componentsItem?.data?.firstOrNull()?.let {
-            if (!it.title.isNullOrEmpty() || !it.subtitle.isNullOrEmpty()) {
-                mHeaderView?.addView(CustomViewCreator.getCustomViewObject(itemView.context,
-                        ComponentsList.LihatSemua, componentsItem, fragment))
+    override fun onTdnBannerResponse(
+        categoriesList: MutableList<List<TopAdsImageViewModel>>
+    ) {
+        binding?.apply {
+            val tdnBanners = categoriesList.firstOrNull()
+            if (!tdnBanners.isNullOrEmpty()) {
+                shimmerView.hide()
+                tdnBannerView.show()
+                tdnBannerView.renderTdnBanner(
+                    tdnBanners = tdnBanners,
+                    cornerRadius = BANNER_CORNER_RADIUS_DP.toPx(),
+                    onLoadFailed = ::onTdnBannerFailedLoaded,
+                    onTdnBannerClicked = ::onTdnBannerClicked,
+                    onTdnBannerImpressed = ::onTdnBannerImpressed
+                )
+            } else {
+                hideWidget()
             }
+            updateCurrentTdnBanners(categoriesList)
         }
     }
 
-    private fun handleError() {
-        mHeaderView?.run {
-            if (childCount > 0)
-                removeAllViews()
-        }
-        shimmerView?.hide()
-        tdnImageView?.hide()
+    override fun onError(
+        t: Throwable
+    ) {
+        binding?.hideWidget()
     }
 
-
-    override fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageViewModel>) {
-        shouldHitService = false
-        if (imageDataList.isNotEmpty()) {
-            shimmerView?.hide()
-            tdnImageView?.show()
-            topAdsModel = imageDataList[0]
-            impressHolder = topAdsModel.ImpressHolder
-            if (isTopAdsGlsp) tdnImageView?.loadImage(
-                topAdsModel,
-                itemView.rootView.getDimens(R.dimen.dp_8)
-            ) else tdnImageView?.loadImage(topAdsModel)
+    private fun DiscoveryTdnBannerViewBinding.setupLayout(
+        owner: LifecycleOwner
+    ) {
+        if (userSession.isLoggedIn) {
+            viewModel?.componentLiveData?.observe(owner) { component ->
+                addHeader(component)
+                getBannerData(component)
+            }
         } else {
-            shouldHitService = false
-            handleError()
+            hideWidget()
         }
     }
 
-    override fun onError(t: Throwable) {
-        shouldHitService = false
-        handleError()
+    private fun DiscoveryTdnBannerViewBinding.addHeader(
+        componentsItem: ComponentsItem
+    ) {
+        val data = componentsItem.data?.firstOrNull()
+        headerView.showIfWithBlock(!data?.title.isNullOrEmpty() || !data?.subtitle.isNullOrEmpty()) {
+            headerView.removeAllViews()
+            headerView.addView(
+                CustomViewCreator.getCustomViewObject(
+                    context = itemView.context,
+                    component = ComponentsList.LihatSemua,
+                    componentItem = componentsItem,
+                    fragment = fragment
+                )
+            )
+        }
     }
 
-    override fun onTopAdsImageViewClicked(applink: String?) {
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTDNBannerClick(viewModel.components, UserSession(fragment.context).userId,
-                viewModel.position, topAdsModel.bannerId ?: "", topAdsModel.shopId)
-        if (!applink.isNullOrEmpty() && fragment.context != null)
-            RouteManager.route(fragment.context, applink)
-
-    }
-
-    override fun onTopAdsImageViewImpression(viewUrl: String) {
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTDNBannerImpression(
-            viewModel.components, UserSession(fragment.context).userId,
-            viewModel.position, topAdsModel.bannerId ?: "", topAdsModel.shopId
-        )
-        impressHolder?.let { impressHolder ->
-            if (!impressHolder.isInvoke){
-                if (fragment.context != null) {
-                    TopAdsUrlHitter(fragment.context).hitImpressionUrl(
-                        this.javaClass.canonicalName,
-                        viewUrl,
-                        "",
-                        "",
-                        ""
-                    )
-                }
-                impressHolder.invoke()
+    private fun DiscoveryTdnBannerViewBinding.getBannerData(
+        component: ComponentsItem
+    ) {
+        component.data?.firstOrNull()?.run {
+            /**
+             * check if the data exist should not hit the gql then set existing data to the ui widget
+             */
+            val currentTdnBannerUiModel = tdnBannerUiModels.firstOrNull { it.id == component.id }
+            if (currentTdnBannerUiModel != null) {
+                onTdnBannerResponse(currentTdnBannerUiModel.tdnBanners.toMutableList())
+            } else {
+                tdnBannerUiModels.add(TdnBannerUiModel(component.id))
+                tdnBannerView.getTdnData(
+                    source = inventoryId.orEmpty(),
+                    adsCount = adsCount.orZero(),
+                    dimenId = dimensionId.toIntSafely(),
+                    depId = depID.orEmpty(),
+                    productID = productId.orEmpty()
+                )
             }
+        }
+    }
+
+    private fun DiscoveryTdnBannerViewBinding.showWidget() {
+        headerView.removeAllViews()
+        tdnBannerView.hide()
+        shimmerView.show()
+    }
+
+    private fun DiscoveryTdnBannerViewBinding.hideWidget() {
+        headerView.removeAllViews()
+        tdnBannerView.hide()
+        shimmerView.hide()
+    }
+
+    private fun onTdnBannerFailedLoaded() {
+        binding?.hideWidget()
+    }
+
+    private fun onTdnBannerClicked(
+        bannerData: TopAdsImageViewModel
+    ) {
+        viewModel?.apply {
+            analytics?.trackTDNBannerClick(
+                componentsItem = components,
+                userID = userSession.userId,
+                positionInPage = position,
+                adID = bannerData.bannerId.orEmpty(),
+                shopId = bannerData.bannerName,
+                itemPosition = bannerData.position
+            )
+        }
+        if (!bannerData.applink.isNullOrBlank()) {
+            RouteManager.route(itemView.context, bannerData.applink)
+        }
+    }
+
+    private fun onTdnBannerImpressed(
+        bannerData: TopAdsImageViewModel
+    ) {
+        viewModel?.apply {
+            analytics?.trackTDNBannerImpression(
+                componentsItem = components,
+                userID = userSession.userId,
+                positionInPage = position,
+                adID = bannerData.bannerId.orEmpty(),
+                shopId = bannerData.bannerName,
+                itemPosition = bannerData.position
+            )
+        }
+    }
+
+    private fun updateCurrentTdnBanners(
+        categoriesList: MutableList<List<TopAdsImageViewModel>>
+    ) {
+        val tdnBannerUiModel = tdnBannerUiModels.firstOrNull { it.id == viewModel?.components?.id }
+        if (tdnBannerUiModel != null) {
+            val newList = categoriesList.map { ArrayList(it) }
+            val index = tdnBannerUiModels.indexOf(tdnBannerUiModel)
+            tdnBannerUiModels.removeAt(index)
+            tdnBannerUiModels.add(index, tdnBannerUiModel.copy(tdnBanners = newList))
         }
     }
 }

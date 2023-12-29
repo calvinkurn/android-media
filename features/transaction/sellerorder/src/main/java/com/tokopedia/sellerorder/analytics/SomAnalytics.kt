@@ -1,6 +1,7 @@
 package com.tokopedia.sellerorder.analytics
 
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofRequestInfoResponse.Data.InfoRequestPartialOrderFulfillment.Companion.STATUS_WAITING_RESPONSE
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.Tracker
@@ -28,8 +29,6 @@ object SomAnalytics {
     private const val CLICK_RESET_BUTTON_ON_FILTER_PAGE = "click reset button on filter page"
     private const val CLICK_TOLAK_PESANAN = "click tolak pesanan"
     private const val CLICK_ACCEPT_ORDER_POPUP = "click accept order popup"
-    private const val CLICK_KONFIRMASI = "click konfirmasi"
-    private const val CLICK_REQUEST_PICKUP_POPUP = "click request pickup popup"
     private const val CLICK_BUTTON_TOLAK_PESANAN_POPUP = "click button tolak pesanan - popup"
     private const val CLICK_BUTTON_DOWNLOAD_INVOICE = "click button download invoice"
     private const val CLICK_START_ADVERTISE = "click start advertise"
@@ -61,6 +60,8 @@ object SomAnalytics {
     private const val EVENT_ACTION_CLICK_ONBOARD_CONTINUE = "click onboard info - lanjut"
     private const val EVENT_ACTION_CLICK_ONBOARD_OK = "click onboard info - oke"
     private const val EVENT_ACTION_CLICK_RESOLUTION_WIDGET = "click on resolution widget"
+    private const val EVENT_ACTION_CLICK_POF_TICKER_WAITING = "click lihat detail pof - waiting confirmation"
+    private const val EVENT_ACTION_CLICK_POF_TICKER_CONFIRMED = "click lihat detail pof - buyer confirmed"
 
     private const val TRACKER_ID_CLICK_ONBOARD_CONTINUE_SA = "33451"
     private const val TRACKER_ID_CLICK_ONBOARD_BACK_SA = "33452"
@@ -68,6 +69,8 @@ object SomAnalytics {
     private const val TRACKER_ID_CLICK_ONBOARD_CONTINUE_MA = "33446"
     private const val TRACKER_ID_CLICK_ONBOARD_BACK_MA = "33447"
     private const val TRACKER_ID_CLICK_ONBOARD_OK_MA = "33448"
+    private const val TRACKER_ID_CLICK_POF_TICKER_WAITING = "48676"
+    private const val TRACKER_ID_CLICK_POF_TICKER_CONFIRMED = "48677"
 
     @JvmStatic
     fun sendScreenName(screenName: String) {
@@ -75,19 +78,25 @@ object SomAnalytics {
     }
 
     private fun sendEventCategoryAction(
-        event: String, eventCategory: String,
+        event: String,
+        eventCategory: String,
         eventAction: String
     ) {
         sendEventCategoryActionLabel(event, eventCategory, eventAction, "")
     }
 
     private fun sendEventCategoryActionLabel(
-        event: String, eventCategory: String,
-        eventAction: String, eventLabel: String
+        event: String,
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String
     ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             TrackAppUtils.gtmData(
-                event, eventCategory, eventAction, eventLabel
+                event,
+                eventCategory,
+                eventAction,
+                eventLabel
             )
         )
     }
@@ -180,16 +189,6 @@ object SomAnalytics {
         var success = "success"
         if (!isSuccess) success = "failed"
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_ACCEPT_ORDER_POPUP, success)
-    }
-
-    fun eventClickKonfirmasi(isSuccess: Boolean) {
-        var success = "success"
-        if (!isSuccess) success = "failed"
-        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_KONFIRMASI, success)
-    }
-
-    fun eventClickRequestPickupPopup() {
-        sendEventCategoryAction(CLICK_SOM, CATEGORY_SOM, CLICK_REQUEST_PICKUP_POPUP)
     }
 
     fun eventClickButtonTolakPesananPopup(statusOrder: String, statusOrderName: String) {
@@ -427,7 +426,6 @@ object SomAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-
     fun sendClickOnResolutionWidgetEvent(userId: String) {
         val trackerId = if (GlobalConfig.isSellerApp()) {
             "38438"
@@ -444,5 +442,30 @@ object SomAnalytics {
             .setCurrentSite(TOKOPEDIA_MARKETPLACE)
             .build()
             .send()
+    }
+
+    fun trackClickPofTicker(pofStatus: Int) {
+        TrackApp
+            .getInstance()
+            .gtm
+            .sendGeneralEvent(
+                mapOf(
+                    TrackAppUtils.EVENT to CLICK_PG,
+                    TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
+                    TrackAppUtils.EVENT_ACTION to if (pofStatus == STATUS_WAITING_RESPONSE) {
+                        EVENT_ACTION_CLICK_POF_TICKER_WAITING
+                    } else {
+                        EVENT_ACTION_CLICK_POF_TICKER_CONFIRMED
+                    },
+                    TrackAppUtils.EVENT_LABEL to "",
+                    CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS_CAPITALIZE,
+                    CUSTOM_DIMENSION_CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                    CUSTOM_DIMENSION_TRACKER_ID to if (pofStatus == STATUS_WAITING_RESPONSE) {
+                        TRACKER_ID_CLICK_POF_TICKER_WAITING
+                    } else {
+                        TRACKER_ID_CLICK_POF_TICKER_CONFIRMED
+                    }
+                )
+            )
     }
 }

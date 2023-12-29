@@ -9,8 +9,6 @@ import com.tokopedia.review.databinding.WidgetCreateReviewTickerBinding
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTickerUiState
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 
 class CreateReviewTicker @JvmOverloads constructor(
     context: Context,
@@ -39,18 +37,14 @@ class CreateReviewTicker @JvmOverloads constructor(
         trackingHandler.trackViewTicker(uiState)
     }
 
-    fun updateUi(uiState: CreateReviewTickerUiState, continuation: Continuation<Unit>) {
+    fun updateUi(uiState: CreateReviewTickerUiState) {
         when(uiState) {
             is CreateReviewTickerUiState.Showing -> {
                 binding.showTicker(uiState)
-                animateShow(onAnimationEnd = {
-                    continuation.resume(Unit)
-                })
+                animateShow()
             }
             else -> {
-                animateHide(onAnimationEnd = {
-                    continuation.resume(Unit)
-                })
+                animateHide()
             }
         }
     }

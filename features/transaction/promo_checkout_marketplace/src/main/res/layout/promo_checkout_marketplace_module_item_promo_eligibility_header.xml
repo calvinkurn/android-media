@@ -20,7 +20,7 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:text="@string/label_title_promo_eligibility_header"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider"

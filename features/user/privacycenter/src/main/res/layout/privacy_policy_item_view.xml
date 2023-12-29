@@ -10,13 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingVertical="12dp"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_3"
         app:typographyWeight="bold"
-        tools:text="Kebijakan Privasi v.005 - 23 Des 2022" />
+        tools:text="Pemberitahuan Privasi v.005 - 23 Des 2022" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerPrivacyPolicy"

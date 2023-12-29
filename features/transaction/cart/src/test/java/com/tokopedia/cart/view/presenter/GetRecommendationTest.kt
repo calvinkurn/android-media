@@ -2,12 +2,10 @@ package com.tokopedia.cart.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.usecase.RequestParams
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Test
-import rx.Observable
 
 class GetRecommendationTest : BaseCartTest() {
 
@@ -30,8 +28,7 @@ class GetRecommendationTest : BaseCartTest() {
             add(recommendationWidget)
         }
 
-        every { getRecommendationUseCase.createObservable(any()) } returns Observable.just(response)
-        every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
+        coEvery { getRecommendationUseCase.getData(any()) } returns response
 
         // WHEN
         cartListPresenter.processGetRecommendationData(1, emptyList())
@@ -60,8 +57,7 @@ class GetRecommendationTest : BaseCartTest() {
             add(recommendationWidget)
         }
 
-        every { getRecommendationUseCase.createObservable(any()) } returns Observable.just(response)
-        every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
+        coEvery { getRecommendationUseCase.getData(any()) } returns response
 
         // WHEN
         cartListPresenter.processGetRecommendationData(1, emptyList())
@@ -80,8 +76,7 @@ class GetRecommendationTest : BaseCartTest() {
     @Test
     fun `WHEN get recommendation error THEN should not render recommendation section`() {
         // GIVEN
-        every { getRecommendationUseCase.createObservable(any()) } returns Observable.error(IllegalStateException())
-        every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
+        coEvery { getRecommendationUseCase.getData(any()) } throws IllegalStateException()
 
         // WHEN
         cartListPresenter.processGetRecommendationData(1, emptyList())
@@ -117,8 +112,7 @@ class GetRecommendationTest : BaseCartTest() {
             add(recommendationWidget)
         }
 
-        every { getRecommendationUseCase.createObservable(any()) } returns Observable.just(response)
-        every { getRecommendationUseCase.getRecomParams(any(), any(), any(), any(), any()) } returns RequestParams.create()
+        coEvery { getRecommendationUseCase.getData(any()) } returns response
 
         cartListPresenter.detachView()
 

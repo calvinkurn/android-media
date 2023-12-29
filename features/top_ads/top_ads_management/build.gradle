@@ -13,7 +13,13 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.topads'
+    testNamespace 'com.tokopedia.topads.test'
+}
+
 dependencies {
+	implementation rootProject.ext.unifyDependencies.principles
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.features.topAdsManagementCommon)
     implementation projectOrAar(rootProject.ext.features.shopCommon)

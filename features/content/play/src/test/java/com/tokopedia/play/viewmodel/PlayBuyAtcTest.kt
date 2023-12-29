@@ -8,6 +8,7 @@ import com.tokopedia.play.model.PlayChannelInfoModelBuilder
 import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.util.assertEqualTo
+import com.tokopedia.play.util.assertTrue
 import com.tokopedia.play.util.assertType
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.ProductButtonType
@@ -16,10 +17,12 @@ import com.tokopedia.play.view.uimodel.action.AtcProductAction
 import com.tokopedia.play.view.uimodel.action.BuyProductAction
 import com.tokopedia.play.view.uimodel.action.OCCProductAction
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
+import com.tokopedia.play.view.uimodel.action.ShowVariantAction
 import com.tokopedia.play.view.uimodel.event.AtcSuccessEvent
 import com.tokopedia.play.view.uimodel.event.BuySuccessEvent
 import com.tokopedia.play.view.uimodel.event.OCCSuccessEvent
 import com.tokopedia.play.view.uimodel.event.OpenPageEvent
+import com.tokopedia.play.view.uimodel.event.ShowVariantSheet
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -495,5 +498,27 @@ class PlayBuyAtcTest {
 
             coVerify { mockRepo.addProductToCart(any(), any(), any(), any(), any()) }
         }
+    }
+
+    @Test
+    fun `show variant sheet -  to open bottomsheet` () {
+        val product = modelBuilder.buildProduct()
+        val robot = createPlayViewModelRobot(
+            dispatchers = testDispatcher,
+            repo = mockRepo,
+        ) {
+            createPage(mockLiveChannelData)
+            focusPage(mockLiveChannelData)
+            setLoggedIn(true)
+        }
+        val event = robot.recordEvent {
+            submitAction(ShowVariantAction(product, false))
+        }
+
+        event.last().assertEqualTo(
+            ShowVariantSheet(product, false)
+        )
+
+        robot.viewModel.isAnyBottomSheetsShown.assertTrue()
     }
 }

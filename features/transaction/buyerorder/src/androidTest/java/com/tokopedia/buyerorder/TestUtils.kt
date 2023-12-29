@@ -14,11 +14,6 @@ const val ORDER_DETAIL_APPLINK = "tokopedia://order/72b9fd8f-2e86-4484-8577-16cf
 const val ORDER_ID_KEY = "order_id"
 const val ORDER_ID_VALUE = "72b9fd8f-2e86-4484-8577-16cf1d97e16c"
 
-fun setupRemoteConfig(context: Context, isNew: Boolean){
-    val remoteConfig = FirebaseRemoteConfigImpl(context)
-    remoteConfig.setString(RemoteConfigKey.MAINAPP_RECHARGE_BUYER_ORDER_DETAIL, isNew.toString())
-}
-
 fun disableCoachMark(context: Context){
     val sharedPref = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
     sharedPref.edit().putBoolean("show_coach_mark_key_deals_banner", false).apply()

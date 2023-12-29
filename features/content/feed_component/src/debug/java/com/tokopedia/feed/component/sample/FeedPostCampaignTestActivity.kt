@@ -34,6 +34,8 @@ class FeedPostCampaignTestActivity : AppCompatActivity() {
     }
 
     private val dummyData = FeedXCard(
+        id = "217052966",
+        title = "Karya Indah Furniture Jambi",
         campaign = FeedXCampaign(
             status = "ongoing",
             name = "Flash Sale Toko",
@@ -58,7 +60,6 @@ class FeedPostCampaignTestActivity : AppCompatActivity() {
         ribbonImageURL = "https://images.tokopedia.net/img/feeds/ribbon-overlay-fst.png"
     ).apply {
         typename = "FeedXCardProductsHighlight"
-        id = "217052966"
         author = FeedXAuthor(
             type = 2,
             name = "Karya Indah Furniture Jambi",
@@ -66,7 +67,6 @@ class FeedPostCampaignTestActivity : AppCompatActivity() {
             badgeURL = "https://images.tokopedia.net/img/official_store/badge_os.png",
             logoURL = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/3/6/b9d7868f-c9dd-4b32-9518-756a0760b6e7.jpg"
         )
-        title = "Karya Indah Furniture Jambi"
         subTitle = "Produk baru"
         text = "Hai, apa kabar \uD83D\uDE01? 15 Barang baru yang kamu tunggu kini udah ada di toko kami, lho! Cek sekarang, ya!"
         totalProducts = 4

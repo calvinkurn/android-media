@@ -34,11 +34,13 @@ class MyCouponViewModel(application: Application, val components: ComponentsItem
     private val _hideSection = SingleLiveEvent<String>()
     val hideSectionLD: LiveData<String> = _hideSection
 
+    @JvmField
     @Inject
-    lateinit var myCouponUseCase: MyCouponUseCase
+    var myCouponUseCase: MyCouponUseCase? = null
 
+    @JvmField
     @Inject
-    lateinit var hideSectionUseCase: HideSectionUseCase
+    var hideSectionUseCase: HideSectionUseCase? = null
 
     fun getComponentList(): LiveData<ArrayList<ComponentsItem>> {
         return componentList
@@ -56,7 +58,7 @@ class MyCouponViewModel(application: Application, val components: ComponentsItem
         val dataItem = components.data?.firstOrNull()
         dataItem?.let { couponDataItem ->
             launchCatchError(block = {
-                myCouponUseCase.getMyCouponData(components.id, components.pageEndPoint, getMyCoupleBundle(couponDataItem))
+                myCouponUseCase?.getMyCouponData(components.id, components.pageEndPoint, getMyCoupleBundle(couponDataItem))
                 setCouponsList()
             }, onError = {
                     components.noOfPagesLoaded = 1
@@ -73,8 +75,8 @@ class MyCouponViewModel(application: Application, val components: ComponentsItem
     }
 
     private fun hideIfPresentInSection() {
-        val response = hideSectionUseCase.checkForHideSectionHandling(components)
-        if (response.shouldHideSection) {
+        val response = hideSectionUseCase?.checkForHideSectionHandling(components)
+        if (response?.shouldHideSection == true) {
             if (response.sectionId.isNotEmpty()) {
                 _hideSection.value = response.sectionId
             }

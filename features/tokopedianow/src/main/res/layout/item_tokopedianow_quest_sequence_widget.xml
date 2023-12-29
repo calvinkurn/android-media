@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp">
 
     <ViewStub
         android:id="@+id/vsTitle"
@@ -28,7 +29,7 @@
         android:layout_toEndOf="@id/vsTitle"
         android:gravity="center_horizontal"
         android:text="@string/tokopedianow_see_all"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         android:visibility="gone"
         tools:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"

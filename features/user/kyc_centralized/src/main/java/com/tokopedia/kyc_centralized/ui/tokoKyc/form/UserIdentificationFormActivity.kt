@@ -80,7 +80,7 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
         toolbar.setTitleTextColor(
             MethodChecker.getColor(
                 this,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
             )
         )
         KycCleanupStorageWorker.scheduleWorker(this, externalCacheDir?.absolutePath + FILE_NAME_KYC)
@@ -228,7 +228,7 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
         val gapWidth = dpToPx(GAP_WIDTH)
         val color = ResourcesCompat.getColor(
             resources,
-            com.tokopedia.unifyprinciples.R.color.Unify_N100,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN200,
             null
         )
         val bulletSpan: BulletSpan

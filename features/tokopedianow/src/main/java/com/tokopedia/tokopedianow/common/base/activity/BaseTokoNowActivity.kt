@@ -13,8 +13,11 @@ import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ActivityTokopedianowBaseBinding
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 abstract class BaseTokoNowActivity : BaseActivity() {
+
+    private var darkStatusBarFlag: Int = 0
 
     private var binding : ActivityTokopedianowBaseBinding? = null
 
@@ -22,6 +25,7 @@ abstract class BaseTokoNowActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityTokopedianowBaseBinding.inflate(layoutInflater)
         setContentView(binding?.root)
+        setDarkStatusBarFlag()
         setStatusBarColor()
         setBackgroundColor()
         setOrientation()
@@ -31,31 +35,65 @@ abstract class BaseTokoNowActivity : BaseActivity() {
         }
     }
 
+    fun switchToLightToolbar() {
+        binding?.let {
+            var flags: Int = it.fragmentContainer.systemUiVisibility
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
+
+            setStatusBarFlag(flags)
+            setTransparentStatusBar()
+        }
+    }
+
+    fun switchToDarkToolbar() {
+        setStatusBarFlag(darkStatusBarFlag)
+        setTransparentStatusBar()
+    }
+
     private fun setStatusBarColor() {
         binding?.let {
             //apply inset to allow recyclerview scrolling behind status bar
             it.fragmentContainer.fitsSystemWindows = false
             it.fragmentContainer.requestApplyInsets()
+            switchToLightToolbar()
+        }
+    }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !isDarkMode()) {
-                var flags: Int = it.fragmentContainer.systemUiVisibility
-                flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+    private fun setStatusBarFlag(flags: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !isDarkMode()) {
+            binding?.let {
                 it.fragmentContainer.systemUiVisibility = flags
-                window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                window.statusBarColor = ContextCompat.getColor(
+                    this, unifyprinciplesR.color.Unify_NN0
+                )
             }
         }
+    }
 
-        //make full transparent statusBar
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+    private fun setTransparentStatusBar() {
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            StatusBarUtil.setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
+            StatusBarUtil.setWindowFlag(
+                this,
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                false
+            )
             window.statusBarColor = Color.TRANSPARENT
+        }
+    }
+
+    private fun setDarkStatusBarFlag() {
+        binding?.let {
+            darkStatusBarFlag = it.fragmentContainer.systemUiVisibility
         }
     }
 
     private fun setBackgroundColor() {
         val bgColor = ContextCompat.getColor(this,
-            com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            unifyprinciplesR.color.Unify_Background)
         window?.decorView?.setBackgroundColor(bgColor)
     }
 

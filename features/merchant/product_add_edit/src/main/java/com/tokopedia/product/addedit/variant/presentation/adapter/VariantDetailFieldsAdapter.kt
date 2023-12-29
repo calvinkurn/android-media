@@ -84,6 +84,16 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
         }
     }
 
+    fun deactivateVariantStatus(position: Int) {
+        (list.getOrNull(position) as? VariantDetailFieldsUiModel)?.
+            variantDetailInputLayoutModel?.apply {
+                if (this.combination == combination) {
+                    isActive = false
+                    notifyItemChanged(position)
+                }
+        }
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     private fun notifyElement(adapterPosition: Int, element: Visitable<*>) {
         try {

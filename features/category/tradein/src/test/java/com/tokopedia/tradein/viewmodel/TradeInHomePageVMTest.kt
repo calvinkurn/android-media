@@ -1,7 +1,7 @@
 package com.tokopedia.tradein.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.laku6.tradeinsdk.api.Laku6TradeIn
+import com.laku6.tradeinsdk.api.TradeInApiService
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.common_tradein.model.TradeInPDPData
 import com.tokopedia.tradein.TradeinConstants
@@ -27,7 +27,7 @@ class TradeInHomePageVMTest {
     var tradeInHomePageVM = spyk(TradeInHomePageVM(userSession, insertLogisticPreferenceUseCase, addToCartOcsUseCase))
 
     @RelaxedMockK
-    lateinit var laku6TradeIn: Laku6TradeIn
+    lateinit var laku6TradeIn: TradeInApiService
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
@@ -51,7 +51,6 @@ class TradeInHomePageVMTest {
         val tradeInPDPData: TradeInPDPData = mockk<TradeInPDPData>(relaxed = true)
 
         Assert.assertEquals(tradeInHomePageVM.getPDPData(tradeInPDPData), tradeInPDPData)
-
     }
     /**************************** getPDPData() *******************************************/
 

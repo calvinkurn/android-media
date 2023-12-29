@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.shop.campaign.view.adapter.ShopCampaignCarouselProductHighlightAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopHomeCarouselProductAdapterTypeFactory
@@ -20,9 +21,9 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
     var id: String = ""
     var name: String = ""
     var displayedPrice: String = ""
-    var originalPrice: String? = null
-    var discountPercentage: String? = null
-    var imageUrl: String? = null
+    var originalPrice: String = ""
+    var discountPercentage: String = ""
+    var imageUrl: String = ""
     var imageUrl300: String? = null
     var imageUrl700: String? = null
     var totalReview: String? = null
@@ -69,6 +70,9 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
             is ShopHomeCarouselProductAdapterTypeFactory -> {
                 typeFactory.type(this)
             }
+            is ShopCampaignCarouselProductHighlightAdapterTypeFactory -> {
+                typeFactory.type(this)
+            }
             else -> {
                 -1
             }
@@ -81,7 +85,7 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
         id = shopProduct.productId.orEmpty()
         name = shopProduct.productName.orEmpty()
         displayedPrice = shopProduct.productPrice.orEmpty()
-        imageUrl = shopProduct.productImage
+        imageUrl = shopProduct.productImage.orEmpty()
         imageUrl300 = shopProduct.productImage300
         imageUrl700 = shopProduct.productImage700
         productUrl = shopProduct.productUrl.orEmpty()
@@ -110,7 +114,7 @@ class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder 
         id = gmFeaturedProduct.productId.orEmpty()
         name = gmFeaturedProduct.name.orEmpty()
         displayedPrice = gmFeaturedProduct.price?.toString().orEmpty()
-        imageUrl = gmFeaturedProduct.imageUri
+        imageUrl = gmFeaturedProduct.imageUri.orEmpty()
         productUrl = gmFeaturedProduct.uri.orEmpty()
 
         totalReview = gmFeaturedProduct.totalReview

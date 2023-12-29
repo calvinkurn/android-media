@@ -3,10 +3,13 @@ package com.tokopedia.iris
 import android.content.Context
 import android.os.Bundle
 import com.google.gson.Gson
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.ConfigurationMapper
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.model.Configuration
+import com.tokopedia.iris.model.PerfConfiguration
+import com.tokopedia.iris.model.PerfWhitelistConfiguration
 import com.tokopedia.iris.util.*
 import com.tokopedia.iris.worker.IrisWorker
 import com.tokopedia.logger.ServerLogger
@@ -14,36 +17,45 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 /**
  * @author okasurya on 10/2/18.
  */
-class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
+class IrisAnalytics private constructor(val context: Context) : Iris, CoroutineScope {
 
     private val session: Session = IrisSession(context)
     private var cache: Cache = Cache(context)
     private var configuration: Configuration? = null
+    private var perfConfiguration: PerfConfiguration? = null
+    private var whitelistConfiguration: PerfWhitelistConfiguration? = null
     private var isAlarmOn: Boolean = false
+    private var isUserWhitelisted = false
 
     private val gson = Gson()
+    private val userSession: UserSessionInterface = UserSession(context)
+
     private lateinit var remoteConfig: RemoteConfig
 
     override val coroutineContext: CoroutineContext by lazy {
-               getCoroutineContextIO()
+        getCoroutineContextIO()
     }
 
-    fun getCoroutineContextIO():CoroutineContext {
-        return  Dispatchers.IO + CoroutineExceptionHandler { _, ex ->
-            ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "CoroutineExceptionIrisAnalytics", "err" to ex.toString()))
+    fun getCoroutineContextIO(): CoroutineContext {
+        return Dispatchers.IO + CoroutineExceptionHandler { _, ex ->
+            ServerLogger.log(
+                Priority.P1,
+                "IRIS",
+                mapOf("type" to "CoroutineExceptionIrisAnalytics", "err" to ex.toString())
+            )
         }
     }
-
 
     private var remoteConfigListener: RemoteConfig.Listener = object : RemoteConfig.Listener {
 
@@ -59,11 +71,41 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
 
     fun setConfiguration(remoteConfig: RemoteConfig?) {
         val irisEnable = remoteConfig?.getBoolean(RemoteConfigKey.IRIS_GTM_ENABLED_TOGGLE, true)
+            ?: true
+        val irisConfig =
+            remoteConfig?.getString(RemoteConfigKey.IRIS_GTM_CONFIG_TOGGLE, DEFAULT_CONFIG)
+                ?: ""
+        val irisPerformanceEnable =
+            remoteConfig?.getBoolean(RemoteConfigKey.IRIS_PERFORMANCE_TOGGLE, true)
                 ?: true
-        val irisConfig = remoteConfig?.getString(RemoteConfigKey.IRIS_GTM_CONFIG_TOGGLE, DEFAULT_CONFIG)
+        val irisPerformanceConfig =
+            remoteConfig?.getString(RemoteConfigKey.IRIS_PERF_CONFIG, DEFAULT_PERF_CONFIG)
+                ?: ""
+        val whitelistPerfConfig =
+            remoteConfig?.getString(RemoteConfigKey.PERFORMANCE_CONFIG_WHITELIST, DEFAULT_WHITELIST_PERF_CONFIG)
                 ?: ""
 
-        setService(irisConfig, irisEnable)
+        this.whitelistConfiguration = ConfigurationMapper.parseWhitelistPerf(whitelistPerfConfig)
+
+        this.isUserWhitelisted = whitelistConfiguration?.let { validateWhitelistUserPerf(it) }
+            ?: false
+
+        setService(irisConfig, irisEnable, irisPerformanceConfig, irisPerformanceEnable)
+    }
+
+    private fun validateWhitelistUserPerf(whitelistConfiguration: PerfWhitelistConfiguration): Boolean {
+        val currentAppVersionNameSuffix = GlobalConfig.VERSION_NAME_SUFFIX
+        val currentUserId = userSession.userId
+
+        val appVersionWhitelisted = whitelistConfiguration.whiteListVersion.any {
+            currentAppVersionNameSuffix.equals(it)
+        }
+
+        val userIdWhitelisted = whitelistConfiguration.whitelistUserId.any {
+            currentUserId == it
+        }
+
+        return appVersionWhitelisted || userIdWhitelisted
     }
 
     override fun initialize() {
@@ -73,21 +115,28 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         isAlarmOn = false
     }
 
-    override fun setService(config: String, isEnabled: Boolean) {
+    private fun setService(
+        config: String,
+        isEnabled: Boolean,
+        irisPerfConfig: String,
+        isPerformanceEnabled: Boolean
+    ) {
         try {
             cache.setEnabled(isEnabled)
-            val confParse = ConfigurationMapper().parse(config)
+            cache.setPerformanceEnabled(isPerformanceEnabled)
+            val confParse = ConfigurationMapper.parse(config)
             if (confParse != null) {
                 this.configuration = confParse
             } else {
                 this.configuration = Configuration()
             }
             this.configuration?.isEnabled = isEnabled
+            this.perfConfiguration = ConfigurationMapper.parsePerf(irisPerfConfig)
         } catch (ignored: Exception) {
         }
     }
 
-    override fun setService(config: Configuration) {
+    private fun setService(config: Configuration) {
         try {
             cache.setEnabled(config.isEnabled)
             if (cache.isEnabled()) {
@@ -103,8 +152,44 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                 try {
                     saveEventSuspend(map)
                 } catch (e: Exception) {
-                    ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "saveEvent", "err" to e.toString()))
+                    ServerLogger.log(
+                        Priority.P1,
+                        "IRIS",
+                        mapOf("type" to "saveEvent", "err" to e.toString())
+                    )
                 }
+            }
+        }
+    }
+
+    override fun trackPerformance(irisPerformanceData: IrisPerformanceData) {
+        if (cache.isPerformanceEnabled()) {
+            launch(coroutineContext) {
+                try {
+                    if (isInSamplingArea(perfConfiguration)) {
+                        saveEventPerformance(irisPerformanceData)
+                    }
+                } catch (e: Exception) {
+                    ServerLogger.log(
+                        Priority.P1,
+                        "IRIS",
+                        mapOf("type" to "saveEventPerf", "err" to e.toString())
+                    )
+                }
+            }
+        }
+    }
+
+    private fun isInSamplingArea(perfConfiguration: PerfConfiguration?): Boolean {
+        return when (val samplingRateInt = perfConfiguration?.samplingRateInt ?: 100) {
+            100 -> {
+                true
+            }
+            0 -> {
+                false
+            }
+            else -> {
+                (0..100).random() < samplingRateInt
             }
         }
     }
@@ -115,34 +200,65 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                 try {
                     saveEventSuspend(Utils.bundleToMap(bundle))
                 } catch (e: Exception) {
-                    ServerLogger.log(Priority.P1, "IRIS", mapOf("type" to "saveEvent", "err" to e.toString()))
+                    ServerLogger.log(
+                        Priority.P1,
+                        "IRIS",
+                        mapOf("type" to "saveEvent", "err" to e.toString())
+                    )
                 }
             }
         }
     }
 
     suspend fun saveEventSuspend(map: Map<String, Any>) {
-        val trackingRepository = TrackingRepository(context)
+        val trackingRepository = TrackingRepository.getInstance(context)
 
         val eventName = map["event"] as? String
 
         // convert map to json then save as string
         val event = gson.toJson(map)
-        val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
-        if (WhiteList.REALTIME_EVENT_LIST.contains(eventName) && trackingRepository.getRemoteConfig().getBoolean(KEY_REMOTE_CONFIG_SEND_REALTIME, false)) {
+        val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId(), cache)
+        if (WhiteList.REALTIME_EVENT_LIST.contains(eventName) && trackingRepository.getRemoteConfig()
+            .getBoolean(KEY_REMOTE_CONFIG_SEND_REALTIME, false)
+        ) {
             sendEvent(map)
         } else {
-            trackingRepository.saveEvent(resultEvent.toString(), session)
+            trackingRepository.saveEvent(resultEvent.toString())
             setAlarm(true, force = false)
         }
     }
 
-    @Deprecated(message = "function should not be called directly outside IrisAnalytics", replaceWith = ReplaceWith(expression = "saveEvent(input)"))
+    private suspend fun saveEventPerformance(irisPerformanceData: IrisPerformanceData) {
+        val trackingRepository = TrackingRepository.getInstance(context)
+
+        val resultEvent =
+            TrackingMapper.reformatPerformanceEvent(irisPerformanceData, session.getSessionId())
+        if (resultEvent.length() > 0) {
+            trackingRepository.savePerformanceEvent(resultEvent.toString())
+            if (isUserWhitelisted) {
+                ServerLogger.log(
+                    Priority.P1,
+                    "DEV_PPS_MONITORING",
+                    TrackingMapper.reformatJsonObjectToMap(resultEvent)
+                )
+            }
+            setAlarm(true, force = false)
+        }
+    }
+
+    @Deprecated(
+        message = "function should not be called directly outside IrisAnalytics",
+        replaceWith = ReplaceWith(expression = "saveEvent(input)")
+    )
     override fun sendEvent(map: Map<String, Any>) {
         if (cache.isEnabled()) {
             launch(coroutineContext) {
-                val trackingRepository = TrackingRepository(context)
-                trackingRepository.sendSingleEvent(gson.toJson(map), session, map["event"] as? String)
+                val trackingRepository = TrackingRepository.getInstance(context)
+                trackingRepository.sendSingleEvent(
+                    gson.toJson(map),
+                    session,
+                    map["event"] as? String
+                )
             }
         }
     }
@@ -152,7 +268,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
      */
     override fun setAlarm(isTurnOn: Boolean, force: Boolean) {
         if (configuration == null) {
-            if(!::remoteConfig.isInitialized) {
+            if (!::remoteConfig.isInitialized) {
                 remoteConfig = FirebaseRemoteConfigImpl(context)
             }
             setConfiguration(remoteConfig)
@@ -189,12 +305,5 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                 }
             }
         }
-
-        fun deleteInstance() {
-            synchronized(lock) {
-                iris = null
-            }
-        }
-
     }
 }

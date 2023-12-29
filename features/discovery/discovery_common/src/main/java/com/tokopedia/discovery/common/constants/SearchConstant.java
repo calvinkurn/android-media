@@ -9,13 +9,7 @@ public interface SearchConstant {
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
 
     String SEARCH_RESULT_PAGE = "search result page";
-
-    String SEARCH_VIEW_MODEL_FACTORY = "search_view_model_factory";
-
     String AB_TEST_REMOTE_CONFIG = "ab_test_remote_config";
-
-    int LANDSCAPE_COLUMN_MAIN = 3;
-    int PORTRAIT_COLUMN_MAIN = 2;
     int CPM_TEMPLATE_ID = 4;
     int GENERAL_SEARCH_TRACKING_PRODUCT_COUNT = 3;
 
@@ -35,6 +29,9 @@ public interface SearchConstant {
         String KEY_QUICK_FILTER_PARAMS = "quick_filter_params";
         String KEY_PAGE_SOURCE = "page_source";
         String PAGE_SOURCE_SEARCH_SHOP = "search_shop";
+
+        String PAGE_SOURCE_MPS = "mps";
+
         String SOURCE_QUICK_FILTER = "quick_filter";
     }
 
@@ -94,9 +91,13 @@ public interface SearchConstant {
         String HEADLINE_TEMPLATE_VALUE = "3";
         String HEADLINE_ITEM_VALUE = "1";
         String ADS_SOURCE = "search";
-        String SEARCH_SHOP_VIEW_MODEL_FACTORY = "search_shop_view_model_factory";
         int SHOP_PRODUCT_PREVIEW_ITEM_MAX_COUNT = 3;
         int HEADLINE_PRODUCT_COUNT = 3;
+    }
+
+    interface MPS {
+        String MPS_FIRST_PAGE_USE_CASE = "mps_first_page_use_case";
+        String MPS_LOAD_MORE_USE_CASE = "mps_load_more_use_case";
     }
 
     interface ShopStatus {
@@ -120,6 +121,7 @@ public interface SearchConstant {
     interface ActiveTab {
         String PRODUCT = "product";
         String SHOP = "shop";
+        String MPS = "mps";
     }
 
     interface FreeOngkir {
@@ -129,18 +131,6 @@ public interface SearchConstant {
 
     interface SimilarSearch {
         String QUERY = "SIMILAR_SEARCH_QUERY";
-    }
-
-    interface ABTestRemoteConfigKey {
-        String AB_TEST_KEY_COMMA_VS_FULL_STAR = "Comma vs Full Star";
-        String AB_TEST_VARIANT_FULL_STAR = "Full Star";
-        String AB_TEST_VARIANT_COMMA_STAR = "Comma Star";
-        String AB_TEST_SHOP_RATING = "Hierarchical Rating Toko";
-        String AB_TEST_SHOP_RATING_VARIANT_A = "Hierarchical Rating";
-        String AB_TEST_SHOP_RATING_VARIANT_B = "Terjual ft Rating";
-        String AB_TEST_SHOP_RATING_VARIANT_C = "Rating Only";
-        String AB_TEST_KEY_THREE_DOTS_SEARCH = "3 Dots Search";
-        String AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS = "Full Options";
     }
 
     interface ProductCardLabel {
@@ -163,6 +153,8 @@ public interface SearchConstant {
         String TYPE_INSPIRATION_CAROUSEL_SINGLE_BUNDLING = "single_bundling";
         String TYPE_INSPIRATION_CAROUSEL_MULTIPLE_BUNDLING = "multiple_bundling";
         String TYPE_SAME_SESSION_RECOMMENDATION = "same_session";
+
+        String TYPE_DILAYANI_TOKOPEDIA = "dilayani_tokopedia";
     }
 
     interface TopAdsComponent {
@@ -183,6 +175,10 @@ public interface SearchConstant {
 
     interface CustomDimension {
         String DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL = "none.none.global_search.none";
+        String DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL_MPS = "none.none.global_search_mps.none";
+
+        String DIMENSION_90_GLOBAL_MPS = "global_search_mps";
+        String DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL_SHOP = "none.none.global_search_shop.none";
     }
 
     interface SaveLastFilter {
@@ -203,5 +199,7 @@ public interface SearchConstant {
         String GIMMICK = "gimmick";
         String PORTRAIT = "portrait";
         String ETA = "eta";
+        String LIST_VIEW = "listview";
+        String FIXED_GRID = "fixedgrid";
     }
 }

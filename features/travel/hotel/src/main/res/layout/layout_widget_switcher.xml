@@ -25,7 +25,7 @@
                 android:id="@+id/tv_switcher_left_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:typographyType="body_3"
                 tools:text="Check-in" />
 
@@ -33,7 +33,7 @@
                 android:id="@+id/tv_switcher_left_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:text="Mulai 11:00" />
@@ -51,7 +51,7 @@
                 android:id="@+id/tv_switcher_right_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:fontSize="micro"
                 app:typographyType="body_3"
                 tools:text="Check-out" />
@@ -60,7 +60,7 @@
                 android:id="@+id/tv_switcher_right_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:text="Sampai 21:00" />
@@ -72,7 +72,7 @@
     <View
         android:layout_width="1dp"
         android:layout_height="@dimen/layout_lvl0"
-        android:background="@color/Unify_N100"
+        android:background="@color/Unify_NN200"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

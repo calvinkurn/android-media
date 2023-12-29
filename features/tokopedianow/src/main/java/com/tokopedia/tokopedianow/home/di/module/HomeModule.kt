@@ -13,6 +13,8 @@ import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMapper
 import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.home.di.scope.HomeScope
 import com.tokopedia.user.session.UserSession
@@ -70,5 +72,11 @@ class HomeModule {
     @Provides
     fun providePlayWidgetImpressionValidator(): DefaultImpressionValidator {
         return DefaultImpressionValidator()
+    }
+
+    @HomeScope
+    @Provides
+    fun provideAbTestPlatform(): AbTestPlatform {
+        return RemoteConfigInstance.getInstance().abTestPlatform
     }
 }

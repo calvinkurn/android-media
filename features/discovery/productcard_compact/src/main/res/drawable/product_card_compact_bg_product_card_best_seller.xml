@@ -1,4 +1,4 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/Unify_N0_68"/>
+    <solid android:color="@color/product_card_compact_dms_card_color"/>
     <corners android:topRightRadius="10dp" android:bottomRightRadius="10dp"/>
 </shape>

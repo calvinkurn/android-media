@@ -36,12 +36,16 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.reflect.KProperty1
 
 /**
@@ -57,10 +61,11 @@ inline fun View.changeConstraint(transform: ConstraintSet.() -> Unit) {
     constraintSet.applyTo(this)
 }
 
-//TODO("Check this as sometimes this causes memory leak, maybe check both old and new vto?")
+// TODO("Check this as sometimes this causes memory leak, maybe check both old and new vto?")
 suspend inline fun View.awaitMeasured() = suspendCancellableCoroutine<Unit> { cont ->
-    if (measuredWidth > 0 && measuredHeight > 0) cont.resume(Unit)
-    else {
+    if (measuredWidth > 0 && measuredHeight > 0) {
+        cont.resume(Unit)
+    } else {
         val vto = viewTreeObserver
         val listener = object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -120,15 +125,15 @@ inline fun View.doOnPreDraw(crossinline action: (view: View) -> Unit) {
 inline fun View.doOnNextLayout(crossinline action: (view: View) -> Unit) {
     addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
         override fun onLayoutChange(
-                view: View,
-                left: Int,
-                top: Int,
-                right: Int,
-                bottom: Int,
-                oldLeft: Int,
-                oldTop: Int,
-                oldRight: Int,
-                oldBottom: Int
+            view: View,
+            left: Int,
+            top: Int,
+            right: Int,
+            bottom: Int,
+            oldLeft: Int,
+            oldTop: Int,
+            oldRight: Int,
+            oldBottom: Int
         ) {
             view.removeOnLayoutChangeListener(this)
             action(view)
@@ -152,15 +157,15 @@ suspend inline fun View.awaitLayout() = suspendCancellableCoroutine<Unit> { cont
     } else {
         val listener = object : View.OnLayoutChangeListener {
             override fun onLayoutChange(
-                    view: View,
-                    left: Int,
-                    top: Int,
-                    right: Int,
-                    bottom: Int,
-                    oldLeft: Int,
-                    oldTop: Int,
-                    oldRight: Int,
-                    oldBottom: Int
+                view: View,
+                left: Int,
+                top: Int,
+                right: Int,
+                bottom: Int,
+                oldLeft: Int,
+                oldTop: Int,
+                oldRight: Int,
+                oldBottom: Int
             ) {
                 view.removeOnLayoutChangeListener(this)
                 if (cont.isActive) cont.resume(Unit)
@@ -176,7 +181,12 @@ suspend inline fun View.awaitPreDraw() = suspendCancellableCoroutine<Unit> { con
     val vto = viewTreeObserver
     val listener = object : ViewTreeObserver.OnPreDrawListener {
         override fun onPreDraw(): Boolean {
-            cont.resume(Unit)
+            if (cont.isActive) {
+                cont.resume(Unit)
+            } else {
+                return true
+            }
+
             when {
                 vto.isAlive -> vto.removeOnPreDrawListener(this)
                 else -> viewTreeObserver.removeOnPreDrawListener(this)
@@ -200,6 +210,58 @@ val View.globalVisibleRect: Rect
         return rect
     }
 
+val View.localVisibleRect: Rect
+    get() {
+        val rect = Rect()
+        getLocalVisibleRect(rect)
+        return rect
+    }
+
+val View.hitRect: Rect
+    get() {
+        val rect = Rect()
+        getHitRect(rect)
+        return rect
+    }
+
+val View.drawingRect: Rect
+    get() {
+        val rect = Rect()
+        getDrawingRect(rect)
+        return rect
+    }
+
+val View.focusedRect: Rect
+    get() {
+        val rect = Rect()
+        getFocusedRect(rect)
+        return rect
+    }
+
+val screenRect: Rect
+    get() {
+        return Rect(0, 0, getScreenWidth(), getScreenHeight())
+    }
+
+fun View.getVisiblePortion(boundsRect: Rect = screenRect): FloatArray {
+    val hitRect = this.globalVisibleRect
+    val visibleHeight = min(hitRect.bottom, boundsRect.bottom) - max(hitRect.top, boundsRect.top)
+    val visibleWidth = min(hitRect.right, boundsRect.right) - max(hitRect.left, boundsRect.left)
+    val visibleHeightPortion = if (height <= 0) {
+        0f
+    } else {
+        visibleHeight.toFloat() / height
+    }
+
+    val visibleWidthPortion = if (width <= 0) {
+        0f
+    } else {
+        visibleWidth.toFloat() / width
+    }
+
+    return floatArrayOf(visibleWidthPortion, visibleHeightPortion)
+}
+
 val View.visibleHeight: Int
     get() = if (visibility == View.GONE) 0 else height
 
@@ -220,10 +282,12 @@ val <T> T.exhaustive: T
 fun EditText.setTextFieldColor(@ColorRes color: Int) {
     val drawable: Drawable = background
     drawable.setColorFilter(
-            MethodChecker.getColor(
-                    context,
-                    color
-            ), PorterDuff.Mode.SRC_ATOP)
+        MethodChecker.getColor(
+            context,
+            color
+        ),
+        PorterDuff.Mode.SRC_ATOP
+    )
 
     background = drawable
 }
@@ -298,8 +362,8 @@ fun Fragment.recreateView() {
 }
 
 inline fun FragmentManager.commit(
-        allowStateLoss: Boolean = false,
-        body: FragmentTransaction.() -> Unit
+    allowStateLoss: Boolean = false,
+    body: FragmentTransaction.() -> Unit
 ) {
     val transaction = beginTransaction()
     transaction.body()
@@ -313,14 +377,13 @@ inline fun FragmentManager.commit(
 val List<GraphqlError>.defaultErrorMessage: String
     get() = mapNotNull { it.message }.joinToString(separator = ", ")
 
-
 fun dismissToaster() {
 }
 
 fun SpannableStringBuilder.append(
     text: CharSequence,
     flags: Int,
-    vararg spans: Any,
+    vararg spans: Any
 ): SpannableStringBuilder {
     val start = length
     append(text)
@@ -381,8 +444,11 @@ fun View.hideKeyboard() {
 )
 fun EditText.showKeyboard(isShow: Boolean) {
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    if (isShow) imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
-    else imm.hideSoftInputFromWindow(this.windowToken, 0)
+    if (isShow) {
+        imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+    } else {
+        imm.hideSoftInputFromWindow(this.windowToken, 0)
+    }
 }
 
 data class CachedState<T>(val prevValue: T? = null, val value: T) {
@@ -403,8 +469,8 @@ data class CachedState<T>(val prevValue: T? = null, val value: T) {
     }
 }
 
-fun <T: Any> Flow<T>.withCache(): Flow<CachedState<T>> {
-    var cachedValue : T? = null
+fun <T : Any> Flow<T>.withCache(): Flow<CachedState<T>> {
+    var cachedValue: T? = null
     return map {
         val prevValue = cachedValue
         cachedValue = it
@@ -413,16 +479,16 @@ fun <T: Any> Flow<T>.withCache(): Flow<CachedState<T>> {
 }
 
 @Deprecated("Use MutableStateFlow.update")
-fun <T: Any> MutableStateFlow<T>.setValue(fn: T.() -> T) {
+fun <T : Any> MutableStateFlow<T>.setValue(fn: T.() -> T) {
     value = value.fn()
 }
 
-fun <T: Any> MutableStateFlow<T?>.setValueIfNotNull(fn: T.() -> T) {
+fun <T : Any> MutableStateFlow<T?>.setValueIfNotNull(fn: T.() -> T) {
     val value = this.value ?: return
     this.value = value.fn()
 }
 
-fun Boolean.switch() : Boolean = !this
+fun Boolean.switch(): Boolean = !this
 
 inline fun buildSpannedString(builderAction: SpannableStringBuilder.() -> Unit): SpannedString {
     val builder = SpannableStringBuilder()
@@ -445,7 +511,7 @@ inline fun SpannableStringBuilder.bold(builderAction: SpannableStringBuilder.() 
 
 suspend fun getBitmapFromUrl(
     context: Context,
-    url: String,
+    url: String
 ): Bitmap = suspendCancellableCoroutine { cont ->
     val target = object : CustomTarget<Bitmap>() {
         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {

@@ -29,8 +29,9 @@ class ShopCardViewModel(val application: Application, val components: Components
     private val shopCardLoadError: MutableLiveData<Boolean> = MutableLiveData()
     private var isLoading = false
 
+    @JvmField
     @Inject
-    lateinit var shopCardUseCase: ShopCardUseCase
+    var shopCardUseCase: ShopCardUseCase? = null
 
     fun getShopCardItemsListData(): LiveData<ArrayList<ComponentsItem>> = shopCardList
     fun getShopCardBackgroundData(): LiveData<ComponentsItem?> = shopCardBackgroundData
@@ -55,12 +56,12 @@ class ShopCardViewModel(val application: Application, val components: Components
 
     fun fetchShopCardData() {
         launchCatchError(block = {
-            val shouldSync = shopCardUseCase.loadFirstPageComponents(
+            val shouldSync = shopCardUseCase?.loadFirstPageComponents(
                 components.id,
                 components.pageEndPoint,
                 SHOP_PER_PAGE
             )
-            if (shouldSync) {
+            if (shouldSync == true) {
                 getComponent(components.id, components.pageEndPoint)?.let {
                     if (it.getComponentsItem().isNullOrEmpty() && !it.areFiltersApplied()) {
                         it.verticalProductFailState = true
@@ -109,7 +110,7 @@ class ShopCardViewModel(val application: Application, val components: Components
     fun fetchShopCardPaginatedData() {
         isLoading = true
         launchCatchError(block = {
-            if (shopCardUseCase.getShopCardPaginatedData(components.id, components.pageEndPoint, SHOP_PER_PAGE)) {
+            if (shopCardUseCase?.getShopCardPaginatedData(components.id, components.pageEndPoint, SHOP_PER_PAGE) == true) {
                 getShopList()?.let {
                     isLoading = false
                     shopCardList.value = addLoadMore(it)

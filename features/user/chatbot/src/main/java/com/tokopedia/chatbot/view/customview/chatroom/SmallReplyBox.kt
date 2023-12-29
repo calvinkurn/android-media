@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.customview.video_onboarding.VideoUploadOnBoarding
@@ -19,6 +20,7 @@ import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.TextAreaUnify2
+import com.tokopedia.unifycomponents.toPx
 
 class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
     ConstraintLayout(context, attributeSet) {
@@ -30,6 +32,7 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
     private var addAttachmentMenu: ImageView? = null
     private var guideline: Guideline? = null
     var sendButton: ImageView? = null
+    var replyBoxClickListener: ReplyBoxClickListener? = null
 
     private var textWatcher: TextWatcher? = null
     var listener: ChatbotSendButtonListener? = null
@@ -65,12 +68,27 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
             replyBox = findViewById(R.id.reply_box)
             replyBubbleContainer = findViewById(R.id.reply_bubble_container)
             commentEditText = findViewById(R.id.new_comment)
+            setEditTextPadding()
             addAttachmentMenu = commentEditText?.icon1
             sendButton = findViewById(R.id.send_but)
             guideline = findViewById(R.id.guideline_reply_bubble)
         }
         context?.resources?.getString(R.string.cb_bot_reply_text)?.toBlankOrString()
             ?.let { setHint(it) }
+        addAttachmentMenu?.setOnClickListener {
+            replyBoxClickListener?.onAttachmentMenuClicked()
+        }
+    }
+
+    private fun setEditTextPadding() {
+        commentEditText?.editText?.apply {
+            this.setPadding(
+                this.paddingLeft,
+                this.paddingTop,
+                ICON_1_PADDING.toPx() + this.paddingRight,
+                this.paddingBottom
+            )
+        }
     }
 
     fun setHint(hint: String) {
@@ -81,7 +99,7 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
         }
     }
 
-    fun showCoachMark(videoUploadOnBoarding: VideoUploadOnBoarding){
+    fun showCoachMark(videoUploadOnBoarding: VideoUploadOnBoarding) {
         videoUploadOnBoarding.showVideoBubbleOnBoarding(
             addAttachmentMenu,
             context
@@ -91,7 +109,6 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
     fun clearChatText() {
         commentEditText?.editText?.setText("")
     }
-
 
     fun addTextChangedListener() {
         commentEditText?.editText?.addTextChangedListener(textWatcher)
@@ -109,7 +126,7 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
             R.dimen.dp_chatbot_20,
             R.dimen.dp_chatbot_20,
             R.dimen.dp_chatbot_20,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950_20,
             R.dimen.dp_chatbot_2,
             R.dimen.dp_chatbot_1,
             Gravity.CENTER
@@ -147,5 +164,7 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
 
     companion object {
         val LAYOUT = R.layout.customview_chatbot_small_reply_box
+
+        const val ICON_1_PADDING = 32
     }
 }

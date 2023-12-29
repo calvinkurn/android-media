@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="attachcommon_dms_transparent">#00000000</color>
+    <color name="attachcommon_dms_shadow_light">#408D96AA</color>
+    <color name="attachcommon_dms_shadow_dark">#12000000</color>
+</resources>

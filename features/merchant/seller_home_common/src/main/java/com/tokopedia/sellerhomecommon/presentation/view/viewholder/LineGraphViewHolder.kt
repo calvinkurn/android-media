@@ -32,9 +32,10 @@ import com.tokopedia.sellerhomecommon.utils.ChartXAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
-import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By @ilhamsuaib on 20/05/20
@@ -63,9 +64,6 @@ class LineGraphViewHolder(
     private var showEmptyState: Boolean = false
 
     override fun bind(element: LineGraphWidgetUiModel) = with(binding) {
-        if (!listener.getIsShouldRemoveWidget()) {
-            itemView.toggleWidgetHeight(true)
-        }
         showAnimation?.end()
         hideAnimation?.end()
         observeState(element)
@@ -101,13 +99,22 @@ class LineGraphViewHolder(
                 onStateLoading(false)
                 showViewComponent(false, element)
                 onStateError(element, true)
-                listener.setOnErrorWidget(adapterPosition, element, data.error)
+                listener.setOnErrorWidget(absoluteAdapterPosition, element, data.error)
             }
+
             else -> {
+                removeWidgetWithCondition(element)
                 onStateLoading(false)
                 onStateError(element, false)
                 showViewComponent(true, element)
             }
+        }
+    }
+
+    private fun removeWidgetWithCondition(element: LineGraphWidgetUiModel) {
+        val shouldRemove = !element.data?.showWidget.orFalse()
+        if (shouldRemove) {
+            listener.removeWidget(absoluteAdapterPosition, element)
         }
     }
 
@@ -170,12 +177,12 @@ class LineGraphViewHolder(
             }
 
             horLineShcLineGraphBtm.isVisible = btnLineGraphMore.isVisible ||
-                luvShcLineGraph.isVisible
+                    luvShcLineGraph.isVisible
         }
     }
 
     private fun setupEmptyState(element: LineGraphWidgetUiModel) {
-        if (element.isEmpty()) {
+        if (element.data?.isWidgetEmpty().orFalse()) {
             if (element.isShowEmpty) {
                 if (element.shouldShowEmptyStateIfEmpty()) {
                     showEmptyState(element)
@@ -183,12 +190,7 @@ class LineGraphViewHolder(
                     animateHideEmptyState()
                 }
             } else {
-                if (listener.getIsShouldRemoveWidget()) {
-                    listener.removeWidget(adapterPosition, element)
-                } else {
-                    listener.onRemoveWidget(adapterPosition)
-                    itemView.toggleWidgetHeight(false)
-                }
+                listener.removeWidget(absoluteAdapterPosition, element)
             }
         } else {
             animateHideEmptyState()
@@ -228,13 +230,13 @@ class LineGraphViewHolder(
             }
 
             val iconColor = root.context.getResColor(
-                com.tokopedia.unifyprinciples.R.color.Unify_G400
+                unifyprinciplesR.color.Unify_GN500
             )
             val iconWidth = root.context.resources.getDimension(
-                com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                unifyprinciplesR.dimen.layout_lvl3
             )
             val iconHeight = root.context.resources.getDimension(
-                com.tokopedia.unifyprinciples.R.dimen.layout_lvl3
+                unifyprinciplesR.dimen.layout_lvl3
             )
             btnLineGraphMore.setUnifyDrawableEnd(
                 IconUnify.CHEVRON_RIGHT,
@@ -266,6 +268,8 @@ class LineGraphViewHolder(
     private fun showEmptyState(element: LineGraphWidgetUiModel) {
         with(element.emptyState) {
             emptyStateBinding.root.visible()
+            setEmptyStateBackground()
+
             emptyStateBinding.tvLineGraphEmptyStateTitle.text = title
             emptyStateBinding.tvLineGraphEmptyStateDescription.text = description
             emptyStateBinding.tvShcMultiLineEmptyStateCta.text = ctaText
@@ -274,6 +278,17 @@ class LineGraphViewHolder(
                 RouteManager.route(itemView.context, appLink)
             }
             animateShowEmptyState()
+        }
+    }
+
+    private fun setEmptyStateBackground() {
+        with(emptyStateBinding.multiLineEmptyState) {
+            val cardBg = if (context.isDarkMode()) {
+                unifyprinciplesR.color.Unify_NN100
+            } else {
+                R.color.card_background_dms
+            }
+            setCardBackgroundColor(context.getResColor(cardBg))
         }
     }
 
@@ -318,7 +333,7 @@ class LineGraphViewHolder(
             xAxis {
                 val xAxisLabels = lineChartData.chartEntry.map { it.xLabel }
                 gridEnabled { false }
-                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600) }
+                textColor { itemView.context.getResColor(unifyprinciplesR.color.Unify_NN600) }
                 labelFormatter {
                     ChartXAxisLabelFormatter(xAxisLabels)
                 }
@@ -326,7 +341,7 @@ class LineGraphViewHolder(
 
             yAxis {
                 val yAxisLabels = lineChartData.yAxisLabel
-                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600) }
+                textColor { itemView.context.getResColor(unifyprinciplesR.color.Unify_NN600) }
                 labelFormatter {
                     ChartYAxisLabelFormatter(yAxisLabels)
                 }

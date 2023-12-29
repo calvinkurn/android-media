@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_view_sparks"
+        android:layout_width="@dimen/mdp_sparks_width"
+        android:layout_height="@dimen/mdp_sparks_height"
+        android:elevation="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1"
+        app:lottie_loop="true" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_view"
+        android:layout_width="@dimen/mdp_medal_width"
+        android:layout_height="@dimen/mdp_medal_height"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/dp_6"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_shutter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dp_16"
+        android:alpha="0"
+        android:gravity="center"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="@id/lottie_view"
+        app:layout_constraintEnd_toEndOf="@id/lottie_view"
+        app:layout_constraintStart_toStartOf="@id/lottie_view"
+        app:layout_constraintTop_toTopOf="@id/lottie_view"
+        app:typographyType="body_3" />
+</merge>

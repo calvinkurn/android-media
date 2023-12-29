@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?android:attr/actionBarSize"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         android:gravity="center"
         android:paddingTop="12dp"
         android:visibility="gone"

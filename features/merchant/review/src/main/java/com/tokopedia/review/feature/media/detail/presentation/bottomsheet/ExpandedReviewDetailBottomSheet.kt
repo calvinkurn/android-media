@@ -8,12 +8,15 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.review.common.extension.collectLatestWhenResumed
 import com.tokopedia.review.databinding.BottomsheetExpandedReviewDetailCommonBinding
+import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailTracker
 import com.tokopedia.review.feature.media.detail.di.ReviewDetailComponentInstance
 import com.tokopedia.review.feature.media.detail.di.qualifier.ReviewDetailViewModelFactory
 import com.tokopedia.review.feature.media.detail.presentation.uistate.ExpandedReviewDetailBottomSheetUiState
 import com.tokopedia.review.feature.media.detail.presentation.viewmodel.ReviewDetailViewModel
 import com.tokopedia.review.feature.media.detail.presentation.widget.ReviewDetailBasicInfo
 import com.tokopedia.review.feature.media.detail.presentation.widget.ReviewDetailSupplementaryInfo
+import com.tokopedia.review.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
+import com.tokopedia.review.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
@@ -31,8 +34,15 @@ class ExpandedReviewDetailBottomSheet: BottomSheetUnify(), CoroutineScope {
     lateinit var dispatchers: CoroutineDispatchers
 
     @Inject
+    lateinit var reviewDetailTracker: ReviewDetailTracker
+
+    @Inject
     @ReviewDetailViewModelFactory
     lateinit var reviewDetailViewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    @DetailedReviewMediaGalleryViewModelFactory
+    lateinit var detailedReviewMediaGalleryViewModelFactory: ViewModelProvider.Factory
 
     private var binding by viewBinding(BottomsheetExpandedReviewDetailCommonBinding::bind)
 
@@ -48,6 +58,12 @@ class ExpandedReviewDetailBottomSheet: BottomSheetUnify(), CoroutineScope {
             requireActivity(),
             reviewDetailViewModelFactory
         ).get(ReviewDetailViewModel::class.java)
+    }
+
+    private val sharedReviewMediaGalleryViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        ViewModelProvider(requireActivity(), detailedReviewMediaGalleryViewModelFactory).get(
+            SharedReviewMediaGalleryViewModel::class.java
+        )
     }
 
     override val coroutineContext: CoroutineContext
@@ -83,6 +99,14 @@ class ExpandedReviewDetailBottomSheet: BottomSheetUnify(), CoroutineScope {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initUiStateCollectors()
+
+        reviewDetailTracker.trackImpressOnSeeMoreBottomSheet(
+            loggedInUserId = sharedReviewMediaGalleryViewModel.getUserID(),
+            feedbackId = reviewDetailViewModel.getFeedbackID().orEmpty(),
+            productId = sharedReviewMediaGalleryViewModel.getProductId(),
+            reviewUserId = sharedReviewMediaGalleryViewModel.getReviewUserID(),
+            isReviewOwner = sharedReviewMediaGalleryViewModel.isReviewOwner,
+        )
     }
 
     private fun initUiStateCollectors() {

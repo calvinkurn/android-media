@@ -17,7 +17,7 @@
             android:id="@+id/tvCategoryNameParent"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700"
+            android:textColor="@color/Unify_NN950"
             android:layout_weight="1" />
 
         <com.tokopedia.iconunify.IconUnify
@@ -38,7 +38,7 @@
     <View
         android:id="@+id/spacingLevelCategory"
         android:visibility="gone"
-        android:background="@color/Unify_N100"
+        android:background="@color/Unify_NN200"
         android:layout_width="match_parent"
         android:layout_height="8dp"/>
 

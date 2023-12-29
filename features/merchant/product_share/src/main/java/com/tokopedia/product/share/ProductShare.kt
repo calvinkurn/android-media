@@ -13,6 +13,8 @@ import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -41,8 +43,12 @@ import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.customview.UniversalShareWidget
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
+import com.tokopedia.universal_sharing.view.model.ImageGeneratorShareWidgetParam
+import com.tokopedia.universal_sharing.view.model.LinkShareWidgetProperties
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.universal_sharing.view.model.ShareWidgetParam
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 
@@ -311,17 +317,18 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         openIntentShare(file, shareProductName, shareDescription, shareUrl)
     }
 
-    private fun shareChannelClicked(shareModel: ShareModel, personalizedCampaignModel: PersonalizedCampaignModel) {
+    private fun shareChannelClicked(shareModel: ShareModel, personalizedCampaignModel: PersonalizedCampaignModel, bottomSheet: UniversalShareBottomSheet) {
         if (isBranchUrlActive()) {
             val branchStart = System.currentTimeMillis()
 
             onClickChannelWidgetClicked(
-                UniversalShareBottomSheet.getShareBottomSheetType(),
+                bottomSheet.getShareBottomSheetType(),
                 shareModel.channel.orEmpty(),
                 productData.userId,
                 productData.productId,
                 productData.campaignId,
-                productData.bundleId
+                productData.bundleId,
+                bottomSheet.getUserType()
             )
 
             val linkerShareData = productDataToLinkerDataMapper(productData)
@@ -340,7 +347,8 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
 
             LinkerManager.getInstance().executeShareRequest(
                 LinkerUtils.createShareRequest(
-                    0, linkerShareData,
+                    0,
+                    linkerShareData,
                     object : ShareCallback {
                         override fun urlCreated(linkerShareResult: LinkerShareResult) {
                             val branchEnd = System.currentTimeMillis()
@@ -360,7 +368,6 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                                             linkerShareResult.url
                                         )
                                     }
-
                                 } else {
                                     String.format(shareModel.personalizedMessageFormat, linkerShareResult.url)
                                 }
@@ -430,20 +437,25 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
     }
 
     private fun generateOgTitle(productData: ProductData): String {
-        return "${productData.productName} - ${productData.priceText}"
+        return if (productData.hasMaskingPrice) {
+            "${productData.productName}"
+        } else {
+            "${productData.productName} - ${productData.priceText}"
+        }
     }
 
     private fun generateOgDescription(productData: ProductData): String {
         return "${productData.shopName} - ${productData.productShareDescription}"
     }
 
-    private fun onCloseShareClicked() {
+    private fun onCloseShareClicked(bottomSheet: UniversalShareBottomSheet) {
         onCloseShareWidgetClicked(
-            UniversalShareBottomSheet.getShareBottomSheetType(),
+            bottomSheet.getShareBottomSheetType(),
             productData.userId,
             productData.productId,
             productData.campaignId,
-            productData.bundleId
+            productData.bundleId,
+            bottomSheet.getUserType()
         )
         universalShareBottomSheet?.dismiss()
     }
@@ -452,7 +464,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         fragmentManager: FragmentManager,
         fragment: Fragment,
         data: ProductData,
-        affiliateInput: AffiliatePDPInput,
+        affiliateInput: AffiliateInput,
         isLog: Boolean = false,
         view: View? = null,
         productImgList: ArrayList<String>? = null,
@@ -460,7 +472,8 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         postBuildImg: () -> Unit,
         screenshotDetector: ScreenshotDetector? = null,
         paramImageGenerator: PdpParamModel,
-        personalizedCampaignModel: PersonalizedCampaignModel
+        personalizedCampaignModel: PersonalizedCampaignModel,
+        screenshotPath: String? = null
     ) {
         cancelShare = false
         resetLog()
@@ -479,20 +492,25 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
             screenshotDetector = screenshotDetector
         ) {
             UniversalShareBottomSheet.createInstance().apply {
+                setFeatureFlagRemoteConfigKey()
+                screenshotPath?.let {
+                    setImageOnlySharingOption(true)
+                    setScreenShotImagePath(screenshotPath)
+                }
                 getImageFromMedia(true)
                 setupAffiliate(affiliateInput, this)
-                setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.AB_TEST_PDP)
+                setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.PDP_WITH_PRICE_STRING)
                 if (!personalizedCampaignModel.isThematicCampaign && !(personalizedCampaignModel.startTime == 0L && personalizedCampaignModel.endTime == 0L)) {
                     setPersonalizedCampaign(personalizedCampaignModel)
                 }
                 setImageGeneratorParam(paramImageGenerator)
                 init(object : ShareBottomsheetListener {
                     override fun onShareOptionClicked(shareModel: ShareModel) {
-                        shareChannelClicked(shareModel, personalizedCampaignModel)
+                        shareChannelClicked(shareModel, personalizedCampaignModel, this@apply)
                     }
 
                     override fun onCloseOptionClicked() {
-                        onCloseShareClicked()
+                        onCloseShareClicked(this@apply)
                     }
                 })
                 setUtmCampaignData("PDP", productData.userId, productData.productId, "share")
@@ -503,15 +521,21 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                     productImgList
                 )
                 universalShareBottomSheet = this
+
+                setOnDismissListener { universalShareBottomSheet = null }
+
+                setOnGetAffiliateData {
+                    onImpressShareWidget(
+                        this.getShareBottomSheetType(),
+                        productData.userId,
+                        productData.productId,
+                        productData.campaignId,
+                        productData.bundleId,
+                        it
+                    )
+                }
             }
         }
-        onImpressShareWidget(
-            UniversalShareBottomSheet.getShareBottomSheetType(),
-            productData.userId,
-            productData.productId,
-            productData.campaignId,
-            productData.bundleId
-        )
     }
 
     fun updateAffiliate(shopStatus: Int) {
@@ -532,15 +556,59 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         }
     }
 
+    fun setWhatsappShareWidget(
+        shareWidget: UniversalShareWidget,
+        productData: ProductData,
+        personalizedCampaignModel: PersonalizedCampaignModel,
+        affiliateInput: AffiliateInput,
+        imageGeneratorParamModel: PdpParamModel
+    ) {
+        var imageGenerator = imageGeneratorParamModel
+        var personalizedMessage = ""
+        var shareMessage = ""
+        if (personalizedCampaignModel.isPersonalizedCampaignActive()) {
+            imageGenerator = imageGenerator.copy(
+                campaignName = personalizedCampaignModel.getCampaignName(),
+                campaignInfo = personalizedCampaignModel.getPersonalizedImage(),
+                hasRibbon = true
+            )
+            personalizedMessage = personalizedCampaignModel.getPersonalizedMessage()
+        }
+
+        if (personalizedMessage.isEmpty()) {
+            shareMessage = if (personalizedCampaignModel.isThematicCampaign && personalizedCampaignModel.discountPercentage != 0F) {
+                productData.getTextDescriptionDisc(
+                    activity,
+                    "%s",
+                    personalizedCampaignModel.discountPercentage
+                )
+            } else {
+                productData.getTextDescriptionNonDisc(
+                    activity,
+                    "%s"
+                )
+            }
+        } else {
+            shareMessage = "$personalizedMessage %s"
+        }
+        shareWidget.setData(
+            shareWidgetParam = ShareWidgetParam(
+                linkProperties = generateLinkProperties(productData, shareMessage),
+                affiliateInput = affiliateInput,
+                imageGenerator = ImageGeneratorShareWidgetParam(
+                    ImageGeneratorConstants.ImageGeneratorSourceId.PDP_WITH_PRICE_STRING,
+                    imageGenerator
+                )
+            )
+        )
+    }
+
     private fun setupAffiliate(
-        affiliateInput: AffiliatePDPInput,
+        affiliateInput: AffiliateInput,
         universalShareBottomSheet: UniversalShareBottomSheet
     ) {
-        universalShareBottomSheet.setAffiliateRequestHolder(affiliateInput)
-        if (affiliateInput.shop?.shopStatus == null) {
-            universalShareBottomSheet.affiliateRequestDataAwaited()
-        } else {
-            universalShareBottomSheet.affiliateRequestDataReceived(true)
+        if (affiliateInput.shop?.shopStatus != null) {
+            universalShareBottomSheet.enableAffiliateCommission(affiliateInput)
         }
     }
     //endregion
@@ -549,6 +617,21 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         override fun permissionAction(action: String, label: String) {
             onClickAccessPhotoMediaAndFiles(productData.userId, productData.productId, label)
         }
+    }
+
+    fun generateLinkProperties(productData: ProductData, message: String): LinkShareWidgetProperties {
+        return LinkShareWidgetProperties(
+            page = "PDP",
+            message = message,
+            deeplink = UriUtil.buildUri(ApplinkConst.PRODUCT_INFO, productData.productId),
+            id = productData.productId,
+            desktopUrl = productData.productUrl.toString(),
+            linkerType = LinkerData.PRODUCT_TYPE,
+            userId = productData.userId,
+            ogTitle = generateOgTitle(productData),
+            ogDescription = generateOgDescription(productData),
+            ogImageUrl = productData.productImageUrl ?: ""
+        )
     }
 }
 

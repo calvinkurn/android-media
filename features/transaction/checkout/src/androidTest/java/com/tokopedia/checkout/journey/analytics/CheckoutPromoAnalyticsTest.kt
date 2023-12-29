@@ -62,7 +62,7 @@ class CheckoutPromoAnalyticsTest {
     }
 
     companion object {
-        private const val SHIPMENT_ADDRESS_FORM_KEY = "shipment_address_form_v3"
+        private const val SHIPMENT_ADDRESS_FORM_KEY = "shipmentAddressFormV4"
 
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/checkout_promo.json"
     }

@@ -43,5 +43,16 @@ data class VoucherOrders(
     val boCampaignId: String = "",
 
     @SerializedName("eta_txt")
-    val etaText: String = ""
-)
+    val etaText: String = "",
+
+    @SerializedName("cart_string_group")
+    val cartStringGroup: String = ""
+) {
+    companion object {
+        private const val TYPE_LOGISTIC = "logistic"
+    }
+
+    fun isTypeLogistic(): Boolean {
+        return type == TYPE_LOGISTIC
+    }
+}

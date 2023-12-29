@@ -1,0 +1,7 @@
+{
+  "chatBlastSellerMetadata": {
+    "status": 1,
+    "url": "https://m.tokopedia.com/broadcast-chat",
+    "urlBroadcast": "tokopedia://webview?titlebar\u003dfalse\u0026url\u003dhttps://m.tokopedia.com/broadcast-chat"
+  }
+}

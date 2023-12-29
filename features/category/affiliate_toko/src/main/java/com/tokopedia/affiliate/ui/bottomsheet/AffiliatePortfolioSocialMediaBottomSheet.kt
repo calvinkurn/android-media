@@ -44,24 +44,40 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class AffiliatePortfolioSocialMediaBottomSheet: BottomSheetUnify() , AddSocialInterface {
+class AffiliatePortfolioSocialMediaBottomSheet : BottomSheetUnify(), AddSocialInterface {
     private var contentView: View? = null
 
-    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(addSocialInterface = this))
+    private val adapter: AffiliateAdapter =
+        AffiliateAdapter(AffiliateAdapterFactory(addSocialInterface = this))
 
     @Inject
-    lateinit var userSessionInterface : UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
 
     @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
+    @JvmField
+    var viewModelProvider: ViewModelProvider.Factory? = null
 
-    private val viewModelFragmentProvider by lazy { ViewModelProvider(
-        requireParentFragment(), viewModelProvider) }
+    private val viewModelFragmentProvider by lazy {
+        parentFragment?.let { parent ->
+            viewModelProvider?.let { viewModelProvider ->
+                ViewModelProvider(
+                    parent,
+                    viewModelProvider
+                )
+            }
+        }
+    }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         init()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
+
     companion object {
         const val INSTA = 3
         const val TIKTOK = 9
@@ -75,12 +91,13 @@ class AffiliatePortfolioSocialMediaBottomSheet: BottomSheetUnify() , AddSocialIn
         }
     }
 
-    private lateinit var portfolioSharedViewModel: AffiliatePortfolioViewModel
-    private var selectedIds = arrayListOf<Int>()
+    private var portfolioSharedViewModel: AffiliatePortfolioViewModel? = null
+    private var selectedIds: ArrayList<Int>? = arrayListOf()
 
     private fun init() {
-        portfolioSharedViewModel =  viewModelFragmentProvider.get(AffiliatePortfolioViewModel::class.java)
-        selectedIds = portfolioSharedViewModel.getCurrentSocialIds()
+        portfolioSharedViewModel =
+            viewModelFragmentProvider?.get(AffiliatePortfolioViewModel::class.java)
+        selectedIds = portfolioSharedViewModel?.getCurrentSocialIds()
         setTitle(getString(R.string.affiliate_add_social_media))
         showCloseIcon = true
         showKnob = false
@@ -106,8 +123,8 @@ class AffiliatePortfolioSocialMediaBottomSheet: BottomSheetUnify() , AddSocialIn
 
     private fun onSaveSocialButtonClicked() {
         val checkedSocialList = arrayListOf<AffiliateShareModel>()
-        for (vistitable in listVisitable){
-            if(vistitable is AffiliateShareModel && vistitable.isChecked){
+        for (vistitable in listVisitable) {
+            if (vistitable is AffiliateShareModel && vistitable.isChecked) {
                 checkedSocialList.add(vistitable)
             }
         }
@@ -115,30 +132,64 @@ class AffiliatePortfolioSocialMediaBottomSheet: BottomSheetUnify() , AddSocialIn
         dismiss()
     }
 
-    private fun convertToPortfolioModel(checkedSocialList : List<AffiliateShareModel>) {
-        val updateList : java.util.ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
-        updateList.add(AffiliateHeaderModel(AffiliateHeaderItemData(userSessionInterface.name,true)))
-        for (item in checkedSocialList){
-            val portfolioDataItemText = portfolioSharedViewModel.finEditTextModelWithId(item.id)?.text
-            val isFirstTime = portfolioSharedViewModel.finEditTextModelWithId(item.id)?.firstTime
-            if(portfolioDataItemText?.isNotBlank() == true){
+    private fun convertToPortfolioModel(checkedSocialList: List<AffiliateShareModel>) {
+        val updateList: java.util.ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
+        updateList.add(
+            AffiliateHeaderModel(
+                AffiliateHeaderItemData(
+                    userSessionInterface?.name,
+                    true
+                )
+            )
+        )
+        for (item in checkedSocialList) {
+            val portfolioDataItemText =
+                portfolioSharedViewModel?.finEditTextModelWithId(item.id)?.text
+            val isFirstTime = portfolioSharedViewModel?.finEditTextModelWithId(item.id)?.firstTime
+            if (portfolioDataItemText?.isNotBlank() == true) {
                 updateList.add(
                     AffiliatePortfolioUrlModel(
-                        AffiliatePortfolioUrlInputData(item.id,item.serviceFormat,"${getString(R.string.affiliate_link)} ${item.name}",
-                    portfolioDataItemText,item.urlSample,getString(R.string.affiliate_link_not_valid),false,regex = item.regex,firstTime = isFirstTime)
+                        AffiliatePortfolioUrlInputData(
+                            item.id,
+                            item.serviceFormat,
+                            "${getString(R.string.affiliate_link)} ${item.name}",
+                            portfolioDataItemText,
+                            item.urlSample,
+                            getString(R.string.affiliate_link_not_valid),
+                            false,
+                            regex = item.regex,
+                            firstTime = isFirstTime
+                        )
                     )
                 )
-            }else {
+            } else {
                 updateList.add(
                     AffiliatePortfolioUrlModel(
-                        AffiliatePortfolioUrlInputData(item.id,item.serviceFormat,"${getString(R.string.affiliate_link)} ${item.name}",
-                    item.defaultText,item.urlSample,getString(R.string.affiliate_link_not_valid),false,regex = item.regex,firstTime = true)
+                        AffiliatePortfolioUrlInputData(
+                            item.id,
+                            item.serviceFormat,
+                            "${getString(R.string.affiliate_link)} ${item.name}",
+                            item.defaultText,
+                            item.urlSample,
+                            getString(R.string.affiliate_link_not_valid),
+                            false,
+                            regex = item.regex,
+                            firstTime = true
+                        )
                     )
                 )
             }
         }
-        updateList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData(getString(R.string.affiliate_tambah_sosial_media), UnifyButton.Type.ALTERNATE, UnifyButton.Variant.GHOST)))
-        portfolioSharedViewModel.affiliatePortfolioData.value = updateList
+        updateList.add(
+            AffiliatePortfolioButtonModel(
+                AffiliatePortfolioButtonData(
+                    getString(R.string.affiliate_tambah_sosial_media),
+                    UnifyButton.Type.ALTERNATE,
+                    UnifyButton.Variant.GHOST
+                )
+            )
+        )
+        portfolioSharedViewModel?.affiliatePortfolioData?.value = updateList
     }
 
     private fun setDataToRecyclerView() {
@@ -154,41 +205,73 @@ class AffiliatePortfolioSocialMediaBottomSheet: BottomSheetUnify() , AddSocialIn
     private var listVisitable: List<Visitable<AffiliateAdapterTypeFactory>> = arrayListOf()
     private fun addDataInRecyclerView() {
         listVisitable = arrayListOf<Visitable<AffiliateAdapterTypeFactory>>(
-            AffiliateShareModel("Instagram", IconUnify.INSTAGRAM,"instagram",
-                INSTA,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
-                "Contoh: instagram.com/tokopedia",false,isChecked = false, false,
+            AffiliateShareModel(
+                "Instagram", IconUnify.INSTAGRAM, "instagram",
+                INSTA, AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
+                "Contoh: instagram.com/tokopedia", false, isChecked = false, false,
                 AFFILIATE_INSTAGRAM_REGEX,
                 INSTAGRAM_DEFAULT
             ),
-            AffiliateShareModel("Tiktok", IconUnify.TIKTOK,"tiktok",
-                TIKTOK,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
-                "Contoh: tiktok.com/tokopedia",false,isChecked = false, false,
-                AFFILIATE_TIKTOK_REGEX,TIKTOK_DEFAULT
+            AffiliateShareModel(
+                "Tiktok", IconUnify.TIKTOK, "tiktok",
+                TIKTOK, AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
+                "Contoh: tiktok.com/tokopedia", false, isChecked = false, false,
+                AFFILIATE_TIKTOK_REGEX, TIKTOK_DEFAULT
             ),
-            AffiliateShareModel("YouTube", IconUnify.YOUTUBE,"youtube",
-                YOUTUBE,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
-                "Contoh: youtube.com/tokopedia",false,isChecked = false, false,
-                AFFILIATE_YT_REGEX,YOUTUBE_DEFAULT
+            AffiliateShareModel(
+                "YouTube", IconUnify.YOUTUBE, "youtube",
+                YOUTUBE, AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
+                "Contoh: youtube.com/tokopedia", false, isChecked = false, false,
+                AFFILIATE_YT_REGEX, YOUTUBE_DEFAULT
             ),
-            AffiliateShareModel("Facebook", IconUnify.FACEBOOK,"facebook",
-                FACEBOOK,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
-                "Contoh: facebook.com/tokopedia",false,isChecked = false, false,defaultText = FACEBOOK_DEFAULT),
-            AffiliateShareModel("Twitter", IconUnify.TWITTER,"twitter",
-                TWITTER,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
-                "Contoh: twitter.com/tokopedia",false,isChecked = false, false,
-                AFFILIATE_TWITTER_REGEX,TWITTER_DEFAULT
+            AffiliateShareModel(
+                "Facebook",
+                IconUnify.FACEBOOK,
+                "facebook",
+                FACEBOOK,
+                AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
+                "Contoh: facebook.com/tokopedia",
+                false,
+                isChecked = false,
+                false,
+                defaultText = FACEBOOK_DEFAULT
             ),
-            AffiliateShareModel("Website/Blog", IconUnify.GLOBE,"website",
-                WEBSITE,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
-                "Contoh: tokopedia.com/tokopedia",false,isChecked = false, false,defaultText = WWW),
-            AffiliateShareModel("Lainnya",null,"others", OTHERS,AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
-                "Contoh: yourwebiste.com",false, isChecked = false,false)
+            AffiliateShareModel(
+                "Twitter", IconUnify.TWITTER, "twitter",
+                TWITTER, AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
+                "Contoh: twitter.com/tokopedia", false, isChecked = false, false,
+                AFFILIATE_TWITTER_REGEX, TWITTER_DEFAULT
+            ),
+            AffiliateShareModel(
+                "Website/Blog",
+                IconUnify.GLOBE,
+                "website",
+                WEBSITE,
+                AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
+                "Contoh: tokopedia.com/tokopedia",
+                false,
+                isChecked = false,
+                false,
+                defaultText = WWW
+            ),
+            AffiliateShareModel(
+                "Lainnya",
+                null,
+                "others",
+                OTHERS,
+                AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL,
+                "Contoh: yourwebiste.com",
+                false,
+                isChecked = false,
+                false
+            )
         )
         setSelectedCheckBox()
     }
-    private fun setSelectedCheckBox(){
+
+    private fun setSelectedCheckBox() {
         listVisitable.forEach {
-            if(it is AffiliateShareModel && selectedIds.contains(it.id)){
+            if (it is AffiliateShareModel && selectedIds?.contains(it.id) == true) {
                 it.isChecked = true
             }
         }
@@ -212,20 +295,22 @@ class AffiliatePortfolioSocialMediaBottomSheet: BottomSheetUnify() , AddSocialIn
         (listVisitable[position] as AffiliateShareModel).isChecked = isChecked
         checkForAtLeastOneSelected()
     }
+
     private fun checkForAtLeastOneSelected() {
         var count = 0
-        for (vistitable in listVisitable){
-            if((vistitable is AffiliateShareModel) && vistitable.isChecked){ count += 1 }
+        for (visitable in listVisitable) {
+            if ((visitable is AffiliateShareModel) && visitable.isChecked) {
+                count += 1
+            }
         }
-        if(count == 0) {
+        if (count == 0) {
             contentView?.findViewById<UnifyButton>(R.id.simpan_btn)?.run {
                 buttonVariant = UnifyButton.Variant.GHOST
                 buttonType = UnifyButton.Type.ALTERNATE
                 isEnabled = false
             }
             contentView?.findViewById<Typography>(R.id.error_message)?.show()
-        }
-        else {
+        } else {
             contentView?.findViewById<UnifyButton>(R.id.simpan_btn)?.run {
                 buttonVariant = UnifyButton.Variant.FILLED
                 buttonType = UnifyButton.Type.MAIN

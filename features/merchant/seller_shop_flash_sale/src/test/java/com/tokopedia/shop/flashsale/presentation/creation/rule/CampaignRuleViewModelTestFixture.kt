@@ -12,7 +12,6 @@ import com.tokopedia.shop.flashsale.domain.usecase.GetSellerCampaignDetailUseCas
 import com.tokopedia.shop.flashsale.domain.usecase.aggregate.ValidateCampaignCreationEligibilityUseCase
 import com.tokopedia.unit.test.rule.AbstractTestRule
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Result
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
@@ -90,7 +89,7 @@ open class CampaignRuleViewModelTestFixture {
 
     lateinit var viewModel: CampaignRuleViewModel
 
-    open fun provideTestRule(): TestRule  = CoroutineTestRule()
+    open fun provideTestRule(): TestRule = CoroutineTestRule()
 
     fun dispatchers() = (testRule as AbstractTestRule).dispatchers
 
@@ -145,5 +144,4 @@ open class CampaignRuleViewModelTestFixture {
             addRelatedCampaignButtonEvent.removeObserver(addRelatedCampaignButtonEventObserver)
         }
     }
-
 }

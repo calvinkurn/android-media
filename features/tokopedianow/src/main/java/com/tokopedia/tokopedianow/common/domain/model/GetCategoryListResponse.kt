@@ -7,32 +7,32 @@ import com.tokopedia.abstraction.common.data.model.response.Header
 data class GetCategoryListResponse(
     @Expose
     @SerializedName("TokonowCategoryTree")
-    val response: CategoryListResponse
+    val response: CategoryListResponse = CategoryListResponse()
 ) {
     data class CategoryListResponse(
         @Expose
         @SerializedName("header")
-        val header: Header,
+        val header: Header = Header(),
         @Expose
         @SerializedName("data")
-        val data: List<CategoryResponse>
+        val data: List<CategoryResponse> = listOf()
     ) {
         data class CategoryResponse(
             @Expose
             @SerializedName("id")
-            val id: String,
+            val id: String = "",
             @Expose
             @SerializedName("name")
-            val name: String,
+            val name: String = "",
             @Expose
             @SerializedName("url")
-            val url: String,
+            val url: String = "",
             @Expose
             @SerializedName("isAdult")
-            val isAdult: Int,
+            val isAdult: Int = 0,
             @Expose
             @SerializedName("applinks")
-            val appLinks: String,
+            val appLinks: String = "",
             @Expose
             @SerializedName("imageUrl")
             val imageUrl: String? = null,
@@ -41,7 +41,7 @@ data class GetCategoryListResponse(
             val parentId: String? = null,
             @Expose
             @SerializedName("color")
-            val color: String,
+            val color: String = "",
             @Expose
             @SerializedName("child")
             val childList: List<CategoryResponse>? = null

@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-
 buildscript {
     repositories {
         google()
@@ -12,6 +11,11 @@ buildscript {
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
     }
+}
+
+android {
+    namespace 'com.tokopedia.fakeresponse'
+    testNamespace 'com.tokopedia.fakeresponse.test'
 }
 
 dependencies {
@@ -29,7 +33,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.gson
 
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
-    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    ksp rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.dbDependencies.dbRoomKtx
 
     implementation rootProject.ext.networkDependencies.okHttp
@@ -42,7 +46,7 @@ dependencies {
 project.ext {
     artifactId = 'fakeresponse'
     groupId = 'com.tokopedia.fakeresponse'
-    versionName = "0.0.11"
+    versionName = "0.0.15"
     artifactName = "fakeresponse-release"
 }
 

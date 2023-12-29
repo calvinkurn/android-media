@@ -71,3 +71,5 @@ open class GetShopPenaltyDetailUseCase @Inject constructor(
         }
     }
 }
+
+

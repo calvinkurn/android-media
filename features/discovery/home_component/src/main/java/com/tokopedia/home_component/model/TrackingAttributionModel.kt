@@ -11,7 +11,12 @@ data class TrackingAttributionModel(
         val homeAttribution: String = "",
         val campaignId: String = "",
         val promoName: String = "",
-        val campaignType: Int = -1
+        val campaignType: Int = -1,
+        val bannerId: String = "",
+        val headerName: String = "",
+        val channelId: String = "",
+        val parentPosition: String = "",
+        val pageName: String = "",
 ) {
         companion object {
                 const val CAMPAIGN_TYPE_SPECIAL_RELEASE = 1

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="blue_booking">@color/Unify_B600</color>
+    <color name="blue_booking">@color/Unify_BN700</color>
     <color name="hotel_safety_badge_blue">#0081CB</color>
-    <color name="blue_background">@color/Unify_B100</color>
-    <color name="grey_no_image">@color/Unify_N50</color>
-    <color name="grey_share_menu">@color/Unify_N500</color>
+    <color name="blue_background">@color/Unify_BN50</color>
+    <color name="grey_no_image">@color/Unify_NN50</color>
+    <color name="grey_share_menu">@color/Unify_NN600</color>
     <color name="ticket_start_gradient">#f7fff0</color>
     <color name="ticket_end_gradient">#d1ffdd</color>
-    <color name="ticket_divider">@color/Unify_N75</color>
-    <color name="bg_green_e_voucher">@color/Unify_G300</color>
+    <color name="ticket_divider">@color/Unify_NN50</color>
+    <color name="bg_green_e_voucher">@color/Unify_GN300</color>
     <color name="hotel_snackbar_border">#87d58b</color>
     <color name="green_all_facility_tab_underlined">#42b549</color>
 
@@ -33,5 +33,5 @@
     <color name="hotel_dms_icon_color">@color/Neutral_N400</color>
     <color name="hotel_dms_max_radius_font_color">#AAB4C8</color>
 
-    <color name="search_subtitle">@color/Unify_N700_44</color>
+    <color name="search_subtitle">@color/Unify_NN950_44</color>
 </resources>

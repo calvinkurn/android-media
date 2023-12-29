@@ -192,7 +192,8 @@ class AffiliateSSAShopListFragment :
         productIdentifier: String,
         status: Int?,
         type: String?,
-        ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?
+        ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?,
+        imageArray: List<String?>?
     ) {
         AffiliatePromotionBottomSheet.newInstance(
             AffiliatePromotionBottomSheetParams(

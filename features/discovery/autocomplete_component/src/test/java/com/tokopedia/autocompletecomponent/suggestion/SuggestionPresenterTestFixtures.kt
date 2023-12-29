@@ -1,14 +1,17 @@
 package com.tokopedia.autocompletecomponent.suggestion
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.autocompletecomponent.TestSchedulersProvider
 import com.tokopedia.autocompletecomponent.initialstate.TestException
 import com.tokopedia.autocompletecomponent.jsonToObject
+import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeyword
 import com.tokopedia.autocompletecomponent.suggestion.chips.SuggestionChipWidgetDataView
 import com.tokopedia.autocompletecomponent.suggestion.domain.model.SuggestionUniverse
 import com.tokopedia.autocompletecomponent.suggestion.doubleline.SuggestionDoubleLineDataDataView
 import com.tokopedia.autocompletecomponent.suggestion.doubleline.SuggestionDoubleLineWithoutImageDataDataView
 import com.tokopedia.autocompletecomponent.suggestion.productline.SuggestionProductLineDataDataView
 import com.tokopedia.autocompletecomponent.suggestion.singleline.SuggestionSingleLineDataDataView
+import com.tokopedia.autocompletecomponent.util.CoachMarkLocalCache
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -30,6 +33,7 @@ internal open class SuggestionPresenterTestFixtures {
     protected val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
 
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
+    protected val coachMarkLocalCache = mockk<CoachMarkLocalCache>(relaxed = true)
 
     protected lateinit var suggestionPresenter: SuggestionPresenter
 
@@ -39,12 +43,14 @@ internal open class SuggestionPresenterTestFixtures {
     protected val testException = TestException("Error")
 
     @Before
-    fun setUp() {
+    open fun setUp() {
         suggestionPresenter = SuggestionPresenter(
             getSuggestionUseCase,
             suggestionTrackerUseCase,
             { topAdsUrlHitter },
             userSession,
+            coachMarkLocalCache,
+            TestSchedulersProvider,
         )
 
         suggestionPresenter.attachView(suggestionView)
@@ -52,15 +58,19 @@ internal open class SuggestionPresenterTestFixtures {
 
     protected fun SuggestionContract.View.onClickSuggestion(applink: String) {
         dropKeyBoard()
-        route(applink, suggestionPresenter.getSearchParameter())
+        route(applink, suggestionPresenter.getSearchParameter(), suggestionPresenter.getActiveKeyword())
         finish()
     }
 
-    protected fun `Given View already load data`(responseJSON: String, searchParameter: Map<String, String>) {
+    protected fun `Given View already load data`(
+        responseJSON: String,
+        searchParameter: Map<String, String>,
+        activeKeyword: SearchBarKeyword = SearchBarKeyword(),
+    ) {
         val suggestionUniverse = responseJSON.jsonToObject<SuggestionUniverse>()
 
         `Given Suggestion API will return SuggestionUniverse`(suggestionUniverse)
-        `Given view already get suggestion`(searchParameter)
+        `Given view already get suggestion`(searchParameter, activeKeyword)
     }
 
     protected fun `Given Suggestion API will return SuggestionUniverse`(
@@ -75,11 +85,12 @@ internal open class SuggestionPresenterTestFixtures {
     }
 
     private fun `Given view already get suggestion`(
-        searchParameter: Map<String, String> = mapOf()
+        searchParameter: Map<String, String> = mapOf(),
+        activeKeyword: SearchBarKeyword = SearchBarKeyword(),
     ) {
         every { suggestionView.showSuggestionResult(capture(slotVisitableList)) } just runs
 
-        suggestionPresenter.getSuggestion(searchParameter)
+        suggestionPresenter.getSuggestion(searchParameter, activeKeyword)
     }
 
     protected fun List<Visitable<*>>.findSingleLine(

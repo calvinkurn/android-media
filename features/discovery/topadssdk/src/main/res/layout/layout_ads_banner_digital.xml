@@ -14,67 +14,63 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/image"
+            android:id="@+id/banner_digital_image"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:adjustViewBounds="true" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="@dimen/dp_128"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="128dp"
             android:layout_centerVertical="true"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/name"
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/banner_digital_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:fontFamily="sans-serif-medium"
                 android:textAllCaps="false"
-                android:textColor="@color/Unify_N700_68"
-                android:textSize="@dimen/text_size_small"
-                android:textStyle="bold"
+                android:textColor="@color/Unify_NN950_68"
                 android:singleLine="true"
                 android:maxLines="1"
                 android:ellipsize="end"
+                app:typographyWeight="bold"
+                app:typographyType="body_3"
                 tools:text="Beli Tiket Dufan di tokopedia!" />
 
-            <TextView
-                android:id="@+id/description"
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/banner_digital_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:fontFamily="sans-serif"
-                android:textColor="@color/Unify_N700_44"
-                android:textSize="@dimen/font_very_small"
-                android:textStyle="normal"
+                android:textColor="@color/Unify_NN950_44"
+                app:typographyWeight="reguler"
+                app:typographyType="small"
                 android:maxLines="2"
                 tools:text="Mulai dari harga Rp 197,000 sampai Rp 321,000" />
 
-            <TextView
-                android:id="@+id/cta_btn"
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/banner_digital_cta_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="marquee"
-                android:fontFamily="sans-serif"
                 android:lineSpacingExtra="5sp"
-                android:textColor="@color/Unify_G400"
-                android:textSize="@dimen/font_very_small"
-                android:textStyle="normal"
+                android:textColor="@color/Unify_GN500"
+                app:typographyWeight="reguler"
+                app:typographyType="small"
                 tools:text="Beli Sekarang" />
         </LinearLayout>
 
     </RelativeLayout>
 
-
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/Unify_N100" />
+        android:background="@color/Unify_NN200" />
 
 </LinearLayout>

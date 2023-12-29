@@ -1,11 +1,9 @@
 package com.tokopedia.topchat.chatsearch.view.activity
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -24,8 +22,9 @@ import com.tokopedia.topchat.chatsearch.view.fragment.ChatSearchFragment
 import com.tokopedia.topchat.chatsearch.view.fragment.ChatSearchFragmentListener
 import com.tokopedia.topchat.chatsearch.view.fragment.ContactLoadMoreChatFragment
 import com.tokopedia.topchat.chatsearch.view.fragment.ContactLoadMoreChatListener
+import com.tokopedia.topchat.databinding.ActivityChatSearchBinding
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.activity_chat_search.*
+import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -38,6 +37,8 @@ import kotlin.coroutines.CoroutineContext
  */
 open class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchComponent>,
         CoroutineScope, ChatSearchFragmentListener, ContactLoadMoreChatListener {
+
+    private val binding: ActivityChatSearchBinding? by viewBinding()
 
     private val textDebounce = 500L
     private var containerSearch: RelativeLayout? = null
@@ -107,19 +108,19 @@ open class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchCom
     }
 
     private fun assignBackButtonClick() {
-        ivBack?.setOnClickListener {
+        binding?.ivBack?.setOnClickListener {
             onBackPressed()
         }
     }
 
     private fun assignClearButtonClick() {
-        ivClear?.setOnClickListener {
-            searchTextView?.text?.clear()
+        binding?.ivClear?.setOnClickListener {
+            binding?.searchTextView?.text?.clear()
         }
     }
 
     private fun initSearchLayout() {
-        searchTextView?.apply {
+        binding?.searchTextView?.apply {
             addTextChangedListener(textWatcher)
             setOnEditorActionListener(editorActionListener)
             requestFocus()
@@ -132,7 +133,7 @@ open class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchCom
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(query: CharSequence?, start: Int, before: Int, count: Int) {
             if (query == null) return
-            ivClear?.showWithCondition(query.isNotEmpty())
+            binding?.ivClear?.showWithCondition(query.isNotEmpty())
             val searchText = query.toString().trim()
             if (searchText == searchFor) return
             searchFor = searchText
@@ -161,13 +162,13 @@ open class ChatSearchActivity : BaseSimpleActivity(), HasComponent<ChatSearchCom
     }
 
     override fun onDestroy() {
-        searchTextView?.removeTextChangedListener(textWatcher)
+        binding?.searchTextView?.removeTextChangedListener(textWatcher)
         super.onDestroy()
     }
 
     override fun onClickChangeKeyword() {
-        searchTextView?.requestFocus()
-        searchTextView?.performClick()
+        binding?.searchTextView?.requestFocus()
+        binding?.searchTextView?.performClick()
         KeyboardHandler.showSoftKeyboard(this)
     }
 }

@@ -30,6 +30,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
 import com.tokopedia.linker.LinkerManager
@@ -182,11 +183,11 @@ class OtherMenuFragment :
 
     private val isSharingEnabled by lazy {
         context?.let {
-            UniversalShareBottomSheet.isCustomSharingEnabled(it)
+            SharingUtil.isCustomSharingEnabled(it)
         } == true
     }
 
-    private val coachMark2 by lazy {
+    private val coachMarkTopAdsMenu by lazy {
         context?.let {
             CoachMark2(it)
         }
@@ -199,6 +200,7 @@ class OtherMenuFragment :
 
     private var multipleErrorSnackbar: Snackbar? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+    private var topAdsView: View? = null
 
     private var canShowErrorToaster = true
     private var hasShownMultipleErrorToaster = false
@@ -206,6 +208,7 @@ class OtherMenuFragment :
     private var shopShareInfo: OtherMenuShopShareData? = null
     private var shopSnippetImageUrl: String = ""
     private var shopShareImagePath: String = ""
+    private var topAdsMenuName: String = String.EMPTY
     private var canShowShareBottomSheet = true
     private var binding: FragmentNewOtherMenuBinding? = null
 
@@ -281,6 +284,13 @@ class OtherMenuFragment :
             sendEventImpressionStatisticMenuItem(userSession.userId)
         } else {
             settingShopInfoImpressionTrackable.sendShopInfoImpressionData()
+        }
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (hidden) {
+            coachMarkTopAdsMenu?.dismissCoachMark()
         }
     }
 
@@ -478,7 +488,8 @@ class OtherMenuFragment :
         )
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(
-                0, linkerShareData,
+                0,
+                linkerShareData,
                 object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
                         checkUsingCustomBranchLinkDomain(linkerShareData)
@@ -541,6 +552,10 @@ class OtherMenuFragment :
 
     override fun onImpressionTokoMember() {
         SettingTokoMemberTracker.trackTokoMemberImpression()
+    }
+
+    override fun onFinishTransition() {
+        showCoachMarkTopAdsMenuItem(topAdsMenuName, topAdsView)
     }
 
     private fun observeLiveData() {
@@ -936,6 +951,7 @@ class OtherMenuFragment :
     private fun showUniversalShareBottomSheet(storageImageUrl: String) {
         universalShareBottomSheet = null
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            setFeatureFlagRemoteConfigKey()
             init(this@OtherMenuFragment)
             setUtmCampaignData(
                 OTHER_MENU_SHARE_BOTTOM_SHEET_PAGE_NAME,
@@ -1028,7 +1044,8 @@ class OtherMenuFragment :
     override fun onViewReadyForCoachMark(menuName: String, targetView: View?) {
         view?.post {
             if (menuName == context?.getString(R.string.setting_menu_iklan_topads)) {
-                showCoachMarkTopAdsMenuItem(menuName, targetView)
+                topAdsView = targetView
+                topAdsMenuName = menuName
             }
         }
     }
@@ -1054,7 +1071,7 @@ class OtherMenuFragment :
                     )
                 }
 
-                coachMark2?.showCoachMark(coachMarkList, null, 0)
+                coachMarkTopAdsMenu?.showCoachMark(coachMarkList, null, 0)
                 sharedPref.putBoolean(key, true)
             }
         }

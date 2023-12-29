@@ -1,7 +1,5 @@
 package com.tokopedia.shop.pageheader.domain.interactor
 
-import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
-import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -14,13 +12,8 @@ import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PAGE_SOURCE
-import com.tokopedia.shop.common.domain.interactor.GqlGetIsShopOsUseCase
-import com.tokopedia.shop.common.domain.interactor.GqlGetIsShopPmUseCase
 import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetDynamicTabUseCase
-import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
-import com.tokopedia.shop.common.graphql.data.isshoppowermerchant.GetIsShopPowerMerchant
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.pageheader.ShopPageHeaderConstant
 import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -41,13 +34,17 @@ class GetShopPageP1DataUseCase @Inject constructor(
         private const val KEY_CITY_ID = "cityId"
         private const val KEY_LATITUDE = "latitude"
         private const val KEY_LONGITUDE = "longitude"
+        private const val KEY_TAB_NAME = "tabName"
+        private const val KEY_CONNECTION_TYPE = "connectionType"
 
         @JvmStatic
         fun createParams(
             shopId: String,
             shopDomain: String,
             extParam: String,
-            widgetUserAddressLocalData: LocalCacheModel
+            widgetUserAddressLocalData: LocalCacheModel,
+            tabName: String,
+            connectionType: String
         ): RequestParams = RequestParams.create().apply {
             putObject(PARAM_SHOP_ID, shopId)
             putObject(PARAM_SHOP_DOMAIN, shopDomain)
@@ -56,6 +53,8 @@ class GetShopPageP1DataUseCase @Inject constructor(
             putObject(KEY_CITY_ID, widgetUserAddressLocalData.city_id)
             putObject(KEY_LATITUDE, widgetUserAddressLocalData.lat)
             putObject(KEY_LONGITUDE, widgetUserAddressLocalData.long)
+            putObject(KEY_TAB_NAME, tabName)
+            putObject(KEY_CONNECTION_TYPE, connectionType)
         }
     }
 
@@ -70,6 +69,9 @@ class GetShopPageP1DataUseCase @Inject constructor(
         val cityId: String = params.getString(KEY_CITY_ID, "")
         val latitude: String = params.getString(KEY_LATITUDE, "")
         val longitude: String = params.getString(KEY_LONGITUDE, "")
+        val tabName: String = params.getString(KEY_TAB_NAME, "")
+        val connectionType: String = params.getString(KEY_CONNECTION_TYPE, "")
+
         val listRequest = mutableListOf<GraphqlRequest>().apply {
             add(
                 getShopDynamicTabDataRequest(
@@ -78,11 +80,12 @@ class GetShopPageP1DataUseCase @Inject constructor(
                     districtId,
                     cityId,
                     latitude,
-                    longitude
+                    longitude,
+                    tabName,
+                    connectionType
                 )
             )
             add(getShopInfoCoreAndAssetsDataRequest(shopId, shopDomain))
-            add(getFeedWhitelistRequest(shopId))
         }
         gqlUseCase.clearRequest()
         gqlUseCase.setCacheStrategy(
@@ -98,11 +101,9 @@ class GetShopPageP1DataUseCase @Inject constructor(
         val gqlResponse = gqlUseCase.executeOnBackground()
         val getShopDynamicTabData = getResponseData<ShopPageGetDynamicTabResponse>(gqlResponse)
         val getShopInfoCoreAndAssetsData = getResponseData<ShopInfo.Response>(gqlResponse).result.data.first()
-        val getFeedWhitelist = getResponseData<WhitelistQuery>(gqlResponse).whitelist
         return NewShopPageHeaderP1(
             shopPageGetDynamicTabResponse = getShopDynamicTabData,
-            shopInfoCoreAndAssetsData = getShopInfoCoreAndAssetsData,
-            feedWhitelist = getFeedWhitelist
+            shopInfoCoreAndAssetsData = getShopInfoCoreAndAssetsData
         )
     }
 
@@ -112,7 +113,9 @@ class GetShopPageP1DataUseCase @Inject constructor(
         districtId: String,
         cityId: String,
         latitude: String,
-        longitude: String
+        longitude: String,
+        tabName: String,
+        connectionType: String
     ): GraphqlRequest {
         val params = GqlShopPageGetDynamicTabUseCase.createParams(
             shopId = shopId.toIntOrZero(),
@@ -120,7 +123,9 @@ class GetShopPageP1DataUseCase @Inject constructor(
             districtId = districtId,
             cityId = cityId,
             latitude = latitude,
-            longitude = longitude
+            longitude = longitude,
+            tabName = tabName,
+            connectionType = connectionType
         )
         return createGraphqlRequest<ShopPageGetDynamicTabResponse>(
             query = GqlShopPageGetDynamicTabUseCase.QUERY,
@@ -138,17 +143,6 @@ class GetShopPageP1DataUseCase @Inject constructor(
         return createGraphqlRequest<ShopInfo.Response>(
             mapQuery[GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS].orEmpty(),
             params.parameters
-        )
-    }
-
-    private fun getFeedWhitelistRequest(shopId: String): GraphqlRequest {
-        val params = GetWhitelistUseCase.createRequestParams(
-            GetWhitelistUseCase.WHITELIST_SHOP,
-            shopId
-        )
-        return createGraphqlRequest<WhitelistQuery>(
-            mapQuery[ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST].orEmpty(),
-            params
         )
     }
 

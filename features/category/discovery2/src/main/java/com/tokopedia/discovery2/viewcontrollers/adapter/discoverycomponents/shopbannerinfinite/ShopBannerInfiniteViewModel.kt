@@ -14,11 +14,11 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-
 class ShopBannerInfiniteViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
+    @JvmField
     @Inject
-    lateinit var bannerInfiniteUseCase: BannerInfiniteUseCase
+    var bannerInfiniteUseCase: BannerInfiniteUseCase? = null
     private var isDarkMode: Boolean = false
 
     override val coroutineContext: CoroutineContext
@@ -27,17 +27,16 @@ class ShopBannerInfiniteViewModel(val application: Application, val components: 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         launchCatchError(block = {
-            this@ShopBannerInfiniteViewModel.syncData.value = bannerInfiniteUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, isDarkMode = isDarkMode)
+            this@ShopBannerInfiniteViewModel.syncData.value = bannerInfiniteUseCase?.loadFirstPageComponents(components.id, components.pageEndPoint, isDarkMode = isDarkMode)
         }, onError = {
-            getComponent(components.id, components.pageEndPoint)?.verticalProductFailState = true
-            this@ShopBannerInfiniteViewModel.syncData.value = true
-        })
+                getComponent(components.id, components.pageEndPoint)?.verticalProductFailState = true
+                this@ShopBannerInfiniteViewModel.syncData.value = true
+            })
     }
 
-    fun checkForDarkMode(context: Context?){
-        if(context != null) {
+    fun checkForDarkMode(context: Context?) {
+        if (context != null) {
             isDarkMode = context.isDarkMode()
         }
     }
-
 }

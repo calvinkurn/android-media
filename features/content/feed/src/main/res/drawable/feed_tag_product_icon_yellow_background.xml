@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:strokeAlpha="0.9" android:fillAlpha="0.9" android:color="@color/Unify_YN400"/>
-    <stroke android:strokeAlpha="0.9" android:fillAlpha="0.9" android:width="0dp" android:color="@color/Unify_NN900"/>
+    <solid
+        android:color="@color/feed_dms_tag_product_icon_background"
+        android:fillAlpha="0.9"
+        android:strokeAlpha="0.9" />
+    <stroke
+        android:width="0dp"
+        android:color="@color/feed_dms_tag_product_icon_background"
+        android:fillAlpha="0.9"
+        android:strokeAlpha="0.9" />
 </shape>

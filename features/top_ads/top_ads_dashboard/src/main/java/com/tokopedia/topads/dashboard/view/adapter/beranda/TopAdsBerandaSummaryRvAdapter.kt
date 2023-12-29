@@ -15,7 +15,7 @@ import com.tokopedia.unifyprinciples.Typography
 class TopAdsBerandaSummaryRvAdapter :
     RecyclerView.Adapter<TopAdsBerandaSummaryRvAdapter.RingkasanViewHolder>() {
 
-    private val selectedBackgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_B100_44
+    private val selectedBackgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_BN50_44
     private val unSelectedBackgroundColor =
         com.tokopedia.unifyprinciples.R.color.Unify_Background
     private val list = mutableListOf<SummaryBeranda>()

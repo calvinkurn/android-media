@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.buy_more_get_more">
+
+    <application>
+        <activity
+            android:name=".olp.presentation.OfferLandingPageActivity"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify">
+
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_merchant"
+                    android:pathPattern="@string/path_buy_more_get_more_olp"
+                    android:scheme="@string/internal_scheme"  />
+            </intent-filter>
+
+        </activity>
+
+        <activity
+            android:name=".sort.activity.ShopProductSortActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
+
+    </application>
+
+</manifest>

@@ -21,7 +21,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/setting_divider_thin"
-        android:background="@color/Unify_N0"/>
+        android:background="@color/Unify_NN0"/>
 
     <include
         android:id="@+id/layout_sah_other_local_load"

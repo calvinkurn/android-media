@@ -8,7 +8,7 @@ import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlStriket
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class DeliveryProduct(
+data class DeliveryProduct(
     @SerializedName("title")
     val title: String = "",
     @SerializedName("text")
@@ -60,12 +60,14 @@ class DeliveryProduct(
 ) : Parcelable {
     fun getFormattedPrice(): String {
         return StringBuilder().apply {
-            if (realPrice != finalPrice) {
-                appendHtmlBoldText(" ($textFinalPrice ")
-                appendHtmlStrikethroughText(textRealPrice)
-                appendHtmlBoldText(")")
-            } else {
-                appendHtmlBoldText(" ($textFinalPrice)")
+            if (textFinalPrice.isNotEmpty()) {
+                if (realPrice != finalPrice) {
+                    appendHtmlBoldText(" ($textFinalPrice ")
+                    appendHtmlStrikethroughText(textRealPrice)
+                    appendHtmlBoldText(")")
+                } else {
+                    appendHtmlBoldText(" ($textFinalPrice)")
+                }
             }
         }.toString()
     }

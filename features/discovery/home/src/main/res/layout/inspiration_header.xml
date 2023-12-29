@@ -4,18 +4,18 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N50"
+    android:background="@color/Unify_NN50"
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@id/title"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_NN0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:padding="10dp"
         app:typographyType="heading_5"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
         tools:text="Inspired by " />

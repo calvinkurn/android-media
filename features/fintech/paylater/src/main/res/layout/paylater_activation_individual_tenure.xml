@@ -16,7 +16,7 @@
         android:paddingTop="4dp"
         android:paddingRight="4dp"
         android:paddingBottom="8dp"
-        android:textColor="@color/Unify_N0"
+        android:textColor="@color/Unify_NN0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="small"

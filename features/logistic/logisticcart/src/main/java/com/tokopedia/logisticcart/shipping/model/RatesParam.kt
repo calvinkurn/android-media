@@ -46,7 +46,16 @@ data class RatesParam(
     var mvc: String = "",
     var bo_metadata: String = "",
     var cart_data: String = "",
-    var warehouse_id: String = ""
+    var warehouse_id: String = "",
+    // new owoc
+    val group_type: Int = 0,
+    // new ofoc
+    val grouping_state: Int = 0,
+
+    var shopShipments: List<ShopShipment> = listOf(),
+
+    // O2O
+    var groupMetadata: String = ""
 ) {
 
     private constructor(builder: Builder) : this(
@@ -79,9 +88,14 @@ data class RatesParam(
         bo_metadata = builder.boMetadata,
         cart_data = builder.cartData,
         occ = builder.occ,
-        warehouse_id = builder.warehouseId
+        warehouse_id = builder.warehouseId,
+        group_type = builder.groupType,
+        shopShipments = builder.shopShipments,
+        groupMetadata = builder.groupMetadata,
+        grouping_state = builder.groupingState
     )
 
+    @Deprecated("please use RatesV3Param or RatesV3ApiParam")
     fun toMap(): Map<String, Any?> = mapOf(
         "spids" to spids,
         "shop_id" to shop_id,
@@ -114,7 +128,9 @@ data class RatesParam(
         "po_time" to po_time,
         "is_fulfillment" to is_fulfillment,
         "bo_metadata" to bo_metadata,
-        "warehouse_id" to warehouse_id
+        "warehouse_id" to warehouse_id,
+        "group_type" to group_type,
+        "group_metadata" to groupMetadata
     )
 
     fun toMetadata(): Map<String, Any?> = mapOf(
@@ -158,6 +174,55 @@ data class RatesParam(
         "unique_id" to unique_id,
         "warehouse_id" to warehouse_id
     )
+
+    fun toRatesV3Param(): RatesV3Param = RatesV3Param(
+        data = toOngkirRatesV3Input(),
+        metadata = RatesMetadata(cart_data)
+    )
+
+    fun toRatesV3ApiParam(): RatesV3ApiParam = RatesV3ApiParam(
+        data = toOngkirRatesV3Input()
+    )
+
+    private fun toOngkirRatesV3Input(): OngkirRatesV3Input {
+        return OngkirRatesV3Input(
+            spids = spids,
+            shop_id = shop_id,
+            shop_tier = shop_tier,
+            origin = origin,
+            destination = destination,
+            weight = weight,
+            actualWeight = actualWeight,
+            token = token,
+            ut = ut,
+            type = type,
+            from = from,
+            insurance = insurance,
+            product_insurance = product_insurance,
+            order_value = order_value,
+            cat_id = cat_id,
+            lang = lang,
+            user_history = user_history,
+            is_corner = is_corner,
+            is_blackbox = is_blackbox,
+            address_id = address_id,
+            preorder = preorder,
+            trade_in = trade_in,
+            vehicle_leasing = vehicle_leasing,
+            psl_code = psl_code,
+            products = products,
+            unique_id = unique_id,
+            occ = occ,
+            mvc = mvc,
+            po_time = po_time,
+            is_fulfillment = is_fulfillment,
+            bo_metadata = bo_metadata,
+            warehouse_id = warehouse_id,
+            group_type = group_type,
+            group_metadata = groupMetadata,
+            grouping_state = grouping_state
+        )
+    }
 
     class Builder(val shopShipments: List<ShopShipment>, val shipping: ShippingParam) {
 
@@ -219,6 +284,12 @@ data class RatesParam(
             private set
         var warehouseId: String = ""
             private set
+        var groupType: Int = shipping.groupType
+            private set
+        var groupMetadata: String = ""
+            private set
+        var groupingState: Int = shipping.groupingState
+            private set
 
         fun isCorner(isCorner: Boolean) = apply { this.isCorner = if (isCorner) 1 else 0 }
 
@@ -235,6 +306,8 @@ data class RatesParam(
         fun cartData(cartData: String) = apply { this.cartData = cartData }
 
         fun warehouseId(warehouseId: String) = apply { this.warehouseId = warehouseId }
+
+        fun groupMetadata(groupMetadata: String) = apply { this.groupMetadata = groupMetadata }
 
         fun build() = RatesParam(this)
     }

@@ -1,7 +1,7 @@
 package com.tokopedia.topads.view.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.topads.view.adapter.ItemListTypeFactory
+import com.tokopedia.topads.view.adapter.ListBottomSheetItemFactory
 
 
 data class ItemListUiModel(
@@ -9,8 +9,8 @@ data class ItemListUiModel(
     val content: String = "",
     var isSelected: Boolean = false
 )
-    : Visitable<ItemListTypeFactory> {
-    override fun type(typeFactory: ItemListTypeFactory): Int {
+    : Visitable<ListBottomSheetItemFactory> {
+    override fun type(typeFactory: ListBottomSheetItemFactory): Int {
         return typeFactory.type(this)
     }
 }

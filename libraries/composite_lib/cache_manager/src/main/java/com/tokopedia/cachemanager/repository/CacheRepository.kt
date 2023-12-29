@@ -3,6 +3,8 @@ package com.tokopedia.cachemanager.repository
 import android.content.Context
 import com.tokopedia.cachemanager.datasource.ICacheDataSource
 import com.tokopedia.cachemanager.db.model.CacheDbModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 abstract class CacheRepository<U : CacheDbModel>(val context: Context) : ICacheRepository {
 
@@ -28,6 +30,10 @@ abstract class CacheRepository<U : CacheDbModel>(val context: Context) : ICacheR
             deleteExpiredRecords()
         }
         return model?.value
+    }
+
+    override fun getFlow(key: String): Flow<String?> {
+        return cacheDataSource.getFlow(key).map { it?.value }
     }
 
     override fun delete(key: String) {

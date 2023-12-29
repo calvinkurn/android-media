@@ -6,6 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/headerUnify"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_title="@string/shop_info_shop_profile" />
+    
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="0dp"
@@ -13,7 +23,7 @@
         app:layout_constraintBottom_toTopOf="@+id/container_report"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/headerUnify">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,10 +37,8 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginLeft="16dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginRight="16dp"
-                android:background="@color/Unify_N75" />
+                android:background="@color/Unify_NN50" />
 
             <include
                 android:id="@+id/layout_partial_shop_info_note"
@@ -109,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="4dp"
                 android:text="@string/label_report"
-                android:textColor="@color/Unify_G400"
+                android:textColor="@color/Unify_GN500"
                 app:layout_constraintBottom_toBottomOf="@+id/label_warning_text"
                 app:layout_constraintStart_toEndOf="@+id/label_warning_text"
                 app:layout_constraintTop_toTopOf="@+id/label_warning_text"
@@ -147,6 +155,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/headerUnify" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -87,7 +87,7 @@ open class ReviewDetailBasicInfo @JvmOverloads constructor(
     ) {
         val colorRes = when(source) {
             Source.REVIEW_DETAIL_FRAGMENT -> com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-            Source.EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET -> com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+            Source.EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET -> com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
         }
         tvReviewDetailCreateTime.run {
             text = createTimeStr
@@ -113,6 +113,7 @@ open class ReviewDetailBasicInfo @JvmOverloads constructor(
     }
 
     protected open fun PartialWidgetReviewDetailBasicInfoBinding.setupReviewerProfilePicture(profilePicture: String) {
+        ivReviewDetailReviewerProfilePicture.showWithCondition(profilePicture.isNotEmpty())
         ivReviewDetailReviewerProfilePicture.setImageUrl(profilePicture)
     }
 
@@ -122,7 +123,7 @@ open class ReviewDetailBasicInfo @JvmOverloads constructor(
     ) {
         val colorRes = when(source) {
             Source.REVIEW_DETAIL_FRAGMENT -> com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-            Source.EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET -> com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+            Source.EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET -> com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
         }
         tvReviewDetailReviewerName.run {
             text = reviewerName
@@ -137,7 +138,7 @@ open class ReviewDetailBasicInfo @JvmOverloads constructor(
     ) {
         val colorRes = when(source) {
             Source.REVIEW_DETAIL_FRAGMENT -> com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-            Source.EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+            Source.EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET -> com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
         }
         tvReviewDetailReviewerStatsSummary.run {
             text = buildString {
@@ -155,7 +156,7 @@ open class ReviewDetailBasicInfo @JvmOverloads constructor(
     ) {
         val colorRes = when(source) {
             Source.REVIEW_DETAIL_FRAGMENT -> com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-            Source.EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+            Source.EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET -> com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
         }
         tvReviewDetailProductVariant.run {
             text = buildString {

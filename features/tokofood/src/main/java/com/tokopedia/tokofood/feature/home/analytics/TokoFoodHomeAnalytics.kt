@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
+import com.tokopedia.product.detail.common.ProductTrackingConstant.MerchantVoucher.PROMO_CLICK
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_CLICK_CAROUSEL_BANNER
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_CLICK_CATEGORY_ICONS
@@ -162,7 +163,7 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         }
         eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionMerchant(merchant, horizontalPosition))
         eventDataLayer.selectContent(userId, destinationId)
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PROMO_CLICK, eventDataLayer)
     }
 
     fun openScreenHomePage(userId: String?, destinationId: String?, isLoggenInStatus: Boolean) {

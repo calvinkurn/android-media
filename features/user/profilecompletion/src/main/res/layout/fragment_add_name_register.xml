@@ -35,7 +35,7 @@
             android:gravity="center"
             android:text="@string/button_name_finish"
             android:textAllCaps="false"
-            android:textColor="@color/Unify_N0" />
+            android:textColor="@color/Unify_NN0" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/bottom_info"

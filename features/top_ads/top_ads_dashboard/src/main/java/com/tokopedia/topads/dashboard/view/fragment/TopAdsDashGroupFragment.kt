@@ -30,7 +30,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EMPT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_TYPE_PRODUCT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_UPDATED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TOASTER_DURATION
-import com.tokopedia.topads.dashboard.data.model.CountDataItem
+import com.tokopedia.topads.common.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils.format
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupDetailViewActivity

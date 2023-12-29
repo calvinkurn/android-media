@@ -1,0 +1,44 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-kapt'
+
+android {
+    namespace 'com.tokopedia.stories.internal'
+    testNamespace 'com.tokopedia.stories.internal.test'
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
+    }
+}
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    
+    implementation rootProject.ext.miscDependencies.dataStorePreferences
+
+    kapt rootProject.ext.supportLibDependencies.kotlinMetaData
+
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+}
+
+project.ext {
+    artifactId = 'stories-internal'
+    groupId = 'com.tokopedia.content'
+    versionName = "0.0.1"
+    artifactName = "stories_internal-release"
+}
+
+apply from: '../../../publish_local.gradle'

@@ -19,6 +19,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import com.scp.auth.common.utils.ScpUtils
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
@@ -33,6 +34,7 @@ import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.error.getMessage
 import com.tokopedia.loginregister.common.utils.RegisterUtil
 import com.tokopedia.loginregister.common.utils.RegisterUtil.removeErrorCode
+import com.tokopedia.loginregister.forbidden.ForbiddenActivity
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
@@ -42,7 +44,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.util.PasswordUtils
-import com.tokopedia.loginregister.forbidden.ForbiddenActivity
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -52,6 +53,8 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.sessioncommon.R as sessioncommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by nisie on 10/25/18.
@@ -70,6 +73,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     var progressBar: LoaderUnify? = null
     var source = ""
     var token = ""
+    private var isFromScp = false
 
     @Inject
     lateinit var analytics: LoginRegisterAnalytics
@@ -126,6 +130,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         arguments?.run {
             wrapperEmail?.textFieldInput?.setText(arguments?.getString(ApplinkConstInternalGlobal.PARAM_EMAIL, ""))
             wrapperEmail?.textFieldInput?.isEnabled = false
+            isFromScp = getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_SCP, false)
             token = getString(ApplinkConstInternalGlobal.PARAM_TOKEN, "")
             source = getString(ApplinkConstInternalGlobal.PARAM_SOURCE, "")
         }
@@ -135,14 +140,19 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         showNameHint()
     }
 
+    private fun saveTokens(data: RegisterRequestData) {
+        userSession.clearToken()
+        userSession.setToken(data.accessToken, data.tokenType, EncoderDecoder.Encrypt(data.refreshToken, userSession.refreshTokenIV))
+
+        /* Migrate token to lsdk */
+        ScpUtils.saveTokens(accessToken = data.accessToken, refreshToken = data.refreshToken)
+    }
+
     private fun initObserver() {
         registerInitialViewModel.registerRequestResponse.observe(viewLifecycleOwner) { registerRequestDataResult: Result<RegisterRequestData>? ->
             if (registerRequestDataResult is Success) {
                 val data = (registerRequestDataResult).data
-                userSession.clearToken()
-                userSession.setToken(data.accessToken,
-                    data.tokenType,
-                    EncoderDecoder.Encrypt(data.refreshToken, userSession.refreshTokenIV))
+                saveTokens(data)
                 onSuccessRegister()
                 if (activity != null) {
                     val intent = Intent()
@@ -166,7 +176,8 @@ class RegisterEmailFragment : BaseDaggerFragment() {
                 } else {
                     if (context != null) {
                         val forbiddenMessage = context?.getString(
-                            com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
+                            sessioncommonR.string.default_request_error_forbidden_auth
+                        )
                         if (errorMessage.removeErrorCode() == forbiddenMessage) {
                             onForbidden()
                         } else {
@@ -190,8 +201,8 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             val termPrivacy = SpannableString(getString(R.string.text_term_and_privacy))
             termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), SPAN_TERM_AND_CONDITION_START, SPAN_TERM_AND_CONDITION_END, SPAN_TERM_AND_CONDITION_FLAGS)
             termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), SPAN_PRIVACY_POLICY_START, SPAN_PRIVACY_POLICY_END, SPAN_PRIVACY_POLICY_FLAGS)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)), SPAN_TERM_AND_CONDITION_START, SPAN_TERM_AND_CONDITION_END, SPAN_TERM_AND_CONDITION_FLAGS)
-            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)), SPAN_PRIVACY_POLICY_START, SPAN_PRIVACY_POLICY_END, SPAN_PRIVACY_POLICY_FLAGS)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN500)), SPAN_TERM_AND_CONDITION_START, SPAN_TERM_AND_CONDITION_END, SPAN_TERM_AND_CONDITION_FLAGS)
+            termPrivacy.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN500)), SPAN_PRIVACY_POLICY_START, SPAN_PRIVACY_POLICY_END, SPAN_PRIVACY_POLICY_FLAGS)
             registerNextTAndC?.setText(termPrivacy, TextView.BufferType.SPANNABLE)
             registerNextTAndC?.movementMethod = LinkMovementMethod.getInstance()
             registerNextTAndC?.isSelected = false
@@ -207,19 +218,24 @@ class RegisterEmailFragment : BaseDaggerFragment() {
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
-                ds.color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400)
+                ds.color = ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             }
         }
     }
 
     private fun getSpannable(sourceString: String, hyperlinkString: String): Spannable {
         val spannable: Spannable = SpannableString(sourceString)
-        spannable.setSpan(object : ClickableSpan() {
-            override fun onClick(view: View) {}
-            override fun updateDrawState(ds: TextPaint) {
-                context?.resources?.let { ds.color = it.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400) }
-            }
-        }, sourceString.indexOf(hyperlinkString), sourceString.length, 0)
+        spannable.setSpan(
+            object : ClickableSpan() {
+                override fun onClick(view: View) {}
+                override fun updateDrawState(ds: TextPaint) {
+                    context?.resources?.let { ds.color = it.getColor(unifyprinciplesR.color.Unify_GN500) }
+                }
+            },
+            sourceString.indexOf(hyperlinkString),
+            sourceString.length,
+            0
+        )
         return spannable
     }
 
@@ -238,7 +254,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         wrapperEmail?.textFieldInput?.addTextChangedListener(emailWatcher(wrapperEmail))
         wrapperPassword?.textFieldInput?.addTextChangedListener(passwordWatcher(wrapperPassword))
         wrapperName?.textFieldInput?.addTextChangedListener(nameWatcher(wrapperName))
-        if(userSession.isLoggedIn) {
+        if (userSession.isLoggedIn) {
             activity?.setResult(Activity.RESULT_OK)
             activity?.finish()
         }
@@ -341,21 +357,23 @@ class RegisterEmailFragment : BaseDaggerFragment() {
 
     private fun registerEmail() {
         showLoadingProgress()
-        if(validatePasswordInput()) {
+        if (validatePasswordInput()) {
             registerAnalytics.trackClickSignUpButtonEmail()
             if (isUseEncryption()) {
                 registerInitialViewModel.registerRequestV2(
                     wrapperEmail?.textFieldInput?.text.toString(),
                     wrapperPassword?.textFieldInput?.text.toString(),
                     wrapperName?.textFieldInput?.text.toString(),
-                    token
+                    token,
+                    isFromScp
                 )
             } else {
                 registerInitialViewModel.registerRequest(
                     wrapperEmail?.textFieldInput?.text.toString(),
                     wrapperPassword?.textFieldInput?.text.toString(),
                     wrapperName?.textFieldInput?.text.toString(),
-                    token
+                    token,
+                    isFromScp
                 )
             }
         } else {
@@ -517,7 +535,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        //** see fragment_register_email
+        // ** see fragment_register_email
         private const val REGISTER_BUTTON_IME = 123321
         private const val REQUEST_AUTO_LOGIN = 101
         private const val REQUEST_ACTIVATE_ACCOUNT = 102

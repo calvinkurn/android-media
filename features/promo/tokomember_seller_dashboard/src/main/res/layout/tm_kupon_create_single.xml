@@ -271,7 +271,7 @@
                     app:typographyWeight="reguler"
                     android:textColor="@color/Unify_NN600"
                     android:layout_marginBottom="@dimen/unify_space_16"
-                    android:textColorLink="@color/Unify_G500"
+                    android:textColorLink="@color/Unify_GN500"
                     android:text="@string/tm_kupon_tnc" />
 
             </LinearLayout>

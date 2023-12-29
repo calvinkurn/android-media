@@ -31,7 +31,7 @@ import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetMediumUiModel
 import com.tokopedia.videoTabComponent.util.PlayFeedDateTimeFormatter
 
 private const val FEED_TYPE_PINNED_FEEDS = "pinnedFeeds"
-private const val FEED_TYPE_CHANNEL_BLOCK = "channelBlock"
+const val FEED_TYPE_CHANNEL_BLOCK = "channelBlock"
 const val FEED_TYPE_TAB_MENU = "tabMenu"
 private const val FEED_TYPE_CHANNEL_RECOM = "channelRecom"
 private const val FEED_TYPE_CHANNEL_HIGHLIGHT = "channelHighlight"
@@ -190,7 +190,10 @@ object FeedPlayVideoTabMapper {
                     partner = PlayWidgetPartnerUiModel(
                         id = item.partner.id,
                         name = MethodChecker.fromHtml(item.partner.name).toString(),
-                        type = PartnerType.getTypeByValue(item.partner.name)
+                        type = PartnerType.getTypeByValue(item.partner.name),
+                        avatarUrl = item.partner.thumbnailUrl,
+                        badgeUrl = item.partner.badgeUrl,
+                        appLink = item.partner.appLink
                     ),
                     video = PlayWidgetVideoUiModel(
                         item.video.id,
@@ -208,12 +211,13 @@ object FeedPlayVideoTabMapper {
                     shouldShowPerformanceDashboard = shouldShowPerformanceDashboard(
                         partnerType = item.partner.type,
                         partnerId = item.partner.id,
-                        shopId = shopId,
+                        shopId = shopId
                     ),
                     channelTypeTransition = PlayWidgetChannelTypeTransition(
                         PlayWidgetChannelType.getByValue(channelTypeTransitionPrev),
                         PlayWidgetChannelType.getByValue(channelTypeTransitionNext)
-                    )
+                    ),
+                    products = emptyList()
                 )
             )
         }

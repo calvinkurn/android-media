@@ -14,11 +14,11 @@ import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
-import com.tokopedia.product.detail.data.model.shop_review.asUiModel
-import com.tokopedia.product.detail.data.model.social_proof.asUiModel
-import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
+import com.tokopedia.product.detail.data.model.asUiModel
 import com.tokopedia.product.detail.data.util.OnErrorLog
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import kotlinx.coroutines.CoroutineScope
@@ -31,12 +31,21 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by Yehezkiel on 20/07/20
  */
-class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) : UseCase<ProductInfoP2UiData>(), CoroutineScope {
+class GetProductInfoP2DataUseCase @Inject constructor(
+    private val graphqlRepository: GraphqlRepository,
+    private val remoteConfig: RemoteConfig
+) : UseCase<ProductInfoP2UiData>(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext get() = Dispatchers.Main + SupervisorJob()
 
     companion object {
-        fun createParams(productId: String, pdpSession: String, deviceId: String, userLocationRequest: UserLocationRequest, tokonow: TokoNowParam): RequestParams =
+        fun createParams(
+            productId: String,
+            pdpSession: String,
+            deviceId: String,
+            userLocationRequest: UserLocationRequest,
+            tokonow: TokoNowParam
+        ): RequestParams =
             RequestParams.create().apply {
                 putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
                 putString(ProductDetailCommonConstant.PARAM_PDP_SESSION, pdpSession)
@@ -292,6 +301,18 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 }
                 unavailable_buttons
                 hide_floating_button
+                override_buttons {
+                  text
+                  color
+                  cart_type
+                  onboarding_message
+                  show_recommendation
+                }
+                postATCLayout {
+                    layoutID
+                    postATCSession
+                    showPostATC
+                }
               }
             }
             upcomingCampaigns {
@@ -393,6 +414,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                   isUsingPadding
                   imageHeight
                 }
+                shipmentBody {
+                  icon
+                  text
+                }
               }
               boMetadata
               productMetadata {
@@ -409,6 +434,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 action
                 actionLink
               }
+              background
             }
             merchantVoucherSummary{
                 animatedInfo{
@@ -417,6 +443,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                     iconURL
                 }
                 isShown
+                additionalData
             }
             reviewImage{
               list{
@@ -498,31 +525,12 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 ratingScore
                 totalRating
                 totalReviewTextAndImage
+                showRatingReview
+                keywords {
+                    text
+                    filter
+                }
             }
-            bundleInfo {
-              productID
-              bundleID
-              groupID
-              name
-              type
-              status
-              titleComponent
-              finalPriceBundling
-              originalPriceBundling
-              savingPriceBundling
-              preorderString
-              bundleItems {
-                productID
-                name
-                picURL
-                status
-                quantity
-                originalPrice
-                bundlePrice
-                discountPercentage
-                stock
-              }
-  	        }
            arInfo{
               productIDs
               applink
@@ -578,16 +586,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                status
                componentName
             }
-            socialProofComponent {
-                socialProofType
-                socialProofID
-                title
-                subtitle
-                icon
-                applink {
-                    appLink
-                }
-            }
             reviewList {
                 title
                 applink
@@ -602,21 +600,67 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                     reviewID
                 }
             }
+            bottomSheetEdu {
+              isShow
+              appLink
+            }
+            dynamicOneLiner {
+                name
+                text
+                applink
+                separator
+                icon
+                status
+                chevronPos
+                padding {
+                  t
+                  b
+                }
+            }
+            bmgm {
+              separator
+              data {
+                backgroundColor
+                titleColor
+                iconUrl
+                title
+                action {
+                  type
+                  link
+                }
+                contents {
+                  imageUrl
+                }
+                loadMoreText
+                productIDs
+                offerID
+              }
+            }
           }
         }
-""".trimIndent()
+        """.trimIndent()
     }
 
     private var mCacheManager: GraphqlCacheManager? = null
     private var mFingerprintManager: FingerprintManager? = null
-    private var cacheStrategy: GraphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.NONE).build()
+    private var cacheStrategy: GraphqlCacheStrategy =
+        GraphqlCacheStrategy.Builder(CacheType.NONE).build()
 
     private var requestParams: RequestParams = RequestParams.EMPTY
     private var forceRefresh: Boolean = false
 
     private var errorLogListener: OnErrorLog? = null
 
-    suspend fun executeOnBackground(requestParams: RequestParams, forceRefresh: Boolean): ProductInfoP2UiData {
+    private val cacheAge
+        get() = remoteConfig.getLong(
+            RemoteConfigKey.ENABLE_PDP_P1_CACHE_AGE,
+            CacheStrategyUtil.EXPIRY_TIME_MULTIPLIER
+        )
+
+    suspend fun executeOnBackground(
+        requestParams: RequestParams,
+        forceRefresh: Boolean
+    ): ProductInfoP2UiData {
         this.requestParams = requestParams
         this.forceRefresh = forceRefresh
         return executeOnBackground()
@@ -629,7 +673,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             ProductInfoP2Data.Response::class.java,
             requestParams.parameters
         )
-        val cacheStrategy = CacheStrategyUtil.getCacheStrategy(forceRefresh)
+        val cacheStrategy = CacheStrategyUtil.getCacheStrategy(
+            forceRefresh = forceRefresh,
+            cacheAge = cacheAge
+        )
 
         try {
             val gqlResponse = graphqlRepository.response(listOf(p2DataRequest), cacheStrategy)
@@ -640,51 +687,10 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 throw RuntimeException()
             }
 
-            p2UiData = mapIntoUiData(successData.response)
+            p2UiData = successData.response.asUiModel()
         } catch (t: Throwable) {
             Timber.d(t)
             errorLogListener?.invoke(t)
-        }
-        return p2UiData
-    }
-
-    private fun mapIntoUiData(responseData: ProductInfoP2Data): ProductInfoP2UiData {
-        val p2UiData = ProductInfoP2UiData()
-        responseData.run {
-            p2UiData.shopInfo = responseData.shopInfo
-            p2UiData.shopSpeed = shopSpeed.hour
-            p2UiData.shopChatSpeed = shopChatSpeed.messageResponseTime
-            p2UiData.shopRating = shopRating.ratingScore
-            p2UiData.productView = productView
-            p2UiData.wishlistCount = wishlistCount
-            p2UiData.shopBadge = shopBadge.badge
-            p2UiData.shopCommitment = shopCommitment.shopCommitment
-            p2UiData.productPurchaseProtectionInfo = productPurchaseProtectionInfo
-            p2UiData.validateTradeIn = validateTradeIn
-            p2UiData.cartRedirection = cartRedirection.data.associateBy({ it.productId }, { it })
-            p2UiData.nearestWarehouseInfo = nearestWarehouseInfo.associateBy({ it.productId }, { it.warehouseInfo })
-            p2UiData.upcomingCampaigns = upcomingCampaigns.associateBy { it.productId ?: "" }
-            p2UiData.productFinancingRecommendationData = productFinancingRecommendationData
-            p2UiData.productFinancingCalculationData = productFinancingCalculationData
-            p2UiData.ratesEstimate = ratesEstimate
-            p2UiData.restrictionInfo = restrictionInfo
-            p2UiData.bebasOngkir = bebasOngkir
-            p2UiData.uspImageUrl = uspTokoCabangData.uspBoe.uspIcon
-            p2UiData.merchantVoucherSummary = merchantVoucherSummary
-            p2UiData.helpfulReviews = mostHelpFulReviewData.list
-            p2UiData.imageReview = DynamicProductDetailMapper.generateImageReview(reviewImage)
-            p2UiData.alternateCopy = cartRedirection.alternateCopy
-            p2UiData.bundleInfoMap = bundleInfoList.associateBy { it.productId }
-            p2UiData.rating = rating
-            p2UiData.ticker = ticker
-            p2UiData.navBar = navBar
-            p2UiData.shopFinishRate = responseData.shopFinishRate.finishRate
-            p2UiData.shopAdditional = responseData.shopAdditional
-            p2UiData.arInfo = arInfo
-            p2UiData.obatKeras = responseData.obatKeras
-            p2UiData.customInfoTitle = responseData.customInfoTitle
-            p2UiData.socialProof = responseData.socialProof.asUiModel()
-            p2UiData.shopReview = responseData.shopReview.asUiModel()
         }
         return p2UiData
     }

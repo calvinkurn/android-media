@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewStub
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.home_component.util.DateHelper
@@ -13,11 +15,13 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
+import com.tokopedia.tokopedianow.common.util.ViewUtil.inflateView
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.Calendar
 import java.util.Date
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
     BaseCustomView(context, attrs, defStyleAttr) {
@@ -29,19 +33,19 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
     private var tpTitle: Typography? = null
     private var tpSubtitle: Typography? = null
     private var tusCountDown: TimerUnifySingle? = null
+    private var tusCountDownViewStub: View? = null
+    private var sivCircleSeeAll: AppCompatImageView? = null
 
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.layout_tokopedianow_dynamic_header_custom_view, this)
         this.itemView = view
     }
 
-    private fun handleHeaderComponent(
-        model: TokoNowDynamicHeaderUiModel
-    ) {
+    private fun handleHeaderComponent(model: TokoNowDynamicHeaderUiModel) {
         setupUi()
         handleTitle(model.title)
         handleSubtitle(model.subTitle, model.expiredTime)
-        handleSeeAllAppLink(model.title, model.ctaText, model.ctaTextLink)
+        handleSeeAllAppLink(model)
         handleHeaderExpiredTime(model.expiredTime, model.serverTimeOffset, model.backColor)
     }
 
@@ -50,7 +54,8 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
         tpTitle = itemView?.findViewById(R.id.tp_title)
         tpSubtitle = itemView?.findViewById(R.id.tp_subtitle)
         tpSeeAll =  itemView?.findViewById(R.id.tp_see_all)
-        tusCountDown = itemView?.findViewById(R.id.tus_count_down)
+        tusCountDownViewStub = itemView?.findViewById(R.id.tus_count_down_view_stub)
+        sivCircleSeeAll = itemView?.findViewById(R.id.siv_circle_see_all)
     }
 
     private fun handleTitle(
@@ -75,21 +80,45 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
         }
     }
 
-    private fun handleSeeAllAppLink(title: String, ctaText: String, ctaTextLink: String) {
+    private fun handleSeeAllAppLink(model: TokoNowDynamicHeaderUiModel) {
+        val channelId = model.channelId
+        val title = model.title
+        val ctaText = model.ctaText
+        val ctaTextLink = model.ctaTextLink
+        val circleSeeAll = model.circleSeeAll
+        val widgetId = model.widgetId
+
         if (ctaTextLink.isNotBlank()) {
-            tpSeeAll?.text = if (ctaText.isNotBlank()) {
-                ctaText
+            if (circleSeeAll) {
+                sivCircleSeeAll?.show()
+                sivCircleSeeAll?.setOnClickListener {
+                    listener?.onSeeAllClicked(
+                        context = context,
+                        channelId = channelId,
+                        headerName = title,
+                        appLink =  ctaTextLink,
+                        widgetId = widgetId
+                    )
+                }
+                tpSeeAll?.hide()
             } else {
-                itemView?.context?.getString(R.string.tokopedianow_mix_left_carousel_widget_see_all)
+                tpSeeAll?.text = if (ctaText.isNotBlank()) {
+                    ctaText
+                } else {
+                    itemView?.context?.getString(R.string.tokopedianow_mix_left_carousel_widget_see_all)
+                }
+                tpSeeAll?.setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500))
+                tpSeeAll?.setOnClickListener {
+                    listener?.onSeeAllClicked(
+                        context = context,
+                        channelId = channelId,
+                        headerName = title,
+                        appLink =  ctaTextLink,
+                        widgetId = widgetId
+                    )
+                }
+                tpSeeAll?.show()
             }
-            tpSeeAll?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-            tpSeeAll?.setOnClickListener {
-                listener?.onSeeAllClicked(
-                    headerName = title,
-                    appLink =  ctaTextLink
-                )
-            }
-            tpSeeAll?.show()
         } else {
             tpSeeAll?.hide()
         }
@@ -105,6 +134,8 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
         if (expiredTime.isNotBlank()) {
             val expiredTimeFormat = DateHelper.getExpiredTime(expiredTime)
             if (!DateHelper.isExpired(serverTimeOffset, expiredTimeFormat)) {
+                inflateTimerCountDown()
+
                 tusCountDown?.run {
                     timerVariant = if(backColor.isNotEmpty()){
                         TimerUnifySingle.VARIANT_ALTERNATE
@@ -126,9 +157,20 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
                         listener?.onChannelExpired()
                     }
                 }
+                tusCountDownViewStub?.show()
+                tusCountDown?.show()
             }
         } else {
-            tusCountDown?.visibility = View.GONE
+            tusCountDownViewStub?.hide()
+            tusCountDown?.hide()
+        }
+    }
+
+    private fun inflateTimerCountDown() {
+        if(tusCountDownViewStub?.parent != null) {
+            val view = (tusCountDownViewStub as? ViewStub)
+                ?.inflateView(R.layout.layout_tokopedianow_timer_unify_single)
+            tusCountDown = view as? TimerUnifySingle
         }
     }
 
@@ -145,7 +187,13 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
     }
 
     interface TokoNowDynamicHeaderListener {
-        fun onSeeAllClicked(headerName: String, appLink: String)
+        fun onSeeAllClicked(
+            context: Context,
+            channelId: String,
+            headerName: String,
+            appLink: String,
+            widgetId: String
+        )
         fun onChannelExpired()
     }
 }

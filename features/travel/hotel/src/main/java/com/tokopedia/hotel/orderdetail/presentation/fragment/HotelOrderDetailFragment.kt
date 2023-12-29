@@ -233,7 +233,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         if (orderDetail.status.textColor.isNotEmpty()){
             binding?.layoutOrderDetailTransaction?.transactionStatus?.setTextColor(Color.parseColor(orderDetail.status.textColor))
         }else{
-            binding?.layoutOrderDetailTransaction?.transactionStatus?.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400_96))
+            binding?.layoutOrderDetailTransaction?.transactionStatus?.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500_96))
         }
 
         var transactionDetailAdapter = TitleTextAdapter(TitleTextAdapter.HORIZONTAL_LAYOUT)
@@ -403,7 +403,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             val helpLabel = Typography(requireContext())
             helpLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, AMENITY_TEXT_SIZE)
             context?.resources?.let {
-                helpLabel.setTextColor(ResourcesCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96, null))
+                helpLabel.setTextColor(ResourcesCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96, null))
             }
 
             val spannableString = createHyperlinkText(orderDetail.contactUs.helpText,
@@ -432,7 +432,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
                 if (button.weight == 1) {
                     buttonCompat.background = ContextCompat.getDrawable(it, R.drawable.bg_hotel_rect_rounded_stroke_gray)
-                    buttonCompat.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N200))
+                    buttonCompat.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN500))
                 } else if (button.weight == 2) {
                     buttonCompat.buttonType = UnifyButton.Type.TRANSACTION
                 }
@@ -465,7 +465,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                     super.updateDrawState(ds)
                     ds.isUnderlineText = false
                     context?.let {
-                        ds.color = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G400) // specific color for this link
+                        ds.color = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500) // specific color for this link
                     }
                 }
             }, hyperlinkIndex, endIndexOfLink - "<hyperlink>".length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)

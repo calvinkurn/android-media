@@ -2,7 +2,7 @@ package com.tokopedia.mediauploader.image.data.params
 
 import android.annotation.SuppressLint
 import com.tokopedia.mediauploader.common.state.ProgressUploader
-import com.tokopedia.mediauploader.common.util.fileBody
+import com.tokopedia.mediauploader.common.util.network.fileBody
 import java.io.File
 
 @SuppressLint("ParamFieldAnnotation")

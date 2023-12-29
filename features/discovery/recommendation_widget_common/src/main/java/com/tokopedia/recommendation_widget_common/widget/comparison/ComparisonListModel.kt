@@ -5,7 +5,8 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 data class ComparisonListModel(
         val comparisonData: List<ComparisonModel>,
         val comparisonWidgetConfig: ComparisonWidgetConfig,
-        val recommendationWidget: RecommendationWidget
+        val recommendationWidget: RecommendationWidget,
+        val comparisonColorConfig: ComparisonColorConfig,
 ) {
     fun getAnchorProduct(): ComparisonModel? {
         return comparisonData.getOrNull(0)

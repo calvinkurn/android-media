@@ -8,16 +8,21 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.databinding.ThankBottomContentBannerBinding
 import com.tokopedia.thankyou_native.presentation.adapter.model.BannerWidgetModel
+import com.tokopedia.thankyou_native.presentation.views.listener.BannerListener
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
-class BannerItemViewHolder(view: View?): AbstractViewHolder<BannerWidgetModel>(view) {
+class BannerItemViewHolder(
+    view: View?,
+    val bannerListener: BannerListener
+    ): AbstractViewHolder<BannerWidgetModel>(view) {
 
     companion object {
         val LAYOUT_ID = R.layout.thank_bottom_content_banner
@@ -60,7 +65,7 @@ class BannerItemViewHolder(view: View?): AbstractViewHolder<BannerWidgetModel>(v
                     adjustViewBounds = true
                     loadImageWithoutPlaceholder(bannerItem.assetUrl)
                     setOnClickListener {
-                        RouteManager.route(context, bannerItem.applink)
+                        bannerListener.onBannerClick(bannerItem, index)
                     }
                 }
 
@@ -68,6 +73,10 @@ class BannerItemViewHolder(view: View?): AbstractViewHolder<BannerWidgetModel>(v
                 indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
                 slideToShow =
                     if (data.items.size > 1) SLIDE_TO_SHOW_MULTIPLE_ITEM else SLIDE_TO_SHOW_1_ITEM
+
+                addOnImpressionListener(bannerItem) {
+                    bannerListener.onBannerImpressed(bannerItem, index)
+                }
             }
         }
     }

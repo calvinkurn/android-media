@@ -2,6 +2,7 @@ package com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.v
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.utils.BasicIdlingResource
 import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.RedefineRegisterInputPhoneViewModel
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.RegistrationPhoneState
@@ -58,6 +59,8 @@ class RedefineRegisterInputPhoneViewModelTest {
 
     private val registerPreferences = mockk<RegisterPreferences>(relaxed = true)
 
+    private val idlingResource = mockk<BasicIdlingResource>(relaxed = true)
+
     @Before
     fun setUp() {
         viewModel = RedefineRegisterInputPhoneViewModel(
@@ -67,6 +70,7 @@ class RedefineRegisterInputPhoneViewModelTest {
             getUserProfileUpdateUseCase,
             getUserProfileValidateUseCase,
             registerPreferences,
+            idlingResource,
             CoroutineTestDispatchersProvider
         )
     }
@@ -132,7 +136,7 @@ class RedefineRegisterInputPhoneViewModelTest {
         // Given
         val email = "habibi@tokopedia.com"
         val phone = "0812"
-        val isRequiredInputPhone = false //in this case, whatever the value behavior still same
+        val isRequiredInputPhone = false // in this case, whatever the value behavior still same
         val validField = RedefineRegisterEmailConstants.EMPTY_RESOURCE
 
         // When
@@ -153,7 +157,7 @@ class RedefineRegisterInputPhoneViewModelTest {
         // Given
         val email = "habibi@tokopedia.com"
         val phone = "08121234567890"
-        val isRequiredInputPhone = false //in this case, whatever the value behavior still same
+        val isRequiredInputPhone = false // in this case, whatever the value behavior still same
         val validField = RedefineRegisterEmailConstants.EMPTY_RESOURCE
 
         // When
@@ -222,7 +226,6 @@ class RedefineRegisterInputPhoneViewModelTest {
         assertTrue(result is RegistrationPhoneState.Registered)
         assertEquals(phone, result.message)
         assertFalse(isLoading)
-
     }
 
     @Test
@@ -503,5 +506,4 @@ class RedefineRegisterInputPhoneViewModelTest {
             registerPreferences.saveFirstInstallTime()
         }
     }
-
 }

@@ -1,13 +1,15 @@
 package com.tokopedia.hotel.homepage.presentation.fragment
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.text.InputType
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -17,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
@@ -25,11 +28,14 @@ import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.common.travel.widget.TravelMenuBottomSheet
 import com.tokopedia.common.travel.widget.TravelVideoBannerWidget
+import com.tokopedia.common_digital.common.presentation.bottomsheet.DigitalDppoConsentBottomSheet
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelSourceEnum
 import com.tokopedia.hotel.common.data.HotelTypeEnum
+import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.common.util.MutationDeleteRecentSearch
@@ -54,13 +60,14 @@ import com.tokopedia.hotel.search_map.data.model.HotelSearchModel
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -84,7 +91,9 @@ class HotelHomepageFragment :
     HotelRoomAndGuestBottomSheets.HotelGuestListener,
     HotelLastSearchViewHolder.LastSearchListener,
     TravelVideoBannerWidget.ActionListener,
-    HotelHomepagePopularCitiesWidget.ActionListener {
+    HotelHomepagePopularCitiesWidget.ActionListener,
+    TravelMenuBottomSheet.TravelMenuListener
+{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -104,6 +113,7 @@ class HotelHomepageFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
 
         performanceMonitoring = PerformanceMonitoring.start(TRACKING_HOTEL_HOMEPAGE)
 
@@ -167,10 +177,26 @@ class HotelHomepageFragment :
         loadPromoData()
         loadPopularCitiesData()
         loadTickerData()
+        loadDppoConsent()
 
         if (hotelHomepageModel.locName.isEmpty()) {
             homepageViewModel.getDefaultHomepageParameter(QueryHotelHomepageDefaultParameter())
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.clear()
+        val dppoConsentData = homepageViewModel.dppoConsent.value
+        inflater.inflate(R.menu.hotel_base_menu_with_dppo, menu)
+        if (dppoConsentData is Success && dppoConsentData.data.description.isNotEmpty()) {
+            menu.showConsentIcon()
+            menu.setupConsentIcon(dppoConsentData.data.description)
+            menu.setupKebabIcon()
+        } else {
+            menu.hideConsentIcon()
+            menu.setupKebabIcon()
+        }
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onResume() {
@@ -283,6 +309,15 @@ class HotelHomepageFragment :
                 }
             }
         )
+
+        homepageViewModel.dppoConsent.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    activity?.invalidateOptionsMenu()
+                }
+                is Fail -> {}
+            }
+        }
     }
 
     override fun onVideoBannerClicked(bannerData: TravelVideoBannerModel) {
@@ -704,6 +739,10 @@ class HotelHomepageFragment :
         homepageViewModel.getRecentSearch(QueryHotelRecentSearchData())
     }
 
+    private fun loadDppoConsent() {
+        homepageViewModel.getDppoConsent()
+    }
+
     val bannerImpressionIndex: HashSet<Int> = hashSetOf()
 
     private fun renderHotelPromo(promoDataList: List<TravelCollectiveBannerModel.Banner>) {
@@ -838,6 +877,75 @@ class HotelHomepageFragment :
         binding?.hotelContainerLastSearch?.visibility = View.GONE
     }
 
+    private fun Menu.hideConsentIcon() {
+        findItem(R.id.action_dppo_consent).isVisible = false
+    }
+
+    private fun Menu.showConsentIcon() {
+        findItem(R.id.action_dppo_consent).isVisible = true
+    }
+
+    private fun Menu.setupConsentIcon(description: String) {
+        if (description.isNotEmpty()) {
+            context?.let { ctx ->
+                val iconUnify = getIconUnifyDrawable(
+                    ctx,
+                    IconUnify.INFORMATION,
+                    ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+                )
+                iconUnify?.toBitmap()?.let {
+                    getItem(0).setOnMenuItemClickListener {
+                        val bottomSheet = DigitalDppoConsentBottomSheet(description)
+                        bottomSheet.show(childFragmentManager)
+                        true
+                    }
+                    getItem(0).icon = BitmapDrawable(
+                        ctx.resources,
+                        Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
+                    )
+                }
+            }
+        }
+    }
+
+    private fun Menu.setupKebabIcon() {
+        context?.let { ctx ->
+            val iconUnify = getIconUnifyDrawable(
+                ctx,
+                IconUnify.MENU_KEBAB_VERTICAL,
+                ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+            )
+            iconUnify?.toBitmap()?.let {
+                getItem(1).setOnMenuItemClickListener {
+                    showBottomMenus()
+                    true
+                }
+                getItem(1).icon = BitmapDrawable(
+                    ctx.resources,
+                    Bitmap.createScaledBitmap(it, TOOLBAR_ICON_SIZE, TOOLBAR_ICON_SIZE, true)
+                )
+            }
+        }
+    }
+
+    override fun onOrderListClicked() {
+        RouteManager.route(context, ApplinkConst.HOTEL_ORDER)
+    }
+
+    override fun onPromoClicked() {
+        RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_PROMO_LIST)
+    }
+
+    override fun onHelpClicked() {
+        RouteManager.route(context, ApplinkConst.CONTACT_US_NATIVE)
+    }
+
+    private fun showBottomMenus() {
+        val hotelMenuBottomSheets = TravelMenuBottomSheet()
+        hotelMenuBottomSheets.listener = this
+        hotelMenuBottomSheets.show(childFragmentManager, HotelBaseActivity.TAG_HOTEL_MENU)
+    }
+
     override fun onDestroyView() {
         binding?.bannerHotelHomepagePromo?.timer?.cancel()
         super.onDestroyView()
@@ -872,6 +980,8 @@ class HotelHomepageFragment :
         const val TAG_GUEST_INFO = "guestHotelInfo"
 
         const val HOMEPAGE_BG_IMAGE_URL = TokopediaImageUrl.HOMEPAGE_BG_IMAGE_URL
+
+        const val TOOLBAR_ICON_SIZE = 64
 
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
 

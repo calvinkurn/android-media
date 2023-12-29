@@ -3,7 +3,6 @@ package com.tokopedia.common.topupbills.utils
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.common.topupbills.view.model.TopupBillsTrackImpressionItem
 
 /**
  * Created by resakemal on 02/09/19.
@@ -36,6 +35,5 @@ class AnalyticUtils {
             }
             return Pair(visibleIndexes.first, visibleIndexes.second - indexOffset)
         }
-
     }
 }

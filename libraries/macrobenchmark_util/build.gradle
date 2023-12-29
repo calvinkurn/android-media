@@ -11,6 +11,8 @@ buildscript {
     }
 }
 android {
+    namespace 'com.tokopedia.macrobenchmark_util'
+    testNamespace 'com.tokopedia.macrobenchmark_util.test'
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {

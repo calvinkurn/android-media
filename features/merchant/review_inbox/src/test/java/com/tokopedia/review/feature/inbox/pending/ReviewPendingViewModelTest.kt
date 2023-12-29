@@ -4,6 +4,7 @@ import android.accounts.NetworkErrorException
 import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.Success
+import com.tokopedia.review.feature.bulkreview.BulkReviewRecommendationWidget
 import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedbackResponse
 import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedbackResponseWrapper
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
@@ -146,6 +147,58 @@ class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
         viewModel.markAsSeen(inboxReviewId)
 
         verifyMarkAsSeenUseCaseExecuted()
+    }
+
+    @Test
+    fun `get bulk review data success with details`() {
+        val userId = "12345"
+
+        coEvery {
+            userSession.userId
+        } returns userId
+
+        coEvery {
+            bulkReviewUseCase.execute(userId)
+        } returns BulkReviewRecommendationWidget(
+            list = listOf(
+                BulkReviewRecommendationWidget.Detail()
+            )
+        )
+
+        viewModel.getBulkReview()
+        Assert.assertTrue(viewModel.bulkReview.value is CoroutineSuccess)
+    }
+
+    @Test
+    fun `get bulk review data success without detail`() {
+        val userId = "12345"
+
+        coEvery {
+            userSession.userId
+        } returns userId
+
+        coEvery {
+            bulkReviewUseCase.execute(userId)
+        } returns BulkReviewRecommendationWidget()
+
+        viewModel.getBulkReview()
+        Assert.assertTrue(viewModel.bulkReview.value == null)
+    }
+
+    @Test
+    fun `get bulk review data failed throwable`() {
+        val userId = "12345"
+
+        coEvery {
+            userSession.userId
+        } returns userId
+
+        coEvery {
+            bulkReviewUseCase.execute(userId)
+        } throws Throwable()
+
+        viewModel.getBulkReview()
+        Assert.assertTrue(viewModel.bulkReview.value is CoroutineFail)
     }
 
     private fun verifyMarkAsSeenUseCaseExecuted() {

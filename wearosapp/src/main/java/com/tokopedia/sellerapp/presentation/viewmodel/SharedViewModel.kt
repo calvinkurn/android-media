@@ -1,9 +1,11 @@
 package com.tokopedia.sellerapp.presentation.viewmodel
 
+import android.os.Build
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.wearable.CapabilityClient
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
 import com.tokopedia.sellerapp.domain.interactor.GetNotificationUseCase
 import com.tokopedia.sellerapp.domain.interactor.GetSummaryUseCase
@@ -13,6 +15,7 @@ import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.domain.model.SummaryModel
 import com.tokopedia.sellerapp.presentation.model.MenuItem
 import com.tokopedia.sellerapp.presentation.model.generateInitialMenu
+import com.tokopedia.sellerapp.presentation.screen.STATE
 import com.tokopedia.sellerapp.util.Action
 import com.tokopedia.sellerapp.util.CapabilityConstant.CAPABILITY_PHONE_APP
 import com.tokopedia.sellerapp.util.MenuHelper.DATAKEY_NEW_ORDER
@@ -41,6 +44,12 @@ class SharedViewModel @Inject constructor(
     companion object {
         private const val FLOW_STOP_TIMEOUT = 3000L
         private const val INDEX_NOT_FOUND = -1
+
+        const val TAG_WEAROS_OPEN_SCREEN = "WEAROS_OPEN_SCREEN"
+        const val TAG_WEAROS_OPEN_APP = "WEAROS_OPEN_APP"
+
+        const val DEVICE_MODEL = "deviceModel"
+        const val WEAR_OS_APP_STATE = "wearOsAppState"
     }
 
     init {
@@ -209,6 +218,12 @@ class SharedViewModel @Inject constructor(
 
                 if (phoneHasApp) {
                     clientMessageDatasource.sendMessagesToNodes(Action.GET_PHONE_STATE)
+                } else {
+                    ServerLogger.log(
+                        Priority.P2, TAG_WEAROS_OPEN_SCREEN, mapOf(
+                        DEVICE_MODEL to Build.MODEL,
+                        WEAR_OS_APP_STATE to STATE.COMPANION_NOT_INSTALLED.getStringState()
+                    ))
                 }
             } catch (throwable: Throwable) { /* nothing to do */ }
         }

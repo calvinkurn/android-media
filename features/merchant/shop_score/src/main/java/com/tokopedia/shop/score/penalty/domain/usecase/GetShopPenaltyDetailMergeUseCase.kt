@@ -2,12 +2,12 @@ package com.tokopedia.shop.score.penalty.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
+import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltyDetailMergeResponse
 import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltySummaryTypeWrapper
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailResponse
-import com.tokopedia.shop.score.penalty.presentation.model.PenaltyDataWrapper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import java.io.IOException
@@ -15,14 +15,22 @@ import javax.inject.Inject
 
 open class GetShopPenaltyDetailMergeUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
-    private val penaltyMapper: PenaltyMapper
-) : UseCase<PenaltyDataWrapper>() {
+    private val getOngoingPenaltyDateUseCase: GetOngoingPenaltyDateUseCase
+) : UseCase<Pair<ShopPenaltySummaryTypeWrapper, ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail>>() {
 
-    override suspend fun executeOnBackground(): PenaltyDataWrapper {
-        val startDate = params.getString(START_DATE_KEY, "")
-        val endDate = params.getString(END_DATE_KEY, "")
-        val typeId = params.getInt(TYPE_ID_KEY, 0)
-        val sortBy = params.getInt(SORT_KEY, 0)
+    override suspend fun executeOnBackground(): Pair<ShopPenaltySummaryTypeWrapper, ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail> {
+        val status = params.getInt(STATUS_KEY, ShopScoreConstant.STATUS_ONGOING)
+
+        val (actualStartDate, actualEndDate) = getOngoingPenaltyDateUseCase.execute(
+            startDate,
+            endDate,
+            status
+        )
+
+        params.run {
+            putString(START_DATE_KEY, actualStartDate)
+            putString(END_DATE_KEY, actualEndDate)
+        }
 
         val shopScorePenaltyDetailRequest = GraphqlRequest(
             SHOP_SCORE_PENALTY_DETAIL_MERGE_QUERY,
@@ -41,13 +49,7 @@ open class GetShopPenaltyDetailMergeUseCase @Inject constructor(
                 shopScorePenaltyTypesResponse = penaltyTypesResponse
             )
             val penaltyDetailResponse = penaltyDetailMergeResponse.shopScorePenaltyDetail
-            return penaltyMapper.mapToPenaltyData(
-                shopScorePenaltySummaryWrapper,
-                penaltyDetailResponse,
-                sortBy,
-                typeId,
-                Pair(startDate, endDate)
-            )
+            return shopScorePenaltySummaryWrapper to penaltyDetailResponse
         } catch (e: IOException) {
             throw IOException(e.message)
         } catch (e: Exception) {
@@ -57,18 +59,22 @@ open class GetShopPenaltyDetailMergeUseCase @Inject constructor(
     }
 
     private var params = RequestParams.create()
+    private var startDate = String.EMPTY
+    private var endDate = String.EMPTY
 
     fun setParams(
         startDate: String,
         endDate: String,
-        typeId: Int,
-        sort: Int
+        typeIds: List<Int>,
+        sort: Int,
+        status: Int
     ) {
+        this@GetShopPenaltyDetailMergeUseCase.startDate = startDate
+        this@GetShopPenaltyDetailMergeUseCase.endDate = endDate
         params = RequestParams.create().apply {
-            putString(START_DATE_KEY, startDate)
-            putString(END_DATE_KEY, endDate)
-            putInt(TYPE_ID_KEY, typeId)
+            putObject(TYPE_IDS_KEY, typeIds)
             putInt(SORT_KEY, sort)
+            putInt(STATUS_KEY, status)
         }
     }
 
@@ -76,15 +82,17 @@ open class GetShopPenaltyDetailMergeUseCase @Inject constructor(
 
         private const val START_DATE_KEY = "startDate"
         private const val END_DATE_KEY = "endDate"
-        private const val TYPE_ID_KEY = "typeID"
+        private const val TYPE_IDS_KEY = "typeIDs"
         private const val SORT_KEY = "sort"
+        private const val STATUS_KEY = "status"
 
         val SHOP_SCORE_PENALTY_DETAIL_MERGE_QUERY = """   
             query shopScorePenaltyDetail(
                 ${'$'}startDate: String!,
                 ${'$'}endDate: String!,
-                ${'$'}typeID: Int!,
-                ${'$'}sort: Int!
+                ${'$'}typeIDs: [Int64],
+                ${'$'}sort: Int!,
+                ${'$'}status: Int!
               ){
               shopScorePenaltyTypes(
                  input: {
@@ -110,6 +118,17 @@ open class GetShopPenaltyDetailMergeUseCase @Inject constructor(
                  result {
                    penalty
                    penaltyAmount
+                   penaltyDynamic
+                   orderVerified
+                   shopLevel
+                   penaltyCumulativePercentage
+                   penaltyCumulativePercentageFormatted
+                   conversionData {
+                    cumulativePercentage
+                    cumulativePercentageFormatted
+                    penaltyPoint
+                    conversionRateFlag
+                   }
                  }
                  error {
                    message
@@ -121,12 +140,17 @@ open class GetShopPenaltyDetailMergeUseCase @Inject constructor(
                    total : 10
                    startDate : ${'$'}startDate
                    endDate : ${'$'}endDate
-                   typeID : ${'$'}typeID
+                   typeIDs : ${'$'}typeIDs
                    sort : ${'$'}sort
+                   status: ${'$'}status
                    lang : "id"
                    source: "android-shop-penalty"
                  }
                ) {
+                  startDate
+                  endDate
+                  defaultStartDate
+                  defaultEndDate
                   result {
                       shopPenaltyID
                       invoiceNumber
@@ -153,5 +177,4 @@ open class GetShopPenaltyDetailMergeUseCase @Inject constructor(
             }
         """.trimIndent()
     }
-
 }

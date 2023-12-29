@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:paddingBottom="4dp"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/card_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="12dp"
+        app:card_type="border"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/date_range"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:textColor="@color/Unify_NN950_68"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/ic_down"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_2"
+                tools:text="7 Hari " />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/ic_down"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                app:icon_name="CHEVRON_DOWN"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_info"
+        android:layout_width="13dp"
+        android:layout_height="13dp"
+        android:layout_marginStart="10dp"
+        app:icon_color_light_disabled="@color/Unify_NN500"
+        app:icon_color_light_enable="@color/Unify_NN500"
+        app:icon_color_night_disabled="@color/Unify_NN500"
+        app:icon_color_night_enable="@color/Unify_NN500"
+        app:icon_name="INFORMATION"
+        app:layout_constraintBottom_toBottomOf="@id/filter_message"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/filter_message" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/filter_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/Unify_NN500"
+        app:layout_constraintStart_toEndOf="@id/icon_info"
+        app:layout_constraintTop_toBottomOf="@id/card_date"
+        app:typographyType="small"
+        tools:text="Update data terakhir 09:41" />
+</androidx.constraintlayout.widget.ConstraintLayout>

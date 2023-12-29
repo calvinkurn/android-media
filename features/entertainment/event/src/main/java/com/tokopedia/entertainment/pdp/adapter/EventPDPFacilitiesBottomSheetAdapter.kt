@@ -1,24 +1,22 @@
 package com.tokopedia.entertainment.pdp.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.databinding.ItemEventPdpFacilitiesBottomSheetBinding
 import com.tokopedia.entertainment.pdp.data.Facilities
-import com.tokopedia.kotlin.extensions.view.loadImage
-import kotlinx.android.synthetic.main.item_event_pdp_facilities_bottom_sheet.view.*
+import com.tokopedia.media.loader.loadImage
 
 class EventPDPFacilitiesBottomSheetAdapter: RecyclerView.Adapter<EventPDPFacilitiesBottomSheetAdapter.EventPDPFacilitiesBottomSheetViewHolder>() {
 
     private var listOpenHour = emptyList<Facilities>()
 
-    inner class EventPDPFacilitiesBottomSheetViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class EventPDPFacilitiesBottomSheetViewHolder(val binding: ItemEventPdpFacilitiesBottomSheetBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(facilities: Facilities) {
-            with(itemView) {
-                iv_event_pdp_facilities_bottom_sheet.loadImage(facilities.iconUrl)
-                tg_event_pdp_facilities_bottom_sheet.text = facilities.title
+            with(binding) {
+                ivEventPdpFacilitiesBottomSheet.loadImage(facilities.iconUrl)
+                tgEventPdpFacilitiesBottomSheet.text = facilities.title
             }
         }
     }
@@ -29,8 +27,12 @@ class EventPDPFacilitiesBottomSheetAdapter: RecyclerView.Adapter<EventPDPFacilit
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): EventPDPFacilitiesBottomSheetViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_event_pdp_facilities_bottom_sheet, parent, false)
-        return EventPDPFacilitiesBottomSheetViewHolder(itemView)
+        val binding = ItemEventPdpFacilitiesBottomSheetBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return EventPDPFacilitiesBottomSheetViewHolder(binding)
     }
 
     fun setList(list: List<Facilities>) {

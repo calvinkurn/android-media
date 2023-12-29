@@ -10,9 +10,7 @@ import com.tokopedia.content.common.producttag.util.AUTHOR_TYPE
 import com.tokopedia.content.common.producttag.util.AUTHOR_USER
 import com.tokopedia.content.common.producttag.util.PRODUCT_TAG_SOURCE_RAW
 import com.tokopedia.content.common.producttag.util.SHOP_BADGE
-import com.tokopedia.content.common.producttag.util.extension.combine
 import com.tokopedia.content.common.producttag.util.extension.isProductFound
-import com.tokopedia.content.common.producttag.util.extension.setValue
 import com.tokopedia.content.common.producttag.view.uimodel.*
 import com.tokopedia.content.common.producttag.util.extension.removeLast
 import com.tokopedia.content.common.producttag.util.preference.ProductTagPreference
@@ -24,7 +22,8 @@ import com.tokopedia.content.common.producttag.view.uimodel.state.*
 import com.tokopedia.filter.common.helper.toMapParam
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.content.common.util.combine
+import com.tokopedia.content.common.util.setValue
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory

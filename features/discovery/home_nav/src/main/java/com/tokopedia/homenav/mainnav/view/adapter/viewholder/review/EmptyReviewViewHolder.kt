@@ -4,12 +4,14 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.homenav.MePage
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderEmptyStateRevampBinding
 import com.tokopedia.homenav.mainnav.view.datamodel.review.EmptyStateReviewDataModel
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
+@MePage(MePage.Widget.REVIEW)
 class EmptyReviewViewHolder(itemView: View) : AbstractViewHolder<EmptyStateReviewDataModel>(itemView) {
     private var binding: HolderEmptyStateRevampBinding? by viewBinding()
 

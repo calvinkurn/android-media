@@ -28,7 +28,7 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/Unify_NN0"
             app:typographyType="display_3"
             tools:text="Sedang mengajukan produk di 2 campaign" />
 

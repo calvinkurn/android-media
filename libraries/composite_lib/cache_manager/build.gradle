@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-
 buildscript {
     repositories {
         google()
@@ -16,18 +15,24 @@ buildscript {
 project.ext {
     artifactId = 'cachemanager'
     groupId = 'com.tokopedia.cachemanager'
-    versionName = "2.24.5"
+    versionName = "2.24.12"
     artifactName = "cache_manager-debug"
 }
 
 
+
+android {
+    namespace 'com.tokopedia.cachemanager'
+    testNamespace 'com.tokopedia.cachemanager.test'
+}
 
 dependencies {
     implementation rootProject.ext.miscDependencies.gson
 
     //room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
-    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    implementation rootProject.ext.dbDependencies.dbRoomKtx
+    ksp rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 }
 

@@ -181,7 +181,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
                 matches(
                     ViewAttributeMatcher {
                         val buttonUnify = (it as UnifyButton)
-                        buttonUnify.buttonVariant == UnifyButton.Variant.GHOST && buttonUnify.buttonType == UnifyButton.Type.TRANSACTION
+                        buttonUnify.buttonVariant == UnifyButton.Variant.GHOST && buttonUnify.buttonType == UnifyButton.Type.MAIN
                     }
                 )
             )
@@ -192,7 +192,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
                 matches(
                     ViewAttributeMatcher {
                         val buttonUnify = (it as UnifyButton)
-                        buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.TRANSACTION
+                        buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN
                     }
                 )
             )

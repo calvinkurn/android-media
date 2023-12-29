@@ -21,6 +21,11 @@ project.ext {
     artifactName = "attachcommon-release"
 }
 
+android {
+    namespace 'com.tokopedia.attachcommon'
+    testNamespace 'com.tokopedia.attachcommon.test'
+}
+
 dependencies {
     implementation rootProject.ext.unifyDependencies.principles
 }

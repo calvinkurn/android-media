@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/itemImageLoader"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        app:loader_type="rect"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/itemTitleLoader"
+        android:layout_width="150dp"
+        android:layout_height="0dp"
+        app:loader_type="rect"
+        app:layout_constraintTop_toTopOf="@id/itemImageLoader"
+        app:layout_constraintStart_toEndOf="@id/itemImageLoader"
+        app:layout_constraintBottom_toTopOf="@id/itemInfoLoader"
+        android:layout_marginStart="16dp"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/item1IconLoader"
+        android:layout_width="16dp"
+        android:layout_height="0dp"
+        app:loader_type="circle"
+        app:layout_constraintStart_toEndOf="@id/itemTitleLoader"
+        app:layout_constraintTop_toTopOf="@id/itemTitleLoader"
+        app:layout_constraintBottom_toBottomOf="@id/itemTitleLoader"
+        android:layout_marginStart="4dp"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/itemInfoLoader"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:loader_type="rect"
+        app:layout_constraintTop_toBottomOf="@id/itemTitleLoader"
+        app:layout_constraintBottom_toBottomOf="@id/itemImageLoader"
+        app:layout_constraintStart_toStartOf="@id/itemTitleLoader"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="4dp"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        app:layout_constraintTop_toBottomOf="@id/itemImageLoader"
+        app:layout_constraintStart_toStartOf="@id/itemImageLoader"
+        app:layout_constraintEnd_toEndOf="@id/itemInfoLoader"
+        android:background="@color/Unify_NN50"
+        android:layout_marginTop="16dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

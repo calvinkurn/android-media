@@ -54,6 +54,7 @@ public interface LinkerConstants {
     String VARIANT = "variant";
     String QTY = "qty";
     String CATEGORY = "category";
+    String PRODUCT_BRAND = "product_brand";
 
     int EVENT_COMMERCE_VAL = 1;
     int EVENT_LOGIN_VAL = 2;
@@ -68,6 +69,7 @@ public interface LinkerConstants {
     int EVENT_DIGITAL_SCREEN_LAUNCH = 11;
     int EVENT_SEARCH = 12;
     int ENUM_EVENT_PAGE_VIEW_STORE = 13;
+    int EVENT_SUBSCRIBE_PLUS = 14;
 
     String KEY_ANDROID_DEEPLINK_PATH = "$android_deeplink_path";
     String KEY_IOS_DEEPLINK_PATH = "$ios_deeplink_path";
@@ -95,6 +97,13 @@ public interface LinkerConstants {
     String KEY_MONTHLY_NEW_BUYER = "monthly_new_buyer";
     String KEY_GOOGLE_BUSINESS_VERTICAL = "google_business_vertical";
     String KEY_ITEM_ID = "item_id";
+    String KEY_CLIENT_TIME_STAMP = "client_timestamp";
+    String KEY_AMOUNT = "amount";
+
+    String KEY_MIN_ANDROID_VERSION = "an_min_version";
+    String KEY_MAX_ANDROID_VERSION = "an_max_version";
+    String KEY_MIN_IOS_VERSION = "ios_min_version";
+    String KEY_MAX_IOS_VERSION = "ios_max_version";
 
     String LABEL_SHARING = "sharing";
     String EMAIL_LABLE = "email";
@@ -106,6 +115,7 @@ public interface LinkerConstants {
     String EVENT_FLIGHT_PURCHASE = "FLIGHT_PURCHASE ";
     String EVENT_MARKETPLACE_FIRST_TXN = "marketplace_first_txn";
     String EVENT_PAGE_VIEW_STORE = "pageview_store";
+    String EVENT_GOTO_PLUS_SUBSCRIBE = "subscribe_plus";
 
     // Recharge Events
     String EVENT_DIGITAL_SUBHOMEPAGE_LAUNCHED = "digital_subhomepage_launched";
@@ -172,4 +182,5 @@ public interface LinkerConstants {
     String QUERY_INITIATOR = "?";
     String QUERY_PARAM_SEGREGATOR = "&";
 
+    String KEY_GA_ID = "gaid";
 }

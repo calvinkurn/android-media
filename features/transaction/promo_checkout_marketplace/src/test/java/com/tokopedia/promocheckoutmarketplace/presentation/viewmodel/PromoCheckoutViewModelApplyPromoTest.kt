@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoBoResponseFailed
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoEmptyRequest
 import com.tokopedia.promocheckoutmarketplace.ApplyPromoDataProvider.provideApplyPromoGlobalAndMerchantRequest
@@ -19,6 +20,7 @@ import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCu
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedGlobalPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.provideCurrentSelectedExpandedMerchantPromoData
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider.providePromoListWithBoPlusAsRecommendedPromo
+import com.tokopedia.promocheckoutmarketplace.presentation.PromoCheckoutLogger
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommendationUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -28,6 +30,7 @@ import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
+import io.mockk.mockkObject
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 import java.util.*
@@ -500,5 +503,25 @@ class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
 
         // then
         assert(selectedBo.uiData.errorMessage.isNotEmpty())
+    }
+
+    @Test
+    fun `WHEN apply promo and failed validate THEN promo response action state should be errorg`() {
+        // given
+        mockkObject(PromoCheckoutLogger)
+        val throwable = MessageErrorException("Tokopedia")
+
+        every { PromoCheckoutLogger.logOnErrorApplyPromo(any()) } just Runs
+        every { analytics.eventClickPakaiPromoSuccess(any(), any(), any()) } just Runs
+        coEvery { validateUseUseCase.setParam(any()) } returns validateUseUseCase
+        coEvery { validateUseUseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        // when
+        viewModel.applyPromo(ValidateUsePromoRequest(), ArrayList())
+
+        // then
+        assertNotNull(viewModel.applyPromoResponseAction.value?.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR)
     }
 }

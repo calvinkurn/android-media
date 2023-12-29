@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.databinding.ItemChipsPenaltyFilterBinding
 import com.tokopedia.shop.score.penalty.presentation.adapter.FilterPenaltyBottomSheetListener
-import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ChipsFilterPenaltyUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -18,9 +18,9 @@ class ItemChipsFilterPenaltyAdapter(
 ) : RecyclerView.Adapter<ItemChipsFilterPenaltyAdapter.ItemChipsFilterPenaltyViewHolder>() {
 
     private val itemChipsFilterPenaltyList =
-        mutableListOf<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>()
+        mutableListOf<ChipsFilterPenaltyUiModel>()
 
-    fun setItemChipsFilterPenaltyList(data: List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>) {
+    fun setItemChipsFilterPenaltyList(data: List<ChipsFilterPenaltyUiModel>) {
         if (data.isNullOrEmpty()) return
         itemChipsFilterPenaltyList.clear()
         itemChipsFilterPenaltyList.addAll(data)
@@ -39,7 +39,7 @@ class ItemChipsFilterPenaltyAdapter(
     override fun onBindViewHolder(holder: ItemChipsFilterPenaltyViewHolder, position: Int) {
         holder.bind(
             itemChipsFilterPenaltyList.getOrNull(position)
-                ?: PenaltyFilterUiModel.ChipsFilterPenaltyUiModel()
+                ?: ChipsFilterPenaltyUiModel()
         )
     }
 
@@ -48,7 +48,7 @@ class ItemChipsFilterPenaltyAdapter(
     inner class ItemChipsFilterPenaltyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding: ItemChipsPenaltyFilterBinding? by viewBinding()
 
-        fun bind(data: PenaltyFilterUiModel.ChipsFilterPenaltyUiModel) {
+        fun bind(data: ChipsFilterPenaltyUiModel) {
             binding?.run {
                 chipsItemPenalty.run {
                     centerText = true
@@ -63,7 +63,7 @@ class ItemChipsFilterPenaltyAdapter(
                         filterPenaltyBottomSheetListener.onChipsFilterItemClick(
                             nameFilter, chipType.orEmpty(),
                             chipsItemPenalty.chipText.orEmpty(),
-                            adapterPosition
+                            absoluteAdapterPosition
                         )
                     }
                 }

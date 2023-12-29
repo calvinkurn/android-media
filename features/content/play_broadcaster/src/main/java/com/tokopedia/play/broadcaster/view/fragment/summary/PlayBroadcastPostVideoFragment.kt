@@ -28,11 +28,11 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPostVideoBinding
-import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
-import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.TagUiState
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet
@@ -41,7 +41,6 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBo
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupCoverBottomSheet.DataSource
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.TagListViewComponent
-import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
@@ -51,7 +50,6 @@ import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -62,7 +60,6 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     private val analytic: PlayBroadcastAnalytic,
     private val userSession: UserSessionInterface,
     private val router: Router,
-    private val viewModelFactory: ViewModelProvider.Factory,
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator
 ) : PlayBaseBroadcastFragment(),
     TagListViewComponent.Listener,
@@ -173,7 +170,6 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
 
     private fun setupObservable() {
         observeUiState()
-        observeCover()
         observeEvent()
     }
 
@@ -213,25 +209,6 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                     }
                     else -> { }
                 }
-            }
-        }
-    }
-
-    private fun observeCover() {
-        parentViewModel.observableCover.observe(viewLifecycleOwner) {
-            when (val croppedCover = it.croppedCover) {
-                is CoverSetupState.Cropped.Uploaded -> {
-                    val newCover = if (croppedCover.localImage.toString().isNotEmpty()) {
-                        croppedCover.localImage.toString()
-                    } else {
-                        croppedCover.coverImage.toString()
-                    }
-                    binding.clCoverPreview.setCoverWithPlaceholder(newCover)
-                }
-                is CoverSetupState.GeneratedCover -> {
-                    binding.clCoverPreview.setCoverWithPlaceholder(croppedCover.coverImage)
-                }
-                else -> {}
             }
         }
     }
@@ -316,7 +293,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     /**
      * Listener
      */
-    override fun onTagClicked(view: TagListViewComponent, tag: PlayTagUiModel) {
+    override fun onTagClicked(view: TagListViewComponent, tag: PlayTagItem) {
         analytic.clickContentTag(tag.tag, !tag.isChosen)
         viewModel.submitAction(PlayBroadcastSummaryAction.ToggleTag(tag))
     }
@@ -371,4 +348,5 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         }
         parentViewModel.submitAction(PlayBroadcastAction.SetCoverUploadedSource(source))
     }
+
 }

@@ -118,7 +118,7 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
         val startTimeIsShown = model.startTime.isNotEmpty() && model.channelType == PlayWidgetChannelType.Upcoming
 
-        tvStartTime.shouldShowWithAction(startTimeIsShown){
+        tvStartTime.shouldShowWithAction(startTimeIsShown) {
             tvStartTime.text = model.startTime
         }
 
@@ -186,9 +186,12 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
         }.exhaustive
     }
 
-    private fun setPromoLabelIcon(isRilisanSpesial: Boolean){
-        if(isRilisanSpesial) ivPromoLabel.setImage(newIconId = IconUnify.ROCKET, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
-        else ivPromoLabel.setImage(newIconId = IconUnify.PROMO, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
+    private fun setPromoLabelIcon(isRilisanSpesial: Boolean) {
+        if (isRilisanSpesial) {
+            ivPromoLabel.setImage(newIconId = IconUnify.ROCKET, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
+        } else {
+            ivPromoLabel.setImage(newIconId = IconUnify.PROMO, newLightEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White), newDarkEnable = MethodChecker.getColor(context, unifyR.color.Unify_Static_White))
+        }
     }
 
     override fun setPlayer(player: PlayVideoPlayer?) {
@@ -200,7 +203,7 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
         } else {
             if (::mModel.isInitialized) {
                 player.videoUrl = mModel.video.videoUrl
-                player.shouldCache = !mModel.video.isLive
+                player.isLive = mModel.video.isLive
                 player.start()
             }
             player.listener = playerListener
@@ -213,7 +216,7 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
     override fun isPlayable(): Boolean {
         return mModel.channelType == PlayWidgetChannelType.Live ||
-                mModel.channelType == PlayWidgetChannelType.Vod
+            mModel.channelType == PlayWidgetChannelType.Vod
     }
 
     override fun onDetachedFromWindow() {
@@ -234,7 +237,7 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
         fun onMenuActionButtonClicked(
             view: View,
-            item: PlayWidgetChannelUiModel,
+            item: PlayWidgetChannelUiModel
         )
     }
 }

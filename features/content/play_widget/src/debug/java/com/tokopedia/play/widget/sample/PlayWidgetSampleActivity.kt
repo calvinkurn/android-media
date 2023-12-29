@@ -21,7 +21,8 @@ class PlayWidgetSampleActivity : BaseSimpleActivity() {
 
     private val pages = listOf<Pair<String, Fragment>>(
         Pair("Feed", PlayWidgetSampleFeedFragment()),
-        Pair("Common",  PlayWidgetSampleCommonFragment())
+        Pair("Common",  PlayWidgetSampleCommonFragment()),
+        Pair("Video",  PlayVideoWidgetSampleFragment()),
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

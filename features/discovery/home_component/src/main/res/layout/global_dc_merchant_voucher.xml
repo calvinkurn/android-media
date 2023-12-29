@@ -25,8 +25,8 @@
         android:id="@+id/container_recycler_merchant"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:translationY="-5dp"
-        android:paddingBottom="6dp"
+        android:translationY="@dimen/home_component_card_compat_padding_translation_y"
+        android:paddingBottom="@dimen/home_component_padding_bottom_with_compat_padding_translated"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_component_header_view">
@@ -49,6 +49,6 @@
         tools:layout_height="8dp"
         app:layout_constraintTop_toBottomOf="@id/container_recycler_merchant"
         tools:visibility="visible"
-        tools:background="@color/Unify_B500"/>
+        tools:background="@color/Unify_BN500"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

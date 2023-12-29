@@ -55,7 +55,7 @@ class CardTooltipLevelAdapter :
                     cardLevelInformation.setCardBackgroundColor(
                         ContextCompat.getColor(
                             root.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G200
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN100
                         )
                     )
                     levelLabel.show()

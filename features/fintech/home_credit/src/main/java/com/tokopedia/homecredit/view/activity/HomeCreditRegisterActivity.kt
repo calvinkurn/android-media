@@ -9,8 +9,11 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.internal.ApplinkConstInternalFintech
 import com.tokopedia.homecredit.di.component.DaggerHomeCreditComponent
 import com.tokopedia.homecredit.di.component.HomeCreditComponent
+import com.tokopedia.homecredit.domain.model.CameraDetail
+import com.tokopedia.homecredit.view.fragment.HomeCreditCameraV2Fragment
 import com.tokopedia.homecredit.view.fragment.HomeCreditKTPFragment
 import com.tokopedia.homecredit.view.fragment.HomeCreditSelfieFragment
 import java.util.*
@@ -77,11 +80,17 @@ open class HomeCreditRegisterActivity : BaseSimpleActivity(), HasComponent<HomeC
     @SuppressLint("MissingPermission")
     override fun getNewFragment(): Fragment? {
         val intent = intent
+        val isV2 = intent.getBooleanExtra(ApplinkConstInternalFintech.isV2, false)
+
         if (intent != null) {
             val uri = intent.data
             showKtp = "true" == uri!!.getQueryParameter(SHOW_KTP)
         }
-        return if (showKtp) {
+        return if (isV2) {
+            HomeCreditCameraV2Fragment.createInstance(
+                CameraDetail.create(this, showKtp)
+            )
+        } else if (showKtp) {
             HomeCreditKTPFragment.createInstance()
         } else {
             HomeCreditSelfieFragment.createInstance()

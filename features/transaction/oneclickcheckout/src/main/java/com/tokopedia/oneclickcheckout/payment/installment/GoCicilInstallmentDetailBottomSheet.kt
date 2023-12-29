@@ -136,10 +136,10 @@ class GoCicilInstallmentDetailBottomSheet(private var paymentProcessor: OrderSum
                 viewInstallmentDetailItem.rbInstallmentDetail.isEnabled = false
                 viewInstallmentDetailItem.rbInstallmentDetail.isChecked = false
                 viewInstallmentDetailItem.tvInstallmentDetailName.setTextColor(
-                    MethodChecker.getColor(fragment.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
+                    MethodChecker.getColor(fragment.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32)
                 )
                 viewInstallmentDetailItem.tvInstallmentDetailDescription.setTextColor(
-                    MethodChecker.getColor(fragment.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                    MethodChecker.getColor(fragment.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
                 )
                 if (installment.description.isEmpty()) {
                     viewInstallmentDetailItem.tvInstallmentDetailDescription.setText(R.string.occ_lbl_gocicil_installment_inactive_description)

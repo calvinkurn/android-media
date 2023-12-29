@@ -24,9 +24,9 @@
             android:paddingBottom="16dp"
             android:paddingTop="16dp"
             tools:lv_content="@string/default_all_album"
-            app:lv_title_color="@color/Unify_N700"
-            app:lv_sub_title_color="@color/Unify_N700"
-            app:lv_content_color="@color/Unify_G400"
+            app:lv_title_color="@color/Unify_NN950"
+            app:lv_sub_title_color="@color/Unify_NN950"
+            app:lv_content_color="@color/Unify_GN500"
             app:lv_title="@string/album"
             app:layout_scrollFlags="enterAlways|scroll" />
     </com.google.android.material.appbar.AppBarLayout>

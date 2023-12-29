@@ -4,29 +4,62 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.analytics.v2.BusinessUnitTracking
 import com.tokopedia.home.beranda.data.model.HomeWidget
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.*
 
 @SuppressLint("SyntheticAccessor")
-class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: String,
-                              private val listenerBusinessTrackerTracker: NewBusinessUnitViewHolder.BusinessUnitItemTrackerListener,
-                              private val cardInteraction: Boolean = false
-) : RecyclerView.Adapter<SizeSmallBusinessViewHolder>(){
+class BusinessUnitItemAdapter: RecyclerView.Adapter<SizeSmallBusinessViewHolder>(){
     private var list: List<BusinessUnitItemDataModel> = listOf()
     private var positionWidgetOnHome = -1
+
+    private var tabIndex: Int = -1
+    private var tabId: String = ""
+    private var tabName: String = ""
+    private var channelId: String = ""
+    private var campaignCode: String = ""
+    private var listenerBusinessTrackerTracker: NewBusinessUnitViewHolder.BusinessUnitItemTrackerListener? = null
+    private var cardInteraction: Boolean = false
+    private var userId: String = ""
 
     private var listener = object: BusinessUnitItemViewListener{
         //increase tab index by 1 as  PO requested @rico.ocir
         override fun onClicked(position: Int) {
             val element = getItem(position)
-            listenerBusinessTrackerTracker.onClickTracking(BusinessUnitTracking.getBusinessUnitClick(BusinessUnitTracking.mapToPromotionTracker(element, positionWidgetOnHome)) as HashMap<String, Any>)
+            listenerBusinessTrackerTracker?.onClickTracking(
+                BusinessUnitTracking.getBusinessUnitClick(
+                    bannerId = tabId,
+                    headerName = tabName,
+                    channelId = channelId,
+                    userType = element.content.userType,
+                    categoryName = element.content.contentName,
+                    tabPosition = tabIndex,
+                    position = position,
+                    businessUnit = element.content.businessUnit,
+                    recommendationLogic = element.content.itemType,
+                    campaignCode = campaignCode,
+                    userId = userId,
+                ) as HashMap<String, Any>
+            )
         }
 
         override fun onImpressed(element: BusinessUnitItemDataModel, position: Int) {
-            listenerBusinessTrackerTracker.onImpressTracking(BusinessUnitTracking.getBusinessUnitView(BusinessUnitTracking.mapToPromotionTracker(element, positionWidgetOnHome)) as HashMap<String, Any>)
+            listenerBusinessTrackerTracker?.onImpressTracking(
+                BusinessUnitTracking.getBusinessUnitView(
+                    bannerId = tabId,
+                    headerName = tabName,
+                    channelId = channelId,
+                    userType = element.content.userType,
+                    categoryName = element.content.contentName,
+                    tabPosition = tabIndex,
+                    position = position,
+                    businessUnit = element.content.businessUnit,
+                    recommendationLogic = element.content.itemType,
+                    userId = userId,
+                ) as HashMap<String, Any>
+            )
         }
     }
 
@@ -61,8 +94,24 @@ class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: St
         }
     }
 
-    fun submitList(list: List<BusinessUnitItemDataModel>){
-        this.list = list
+    fun submitList(
+        model: BusinessUnitDataModel?,
+        listener: NewBusinessUnitViewHolder.BusinessUnitItemTrackerListener,
+        cardInteraction: Boolean,
+        userId: String
+    ) {
+        model?.list?.let {
+            this.list = it
+        }
+        tabIndex = model?.tabPosition ?: -1
+        tabId = model?.tabId ?: ""
+        tabName = model?.tabName ?: ""
+        channelId = model?.channelId ?: ""
+        campaignCode = model?.campaignCode ?: ""
+        listenerBusinessTrackerTracker = listener
+        this.cardInteraction = cardInteraction
+        this.userId = userId
+
         notifyDataSetChanged()
     }
 

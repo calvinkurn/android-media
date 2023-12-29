@@ -2,7 +2,6 @@ package com.tokopedia.remoteconfig.abtest
 
 import android.content.Context
 import android.util.Log
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -52,9 +51,17 @@ class AbTestPlatform @JvmOverloads constructor(val context: Context) : RemoteCon
         throw RuntimeException("Method is not implemented yet")
     }
 
-    @Suppress("TooGenericExceptionCaught")
-    override fun getKeysByPrefix(prefix: String?): MutableSet<String> {
-        throw RuntimeException("Method is not implemented yet")
+    override fun getKeysByPrefix(prefix: String): MutableSet<String> {
+        return mutableSetOf<String>().apply {
+            for ((key, value) in sharedPreferences.all) {
+                val valueClassType = value?.let { it::class.java }
+                if (key.startsWith(prefix = prefix, ignoreCase = false) &&
+                    valueClassType == String::class.java
+                ) {
+                    add(key)
+                }
+            }
+        }
     }
 
     @Suppress("TooGenericExceptionCaught")
@@ -138,7 +145,9 @@ class AbTestPlatform @JvmOverloads constructor(val context: Context) : RemoteCon
                 context.resources,
                 R.raw.gql_rollout_feature_variant
             ),
-            AbTestVariantPojo::class.java, payloads, false
+            AbTestVariantPojo::class.java,
+            payloads,
+            false
         )
 
         graphqlUseCase.clearRequest()
@@ -153,7 +162,6 @@ class AbTestPlatform @JvmOverloads constructor(val context: Context) : RemoteCon
                 Log.d("doOnError", error.toString())
             }
             .doOnNext {
-                sendTracking(it)
                 listener?.onComplete(this)
             }
             .subscribeOn(Schedulers.io())
@@ -165,7 +173,7 @@ class AbTestPlatform @JvmOverloads constructor(val context: Context) : RemoteCon
                     override fun onCompleted() { }
 
                     override fun onError(e: Throwable?) { }
-                } 
+                }
             }
     }
 
@@ -193,22 +201,6 @@ class AbTestPlatform @JvmOverloads constructor(val context: Context) : RemoteCon
         editor.commit()
 
         return responseData.dataRollout
-    }
-
-    private fun sendTracking(featureVariants: RolloutFeatureVariants) {
-        featureVariants.featureVariants?.let { featureVariants ->
-            val userSession: UserSessionInterface = UserSession(context)
-
-            val dataLayerAbTest = mapOf(
-                "event" to "abtesting",
-                "eventCategory" to "abtesting",
-                "user_id" to if (userSession.isLoggedIn) userSession.userId else null,
-                "feature" to featureVariants.map {
-                    FeatureVariantAnalytics(it.feature, it.variant)
-                }
-            )
-            TrackApp.getInstance().gtm.sendGeneralEvent(dataLayerAbTest)
-        }
     }
 
     companion object {

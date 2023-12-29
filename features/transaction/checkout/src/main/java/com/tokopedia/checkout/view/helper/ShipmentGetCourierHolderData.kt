@@ -11,9 +11,9 @@ data class ShipmentGetCourierHolderData(
     val shipmentCartItemModel: ShipmentCartItemModel,
     val shopShipmentList: List<ShopShipment>,
     val isInitialLoad: Boolean,
-    val cartString: String,
+//    val cartString: String,
     val isTradeInDropOff: Boolean,
     val isForceReload: Boolean,
-    val ratesParam: RatesParam,
-    val promoCode: String
+    val ratesParam: RatesParam
+//    val promoCode: String
 )

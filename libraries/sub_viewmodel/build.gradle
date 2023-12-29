@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.library.subviewmodel'
+    testNamespace 'com.tokopedia.library.subviewmodel.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.miscDependencies.viewModelKtx

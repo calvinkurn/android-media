@@ -2,7 +2,6 @@ package com.tokopedia.entertainment.pdp.fragment
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.net.Network
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,12 +13,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
+import com.tokopedia.entertainment.databinding.BottomSheetEventListFormBinding
+import com.tokopedia.entertainment.databinding.EntPdpFormFragmentBinding
 import com.tokopedia.entertainment.pdp.activity.EventPDPFormActivity
 import com.tokopedia.entertainment.pdp.activity.EventPDPFormActivity.Companion.EXTRA_ADDITIONAL_DATA
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
@@ -31,7 +31,6 @@ import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter
 import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.ent_pdp_form_fragment.*
 import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPTextFieldViewHolder
 import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
@@ -40,9 +39,10 @@ import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.setL
 import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheet_event_list_form.view.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.io.Serializable
-import java.util.*
+import java.util.Calendar
+import java.util.GregorianCalendar
 import kotlin.collections.LinkedHashMap
 
 class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
@@ -64,6 +64,8 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
 
     lateinit var formAdapter: EventPDPFormAdapter
 
+    private var binding by autoClearedNullable<EntPdpFormFragmentBinding>()
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -76,7 +78,8 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.ent_pdp_form_fragment, container, false)
+        binding = EntPdpFormFragmentBinding.inflate(inflater)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -99,12 +102,12 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
 
     private fun setupTicker() {
         context?.let { context ->
-            tickerText.setTextDescription(context.resources.getString(R.string.ent_pdp_form_ticker_warn_text))
+            binding?.tickerText?.setTextDescription(context.resources.getString(R.string.ent_pdp_form_ticker_warn_text))
         }
     }
 
     private fun setupRecycler() {
-        recycler_view.apply {
+        binding?.recyclerView?.run {
             setHasFixedSize(true)
             isNestedScrollingEnabled = false
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
@@ -114,7 +117,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
 
     private fun setupSimpanButton() {
         context?.let { context ->
-            simpanBtn.setOnClickListener {
+            binding?.simpanBtn?.setOnClickListener {
                 if (formAdapter.getError(context.resources).isNotEmpty()) {
                     view?.let {
                         val typeTitle = when (eventCheckoutAdditionalData.additionalType) {
@@ -189,13 +192,13 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
     }
 
     private fun hideProgressBar() {
-        progressBar.visibility = View.GONE
+        binding?.progressBar?.visibility = View.GONE
     }
 
     private fun showData() {
-        recycler_view.visibility = View.VISIBLE
-        tickerText.visibility = View.VISIBLE
-        simpanBtn.visibility = View.VISIBLE
+        binding?.recyclerView?.visibility = View.VISIBLE
+        binding?.tickerText?.visibility = View.VISIBLE
+        binding?.simpanBtn?.visibility = View.VISIBLE
     }
 
     private fun setupData() {
@@ -237,22 +240,24 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
 
     override fun clickBottomSheet(list: LinkedHashMap<String, String>, title: String, positionForm: Int) {
         val adapterBottomSheet = EventFormBottomSheetAdapter(this)
-        val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_event_list_form, null)
+        val binding = BottomSheetEventListFormBinding.inflate(
+            LayoutInflater.from(context)
+        )
         listBottomSheetTemp = list
         positionActiveForm = positionForm
         bottomSheets.apply {
             isFullpage = true
-            setChild(view)
+            setChild(binding.root)
             setTitle(title)
             setCloseClickListener { bottomSheets.dismiss() }
         }
 
         if (list.size > SEARCH_PAGE_LIMIT) {
-            val searchTextField = view.event_search_list_form?.searchBarTextField
-            val searchClearButton = view.event_search_list_form?.searchBarIcon
+            val searchTextField = binding.eventSearchListForm.searchBarTextField
+            val searchClearButton = binding.eventSearchListForm.searchBarIcon
 
-            view.event_search_list_form.searchBarPlaceholder = context?.resources?.getString(R.string.ent_bottomsheet_placeholder, title) ?: ""
-            searchTextField?.addTextChangedListener(object : TextWatcher {
+            binding.eventSearchListForm.searchBarPlaceholder = context?.resources?.getString(R.string.ent_bottomsheet_placeholder, title) ?: ""
+            searchTextField.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(p0: Editable?) {}
 
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -267,18 +272,18 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
                     }
                 }
             })
-            searchClearButton?.setOnClickListener {
-                searchTextField?.text?.clear()
+            searchClearButton.setOnClickListener {
+                searchTextField.text?.clear()
                 listBottomSheetTemp = list
                 adapterBottomSheet.setList(setListBottomSheetString(list))
             }
         } else {
-            view.event_search_list_form.visibility = View.GONE
+            binding.eventSearchListForm.visibility = View.GONE
         }
 
         adapterBottomSheet.setList(setListBottomSheetString(list))
 
-        view.rv_event_bottom_sheet_form.apply {
+        binding.rvEventBottomSheetForm.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             this.adapter = adapterBottomSheet
         }

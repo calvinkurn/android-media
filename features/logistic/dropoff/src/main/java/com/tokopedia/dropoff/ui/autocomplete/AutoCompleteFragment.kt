@@ -6,18 +6,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.dropoff.R
 import com.tokopedia.dropoff.databinding.FragmentAutocompleteBinding
 import com.tokopedia.dropoff.di.DaggerDropoffPickerComponent
 import com.tokopedia.dropoff.ui.dropoff_picker.DropOffAnalytics
 import com.tokopedia.dropoff.util.SimpleVerticalDivider
+import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.logisticCommon.domain.model.AutoCompleteVisitable
 import com.tokopedia.logisticCommon.domain.model.SavedAddress
 import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
@@ -31,7 +32,6 @@ const val DEBOUNCE_DELAY = 400L
 
 class AutoCompleteFragment :
     Fragment(),
-    SearchInputView.Listener,
     AutoCompleteAdapter.ActionListener {
 
     @Inject
@@ -53,7 +53,11 @@ class AutoCompleteFragment :
         initInjector()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentAutocompleteBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -62,8 +66,14 @@ class AutoCompleteFragment :
         super.onViewCreated(view, savedInstanceState)
 
         binding?.searchInputAutocomplete?.apply {
-            setDelayTextChanged(DEBOUNCE_DELAY)
-            setListener(this@AutoCompleteFragment)
+            addDebouncedTextChangedListener(::onSearchTextChanged, DEBOUNCE_DELAY)
+            searchBarTextField.setOnEditorActionListener { textView, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    textView.hideKeyboard()
+                    onSearchSubmitted(textView.text.toString())
+                }
+                return@setOnEditorActionListener actionId == EditorInfo.IME_ACTION_SEARCH
+            }
         }
 
         binding?.rvAutocomplete?.apply {
@@ -78,30 +88,34 @@ class AutoCompleteFragment :
         setObservers()
     }
 
-    override fun onSearchSubmitted(text: String?) {
+    override fun onResultClicked(data: AutoCompleteVisitable) {
+        if (data is SuggestedPlace) {
+            tracker.trackSelectLandmarkFromKeyword(
+                binding?.searchInputAutocomplete?.searchBarTextField?.text?.toString().orEmpty(),
+                data.mainText,
+                data.secondaryText
+            )
+            if (!data.hasPinpoint()) {
+                viewModel.getLatLng(data.placeId)
+            } else {
+                sendResult(data.lat, data.long)
+            }
+        } else if (data is SavedAddress) {
+            sendResult(data.latitude, data.longitude)
+        }
+    }
+
+    private fun onSearchSubmitted(text: String?) {
         text?.let { fetchData(it) }
     }
 
-    override fun onSearchTextChanged(text: String?) {
+    private fun onSearchTextChanged(text: String?) {
         text?.let {
             if (it.isBlank()) {
                 fetchSavedAddress()
             } else {
                 fetchData(it)
             }
-        }
-    }
-
-    override fun onResultClicked(data: AutoCompleteVisitable) {
-        if (data is SuggestedPlace) {
-            tracker.trackSelectLandmarkFromKeyword(
-                binding?.searchInputAutocomplete?.searchText.orEmpty(),
-                data.mainText,
-                data.secondaryText
-            )
-            viewModel.getLatLng(data.placeId)
-        } else if (data is SavedAddress) {
-            sendResult(data.latitude, data.longitude)
         }
     }
 
@@ -154,7 +168,11 @@ class AutoCompleteFragment :
             Observer {
                 when (it) {
                     is Success -> sendResult(it.data.latitude, it.data.longitude)
-                    is Fail -> Toast.makeText(context, "Oops.. something went wrong", Toast.LENGTH_SHORT).show()
+                    is Fail -> Toast.makeText(
+                        context,
+                        "Oops.. something went wrong",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         )

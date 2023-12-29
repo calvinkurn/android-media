@@ -4,6 +4,11 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.GeneralLocation
+import androidx.test.espresso.action.GeneralSwipeAction
+import androidx.test.espresso.action.Press
+import androidx.test.espresso.action.Swipe
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -16,9 +21,9 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
+import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.entertainment.home.adapter.viewholder.CategoryEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewholder.EventCarouselEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewholder.EventGridEventViewHolder
@@ -37,6 +42,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+
 
 class NavigationEventActivityTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -150,7 +156,7 @@ class NavigationEventActivityTest {
     }
 
     private fun impression_banner() {
-        Espresso.onView(ViewMatchers.withId(R.id.banner_recyclerview))
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.banner.R.id.banner_recyclerview))
             .perform(RecyclerViewActions.scrollToPosition<BannerViewPagerAdapter.BannerViewHolder>(1))
     }
 
@@ -158,7 +164,7 @@ class NavigationEventActivityTest {
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 
-        val viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.banner_recyclerview))
+        val viewInteraction = Espresso.onView(ViewMatchers.withId(com.tokopedia.banner.R.id.banner_recyclerview))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         viewInteraction.perform(
             RecyclerViewActions.actionOnItemAtPosition<BannerViewPagerAdapter.BannerViewHolder>(
@@ -266,8 +272,7 @@ class NavigationEventActivityTest {
                 )
             ).check(ViewAssertions.matches(ViewMatchers.isCompletelyDisplayed()))
         } catch (e: AssertionFailedError) {
-            Espresso.onView(ViewMatchers.withId(R.id.ent_grid_layout))
-                .perform(ViewActions.swipeUp())
+            Espresso.onView(ViewMatchers.withId(R.id.recycler_view_home)).perform(swipeFromTopToBottom())
         }
 
         Thread.sleep(3000)
@@ -682,6 +687,13 @@ class NavigationEventActivityTest {
         Thread.sleep(3000)
         Espresso.onView(CommonMatcher.getElementFromMatchAtPosition(ViewMatchers.withText("12"), 1))
             .perform(ViewActions.click())
+    }
+
+    private fun swipeFromTopToBottom(): ViewAction? {
+        return GeneralSwipeAction(
+            Swipe.SLOW, GeneralLocation.BOTTOM_CENTER,
+            GeneralLocation.TOP_CENTER, Press.FINGER
+        )
     }
 
     @After

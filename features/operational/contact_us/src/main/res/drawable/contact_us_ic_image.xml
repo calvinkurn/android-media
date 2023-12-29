@@ -1,8 +1,8 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24">
-    <path android:pathData="M5 22.25h11A6.25 6.25 0 0 0 22.25 16V6a0.5 0.5 0 0 0-0.5-0.5h-0.5a0.5 0.5 0 0 0-0.5 0.5v10A4.75 4.75 0 0 1 16 20.75H5a0.5 0.5 0 0 0-0.5 0.5v0.5a0.5 0.5 0 0 0 0.5 0.5z" android:fillColor="@color/contact_us_dms_image"/>
-    <path android:pathData="M6 2h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V6a4 4 0 0 1 4-4zm1 3.5a1.5 1.5 0 1 0-3.001 0.001A1.5 1.5 0 0 0 7 5.5zM6 16a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2H6zm8.443-8.29c-0.416-0.534-1.104-0.54-1.528-0.011l-2.232 2.783c-0.425 0.529-1.134 0.54-1.576 0.025L8.024 9.244C7.581 8.728 6.871 8.738 6.446 9.268l-2.228 2.77C3.792 12.567 4.01 13 4.702 13h12.587c0.692 0 0.919-0.438 0.502-0.975L14.443 7.71z" android:fillColor="@color/contact_us_dms_image"/>
+    <path android:pathData="M5 22.25h11A6.25 6.25 0 0 0 22.25 16V6a0.5 0.5 0 0 0-0.5-0.5h-0.5a0.5 0.5 0 0 0-0.5 0.5v10A4.75 4.75 0 0 1 16 20.75H5a0.5 0.5 0 0 0-0.5 0.5v0.5a0.5 0.5 0 0 0 0.5 0.5z" android:fillColor="@color/Unify_NN500"/>
+    <path android:pathData="M6 2h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V6a4 4 0 0 1 4-4zm1 3.5a1.5 1.5 0 1 0-3.001 0.001A1.5 1.5 0 0 0 7 5.5zM6 16a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2H6zm8.443-8.29c-0.416-0.534-1.104-0.54-1.528-0.011l-2.232 2.783c-0.425 0.529-1.134 0.54-1.576 0.025L8.024 9.244C7.581 8.728 6.871 8.738 6.446 9.268l-2.228 2.77C3.792 12.567 4.01 13 4.702 13h12.587c0.692 0 0.919-0.438 0.502-0.975L14.443 7.71z" android:fillColor="@color/Unify_NN500"/>
     <group>
         <clip-path android:pathData="M6 2h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V6a4 4 0 0 1 4-4zm1 3.5a1.5 1.5 0 1 0-3.001 0.001A1.5 1.5 0 0 0 7 5.5zM6 16a1 1 0 0 0 0 2h10a1 1 0 0 0 0-2H6zm8.443-8.29c-0.416-0.534-1.104-0.54-1.528-0.011l-2.232 2.783c-0.425 0.529-1.134 0.54-1.576 0.025L8.024 9.244C7.581 8.728 6.871 8.738 6.446 9.268l-2.228 2.77C3.792 12.567 4.01 13 4.702 13h12.587c0.692 0 0.919-0.438 0.502-0.975L14.443 7.71z"/>
-        <path android:pathData="M-1-1h24v24H-1z" android:fillColor="@color/contact_us_dms_image" android:fillType="evenOdd"/>
+        <path android:pathData="M-1-1h24v24H-1z" android:fillColor="@color/Unify_NN500" android:fillType="evenOdd"/>
     </group>
 </vector>

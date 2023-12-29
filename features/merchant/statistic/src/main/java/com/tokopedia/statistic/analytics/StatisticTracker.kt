@@ -37,6 +37,36 @@ object StatisticTracker {
         TrackingHelper.sendGeneralEvent(map)
     }
 
+    fun sendClickMultiComponentTab(tabName: String) {
+        val map = createEventMap(
+            event = TrackingConstant.CLICK_PG,
+            action = TrackingConstant.CLICK_MULTI_COMPONENT_TAB,
+            category = TrackingConstant.SHOP_INSIGHT,
+            label = tabName
+        )
+
+        map[TrackingConstant.TRACKER_ID] = "47199"
+        map[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS_SPACE
+        map[TrackingConstant.CURRENT_SITE] = TrackingConstant.CURRENT_SITE_MARKETPLACE
+
+        TrackingHelper.sendGeneralEvent(map)
+    }
+
+    fun impressClickMultiComponentTab() {
+        val map = createEventMap(
+            event = TrackingConstant.VIEW_PG_IRIS,
+            action = TrackingConstant.VIEW_MULTI_COMPONENT_TAB,
+            category = TrackingConstant.SHOP_INSIGHT,
+            label = ""
+        )
+
+        map[TrackingConstant.TRACKER_ID] = "47200"
+        map[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS_SPACE
+        map[TrackingConstant.CURRENT_SITE] = TrackingConstant.CURRENT_SITE_MARKETPLACE
+
+        TrackingHelper.sendGeneralEvent(map)
+    }
+
     fun sendSetDateFilterEvent(pageSource: String, type: String, startDate: Date?, endDate: Date?) {
         val startDateFmt = if (startDate == null) {
             String.EMPTY

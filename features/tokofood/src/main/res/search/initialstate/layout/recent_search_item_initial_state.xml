@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         app:typographyType="display_2"
         tools:text="es teh indonesia"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@id/ivInitialStateHistory"
         app:layout_constraintEnd_toStartOf="@id/ivDeleteRecentSearch"

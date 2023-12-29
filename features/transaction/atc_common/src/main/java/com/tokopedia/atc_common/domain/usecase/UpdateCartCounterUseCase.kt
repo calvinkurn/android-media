@@ -17,7 +17,7 @@ import javax.inject.Named
  */
 
 class UpdateCartCounterUseCase @Inject constructor(
-        @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER) private val queryString: String
+    @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER) private val queryString: String
 ) : UseCase<Int>() {
 
     override fun createObservable(p0: RequestParams?): Observable<Int> {
@@ -29,8 +29,7 @@ class UpdateCartCounterUseCase @Inject constructor(
             val updateCartCounterResponse = it.getData<UpdateCartCounterGqlResponse>(UpdateCartCounterGqlResponse::class.java)
             updateCartCounterResponse.updateCartCounter.count
         }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
-
 }

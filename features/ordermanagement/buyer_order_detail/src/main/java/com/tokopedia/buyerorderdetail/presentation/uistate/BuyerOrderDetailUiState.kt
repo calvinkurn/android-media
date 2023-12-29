@@ -14,6 +14,8 @@ sealed interface BuyerOrderDetailUiState {
         val orderResolutionUiState: OrderResolutionTicketStatusUiState
         val orderInsuranceUiState: OrderInsuranceUiState
         val epharmacyInfoUiState: EpharmacyInfoUiState.HasData
+        val scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState
+        val savingsWidgetUiState: SavingsWidgetUiState
 
         data class PullRefreshLoading(
             override val actionButtonsUiState: ActionButtonsUiState.HasData,
@@ -24,7 +26,9 @@ sealed interface BuyerOrderDetailUiState {
             override val pgRecommendationWidgetUiState: PGRecommendationWidgetUiState.HasData,
             override val orderResolutionUiState: OrderResolutionTicketStatusUiState,
             override val orderInsuranceUiState: OrderInsuranceUiState,
-            override val epharmacyInfoUiState: EpharmacyInfoUiState.HasData
+            override val epharmacyInfoUiState: EpharmacyInfoUiState.HasData,
+            override val scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState.HasData,
+            override val savingsWidgetUiState: SavingsWidgetUiState
         ) : HasData
 
         data class Showing(
@@ -36,7 +40,9 @@ sealed interface BuyerOrderDetailUiState {
             override val pgRecommendationWidgetUiState: PGRecommendationWidgetUiState.HasData,
             override val orderResolutionUiState: OrderResolutionTicketStatusUiState,
             override val orderInsuranceUiState: OrderInsuranceUiState,
-            override val epharmacyInfoUiState: EpharmacyInfoUiState.HasData
+            override val epharmacyInfoUiState: EpharmacyInfoUiState.HasData,
+            override val scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState.HasData,
+            override val savingsWidgetUiState: SavingsWidgetUiState
         ) : HasData
     }
 

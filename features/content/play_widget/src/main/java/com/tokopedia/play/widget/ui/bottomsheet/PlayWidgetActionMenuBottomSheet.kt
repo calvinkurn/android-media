@@ -90,7 +90,7 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
                         IconUnify.SHARE_MOBILE,
                         MethodChecker.getColor(
                             requireContext(),
-                            com.tokopedia.unifyprinciples.R.color.Unify_N400
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN600
                         ),
                         getString(R.string.play_widget_action_menu_copy_link)
                     ) {
@@ -105,7 +105,7 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
                         IconUnify.GRAPH,
                         MethodChecker.getColor(
                             requireContext(),
-                            com.tokopedia.unifyprinciples.R.color.Unify_N400
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN600
                         ),
                         getString(R.string.play_widget_action_menu_see_performance)
                     ) {
@@ -120,7 +120,7 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
                         IconUnify.GRAPH_REPORT,
                         MethodChecker.getColor(
                             requireContext(),
-                            com.tokopedia.unifyprinciples.R.color.Unify_N400
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN600
                         ),
                         getString(R.string.play_widget_action_menu_see_performance_video_analytics)
                     ) {
@@ -134,7 +134,7 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
                     IconUnify.DELETE,
                     MethodChecker.getColor(
                         requireContext(),
-                        com.tokopedia.unifyprinciples.R.color.Unify_N400
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
                     ),
                     getString(R.string.play_widget_action_menu_delete_video)
                 ) {
@@ -213,7 +213,7 @@ class PlayWidgetActionMenuBottomSheet : BottomSheetUnify() {
         private val dividerHeight = context.resources.getDimensionPixelOffset(R.dimen.play_widget_action_divider_height)
 
         private val mPaint = Paint().apply {
-            color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N75)
+            color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
         }
 
         override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {

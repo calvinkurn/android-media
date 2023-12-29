@@ -28,12 +28,12 @@ class ToolbarPromoCheckout : Toolbar {
 
     fun disableInputPromoButton() {
         viewBinding?.buttonInputPromo?.isEnabled = false
-        viewBinding?.buttonInputPromo?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+        viewBinding?.buttonInputPromo?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
     }
 
     fun enableInputPromoButton() {
         viewBinding?.buttonInputPromo?.isEnabled = true
-        viewBinding?.buttonInputPromo?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+        viewBinding?.buttonInputPromo?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
     }
 
     fun hideInputPromoButton() {

@@ -224,16 +224,6 @@ class LoginRegisterAnalytics @Inject constructor(
         ))
     }
 
-    //#7
-    fun trackClickForgotPassword() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                "click on lupa kata sandi",
-                ""
-        ))
-    }
-
     //#11
     fun eventClickLoginEmailButton(applicationContext: Context) {
         val hashMap = TrackAppUtils.gtmData(

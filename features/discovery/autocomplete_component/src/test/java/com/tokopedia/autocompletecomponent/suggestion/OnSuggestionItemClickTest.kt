@@ -1,11 +1,18 @@
 package com.tokopedia.autocompletecomponent.suggestion
 
+import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeyword
 import com.tokopedia.autocompletecomponent.suggestion.domain.suggestiontracker.SuggestionTrackerUseCase
 import com.tokopedia.autocompletecomponent.suggestion.doubleline.SuggestionDoubleLineDataDataView
 import com.tokopedia.autocompletecomponent.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.usecase.RequestParams
-import io.mockk.*
+import io.mockk.confirmVerified
+import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
+import io.mockk.slot
+import io.mockk.verify
+import io.mockk.verifyOrder
 import org.junit.Test
 
 private const val suggestionCommonResponse = "autocomplete/suggestion/suggestion-common-response.json"
@@ -98,6 +105,32 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
             suggestionView.showSuggestionResult(any())
             suggestionView.trackEventClickKeyword(expectedEventLabel, item.dimension90, item)
             suggestionView.onClickSuggestion(item.applink)
+        }
+    }
+
+    @Test
+    fun `test click suggestion item keyword on MPS selected keyword`() {
+        `given suggestion tracker use case capture request params`()
+        val activeKeyword = SearchBarKeyword(keyword = keywordTypedByUser, isSelected = true)
+        `Given View already load data`(
+            suggestionCommonResponse,
+            searchParameter as HashMap<String, String>,
+            activeKeyword,
+        )
+
+        val item = visitableList.findSingleLine(TYPE_KEYWORD)
+
+        `when suggestion item clicked`(item.data)
+
+        `then verify view apply suggestion to selected keyword`(item.data.title, activeKeyword)
+    }
+
+    private fun `then verify view apply suggestion to selected keyword`(
+        expectedSuggestedText: String,
+        expectedActiveKeyword: SearchBarKeyword,
+    ) {
+        verify {
+            suggestionView.applySuggestionToSelectedKeyword(expectedSuggestedText, expectedActiveKeyword)
         }
     }
 
@@ -339,7 +372,11 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
                 childItem,
             )
             suggestionView.dropKeyBoard()
-            suggestionView.route(childItem.applink, suggestionPresenter.getSearchParameter())
+            suggestionView.route(
+                childItem.applink,
+                suggestionPresenter.getSearchParameter(),
+                suggestionPresenter.getActiveKeyword(),
+            )
             suggestionView.finish()
         }
     }

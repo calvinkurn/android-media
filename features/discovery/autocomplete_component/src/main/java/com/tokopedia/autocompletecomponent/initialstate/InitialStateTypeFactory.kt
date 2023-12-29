@@ -7,6 +7,7 @@ import com.tokopedia.autocompletecomponent.initialstate.chips.InitialStateChipWi
 import com.tokopedia.autocompletecomponent.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateTitleDataView
+import com.tokopedia.autocompletecomponent.initialstate.mps.MpsDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.productline.InitialStateProductListDataView
@@ -51,4 +52,7 @@ interface InitialStateTypeFactory {
     fun type(initialStateChipWidgetTitleDataView: InitialStateChipWidgetTitleDataView): Int
 
     fun type(searchBarEducationDataView: SearchBarEducationDataView): Int
+
+    fun type(mpsDataView: MpsDataView): Int
+
 }

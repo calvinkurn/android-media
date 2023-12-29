@@ -23,7 +23,7 @@
         app:typographyType="body_2"
         tools:text="RP2.00000"
         android:layout_marginStart="@dimen/spacing_lvl5"
-        android:textColor="@color/Unify_N700_68"/>
+        android:textColor="@color/Unify_NN950_68"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvStoreFee"
@@ -35,7 +35,7 @@
         app:typographyType="body_2"
         tools:text="RP2.00000"
         app:typographyWeight="bold"
-        android:textColor="@color/Unify_N700_96"/>
+        android:textColor="@color/Unify_NN950_96"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_marginTop="@dimen/spacing_lvl3"

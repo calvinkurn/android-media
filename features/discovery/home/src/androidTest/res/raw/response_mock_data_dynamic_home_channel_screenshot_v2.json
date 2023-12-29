@@ -901,207 +901,6 @@
                     }
                 },
                 {
-                    "id": 38550,
-                    "groupId": 218,
-                    "galaxyAttribution": "PG",
-                    "persona": "",
-                    "brandId": "",
-                    "categoryPersona": "",
-                    "name": "Android Test - 4 Banners Auto",
-                    "layout": "4_banners_auto",
-                    "type": "inspiration",
-                    "showPromoBadge": false,
-                    "categoryID": "{}",
-                    "persoType": 1,
-                    "campaignCode": "",
-                    "hasCloseButton": false,
-                    "isAutoRefreshAfterExpired": false,
-                    "header": {
-                        "id": 38789,
-                        "name": "Android Test - 4 Banners Auto",
-                        "subtitle": "",
-                        "url": "",
-                        "applink": "",
-                        "serverTime": 0,
-                        "expiredTime": "",
-                        "backColor": "",
-                        "backImage": "",
-                        "textColor": ""
-                    },
-                    "grids": [
-                        {
-                            "id": 1768,
-                            "backColor": "red",
-                            "name": "Atasan Wanita",
-                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&category_id=1768&search_ref=homepage.4_banners_auto.2.1768.38550&max_cashback=96",
-                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_cashback=96&category_id=1768&search_ref=homepage.4_banners_auto.2.1768.38550",
-                            "price": "",
-                            "slashedPrice": "",
-                            "discount": "",
-                            "imageUrl": "https://images.tokopedia.net/img/attachment/2020/3/18/77305583/77305583_7fc832de-911f-4c53-87e4-d9f97d7d52ed.png",
-                            "label": "",
-                            "soldPercentage": 0,
-                            "attribution": "",
-                            "productClickUrl": "",
-                            "impression": "",
-                            "cashback": "",
-                            "isTopads": false,
-                            "freeOngkir": {
-                                "isActive": false,
-                                "imageUrl": ""
-                            },
-                            "productViewCountFormatted": "",
-                            "isOutOfStock": false,
-                            "warehouseID": 0,
-                            "minOrder": 0,
-                            "shop": {
-                                "shopID": 0
-                            },
-                            "labelGroup": [],
-                            "hasBuyButton": false,
-                            "rating": 0,
-                            "countReview": 0,
-                            "benefit": {
-                                "type": "Cashback Hingga",
-                                "value": "96%"
-                            },
-                            "textColor": ""
-                        },
-                        {
-                            "id": 1899,
-                            "backColor": "red",
-                            "name": "Jilbab",
-                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_cashback=99&category_id=1899&search_ref=homepage.4_banners_auto.2.1899.38550",
-                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&search_ref=homepage.4_banners_auto.2.1899.38550&max_cashback=99&category_id=1899",
-                            "price": "",
-                            "slashedPrice": "",
-                            "discount": "",
-                            "imageUrl": "https://images.tokopedia.net/img/attachment/2020/3/19/82120085/82120085_dbf48ae0-045c-46d7-a3ad-b7e10ef6f91b.png",
-                            "label": "",
-                            "soldPercentage": 0,
-                            "attribution": "",
-                            "productClickUrl": "",
-                            "impression": "",
-                            "cashback": "",
-                            "isTopads": false,
-                            "freeOngkir": {
-                                "isActive": false,
-                                "imageUrl": ""
-                            },
-                            "productViewCountFormatted": "",
-                            "isOutOfStock": false,
-                            "warehouseID": 0,
-                            "minOrder": 0,
-                            "shop": {
-                                "shopID": 0
-                            },
-                            "labelGroup": [],
-                            "hasBuyButton": false,
-                            "rating": 0,
-                            "countReview": 0,
-                            "benefit": {
-                                "type": "Cashback Hingga",
-                                "value": "99%"
-                            },
-                            "textColor": ""
-                        },
-                        {
-                            "id": 863,
-                            "backColor": "red",
-                            "name": "Pendidikan",
-                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_cashback=95&category_id=863&search_ref=homepage.4_banners_auto.2.863.38550",
-                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_cashback=95&category_id=863&search_ref=homepage.4_banners_auto.2.863.38550",
-                            "price": "",
-                            "slashedPrice": "",
-                            "discount": "",
-                            "imageUrl": "https://images.tokopedia.net/img/attachment/2020/3/20/77305583/77305583_db19aa4e-bb1e-4cfd-a2c0-df81be5fd429.png",
-                            "label": "",
-                            "soldPercentage": 0,
-                            "attribution": "",
-                            "productClickUrl": "",
-                            "impression": "",
-                            "cashback": "",
-                            "isTopads": false,
-                            "freeOngkir": {
-                                "isActive": false,
-                                "imageUrl": ""
-                            },
-                            "productViewCountFormatted": "",
-                            "isOutOfStock": false,
-                            "warehouseID": 0,
-                            "minOrder": 0,
-                            "shop": {
-                                "shopID": 0
-                            },
-                            "labelGroup": [],
-                            "hasBuyButton": false,
-                            "rating": 0,
-                            "countReview": 0,
-                            "benefit": {
-                                "type": "Cashback Hingga",
-                                "value": "95%"
-                            },
-                            "textColor": ""
-                        },
-                        {
-                            "id": 3441,
-                            "backColor": "red",
-                            "name": "Perlengkapan Cuci Piring",
-                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_cashback=99&category_id=3441&search_ref=homepage.4_banners_auto.2.3441.38550",
-                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_cashback=99&category_id=3441&search_ref=homepage.4_banners_auto.2.3441.38550",
-                            "price": "",
-                            "slashedPrice": "",
-                            "discount": "",
-                            "imageUrl": "https://images.tokopedia.net/img/attachment/2020/3/18/82120085/82120085_a38bd671-0d6b-433e-8e89-582315a8690a.png",
-                            "label": "",
-                            "soldPercentage": 0,
-                            "attribution": "",
-                            "productClickUrl": "",
-                            "impression": "",
-                            "cashback": "",
-                            "isTopads": false,
-                            "freeOngkir": {
-                                "isActive": false,
-                                "imageUrl": ""
-                            },
-                            "productViewCountFormatted": "",
-                            "isOutOfStock": false,
-                            "warehouseID": 0,
-                            "minOrder": 0,
-                            "shop": {
-                                "shopID": 0
-                            },
-                            "labelGroup": [],
-                            "hasBuyButton": false,
-                            "rating": 0,
-                            "countReview": 0,
-                            "benefit": {
-                                "type": "Cashback Hingga",
-                                "value": "99%"
-                            },
-                            "textColor": ""
-                        }
-                    ],
-                    "banner": {
-                        "id": 0,
-                        "title": "",
-                        "description": "",
-                        "url": "",
-                        "backColor": "",
-                        "cta": {
-                            "type": "",
-                            "mode": "",
-                            "text": "",
-                            "couponCode": ""
-                        },
-                        "applink": "",
-                        "textColor": "",
-                        "imageUrl": "",
-                        "attribution": "",
-                        "gradientColor": []
-                    }
-                },
-                {
                     "banner": {
                         "applink": "tokopedia://discovery/kejar-diskon?source=homepage.6_image_auto.0.71344",
                         "attribution": "",
@@ -6515,208 +6314,6 @@
                     }
                 },
                 {
-                    "id": 38551,
-                    "groupId": 218,
-                    "galaxyAttribution": "PG",
-                    "persona": "",
-                    "brandId": "",
-                    "categoryPersona": "",
-                    "name": "Android Test - 4 Banners Auto Padding",
-                    "layout": "4_banners_auto",
-                    "styleParam": "borderStyle=padding&dividerSize=8",
-                    "type": "inspiration",
-                    "showPromoBadge": false,
-                    "categoryID": "{}",
-                    "persoType": 1,
-                    "campaignCode": "",
-                    "hasCloseButton": false,
-                    "isAutoRefreshAfterExpired": false,
-                    "header": {
-                        "id": 38789,
-                        "name": "Android Test - 4 Banners Auto",
-                        "subtitle": "",
-                        "url": "",
-                        "applink": "",
-                        "serverTime": 0,
-                        "expiredTime": "",
-                        "backColor": "",
-                        "backImage": "",
-                        "textColor": ""
-                    },
-                    "grids": [
-                        {
-                            "id": 1768,
-                            "backColor": "red",
-                            "name": "Atasan Wanita",
-                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&category_id=1768&search_ref=homepage.4_banners_auto.2.1768.38550&max_cashback=96",
-                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_cashback=96&category_id=1768&search_ref=homepage.4_banners_auto.2.1768.38550",
-                            "price": "",
-                            "slashedPrice": "",
-                            "discount": "",
-                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/3/18/77305583/77305583_7fc832de-911f-4c53-87e4-d9f97d7d52ed.png",
-                            "label": "",
-                            "soldPercentage": 0,
-                            "attribution": "",
-                            "productClickUrl": "",
-                            "impression": "",
-                            "cashback": "",
-                            "isTopads": false,
-                            "freeOngkir": {
-                                "isActive": false,
-                                "imageUrl": ""
-                            },
-                            "productViewCountFormatted": "",
-                            "isOutOfStock": false,
-                            "warehouseID": 0,
-                            "minOrder": 0,
-                            "shop": {
-                                "shopID": 0
-                            },
-                            "labelGroup": [],
-                            "hasBuyButton": false,
-                            "rating": 0,
-                            "countReview": 0,
-                            "benefit": {
-                                "type": "Cashback Hingga",
-                                "value": "96%"
-                            },
-                            "textColor": ""
-                        },
-                        {
-                            "id": 1899,
-                            "backColor": "red",
-                            "name": "Jilbab",
-                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_cashback=99&category_id=1899&search_ref=homepage.4_banners_auto.2.1899.38550",
-                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&search_ref=homepage.4_banners_auto.2.1899.38550&max_cashback=99&category_id=1899",
-                            "price": "",
-                            "slashedPrice": "",
-                            "discount": "",
-                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/3/19/82120085/82120085_dbf48ae0-045c-46d7-a3ad-b7e10ef6f91b.png",
-                            "label": "",
-                            "soldPercentage": 0,
-                            "attribution": "",
-                            "productClickUrl": "",
-                            "impression": "",
-                            "cashback": "",
-                            "isTopads": false,
-                            "freeOngkir": {
-                                "isActive": false,
-                                "imageUrl": ""
-                            },
-                            "productViewCountFormatted": "",
-                            "isOutOfStock": false,
-                            "warehouseID": 0,
-                            "minOrder": 0,
-                            "shop": {
-                                "shopID": 0
-                            },
-                            "labelGroup": [],
-                            "hasBuyButton": false,
-                            "rating": 0,
-                            "countReview": 0,
-                            "benefit": {
-                                "type": "Cashback Hingga",
-                                "value": "99%"
-                            },
-                            "textColor": ""
-                        },
-                        {
-                            "id": 863,
-                            "backColor": "red",
-                            "name": "Pendidikan",
-                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_cashback=95&category_id=863&search_ref=homepage.4_banners_auto.2.863.38550",
-                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_cashback=95&category_id=863&search_ref=homepage.4_banners_auto.2.863.38550",
-                            "price": "",
-                            "slashedPrice": "",
-                            "discount": "",
-                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/3/20/77305583/77305583_db19aa4e-bb1e-4cfd-a2c0-df81be5fd429.png",
-                            "label": "",
-                            "soldPercentage": 0,
-                            "attribution": "",
-                            "productClickUrl": "",
-                            "impression": "",
-                            "cashback": "",
-                            "isTopads": false,
-                            "freeOngkir": {
-                                "isActive": false,
-                                "imageUrl": ""
-                            },
-                            "productViewCountFormatted": "",
-                            "isOutOfStock": false,
-                            "warehouseID": 0,
-                            "minOrder": 0,
-                            "shop": {
-                                "shopID": 0
-                            },
-                            "labelGroup": [],
-                            "hasBuyButton": false,
-                            "rating": 0,
-                            "countReview": 0,
-                            "benefit": {
-                                "type": "Cashback Hingga",
-                                "value": "95%"
-                            },
-                            "textColor": ""
-                        },
-                        {
-                            "id": 3441,
-                            "backColor": "red",
-                            "name": "Perlengkapan Cuci Piring",
-                            "url": "https://www.tokopedia.com/rekomendasi/0/d/?ref=channel_banner&max_cashback=99&category_id=3441&search_ref=homepage.4_banners_auto.2.3441.38550",
-                            "applink": "tokopedia://rekomendasi/0/d/?ref=channel_banner&max_cashback=99&category_id=3441&search_ref=homepage.4_banners_auto.2.3441.38550",
-                            "price": "",
-                            "slashedPrice": "",
-                            "discount": "",
-                            "imageUrl": "https://ecs7.tokopedia.net/img/attachment/2020/3/18/82120085/82120085_a38bd671-0d6b-433e-8e89-582315a8690a.png",
-                            "label": "",
-                            "soldPercentage": 0,
-                            "attribution": "",
-                            "productClickUrl": "",
-                            "impression": "",
-                            "cashback": "",
-                            "isTopads": false,
-                            "freeOngkir": {
-                                "isActive": false,
-                                "imageUrl": ""
-                            },
-                            "productViewCountFormatted": "",
-                            "isOutOfStock": false,
-                            "warehouseID": 0,
-                            "minOrder": 0,
-                            "shop": {
-                                "shopID": 0
-                            },
-                            "labelGroup": [],
-                            "hasBuyButton": false,
-                            "rating": 0,
-                            "countReview": 0,
-                            "benefit": {
-                                "type": "Cashback Hingga",
-                                "value": "99%"
-                            },
-                            "textColor": ""
-                        }
-                    ],
-                    "banner": {
-                        "id": 0,
-                        "title": "",
-                        "description": "",
-                        "url": "",
-                        "backColor": "",
-                        "cta": {
-                            "type": "",
-                            "mode": "",
-                            "text": "",
-                            "couponCode": ""
-                        },
-                        "applink": "",
-                        "textColor": "",
-                        "imageUrl": "",
-                        "attribution": "",
-                        "gradientColor": []
-                    }
-                },
-                {
                     "id": 6999442,
                     "dividerType": 0,
                     "groupId": 57,
@@ -7085,6 +6682,1444 @@
                     "campaignCode": "",
                     "campaignType": 0,
                     "showPromoBadge": false,
+                    "pgCampaignType": "",
+                    "hasCloseButton": false,
+                    "contextualInfo": 0,
+                    "categoryPersona": "",
+                    "galaxyAttribution": "PG",
+                    "isAutoRefreshAfterExpired": false
+                },
+                {
+                    "id": 270895,
+                    "name": "Test KD Revamp ",
+                    "type": "",
+                    "token": "",
+                    "grids": [
+                        {
+                            "id": 3551388604,
+                            "url": "https://www.tokopedia.com/12145952-emilystore/es-batu-bulat-hitam-4?extParam=src%3Dmultiloc%26whid%3D12090764&source=homepage.kejar_diskon_carousel.0.270895",
+                            "name": "",
+                            "shop": {
+                                "id": 12145952,
+                                "url": "https://www.tokopedia.com/12145952-emilystore?source=homepage.kejar_diskon_carousel.0.270895",
+                                "city": "",
+                                "name": "",
+                                "domain": "",
+                                "applink": "",
+                                "imageUrl": "",
+                                "reputation": ""
+                            },
+                            "price": "Rp 3.000",
+                            "label": "Tersedia",
+                            "stock": 0,
+                            "param": "",
+                            "rating": 0,
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "imageUrl": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ],
+                            "applink": "tokopedia://product/3551388604?extParam=src%3Dcampaign%26whid%3D12090764&source=homepage.kejar_diskon_carousel.0.270895",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/7/25/10291df9-7fad-4cf4-9108-4bbf963e9da1.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "minOrder": 1,
+                            "maxOrder": 5,
+                            "clusterID": 0,
+                            "backColor": "",
+                            "textColor": "",
+                            "impression": "",
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "url": "",
+                                    "type": "red",
+                                    "title": "40%",
+                                    "position": "ribbon"
+                                }
+                            ],
+                            "attribution": "",
+                            "warehouseID": 0,
+                            "countReview": 0,
+                            "expiredTime": "",
+                            "slashedPrice": "Rp 5.000",
+                            "isOutOfStock": false,
+                            "hasBuyButton": false,
+                            "campaignCode": "",
+                            "ratingAverage": "",
+                            "labelTextColor": "#31353b",
+                            "soldPercentage": 0,
+                            "productClickUrl": "",
+                            "productImageUrl": "",
+                            "parentProductID": 0,
+                            "labelGroupVariant": [],
+                            "discountPercentage": 0,
+                            "recommendationType": "",
+                            "categoryBreadcrumbs": "",
+                            "productViewCountFormatted": ""
+                        },
+                        {
+                            "id": 3625533550,
+                            "url": "https://www.tokopedia.com/12145952-emilystore/es-batu-kotak-putih-xs?extParam=src%3Dmultiloc%26whid%3D12090764&source=homepage.kejar_diskon_carousel.0.270895",
+                            "name": "",
+                            "shop": {
+                                "id": 12145952,
+                                "url": "https://www.tokopedia.com/12145952-emilystore?source=homepage.kejar_diskon_carousel.0.270895",
+                                "city": "",
+                                "name": "",
+                                "domain": "",
+                                "applink": "",
+                                "imageUrl": "",
+                                "reputation": ""
+                            },
+                            "price": "Rp 3.000",
+                            "label": "Tersedia",
+                            "stock": 0,
+                            "param": "",
+                            "rating": 0,
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "imageUrl": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ],
+                            "applink": "tokopedia://product/3625533550?extParam=src%3Dcampaign%26whid%3D12090764&source=homepage.kejar_diskon_carousel.0.270895",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/7/25/1b51f671-8e35-4066-9a2f-3ce7e55822ba.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "minOrder": 1,
+                            "maxOrder": 5,
+                            "clusterID": 0,
+                            "backColor": "",
+                            "textColor": "",
+                            "impression": "",
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "url": "",
+                                    "type": "red",
+                                    "title": "70%",
+                                    "position": "ribbon"
+                                }
+                            ],
+                            "attribution": "",
+                            "warehouseID": 0,
+                            "countReview": 0,
+                            "expiredTime": "",
+                            "slashedPrice": "Rp 10.000",
+                            "isOutOfStock": false,
+                            "hasBuyButton": false,
+                            "campaignCode": "",
+                            "ratingAverage": "",
+                            "labelTextColor": "#31353b",
+                            "soldPercentage": 0,
+                            "productClickUrl": "",
+                            "productImageUrl": "",
+                            "parentProductID": 0,
+                            "labelGroupVariant": [],
+                            "discountPercentage": 0,
+                            "recommendationType": "",
+                            "categoryBreadcrumbs": "",
+                            "productViewCountFormatted": ""
+                        },
+                        {
+                            "id": 5022269634,
+                            "url": "https://www.tokopedia.com/12145952-emilystore/piring-kayu-bulat-cokelat?extParam=src%3Dmultiloc%26whid%3D12090764&source=homepage.kejar_diskon_carousel.0.270895",
+                            "name": "",
+                            "shop": {
+                                "id": 12145952,
+                                "url": "https://www.tokopedia.com/12145952-emilystore?source=homepage.kejar_diskon_carousel.0.270895",
+                                "city": "",
+                                "name": "",
+                                "domain": "",
+                                "applink": "",
+                                "imageUrl": "",
+                                "reputation": ""
+                            },
+                            "price": "Rp 3.000",
+                            "label": "Tersedia",
+                            "stock": 0,
+                            "param": "",
+                            "rating": 0,
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "imageUrl": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ],
+                            "applink": "tokopedia://product/5022269634?extParam=src%3Dcampaign%26whid%3D12090764&source=homepage.kejar_diskon_carousel.0.270895",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/7/26/026b0f0e-2838-4760-b87b-e56561bb555d.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "minOrder": 1,
+                            "maxOrder": 5,
+                            "clusterID": 0,
+                            "backColor": "",
+                            "textColor": "",
+                            "impression": "",
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "url": "",
+                                    "type": "red",
+                                    "title": "95%",
+                                    "position": "ribbon"
+                                }
+                            ],
+                            "attribution": "",
+                            "warehouseID": 0,
+                            "countReview": 0,
+                            "expiredTime": "",
+                            "slashedPrice": "Rp 56.000",
+                            "isOutOfStock": false,
+                            "hasBuyButton": false,
+                            "campaignCode": "",
+                            "ratingAverage": "",
+                            "labelTextColor": "#31353b",
+                            "soldPercentage": 0,
+                            "productClickUrl": "",
+                            "productImageUrl": "",
+                            "parentProductID": 0,
+                            "labelGroupVariant": [],
+                            "discountPercentage": 0,
+                            "recommendationType": "",
+                            "categoryBreadcrumbs": "",
+                            "productViewCountFormatted": ""
+                        },
+                        {
+                            "id": 3625842887,
+                            "url": "https://www.tokopedia.com/12145952-emilystore/bolu-pisang-xs?extParam=src%3Dmultiloc%26whid%3D12090764&source=homepage.kejar_diskon_carousel.0.270895",
+                            "name": "",
+                            "shop": {
+                                "id": 12145952,
+                                "url": "https://www.tokopedia.com/12145952-emilystore?source=homepage.kejar_diskon_carousel.0.270895",
+                                "city": "",
+                                "name": "",
+                                "domain": "",
+                                "applink": "",
+                                "imageUrl": "",
+                                "reputation": ""
+                            },
+                            "price": "Rp 3.000",
+                            "label": "Tersedia",
+                            "stock": 0,
+                            "param": "",
+                            "rating": 0,
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "imageUrl": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ],
+                            "applink": "tokopedia://product/3625842887?extParam=src%3Dcampaign%26whid%3D12090764&source=homepage.kejar_diskon_carousel.0.270895",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/7/25/7dfe9d2a-d822-499e-b26b-9bb3d52ea20a.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "minOrder": 1,
+                            "maxOrder": 5,
+                            "clusterID": 0,
+                            "backColor": "",
+                            "textColor": "",
+                            "impression": "",
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "url": "",
+                                    "type": "red",
+                                    "title": "88%",
+                                    "position": "ribbon"
+                                }
+                            ],
+                            "attribution": "",
+                            "warehouseID": 0,
+                            "countReview": 0,
+                            "expiredTime": "",
+                            "slashedPrice": "Rp 25.000",
+                            "isOutOfStock": false,
+                            "hasBuyButton": false,
+                            "campaignCode": "",
+                            "ratingAverage": "",
+                            "labelTextColor": "#31353b",
+                            "soldPercentage": 0,
+                            "productClickUrl": "",
+                            "productImageUrl": "",
+                            "parentProductID": 0,
+                            "labelGroupVariant": [],
+                            "discountPercentage": 0,
+                            "recommendationType": "",
+                            "categoryBreadcrumbs": "",
+                            "productViewCountFormatted": ""
+                        },
+                        {
+                            "id": 3377581632,
+                            "url": "https://www.tokopedia.com/12145952-emilystore/matcha-cake?extParam=src%3Dmultiloc%26whid%3D12090764&source=homepage.kejar_diskon_carousel.0.270895",
+                            "name": "",
+                            "shop": {
+                                "id": 12145952,
+                                "url": "https://www.tokopedia.com/12145952-emilystore?source=homepage.kejar_diskon_carousel.0.270895",
+                                "city": "",
+                                "name": "",
+                                "domain": "",
+                                "applink": "",
+                                "imageUrl": "",
+                                "reputation": ""
+                            },
+                            "price": "Rp 3.000",
+                            "label": "Tersedia",
+                            "stock": 0,
+                            "param": "",
+                            "rating": 0,
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "imageUrl": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ],
+                            "applink": "tokopedia://product/3377581632?extParam=src%3Dcampaign%26whid%3D12090764&source=homepage.kejar_diskon_carousel.0.270895",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/7/26/161144c1-10ca-42cc-a729-e88cccb28e54.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "minOrder": 1,
+                            "maxOrder": 5,
+                            "clusterID": 0,
+                            "backColor": "",
+                            "textColor": "",
+                            "impression": "",
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "url": "",
+                                    "type": "red",
+                                    "title": "88%",
+                                    "position": "ribbon"
+                                }
+                            ],
+                            "attribution": "",
+                            "warehouseID": 0,
+                            "countReview": 0,
+                            "expiredTime": "",
+                            "slashedPrice": "Rp 26.000",
+                            "isOutOfStock": false,
+                            "hasBuyButton": false,
+                            "campaignCode": "",
+                            "ratingAverage": "",
+                            "labelTextColor": "#31353b",
+                            "soldPercentage": 0,
+                            "productClickUrl": "",
+                            "productImageUrl": "",
+                            "parentProductID": 0,
+                            "labelGroupVariant": [],
+                            "discountPercentage": 0,
+                            "recommendationType": "",
+                            "categoryBreadcrumbs": "",
+                            "productViewCountFormatted": ""
+                        },
+                        {
+                            "id": 7141018650,
+                            "url": "https://www.tokopedia.com/qa-cp-mt-npl/benih-kesemek-jepang-asam-biji-76gr?extParam=src%3Dmultiloc%26whid%3D10284966&source=homepage.kejar_diskon_carousel.0.270895",
+                            "name": "",
+                            "shop": {
+                                "id": 10222724,
+                                "url": "https://www.tokopedia.com/qa-cp-mt-npl?source=homepage.kejar_diskon_carousel.0.270895",
+                                "city": "",
+                                "name": "",
+                                "domain": "",
+                                "applink": "",
+                                "imageUrl": "",
+                                "reputation": ""
+                            },
+                            "price": "Rp 50.000",
+                            "label": "Tersedia",
+                            "stock": 0,
+                            "param": "",
+                            "rating": 0,
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "imageUrl": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ],
+                            "applink": "tokopedia://product/7141018650?extParam=src%3Dcampaign%26whid%3D10284966&source=homepage.kejar_diskon_carousel.0.270895",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2022/12/5/9f8fbdcf-9c7b-4d20-9fe6-97097fed3727.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "minOrder": 1,
+                            "maxOrder": 1,
+                            "clusterID": 0,
+                            "backColor": "",
+                            "textColor": "",
+                            "impression": "",
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "url": "",
+                                    "type": "red",
+                                    "title": "29%",
+                                    "position": "ribbon"
+                                }
+                            ],
+                            "attribution": "",
+                            "warehouseID": 0,
+                            "countReview": 0,
+                            "expiredTime": "",
+                            "slashedPrice": "Rp 70.000",
+                            "isOutOfStock": false,
+                            "hasBuyButton": false,
+                            "campaignCode": "",
+                            "ratingAverage": "",
+                            "labelTextColor": "#31353b",
+                            "soldPercentage": 0,
+                            "productClickUrl": "",
+                            "productImageUrl": "",
+                            "parentProductID": 0,
+                            "labelGroupVariant": [],
+                            "discountPercentage": 0,
+                            "recommendationType": "",
+                            "categoryBreadcrumbs": "",
+                            "productViewCountFormatted": ""
+                        },
+                        {
+                            "id": 7141019069,
+                            "url": "https://www.tokopedia.com/qa-cp-mt-npl/benih-pir-salju-manis-biji-45gr?extParam=src%3Dmultiloc%26whid%3D10284966&source=homepage.kejar_diskon_carousel.0.270895",
+                            "name": "",
+                            "shop": {
+                                "id": 10222724,
+                                "url": "https://www.tokopedia.com/qa-cp-mt-npl?source=homepage.kejar_diskon_carousel.0.270895",
+                                "city": "",
+                                "name": "",
+                                "domain": "",
+                                "applink": "",
+                                "imageUrl": "",
+                                "reputation": ""
+                            },
+                            "price": "Rp 50.000",
+                            "label": "Tersedia",
+                            "stock": 0,
+                            "param": "",
+                            "rating": 0,
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "imageUrl": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ],
+                            "applink": "tokopedia://product/7141019069?extParam=src%3Dcampaign%26whid%3D10284966&source=homepage.kejar_diskon_carousel.0.270895",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2022/12/5/dda526aa-4cd5-4a9b-993d-42ebcad8909f.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "minOrder": 1,
+                            "maxOrder": 1,
+                            "clusterID": 0,
+                            "backColor": "",
+                            "textColor": "",
+                            "impression": "",
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "url": "",
+                                    "type": "red",
+                                    "title": "86%",
+                                    "position": "ribbon"
+                                }
+                            ],
+                            "attribution": "",
+                            "warehouseID": 0,
+                            "countReview": 0,
+                            "expiredTime": "",
+                            "slashedPrice": "Rp 350.000",
+                            "isOutOfStock": false,
+                            "hasBuyButton": false,
+                            "campaignCode": "",
+                            "ratingAverage": "",
+                            "labelTextColor": "#31353b",
+                            "soldPercentage": 0,
+                            "productClickUrl": "",
+                            "productImageUrl": "",
+                            "parentProductID": 0,
+                            "labelGroupVariant": [],
+                            "discountPercentage": 0,
+                            "recommendationType": "",
+                            "categoryBreadcrumbs": "",
+                            "productViewCountFormatted": ""
+                        },
+                        {
+                            "id": 1250916696,
+                            "url": "https://www.tokopedia.com/txshopos/poster-foto-awan-senja-4?extParam=src%3Dmultiloc%26whid%3D8100659&source=homepage.kejar_diskon_carousel.0.270895",
+                            "name": "",
+                            "shop": {
+                                "id": 7897230,
+                                "url": "https://www.tokopedia.com/txshopos?source=homepage.kejar_diskon_carousel.0.270895",
+                                "city": "",
+                                "name": "",
+                                "domain": "",
+                                "applink": "",
+                                "imageUrl": "",
+                                "reputation": ""
+                            },
+                            "price": "Rp 100",
+                            "label": "Tersedia",
+                            "stock": 0,
+                            "param": "",
+                            "rating": 0,
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "imageUrl": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ],
+                            "applink": "tokopedia://product/1250916696?extParam=src%3Dcampaign%26whid%3D8100659&source=homepage.kejar_diskon_carousel.0.270895",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/12/95a5b537-087f-44e5-863c-17073ab736bb.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "minOrder": 1,
+                            "maxOrder": 1,
+                            "clusterID": 0,
+                            "backColor": "",
+                            "textColor": "",
+                            "impression": "",
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "url": "",
+                                    "type": "red",
+                                    "title": "90%",
+                                    "position": "ribbon"
+                                }
+                            ],
+                            "attribution": "",
+                            "warehouseID": 0,
+                            "countReview": 0,
+                            "expiredTime": "",
+                            "slashedPrice": "Rp 1.000",
+                            "isOutOfStock": false,
+                            "hasBuyButton": false,
+                            "campaignCode": "",
+                            "ratingAverage": "",
+                            "labelTextColor": "#31353b",
+                            "soldPercentage": 0,
+                            "productClickUrl": "",
+                            "productImageUrl": "",
+                            "parentProductID": 0,
+                            "labelGroupVariant": [],
+                            "discountPercentage": 0,
+                            "recommendationType": "",
+                            "categoryBreadcrumbs": "",
+                            "productViewCountFormatted": ""
+                        },
+                        {
+                            "id": 2131093436,
+                            "url": "https://www.tokopedia.com/txshopos/topi-hitam?extParam=src%3Dmultiloc%26whid%3D8100659&source=homepage.kejar_diskon_carousel.0.270895",
+                            "name": "",
+                            "shop": {
+                                "id": 7897230,
+                                "url": "https://www.tokopedia.com/txshopos?source=homepage.kejar_diskon_carousel.0.270895",
+                                "city": "",
+                                "name": "",
+                                "domain": "",
+                                "applink": "",
+                                "imageUrl": "",
+                                "reputation": ""
+                            },
+                            "price": "Rp 50.000",
+                            "label": "Tersedia",
+                            "stock": 0,
+                            "param": "",
+                            "rating": 0,
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "imageUrl": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ],
+                            "applink": "tokopedia://product/2131093436?extParam=src%3Dcampaign%26whid%3D8100659&source=homepage.kejar_diskon_carousel.0.270895",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/9/2/6ae383af-c821-4e8a-a906-9601627baf38.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "minOrder": 1,
+                            "maxOrder": 1,
+                            "clusterID": 0,
+                            "backColor": "",
+                            "textColor": "",
+                            "impression": "",
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "url": "",
+                                    "type": "red",
+                                    "title": "50%",
+                                    "position": "ribbon"
+                                }
+                            ],
+                            "attribution": "",
+                            "warehouseID": 0,
+                            "countReview": 0,
+                            "expiredTime": "",
+                            "slashedPrice": "Rp 100.000",
+                            "isOutOfStock": false,
+                            "hasBuyButton": false,
+                            "campaignCode": "",
+                            "ratingAverage": "",
+                            "labelTextColor": "#31353b",
+                            "soldPercentage": 0,
+                            "productClickUrl": "",
+                            "productImageUrl": "",
+                            "parentProductID": 0,
+                            "labelGroupVariant": [],
+                            "discountPercentage": 0,
+                            "recommendationType": "",
+                            "categoryBreadcrumbs": "",
+                            "productViewCountFormatted": ""
+                        },
+                        {
+                            "id": 7141008851,
+                            "url": "https://www.tokopedia.com/qa-cp-mt-npl/benih-lengkeng-longan-manis-biji-repack?extParam=src%3Dmultiloc%26whid%3D10284966&source=homepage.kejar_diskon_carousel.0.270895",
+                            "name": "",
+                            "shop": {
+                                "id": 10222724,
+                                "url": "https://www.tokopedia.com/qa-cp-mt-npl?source=homepage.kejar_diskon_carousel.0.270895",
+                                "city": "",
+                                "name": "",
+                                "domain": "",
+                                "applink": "",
+                                "imageUrl": "",
+                                "reputation": ""
+                            },
+                            "price": "Rp 50.000",
+                            "label": "Tersedia",
+                            "stock": 0,
+                            "param": "",
+                            "rating": 0,
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "imageUrl": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ],
+                            "applink": "tokopedia://product/7141008851?extParam=src%3Dcampaign%26whid%3D10284966&source=homepage.kejar_diskon_carousel.0.270895",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2022/12/5/38918f3e-009c-4e8d-bc2e-e76891d7c123.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "minOrder": 1,
+                            "maxOrder": 1,
+                            "clusterID": 0,
+                            "backColor": "",
+                            "textColor": "",
+                            "impression": "",
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "url": "",
+                                    "type": "red",
+                                    "title": "80%",
+                                    "position": "ribbon"
+                                }
+                            ],
+                            "attribution": "",
+                            "warehouseID": 0,
+                            "countReview": 0,
+                            "expiredTime": "",
+                            "slashedPrice": "Rp 250.000",
+                            "isOutOfStock": false,
+                            "hasBuyButton": false,
+                            "campaignCode": "",
+                            "ratingAverage": "",
+                            "labelTextColor": "#31353b",
+                            "soldPercentage": 0,
+                            "productClickUrl": "",
+                            "productImageUrl": "",
+                            "parentProductID": 0,
+                            "labelGroupVariant": [],
+                            "discountPercentage": 0,
+                            "recommendationType": "",
+                            "categoryBreadcrumbs": "",
+                            "productViewCountFormatted": ""
+                        },
+                        {
+                            "id": 7141018190,
+                            "url": "https://www.tokopedia.com/qa-cp-mt-npl/benih-ceplukan-masam-manis-biji-repack?extParam=src%3Dmultiloc%26whid%3D10284966&source=homepage.kejar_diskon_carousel.0.270895",
+                            "name": "",
+                            "shop": {
+                                "id": 10222724,
+                                "url": "https://www.tokopedia.com/qa-cp-mt-npl?source=homepage.kejar_diskon_carousel.0.270895",
+                                "city": "",
+                                "name": "",
+                                "domain": "",
+                                "applink": "",
+                                "imageUrl": "",
+                                "reputation": ""
+                            },
+                            "price": "Rp 50.000",
+                            "label": "Tersedia",
+                            "stock": 0,
+                            "param": "",
+                            "rating": 0,
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "imageUrl": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ],
+                            "applink": "tokopedia://product/7141018190?extParam=src%3Dcampaign%26whid%3D10284966&source=homepage.kejar_diskon_carousel.0.270895",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2022/12/5/fc5912a6-f4dd-42ae-80e0-294b663928d1.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "minOrder": 1,
+                            "maxOrder": 1,
+                            "clusterID": 0,
+                            "backColor": "",
+                            "textColor": "",
+                            "impression": "",
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "url": "",
+                                    "type": "red",
+                                    "title": "29%",
+                                    "position": "ribbon"
+                                }
+                            ],
+                            "attribution": "",
+                            "warehouseID": 0,
+                            "countReview": 0,
+                            "expiredTime": "",
+                            "slashedPrice": "Rp 70.000",
+                            "isOutOfStock": false,
+                            "hasBuyButton": false,
+                            "campaignCode": "",
+                            "ratingAverage": "",
+                            "labelTextColor": "#31353b",
+                            "soldPercentage": 0,
+                            "productClickUrl": "",
+                            "productImageUrl": "",
+                            "parentProductID": 0,
+                            "labelGroupVariant": [],
+                            "discountPercentage": 0,
+                            "recommendationType": "",
+                            "categoryBreadcrumbs": "",
+                            "productViewCountFormatted": ""
+                        },
+                        {
+                            "id": 7141019791,
+                            "url": "https://www.tokopedia.com/qa-cp-mt-npl/benih-pir-callery-manis-seed?extParam=src%3Dmultiloc%26whid%3D10284966&source=homepage.kejar_diskon_carousel.0.270895",
+                            "name": "",
+                            "shop": {
+                                "id": 10222724,
+                                "url": "https://www.tokopedia.com/qa-cp-mt-npl?source=homepage.kejar_diskon_carousel.0.270895",
+                                "city": "",
+                                "name": "",
+                                "domain": "",
+                                "applink": "",
+                                "imageUrl": "",
+                                "reputation": ""
+                            },
+                            "price": "Rp 10.000",
+                            "label": "Tersedia",
+                            "stock": 0,
+                            "param": "",
+                            "rating": 0,
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "imageUrl": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ],
+                            "applink": "tokopedia://product/7141019791?extParam=src%3Dcampaign%26whid%3D10284966&source=homepage.kejar_diskon_carousel.0.270895",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2022/12/5/a113c7be-31f3-48b6-ba1d-f6528a25bf35.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "minOrder": 1,
+                            "maxOrder": 1,
+                            "clusterID": 0,
+                            "backColor": "",
+                            "textColor": "",
+                            "impression": "",
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "url": "",
+                                    "type": "red",
+                                    "title": "96%",
+                                    "position": "ribbon"
+                                }
+                            ],
+                            "attribution": "",
+                            "warehouseID": 0,
+                            "countReview": 0,
+                            "expiredTime": "",
+                            "slashedPrice": "Rp 250.000",
+                            "isOutOfStock": false,
+                            "hasBuyButton": false,
+                            "campaignCode": "",
+                            "ratingAverage": "",
+                            "labelTextColor": "#31353b",
+                            "soldPercentage": 0,
+                            "productClickUrl": "",
+                            "productImageUrl": "",
+                            "parentProductID": 0,
+                            "labelGroupVariant": [],
+                            "discountPercentage": 0,
+                            "recommendationType": "",
+                            "categoryBreadcrumbs": "",
+                            "productViewCountFormatted": ""
+                        },
+                        {
+                            "id": 1763740628,
+                            "url": "https://www.tokopedia.com/sellertokocabang/box-kardus-packing-tambahan?extParam=src%3Dmultiloc%26whid%3D11029495&source=homepage.kejar_diskon_carousel.0.270895",
+                            "name": "",
+                            "shop": {
+                                "id": 11081561,
+                                "url": "https://www.tokopedia.com/sellertokocabang?source=homepage.kejar_diskon_carousel.0.270895",
+                                "city": "",
+                                "name": "",
+                                "domain": "",
+                                "applink": "",
+                                "imageUrl": "",
+                                "reputation": ""
+                            },
+                            "price": "Rp 50.000",
+                            "label": "Tersedia",
+                            "stock": 0,
+                            "param": "",
+                            "rating": 0,
+                            "badges": [],
+                            "applink": "tokopedia://product/1763740628?extParam=src%3Dcampaign%26whid%3D11029495&source=homepage.kejar_diskon_carousel.0.270895",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/4/14/2bf453a3-6224-4632-9cf4-601fee614510.png",
+                            "cashback": "",
+                            "isTopads": false,
+                            "minOrder": 1,
+                            "maxOrder": 1,
+                            "clusterID": 0,
+                            "backColor": "",
+                            "textColor": "",
+                            "impression": "",
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "url": "",
+                                    "type": "red",
+                                    "title": "50%",
+                                    "position": "ribbon"
+                                }
+                            ],
+                            "attribution": "",
+                            "warehouseID": 0,
+                            "countReview": 0,
+                            "expiredTime": "",
+                            "slashedPrice": "Rp 100.000",
+                            "isOutOfStock": false,
+                            "hasBuyButton": false,
+                            "campaignCode": "",
+                            "ratingAverage": "",
+                            "labelTextColor": "#31353b",
+                            "soldPercentage": 0,
+                            "productClickUrl": "",
+                            "productImageUrl": "",
+                            "parentProductID": 0,
+                            "labelGroupVariant": [],
+                            "discountPercentage": 0,
+                            "recommendationType": "",
+                            "categoryBreadcrumbs": "",
+                            "productViewCountFormatted": ""
+                        },
+                        {
+                            "id": 1979970781,
+                            "url": "https://www.tokopedia.com/txshopos/topi-korea-hitam?extParam=src%3Dmultiloc%26whid%3D8100659&source=homepage.kejar_diskon_carousel.0.270895",
+                            "name": "",
+                            "shop": {
+                                "id": 7897230,
+                                "url": "https://www.tokopedia.com/txshopos?source=homepage.kejar_diskon_carousel.0.270895",
+                                "city": "",
+                                "name": "",
+                                "domain": "",
+                                "applink": "",
+                                "imageUrl": "",
+                                "reputation": ""
+                            },
+                            "price": "Rp 100",
+                            "label": "Tersedia",
+                            "stock": 0,
+                            "param": "",
+                            "rating": 0,
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "imageUrl": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ],
+                            "applink": "tokopedia://product/1979970781?extParam=src%3Dcampaign%26whid%3D8100659&source=homepage.kejar_diskon_carousel.0.270895",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/7/6/c6cad0f8-a0b9-4c8e-85e7-064fca03e75f.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "minOrder": 1,
+                            "maxOrder": 1,
+                            "clusterID": 0,
+                            "backColor": "",
+                            "textColor": "",
+                            "impression": "",
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "url": "",
+                                    "type": "red",
+                                    "title": "90%",
+                                    "position": "ribbon"
+                                }
+                            ],
+                            "attribution": "",
+                            "warehouseID": 0,
+                            "countReview": 0,
+                            "expiredTime": "",
+                            "slashedPrice": "Rp 1.000",
+                            "isOutOfStock": false,
+                            "hasBuyButton": false,
+                            "campaignCode": "",
+                            "ratingAverage": "",
+                            "labelTextColor": "#31353b",
+                            "soldPercentage": 0,
+                            "productClickUrl": "",
+                            "productImageUrl": "",
+                            "parentProductID": 0,
+                            "labelGroupVariant": [],
+                            "discountPercentage": 0,
+                            "recommendationType": "",
+                            "categoryBreadcrumbs": "",
+                            "productViewCountFormatted": ""
+                        },
+                        {
+                            "id": 7141021010,
+                            "url": "https://www.tokopedia.com/qa-cp-mt-npl/benih-pir-callery-manis-biji-repack?extParam=src%3Dmultiloc%26whid%3D10284966&source=homepage.kejar_diskon_carousel.0.270895",
+                            "name": "",
+                            "shop": {
+                                "id": 10222724,
+                                "url": "https://www.tokopedia.com/qa-cp-mt-npl?source=homepage.kejar_diskon_carousel.0.270895",
+                                "city": "",
+                                "name": "",
+                                "domain": "",
+                                "applink": "",
+                                "imageUrl": "",
+                                "reputation": ""
+                            },
+                            "price": "Rp 1.000.000",
+                            "label": "Tersedia",
+                            "stock": 0,
+                            "param": "",
+                            "rating": 0,
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "imageUrl": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ],
+                            "applink": "tokopedia://product/7141021010?extParam=src%3Dcampaign%26whid%3D10284966&source=homepage.kejar_diskon_carousel.0.270895",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2022/12/5/666c8a2c-c77e-419d-a0e5-059228a7ba69.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "minOrder": 1,
+                            "maxOrder": 1,
+                            "clusterID": 0,
+                            "backColor": "",
+                            "textColor": "",
+                            "impression": "",
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "url": "",
+                                    "type": "red",
+                                    "title": "80%",
+                                    "position": "ribbon"
+                                }
+                            ],
+                            "attribution": "",
+                            "warehouseID": 0,
+                            "countReview": 0,
+                            "expiredTime": "",
+                            "slashedPrice": "Rp 5.000.000",
+                            "isOutOfStock": false,
+                            "hasBuyButton": false,
+                            "campaignCode": "",
+                            "ratingAverage": "",
+                            "labelTextColor": "#31353b",
+                            "soldPercentage": 0,
+                            "productClickUrl": "",
+                            "productImageUrl": "",
+                            "parentProductID": 0,
+                            "labelGroupVariant": [],
+                            "discountPercentage": 0,
+                            "recommendationType": "",
+                            "categoryBreadcrumbs": "",
+                            "productViewCountFormatted": ""
+                        },
+                        {
+                            "id": 7141019905,
+                            "url": "https://www.tokopedia.com/qa-cp-mt-npl/benih-pir-callery-manis-biji-56gr?extParam=src%3Dmultiloc%26whid%3D10284966&source=homepage.kejar_diskon_carousel.0.270895",
+                            "name": "",
+                            "shop": {
+                                "id": 10222724,
+                                "url": "https://www.tokopedia.com/qa-cp-mt-npl?source=homepage.kejar_diskon_carousel.0.270895",
+                                "city": "",
+                                "name": "",
+                                "domain": "",
+                                "applink": "",
+                                "imageUrl": "",
+                                "reputation": ""
+                            },
+                            "price": "Rp 10.000",
+                            "label": "Tersedia",
+                            "stock": 0,
+                            "param": "",
+                            "rating": 0,
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "imageUrl": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                                }
+                            ],
+                            "applink": "tokopedia://product/7141019905?extParam=src%3Dcampaign%26whid%3D10284966&source=homepage.kejar_diskon_carousel.0.270895",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/hDjmkQ/2022/12/5/dd6750ed-0d5a-47ea-b308-e5425d5fc641.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "minOrder": 1,
+                            "maxOrder": 1,
+                            "clusterID": 0,
+                            "backColor": "",
+                            "textColor": "",
+                            "impression": "",
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "url": "",
+                                    "type": "red",
+                                    "title": "87%",
+                                    "position": "ribbon"
+                                }
+                            ],
+                            "attribution": "",
+                            "warehouseID": 0,
+                            "countReview": 0,
+                            "expiredTime": "",
+                            "slashedPrice": "Rp 75.000",
+                            "isOutOfStock": false,
+                            "hasBuyButton": false,
+                            "campaignCode": "",
+                            "ratingAverage": "",
+                            "labelTextColor": "#31353b",
+                            "soldPercentage": 0,
+                            "productClickUrl": "",
+                            "productImageUrl": "",
+                            "parentProductID": 0,
+                            "labelGroupVariant": [],
+                            "discountPercentage": 0,
+                            "recommendationType": "",
+                            "categoryBreadcrumbs": "",
+                            "productViewCountFormatted": ""
+                        }
+                    ],
+                    "layout": "kejar_diskon_carousel",
+                    "styleParam": "borderStyle=bleeding&dividerSize=8",
+                    "header": {
+                        "id": 290466,
+                        "url": "https://www.tokopedia.com/discovery/test-campaign?source=homepage.kejar_diskon_carousel.0.270895",
+                        "name": "Test KD Revamp ",
+                        "applink": "tokopedia://discovery/test-campaign?source=homepage.kejar_diskon_carousel.0.270895",
+                        "subtitle": "Berakhir dalam",
+                        "boxColor": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": "#000000",
+                        "timerColor": "",
+                        "serverTime": 1685434263,
+                        "expiredTime": "2023-06-02T17:00:00+07:00",
+                        "desktopName": "",
+                        "timerVariant": ""
+                    },
+                    "banner": {
+                        "id": 64809,
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "couponCode": ""
+                        },
+                        "url": "",
+                        "title": "",
+                        "applink": "",
+                        "imageUrl": "",
+                        "textColor": "#ffffff",
+                        "backColor": "",
+                        "description": "",
+                        "attribution": "",
+                        "gradientColor": [
+                            "#06A04A",
+                            "#1DCC67"
+                        ]
+                    },
+                    "persona": "",
+                    "brandID": "",
+                    "groupID": 240,
+                    "pageName": "",
+                    "persoType": 3,
+                    "categoryID": "{}",
+                    "campaignID": 2243508,
+                    "widgetParam": "",
+                    "dividerType": 1,
+                    "viewAllCard": {
+                        "id": 96314,
+                        "title": "+100",
+                        "imageUrl": "https://images.tokopedia.net/img/",
+                        "contentType": "title-as-integer",
+                        "description": "Produk kejar diskon lainnya",
+                        "gradientColor": [
+                            "#06A04A",
+                            "#1DCC67"
+                        ]
+                    },
+                    "campaignCode": "PG_30 May 23_[Test] home 29/05/2023 16:45_2243508",
+                    "campaignType": 0,
+                    "showPromoBadge": false,
+                    "pgCampaignType": "",
+                    "hasCloseButton": false,
+                    "contextualInfo": 0,
+                    "categoryPersona": "",
+                    "galaxyAttribution": "",
+                    "isAutoRefreshAfterExpired": false
+                },
+                {
+                    "id": 278879,
+                    "name": "Test new rilisan spesial",
+                    "type": "",
+                    "token": "",
+                    "grids": [
+                        {
+                            "id": 5084041545,
+                            "url": "https://www.tokopedia.com/skintific/skintific-symwhite-377-dark-spot-serum-brightening-serum-20ml?source=homepage.rilisan_spesial.0.278879",
+                            "name": "SKINTIFIC SymWhite 377 Dark Spot Serum Brightening Serum 20ml",
+                            "shop": {
+                                "id": 12307751,
+                                "url": "https://www.tokopedia.com/skintific?source=homepage.rilisan_spesial.0.278879",
+                                "city": "Kota Bekasi",
+                                "name": "Skintific Official Store",
+                                "domain": "",
+                                "applink": "tokopedia://shop/12307751?source_ref=homepage.rilisan_spesial.0.278879",
+                                "imageUrl": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/3/6/b9d7868f-c9dd-4b32-9518-756a0760b6e7.jpg",
+                                "reputation": ""
+                            },
+                            "price": "Rp 119.000",
+                            "label": "",
+                            "stock": 455,
+                            "param": "",
+                            "rating": 0,
+                            "badges": [],
+                            "applink": "tokopedia://product/5084041545?source=homepage.rilisan_spesial.0.278879",
+                            "benefit": {
+                                "type": "",
+                                "value": "Diskon Bundling 33%"
+                            },
+                            "discount": "30%",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/2/3/6c7e85d7-f0c0-4ec3-9326-7fb8c7eec698.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "minOrder": 1,
+                            "maxOrder": 0,
+                            "clusterID": 27032,
+                            "backColor": "",
+                            "textColor": "",
+                            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/2/3/6c7e85d7-f0c0-4ec3-9326-7fb8c7eec698.jpg",
+                            "freeOngkir": {
+                                "isActive": true,
+                                "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_normal.png"
+                            },
+                            "labelGroup": [
+                                {
+                                    "url": "",
+                                    "type": "lightGreen",
+                                    "title": "Cashback",
+                                    "position": "promo"
+                                },
+                                {
+                                    "url": "",
+                                    "type": "lightGrey",
+                                    "title": "Dilayani Tokopedia",
+                                    "position": "offers"
+                                }
+                            ],
+                            "attribution": "",
+                            "warehouseID": 13056835,
+                            "countReview": 0,
+                            "expiredTime": "",
+                            "slashedPrice": "Rp 169.000",
+                            "isOutOfStock": false,
+                            "hasBuyButton": false,
+                            "campaignCode": "",
+                            "ratingAverage": "",
+                            "labelTextColor": "",
+                            "soldPercentage": 0,
+                            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2265&event=click&experimentVersion=v1.4&page=0&page_name=shop_campaign_product_test&pid=5084041545&pos=1&recommendation=shop_campaign_product&rectype=shop_campaign_product&redirect=https://www.tokopedia.com/skintific/skintific-symwhite-377-dark-spot-serum-brightening-serum-20ml?catid2265=%26ref=shop_campaign_product_test_pa0_po1%26src=r3shop_campaign_product&tid=nn8YAWm0U4-nTs2Hgbd_1pqloEk=&uid=16939915&unique_id=&utime=1690991678&widget=r3_widget&xdevice=android-3.226",
+                            "productImageUrl": "",
+                            "parentProductID": 0,
+                            "labelGroupVariant": [],
+                            "discountPercentage": 30,
+                            "recommendationType": "shop_campaign_product",
+                            "categoryBreadcrumbs": "Kecantikan/Perawatan Wajah/Serum Wajah",
+                            "productViewCountFormatted": ""
+                        },
+                        {
+                            "id": 7053201407,
+                            "url": "https://www.tokopedia.com/lorealprofessionnel/l-oreal-professionnel-absolut-repair-hair-serum-rambut-rusak?source=homepage.rilisan_spesial.0.278879",
+                            "name": "L'Oreal Professionnel Absolut Repair Hair Serum- Rambut Rusak",
+                            "shop": {
+                                "id": 11104475,
+                                "url": "https://www.tokopedia.com/lorealprofessionnel?source=homepage.rilisan_spesial.0.278879",
+                                "city": "Kota Tangerang",
+                                "name": "L'Oreal Professionnel Official Store",
+                                "domain": "",
+                                "applink": "tokopedia://shop/11104475?source_ref=homepage.rilisan_spesial.0.278879",
+                                "imageUrl": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/4/1/88d8d607-6cc6-49a6-a513-d7706ad35baa.jpg",
+                                "reputation": ""
+                            },
+                            "price": "Rp 298.900",
+                            "label": "",
+                            "stock": 4,
+                            "param": "",
+                            "rating": 0,
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "imageUrl": "https://images.tokopedia.net/img/official_store_badge.png"
+                                }
+                            ],
+                            "applink": "tokopedia://product/7053201407?source=homepage.rilisan_spesial.0.278879",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "discount": "30%",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/8/1/e6d7ae8b-55db-4045-b5dd-6ea4f2a60109.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "minOrder": 1,
+                            "maxOrder": 0,
+                            "clusterID": 25457,
+                            "backColor": "",
+                            "textColor": "",
+                            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/1/e6d7ae8b-55db-4045-b5dd-6ea4f2a60109.jpg",
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "url": "",
+                                    "type": "lightGreen",
+                                    "title": "Cashback",
+                                    "position": "promo"
+                                }
+                            ],
+                            "attribution": "",
+                            "warehouseID": 11107181,
+                            "countReview": 0,
+                            "expiredTime": "",
+                            "slashedPrice": "Rp 427.000",
+                            "isOutOfStock": false,
+                            "hasBuyButton": false,
+                            "campaignCode": "",
+                            "ratingAverage": "",
+                            "labelTextColor": "",
+                            "soldPercentage": 0,
+                            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2172&event=click&experimentVersion=v1.4&page=0&page_name=shop_campaign_product_test&pid=7053201407&pos=2&recommendation=shop_campaign_product&rectype=shop_campaign_product&redirect=https://www.tokopedia.com/lorealprofessionnel/l-oreal-professionnel-absolut-repair-hair-serum-rambut-rusak?catid2172=%26ref=shop_campaign_product_test_pa0_po2%26src=r3shop_campaign_product&tid=nn8YAWm0U4-nTs2Hgbd_1pqloEk=&uid=16939915&unique_id=&utime=1690991678&widget=r3_widget&xdevice=android-3.226",
+                            "productImageUrl": "",
+                            "parentProductID": 0,
+                            "labelGroupVariant": [],
+                            "discountPercentage": 30,
+                            "recommendationType": "shop_campaign_product",
+                            "categoryBreadcrumbs": "Perawatan Tubuh/Perawatan Rambut/Vitamin & Serum Rambut",
+                            "productViewCountFormatted": ""
+                        }
+                    ],
+                    "layout": "rilisan_spesial",
+                    "styleParam": "dividerSize=8&borderStyle=bleeding",
+                    "header": {
+                        "id": 298450,
+                        "url": "https://www.tokopedia.com/discovery/gebyar-koleksi-spesial?source=homepage.rilisan_spesial.0.278879",
+                        "name": "Special releases today!",
+                        "applink": "tokopedia://discovery/gebyar-koleksi-spesial?source=homepage.rilisan_spesial.0.278879",
+                        "subtitle": "",
+                        "boxColor": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": "#212121",
+                        "timerColor": "",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "desktopName": "",
+                        "timerVariant": ""
+                    },
+                    "banner": {
+                        "id": 0,
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "couponCode": ""
+                        },
+                        "url": "",
+                        "title": "",
+                        "applink": "",
+                        "imageUrl": "",
+                        "textColor": "",
+                        "backColor": "",
+                        "description": "",
+                        "attribution": "",
+                        "gradientColor": []
+                    },
+                    "persona": "",
+                    "brandID": "",
+                    "groupID": 240,
+                    "pageName": "shop_campaign_product_test",
+                    "persoType": 1,
+                    "categoryID": "{}",
+                    "campaignID": 0,
+                    "widgetParam": "",
+                    "dividerType": 0,
+                    "viewAllCard": {
+                        "id": 0,
+                        "title": "",
+                        "imageUrl": "",
+                        "contentType": "",
+                        "description": "",
+                        "gradientColor": []
+                    },
+                    "campaignCode": "",
+                    "campaignType": 0,
+                    "showPromoBadge": true,
                     "pgCampaignType": "",
                     "hasCloseButton": false,
                     "contextualInfo": 0,

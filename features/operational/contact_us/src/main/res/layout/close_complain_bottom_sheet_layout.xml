@@ -43,7 +43,7 @@
         android:paddingTop="11dp"
         android:paddingBottom="11dp"
         android:text="@string/inbox_cancel"
-        android:textColor="@color/contact_us_dms_complain_bg"
+        android:textColor="@color/Unify_GN500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tv_yes_button"
         app:layout_constraintStart_toStartOf="parent"

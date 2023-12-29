@@ -1,7 +1,7 @@
 package com.tokopedia.product.addedit.category.common
 
-import com.tokopedia.core.common.category.domain.model.Category
-import com.tokopedia.core.common.category.view.model.CategoryViewModel
+import com.tokopedia.product.manage.common.feature.category.model.Category
+import com.tokopedia.product.manage.common.feature.category.model.CategoryUIModel
 import com.tokopedia.product.addedit.category.common.Constant.INCREMENT_CATEGORY_LEVEL
 import com.tokopedia.product.addedit.category.presentation.model.CategoryUiModel
 
@@ -20,11 +20,11 @@ object CategoryMapper {
         return listCategories
     }
 
-    fun mapCategoryUiModelToCategoryModel(categories: List<CategoryUiModel>): List<CategoryViewModel> {
-        val listCategories = mutableListOf<CategoryViewModel>()
+    fun mapCategoryUiModelToCategoryModel(categories: List<CategoryUiModel>): List<CategoryUIModel> {
+        val listCategories = mutableListOf<CategoryUIModel>()
         categories.forEach {
             if (it.categoryId.isNotBlank()) {
-                val category = CategoryViewModel().apply {
+                val category = CategoryUIModel().apply {
                     id = it.categoryId.toLong()
                     name = it.categoryName
                     isHasChild = it.child.isNotEmpty()

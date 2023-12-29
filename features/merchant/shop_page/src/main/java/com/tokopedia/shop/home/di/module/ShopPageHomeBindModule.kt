@@ -12,5 +12,4 @@ abstract class ShopPageHomeBindModule {
     @ShopPageHomeScope
     @Binds
     abstract fun bindPlayPerformanceDashboardAnalytic(analytic: PlayPerformanceDashboardEntryPointAnalyticImpl): PlayPerformanceDashboardEntryPointAnalytic
-
 }

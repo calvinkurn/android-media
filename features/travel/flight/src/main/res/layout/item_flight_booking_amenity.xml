@@ -19,7 +19,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             app:typographyType="body_2"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950_96"
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

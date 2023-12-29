@@ -364,12 +364,12 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
             CompoundButtonCompat.getButtonDrawable(checkboxAutoWD)
             checkboxAutoWD.isEnabled = isEnable
             if (isEnable) {
-                val textHeadingColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
-                val textBodyColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                val textHeadingColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
+                val textBodyColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
                 tvAutoWDTitle.setTextColor(textHeadingColor)
                 tvAutoWDAllBalanceAccording.setTextColor(textBodyColor)
             } else {
-                val textDisabledColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
+                val textDisabledColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32)
                 tvAutoWDTitle.setTextColor(textDisabledColor)
                 tvAutoWDAllBalanceAccording.setTextColor(textDisabledColor)
             }
@@ -380,18 +380,18 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         context?.let { context ->
             if (isEnable) {
                 ivAutoWDSchedule.isEnabled = isEnable
-                val imageEnableColor = tintDrawable(context, R.drawable.swd_ic_time, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                val imageEnableColor = tintDrawable(context, R.drawable.swd_ic_time, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 ivAutoWDSchedule.setImageDrawable(imageEnableColor)
-                val textHeadingColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
-                val textBodyColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                val textHeadingColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
+                val textBodyColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
                 tvAutoWDScheduleTitle.setTextColor(textHeadingColor)
                 tvAutoWDScheduleType.setTextColor(textBodyColor)
                 tvScheduleTiming.setTextColor(textBodyColor)
                 tvChangeAutoWDSchedule.visible()
             } else {
-                val imageDisableColor = tintDrawable(context, R.drawable.swd_ic_time, com.tokopedia.unifyprinciples.R.color.Unify_N100)
+                val imageDisableColor = tintDrawable(context, R.drawable.swd_ic_time, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
                 ivAutoWDSchedule.setImageDrawable(imageDisableColor)
-                val textDisabledColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
+                val textDisabledColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32)
                 tvAutoWDScheduleTitle.setTextColor(textDisabledColor)
                 tvAutoWDScheduleType.setTextColor(textDisabledColor)
                 tvScheduleTiming.setTextColor(textDisabledColor)
@@ -414,14 +414,14 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
     private fun enableBankAccountSection(isEnable: Boolean) {
         context?.let { context ->
             if (isEnable) {
-                val rpLogo = tintDrawable(context, R.drawable.swd_ic_transaction, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                val rpLogo = tintDrawable(context, R.drawable.swd_ic_transaction, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 ivDestinationAccount.setImageDrawable(rpLogo)
-                val textHeadingColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                val textHeadingColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96)
                 tvDestinationAccountTitle.setTextColor(textHeadingColor)
             } else {
-                val rpLogo = tintDrawable(context, R.drawable.swd_ic_transaction, com.tokopedia.unifyprinciples.R.color.Unify_N100)
+                val rpLogo = tintDrawable(context, R.drawable.swd_ic_transaction, com.tokopedia.unifyprinciples.R.color.Unify_NN200)
                 ivDestinationAccount.setImageDrawable(rpLogo)
-                val textDisabledColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
+                val textDisabledColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32)
                 tvDestinationAccountTitle.setTextColor(textDisabledColor)
             }
             enableBankAccountData(isEnable)
@@ -439,12 +439,12 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
     private fun enableBankAccountData(isEnable: Boolean) {
         context?.let { context ->
             if (isEnable) {
-                val textBodyColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                val textBodyColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
                 tvAutoWdBankAccountDetail.setTextColor(textBodyColor)
                 tvAutoWDBankName.setTextColor(textBodyColor)
                 tvAutoWdBankNote.setTextColor(textBodyColor)
             } else {
-                val textDisabledColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
+                val textDisabledColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_32)
                 tvAutoWdBankAccountDetail.setTextColor(textDisabledColor)
                 tvAutoWDBankName.setTextColor(textDisabledColor)
                 tvAutoWdBankNote.setTextColor(textDisabledColor)
@@ -468,7 +468,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         val spannableString = SpannableString(rekeningAccount)
         val startIndex = 0
         val endIndex = spannableString.length
-        val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
@@ -492,7 +492,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
         val spannableString = SpannableString(termCondition)
         val startIndex = 0
         val endIndex = spannableString.length
-        val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+        val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
         spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {

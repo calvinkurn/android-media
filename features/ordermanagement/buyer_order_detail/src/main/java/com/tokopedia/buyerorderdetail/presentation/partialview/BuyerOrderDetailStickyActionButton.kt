@@ -5,30 +5,42 @@ import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.View
 import android.view.View.OnClickListener
-import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
 import com.tokopedia.buyerorderdetail.presentation.helper.BuyerOrderDetailStickyActionButtonHandler
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.SavingsWidgetUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
-import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyImageButton
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.DarkModeUtil
 
 class BuyerOrderDetailStickyActionButton @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
-    private var motionLayout: MotionLayout? = null
+
     private var btnBuyerOrderDetailPrimaryActions: UnifyButton? = null
     private var btnBuyerOrderDetailSecondaryActions: UnifyImageButton? = null
+    private var savingWidgetButton: LinearLayoutCompat? = null
+
+    private var leftTextSavingWidget: Typography? = null
+    private var rightTextSavingWidget: Typography? = null
+    private var imgCenterSavingWidget: ImageUnify? = null
 
     private val primaryActionButtonClickListener: OnClickListener by lazy {
         createPrimaryActionButtonClickListener()
@@ -45,9 +57,11 @@ class BuyerOrderDetailStickyActionButton @JvmOverloads constructor(
         View.inflate(context, R.layout.partial_buyer_order_detail_sticky_action_buttons, this).run {
             btnBuyerOrderDetailPrimaryActions = findViewById(R.id.btnBuyerOrderDetailPrimaryActions)
             btnBuyerOrderDetailSecondaryActions = findViewById(R.id.btnBuyerOrderDetailSecondaryActions)
-            motionLayout = findViewById(R.id.buyerOrderDetailStickyActionButtons)
+            savingWidgetButton = findViewById(R.id.savingWidgetBuyerOrderDetail)
+            leftTextSavingWidget = findViewById(R.id.tvLeftSavingWidget)
+            rightTextSavingWidget= findViewById(R.id.tvRightSavingWidget)
+            imgCenterSavingWidget= findViewById(R.id.imgMiddleSavingWidget)
         }
-        setupSecondaryButton()
     }
 
     private fun createPrimaryActionButtonClickListener(): OnClickListener {
@@ -95,59 +109,34 @@ class BuyerOrderDetailStickyActionButton @JvmOverloads constructor(
         }
     }
 
-    private fun setupSecondaryButton() {
-        btnBuyerOrderDetailSecondaryActions?.apply {
-            background = GradientDrawable().apply {
-                shape = GradientDrawable.RECTANGLE
-                setColor(ContextCompat.getColor(context, android.R.color.transparent))
-                cornerRadius = resources.getDimension(
-                    com.tokopedia.unifycomponents.R.dimen.button_corner_radius
-                )
-                setStroke(
-                    resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width),
+    private fun setupSecondaryButton(secondaryActionButtons: List<ActionButtonsUiModel.ActionButton>) {
+        if (secondaryActionButtons.isNotEmpty()) {
+            btnBuyerOrderDetailSecondaryActions?.apply {
+                show()
+                background = GradientDrawable().apply {
+                    shape = GradientDrawable.RECTANGLE
+                    setColor(ContextCompat.getColor(context, android.R.color.transparent))
+                    cornerRadius = resources.getDimension(
+                        com.tokopedia.unifycomponents.R.dimen.button_corner_radius
+                    )
+                    setStroke(
+                        resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width),
+                        ContextCompat.getColor(
+                            context,
+                            R.color.buyer_order_detail_dms_secondary_action_button_stroke_color
+                        )
+                    )
+                }
+                setColorFilter(
                     ContextCompat.getColor(
                         context,
-                        R.color.buyer_order_detail_dms_secondary_action_button_stroke_color
+                        R.color.buyer_order_detail_dms_secondary_action_button_color_filter
                     )
                 )
+                setOnClickListener(secondaryActionButtonClickListener)
             }
-            setColorFilter(
-                ContextCompat.getColor(
-                    context,
-                    R.color.buyer_order_detail_dms_secondary_action_button_color_filter
-                )
-            )
-            setOnClickListener(secondaryActionButtonClickListener)
-        }
-    }
-
-    private fun animateChanges(animateChanges: Boolean, shouldShowSecondaryButton: Boolean) {
-        if (shouldShowSecondaryButton) {
-            animateShowAllButtons(animateChanges)
         } else {
-            animateShowPrimaryButtonOnly(animateChanges)
-        }
-    }
-
-    private fun animateShowAllButtons(animateChanges: Boolean) {
-        if (motionLayout?.currentState.orZero() == R.id.show_only_primary_buttons) {
-            motionLayout?.setTransition(R.id.show_only_primary_buttons, R.id.show_all_buttons)
-            if (animateChanges) {
-                motionLayout?.transitionToEnd()
-            } else {
-                motionLayout?.progress = 1f
-            }
-        }
-    }
-
-    private fun animateShowPrimaryButtonOnly(animateChanges: Boolean) {
-        if (motionLayout?.currentState.orZero() == R.id.show_all_buttons) {
-            motionLayout?.setTransition(R.id.show_all_buttons, R.id.show_only_primary_buttons)
-            if (animateChanges) {
-                motionLayout?.transitionToEnd()
-            } else {
-                motionLayout?.progress = 1f
-            }
+            btnBuyerOrderDetailSecondaryActions?.hide()
         }
     }
 
@@ -159,11 +148,52 @@ class BuyerOrderDetailStickyActionButton @JvmOverloads constructor(
         btnBuyerOrderDetailPrimaryActions?.isLoading = false
     }
 
-    fun setupActionButtons(actionButtonsUiModel: ActionButtonsUiModel, animateChanges: Boolean) {
+    fun setupActionButtons(actionButtonsUiModel: ActionButtonsUiModel) {
         if (actionButtonsUiModel.primaryActionButton.key.isNotBlank()) {
+            show()
             setupPrimaryButton(actionButtonsUiModel.primaryActionButton)
-            animateChanges(animateChanges, actionButtonsUiModel.secondaryActionButtons.isNotEmpty())
+            setupSecondaryButton(actionButtonsUiModel.secondaryActionButtons)
+        } else {
+            hide()
         }
+    }
+
+    fun setupSavingWidget(savingsWidgetUiModel: SavingsWidgetUiModel) {
+        savingWidgetButton?.show()
+        val tickerData = savingsWidgetUiModel.plusTicker
+        leftTextSavingWidget?.showIfWithBlock(tickerData.leftText.isNotEmpty()) {
+            text = HtmlLinkHelper(
+                context, DarkModeUtil.getHtmlTextDarkModeSupport(
+                    context,
+                    tickerData.leftText
+                )
+            ).spannedString
+        }
+
+        rightTextSavingWidget?.showIfWithBlock(tickerData.rightText.isNotEmpty()) {
+            text = HtmlLinkHelper(context, DarkModeUtil.getHtmlTextDarkModeSupport(
+                context,
+                tickerData.rightText
+            )).spannedString
+        }
+
+        imgCenterSavingWidget?.showIfWithBlock(tickerData.imageUrl.isNotEmpty()) {
+            loadImage(
+                tickerData.imageUrl
+            )
+        }
+
+        savingWidgetButton?.setOnClickListener {
+            stickyActionButtonHandler?.onSavingsWidgetClicked(
+                plusComponent = savingsWidgetUiModel.plusComponents,
+                isPlus = savingsWidgetUiModel.isPlus,
+                isMixPromo = tickerData.rightText.isNotEmpty()
+            )
+        }
+    }
+
+    fun hideSavingWidget() {
+        savingWidgetButton?.hide()
     }
 
     fun setViewModel(viewModel: BuyerOrderDetailViewModel) {

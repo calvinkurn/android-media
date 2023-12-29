@@ -23,7 +23,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_N700_44"
+                android:background="@color/Unify_NN950_44"
                 android:orientation="horizontal"
                 android:layout_alignParentBottom="true">
 
@@ -46,13 +46,13 @@
                         android:id="@+id/shop_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/Unify_N0" />
+                        android:textColor="@color/Unify_NN0" />
 
                     <TextView
                         android:id="@+id/shop_location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/Unify_N0"
+                        android:textColor="@color/Unify_NN0"
                         android:textSize="@dimen/fontvs"/>
                 </LinearLayout>
 

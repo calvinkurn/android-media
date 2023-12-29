@@ -63,7 +63,7 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         public ViewHolderEmpty(View itemView) {
             super(itemView);
-            emptyImage = itemView.findViewById(R.id.no_result_image);
+            emptyImage = itemView.findViewById(com.tokopedia.baselist.R.id.no_result_image);
         }
     }
 
@@ -94,7 +94,7 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private ViewHolderEmpty createViewEmpty(ViewGroup viewGroup) {
         ViewGroup parent = viewGroup;
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_view_no_result, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(com.tokopedia.baselist.R.layout.item_view_no_result, viewGroup, false);
         if (parent.getMeasuredHeight() < parent.getMeasuredWidth()) {
             view.setLayoutParams(new AbsListView.LayoutParams(-1, parent.getMeasuredWidth()));
         } else {
@@ -110,14 +110,14 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     private ViewHolderErrorNetworkState createViewErrorNetworkState(ViewGroup viewGroup) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.partial_empty_page_error, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(com.tokopedia.abstraction.R.layout.partial_empty_page_error, viewGroup, false);
         return new ViewHolderErrorNetworkState(view);
     }
 
     public ViewHolder createViewLoading(ViewGroup viewGroup) {
         ViewGroup parent = viewGroup;
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.loading_layout, viewGroup, false);
+                .inflate(com.tokopedia.baselist.R.layout.loading_layout, viewGroup, false);
         return new ViewHolder(view);
     }
 
@@ -131,7 +131,7 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
                 bindRetryHolder((ViewHolderRetry) viewHolder);
                 break;
             case TkpdState.RecyclerView.VIEW_EMPTY:
-                ImageHandler.loadImageWithId(((ViewHolderEmpty) viewHolder).emptyImage, R.drawable.status_no_result);
+                ImageHandler.loadImageWithId(((ViewHolderEmpty) viewHolder).emptyImage, com.tokopedia.abstraction.R.drawable.status_no_result);
                 break;
         }
     }

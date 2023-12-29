@@ -525,7 +525,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         binding?.rvMeals?.setHasFixedSize(true)
         binding?.rvMeals?.isNestedScrollingEnabled = false
         binding?.rvMeals?.adapter = mealAdapter
-        mealAdapter.setDescriptionTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
+        mealAdapter.setDescriptionTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500))
         mealAdapter.setViewModels(models)
         mealAdapter.notifyDataSetChanged()
     }
@@ -613,7 +613,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         binding?.rvLuggages?.setHasFixedSize(true)
         binding?.rvLuggages?.isNestedScrollingEnabled = false
         binding?.rvLuggages?.adapter = luggageAdapter
-        luggageAdapter.setDescriptionTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
+        luggageAdapter.setDescriptionTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500))
         luggageAdapter.setViewModels(models)
         luggageAdapter.notifyDataSetChanged()
 

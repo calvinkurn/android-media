@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lottie_reminder_off_on">https://assets.tokopedia.net/asts/android/content/play/play_widget_lottie_reminder_off_on.json</string>
+    <string name="lottie_reminder_on_off">https://assets.tokopedia.net/asts/android/content/play/play_widget_lottie_reminder_on_off.json</string>
+
+    <string name="lottie_sound_off_on">https://assets.tokopedia.net/asts/android/content/play/play_widget_lottie_sound_off_on.json</string>
+    <string name="lottie_sound_on_off">https://assets.tokopedia.net/asts/android/content/play/play_widget_lottie_sound_on_off.json</string>
+    <string name="lottie_sound_on_loop">https://assets.tokopedia.net/asts/android/content/play/play_widget_lottie_sound_on_loop.json</string>
+</resources>

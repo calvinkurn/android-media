@@ -1,23 +1,22 @@
 package com.tokopedia.sellerorder.filter.presentation.bottomsheet
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import androidx.cardview.widget.CardView
+import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.calendar.CalendarPickerView
-import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.PATTERN_DATE_PARAM
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
+import com.tokopedia.sellerorder.databinding.BottomSheetFilterDateBinding
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet.Companion.SOM_FILTER_DATE_BOTTOM_SHEET_TAG
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.TextFieldUnify
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import java.util.*
-
 
 class SomFilterDateBottomSheet : BottomSheetUnify() {
 
@@ -36,18 +35,11 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
 
     var selectedDates: List<Date> = emptyList()
 
-    private var calendarViewFilter: UnifyCalendar? = null
-    private var tfStartDate: TextFieldUnify? = null
-    private var tfEndDate: TextFieldUnify? = null
-    private var calendarView: CalendarPickerView? = null
-    private var btnSaveCalendar: UnifyButton? = null
-    private var cvSaveCalendar: CardView? = null
+    private var binding by autoClearedNullable<BottomSheetFilterDateBinding>()
 
     private var calenderFilterListener: CalenderListener? = null
 
     private var mode: CalendarPickerView.SelectionMode = CalendarPickerView.SelectionMode.RANGE
-
-    private var fm: FragmentManager? = null
 
     private var startDateParam = ""
     private var endDateParam = ""
@@ -59,17 +51,25 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val child: View = View.inflate(context, R.layout.bottom_sheet_filter_date, null)
         setTitle(TITLE_FILTER_DATE)
         clearContentPadding = true
         isFullpage = true
         setStyle(DialogFragment.STYLE_NORMAL, R.style.SomFilterDialogStyle)
-        setChild(child)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = BottomSheetFilterDateBinding.inflate(inflater, container, false)
+        setChild(binding?.root)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
+        initView()
         setupCalendarView()
         setDefaultSelectedDate()
         btnSaveCalendar()
@@ -81,39 +81,46 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
         updateShopActive()
     }
 
-    fun show() {
-        fm?.let {
-            show(it, SOM_FILTER_DATE_BOTTOM_SHEET_TAG)
+    override fun onDestroy() {
+        cleanupResources()
+        super.onDestroy()
+    }
+
+    fun show(fm: FragmentManager?) {
+        if (!isVisible) {
+            fm?.let {
+                show(it, SOM_FILTER_DATE_BOTTOM_SHEET_TAG)
+            }
         }
     }
 
-    fun setFragmentManager(fm: FragmentManager): SomFilterDateBottomSheet {
-        this.fm = fm
-        return this
+    private fun cleanupResources() {
+        selectedDates = emptyList()
+        calenderFilterListener = null
+        startDateParam = ""
+        endDateParam = ""
+        startDateEditText = ""
+        endDateEditText = ""
+        minDate = null
+        maxDate = null
     }
 
-    private fun initView(view: View) {
-        calendarViewFilter = view.findViewById(R.id.somFilterCalendar)
-        tfStartDate = view.findViewById(R.id.tfStartDate)
-        tfEndDate = view.findViewById(R.id.tfEndDate)
-        btnSaveCalendar = view.findViewById(R.id.btnSaveCalendar)
-        cvSaveCalendar = view.findViewById(R.id.cvSaveCalendar)
-        calendarView = calendarViewFilter?.calendarPickerView
-        tfStartDate?.textFieldInput?.isClickable = false
-        tfEndDate?.textFieldInput?.isClickable = false
-        tfStartDate?.textFieldInput?.isFocusable = false
-        tfEndDate?.textFieldInput?.isFocusable = false
+    private fun initView() {
+        binding?.tfStartDate?.textFieldInput?.isClickable = false
+        binding?.tfEndDate?.textFieldInput?.isClickable = false
+        binding?.tfStartDate?.textFieldInput?.isFocusable = false
+        binding?.tfEndDate?.textFieldInput?.isFocusable = false
     }
 
     private fun toggleBtnShowOrder() {
-        val isShowStartDate = tfStartDate?.textFieldInput?.text?.trim().toString().isNotBlank()
-        val isShowEndDate = tfEndDate?.textFieldInput?.text?.trim().toString().isNotBlank()
+        val isShowStartDate = binding?.tfStartDate?.textFieldInput?.text?.trim().toString().isNotBlank()
+        val isShowEndDate = binding?.tfEndDate?.textFieldInput?.text?.trim().toString().isNotBlank()
 
-        btnSaveCalendar?.isEnabled = (isShowStartDate || isShowEndDate)
+        binding?.btnSaveCalendar?.isEnabled = (isShowStartDate || isShowEndDate)
     }
 
     private fun setDefaultSelectedDate() {
-        calendarView?.let { cpv ->
+        binding?.somFilterCalendar?.calendarPickerView?.let { cpv ->
             val startDate = selectedDates.firstOrNull()
             val endDate = selectedDates.lastOrNull()
             startDate?.let {
@@ -139,7 +146,7 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
         val minDate = Utils.getNPastYearTimeStamp(YEARS_BACK)
         val maxDate = Utils.getNFutureMonthsTimeStamp(MONTHS_AHEAD)
 
-        calendarView?.let { cpv ->
+        binding?.somFilterCalendar?.calendarPickerView?.let { cpv ->
             cpv.init(minDate, maxDate, emptyList()).inMode(mode)
             cpv.scrollToDate(maxDate)
             cpv.selectDateClickListener()
@@ -164,7 +171,6 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
                     }
                     else -> {
                     }
-
                 }
             }
 
@@ -175,17 +181,17 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
     private fun selectEndDate(date: Date) {
         endDateParam = getSelectedDate(date, PATTERN_DATE_PARAM)
         endDateEditText = getSelectedDate(date, PATTER_DATE_EDT)
-        tfEndDate?.textFieldInput?.setText(getSelectedDate(date, PATTERN_DATE))
-        tfEndDate?.textFieldInput?.setSelection(tfEndDate?.textFieldInput?.text?.length ?: 0)
-        tfEndDate?.textFieldInput?.requestFocus()
+        binding?.tfEndDate?.textFieldInput?.setText(getSelectedDate(date, PATTERN_DATE))
+        binding?.tfEndDate?.textFieldInput?.setSelection(binding?.tfEndDate?.textFieldInput?.text?.length ?: 0)
+        binding?.tfEndDate?.textFieldInput?.requestFocus()
     }
 
     private fun selectStartDate(date: Date) {
         startDateParam = getSelectedDate(date, PATTERN_DATE_PARAM)
         startDateEditText = getSelectedDate(date, PATTER_DATE_EDT)
-        tfStartDate?.textFieldInput?.setText(getSelectedDate(date, PATTERN_DATE))
-        tfStartDate?.textFieldInput?.setSelection(tfStartDate?.textFieldInput?.text?.length ?: 0)
-        tfStartDate?.textFieldInput?.requestFocus()
+        binding?.tfStartDate?.textFieldInput?.setText(getSelectedDate(date, PATTERN_DATE))
+        binding?.tfStartDate?.textFieldInput?.setSelection(binding?.tfStartDate?.textFieldInput?.text?.length ?: 0)
+        binding?.tfStartDate?.textFieldInput?.requestFocus()
     }
 
     private fun getSelectedDate(date: Date, patternDate: String): String {
@@ -193,7 +199,7 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
     }
 
     private fun btnSaveCalendar() {
-        btnSaveCalendar?.setOnClickListener {
+        binding?.btnSaveCalendar?.setOnClickListener {
             calenderFilterListener?.onBtnSaveCalendarClicked(Pair(startDateParam, startDateEditText), Pair(endDateParam, endDateEditText))
             dismiss()
         }

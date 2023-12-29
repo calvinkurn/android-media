@@ -74,7 +74,7 @@
             app:typographyType="body_3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_address"
-            android:textColor="@color/Unify_N700_44"/>
+            android:textColor="@color/Unify_NN950_44"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_primary"
@@ -131,7 +131,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_8"
             android:gravity="center"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950_68"
             app:typographyType="body_2" />
 
         <com.tokopedia.unifycomponents.UnifyButton

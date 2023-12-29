@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/card_border"
+    android:padding="24dp">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_card"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:icon_name="CARD"
+        app:icon_color_light_enable="@color/Unify_GN500"
+        app:icon_color_night_enable="@color/Unify_GN500"
+        app:icon_enable_state="true"
+        android:visibility="gone"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toStartOf="@id/img_item"
+        app:layout_constraintTop_toTopOf="@id/img_item"
+        app:layout_constraintEnd_toEndOf="@id/img_item"
+        app:layout_constraintBottom_toBottomOf="@id/img_item"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_item"
+        android:layout_width="52dp"
+        android:layout_height="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title_ktp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/goto_kyc_onboard_progressive_item_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/img_item"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="paragraph_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_name_ktp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tv_title_ktp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_ktp"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="Far*** Nur** Fati****" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

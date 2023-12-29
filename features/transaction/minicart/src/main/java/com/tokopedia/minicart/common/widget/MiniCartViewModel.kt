@@ -71,8 +71,7 @@ class MiniCartViewModel @Inject constructor(
     private val miniCartListUiModelMapper: MiniCartListUiModelMapper,
     private val miniCartChatListUiModelMapper: MiniCartChatListUiModelMapper,
     private val userSession: UserSessionInterface
-) :
-    BaseViewModel(executorDispatchers.main) {
+) : BaseViewModel(executorDispatchers.main) {
 
     companion object {
         const val TEMPORARY_PARENT_ID_PREFIX = "tmp_"
@@ -262,8 +261,8 @@ class MiniCartViewModel @Inject constructor(
                 response
             )
         }, onError = {
-            hideProductBundleRecomShimmering(miniCartListUiModel)
-        })
+                hideProductBundleRecomShimmering(miniCartListUiModel)
+            })
     }
 
     private fun showProductBundleRecomShimmering(miniCartListUiModel: MiniCartListUiModel) {
@@ -322,7 +321,7 @@ class MiniCartViewModel @Inject constructor(
         bundlePosition: Int,
         priceCut: String,
         productDetails: List<ShopHomeBundleProductUiModel>,
-        productQuantity: Int
+        productQuantity: Int? = null
     ) {
         launchCatchError(context = executorDispatchers.io, block = {
             val productDetailsParam =

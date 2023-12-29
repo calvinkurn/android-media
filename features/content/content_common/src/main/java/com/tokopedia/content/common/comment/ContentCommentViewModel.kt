@@ -162,9 +162,9 @@ class ContentCommentViewModel @AssistedInject constructor(
             is CommentAction.PermanentRemoveComment -> deleteComment()
             is CommentAction.ReportComment -> reportComment(action.param)
             CommentAction.RequestReportAction -> handleOpenReport()
-            is CommentAction.SelectComment -> _selectedComment.update {
-                val item = action.comment
-                it.copy(first = item, second = _comments.value.list.indexOf(item))
+            is CommentAction.SelectComment -> {
+                val item = _comments.value.list.filterIsInstance<CommentUiModel.Item>().first { comment -> comment.id == action.id }
+                _selectedComment.value = Pair(first = item, second = _comments.value.list.indexOf(item))
             }
             is CommentAction.EditTextClicked -> handleEditTextClicked(action.item)
             is CommentAction.ReplyComment -> sendReply(action.comment, action.commentType)
@@ -270,7 +270,7 @@ class ContentCommentViewModel @AssistedInject constructor(
     }
 
     private fun undoComment() {
-        _comments.update {
+        _comments.getAndUpdate {
             val newList = it.list.toMutableList()
             newList.add(_selectedComment.value.second, _selectedComment.value.first)
             it.copy(list = newList)

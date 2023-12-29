@@ -28,4 +28,5 @@ object ShopScoreDeepLinkMapper {
             UriUtil.buildUriAppendParams(ApplinkConstInternalMarketplace.SHOP_PERFORMANCE, params)
         }
     }
+
 }

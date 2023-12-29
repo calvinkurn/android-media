@@ -38,4 +38,8 @@ class PlayMinimumCoverImageTransformer : ImageTransformer {
             Uri.fromFile(it)
         } ?: uri
     }
+
+    override fun parseToUri(id: String): Uri {
+        return Uri.parse(id)
+    }
 }

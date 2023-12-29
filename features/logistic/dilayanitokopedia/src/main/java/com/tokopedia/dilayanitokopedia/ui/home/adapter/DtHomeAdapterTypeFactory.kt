@@ -19,33 +19,13 @@ import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.listener.MixTopComponentListener
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
-import com.tokopedia.home_component.viewholders.CategoryNavigationViewHolder
-import com.tokopedia.home_component.viewholders.DynamicIconViewHolder
-import com.tokopedia.home_component.viewholders.DynamicLegoBannerSixAutoViewHolder
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
-import com.tokopedia.home_component.viewholders.FeaturedBrandViewHolder
-import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
-import com.tokopedia.home_component.viewholders.Lego4AutoBannerViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
-import com.tokopedia.home_component.viewholders.ProductHighlightComponentViewHolder
-import com.tokopedia.home_component.viewholders.QuestWidgetViewHolder
-import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHolder
-import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.home_component.visitable.BannerDataModel
-import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
-import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.home_component.visitable.DynamicLegoBannerSixAutoDataModel
-import com.tokopedia.home_component.visitable.FeaturedBrandDataModel
-import com.tokopedia.home_component.visitable.FeaturedShopDataModel
-import com.tokopedia.home_component.visitable.Lego4AutoDataModel
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
-import com.tokopedia.home_component.visitable.ProductHighlightDataModel
-import com.tokopedia.home_component.visitable.QuestWidgetModel
-import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
-import com.tokopedia.home_component.visitable.ReminderWidgetModel
 
 /**
  * Created by irpan on 12/09/22.
@@ -58,22 +38,6 @@ class DtHomeAdapterTypeFactory(
     private val homeTopCarouselListener: MixTopComponentListener? = null,
     private val homeLeftCarouselListener: MixLeftComponentListener? = null
 ) : BaseAdapterTypeFactory(), HomeTypeFactory, HomeComponentTypeFactory {
-
-    // region Global Home Component
-    override fun type(dynamicLegoBannerSixAutoDataModel: DynamicLegoBannerSixAutoDataModel): Int =
-        DynamicLegoBannerSixAutoViewHolder.LAYOUT
-
-    override fun type(recommendationListCarouselDataModel: RecommendationListCarouselDataModel): Int =
-        RecommendationListCarouselViewHolder.LAYOUT
-
-    override fun type(reminderWidgetModel: ReminderWidgetModel): Int = ReminderWidgetViewHolder.LAYOUT
-    override fun type(productHighlightDataModel: ProductHighlightDataModel): Int = ProductHighlightComponentViewHolder.LAYOUT
-    override fun type(lego4AutoDataModel: Lego4AutoDataModel) = Lego4AutoBannerViewHolder.LAYOUT
-    override fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int = CategoryNavigationViewHolder.LAYOUT
-    override fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int = DynamicIconViewHolder.LAYOUT
-    override fun type(featuredBrandDataModel: FeaturedBrandDataModel): Int = FeaturedBrandViewHolder.LAYOUT
-    override fun type(questWidgetModel: QuestWidgetModel): Int = QuestWidgetViewHolder.LAYOUT
-    override fun type(featuredShopDataModel: FeaturedShopDataModel): Int = FeaturedShopViewHolder.LAYOUT
 
     // currently used in DT
     override fun type(bannerDataModel: BannerDataModel): Int = BannerComponentViewHolder.LAYOUT

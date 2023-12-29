@@ -224,11 +224,8 @@ class DefaultViewHolder(
             textView.setOnClickListener {
                 clickActionButton(
                     itemView.context,
-                    actionButton.body.appURL,
-                    false
-                ){ uri ->
-                    eventDetailsListener.askPermission(uri, false, "")
-                }
+                    actionButton.body.appURL
+                )
             }
         }
     }

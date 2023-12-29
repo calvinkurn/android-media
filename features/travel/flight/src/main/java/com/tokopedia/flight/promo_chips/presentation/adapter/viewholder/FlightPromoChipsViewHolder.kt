@@ -34,7 +34,7 @@ class FlightPromoChipsViewHolder (val binding: ItemFlightPromoChipsBinding, priv
         with(binding){
             if (selected){
                 cardPromoChips.changeTypeWithTransition(CardUnify.TYPE_BORDER_ACTIVE)
-                flightPromochipsSideLine.setLabelType(com.tokopedia.unifyprinciples.R.color.Unify_G500)
+                flightPromochipsSideLine.setLabelType(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             }else{
                 cardPromoChips.changeTypeWithTransition(CardUnify.TYPE_BORDER)
                 flightPromochipsSideLine.setLabelType(Label.GENERAL_DARK_GREEN)

@@ -49,7 +49,7 @@ open class TopupBillsSearchNumberActivity : BaseSimpleActivity() {
         updateTitle(getString(R.string.common_topup_fav_number_title))
 
         //draw background without overdraw GPU
-        window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
 
         toolbar.elevation = 0f
         (toolbar as HeaderUnify).transparentMode = false

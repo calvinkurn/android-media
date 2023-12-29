@@ -5,12 +5,13 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductChooseAddressLayoutBinding
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
-import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.product.changeview.ChangeViewListener
+import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -19,6 +20,7 @@ internal class ChooseAddressViewHolder(
     private val chooseAddressListener: ChooseAddressListener,
     private val changeViewListener: ChangeViewListener,
     private val fragmentProvider: FragmentProvider,
+    private val isReimagineProductCard: Boolean,
 ): AbstractViewHolder<ChooseAddressDataView>(itemView) {
 
     companion object {
@@ -73,15 +75,25 @@ internal class ChooseAddressViewHolder(
     }
 
     private fun bindChangeViewButton() {
-        setChangeViewIcon(changeViewListener.viewType.icon)
+        val changeViewButton = binding?.searchProductChooseAddressChangeViewButton ?: return
 
-        binding?.searchProductChooseAddressChangeViewButton?.setOnClickListener {
-            changeViewListener.onChangeViewClicked()
+        changeViewButton.shouldShowWithAction(!isReimagineProductCard) {
             setChangeViewIcon(changeViewListener.viewType.icon)
+
+            changeViewButton.setOnClickListener {
+                changeViewListener.onChangeViewClicked()
+                setChangeViewIcon(changeViewListener.viewType.icon)
+            }
+
+            changeViewListener.checkShouldShowViewTypeOnBoarding()
         }
     }
 
     private fun setChangeViewIcon(id: Int) {
         binding?.searchProductChooseAddressChangeViewButton?.setImage(newIconId = id)
+    }
+
+    fun getChangeViewButton(): View? {
+        return binding?.searchProductChooseAddressChangeViewButton
     }
 }

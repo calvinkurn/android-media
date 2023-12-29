@@ -3,13 +3,13 @@ package com.tokopedia.play.broadcaster.setup.productsummary
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
-import com.tokopedia.play.broadcaster.helper.contains
 import com.tokopedia.play.broadcaster.helper.containsEventAction
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
-import com.tokopedia.play.broadcaster.type.OriginalPrice
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.seller.model.OriginalPrice
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.test.application.annotations.CassavaTest
 import io.mockk.mockk
 import org.junit.Rule
@@ -30,6 +30,12 @@ class ProductSummaryAnalyticTest {
             imageUrl = "",
             stock = 1,
             price = OriginalPrice("Rp ${it}000", it * 1000.0),
+            hasCommission = false,
+            commissionFmt = "",
+            commission = 0L,
+            extraCommission = false,
+            pinStatus = PinProductUiModel.Empty,
+            number = "",
         )
     }
 

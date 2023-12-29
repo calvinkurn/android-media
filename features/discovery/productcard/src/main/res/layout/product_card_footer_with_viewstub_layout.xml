@@ -6,7 +6,8 @@
     android:id="@+id/productCardFooterLayout"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:ignore="NotSibling">
 
     <ViewStub
         android:id="@+id/buttonNotifyStub"
@@ -37,7 +38,7 @@
         android:focusable="true"
         android:foreground="?selectableItemBackground"
         android:padding="6dp"
-        android:tint="@color/Unify_N400"
+        android:tint="@color/Unify_NN600"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/buttonAddToCart"
@@ -50,7 +51,7 @@
             android:contentDescription="@string/content_desc_imageRemoveFromWishlist"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:tint="@color/Unify_N400"
+            android:tint="@color/Unify_NN600"
             app:srcCompat="@drawable/ic_system_action_delete_black_24"/>
 
     </FrameLayout>
@@ -122,7 +123,7 @@
         android:id="@+id/textVariantQuantity"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/product_card_text_add_variant_quantity_height"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         tools:text="@string/product_card_text_variant_quantity_grid"
         android:visibility="gone"
         app:typographyType="small"
@@ -154,7 +155,7 @@
         android:focusable="true"
         android:foreground="?selectableItemBackground"
         android:padding="@dimen/product_card_button_secondary_padding"
-        android:tint="@color/Unify_N400"
+        android:tint="@color/Unify_NN600"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/rlPrimaryButtonWishlist"
@@ -166,7 +167,7 @@
             android:contentDescription="@string/content_desc_imageRemoveFromWishlist"
             android:layout_width="@dimen/product_card_button_image_secondary_width"
             android:layout_height="@dimen/product_card_button_image_secondary_height"
-            android:tint="@color/Unify_N400"
+            android:tint="@color/Unify_NN600"
             app:srcCompat="@drawable/product_card_ic_three_dots"/>
 
     </FrameLayout>
@@ -209,6 +210,17 @@
         android:layout_marginTop="@dimen/product_card_button_delete_product_margin_top"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rlPrimaryButtonWishlist"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ViewStub
+        android:id="@+id/buttonSeeOtherProductStub"
+        android:inflatedId="@+id/buttonSeeOtherProduct"
+        android:layout="@layout/product_card_see_other_product_button"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/product_card_button_delete_product_height"
+        android:layout_marginTop="@dimen/product_card_button_delete_product_margin_top"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonDeleteProduct"
         app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

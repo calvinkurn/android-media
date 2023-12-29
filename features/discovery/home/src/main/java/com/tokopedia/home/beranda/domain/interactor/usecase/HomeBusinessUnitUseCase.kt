@@ -19,7 +19,16 @@ class HomeBusinessUnitUseCase @Inject constructor(
                 tabList = data.tabBusinessList,
                 backColor = data.widgetHeader.backColor,
                 contentsList = data.tabBusinessList.withIndex()
-                    .map { BusinessUnitDataModel(tabName = it.value.name, tabPosition = it.index) })
+                    .map {
+                        BusinessUnitDataModel(
+                            tabId = it.value.id.toString(),
+                            tabName = it.value.name,
+                            tabPosition = it.index,
+                            channelId = buModel.channelId,
+                            campaignCode = buModel.campaignCode,
+                        )
+                    }
+            )
         } catch (e: Exception) {
             buModel.copy(tabList = listOf())
         }

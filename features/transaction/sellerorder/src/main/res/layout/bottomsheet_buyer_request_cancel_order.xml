@@ -26,7 +26,7 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:lineSpacingExtra="@dimen/spacing_lvl2"
         android:lineSpacingMultiplier="1.5"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="body_2"
         app:typographyWeight="reguler" />
 
@@ -51,7 +51,7 @@
         android:layout_toEndOf="@id/buyer_request_cancel_notes_left_icon"
         android:paddingStart="@dimen/layout_lvl0"
         android:paddingEnd="10dp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="heading_4" />
 
     <androidx.constraintlayout.widget.ConstraintLayout

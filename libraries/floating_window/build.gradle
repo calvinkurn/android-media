@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.floatingwindow'
+    testNamespace 'com.tokopedia.floatingwindow.test'
+}
+
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 

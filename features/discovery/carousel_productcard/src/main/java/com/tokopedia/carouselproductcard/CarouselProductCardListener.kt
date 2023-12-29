@@ -38,6 +38,10 @@ interface CarouselProductCardListener {
         fun onAddVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int)
     }
 
+    interface OnSeeOtherProductClickListener {
+        fun onSeeOtherProductClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int)
+    }
+
     interface OnViewAllCardClickListener {
         fun onViewAllCardClick()
     }

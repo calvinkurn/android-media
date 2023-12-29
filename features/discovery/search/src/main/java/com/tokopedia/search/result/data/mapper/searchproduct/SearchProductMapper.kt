@@ -3,6 +3,7 @@ package com.tokopedia.search.result.data.mapper.searchproduct
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.search.result.domain.model.AceSearchProductModel
+import com.tokopedia.search.result.domain.model.AceSearchProductModelV5
 import com.tokopedia.search.result.domain.model.GlobalSearchNavigationModel
 import com.tokopedia.search.result.domain.model.HeadlineAdsModel
 import com.tokopedia.search.result.domain.model.LastFilterModel
@@ -16,6 +17,9 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.GlobalSearchN
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationWidget
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchProduct
+import com.tokopedia.search.result.domain.model.SearchProductV5
+import com.tokopedia.search.result.domain.model.UserDOB
+import com.tokopedia.search.result.domain.model.UserProfileDobModel
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 import rx.functions.Func1
@@ -27,6 +31,7 @@ internal class SearchProductMapper : Func1<GraphqlResponse?, SearchProductModel?
 
         return SearchProductModel(
             searchProduct = graphqlResponse.getSearchProduct(),
+            searchProductV5 = graphqlResponse.getSearchProductV5(),
             quickFilterModel = graphqlResponse.getQuickFilter(),
             topAdsModel = graphqlResponse.getTopAdsModel(),
             cpmModel = graphqlResponse.getCPMModel(),
@@ -34,6 +39,7 @@ internal class SearchProductMapper : Func1<GraphqlResponse?, SearchProductModel?
             searchInspirationCarousel = graphqlResponse.getSearchInspirationCarousel(),
             searchInspirationWidget = graphqlResponse.getSearchInspirationWidget(),
             lastFilter = graphqlResponse.getLastFilter(),
+            userDOB = graphqlResponse.getUserProfile(),
         )
     }
 
@@ -41,6 +47,11 @@ internal class SearchProductMapper : Func1<GraphqlResponse?, SearchProductModel?
         getData<AceSearchProductModel>(AceSearchProductModel::class.java)
             ?.searchProduct
             ?: SearchProduct()
+
+    private fun GraphqlResponse.getSearchProductV5(): SearchProductV5 =
+        getData<AceSearchProductModelV5>(AceSearchProductModelV5::class.java)
+            ?.searchProduct
+            ?: SearchProductV5()
 
     private fun GraphqlResponse.getQuickFilter(): DataValue =
         getData<QuickFilterModel>(QuickFilterModel::class.java)
@@ -76,4 +87,9 @@ internal class SearchProductMapper : Func1<GraphqlResponse?, SearchProductModel?
         getData<LastFilterModel>(LastFilterModel::class.java)
             ?.lastFilter
             ?: LastFilter()
+
+    private fun GraphqlResponse.getUserProfile(): UserDOB =
+        getData<UserProfileDobModel>(UserProfileDobModel::class.java)
+            ?.userDOB
+            ?: UserDOB()
 }

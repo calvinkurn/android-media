@@ -1,22 +1,24 @@
 package com.tokopedia.home_component.viewholders
 
 import android.annotation.SuppressLint
+import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_component.R
-import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home_component.databinding.GlobalComponentMissionWidgetBinding
-import com.tokopedia.home_component.decoration.MissionWidgetItemDecoration
+import com.tokopedia.home_component.decoration.MissionWidgetCardItemDecoration
+import com.tokopedia.home_component.decoration.MissionWidgetClearItemDecoration
 import com.tokopedia.home_component.listener.MissionWidgetComponentListener
-import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselMissionWidgetDataModel
-import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
+import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
 import com.tokopedia.home_component.util.ChannelWidgetUtil
-import com.tokopedia.home_component.util.MissionWidgetUtil
-import com.tokopedia.home_component.viewholders.adapter.MissionWidgetAdapter
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
+import com.tokopedia.home_component.widget.common.carousel.CarouselListAdapter
+import com.tokopedia.home_component.widget.common.carousel.CommonCarouselDiffUtilCallback
+import com.tokopedia.home_component.widget.mission.MissionWidgetTypeFactory
+import com.tokopedia.home_component.widget.mission.MissionWidgetTypeFactoryImpl
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
@@ -27,90 +29,84 @@ import com.tokopedia.utils.view.binding.viewBinding
 @SuppressLint("PII Data Exposure")
 class MissionWidgetViewHolder(
     itemView: View,
-    private val missionWidgetComponentListener: MissionWidgetComponentListener,
-    private val cardInteraction: Boolean = false
+    private val missionWidgetComponentListener: MissionWidgetComponentListener
 ) : AbstractViewHolder<MissionWidgetListDataModel>(itemView) {
 
     companion object {
-        val LAYOUT = R.layout.global_component_mission_widget
+        val LAYOUT = home_componentR.layout.global_component_mission_widget
     }
 
     private var binding: GlobalComponentMissionWidgetBinding? by viewBinding()
-    private var adapter: MissionWidgetAdapter? = null
+    private val adapter by lazy {
+        CarouselListAdapter(
+            MissionWidgetTypeFactoryImpl(missionWidgetComponentListener),
+            CommonCarouselDiffUtilCallback()
+        )
+    }
+
+    init {
+        setupRecyclerView()
+    }
 
     private fun setHeaderComponent(element: MissionWidgetListDataModel) {
-        binding?.homeComponentHeaderView?.setChannel(
-            element.channelModel,
-            object : HeaderListener {
-                override fun onSeeAllClick(link: String) {
-                    // no-op
-                }
-
-                override fun onChannelExpired(channelModel: ChannelModel) {
-                    // no-op
-                }
-            }
-        )
+        binding?.homeComponentHeaderView?.bind(element.header)
     }
 
     private fun setChannelDivider(element: MissionWidgetListDataModel) {
         ChannelWidgetUtil.validateHomeComponentDivider(
-            channelModel = element.channelModel,
+            channelConfig = element.config,
             dividerTop = binding?.homeComponentDividerHeader,
             dividerBottom = binding?.homeComponentDividerFooter
         )
     }
 
-    private fun valuateRecyclerViewDecoration() {
-        if (binding?.homeComponentMissionWidgetRcv?.itemDecorationCount == 0) {
-            binding?.homeComponentMissionWidgetRcv?.addItemDecoration(
-                MissionWidgetItemDecoration()
-            )
-        }
+    private fun setupRecyclerView() {
+        binding?.homeComponentMissionWidgetRcv?.itemAnimator = null
         binding?.homeComponentMissionWidgetRcv?.layoutManager = LinearLayoutManager(
             itemView.context,
             LinearLayoutManager.HORIZONTAL,
             false
         )
-    }
-
-    private fun mappingItem(channel: ChannelModel, visitables: MutableList<Visitable<*>>) {
-        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel, cardInteraction)
-        adapter = MissionWidgetAdapter(visitables, typeFactoryImpl)
         binding?.homeComponentMissionWidgetRcv?.adapter = adapter
-        binding?.homeComponentMissionWidgetRcv?.scrollToPosition(0)
     }
 
-    private fun convertDataToMissionWidgetData(element: MissionWidgetListDataModel): MutableList<Visitable<*>> {
-        val list: MutableList<Visitable<*>> = mutableListOf()
-        val subtitleHeight = MissionWidgetUtil.findMaxHeightSubtitleText(
-            element.missionWidgetList,
-            itemView.context
-        )
-        for (missionWidget in element.missionWidgetList) {
-            list.add(
-                CarouselMissionWidgetDataModel(
-                    id = missionWidget.id,
-                    title = missionWidget.title,
-                    subTitle = missionWidget.subTitle,
-                    appLink = missionWidget.appLink,
-                    imageURL = missionWidget.imageURL,
-                    pageName = missionWidget.pageName,
-                    categoryID = missionWidget.categoryID,
-                    productID = missionWidget.productID,
-                    productName = missionWidget.productName,
-                    recommendationType = missionWidget.recommendationType,
-                    buType = missionWidget.buType,
-                    isTopads = missionWidget.isTopads,
-                    isCarousel = missionWidget.isCarousel,
-                    subtitleHeight = subtitleHeight,
-                    missionWidgetComponentListener = missionWidgetComponentListener,
-                    channel = element.channelModel,
-                    verticalPosition = adapterPosition
-                )
+    private fun valuateRecyclerViewDecoration(type: MissionWidgetListDataModel.Type) {
+        if (binding?.homeComponentMissionWidgetRcv?.itemDecorationCount == 0) {
+            val itemDecoration = if(type == MissionWidgetListDataModel.Type.CLEAR)
+                MissionWidgetClearItemDecoration()
+            else MissionWidgetCardItemDecoration()
+            val translationY = if(type == MissionWidgetListDataModel.Type.CLEAR) 0f
+            else itemView.context.resources.getDimension(home_componentR.dimen.home_component_card_compat_padding_translation_y)
+            binding?.homeComponentMissionWidgetRcv?.addItemDecoration(itemDecoration)
+            binding?.homeComponentMissionWidgetRcv?.translationY = translationY
+        }
+    }
+
+    private fun mappingItem(visitables: List<Visitable<MissionWidgetTypeFactory>>) {
+        adapter.submitList(visitables as? List<Visitable<CommonCarouselProductCardTypeFactory>>) {
+            binding?.homeComponentMissionWidgetRcv?.scrollToPosition(0)
+        }
+    }
+
+    private fun MissionWidgetListDataModel.convertToVisitables(): List<Visitable<MissionWidgetTypeFactory>> {
+        val titleHeight = missionWidgetUtil.findMaxTitleHeight(this, itemView.context)
+        val subtitleHeight = missionWidgetUtil.findMaxSubtitleHeight(this, itemView.context)
+        return missionWidgetList.mapIndexed { index, item ->
+            CarouselMissionWidgetDataModel(
+                data = item,
+                channelId = id,
+                channelName = name,
+                headerName = header.name,
+                withSubtitle = isWithSubtitle(),
+                titleHeight = titleHeight,
+                subtitleHeight = subtitleHeight,
+                verticalPosition = verticalPosition,
+                cardPosition = index,
+                animateOnPress = item.animateOnPress,
+                isCache = item.isCache,
+                type = type
             )
         }
-        return list
     }
 
     private fun setLayoutByStatus(element: MissionWidgetListDataModel) {
@@ -144,9 +140,7 @@ class MissionWidgetViewHolder(
                     binding?.shimmeringMissionWidget?.gone()
                     binding?.homeComponentHeaderView?.show()
                     binding?.homeComponentMissionWidgetRcv?.setHasFixedSize(true)
-                    valuateRecyclerViewDecoration()
-                    val visitables = convertDataToMissionWidgetData(element)
-                    mappingItem(element.channelModel, visitables)
+                    mappingItem(element.convertToVisitables())
                 }
             }
         } else {
@@ -163,10 +157,12 @@ class MissionWidgetViewHolder(
     }
 
     override fun bind(element: MissionWidgetListDataModel) {
+        valuateRecyclerViewDecoration(element.type)
         setLayoutByStatus(element)
     }
 
     override fun bind(element: MissionWidgetListDataModel, payloads: MutableList<Any>) {
+        if(payloads.isNotEmpty() && (payloads[0] as? Bundle)?.getBoolean(MissionWidgetListDataModel.PAYLOAD_IS_REFRESH, false) == true) return
         bind(element)
     }
 }

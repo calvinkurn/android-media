@@ -36,6 +36,11 @@ class PlayBroadcastPreparationBannerViewHolder(
                 description = mContext.getString(R.string.play_bro_banner_performance_subtitle)
                 icon = IconUnify.GRAPH_REPORT
             }
+            PlayBroadcastPreparationBannerModel.TYPE_SHORTS_AFFILIATE -> {
+                title = mContext.getString(R.string.play_bro_banner_shorts_join_affiliate_title)
+                description = mContext.getString(R.string.play_bro_banner_shorts_join_affiliate_description)
+                icon = IconUnify.SALDO
+            }
             else -> {
                 title = ""
                 description = ""

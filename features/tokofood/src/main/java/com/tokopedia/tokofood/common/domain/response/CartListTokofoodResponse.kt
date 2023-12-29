@@ -17,7 +17,7 @@ import kotlinx.parcelize.Parcelize
 
 data class CartListTokofoodResponse(
     @SerializedName("cart_general_cart_list")
-    val cartGeneralCartList: CartGeneralCartList 
+    val cartGeneralCartList: CartGeneralCartList  = CartGeneralCartList()
 )
 
 data class CartGeneralCartList(

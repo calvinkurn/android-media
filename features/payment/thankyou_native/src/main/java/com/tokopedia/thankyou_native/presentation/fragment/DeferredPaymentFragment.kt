@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.carousel.CarouselUnify
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
@@ -76,16 +77,25 @@ class DeferredPaymentFragment : ThankYouBaseFragment() {
                         highlightAmountDigits = true,
                         paymentType = paymentType
                     )
-                    showDigitAnnouncementTicker()
+                    showAnnouncementTicker(
+                        getString(R.string.thank_pending),
+                        getString(R.string.thank_exact_transfer_upto_3_digits)
+                    )
                 }
-                is VirtualAccount -> inflateWaitingUI(
-                    if (thanksPageData.gatewayName == GATEWAY_KLIK_BCA)
-                        getString(R.string.thank_klikBCA_virtual_account_tag)
-                    else
-                        getString(R.string.thank_virtual_account_tag),
-                    isCopyVisible = true, highlightAmountDigits = false,
-                    paymentType = paymentType
-                )
+                is VirtualAccount -> {
+                    inflateWaitingUI(
+                        if (thanksPageData.gatewayName == GATEWAY_KLIK_BCA)
+                            getString(R.string.thank_klikBCA_virtual_account_tag)
+                        else
+                            getString(R.string.thank_virtual_account_tag),
+                        isCopyVisible = true, highlightAmountDigits = false,
+                        paymentType = paymentType
+                    )
+                    showAnnouncementTicker(
+                        String.EMPTY,
+                        getString(R.string.thanks_va_ticker_description)
+                    )
+                }
                 is Retail -> inflateWaitingUI(
                     getString(R.string.thank_payment_code), isCopyVisible = true,
                     highlightAmountDigits = false,
@@ -119,7 +129,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment() {
             tvTotalAmount.setTextColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifycomponents.R.color.Unify_N700_96
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
                 )
             )
             val spannable =
@@ -130,7 +140,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment() {
                     ForegroundColorSpan(
                         ContextCompat.getColor(
                             it,
-                            com.tokopedia.unifycomponents.R.color.Unify_G500
+                            com.tokopedia.unifyprinciples.R.color.Unify_GN500
                         )
                     ),
                     startIndex, spannable.length,
@@ -228,17 +238,20 @@ class DeferredPaymentFragment : ThankYouBaseFragment() {
         setUpHomeButton(btnShopAgain)
     }
 
-    private fun showDigitAnnouncementTicker() {
-        tickerAnnouncementExactDigits.visible()
-        tickerAnnouncementExactDigits.tickerTitle = getString(R.string.thank_pending)
+    private fun showAnnouncementTicker(
+        title: String,
+        description: String,
+    ) {
+        tickerAnnouncement.visible()
+        tickerAnnouncement.tickerTitle = title
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            tickerAnnouncementExactDigits.setTextDescription(
+            tickerAnnouncement.setTextDescription(
                 HtmlUtil
-                    .fromHtml(getString(R.string.thank_exact_transfer_upto_3_digits)).trim()
+                    .fromHtml(description).trim()
             )
         } else {
-            tickerAnnouncementExactDigits
-                .setHtmlDescription(getString(R.string.thank_exact_transfer_upto_3_digits))
+            tickerAnnouncement
+                .setHtmlDescription(description)
         }
         view_divider_3.gone()
     }

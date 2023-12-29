@@ -24,8 +24,10 @@ class ErrorHandlingTestHelper(
 
     private fun `Then assert page show error with exception data`(throwable: Throwable) {
         val actualThrowable = baseViewModel.isShowErrorLiveData.value!!
+        val actualStopPerformanceMonitoring = baseViewModel.stopPerformanceMonitoringLiveData.value
 
         assertThat(actualThrowable, shouldBe(throwable))
+        assertThat(actualStopPerformanceMonitoring, shouldBe(Unit))
     }
 
     interface Callback {

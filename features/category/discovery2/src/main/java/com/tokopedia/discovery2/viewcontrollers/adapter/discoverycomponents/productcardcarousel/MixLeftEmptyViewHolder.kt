@@ -13,13 +13,13 @@ class MixLeftEmptyViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private var mixLeftData: MixLeft? = null
-    private lateinit var viewModel: MixLeftEmptyViewModel
+    private var viewModel: MixLeftEmptyViewModel? = null
 
     init {
         itemView.setOnClickListener {
             mixLeftData?.let {
                 if (!it.applink.isNullOrEmpty()) {
-                    (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackMixLeftBannerClick(viewModel.components)
+                    viewModel?.components?.let { it1 -> (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackMixLeftBannerClick(it1) }
                     RouteManager.route(fragment.context, it.applink)
                 }
             }
@@ -27,22 +27,22 @@ class MixLeftEmptyViewHolder(itemView: View, val fragment: Fragment) :
     }
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         viewModel = discoveryBaseViewModel as MixLeftEmptyViewModel
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().sendMixLeftBannerImpression(viewModel.components)
+        viewModel?.components?.let { (fragment as DiscoveryFragment).getDiscoveryAnalytics().sendMixLeftBannerImpression(it) }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let { lifecycle ->
-            viewModel.getMixLeftBannerDataLD().observe(lifecycle, { data ->
+            viewModel?.getMixLeftBannerDataLD()?.observe(lifecycle) { data ->
                 mixLeftData = data
-            })
+            }
         }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let { lifecycle ->
-            viewModel.getMixLeftBannerDataLD().removeObservers(lifecycle)
+            viewModel?.getMixLeftBannerDataLD()?.removeObservers(lifecycle)
         }
     }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.sellerhomecommon.presentation.model
 
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By @ilhamsuaib on 20/05/20
@@ -9,6 +10,7 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
 
 data class SectionWidgetUiModel(
     override val id: String,
+    override val sectionId: String,
     override val widgetType: String,
     override val title: String,
     override val subtitle: String,
@@ -29,8 +31,8 @@ data class SectionWidgetUiModel(
     override var emptyState: WidgetEmptyStateUiModel,
     override var useRealtime: Boolean = false,
     var shouldShow: Boolean = true,
-    var titleTextColorId: Int = com.tokopedia.unifyprinciples.R.color.Unify_N700_96,
-    var subTitleTextColorId: Int = com.tokopedia.unifyprinciples.R.color.Unify_N700_68,
+    var titleTextColorId: Int = unifyprinciplesR.color.Unify_NN950_96,
+    var subTitleTextColorId: Int = unifyprinciplesR.color.Unify_NN950_68,
 ) : BaseWidgetUiModel<BaseDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

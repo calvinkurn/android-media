@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 
 android {
+    namespace 'com.tokopedia.analyticsdebugger'
+    testNamespace 'com.tokopedia.analyticsdebugger.test'
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
@@ -8,8 +10,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 

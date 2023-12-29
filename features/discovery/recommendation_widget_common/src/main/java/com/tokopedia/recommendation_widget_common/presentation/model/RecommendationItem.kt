@@ -2,6 +2,9 @@ package com.tokopedia.recommendation_widget_common.presentation.model
 
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.recommendation_widget_common.extension.GRID_POS_BOTTOM_RIGHT
+import com.tokopedia.recommendation_widget_common.extension.GRID_POS_LEFT
+import com.tokopedia.recommendation_widget_common.extension.GRID_POS_TOP_RIGHT
 
 data class RecommendationItem(
     val productId: Long = 0L,
@@ -31,6 +34,7 @@ data class RecommendationItem(
     val shopId: Int = 0,
     val shopType: String = "",
     val shopName: String = "",
+    val warehouseId: Long = 0L,
     var cartId: String = "",
     var quantity: Int = 0,
     val header: String = "",
@@ -47,9 +51,9 @@ data class RecommendationItem(
     val isOfficial: Boolean = false,
     val specs: List<RecommendationSpecificationLabels> = listOf(),
     val addToCartType: AddToCartType = AddToCartType.None,
+    val gridPosition: GridPosition = GridPosition.None,
     // for tracker field
     val dimension61: String = "",
-    val anchorProductId: String = "",
     // for tokonow
     val parentID: Long = 0L,
     var currentQuantity: Int = 0 // change this quantity before atc/update/delete, if failed then return this value to quantity
@@ -59,6 +63,13 @@ data class RecommendationItem(
         DirectAtc,
         QuantityEditor,
         None
+    }
+
+    enum class GridPosition(val value: String) {
+        None(""),
+        Left(GRID_POS_LEFT),
+        TopRight(GRID_POS_TOP_RIGHT),
+        BottomRight(GRID_POS_BOTTOM_RIGHT)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -199,6 +210,8 @@ data class RecommendationItem(
             isVariant = isProductHasParentID(),
             stockQty = currentQuantity
         )
+
+    fun isUseQuantityEditor(): Boolean = addToCartType == AddToCartType.QuantityEditor
 }
 
 data class RecommendationSpecificationLabels(

@@ -10,5 +10,5 @@ import java.util.concurrent.TimeUnit
 class HomeRateLimiterTestModule {
     @HomeScope
     @Provides
-    fun provideHomeRateLimiter(): RateLimiter<String> = RateLimiter<String>(timeout = 10, timeUnit = TimeUnit.SECONDS)
+    fun provideHomeRateLimiter(): RateLimiter<String> = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.SECONDS)
 }

@@ -31,7 +31,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:text="@string/power_merchant_pro_status"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950_96"
                 app:layout_constraintStart_toStartOf="@id/middleGuideline"
                 app:typographyType="body_2"
                 app:typographyWeight="bold" />
@@ -41,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/Unify_NN950_68"
                 app:layout_constraintStart_toEndOf="@id/powerMerchantProText"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"

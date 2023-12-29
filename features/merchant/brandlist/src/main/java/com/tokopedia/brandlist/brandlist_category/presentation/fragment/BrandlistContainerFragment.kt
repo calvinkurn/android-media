@@ -230,7 +230,7 @@ class BrandlistContainerFragment : BaseDaggerFragment(),
             flags = flags?.or(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
             flags?.let { rootView?.setSystemUiVisibility(it) }
             context?.let {
-                activity?.window?.statusBarColor = androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                activity?.window?.statusBarColor = androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
             }
 
         }

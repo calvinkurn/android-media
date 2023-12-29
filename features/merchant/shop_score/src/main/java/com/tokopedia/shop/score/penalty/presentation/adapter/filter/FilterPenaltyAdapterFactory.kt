@@ -5,15 +5,24 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.score.penalty.presentation.adapter.FilterPenaltyBottomSheetListener
+import com.tokopedia.shop.score.penalty.presentation.adapter.FilterPenaltyDateListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemPenaltyEmptyViewHolder
 import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemPenaltyFilterBottomSheetViewHolder
+import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemPenaltyFilterDateViewHolder
+import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterDateUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 
-class FilterPenaltyAdapterFactory(private val itemBottomSheetListener: FilterPenaltyBottomSheetListener) :
-    BaseAdapterTypeFactory(), FilterPenaltyTypeFactory {
+class FilterPenaltyAdapterFactory(
+    private val itemBottomSheetListener: FilterPenaltyBottomSheetListener,
+    private val penaltyFilterPenaltyDateListener: FilterPenaltyDateListener? = null
+) : BaseAdapterTypeFactory(), FilterPenaltyTypeFactory {
 
     override fun type(penaltyFilterUiModel: PenaltyFilterUiModel): Int {
         return ItemPenaltyFilterBottomSheetViewHolder.LAYOUT
+    }
+
+    override fun type(penaltyFilterDateUiModel: PenaltyFilterDateUiModel): Int {
+        return ItemPenaltyFilterDateViewHolder.LAYOUT
     }
 
     override fun type(viewModel: LoadingModel?): Int {
@@ -27,6 +36,7 @@ class FilterPenaltyAdapterFactory(private val itemBottomSheetListener: FilterPen
                 itemBottomSheetListener
             )
             ItemPenaltyEmptyViewHolder.LAYOUT -> ItemPenaltyEmptyViewHolder(parent)
+            ItemPenaltyFilterDateViewHolder.LAYOUT -> ItemPenaltyFilterDateViewHolder(parent, penaltyFilterPenaltyDateListener)
             else -> super.createViewHolder(parent, type)
         }
     }

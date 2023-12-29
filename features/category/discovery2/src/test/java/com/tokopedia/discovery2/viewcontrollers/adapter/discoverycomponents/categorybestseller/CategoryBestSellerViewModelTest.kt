@@ -71,7 +71,7 @@ class CategoryBestSellerViewModelTest {
             every { componentsItem.pageEndPoint } returns "s"
             every { componentsItem.properties } returns null
             coEvery {
-                viewModel.productCardsUseCase.loadFirstPageComponents(
+                viewModel.productCardsUseCase?.loadFirstPageComponents(
                     any(),
                     any(),
                     any()
@@ -94,7 +94,7 @@ class CategoryBestSellerViewModelTest {
             every { componentsItem.getComponentsItem() } returns list
             every { componentsItem.properties } returns null
             coEvery {
-                viewModel.productCardsUseCase.loadFirstPageComponents(
+                viewModel.productCardsUseCase?.loadFirstPageComponents(
                     any(),
                     any(),
                     any()
@@ -116,7 +116,7 @@ class CategoryBestSellerViewModelTest {
         every { componentsItem.getComponentsItem() } returns list
         every { componentsItem.properties } returns null
         coEvery {
-            viewModel.productCardsUseCase.loadFirstPageComponents(
+            viewModel.productCardsUseCase?.loadFirstPageComponents(
                 any(),
                 any(),
                 any()
@@ -124,7 +124,7 @@ class CategoryBestSellerViewModelTest {
         } returns mockk()
 
         viewModel.onAttachToViewHolder()
-        assert(viewModel.getBackgroundImage().value == null)
+        assert(viewModel.getBackgroundImage().value == "")
     }
 
     @Test
@@ -138,7 +138,7 @@ class CategoryBestSellerViewModelTest {
         every { componentsItem.properties } returns mockProperties
         every { mockProperties.backgroundImageUrl } returns "url"
         coEvery {
-            viewModel.productCardsUseCase.loadFirstPageComponents(
+            viewModel.productCardsUseCase?.loadFirstPageComponents(
                 any(),
                 any(),
                 any()
@@ -147,7 +147,6 @@ class CategoryBestSellerViewModelTest {
 
         viewModel.onAttachToViewHolder()
         assert(viewModel.getBackgroundImage().value == "url")
-
     }
 
     @Test
@@ -164,9 +163,9 @@ class CategoryBestSellerViewModelTest {
         every { componentsItem.getComponentsItem() } returns list
         every { componentsItem.properties } returns null
         coEvery { application.applicationContext } returns context
-        val productArray : ArrayList<ProductCardModel> = mockk(relaxed = true)
+        val productArray: ArrayList<ProductCardModel> = mockk(relaxed = true)
         coEvery {
-            viewModel.productCardsUseCase.loadFirstPageComponents(
+            viewModel.productCardsUseCase?.loadFirstPageComponents(
                 any(),
                 any(),
                 any()
@@ -175,7 +174,7 @@ class CategoryBestSellerViewModelTest {
 
         every {
             runBlocking {
-                productArray.getMaxHeightForGridView(context = context, coroutineDispatcher = rule1.dispatchers.default , productImageWidth = 1)
+                productArray.getMaxHeightForGridView(context = context, coroutineDispatcher = rule1.dispatchers.default, productImageWidth = 1)
             }
         } answers {
             0
@@ -194,7 +193,7 @@ class CategoryBestSellerViewModelTest {
         every { componentsItem.getComponentsItem() } returns list
         every { componentsItem.properties } returns null
         coEvery {
-            viewModel.productCardsUseCase.loadFirstPageComponents(
+            viewModel.productCardsUseCase?.loadFirstPageComponents(
                 any(),
                 any(),
                 any()
@@ -215,7 +214,7 @@ class CategoryBestSellerViewModelTest {
         every { componentsItem.getComponentsItem() } returns list
         every { componentsItem.properties } returns null
         coEvery {
-            viewModel.productCardsUseCase.loadFirstPageComponents(
+            viewModel.productCardsUseCase?.loadFirstPageComponents(
                 any(),
                 any(),
                 any()
@@ -227,7 +226,6 @@ class CategoryBestSellerViewModelTest {
     }
 
     /**************************** onAttachToViewHolder() *******************************************/
-
 
     @After
     @Throws(Exception::class)

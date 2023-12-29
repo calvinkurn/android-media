@@ -34,7 +34,7 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         android:ellipsize="end"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         android:gravity="center_horizontal"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -44,7 +44,7 @@
         android:lines="1"
         android:ellipsize="end"
         android:layout_marginTop="2dp"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         android:visibility="gone"

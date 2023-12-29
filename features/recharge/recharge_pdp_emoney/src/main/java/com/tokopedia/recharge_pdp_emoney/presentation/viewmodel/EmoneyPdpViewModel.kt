@@ -3,28 +3,44 @@ package com.tokopedia.recharge_pdp_emoney.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.product.CatalogData
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
+import com.tokopedia.common.topupbills.favoritecommon.data.TopupBillsPersoFavNumberData
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogPrefixSelectUseCase
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogProductInputUseCase
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
+import com.tokopedia.recharge_pdp_emoney.presentation.domain.GetBCAGenCheckerUseCase
+import com.tokopedia.recharge_pdp_emoney.presentation.model.EmoneyBCAGenCheckModel
+import com.tokopedia.recharge_pdp_emoney.presentation.model.EmoneyDppoConsentModel
+import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpMapper.mapDigiPersoToBCAGenCheck
+import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpMapper.mapDppoConsentToEmoneyModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.CancellationException
 import javax.inject.Inject
 
 /**
  * @author by jessica on 01/04/21
  */
-class EmoneyPdpViewModel @Inject constructor(private val userSession: UserSessionInterface,
-                                             private val rechargeCatalogPrefixSelectUseCase: RechargeCatalogPrefixSelectUseCase,
-                                             private val rechargeCatalogProductInputUseCase: RechargeCatalogProductInputUseCase)
-    : ViewModel() {
+class EmoneyPdpViewModel @Inject constructor(
+    private val userSession: UserSessionInterface,
+    private val rechargeCatalogPrefixSelectUseCase: RechargeCatalogPrefixSelectUseCase,
+    private val rechargeCatalogProductInputUseCase: RechargeCatalogProductInputUseCase,
+    private val getDppoConsentUseCase: GetDppoConsentUseCase,
+    private val getBCAGenCheckerUseCase: GetBCAGenCheckerUseCase
+) : ViewModel() {
+
+    var bcaCheckGenJob: Job? = null
 
     private val _inputViewError = MutableLiveData<String>()
     val inputViewError: LiveData<String>
@@ -49,6 +65,14 @@ class EmoneyPdpViewModel @Inject constructor(private val userSession: UserSessio
     private val _catalogData = MutableLiveData<Result<CatalogData>>()
     val catalogData: LiveData<Result<CatalogData>>
         get() = _catalogData
+
+    private val mutableDppoConsent = MutableLiveData<Result<EmoneyDppoConsentModel>>()
+    val dppoConsent: LiveData<Result<EmoneyDppoConsentModel>>
+        get() = mutableDppoConsent
+
+    private val mutableBcaGenCheckerResult = MutableLiveData<Result<EmoneyBCAGenCheckModel>>()
+    val bcaGenCheckerResult: LiveData<Result<EmoneyBCAGenCheckModel>>
+        get() = mutableBcaGenCheckerResult
 
     var digitalCheckoutPassData = DigitalCheckoutPassData()
 
@@ -80,6 +104,28 @@ class EmoneyPdpViewModel @Inject constructor(private val userSession: UserSessio
             }
         } catch (e: Throwable) {
             _inputViewError.value = errorNotFoundString
+        }
+    }
+
+    fun getBCAGenCheck(clientNumber: String) {
+        bcaCheckGenJob = viewModelScope.launchCatchError(block = {
+            val data = getBCAGenCheckerUseCase.execute(listOf(clientNumber))
+            val mappedBCAData = mapDigiPersoToBCAGenCheck(data)
+            mutableBcaGenCheckerResult.postValue(Success(mappedBCAData))
+        }){
+            if (it !is CancellationException) {
+                mutableBcaGenCheckerResult.postValue(Fail(it))
+            }
+        }
+    }
+
+    fun getDppoConsent() {
+        viewModelScope.launchCatchError(block = {
+            val data = getDppoConsentUseCase.execute(EMONEY_CATEGORY_ID)
+            val eventModel = mapDppoConsentToEmoneyModel(data)
+            mutableDppoConsent.postValue(Success(eventModel))
+        }) {
+            mutableDppoConsent.postValue(Fail(it))
         }
     }
 
@@ -120,7 +166,7 @@ class EmoneyPdpViewModel @Inject constructor(private val userSession: UserSessio
             this.clientNumber = clientNumber
             productId = selectedProductId ?: selectedProduct.value?.id
             operatorId = selectedOperatorId ?: selectedOperator.value?.key
-            categoryId = categoryIdFromPDP ?: EMONEY_CATEGORY_ID
+            categoryId = categoryIdFromPDP ?: EMONEY_CATEGORY_ID.toString()
             isFromPDP = true
         }
 
@@ -128,8 +174,18 @@ class EmoneyPdpViewModel @Inject constructor(private val userSession: UserSessio
         return digitalCheckoutPassData
     }
 
+    fun selectedOperatorIsBCA(): Boolean {
+        return selectedOperator.value?.operator?.attributes?.name?.contains(BCA_OPERATOR_NAME) ?: false
+    }
+
+    fun cancelBCACheckGenJob() {
+        bcaCheckGenJob?.cancel()
+    }
+
     companion object {
         const val ERROR_GRPC_TIMEOUT = "grpc timeout"
-        const val EMONEY_CATEGORY_ID = "34"
+        const val EMONEY_CATEGORY_ID = 34
+
+        const val BCA_OPERATOR_NAME = "BCA"
     }
 }

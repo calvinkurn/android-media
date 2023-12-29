@@ -1,14 +1,15 @@
 package com.tokopedia.tokochat.base
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.tokochat.common.util.TokoChatCacheManager
+import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
 import com.tokopedia.tokochat.domain.usecase.*
 import com.tokopedia.tokochat.util.TokoChatViewUtil
 import com.tokopedia.tokochat.view.chatroom.TokoChatViewModel
 import com.tokopedia.tokochat.view.chatroom.uimodel.TokoChatImageAttachmentExtensionProvider
-import com.tokopedia.tokochat_common.util.TokoChatCacheManager
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usercomponents.userconsent.domain.collection.GetNeedConsentUseCase
-import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.spyk
@@ -27,13 +28,19 @@ abstract class TokoChatViewModelTestFixture {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
+    val coroutineTestRule = UnconfinedTestRule()
 
     @RelaxedMockK
-    protected lateinit var getChannelUseCase: TokoChatChannelUseCase
+    protected lateinit var tokoChatGroupBookingUseCase: TokoChatGroupBookingUseCase
+
+    @RelaxedMockK
+    protected lateinit var tokoChatRoomUseCase: TokoChatRoomUseCase
 
     @RelaxedMockK
     protected lateinit var getChatHistoryUseCase: TokoChatGetChatHistoryUseCase
+
+    @RelaxedMockK
+    protected lateinit var tokoChatMemberUseCase: TokoChatMemberUseCase
 
     @RelaxedMockK
     protected lateinit var markAsReadUseCase: TokoChatMarkAsReadUseCase
@@ -66,6 +73,9 @@ abstract class TokoChatViewModelTestFixture {
     protected lateinit var getNeedConsentUseCase: GetNeedConsentUseCase
 
     @RelaxedMockK
+    protected lateinit var getTokopediaOrderIdUseCase: TokoChatGetTokopediaOrderIdUseCase
+
+    @RelaxedMockK
     protected lateinit var imageAttachmentExtensionProvider: TokoChatImageAttachmentExtensionProvider
 
     @RelaxedMockK
@@ -82,8 +92,10 @@ abstract class TokoChatViewModelTestFixture {
         MockKAnnotations.init(this)
         viewModel = spyk(
             TokoChatViewModel(
-                getChannelUseCase,
+                tokoChatGroupBookingUseCase,
+                tokoChatRoomUseCase,
                 getChatHistoryUseCase,
+                tokoChatMemberUseCase,
                 markAsReadUseCase,
                 registrationChannelUseCase,
                 sendMessageUseCase,
@@ -94,6 +106,7 @@ abstract class TokoChatViewModelTestFixture {
                 getImageUrlUseCase,
                 uploadImageUseCase,
                 getNeedConsentUseCase,
+                getTokopediaOrderIdUseCase,
                 viewUtil,
                 imageAttachmentExtensionProvider,
                 cacheManager,

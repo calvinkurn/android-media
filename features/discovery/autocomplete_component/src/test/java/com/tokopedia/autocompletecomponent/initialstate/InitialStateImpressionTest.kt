@@ -90,6 +90,7 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
     @Test
     fun `Test get initial state impression with see more`() {
         val initialStateData = initialStateWithShowMoreResponse.jsonToObject<InitialStateUniverse>()
+        `Given rollance is off`()
         `Given view already get initial state`(initialStateData)
 
         `Then verify initial state impression is called`()
@@ -177,7 +178,7 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         `Given view already get initial state`(listInitialStateData)
 
         `Then verify initial state view will call showInitialStateResult behavior`()
-        `Then verify view interaction for load data failed with exception`()
+        `Then verify view interaction for load data with empty item`()
     }
 
     private fun `Then verify initial state view will call showInitialStateResult behavior`() {

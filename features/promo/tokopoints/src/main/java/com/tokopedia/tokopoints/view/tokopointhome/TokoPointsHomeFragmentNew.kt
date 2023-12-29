@@ -70,7 +70,6 @@ import com.tokopedia.tokopoints.view.util.CommonConstant.SectionLayoutType.Compa
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -188,7 +187,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             if (context != null) {
                 activity?.window?.statusBarColor = androidx.core.content.ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
                 )
             }
         }
@@ -308,8 +307,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         dynamicActionList?.forEachIndexed { index, it ->
             it?.let { item ->
                 tokoPointToolbar?.addItem(it)?.apply {
-                    toolbarItemList.add(this.notif_dynamic)
-                    setOnClickListener {
+                    toolbarItemList.add(notifDynamic)
+                    root.setOnClickListener {
                         RouteManager.route(context, item.cta?.appLink)
                         hideNotification(index, dynamicActionList)
 

@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/pdp_play_widget_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
-        android:layout_height="2dp" />
+        android:layout_height="@dimen/thick_divider_height_component" />
 
     <com.tokopedia.play.widget.ui.PlayWidgetView
         android:id="@+id/pdp_play_widget_view"

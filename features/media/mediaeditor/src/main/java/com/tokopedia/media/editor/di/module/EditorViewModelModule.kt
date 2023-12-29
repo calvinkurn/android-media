@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.media.editor.ui.activity.addtext.AddTextViewModel
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.activity.main.EditorViewModel
 import dagger.Binds
@@ -29,5 +30,11 @@ abstract class EditorViewModelModule {
     @ActivityScope
     @ViewModelKey(EditorViewModel::class)
     internal abstract fun getEditorViewModel(viewModel: EditorViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ActivityScope
+    @ViewModelKey(AddTextViewModel::class)
+    internal abstract fun getAddTextViewModel(viewModel: AddTextViewModel): ViewModel
 
 }

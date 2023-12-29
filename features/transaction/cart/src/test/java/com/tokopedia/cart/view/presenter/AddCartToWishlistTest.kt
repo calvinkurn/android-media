@@ -1,7 +1,6 @@
 package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.cart.domain.model.cartlist.AddCartToWishlistData
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.usecase.coroutines.Fail
@@ -39,9 +38,7 @@ class AddCartToWishlistTest : BaseCartTest() {
             message = "success"
         }
 
-        every { addCartToWishlistUseCase.createObservable(any()) } returns Observable.just(
-            addToCartWishlistData
-        )
+        coEvery { addCartToWishlistUseCase(any()) } returns addToCartWishlistData
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
 
         // When
@@ -81,9 +78,7 @@ class AddCartToWishlistTest : BaseCartTest() {
             message = "failed"
         }
 
-        every { addCartToWishlistUseCase.createObservable(any()) } returns Observable.just(
-            addToCartWishlistData
-        )
+        coEvery { addCartToWishlistUseCase(any()) } returns addToCartWishlistData
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
 
         // When
@@ -111,9 +106,7 @@ class AddCartToWishlistTest : BaseCartTest() {
         val forceExpandCollapsedUnavailableItems = false
         val exception = ResponseErrorException("Error")
 
-        every { addCartToWishlistUseCase.createObservable(any()) } returns Observable.error(
-            exception
-        )
+        coEvery { addCartToWishlistUseCase(any()) } throws exception
         every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
 
         // When
@@ -226,37 +219,14 @@ class AddCartToWishlistTest : BaseCartTest() {
 
     @Test
     fun `verify get wishlistV2 returns success`() {
-        val districtId = "123"
-        val cityId = "45"
-        val lat = "10.2131"
-        val long = "12.01324"
-        val postalCode = "12345"
-        val addressId = "123"
-        val lca = LocalCacheModel(
-            district_id = districtId,
-            city_id = cityId,
-            lat = lat,
-            long = long,
-            postal_code = postalCode,
-            address_id = addressId
-        )
         val wishlistParam = WishlistV2Params(
-            source = "cart",
-            wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
-                districtId = districtId,
-                cityId = cityId,
-                latitude = lat,
-                longitude = long,
-                postalCode = postalCode,
-                addressId = addressId
-            )
+            source = "cart"
         )
         val wishlistV2 = GetWishlistV2Response.Data.WishlistV2(totalData = 10)
 
         every { getWishlistV2UseCase.setParams(wishlistParam) } just Runs
         coEvery { getWishlistV2UseCase.executeOnBackground() } returns Success(wishlistV2)
 
-        cartListPresenter.setLocalizingAddressData(lca)
         cartListPresenter.processGetWishlistV2Data()
 
         verify { getWishlistV2UseCase.setParams(wishlistParam) }
@@ -266,36 +236,13 @@ class AddCartToWishlistTest : BaseCartTest() {
     @Test
     fun `verify get wishlistV2 returns fail`() {
         val mockThrowable = mockk<Throwable>("fail")
-        val districtId = "123"
-        val cityId = "45"
-        val lat = "10.2131"
-        val long = "12.01324"
-        val postalCode = "12345"
-        val addressId = "123"
-        val lca = LocalCacheModel(
-            district_id = districtId,
-            city_id = cityId,
-            lat = lat,
-            long = long,
-            postal_code = postalCode,
-            address_id = addressId
-        )
         val wishlistParam = WishlistV2Params(
-            source = "cart",
-            wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
-                districtId = districtId,
-                cityId = cityId,
-                latitude = lat,
-                longitude = long,
-                postalCode = postalCode,
-                addressId = addressId
-            )
+            source = "cart"
         )
 
         every { getWishlistV2UseCase.setParams(wishlistParam) } just Runs
         coEvery { getWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
 
-        cartListPresenter.setLocalizingAddressData(lca)
         cartListPresenter.processGetWishlistV2Data()
 
         verify { getWishlistV2UseCase.setParams(wishlistParam) }
@@ -311,36 +258,13 @@ class AddCartToWishlistTest : BaseCartTest() {
         listItem.add(GetWishlistV2Response.Data.WishlistV2.Item(id = "4"))
         listItem.add(GetWishlistV2Response.Data.WishlistV2.Item(id = "5"))
         val wishlistV2 = GetWishlistV2Response.Data.WishlistV2(totalData = 5, items = listItem)
-        val districtId = "123"
-        val cityId = "45"
-        val lat = "10.2131"
-        val long = "12.01324"
-        val postalCode = "12345"
-        val addressId = "123"
-        val lca = LocalCacheModel(
-            district_id = districtId,
-            city_id = cityId,
-            lat = lat,
-            long = long,
-            postal_code = postalCode,
-            address_id = addressId
-        )
         val wishlistParam = WishlistV2Params(
-            source = "cart",
-            wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
-                districtId = districtId,
-                cityId = cityId,
-                latitude = lat,
-                longitude = long,
-                postalCode = postalCode,
-                addressId = addressId
-            )
+            source = "cart"
         )
 
         every { getWishlistV2UseCase.setParams(wishlistParam) } just Runs
         coEvery { getWishlistV2UseCase.executeOnBackground() } returns Success(wishlistV2)
 
-        cartListPresenter.setLocalizingAddressData(lca)
         cartListPresenter.processGetWishlistV2Data()
 
         verify { getWishlistV2UseCase.setParams(wishlistParam) }
@@ -355,36 +279,13 @@ class AddCartToWishlistTest : BaseCartTest() {
     @Test
     fun `verify get wishlistV2 returns fail and verify view`() {
         val mockThrowable = mockk<Throwable>("fail")
-        val districtId = "123"
-        val cityId = "45"
-        val lat = "10.2131"
-        val long = "12.01324"
-        val postalCode = "12345"
-        val addressId = "123"
-        val lca = LocalCacheModel(
-            district_id = districtId,
-            city_id = cityId,
-            lat = lat,
-            long = long,
-            postal_code = postalCode,
-            address_id = addressId
-        )
         val wishlistParam = WishlistV2Params(
-            source = "cart",
-            wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
-                districtId = districtId,
-                cityId = cityId,
-                latitude = lat,
-                longitude = long,
-                postalCode = postalCode,
-                addressId = addressId
-            )
+            source = "cart"
         )
 
         every { getWishlistV2UseCase.setParams(wishlistParam) } just Runs
         coEvery { getWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
 
-        cartListPresenter.setLocalizingAddressData(lca)
         cartListPresenter.processGetWishlistV2Data()
 
         verify { getWishlistV2UseCase.setParams(wishlistParam) }
@@ -398,36 +299,13 @@ class AddCartToWishlistTest : BaseCartTest() {
     @Test
     fun `verify get wishlistV2 returns fail when view is null`() {
         val mockThrowable = mockk<Throwable>("fail")
-        val districtId = "123"
-        val cityId = "45"
-        val lat = "10.2131"
-        val long = "12.01324"
-        val postalCode = "12345"
-        val addressId = "123"
-        val lca = LocalCacheModel(
-            district_id = districtId,
-            city_id = cityId,
-            lat = lat,
-            long = long,
-            postal_code = postalCode,
-            address_id = addressId
-        )
         val wishlistParam = WishlistV2Params(
-            source = "cart",
-            wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
-                districtId = districtId,
-                cityId = cityId,
-                latitude = lat,
-                longitude = long,
-                postalCode = postalCode,
-                addressId = addressId
-            )
+            source = "cart"
         )
 
         every { getWishlistV2UseCase.setParams(wishlistParam) } just Runs
         coEvery { getWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
 
-        cartListPresenter.setLocalizingAddressData(lca)
         cartListPresenter.processGetWishlistV2Data()
         cartListPresenter.detachView()
 
@@ -438,36 +316,13 @@ class AddCartToWishlistTest : BaseCartTest() {
     @Test
     fun `verify get wishlistV2 returns success when view is null`() {
         val wishlistV2 = GetWishlistV2Response.Data.WishlistV2(totalData = 10)
-        val districtId = "123"
-        val cityId = "45"
-        val lat = "10.2131"
-        val long = "12.01324"
-        val postalCode = "12345"
-        val addressId = "123"
-        val lca = LocalCacheModel(
-            district_id = districtId,
-            city_id = cityId,
-            lat = lat,
-            long = long,
-            postal_code = postalCode,
-            address_id = addressId
-        )
         val wishlistParam = WishlistV2Params(
-            source = "cart",
-            wishlistChosenAddress = WishlistV2Params.WishlistChosenAddress(
-                districtId = districtId,
-                cityId = cityId,
-                latitude = lat,
-                longitude = long,
-                postalCode = postalCode,
-                addressId = addressId
-            )
+            source = "cart"
         )
 
         every { getWishlistV2UseCase.setParams(wishlistParam) } just Runs
         coEvery { getWishlistV2UseCase.executeOnBackground() } returns Success(wishlistV2)
 
-        cartListPresenter.setLocalizingAddressData(lca)
         cartListPresenter.processGetWishlistV2Data()
         cartListPresenter.detachView()
 

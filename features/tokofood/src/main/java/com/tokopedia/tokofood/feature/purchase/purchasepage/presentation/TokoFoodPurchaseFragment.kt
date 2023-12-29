@@ -26,7 +26,6 @@ import com.tokopedia.abstraction.base.view.fragment.enums.BaseMultiFragmentLaunc
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
@@ -41,13 +40,15 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.logisticCommon.util.PinpointRolloutHelper
+import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
@@ -81,20 +82,22 @@ import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.subview
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.toolbar.TokoFoodPurchaseToolbar
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.toolbar.TokoFoodPurchaseToolbarListener
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
-import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.tokofood.R as tokofoodR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class TokoFoodPurchaseFragment :
+open class TokoFoodPurchaseFragment :
     BaseMultiFragment(),
     TokoFoodPurchaseActionListener,
     TokoFoodPurchaseToolbarListener,
@@ -126,13 +129,15 @@ class TokoFoodPurchaseFragment :
         }
     }
 
-    private var rvAdapter: TokoFoodPurchaseAdapter? = null
+    protected var rvAdapter: TokoFoodPurchaseAdapter? = null
     private var toolbar: TokoFoodPurchaseToolbar? = null
     private var loaderDialog: LoaderDialog? = null
     private var consentBottomSheet: TokoFoodPurchaseConsentBottomSheet? = null
 
     private var shopId = ""
     private var currentCartIdList: List<String> = listOf()
+    private var isPaymentButtonLoading: Boolean = false
+    private var canPaymentButtonClicked: Boolean = true
 
     override fun onAttachActivity(context: Context?) {
         super.onAttachActivity(context)
@@ -149,10 +154,15 @@ class TokoFoodPurchaseFragment :
         loadData()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         viewBinding = LayoutFragmentPurchaseBinding.inflate(inflater, container, false)
         val view = viewBinding?.root
-        (viewBinding?.recyclerViewPurchase?.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+        (viewBinding?.recyclerViewPurchase?.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations =
+            false
         return view
     }
 
@@ -171,6 +181,7 @@ class TokoFoodPurchaseFragment :
         collectShouldRefreshCartData()
         collectTrackerLoadCheckoutData()
         collectTrackerPaymentCheckoutData()
+        collectIsPaymentButtonLoading()
     }
 
     override fun getFragmentToolbar(): Toolbar? {
@@ -208,12 +219,16 @@ class TokoFoodPurchaseFragment :
 
     private fun loadData() {
         showLoadingLayout()
-        context?.let {
-            ChooseAddressUtils.getLocalizingAddressData(it).let { addressData ->
-                viewModel.setIsHasPinpoint(addressData.address_id, addressData.latLong.isNotEmpty())
-            }
+        getLocalCacheModel()?.let { addressData ->
+            viewModel.setIsHasPinpoint(addressData.address_id, addressData.latLong.isNotEmpty())
         }
         viewModel.loadData()
+    }
+
+    open fun getLocalCacheModel(): LocalCacheModel? {
+        return context?.let {
+            ChooseAddressUtils.getLocalizingAddressData(it)
+        }
     }
 
     private fun showLoading() {
@@ -260,7 +275,12 @@ class TokoFoodPurchaseFragment :
 
     private fun setBackground() {
         activity?.let {
-            it.window.decorView.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+            it.window.decorView.setBackgroundColor(
+                ContextCompat.getColor(
+                    it,
+                    unifyprinciplesR.color.Unify_NN0
+                )
+            )
         }
     }
 
@@ -274,19 +294,20 @@ class TokoFoodPurchaseFragment :
     }
 
     private fun initializeRecyclerViewScrollListener() {
-        viewBinding?.recyclerViewPurchase?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                // No-op
-            }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (recyclerView.canScrollVertically(RV_DIRECTION_UP)) {
-                    setToolbarShadowVisibility(true)
-                } else {
-                    setToolbarShadowVisibility(false)
+        viewBinding?.recyclerViewPurchase?.addOnScrollListener(object :
+                RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    // No-op
                 }
-            }
-        })
+
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    if (recyclerView.canScrollVertically(RV_DIRECTION_UP)) {
+                        setToolbarShadowVisibility(true)
+                    } else {
+                        setToolbarShadowVisibility(false)
+                    }
+                }
+            })
     }
 
     private fun observeList() {
@@ -321,6 +342,7 @@ class TokoFoodPurchaseFragment :
                                             getOkayMessage()
                                         ) {}
                                     }
+
                                     businessData.customResponse.popupMessage.isNotEmpty() -> {
                                         if (!isPreviousPopupPromo || !businessData.isPromoPopupType()) {
                                             showToaster(
@@ -334,10 +356,12 @@ class TokoFoodPurchaseFragment :
                         }
                     }
                 }
+
                 PurchaseUiEvent.EVENT_NO_PINPOINT -> {
                     hideLoading()
                     renderNoPinpoint()
                 }
+
                 PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE_PARTIAL -> {
                     hideLoading()
                     renderRecyclerView()
@@ -355,6 +379,7 @@ class TokoFoodPurchaseFragment :
                         )
                     }
                 }
+
                 PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE -> {
                     hideLoading()
                     renderRecyclerView()
@@ -372,37 +397,42 @@ class TokoFoodPurchaseFragment :
                         )
                     }
                 }
+
                 PurchaseUiEvent.EVENT_EMPTY_PRODUCTS -> {
                     activityViewModel?.loadCartList(null)
                     parentFragmentManager.popBackStack()
                 }
+
                 PurchaseUiEvent.EVENT_SUCCESS_REMOVE_PRODUCT -> onSuccessRemoveProduct(it.data as Int)
                 PurchaseUiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS -> scrollToIndex(it.data as Int)
                 PurchaseUiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG -> showBulkDeleteConfirmationDialog(
                     it.data as Int
                 )
+
                 PurchaseUiEvent.EVENT_NAVIGATE_TO_SET_PINPOINT -> navigateToSetPinpoint(it.data as LocationPass)
                 PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> {
-                    (it.data as? Pair<*, *>)?.let { (latitude, longitude) ->
-                        if (latitude is String && longitude is String) {
-                            setupChooseAddress(latitude, longitude)
-                            loadData()
-                        }
+                    (it.data as? KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse)?.let { address ->
+                        address.updateLocalChosenAddressPinpoint(requireContext())
+                        loadData()
                     }
                 }
+
                 PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT -> {
                     (it.data as? Throwable)?.message?.let { error ->
                         showToasterError(error)
                     }
                 }
+
                 PurchaseUiEvent.EVENT_SUCCESS_GET_CONSENT -> {
                     (it.data as? CartListBusinessDataBottomSheet)?.let { data ->
                         showConsentBottomSheet(data)
                     }
                 }
+
                 PurchaseUiEvent.EVENT_SUCCESS_VALIDATE_CONSENT -> {
                     onSuccessAgreeConsent()
                 }
+
                 PurchaseUiEvent.EVENT_SUCCESS_CHECKOUT_GENERAL -> {
                     consentBottomSheet?.dismiss()
                     viewModel.setPaymentButtonLoading(false)
@@ -413,6 +443,7 @@ class TokoFoodPurchaseFragment :
                         goToPaymentPage(paymentData, paymentURL, callbackUrl)
                     }
                 }
+
                 PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_BOTTOMSHEET -> {
                     consentBottomSheet?.dismiss()
                     viewModel.setPaymentButtonLoading(false)
@@ -433,6 +464,7 @@ class TokoFoodPurchaseFragment :
                         )
                     }
                 }
+
                 PurchaseUiEvent.EVENT_FAILED_CHECKOUT_GENERAL_TOASTER -> {
                     consentBottomSheet?.dismiss()
                     viewModel.setPaymentButtonLoading(false)
@@ -443,12 +475,15 @@ class TokoFoodPurchaseFragment :
                             errorMetadata?.popupErrorMessage?.text?.isNotEmpty() == true -> {
                                 showToasterFromMetadata(true, errorMetadata.popupErrorMessage)
                             }
+
                             errorMetadata?.popupMessage?.text?.isNotEmpty() == true -> {
                                 showToasterFromMetadata(false, errorMetadata.popupMessage)
                             }
+
                             checkoutData.error.isNotEmpty() -> {
                                 showToasterError(checkoutData.error)
                             }
+
                             else -> {
                                 showDefaultCheckoutGeneralError(
                                     checkoutData.message.takeIf { errorMessage ->
@@ -468,6 +503,7 @@ class TokoFoodPurchaseFragment :
                         )
                     }
                 }
+
                 PurchaseUiEvent.EVENT_GO_TO_ORDER_CUSTOMIZATION -> {
                     (it.data as? ProductUiModel)?.let { productUiModel ->
                         val orderCustomizationFragment = OrderCustomizationFragment.createInstance(
@@ -480,6 +516,7 @@ class TokoFoodPurchaseFragment :
                         navigateToNewFragment(orderCustomizationFragment)
                     }
                 }
+
                 PurchaseUiEvent.EVENT_SUCCESS_UPDATE_NOTES -> {
                     (it.data as? CartGeneralCartListData)?.let { cartData ->
                         loadCartData(cartData)
@@ -487,10 +524,6 @@ class TokoFoodPurchaseFragment :
                 }
             }
         }
-    }
-
-    private fun setupChooseAddress(latitude: String, longitude: String) {
-        context?.updateLocalChosenAddressPinpoint(latitude, longitude)
     }
 
     private fun collectSharedUiState() {
@@ -501,6 +534,7 @@ class TokoFoodPurchaseFragment :
                     UiEvent.EVENT_LOADING_DIALOG -> {
                         showLoadingDialog()
                     }
+
                     UiEvent.EVENT_SUCCESS_DELETE_PRODUCT -> {
                         if (it.source == SOURCE) {
                             (it.data as? Pair<*, *>)?.let { pair ->
@@ -512,44 +546,55 @@ class TokoFoodPurchaseFragment :
                                     }
                                 }
                             }
+                            canPaymentButtonClicked = true
                         }
                     }
+
                     UiEvent.EVENT_SUCCESS_DELETE_UNAVAILABLE_PRODUCTS -> {
                         viewBinding?.recyclerViewPurchase?.post {
                             viewModel.bulkDeleteUnavailableProducts()
                         }
+                        canPaymentButtonClicked = true
                     }
+
                     UiEvent.EVENT_SUCCESS_UPDATE_NOTES -> {
                         if (it.source == SOURCE) {
                             it.data?.getSuccessAddToCartResultPair()?.let { (_, cartTokoFoodData) ->
-                                cartTokoFoodData.data.getTokofoodBusinessData().getAvailableSectionProducts().firstOrNull()?.let { product ->
-                                    viewBinding?.recyclerViewPurchase?.post {
-                                        viewModel.updateNotes(product)
-                                    }
+                                cartTokoFoodData.data.getTokofoodBusinessData()
+                                    .getAvailableSectionProducts().firstOrNull()?.let { product ->
+                                        viewBinding?.recyclerViewPurchase?.post {
+                                            viewModel.updateNotes(product)
+                                        }
 
-                                    val toasterMessage =
-                                        context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_notes)
-                                            .orEmpty()
-                                    showToaster(toasterMessage, getOkayMessage())
-                                }
+                                        val toasterMessage =
+                                            context?.getString(tokofoodR.string.text_purchase_success_notes)
+                                                .orEmpty()
+                                        showToaster(toasterMessage, getOkayMessage())
+                                    }
+                                canPaymentButtonClicked = true
                             }
                         }
                     }
+
                     UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY -> {
                         if (it.source == SOURCE) {
                             (it.data as? Pair<*, *>)?.let { pair ->
                                 (pair.first as? String)?.let { message ->
                                     val toasterMessage = message.takeIf { cartMessage ->
                                         cartMessage.isNotBlank()
-                                    } ?: context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_quantity).orEmpty()
+                                    }
+                                        ?: context?.getString(tokofoodR.string.text_purchase_success_quantity)
+                                            .orEmpty()
                                     showToaster(toasterMessage, getOkayMessage())
                                 }
                                 viewBinding?.recyclerViewPurchase?.post {
                                     viewModel.refreshPartialCartInformation()
                                 }
+                                canPaymentButtonClicked = true
                             }
                         }
                     }
+
                     UiEvent.EVENT_FAILED_DELETE_PRODUCT -> {
                         if (it.source == SOURCE) {
                             it.throwable?.let { throwable ->
@@ -564,8 +609,10 @@ class TokoFoodPurchaseFragment :
                                     )
                                 )
                             }
+                            canPaymentButtonClicked = true
                         }
                     }
+
                     UiEvent.EVENT_FAILED_UPDATE_QUANTITY -> {
                         if (it.source == SOURCE) {
                             it.throwable?.let { throwable ->
@@ -580,8 +627,13 @@ class TokoFoodPurchaseFragment :
                                     )
                                 )
                             }
+                            viewBinding?.recyclerViewPurchase?.post {
+                                viewModel.refreshPartialCartInformation()
+                            }
+                            canPaymentButtonClicked = true
                         }
                     }
+
                     UiEvent.EVENT_FAILED_UPDATE_NOTES -> {
                         if (it.source == SOURCE) {
                             it.throwable?.let { throwable ->
@@ -597,6 +649,7 @@ class TokoFoodPurchaseFragment :
                                 )
                                 showToasterError(throwable)
                             }
+                            canPaymentButtonClicked = true
                         }
                     }
                 }
@@ -646,6 +699,15 @@ class TokoFoodPurchaseFragment :
         }
     }
 
+    private fun collectIsPaymentButtonLoading() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.isPaymentButtonLoading
+                .collect { isLoading ->
+                    isPaymentButtonLoading = isLoading
+                }
+        }
+    }
+
     private fun renderRecyclerView() {
         viewBinding?.let {
             it.layoutGlobalErrorPurchase.gone()
@@ -676,9 +738,15 @@ class TokoFoodPurchaseFragment :
             setType(GlobalError.PAGE_NOT_FOUND)
             errorIllustration.loadImage(NO_PINPOINT_URL)
             errorIllustration.adjustViewBounds = true
-            errorTitle.text = context?.getString(com.tokopedia.tokofood.R.string.text_purchase_no_pinpoint).orEmpty()
-            errorDescription.text = context?.getString(com.tokopedia.tokofood.R.string.text_purchase_pinpoint_benefit).orEmpty()
-            errorAction.text = context?.getString(com.tokopedia.tokofood.R.string.text_purchase_set_pinpoint).orEmpty()
+            errorTitle.text =
+                context?.getString(tokofoodR.string.text_purchase_no_pinpoint)
+                    .orEmpty()
+            errorDescription.text =
+                context?.getString(tokofoodR.string.text_purchase_pinpoint_benefit)
+                    .orEmpty()
+            errorAction.text =
+                context?.getString(tokofoodR.string.text_purchase_set_pinpoint)
+                    .orEmpty()
             setActionClickListener {
                 viewModel.validateSetPinpoint()
             }
@@ -704,25 +772,14 @@ class TokoFoodPurchaseFragment :
 
     private fun navigateToSetPinpoint(locationPass: LocationPass) {
         activity?.let {
-            if (PinpointRolloutHelper.eligibleForRevamp(it, true)) {
-                // go to pinpoint
-                val bundle = Bundle().apply {
-                    putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
-                    putDouble(AddressConstant.EXTRA_LAT, locationPass.latitude.toDouble())
-                    putDouble(AddressConstant.EXTRA_LONG, locationPass.longitude.toDouble())
-                }
-                RouteManager.getIntent(it, ApplinkConstInternalLogistic.PINPOINT).apply {
-                    putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
-                    startActivityForResult(this, REQUEST_CODE_SET_PINPOINT)
-                }
-            } else {
-                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.GEOLOCATION)
-                val bundle = Bundle().apply {
-                    putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-                    putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
-                }
-                intent.putExtras(bundle)
-                startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
+            val bundle = Bundle().apply {
+                putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+                putDouble(AddressConstant.EXTRA_LAT, locationPass.latitude.toDouble())
+                putDouble(AddressConstant.EXTRA_LONG, locationPass.longitude.toDouble())
+            }
+            RouteManager.getIntent(it, ApplinkConstInternalLogistic.PINPOINT).apply {
+                putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+                startActivityForResult(this, REQUEST_CODE_SET_PINPOINT)
             }
         }
     }
@@ -730,10 +787,15 @@ class TokoFoodPurchaseFragment :
     private fun showBulkDeleteConfirmationDialog(productCount: Int) {
         activity?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(com.tokopedia.tokofood.R.string.text_purchase_delete_item, productCount.toString()))
-                setDescription(getString(com.tokopedia.tokofood.R.string.text_purchase_delete_all))
-                setPrimaryCTAText(getString(com.tokopedia.tokofood.R.string.text_purchase_delete))
-                setSecondaryCTAText(getString(com.tokopedia.tokofood.R.string.text_purchase_back))
+                setTitle(
+                    getString(
+                        tokofoodR.string.text_purchase_delete_item,
+                        productCount.toString()
+                    )
+                )
+                setDescription(getString(tokofoodR.string.text_purchase_delete_all))
+                setPrimaryCTAText(getString(tokofoodR.string.text_purchase_delete))
+                setSecondaryCTAText(getString(tokofoodR.string.text_purchase_back))
                 setPrimaryCTAClickListener {
                     activityViewModel?.deleteUnavailableProducts()
                     dismiss()
@@ -747,13 +809,20 @@ class TokoFoodPurchaseFragment :
 
     private fun onSuccessRemoveProduct(productCount: Int) {
         showToaster(
-            context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_delete, productCount).orEmpty(),
+            context?.getString(
+                tokofoodR.string.text_purchase_success_delete,
+                productCount
+            ).orEmpty(),
             getOkayMessage()
         )
     }
 
     private fun navigateToHomePage(isFinishCurrent: Boolean = false) {
-        TokofoodRouteManager.routePrioritizeInternal(context, ApplinkConstInternalTokoFood.HOME, isFinishCurrent)
+        TokofoodRouteManager.routePrioritizeInternal(
+            context,
+            ApplinkConstInternalTokoFood.HOME,
+            isFinishCurrent
+        )
     }
 
     private fun navigateToMerchantPage(merchantId: String, isFinishCurrent: Boolean = false) {
@@ -761,7 +830,11 @@ class TokoFoodPurchaseFragment :
             .buildUpon()
             .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchantId)
             .build()
-        TokofoodRouteManager.routePrioritizeInternal(context, merchantPageUri.toString(), isFinishCurrent)
+        TokofoodRouteManager.routePrioritizeInternal(
+            context,
+            merchantPageUri.toString(),
+            isFinishCurrent
+        )
     }
 
     private fun scrollToIndex(index: Int) {
@@ -786,12 +859,14 @@ class TokoFoodPurchaseFragment :
                     onResultFromChangeAddress(data)
                 }
             }
+
             REQUEST_CODE_SET_PINPOINT -> onResultFromSetPinpoint(resultCode, data)
             REQUEST_CODE_PAYMENT -> {
                 when (resultCode) {
                     PaymentConstant.PAYMENT_SUCCESS -> {
                         onResultFromPaymentSuccess()
                     }
+
                     PaymentConstant.PAYMENT_FAILED -> {
                         showDefaultCheckoutGeneralError()
                     }
@@ -803,9 +878,11 @@ class TokoFoodPurchaseFragment :
     private fun onResultFromSetPinpoint(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             data?.let {
-                val locationPass = it.getParcelableExtra(LogisticConstant.EXTRA_EXISTING_LOCATION) as? LocationPass
+                val locationPass =
+                    it.getParcelableExtra(LogisticConstant.EXTRA_EXISTING_LOCATION) as? LocationPass
                 if (locationPass == null) {
-                    val addressData = it.getParcelableExtra(AddressConstant.EXTRA_SAVE_DATA_UI_MODEL) as? SaveAddressDataModel
+                    val addressData =
+                        it.getParcelableExtra(AddressConstant.EXTRA_SAVE_DATA_UI_MODEL) as? SaveAddressDataModel
                     addressData?.let { address ->
                         showLoadingLayout()
                         viewModel.updateAddressPinpoint(address.latitude, address.longitude)
@@ -819,15 +896,47 @@ class TokoFoodPurchaseFragment :
     }
 
     private fun onResultFromChangeAddress(intent: Intent?) {
-        showToaster(
-            context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_edit_address).orEmpty(),
-            getOkayMessage()
-        )
-        intent?.getParcelableExtra<ChosenAddressModel>(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA)?.let { chosenAddressModel ->
-            val hasPinpoint = chosenAddressModel.latitude.isNotBlank() && chosenAddressModel.longitude.isNotBlank()
-            viewModel.setIsHasPinpoint(chosenAddressModel.addressId.toString(), hasPinpoint)
-        }
+        showAddressToaster(intent)
+        setPinpointOnResult(intent)
         loadData()
+    }
+
+    private fun getAddressMessage(isNewAddress: Boolean): String {
+        return if (isNewAddress) {
+            context?.getString(tokofoodR.string.text_purchase_success_add_address)
+                .orEmpty()
+        } else {
+            context?.getString(tokofoodR.string.text_purchase_success_edit_address)
+                .orEmpty()
+        }
+    }
+
+    private fun getAddressMessageAction(isNewAddress: Boolean): String {
+        return if (isNewAddress) {
+            String.EMPTY
+        } else {
+            getOkayMessage()
+        }
+    }
+
+    private fun showAddressToaster(intent: Intent?) {
+        val isNewAddress =
+            intent?.getBooleanExtra(ChooseAddressConstant.EXTRA_IS_FROM_ANA, false) == true
+        val toasterMessage = getAddressMessage(isNewAddress)
+        val toasterActionMessage = getAddressMessageAction(isNewAddress)
+        showToaster(
+            toasterMessage,
+            toasterActionMessage
+        )
+    }
+
+    private fun setPinpointOnResult(intent: Intent?) {
+        intent?.getParcelableExtra<ChosenAddressModel>(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA)
+            ?.let { chosenAddressModel ->
+                val hasPinpoint =
+                    chosenAddressModel.latitude.isNotBlank() && chosenAddressModel.longitude.isNotBlank()
+                viewModel.setIsHasPinpoint(chosenAddressModel.addressId.toString(), hasPinpoint)
+            }
     }
 
     private fun onResultFromPaymentSuccess() {
@@ -874,8 +983,10 @@ class TokoFoodPurchaseFragment :
                 }
 
                 override fun onRetry() {
-                    viewModel.setPaymentButtonLoading(true)
-                    viewModel.checkoutGeneral()
+                    if (canPaymentButtonClicked) {
+                        viewModel.setPaymentButtonLoading(true)
+                        viewModel.checkoutGeneral()
+                    }
                 }
 
                 override fun onCheckOtherMerchant() {
@@ -960,15 +1071,21 @@ class TokoFoodPurchaseFragment :
         } ?: throwable.message.orEmpty()
     }
 
-    private fun getOkayMessage(): String = context?.getString(com.tokopedia.tokofood.R.string.text_purchase_okay).orEmpty()
+    private fun getOkayMessage(): String =
+        context?.getString(tokofoodR.string.text_purchase_okay).orEmpty()
 
     private fun showDefaultCheckoutGeneralError(message: String? = null) {
         val errorMessage =
-            message ?: context?.getString(com.tokopedia.tokofood.R.string.text_purchase_failed_to_payment).orEmpty()
-        val actionMessage = context?.getString(com.tokopedia.tokofood.R.string.text_purchase_try_again).orEmpty()
+            message
+                ?: context?.getString(tokofoodR.string.text_purchase_failed_to_payment)
+                    .orEmpty()
+        val actionMessage =
+            context?.getString(tokofoodR.string.text_purchase_try_again).orEmpty()
         showToasterError(errorMessage, actionMessage) {
-            viewModel.setPaymentButtonLoading(true)
-            viewModel.checkoutGeneral()
+            if (canPaymentButtonClicked) {
+                viewModel.setPaymentButtonLoading(true)
+                viewModel.checkoutGeneral()
+            }
         }
     }
 
@@ -980,14 +1097,18 @@ class TokoFoodPurchaseFragment :
         val toasterAction: () -> Unit = {
             when (errorDetail.action) {
                 CheckoutErrorMetadataDetail.REFRESH_ACTION -> {
-                    viewModel.setPaymentButtonLoading(true)
-                    viewModel.checkoutGeneral()
+                    if (canPaymentButtonClicked) {
+                        viewModel.setPaymentButtonLoading(true)
+                        viewModel.checkoutGeneral()
+                    }
                 }
+
                 CheckoutErrorMetadataDetail.REDIRECT_ACTION -> {
                     context?.let {
                         TokofoodRouteManager.routePrioritizeInternal(it, errorDetail.link)
                     }
                 }
+
                 else -> {
                     // Dismiss only
                 }
@@ -1016,14 +1137,12 @@ class TokoFoodPurchaseFragment :
             val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
             val intent = RouteManager.getIntent(context, paymentCheckoutString)
             intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
-            intent.putPaymentTimestampExtra()
-            startActivityForResult(intent, REQUEST_CODE_PAYMENT)
+            try {
+                startActivityForResult(intent, REQUEST_CODE_PAYMENT)
+            } catch (ex: Exception) {
+                Timber.e(ex)
+            }
         }
-    }
-
-    private fun Intent.putPaymentTimestampExtra() {
-        val currentTimestamp = System.currentTimeMillis()
-        putExtra(ApplinkConstInternalPayment.CHECKOUT_TIMESTAMP, currentTimestamp)
     }
 
     private fun setCurrentCartList(visitableList: List<Visitable<*>>) {
@@ -1037,10 +1156,11 @@ class TokoFoodPurchaseFragment :
     }
 
     override fun onTextChangeShippingAddressClicked() {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS).apply {
-            putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true)
-            putExtra(PARAM_SOURCE, ManageAddressSource.TOKOFOOD.source)
-        }
+        val intent =
+            RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS).apply {
+                putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true)
+                putExtra(PARAM_SOURCE, ManageAddressSource.TOKOFOOD.source)
+            }
         startActivityForResult(intent, REQUEST_CODE_CHANGE_ADDRESS)
     }
 
@@ -1062,28 +1182,21 @@ class TokoFoodPurchaseFragment :
     }
 
     override fun onQuantityChanged() {
-        viewModel.triggerEditQuantity()
+        if (!isPaymentButtonLoading) {
+            canPaymentButtonClicked = false
+            viewModel.triggerEditQuantity()
+        }
     }
 
     override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
-        activityViewModel?.deleteProduct(
-            cartId = element.cartId,
-            productId = element.id,
-            source = SOURCE,
-            shouldRefreshCart = false
-        )
-    }
-
-    override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld) {
-        // no-op
-    }
-
-    override fun onTextChangeNotesClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld) {
-        // no-op
-    }
-
-    override fun onTextChangeNoteAndVariantClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModelOld) {
-        // no-op
+        if (!isPaymentButtonLoading) {
+            activityViewModel?.deleteProduct(
+                cartId = element.cartId,
+                productId = element.id,
+                source = SOURCE,
+                shouldRefreshCart = false
+            )
+        }
     }
 
     override fun onTextChangeNotesClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
@@ -1134,8 +1247,10 @@ class TokoFoodPurchaseFragment :
     }
 
     override fun onSuccessAgreeConsent() {
-        viewModel.setConsentAgreed(true)
-        viewModel.checkoutGeneral()
+        if (canPaymentButtonClicked) {
+            viewModel.setConsentAgreed(true)
+            viewModel.checkoutGeneral()
+        }
     }
 
     override fun onFailedAgreeConsent(throwable: Throwable) {

@@ -109,24 +109,24 @@ class TopupBillsSavedNumberActivityTest {
 
     private fun validate_search_filter_interaction() {
         // Contact List
-        onView(withId(R.id.searchbar_textfield))
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield))
             .perform(clearText())
             .perform(typeText(SEARCH_INPUT_NUMBER_PREFIX))
         assertTrue(getRecyclerViewItemCount(R.id.common_topup_bills_contacts_rv) == 4)
 
-        onView(withId(R.id.searchbar_textfield))
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield))
             .perform(clearText())
             .perform(typeText(SEARCH_INPUT_NAME_CHARACTER))
         assertTrue(getRecyclerViewItemCount(R.id.common_topup_bills_contacts_rv) == 3)
 
         Espresso.closeSoftKeyboard()
         mActivityRule.activity.runOnUiThread {
-            mActivityRule.activity.findViewById<EditText>(R.id.searchbar_textfield).clearFocus()
+            mActivityRule.activity.findViewById<EditText>(com.tokopedia.unifycomponents.R.id.searchbar_textfield).clearFocus()
         }
         Thread.sleep(1000)
         validate_saved_number_empty_state()
 
-        onView(withId(R.id.searchbar_textfield)).perform(clearText())
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield)).perform(clearText())
         Thread.sleep(1000)
 
         // Favorite Number
@@ -136,17 +136,17 @@ class TopupBillsSavedNumberActivityTest {
         onView(withId(R.id.common_topup_bills_contacts_rv)).perform(swipeLeft())
         Thread.sleep(2000)
 
-        onView(withId(R.id.searchbar_textfield))
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield))
             .perform(clearText())
             .perform(typeText(SEARCH_INPUT_NUMBER_PREFIX))
         assertTrue(getRecyclerViewItemCount(R.id.common_topupbills_favorite_number_rv) == 3)
 
-        onView(withId(R.id.searchbar_textfield))
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield))
             .perform(clearText())
             .perform(typeText(SEARCH_INPUT_NAME_CHARACTER))
         assertTrue(getRecyclerViewItemCount(R.id.common_topupbills_favorite_number_rv) == 1)
 
-        onView(withId(R.id.searchbar_textfield))
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield))
             .perform(clearText())
             .perform(typeText(SEARCH_INPUT_NAME_CHARACTER))
 
@@ -156,7 +156,7 @@ class TopupBillsSavedNumberActivityTest {
 
 
     private fun validate_saved_number_empty_state() {
-        onView(withId(R.id.searchbar_textfield))
+        onView(withId(com.tokopedia.unifycomponents.R.id.searchbar_textfield))
             .perform(clearText())
             .perform(typeText(NON_EXISTING_FAVORITE_NUMBER))
         onView(withId(R.id.common_topupbills_saved_num_empty_state_image)).check(matches(isDisplayed()))

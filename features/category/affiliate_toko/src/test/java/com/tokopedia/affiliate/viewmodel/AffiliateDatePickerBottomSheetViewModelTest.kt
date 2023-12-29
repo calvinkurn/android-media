@@ -49,15 +49,15 @@ class AffiliateDatePickerBottomSheetViewModelTest {
             AffiliateDateFilterResponse.Data.GetAffiliateDateFilter("", "", "30 Hari Terakhir", "LastThirtyDays", "30"),
             AffiliateDateFilterResponse.Data.GetAffiliateDateFilter("", "", "7 Hari Terakhir", "LastSevenDays", "7")
         )
-        filterResponse.data = AffiliateDateFilterResponse.Data(null, null)
+        filterResponse.dateFilterData = AffiliateDateFilterResponse.Data(null, null)
         aff.getAffiliateFilterData()
-        filterResponse.data?.ticker = arrayListOf()
+        filterResponse.dateFilterData?.ticker = arrayListOf()
         aff.getAffiliateFilterData()
-        filterResponse.data?.ticker = arrayListOf(null)
+        filterResponse.dateFilterData?.ticker = arrayListOf(null)
         aff.getAffiliateFilterData()
-        filterResponse.data?.ticker = arrayListOf(ticker)
-        filterResponse.data?.getAffiliateDateFilter = list
-        val response = aff.convertFilterToVisitable(filterResponse.data?.getAffiliateDateFilter)
+        filterResponse.dateFilterData?.ticker = arrayListOf(ticker)
+        filterResponse.dateFilterData?.getAffiliateDateFilter = list
+        val response = aff.convertFilterToVisitable(filterResponse.dateFilterData?.getAffiliateDateFilter)
         aff.getAffiliateFilterData()
         assertEquals(Gson().toJson(aff.getAffiliateFilterItems().value), Gson().toJson(response))
         assertEquals(Gson().toJson(aff.getItemList()), Gson().toJson(response))
@@ -75,7 +75,7 @@ class AffiliateDatePickerBottomSheetViewModelTest {
         val filterResponse = AffiliateDateFilterResponse(AffiliateDateFilterResponse.Data(list, arrayListOf(ticker)))
         coEvery { affiliateUserPerformanceUseCase.getAffiliateFilter() } returns filterResponse
         aff.getAffiliateFilterData()
-        val response = aff.convertFilterToVisitable(filterResponse.data?.getAffiliateDateFilter)
+        val response = aff.convertFilterToVisitable(filterResponse.dateFilterData?.getAffiliateDateFilter)
         assertEquals(Gson().toJson(aff.getItemList()), Gson().toJson(response))
         aff.updateItem(1)
     }

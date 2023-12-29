@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.catalog.model.util.nestedrecyclerview.NestedRecyclerView
+    <com.tokopedia.oldcatalog.model.util.nestedrecyclerview.NestedRecyclerView
         android:id="@+id/catalog_detail_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

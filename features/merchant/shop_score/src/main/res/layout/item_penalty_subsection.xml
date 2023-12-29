@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_penalty_subsection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Sedang Berlangsung"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_penalty_subsection"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toEndOf="@id/tv_penalty_subsection"
+        app:layout_constraintTop_toTopOf="@id/tv_penalty_subsection"
+        app:layout_constraintBottom_toBottomOf="@id/tv_penalty_subsection"
+        app:icon_name="INFORMATION"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_penalty_subsection_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_penalty_subsection"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="5 Jun - 6 Aug"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -51,10 +51,20 @@ internal class SortFilterBottomSheetTypeFactoryImpl(
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when(viewType) {
             SortViewHolder.LAYOUT -> SortViewHolder(view, sortViewListener)
-            FilterViewHolder.LAYOUT -> FilterViewHolder(view, recycledViewPool, filterViewListener)
-            PriceFilterViewHolder.LAYOUT -> PriceFilterViewHolder(view, priceFilterViewListener)
-            KeywordFilterViewHolder.LAYOUT -> KeywordFilterViewHolder(view, keywordFilterListener)
-            PriceRangeFilterCheckboxViewHolder.LAYOUT -> PriceRangeFilterCheckboxViewHolder(view, priceRangeFilterCheckboxListener)
+            FilterViewHolder.LAYOUT -> FilterViewHolder(
+                view,
+                recycledViewPool,
+                filterViewListener,
+            )
+            PriceFilterViewHolder.LAYOUT ->
+                PriceFilterViewHolder(view, priceFilterViewListener)
+            KeywordFilterViewHolder.LAYOUT ->
+                KeywordFilterViewHolder(view, keywordFilterListener)
+            PriceRangeFilterCheckboxViewHolder.LAYOUT ->
+                PriceRangeFilterCheckboxViewHolder(
+                    view,
+                    priceRangeFilterCheckboxListener
+                )
             else -> throw TypeNotSupportedException.create("Layout not supported")
         }
     }

@@ -51,9 +51,8 @@
         <View
             android:id="@+id/attachShadow"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing_lvl3"
-            android:layout_gravity="bottom"
-            android:background="@drawable/bg_attachvoucher_shadow_attachment" />
+            android:layout_height="8dp"
+            android:layout_gravity="bottom" />
     </FrameLayout>
 
     <FrameLayout

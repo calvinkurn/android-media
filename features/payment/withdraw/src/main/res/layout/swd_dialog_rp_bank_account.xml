@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/unify_space_16"
         android:text="@string/swd_premium_account_info_title"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950_96"
         app:layout_constraintBottom_toBottomOf="@id/ivRpIcon"
         app:layout_constraintEnd_toStartOf="@id/ivRpIcon"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
         android:text="@string/swd_premium_account_info_line_one"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvPremiumAccountInfoTitle"
         app:typographyType="body_2" />
@@ -49,7 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_8"
         android:text="@string/swd_premium_account_info_line_Two"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvPremiumAccountInfoLineOne"
         app:typographyType="body_2" />
@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_8"
         android:text="@string/swd_premium_account_info_line_Three"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN950_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvPremiumAccountInfoLineTwo"
         app:typographyType="body_2" />
@@ -71,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
         android:text="@string/swd_more_info"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvPremiumAccountInfoLineThree"
         app:typographyType="body_2" />

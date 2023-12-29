@@ -119,7 +119,8 @@
           "label_type": "",
           "shortcut_image": "",
           "type": "",
-          "component_id": "01.02.01.01"
+          "component_id": "01.02.01.01",
+          "campaign_code": "xx123"
         },
         {
           "id": "0",

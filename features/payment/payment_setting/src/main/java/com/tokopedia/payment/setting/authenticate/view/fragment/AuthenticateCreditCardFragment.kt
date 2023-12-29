@@ -26,11 +26,12 @@ import com.tokopedia.payment.setting.authenticate.model.TypeAuthenticateCreditCa
 import com.tokopedia.payment.setting.authenticate.view.adapter.AuthenticateCCAdapterFactory
 import com.tokopedia.payment.setting.authenticate.view.adapter.AuthenticateCreditCardAdapter
 import com.tokopedia.payment.setting.authenticate.view.viewmodel.AuthenticateCCViewModel
+import com.tokopedia.payment.setting.databinding.FragmentAuthenticateCreditCardBinding
 import com.tokopedia.payment.setting.di.SettingPaymentComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_authenticate_credit_card.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCard,
@@ -41,6 +42,8 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
 
     @Inject
     lateinit var analytics: PaymentSettingAuthenticateAnalytics
+
+    private var binding by autoClearedNullable<FragmentAuthenticateCreditCardBinding>()
 
     private val viewModel: AuthenticateCCViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory.get())
@@ -54,12 +57,13 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_authenticate_credit_card, container, false)
+        binding = FragmentAuthenticateCreditCardBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        buttonUse.setOnClickListener {
+        binding?.buttonUse?.setOnClickListener {
             analytics.sendEventClickSafeVerificationMethod()
             showProgressLoading()
             viewModel.updateWhiteList(
@@ -173,9 +177,9 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
 
     private fun updateVisibilityButtonUse() {
         if (adapter?.data?.size ?: 0 > 0) {
-            buttonUse.visibility = View.VISIBLE
+            binding?.buttonUse?.visibility = View.VISIBLE
         } else {
-            buttonUse.visibility = View.GONE
+            binding?.buttonUse?.visibility = View.GONE
         }
     }
 

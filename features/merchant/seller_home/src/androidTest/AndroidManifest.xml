@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.tokopedia.sellerhome"
     android:versionCode="1"
     android:versionName="1.0.0">
 
@@ -9,7 +8,7 @@
         tools:replace="android:label">
 
         <activity
-            android:name=".stub.features.home.presentation.SellerHomeActivityStub"
+            android:name="com.tokopedia.sellerhome.stub.features.home.presentation.SellerHomeActivityStub"
             android:exported="false"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

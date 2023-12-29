@@ -10,6 +10,15 @@ query $queryName(${"$"}param : OngkirRatesV3Input!) {
       id
       rates_id
       type
+      origin {
+        city_id
+        city_name
+      }
+      destination {
+        city_id
+        city_name
+      }
+      weight
       error {
         error_id
         error_message
@@ -37,6 +46,7 @@ query $queryName(${"$"}param : OngkirRatesV3Input!) {
           text_service_desc
           text_eta_summarize
           error_code
+          text_service_ticker
         }
         features {
           dynamic_price {
@@ -77,6 +87,7 @@ query $queryName(${"$"}param : OngkirRatesV3Input!) {
           shipper_product_id
           shipper_product_name
           shipper_product_desc
+          order_message
           is_show_map
           shipper_weight
           status
@@ -159,6 +170,8 @@ query $queryName(${"$"}param : OngkirRatesV3Input!) {
         service_id
         is_applied
         image_url
+        image_url_chosen
+        quota_message
         discounted_rate
         shipping_rate
         benefit_amount
@@ -207,6 +220,8 @@ query $queryName(${"$"}param : OngkirRatesV3Input!) {
         service_id
         is_applied
         image_url
+        image_url_chosen
+        quota_message
         discounted_rate
         shipping_rate
         benefit_amount
@@ -231,6 +246,7 @@ query $queryName(${"$"}param : OngkirRatesV3Input!) {
           ticker_courier
           bottom_sheet_description
           title_promo_message
+          order_message
         }
         free_shipping_metadata {
           sent_shipper_partner
@@ -264,6 +280,15 @@ internal fun ratesQuery() = """
         ratesv3 {
           id
           rates_id
+          origin {
+            city_id
+            city_name
+          }
+          destination {
+            city_id
+            city_name
+          }
+          weight
           type
           error {
             error_id
@@ -292,6 +317,7 @@ internal fun ratesQuery() = """
               text_service_desc
               text_eta_summarize
               error_code
+              text_service_ticker
             }
             features {
               dynamic_price {
@@ -332,6 +358,7 @@ internal fun ratesQuery() = """
               shipper_product_id
               shipper_product_name
               shipper_product_desc
+              order_message
               is_show_map
               shipper_weight
               status
@@ -414,6 +441,8 @@ internal fun ratesQuery() = """
             service_id
             is_applied
             image_url
+            image_url_chosen
+            quota_message
             discounted_rate
             shipping_rate
             benefit_amount
@@ -462,6 +491,8 @@ internal fun ratesQuery() = """
             service_id
             is_applied
             image_url
+            image_url_chosen
+            quota_message
             discounted_rate
             shipping_rate
             benefit_amount
@@ -487,6 +518,7 @@ internal fun ratesQuery() = """
               bottom_sheet_description
               promo_message
               title_promo_message
+              order_message
             }
             free_shipping_metadata {
               sent_shipper_partner

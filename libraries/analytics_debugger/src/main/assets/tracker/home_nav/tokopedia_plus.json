@@ -7,12 +7,11 @@
       "eventAction": "click on gotoplus - .*",
       "eventCategory": "global menu",
       "eventLabel": "",
-      "trackerId": "33342",
+      "pageSource": ".*",
+      "trackerId": "33341|33342",
       "businessUnit": "home & browse",
       "currentSite": "tokopediamarketplace",
-      "userId": ".*",
-      "sessionIris": ".*",
-      "clientId": ".*"
+      "sessionIris": ".*"
     }
   ]
 }

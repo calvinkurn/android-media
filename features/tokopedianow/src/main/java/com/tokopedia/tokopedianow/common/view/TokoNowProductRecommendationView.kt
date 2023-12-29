@@ -4,7 +4,13 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -17,11 +23,14 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewU
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.customview.ProductCardCompactCarouselView.ProductCardCompactCarouselListener
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
+import com.tokopedia.tokopedianow.common.util.ViewUtil.inflateView
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductRecommendationViewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
 
 class TokoNowProductRecommendationView @JvmOverloads constructor(
     context: Context,
@@ -38,6 +47,9 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
     private var viewModel: TokoNowProductRecommendationViewModel? = null
     private var listener: TokoNowProductRecommendationListener? = null
     private var requestParam: GetRecommendationRequestParam? = null
+    private var header: TokoNowDynamicHeaderView? = null
+    private var mTickerPageSource: String = String.EMPTY
+    private var headerListener: TokoNowDynamicHeaderListener? = null
 
     private fun TokoNowProductRecommendationViewModel.observeRecommendationWidget() {
         productRecommendation.observe(context as AppCompatActivity) {
@@ -58,7 +70,7 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
         loadingState.observe(context as AppCompatActivity) { isShown ->
             binding.productCardShimmering.root.showWithCondition(isShown)
             binding.productCardCarousel.showWithCondition(!isShown)
-            binding.header.showWithCondition(!isShown)
+            header?.showWithCondition(!isShown)
         }
     }
 
@@ -66,17 +78,23 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
         productRecommendation: TokoNowProductRecommendationViewUiModel
     ) {
         binding.apply {
+            root.show()
+            inflateHeader()
             productCardCarousel.bindItems(
                 items = productRecommendation.productModels,
                 seeMoreModel = productRecommendation.seeMoreModel
             )
-            header.setModel(
+            header?.setListener(
+                headerListener = headerListener
+            )
+            header?.setModel(
                 model = productRecommendation.headerModel
             )
         }
     }
 
     private fun hideWidget() {
+        binding.root.hide()
         listener?.hideProductRecommendationWidget()
     }
 
@@ -96,11 +114,7 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
                 seeMoreModel = seeMoreModel
             )
         }
-        binding.header.showIfWithBlock(header != null && state == LOADED) {
-            header?.apply {
-                setModel(this)
-            }
-        }
+        bindHeader(header, state)
     }
 
     /**
@@ -108,23 +122,23 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
      */
     fun setListener(
         productCardCarouselListener: ProductCardCompactCarouselListener? = null,
-        headerCarouselListener: TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener? = null
+        headerCarouselListener: TokoNowDynamicHeaderListener? = null
     ) {
         binding.productCardCarousel.setListener(
             productCardCarouselListener = productCardCarouselListener,
         )
-        binding.header.setListener(
-            headerListener =  headerCarouselListener
-        )
+        this.headerListener = headerCarouselListener
     }
 
     /**
      * setting the data via fetching gql
      */
     fun setRequestParam(
-        getRecommendationRequestParam: GetRecommendationRequestParam? = null
+        getRecommendationRequestParam: GetRecommendationRequestParam? = null,
+        tickerPageSource: String
     ) {
         requestParam = getRecommendationRequestParam
+        mTickerPageSource = tickerPageSource
     }
 
     /**
@@ -154,14 +168,48 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
 
                 requestParam?.let { requestParam ->
                     setRecommendationPageName(requestParam.pageName)
-                    getFirstRecommendationCarousel(requestParam)
+                    getFirstRecommendationCarousel(requestParam, mTickerPageSource)
                 }
             }
         }
     }
 
-    fun scrollToPosition(position: Int) {
+    fun scrollToPosition(
+        position: Int
+    ) {
         binding.productCardCarousel.scrollToPosition(position)
+    }
+
+    fun setRecycledViewPool(
+        recycledViewPool: RecycledViewPool?
+    ) {
+        binding.productCardCarousel.setRecycledViewPool(recycledViewPool)
+    }
+
+    private fun bindHeader(
+        headerUiModel: TokoNowDynamicHeaderUiModel?,
+        state: TokoNowProductRecommendationState
+    ) {
+        binding.apply {
+            if(headerUiModel != null && state == LOADED) {
+                inflateHeader()
+                header?.setListener(headerListener)
+                header?.setModel(headerUiModel)
+                headerViewStub.show()
+                header?.show()
+            } else {
+                headerViewStub.hide()
+                header?.hide()
+            }
+        }
+    }
+
+    private fun LayoutTokopedianowProductRecommendationViewBinding.inflateHeader() {
+        if(headerViewStub.parent != null) {
+            val view = headerViewStub
+                .inflateView(R.layout.layout_tokopedianow_dynamic_header_view)
+            header = view as? TokoNowDynamicHeaderView
+        }
     }
 
     interface TokoNowProductRecommendationListener {

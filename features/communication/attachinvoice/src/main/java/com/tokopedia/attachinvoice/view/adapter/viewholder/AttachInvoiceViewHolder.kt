@@ -102,7 +102,7 @@ class AttachInvoiceViewHolder(private val binding: ItemAttachinvoiceBinding, val
     }
 
     private fun stateChecked() {
-        val color = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G100)
+        val color = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50)
         binding.clContainer.setBackgroundColor(color)
         binding.rbSelect.isChecked = true
     }

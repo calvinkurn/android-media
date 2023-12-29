@@ -6,9 +6,7 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
-import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
-import com.tokopedia.epharmacy.component.model.EPharmacyTickerDataModel
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.epharmacy.network.params.InitiateConsultationParam
 import com.tokopedia.epharmacy.network.response.EPharmacyConsultationDetails
@@ -17,6 +15,8 @@ import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationRes
 import com.tokopedia.epharmacy.usecase.EPharmacyGetConsultationDetailsUseCase
 import com.tokopedia.epharmacy.usecase.EPharmacyInitiateConsultationUseCase
 import com.tokopedia.epharmacy.utils.*
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -27,6 +27,7 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
     private val ePharmacyPrepareProductsGroupUseCase: EPharmacyPrepareProductsGroupUseCase,
     private val ePharmacyInitiateConsultationUseCase: EPharmacyInitiateConsultationUseCase,
     private val ePharmacyGetConsultationDetailsUseCase: EPharmacyGetConsultationDetailsUseCase,
+    private val remoteConfig: RemoteConfig,
     @CoroutineBackgroundDispatcher private val dispatcherBackground: CoroutineDispatcher
 ) : BaseViewModel(dispatcherBackground) {
 
@@ -77,7 +78,8 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         ePharmacyPrepareProductsGroupResponseData = ePharmacyPrepareProductsGroupResponse
         ePharmacyPrepareProductsGroupResponse.let { data ->
             if (data.detailData?.groupsData?.epharmacyGroups?.isNotEmpty() == true) {
-                _productGroupLiveData.postValue(Success(mapGroupsDataIntoDataModel(data)))
+                val tickerWebViewText = remoteConfig.getString(RemoteConfigKey.REDIRECT_EPHARMACY_WEB_VIEW_VERSION_LOW)
+                _productGroupLiveData.postValue(Success(EPharmacyUtils.mapGroupsDataIntoDataModel(data, tickerWebViewText)))
                 _buttonLiveData.postValue(ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.papPrimaryCTA)
                 showToastData(ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.toaster)
             } else {
@@ -113,48 +115,6 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         }
     }
 
-    private fun mapGroupsDataIntoDataModel(data: EPharmacyPrepareProductsGroupResponse): EPharmacyDataModel {
-        val listOfComponents = arrayListOf<BaseEPharmacyDataModel>()
-        if (data.detailData?.groupsData?.attachmentPageTickerText?.isNotBlank() == true) {
-            listOfComponents.add(
-                EPharmacyTickerDataModel(
-                    TICKER_COMPONENT,
-                    TICKER_COMPONENT,
-                    data.detailData?.groupsData?.attachmentPageTickerText,
-                    data.detailData?.groupsData?.attachmentPageTickerLogoUrl,
-                    EPHARMACY_TICKER_BACKGROUND
-                )
-            )
-        }
-
-        data.detailData?.groupsData?.epharmacyGroups?.forEachIndexed { indexGroup, group ->
-            if (!group?.shopInfo.isNullOrEmpty()) {
-                group?.shopInfo?.forEachIndexed { shopIndex, info ->
-                    if (info?.products?.isEmpty() != true) {
-                        listOfComponents.add(
-                            getGroupComponent(
-                                group,
-                                info,
-                                shopIndex,
-                                EPharmacyMapper.isLastIndex(data.detailData?.groupsData?.epharmacyGroups, indexGroup)
-                            )
-                        )
-                    }
-                }
-            }
-        }
-        return EPharmacyDataModel(listOfComponents)
-    }
-
-    private fun getGroupComponent(
-        group: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup,
-        info: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo?,
-        shopIndex: Int,
-        isLastGroup: Boolean
-    ): BaseEPharmacyDataModel {
-        return EPharmacyMapper.mapGroupsToAttachmentComponents(group, info, shopIndex, isLastGroup)
-    }
-
     private fun onFailPrepareProductGroup(throwable: Throwable) {
         _productGroupLiveData.postValue(Fail(throwable))
     }
@@ -171,70 +131,29 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         val result = arrayListOf<EPharmacyMiniConsultationResult>()
         ePharmacyPrepareProductsGroupResponseData?.let { response ->
             response.detailData?.groupsData?.epharmacyGroups?.forEach { group ->
-                result.add(
-                    EPharmacyMiniConsultationResult(
-                        group?.epharmacyGroupId,
-                        group?.shopInfo,
-                        group?.consultationData?.consultationStatus,
-                        group?.consultationData?.consultationString,
-                        group?.consultationData?.prescription,
-                        group?.consultationData?.partnerConsultationId,
-                        group?.consultationData?.tokoConsultationId.toString(),
-                        group?.prescriptionImages
-                    )
-                )
+                result.add(EPharmacyUtils.getMiniConsultationModel(group))
             }
         }
         return result
     }
 
     fun getGroupIds(): ArrayList<String> {
-        val ids = arrayListOf<String>()
-        ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.epharmacyGroups?.forEach { gp ->
-            if (!gp?.epharmacyGroupId.isNullOrBlank()) {
-                ids.add(gp?.epharmacyGroupId ?: "")
-            }
-        }
-        return ids
+        return EPharmacyUtils.getGroupIds(ePharmacyPrepareProductsGroupResponseData)
     }
 
-    fun getShopIds(): ArrayList<String> {
-        val ids = arrayListOf<String>()
-        ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.epharmacyGroups?.forEach { gp ->
-            gp?.shopInfo?.forEach { si ->
-                if (!si?.shopId.isNullOrBlank()) {
-                    ids.add(si?.shopId ?: "")
-                }
-            }
-        }
-        return ids
+    fun getShopIds(): List<String> {
+        return EPharmacyUtils.getShopIds(ePharmacyPrepareProductsGroupResponseData)
     }
 
-    fun getShopIds(ePharmacyGroupId: String?): ArrayList<String> {
-        val ids = arrayListOf<String>()
-        ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.epharmacyGroups?.forEach { gp ->
-            if (gp?.epharmacyGroupId == ePharmacyGroupId) {
-                gp?.shopInfo?.forEach { si ->
-                    if (!si?.shopId.isNullOrBlank()) {
-                        ids.add(si?.shopId ?: "")
-                    }
-                }
-            }
-        }
-        return ids
+    fun getShopIds(ePharmacyGroupId: String?): List<String> {
+        return EPharmacyUtils.getShopIds(ePharmacyGroupId, ePharmacyPrepareProductsGroupResponseData)
     }
 
     fun getEnablers(): ArrayList<String> {
-        val ids = arrayListOf<String>()
-        ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.epharmacyGroups?.forEach { gp ->
-            if (!gp?.consultationSource?.enablerName.isNullOrBlank()) {
-                ids.add(gp?.consultationSource?.enablerName ?: "")
-            }
-        }
-        return ids
+        return EPharmacyUtils.getEnablers(ePharmacyPrepareProductsGroupResponseData)
     }
 
     fun findGroup(ePharmacyGroupId: String?): EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup? {
-        return ePharmacyPrepareProductsGroupResponseData?.detailData?.groupsData?.epharmacyGroups?.find { group -> group?.epharmacyGroupId == ePharmacyGroupId }
+        return EPharmacyUtils.findGroup(ePharmacyGroupId, ePharmacyPrepareProductsGroupResponseData)
     }
 }

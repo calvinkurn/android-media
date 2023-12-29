@@ -25,17 +25,20 @@ import com.tokopedia.profilecompletion.addphone.data.analitycs.AddPhoneNumberTra
 import com.tokopedia.profilecompletion.addphone.view.activity.AddPhoneActivity
 import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
 import com.tokopedia.profilecompletion.common.ColorUtils
+import com.tokopedia.profilecompletion.databinding.FragmentAddPhoneBinding
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_add_phone.*
 import javax.inject.Inject
 
 
 open class AddPhoneFragment : BaseDaggerFragment() {
+
+    private var _binding: FragmentAddPhoneBinding? = null
+    private val binding get() = _binding!!
 
     @Inject
     lateinit var tracker: ProfileInfoTracker
@@ -73,12 +76,8 @@ open class AddPhoneFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         splitCompatInstall()
-        return try {
-            inflater.inflate(R.layout.fragment_add_phone, container, false)
-        } catch (e: Throwable) {
-            e.printStackTrace()
-            null
-        }
+        _binding = FragmentAddPhoneBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onFragmentBackPressed(): Boolean {
@@ -96,18 +95,18 @@ open class AddPhoneFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setListener()
         setObserver()
-        buttonSubmit.isEnabled = false
+        binding?.buttonSubmit?.isEnabled = false
         presetView()
     }
 
     private fun presetView() {
         arguments?.getString(AddPhoneActivity.PARAM_PHONE_NUMBER)?.let { phone ->
-            etPhone.editText.setText(phone)
+            binding?.etPhone?.editText?.setText(phone)
         }
     }
 
     private fun setListener() {
-        etPhone?.editText?.addTextChangedListener(object : TextWatcher {
+        binding?.etPhone?.editText?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
 
             }
@@ -117,7 +116,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
                     setErrorText("")
                 } else {
                     setErrorText(getString(R.string.error_cant_empty))
-                    buttonSubmit.isEnabled = false
+                    binding?.buttonSubmit?.isEnabled = false
                 }
             }
 
@@ -126,7 +125,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
             }
         })
 
-        etPhone?.setOnFocusChangeListener { view, hasFocus ->
+        binding?.etPhone?.setOnFocusChangeListener { view, hasFocus ->
             if (hasFocus && !isOnclickEventTriggered) {
                 isOnclickEventTriggered = true
 
@@ -134,8 +133,8 @@ open class AddPhoneFragment : BaseDaggerFragment() {
             }
         }
 
-        buttonSubmit?.setOnClickListener {
-            val phone = etPhone?.editText?.text.toString()
+        binding?.buttonSubmit?.setOnClickListener {
+            val phone = binding?.etPhone?.editText?.text.toString()
             if (phone.isBlank()) {
                 setErrorText(getString(R.string.error_field_required))
                 phoneNumberTracker.clickOnButtonNext(
@@ -157,7 +156,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun goToVerificationActivity() {
-        val phone = etPhone?.editText?.text.toString().trim()
+        val phone = binding?.etPhone?.editText?.text.toString().trim()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         val bundle = Bundle()
         bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
@@ -172,13 +171,13 @@ open class AddPhoneFragment : BaseDaggerFragment() {
 
     private fun setErrorText(s: String) {
         if (TextUtils.isEmpty(s)) {
-            etPhone.isInputError = false
-            etPhone.setMessage(getString(R.string.add_phone_sample_phone))
-            buttonSubmit?.isEnabled = true
+            binding?.etPhone?.isInputError = false
+            binding?.etPhone?.setMessage(getString(R.string.add_phone_sample_phone))
+            binding?.buttonSubmit?.isEnabled = true
         } else {
-            etPhone.isInputError = true
-            etPhone.setMessage(s)
-            buttonSubmit?.isEnabled = false
+            binding?.etPhone?.isInputError = true
+            binding?.etPhone?.setMessage(s)
+            binding?.buttonSubmit?.isEnabled = false
         }
     }
 
@@ -255,17 +254,17 @@ open class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun showLoading() {
-        mainView?.visibility = View.GONE
-        progressBar?.visibility = View.VISIBLE
+        binding?.mainView?.visibility = View.GONE
+        binding?.progressBar?.visibility = View.VISIBLE
     }
 
     protected fun dismissLoading() {
-        mainView?.visibility = View.VISIBLE
-        progressBar?.visibility = View.GONE
+        binding?.mainView?.visibility = View.VISIBLE
+        binding?.progressBar?.visibility = View.GONE
     }
 
     private fun onSuccessVerifyPhone(data: Intent?) {
-        val phone = etPhone.editText.text.toString()
+        val phone = binding?.etPhone?.editText?.text.toString()
         viewModel.mutateAddPhone(phone.trim(), validateToken)
     }
 
@@ -285,6 +284,7 @@ open class AddPhoneFragment : BaseDaggerFragment() {
             viewModel.addPhoneResponse.removeObservers(this)
             viewModel.userValidateResponse.removeObservers(this)
             viewModel.flush()
+            _binding = null
         } catch (_: Throwable) { }
     }
 

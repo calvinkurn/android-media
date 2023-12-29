@@ -20,6 +20,7 @@ class SearchCategoryChooserFilterTest: SearchTestFixtures(), CategoryChooserFilt
         categoryChooserFilterPageTestHelper = CategoryChooserFilterTestHelper(
                 tokoNowSearchViewModel,
                 getProductCountUseCase,
+                getFilterUseCase,
                 this,
         )
     }
@@ -78,6 +79,7 @@ class SearchCategoryChooserFilterTest: SearchTestFixtures(), CategoryChooserFilt
         categoryChooserFilterPageTestHelper = CategoryChooserFilterTestHelper(
             tokoNowSearchViewModel,
             getProductCountUseCase,
+            getFilterUseCase,
             this
         )
 

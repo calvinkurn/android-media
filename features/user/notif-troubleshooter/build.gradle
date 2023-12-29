@@ -8,6 +8,8 @@ repositories {
 }
 
 android {
+    namespace 'com.tokopedia.troubleshooter.notification'
+    testNamespace 'com.tokopedia.troubleshooter.notification.test'
     buildFeatures {
         viewBinding true
     }
@@ -28,7 +30,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.settingnotif)
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
 
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.fcm_common)

@@ -48,7 +48,7 @@ class RoundButton : AppCompatButton {
                 com.tokopedia.tokopoints.R.styleable.RoundButton_tpRbButtonColor,
                 MethodChecker.getColor(
                     context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
                 )
             )
             array.recycle()

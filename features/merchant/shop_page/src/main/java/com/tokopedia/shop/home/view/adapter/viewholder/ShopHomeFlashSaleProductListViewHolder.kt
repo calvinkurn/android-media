@@ -27,7 +27,6 @@ class ShopHomeFlashSaleProductListViewHolder(
     private var uiModel: ShopHomeProductUiModel? = null
     private var fsUiModel: ShopHomeFlashSaleUiModel? = null
     private var productCardList: ProductCardListView? = itemView.findViewById(R.id.fs_product_card_list)
-
     private fun setupImpressionListener(listener: ShopHomeFlashSaleWidgetListener) {
         uiModel?.let {
             productCardList?.setImageProductViewHintListener(
@@ -59,7 +58,8 @@ class ShopHomeFlashSaleProductListViewHolder(
             hasThreeDots = false,
             shopHomeProductViewModel = uiModel,
             widgetName = fsUiModel?.name.orEmpty(),
-            statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty()
+            statusCampaign = fsUiModel?.data?.firstOrNull()?.statusCampaign.orEmpty(),
+            forceLightModeColor = listener.isForceLightModeColorOnShopFlashSaleWidget()
         ).copy(
             stockBarLabelColor = stockBarLabelColor
         )

@@ -23,7 +23,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.ext.encodeOnce
 import javax.inject.Inject
 
-class InsuranceInfoBottomSheet(private val url: String) :
+class InsuranceInfoBottomSheet :
     BottomSheetUnify(),
     HasComponent<InsuranceInfoComponent> {
 
@@ -31,10 +31,14 @@ class InsuranceInfoBottomSheet(private val url: String) :
     lateinit var userSession: UserSessionInterface
 
     private var viewBinding: BottomSheetInsuranceInfoBinding? = null
+    private var url: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
+        arguments?.let {
+            url = it.getString(INSURANCE_URL_EXTRA, "")
+        }
         setStyle(DialogFragment.STYLE_NORMAL, R.style.InsuranceInfoBottomSheetStyle)
     }
 
@@ -99,6 +103,18 @@ class InsuranceInfoBottomSheet(private val url: String) :
             .builder()
             .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
             .build()
+    }
+
+    companion object {
+        private const val INSURANCE_URL_EXTRA = "INSURANCE_URL_EXTRA"
+
+        fun newInstance(url: String): InsuranceInfoBottomSheet {
+            val bottomSheet = InsuranceInfoBottomSheet()
+            val bundle = Bundle()
+            bundle.putString(INSURANCE_URL_EXTRA, url)
+            bottomSheet.arguments = bundle
+            return bottomSheet
+        }
     }
 
 }

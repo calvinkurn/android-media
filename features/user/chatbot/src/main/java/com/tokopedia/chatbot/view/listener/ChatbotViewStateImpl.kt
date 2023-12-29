@@ -41,6 +41,7 @@ import com.tokopedia.chatbot.view.adapter.QuickReplyAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.TextAreaUnify2
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
@@ -415,7 +416,6 @@ class ChatbotViewStateImpl(
         val title = toolbar.findViewById<TextView>(R.id.title)
         val interlocutorName = getInterlocutorName(chatroomViewModel.getHeaderName())
         title.text = MethodChecker.fromHtml(interlocutorName)
-    //    loadAvatar(chatroomViewModel.headerModel.image)
     }
 
     override fun getInterlocutorName(headerName: String): String = headerName
@@ -438,7 +438,8 @@ class ChatbotViewStateImpl(
     }
 
     override fun getNewCommentId(): Int {
-        return R.id.new_comment
+        var textAreaUnify = view.findViewById<TextAreaUnify2>(R.id.new_comment)
+        return textAreaUnify.editText.id
     }
 
     override fun getReplyBoxId(): Int {

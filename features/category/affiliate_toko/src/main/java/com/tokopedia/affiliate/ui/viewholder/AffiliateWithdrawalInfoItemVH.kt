@@ -17,8 +17,8 @@ class AffiliateWithdrawalInfoItemVH(itemView: View) :
         @JvmField
         @LayoutRes
         var LAYOUT = R.layout.affiliate_withdrawal_info_item
-        val TYPE_BOLD = "bold"
-        val TYPE_REGULER = "regular"
+        private const val TYPE_BOLD = "bold"
+        private const val TYPE_REGULER = "regular"
     }
 
     override fun bind(element: AffiliateWithrawalInfoAttributionModel?) {
@@ -28,30 +28,27 @@ class AffiliateWithdrawalInfoItemVH(itemView: View) :
             when (element?.advanceTooltip?.textType) {
                 TYPE_BOLD -> {
                     element.advanceTooltip.textSize?.let {
-                        headerTypoMap[it]?.let { it ->
-                            setType(it)
+                        headerTypoMap[it]?.let { type ->
+                            setType(type)
                         }
                     }
                     setWeight(Typography.BOLD)
                 }
                 TYPE_REGULER -> {
                     element.advanceTooltip.textSize?.let {
-                        bodyTypoMap[it]?.let { it ->
-                            setType(it)
+                        bodyTypoMap[it]?.let { type ->
+                            setType(type)
                         }
                     }
                     setWeight(Typography.REGULAR)
                     setTextColor(
                         MethodChecker.getColor(
                             itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
                         )
                     )
-
                 }
             }
-
         }
     }
-
 }
