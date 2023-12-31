@@ -3,7 +3,14 @@ package com.tokopedia.shareexperience.data.usecase
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.shareexperience.data.dto.response.ShareExBottomSheetResponseDto
+import com.tokopedia.shareexperience.data.dto.response.ShareExPropertyResponseDto
+import com.tokopedia.shareexperience.data.dto.response.ShareExShareBodyResponseDto
+import com.tokopedia.shareexperience.data.dto.response.ShareExSharePropertiesResponseDto
 import com.tokopedia.shareexperience.data.dto.response.ShareExWrapperResponseDto
+import com.tokopedia.shareexperience.data.dto.response.affiliate.ShareExAffiliateEligibilityResponseDto
+import com.tokopedia.shareexperience.data.dto.response.affiliate.ShareExAffiliateRegistrationWidgetResponseDto
+import com.tokopedia.shareexperience.data.dto.response.imagegenerator.ShareExImageGeneratorResponseDto
 import com.tokopedia.shareexperience.data.mapper.ShareExPropertyMapper
 import com.tokopedia.shareexperience.data.repository.ShareExGetSharePropertiesQuery
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
@@ -26,9 +33,130 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
             //                val response = repository.request<ShareExRequest, ShareExWrapperResponseDto>(
 //                    sharePropertiesQuery, params
 //                )
-            val dto = ShareExWrapperResponseDto()
+            val dto = getDummyResponseDto()
             val result = mapper.map(dto.response.bottomSheet)
             emit(result)
         }.flowOn(dispatchers.io)
+    }
+
+    private fun getDummyResponseDto(): ShareExWrapperResponseDto {
+        return ShareExWrapperResponseDto(
+            ShareExSharePropertiesResponseDto(
+                ShareExBottomSheetResponseDto(
+                    title = "Bagikan ke teman kamu",
+                    subtitle = "Mau bagi halaman yang mana?",
+                    chips = getChips(),
+                    properties = getProperties(),
+                    imageGeneratorPayload = ShareExImageGeneratorResponseDto() // TODO: setup this
+                )
+            )
+        )
+    }
+
+    private fun getChips(): List<String> {
+        return listOf(
+            "Halaman Toko",
+            "Semua Produk",
+            "Etalase",
+            "Feed"
+        )
+    }
+
+    private fun getProperties(): List<ShareExPropertyResponseDto> {
+        return listOf(
+            ShareExPropertyResponseDto(
+                shareBody = ShareExShareBodyResponseDto(
+                    title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+                    thumbnailUrls = getImageThumbnails(5)
+                ),
+                affiliateRegistrationWidget = ShareExAffiliateRegistrationWidgetResponseDto(
+                    icon = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png",
+                    title = "Tokopedia Affiliate",
+                    label = "Daftar dan raih komisi Rp16.000/barang terjual dengan bagikan link ini.",
+                    description = "BARU",
+                    link = "tokopedia://topchat"
+                ),
+                affiliateEligibility = ShareExAffiliateEligibilityResponseDto(
+                    eligible = false,
+                    commission = ""
+                )
+            ),
+            ShareExPropertyResponseDto(
+                shareBody = ShareExShareBodyResponseDto(
+                    title = "Lorem ipsum dolor sit amet.",
+                    thumbnailUrls = getImageThumbnails(3)
+                ),
+                affiliateRegistrationWidget = ShareExAffiliateRegistrationWidgetResponseDto(),
+                affiliateEligibility = ShareExAffiliateEligibilityResponseDto(
+                    eligible = true,
+                    commission = "Rp16.000"
+                )
+            ),
+            ShareExPropertyResponseDto(
+                shareBody = ShareExShareBodyResponseDto(
+                    title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+                    thumbnailUrls = getImageThumbnails(1)
+                ),
+                affiliateRegistrationWidget = ShareExAffiliateRegistrationWidgetResponseDto(
+                    icon = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png",
+                    title = "Tokopedia Affiliate",
+                    label = "Daftar dan raih komisi Rp16.000/barang terjual dengan bagikan link ini.",
+                    description = "BARU",
+                    link = "tokopedia://topchat"
+                ),
+                affiliateEligibility = ShareExAffiliateEligibilityResponseDto(
+                    eligible = true,
+                    commission = "Rp16.000"
+                )
+            ),
+            ShareExPropertyResponseDto(
+                shareBody = ShareExShareBodyResponseDto(
+                    title = "",
+                    thumbnailUrls = getImageThumbnails(0)
+                ),
+                affiliateRegistrationWidget = ShareExAffiliateRegistrationWidgetResponseDto(),
+                affiliateEligibility = ShareExAffiliateEligibilityResponseDto(
+                    eligible = true,
+                    commission = "Rp16.000"
+                )
+            ),
+            ShareExPropertyResponseDto(
+                shareBody = ShareExShareBodyResponseDto(
+                    title = "",
+                    thumbnailUrls = getImageThumbnails(0)
+                ),
+                affiliateRegistrationWidget = ShareExAffiliateRegistrationWidgetResponseDto(),
+                affiliateEligibility = ShareExAffiliateEligibilityResponseDto()
+            )
+        )
+    }
+
+    private fun getImageThumbnails(imageCount: Int): List<String> {
+        return when (imageCount) {
+            1 -> listOf("https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png")
+            2 -> listOf(
+                "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png",
+                "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/10/18/999822bb-f444-4602-9203-1643d3f2393a.jpg"
+            )
+            3 -> listOf(
+                "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png",
+                "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/10/18/999822bb-f444-4602-9203-1643d3f2393a.jpg",
+                "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/7/13/a0a46e5a-c3de-4c73-b25f-35d8a52dafc3.jpg"
+            )
+            4 -> listOf(
+                "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png",
+                "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/10/18/999822bb-f444-4602-9203-1643d3f2393a.jpg",
+                "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/7/13/a0a46e5a-c3de-4c73-b25f-35d8a52dafc3.jpg",
+                "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/5/31/82f8d445-615a-49d0-a567-bc9ab6f75195.png"
+            )
+            5 -> listOf(
+                "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png",
+                "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/10/18/999822bb-f444-4602-9203-1643d3f2393a.jpg",
+                "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/7/13/a0a46e5a-c3de-4c73-b25f-35d8a52dafc3.jpg",
+                "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2023/5/31/82f8d445-615a-49d0-a567-bc9ab6f75195.png",
+                "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/7/6/69b75de5-b8b1-4d3f-9b10-3a1db5e1913a.jpg"
+            )
+            else -> listOf()
+        }
     }
 }

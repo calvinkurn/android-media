@@ -58,6 +58,7 @@ fun ShareExBottomSheetModel.map(position: Int = 0): List<Visitable<in ShareExTyp
                 commissionText,
                 "tokopedia.link",
                 listImageUiModel.firstOrNull()?.imageUrl.toString(),
+                // TODO: Ask BE for Komisi Extra label and date
                 "Komisi Extra",
                 "Hingga 31 Des 2024"
             )

@@ -5,19 +5,19 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.databinding.ShareexperienceChipsItemBinding
-import com.tokopedia.shareexperience.ui.listener.ShareExBottomSheetListener
+import com.tokopedia.shareexperience.ui.listener.ShareExChipsListener
 import com.tokopedia.shareexperience.ui.model.chip.ShareExChipsUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShareExChipsViewHolder(
     itemView: View,
-    bottomSheetListener: ShareExBottomSheetListener
+    chipsListener: ShareExChipsListener
 ) : AbstractViewHolder<ShareExChipsUiModel>(itemView) {
 
     private val binding: ShareexperienceChipsItemBinding? by viewBinding()
 
     init {
-        binding?.shareexRvChip?.setBottomSheetListener(bottomSheetListener)
+        binding?.shareexRvChip?.setBottomSheetListener(chipsListener)
     }
 
     override fun bind(element: ShareExChipsUiModel) {

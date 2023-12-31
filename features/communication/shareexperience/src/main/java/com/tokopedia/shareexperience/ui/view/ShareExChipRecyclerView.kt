@@ -7,11 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.shareexperience.ui.adapter.ShareExChipsAdapter
 import com.tokopedia.shareexperience.ui.adapter.decoration.ShareExHorizontalSpacingItemDecoration
-import com.tokopedia.shareexperience.ui.listener.ShareExBottomSheetListener
 import com.tokopedia.shareexperience.ui.listener.ShareExChipsListener
 import com.tokopedia.shareexperience.ui.model.chip.ShareExChipUiModel
 
-class ShareExChipRecyclerView : RecyclerView, ShareExChipsListener {
+class ShareExChipRecyclerView : RecyclerView {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -38,21 +37,8 @@ class ShareExChipRecyclerView : RecyclerView, ShareExChipsListener {
         chipsAdapter?.updateData(newList)
     }
 
-    fun setBottomSheetListener(listener: ShareExBottomSheetListener) {
-        chipsAdapter = ShareExChipsAdapter(this, listener)
+    fun setBottomSheetListener(listener: ShareExChipsListener) {
+        chipsAdapter = ShareExChipsAdapter(listener)
         adapter = chipsAdapter
-    }
-
-    override fun onClickChip(position: Int) {
-        chipsAdapter?.currentList?.mapIndexed { index, item ->
-            item.copy(isSelected = index == position)
-        }?.let { newList ->
-            updateData(newList)
-        }
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        chipsAdapter = null
     }
 }
