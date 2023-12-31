@@ -41,8 +41,10 @@ fun ShareExBottomSheetModel.map(position: Int = 0): List<Visitable<in ShareExTyp
         val listImageUiModel = shareExPropertyModel.listImage.mapIndexed { index, imageUrl ->
             ShareExImageUiModel(imageUrl = imageUrl, isSelected = index == 0)
         }
-        val imageCarouselUiModel = ShareExImageCarouselUiModel(listImageUiModel)
-        result.add(imageCarouselUiModel)
+        if (listImageUiModel.isNotEmpty()) {
+            val imageCarouselUiModel = ShareExImageCarouselUiModel(listImageUiModel)
+            result.add(imageCarouselUiModel)
+        }
 
         // Link Share Card UI
         // TODO: Ask BE if this copy can be from them
