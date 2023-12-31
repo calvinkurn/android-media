@@ -13,6 +13,7 @@ import com.tokopedia.shareexperience.ui.adapter.viewholder.channel.ShareExSocial
 import com.tokopedia.shareexperience.ui.adapter.viewholder.chip.ShareExChipsViewHolder
 import com.tokopedia.shareexperience.ui.adapter.viewholder.image.ShareExImageCarouselViewHolder
 import com.tokopedia.shareexperience.ui.listener.ShareExChipsListener
+import com.tokopedia.shareexperience.ui.listener.ShareExImageGeneratorListener
 import com.tokopedia.shareexperience.ui.model.ShareExAffiliateRegistrationUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExErrorUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExLinkShareUiModel
@@ -24,7 +25,8 @@ import com.tokopedia.shareexperience.ui.model.chip.ShareExChipsUiModel
 import com.tokopedia.shareexperience.ui.model.image.ShareExImageCarouselUiModel
 
 class ShareExTypeFactoryImpl(
-    private val chipsListener: ShareExChipsListener
+    private val chipsListener: ShareExChipsListener,
+    private val imageGeneratorListener: ShareExImageGeneratorListener
 ) : BaseAdapterTypeFactory(), ShareExTypeFactory {
     override fun type(uiModel: ShareExSubtitleUiModel): Int {
         return ShareExSubtitleViewHolder.LAYOUT
@@ -66,7 +68,7 @@ class ShareExTypeFactoryImpl(
         return when (type) {
             ShareExSubtitleViewHolder.LAYOUT -> ShareExSubtitleViewHolder(parent)
             ShareExChipsViewHolder.LAYOUT -> ShareExChipsViewHolder(parent, chipsListener)
-            ShareExImageCarouselViewHolder.LAYOUT -> ShareExImageCarouselViewHolder(parent)
+            ShareExImageCarouselViewHolder.LAYOUT -> ShareExImageCarouselViewHolder(parent, imageGeneratorListener)
             ShareExLinkShareViewHolder.LAYOUT -> ShareExLinkShareViewHolder(parent)
             ShareExLineSeparatorViewHolder.LAYOUT -> ShareExLineSeparatorViewHolder(parent)
             ShareExAffiliateRegistrationViewHolder.LAYOUT -> ShareExAffiliateRegistrationViewHolder(parent)

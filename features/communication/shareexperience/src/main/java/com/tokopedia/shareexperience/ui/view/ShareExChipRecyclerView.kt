@@ -37,7 +37,7 @@ class ShareExChipRecyclerView : RecyclerView {
         chipsAdapter?.updateData(newList)
     }
 
-    fun setBottomSheetListener(listener: ShareExChipsListener) {
+    fun setChipsListener(listener: ShareExChipsListener) {
         chipsAdapter = ShareExChipsAdapter(listener)
         adapter = chipsAdapter
     }

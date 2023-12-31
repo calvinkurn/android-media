@@ -11,18 +11,20 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShareExImageViewHolder(
     itemView: View,
-    private val listener: ShareExCarouselImageListener
-): RecyclerView.ViewHolder(itemView) {
+    listener: ShareExCarouselImageListener
+) : RecyclerView.ViewHolder(itemView) {
 
     private val binding: ShareexperienceImageItemBinding? by viewBinding()
+    private var element: ShareExImageUiModel? = null
 
     init {
         binding?.shareexIvImageItem?.setOnClickListener {
-            listener.onClickImage(bindingAdapterPosition)
+            listener.onClickImage(bindingAdapterPosition, element?.imageUrl ?: "")
         }
     }
 
     fun bind(element: ShareExImageUiModel) {
+        this.element = element
         binding?.shareexIvImageItem?.loadImage(element.imageUrl)
         binding?.shareexIconCheckmark?.showWithCondition(element.isSelected)
         binding?.shareexBorderSelectedImage?.showWithCondition(element.isSelected)

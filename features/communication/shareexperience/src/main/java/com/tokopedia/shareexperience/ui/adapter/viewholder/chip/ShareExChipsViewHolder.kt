@@ -17,7 +17,7 @@ class ShareExChipsViewHolder(
     private val binding: ShareexperienceChipsItemBinding? by viewBinding()
 
     init {
-        binding?.shareexRvChip?.setBottomSheetListener(chipsListener)
+        binding?.shareexRvChip?.setChipsListener(chipsListener)
     }
 
     override fun bind(element: ShareExChipsUiModel) {
