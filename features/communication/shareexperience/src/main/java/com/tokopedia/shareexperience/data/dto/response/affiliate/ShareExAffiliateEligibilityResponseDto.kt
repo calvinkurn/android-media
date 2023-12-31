@@ -6,5 +6,10 @@ data class ShareExAffiliateEligibilityResponseDto(
     @SerializedName("eligibile")
     val eligible: Boolean = false,
     @SerializedName("commission")
-    val commission: String = ""
+    val commission: String = "",
+    // TODO: Ask BE for Komisi Extra label and date
+    @SerializedName("label")
+    val label: String = "",
+    @SerializedName("date")
+    val date: String = ""
 )

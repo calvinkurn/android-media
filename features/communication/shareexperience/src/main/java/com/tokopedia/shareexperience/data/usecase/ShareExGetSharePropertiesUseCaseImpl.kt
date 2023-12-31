@@ -78,7 +78,9 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                 ),
                 affiliateEligibility = ShareExAffiliateEligibilityResponseDto(
                     eligible = false,
-                    commission = ""
+                    commission = "",
+                    label = "Komisi Extra",
+                    date = "Hingga 31 Des 2024"
                 )
             ),
             ShareExPropertyResponseDto(
@@ -89,7 +91,9 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                 affiliateRegistrationWidget = ShareExAffiliateRegistrationWidgetResponseDto(),
                 affiliateEligibility = ShareExAffiliateEligibilityResponseDto(
                     eligible = true,
-                    commission = "Rp16.000"
+                    commission = "Rp16.000",
+                    label = "Komisi Extra",
+                    date = "Hingga 31 Des 2024"
                 )
             ),
             ShareExPropertyResponseDto(
@@ -116,8 +120,10 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                 ),
                 affiliateRegistrationWidget = ShareExAffiliateRegistrationWidgetResponseDto(),
                 affiliateEligibility = ShareExAffiliateEligibilityResponseDto(
-                    eligible = true,
-                    commission = "Rp16.000"
+                    eligible = false,
+                    commission = "Rp16.000",
+                    label = "Komisi Extra",
+                    date = "Hingga 31 Des 2024"
                 )
             ),
             ShareExPropertyResponseDto(
