@@ -36,8 +36,10 @@ class ShareExCarouselImageRecyclerView : RecyclerView, ShareExCarouselImageListe
         addItemDecoration(horizontalSpacingItemDecoration)
     }
 
-    fun updateData(newList: List<ShareExImageUiModel>) {
+    fun initData(newList: List<ShareExImageUiModel>) {
         imageAdapter.updateData(newList)
+        scrollToPosition(0)
+        imageGeneratorListener?.onImageChanged(newList.firstOrNull()?.imageUrl ?: "")
     }
 
     fun setImageGeneratorListener(listener: ShareExImageGeneratorListener) {
@@ -48,7 +50,7 @@ class ShareExCarouselImageRecyclerView : RecyclerView, ShareExCarouselImageListe
         val newList = imageAdapter.currentList.mapIndexed { index, item ->
             item.copy(isSelected = index == position)
         }
-        updateData(newList)
+        imageAdapter.updateData(newList)
         imageGeneratorListener?.onImageChanged(imageUrl)
     }
 }

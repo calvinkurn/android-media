@@ -38,8 +38,8 @@ fun ShareExBottomSheetModel.map(position: Int = 0): List<Visitable<in ShareExTyp
     // Only add when property is not null
     this.body.listShareProperty.getOrNull(position)?.let { shareExPropertyModel ->
         // Image Carousel UI
-        val listImageUiModel = shareExPropertyModel.listImage.map {
-            ShareExImageUiModel(it)
+        val listImageUiModel = shareExPropertyModel.listImage.mapIndexed { index, imageUrl ->
+            ShareExImageUiModel(imageUrl = imageUrl, isSelected = index == 0)
         }
         val imageCarouselUiModel = ShareExImageCarouselUiModel(listImageUiModel)
         result.add(imageCarouselUiModel)

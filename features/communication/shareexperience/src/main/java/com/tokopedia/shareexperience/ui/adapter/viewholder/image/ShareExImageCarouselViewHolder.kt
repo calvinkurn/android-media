@@ -21,7 +21,7 @@ class ShareExImageCarouselViewHolder(
     }
 
     override fun bind(element: ShareExImageCarouselUiModel) {
-        binding?.shareexRvImageCarousel?.updateData(element.imageUrlList)
+        binding?.shareexRvImageCarousel?.initData(element.imageUrlList)
     }
 
     companion object {
