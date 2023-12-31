@@ -12,6 +12,7 @@ import com.tokopedia.shareexperience.ui.adapter.viewholder.channel.ShareExCommon
 import com.tokopedia.shareexperience.ui.adapter.viewholder.channel.ShareExSocialChannelsViewHolder
 import com.tokopedia.shareexperience.ui.adapter.viewholder.chip.ShareExChipsViewHolder
 import com.tokopedia.shareexperience.ui.adapter.viewholder.image.ShareExImageCarouselViewHolder
+import com.tokopedia.shareexperience.ui.listener.ShareExAffiliateRegistrationListener
 import com.tokopedia.shareexperience.ui.listener.ShareExChipsListener
 import com.tokopedia.shareexperience.ui.listener.ShareExImageGeneratorListener
 import com.tokopedia.shareexperience.ui.model.ShareExAffiliateRegistrationUiModel
@@ -26,7 +27,8 @@ import com.tokopedia.shareexperience.ui.model.image.ShareExImageCarouselUiModel
 
 class ShareExTypeFactoryImpl(
     private val chipsListener: ShareExChipsListener,
-    private val imageGeneratorListener: ShareExImageGeneratorListener
+    private val imageGeneratorListener: ShareExImageGeneratorListener,
+    private val affiliateRegistrationListener: ShareExAffiliateRegistrationListener
 ) : BaseAdapterTypeFactory(), ShareExTypeFactory {
     override fun type(uiModel: ShareExSubtitleUiModel): Int {
         return ShareExSubtitleViewHolder.LAYOUT
@@ -71,7 +73,7 @@ class ShareExTypeFactoryImpl(
             ShareExImageCarouselViewHolder.LAYOUT -> ShareExImageCarouselViewHolder(parent, imageGeneratorListener)
             ShareExLinkShareViewHolder.LAYOUT -> ShareExLinkShareViewHolder(parent)
             ShareExLineSeparatorViewHolder.LAYOUT -> ShareExLineSeparatorViewHolder(parent)
-            ShareExAffiliateRegistrationViewHolder.LAYOUT -> ShareExAffiliateRegistrationViewHolder(parent)
+            ShareExAffiliateRegistrationViewHolder.LAYOUT -> ShareExAffiliateRegistrationViewHolder(parent, affiliateRegistrationListener)
             ShareExSocialChannelsViewHolder.LAYOUT -> ShareExSocialChannelsViewHolder(parent)
             ShareExCommonChannelsViewHolder.LAYOUT -> ShareExCommonChannelsViewHolder(parent)
             else -> super.createViewHolder(parent, type)

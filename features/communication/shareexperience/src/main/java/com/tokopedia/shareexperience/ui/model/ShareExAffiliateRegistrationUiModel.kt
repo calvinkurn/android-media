@@ -7,7 +7,8 @@ class ShareExAffiliateRegistrationUiModel(
     val icon: String,
     val title: String,
     val description: String,
-    val label: String
+    val label: String,
+    val applink: String
 ): Visitable<ShareExTypeFactory> {
     override fun type(typeFactory: ShareExTypeFactory): Int {
         return typeFactory.type(this)

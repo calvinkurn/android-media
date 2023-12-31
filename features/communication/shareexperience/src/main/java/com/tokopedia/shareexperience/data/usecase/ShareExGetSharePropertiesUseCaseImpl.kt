@@ -71,9 +71,9 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                 ),
                 affiliateRegistrationWidget = ShareExAffiliateRegistrationWidgetResponseDto(
                     icon = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png",
-                    title = "Tokopedia Affiliate",
-                    label = "Daftar dan raih komisi Rp16.000/barang terjual dengan bagikan link ini.",
-                    description = "BARU",
+                    title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+                    description  = "Daftar dan raih komisi Rp16.000/barang terjual dengan bagikan link ini.",
+                    label = "BARU",
                     link = "tokopedia://topchat"
                 ),
                 affiliateEligibility = ShareExAffiliateEligibilityResponseDto(
@@ -88,7 +88,13 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                     title = "Lorem ipsum dolor sit amet.",
                     thumbnailUrls = getImageThumbnails(3)
                 ),
-                affiliateRegistrationWidget = ShareExAffiliateRegistrationWidgetResponseDto(),
+                affiliateRegistrationWidget = ShareExAffiliateRegistrationWidgetResponseDto(
+                    icon = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png",
+                    title = "Tokopedia Affiliate",
+                    description  = "Daftar dan raih komisi Rp16.000/barang terjual dengan bagikan link ini.",
+                    label = "BARU",
+                    link = ""
+                ),
                 affiliateEligibility = ShareExAffiliateEligibilityResponseDto(
                     eligible = true,
                     commission = "Rp16.000",
@@ -104,8 +110,8 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                 affiliateRegistrationWidget = ShareExAffiliateRegistrationWidgetResponseDto(
                     icon = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png",
                     title = "Tokopedia Affiliate",
-                    label = "Daftar dan raih komisi Rp16.000/barang terjual dengan bagikan link ini.",
-                    description = "BARU",
+                    description  = "Daftar dan raih komisi Rp16.000/barang terjual dengan bagikan link ini.",
+                    label = "BARU BARU BARU BARU BARU BARU BARU BARU BARU BARU BARU BARU BARU BARU BARU BARU",
                     link = "tokopedia://topchat"
                 ),
                 affiliateEligibility = ShareExAffiliateEligibilityResponseDto(

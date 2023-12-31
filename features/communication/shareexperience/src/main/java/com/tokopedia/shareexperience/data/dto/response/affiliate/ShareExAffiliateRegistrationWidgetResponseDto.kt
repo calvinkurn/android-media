@@ -7,10 +7,10 @@ data class ShareExAffiliateRegistrationWidgetResponseDto(
     val icon: String = "",
     @SerializedName("title")
     val title: String = "",
-    @SerializedName("label")
-    val label: String = "",
     @SerializedName("description")
     val description: String = "",
+    @SerializedName("label")
+    val label: String = "",
     @SerializedName("link")
     val link: String = ""
 )

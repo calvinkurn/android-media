@@ -2,6 +2,7 @@ package com.tokopedia.shareexperience.ui.util
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
+import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateRegistrationModel
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.model.ShareExAffiliateRegistrationUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExLinkShareUiModel
@@ -71,12 +72,15 @@ fun ShareExBottomSheetModel.map(position: Int = 0): List<Visitable<in ShareExTyp
         result.add(separator)
 
         // Affliate Registration Ui
-        if (shareExPropertyModel.affiliate.registration != null) {
+        if (shareExPropertyModel.affiliate.registration != null &&
+            shareExPropertyModel.affiliate.registration.hasEnoughData()
+        ) {
             val affiliateRegistrationUiModel = ShareExAffiliateRegistrationUiModel(
                 shareExPropertyModel.affiliate.registration.icon,
                 shareExPropertyModel.affiliate.registration.title,
                 shareExPropertyModel.affiliate.registration.description,
-                shareExPropertyModel.affiliate.registration.label
+                shareExPropertyModel.affiliate.registration.label,
+                shareExPropertyModel.affiliate.registration.appLink
             )
             result.add(affiliateRegistrationUiModel)
         }
@@ -93,4 +97,11 @@ fun ShareExBottomSheetModel.map(position: Int = 0): List<Visitable<in ShareExTyp
     }
 
     return result
+}
+
+private fun ShareExAffiliateRegistrationModel.hasEnoughData(): Boolean {
+    return this.icon.isNotBlank() &&
+        this.title.isNotBlank() &&
+        this.description.isNotBlank() &&
+        this.appLink.isNotBlank()
 }

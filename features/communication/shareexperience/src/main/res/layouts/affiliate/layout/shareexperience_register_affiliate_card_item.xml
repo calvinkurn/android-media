@@ -45,13 +45,16 @@
                 android:id="@+id/shareex_label_register_affiliate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxWidth="100dp"
                 app:layout_constraintTop_toTopOf="@id/shareex_tv_register_affiliate_title"
                 app:layout_constraintLeft_toRightOf="@id/shareex_tv_register_affiliate_title"
                 app:layout_constraintRight_toLeftOf="@id/shareex_icon_register_affiliate_chevron_right"
                 android:layout_marginStart="6dp"
                 android:layout_marginEnd="8dp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 app:labelType="highlight_dark_red"
-                tools:text="Baru"/>
+                tools:text="@tools:sample/lorem/random"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/shareex_tv_register_affiliate_desc"

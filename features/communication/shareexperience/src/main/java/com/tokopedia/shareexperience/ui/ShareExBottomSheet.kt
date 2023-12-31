@@ -10,6 +10,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
 import com.tokopedia.shareexperience.databinding.ShareexperienceBottomSheetBinding
@@ -17,6 +18,7 @@ import com.tokopedia.shareexperience.ui.adapter.ShareExBottomSheetAdapter
 import com.tokopedia.shareexperience.ui.adapter.decoration.ShareExBottomSheetSpacingItemDecoration
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactoryImpl
+import com.tokopedia.shareexperience.ui.listener.ShareExAffiliateRegistrationListener
 import com.tokopedia.shareexperience.ui.listener.ShareExChipsListener
 import com.tokopedia.shareexperience.ui.listener.ShareExImageGeneratorListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -28,7 +30,8 @@ import javax.inject.Inject
 class ShareExBottomSheet :
     BottomSheetUnify(),
     ShareExChipsListener,
-    ShareExImageGeneratorListener {
+    ShareExImageGeneratorListener,
+    ShareExAffiliateRegistrationListener {
 
     @Inject
     lateinit var viewModel: ShareExViewModel
@@ -36,7 +39,7 @@ class ShareExBottomSheet :
     private var viewBinding by autoClearedNullable<ShareexperienceBottomSheetBinding>()
     private val adapter by lazy {
         ShareExBottomSheetAdapter(
-            ShareExTypeFactoryImpl(this, this)
+            ShareExTypeFactoryImpl(this, this, this)
         )
     }
 
@@ -101,6 +104,9 @@ class ShareExBottomSheet :
                 launch {
                     observeBottomSheetUiState()
                 }
+                launch {
+                    observeNavigationUiState()
+                }
             }
         }
         viewModel.setupViewModelObserver()
@@ -118,6 +124,17 @@ class ShareExBottomSheet :
         adapter.updateItems(newList)
     }
 
+    private suspend fun observeNavigationUiState() {
+        viewModel.navigationUiState.collectLatest {
+            if (it.appLink.isNotBlank()) {
+                context?.let { ctx ->
+                    val intent = RouteManager.getIntent(ctx, it.appLink)
+                    startActivity(intent)
+                }
+            }
+        }
+    }
+
     override fun onClickChip(position: Int) {
         viewModel.processAction(ShareExBottomSheetAction.UpdateShareBody(position))
     }
@@ -125,6 +142,12 @@ class ShareExBottomSheet :
     override fun onImageChanged(imageUrl: String) {
         if (imageUrl.isNotBlank()) {
             viewModel.processAction(ShareExBottomSheetAction.UpdateShareImage(imageUrl))
+        }
+    }
+
+    override fun onAffiliateRegistrationCardClicked(appLink: String) {
+        if (appLink.isNotBlank()) {
+            viewModel.processAction(ShareExBottomSheetAction.NavigateToPage(appLink))
         }
     }
 }
