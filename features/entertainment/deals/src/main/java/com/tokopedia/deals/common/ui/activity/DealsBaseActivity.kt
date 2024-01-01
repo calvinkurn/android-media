@@ -2,7 +2,6 @@ package com.tokopedia.deals.common.ui.activity
 
 import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -13,7 +12,6 @@ import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.ScrollingViewBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
@@ -85,11 +83,6 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
         setupView()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-        initInjector()
-    }
-
     private fun initInjector() {
         getDealsComponent().inject(this)
     }
@@ -108,7 +101,10 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
         binding = ActivityBaseDealsBinding.bind(viewGroup)
 
         val nestedScrollView = NestedScrollView(this)
-        nestedScrollView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        nestedScrollView.layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
         nestedScrollView.isFillViewport = true
         nestedScrollView.id = R.id.containerBaseDealsParentView
         binding.baseDealsCoor.addView(nestedScrollView)
@@ -124,22 +120,24 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     }
 
     private fun setUpScrollView() {
-        binding.appBarLayoutSearchContent.addOnOffsetChangedListener(
-            AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-                if (abs(verticalOffset) - appBarLayout.totalScrollRange >= -binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.height) {
-                    // collapse
-                    binding.contentBaseToolbar.imgDealsSearchIcon.show()
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        binding.appBarLayoutSearchContent.elevation = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-                    }
-                } else {
-                    binding.contentBaseToolbar.imgDealsSearchIcon.hide()
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        binding.appBarLayoutSearchContent.elevation = resources.getDimension(R.dimen.deals_dp_0)
-                    }
+        binding.appBarLayoutSearchContent.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
+            if (abs(verticalOffset) - appBarLayout.totalScrollRange >=
+                -binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.height
+            ) {
+                // collapse
+                binding.contentBaseToolbar.imgDealsSearchIcon.show()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    binding.appBarLayoutSearchContent.elevation =
+                        resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
+                }
+            } else {
+                binding.contentBaseToolbar.imgDealsSearchIcon.hide()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    binding.appBarLayoutSearchContent.elevation =
+                        resources.getDimension(R.dimen.deals_dp_0)
                 }
             }
-        )
+        }
 
         binding.contentBaseToolbar.imgDealsSearchIcon.setOnClickListener {
             searchBarActionListener?.onClickSearchBar()
@@ -178,7 +176,7 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
             this,
             PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION,
             object : PermissionCheckerHelper.PermissionCheckListener {
-                override fun onNeverAskAgain(permissionText: String) {}
+                override fun onNeverAskAgain(permissionText: String) = Unit
 
                 override fun onPermissionDenied(permissionText: String) {
                     val defaultLocation = dealsLocationUtils.updateLocationToDefault()
@@ -208,10 +206,15 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
         }
     }
 
-    override fun setChangedLocation() { /* do nothing */
+    override fun setChangedLocation() {
+        /* do nothing */
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -242,10 +245,20 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
                         searchBarActionListener?.afterSearchBarTextChanged(s.toString())
                     }
 
-                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { /* do nothing */
+                    override fun beforeTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        count: Int,
+                        after: Int
+                    ) { /* do nothing */
                     }
 
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { /* do nothing */
+                    override fun onTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) { /* do nothing */
                     }
                 })
             }
@@ -266,7 +279,8 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     var currentLoc = Location()
 
     private fun onClickLocation() {
-        locationBottomSheet = SelectLocationBottomSheet.createInstance("", currentLoc, isLandmarkPage)
+        locationBottomSheet =
+            SelectLocationBottomSheet.createInstance("", currentLoc, isLandmarkPage)
         locationBottomSheet.show(supportFragmentManager, "")
     }
 
