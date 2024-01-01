@@ -70,7 +70,7 @@ class CatalogDetailUseCase @Inject constructor(
     ): ComparisonUiModel? {
         val gqlResponse = catalogDetailRepository.getCatalogDetail(
             catalogId,
-            "$catalogId,${comparedCatalogIds.joinToString(",")}",
+            comparedCatalogIds.joinToString(","),
             userSession.userId,
             CatalogConstant.DEVICE,
             cacheType = CacheType.NONE

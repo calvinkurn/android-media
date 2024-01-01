@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -81,6 +82,7 @@ import com.tokopedia.catalog.databinding.FragmentCatalogReimagineDetailPageBindi
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.ui.activity.CatalogComparisonDetailActivity
 import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.EXTRA_CATALOG_URL
+import com.tokopedia.catalog.ui.activity.CatalogSwitchingComparisonActivity
 import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Companion.ARG_PARAM_CATALOG_ID
 import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Companion.ARG_PARAM_CATEGORY_ID
 import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Companion.ARG_PARAM_COMPARE_CATALOG_ID
@@ -122,6 +124,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.oldcatalog.listener.CatalogDetailListener
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -157,7 +160,8 @@ class CatalogDetailPageFragment :
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
         private const val COLOR_VALUE_MAX = 255
         private const val LOGIN_REQUEST_CODE = 1001
-        private const val CATALOG_COMPARE_REQUEST_CODE = 1002
+        const val CATALOG_COMPARE_REQUEST_CODE = 1002
+        const val CATALOG_CAMPARE_SWITCHING_REQUEST_CODE = 1003
         private const val POSITION_THREE_IN_WIDGET_LIST = 3
         private const val POSITION_TWO_IN_WIDGET_LIST = 2
         private const val NAVIGATION_SCROLL_DURATION = 800L
@@ -200,6 +204,9 @@ class CatalogDetailPageFragment :
     private var catalogId = ""
     private var categoryId = ""
     private var catalogUrl = ""
+    private var brand = ""
+
+    private var compareCatalogId = ""
     private var selectNavigationFromScroll = true
     private var retriedCompareCatalogIds = listOf<String>()
     private val seenTracker = mutableListOf<String>()
@@ -295,6 +302,10 @@ class CatalogDetailPageFragment :
             val comparedCatalogId = data?.getStringArrayListExtra(ARG_PARAM_COMPARE_CATALOG_ID)
             if (!comparedCatalogId.isNullOrEmpty()) changeComparison(comparedCatalogId)
         }
+        if (requestCode == CATALOG_CAMPARE_SWITCHING_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val newComparedCatalogId = data?.getStringArrayListExtra(CatalogSwitchingComparisonFragment.ARG_COMPARISON_CATALOG_ID)
+            if (!newComparedCatalogId.isNullOrEmpty()) changeComparison(newComparedCatalogId)
+        }
     }
 
     override fun onNavigateWidget(anchorTo: String, tabPosition: Int, tabTitle: String?) {
@@ -346,6 +357,7 @@ class CatalogDetailPageFragment :
                 productSortingStatus = it.data.productSortingStatus
                 catalogUrl = it.data.catalogUrl
                 categoryId = it.data.priceCtaProperties.departmentId
+                brand = it.data.priceCtaProperties.brand
                 title = it.data.navigationProperties.title
                 binding?.setupToolbar(it.data.navigationProperties)
                 binding?.setupRvWidgets(it.data.navigationProperties)
@@ -361,6 +373,17 @@ class CatalogDetailPageFragment :
                         viewModel.getUserId()
                     )
                 }
+
+                val comparison = it.data.widgets.find {
+                    it is ComparisonUiModel
+                } as? ComparisonUiModel
+
+                comparison?.let {
+                    compareCatalogId = comparison.content.joinToString(",") {
+                        it.id
+                    }
+                }
+
             } else if (it is Fail) {
                 binding?.showPageError(it.throwable)
             }
@@ -402,6 +425,9 @@ class CatalogDetailPageFragment :
                     getString(R.string.catalog_error_message_inactive)
                 ).show()
             } else {
+                compareCatalogId = it.content.joinToString(",") {
+                    it.id
+                }
                 widgetAdapter.changeComparison(it)
             }
         }
@@ -803,10 +829,8 @@ class CatalogDetailPageFragment :
         }
     }
 
-    override fun onComparisonSwitchButtonClicked(
-        items: List<ComparisonUiModel.ComparisonContent>
-    ) {
-        val label = "$catalogId | compared catalog id: ${items.joinToString { it.id }}"
+    override fun onComparisonSwitchButtonClicked(items: List<ComparisonUiModel.ComparisonContent>) {
+        val label = "$catalogId | compared catalog id: $compareCatalogId"
         CatalogReimagineDetailAnalytics.sendEvent(
             event = EVENT_VIEW_CLICK_PG,
             action = EVENT_CLICK_CHANGE_COMPARISON,
@@ -814,17 +838,17 @@ class CatalogDetailPageFragment :
             labels = label,
             trackerId = TRACKER_ID_CHANGE_COMPARISON
         )
-        /*
-        TODO: implement redirection to switch catalog activity
-        CatalogComponentBottomSheet.newInstance(
-            "",
-            catalogId,
-            "",
-            categoryId,
-            compareCatalogId,
-            CatalogComponentBottomSheet.ORIGIN_ULTIMATE_VERSION,
-            this
-        ).show(childFragmentManager, "")*/
+
+        val catalogComparedId = arrayListOf<String>()
+        catalogComparedId.addAll(items.map { it.id })
+
+        Intent(activity ?: return, CatalogSwitchingComparisonActivity::class.java).apply {
+            putExtra(CatalogSwitchingComparisonFragment.ARG_CATALOG_ID, catalogId)
+            putStringArrayListExtra(CatalogSwitchingComparisonFragment.ARG_COMPARISON_CATALOG_ID, catalogComparedId)
+            putExtra(CatalogSwitchingComparisonFragment.ARG_EXTRA_CATALOG_BRAND, brand)
+            putExtra(CatalogSwitchingComparisonFragment.ARG_EXTRA_CATALOG_CATEGORY_ID, categoryId)
+            startActivityForResult(this, CATALOG_CAMPARE_SWITCHING_REQUEST_CODE)
+        }
     }
 
     override fun onComparisonSeeMoreButtonClicked(

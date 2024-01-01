@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -21,7 +20,7 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
     var adapter: T? = null
     var recyclerView: RecyclerView? = null
     var swipeToRefresh: SwipeRefreshLayout? = null
-    private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
+    private var endlessRecyclerViewScrollListener: CatalogEndlessRecyclerViewScrollListener? = null
     private var endlessLayoutManagerListener: EndlessLayoutManagerListener? = null
     private val recyclerViewLayoutManager
         get() = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -42,7 +41,7 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
 
     abstract fun clearAdapterData()
 
-    val defaultInitialPage = 0
+    var defaultInitialPage = 0
 
     var isLoadingInitialData = false
 
@@ -96,8 +95,8 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
         }
     }
 
-    private fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollListener(recyclerView?.layoutManager) {
+    private fun createEndlessRecyclerViewListener(): CatalogEndlessRecyclerViewScrollListener? {
+        return object : CatalogEndlessRecyclerViewScrollListener(recyclerView?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
                 loadData(page)
@@ -187,5 +186,10 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
         } else {
             onGetListErrorWithEmptyData(throwable)
         }
+    }
+
+    fun setInitialPage(page:Int){
+        defaultInitialPage = page
+        endlessRecyclerViewScrollListener?.setInitialPage(defaultInitialPage)
     }
 }

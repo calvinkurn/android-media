@@ -34,6 +34,7 @@ class ComparisonViewHolder(
         )
         fun onComparisonSeeMoreButtonClicked(items: List<ComparisonUiModel.ComparisonContent>)
         fun onComparisonProductClick(id: String)
+
         fun onComparisonImpression(id: String)
         fun onComparisonScrolled(dx: Int, dy: Int, scrollProgress: Int)
     }
@@ -79,7 +80,6 @@ class ComparisonViewHolder(
                 }
             })
         }
-        comparisonContents = contents
     }
 
     private fun WidgetItemComparisonBinding.setupLayoutComparison(
@@ -192,6 +192,7 @@ class ComparisonViewHolder(
     override fun bind(element: ComparisonUiModel) {
         comparisonItemListener?.onComparisonImpression(element.content.getOrNull(Int.ONE)?.id.orEmpty())
         if (element.content.isEmpty()) return
+        this.comparisonContents = element.content
         val comparisonItems = element.content.subList(Int.ONE, element.content.size)
         val comparedItem = element.content.firstOrNull()
         binding?.setupLayoutComparison(comparedItem, comparisonItems)

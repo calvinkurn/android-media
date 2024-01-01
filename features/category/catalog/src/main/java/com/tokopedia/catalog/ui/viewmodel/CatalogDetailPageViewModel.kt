@@ -72,6 +72,7 @@ class CatalogDetailPageViewModel @Inject constructor(
     }
 
     fun getProductCatalogComparisons(catalogId: String, comparedCatalogIds: List<String>) {
+
         launchCatchError(
             dispatchers.io,
             block = {
