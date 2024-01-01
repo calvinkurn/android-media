@@ -56,7 +56,8 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CatalogSwitchingComparisonFragment :
     BaseSimpleListFragment<CatalogListingAdapterDiffUtil, CatalogComparisonProductsUiModel.CatalogComparisonUIModel>(),
-    CatalogListingListener, CatalogSelectionListener {
+    CatalogListingListener,
+    CatalogSelectionListener {
 
     @Inject
     lateinit var viewModel: CatalogSwitchComparisonViewModel
@@ -423,7 +424,6 @@ class CatalogSwitchingComparisonFragment :
             binding?.globalError?.errorDescription?.text = errorMessage
             binding?.globalError?.show()
             visibilityLoaderForInitialPage(false)
-
         }
 
         viewModel.errorsToasterGetCatalogListing.observe(viewLifecycleOwner) {
@@ -460,10 +460,11 @@ class CatalogSwitchingComparisonFragment :
     private fun checkingEnableOrDisableButtonSeeCompare() {
         val listCatalogId = compareCatalogId.toMutableList()
         binding?.btnSeeCompare?.isEnabled =
-            (listCatalogId.size >= MINIMUM_SELECT_PRODUCT
-                && compareCatalogId.joinToString(",") != defaultComparison.joinToString(","))
+            (
+                listCatalogId.size >= MINIMUM_SELECT_PRODUCT &&
+                    compareCatalogId.joinToString(",") != defaultComparison.joinToString(",")
+                )
     }
-
 
     private fun showMessageUnselectCatalog() {
         val totalUnselect = (LIMIT_SELECT_PRODUCT) - compareCatalogId.size
@@ -553,7 +554,12 @@ class CatalogSwitchingComparisonFragment :
     }
 
     override fun onFragmentBackPressed(): Boolean {
-        showCancelSwitch()
-        return true
+        return if (!binding?.btnSeeCompare?.isEnabled.orFalse()) {
+            showCancelSwitch()
+            true
+        } else {
+            activity?.finish()
+            false
+        }
     }
 }
