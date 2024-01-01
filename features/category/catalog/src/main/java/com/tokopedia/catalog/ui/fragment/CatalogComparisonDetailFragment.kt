@@ -36,6 +36,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.dpToPx
@@ -53,7 +54,6 @@ class CatalogComparisonDetailFragment :
     ComparisonViewHolder.ComparisonItemListener {
 
     companion object {
-        private const val START_INDEX_HEADER = 2
         private const val HEADER_VISIBLE_THRESHOLD = 150
         private const val HEADER_ELEVATION = 5F
         const val CATALOG_COMPARISON_DETAIL_FRAGMENT_TAG = "CATALOG_COMPARISON_DETAIL_FRAGMENT_TAG"
@@ -110,6 +110,7 @@ class CatalogComparisonDetailFragment :
                 }
                 if (comparison != null) {
                     widgetAdapter.addWidget(listOf(comparison))
+                    setupContentHeader(comparison as? ComparisonUiModel ?: return@observe)
                 }
             } else if (it is Fail) {
                 val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
@@ -153,7 +154,10 @@ class CatalogComparisonDetailFragment :
                     view,
                     getString(R.string.catalog_error_message_inactive)
                 ).show()
+                binding?.rvHeader?.gone()
+                binding?.tfHeaderTitle?.gone()
             } else {
+                setupContentHeader(it)
                 if (widgetAdapter.isVisitableEmpty()) {
                     widgetAdapter.addWidget(listOf(it))
                 } else {
@@ -246,17 +250,18 @@ class CatalogComparisonDetailFragment :
             trackerId = CatalogTrackerConstant.TRACKER_ID_IMPRESSION_COMPARISON_DETAIL
         )
         sendOpenPageTracker()
-        setupContentHeader(compareCatalogIds)
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun setupContentHeader(compareCatalogIds: List<String>) {
+    private fun setupContentHeader(comparisonUiModel: ComparisonUiModel) {
+        val titleList = comparisonUiModel.content.map { it.productTitle }
         val comparisonAdapter = ComparisonHeaderAdapter(
-            List(compareCatalogIds.size) { index ->
-                getString(catalogR.string.catalog_title_comparison, index + START_INDEX_HEADER)
-            }
+            titleList.takeLast(comparisonUiModel.content.size.dec())
         )
+        binding?.tfHeaderTitle?.text = titleList.firstOrNull().orEmpty()
+        binding?.tfHeaderTitle?.visible()
         binding?.rvHeader?.apply {
+            visible()
             layoutManager = LinearLayoutManager(context ?: return, LinearLayoutManager.HORIZONTAL, false)
             adapter = comparisonAdapter
             setOnTouchListener { _, _ -> return@setOnTouchListener true } // disable scrolling
