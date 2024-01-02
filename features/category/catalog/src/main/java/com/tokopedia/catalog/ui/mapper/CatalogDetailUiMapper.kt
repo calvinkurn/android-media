@@ -13,6 +13,7 @@ import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
 import com.tokopedia.catalogcommon.uimodel.BlankUiModel
+import com.tokopedia.catalogcommon.uimodel.BuyerReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
 import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel
 import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel.Companion.CELL_TITLE_ON_3_COLUMN_TYPE
@@ -42,6 +43,7 @@ import com.tokopedia.kotlin.extensions.view.isOdd
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.oldcatalog.model.raw.CatalogResponseData
 import com.tokopedia.oldcatalog.model.raw.LayoutData
+import okhttp3.internal.toImmutableList
 import javax.inject.Inject
 import com.tokopedia.catalog.R as catalogR
 import com.tokopedia.catalogcommon.R as catalogcommonR
@@ -60,6 +62,8 @@ class CatalogDetailUiMapper @Inject constructor(
         private const val COLUMN_INFO_3_COLUMN_ROW_LIMIT = 3
         private const val INVALID_CATALOG_ID = "0"
         private const val BACKGROUND_ALPHA = 20
+        private const val USER_STATS_KEY_TOTAL_COMPLETE_REVIEW = "total-complete-review"
+        private const val USER_STATS_KEY_TOTAL_LIKES = "total-likes"
     }
 
     fun mapToWidgetVisitables(
@@ -84,6 +88,7 @@ class CatalogDetailUiMapper @Inject constructor(
                 WidgetTypes.CATALOG_ACCORDION.type -> it.mapToAccordion(isDarkMode)
                 WidgetTypes.CATALOG_COMPARISON.type -> it.mapToComparison(isDarkMode)
                 WidgetTypes.CATALOG_VIDEO.type -> it.mapToVideo(isDarkMode)
+                WidgetTypes.CATALOG_REVIEW_BUYER.type -> it.mapToBuyerReview()
                 WidgetTypes.CATALOG_COLUMN_INFO.type -> it.mapToColumnInfo(isDarkMode)
                 else -> {
                     BlankUiModel()
@@ -104,6 +109,51 @@ class CatalogDetailUiMapper @Inject constructor(
             catalogUrl = remoteModel.basicInfo.url.orEmpty(),
             shareProperties = mapToShareProperties(remoteModel, widgets)
         )
+    }
+
+    private fun CatalogResponseData.CatalogGetDetailModular.BasicInfo.Layout.mapToBuyerReview(): BaseCatalogUiModel {
+        val maxDisplay = data?.style?.maxDisplay.orZero()
+        val items = data?.buyerReviewList.orEmpty().take(maxDisplay).map { buyerReview ->
+            val totalCompleteReview = buyerReview.userStats.firstOrNull { it.key == USER_STATS_KEY_TOTAL_COMPLETE_REVIEW }?.count.orZero()
+            val totalHelpedPeople = buyerReview.userStats.firstOrNull { it.key == USER_STATS_KEY_TOTAL_LIKES }?.count.orZero()
+            BuyerReviewUiModel.ItemBuyerReviewUiModel(
+                shopIcon = buyerReview.shopBadge,
+                shopName = buyerReview.shopName,
+                reviewerName = buyerReview.reviewerName,
+                avatar = buyerReview.reviewerProfilePicture,
+                reviewerStatus = buyerReview.reviewerStamp,
+                totalCompleteReview = totalCompleteReview,
+                totalHelpedPeople = totalHelpedPeople,
+                description = buyerReview.reviewText,
+                datetime = buyerReview.reviewDate,
+                rating = buyerReview.rating.toFloat(),
+                variantName = buyerReview.productVariantName,
+                images = buyerReview.imageAttachments.map { attachment ->
+                    BuyerReviewUiModel.ImgReview(
+                        id = attachment.attachmentId,
+                        imgUrl = attachment.thumbnailUrl,
+                        fullsizeImgUrl = attachment.fullsizeUrl
+                    )
+                }
+            )
+        }
+
+        return if (items.isEmpty()) {
+            BlankUiModel()
+        } else {
+            BuyerReviewUiModel(
+                title = data?.section?.title.orEmpty(),
+                items = items
+            )
+        }
+    }
+
+    private fun mapToNewWidgetVisitables(
+        widgets: List<Visitable<*>>
+    ): List<Visitable<*>> {
+        val _widgets = widgets.toMutableList()
+        _widgets.add(BuyerReviewUiModel.dummyBuyerReviewData())
+        return _widgets.toImmutableList()
     }
 
     private fun mapToPriceCtaProperties(remoteModel: CatalogResponseData.CatalogGetDetailModular): PriceCtaProperties {

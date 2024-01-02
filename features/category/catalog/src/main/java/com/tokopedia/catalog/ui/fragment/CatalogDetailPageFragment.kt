@@ -138,6 +138,10 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.catalogcommon.viewholder.BuyerReviewViewHolder
+import com.tokopedia.catalogcommon.uimodel.BuyerReviewUiModel
+import com.tokopedia.catalogcommon.bottomsheet.BuyerReviewDetailBottomSheet
+import com.tokopedia.catalog.ui.activity.CatalogImagePreviewActivity
 
 class CatalogDetailPageFragment :
     BaseDaggerFragment(),
@@ -151,6 +155,7 @@ class CatalogDetailPageFragment :
     TopFeatureListener,
     DoubleBannerListener,
     ComparisonViewHolder.ComparisonItemListener,
+    BuyerReviewViewHolder.BuyerReviewListener,
     ColumnedInfoListener,
     VideoListener {
 
@@ -194,7 +199,8 @@ class CatalogDetailPageFragment :
                 doubleBannerListener = this,
                 comparisonItemListener = this,
                 columnedInfoListener = this,
-                videoListener = this
+                videoListener = this,
+                buyerReviewListener = this
             )
         )
     }
@@ -306,6 +312,24 @@ class CatalogDetailPageFragment :
             val newComparedCatalogId = data?.getStringArrayListExtra(CatalogSwitchingComparisonFragment.ARG_COMPARISON_CATALOG_ID)
             if (!newComparedCatalogId.isNullOrEmpty()) changeComparison(newComparedCatalogId)
         }
+    }
+
+    override fun onClickSeeMore(carouselItem: BuyerReviewUiModel.ItemBuyerReviewUiModel) {
+        BuyerReviewDetailBottomSheet.show(
+            manager = childFragmentManager,
+            reviewData = carouselItem
+        )
+    }
+
+    override fun onClickImage(
+        carouselItem: BuyerReviewUiModel.ItemBuyerReviewUiModel,
+        position: Int
+    ) {
+        val imageUrl = carouselItem.images.map { it.fullsizeImgUrl }
+        val intent = context?.let {
+            CatalogImagePreviewActivity.createIntent(it, imageUrl, position)
+        }
+        startActivity(intent)
     }
 
     override fun onNavigateWidget(anchorTo: String, tabPosition: Int, tabTitle: String?) {

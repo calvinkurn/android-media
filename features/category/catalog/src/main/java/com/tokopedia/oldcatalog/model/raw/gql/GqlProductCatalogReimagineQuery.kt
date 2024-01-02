@@ -438,6 +438,47 @@ const val GQL_CATALOG_REIMAGINE_QUERY = """query catalogGetDetailModular(${'$'}c
             }
           }
         }
+        ... on CatalogCompReviewBuyer {
+          section {
+            title
+          }
+          buyerReviewSummary {
+            avgRating
+            totalHelpfulReview
+          }
+          buyerReviewList {
+            rating
+            informativeScore
+            reviewerName
+            reviewDate
+            reviewText
+            reviewImageUrl
+            reviewId
+			productId
+			productIdString
+			productUrl
+			reviewerStamp
+			reviewerProfilePicture
+			productVariantName
+			shopID
+			shopName
+			shopUrl
+			shopBadge
+            imageAttachments {
+              fullsizeUrl
+              thumbnailUrl
+              attachmentID
+            }
+			userStats {
+              key
+              count
+            }
+          }
+          style {
+            isHidden
+            maxDisplay
+          }
+        }
       }
     }
   }

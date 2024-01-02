@@ -1,0 +1,54 @@
+package com.tokopedia.catalog.ui.activity
+
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.catalog.R
+import com.tokopedia.image_gallery.ImageGallery
+import com.tokopedia.image_gallery.ImageGalleryItem
+import com.tokopedia.kotlin.extensions.view.ZERO
+
+class CatalogImagePreviewActivity : BaseSimpleActivity() {
+
+    companion object {
+        const val ARG_PARAM_IMAGE_LIST = "image_list"
+        const val ARG_PARAM_DEFAULT_INDEX = "default_index"
+        @JvmStatic
+        fun createIntent(
+            context: Context,
+            imageList: List<String>,
+            defaultIndex: Int
+        ): Intent {
+            val intent = Intent(context, CatalogImagePreviewActivity::class.java)
+            intent.putStringArrayListExtra(ARG_PARAM_IMAGE_LIST, ArrayList(imageList))
+            intent.putExtra(ARG_PARAM_DEFAULT_INDEX, defaultIndex)
+            return intent
+        }
+    }
+
+    private fun setupViews(imageList: List<ImageGalleryItem>, defaultIndex: Int) {
+        val imageGallery: ImageGallery = findViewById(R.id.imageGalleryUnify)
+        val closeButton: View = findViewById(R.id.closeButton)
+        imageGallery.setImages(ArrayList(imageList), defaultIndex)
+        closeButton.setOnClickListener {
+            finish()
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_catalog_image_preview)
+        val imageList = intent.getStringArrayListExtra(ARG_PARAM_IMAGE_LIST).orEmpty().map {
+            ImageGalleryItem(null, it)
+        }
+        val defaultIndex = intent.getIntExtra(ARG_PARAM_DEFAULT_INDEX, Int.ZERO)
+        setupViews(imageList, defaultIndex)
+    }
+
+    override fun getNewFragment(): Fragment? {
+        return null
+    }
+}

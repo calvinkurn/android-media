@@ -50,6 +50,8 @@ import com.tokopedia.catalogcommon.viewholder.TrustmakerViewHolder
 import com.tokopedia.catalogcommon.viewholder.VideoViewHolder
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.viewholders.BannerRevampViewHolder
+import com.tokopedia.catalogcommon.uimodel.BuyerReviewUiModel
+import com.tokopedia.catalogcommon.viewholder.BuyerReviewViewHolder
 
 class CatalogAdapterFactoryImpl(
     private val heroBannerListener: HeroBannerListener? = null,
@@ -64,7 +66,8 @@ class CatalogAdapterFactoryImpl(
     private val comparisonItemListener: ComparisonViewHolder.ComparisonItemListener? = null,
     private val videoListener: VideoListener? = null,
     private val columnedInfoListener: ColumnedInfoListener? = null,
-    private val isDisplayingTopSpec: Boolean = true
+    private val isDisplayingTopSpec: Boolean = true,
+    private val buyerReviewListener: BuyerReviewViewHolder.BuyerReviewListener? = null
 ) : BaseAdapterTypeFactory(), HomeComponentTypeFactory, CatalogAdapterFactory {
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
@@ -86,6 +89,7 @@ class CatalogAdapterFactoryImpl(
             ComparisonViewHolder.LAYOUT -> ComparisonViewHolder(view, comparisonItemListener, isDisplayingTopSpec)
             VideoViewHolder.LAYOUT -> VideoViewHolder(view, videoListener)
             ColumnedInfoViewHolder.LAYOUT -> ColumnedInfoViewHolder(view, columnedInfoListener)
+            BuyerReviewViewHolder.LAYOUT -> BuyerReviewViewHolder(view, buyerReviewListener)
             BlankViewHolder.LAYOUT -> BlankViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
@@ -157,5 +161,9 @@ class CatalogAdapterFactoryImpl(
 
     override fun type(uiModel: ColumnedInfoUiModel): Int {
         return ColumnedInfoViewHolder.LAYOUT
+    }
+
+    override fun type(uiModel: BuyerReviewUiModel): Int {
+        return BuyerReviewViewHolder.LAYOUT
     }
 }
