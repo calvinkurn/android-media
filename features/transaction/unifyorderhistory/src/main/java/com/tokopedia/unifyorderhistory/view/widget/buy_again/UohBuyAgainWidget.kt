@@ -348,7 +348,7 @@ fun UohBuyAgainCard(
                 modifier = if (isSingleCard) {
                     Modifier.padding(start = 8.dp, end = 12.dp)
                         .align(Alignment.CenterVertically)
-                        .width(85.dp)
+                        .width(90.dp)
                 } else {
                     Modifier.padding(start = 8.dp, end = 8.dp)
                         .align(Alignment.CenterVertically)
