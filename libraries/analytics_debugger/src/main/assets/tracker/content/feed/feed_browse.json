@@ -1,6 +1,6 @@
 {
   "readme": "Feed Browse - Analytics",
-  "mode": "exact",
+  "mode": "subset",
   "query": [
     {
       "event": "clickContent",
@@ -167,6 +167,16 @@
       "currentSite": "tokopediamarketplace",
       "sessionIris":".*",
       "userId": ".*"
+    },
+    {
+      "event": "openScreen",
+      "businessUnit": "content",
+      "screenName": "/feed browse page",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "trackerId": "49229",
+      "currentSite": "tokopediamarketplace",
+      "isLoggedInStatus": "true"
     }
   ]
 }

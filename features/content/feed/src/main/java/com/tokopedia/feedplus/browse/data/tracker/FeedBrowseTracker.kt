@@ -75,4 +75,6 @@ internal interface FeedBrowseTracker {
     )
 
     fun clickBackExitCategoryInspirationPage()
+
+    fun openScreenBrowseFeedPage()
 }

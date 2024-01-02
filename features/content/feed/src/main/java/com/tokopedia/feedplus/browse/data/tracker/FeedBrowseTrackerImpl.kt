@@ -364,6 +364,19 @@ internal class FeedBrowseTrackerImpl @AssistedInject constructor(
             .send()
     }
 
+    override fun openScreenBrowseFeedPage() {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(
+            "/feed browse page",
+            mapOf(
+                Key.trackerId to "49229",
+                Key.businessUnit to BusinessUnit.content,
+                Key.currentSite to CurrentSite.tokopediaMarketplace,
+                Key.isLoggedInStatus to userSession.isLoggedIn.toString(),
+                Key.userId to userSession.userId
+            )
+        )
+    }
+
     private fun sendEnhanceEcommerceEvent(
         eventName: String,
         eventAction: String,

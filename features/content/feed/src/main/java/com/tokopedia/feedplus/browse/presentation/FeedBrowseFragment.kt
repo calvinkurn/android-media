@@ -250,6 +250,7 @@ internal class FeedBrowseFragment @Inject constructor(
 
         if (savedInstanceState == null) {
             viewModel.onIntent(FeedBrowseIntent.LoadInitialPage)
+            tracker.openScreenBrowseFeedPage()
         }
     }
 
