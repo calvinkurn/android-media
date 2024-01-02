@@ -15,7 +15,7 @@ buildscript {
 project.ext {
     artifactId = 'cachemanager'
     groupId = 'com.tokopedia.cachemanager'
-    versionName = "2.24.5"
+    versionName = "2.24.12"
     artifactName = "cache_manager-debug"
 }
 
@@ -31,6 +31,7 @@ dependencies {
 
     //room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    implementation rootProject.ext.dbDependencies.dbRoomKtx
     ksp rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 }

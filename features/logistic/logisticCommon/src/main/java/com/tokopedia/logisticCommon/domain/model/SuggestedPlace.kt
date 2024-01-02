@@ -1,6 +1,7 @@
 package com.tokopedia.logisticCommon.domain.model
 
 import android.os.Parcelable
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import kotlinx.parcelize.Parcelize
 
 sealed class AutoCompleteVisitable
@@ -22,8 +23,8 @@ data class SuggestedPlace(
     val cityId: Long = 0L,
     val provinceId: Long = 0L,
     val postalCode: String = "",
-    val lat: Double = 0.0,
-    val long: Double = 0.0,
+    val lat: String = "0.0",
+    val long: String = "0.0",
     val title: String = ""
 ) : AutoCompleteVisitable(), Parcelable {
     val formattedAddress: String
@@ -31,6 +32,13 @@ data class SuggestedPlace(
             return listOf(districtName, cityName, provinceName).filter { it.isNotEmpty() }
                 .joinToString(separator = ", ")
         }
+
+    fun hasPinpoint(): Boolean {
+        return lat.isValidPinpoint() && long.isValidPinpoint()
+    }
+    private fun String.isValidPinpoint(): Boolean {
+        return this.toDoubleOrZero() != 0.0
+    }
 }
 
 data class SavedAddress(

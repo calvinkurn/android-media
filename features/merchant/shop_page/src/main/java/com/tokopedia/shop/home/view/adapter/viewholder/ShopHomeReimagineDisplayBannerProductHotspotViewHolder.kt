@@ -25,6 +25,7 @@ import com.tokopedia.shop.common.view.customview.bannerhotspot.ImageHotspotView
 import com.tokopedia.shop.common.view.model.ImageHotspotData
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopHomeDisplayBannerProductHotspotViewHolderLayoutBinding
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.view.adapter.ShopWidgetProductHotspotAdapter
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.unifycomponents.PageControl
@@ -34,7 +35,8 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
     itemView: View,
-    private val listener: Listener
+    private val listener: Listener,
+    private val recyclerviewPoolListener: RecyclerviewPoolListener
 ) : AbstractViewHolder<ShopWidgetDisplayBannerProductHotspotUiModel>(itemView),
     ImageHotspotView.Listener {
 
@@ -235,6 +237,7 @@ class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
             this.setHasFixedSize(true)
             this.addOnScrollListener(CenterScrollListener())
             this.adapter = adapterShopWidgetProductHotspot
+            this.setRecycledViewPool(recyclerviewPoolListener.parentPool)
             this.removeOnItemTouchListener(itemTouchListener)
             this.addOnItemTouchListener(itemTouchListener)
             carouselLayoutManager?.let {

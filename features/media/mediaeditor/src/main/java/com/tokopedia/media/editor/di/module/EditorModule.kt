@@ -6,10 +6,7 @@ import com.tokopedia.media.editor.analytics.editordetail.EditorDetailAnalyticsIm
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalyticsImpl
 import com.tokopedia.media.editor.data.repository.*
-import com.tokopedia.media.editor.data.FeatureToggleManager
-import com.tokopedia.media.editor.data.FeatureToggleManagerImpl
 import com.tokopedia.picker.common.cache.*
-import com.tokopedia.picker.common.utils.ImageCompressor
 import dagger.Binds
 import dagger.Module
 
@@ -111,12 +108,6 @@ abstract class EditorModule {
     internal abstract fun provideSaveEditorDetailAnalytics(
         analytics: EditorDetailAnalyticsImpl
     ): EditorDetailAnalytics
-
-    @Binds
-    @ActivityScope
-    internal abstract fun provideFeatureToggleManager(
-        featureToggleManager: FeatureToggleManagerImpl
-    ): FeatureToggleManager
 
     @Binds
     @ActivityScope

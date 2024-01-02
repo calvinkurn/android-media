@@ -841,8 +841,11 @@ class OrderSummaryPageViewModel @Inject constructor(
             val chosenAddress = ChosenAddress(
                 addressId = newChosenAddress.addressId.toString(),
                 districtId = newChosenAddress.districtId.toString(),
+                cityId = newChosenAddress.cityId.toString(),
                 postalCode = newChosenAddress.postalCode,
                 geolocation = if (newChosenAddress.latitude.isNotBlank() && newChosenAddress.longitude.isNotBlank()) newChosenAddress.latitude + "," + newChosenAddress.longitude else "",
+                latitude = newChosenAddress.latitude,
+                longitude = newChosenAddress.longitude,
                 mode = ChosenAddress.MODE_ADDRESS,
                 tokonow = ChosenAddressTokonow(
                     shopId = newChosenAddress.tokonowModel.shopId.toString(),
