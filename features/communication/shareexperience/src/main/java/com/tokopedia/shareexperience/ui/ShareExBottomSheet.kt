@@ -81,14 +81,9 @@ class ShareExBottomSheet :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setTitle()
         initializeRecyclerView()
         initObservers()
         viewModel.processAction(ShareExAction.InitializePage)
-    }
-
-    private fun setTitle() {
-        bottomSheetTitle.text = "Bagikan ke teman kamu" // TODO: change to data from BE
     }
 
     private fun initializeRecyclerView() {
@@ -122,10 +117,15 @@ class ShareExBottomSheet :
 
     private suspend fun observeBottomSheetUiState() {
         viewModel.bottomSheetUiState.collectLatest {
+            setBottomSheetTitle(it.title)
             it.uiModelList?.let { newList ->
                 setBottomSheetData(newList = newList)
             }
         }
+    }
+
+    private fun setBottomSheetTitle(title: String) {
+        bottomSheetTitle.text = title
     }
 
     private fun setBottomSheetData(newList: List<Visitable<in ShareExTypeFactory>>) {

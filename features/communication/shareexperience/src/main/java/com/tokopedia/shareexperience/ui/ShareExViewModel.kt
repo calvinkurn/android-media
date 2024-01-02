@@ -106,6 +106,7 @@ class ShareExViewModel @Inject constructor(
                 val uiResult = _bottomSheetModel?.map()
                 _bottomSheetUiState.update { uiState ->
                     uiState.copy(
+                        title = _bottomSheetModel?.title ?: "",
                         uiModelList = uiResult
                     )
                 }
