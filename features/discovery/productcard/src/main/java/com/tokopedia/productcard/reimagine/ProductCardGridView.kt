@@ -83,7 +83,7 @@ class ProductCardGridView: ConstraintLayout {
         val labelView = preventiveThematicLabel ?: return
         val labelPreventiveThematic = productCardModel.labelPreventiveThematic()
 
-        if (labelPreventiveThematic == null) {
+        if (labelPreventiveThematic == null || productCardModel.isSafeProduct) {
             labelView.hide()
         } else {
             labelView.show()
@@ -92,7 +92,9 @@ class ProductCardGridView: ConstraintLayout {
     }
 
     private fun renderVideo(productCardModel: ProductCardModel) {
-        videoIdentifier?.showWithCondition(productCardModel.videoUrl.isNotBlank())
+        videoIdentifier?.showWithCondition(
+            productCardModel.videoUrl.isNotBlank() && !productCardModel.isSafeProduct
+        )
         video.setVideoURL(productCardModel.videoUrl)
     }
 

@@ -37,6 +37,7 @@ import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.databinding.ActivityStcStatisticBinding
 import com.tokopedia.statistic.di.DaggerStatisticComponent
 import com.tokopedia.statistic.di.StatisticComponent
+import com.tokopedia.statistic.di.module.StatisticModule
 import com.tokopedia.statistic.view.fragment.StatisticFragment
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.statistic.view.viewhelper.FragmentListener
@@ -123,6 +124,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     override fun getComponent(): StatisticComponent {
         return DaggerStatisticComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+            .statisticModule(StatisticModule(this))
             .build()
     }
 

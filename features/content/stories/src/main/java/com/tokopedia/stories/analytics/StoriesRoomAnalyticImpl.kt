@@ -421,19 +421,66 @@ class StoriesRoomAnalyticImpl @AssistedInject constructor(
     override fun sendClickExitStoryRoomEvent(
         storiesId: String,
         contentType: StoriesDetailItem.StoriesItemContentType,
+        storyType: String,
         currentCircle: String
     ) {
-        val authorId =  if (storiesId == "0") "0" else args.authorId
-        val mediaType = if (contentType == StoriesDetailItem.StoriesItemContentType.Unknown) "0" else "asgc"
+        val authorId = if (storiesId == "0") "0" else args.authorId
+
         Tracker.Builder()
             .setEvent(Event.clickContent)
             .setEventAction("click - exit story room")
             .setEventCategory(STORIES_ROOM_CATEGORIES)
-            .setEventLabel("${args.entryPoint} - $authorId - $storiesId - $mediaType - ${contentType.value} - $currentCircle")
+            .setEventLabel("${args.entryPoint} - $authorId - $storiesId - $storyType - ${contentType.value} - $currentCircle")
             .setCustomProperty(Key.trackerId, "46062")
             .setBusinessUnit(BusinessUnit.content)
             .setCurrentSite(currentSite)
             .setCustomProperty(Key.sessionIris, sessionIris)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
+    // Tracker ID: 47950
+    override fun sendViewReportReasonList(
+        storiesId: String,
+        contentType: StoriesDetailItem.StoriesItemContentType,
+        storyType: String
+    ) {
+        val authorId = if (storiesId == "0") "0" else args.authorId
+
+        Tracker.Builder()
+            .setEvent(Event.viewContentIris)
+            .setEventAction("view - list report reason")
+            .setEventCategory(STORIES_ROOM_CATEGORIES)
+            .setEventLabel("${args.entryPoint} - $authorId - $storiesId - $storyType - ${contentType.value}")
+            .setCustomProperty(Key.trackerId, "47950")
+            .setBusinessUnit(BusinessUnit.content)
+            .setCurrentSite(currentSite)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4155
+    // Tracker ID: 47951
+    override fun sendClickReportReason(
+        storiesId: String,
+        contentType: StoriesDetailItem.StoriesItemContentType,
+        storyType: String,
+        reportReason: String
+    ) {
+        val authorId = if (storiesId == "0") "0" else args.authorId
+
+        Tracker.Builder()
+            .setEvent(Event.clickContent)
+            .setEventAction("click - report reason")
+            .setEventCategory(STORIES_ROOM_CATEGORIES)
+            .setEventLabel("${args.entryPoint} - $authorId - $storiesId - $storyType - ${contentType.value} - $reportReason")
+            .setCustomProperty(Key.trackerId, "47951")
+            .setBusinessUnit(BusinessUnit.content)
+            .setCurrentSite(currentSite)
             .setUserId(userId)
             .build()
             .send()

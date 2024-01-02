@@ -108,6 +108,7 @@ import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.ServerErrorListener
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowHomeBinding
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
@@ -268,7 +269,8 @@ class TokoNowHomeFragment :
                 bannerComponentListener = createSlideBannerCallback(),
                 homeProductRecomOocListener = createProductRecomOocCallback(),
                 homeProductRecomListener = createProductRecomCallback(),
-                tokoNowRepurchaseListener = createRepurchaseProductListener(),
+                tokoNowRepurchaseProductListener = createRepurchaseProductListener(),
+                tokoNowRepurchaseListener = createRepurchaseCallback(),
                 homeSharingEducationListener = this,
                 homeEducationalInformationListener = this,
                 serverErrorListener = this,
@@ -2075,6 +2077,12 @@ class TokoNowHomeFragment :
             startActivityForResult = this::startActivityForResult,
             onBlockAddToCartListener = ::showToasterWhenAddToCartBlocked
         )
+    }
+
+    private fun createRepurchaseCallback() = object : TokoNowRepurchaseViewHolder.TokoNowRepurchaseListener {
+        override fun onChevronClicked() {
+            analytics.trackClickChevronButtonOnPastPurchaseWidget()
+        }
     }
 
     private fun createQuestReloadWidgetCallback() = object : HomeQuestReloadWidgetViewHolder.HomeQuestReloadWidgetListener {

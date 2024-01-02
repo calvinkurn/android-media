@@ -52,7 +52,9 @@ class RepurchaseProductCardListener(
         }
     }
 
-    override fun onProductImpressed(item: RepurchaseProductUiModel) {}
+    override fun onProductImpressed(item: RepurchaseProductUiModel) {
+        analytics.trackImpressionProduct(userSession.userId, item)
+    }
 
     override fun onClickSimilarProduct() {
         analytics.onClickSimilarProduct(userSession.userId)
