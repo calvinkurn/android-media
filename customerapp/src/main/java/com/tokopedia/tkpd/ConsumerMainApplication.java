@@ -136,11 +136,11 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         if (isAlphaVersion()) {
             registerActivityLifecycleCallbacks(new AlphaObserver());
         }
-        if (isAlphaVersion() || isNakamaVersion()) {
+//        if (isAlphaVersion() || isNakamaVersion()) {
             registerActivityLifecycleCallbacks(
                     new Screenshot(getApplicationContext().getContentResolver(), this::openFeedbackForm)
             );
-        }
+//        }
     }
 
     private boolean isAlphaVersion() {
