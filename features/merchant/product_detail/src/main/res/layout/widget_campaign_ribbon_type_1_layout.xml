@@ -19,16 +19,6 @@
         tools:ignore="MissingConstraints,RtlSymmetry"
         tools:text="Harga Spesial" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:scaleType="fitEnd"
-        app:layout_constraintBottom_toBottomOf="@id/tus_timer_view_s1"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/transparent_asset_big"
-        tools:ignore="MissingConstraints" />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/remind_me_button_s1"
         android:layout_width="wrap_content"

@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.widget.campaign.component
 
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -13,14 +14,17 @@ import androidx.compose.ui.graphics.Color
  * Project name: android-unify
  **/
 
+@Stable
+class ImmutableList<T>(val values: List<T> = mutableListOf())
+
 private const val CAMPAIGN_COLOR = 0xFFD72C2C
 
-private fun Modifier.campaignBackgroundColor(colors: List<Color>) = this.then(
-    when (colors.size) {
+private fun Modifier.campaignBackgroundColor(colors: ImmutableList<Color>) = this.then(
+    when (colors.values.size) {
         0 -> background(color = Color(CAMPAIGN_COLOR))
-        1 -> background(color = colors.first())
+        1 -> background(color = colors.values.first())
         else -> {
-            val brush = Brush.horizontalGradient(colors)
+            val brush = Brush.horizontalGradient(colors.values)
             background(brush)
         }
     }
@@ -38,7 +42,7 @@ internal fun Modifier.campaignBackgroundColor(colorString: String): Modifier {
         }
     }
 
-    return campaignBackgroundColor(colors = color.value)
+    return campaignBackgroundColor(colors = ImmutableList(color.value))
 }
 
 private fun parseColor(colorString: String): Color = runCatching {

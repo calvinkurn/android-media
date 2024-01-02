@@ -16,10 +16,12 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductUpcomingTypeDef
@@ -187,7 +189,7 @@ class CampaignRibbon @JvmOverloads constructor(
                     renderOnGoingCountDownTimer(campaign = campaign, timerView = tusTimerViewS3)
                     // hide irrelevant views
                     tgpRegulatoryInfoS3.hide()
-                    hideLogoView3()
+                    iuCampaignLogoS3.hide()
                     // show campaign ribbon type 3
                     showCampaignRibbonType3()
                 }
@@ -210,34 +212,29 @@ class CampaignRibbon @JvmOverloads constructor(
                 renderBackGroundColor(root, backGroundColorData)
             }
             // render campaign logo
-            if (thematic.icon.isNotBlank()) {
-                iuCampaignLogoS3.loadImage(thematic.icon) {}
-                showLogoView3()
+            if (thematic.campaignLogo.isNotBlank()) {
+                tpgCampaignNameS3.hide()
+                iuCampaignLogoS3.show()
+                iuCampaignLogoS3.loadImageWithoutPlaceholder(thematic.campaignLogo)
             } else {
-                hideLogoView3()
+                iuCampaignLogoS3.showIfWithBlock(thematic.icon.isNotBlank()) {
+                    cornerRadius = 3
+                    loadImageWithoutPlaceholder(thematic.icon)
+                }
+                // render campaign name
+                tpgCampaignNameS3.text = thematic.campaignName
             }
-            // render campaign name
-            tpgCampaignNameS3.text = thematic.campaignName
+
+            tpgCampaignSupergraphicS3.showIfWithBlock(thematic.superGraphicURL.isNotBlank()) {
+                loadImageWithoutPlaceholder(thematic.superGraphicURL)
+            }
+
             // hide irrelevant views
             tgpRegulatoryInfoS3.hide()
             tpgEndsInS3.hide()
             tusTimerViewS3.hide()
             // show campaign ribbon type 3
             showCampaignRibbonType3()
-        }
-    }
-
-    private fun hideLogoView3() {
-        campaignType3Binding?.apply {
-            iuCampaignLogoS3.hide()
-            iuCampaignLogoS3Container.hide()
-        }
-    }
-
-    private fun showLogoView3() {
-        campaignType3Binding?.apply {
-            iuCampaignLogoS3.show()
-            iuCampaignLogoS3Container.show()
         }
     }
 
