@@ -346,9 +346,9 @@ fun UohBuyAgainCard(
                 variant = ButtonVariant.GHOST,
                 size = ButtonSize.MICRO,
                 modifier = if (isSingleCard) {
-                    Modifier.padding(start = 8.dp, end = 12.dp)
+                    Modifier.padding(start = 8.dp, end = 8.dp)
                         .align(Alignment.CenterVertically)
-                        .width(90.dp)
+                        .width(85.dp)
                 } else {
                     Modifier.padding(start = 8.dp, end = 8.dp)
                         .align(Alignment.CenterVertically)
