@@ -62,7 +62,7 @@ class MerchantVoucherGridViewModel(
 
     private fun setVoucherList(
         redirection: Redirection?,
-        onEventAfterVoucherListSet: () -> Unit,
+        onEventAfterVoucherListSet: () -> Unit
     ) {
         val components = component.getComponentsItem()
         if (!components.isNullOrEmpty()) {
@@ -86,16 +86,20 @@ class MerchantVoucherGridViewModel(
 
         launchCatchError(
             block = {
-                if (useCase?.loadFirstPageComponents(componentId = component.id, pageEndPoint = component.pageEndPoint) == true) {
-                    val redirection = getComponentAdditionalInfo()?.redirection
-                    setVoucherList(
-                        redirection = redirection,
-                        onEventAfterVoucherListSet = {
-                            this@MerchantVoucherGridViewModel._seeMore.value = redirection
-                            _noMorePages.value = Unit
-                        }
-                    )
-                }
+                useCase?.loadFirstPageComponents(
+                    componentId = component.id,
+                    pageEndPoint = component.pageEndPoint
+                )
+
+                val redirection = getComponentAdditionalInfo()?.redirection
+                setVoucherList(
+                    redirection = redirection,
+                    onEventAfterVoucherListSet = {
+                        this@MerchantVoucherGridViewModel._seeMore.value = redirection
+                        _noMorePages.value = Unit
+                    }
+                )
+
                 isLoading = false
             },
             onError = {
