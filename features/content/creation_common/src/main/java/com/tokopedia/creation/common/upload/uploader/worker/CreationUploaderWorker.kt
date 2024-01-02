@@ -94,7 +94,12 @@ class CreationUploaderWorker(
                         }
                     )
 
-                    when (val result = uploadManager.execute(notificationId)) {
+                    val result = uploadManager.execute(notificationId)
+
+                    /** Need this to avoid race condition between update status to success & delete row in Room */
+                    delay(DEFAULT_DELAY_AFTER_EXECUTE)
+
+                    when (result) {
                         is CreationUploadExecutionResult.Success -> {
                             queueRepository.delete(data.queueId)
                         }
@@ -137,6 +142,8 @@ class CreationUploaderWorker(
     companion object {
 
         private const val DEFAULT_DELAY_AFTER_EMIT_RESULT = 1000L
+        private const val DEFAULT_DELAY_AFTER_EXECUTE = 500L
+
         fun build(): OneTimeWorkRequest {
             return OneTimeWorkRequest.Builder(CreationUploaderWorker::class.java)
                 .build()
