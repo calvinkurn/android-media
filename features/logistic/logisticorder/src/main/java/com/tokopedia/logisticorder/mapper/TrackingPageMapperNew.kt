@@ -42,11 +42,12 @@ class TrackingPageMapperNew @Inject constructor() {
         response: GetLogisticTrackingResponse,
         userId: String,
         deviceId: String,
-        orderId: String?
+        orderId: String?,
+        trackingUrlFromOrder: String
     ): TrackingDataModel {
         val data = response.response.data
         return TrackingDataModel().apply {
-            trackOrder = mapTrackOrder(data.trackOrder, userId, deviceId, orderId)
+            trackOrder = mapTrackOrder(data.trackOrder, userId, deviceId, orderId, trackingUrlFromOrder)
             page = mapPage(data.page)
             tipping = mapTippingData(data.tipping)
             lastDriver = mapLastDriverData(data.lastDriver)
@@ -67,10 +68,11 @@ class TrackingPageMapperNew @Inject constructor() {
         response: TrackOrder,
         userId: String? = null,
         deviceId: String? = null,
-        orderId: String? = null
+        orderId: String? = null,
+        trackingUrlFromOrder: String? = null
     ): TrackOrderModel {
         return TrackOrderModel().apply {
-            detail = mapDetailOrder(response.detail)
+            detail = mapDetailOrder(response.detail, trackingUrlFromOrder)
             trackHistory = mapTrackingHistory(response.trackHistory, userId, deviceId, orderId)
             change = response.change
             status = response.status
@@ -82,7 +84,7 @@ class TrackingPageMapperNew @Inject constructor() {
         }
     }
 
-    private fun mapDetailOrder(detail: Detail): DetailModel {
+    private fun mapDetailOrder(detail: Detail, trackingUrlFromOrder: String?): DetailModel {
         return DetailModel().apply {
             shipperCity = detail.shipperCity
             shipperName = detail.shipperName
@@ -92,7 +94,7 @@ class TrackingPageMapperNew @Inject constructor() {
             sendTime = detail.sendTime
             receiverName = detail.receiverName
             serviceCode = detail.serviceCode
-            trackingUrl = detail.trackingUrl
+            trackingUrl = trackingUrlFromOrder?.takeIf { it.isNotEmpty() } ?: detail.trackingUrl
             eta = mapEta(detail.eta)
         }
     }
