@@ -53,7 +53,6 @@ import androidx.constraintlayout.compose.Dimension
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gm.common.constant.PMProURL
 import com.tokopedia.header.compose.HeaderActionButton
-import com.tokopedia.header.compose.HeaderIconSource
 import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.iconunify.IconUnify
@@ -79,6 +78,7 @@ import com.tokopedia.nest.components.ticker.NestTickerData
 import com.tokopedia.nest.components.ticker.TickerType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.IconSource
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.nest.principles.utils.addImpression
 import com.tokopedia.nest.principles.utils.toAnnotatedString
@@ -149,9 +149,7 @@ fun SellerMenuScreen(
                             },
                             contentDescription = "Inbox",
                             notification = null,
-                            icon = HeaderIconSource.Painter(
-                                painterResource(id = sellermenuR.drawable.ic_seller_menu_inbox)
-                            )
+                            icon = IconSource.Painter(sellermenuR.drawable.ic_seller_menu_inbox)
                         ),
                         HeaderActionButton(
                             onClicked = {
@@ -159,9 +157,7 @@ fun SellerMenuScreen(
                             },
                             contentDescription = "Notif",
                             notification = null,
-                            icon = HeaderIconSource.Painter(
-                                painterResource(id = sellermenuR.drawable.ic_seller_menu_notif)
-                            )
+                            icon = IconSource.Painter(sellermenuR.drawable.ic_seller_menu_notif)
                         )
                     ),
                     onBackClicked = {
