@@ -21,6 +21,7 @@ import com.tokopedia.catalogcommon.util.getGreenColorSpan
 import com.tokopedia.catalogcommon.util.setSpanOnText
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.JvmMediaLoader
 import com.tokopedia.unifycomponents.ImageUnify
@@ -35,6 +36,8 @@ class BuyerReviewViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.widget_buyer_review
+        private const val MAX_CHARS = 135
+        private const val MARGIN_VERTICAL = 16
     }
 
     private val binding: WidgetBuyerReviewBinding? by viewBinding()
@@ -43,7 +46,6 @@ class BuyerReviewViewHolder(
     private var widgetTitle: Typography? = null
     private var carouselData: ArrayList<Any>? = null
     private var cardData: BuyerReviewUiModel? = null
-    private val MAX_CHARS = 135
 
     init {
         widgetTitle = binding?.tgpBuyerReviewTitle
@@ -52,8 +54,7 @@ class BuyerReviewViewHolder(
             indicatorPosition = CarouselUnify.INDICATOR_BC
             infinite = true
             onActiveIndexChangedListener
-            indicatorWrapper.setPadding(indicatorWrapper.paddingLeft, 16, indicatorWrapper.paddingRight, 16)
-//            indicatorWrapper.setMargin(0, 0, 0, 0)
+            indicatorWrapper.setPadding(indicatorWrapper.paddingLeft, MARGIN_VERTICAL, indicatorWrapper.paddingRight, MARGIN_VERTICAL)
         }
     }
 
@@ -164,6 +165,7 @@ class BuyerReviewViewHolder(
             }
         }
         widgetTitle?.apply {
+            setTextColor(element.widgetTextColor.orZero())
             if (element.title.isEmpty()) {
                 hide()
             } else {

@@ -229,11 +229,10 @@
                 android:textSize="12sp"
                 android:textColor="@color/Unify_NN950"
                 android:lines="3"
-                android:height="54dp"
                 tools:text="I'm 57 years old and I have dry skin! I absolutely love this product. Has nice consistency that slips in nicely after I wash my face. When I...Selengkapnya"
                 app:typographyWeight="reguler"
                 android:layout_width="match_parent"
-                android:layout_height="54dp" />
+                android:layout_height="wrap_content" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_img_review"
