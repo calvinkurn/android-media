@@ -46,18 +46,30 @@ class TrackingPageComposeViewModel @Inject constructor(
             }
 
             is TrackingPageEvent.LoadTrackingData -> {
-                getTrackingData(event.orderId, event.orderTxId, event.groupType)
+                getTrackingData(
+                    event.orderId,
+                    event.orderTxId,
+                    event.groupType,
+                    event.userId,
+                    event.deviceId
+                )
             }
         }
     }
 
-    private fun getTrackingData(orderId: String, orderTxId: String?, groupType: Int?) {
+    private fun getTrackingData(
+        orderId: String,
+        orderTxId: String?,
+        groupType: Int?,
+        userId: String,
+        deviceId: String
+    ) {
         this.orderId = orderId
         viewModelScope.launch {
             try {
                 val trackingParam = trackingUseCase.getParam(orderId, orderTxId, groupType, "")
                 val getTrackingData = trackingUseCase(trackingParam)
-                val uiModel = mapper.mapTrackingData(getTrackingData)
+                val uiModel = mapper.mapTrackingDataCompose(getTrackingData, userId, deviceId, orderId)
                 _uiState.update {
                     it.copy(isLoading = false, trackingData = uiModel)
                 }

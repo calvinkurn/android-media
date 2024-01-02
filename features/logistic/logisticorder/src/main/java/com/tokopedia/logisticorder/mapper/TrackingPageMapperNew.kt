@@ -1,5 +1,8 @@
 package com.tokopedia.logisticorder.mapper
 
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper
+import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper.getDeliveryImage
 import com.tokopedia.logisticorder.domain.response.AdditionalInfo
 import com.tokopedia.logisticorder.domain.response.Detail
 import com.tokopedia.logisticorder.domain.response.Eta
@@ -35,6 +38,21 @@ class TrackingPageMapperNew @Inject constructor() {
         }
     }
 
+    fun mapTrackingDataCompose(
+        response: GetLogisticTrackingResponse,
+        userId: String,
+        deviceId: String,
+        orderId: String?
+    ): TrackingDataModel {
+        val data = response.response.data
+        return TrackingDataModel().apply {
+            trackOrder = mapTrackOrder(data.trackOrder, userId, deviceId, orderId)
+            page = mapPage(data.page)
+            tipping = mapTippingData(data.tipping)
+            lastDriver = mapLastDriverData(data.lastDriver)
+        }
+    }
+
     private fun mapLastDriverData(lastDriver: LastDriver): LastDriverModel {
         return LastDriverModel().apply {
             photo = lastDriver.photo
@@ -45,10 +63,15 @@ class TrackingPageMapperNew @Inject constructor() {
         }
     }
 
-    private fun mapTrackOrder(response: TrackOrder): TrackOrderModel {
+    private fun mapTrackOrder(
+        response: TrackOrder,
+        userId: String? = null,
+        deviceId: String? = null,
+        orderId: String? = null
+    ): TrackOrderModel {
         return TrackOrderModel().apply {
             detail = mapDetailOrder(response.detail)
-            trackHistory = mapTrackingHistory(response.trackHistory)
+            trackHistory = mapTrackingHistory(response.trackHistory, userId, deviceId, orderId)
             change = response.change
             status = response.status
             orderStatus = response.orderStatus
@@ -74,11 +97,38 @@ class TrackingPageMapperNew @Inject constructor() {
         }
     }
 
-    private fun mapProofOrder(proof: Proof): ProofModel {
-        return ProofModel(imageId = proof.imageId, description = proof.description)
+    private fun mapProofOrder(
+        proof: Proof,
+        userId: String?,
+        deviceId: String?,
+        orderId: String?
+    ): ProofModel {
+        val imageUrl =
+            if (proof.imageId.isNotEmpty() && !userId.isNullOrEmpty() && !deviceId.isNullOrEmpty() && !orderId.isNullOrEmpty()) {
+                getDeliveryImage(
+                    proof.imageId,
+                    orderId.toLongOrZero(),
+                    LogisticImageDeliveryHelper.IMAGE_SMALL_SIZE,
+                    userId,
+                    LogisticImageDeliveryHelper.DEFAULT_OS_TYPE,
+                    deviceId
+                )
+            } else {
+                ""
+            }
+        return ProofModel(
+            imageId = proof.imageId,
+            description = proof.description,
+            imageUrl = imageUrl
+        )
     }
 
-    private fun mapTrackingHistory(trackHistory: List<TrackHistory>): List<TrackHistoryModel> {
+    private fun mapTrackingHistory(
+        trackHistory: List<TrackHistory>,
+        userId: String?,
+        deviceId: String?,
+        orderId: String?
+    ): List<TrackHistoryModel> {
         return trackHistory.map {
             TrackHistoryModel(
                 it.dateTime,
@@ -87,7 +137,7 @@ class TrackingPageMapperNew @Inject constructor() {
                 it.city,
                 it.time,
                 it.partnerName,
-                mapProofOrder(it.proof)
+                mapProofOrder(it.proof, userId, deviceId, orderId)
             )
         }
     }

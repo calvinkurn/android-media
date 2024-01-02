@@ -42,7 +42,6 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.iconunify.getIconUnifyResourceIdRef
 import com.tokopedia.imageassets.TokopediaImageUrl.ICON_OPEN_TIPPING_GOJEK
-import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.uimodel.DetailModel
 import com.tokopedia.logisticorder.uimodel.EtaModel
@@ -109,6 +108,7 @@ fun TrackingPageScreen(state: TrackingPageState) {
     val icon = painterResource(id = unifyIconId)
     Scaffold(topBar = {
         NestHeader(
+            // todo icon clickable
             type = NestHeaderType.SingleLine(
                 title = stringResource(id = logisticorderR.string.label_tracking_activity),
                 onBackClicked = {},
@@ -368,16 +368,9 @@ fun TrackingHistoryItem(trackHistoryModel: TrackHistoryModel, isFirst: Boolean, 
                     visibility =
                         if (trackHistoryModel.proof.imageId.isNotEmpty()) Visibility.Visible else Visibility.Gone
                 },
-            // todo todo
+            // todo clickable
             source = ImageSource.Remote(
-                LogisticImageDeliveryHelper.getDeliveryImage(
-                    trackHistoryModel.proof.imageId,
-                    orderId,
-                    LogisticImageDeliveryHelper.IMAGE_SMALL_SIZE,
-                    userSession.userId,
-                    LogisticImageDeliveryHelper.DEFAULT_OS_TYPE,
-                    userSession.deviceId
-                )
+                trackHistoryModel.proof.imageUrl
             )
         )
     }
