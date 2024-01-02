@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.presentation.download
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -227,6 +228,11 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
                 permissionCheckerHelper.onNeverAskAgain(requireActivity(), permissionText)
             }
 
+            @SuppressLint("MissingPermission")
+            /**
+             * This callback only invoked after the permission dialog already displayed via checkPermission function and permission is granted by user.
+             * Need to suppress the permission, otherwise the file download won't work.
+             */
             override fun onPermissionGranted() {
                 imageUrls.forEach { downloadFile(it.imageUrl) }
             }
