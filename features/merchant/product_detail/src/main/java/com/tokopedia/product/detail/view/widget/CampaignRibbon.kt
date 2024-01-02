@@ -566,7 +566,7 @@ class CampaignRibbon @JvmOverloads constructor(
     ) {
         if (upcomingComposeActive) {
             val data = upcomingData ?: return
-            renderUpcomingCampaignCompose(data = data)
+            renderUpcomingCampaignCompose(data = data, isOwner = isOwner)
         } else {
             renderUpcomingCampaignView(isOwner, upcomingData, upcomingIdentifier)
         }
@@ -586,7 +586,9 @@ class CampaignRibbon @JvmOverloads constructor(
         updateRemindMeButtonView(isOwner, upcomingData, upcomingIdentifier)
     }
 
-    private fun renderUpcomingCampaignCompose(data: ProductNotifyMeDataModel) {
+    private fun renderUpcomingCampaignCompose(data: ProductNotifyMeDataModel, isOwner: Boolean) {
+        val showReminderButton = !isOwner &&
+            data.upcomingNplData.upcomingType != ProductUpcomingTypeDef.UPCOMING_NPL
         val labelButton = context.getString(if (data.notifyMe) R.string.notify_me_active else R.string.notify_me_inactive)
 
         val type = CampaignType.UpComing(
@@ -598,7 +600,8 @@ class CampaignRibbon @JvmOverloads constructor(
                 endTimeUnix = data.startDate.toLongOrZero(),
                 timerLabel = context.getString(R.string.notify_me_subtitle_main),
                 labelButton = labelButton,
-                backgroundColorString = data.bgColorUpcoming
+                backgroundColorString = data.bgColorUpcoming,
+                showRemainderButton = showReminderButton
             ),
             onTimerFinish = onRefreshPage,
             onClickRemindMe = {
@@ -618,7 +621,7 @@ class CampaignRibbon @JvmOverloads constructor(
     ) {
         if (upcomingComposeActive) {
             val data = upComingData ?: return
-            renderUpcomingCampaignCompose(data = data)
+            renderUpcomingCampaignCompose(data = data, isOwner = isOwner)
         } else {
             updateRemindMeButtonView(isOwner, upComingData, upcomingIdentifier)
         }

@@ -73,11 +73,13 @@ private fun UpcomingContent(
             UpcomingCountDown(uiModel, onTimerFinish)
         }
 
-        RemindMeButton(
-            text = uiModel.labelButton,
-            onClick = onClickRemindMe,
-            modifier = Modifier.height(32.dp)
-        )
+        if (uiModel.showRemainderButton) {
+            RemindMeButton(
+                text = uiModel.labelButton,
+                onClick = onClickRemindMe,
+                modifier = Modifier.height(32.dp)
+            )
+        }
     }
 }
 
@@ -112,7 +114,7 @@ fun UpcomingCampaignPreview() {
     val data = UpcomingCampaignUiModel(
         logoUrl = "https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_f563497d-22f9-4295-ae71-423a35af5476.jpg",
         title = "Kerja Keras",
-        endTimeUnix = 1703173097,
+        endTimeUnix = 1704187685,
         timerLabel = "Akan datang",
         labelButton = "Ingatkan saya",
         paymentSpecific = "",
@@ -123,7 +125,12 @@ fun UpcomingCampaignPreview() {
             UpcomingCampaign(data, onTimerFinish = {}, onClickRemindMe = {})
             UpcomingCampaign(data.copy(paymentSpecific = "Khusus pembayaran OVO"), onTimerFinish = {}, onClickRemindMe = {})
             UpcomingCampaign(
-                data.copy(logoUrl = ""),
+                data.copy(logoUrl = "", showRemainderButton = true),
+                onTimerFinish = {},
+                onClickRemindMe = {}
+            )
+            UpcomingCampaign(
+                data.copy(paymentSpecific = "Khusus pembayaran OVO", showRemainderButton = true),
                 onTimerFinish = {},
                 onClickRemindMe = {}
             )

@@ -10,7 +10,8 @@ data class UpcomingCampaignUiModel(
     val timerLabel: String = "",
     val labelButton: String = "",
     val paymentSpecific: String = "",
-    val backgroundColorString: String = ""
+    val backgroundColorString: String = "",
+    val showRemainderButton: Boolean = false
 )
 
 val Long.secondToMs
