@@ -12,5 +12,7 @@ data class ShopHomeCampaignWidgetProductTrackerModel(
     val isFestivity: Boolean = false,
     val productId: String = "",
     val productName: String = "",
-    val productPrice: String = ""
+    val productPrice: String = "",
+    val isFulfilment: Boolean?,
+    val warehouseId: String?
 )
