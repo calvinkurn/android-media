@@ -1,4 +1,4 @@
-package com.tokopedia.feedplus.presentation.customview
+package com.tokopedia.content.common.ui.custom.player
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -20,17 +20,16 @@ import com.google.android.exoplayer2.ui.TimeBar
 import com.google.android.exoplayer2.ui.TimeBar.OnScrubListener
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.feedplus.R
 import java.util.*
 import java.util.concurrent.CopyOnWriteArraySet
 import kotlin.math.min
-import com.tokopedia.unifyprinciples.R as unifyR
-
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * Created by kenny.hadisaputra on 28/03/23
  */
-class FeedTimeBar : View, TimeBar {
+class ContentTimeBar : View, TimeBar {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -70,17 +69,17 @@ class FeedTimeBar : View, TimeBar {
     private val seekBounds = Rect()
 
     private val unplayedPaint = Paint().apply {
-        color = MethodChecker.getColor(context, R.color.feed_dms_seekbar_unplayed_color)
+        color = MethodChecker.getColor(context, contentcommonR.color.content_dms_seekbar_unplayed_color)
     }
     private val bufferedPaint = Paint().apply {
-        color = MethodChecker.getColor(context, R.color.feed_dms_seekbar_unplayed_color)
+        color = MethodChecker.getColor(context, contentcommonR.color.content_dms_seekbar_unplayed_color)
     }
     private val playedPaint = Paint().apply {
-        color = MethodChecker.getColor(context, unifyR.color.Unify_Static_White)
+        color = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Static_White)
     }
     private val scrubberPaint = Paint().apply {
         isAntiAlias = true
-        color = MethodChecker.getColor(context, unifyR.color.Unify_Static_White)
+        color = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Static_White)
     }
 
     private val scrubberDraggedSize: Int

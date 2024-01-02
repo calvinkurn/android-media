@@ -10,13 +10,14 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
+import com.tokopedia.hotel.databinding.LayoutHotelCancellationReasonItemBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.layout_hotel_cancellation_reason_item.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by jessica on 05/05/20
@@ -68,46 +69,49 @@ class HotelCancellationReasonAdapter: RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
+
+        private val binding = LayoutHotelCancellationReasonItemBinding.bind(view)
+
         fun bind(reason: HotelCancellationModel.Reason, isLastItem: Boolean,
                  listener: OnClickItemListener?, selectedId: String) {
-            with(itemView) {
-                hotel_cancellation_reason_hotel_description.text = reason.title
+            with(binding) {
+                hotelCancellationReasonHotelDescription.text = reason.title
 
-                hotel_cancellation_reason_radio_button.isChecked = reason.id == selectedId
-                if (!hotel_cancellation_reason_radio_button.isChecked) hotel_cancellation_reason_free_text_tf.hide()
+                hotelCancellationReasonRadioButton.isChecked = reason.id == selectedId
+                if (!hotelCancellationReasonRadioButton.isChecked) hotelCancellationReasonFreeTextTf.hide()
 
-                itemView.setOnClickListener { setUpFreeText(reason, listener) }
-                hotel_cancellation_reason_radio_button.setOnClickListener { setUpFreeText(reason, listener) }
+                binding.root.setOnClickListener { setUpFreeText(reason, listener) }
+                hotelCancellationReasonRadioButton.setOnClickListener { setUpFreeText(reason, listener) }
 
                 if (reason.freeText) setUpFreeTextTextField(listener, reason.id)
-                if (isLastItem) hotel_cancellation_seperator.hide()
+                if (isLastItem) hotelCancellationSeperator.hide()
             }
         }
 
         private fun setUpFreeText(reason: HotelCancellationModel.Reason, listener: OnClickItemListener?) {
-            with(itemView) {
-                if (reason.freeText) hotel_cancellation_reason_free_text_tf.show()
-                val isValid = !reason.freeText || hotel_cancellation_reason_free_text_tf.getEditableValue().length >= 10
+            with(binding) {
+                if (reason.freeText) hotelCancellationReasonFreeTextTf.show()
+                val isValid = !reason.freeText || hotelCancellationReasonFreeTextTf.getEditableValue().length >= 10
                 listener?.onClick(reason.id, isValid)
             }
         }
 
         private fun setUpFreeTextTextField(listener: OnClickItemListener?, id: String) {
-            with(itemView) {
-                hotel_cancellation_reason_free_text_tf.textFieldInput.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-                hotel_cancellation_reason_free_text_tf.textFiedlLabelText.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
-                hotel_cancellation_reason_free_text_tf.textFieldInput.addTextChangedListener(object : TextWatcher{
+            with(binding) {
+                hotelCancellationReasonFreeTextTf.textFieldInput.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                hotelCancellationReasonFreeTextTf.textFiedlLabelText.setTextColor(ContextCompat.getColor(root.context, unifyprinciplesR.color.Unify_NN950_68))
+                hotelCancellationReasonFreeTextTf.textFieldInput.addTextChangedListener(object : TextWatcher{
                     override fun afterTextChanged(s: Editable?) {
                         CoroutineScope(Dispatchers.Main).launch {
                             delay(TYPE_EDITTEXT_DELAY_MS.toLong())
                             if (s.toString().trim().length >= MIN_EDITTEXT_CHAR) {
-                                hotel_cancellation_reason_free_text_tf.setError(false)
-                                hotel_cancellation_reason_free_text_tf.setMessage("")
+                                hotelCancellationReasonFreeTextTf.setError(false)
+                                hotelCancellationReasonFreeTextTf.setMessage("")
                                 listener?.onTypeFreeTextAndMoreThan10Words(true, s.toString())
                             }
                             else {
-                                hotel_cancellation_reason_free_text_tf.setError(true)
-                                hotel_cancellation_reason_free_text_tf.setMessage(resources.getString(R.string.hotel_cancellation_reason_free_text_minimal_10_char))
+                                hotelCancellationReasonFreeTextTf.setError(true)
+                                hotelCancellationReasonFreeTextTf.setMessage(root.resources.getString(R.string.hotel_cancellation_reason_free_text_minimal_10_char))
                                 listener?.onTypeFreeTextAndMoreThan10Words(false)
                             }
                         }

@@ -1,18 +1,18 @@
-package com.tokopedia.feedplus.presentation.customview
+package com.tokopedia.content.common.ui.custom.player
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.databinding.ViewFeedVideoTimeBinding
+import com.tokopedia.content.common.databinding.ViewContentVideoTimeBinding
 import java.util.concurrent.TimeUnit
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * Created by kenny.hadisaputra on 04/04/23
  */
-class FeedVideoTimeView : LinearLayout {
+class ContentVideoTimeView : LinearLayout {
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -29,7 +29,7 @@ class FeedVideoTimeView : LinearLayout {
         defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    private val binding = ViewFeedVideoTimeBinding.inflate(
+    private val binding = ViewContentVideoTimeBinding.inflate(
         LayoutInflater.from(context),
         this,
     )
@@ -51,7 +51,7 @@ class FeedVideoTimeView : LinearLayout {
         val seconds = totalSeconds % 60 + if (this % 1000 >= 500) 1 else 0
         val minutes = TimeUnit.SECONDS.toMinutes(totalSeconds) % 60
         val hours = TimeUnit.SECONDS.toHours(totalSeconds)
-        return if (hours <= 0) String.format(context.getString(R.string.feed_video_time_less_than_hour), minutes, seconds)
-        else String.format(context.getString(R.string.feed_video_time_hours), hours, minutes, seconds)
+        return if (hours <= 0) String.format(context.getString(contentcommonR.string.content_video_time_less_than_hour), minutes, seconds)
+        else String.format(context.getString(contentcommonR.string.content_video_time_hours), hours, minutes, seconds)
     }
 }

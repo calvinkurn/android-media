@@ -74,8 +74,6 @@
 
     <string name="feed_live_wave_label">Ketuk untuk nonton LIVE</string>
 
-    <string name="feed_video_duration_separator">/</string>
-
     <string name="feed_product_list_bottom_sheet_title">Produk pilihan</string>
 
     <!-- Delete Post-->
@@ -88,8 +86,6 @@
     <string name="feed_cta_ok_toaster">Oke</string>
     <string name="feed_flash_sale">Flash Sale</string>
     <string name="feed_special_release">Rilisan Spesial</string>
-    <string name="feed_video_time_less_than_hour">%d:%02d</string>
-    <string name="feed_video_time_hours">%d:%02d:%02d</string>
     <string name="feed_campaign_start_from_label">Dimulai dalam</string>
     <string name="feed_cancel">Batal</string>
 
