@@ -1253,7 +1253,7 @@ class CartItemViewHolder(
             keyboardOptions.value = KeyboardOptions(
                 imeAction = ImeAction.Done
             )
-            keyboardAction.value = KeyboardActions(
+            keyboardActions.value = KeyboardActions(
                 onDone = {
                     val newQty = qtyValue.value
                     if (newQty == 0) {
