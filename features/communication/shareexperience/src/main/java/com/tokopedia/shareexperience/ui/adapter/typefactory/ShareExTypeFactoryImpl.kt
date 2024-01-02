@@ -13,6 +13,7 @@ import com.tokopedia.shareexperience.ui.adapter.viewholder.channel.ShareExSocial
 import com.tokopedia.shareexperience.ui.adapter.viewholder.chip.ShareExChipsViewHolder
 import com.tokopedia.shareexperience.ui.adapter.viewholder.image.ShareExImageCarouselViewHolder
 import com.tokopedia.shareexperience.ui.listener.ShareExAffiliateRegistrationListener
+import com.tokopedia.shareexperience.ui.listener.ShareExChannelListener
 import com.tokopedia.shareexperience.ui.listener.ShareExChipsListener
 import com.tokopedia.shareexperience.ui.listener.ShareExImageGeneratorListener
 import com.tokopedia.shareexperience.ui.model.ShareExAffiliateRegistrationUiModel
@@ -28,7 +29,8 @@ import com.tokopedia.shareexperience.ui.model.image.ShareExImageCarouselUiModel
 class ShareExTypeFactoryImpl(
     private val chipsListener: ShareExChipsListener,
     private val imageGeneratorListener: ShareExImageGeneratorListener,
-    private val affiliateRegistrationListener: ShareExAffiliateRegistrationListener
+    private val affiliateRegistrationListener: ShareExAffiliateRegistrationListener,
+    private val channelListener: ShareExChannelListener
 ) : BaseAdapterTypeFactory(), ShareExTypeFactory {
     override fun type(uiModel: ShareExSubtitleUiModel): Int {
         return ShareExSubtitleViewHolder.LAYOUT
@@ -74,8 +76,8 @@ class ShareExTypeFactoryImpl(
             ShareExLinkShareViewHolder.LAYOUT -> ShareExLinkShareViewHolder(parent)
             ShareExLineSeparatorViewHolder.LAYOUT -> ShareExLineSeparatorViewHolder(parent)
             ShareExAffiliateRegistrationViewHolder.LAYOUT -> ShareExAffiliateRegistrationViewHolder(parent, affiliateRegistrationListener)
-            ShareExSocialChannelsViewHolder.LAYOUT -> ShareExSocialChannelsViewHolder(parent)
-            ShareExCommonChannelsViewHolder.LAYOUT -> ShareExCommonChannelsViewHolder(parent)
+            ShareExSocialChannelsViewHolder.LAYOUT -> ShareExSocialChannelsViewHolder(parent, channelListener)
+            ShareExCommonChannelsViewHolder.LAYOUT -> ShareExCommonChannelsViewHolder(parent, channelListener)
             else -> super.createViewHolder(parent, type)
         }
     }

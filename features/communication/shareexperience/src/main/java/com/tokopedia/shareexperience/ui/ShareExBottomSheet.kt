@@ -14,11 +14,13 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
 import com.tokopedia.shareexperience.databinding.ShareexperienceBottomSheetBinding
+import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.ui.adapter.ShareExBottomSheetAdapter
 import com.tokopedia.shareexperience.ui.adapter.decoration.ShareExBottomSheetSpacingItemDecoration
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactoryImpl
 import com.tokopedia.shareexperience.ui.listener.ShareExAffiliateRegistrationListener
+import com.tokopedia.shareexperience.ui.listener.ShareExChannelListener
 import com.tokopedia.shareexperience.ui.listener.ShareExChipsListener
 import com.tokopedia.shareexperience.ui.listener.ShareExImageGeneratorListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -31,7 +33,8 @@ class ShareExBottomSheet :
     BottomSheetUnify(),
     ShareExChipsListener,
     ShareExImageGeneratorListener,
-    ShareExAffiliateRegistrationListener {
+    ShareExAffiliateRegistrationListener,
+    ShareExChannelListener {
 
     @Inject
     lateinit var viewModel: ShareExViewModel
@@ -39,7 +42,12 @@ class ShareExBottomSheet :
     private var viewBinding by autoClearedNullable<ShareexperienceBottomSheetBinding>()
     private val adapter by lazy {
         ShareExBottomSheetAdapter(
-            ShareExTypeFactoryImpl(this, this, this)
+            ShareExTypeFactoryImpl(
+                chipsListener = this,
+                imageGeneratorListener = this,
+                affiliateRegistrationListener = this,
+                channelListener = this
+            )
         )
     }
 
@@ -149,5 +157,9 @@ class ShareExBottomSheet :
         if (appLink.isNotBlank()) {
             viewModel.processAction(ShareExBottomSheetAction.NavigateToPage(appLink))
         }
+    }
+
+    override fun onChannelClicked(element: ShareExChannelItemModel) {
+
     }
 }

@@ -7,6 +7,7 @@ import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelModel
 import com.tokopedia.shareexperience.ui.adapter.channel.ShareExBaseChannelAdapter
 import com.tokopedia.shareexperience.ui.adapter.channel.ShareExCommonChannelAdapter
 import com.tokopedia.shareexperience.ui.adapter.channel.ShareExSocialChannelAdapter
+import com.tokopedia.shareexperience.ui.listener.ShareExChannelListener
 
 class ShareExSocialChannelRecyclerView: ShareExBaseChannelRecyclerView {
     constructor(context: Context) : super(context)
@@ -17,18 +18,15 @@ class ShareExSocialChannelRecyclerView: ShareExBaseChannelRecyclerView {
         defStyleAttr
     )
 
-    private val adapter = ShareExSocialChannelAdapter()
-
-    override fun getChannelAdapter(): ShareExBaseChannelAdapter {
-        return adapter
+    override fun getChannelAdapter(listener: ShareExChannelListener): ShareExBaseChannelAdapter {
+        return ShareExSocialChannelAdapter(listener)
     }
 
     init {
         init()
     }
 
-    fun updateData(newData: ShareExChannelModel) {
-        //TODO: set description
-        adapter.updateData(newData.listChannel)
+    fun updateData(newData: List<ShareExChannelItemModel>) {
+        channelAdapter?.updateData(newData)
     }
 }

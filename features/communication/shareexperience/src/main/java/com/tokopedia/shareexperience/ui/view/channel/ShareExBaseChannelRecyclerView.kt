@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.shareexperience.ui.adapter.channel.ShareExBaseChannelAdapter
 import com.tokopedia.shareexperience.ui.adapter.decoration.ShareExHorizontalSpacingItemDecoration
+import com.tokopedia.shareexperience.ui.listener.ShareExChannelListener
 
 abstract class ShareExBaseChannelRecyclerView: RecyclerView {
     constructor(context: Context) : super(context)
@@ -21,12 +22,16 @@ abstract class ShareExBaseChannelRecyclerView: RecyclerView {
     private val horizontalSpacingItemDecoration = ShareExHorizontalSpacingItemDecoration(
         8.dpToPx(context.resources.displayMetrics)
     )
-    protected abstract fun getChannelAdapter(): ShareExBaseChannelAdapter
+    protected var channelAdapter: ShareExBaseChannelAdapter? = null
+    protected abstract fun getChannelAdapter(listener: ShareExChannelListener): ShareExBaseChannelAdapter
+    fun setChannelListener(listener: ShareExChannelListener) {
+        channelAdapter = getChannelAdapter(listener)
+        adapter = channelAdapter
+    }
 
     protected open fun init() {
         setHasFixedSize(true)
         layoutManager = linearLayoutManager
-        adapter = getChannelAdapter()
         isNestedScrollingEnabled = false
         itemAnimator = null
         addItemDecoration(horizontalSpacingItemDecoration)
