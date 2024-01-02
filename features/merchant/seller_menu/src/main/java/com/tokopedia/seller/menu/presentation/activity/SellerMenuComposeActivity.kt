@@ -76,9 +76,7 @@ class SellerMenuComposeActivity : BaseSellerMenuActivity() {
                             is SellerMenuUIEvent.OnSuccessGetShopInfo -> {
                                 shopAge = state.shopAge
                                 isNewSeller = state.isNewSeller
-                                viewModel.getAllSettingShopInfo()
-                                viewModel.getProductCount()
-                                viewModel.getNotifications()
+                                viewModel.onEvent(SellerMenuUIEvent.GetShopInfo)
                             }
                             else -> {
                             }

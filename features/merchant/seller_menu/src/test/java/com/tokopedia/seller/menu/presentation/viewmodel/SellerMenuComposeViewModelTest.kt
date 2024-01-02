@@ -243,8 +243,7 @@ class SellerMenuComposeViewModelTest : SellerMenuComposeViewModelTestFixture() {
         getAllSettingShopInfoSuccess()
 
         viewModel.onEvent(SellerMenuUIEvent.GetInitialMenu)
-        viewModel.getAllSettingShopInfo(false)
-        viewModel.getProductCount()
+        viewModel.onEvent(SellerMenuUIEvent.GetShopInfo)
 
         advanceUntilIdle()
 
@@ -259,8 +258,7 @@ class SellerMenuComposeViewModelTest : SellerMenuComposeViewModelTestFixture() {
         getAllSettingShopInfoSuccess()
 
         viewModel.onEvent(SellerMenuUIEvent.GetInitialMenu)
-        viewModel.getAllSettingShopInfo(false)
-        viewModel.getProductCount()
+        viewModel.onEvent(SellerMenuUIEvent.GetShopInfo)
 
         advanceUntilIdle()
 
@@ -280,8 +278,7 @@ class SellerMenuComposeViewModelTest : SellerMenuComposeViewModelTestFixture() {
         getAllSettingShopInfoSuccess()
 
         viewModel.onEvent(SellerMenuUIEvent.GetInitialMenu)
-        viewModel.getAllSettingShopInfo(false)
-        viewModel.getNotifications()
+        viewModel.onEvent(SellerMenuUIEvent.GetShopInfo)
 
         advanceUntilIdle()
 
@@ -297,8 +294,7 @@ class SellerMenuComposeViewModelTest : SellerMenuComposeViewModelTestFixture() {
         getAllSettingShopInfoSuccess()
 
         viewModel.onEvent(SellerMenuUIEvent.GetInitialMenu)
-        viewModel.getAllSettingShopInfo(false)
-        viewModel.getNotifications()
+        viewModel.onEvent(SellerMenuUIEvent.GetShopInfo)
 
         advanceUntilIdle()
 

@@ -65,6 +65,11 @@ class SellerMenuComposeViewModel @Inject constructor(
                     getInitialMenu()
                     getAllSettingShopInfo()
                 }
+                is SellerMenuUIEvent.GetShopInfo -> {
+                    getAllSettingShopInfo()
+                    getProductCount()
+                    getNotifications()
+                }
                 else -> {
                     // NO-OP
                 }
@@ -113,7 +118,7 @@ class SellerMenuComposeViewModel @Inject constructor(
         getAllShopInfoData(_shopAge.value)
     }
 
-    fun getProductCount() {
+    private fun getProductCount() {
         viewModelScope.launchCatchError(block = {
             val response = withContext(dispatchers.io) {
                 getProductListMetaUseCase.setParams(userSession.shopId)
@@ -138,7 +143,7 @@ class SellerMenuComposeViewModel @Inject constructor(
             })
     }
 
-    fun getNotifications() {
+    private fun getNotifications() {
         viewModelScope.launchCatchError(block = {
             val data = withContext(dispatchers.io) {
                 getSellerMenuNotifications.executeOnBackground()
