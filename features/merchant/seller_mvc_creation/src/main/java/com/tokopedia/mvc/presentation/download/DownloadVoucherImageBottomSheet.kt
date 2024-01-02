@@ -1,6 +1,5 @@
 package com.tokopedia.mvc.presentation.download
 
-import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -39,7 +38,6 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
         private const val BANNER_URL = "banner_url"
         private const val SQUARE_URL = "square_url"
         private const val PORTRAIT_URL = "portrait_url"
-
 
         @JvmStatic
         fun newInstance(
@@ -85,7 +83,7 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<SmvcBottomsheetDownloadVoucherImageBinding>()
     private var onDownloadSuccess: () -> Unit = {}
-    private var onDownloadError : () -> Unit = {}
+    private var onDownloadError: () -> Unit = {}
 
     private fun setupDependencyInjection() {
         DaggerMerchantVoucherCreationComponent.builder()
@@ -176,7 +174,6 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
         }
     }
 
-
     private fun handleUiState(uiState: VoucherImageUiState) {
         renderList(uiState.voucherImages)
         renderButton(uiState.selectedImageUrls.count())
@@ -207,7 +204,7 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
         binding?.btnDownload?.isEnabled = selectedImageCount.isMoreThanZero()
     }
 
-    private fun renderList(voucherImages : List<VoucherImageUiModel>) {
+    private fun renderList(voucherImages: List<VoucherImageUiModel>) {
         voucherImageAdapter.submit(voucherImages)
     }
 
@@ -230,7 +227,6 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
                 permissionCheckerHelper.onNeverAskAgain(requireActivity(), permissionText)
             }
 
-            @SuppressLint("MissingPermission")
             override fun onPermissionGranted() {
                 imageUrls.forEach { downloadFile(it.imageUrl) }
             }
@@ -241,9 +237,8 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
             permission = PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
             listener = listener
         )
-
     }
-    
+
     private fun downloadFile(uri: String) {
         val downloadCompleteListener = object : DownloadHelper.DownloadHelperListener {
             override fun onDownloadComplete() {
@@ -309,5 +304,4 @@ class DownloadVoucherImageBottomSheet : BottomSheetUnify() {
 
         return voucherImages
     }
-
 }
