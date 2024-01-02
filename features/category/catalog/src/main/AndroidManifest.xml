@@ -44,6 +44,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="com.tokopedia.catalog.ui.activity.CatalogImagePreviewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
+        <activity
             android:name="com.tokopedia.oldcatalog.ui.activity.CatalogDetailPageActivity"
             android:exported="false"
             android:screenOrientation="portrait"
