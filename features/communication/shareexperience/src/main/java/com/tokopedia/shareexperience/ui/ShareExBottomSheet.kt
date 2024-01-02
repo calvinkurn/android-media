@@ -4,15 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
+import com.tokopedia.shareexperience.data.di.ShareExComponent
 import com.tokopedia.shareexperience.databinding.ShareexperienceBottomSheetBinding
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.ui.adapter.ShareExBottomSheetAdapter
@@ -37,7 +39,8 @@ class ShareExBottomSheet :
     ShareExChannelListener {
 
     @Inject
-    lateinit var viewModel: ShareExViewModel
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel: ShareExViewModel by activityViewModels { viewModelFactory }
 
     private var viewBinding by autoClearedNullable<ShareexperienceBottomSheetBinding>()
     private val adapter by lazy {
@@ -71,12 +74,9 @@ class ShareExBottomSheet :
         initInjector()
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun initInjector() {
-        DaggerShareExComponent
-            .builder()
-            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-            .build()
-            .inject(this)
+        (activity as HasComponent<ShareExComponent>).component.inject(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -84,7 +84,7 @@ class ShareExBottomSheet :
         setTitle()
         initializeRecyclerView()
         initObservers()
-        viewModel.processAction(ShareExBottomSheetAction.InitializePage)
+        viewModel.processAction(ShareExAction.InitializePage)
     }
 
     private fun setTitle() {
@@ -144,22 +144,21 @@ class ShareExBottomSheet :
     }
 
     override fun onClickChip(position: Int) {
-        viewModel.processAction(ShareExBottomSheetAction.UpdateShareBody(position))
+        viewModel.processAction(ShareExAction.UpdateShareBody(position))
     }
 
     override fun onImageChanged(imageUrl: String) {
         if (imageUrl.isNotBlank()) {
-            viewModel.processAction(ShareExBottomSheetAction.UpdateShareImage(imageUrl))
+            viewModel.processAction(ShareExAction.UpdateShareImage(imageUrl))
         }
     }
 
     override fun onAffiliateRegistrationCardClicked(appLink: String) {
         if (appLink.isNotBlank()) {
-            viewModel.processAction(ShareExBottomSheetAction.NavigateToPage(appLink))
+            viewModel.processAction(ShareExAction.NavigateToPage(appLink))
         }
     }
 
     override fun onChannelClicked(element: ShareExChannelItemModel) {
-
     }
 }

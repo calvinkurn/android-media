@@ -8,6 +8,7 @@ import com.tokopedia.shareexperience.data.util.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
 import com.tokopedia.shareexperience.ui.uistate.ShareExBottomSheetUiState
+import com.tokopedia.shareexperience.ui.uistate.ShareExFetchUiState
 import com.tokopedia.shareexperience.ui.uistate.ShareExNavigationUiState
 import com.tokopedia.shareexperience.ui.util.map
 import kotlinx.coroutines.flow.Flow
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -29,9 +31,13 @@ class ShareExViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     private val _actionFlow =
-        MutableSharedFlow<ShareExBottomSheetAction>(extraBufferCapacity = 16)
+        MutableSharedFlow<ShareExAction>(extraBufferCapacity = 16)
 
-    private var _bottomSheetModel: ShareExBottomSheetModel? = null // Cache the model for body switching
+    // Cache the model from activity and body switching when chip clicked
+    private var _bottomSheetModel: ShareExBottomSheetModel? = null
+
+    private val _fetchedDataState = MutableStateFlow<ShareExFetchUiState?>(null)
+    val fetchedDataState = _fetchedDataState.asStateFlow()
 
     private val _bottomSheetUiState = MutableStateFlow(ShareExBottomSheetUiState())
     val bottomSheetUiState = _bottomSheetUiState.asStateFlow()
@@ -45,32 +51,35 @@ class ShareExViewModel @Inject constructor(
         _actionFlow.process()
     }
 
-    fun processAction(action: ShareExBottomSheetAction) {
+    fun processAction(action: ShareExAction) {
         viewModelScope.launch {
             _actionFlow.emit(action)
         }
     }
 
-    private fun Flow<ShareExBottomSheetAction>.process() {
+    private fun Flow<ShareExAction>.process() {
         onEach {
             when (it) {
-                is ShareExBottomSheetAction.InitializePage -> {
+                is ShareExAction.FetchShareData -> {
+                    getShareData()
+                }
+                is ShareExAction.InitializePage -> {
                     getShareBottomSheetData()
                 }
-                is ShareExBottomSheetAction.UpdateShareBody -> {
+                is ShareExAction.UpdateShareBody -> {
                     updateShareBottomSheetBody(it.position)
                 }
-                is ShareExBottomSheetAction.UpdateShareImage -> {
+                is ShareExAction.UpdateShareImage -> {
                     updateShareImage(it.imageUrl)
                 }
-                is ShareExBottomSheetAction.NavigateToPage -> {
+                is ShareExAction.NavigateToPage -> {
                     navigateToPage(it.appLink)
                 }
             }
         }.launchIn(viewModelScope)
     }
 
-    private fun getShareBottomSheetData() {
+    private fun getShareData() {
         viewModelScope.launch {
             try {
                 getSharePropertiesUseCase.getData(
@@ -78,14 +87,27 @@ class ShareExViewModel @Inject constructor(
                         pageType = ShareExPageTypeEnum.PDP.value,
                         id = 2150412049
                     )
-                ).collectLatest {
+                ).catch {
+                    _fetchedDataState.value = ShareExFetchUiState(false, it)
+                }.collectLatest {
                     _bottomSheetModel = it
-                    val uiResult = it.map()
-                    _bottomSheetUiState.update { uiState ->
-                        uiState.copy(
-                            uiModelList = uiResult
-                        )
-                    }
+                    _fetchedDataState.value = ShareExFetchUiState(true, null)
+                }
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+                _fetchedDataState.value = ShareExFetchUiState(false, throwable)
+            }
+        }
+    }
+
+    private fun getShareBottomSheetData() {
+        viewModelScope.launch {
+            try {
+                val uiResult = _bottomSheetModel?.map()
+                _bottomSheetUiState.update { uiState ->
+                    uiState.copy(
+                        uiModelList = uiResult
+                    )
                 }
             } catch (throwable: Throwable) {
                 Timber.d(throwable)

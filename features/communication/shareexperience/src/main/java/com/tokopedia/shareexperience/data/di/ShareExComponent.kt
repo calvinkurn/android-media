@@ -3,6 +3,7 @@ package com.tokopedia.shareexperience.data.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.shareexperience.ui.ShareExBottomSheet
+import com.tokopedia.shareexperience.ui.ShareExLoadingActivity
 import dagger.Component
 
 @ActivityScope
@@ -15,5 +16,6 @@ import dagger.Component
     dependencies = [BaseAppComponent::class]
 )
 interface ShareExComponent {
+    fun inject(activity: ShareExLoadingActivity)
     fun inject(bottomSheet: ShareExBottomSheet)
 }
