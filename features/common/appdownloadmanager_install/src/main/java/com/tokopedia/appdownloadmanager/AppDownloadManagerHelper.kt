@@ -37,8 +37,8 @@ class AppDownloadManagerHelper(
                             ::onFailDownloaded
                         ) { setCacheExpire() }
                     }
-                    updateAppVersionDialog?.showDialog()
                 }
+                updateAppVersionDialog?.showDialog()
             }
         }
     }
