@@ -20,9 +20,11 @@ import com.tokopedia.creation.common.upload.model.exception.UnknownUploadTypeExc
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadExecutionResult
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerListener
 import com.tokopedia.creation.common.upload.util.logger.CreationUploadLogger
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.Executors
 import javax.inject.Inject
 
 /**
@@ -61,12 +63,15 @@ class CreationUploaderWorker(
     }
 
     override suspend fun doWork(): Result {
+
         return withContext(dispatchers.io) {
             /**
              * 1. Read data from DB
              * 2. Get upload manager based on type
              * 3. Execute upload manager
              */
+
+            val coroutineDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
             val notificationId = (0..10000000).random()
 
@@ -87,7 +92,7 @@ class CreationUploaderWorker(
                                 progress: Int,
                                 uploadStatus: CreationUploadStatus,
                             ) {
-                                launch {
+                                launch(coroutineDispatcher) {
                                     saveProgress(progress, uploadData, uploadStatus)
                                 }
                             }
@@ -96,12 +101,11 @@ class CreationUploaderWorker(
 
                     val result = uploadManager.execute(notificationId)
 
-                    /** Need this to avoid race condition between update status to success & delete row in Room */
-                    delay(DEFAULT_DELAY_AFTER_EXECUTE)
-
                     when (result) {
                         is CreationUploadExecutionResult.Success -> {
-                            queueRepository.delete(data.queueId)
+                            launch(coroutineDispatcher) {
+                                queueRepository.delete(data.queueId)
+                            }
                         }
                         is CreationUploadExecutionResult.Error -> {
                             logger.sendLog(result.uploadData, result.throwable)
@@ -142,7 +146,6 @@ class CreationUploaderWorker(
     companion object {
 
         private const val DEFAULT_DELAY_AFTER_EMIT_RESULT = 1000L
-        private const val DEFAULT_DELAY_AFTER_EXECUTE = 500L
 
         fun build(): OneTimeWorkRequest {
             return OneTimeWorkRequest.Builder(CreationUploaderWorker::class.java)
