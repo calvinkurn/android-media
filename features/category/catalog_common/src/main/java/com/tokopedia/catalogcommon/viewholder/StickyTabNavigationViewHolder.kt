@@ -58,7 +58,7 @@ class StickyTabNavigationViewHolder(
                 }
             }
             catalogTabsUnify.getTabAt(element?.currentSelectTab.orZero())?.select()
-            catalogTabsUnify.tabMode = TabLayout.MODE_FIXED
+            catalogTabsUnify.tabMode = TabLayout.MODE_SCROLLABLE
             catalogTabsUnify.isTabIndicatorFullWidth = false
             catalogTabsUnify.tabRippleColor = null
             catalogTabsUnify.setBackgroundColor(widgetBackgroundColor)
