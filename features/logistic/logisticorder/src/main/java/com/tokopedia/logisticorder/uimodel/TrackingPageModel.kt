@@ -1,6 +1,7 @@
 package com.tokopedia.logisticorder.uimodel
 
 import android.os.Parcelable
+import com.tokopedia.logisticorder.utils.TippingConstant
 import kotlinx.parcelize.Parcelize
 
 data class TrackingPageModel(
@@ -92,7 +93,10 @@ data class TippingModel(
     var status: Int = 0,
     var statusTitle: String = "",
     var statusSubtitle: String = ""
-) : Parcelable
+) : Parcelable {
+    val eligibleForTipping: Boolean
+        get() = status == TippingConstant.OPEN || status == TippingConstant.WAITING_PAYMENT || status == TippingConstant.SUCCESS_PAYMENT || status == TippingConstant.SUCCESS_TIPPING || status == TippingConstant.REFUND_TIP
+}
 
 @Parcelize
 data class LastDriverModel(
