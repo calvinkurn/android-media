@@ -2,7 +2,6 @@ package com.tokopedia.feedplus.browse.presentation.adapter.viewholder
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
@@ -30,6 +29,7 @@ internal class FeedBrowseBannerViewHolder private constructor() {
             binding.imgBanner.loadImage(item.banner.imageUrl) {
                 centerCrop()
             }
+
             binding.tvInspiration.text = item.banner.title
 
             binding.root.addImpressionListener {

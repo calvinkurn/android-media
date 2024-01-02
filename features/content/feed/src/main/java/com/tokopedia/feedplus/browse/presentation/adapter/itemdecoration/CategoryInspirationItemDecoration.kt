@@ -81,8 +81,13 @@ internal class CategoryInspirationItemDecoration(
 
         val currPosition = parent.getChildLayoutPosition(child)
 
-        left = if (spanIndex == 0) offset16 else offset4
-        right = if (spanIndex == spanCount - 1) offset16 else offset4
+        if (spanCount <= 2) {
+            left = if (spanIndex == 0) offset16 else offset4
+            right = if (spanIndex == spanCount - 1) offset16 else offset4
+        } else {
+            left = offset16 * (spanCount - spanIndex) / spanCount
+            right = offset16 * (spanIndex + 1) / spanCount
+        }
 
         val prevSpanRowPosition = currPosition - spanIndex - 1
         if (prevSpanRowPosition < 0) return

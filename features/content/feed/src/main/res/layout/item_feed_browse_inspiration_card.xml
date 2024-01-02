@@ -8,27 +8,19 @@
     app:rcl_cornerRadius="8dp"
     >
 
-    <com.tokopedia.play_common.view.RoundedFrameLayout
-        android:id="@+id/fl_media"
+    <com.tokopedia.play_common.view.RoundedImageView
+        android:id="@+id/img_cover"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/tv_title"
-        app:layout_constraintDimensionRatio="0.56"
+        app:layout_constraintDimensionRatio="H, 158:280"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:rfl_cornerRadius="8dp"
-        app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintVertical_bias="0"
-        >
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/img_cover"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
-
-    </com.tokopedia.play_common.view.RoundedFrameLayout>
+        app:layout_constraintVertical_chainStyle="packed"
+        app:rImg_cornerRadius="8dp"
+        />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -47,7 +39,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/img_cover"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -61,7 +53,7 @@
         app:layout_constraintBottom_toTopOf="@id/ll_partner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fl_media"
+        app:layout_constraintTop_toBottomOf="@id/img_cover"
         app:typographyType="display_2"
         tools:text="Terong goreng super simple hanya 4 bahan"
         />
