@@ -24,6 +24,7 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
+import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_ADDRESS
@@ -191,7 +192,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             )
             when {
                 result.globalEvent != null -> {
-                    globalEvent.value = result.globalEvent
+                    globalEvent.value = result.globalEvent!!
                 }
 
                 uiMessage is OccToasterAction -> {
@@ -1431,7 +1432,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             validateUsePromoRevampUiModel,
             orderPayment.value
         )
-        val dynamicPaymentFee = paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost)
+        val dynamicPaymentFee = paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost, generatePaymentRequest(orderCost))
         val newOrderPayment = orderPayment.value
         orderPayment.value = newOrderPayment.copy(dynamicPaymentFees = dynamicPaymentFee)
         if (dynamicPaymentFee == null) {
@@ -1449,7 +1450,8 @@ class OrderSummaryPageViewModel @Inject constructor(
             orderPayment.value,
             userSession.userId,
             orderCost,
-            orderCart
+            orderCart,
+            generatePaymentRequest(orderCost)
         )
         if (installmentTermList == null) {
             val newOrderPayment = orderPayment.value
@@ -1491,7 +1493,8 @@ class OrderSummaryPageViewModel @Inject constructor(
             orderCost,
             orderCart,
             orderProfile.value,
-            promoProcessor.getValidPromoCodes(validateUsePromoRevampUiModel)
+            promoProcessor.getValidPromoCodes(validateUsePromoRevampUiModel),
+            generatePaymentRequest(orderCost)
         )
     }
 
@@ -1508,7 +1511,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             orderCost.totalPriceWithoutPaymentFees <= payment.walletAmount
         ) {
             val dynamicPaymentFee =
-                paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost)
+                paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost, generatePaymentRequest(orderCost))
             val newOrderPayment = orderPayment.value
             orderPayment.value = newOrderPayment.copy(dynamicPaymentFees = dynamicPaymentFee)
             if (dynamicPaymentFee == null) {
@@ -1562,7 +1565,7 @@ class OrderSummaryPageViewModel @Inject constructor(
             validateUsePromoRevampUiModel,
             orderPayment.value
         )
-        val dynamicPaymentFee = paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost)
+        val dynamicPaymentFee = paymentProcessor.get().getPaymentFee(orderPayment.value, orderCost, generatePaymentRequest(orderCost))
         val newOrderPayment = orderPayment.value
         orderPayment.value = newOrderPayment.copy(dynamicPaymentFees = dynamicPaymentFee)
         calculator.calculateTotal(
@@ -1681,6 +1684,19 @@ class OrderSummaryPageViewModel @Inject constructor(
         orderProducts.value.find { it.productId == productId }?.apply {
             addOnsProductData.data.find { it.id == addOnProductId }?.status = status
         }
+    }
+
+    fun generatePaymentRequest(orderCost: OrderCost): PaymentRequest {
+        return paymentProcessor.get().generatePaymentRequest(
+            orderCart,
+            orderProducts.value,
+            orderShop.value,
+            orderProfile.value,
+            orderShipment.value,
+            orderPayment.value,
+            orderCost,
+            orderPromo.value
+        )
     }
 
     override fun onCleared() {
