@@ -54,7 +54,7 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                 BottomNavUiModel.DiscountedPrice(
                     discountedPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(price = response.data.campaign.discountedPrice, hasSpace = false),
                     ogPriceFmt = response.data.product.priceFmt,
-                    discountPercentage = "${response.data.campaign.discountPercentage.roundToInt()}%",
+                    discountPercentage = "${response.data.campaign.discountPercentage}%",
                 )
             } else BottomNavUiModel.NormalPrice(priceFmt = response.data.product.priceFmt),
             stock = response.data.product.stock,
