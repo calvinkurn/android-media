@@ -17,13 +17,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.product.detail.view.widget.campaign.component.CampaignName
-import com.tokopedia.product.detail.view.widget.campaign.component.CampaignTimer
-import com.tokopedia.product.detail.view.widget.campaign.component.PaymentSpecific
-import com.tokopedia.product.detail.view.widget.campaign.component.RemindMeButton
-import com.tokopedia.product.detail.view.widget.campaign.component.campaignBackgroundColor
-import com.tokopedia.product.detail.view.widget.campaign.timebased.ongoing.UpcomingCampaignUiModel
-import com.tokopedia.product.detail.view.widget.campaign.timebased.ongoing.secondToMs
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.CampaignName
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.CampaignTimer
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.PaymentSpecific
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.RemindMeButton
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.campaignBackgroundColor
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.upcoming.UpcomingCampaignComposeUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.upcoming.secondToMs
 
 /**
  * Created by yovi.putra on 19/12/23"
@@ -32,7 +32,7 @@ import com.tokopedia.product.detail.view.widget.campaign.timebased.ongoing.secon
 
 @Composable
 fun UpcomingCampaign(
-    uiModel: UpcomingCampaignUiModel,
+    uiModel: UpcomingCampaignComposeUiModel,
     onTimerFinish: () -> Unit,
     onClickRemindMe: () -> Unit
 ) {
@@ -52,7 +52,7 @@ fun UpcomingCampaign(
 
 @Composable
 private fun UpcomingContent(
-    uiModel: UpcomingCampaignUiModel,
+    uiModel: UpcomingCampaignComposeUiModel,
     onTimerFinish: () -> Unit,
     onClickRemindMe: () -> Unit
 ) {
@@ -85,7 +85,7 @@ private fun UpcomingContent(
 
 @Composable
 private fun UpcomingCountDown(
-    uiModel: UpcomingCampaignUiModel,
+    uiModel: UpcomingCampaignComposeUiModel,
     onTimerFinish: () -> Unit
 ) {
     Row(
@@ -111,7 +111,7 @@ private fun UpcomingCountDown(
 @Preview
 @Composable
 fun UpcomingCampaignPreview() {
-    val data = UpcomingCampaignUiModel(
+    val data = UpcomingCampaignComposeUiModel(
         logoUrl = "https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_f563497d-22f9-4295-ae71-423a35af5476.jpg",
         title = "Kerja Keras",
         endTimeUnix = 1704187685,
@@ -125,12 +125,12 @@ fun UpcomingCampaignPreview() {
             UpcomingCampaign(data, onTimerFinish = {}, onClickRemindMe = {})
             UpcomingCampaign(data.copy(paymentSpecific = "Khusus pembayaran OVO"), onTimerFinish = {}, onClickRemindMe = {})
             UpcomingCampaign(
-                data.copy(logoUrl = "", showRemainderButton = true),
+                data.copy(logoUrl = "", showRemainderButton = false),
                 onTimerFinish = {},
                 onClickRemindMe = {}
             )
             UpcomingCampaign(
-                data.copy(paymentSpecific = "Khusus pembayaran OVO", showRemainderButton = true),
+                data.copy(paymentSpecific = "Khusus pembayaran OVO", showRemainderButton = false),
                 onTimerFinish = {},
                 onClickRemindMe = {}
             )

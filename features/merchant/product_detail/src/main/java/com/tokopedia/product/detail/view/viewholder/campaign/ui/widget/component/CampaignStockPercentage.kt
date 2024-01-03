@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.widget.campaign.component
+package com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

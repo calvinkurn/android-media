@@ -1,18 +1,19 @@
-package com.tokopedia.product.detail.view.viewholder
+package com.tokopedia.product.detail.view.viewholder.campaign.ui
 
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
-import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
 import com.tokopedia.product.detail.databinding.ItemCampaignBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.OngoingCampaignUiModel
 
 class OngoingCampaignViewHolder(
     view: View,
     private val listener: DynamicProductDetailListener
-) : ProductDetailPageViewHolder<OngoingCampaignDataModel>(view) {
+) : ProductDetailPageViewHolder<OngoingCampaignUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_campaign
@@ -31,22 +32,16 @@ class OngoingCampaignViewHolder(
         )
     }
 
-    override fun bind(element: OngoingCampaignDataModel) = with(campaignRibbon) {
-        val data = element.data ?: return
+    override fun bind(element: OngoingCampaignUiModel) = with(campaignRibbon) {
+        campaignRibbon.setData(onGoingData = element.data, upComingData = element.upcoming)
 
-        if (element.isNpl()) {
-            campaignRibbon.setLayoutHeight(Int.ZERO)
-        } else {
-            campaignRibbon.renderOnGoingCampaign(data)
-
-            itemView.addOnImpressionListener(
-                holder = element.impressHolder,
-                holders = listener.getImpressionHolders(),
-                name = element.data?.hashCode().toString(),
-                useHolders = listener.isRemoteCacheableActive()
-            ) {
-                listener.onImpressComponent(getComponentTrackData(element))
-            }
+        itemView.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = element.data?.hashCode().toString(),
+            useHolders = listener.isRemoteCacheableActive()
+        ) {
+            listener.onImpressComponent(getComponentTrackData(element))
         }
     }
 }

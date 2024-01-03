@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.widget
+package com.tokopedia.product.detail.view.viewholder.campaign.ui.widget
 
 import android.content.Context
 import android.graphics.Color
@@ -24,23 +24,20 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.constant.ProductUpcomingTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 import com.tokopedia.product.detail.common.extensions.getDrawableChecker
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
-import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.databinding.WidgetCampaignRibbonLayoutBinding
 import com.tokopedia.product.detail.databinding.WidgetCampaignRibbonType1LayoutBinding
 import com.tokopedia.product.detail.databinding.WidgetCampaignRibbonType2LayoutBinding
 import com.tokopedia.product.detail.databinding.WidgetCampaignRibbonType3LayoutBinding
 import com.tokopedia.product.detail.view.util.isInflated
 import com.tokopedia.product.detail.view.util.setContentSafety
-import com.tokopedia.product.detail.view.widget.campaign.CampaignRibbonCompose
-import com.tokopedia.product.detail.view.widget.campaign.CampaignType
-import com.tokopedia.product.detail.view.widget.campaign.timebased.ongoing.UpcomingCampaignUiModel
-import com.tokopedia.product.detail.view.widget.campaign.timebased.upcoming.OngoingCampaignUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCampaignUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.upcoming.UpcomingCampaignComposeUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.ongoing.OngoingCampaignComposeUiModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -78,7 +75,7 @@ class CampaignRibbon @JvmOverloads constructor(
      */
     private var onCampaignEnded: (campaign: CampaignModular) -> Unit = {}
     private var onRefreshPage: () -> Unit = {}
-    private var onRemindMeClick: (ProductNotifyMeDataModel, ComponentTrackDataModel) -> Unit =
+    private var onRemindMeClick: (UpcomingCampaignUiModel, ComponentTrackDataModel) -> Unit =
         { _, _ -> }
 
     /**
@@ -133,7 +130,7 @@ class CampaignRibbon @JvmOverloads constructor(
     fun init(
         onCampaignEnded: (campaign: CampaignModular) -> Unit = {},
         onRefreshPage: () -> Unit = {},
-        onRemindMeClick: (ProductNotifyMeDataModel, ComponentTrackDataModel) -> Unit = { _, _ -> }
+        onRemindMeClick: (UpcomingCampaignUiModel, ComponentTrackDataModel) -> Unit = { _, _ -> }
     ) {
         this.onCampaignEnded = onCampaignEnded
         this.onRefreshPage = onRefreshPage
@@ -144,7 +141,15 @@ class CampaignRibbon @JvmOverloads constructor(
         this.trackDataModel = trackDataModel
     }
 
-    fun renderOnGoingCampaign(onGoingData: ProductContentMainData) {
+    fun setData(onGoingData: ProductContentMainData?, upComingData: UpcomingCampaignUiModel?) {
+        if (onGoingData != null) {
+            renderOnGoingCampaign(onGoingData = onGoingData)
+        } else if (upComingData != null) {
+            renderUpComingCampaignRibbon(upComingData)
+        }
+    }
+
+    private fun renderOnGoingCampaign(onGoingData: ProductContentMainData) {
         val identifier = onGoingData.campaign.campaignIdentifier
         if (identifier == NO_CAMPAIGN) {
             hideComponent()
@@ -268,39 +273,29 @@ class CampaignRibbon @JvmOverloads constructor(
         root.campaignRibbonCompose.hide()
     }
 
-    private fun renderTimerUpcoming(upcomingData: ProductNotifyMeDataModel?) {
-        val upComing = upcomingData ?: return
+    private fun renderTimerUpcoming(upcomingData: UpcomingCampaignUiModel) {
         val campaignType1 = campaignType1Binding ?: return
 
         renderUpComingNplCountDownTimer(
-            upComing.startDate,
+            upcomingData.startDate,
             campaignType1.tusTimerViewS1
         )
     }
 
-    private fun renderUpcomingBackground(
-        upcomingData: ProductNotifyMeDataModel?,
-        upcomingIdentifier: String
-    ) {
-        val drawable = getUpcomingBackground(
-            identifier = upcomingIdentifier,
-            color = upcomingData?.bgColorUpcoming
-        )
+    private fun renderUpcomingBackground(upcomingData: UpcomingCampaignUiModel) {
+        val drawable = getUpcomingBackground(upcomingData = upcomingData)
 
         campaignType1Binding?.root?.background = drawable
     }
 
-    private fun getUpcomingBackground(
-        identifier: String,
-        color: String?
-    ) = if (color.isNullOrBlank()) {
-        if (identifier == ProductUpcomingTypeDef.UPCOMING_NPL) {
+    private fun getUpcomingBackground(upcomingData: UpcomingCampaignUiModel) = if (upcomingData.bgColorUpcoming.isNullOrBlank()) {
+        if (upcomingData.isNpl) {
             context.getDrawableChecker(R.drawable.bg_gradient_default_blue)
         } else {
             context.getDrawableChecker(R.drawable.bg_gradient_default_red)
         }
     } else {
-        getGradientDrawableForBackGround(color)
+        getGradientDrawableForBackGround(upcomingData.bgColorUpcoming)
     }
 
     private fun renderUpComingNplCountDownTimer(
@@ -320,36 +315,6 @@ class CampaignRibbon @JvmOverloads constructor(
             timerView?.show()
         } catch (e: Throwable) {
             this.hide()
-        }
-    }
-
-    private fun renderUpComingRemindMeButton(
-        isOwner: Boolean,
-        upComingData: ProductNotifyMeDataModel,
-        remindMeButton: Typography?,
-        upcomingIdentifier: String
-    ) {
-        remindMeButton?.showWithCondition(!isOwner && upcomingIdentifier != ProductUpcomingTypeDef.UPCOMING_NPL)
-        when (upComingData.notifyMe) {
-            true -> {
-                remindMeButton?.text = context.getString(R.string.notify_me_active)
-                remindMeButton?.setTextColor(
-                    ContextCompat.getColor(
-                        context,
-                        unifyprinciplesR.color.Unify_Static_White
-                    )
-                )
-                remindMeButton?.background =
-                    ContextCompat.getDrawable(context, R.drawable.bg_remind_me_btn_active)
-            }
-            false -> {
-                remindMeButton?.text = context.getString(R.string.notify_me_inactive)
-                remindMeButton?.setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White))
-                remindMeButton?.background = ContextCompat.getDrawable(context, R.drawable.bg_remind_me_btn_inactive)
-            }
-        }
-        remindMeButton?.setOnClickListener {
-            onRemindMeClick(upComingData, trackDataModel ?: ComponentTrackDataModel())
         }
     }
 
@@ -510,7 +475,7 @@ class CampaignRibbon @JvmOverloads constructor(
      * Ongoing Campaign Compose
      */
     private fun renderOngoingCampaign(data: CampaignModular, stockWording: String) {
-        val onGoingCampaign = OngoingCampaignUiModel(
+        val onGoingCampaign = OngoingCampaignComposeUiModel(
             logoUrl = data.campaignLogo,
             title = data.campaignTypeName,
             endTimeUnix = data.endDateUnix.toLongOrZero(),
@@ -558,50 +523,37 @@ class CampaignRibbon @JvmOverloads constructor(
     /**
      * Upcoming Campaign Compose
      */
-    // region upcoming campaign
-    fun renderUpComingCampaignRibbon(
-        isOwner: Boolean,
-        upcomingData: ProductNotifyMeDataModel?,
-        upcomingIdentifier: String
-    ) {
+    private fun renderUpComingCampaignRibbon(upComing: UpcomingCampaignUiModel) {
         if (upcomingComposeActive) {
-            val data = upcomingData ?: return
-            renderUpcomingCampaignCompose(data = data, isOwner = isOwner)
+            renderUpcomingCampaignCompose(data = upComing)
         } else {
-            renderUpcomingCampaignView(isOwner, upcomingData, upcomingIdentifier)
+            renderUpcomingCampaignView(upComing)
         }
     }
 
-    private fun renderUpcomingCampaignView(
-        isOwner: Boolean,
-        upcomingData: ProductNotifyMeDataModel?,
-        upcomingIdentifier: String
-    ) {
+    private fun renderUpcomingCampaignView(upcomingData: UpcomingCampaignUiModel) {
         showCampaignRibbonType1()
-        renderUpcomingBackground(upcomingData, upcomingIdentifier)
+        renderUpcomingBackground(upcomingData)
         renderTimerUpcoming(upcomingData)
-        val campaignTypeName = upcomingData?.upcomingNplData?.ribbonCopy ?: ""
-        campaignType1Binding?.tpgCampaignNameS1?.text =
-            campaignTypeName.ifEmpty { context.getString(R.string.notify_me_title) }
-        updateRemindMeButtonView(isOwner, upcomingData, upcomingIdentifier)
+        val campaignTypeName = upcomingData.ribbonCopy
+        campaignType1Binding?.tpgCampaignNameS1?.text = campaignTypeName.ifEmpty { context.getString(R.string.notify_me_title) }
+        updateRemindMeButtonView(upcomingData)
     }
 
-    private fun renderUpcomingCampaignCompose(data: ProductNotifyMeDataModel, isOwner: Boolean) {
-        val showReminderButton = !isOwner &&
-            data.upcomingNplData.upcomingType != ProductUpcomingTypeDef.UPCOMING_NPL
+    private fun renderUpcomingCampaignCompose(data: UpcomingCampaignUiModel) {
         val labelButton = context.getString(if (data.notifyMe) R.string.notify_me_active else R.string.notify_me_inactive)
 
         val type = CampaignType.UpComing(
-            data = UpcomingCampaignUiModel(
+            data = UpcomingCampaignComposeUiModel(
                 logoUrl = data.campaignLogo,
-                title = data.upcomingNplData.ribbonCopy.ifBlank {
+                title = data.ribbonCopy.ifBlank {
                     context.getString(R.string.notify_me_title)
                 },
                 endTimeUnix = data.startDate.toLongOrZero(),
                 timerLabel = context.getString(R.string.notify_me_subtitle_main),
                 labelButton = labelButton,
                 backgroundColorString = data.bgColorUpcoming,
-                showRemainderButton = showReminderButton
+                showRemainderButton = data.showReminderButton
             ),
             onTimerFinish = onRefreshPage,
             onClickRemindMe = {
@@ -614,32 +566,39 @@ class CampaignRibbon @JvmOverloads constructor(
     /**
      * Update Upcoming Campaign Compose
      */
-    fun updateRemindMeButton(
-        isOwner: Boolean,
-        upComingData: ProductNotifyMeDataModel?,
-        upcomingIdentifier: String
-    ) {
+    fun updateRemindMeButton(upComingData: UpcomingCampaignUiModel) {
         if (upcomingComposeActive) {
-            val data = upComingData ?: return
-            renderUpcomingCampaignCompose(data = data, isOwner = isOwner)
+            renderUpcomingCampaignCompose(data = upComingData)
         } else {
-            updateRemindMeButtonView(isOwner, upComingData, upcomingIdentifier)
+            updateRemindMeButtonView(upComingData)
         }
     }
 
-    private fun updateRemindMeButtonView(
-        isOwner: Boolean,
-        upComingData: ProductNotifyMeDataModel?,
-        upcomingIdentifier: String
-    ) {
-        val data = upComingData ?: return
+    private fun updateRemindMeButtonView(upComingData: UpcomingCampaignUiModel) {
+        val remindMeButton = campaignType1Binding?.remindMeButtonS1
+        remindMeButton?.showWithCondition(upComingData.showReminderButton)
 
-        renderUpComingRemindMeButton(
-            isOwner = isOwner,
-            upComingData = data,
-            remindMeButton = campaignType1Binding?.remindMeButtonS1,
-            upcomingIdentifier = upcomingIdentifier
-        )
+        when (upComingData.notifyMe) {
+            true -> {
+                remindMeButton?.text = context.getString(R.string.notify_me_active)
+                remindMeButton?.setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        unifyprinciplesR.color.Unify_Static_White
+                    )
+                )
+                remindMeButton?.background =
+                    ContextCompat.getDrawable(context, R.drawable.bg_remind_me_btn_active)
+            }
+            false -> {
+                remindMeButton?.text = context.getString(R.string.notify_me_inactive)
+                remindMeButton?.setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_Static_White))
+                remindMeButton?.background = ContextCompat.getDrawable(context, R.drawable.bg_remind_me_btn_inactive)
+            }
+        }
+        remindMeButton?.setOnClickListener {
+            onRemindMeClick(upComingData, trackDataModel ?: ComponentTrackDataModel())
+        }
     }
     // endregion upcoming campaign
 

@@ -14,7 +14,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.databinding.ItemProductContentBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.product.detail.view.widget.CampaignRibbon
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.CampaignRibbon
 import com.tokopedia.common_tradein.R as common_tradeinR
 import com.tokopedia.product.detail.common.R as productdetailcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR

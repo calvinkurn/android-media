@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.product.detail.view.widget.CampaignRibbon xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.CampaignRibbon xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/upcoming_campaign_ribbon"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"/>

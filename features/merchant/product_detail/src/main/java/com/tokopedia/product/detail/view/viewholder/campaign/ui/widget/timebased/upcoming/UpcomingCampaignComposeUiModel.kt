@@ -1,9 +1,9 @@
-package com.tokopedia.product.detail.view.widget.campaign.timebased.ongoing
+package com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.upcoming
 
 import androidx.compose.runtime.Immutable
 
 @Immutable
-data class UpcomingCampaignUiModel(
+data class UpcomingCampaignComposeUiModel(
     val logoUrl: String = "",
     val title: String = "",
     val endTimeUnix: Long = 0,
@@ -11,7 +11,8 @@ data class UpcomingCampaignUiModel(
     val labelButton: String = "",
     val paymentSpecific: String = "",
     val backgroundColorString: String = "",
-    val showRemainderButton: Boolean = false
+    val showRemainderButton: Boolean = true,
+    val isOwner: Boolean = false
 )
 
 val Long.secondToMs

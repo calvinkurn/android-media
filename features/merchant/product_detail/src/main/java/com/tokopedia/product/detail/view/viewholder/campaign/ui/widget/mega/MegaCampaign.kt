@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.widget.campaign.mega
+package com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.mega
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,9 +12,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.product.detail.view.widget.campaign.component.CampaignImage
-import com.tokopedia.product.detail.view.widget.campaign.component.CampaignName
-import com.tokopedia.product.detail.view.widget.campaign.component.campaignBackgroundColor
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.CampaignImage
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.CampaignName
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.campaignBackgroundColor
 
 /**
  * Created by yovi.putra on 20/12/23"

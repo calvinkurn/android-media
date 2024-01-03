@@ -18,12 +18,13 @@ import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.product.detail.view.util.asHtmlLink
-import com.tokopedia.product.detail.view.widget.campaign.component.CampaignName
-import com.tokopedia.product.detail.view.widget.campaign.component.CampaignStockPercentage
-import com.tokopedia.product.detail.view.widget.campaign.component.CampaignTimer
-import com.tokopedia.product.detail.view.widget.campaign.component.PaymentSpecific
-import com.tokopedia.product.detail.view.widget.campaign.component.campaignBackgroundColor
-import com.tokopedia.product.detail.view.widget.campaign.timebased.upcoming.OngoingCampaignUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.CampaignName
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.CampaignStockPercentage
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.CampaignTimer
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.PaymentSpecific
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.campaignBackgroundColor
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.upcoming.secondToMs
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.ongoing.OngoingCampaignComposeUiModel
 
 /**
  * Created by yovi.putra on 19/12/23"
@@ -31,7 +32,7 @@ import com.tokopedia.product.detail.view.widget.campaign.timebased.upcoming.Ongo
  **/
 
 @Composable
-fun OngoingCampaign(uiModel: OngoingCampaignUiModel, onTimerFinish: () -> Unit) {
+fun OngoingCampaign(uiModel: OngoingCampaignComposeUiModel, onTimerFinish: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -47,7 +48,7 @@ fun OngoingCampaign(uiModel: OngoingCampaignUiModel, onTimerFinish: () -> Unit) 
 }
 
 @Composable
-private fun OngoingContent(uiModel: OngoingCampaignUiModel, onTimerFinish: () -> Unit) {
+private fun OngoingContent(uiModel: OngoingCampaignComposeUiModel, onTimerFinish: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -70,7 +71,7 @@ private fun OngoingContent(uiModel: OngoingCampaignUiModel, onTimerFinish: () ->
 
 @Composable
 private fun CampaignCountDown(
-    uiModel: OngoingCampaignUiModel,
+    uiModel: OngoingCampaignComposeUiModel,
     onTimerFinish: () -> Unit
 ) {
     Column(
@@ -94,7 +95,7 @@ private fun CampaignCountDown(
 }
 
 @Composable
-private fun CampaignStock(uiModel: OngoingCampaignUiModel) {
+private fun CampaignStock(uiModel: OngoingCampaignComposeUiModel) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -118,7 +119,7 @@ private fun CampaignStock(uiModel: OngoingCampaignUiModel) {
 @Preview
 @Composable
 fun OngoingCampaignPreview() {
-    val data = OngoingCampaignUiModel(
+    val data = OngoingCampaignComposeUiModel(
         logoUrl = "https://ecs7.tokopedia.net/img/banner/2020/2/1/85531617/85531617_f563497d-22f9-4295-ae71-423a35af5476.jpg",
         title = "Kerja Keras",
         endTimeUnix = 1703086697,

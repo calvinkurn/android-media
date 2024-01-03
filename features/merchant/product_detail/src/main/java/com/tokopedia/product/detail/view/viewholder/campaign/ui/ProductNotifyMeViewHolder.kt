@@ -1,22 +1,21 @@
-package com.tokopedia.product.detail.view.viewholder
+package com.tokopedia.product.detail.view.viewholder.campaign.ui
 
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.databinding.PartialProductNotifyMeBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.ProductNotifyMeUiModel
 
 class ProductNotifyMeViewHolder(
     private val view: View,
     private val listener: DynamicProductDetailListener
-) : AbstractViewHolder<ProductNotifyMeDataModel>(view) {
+) : AbstractViewHolder<ProductNotifyMeUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.partial_product_notify_me
@@ -35,13 +34,13 @@ class ProductNotifyMeViewHolder(
         )
     }
 
-    override fun bind(element: ProductNotifyMeDataModel) {
-        if (element.campaignID.isNotEmpty()) {
+    override fun bind(element: ProductNotifyMeUiModel) {
+        if (element.data.campaignID.isNotEmpty()) {
             showContainer()
             // render upcoming campaign ribbon
-            val trackDataModel = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
+            val trackDataModel = ComponentTrackDataModel(element.type, element.name, bindingAdapterPosition.inc())
             campaignRibbon.setComponentTrackDataModel(trackDataModel)
-            campaignRibbon.renderUpComingCampaignRibbon(listener.isOwner().orFalse(), element, element.upcomingNplData.upcomingType)
+            campaignRibbon.setData(upComingData = element.data.copy(isOwner = listener.isOwner()), onGoingData = null)
             view.addOnImpressionListener(
                 holder = element.impressHolder,
                 holders = listener.getImpressionHolders(),
@@ -65,7 +64,7 @@ class ProductNotifyMeViewHolder(
         upcomingCampaignRibbon.requestLayout()
     }
 
-    override fun bind(element: ProductNotifyMeDataModel?, payloads: MutableList<Any>) {
+    override fun bind(element: ProductNotifyMeUiModel?, payloads: MutableList<Any>) {
         super.bind(element, payloads)
         if (element == null || payloads.isEmpty()) {
             return
@@ -73,12 +72,12 @@ class ProductNotifyMeViewHolder(
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_NOTIFY_ME -> {
                 val campaignRibbon = binding.upcomingCampaignRibbon
-                campaignRibbon.updateRemindMeButton(listener.isOwner().orFalse(), element, element.campaignType)
+                campaignRibbon.updateRemindMeButton(element.data.copy(isOwner = listener.isOwner()))
             }
         }
     }
 
     private fun getComponentTrackData(
-        element: ProductNotifyMeDataModel
+        element: ProductNotifyMeUiModel
     ) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
 }

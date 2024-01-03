@@ -18,7 +18,7 @@ import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetV2DataMode
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
-import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.OngoingCampaignUiModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
@@ -35,7 +35,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDa
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewUiModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.ProductNotifyMeUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
@@ -60,7 +60,7 @@ import com.tokopedia.product.detail.view.viewholder.FintechWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.GlobalBundlingViewHolder
 import com.tokopedia.product.detail.view.viewholder.LoadingViewHolder
 import com.tokopedia.product.detail.view.viewholder.OneLinersViewHolder
-import com.tokopedia.product.detail.view.viewholder.OngoingCampaignViewHolder
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.OngoingCampaignViewHolder
 import com.tokopedia.product.detail.view.viewholder.PageErrorViewHolder
 import com.tokopedia.product.detail.view.viewholder.PdpComparisonWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.PdpRecommendationWidgetViewHolder
@@ -75,7 +75,7 @@ import com.tokopedia.product.detail.view.viewholder.ProductMediaViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductMerchantVoucherSummaryViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductMiniShopWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductMiniSocialProofStockViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductNotifyMeViewHolder
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.ProductNotifyMeViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecomWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalPlaceholderViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationVerticalViewHolder
@@ -127,7 +127,7 @@ class DynamicProductDetailAdapterFactoryImpl(
         return PageErrorViewHolder.LAYOUT
     }
 
-    override fun type(data: ProductNotifyMeDataModel): Int {
+    override fun type(data: ProductNotifyMeUiModel): Int {
         return ProductNotifyMeViewHolder.LAYOUT
     }
 
@@ -266,7 +266,7 @@ class DynamicProductDetailAdapterFactoryImpl(
         return PdpRecommendationWidgetViewHolder.LAYOUT
     }
 
-    override fun type(data: OngoingCampaignDataModel): Int {
+    override fun type(data: OngoingCampaignUiModel): Int {
         return OngoingCampaignViewHolder.LAYOUT
     }
 

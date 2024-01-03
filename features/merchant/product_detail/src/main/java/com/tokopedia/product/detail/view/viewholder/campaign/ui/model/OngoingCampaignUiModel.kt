@@ -1,15 +1,18 @@
-package com.tokopedia.product.detail.data.model.datamodel
+package com.tokopedia.product.detail.view.viewholder.campaign.ui.model
 
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.product.detail.common.data.model.constant.ProductUpcomingTypeDef
+import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
-data class OngoingCampaignDataModel(
+data class OngoingCampaignUiModel(
     private val type: String = "",
     private val name: String = "",
     override val impressHolder: ImpressHolder = ImpressHolder(),
     var data: ProductContentMainData? = null,
-    var upcomingNplData: UpcomingNplDataModel = UpcomingNplDataModel()
+    var upcoming: UpcomingCampaignUiModel? = null
 ) : DynamicPdpDataModel {
     override fun type(): String = type
 
@@ -18,9 +21,9 @@ data class OngoingCampaignDataModel(
     override fun name(): String = name
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
-        return newData is OngoingCampaignDataModel &&
+        return newData is OngoingCampaignUiModel &&
             data?.hashCode() == newData.data?.hashCode() &&
-            upcomingNplData.hashCode() == newData.upcomingNplData.hashCode()
+            upcoming.hashCode() == newData.upcoming.hashCode()
     }
 
     override fun newInstance(): DynamicPdpDataModel = this.copy()
@@ -28,6 +31,6 @@ data class OngoingCampaignDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? = null
 
     fun isNpl(): Boolean {
-        return upcomingNplData.upcomingType.isNotEmpty()
+        return upcoming?.upcomingType == ProductUpcomingTypeDef.UPCOMING_NPL
     }
 }

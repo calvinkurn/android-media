@@ -1,9 +1,9 @@
-package com.tokopedia.product.detail.view.widget.campaign
+package com.tokopedia.product.detail.view.viewholder.campaign.ui.widget
 
 import androidx.compose.runtime.Composable
 import com.tokopedia.nest.principles.ui.NestTheme
-import com.tokopedia.product.detail.view.widget.campaign.mega.MegaCampaign
-import com.tokopedia.product.detail.view.widget.campaign.regular.RegularCampaign
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.mega.MegaCampaign
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.regular.RegularCampaign
 import com.tokopedia.product.detail.view.widget.campaign.timebased.ongoing.OngoingCampaign
 import com.tokopedia.product.detail.view.widget.timebased.upcoming.UpcomingCampaign
 

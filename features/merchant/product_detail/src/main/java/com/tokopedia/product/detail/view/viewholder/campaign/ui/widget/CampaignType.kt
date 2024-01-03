@@ -1,7 +1,7 @@
-package com.tokopedia.product.detail.view.widget.campaign
+package com.tokopedia.product.detail.view.viewholder.campaign.ui.widget
 
-import com.tokopedia.product.detail.view.widget.campaign.timebased.ongoing.UpcomingCampaignUiModel
-import com.tokopedia.product.detail.view.widget.campaign.timebased.upcoming.OngoingCampaignUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.upcoming.UpcomingCampaignComposeUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.ongoing.OngoingCampaignComposeUiModel
 
 /**
  * Created by yovi.putra on 21/12/23"
@@ -11,12 +11,12 @@ import com.tokopedia.product.detail.view.widget.campaign.timebased.upcoming.Ongo
 sealed interface CampaignType {
 
     data class OnGoing(
-        val data: OngoingCampaignUiModel,
+        val data: OngoingCampaignComposeUiModel,
         val onTimerFinish: () -> Unit
     ) : CampaignType
 
     data class UpComing(
-        val data: UpcomingCampaignUiModel,
+        val data: UpcomingCampaignComposeUiModel,
         val onTimerFinish: () -> Unit,
         val onClickRemindMe: () -> Unit
     ) : CampaignType

@@ -9,7 +9,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.Price
 import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
-import com.tokopedia.product.detail.view.widget.CampaignRibbon
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.CampaignRibbon
 
 /**
  * Created by Yehezkiel on 06/05/20

@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.util
 
 import android.content.Context
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -35,7 +36,7 @@ import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetV2DataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
-import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.OngoingCampaignUiModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
@@ -48,7 +49,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherS
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewUiModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.ProductNotifyMeUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
@@ -60,7 +61,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDat
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
-import com.tokopedia.product.detail.data.model.datamodel.UpcomingNplDataModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCampaignUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.asMediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
@@ -132,8 +133,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val productSingleVariant: ProductSingleVariantDataModel?
         get() = mapOfData[ProductDetailConstant.MINI_VARIANT_OPTIONS] as? ProductSingleVariantDataModel
 
-    val notifyMeMap: ProductNotifyMeDataModel?
-        get() = mapOfData[ProductDetailConstant.UPCOMING_DEALS] as? ProductNotifyMeDataModel
+    val notifyMeMap: ProductNotifyMeUiModel?
+        get() = mapOfData[ProductDetailConstant.UPCOMING_DEALS] as? ProductNotifyMeUiModel
 
     val mediaMap: ProductMediaDataModel?
         get() = mapOfData[ProductDetailConstant.MEDIA] as? ProductMediaDataModel
@@ -192,8 +193,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val shopReview: ProductShopReviewDataModel?
         get() = mapOfData[ProductDetailConstant.SHOP_REVIEW] as? ProductShopReviewDataModel
 
-    val ongoingCampaignData: OngoingCampaignDataModel?
-        get() = mapOfData[ProductDetailConstant.ONGOING_CAMPAIGN] as? OngoingCampaignDataModel
+    val ongoingCampaignData: OngoingCampaignUiModel?
+        get() = mapOfData[ProductDetailConstant.ONGOING_CAMPAIGN] as? OngoingCampaignUiModel
 
     val bmgmSneakPeak: BMGMUiModel?
         get() = mapOfData[ProductDetailConstant.BMGM_SNEAK_PEEK_NAME] as? BMGMUiModel
@@ -642,7 +643,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     fun updateNotifyMeButton(notifyMe: Boolean) {
         updateData(ProductDetailConstant.UPCOMING_DEALS) {
-            notifyMeMap?.notifyMe = !notifyMe
+            val data = notifyMeMap?.data ?: return@updateData
+            notifyMeMap?.data = data.copy(notifyMe = !notifyMe)
         }
     }
 
@@ -662,41 +664,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
         }
 
-        updateUpcoming(productId, upcomingData)
-
-        updateData(ProductDetailConstant.ONGOING_CAMPAIGN) {
-            ongoingCampaignData?.run {
-                val selectedUpcoming = upcomingData?.get(productId)
-                upcomingNplData = UpcomingNplDataModel(
-                    selectedUpcoming?.upcomingType.orEmpty(),
-                    selectedUpcoming?.campaignTypeName.orEmpty(),
-                    selectedUpcoming?.startDate.orEmpty()
-                )
-            }
-        }
-    }
-
-    private fun updateUpcoming(
-        productId: String,
-        upcomingData: Map<String, ProductUpcomingData>?
-    ) {
-        updateData(ProductDetailConstant.UPCOMING_DEALS) {
-            notifyMeMap?.run {
-                val selectedUpcoming = upcomingData?.get(productId)
-                campaignID = selectedUpcoming?.campaignId ?: ""
-                campaignType = selectedUpcoming?.campaignType ?: ""
-                campaignTypeName = selectedUpcoming?.campaignTypeName ?: ""
-                startDate = selectedUpcoming?.startDate ?: ""
-                notifyMe = selectedUpcoming?.notifyMe ?: false
-                bgColorUpcoming = selectedUpcoming?.bgColorUpcoming ?: ""
-                campaignLogo = selectedUpcoming?.campaignLogo.orEmpty()
-                upcomingNplData = UpcomingNplDataModel(
-                    upcomingType = selectedUpcoming?.upcomingType.orEmpty(),
-                    ribbonCopy = selectedUpcoming?.campaignTypeName.orEmpty(),
-                    startDate = selectedUpcoming?.startDate.orEmpty()
-                )
-            }
-        }
+        updateCampaign(productId = productId, upcomingData = upcomingData)
     }
 
     /**
@@ -715,15 +683,39 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
         }
 
+        updateCampaign(productId = productId, upcomingData = upcomingData)
+    }
+
+    private fun updateCampaign(
+        productId: String,
+        upcomingData: Map<String, ProductUpcomingData>?,
+    ) {
         updateUpcoming(productId, upcomingData)
 
         updateData(ProductDetailConstant.ONGOING_CAMPAIGN) {
             ongoingCampaignData?.run {
+                upcoming = notifyMeMap?.data
+            }
+        }
+    }
+
+    private fun updateUpcoming(
+        productId: String,
+        upcomingData: Map<String, ProductUpcomingData>?
+    ) {
+        updateData(ProductDetailConstant.UPCOMING_DEALS) {
+            notifyMeMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
-                upcomingNplData = UpcomingNplDataModel(
-                    selectedUpcoming?.upcomingType.orEmpty(),
-                    selectedUpcoming?.campaignTypeName.orEmpty(),
-                    selectedUpcoming?.startDate.orEmpty()
+                data = UpcomingCampaignUiModel(
+                    campaignID = selectedUpcoming?.campaignId.orEmpty(),
+                    campaignType = selectedUpcoming?.campaignType.orEmpty(),
+                    campaignTypeName = selectedUpcoming?.campaignTypeName.orEmpty(),
+                    startDate = selectedUpcoming?.startDate.orEmpty(),
+                    notifyMe = selectedUpcoming?.notifyMe.orFalse(),
+                    bgColorUpcoming = selectedUpcoming?.bgColorUpcoming.orEmpty(),
+                    campaignLogo = selectedUpcoming?.campaignLogo.orEmpty(),
+                    upcomingType = selectedUpcoming?.upcomingType.orEmpty(),
+                    ribbonCopy = selectedUpcoming?.campaignTypeName.orEmpty()
                 )
             }
         }

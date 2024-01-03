@@ -173,7 +173,7 @@ import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.ProductNotifyMeUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
@@ -266,6 +266,7 @@ import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCampaignUiModel
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.DynamicProductDetailViewModel
@@ -5423,17 +5424,17 @@ open class DynamicProductDetailFragment :
             ctaText = getString(productdetailcommonR.string.pdp_common_oke)
         )
         if (dataModel != null) {
-            pdpUiUpdater?.updateNotifyMeButton(dataModel.notifyMe)
+            pdpUiUpdater?.updateNotifyMeButton(dataModel.data.notifyMe)
             updateUi()
         }
     }
 
     override fun onNotifyMeClicked(
-        data: ProductNotifyMeDataModel,
+        data: UpcomingCampaignUiModel,
         componentTrackDataModel: ComponentTrackDataModel
     ) {
         doActionOrLogin({
-            pdpUiUpdater?.notifyMeMap?.notifyMe?.let { notifyMe ->
+            pdpUiUpdater?.notifyMeMap?.data?.notifyMe?.let { notifyMe ->
                 trackToggleNotifyMe(componentTrackDataModel, notifyMe)
             }
             pdpUiUpdater?.updateNotifyMeButton(data.notifyMe)
