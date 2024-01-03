@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -46,6 +47,9 @@ class ComparisonViewHolder(
         private const val DEFAULT_CHAR_WIDTH = 15
         private const val DEFAULT_TITLE_CHAR_WIDTH = 20
         private const val TOP_SPEC_MARGIN = 16
+        private const val WIDE_WIDTH_ITEM_COUNT = 2
+        private const val NORMAL_WIDTH_DP_VALUE = 148
+        private const val MAX_PRODUCT_TITLE_LINES = 2
     }
 
     private val binding by viewBinding<WidgetItemComparisonBinding>()
@@ -113,7 +117,7 @@ class ComparisonViewHolder(
         // update list
         comparisonItems.forEach {
             val tempTitleHeight = ceil((it.productTitle.length * DEFAULT_TITLE_CHAR_WIDTH) / textAreaWidth).toInt()
-            if (tempTitleHeight > titleHeight) titleHeight = tempTitleHeight
+            if (tempTitleHeight == MAX_PRODUCT_TITLE_LINES) titleHeight = tempTitleHeight
             if (isDisplayingTopSpec) {
                 it.topComparisonSpecs.updateRowsHeight(rowsHeight, textAreaWidth)
             } else {
@@ -189,12 +193,22 @@ class ComparisonViewHolder(
         }
     }
 
+    private fun WidgetItemComparisonBinding.setupWidth(contentSize: Int) {
+        val screenWidth = if (contentSize <= WIDE_WIDTH_ITEM_COUNT) {
+            getScreenWidth() / WIDE_WIDTH_ITEM_COUNT
+        } else {
+            NORMAL_WIDTH_DP_VALUE.dpToPx(itemView.resources.displayMetrics)
+        }
+        guidelineComparison.setGuidelineBegin(screenWidth)
+    }
+
     override fun bind(element: ComparisonUiModel) {
         comparisonItemListener?.onComparisonImpression(element.content.getOrNull(Int.ONE)?.id.orEmpty())
         if (element.content.isEmpty()) return
         this.comparisonContents = element.content
         val comparisonItems = element.content.subList(Int.ONE, element.content.size)
         val comparedItem = element.content.firstOrNull()
+        binding?.setupWidth(element.content.size)
         binding?.setupLayoutComparison(comparedItem, comparisonItems)
         binding?.setupColors(element)
         binding?.setupTopSpecs(element)
