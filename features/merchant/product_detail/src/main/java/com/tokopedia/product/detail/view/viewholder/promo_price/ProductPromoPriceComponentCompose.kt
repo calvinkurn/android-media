@@ -52,15 +52,10 @@ fun ProductDetailPriceComponent(
     onPromoPriceClicked: () -> Unit = {}
 ) {
     NestTheme {
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            if (priceComponentType == NORMAL_PROMO_UI) {
-                NormalPriceComponent(normalPromoUiModel, normalPriceBoUrl)
-            } else {
-                PromoPriceCard(promoPriceData, onPromoPriceClicked)
-            }
+        if (priceComponentType == NORMAL_PROMO_UI) {
+            NormalPriceComponent(normalPromoUiModel, normalPriceBoUrl)
+        } else {
+            PromoPriceCard(promoPriceData, onPromoPriceClicked)
         }
     }
 }
@@ -127,10 +122,11 @@ fun PromoPriceHeader(
     mainIconUrl: String,
     promoPriceFmt: String,
     promoSubtitle: String,
-    mainTextColor: String
+    mainTextColor: String,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier.padding(8.dp),
+        modifier = modifier.padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         NestImage(
@@ -174,9 +170,10 @@ fun PromoPriceHeader(
 fun PromoPriceFooter(
     priceAdditionalFmt: String,
     slashPriceFmt: String,
-    boLogo: String
+    boLogo: String,
+    modifier: Modifier = Modifier
 ) {
-    ConstraintLayout(modifier = Modifier.padding(8.dp).fillMaxWidth()) {
+    ConstraintLayout(modifier = modifier.padding(8.dp).fillMaxWidth()) {
         val (normalPrice, slashPrice, boImage) = createRefs()
         val context = LocalContext.current
         NestTypography(
@@ -243,7 +240,7 @@ fun PromoPriceCard(
                 onPromoPriceClicked.invoke()
             }
     ) {
-        val (mainContent, superGraphic) = createRefs()
+        val (superGraphic, header, divider, footer) = createRefs()
 
         NestImage(
             source = Remote(source = data.superGraphicIconUrl),
@@ -256,36 +253,49 @@ fun PromoPriceCard(
             contentScale = ContentScale.Fit
         )
 
-        Column(modifier = Modifier.constrainAs(mainContent) {
-            top.linkTo(parent.top)
-            start.linkTo(parent.start)
-            bottom.linkTo(parent.bottom)
-            end.linkTo(parent.end)
-        }) {
-            PromoPriceHeader(
-                mainIconUrl = data.mainIconUrl,
-                promoPriceFmt = data.promoPriceFmt,
-                promoSubtitle = data.promoSubtitle,
-                mainTextColor = data.mainTextColor
-            )
-            DashDivider(
-                separatorColor = data.separatorColor
-            )
-            PromoPriceFooter(
-                priceAdditionalFmt = data.priceAdditionalFmt,
-                slashPriceFmt = data.slashPriceFmt,
-                boLogo = data.boIconUrl
-            )
-        }
+        PromoPriceHeader(
+            mainIconUrl = data.mainIconUrl,
+            promoPriceFmt = data.promoPriceFmt,
+            promoSubtitle = data.promoSubtitle,
+            mainTextColor = data.mainTextColor,
+            modifier = Modifier.constrainAs(header) {
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                width = Dimension.fillToConstraints
+            }
+        )
+
+        DashDivider(
+            separatorColor = data.separatorColor,
+            modifier = Modifier.constrainAs(divider) {
+                top.linkTo(header.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                width = Dimension.fillToConstraints
+            }
+        )
+
+        PromoPriceFooter(
+            priceAdditionalFmt = data.priceAdditionalFmt,
+            slashPriceFmt = data.slashPriceFmt,
+            boLogo = data.boIconUrl,
+            modifier = Modifier.constrainAs(footer) {
+                top.linkTo(divider.bottom)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                bottom.linkTo(parent.bottom)
+            }
+        )
     }
 }
 
 @Composable
-fun DashDivider(separatorColor: String) {
+fun DashDivider(separatorColor: String, modifier: Modifier = Modifier) {
     val pathEffect = PathEffect.dashPathEffect(floatArrayOf(10F, 10F), 0f)
     val separatorColorCompose = separatorColor.color
 
-    Canvas(Modifier.fillMaxWidth()) {
+    Canvas(modifier.fillMaxWidth()) {
         drawLine(
             color = separatorColorCompose,
             start = Offset(0f, 0f),
