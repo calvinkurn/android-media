@@ -7,12 +7,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.SharedPreferencesEditorUiModel
 import com.tokopedia.developer_options.sharedpref.SharedPrefActivity
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.unifycomponents.UnifyButton
 
 class SharedPreferencesEditorViewHolder(
     itemView: View
-): AbstractViewHolder<SharedPreferencesEditorUiModel>(itemView)
-{
+) : AbstractViewHolder<SharedPreferencesEditorUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shared_preferences_editor
@@ -22,6 +23,7 @@ class SharedPreferencesEditorViewHolder(
         val btn = itemView.findViewById<UnifyButton>(R.id.shared_preferences_editor_btn)
         btn.setOnClickListener {
             itemView.context.apply {
+                DevOpsTracker.trackEntryEvent(DevopsFeature.SHARED_PREF_EDITOR)
                 startActivity(Intent(this, SharedPrefActivity::class.java))
             }
         }

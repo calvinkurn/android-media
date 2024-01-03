@@ -6,12 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity
 import com.tokopedia.developer_options.presentation.model.ForceCrashUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.unifycomponents.UnifyButton
 
 class ForceCrashViewHolder(
     itemView: View
-): AbstractViewHolder<ForceCrashUiModel>(itemView)
-{
+) : AbstractViewHolder<ForceCrashUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_force_crash
@@ -20,6 +21,7 @@ class ForceCrashViewHolder(
     override fun bind(element: ForceCrashUiModel) {
         val btn = itemView.findViewById<UnifyButton>(R.id.force_crash_btn)
         btn.setOnClickListener {
+            DevOpsTracker.trackEntryEvent(DevopsFeature.FORCE_CRASH)
             throw DeveloperOptionActivity.DeveloperOptionException("Throw Runtime Exception")
         }
     }
