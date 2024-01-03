@@ -10,7 +10,9 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 import com.tokopedia.play.broadcaster.shorts.view.compose.VideoPreviewLayout
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
@@ -21,6 +23,8 @@ import javax.inject.Inject
  */
 class PlayShortsVideoPreviewFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
+    private val exoPlayer: ExoPlayer,
+    private val mediaSourceFactory: PlayShortsMediaSourceFactory,
 ) : PlayShortsBaseFragment() {
 
     private val viewModel by activityViewModels<PlayShortsViewModel> { viewModelFactory }
@@ -42,6 +46,8 @@ class PlayShortsVideoPreviewFragment @Inject constructor(
                     Surface {
                         VideoPreviewLayout(
                             videoUri = viewModel.productVideo.videoUrl,
+                            exoPlayer = exoPlayer,
+                            mediaSourceFactory = mediaSourceFactory,
                             onClose = {
                                 activity?.onBackPressed()
                             }

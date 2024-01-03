@@ -78,7 +78,6 @@ class PlayShortsModule(
     }
 
     @Provides
-    @PlayShortsScope
     fun provideExoPlayer(remoteConfig: RemoteConfig): ExoPlayer {
         return SimpleExoPlayer.Builder(activityContext)
             .setLoadControl(
