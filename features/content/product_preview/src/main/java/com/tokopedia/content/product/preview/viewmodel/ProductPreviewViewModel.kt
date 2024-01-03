@@ -61,12 +61,11 @@ class ProductPreviewViewModel @AssistedInject constructor(
     val miniInfo: Flow<BottomNavUiModel>
         get() = _miniInfo
 
-    private val _reviewIndex = MutableStateFlow(0)
-    //TODO: temp
+    private val _reviewPosition = MutableStateFlow(0)
     private val currentReview : ReviewUiModel
         get() {
-            return if (_review.value.isEmpty() || _reviewIndex.value < 0) ReviewUiModel.Empty
-            else _review.value[_reviewIndex.value]
+            return if (_review.value.isEmpty() || _reviewPosition.value < 0) ReviewUiModel.Empty
+            else _review.value[_reviewPosition.value]
         }
 
     fun onAction(action: ProductPreviewAction) {
@@ -192,7 +191,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
     }
 
     private fun updateReviewIndex(position: Int) {
-        _reviewIndex.value = position
+        _reviewPosition.value = position
     }
 
     private fun like(state: LikeUiState) {
