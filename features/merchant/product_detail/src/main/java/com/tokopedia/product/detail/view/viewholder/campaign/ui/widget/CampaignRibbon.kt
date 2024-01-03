@@ -36,8 +36,8 @@ import com.tokopedia.product.detail.databinding.WidgetCampaignRibbonType3LayoutB
 import com.tokopedia.product.detail.view.util.isInflated
 import com.tokopedia.product.detail.view.util.setContentSafety
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCampaignUiModel
-import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.upcoming.UpcomingCampaignComposeUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.ongoing.OngoingCampaignComposeUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.upcoming.UpcomingCampaignComposeUiModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -286,7 +286,7 @@ class CampaignRibbon @JvmOverloads constructor(
         campaignType1Binding?.root?.background = drawable
     }
 
-    private fun getUpcomingBackground(upcomingData: UpcomingCampaignUiModel) = if (upcomingData.bgColorUpcoming.isNullOrBlank()) {
+    private fun getUpcomingBackground(upcomingData: UpcomingCampaignUiModel) = if (upcomingData.bgColorUpcoming.isBlank()) {
         if (upcomingData.isNpl) {
             context.getDrawableChecker(R.drawable.bg_gradient_default_blue)
         } else {
