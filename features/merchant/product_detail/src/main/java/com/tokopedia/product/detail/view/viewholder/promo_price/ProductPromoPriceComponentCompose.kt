@@ -42,7 +42,7 @@ import com.tokopedia.product.detail.common.data.model.promoprice.PromoPriceUiMod
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 private const val NORMAL_PROMO_UI = 1
-
+private val Static_950: Color = Color(0xFF212121)
 @Composable
 fun ProductDetailPriceComponent(
     promoPriceData: PromoPriceUiModel?,
@@ -184,7 +184,7 @@ fun PromoPriceFooter(
                 bottom.linkTo(parent.bottom)
             },
             textStyle = NestTheme.typography.small.copy(
-                color = NestTheme.colors.NN._950
+                color = Static_950
             )
         )
 
@@ -301,7 +301,7 @@ fun DashDivider(separatorColor: String, modifier: Modifier = Modifier) {
             start = Offset(0f, 0f),
             end = Offset(size.width, 0f),
             pathEffect = pathEffect,
-            strokeWidth = 5f
+            strokeWidth = 1f
         )
     }
 }

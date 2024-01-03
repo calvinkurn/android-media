@@ -1,7 +1,6 @@
 package com.tkpd.atcvariant.view.widget
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -46,8 +45,8 @@ class AtcVariantPromoPriceWidget : ConstraintLayout {
             _binding?.atcVariantPromoContainerTextIcon?.setBorderWithColor(
                 borderWidth = 2,
                 borderRadius = 8,
-                borderColor = promoPriceData.separatorColor,
-                backgroundColor = promoPriceData.cardBackgroundColor
+                borderColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_RN100),
+                backgroundColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_RN50)
             )
 
             _binding?.atcVariantPromoIconLeft?.loadImage(promoPriceData.mainIconUrl)
@@ -55,21 +54,13 @@ class AtcVariantPromoPriceWidget : ConstraintLayout {
 
         _binding?.atcVariantPromoTxtRight?.run {
             text = promoPriceData.promoPriceFmt
-            setTextColor(promoPriceData.mainTextColor.safelyGetColor(context))
+            setTextColor(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_RN500))
         }
 
         _binding?.atcVariantPromoPriceOriginalPrice?.text = originalPriceFmt
         _binding?.atcVariantPromoPriceSlashPrice?.run {
             text = promoPriceData.slashPriceFmt
             paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-        }
-    }
-
-    private fun String.safelyGetColor(context: Context): Int {
-        return if (this.isEmpty()) {
-            Color.parseColor(this)
-        } else {
-            MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Static_Black)
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.tkpd.atcvariant.util
 
-import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.view.View
 import com.tokopedia.unifycomponents.toPx
@@ -8,15 +7,15 @@ import com.tokopedia.unifycomponents.toPx
 fun View.setBorderWithColor(
     borderWidth: Int,
     borderRadius: Int,
-    borderColor: String,
-    backgroundColor: String
+    borderColor: Int,
+    backgroundColor: Int
 ) {
     val gradientDrawableDefault = GradientDrawable()
     gradientDrawableDefault.setStroke(
         borderWidth.toPx(),
-        Color.parseColor(borderColor)
+        borderColor
     )
     gradientDrawableDefault.cornerRadius = borderRadius.toPx().toFloat()
-    gradientDrawableDefault.setColor(Color.parseColor(backgroundColor))
+    gradientDrawableDefault.setColor(backgroundColor)
     background = gradientDrawableDefault
 }
