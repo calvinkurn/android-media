@@ -15,8 +15,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
@@ -38,12 +40,12 @@ fun ReportScreen(reports: List<ReportUiModel>, onSubmit: (ReportUiModel) -> Unit
             .padding(16.dp)
     ) {
         NestTypography(
-            text = "Bantu kami memahami apa yang terjadi. Mengapa Anda melaporkan ulasan ini?",
+            text = stringResource(R.string.review_report_header),
             textStyle = NestTheme.typography.paragraph2.copy(
                 color = colorResource(id = unifyprinciplesR.color.Unify_NN950),
             )
         )
-        LazyColumn(modifier = Modifier.padding(top = 12.dp, bottom = 12.dp)) {
+        LazyColumn(modifier = Modifier.padding(vertical = 12.dp)) {
             items(reports) { item ->
                 NestRadioButton(
                     text = item.text,
@@ -60,7 +62,7 @@ fun ReportScreen(reports: List<ReportUiModel>, onSubmit: (ReportUiModel) -> Unit
         TextField(
             value = text,
             onValueChange = { text = it },
-            label = { Text(text = "Alasan") },
+            label = { Text(text = stringResource(R.string.review_report_reason)) },
             enabled = isLastSelected,
             modifier = Modifier
                 .fillMaxWidth()
@@ -68,7 +70,8 @@ fun ReportScreen(reports: List<ReportUiModel>, onSubmit: (ReportUiModel) -> Unit
         )
         // enable when report is not empty
         NestButton(
-            text = "Kirim", onClick = { onSubmit(selectedOption) },
+            text = stringResource(R.string.review_report_send),
+            onClick = { onSubmit(selectedOption) },
             isEnabled = selectedOption != ReportUiModel.Empty,
             modifier = Modifier.fillMaxWidth()
         )
@@ -79,18 +82,7 @@ fun ReportScreen(reports: List<ReportUiModel>, onSubmit: (ReportUiModel) -> Unit
 @Composable
 fun MyApp() {
     ReportScreen(
-        reports = listOfReport
+        reports = emptyList(),
     )
 }
 
-internal val listOfReport: List<ReportUiModel>
-    get() = buildList {
-        add(ReportUiModel(text = "Ini adalah konten spam", reasonCode = 1))
-        add(
-            ReportUiModel(
-                text = "Konten mengandung SARA, diskriminasi, vulgar, ancaman, dan pelanggaran nilai/norma sosial",
-                reasonCode = 2,
-            )
-        )
-        add(ReportUiModel(text = "Lainnya", reasonCode = 3))
-    }

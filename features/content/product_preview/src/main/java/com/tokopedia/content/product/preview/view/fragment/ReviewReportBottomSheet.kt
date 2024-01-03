@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.view.components.ReportScreen
-import com.tokopedia.content.product.preview.view.components.listOfReport
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
@@ -59,6 +59,18 @@ class ReviewReportBottomSheet : BottomSheetUnify() {
     interface Listener {
         fun onReasonClicked(report: ReportUiModel)
     }
+
+    private val listOfReport: List<ReportUiModel>
+        get() = buildList {
+            add(ReportUiModel(text = getString(R.string.review_report_spam), reasonCode = 1))
+            add(
+                ReportUiModel(
+                    text = getString(R.string.review_report_social),
+                    reasonCode = 2,
+                )
+            )
+            add(ReportUiModel(text = getString(R.string.review_report_other), reasonCode = 3))
+        }
 
     companion object {
         const val TAG = "ReviewReportBottomSheet"
