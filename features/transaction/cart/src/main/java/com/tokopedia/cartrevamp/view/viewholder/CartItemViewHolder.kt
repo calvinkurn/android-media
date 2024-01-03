@@ -3,10 +3,14 @@ package com.tokopedia.cartrevamp.view.viewholder
 import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.graphics.drawable.GradientDrawable
+import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
+import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.ImeAction
@@ -15,7 +19,9 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
+import com.tokopedia.unifyprinciples.Typography
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.R
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
@@ -41,6 +47,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
@@ -51,12 +58,15 @@ import com.tokopedia.nest.components.quantityeditor.QtyState
 import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.util.*
 import com.tokopedia.nest.components.R as nestcomponentsR
@@ -70,6 +80,8 @@ class CartItemViewHolder(
     private var mainCoachMark: CartMainCoachMarkUiModel,
     private val binderHelper: CartViewBinderHelper
 ) : RecyclerView.ViewHolder(binding.root) {
+
+    private val remoteConfig by lazy { FirebaseRemoteConfigImpl(itemView.context) }
 
     private var viewHolderListener: ViewHolderListener? = null
 
@@ -127,7 +139,7 @@ class CartItemViewHolder(
         renderShopInfo(data)
         renderLeftAnchor(data)
         renderProductInfo(data)
-        renderQuantity(data, viewHolderListener)
+        renderQuantityWidget(data)
         renderProductAction(data)
         renderBmGmOfferTicker(data)
         renderProductTagInfo(data)
@@ -1219,6 +1231,152 @@ class CartItemViewHolder(
             binding.root.context.getString(R.string.cart_button_notes_filled_content_desc)
     }
 
+    private fun renderOldQuantity(data: CartItemHolderData, viewHolderListener: ViewHolderListener?) {
+        val qtyEditorProduct = binding.oldQtyEditorProduct
+        if (data.isError) {
+            qtyEditorProduct.gone()
+            return
+        }
+        qtyEditorProduct.autoHideKeyboard = true
+        qtyEditorProduct.errorMessage.textAlignment = View.TEXT_ALIGNMENT_TEXT_END
+        qtyEditorProduct.errorMessage.setType(Typography.DISPLAY_3)
+
+        if (data.isAlreadyShowMinimumQuantityPurchasedError) {
+            binding.labelQuantityError.text = String.format(
+                itemView.context.getString(R.string.cart_min_quantity_error),
+                data.minOrder
+            )
+            binding.labelQuantityError.visible()
+        }
+
+        if (data.isAlreadyShowMaximumQuantityPurchasedError) {
+            binding.labelQuantityError.text = String.format(
+                itemView.context.getString(R.string.cart_max_quantity_error),
+                data.maxOrder
+            )
+            binding.labelQuantityError.visible()
+        }
+
+        if (!data.isAlreadyShowMinimumQuantityPurchasedError && !data.isAlreadyShowMaximumQuantityPurchasedError) {
+            binding.labelQuantityError.gone()
+        }
+
+        if (qtyTextWatcher != null) {
+            // reset listener
+            qtyEditorProduct.editText.removeTextChangedListener(qtyTextWatcher)
+        }
+        qtyEditorProduct.minValue = 0
+        qtyEditorProduct.maxValue = data.maxOrder
+        if (data.isBundlingItem) {
+            qtyEditorProduct.setValue(data.bundleQuantity)
+        } else {
+            qtyEditorProduct.setValue(data.quantity)
+        }
+        qtyTextWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                delayChangeQty?.cancel()
+                delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
+                    val newValue = s.toString().replace(".", "").toIntOrZero()
+                    lastQty = newValue
+                    val minOrder = data.minOrder
+                    if (newValue >= minOrder) {
+                        delay(DEBOUNCE_TIME)
+                    } else {
+                        // Use longer delay for reset qty, to support automation
+                        delay(RESET_QTY_DEBOUNCE_TIME)
+                    }
+                    val previousQuantity =
+                        if (data.isBundlingItem) data.bundleQuantity else data.quantity
+                    if (isActive && previousQuantity != newValue) {
+                        if (!qtyEditorProduct.editText.isFocused) {
+                            if (isDeleteFromDoneImeButton) {
+                                isDeleteFromDoneImeButton = false
+                            } else {
+                                validateOldQty(newValue, data)
+                            }
+                            if (isActive && newValue != 0) {
+                                actionListener?.onCartItemQuantityChanged(data, newValue)
+                                handleRefreshType(data, viewHolderListener)
+                            }
+                        }
+                    }
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+        }
+        qtyEditorProduct.editText.addTextChangedListener(qtyTextWatcher)
+        qtyEditorProduct.setSubstractListener {
+            if (!data.isError && bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                val currentQuantity =
+                    if (data.isBundlingItem) data.bundleQuantity else data.quantity
+                if ((currentQuantity == 1 && data.minOrder == 1) || (currentQuantity == data.minOrder && data.isAlreadyShowMinimumQuantityPurchasedError)) {
+                    delayChangeQty?.cancel()
+                    actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.TrashBin)
+                    actionListener?.sendRemoveCartFromSubtractButtonAnalytic(data)
+                }
+                actionListener?.onCartItemQuantityMinusButtonClicked()
+            }
+        }
+        qtyEditorProduct.setAddClickListener {
+            if (!data.isError && bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                actionListener?.onCartItemQuantityPlusButtonClicked()
+            }
+        }
+        qtyEditorProduct.editText.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                val qtyStr = (v as? AppCompatEditText)?.text?.toString() ?: ""
+                actionListener?.onCartItemQuantityInputFormClicked(
+                    if (!TextUtils.isEmpty(qtyStr)) qtyStr else ""
+                )
+            }
+        }
+        qtyEditorProduct.editText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                KeyboardHandler.DropKeyboard(qtyEditorProduct.editText.context, itemView)
+                val isDeletion = qtyEditorProduct.editText.text.toString() == "0"
+                isDeleteFromDoneImeButton = isDeletion
+                if (isDeletion) {
+                    delayChangeQty?.cancel()
+                    actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.QuantityEditorImeAction)
+                }
+                if (lastQty > data.maxOrder) {
+                    binding.labelQuantityError.text = String.format(
+                        itemView.context.getString(R.string.cart_max_quantity_error),
+                        data.maxOrder
+                    )
+                    data.isAlreadyShowMaximumQuantityPurchasedError = true
+                    binding.labelQuantityError.show()
+                } else if (lastQty > data.minOrder && lastQty < data.maxOrder) {
+                    data.isAlreadyShowMaximumQuantityPurchasedError = false
+                    binding.labelQuantityError.gone()
+                }
+                true
+            } else {
+                false
+            }
+        }
+        qtyEditorProduct.editText.imeOptions = EditorInfo.IME_ACTION_DONE
+        qtyEditorProduct.editText.isEnabled = data.isError == false
+    }
+
+    private fun renderQuantityWidget(data: CartItemHolderData) {
+        if (isUsingNewQuantityEditor()) {
+            binding.qtyEditorProduct.visibility = View.VISIBLE
+            binding.oldQtyEditorProduct.visibility = View.GONE
+            renderQuantity(data, viewHolderListener)
+        }
+        else {
+            binding.qtyEditorProduct.visibility = View.INVISIBLE
+            binding.oldQtyEditorProduct.visibility = View.VISIBLE
+            renderOldQuantity(data, viewHolderListener)
+        }
+    }
+
     private fun renderQuantity(data: CartItemHolderData, viewHolderListener: ViewHolderListener?) {
         val qtyEditorProduct = binding.qtyEditorProduct
         if (data.isError) {
@@ -1324,6 +1482,36 @@ class CartItemViewHolder(
         } else {
             QtyButton.defaultMinButton
         }
+    }
+
+    private fun validateOldQty(newValue: Int, element: CartItemHolderData) {
+        val qtyEditorCart = binding.oldQtyEditorProduct
+        if (newValue > element.minOrder) {
+            element.isAlreadyShowMinimumQuantityPurchasedError = false
+        }
+        if (newValue < element.maxOrder) {
+            element.isAlreadyShowMaximumQuantityPurchasedError = false
+        }
+        if (newValue < element.minOrder) {
+            if (element.minOrder <= 1) {
+                actionListener?.onCartItemDeleteButtonClicked(element, CartDeleteButtonSource.TrashBin)
+                return
+            }
+            binding.labelQuantityError.show()
+            binding.labelQuantityError.text = String.format(
+                itemView.context.getString(R.string.cart_min_quantity_error),
+                element.minOrder
+            )
+            if (!element.isAlreadyShowMinimumQuantityPurchasedError) {
+                qtyEditorCart.setValue(element.minOrder)
+                element.isAlreadyShowMinimumQuantityPurchasedError = true
+            } else {
+                element.isAlreadyShowMinimumQuantityPurchasedError = false
+                actionListener?.onCartItemDeleteButtonClicked(element, CartDeleteButtonSource.TrashBin)
+            }
+        }
+        qtyEditorCart.addButton.isEnabled = true
+        qtyEditorCart.subtractButton.isEnabled = true
     }
 
     private fun validateQty(newQty: Int, data: CartItemHolderData) {
@@ -1725,5 +1913,9 @@ class CartItemViewHolder(
         private const val BOTTOM_DIVIDER_BMGM_MARGIN_START = 52
 
         private const val CART_MAIN_COACH_MARK = "cart_main_coach_mark"
+    }
+
+    private fun isUsingNewQuantityEditor(): Boolean {
+        return remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_NEW_CART_QUANTITY_EDITOR, false)
     }
 }
