@@ -62,11 +62,8 @@ internal class FeedBrowseViewModel @Inject constructor(
     fun onIntent(action: FeedBrowseIntent) {
         when (action) {
             FeedBrowseIntent.LoadInitialPage -> handleInitialPage()
-            is FeedBrowseIntent.FetchCards -> {
-                handleFetchWidget(action.extraParam, action.widgetId)
-            }
             is FeedBrowseIntent.FetchCardsWidget -> {
-                handleFetchWidget(WidgetRequestModel.Empty, action.slotId)
+                handleFetchWidget(action.slotId)
             }
             is FeedBrowseIntent.SelectChipWidget -> {
                 handleSelectChip(action.model, action.slotId)
@@ -102,7 +99,7 @@ internal class FeedBrowseViewModel @Inject constructor(
         }
     }
 
-    private fun handleFetchWidget(extraParam: WidgetRequestModel, slotId: String) {
+    private fun handleFetchWidget(slotId: String) {
         viewModelScope.launch {
             val widgets = _widgets.value
             val widget = widgets[slotId]?.model ?: return@launch

@@ -1,7 +1,6 @@
 package com.tokopedia.feedplus.browse.presentation.model
 
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
-import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 
 /**
  * Created by meyta.taliti on 11/08/23.
@@ -12,16 +11,11 @@ internal sealed interface FeedBrowseIntent {
 
     data class SelectChipWidget(
         val slotId: String,
-        val model: WidgetMenuModel,
-    ) : FeedBrowseIntent
-
-    data class FetchCards(
-        val extraParam: WidgetRequestModel,
-        val widgetId: String
+        val model: WidgetMenuModel
     ) : FeedBrowseIntent
 
     data class FetchCardsWidget(
         val slotId: String,
-        val model: WidgetMenuModel,
+        val model: WidgetMenuModel
     ) : FeedBrowseIntent
 }
