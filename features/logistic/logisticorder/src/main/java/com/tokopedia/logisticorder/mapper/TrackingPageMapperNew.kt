@@ -43,7 +43,7 @@ class TrackingPageMapperNew @Inject constructor() {
         userId: String,
         deviceId: String,
         orderId: String?,
-        trackingUrlFromOrder: String
+        trackingUrlFromOrder: String?
     ): TrackingDataModel {
         val data = response.response.data
         return TrackingDataModel().apply {

@@ -4,13 +4,17 @@ import com.tokopedia.logisticorder.usecase.entity.RetryAvailabilityResponse
 import com.tokopedia.logisticorder.usecase.entity.RetryBookingResponse
 
 sealed interface TrackingPageEvent {
-    data class LoadTrackingData(val orderId: String, val orderTxId: String?, val groupType: Int?, val userId: String, val deviceId: String, val trackingUrl: String) : TrackingPageEvent
-    data class FindNewDriver(val orderId: String) : TrackingPageEvent
-    data class CheckAvailabilityToFindNewDriver(val orderId: String) : TrackingPageEvent
-}
+    data class LoadTrackingData(
+        val orderId: String,
+        val orderTxId: String?,
+        val groupType: Int?,
+        val userId: String,
+        val deviceId: String,
+        val trackingUrl: String
+    ) : TrackingPageEvent
 
-enum class ErrorTrackingPage {
-    TRACKING_DATA, RETRY_BOOKING, RETRY_AVAILABILITY, DEFAULT
+    object FindNewDriver : TrackingPageEvent
+    data class CheckAvailabilityToFindNewDriver(val orderId: String) : TrackingPageEvent
 }
 
 data class TrackingPageState(

@@ -215,7 +215,11 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         mOrderId?.let { orderId ->
             viewModel.getTrackingData(orderId, mOrderTxId, mGroupType)
 
-            if ((!mTrackingUrl.isNullOrEmpty()) && mCaller != null && mCaller.equals("seller", ignoreCase = true)) {
+            if ((!mTrackingUrl.isNullOrEmpty()) && mCaller != null && mCaller.equals(
+                    "seller",
+                    ignoreCase = true
+                )
+            ) {
                 viewModel.retryAvailability(orderId)
             }
         }

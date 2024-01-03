@@ -42,7 +42,7 @@ class TrackingPageComposeViewModel @Inject constructor(
             }
 
             is TrackingPageEvent.FindNewDriver -> {
-                retryBooking(event.orderId)
+                retryBooking(orderId)
             }
 
             is TrackingPageEvent.LoadTrackingData -> {
