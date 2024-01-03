@@ -2,12 +2,12 @@ package com.tokopedia.play.broadcaster.shorts.view.compose
 
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -16,6 +16,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
+import com.tokopedia.nest.principles.utils.noRippleClickable
 import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 
 /**
@@ -31,21 +32,18 @@ fun VideoPreviewLayout(
     ConstraintLayout {
         val (
             icClose,
-            videoPreview
+            videoPreview,
+            icPlay
         ) = createRefs()
 
         LaunchedEffect(Unit) {
             val mediaSource = mediaSourceFactory.create(videoUri)
             exoPlayer.prepare(mediaSource)
-            exoPlayer.playWhenReady = true
+            exoPlayer.seekTo(1)
         }
 
         DisposableEffect(
             AndroidView(
-                modifier = Modifier.constrainAs(videoPreview) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                },
                 factory = {
                     PlayerView(it).apply {
                         player = exoPlayer
@@ -55,6 +53,10 @@ fun VideoPreviewLayout(
                         )
                         useController = false
                     }
+                },
+                modifier = Modifier.constrainAs(videoPreview) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
                 }
             )
         ) {
@@ -63,6 +65,30 @@ fun VideoPreviewLayout(
                 exoPlayer.release()
             }
         }
+
+        NestIcon(
+            iconId = IconUnify.PLAY,
+            colorLightEnable = Color.White,
+            colorLightDisable = Color.White,
+            colorNightEnable = Color.White,
+            colorNightDisable = Color.White,
+            modifier = Modifier
+                .constrainAs(icPlay) {
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                }
+                .drawBehind {
+                    drawCircle(
+                        color = Color(0f, 0f, 0f, 0.4f),
+                        radius = size.maxDimension
+                    )
+                }
+                .noRippleClickable {
+                    exoPlayer.playWhenReady = !exoPlayer.playWhenReady
+                }
+        )
 
         NestIcon(
             iconId = IconUnify.CLOSE,
@@ -76,7 +102,7 @@ fun VideoPreviewLayout(
                     top.linkTo(parent.top, 16.dp)
                     start.linkTo(parent.start, 16.dp)
                 }
-                .clickable { onClose() }
+                .noRippleClickable { onClose() }
         )
     }
 }
