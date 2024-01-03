@@ -74,6 +74,8 @@ class CatalogSwitchingComparisonFragment :
 
     private var initialDataFromSearch = false
 
+    private var totalUnselect = 0
+
     companion object {
 
         const val CATALOG_CHANGE_COMPARISON_TAG = "CATALOG_CHANGE_COMPARISON_TAG"
@@ -271,12 +273,16 @@ class CatalogSwitchingComparisonFragment :
     ) {
         val listCatalogId = compareCatalogId.toMutableList()
         if (!isChecked) {
+            totalUnselect += 1
             listCatalogId.remove(item.id)
             catalogSelectionAdapter?.itemList = catalogSelectionAdapter?.itemList?.filter {
                 it.id != item.id.orEmpty()
             }.orEmpty().toMutableList()
             showMessageUnselectCatalog()
         } else {
+            if (totalUnselect > 0) {
+                totalUnselect -= 1
+            }
             if (listCatalogId.size < (LIMIT_SELECT_PRODUCT)) {
                 listCatalogId.add(item.id.orEmpty())
                 catalogSelectionAdapter?.itemList?.add(item)
@@ -295,6 +301,7 @@ class CatalogSwitchingComparisonFragment :
     override fun onActionListener(id: String) {
         val listCatalogId = compareCatalogId.toMutableList()
         listCatalogId.remove(id)
+        totalUnselect += 1
         adapter?.currentCatalogSelection = listCatalogId
         compareCatalogId = listCatalogId
         catalogSelectionAdapter?.itemList = catalogSelectionAdapter?.itemList?.filter {
@@ -467,7 +474,6 @@ class CatalogSwitchingComparisonFragment :
     }
 
     private fun showMessageUnselectCatalog() {
-        val totalUnselect = (LIMIT_SELECT_PRODUCT) - compareCatalogId.size
         val errorMessage =
             getString(catalogR.string.catalog_message_unselect, totalUnselect.toString())
 
