@@ -1,11 +1,14 @@
 package com.tokopedia.creation.common.upload.domain.repository
 
 import com.tokopedia.creation.common.upload.model.CreationUploadData
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Created By : Jonathan Darwin on September 15, 2023
  */
 interface CreationUploadQueueRepository {
+
+    fun observeTopQueue(): Flow<CreationUploadData>
 
     suspend fun insert(data: CreationUploadData)
 

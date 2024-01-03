@@ -57,6 +57,10 @@ class FlashSaleTokoTabViewHolder(
         trackTabClick(position)
     }
 
+    override fun onShopTabImpressed(element: ShopTabDataModel) {
+
+    }
+
     private fun updateCurrentTabPosition(element: ShopTabDataModel): Int {
         val position = viewModel?.getTabLiveData()?.value
             ?.indexOfFirst { it.data?.first()?.filterValue == element.id } ?: -1

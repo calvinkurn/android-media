@@ -48,4 +48,5 @@
     <color name="dms_label_assigned_value_gradient_end">#7ADBA5</color>
 
     <color name="dms_product_card_reimagine_image_overlay">#08000000</color>
+    <color name="dms_product_card_reimagine_safe_product_image">#C7C6C6</color>
 </resources>

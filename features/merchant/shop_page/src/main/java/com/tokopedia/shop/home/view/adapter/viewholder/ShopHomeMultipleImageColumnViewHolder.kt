@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.WidgetShopHomeMultipleImageColumnBinding
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeMultipleImageColumnAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
@@ -29,7 +30,8 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopHomeMultipleImageColumnViewHolder(
     itemView: View,
-    private val listener: ShopHomeDisplayWidgetListener
+    private val listener: ShopHomeDisplayWidgetListener,
+    private val recyclerviewPoolListener: RecyclerviewPoolListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(itemView) {
 
     companion object {
@@ -68,6 +70,7 @@ class ShopHomeMultipleImageColumnViewHolder(
                 addItemDecoration(PaddingItemDecorationShopPage(element.name))
             }
             adapter = shopHomeMultipleImageColumnAdapter
+            setRecycledViewPool(recyclerviewPoolListener.parentPool)
         }
         textViewTitle?.apply {
             if (element.header.title.isEmpty()) {

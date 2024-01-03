@@ -55,15 +55,13 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.targetedticker.domain.TargetedTickerPage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifycomponents.ticker.TickerData
-import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
@@ -211,7 +209,7 @@ class ShippingEditorFragment :
                 is ShippingEditorState.Success -> {
                     showSuccessLayout()
                     updateData(it.data.shippers)
-                    renderTicker(it.data.ticker)
+                    renderTargetedTicker()
                     checkWhitelabelCoachmarkState()
                     renderDropOffButton(binding?.buttonDropOff, it.data.dropOffMapsUrl)
                     updateHeaderTickerData(it.data.tickerHeader)
@@ -283,6 +281,13 @@ class ShippingEditorFragment :
                 }
                 else -> binding?.swipeRefresh?.isRefreshing = true
             }
+        }
+    }
+
+    private fun renderTargetedTicker() {
+        binding?.tickerShipperInfo?.apply {
+            setTickerShape(Ticker.SHAPE_LOOSE)
+            loadAndShow(TargetedTickerPage.SHIPPING_EDITOR)
         }
     }
 
@@ -369,47 +374,6 @@ class ShippingEditorFragment :
             binding?.tickerHeader?.gone()
         }
     }
-
-    private fun renderTicker(tickers: List<TickerModel>) {
-        val messages = ArrayList<TickerData>()
-        if (tickers.isNotEmpty()) {
-            for (item in tickers) {
-                val spannableString = SpannableString(item.body + " " + item.textLink)
-                val color = getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-                spannableString.setSpan(
-                    ForegroundColorSpan(color),
-                    spannableString.length - item.textLink.length,
-                    spannableString.length,
-                    Spannable.SPAN_INCLUSIVE_EXCLUSIVE
-                )
-                messages.add(
-                    TickerData(
-                        item.header,
-                        item.body + " " + item.textLink,
-                        Ticker.TYPE_ANNOUNCEMENT,
-                        true,
-                        item.urlLink
-                    )
-                )
-            }
-            val tickerPageAdapter = TickerPagerAdapter(context, messages)
-            binding?.tickerShipperInfo?.addPagerView(tickerPageAdapter, messages)
-            tickerPageAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
-                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                    val appLink = itemData.toString()
-                    if (appLink.startsWith("tokopedia")) {
-                        startActivity(RouteManager.getIntent(context, appLink))
-                    } else {
-                        goToWebView(appLink)
-                    }
-                }
-            })
-            binding?.tickerShipperInfo?.visible()
-        } else {
-            binding?.tickerShipperInfo?.gone()
-        }
-    }
-
     private fun validateSaveData(data: ValidateShippingEditorModel) {
         if (data.state == VALIDATE_MULTIPLE_LOC_STATE) {
             setDataCourierNotCovered(data)

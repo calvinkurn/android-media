@@ -78,7 +78,7 @@ class FeedMainViewModelTest {
     @Test
     fun onGetDisplayName_shoudReturnUserName() {
         // given
-        val name = "Muhammad Furqan"
+        val name = "Fulan"
         coEvery { userSession.name } returns name
         coEvery { userSession.isLoggedIn } returns true
         coEvery { onBoardingPreferences.setHasShownSwipeOnBoarding() } coAnswers {}

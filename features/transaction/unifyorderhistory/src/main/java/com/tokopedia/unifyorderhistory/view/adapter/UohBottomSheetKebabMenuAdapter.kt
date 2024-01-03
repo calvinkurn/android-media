@@ -8,9 +8,6 @@ import com.tokopedia.unifyorderhistory.databinding.BottomsheetKebabUohItemBindin
 import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohBottomSheetKebabMenuViewHolder
 import com.tokopedia.unifyorderhistory.view.bottomsheet.UohKebabMenuBottomSheet
 
-/**
- * Created by fwidjaja on 05/07/20.
- */
 class UohBottomSheetKebabMenuAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var uohKebabMenuList = mutableListOf<UohListOrder.UohOrders.Order.Metadata.DotMenu>()
     var _orderData: UohListOrder.UohOrders.Order? = null
