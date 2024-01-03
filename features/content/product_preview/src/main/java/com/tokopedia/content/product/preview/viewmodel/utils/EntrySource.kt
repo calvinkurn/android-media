@@ -1,4 +1,4 @@
-package com.tokopedia.content.product.preview.viewmodel
+package com.tokopedia.content.product.preview.viewmodel.utils
 
 /**
  * @author by astidhiyaa on 06/12/23

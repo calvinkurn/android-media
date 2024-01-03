@@ -5,35 +5,48 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.content.product.preview.data.ContentUiModel
-import com.tokopedia.content.product.preview.data.product.ProductIndicatorUiModel
+import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentProductBinding
 import com.tokopedia.content.product.preview.view.adapter.product.ProductContentAdapter
 import com.tokopedia.content.product.preview.view.adapter.product.ProductIndicatorAdapter
-import com.tokopedia.content.product.preview.view.components.items.ProductPreviewIndicatorItemDecoration
+import com.tokopedia.content.product.preview.view.components.items.ProductIndicatorItemDecoration
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewExoPlayer
 import com.tokopedia.content.product.preview.view.components.player.ProductPreviewVideoPlayerManager
+import com.tokopedia.content.product.preview.view.listener.ProductIndicatorListener
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
+import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
+import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.content.product.preview.R as contentproductpreviewR
 
 class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
+
+    private val mParentPage: ProductPreviewFragment
+        get() = (requireParentFragment() as ProductPreviewFragment)
 
     private var _binding: FragmentProductBinding? = null
     private val binding: FragmentProductBinding
         get() = _binding!!
 
-    private var productContentAdapter: ProductContentAdapter? = null
-    private var productIndicatorAdapter: ProductIndicatorAdapter? = null
+    private val viewModel by activityViewModels<ProductPreviewViewModel> {
+        mParentPage.viewModelProvider
+    }
 
     private var snapHelperContent: PagerSnapHelper = PagerSnapHelper()
-    private var snapHelperIndicator: PagerSnapHelper = PagerSnapHelper()
 
     private val layoutManagerContent by lazyThreadSafetyNone {
         LinearLayoutManager(requireContext(), HORIZONTAL, false)
@@ -42,18 +55,34 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
         LinearLayoutManager(requireContext(), HORIZONTAL, false)
     }
 
+    private val productContentAdapter by lazyThreadSafetyNone {
+        ProductContentAdapter(
+            listener = object : ProductPreviewListener {
+                override fun getVideoPlayer(id: String): ProductPreviewExoPlayer {
+                    return videoPlayerManager.occupy(id)
+                }
+            }
+        )
+    }
+    private val productIndicatorAdapter by lazyThreadSafetyNone {
+        ProductIndicatorAdapter(
+            listener = object :
+                ProductIndicatorListener {
+                override fun onClickProductIndicator(position: Int) {
+                    scrollTo(position)
+                    viewModel.submitAction(ProductPreviewUiAction.ProductSelected(position))
+                }
+            }
+        )
+    }
+
     private val videoPlayerManager by lazy { ProductPreviewVideoPlayerManager(requireContext()) }
     private val contentScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == ViewPager2.SCROLL_STATE_IDLE) {
                 val position = getContentCurrentPosition()
-            }
-        }
-    }
-    private val indicatorScrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == ViewPager2.SCROLL_STATE_IDLE) {
-                val position = getIndicatorCurrentPosition()
+                scrollTo(position)
+                viewModel.submitAction(ProductPreviewUiAction.ProductSelected(position))
             }
         }
     }
@@ -72,6 +101,9 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
+        setupObservers()
+
+        viewModel.submitAction(ProductPreviewUiAction.InitializeProductMainData)
     }
 
     private fun setupViews() {
@@ -80,139 +112,74 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     }
 
     private fun setupProductContentViews() = with(binding.rvContentProduct) {
-        productContentAdapter = ProductContentAdapter(listener = object : ProductPreviewListener {
-            override fun getVideoPlayer(id: String): ProductPreviewExoPlayer {
-                return videoPlayerManager.occupy(id)
-            }
-        })
         adapter = productContentAdapter
         layoutManager = layoutManagerContent
-        hasFixedSize()
+        itemAnimator = null
         removeOnScrollListener(contentScrollListener)
         addOnScrollListener(contentScrollListener)
         snapHelperContent.attachToRecyclerView(this)
-        val data = listOf(
-                ContentUiModel(
-                    type = ContentUiModel.MediaType.Video,
-                    url = "https://vod-stream.tokopedia.net/view/adaptive.m3u8?id=f01396ff94ae71eeae0987c7371d0102",
-                ),
-                ContentUiModel(
-                    type = ContentUiModel.MediaType.Image,
-                    url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/12/12/ca158fc4-699a-495e-aaac-229b4f8ed1aa.png",
-                ),
-                ContentUiModel(
-                    type = ContentUiModel.MediaType.Image,
-                    url = "https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/2/4/6a3db555-a5e9-4bc1-9c17-1753ad105b92.jpg",
-                ),
-                ContentUiModel(
-                    type = ContentUiModel.MediaType.Image,
-                    url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/9/14/9d770fbf-2bbd-4206-8511-56df29a6f4be.png",
-                ),
-                ContentUiModel(
-                    type = ContentUiModel.MediaType.Image,
-                    url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/8/25/1f559a48-03f3-4656-b77f-3caf0fcc94d2.png",
-                ),
-            )
-
-        productContentAdapter?.insertData(data)
     }
 
     private fun setupProductIndicatorViews() = with(binding.rvIndicatorProduct) {
-        productIndicatorAdapter = ProductIndicatorAdapter()
         adapter = productIndicatorAdapter
         layoutManager = layoutManagerIndicator
-        removeOnScrollListener(indicatorScrollListener)
-        addOnScrollListener(indicatorScrollListener)
-        snapHelperIndicator.attachToRecyclerView(this)
+        itemAnimator = null
         if (itemDecorationCount == 0) {
-            addItemDecoration(ProductPreviewIndicatorItemDecoration(requireContext()))
+            addItemDecoration(ProductIndicatorItemDecoration(requireContext()))
         }
-        val data = listOf(
-                ProductIndicatorUiModel(
-                    id = "1",
-                    selected = true,
-                    content = ContentUiModel(
-                        type = ContentUiModel.MediaType.Video,
-                        url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/12/12/ca158fc4-699a-495e-aaac-229b4f8ed1aa.png",
-                    ),
-                    variantName = "Test 1",
-                ),
-                ProductIndicatorUiModel(
-                    id = "2",
-                    selected = false,
-                    content = ContentUiModel(
-                        type = ContentUiModel.MediaType.Image,
-                        url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/12/12/ca158fc4-699a-495e-aaac-229b4f8ed1aa.png",
-                    ),
-                    variantName = "Test 2",
-                ),
-                ProductIndicatorUiModel(
-                    id = "3",
-                    selected = false,
-                    content = ContentUiModel(
-                        type = ContentUiModel.MediaType.Image,
-                        url = "https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/2/4/6a3db555-a5e9-4bc1-9c17-1753ad105b92.jpg",
-                    ),
-                    variantName = "Test 3",
-                ),
-                ProductIndicatorUiModel(
-                    id = "4",
-                    selected = false,
-                    content = ContentUiModel(
-                        type = ContentUiModel.MediaType.Image,
-                        url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/9/14/9d770fbf-2bbd-4206-8511-56df29a6f4be.png",
-                    ),
-                    variantName = "Test 4",
-                ),
-                ProductIndicatorUiModel(
-                    id = "5",
-                    selected = false,
-                    content = ContentUiModel(
-                        type = ContentUiModel.MediaType.Image,
-                        url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/8/25/1f559a48-03f3-4656-b77f-3caf0fcc94d2.png",
-                    ),
-                    variantName = "Test 5",
-                ),
-                ProductIndicatorUiModel(
-                    id = "6",
-                    selected = false,
-                    content = ContentUiModel(
-                        type = ContentUiModel.MediaType.Image,
-                        url = "https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/2/4/6a3db555-a5e9-4bc1-9c17-1753ad105b92.jpg",
-                    ),
-                    variantName = "Test 6",
-                ),
-                ProductIndicatorUiModel(
-                    id = "7",
-                    selected = false,
-                    content = ContentUiModel(
-                        type = ContentUiModel.MediaType.Image,
-                        url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/9/14/9d770fbf-2bbd-4206-8511-56df29a6f4be.png",
-                    ),
-                    variantName = "Test 7",
-                ),
-                ProductIndicatorUiModel(
-                    id = "8",
-                    selected = false,
-                    content = ContentUiModel(
-                        type = ContentUiModel.MediaType.Image,
-                        url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/8/25/1f559a48-03f3-4656-b77f-3caf0fcc94d2.png",
-                    ),
-                    variantName = "Test 8",
-                ),
-            )
+    }
 
-        productIndicatorAdapter?.insertData(data)
+    private fun setupObservers() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.productUiState.withCache().collectLatest { (prevState, currState) ->
+                renderContent(prevState?.productContent, currState.productContent)
+                renderIndicator(prevState?.productIndicator, currState.productIndicator)
+            }
+        }
+    }
+
+    private fun renderContent(
+        prev: List<ContentUiModel>?,
+        state: List<ContentUiModel>
+    ) {
+        if (prev == state) return
+
+        productContentAdapter.updateData(state)
+    }
+
+    private fun renderIndicator(
+        prev: List<ProductIndicatorUiModel>?,
+        state: List<ProductIndicatorUiModel>
+    ) {
+        if (prev == state) return
+
+        try {
+            val selectedData = state.firstOrNull { it.selected }
+            val position = state.indexOf(selectedData)
+            binding.tvIndicatorLabel.apply {
+                visible()
+                text = String.format(
+                    getString(contentproductpreviewR.string.text_label_place_holder),
+                    position.plus(1),
+                    state.size,
+                    state[position].variantName
+                )
+            }
+        } catch (_: Exception) {
+            binding.tvIndicatorLabel.gone()
+        }
+        productIndicatorAdapter.updateData(state)
     }
 
     private fun getContentCurrentPosition(): Int {
-        val snappedView = snapHelperContent.findSnapView(layoutManagerContent) ?: return RecyclerView.NO_POSITION
+        val snappedView =
+            snapHelperContent.findSnapView(layoutManagerContent) ?: return RecyclerView.NO_POSITION
         return binding.rvContentProduct.getChildAdapterPosition(snappedView)
     }
 
-    private fun getIndicatorCurrentPosition(): Int {
-        val snappedView = snapHelperIndicator.findSnapView(layoutManagerIndicator) ?: return RecyclerView.NO_POSITION
-        return binding.rvIndicatorProduct.getChildAdapterPosition(snappedView)
+    private fun scrollTo(position: Int) {
+        binding.rvContentProduct.scrollToPosition(position)
+        binding.rvIndicatorProduct.scrollToPosition(position)
     }
 
     override fun onDestroyView() {
@@ -238,5 +205,4 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
             } as ProductFragment
         }
     }
-
 }
