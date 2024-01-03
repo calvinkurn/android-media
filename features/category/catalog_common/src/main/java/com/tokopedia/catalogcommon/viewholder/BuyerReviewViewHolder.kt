@@ -1,11 +1,11 @@
 package com.tokopedia.catalogcommon.viewholder
 
-import android.os.Handler
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.RatingBar
 import androidx.annotation.LayoutRes
+import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -19,9 +19,11 @@ import com.tokopedia.catalogcommon.util.getBoldSpan
 import com.tokopedia.catalogcommon.util.getClickableSpan
 import com.tokopedia.catalogcommon.util.getGreenColorSpan
 import com.tokopedia.catalogcommon.util.setSpanOnText
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.JvmMediaLoader
 import com.tokopedia.unifycomponents.ImageUnify
@@ -46,6 +48,7 @@ class BuyerReviewViewHolder(
     private var widgetTitle: Typography? = null
     private var carouselData: ArrayList<Any>? = null
     private var cardData: BuyerReviewUiModel? = null
+    private var carouselHeights = listOf<Int>()
 
     init {
         widgetTitle = binding?.tgpBuyerReviewTitle
@@ -53,8 +56,21 @@ class BuyerReviewViewHolder(
         carouselBuyerReview?.apply {
             indicatorPosition = CarouselUnify.INDICATOR_BC
             infinite = true
-            onActiveIndexChangedListener
+            onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
+                override fun onActiveIndexChanged(prev: Int, current: Int) {
+                    refreshCardHeight(current)
+                }
+            }
             indicatorWrapper.setPadding(indicatorWrapper.paddingLeft, MARGIN_VERTICAL, indicatorWrapper.paddingRight, MARGIN_VERTICAL)
+        }
+    }
+
+    private fun refreshCardHeight(index: Int) {
+        carouselHeights.getOrNull(index)?.let { height ->
+            binding?.carouselBuyerReview?.getChildAt(Int.ZERO)?.apply {
+                setLayoutHeight(height)
+                requestLayout()
+            }
         }
     }
 
@@ -158,9 +174,15 @@ class BuyerReviewViewHolder(
             carouselData?.let {
                 if (stage.childCount == 0) {
                     addItems(R.layout.item_buyer_review, it, itemListener)
-                    Handler().post {
+                    postDelayed({
                         activeIndex = 0
-                    }
+                        carouselHeights = stage.children
+                            .toList()
+                            .subList(1, stage.childCount.dec())
+                            .map {
+                                it.measuredHeight
+                            }
+                    }, 100)
                 }
             }
         }
