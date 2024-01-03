@@ -348,10 +348,14 @@ class ConfirmShippingFragment : BaseDaggerFragment(), BottomSheetCourierListAdap
                     TargetedTickerParamModel.Template.Content(it.key, it.values)
                 }
             )
+            val target = params.target.map {
+                TargetedTickerParamModel.Target(it.type, it.values)
+            }
 
             val param = TargetedTickerParamModel(
                 page = params.page,
-                template = template
+                template = template,
+                target = target
             )
             loadAndShow(param)
         }

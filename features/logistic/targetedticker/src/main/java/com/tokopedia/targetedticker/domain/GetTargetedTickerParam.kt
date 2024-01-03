@@ -21,7 +21,7 @@ data class GetTargetedTickerParam(
 ) : GqlParam {
 
     data class Template(
-        @SerializedName("contents")
+        @SerializedName("Contents")
         val contents: List<Content> = listOf()
     ) {
         data class Content(

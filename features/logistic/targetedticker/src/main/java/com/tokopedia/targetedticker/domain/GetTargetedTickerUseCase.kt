@@ -26,7 +26,9 @@ class GetTargetedTickerUseCase @Inject constructor(
         return GetTargetedTickerRequest(
             GetTargetedTickerParam(
                 page = param.page,
-
+                target = param.target.map {
+                    GetTargetedTickerParam.GetTargetedTickerRequestTarget(it.type, it.value)
+                },
                 template = GetTargetedTickerParam.Template(
                     contents = param.template.contents.map {
                         GetTargetedTickerParam.Template.Content(it.key, it.values)
