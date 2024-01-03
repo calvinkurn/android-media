@@ -5003,7 +5003,7 @@ class CartRevampFragment :
                             quantityView?.let {
                                 bulkActionCoachMarkItems.add(
                                     CoachMark2Item(
-                                        quantityView,
+                                        it,
                                         "",
                                         minQuantityOnboardingData.text,
                                         CoachMark2.POSITION_BOTTOM
@@ -5037,13 +5037,15 @@ class CartRevampFragment :
                         }
                     }
 
-                    bulkActionCoachMark?.showCoachMark(
-                        bulkActionCoachMarkItems,
-                        null,
-                        bulkActionCoachMarkLastActiveIndex
-                    )
-                    hasShowBulkActionCoachMark = true
-                    CoachMarkPreference.setShown(it, CART_BULK_ACTION_COACH_MARK, true)
+                    if (bulkActionCoachMarkItems.isNotEmpty()) {
+                        bulkActionCoachMark?.showCoachMark(
+                            bulkActionCoachMarkItems,
+                            null,
+                            bulkActionCoachMarkLastActiveIndex
+                        )
+                        hasShowBulkActionCoachMark = true
+                        CoachMarkPreference.setShown(it, CART_BULK_ACTION_COACH_MARK, true)
+                    }
                 }
             }
         }
