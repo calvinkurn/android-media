@@ -95,8 +95,8 @@ import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_detail_info.ProductDetailInfoViewHolder
 import com.tokopedia.product.detail.view.viewholder.product_variant_thumbail.ProductThumbnailVariantViewHolder
-import com.tokopedia.product.detail.view.viewholder.promo_price.ProductPriceUiModel
-import com.tokopedia.product.detail.view.viewholder.promo_price.ProductPromoPriceViewHolder
+import com.tokopedia.product.detail.view.viewholder.promo_price.ui.ProductPriceUiModel
+import com.tokopedia.product.detail.view.viewholder.promo_price.ui.ProductPriceViewHolder
 import com.tokopedia.product.detail.view.viewholder.review.ui.ProductReviewViewHolder
 import com.tokopedia.product.detail.view.viewholder.show_review.ProductShopReviewViewHolder
 import com.tokopedia.product.detail.view.viewholder.social_proof.ProductMiniSocialProofViewHolder
@@ -289,7 +289,7 @@ class DynamicProductDetailAdapterFactoryImpl(
     }
 
     override fun type(data: ProductPriceUiModel): Int {
-        return ProductPromoPriceViewHolder.LAYOUT
+        return ProductPriceViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
@@ -399,7 +399,7 @@ class DynamicProductDetailAdapterFactoryImpl(
             DynamicOneLinerViewHolder.LAYOUT -> DynamicOneLinerViewHolder(view, listener)
             APlusImageViewHolder.LAYOUT -> APlusImageViewHolder(view, listener)
             BMGMViewHolder.LAYOUT -> BMGMViewHolder(view, listener)
-            ProductPromoPriceViewHolder.LAYOUT -> ProductPromoPriceViewHolder(view, listener)
+            ProductPriceViewHolder.LAYOUT -> ProductPriceViewHolder(view, pdpCallback.productPrice)
             else -> super.createViewHolder(view, type)
         }
     }

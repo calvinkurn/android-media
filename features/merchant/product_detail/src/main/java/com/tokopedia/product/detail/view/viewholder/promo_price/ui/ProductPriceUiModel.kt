@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.viewholder.promo_price
+package com.tokopedia.product.detail.view.viewholder.promo_price.ui
 
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder

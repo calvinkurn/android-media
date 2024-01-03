@@ -96,8 +96,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CARO
 import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.product.detail.view.viewholder.a_plus_content.APlusImageUiModel
 import com.tokopedia.product.detail.view.viewholder.bmgm.BMGMUiModel
-import com.tokopedia.product.detail.view.viewholder.promo_price.ProductPriceUiModel
-import com.tokopedia.product.detail.view.viewholder.promo_price.ProductPromoPriceUiModel
+import com.tokopedia.product.detail.view.viewholder.promo_price.ui.ProductPriceUiModel
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst

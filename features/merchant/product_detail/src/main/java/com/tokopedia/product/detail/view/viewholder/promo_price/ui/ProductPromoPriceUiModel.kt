@@ -1,4 +1,4 @@
-package com.tokopedia.product.detail.view.viewholder.promo_price
+package com.tokopedia.product.detail.view.viewholder.promo_price.ui
 
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
 import com.tokopedia.product.detail.common.data.model.promoprice.PromoPriceUiModel

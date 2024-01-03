@@ -1,15 +1,16 @@
-package com.tokopedia.product.detail.view.viewholder.promo_price
+package com.tokopedia.product.detail.view.viewholder.promo_price.ui
 
 import android.view.View
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.databinding.ProductPromoPriceViewHolderBinding
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.fragment.delegate.GoToApplink
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
+import com.tokopedia.product.detail.view.viewholder.promo_price.delegate.ProductPriceCallback
 
-class ProductPromoPriceViewHolder(
+class ProductPriceViewHolder(
     view: View,
-    private val listener: DynamicProductDetailListener
+    private val callback: ProductPriceCallback
 ) : ProductDetailPageViewHolder<ProductPriceUiModel>(view) {
 
     private val binding by lazyThreadSafetyNone {
@@ -29,7 +30,7 @@ class ProductPromoPriceViewHolder(
                 normalPriceBoUrl = element.normalPriceBoUrl,
                 onPromoPriceClicked = {
                     element.promoPriceData?.applink?.let {
-                        listener.goToApplink(it)
+                        callback.event(GoToApplink(it))
                     }
                 }
             )
