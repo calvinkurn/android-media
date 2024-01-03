@@ -286,7 +286,7 @@ fun UohBuyAgainCard(
         modifier = modifier
             .heightIn(min = 56.dp)
             .widthIn(max = if (isSingleCard) 350.dp else 325.dp)
-            .padding(start = 8.dp, top = 6.dp, bottom = 6.dp),
+            .padding(start = 8.dp, top = 6.dp, bottom = 6.dp, end = 6.dp),
         type = NestCardType.Shadow,
         onClick = { onProductCardClick.invoke(recommItem, index) }
     ) {
