@@ -1345,7 +1345,7 @@ class CartItemViewHolder(
         }
     }
 
-    private fun validateMinimumQty(newQty: Int, data: CartItemHolderData): Boolean {
+    private fun validateMinimumQty(newQty: Int, data: CartItemHolderData) {
         val qtyEditorCart = binding.qtyEditorProduct
         if (newQty > data.minOrder) {
             data.isAlreadyShowMinimumQuantityPurchasedError = false
@@ -1359,37 +1359,35 @@ class CartItemViewHolder(
                 itemView.context.getString(R.string.cart_min_quantity_error),
                 data.minOrder
             )
-            return if (!data.isAlreadyShowMinimumQuantityPurchasedError) {
+            if (!data.isAlreadyShowMinimumQuantityPurchasedError) {
                 qtyEditorCart.qtyValue.value = data.minOrder
                 data.isAlreadyShowMinimumQuantityPurchasedError = true
-                false
             } else {
                 data.isAlreadyShowMinimumQuantityPurchasedError = false
                 actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.TrashBin)
-                false
             }
+            return
         }
         if (newQty < data.minOrder) {
             if (data.minOrder <= 1) {
                 actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.TrashBin)
-                return false
+                return
             }
             binding.labelQuantityError.show()
             binding.labelQuantityError.text = String.format(
                 itemView.context.getString(R.string.cart_min_quantity_error),
                 data.minOrder
             )
-            return if (!data.isAlreadyShowMinimumQuantityPurchasedError) {
+            if (!data.isAlreadyShowMinimumQuantityPurchasedError) {
                 qtyEditorCart.qtyValue.value = data.minOrder
                 data.isAlreadyShowMinimumQuantityPurchasedError = true
-                false
             } else {
                 data.isAlreadyShowMinimumQuantityPurchasedError = false
                 actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.TrashBin)
-                false
             }
+            return
         }
-        return true
+        return
     }
 
     private fun handleRefreshType(
