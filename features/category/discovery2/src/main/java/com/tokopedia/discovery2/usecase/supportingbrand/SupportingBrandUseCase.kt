@@ -53,7 +53,6 @@ class SupportingBrandUseCase @Inject constructor(private val repository: Support
                     paramWithoutRpc
                 )
             )
-            it.showVerticalLoader = shopCardListData.isNotEmpty()
             it.setComponentsItem(
                 listComponents = it.appendNextPageData(shopCardListData),
                 tabName = component.tabName
@@ -65,7 +64,6 @@ class SupportingBrandUseCase @Inject constructor(private val repository: Support
             )
             it.nextPageKey = nextPage
             if (shopCardListData.isEmpty()) return false else it.pageLoadedCounter += 1
-            it.verticalProductFailState = false
             return true
         }
         return false
