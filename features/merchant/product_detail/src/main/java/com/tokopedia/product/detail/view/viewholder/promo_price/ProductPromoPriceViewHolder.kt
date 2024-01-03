@@ -23,10 +23,15 @@ class ProductPromoPriceViewHolder(
     override fun bind(element: ProductPriceUiModel) {
         binding.pdpPromoPriceComposeView.setContent {
             ProductDetailPriceComponent(
-                element.promoPriceData,
-                element.normalPromoUiModel,
-                element.priceComponentType,
-                element.normalPriceBoUrl
+                promoPriceData = element.promoPriceData,
+                normalPromoUiModel = element.normalPromoUiModel,
+                priceComponentType = element.priceComponentType,
+                normalPriceBoUrl = element.normalPriceBoUrl,
+                onPromoPriceClicked = {
+                    element.promoPriceData?.applink?.let {
+                        listener.goToApplink(it)
+                    }
+                }
             )
         }
     }

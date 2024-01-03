@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.viewholder.promo_price
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,7 +29,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.constraintlayout.compose.Dimension.Companion
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.components.NestImage
@@ -191,22 +191,6 @@ fun PromoPriceFooter(
             )
         )
 
-        NestTypography(
-            slashPriceFmt,
-            modifier = Modifier.constrainAs(slashPrice) {
-                top.linkTo(normalPrice.top)
-                start.linkTo(normalPrice.end)
-                bottom.linkTo(normalPrice.bottom)
-                width = Companion.fillToConstraints
-            }.padding(start = 4.dp, end = 4.dp),
-            textStyle = NestTheme.typography.small.copy(
-                color = NestTheme.colors.NN._400,
-                textDecoration = TextDecoration.LineThrough
-            ),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-
         if (boLogo.isNotEmpty()) {
             NestImage(
                 source = Remote(source = boLogo, customUIError = {
@@ -220,6 +204,26 @@ fun PromoPriceFooter(
                 }
             )
         }
+
+        NestTypography(
+            slashPriceFmt,
+            modifier = Modifier.constrainAs(slashPrice) {
+                linkTo(
+                    start = normalPrice.end,
+                    top = normalPrice.top,
+                    bottom = normalPrice.bottom,
+                    end = boImage.start,
+                    horizontalBias = 0F
+                )
+                width = Dimension.preferredWrapContent
+            }.padding(start = 4.dp, end = 4.dp),
+            textStyle = NestTheme.typography.small.copy(
+                color = NestTheme.colors.NN._400,
+                textDecoration = TextDecoration.LineThrough
+            ),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 
@@ -235,7 +239,9 @@ fun PromoPriceCard(
             .background(
                 data.cardBackgroundColor.color,
                 RoundedCornerShape(10.dp)
-            )
+            ).clickable {
+                onPromoPriceClicked.invoke()
+            }
     ) {
         val (mainContent, superGraphic) = createRefs()
 
@@ -320,7 +326,7 @@ fun PromoPriceCardPreview() {
                         priceAdditionalFmt = "Tanpa promo: Rp.9.500.000",
                         promoPriceFmt = "Rp.9.000.000",
                         promoSubtitle = "Diskon 200rb Cashback 300rb",
-                        slashPriceFmt = "Rp.11.000.000",
+                        slashPriceFmt = "Rp.11.000.000 Rp.11.000.000 Rp.11.000.000 Rp.11.000.000 Rp.11.000.000",
                         separatorColor = "#FFDBE2",
                         mainTextColor = "#F94D63",
                         cardBackgroundColor = "#FFF5F6",
