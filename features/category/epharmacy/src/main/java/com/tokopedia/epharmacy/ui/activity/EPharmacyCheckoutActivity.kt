@@ -14,6 +14,7 @@ import com.tokopedia.epharmacy.utils.EPHARMACY_ENABLER_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EventKeys
+import com.tokopedia.epharmacy.utils.TrackerId.Companion.CLICK_BACK_CHECKOUT
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -92,9 +93,9 @@ class EPharmacyCheckoutActivity : BaseSimpleActivity(), HasComponent<EPharmacyCo
         Tracker.Builder()
             .setEvent(EventKeys.CLICK_GROCERIES)
             .setEventAction("click back")
-            .setEventCategory(CategoryKeys.EPHARMACY_CHAT_DOkTER_CHECKOUT_PAGE)
+            .setEventCategory(CategoryKeys.EPHARMACY_CHAT_DOKTER_CHECKOUT_PAGE)
             .setEventLabel(eventLabel)
-            .setCustomProperty(EventKeys.TRACKER_ID, "45890")
+            .setCustomProperty(EventKeys.TRACKER_ID, CLICK_BACK_CHECKOUT)
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()

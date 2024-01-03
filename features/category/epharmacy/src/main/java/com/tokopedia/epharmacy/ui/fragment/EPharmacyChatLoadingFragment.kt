@@ -16,8 +16,11 @@ import com.tokopedia.epharmacy.databinding.EpharmacyReminderScreenBottomSheetBin
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.response.EPharmacyVerifyConsultationResponse
 import com.tokopedia.epharmacy.utils.CategoryKeys
+import com.tokopedia.epharmacy.utils.CategoryKeys.Companion.EPHARMACY_ERROR_PAGE
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
+import com.tokopedia.epharmacy.utils.EventKeys
 import com.tokopedia.epharmacy.utils.IS_SINGLE_CONSUL_FLOW
+import com.tokopedia.epharmacy.utils.TrackerId
 import com.tokopedia.epharmacy.utils.WEB_LINK_PREFIX
 import com.tokopedia.epharmacy.viewmodel.EPharmacyChatLoadingViewModel
 import com.tokopedia.globalerror.GlobalError
@@ -25,6 +28,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -134,6 +138,7 @@ class EPharmacyChatLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
     }
 
     private fun handleFail() {
+        sendViewErrorPageFailedOrderCreationEvent(tConsultationId.toString())
         setErrorData(
             getString(epharmacyR.string.epharmacy_chat_loading_error_title),
             getString(epharmacyR.string.epharmacy_chat_loading_error_description),
@@ -205,5 +210,18 @@ class EPharmacyChatLoadingFragment : BaseDaggerFragment(), EPharmacyListener {
     override fun onPause() {
         super.onPause()
         if (verifyRunnable != null) { mainHandler.removeCallbacks(verifyRunnable!!) }
+    }
+
+    private fun sendViewErrorPageFailedOrderCreationEvent(eventLabel: String) {
+        Tracker.Builder()
+            .setEvent(EventKeys.VIEW_GROCERIES_IRIS)
+            .setEventAction("view error page - failed order creation")
+            .setEventCategory(EPHARMACY_ERROR_PAGE)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.FAILED_ORDER_CREATION)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .build()
+            .send()
     }
 }

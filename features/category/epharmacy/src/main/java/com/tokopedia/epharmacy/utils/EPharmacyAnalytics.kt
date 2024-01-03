@@ -27,7 +27,8 @@ interface CategoryKeys {
         const val EPHARMACY_QUANTITY_CHANGE_BS = "epharmacy quantity change bottom sheet"
         const val EPHARMACY_LOADING_PAGE = "epharmacy loading page"
         const val EPHARMACY_ORDER_DETAIL_PAGE = "epharmacy order detail page"
-        const val EPHARMACY_CHAT_DOkTER_CHECKOUT_PAGE = "epharmacy chat dokter checkout page"
+        const val EPHARMACY_CHAT_DOKTER_CHECKOUT_PAGE = "epharmacy chat dokter checkout page"
+        const val EPHARMACY_ERROR_PAGE = "epharmacy error page"
     }
 }
 
@@ -79,5 +80,22 @@ interface TrackerId {
         const val VIEW_NO_DOCTOR = "37747"
         const val CLICK_INGATKAN_SAYA = "37748"
         const val LANJUT_BUTTON_CLICK = "38051"
+        const val CHECKOUT_PAGE_EVENT = "45865"
+        const val CLICK_PILIH_PEMBAYARAN_EVENT = "45866"
+        const val VIEW_QUANTITY_CHANGE_BS = "45874"
+        const val ADD_QTY_CHANGE = "45875"
+        const val REMOVE_QTY_CHANGE = "45876"
+        const val CLICK_PERBAHARUI = "45877"
+        const val VIEW_ERROR_ON_QTY_BS = "45878"
+        const val VIEW_CHAT_DOKTER_ORDER_DETAIL_PAGE = "45879"
+        const val ORDER_DETAIL_MAIN_CTA = "45880"
+        const val CLICK_LIHAT_INVOICE = "45881"
+        const val VIEW_PRESC_IMAGE_WEBVIEW = "45882"
+        const val CLICK_PUSAT_BANTUAN = "45885"
+        const val CLICK_BACK_CHECKOUT = "45890"
+        const val SUCCESS_QUANTITY_CHANGE = "49199"
+        const val FAILED_ORDER_CREATION = "45871"
+        const val VIEW_ONGOING_CHAT = "45872"
+        const val TICKER_TRACKER_ID = "45873"
     }
 }

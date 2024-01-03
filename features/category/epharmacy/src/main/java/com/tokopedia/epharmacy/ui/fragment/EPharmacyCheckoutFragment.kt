@@ -26,6 +26,8 @@ import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
 import com.tokopedia.epharmacy.utils.EPHARMACY_TOKO_CONSULTATION_ID
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.epharmacy.utils.EventKeys
+import com.tokopedia.epharmacy.utils.TrackerId.Companion.CHECKOUT_PAGE_EVENT
+import com.tokopedia.epharmacy.utils.TrackerId.Companion.CLICK_PILIH_PEMBAYARAN_EVENT
 import com.tokopedia.epharmacy.viewmodel.EPharmacyCheckoutViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -304,9 +306,9 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
         Tracker.Builder()
             .setEvent(EventKeys.VIEW_GROCERIES_IRIS)
             .setEventAction("view checkout page")
-            .setEventCategory(CategoryKeys.EPHARMACY_CHAT_DOkTER_CHECKOUT_PAGE)
+            .setEventCategory(CategoryKeys.EPHARMACY_CHAT_DOKTER_CHECKOUT_PAGE)
             .setEventLabel(eventLabel)
-            .setCustomProperty(EventKeys.TRACKER_ID, "45865")
+            .setCustomProperty(EventKeys.TRACKER_ID, CHECKOUT_PAGE_EVENT)
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()
@@ -317,9 +319,9 @@ class EPharmacyCheckoutFragment : BaseDaggerFragment() {
         Tracker.Builder()
             .setEvent(EventKeys.CLICK_GROCERIES)
             .setEventAction("click pilih pembayaran")
-            .setEventCategory(CategoryKeys.EPHARMACY_CHAT_DOkTER_CHECKOUT_PAGE)
+            .setEventCategory(CategoryKeys.EPHARMACY_CHAT_DOKTER_CHECKOUT_PAGE)
             .setEventLabel(eventLabel)
-            .setCustomProperty(EventKeys.TRACKER_ID, "45866")
+            .setCustomProperty(EventKeys.TRACKER_ID, CLICK_PILIH_PEMBAYARAN_EVENT)
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()

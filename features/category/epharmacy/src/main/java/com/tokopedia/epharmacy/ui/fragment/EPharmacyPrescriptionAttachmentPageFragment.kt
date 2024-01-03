@@ -56,6 +56,7 @@ import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_ID_STRING
 import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_PAGE_SOURCE
 import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_PAGE_SOURCE_EPHARMACY
 import com.tokopedia.epharmacy.utils.EXTRA_SOURCE_STRING
+import com.tokopedia.epharmacy.utils.EventKeys
 import com.tokopedia.epharmacy.utils.LabelKeys.Companion.FAILED
 import com.tokopedia.epharmacy.utils.LabelKeys.Companion.SUCCESS
 import com.tokopedia.epharmacy.utils.PapCtaRedirection
@@ -64,6 +65,7 @@ import com.tokopedia.epharmacy.utils.SHIMMER_COMPONENT
 import com.tokopedia.epharmacy.utils.SHIMMER_COMPONENT_1
 import com.tokopedia.epharmacy.utils.SHIMMER_COMPONENT_2
 import com.tokopedia.epharmacy.utils.TYPE_DOCTOR_NOT_AVAILABLE_REMINDER
+import com.tokopedia.epharmacy.utils.TrackerId
 import com.tokopedia.epharmacy.utils.UPLOAD_PAGE_SOURCE_PAP
 import com.tokopedia.epharmacy.utils.openDocument
 import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewModel
@@ -76,6 +78,7 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_LONG
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
@@ -629,6 +632,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             if (consultationData.consultationStatus.orZero().isZero()) {
                 startAttachmentChooser(chooserLogo, groupId, enablerName, price, operatingSchedule, note, true)
             } else {
+                sendViewOngoingChatDokterEvent("$enablerName - $groupId - ${consultationData.tokoConsultationId}")
                 startMiniConsultation(enablerName, groupId)
             }
         } ?: kotlin.run {
@@ -721,5 +725,18 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 arguments = bundle
             }
         }
+    }
+
+    fun sendViewOngoingChatDokterEvent(eventLabel: String) {
+        Tracker.Builder()
+            .setEvent(EventKeys.VIEW_GROCERIES_IRIS)
+            .setEventAction("view ongoing chat dokter")
+            .setEventCategory(ATTACH_PRESCRIPTION_PAGE)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.VIEW_ONGOING_CHAT)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .build()
+            .send()
     }
 }
