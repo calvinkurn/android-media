@@ -29,9 +29,9 @@ import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
-import com.tokopedia.content.product.preview.viewmodel.EntrySource
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
-import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModelFactory
+import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
+import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

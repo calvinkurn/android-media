@@ -42,7 +42,7 @@ class ProductPreviewVideoTimeView : LinearLayout {
         val minutes = TimeUnit.SECONDS.toMinutes(totalSeconds) % 60
         val hours = TimeUnit.SECONDS.toHours(totalSeconds)
         return if (hours <= 0) String.format(context.getString(contentproductpreviewR.string.video_time_less_than_hour), minutes, seconds)
-        else String.format(context.getString(contentproductpreviewR.string.feed_video_time_hours), hours, minutes, seconds)
+        else String.format(context.getString(contentproductpreviewR.string.video_time_hours), hours, minutes, seconds)
     }
 
 }

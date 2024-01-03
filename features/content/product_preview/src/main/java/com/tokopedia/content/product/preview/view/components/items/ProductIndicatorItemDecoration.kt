@@ -6,12 +6,12 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.product.preview.R as contentproductpreviewR
 
-class ProductPreviewIndicatorItemDecoration(
+class ProductIndicatorItemDecoration(
     context: Context
 ) : RecyclerView.ItemDecoration() {
 
     private val spaceItemEdge = context.resources.getDimensionPixelOffset(contentproductpreviewR.dimen.product_preview_space_16)
-    private val spaceItem = context.resources.getDimensionPixelOffset(contentproductpreviewR.dimen.product_preview_space_2)
+    private val spaceItem = context.resources.getDimensionPixelOffset(contentproductpreviewR.dimen.product_preview_space_6)
 
     override fun getItemOffsets(
         outRect: Rect,
