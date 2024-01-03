@@ -97,8 +97,8 @@ class PlayShortsViewModel @Inject constructor(
     val uploadedCoverSource: Int
         get() = sharedPref.getUploadedCoverSource(selectedAccount.id, SOURCE)
 
-    val productVideoCoverUri: String
-        get() = _productVideo.value.coverUrl
+    val productVideo: ProductVideoUiModel
+        get() = _productVideo.value
 
     val coverUri: String
         get() = _coverForm.value.coverUri.ifEmpty { _media.value.mediaUri }

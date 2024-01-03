@@ -141,7 +141,7 @@ class PlayShortsSummaryFragment @Inject constructor(
                 is InterspersingConfirmationBottomSheet -> {
                     childFragment.data = InterspersingConfirmationBottomSheet.Data(
                         newCoverUri = viewModel.coverUri,
-                        oldCoverUri = viewModel.productVideoCoverUri,
+                        oldCoverUri = viewModel.productVideo.coverUrl,
                         needSnapNewCover = !viewModel.isCoverSelected
                     )
 
