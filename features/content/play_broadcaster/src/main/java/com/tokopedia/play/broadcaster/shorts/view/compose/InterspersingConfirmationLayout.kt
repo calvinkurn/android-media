@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.shorts.view.compose
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -18,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,19 +31,23 @@ import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.components.NestImage
-import com.tokopedia.nest.components.NestImageType
+import com.tokopedia.nest.components.loader.NestLoader
+import com.tokopedia.nest.components.loader.NestLoaderType
+import com.tokopedia.nest.components.loader.NestShimmerType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.shorts.ui.model.ShortsCoverState
+import com.tokopedia.nest.components.R as nestcomponentsR
 
 /**
  * Created By : Jonathan Darwin on December 14, 2023
  */
 @Composable
 fun InterspersingConfirmationLayout(
-    newCoverUrl: String,
-    oldCoverUrl: String,
+    newCoverState: ShortsCoverState,
+    oldCoverState: ShortsCoverState,
     onClickBack: () -> Unit,
     onClickNext: () -> Unit,
     onClickPdpVideo: () -> Unit,
@@ -73,7 +79,7 @@ fun InterspersingConfirmationLayout(
         )
 
         ContentPreviewSection(
-            coverUrl = newCoverUrl, 
+            coverState = newCoverState,
             description = stringResource(id = R.string.play_shorts_interspersing_video_new_video_desc),
             modifier = Modifier.constrainAs(newContentSection) {
                 top.linkTo(tvTitle.bottom, 20.dp)
@@ -97,7 +103,7 @@ fun InterspersingConfirmationLayout(
         )
 
         ContentPreviewSection(
-            coverUrl = oldCoverUrl,
+            coverState = oldCoverState,
             description = stringResource(id = R.string.play_shorts_interspersing_video_old_video_desc),
             onClickCover = onClickPdpVideo,
             modifier = Modifier.constrainAs(oldContentSection) {
@@ -140,7 +146,7 @@ fun InterspersingConfirmationLayout(
 
 @Composable
 private fun ContentPreviewSection(
-    coverUrl: String,
+    coverState: ShortsCoverState,
     description: String,
     modifier: Modifier = Modifier,
     onClickCover: (() -> Unit)? = null,
@@ -163,15 +169,37 @@ private fun ContentPreviewSection(
                         onClickCover?.invoke()
                     },
             ) {
-                NestImage(
-                    source = ImageSource.Remote(coverUrl),
-                    modifier = Modifier.fillMaxSize()
-                )
+                val coverModifier = Modifier.fillMaxSize()
+                when (val state = coverState) {
+                    is ShortsCoverState.Loading -> {
+                        NestLoader(
+                            variant = NestLoaderType.Shimmer(type = NestShimmerType.Rect(8.dp)),
+                            modifier = coverModifier
+                        )
+                    }
+                    is ShortsCoverState.Success -> {
+                        NestImage(
+                            source = ImageSource.Remote(state.uri),
+                            modifier = coverModifier
+                        )
+                    }
+                    is ShortsCoverState.Error -> {
+                        Box(
+                            modifier = coverModifier.background(NestTheme.colors.NN._100),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Image(
+                                painter = painterResource(id = nestcomponentsR.drawable.imagestate_error),
+                                contentDescription = "Cover is not loaded"
+                            )
+                        }
+                    }
+                    else -> {}
+                }
 
                 if (onClickCover != null) {
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
+                        modifier = coverModifier
                             .background(Color(0f, 0f, 0f, 0.4f))
                     )
 
@@ -202,8 +230,8 @@ private fun InterspersingConfirmationLayoutPreview() {
     NestTheme {
         Surface {
             InterspersingConfirmationLayout(
-                newCoverUrl = "",
-                oldCoverUrl = "",
+                newCoverState = ShortsCoverState.Success(""),
+                oldCoverState = ShortsCoverState.Success(""),
                 onClickBack = {  },
                 onClickNext = {  },
                 onClickPdpVideo = { },

@@ -23,7 +23,6 @@ import com.tokopedia.play.broadcaster.shorts.view.compose.PlayShortsSummaryConfi
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
-import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.view.partial.TagListViewComponent
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -32,7 +31,6 @@ import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -142,8 +140,9 @@ class PlayShortsSummaryFragment @Inject constructor(
             when (childFragment) {
                 is InterspersingConfirmationBottomSheet -> {
                     childFragment.data = InterspersingConfirmationBottomSheet.Data(
-                        newCoverUrl = viewModel.coverUri,
-                        oldCoverUrl = viewModel.productVideoCoverUri,
+                        newCoverUri = viewModel.coverUri,
+                        oldCoverUri = viewModel.productVideoCoverUri,
+                        needSnapNewCover = !viewModel.isCoverSelected
                     )
 
                     childFragment.listener = object : InterspersingConfirmationBottomSheet.Listener {
