@@ -14,6 +14,7 @@ import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 
 interface FeedListener {
     fun isMuted(): Boolean
+    fun checkLiveStatus(channelId: String)
 
     fun onMenuClicked(
         id: String,

@@ -77,8 +77,11 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 import javax.inject.Inject
+import com.tokopedia.resources.common.R as resourcescommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.travel.passenger.R as travelpassengerR
+import com.tokopedia.iconunify.R as iconunifyR
 
 class HotelBookingFragment : HotelBaseFragment() {
 
@@ -159,7 +162,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                     }
                     view?.let { v ->
                         Toaster.build(v, message, Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
-                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                                getString(resourcescommonR.string.general_label_ok)).show()
                     }
                 }
             }
@@ -187,7 +190,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentHotelBookingBinding.inflate(inflater, container, false)
-        binding?.root?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+        binding?.root?.setBackgroundResource(unifyprinciplesR.color.Unify_NN0)
         return binding?.root
     }
 
@@ -282,7 +285,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     private fun initGuestInfoEditText() {
         binding?.tvGuestInput?.setHint(getString(R.string.hotel_booking_guest_form_hint))
         context?.let {
-            travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.travel.passenger.R.layout.layout_travel_passenger_autocompletetv,
+            travelContactArrayAdapter = TravelContactArrayAdapter(it, travelpassengerR.layout.layout_travel_passenger_autocompletetv,
                     arrayListOf(), object : TravelContactArrayAdapter.ContactArrayListener {
                 override fun getFilterText(): String {
                     return binding?.tvGuestInput?.getEditableValue() ?: ""
@@ -360,7 +363,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             binding?.ivHotelInfoImage?.clipToOutline = true
         }
         binding?.ivHotelInfoImage?.loadIcon(property.getImageToLoad(context)){
-            setPlaceHolder(com.tokopedia.iconunify.R.drawable.iconunify_image_broken)
+            setPlaceHolder(iconunifyR.drawable.iconunify_image_broken)
         }
     }
 
@@ -407,8 +410,8 @@ class HotelBookingFragment : HotelBaseFragment() {
                 context?.run {
                     val policyView = InfoTextView(this)
                     policyView.setTitleAndDescription(policy.longTitle, policy.longDesc)
-                    policyView.rootView.info_title.setTextSize(TypedValue.COMPLEX_UNIT_SP, POLICY_VIEW_TEXT_SIZE)
-                    policyView.rootView.info_container.setMargin(0, 0, 0, policyView.rootView.info_container.getDimens(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2))
+                    policyView.setInfoTitleTextSize(POLICY_VIEW_TEXT_SIZE)
+                    policyView.setInfoContainerMargin(0, 0, 0, INFO_CONTAINER_BOTTOM_MARGIN)
                     hotelCancellationPolicyBottomSheets.addContentView(policyView)
                 }
             }
@@ -516,12 +519,12 @@ class HotelBookingFragment : HotelBaseFragment() {
     private fun setupPayNowPromoTicker(promoData: PromoData) {
         if (promoData.promoCode.isEmpty()){
             setupPromoTicker(TickerCheckoutView.State.ACTIVE, getString(R.string.hotel_promo_btn_default_title))
-            binding?.bookingPayNowPromoTicker?.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24
+            binding?.bookingPayNowPromoTicker?.chevronIcon = resourcescommonR.drawable.ic_system_action_arrow_right_grayscale_24
         }else if (promoData.promoCode.isNotEmpty() && hotelCart.property.isDirectPayment){
             setupPromoTicker(promoData.state,
                     promoData.title,
                     promoData.description)
-            binding?.bookingPayNowPromoTicker?.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
+            binding?.bookingPayNowPromoTicker?.chevronIcon = resourcescommonR.drawable.ic_system_action_close_grayscale_24
         }
 
         if(hotelCart.property.isDirectPayment){
@@ -557,7 +560,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             binding?.bookingPayNowPromoTicker?.state = ButtonPromoCheckoutView.State.ACTIVE
             view?.let { v ->
                 Toaster.build(v, getString(R.string.hotel_error_cancel_promo), Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
-                        getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                        getString(resourcescommonR.string.general_label_ok)).show()
             }
         }
     }
@@ -599,7 +602,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         }
         binding?.tvRoomEstimatedPriceLabel?.text = getString(priceLabelResId)
         binding?.tvRoomEstimatedPrice?.text = price
-        context?.run { binding?.tvRoomEstimatedPrice?.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_YN500)) }
+        context?.run { binding?.tvRoomEstimatedPrice?.setTextColor(ContextCompat.getColor(this, unifyprinciplesR.color.Unify_YN500)) }
     }
 
     private fun setupImportantNotes(property: HotelPropertyData) {
@@ -618,7 +621,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
             context?.run {
-                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN100)),
+                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, unifyprinciplesR.color.Unify_GN100)),
                         spannableString.length - expandNotesLabel.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
 
@@ -744,6 +747,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
         private const val REGEX_IS_ALPHANUMERIC_ONLY = "^[a-zA-Z\\s]*$"
         const val POLICY_VIEW_TEXT_SIZE = 14f
+        const val INFO_CONTAINER_BOTTOM_MARGIN = 16
 
 
         fun getInstance(cartId: String): HotelBookingFragment =

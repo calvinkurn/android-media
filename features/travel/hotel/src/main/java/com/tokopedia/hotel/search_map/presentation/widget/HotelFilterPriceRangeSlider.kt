@@ -2,15 +2,16 @@ package com.tokopedia.hotel.search_map.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.util.CurrencyEnum
 import com.tokopedia.hotel.common.util.CurrencyTextWatcher
+import com.tokopedia.hotel.databinding.LayoutHotelFilterPriceRangeSliderBinding
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.RangeSliderUnify
-import kotlinx.android.synthetic.main.layout_hotel_filter_price_range_slider.view.*
 import kotlin.math.ceil
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by jessica on 31/03/20
@@ -19,85 +20,88 @@ import kotlin.math.ceil
 class HotelFilterPriceRangeSlider @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
+    private val binding = LayoutHotelFilterPriceRangeSliderBinding.inflate(
+        LayoutInflater.from(context),
+        this,
+        true
+    )
+
     var maxBound = 0
     private lateinit var minCurrencyTextWatcher: CurrencyTextWatcher
     private lateinit var maxCurrencyTextWatcher: CurrencyTextWatcher
 
     var onValueChangedListener: OnValueChangedListener? = null
 
-    init {
-        View.inflate(context, R.layout.layout_hotel_filter_price_range_slider, this)
-    }
-
     fun initView(selectedMinPrice: Int, selectedMaxPrice: Int, maxBound: Int) {
-        this.maxBound = maxBound
+        with(binding) {
+            this@HotelFilterPriceRangeSlider.maxBound = maxBound
 
-        if (::minCurrencyTextWatcher.isInitialized) {
-            min_value.removeTextChangedListener(minCurrencyTextWatcher)
-        }
-        minCurrencyTextWatcher = CurrencyTextWatcher(min_value, CurrencyEnum.RP)
-        min_value.addTextChangedListener(minCurrencyTextWatcher)
-        min_value.setText(selectedMinPrice.toString())
+            if (::minCurrencyTextWatcher.isInitialized) {
+                minValue.removeTextChangedListener(minCurrencyTextWatcher)
+            }
+            minCurrencyTextWatcher = CurrencyTextWatcher(minValue, CurrencyEnum.RP)
+            minValue.addTextChangedListener(minCurrencyTextWatcher)
+            minValue.setText(selectedMinPrice.toString())
 
-        if (::maxCurrencyTextWatcher.isInitialized) {
-            max_value.removeTextChangedListener(maxCurrencyTextWatcher)
-        }
-        maxCurrencyTextWatcher = CurrencyTextWatcher(max_value, CurrencyEnum.RP)
-        max_value.addTextChangedListener(maxCurrencyTextWatcher)
+            if (::maxCurrencyTextWatcher.isInitialized) {
+                maxValue.removeTextChangedListener(maxCurrencyTextWatcher)
+            }
+            maxCurrencyTextWatcher = CurrencyTextWatcher(maxValue, CurrencyEnum.RP)
+            maxValue.addTextChangedListener(maxCurrencyTextWatcher)
 
-        if (selectedMaxPrice == 0 || selectedMaxPrice == maxBound) maxCurrencyTextWatcher.stringFormat = resources.getString(R.string.hotel_search_filter_max_string_format_with_plus)
-        if (selectedMaxPrice != 0) max_value.setText(selectedMaxPrice.toString())
-        else max_value.setText(maxBound.toString())
+            if (selectedMaxPrice == 0 || selectedMaxPrice == maxBound) maxCurrencyTextWatcher.stringFormat = resources.getString(R.string.hotel_search_filter_max_string_format_with_plus)
+            if (selectedMaxPrice != 0) maxValue.setText(selectedMaxPrice.toString())
+            else maxValue.setText(maxBound.toString())
 
-        min_label.text = resources.getString(R.string.hotel_search_filter_price_min_label)
-        max_label.text = resources.getString(R.string.hotel_search_filter_price_max_label)
+            minLabel.text = resources.getString(R.string.hotel_search_filter_price_min_label)
+            maxLabel.text = resources.getString(R.string.hotel_search_filter_price_max_label)
 
-        seekbar_background.activeRailColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN300)
-        seekbar_background.activeBackgroundRailColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN50)
-        seekbar_background.activeKnobColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+            seekbarBackground.activeRailColor = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN300)
+            seekbarBackground.activeBackgroundRailColor = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN50)
+            seekbarBackground.activeKnobColor = ContextCompat.getColor(context, unifyprinciplesR.color.Unify_GN500)
 
-        seekbar_background.updateEndValue(getPositionFromMaxValue(maxBound))
-        seekbar_background.setInitialValue(getPositionFromMinValue(selectedMinPrice), getPositionFromMaxValue(selectedMaxPrice))
+            seekbarBackground.updateEndValue(getPositionFromMaxValue(maxBound))
+            seekbarBackground.setInitialValue(getPositionFromMinValue(selectedMinPrice), getPositionFromMaxValue(selectedMaxPrice))
 
-        seekbar_background.onSliderMoveListener = object : RangeSliderUnify.OnSliderMoveListener {
-            override fun onSliderMove(p0: Pair<Int, Int>) {
-                val (start, end) = p0
-                var endValue = 0
-                var startValue = 0
+            seekbarBackground.onSliderMoveListener = object : RangeSliderUnify.OnSliderMoveListener {
+                override fun onSliderMove(p0: Pair<Int, Int>) {
+                    val (start, end) = p0
+                    var endValue = 0
+                    var startValue = 0
 
-                if (start < ONE_HUNDRED) {
-                    startValue = (start * ONE_THOUSAND)
+                    if (start < ONE_HUNDRED) {
+                        startValue = (start * ONE_THOUSAND)
+                    }
+                    if (start in ONE_HUNDRED..(STEP_190 + 1)) {
+                        startValue = ((start - STEP_100) * TEN_THOUSAND) + ONE_HUNDRED_THOUSAND
+                    }
+                    if (start in STEP_190..(STEP_280 + 1)) {
+                        startValue = ((start - STEP_190) * ONE_HUNDRED_THOUSAND) + ONE_MILLION
+                    }
+                    if (start > STEP_280) {
+                        startValue = ((start - STEP_280) * ONE_MILLION) + TEN_MILLION
+                    }
+
+                    if (end < (STEP_99)) {
+                        endValue = (ceil(end * (1 - (MIN_BOUND / ONE_HUNDRED_THOUSAND.toFloat()))).toInt() * ONE_THOUSAND) + MIN_BOUND
+                    }
+                    if (end in (STEP_99)..STEP_190) {
+                        endValue = ((end - STEP_99) * TEN_THOUSAND) + ONE_HUNDRED_THOUSAND
+                    }
+                    if (end in (STEP_189)..STEP_280) {
+                        endValue = ((end - STEP_189) * ONE_HUNDRED_THOUSAND) + ONE_MILLION
+                    }
+                    if (end >= STEP_280) {
+                        endValue = ((end - STEP_279) * ONE_MILLION) + TEN_MILLION
+                    }
+
+                    onValueChangedListener?.onValueChanged(startValue, endValue)
+
+                    minValue.setText(startValue.toString())
+                    if (endValue >= maxBound) maxCurrencyTextWatcher.stringFormat = resources.getString(R.string.hotel_search_filter_max_string_format_with_plus)
+                    else maxCurrencyTextWatcher.stringFormat = resources.getString(R.string.hotel_search_filter_max_string_format)
+                    maxValue.setText(endValue.toString())
                 }
-                if (start in ONE_HUNDRED..(STEP_190 + 1)) {
-                    startValue = ((start - STEP_100) * TEN_THOUSAND) + ONE_HUNDRED_THOUSAND
-                }
-                if (start in STEP_190..(STEP_280 + 1)) {
-                    startValue = ((start - STEP_190) * ONE_HUNDRED_THOUSAND) + ONE_MILLION
-                }
-                if (start > STEP_280) {
-                    startValue = ((start - STEP_280) * ONE_MILLION) + TEN_MILLION
-                }
-
-                if (end < (STEP_99)) {
-                    endValue = (ceil(end * (1 - (MIN_BOUND / ONE_HUNDRED_THOUSAND.toFloat()))).toInt() * ONE_THOUSAND) + MIN_BOUND
-                }
-                if (end in (STEP_99)..STEP_190) {
-                    endValue = ((end - STEP_99) * TEN_THOUSAND) + ONE_HUNDRED_THOUSAND
-                }
-                if (end in (STEP_189)..STEP_280) {
-                    endValue = ((end - STEP_189) * ONE_HUNDRED_THOUSAND) + ONE_MILLION
-                }
-                if (end >= STEP_280) {
-                    endValue = ((end - STEP_279) * ONE_MILLION) + TEN_MILLION
-                }
-
-                onValueChangedListener?.onValueChanged(startValue, endValue)
-
-                min_value.setText(startValue.toString())
-                if (endValue >= maxBound) maxCurrencyTextWatcher.stringFormat = resources.getString(R.string.hotel_search_filter_max_string_format_with_plus)
-                else maxCurrencyTextWatcher.stringFormat = resources.getString(R.string.hotel_search_filter_max_string_format)
-                max_value.setText(endValue.toString())
-
             }
         }
     }

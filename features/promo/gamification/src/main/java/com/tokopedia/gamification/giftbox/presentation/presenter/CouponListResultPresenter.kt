@@ -19,35 +19,38 @@ class CouponListResultPresenter @Inject constructor(val context: Context,
                                                     @Named(IO) val workerDispatcher: CoroutineDispatcher,
                                                     @Named(MAIN) val uiDispatcher: CoroutineDispatcher
 ) : CoroutineScope {
+    companion object {
+        const val HTTP_STATUS_OK = "200"
+    }
+
+    private val customToast: CustomToast = CustomToast
+
     override val coroutineContext: CoroutineContext = workerDispatcher
-    private val HTTP_STATUS_OK = "200"
 
     fun autoApply(code: String, autoApplyMessage: String?) {
         launchCatchError(block = {
             val map = autoApplyUseCase.getQueryParams(code)
             val response = autoApplyUseCase.getResponse(map)
-            if (response != null) {
-                withContext(uiDispatcher) {
-                    showAutoApplyMessage(response, autoApplyMessage)
-                }
+            withContext(uiDispatcher) {
+                showAutoApplyMessage(response, autoApplyMessage)
             }
         }, onError = {})
     }
 
-    fun showAutoApplyMessage(autoApplyResponse: AutoApplyResponse, autoApplyMessage: String?) {
+    private fun showAutoApplyMessage(autoApplyResponse: AutoApplyResponse, autoApplyMessage: String?) {
         val code = autoApplyResponse.tokopointsSetAutoApply?.resultStatus?.code
-        val messageList = autoApplyResponse.tokopointsSetAutoApply?.resultStatus?.message
+        val message = autoApplyResponse.tokopointsSetAutoApply?.resultStatus?.message?.firstOrNull().orEmpty()
         if (code == HTTP_STATUS_OK) {
             if (!autoApplyMessage.isNullOrEmpty()) {
-                CustomToast.show(context, autoApplyMessage)
+                customToast.show(context, autoApplyMessage)
             } else {
-                if (!messageList.isNullOrEmpty()) {
-                    CustomToast.show(context, messageList[0])
+                if (message.isNotEmpty()) {
+                    customToast.show(context, message)
                 }
             }
         } else {
-            if (!messageList.isNullOrEmpty()) {
-                CustomToast.show(context, messageList[0], isError = true)
+            if (message.isNotEmpty()) {
+                customToast.show(context, message, isError = true)
             }
         }
     }
