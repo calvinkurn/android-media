@@ -42,64 +42,53 @@ class MediaReviewUseCase @Inject constructor(
         const val QUERY_NAME = "MediaReviewUseCaseQuery"
         const val QUERY = """
             query getMediaReview(${'$'}productID: String!, ${'$'}page: Int!, ${'$'}limit: Int!) {
-              productrevGetReviewImage(productID: ${'$'}productID, page: ${'$'}page, limit: ${'$'}limit){
+              productrevGetProductReviewList(productID: ${'$'}productID, page: ${'$'}page, limit: ${'$'}limit){
                 list {
-                  imageID
                   feedbackID
-                  imageSiblings
-                  imageNumber
-                  videoID
-                }
-                detail {
-                  review {
-                    shopID
-                    user {
-                      userID
-                      fullName
-                      image
-                      url
-                      label
-                    }
-                    feedbackID
-                    variantName
-                    description
-                    rating
-                    review
+                  variantName
+                  message
+                  productRating
+                  reviewCreateTime
+                  reviewCreateTimestamp
+                  isAnonymous
+                  isReportable
+                  reviewResponse {
+                    message
                     createTime
-                    createTimestamp
-                    updateTime
-                    updateTimestamp
-                    isUpdated
-                    isReportable
-                    isAnonymous
-                    isLiked
-                    totalLike
-                    userStats {
-                      key
-                      formatted
-                      count
-                    }
                   }
-                  image {
-                    attachmentID
-                    thumbnailURL
-                    fullsizeURL
-                    description
-                    feedbackID
-                  }
-                  video { 
-                    attachmentID
+                  user {
+                    userID
+                    fullName
+                    image
                     url
-                    feedbackID
+                    label
                   }
-                  imageCountFmt
-                  imageCount 
-                  mediaCountFmt
-                  mediaCount
-                  mediaCountTitle
+                  imageAttachments {
+                    attachmentID
+                    imageThumbnailUrl
+                    imageUrl
+                  }
+                  videoAttachments { 
+                    attachmentID
+                    videoUrl
+                  }
+                  likeDislike {
+                    totalLike
+                    likeStatus
+                  }
+                  stats {
+                    key
+                    formatted
+                    count
+                  }
+                }
+                shop {
+                  shopID
+                  name
+                  url
+                  image
                 }
                 hasNext
-                hasPrev
               }
             }
         """

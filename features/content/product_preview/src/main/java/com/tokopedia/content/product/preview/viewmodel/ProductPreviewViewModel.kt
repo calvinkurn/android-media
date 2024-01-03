@@ -1,6 +1,12 @@
 package com.tokopedia.content.product.preview.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
+import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
@@ -21,12 +27,34 @@ import kotlinx.coroutines.flow.update
  * @author by astidhiyaa on 06/12/23
  */
 class ProductPreviewViewModel @AssistedInject constructor(
-    @Assisted private val param: EntrySource
+    @Assisted private val param: EntrySource,
+    private val repo: ProductPreviewRepository,
+    private val userSessionInterface: UserSessionInterface,
 ) : ViewModel() {
 
     @AssistedFactory
     interface Factory {
         fun create(param: EntrySource): ProductPreviewViewModel
+    }
+
+    //TODO: add uiState
+    //TODO: add uiEvent
+
+    private val _review = MutableStateFlow(emptyList<ReviewUiModel>())
+    val review : Flow<List<ReviewUiModel>>
+        get() = _review //TODO: add state
+
+    fun onAction(action: ProductPreviewAction) {
+        when(action) {
+            ProductPreviewAction.FetchReview -> getReview()
+            else -> {}
+        }
+    }
+
+    private fun getReview() {
+        viewModelScope.launchCatchError(block = {
+            _review.value = repo.getReview(param.productId, 1) //TODO: add pagination
+        }) {}
     }
 
     private val _productContentState = MutableStateFlow(emptyList<ContentUiModel>())
