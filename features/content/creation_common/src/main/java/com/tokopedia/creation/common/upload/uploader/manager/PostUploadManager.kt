@@ -9,6 +9,7 @@ import com.tokopedia.createpost.common.domain.usecase.SubmitPostUseCase
 import com.tokopedia.createpost.common.view.util.FeedSellerAppReviewHelper
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.creation.common.upload.model.CreationUploadData
+import com.tokopedia.creation.common.upload.uploader.notification.PostUploadNotificationManager
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -19,9 +20,10 @@ import dagger.assisted.AssistedInject
 class PostUploadManager @AssistedInject constructor(
     @ApplicationContext private val appContext: Context,
     @Assisted private val uploadData: CreationUploadData.Post,
+    private val notificationManager: PostUploadNotificationManager,
     private val submitPostUseCase: SubmitPostUseCase,
     private val sellerAppReviewHelper: FeedSellerAppReviewHelper,
-) : CreationUploadManager(null) {
+) : CreationUploadManager(notificationManager) {
 
     @AssistedFactory
     interface Factory {
