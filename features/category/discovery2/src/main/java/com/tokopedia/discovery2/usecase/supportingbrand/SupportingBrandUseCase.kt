@@ -15,7 +15,6 @@ class SupportingBrandUseCase @Inject constructor(private val repository: Support
 
     companion object {
         const val BRAND_PER_PAGE = 10
-        private const val PAGE_START = 1
     }
 
     suspend fun loadPageComponents(
@@ -30,12 +29,17 @@ class SupportingBrandUseCase @Inject constructor(private val repository: Support
             it.properties?.let { properties ->
                 if (properties.limitProduct && properties.limitNumber.toIntOrZero() ==
                     it.getComponentsItem()?.size
-                ) return false
+                ) {
+                    return false
+                }
             }
             val isDynamic = it.properties?.dynamic ?: false
             val formattedComponentId =
-                if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty())
-                    component.dynamicOriginalId!! else componentId
+                if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty()) {
+                    component.dynamicOriginalId!!
+                } else {
+                    componentId
+                }
             val (shopCardListData, nextPage) = repository.getData(
                 formattedComponentId,
                 pageEndPoint,
@@ -46,11 +50,15 @@ class SupportingBrandUseCase @Inject constructor(private val repository: Support
                     it.userAddressData,
                     it.selectedFilters,
                     it.selectedSort,
-                    paramWithoutRpc,
+                    paramWithoutRpc
                 )
             )
             it.showVerticalLoader = shopCardListData.isNotEmpty()
-            it.setComponentsItem(shopCardListData, component.tabName)
+            it.setComponentsItem(
+                listComponents = it.appendNextPageData(shopCardListData),
+                tabName = component.tabName
+            )
+
             it.noOfPagesLoaded = it.pageLoadedCounter
             Timber.d(
                 "Next page -> $nextPage"
@@ -58,10 +66,17 @@ class SupportingBrandUseCase @Inject constructor(private val repository: Support
             it.nextPageKey = nextPage
             if (shopCardListData.isEmpty()) return false else it.pageLoadedCounter += 1
             it.verticalProductFailState = false
-            (it.getComponentsItem() as ArrayList<ComponentsItem>).addAll(shopCardListData)
             return true
         }
         return false
+    }
+
+    private fun ComponentsItem.appendNextPageData(
+        data: List<ComponentsItem>
+    ): List<ComponentsItem> {
+        val existing = this.getComponentsItem() ?: emptyList()
+
+        return existing + data
     }
 
     @SuppressLint("PII Data Exposure")
