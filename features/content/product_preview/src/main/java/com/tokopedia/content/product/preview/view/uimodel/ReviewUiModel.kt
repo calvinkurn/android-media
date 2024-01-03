@@ -1,6 +1,7 @@
 package com.tokopedia.content.product.preview.view.uimodel
 
-import com.tokopedia.content.common.report_content.model.ContentMenuItem
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
 /**
  * @author by astidhiyaa on 06/12/23
