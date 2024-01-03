@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -40,7 +41,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
@@ -1251,7 +1251,8 @@ class CartItemViewHolder(
                 qtyState.value = if (it.isFocused) QtyState.Focus else QtyState.Enabled
             }
             keyboardOptions.value = KeyboardOptions(
-                imeAction = ImeAction.Done
+                imeAction = ImeAction.Done,
+                keyboardType = KeyboardType.Number
             )
             keyboardActions.value = KeyboardActions(
                 onDone = {
@@ -1292,12 +1293,11 @@ class CartItemViewHolder(
                 configState.value = configState.value.copy(
                     qtyMinusButton = getQuantityEditorMinButton(qty, data)
                 )
-                val newQty = qty.toString().replace(".", "").toIntOrZero()
                 if (qtyState.value !is QtyState.Focus) {
-                    validateQty(newQty, data)
+                    validateQty(qty, data)
                     if (qty != 0) {
                         lastQty = qty
-                        actionListener?.onCartItemQuantityChanged(data, newQty)
+                        actionListener?.onCartItemQuantityChanged(data, qty)
                         handleRefreshType(data, viewHolderListener)
                     }
                 } else {
