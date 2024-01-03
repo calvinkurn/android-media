@@ -2,33 +2,34 @@ package com.tokopedia.product.detail.view.viewholder.campaign.ui
 
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.databinding.PartialProductNotifyMeBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.ProductNotifyMeUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.CampaignRibbon
 
 class ProductNotifyMeViewHolder(
     private val view: View,
     private val listener: DynamicProductDetailListener
-) : AbstractViewHolder<ProductNotifyMeUiModel>(view) {
+) : ProductDetailPageViewHolder<ProductNotifyMeUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.partial_product_notify_me
     }
 
     private val binding = PartialProductNotifyMeBinding.bind(view)
-    private val campaignRibbon by lazyThreadSafetyNone { binding.upcomingCampaignRibbon }
 
     init {
-        campaignRibbon.init(
-            onCampaignEnded = { listener.showAlertCampaignEnded() },
+        binding.upcomingCampaignRibbon.init(
+            onCampaignEnded = {
+                binding.upcomingCampaignRibbon.setLayoutHeight(Int.ZERO)
+                listener.showAlertCampaignEnded()
+            },
             onRefreshPage = listener::refreshPage,
             onRemindMeClick = { data, tracker ->
                 listener.onNotifyMeClicked(data, tracker)
@@ -36,32 +37,43 @@ class ProductNotifyMeViewHolder(
         )
     }
 
-    override fun bind(element: ProductNotifyMeUiModel) {
-        if (element.shouldShow) {
-            showContainer()
-            // render upcoming campaign ribbon
-            val trackDataModel = ComponentTrackDataModel(element.type, element.name, bindingAdapterPosition.inc())
-            campaignRibbon.setComponentTrackDataModel(trackDataModel)
-            campaignRibbon.setData(upComingData = element.data.copy(isOwner = listener.isOwner()), onGoingData = null)
-            view.addOnImpressionListener(
-                holder = element.impressHolder,
-                holders = listener.getImpressionHolders(),
-                name = element.name,
-                useHolders = listener.isRemoteCacheableActive()
-            ) {
-                listener.onImpressComponent(getComponentTrackData(element))
-            }
-        } else {
-            hideContainer()
+    override fun bind(element: ProductNotifyMeUiModel) = with(binding.upcomingCampaignRibbon) {
+        if (!element.shouldShow) {
+            hideComponent()
+            return@with
+        }
+        setupCampaignRibbon(element)
+        showComponent()
+        setImpression(element)
+    }
+
+    private fun CampaignRibbon.setImpression(
+        element: ProductNotifyMeUiModel
+    ) {
+        addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = element.name,
+            useHolders = listener.isRemoteCacheableActive()
+        ) {
+            listener.onImpressComponent(getComponentTrackData(element))
         }
     }
 
-    private fun showContainer() = with(binding) {
-        upcomingCampaignRibbon.setLayoutHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
+    private fun CampaignRibbon.setupCampaignRibbon(element: ProductNotifyMeUiModel) {
+        setComponentTrackDataModel(getComponentTrackData(element))
+        setData(
+            upComingData = element.data.copy(isOwner = listener.isOwner()),
+            onGoingData = null
+        )
     }
 
-    private fun hideContainer() = with(binding) {
-        upcomingCampaignRibbon.setLayoutHeight(Int.ZERO)
+    private fun CampaignRibbon.hideComponent() {
+        setLayoutHeight(Int.ZERO)
+    }
+
+    private fun CampaignRibbon.showComponent() {
+        setLayoutHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
     override fun bind(element: ProductNotifyMeUiModel?, payloads: MutableList<Any>) {
@@ -76,8 +88,4 @@ class ProductNotifyMeViewHolder(
             }
         }
     }
-
-    private fun getComponentTrackData(
-        element: ProductNotifyMeUiModel
-    ) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
 }

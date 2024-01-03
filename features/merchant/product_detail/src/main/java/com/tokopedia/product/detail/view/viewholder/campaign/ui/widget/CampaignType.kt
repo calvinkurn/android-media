@@ -1,13 +1,15 @@
 package com.tokopedia.product.detail.view.viewholder.campaign.ui.widget
 
-import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.upcoming.UpcomingCampaignComposeUiModel
+import androidx.compose.runtime.Immutable
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.ongoing.OngoingCampaignComposeUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.upcoming.UpcomingCampaignComposeUiModel
 
 /**
  * Created by yovi.putra on 21/12/23"
  * Project name: android-tokopedia-core
  **/
 
+@Immutable
 sealed interface CampaignType {
 
     data class OnGoing(
@@ -33,4 +35,6 @@ sealed interface CampaignType {
         val logoUrl: String,
         val backgroundColorString: String
     ) : CampaignType
+
+    object None : CampaignType
 }

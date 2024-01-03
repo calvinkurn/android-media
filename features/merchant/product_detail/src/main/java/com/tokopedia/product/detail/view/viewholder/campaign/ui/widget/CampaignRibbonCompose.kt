@@ -38,5 +38,8 @@ internal fun CampaignRibbonCompose(type: CampaignType) = NestTheme {
             logoUrl = type.logoUrl,
             backgroundColorString = type.backgroundColorString
         )
+
+        else -> {
+        }
     }
 }

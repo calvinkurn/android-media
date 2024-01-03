@@ -8,12 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
@@ -34,7 +33,7 @@ import com.tokopedia.product.detail.databinding.WidgetCampaignRibbonType1LayoutB
 import com.tokopedia.product.detail.databinding.WidgetCampaignRibbonType2LayoutBinding
 import com.tokopedia.product.detail.databinding.WidgetCampaignRibbonType3LayoutBinding
 import com.tokopedia.product.detail.view.util.isInflated
-import com.tokopedia.product.detail.view.util.setContentSafety
+import com.tokopedia.product.detail.view.util.setContentUi
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.UpcomingCampaignUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.ongoing.OngoingCampaignComposeUiModel
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.upcoming.UpcomingCampaignComposeUiModel
@@ -43,6 +42,9 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.util.*
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -83,23 +85,29 @@ class CampaignRibbon @JvmOverloads constructor(
      */
     private var _rootBinding: WidgetCampaignRibbonLayoutBinding? = null
 
-    private val campaignType1Binding by lazy {
+    private val campaignType1Binding by lazyThreadSafetyNone {
         _rootBinding?.campaignRibbonType1?.inflate()?.let {
             WidgetCampaignRibbonType1LayoutBinding.bind(it)
         }
     }
 
-    private val campaignType2Binding by lazy {
+    private val campaignType2Binding by lazyThreadSafetyNone {
         _rootBinding?.campaignRibbonType2?.inflate()?.let {
             WidgetCampaignRibbonType2LayoutBinding.bind(it)
         }
     }
 
-    private val campaignType3Binding by lazy {
+    private val campaignType3Binding by lazyThreadSafetyNone {
         _rootBinding?.campaignRibbonType3?.inflate()?.let {
             WidgetCampaignRibbonType3LayoutBinding.bind(it)
         }
     }
+
+    /**
+     * UI State for Campign Compose
+     */
+    private val _campaignTypeState = MutableStateFlow<CampaignType>(CampaignType.None)
+    val campaignTypeState get() = _campaignTypeState.asStateFlow()
 
     /**
      * data tracker
@@ -120,10 +128,19 @@ class CampaignRibbon @JvmOverloads constructor(
     init {
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.widget_campaign_ribbon_layout, this, true)
-        _rootBinding = WidgetCampaignRibbonLayoutBinding.bind(view).apply {
-            campaignRibbonCompose.setViewCompositionStrategy(
-                ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
-            )
+        _rootBinding = WidgetCampaignRibbonLayoutBinding.bind(view)
+        setupCampaignCompose()
+    }
+
+    private fun setupCampaignCompose() {
+        val binding = _rootBinding ?: return
+        binding.campaignRibbonCompose.setContentUi {
+            val type = campaignTypeState.collectAsStateWithLifecycle()
+            binding.campaignRibbonCompose.isVisible = type.value != CampaignType.None
+
+            NestTheme {
+                CampaignRibbonCompose(type = type.value)
+            }
         }
     }
 
@@ -146,13 +163,17 @@ class CampaignRibbon @JvmOverloads constructor(
      */
     fun setData(onGoingData: ProductContentMainData?, upComingData: UpcomingCampaignUiModel?) {
         if (onGoingData != null) {
-            renderOnGoingCampaign(onGoingData = onGoingData)
+            renderOnGoingCampaignLegacy(onGoingData = onGoingData)
         } else if (upComingData != null) {
             renderUpComingCampaignRibbon(upComing = upComingData)
         }
     }
 
-    private fun renderOnGoingCampaign(onGoingData: ProductContentMainData) {
+    /**
+     * Ongoing Campaign Legacy
+     */
+    // region ongoing campaign legacy
+    private fun renderOnGoingCampaignLegacy(onGoingData: ProductContentMainData) {
         val identifier = onGoingData.campaign.campaignIdentifier
         if (identifier == NO_CAMPAIGN) {
             hideComponent()
@@ -243,34 +264,39 @@ class CampaignRibbon @JvmOverloads constructor(
 
     // show upcoming structure
     private fun showCampaignRibbonType1() {
-        val root = _rootBinding ?: return
-
-        root.showCampaignType1()
-        root.showCampaignType2(show = false)
-        root.showCampaignType3(show = false)
-        root.campaignRibbonCompose.hide()
+        _rootBinding?.apply {
+            showCampaignType1()
+            showCampaignType2(show = false)
+            showCampaignType3(show = false)
+            campaignRibbonCompose.hide()
+        }
     }
 
     // show ongoing structure
     private fun showCampaignRibbonType2() {
-        val root = _rootBinding ?: return
-
-        root.showCampaignType1(show = false)
-        root.showCampaignType2()
-        root.showCampaignType3(show = false)
-        root.campaignRibbonCompose.hide()
+        _rootBinding?.apply {
+            showCampaignType1(show = false)
+            showCampaignType2()
+            showCampaignType3(show = false)
+            campaignRibbonCompose.hide()
+        }
     }
 
     // show thematic only, new user, slash price structure
     private fun showCampaignRibbonType3() {
-        val root = _rootBinding ?: return
-
-        root.showCampaignType1(show = false)
-        root.showCampaignType2(show = false)
-        root.showCampaignType3()
-        root.campaignRibbonCompose.hide()
+        _rootBinding?.apply {
+            showCampaignType1(show = false)
+            showCampaignType2(show = false)
+            showCampaignType3()
+            campaignRibbonCompose.hide()
+        }
     }
+    // endregion ongoing campaign legacy
 
+    /**
+     * Upcoming Campaign Legacy
+     */
+    // region upcoming legacy
     private fun renderTimerUpcoming(upcomingData: UpcomingCampaignUiModel) {
         val campaignType1 = campaignType1Binding ?: return
 
@@ -315,6 +341,7 @@ class CampaignRibbon @JvmOverloads constructor(
             hideComponent()
         }
     }
+    // endregion upcoming legacy
 
     // ONGOING CAMPAIGN - use campaign ribbon structure type 2
     private fun renderOnGoingCampaignRibbon(onGoingData: ProductContentMainData) {
@@ -484,7 +511,9 @@ class CampaignRibbon @JvmOverloads constructor(
         val onGoing = CampaignType.OnGoing(data = onGoingCampaign) {
             onCampaignEnded.invoke(data)
         }
-        renderCampaignRibbonCompose(type = onGoing)
+
+        // renderCampaignRibbonCompose(type = onGoing)
+        _campaignTypeState.value = onGoing
     }
 
     /**
@@ -513,7 +542,8 @@ class CampaignRibbon @JvmOverloads constructor(
                 backgroundColorString = thematic.background
             )
         }
-        renderCampaignRibbonCompose(type = type)
+        // renderCampaignRibbonCompose(type = type)
+        _campaignTypeState.value = type
     }
 
     /**
@@ -556,7 +586,8 @@ class CampaignRibbon @JvmOverloads constructor(
                 onRemindMeClick.invoke(data, trackDataModel ?: ComponentTrackDataModel())
             }
         )
-        renderCampaignRibbonCompose(type = type)
+        // renderCampaignRibbonCompose(type = type)
+        _campaignTypeState.value = type
     }
 
     /**
@@ -597,14 +628,4 @@ class CampaignRibbon @JvmOverloads constructor(
         }
     }
     // endregion upcoming campaign
-
-    private fun renderCampaignRibbonCompose(type: CampaignType) {
-        val binding = _rootBinding ?: return
-        binding.campaignRibbonCompose.show()
-        binding.campaignRibbonCompose.setContentSafety {
-            NestTheme {
-                CampaignRibbonCompose(type = type)
-            }
-        }
-    }
 }

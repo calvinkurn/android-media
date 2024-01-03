@@ -10,6 +10,7 @@ import com.tokopedia.product.detail.databinding.ItemCampaignBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductDetailPageViewHolder
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.OngoingCampaignUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.CampaignRibbon
 
 class OngoingCampaignViewHolder(
     view: View,
@@ -26,7 +27,7 @@ class OngoingCampaignViewHolder(
     init {
         campaignRibbon.init(
             onCampaignEnded = {
-                campaignRibbon.setLayoutHeight(Int.ZERO)
+                campaignRibbon.hideComponent()
                 listener.showAlertCampaignEnded()
             },
             onRefreshPage = listener::refreshPage
@@ -34,20 +35,31 @@ class OngoingCampaignViewHolder(
     }
 
     override fun bind(element: OngoingCampaignUiModel) = with(campaignRibbon) {
-        if (element.shouldShow) {
-            campaignRibbon.setLayoutHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
-            campaignRibbon.setData(onGoingData = element.data, upComingData = null)
-
-            itemView.addOnImpressionListener(
-                holder = element.impressHolder,
-                holders = listener.getImpressionHolders(),
-                name = element.data?.hashCode().toString(),
-                useHolders = listener.isRemoteCacheableActive()
-            ) {
-                listener.onImpressComponent(getComponentTrackData(element))
-            }
-        } else {
-            campaignRibbon.setLayoutHeight(Int.ZERO)
+        if (!element.shouldShow) {
+            hideComponent()
+            return@with
         }
+        setData(onGoingData = element.data, upComingData = null)
+        showComponent()
+        setImpression(element)
+    }
+
+    private fun setImpression(element: OngoingCampaignUiModel) {
+        itemView.addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = element.data?.hashCode().toString(),
+            useHolders = listener.isRemoteCacheableActive()
+        ) {
+            listener.onImpressComponent(getComponentTrackData(element))
+        }
+    }
+
+    private fun CampaignRibbon.showComponent() {
+        setLayoutHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
+    }
+
+    private fun CampaignRibbon.hideComponent() {
+        setLayoutHeight(Int.ZERO)
     }
 }
