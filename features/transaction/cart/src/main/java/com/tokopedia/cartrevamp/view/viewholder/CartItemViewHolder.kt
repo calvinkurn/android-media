@@ -620,16 +620,17 @@ class CartItemViewHolder(
     }
 
     private fun renderProductActionSection(data: CartItemHolderData) {
+        val quantityEditorView = getQuantityEditorView()
         if (data.isBundlingItem) {
             if (data.isMultipleBundleProduct && (data.bundlingItemPosition == BUNDLING_ITEM_HEADER || data.bundlingItemPosition == CartItemHolderData.BUNDLING_ITEM_DEFAULT)) {
-                binding.qtyEditorProduct.gone()
+                quantityEditorView.gone()
             } else {
-                binding.qtyEditorProduct.show()
+                quantityEditorView.show()
             }
             binding.buttonChangeNote.show()
             binding.buttonToggleWishlist.show()
         } else {
-            binding.qtyEditorProduct.show()
+            quantityEditorView.show()
             binding.buttonChangeNote.show()
             binding.buttonToggleWishlist.show()
         }
@@ -1366,13 +1367,9 @@ class CartItemViewHolder(
 
     private fun renderQuantityWidget(data: CartItemHolderData) {
         if (isUsingNewQuantityEditor()) {
-            binding.qtyEditorProduct.visibility = View.VISIBLE
-            binding.oldQtyEditorProduct.visibility = View.GONE
             renderQuantity(data, viewHolderListener)
         }
         else {
-            binding.qtyEditorProduct.visibility = View.INVISIBLE
-            binding.oldQtyEditorProduct.visibility = View.VISIBLE
             renderOldQuantity(data, viewHolderListener)
         }
     }
@@ -1380,7 +1377,7 @@ class CartItemViewHolder(
     private fun renderQuantity(data: CartItemHolderData, viewHolderListener: ViewHolderListener?) {
         val qtyEditorProduct = binding.qtyEditorProduct
         if (data.isError) {
-            binding.qtyEditorProduct.gone()
+            qtyEditorProduct.gone()
             return
         }
 
@@ -1913,6 +1910,10 @@ class CartItemViewHolder(
         private const val BOTTOM_DIVIDER_BMGM_MARGIN_START = 52
 
         private const val CART_MAIN_COACH_MARK = "cart_main_coach_mark"
+    }
+
+    private fun getQuantityEditorView(): View {
+        return if (isUsingNewQuantityEditor()) binding.qtyEditorProduct else binding.oldQtyEditorProduct
     }
 
     private fun isUsingNewQuantityEditor(): Boolean {
