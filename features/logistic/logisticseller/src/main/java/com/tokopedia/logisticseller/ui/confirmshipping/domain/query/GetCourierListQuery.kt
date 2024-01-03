@@ -6,8 +6,8 @@ object GetCourierListQuery : GqlQueryInterface {
 
     private const val OPERATION_NAME = "mpLogisticGetEditShippingForm"
     private val GET_COURIER_LIST_QUERY = """
-            query $OPERATION_NAME{
-              $OPERATION_NAME{
+            query $OPERATION_NAME(${'$'}deliveryIdentifier: String!){
+              $OPERATION_NAME(DeliveryIdentifier:${'$'}deliveryIdentifier){
                 data{
                   shipment{
                     shipping_max_add_fee
