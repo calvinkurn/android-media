@@ -478,12 +478,6 @@ class CatalogSwitchingComparisonFragment :
             getString(catalogR.string.catalog_message_unselect, totalUnselect.toString())
 
         view?.let {
-            val toasterUnselect = Toaster.build(
-                it,
-                errorMessage,
-                duration = Toaster.LENGTH_LONG,
-                type = Toaster.TYPE_NORMAL
-            )
             if (totalUnselect == 4) {
                 val toasterInfo = Toaster.build(
                     it,
@@ -494,12 +488,6 @@ class CatalogSwitchingComparisonFragment :
                 )
                 toasterInfo.show()
 
-                handlerDelayToaster.postDelayed({
-                    toasterInfo.dismiss()
-                    toasterUnselect.show()
-                }, DELAY_TOASTER)
-            } else {
-                toasterUnselect.show()
             }
         }
     }
