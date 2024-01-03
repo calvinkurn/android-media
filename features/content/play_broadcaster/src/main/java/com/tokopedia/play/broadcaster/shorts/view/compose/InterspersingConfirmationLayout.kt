@@ -170,7 +170,7 @@ private fun ContentPreviewSection(
                     },
             ) {
                 val coverModifier = Modifier.fillMaxSize()
-                when (val state = coverState) {
+                when (coverState) {
                     is ShortsCoverState.Loading -> {
                         NestLoader(
                             variant = NestLoaderType.Shimmer(type = NestShimmerType.Rect(8.dp)),
@@ -179,7 +179,7 @@ private fun ContentPreviewSection(
                     }
                     is ShortsCoverState.Success -> {
                         NestImage(
-                            source = ImageSource.Remote(state.uri),
+                            source = ImageSource.Remote(coverState.uri),
                             modifier = coverModifier
                         )
                     }
