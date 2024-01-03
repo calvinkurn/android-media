@@ -8,9 +8,9 @@ import com.tokopedia.shareexperience.data.util.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
 import com.tokopedia.shareexperience.ui.uistate.ShareExBottomSheetUiState
-import com.tokopedia.shareexperience.ui.uistate.ShareExFetchUiState
 import com.tokopedia.shareexperience.ui.uistate.ShareExNavigationUiState
 import com.tokopedia.shareexperience.ui.util.map
+import com.tokopedia.shareexperience.ui.util.mapError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,9 +35,15 @@ class ShareExViewModel @Inject constructor(
 
     // Cache the model from activity and body switching when chip clicked
     private var _bottomSheetModel: ShareExBottomSheetModel? = null
+    // Cache the throwable for showing error state
+    private var _fetchThrowable: Throwable? = null
 
-    private val _fetchedDataState = MutableStateFlow<ShareExFetchUiState?>(null)
-    val fetchedDataState = _fetchedDataState.asStateFlow()
+    /**
+     * This ui state only for trigger show bottomsheet
+     * Mark the data has been fetched
+     */
+    private val _fetchedDataState = MutableSharedFlow<Unit>()
+    val fetchedDataState = _fetchedDataState.asSharedFlow()
 
     private val _bottomSheetUiState = MutableStateFlow(ShareExBottomSheetUiState())
     val bottomSheetUiState = _bottomSheetUiState.asStateFlow()
@@ -88,14 +94,16 @@ class ShareExViewModel @Inject constructor(
                         id = 2150412049
                     )
                 ).catch {
-                    _fetchedDataState.value = ShareExFetchUiState(false, it)
+                    _fetchThrowable = it
+                    _fetchedDataState.emit(Unit)
                 }.collectLatest {
                     _bottomSheetModel = it
-                    _fetchedDataState.value = ShareExFetchUiState(true, null)
+                    _fetchedDataState.emit(Unit)
                 }
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
-                _fetchedDataState.value = ShareExFetchUiState(false, throwable)
+                _fetchThrowable = throwable
+                _fetchedDataState.emit(Unit)
             }
         }
     }
@@ -103,7 +111,15 @@ class ShareExViewModel @Inject constructor(
     private fun getShareBottomSheetData() {
         viewModelScope.launch {
             try {
-                val uiResult = _bottomSheetModel?.map()
+                val uiResult = when {
+                    (_bottomSheetModel != null) -> {
+                        _bottomSheetModel?.map()
+                    }
+                    (_fetchThrowable != null) -> {
+                        _fetchThrowable?.mapError()
+                    }
+                    else -> listOf()
+                }
                 _bottomSheetUiState.update { uiState ->
                     uiState.copy(
                         title = _bottomSheetModel?.title ?: "",
@@ -145,6 +161,8 @@ class ShareExViewModel @Inject constructor(
     }
 
     private fun navigateToPage(appLink: String) {
-        _navigationUiState.tryEmit(ShareExNavigationUiState(appLink))
+        viewModelScope.launch {
+            _navigationUiState.emit(ShareExNavigationUiState(appLink))
+        }
     }
 }

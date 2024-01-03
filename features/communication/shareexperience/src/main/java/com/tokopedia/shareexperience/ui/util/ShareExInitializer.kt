@@ -80,6 +80,12 @@ class ShareExInitializer(context: Context) {
         }
     }
 
+    fun openShareBottomSheet(
+        defaultUrl: String
+    ) {
+
+    }
+
     private fun isShareAffiliateIconEnabled(): Boolean {
         return RemoteConfigInstance.getInstance().abTestPlatform.getString(
             RollenceKey.AFFILIATE_SHARE_ICON

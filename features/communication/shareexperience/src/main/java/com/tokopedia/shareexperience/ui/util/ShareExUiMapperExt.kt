@@ -5,6 +5,7 @@ import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateRegistrationModel
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.model.ShareExAffiliateRegistrationUiModel
+import com.tokopedia.shareexperience.ui.model.ShareExErrorUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExLinkShareUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExSeparatorUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExSubtitleUiModel
@@ -104,4 +105,8 @@ private fun ShareExAffiliateRegistrationModel.hasEnoughData(): Boolean {
         this.title.isNotBlank() &&
         this.description.isNotBlank() &&
         this.appLink.isNotBlank()
+}
+
+fun Throwable.mapError(): List<Visitable<in ShareExTypeFactory>> {
+    return listOf(ShareExErrorUiModel(this))
 }

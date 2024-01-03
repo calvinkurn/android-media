@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shareexperience.ui.adapter.viewholder.ShareExAffiliateRegistrationViewHolder
+import com.tokopedia.shareexperience.ui.adapter.viewholder.ShareExErrorViewHolder
 import com.tokopedia.shareexperience.ui.adapter.viewholder.ShareExLineSeparatorViewHolder
 import com.tokopedia.shareexperience.ui.adapter.viewholder.ShareExLinkShareViewHolder
 import com.tokopedia.shareexperience.ui.adapter.viewholder.ShareExSubtitleViewHolder
@@ -15,6 +16,7 @@ import com.tokopedia.shareexperience.ui.adapter.viewholder.image.ShareExImageCar
 import com.tokopedia.shareexperience.ui.listener.ShareExAffiliateRegistrationListener
 import com.tokopedia.shareexperience.ui.listener.ShareExChannelListener
 import com.tokopedia.shareexperience.ui.listener.ShareExChipsListener
+import com.tokopedia.shareexperience.ui.listener.ShareExErrorListener
 import com.tokopedia.shareexperience.ui.listener.ShareExImageGeneratorListener
 import com.tokopedia.shareexperience.ui.model.ShareExAffiliateRegistrationUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExErrorUiModel
@@ -30,7 +32,8 @@ class ShareExTypeFactoryImpl(
     private val chipsListener: ShareExChipsListener,
     private val imageGeneratorListener: ShareExImageGeneratorListener,
     private val affiliateRegistrationListener: ShareExAffiliateRegistrationListener,
-    private val channelListener: ShareExChannelListener
+    private val channelListener: ShareExChannelListener,
+    private val errorListener: ShareExErrorListener
 ) : BaseAdapterTypeFactory(), ShareExTypeFactory {
     override fun type(uiModel: ShareExSubtitleUiModel): Int {
         return ShareExSubtitleViewHolder.LAYOUT
@@ -65,7 +68,7 @@ class ShareExTypeFactoryImpl(
     }
 
     override fun type(uiModel: ShareExErrorUiModel): Int {
-        return 0
+        return ShareExErrorViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -78,6 +81,7 @@ class ShareExTypeFactoryImpl(
             ShareExAffiliateRegistrationViewHolder.LAYOUT -> ShareExAffiliateRegistrationViewHolder(parent, affiliateRegistrationListener)
             ShareExSocialChannelsViewHolder.LAYOUT -> ShareExSocialChannelsViewHolder(parent, channelListener)
             ShareExCommonChannelsViewHolder.LAYOUT -> ShareExCommonChannelsViewHolder(parent, channelListener)
+            ShareExErrorViewHolder.LAYOUT -> ShareExErrorViewHolder(parent, errorListener)
             else -> super.createViewHolder(parent, type)
         }
     }

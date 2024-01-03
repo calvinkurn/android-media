@@ -24,6 +24,7 @@ import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactoryIm
 import com.tokopedia.shareexperience.ui.listener.ShareExAffiliateRegistrationListener
 import com.tokopedia.shareexperience.ui.listener.ShareExChannelListener
 import com.tokopedia.shareexperience.ui.listener.ShareExChipsListener
+import com.tokopedia.shareexperience.ui.listener.ShareExErrorListener
 import com.tokopedia.shareexperience.ui.listener.ShareExImageGeneratorListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -36,7 +37,8 @@ class ShareExBottomSheet :
     ShareExChipsListener,
     ShareExImageGeneratorListener,
     ShareExAffiliateRegistrationListener,
-    ShareExChannelListener {
+    ShareExChannelListener,
+    ShareExErrorListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -49,7 +51,8 @@ class ShareExBottomSheet :
                 chipsListener = this,
                 imageGeneratorListener = this,
                 affiliateRegistrationListener = this,
-                channelListener = this
+                channelListener = this,
+                errorListener = this
             )
         )
     }
@@ -160,5 +163,15 @@ class ShareExBottomSheet :
     }
 
     override fun onChannelClicked(element: ShareExChannelItemModel) {
+        //TODO
+    }
+
+    override fun onErrorActionClicked() {
+        //TODO
+        /**
+         * 1. Close bottom sheet
+         * 2. Show Activity & Loading (re-hit query)
+         * 3. Open Bottom Sheet again
+         */
     }
 }

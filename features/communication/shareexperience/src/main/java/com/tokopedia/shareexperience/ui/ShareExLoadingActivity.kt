@@ -71,17 +71,8 @@ class ShareExLoadingActivity : BaseActivity(), HasComponent<ShareExComponent> {
     }
 
     private suspend fun observeFetchedDataState() {
-        viewModel.fetchedDataState.collectLatest { uiState ->
-            uiState?.let {
-                when (it.isSuccess) {
-                    true -> {
-                        initBottomSheet()
-                    }
-                    false -> {
-                        // TODO: Error state
-                    }
-                }
-            }
+        viewModel.fetchedDataState.collectLatest {
+            initBottomSheet()
         }
     }
 
