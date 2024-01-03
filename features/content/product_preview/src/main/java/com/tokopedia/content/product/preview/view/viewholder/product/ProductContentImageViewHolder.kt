@@ -1,15 +1,19 @@
 package com.tokopedia.content.product.preview.view.viewholder.product
 
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.tokopedia.content.product.preview.data.ContentUiModel
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.product.preview.databinding.ItemProductContentImageBinding
+import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
+import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 
 class ProductContentImageViewHolder(
-    private val binding: ItemProductContentImageBinding
-) : ViewHolder(binding.root) {
+    private val binding: ItemProductContentImageBinding,
+    private val listener: ProductPreviewListener
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(content: ContentUiModel) {
         binding.ivProductContentImage.loadImage(content.url) {
@@ -29,4 +33,15 @@ class ProductContentImageViewHolder(
         }
     }
 
+    companion object {
+        fun create(parent: ViewGroup, listener: ProductPreviewListener) =
+            ProductContentImageViewHolder(
+                binding = ItemProductContentImageBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                ),
+                listener = listener
+            )
+    }
 }

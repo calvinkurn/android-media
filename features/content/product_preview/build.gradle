@@ -41,7 +41,11 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
 
+    implementation projectOrAar(rootProject.ext.features.contentCommon)
     implementation projectOrAar(rootProject.ext.features.atc_common)
     implementation projectOrAar(rootProject.ext.features.contentCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
@@ -50,6 +54,10 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.fragmentKtx
     implementation rootProject.ext.miscDependencies.viewPager2
     implementation rootProject.ext.miscDependencies.dagger
@@ -64,7 +72,7 @@ dependencies {
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.supportLibDependencies.kotlinMetaData
-    ksp project(rootProject.ext.libraries.gqlKspProcessor)
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 }
 
 

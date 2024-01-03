@@ -1,7 +1,9 @@
-package com.tokopedia.content.product.preview.viewmodel
+package com.tokopedia.content.product.preview.viewmodel.factory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
+import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -13,6 +15,7 @@ class ProductPreviewViewModelFactory @AssistedInject constructor(
     @Assisted private val param: EntrySource,
     private val factory: ProductPreviewViewModel.Factory,
 ) : ViewModelProvider.Factory {
+
     @AssistedFactory
     interface Creator {
         fun create(@Assisted param: EntrySource): ProductPreviewViewModelFactory

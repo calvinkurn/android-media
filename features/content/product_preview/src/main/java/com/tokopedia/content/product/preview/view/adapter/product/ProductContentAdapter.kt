@@ -1,78 +1,61 @@
 package com.tokopedia.content.product.preview.view.adapter.product
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView.Adapter
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.tokopedia.content.product.preview.data.ContentUiModel
-import com.tokopedia.content.product.preview.databinding.ItemProductContentImageBinding
-import com.tokopedia.content.product.preview.databinding.ItemProductContentVideoBinding
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
+import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel.MediaType
 import com.tokopedia.content.product.preview.view.viewholder.product.ProductContentImageViewHolder
+import com.tokopedia.content.product.preview.view.viewholder.product.ProductContentLoadingViewHolder
 import com.tokopedia.content.product.preview.view.viewholder.product.ProductContentVideoViewHolder
 
 class ProductContentAdapter(
-    private val listener: ProductPreviewListener,
-) : Adapter<ViewHolder>() {
+    private val listener: ProductPreviewListener
+) : ListAdapter<ContentUiModel, ViewHolder>(ProductContentDiffUtil()) {
 
-    private val _productContentList = mutableListOf<ContentUiModel>()
-    private val productContentList: List<ContentUiModel>
-        get() = _productContentList
-
-    fun insertData(data: List<ContentUiModel>) {
-        _productContentList.clear()
-        _productContentList.addAll(data)
-        notifyItemRangeInserted(0, productContentList.size)
+    fun updateData(data: List<ContentUiModel>) {
+        submitList(data)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
-            TYPE_IMAGE -> createImageViewHolder(parent)
-            TYPE_VIDEO -> createVideoViewHolder(parent)
-            else -> error("View type is not supported")
+            TYPE_IMAGE -> ProductContentImageViewHolder.create(parent, listener)
+            TYPE_VIDEO -> ProductContentVideoViewHolder.create(parent, listener)
+            else -> ProductContentLoadingViewHolder.create(parent)
         }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         when (holder.itemViewType) {
-            TYPE_IMAGE -> (holder as ProductContentImageViewHolder).bind(productContentList[position])
-            TYPE_VIDEO -> (holder as ProductContentVideoViewHolder).bind(productContentList[position])
-            else -> error("View holder is not supported")
+            TYPE_IMAGE -> (holder as ProductContentImageViewHolder).bind(getItem(position))
+            TYPE_VIDEO -> (holder as ProductContentVideoViewHolder).bind(getItem(position))
+            else -> (holder as ProductContentLoadingViewHolder).bind()
         }
     }
-
-    override fun getItemCount(): Int = productContentList.size
 
     override fun getItemViewType(position: Int): Int {
-        return when (productContentList[position].type) {
-            ContentUiModel.MediaType.Image -> TYPE_IMAGE
-            ContentUiModel.MediaType.Video -> TYPE_VIDEO
-            ContentUiModel.MediaType.Unknown -> error("Item view type is not supported")
+        return when (getItem(position).type) {
+            MediaType.Image -> TYPE_IMAGE
+            MediaType.Video -> TYPE_VIDEO
+            MediaType.Unknown -> TYPE_UNKNOWN
         }
     }
 
-    private fun createImageViewHolder(parent: ViewGroup): ProductContentImageViewHolder {
-        return ProductContentImageViewHolder(
-            binding = ItemProductContentImageBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent, false
-            )
-        )
-    }
+    internal class ProductContentDiffUtil : DiffUtil.ItemCallback<ContentUiModel>() {
+        override fun areItemsTheSame(oldItem: ContentUiModel, newItem: ContentUiModel): Boolean {
+            return oldItem.url == newItem.url // if we have id in the next, it will be better to use id instead
+        }
 
-    private fun createVideoViewHolder(parent: ViewGroup): ProductContentVideoViewHolder {
-        return ProductContentVideoViewHolder(
-            binding = ItemProductContentVideoBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent, false
-            ),
-            listener = listener,
-        )
+        override fun areContentsTheSame(oldItem: ContentUiModel, newItem: ContentUiModel): Boolean {
+            return oldItem == newItem
+        }
     }
 
     companion object {
         private const val TYPE_IMAGE = 0
         private const val TYPE_VIDEO = 1
+        private const val TYPE_UNKNOWN = 2
     }
-
 }
