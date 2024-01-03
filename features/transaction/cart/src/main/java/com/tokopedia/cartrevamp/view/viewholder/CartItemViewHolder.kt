@@ -1318,6 +1318,7 @@ class CartItemViewHolder(
                         data,
                         CartDeleteButtonSource.TrashBin
                     )
+                    actionListener?.clearAllFocus()
                 }
             )
         } else {
@@ -1365,12 +1366,14 @@ class CartItemViewHolder(
             } else {
                 data.isAlreadyShowMinimumQuantityPurchasedError = false
                 actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.TrashBin)
+                actionListener?.clearAllFocus()
             }
             return
         }
         if (newQty < data.minOrder) {
             if (data.minOrder <= 1) {
                 actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.TrashBin)
+                actionListener?.clearAllFocus()
                 return
             }
             binding.labelQuantityError.show()
@@ -1384,6 +1387,7 @@ class CartItemViewHolder(
             } else {
                 data.isAlreadyShowMinimumQuantityPurchasedError = false
                 actionListener?.onCartItemDeleteButtonClicked(data, CartDeleteButtonSource.TrashBin)
+                actionListener?.clearAllFocus()
             }
             return
         }
