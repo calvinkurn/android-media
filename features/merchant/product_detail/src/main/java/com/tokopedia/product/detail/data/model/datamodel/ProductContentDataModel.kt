@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.data.model.datamodel
 import android.os.Bundle
 import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
 import com.tokopedia.analytics.performance.perf.LoadableComponent
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
@@ -116,4 +117,19 @@ data class ProductContentMainData(
     var isVariant: Boolean = false,
     var productName: String = "",
     var isProductActive: Boolean = false
-)
+) {
+
+    val hasCampaign
+        get() = campaign.campaignIdentifier != CampaignRibbon.NO_CAMPAIGN
+
+    val shouldOngoingRenderPriority
+        get() = run {
+            val id = campaign.campaignIdentifier
+
+            if (id == CampaignRibbon.THEMATIC_CAMPAIGN) {
+                thematicCampaign.isMegaType
+            } else {
+                hasCampaign
+            }
+        }
+}

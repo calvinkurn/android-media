@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder.campaign.ui
 
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.product.detail.R
@@ -33,15 +34,20 @@ class OngoingCampaignViewHolder(
     }
 
     override fun bind(element: OngoingCampaignUiModel) = with(campaignRibbon) {
-        campaignRibbon.setData(onGoingData = element.data, upComingData = element.upcoming)
+        if (element.shouldShow) {
+            campaignRibbon.setLayoutHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
+            campaignRibbon.setData(onGoingData = element.data, upComingData = null)
 
-        itemView.addOnImpressionListener(
-            holder = element.impressHolder,
-            holders = listener.getImpressionHolders(),
-            name = element.data?.hashCode().toString(),
-            useHolders = listener.isRemoteCacheableActive()
-        ) {
-            listener.onImpressComponent(getComponentTrackData(element))
+            itemView.addOnImpressionListener(
+                holder = element.impressHolder,
+                holders = listener.getImpressionHolders(),
+                name = element.data?.hashCode().toString(),
+                useHolders = listener.isRemoteCacheableActive()
+            ) {
+                listener.onImpressComponent(getComponentTrackData(element))
+            }
+        } else {
+            campaignRibbon.setLayoutHeight(Int.ZERO)
         }
     }
 }

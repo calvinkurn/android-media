@@ -214,6 +214,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateData(ProductDetailConstant.ONGOING_CAMPAIGN, loadInitialData) {
                 ongoingCampaignData?.apply {
                     data = it.createOngoingCampaignData()
+                    shouldShow = data?.hasCampaign.orFalse()
                 }
             }
 
@@ -686,6 +687,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateCampaign(productId = productId, upcomingData = upcomingData)
     }
 
+    /**
+     * Render priority => ongoing > mega thematic > upcoming > regular thematic
+     */
     private fun updateCampaign(
         productId: String,
         upcomingData: Map<String, ProductUpcomingData>?,
@@ -694,7 +698,12 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
         updateData(ProductDetailConstant.ONGOING_CAMPAIGN) {
             ongoingCampaignData?.run {
-                upcoming = notifyMeMap?.data
+                val upComing = notifyMeMap?.data
+                shouldShow = if (upComing?.hasValue == true) {
+                    !upComing.isNpl.orFalse() && data?.shouldOngoingRenderPriority.orFalse()
+                } else {
+                    data?.hasCampaign.orFalse()
+                }
             }
         }
     }
@@ -717,6 +726,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     upcomingType = selectedUpcoming?.upcomingType.orEmpty(),
                     ribbonCopy = selectedUpcoming?.campaignTypeName.orEmpty()
                 )
+
+                // Render priority => ongoing > mega thematic > upcoming > regular thematic
+                val ongoingHasRegular = !ongoingCampaignData?.data?.shouldOngoingRenderPriority
+                    .orFalse()
+                shouldShow = data.campaignID.isNotBlank() && ongoingHasRegular
             }
         }
     }

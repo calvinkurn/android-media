@@ -9,6 +9,7 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class ProductNotifyMeUiModel(
     val type: String = "",
     val name: String = "",
+    var shouldShow: Boolean = false,
     var data: UpcomingCampaignUiModel = UpcomingCampaignUiModel()
 ) : DynamicPdpDataModel {
     override val impressHolder: ImpressHolder = ImpressHolder()
@@ -23,7 +24,7 @@ data class ProductNotifyMeUiModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductNotifyMeUiModel) {
-            data == newData.data
+            data == newData.data && shouldShow == newData.shouldShow
         } else {
             false
         }

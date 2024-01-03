@@ -18,6 +18,9 @@ data class UpcomingCampaignUiModel(
     val isOwner: Boolean = false
 ) {
 
+    val hasValue
+        get() = campaignID.isNotBlank()
+
     val isNpl
         get() = upcomingType == ProductUpcomingTypeDef.UPCOMING_NPL
 

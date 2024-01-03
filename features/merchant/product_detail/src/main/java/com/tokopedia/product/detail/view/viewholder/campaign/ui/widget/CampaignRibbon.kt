@@ -141,11 +141,14 @@ class CampaignRibbon @JvmOverloads constructor(
         this.trackDataModel = trackDataModel
     }
 
+    /**
+     * Render priority => ongoing > mega thematic > upcoming > regular thematic
+     */
     fun setData(onGoingData: ProductContentMainData?, upComingData: UpcomingCampaignUiModel?) {
         if (onGoingData != null) {
             renderOnGoingCampaign(onGoingData = onGoingData)
         } else if (upComingData != null) {
-            renderUpComingCampaignRibbon(upComingData)
+            renderUpComingCampaignRibbon(upComing = upComingData)
         }
     }
 
@@ -199,7 +202,7 @@ class CampaignRibbon @JvmOverloads constructor(
                     showCampaignRibbonType3()
                 }
             } else {
-                this.hide()
+                hideComponent()
             }
         } else {
             // if thematic have value, render thematic instead of slash price
@@ -217,16 +220,11 @@ class CampaignRibbon @JvmOverloads constructor(
                 renderBackGroundColor(root, backGroundColorData)
             }
             // render campaign logo
-            if (thematic.campaignLogo.isNotBlank()) {
-                tpgCampaignNameS3.hide()
-                iuCampaignLogoS3.show()
-                iuCampaignLogoS3.loadImageWithoutPlaceholder(thematic.campaignLogo)
-            } else {
-                iuCampaignLogoS3.showIfWithBlock(thematic.icon.isNotBlank()) {
-                    cornerRadius = 3
-                    loadImageWithoutPlaceholder(thematic.icon)
-                }
-                // render campaign name
+            iuCampaignLogoS3.showIfWithBlock(thematic.campaignLogo.isNotBlank()) {
+                cornerRadius = 3
+                loadImageWithoutPlaceholder(thematic.icon)
+            }
+            tpgCampaignNameS3.showIfWithBlock(thematic.campaignLogo.isBlank()) {
                 tpgCampaignNameS3.text = thematic.campaignName
             }
 
@@ -314,7 +312,7 @@ class CampaignRibbon @JvmOverloads constructor(
             timerView?.onFinish = onRefreshPage
             timerView?.show()
         } catch (e: Throwable) {
-            this.hide()
+            hideComponent()
         }
     }
 
@@ -399,7 +397,7 @@ class CampaignRibbon @JvmOverloads constructor(
                 timerView?.show()
             }
         } catch (ex: Exception) {
-            this.hide()
+            hideComponent()
         }
     }
 
@@ -462,12 +460,10 @@ class CampaignRibbon @JvmOverloads constructor(
 
     private fun hideComponent() {
         setLayoutHeight(Int.ZERO)
-        hide()
     }
 
     private fun showComponent() {
         setLayoutHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
-        show()
     }
 
     // render campaign revamp
@@ -503,17 +499,17 @@ class CampaignRibbon @JvmOverloads constructor(
     }
 
     private fun renderThematicCampaignCompose(thematic: ThematicCampaign) {
-        val type = if (thematic.superGraphicURL.isBlank()) {
-            CampaignType.Regular(
-                title = thematic.campaignName,
-                logoUrl = thematic.campaignLogo,
-                backgroundColorString = thematic.background
-            )
-        } else {
+        val type = if (thematic.isMegaType) {
             CampaignType.Mega(
                 title = thematic.campaignName,
                 logoUrl = thematic.campaignLogo,
                 superGraphicUrl = thematic.superGraphicURL,
+                backgroundColorString = thematic.background
+            )
+        } else {
+            CampaignType.Regular(
+                title = thematic.campaignName,
+                logoUrl = thematic.campaignLogo,
                 backgroundColorString = thematic.background
             )
         }

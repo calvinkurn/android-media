@@ -3,6 +3,8 @@ package com.tokopedia.product.detail.view.viewholder.campaign.ui
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
@@ -35,7 +37,7 @@ class ProductNotifyMeViewHolder(
     }
 
     override fun bind(element: ProductNotifyMeUiModel) {
-        if (element.data.campaignID.isNotEmpty()) {
+        if (element.shouldShow) {
             showContainer()
             // render upcoming campaign ribbon
             val trackDataModel = ComponentTrackDataModel(element.type, element.name, bindingAdapterPosition.inc())
@@ -55,13 +57,11 @@ class ProductNotifyMeViewHolder(
     }
 
     private fun showContainer() = with(binding) {
-        upcomingCampaignRibbon.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
-        upcomingCampaignRibbon.requestLayout()
+        upcomingCampaignRibbon.setLayoutHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
     private fun hideContainer() = with(binding) {
-        upcomingCampaignRibbon.layoutParams?.height = 0
-        upcomingCampaignRibbon.requestLayout()
+        upcomingCampaignRibbon.setLayoutHeight(Int.ZERO)
     }
 
     override fun bind(element: ProductNotifyMeUiModel?, payloads: MutableList<Any>) {
