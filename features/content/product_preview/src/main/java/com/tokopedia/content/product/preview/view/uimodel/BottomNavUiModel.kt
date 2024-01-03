@@ -39,11 +39,11 @@ data class BottomNavUiModel(
         val discountPercentage: String
     ) : Price
 
-    enum class ButtonState(val value: String) {
-        Active("ACTIVE"), //+Keranjang
-        Inactive("INACTIVE"), //Stok Habis
-        OOS("OOS"), //Ingatkan Saya
-        Unknown("");
+    enum class ButtonState(val value: String, val text: String) {
+        Active("ACTIVE", "+ Keranjang"),
+        Inactive("INACTIVE","Stok Habis"),
+        OOS("OOS", "Ingatkan Saya"),
+        Unknown("","");
 
         companion object {
             private val values = ButtonState.values()

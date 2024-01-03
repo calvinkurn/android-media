@@ -44,9 +44,6 @@ class ProductPreviewViewModel @AssistedInject constructor(
         fun create(param: EntrySource): ProductPreviewViewModel
     }
 
-    //TODO: add uiState
-    //TODO: add uiEvent
-
     private val _uiEvent = MutableSharedFlow<ProductPreviewEvent>(20)
     val uiEvent get() = _uiEvent
 
