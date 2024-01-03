@@ -12,7 +12,7 @@ import javax.inject.Inject
 class GetCourierListUseCase @Inject constructor(private val useCase: GraphqlUseCase<SomCourierList.Data>) {
 
     companion object {
-        private const val PARAM_DELIVERY_IDENTIFIER = "DeliveryIdentifier"
+        private const val PARAM_DELIVERY_IDENTIFIER = "deliveryIdentifier"
     }
 
     init {
