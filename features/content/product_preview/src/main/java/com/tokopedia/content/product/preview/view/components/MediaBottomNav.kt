@@ -63,7 +63,7 @@ fun MediaBottomNav(
                 text = product.price.finalPrice,
                 maxLines = 1,
                 textStyle = NestTheme.typography.heading5.copy(
-                    color = NestTheme.colors.NN._0
+                    color = NestTheme.colors.NN._1000
                 ),
                 modifier = Modifier
                     .heightIn(0.dp, 208.dp)
