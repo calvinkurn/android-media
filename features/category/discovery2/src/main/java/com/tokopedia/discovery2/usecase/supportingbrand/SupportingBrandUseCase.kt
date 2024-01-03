@@ -2,30 +2,36 @@ package com.tokopedia.discovery2.usecase.supportingbrand
 
 import android.annotation.SuppressLint
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.datamapper.getMapWithoutRpc
 import com.tokopedia.discovery2.repository.supportingbrand.SupportingBrandRepository
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import timber.log.Timber
 import javax.inject.Inject
 
 class SupportingBrandUseCase @Inject constructor(private val repository: SupportingBrandRepository) {
 
     companion object {
-        private const val BRAND_PER_PAGE = 10
+        const val BRAND_PER_PAGE = 10
         private const val PAGE_START = 1
-        private const val PAGE_LOADED_2 = 2
     }
 
-    suspend fun loadFirstPageComponents(
+    suspend fun loadPageComponents(
         componentId: String,
         pageEndPoint: String,
         limit: Int = BRAND_PER_PAGE
     ): Boolean {
         val component = getComponent(componentId, pageEndPoint)
         val paramWithoutRpc = getMapWithoutRpc(pageEndPoint)
-        if (component?.noOfPagesLoaded == PAGE_START) return false
 
         component?.let {
+            it.properties?.let { properties ->
+                if (properties.limitProduct && properties.limitNumber.toIntOrZero() ==
+                    it.getComponentsItem()?.size
+                ) return false
+            }
             val isDynamic = it.properties?.dynamic ?: false
             val formattedComponentId =
                 if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty())
@@ -34,7 +40,7 @@ class SupportingBrandUseCase @Inject constructor(private val repository: Support
                 formattedComponentId,
                 pageEndPoint,
                 getQueryParameterMap(
-                    PAGE_START,
+                    it.pageLoadedCounter,
                     limit,
                     it.nextPageKey,
                     it.userAddressData,
@@ -45,11 +51,14 @@ class SupportingBrandUseCase @Inject constructor(private val repository: Support
             )
             it.showVerticalLoader = shopCardListData.isNotEmpty()
             it.setComponentsItem(shopCardListData, component.tabName)
-            it.noOfPagesLoaded = PAGE_START
+            it.noOfPagesLoaded = it.pageLoadedCounter
+            Timber.d(
+                "Next page -> $nextPage"
+            )
             it.nextPageKey = nextPage
-            if (shopCardListData.isEmpty()) return true
-            it.pageLoadedCounter = PAGE_LOADED_2
+            if (shopCardListData.isEmpty()) return false else it.pageLoadedCounter += 1
             it.verticalProductFailState = false
+            (it.getComponentsItem() as ArrayList<ComponentsItem>).addAll(shopCardListData)
             return true
         }
         return false

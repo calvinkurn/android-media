@@ -4,9 +4,15 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.usecase.supportingbrand.SupportingBrandUseCase
+import com.tokopedia.discovery2.usecase.supportingbrand.SupportingBrandUseCase.Companion.BRAND_PER_PAGE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.PRODUCT_PER_PAGE
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopoffersupportingbrand.ShopOfferSupportingBrandComponentExtension.addLoadMore
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopoffersupportingbrand.ShopOfferSupportingBrandComponentExtension.addReload
 import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -42,27 +48,54 @@ class ShopOfferSupportingBrandViewModel(
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main.immediate + SupervisorJob()
 
-    fun loadFirstPageBrand() {
-        _brands.value = Success(ArrayList(layout))
+    var isLoading = false
+        private set
 
+    fun hasNextPage(): Boolean = Utils.nextPageAvailable(
+        component,
+        BRAND_PER_PAGE
+    )
+
+    fun hasHeader(): Boolean = component.getPropertyHeader() != null
+
+    fun getProductList(): List<ComponentsItem>? = component.getComponentsItem()
+
+    fun loadPageBrand() {
         launchCatchError(
             block = {
-                val isFirstLoad = useCase?.loadFirstPageComponents(
+                useCase?.loadPageComponents(
                     componentId = component.id,
                     pageEndPoint = component.pageEndPoint
                 )
-
-                if (isFirstLoad == true) {
-                    setSupportingBrandList()
-                } else {
+                component.shouldRefreshComponent = null
+                setSupportingBrandList {
                     _brands.value = Fail(Throwable(EMPTY_DATA_MESSAGE))
                 }
             },
             onError = {
+                component.noOfPagesLoaded = 1
+                component.verticalProductFailState = true
+                component.shouldRefreshComponent = null
                 Timber.e(it)
                 _brands.value = Fail(it)
+                isLoading = false
             }
         )
+    }
+
+    fun loadMore() {
+        isLoading = true
+        launchCatchError(block = {
+            if (useCase?.loadPageComponents(component.id, component.pageEndPoint) == true) {
+                setSupportingBrandList {
+
+                }
+            } else {
+                handleErrorPagination()
+            }
+        }, onError = {
+            handleErrorPagination()
+        })
     }
 
     fun resetComponent() {
@@ -72,14 +105,45 @@ class ShopOfferSupportingBrandViewModel(
         }
     }
 
-    private fun setSupportingBrandList() {
-        val components = component.getComponentsItem()
+    private fun setSupportingBrandList(
+        onEmptyListener: () -> Unit
+    ) {
+        isLoading = false
+        val productList = getProductList()
 
-        if (!components.isNullOrEmpty()) {
-            layout.addBrandList(components)
-            _brands.value = Success(ArrayList(layout))
+        if (!productList.isNullOrEmpty()) {
+            _brands.value = Success(ArrayList(addLoadMore(productList)))
         } else {
-            _brands.value = Fail(Throwable(EMPTY_DATA_MESSAGE))
+            onEmptyListener.invoke()
+        }
+    }
+
+    private fun addLoadMore(productDataList: List<ComponentsItem>): ArrayList<ComponentsItem> {
+        val productList: ArrayList<ComponentsItem> = ArrayList()
+        productList.addAll(productDataList)
+
+        return if (hasNextPage()) {
+            productList.addLoadMore(component)
+            productList
+        } else {
+            productList
+        }
+    }
+
+    private fun addReload(productDataList: List<ComponentsItem>): ArrayList<ComponentsItem> {
+        val productLoadState: ArrayList<ComponentsItem> = ArrayList()
+        productLoadState.addAll(productDataList)
+        productLoadState.addReload(component)
+        return productLoadState
+    }
+
+    private fun handleErrorPagination() {
+        isLoading = false
+        component.horizontalProductFailState = true
+
+        val productList = getProductList()
+        if (!productList.isNullOrEmpty()) {
+            _brands.value = Success(ArrayList(addReload(productList)))
         }
     }
 

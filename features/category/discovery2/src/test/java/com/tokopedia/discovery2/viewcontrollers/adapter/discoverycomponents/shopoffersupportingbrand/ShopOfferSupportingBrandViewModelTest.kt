@@ -58,9 +58,9 @@ class ShopOfferSupportingBrandViewModelTest {
 
         coEvery { component.pageEndPoint } returns pageEndpoint
 
-        viewModel.loadFirstPageBrand()
+        viewModel.loadPageBrand()
 
-        coVerify(exactly = 1) { useCase.loadFirstPageComponents(componentId, pageEndpoint) }
+        coVerify(exactly = 1) { useCase.loadPageComponents(componentId, pageEndpoint) }
     }
 
     @Test
@@ -77,9 +77,9 @@ class ShopOfferSupportingBrandViewModelTest {
 
         coEvery { component.getComponentsItem() } returns componentsItems
 
-        coEvery { useCase.loadFirstPageComponents(componentId, pageEndpoint) } returns true
+        coEvery { useCase.loadPageComponents(componentId, pageEndpoint) } returns true
 
-        viewModel.loadFirstPageBrand()
+        viewModel.loadPageBrand()
 
         Assert.assertTrue(viewModel.brands.value is Success)
         Assert.assertEquals(componentsItems, (viewModel.brands.value as Success).data)
@@ -94,9 +94,9 @@ class ShopOfferSupportingBrandViewModelTest {
 
         coEvery { component.pageEndPoint } returns pageEndpoint
 
-        coEvery { useCase.loadFirstPageComponents(componentId, pageEndpoint) } throws Throwable()
+        coEvery { useCase.loadPageComponents(componentId, pageEndpoint) } throws Throwable()
 
-        viewModel.loadFirstPageBrand()
+        viewModel.loadPageBrand()
 
         Assert.assertTrue(viewModel.brands.value is Fail)
     }
@@ -110,9 +110,9 @@ class ShopOfferSupportingBrandViewModelTest {
 
         coEvery { component.pageEndPoint } returns pageEndpoint
 
-        coEvery { useCase.loadFirstPageComponents(componentId, pageEndpoint) } returns false
+        coEvery { useCase.loadPageComponents(componentId, pageEndpoint) } returns false
 
-        viewModel.loadFirstPageBrand()
+        viewModel.loadPageBrand()
 
         Assert.assertTrue(viewModel.brands.value is Fail)
         Assert.assertEquals("Empty Data", (viewModel.brands.value as Fail).throwable.message)
@@ -131,9 +131,9 @@ class ShopOfferSupportingBrandViewModelTest {
 
         coEvery { component.getComponentsItem() } returns componentsItems
 
-        coEvery { useCase.loadFirstPageComponents(componentId, pageEndpoint) } returns true
+        coEvery { useCase.loadPageComponents(componentId, pageEndpoint) } returns true
 
-        viewModel.loadFirstPageBrand()
+        viewModel.loadPageBrand()
 
         Assert.assertTrue(viewModel.brands.value is Fail)
         Assert.assertEquals("Empty Data", (viewModel.brands.value as Fail).throwable.message)
