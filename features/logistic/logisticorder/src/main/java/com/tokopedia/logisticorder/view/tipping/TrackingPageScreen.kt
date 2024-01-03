@@ -48,6 +48,7 @@ import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.uimodel.DetailModel
 import com.tokopedia.logisticorder.uimodel.EtaModel
 import com.tokopedia.logisticorder.uimodel.LastDriverModel
+import com.tokopedia.logisticorder.uimodel.ProofModel
 import com.tokopedia.logisticorder.uimodel.TickerUnificationTargets
 import com.tokopedia.logisticorder.uimodel.TippingModel
 import com.tokopedia.logisticorder.uimodel.TrackHistoryModel
@@ -80,13 +81,13 @@ import com.tokopedia.logisticorder.R as logisticorderR
 fun TrackingPageScreen(
     state: TrackingPageState,
     openWebview: (url: String) -> Unit,
-    openTipping: () -> Unit,
+    onClickTippingButton: (tipping: TippingModel) -> Unit,
     openTippingInfo: () -> Unit,
     pressBack: () -> Unit,
     callDriver: (phoneNumber: String) -> Unit,
-    seeProofOfDelivery: (imageId: String) -> Unit,
+    seeProofOfDelivery: (proof: ProofModel) -> Unit,
     copyShippingRefNumber: (shippingRefNum: String) -> Unit,
-    seeEtaChangesInfo: () -> Unit,
+    seeEtaChangesInfo: (description: String) -> Unit,
     onEvent: (TrackingPageEvent) -> Unit
 ) {
     val unifyIconId = getIconUnifyResourceIdRef(iconId = IconUnify.CALL_CENTER)
@@ -121,7 +122,7 @@ fun TrackingPageScreen(
             Divider(
                 thickness = 8.dp
             )
-            DriverWidget(state.trackingData, callDriver, openTippingInfo, openTipping)
+            DriverWidget(state.trackingData, callDriver, openTippingInfo, onClickTippingButton)
             ShippingStatusSection(state.trackingData?.trackOrder?.status)
             TargetedTicker(state.trackingData?.page?.tickerUnificationTargets)
             Divider(
@@ -270,7 +271,10 @@ fun EmptyTracking(history: TrackOrderModel) {
 }
 
 @Composable
-fun TrackingHistory(trackHistory: TrackOrderModel?, seeProofOfDelivery: (imageId: String) -> Unit) {
+fun TrackingHistory(
+    trackHistory: TrackOrderModel?,
+    seeProofOfDelivery: (proof: ProofModel) -> Unit
+) {
     trackHistory?.let { model ->
         val list = model.trackHistory
         if (list.isNotEmpty() && !model.invalid && model.orderStatus != INVALID_ORDER_STATUS && model.change != 0) {
@@ -295,7 +299,7 @@ fun TrackingHistoryItem(
     trackHistoryModel: TrackHistoryModel,
     isFirst: Boolean,
     isLast: Boolean,
-    seeProofOfDelivery: (imageId: String) -> Unit
+    seeProofOfDelivery: (proof: ProofModel) -> Unit
 ) {
     ConstraintLayout {
         val (day, time, description, courier, circle, line, pod) = createRefs()
@@ -385,7 +389,7 @@ fun TrackingHistoryItem(
                     visibility =
                         if (trackHistoryModel.proof.imageId.isNotEmpty()) Visibility.Visible else Visibility.Gone
                 }
-                .clickable { seeProofOfDelivery(trackHistoryModel.proof.imageId) },
+                .clickable { seeProofOfDelivery(trackHistoryModel.proof) },
             // todo image network header
             source = ImageSource.Remote(
                 trackHistoryModel.proof.imageUrl
@@ -399,7 +403,7 @@ fun DriverWidget(
     trackingDataModel: TrackingDataModel?,
     callDriver: (phoneNumber: String) -> Unit,
     openTippingInfo: () -> Unit,
-    openTipping: () -> Unit
+    onClickTippingButton: (tipping: TippingModel) -> Unit
 ) {
     trackingDataModel?.takeIf { it.hasDriverInfo }?.let {
         Column(
@@ -413,13 +417,13 @@ fun DriverWidget(
                 textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold)
             )
             DriverInfoLayout(it.lastDriver, callDriver, openTippingInfo)
-            TippingLayout(it.tipping, openTipping)
+            TippingLayout(it.tipping, onClickTippingButton)
         }
     }
 }
 
 @Composable
-fun TippingLayout(tipping: TippingModel, openTipping: () -> Unit) {
+fun TippingLayout(tipping: TippingModel, onClickTippingButton: (model: TippingModel) -> Unit) {
     if (tipping.eligibleForTipping) {
         Card(
             modifier = Modifier
@@ -482,7 +486,7 @@ fun TippingLayout(tipping: TippingModel, openTipping: () -> Unit) {
                         bottom.linkTo(parent.bottom)
                     },
                     text = tipping.buttonText,
-                    onClick = openTipping,
+                    onClick = { onClickTippingButton(tipping) },
                     variant = if (tipping.status == OPEN) ButtonVariant.GHOST_INVERTED else ButtonVariant.GHOST
                 )
             }
@@ -574,7 +578,7 @@ fun DriverInfoLayout(
 fun TrackingDetail(
     state: TrackingPageState,
     copyShippingRefNumber: (shippingRefNum: String) -> Unit,
-    seeEtaChangesInfo: () -> Unit
+    seeEtaChangesInfo: (description: String) -> Unit
 ) {
     if (!state.isLoading && state.trackingData != null) {
         val data = state.trackingData
@@ -654,7 +658,7 @@ fun TrackingDetail(
                 value = data.trackOrder.detail.eta.userInfo,
                 icon = IconUnify.INFORMATION,
                 showIcon = data.trackOrder.detail.eta.isChanged,
-                onIconClicked = seeEtaChangesInfo
+                onIconClicked = { seeEtaChangesInfo(data.trackOrder.detail.eta.userUpdatedInfo) }
             )
         }
     }

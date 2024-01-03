@@ -52,7 +52,8 @@ class TrackingPageComposeViewModel @Inject constructor(
                     event.groupType,
                     event.userId,
                     event.deviceId,
-                    event.trackingUrl
+                    event.trackingUrl,
+                    event.pageCaller
                 )
             }
         }
@@ -64,16 +65,32 @@ class TrackingPageComposeViewModel @Inject constructor(
         groupType: Int?,
         userId: String,
         deviceId: String,
-        trackingUrlFromOrder: String?
+        trackingUrlFromOrder: String?,
+        pageCaller: String
     ) {
         this.orderId = orderId
         this.orderTxId = orderTxId
         this.groupType = groupType
+        this.trackingUrl = trackingUrlFromOrder
+        this.caller = pageCaller
         viewModelScope.launch {
             try {
                 val trackingParam = trackingUseCase.getParam(orderId, orderTxId, groupType, "")
                 val getTrackingData = trackingUseCase(trackingParam)
-                val uiModel = mapper.mapTrackingDataCompose(getTrackingData, userId, deviceId, orderId, trackingUrlFromOrder)
+                val uiModel = mapper.mapTrackingDataCompose(
+                    getTrackingData,
+                    userId,
+                    deviceId,
+                    orderId,
+                    trackingUrlFromOrder
+                )
+                if ((!trackingUrl.isNullOrEmpty()) && caller.equals(
+                        "seller",
+                        ignoreCase = true
+                    )
+                ) {
+                    retryAvailability(orderId)
+                }
                 _uiState.update {
                     it.copy(isLoading = false, trackingData = uiModel)
                 }

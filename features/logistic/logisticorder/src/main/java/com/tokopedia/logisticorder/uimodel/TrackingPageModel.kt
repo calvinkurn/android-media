@@ -93,7 +93,8 @@ data class EtaModel(
 data class TippingModel(
     var status: Int = 0,
     var statusTitle: String = "",
-    var statusSubtitle: String = ""
+    var statusSubtitle: String = "",
+    var refNumber: String = ""
 ) : Parcelable {
     val eligibleForTipping: Boolean
         get() = status == TippingConstant.OPEN || status == TippingConstant.WAITING_PAYMENT || status == TippingConstant.SUCCESS_PAYMENT || status == TippingConstant.SUCCESS_TIPPING || status == TippingConstant.REFUND_TIP
