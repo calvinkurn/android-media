@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.view.viewholder.gwp.callback
 
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.view.componentization.PdpComponentCallbackMediator
 import com.tokopedia.product.detail.view.fragment.delegate.BaseComponentCallback
 import com.tokopedia.product.detail.view.viewholder.gwp.event.GWPEvent
@@ -15,29 +14,51 @@ class GWPCallback(
     mediator: PdpComponentCallbackMediator
 ) : BaseComponentCallback<GWPEvent>(mediator = mediator) {
 
-    private val tracker by lazyThreadSafetyNone {
-        GWPTracker(trackingQueue = queueTracker)
+    override fun onEvent(event: GWPEvent) {
+        when (event) {
+            is GWPEvent.OnClickComponent -> onClickComponent(event)
+            is GWPEvent.OnClickProduct -> onClickProduct(event = event)
+            is GWPEvent.OnClickShowMore -> onClickShowMore(event = event)
+            is GWPEvent.OnCardImpress -> onCardImpress(event = event)
+        }
     }
 
-    override fun onEvent(event: GWPEvent) {
-        tracker.tracking(event = event, commonTracker = getCommonTracker())
+    private fun onClickComponent(event: GWPEvent.OnClickComponent) {
+        event.data.action.navigate()
 
-        when (event) {
-            is GWPEvent.OnClickComponent -> {
-                event.data.action.navigate()
-            }
+        GWPTracker.onShowMore(
+            title = event.data.title,
+            componentTrackDataModel = event.data.trackData,
+            commonTracker = getCommonTracker()
+        )
+    }
 
-            is GWPEvent.OnClickProduct -> {
-                event.data.action.navigate()
-            }
+    private fun onClickProduct(event: GWPEvent.OnClickProduct) {
+        event.data.action.navigate()
 
-            is GWPEvent.OnClickShowMore -> {
-                event.data.action.navigate()
-            }
+        GWPTracker.onCardClicked(
+            trackingQueue = queueTracker,
+            cardTrackData = event.data.trackData,
+            commonTracker = getCommonTracker()
+        )
+    }
 
-            is GWPEvent.OnCardImpress -> {
-                // no-ops
-            }
-        }
+    private fun onClickShowMore(event: GWPEvent.OnClickShowMore) {
+        event.data.action.navigate()
+
+        val trackData = event.data.trackData
+        GWPTracker.onShowMore(
+            title = trackData.componentTitle,
+            componentTrackDataModel = trackData.parentTrackData,
+            commonTracker = getCommonTracker()
+        )
+    }
+
+    private fun onCardImpress(event: GWPEvent.OnCardImpress) {
+        GWPTracker.onCardImpression(
+            trackingQueue = queueTracker,
+            cardTrackData = event.card.trackData,
+            commonTracker = getCommonTracker()
+        )
     }
 }

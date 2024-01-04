@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.view.viewholder.gwp.tracker
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.util.TrackingUtil
 import com.tokopedia.product.detail.tracking.CommonTracker
-import com.tokopedia.product.detail.view.viewholder.gwp.event.GWPEvent
 import com.tokopedia.product.detail.view.viewholder.gwp.model.GWPWidgetUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -16,46 +15,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 /**
  * Tracker link: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4406
  */
-class GWPTracker(
-    private val trackingQueue: TrackingQueue
-) {
-
-    fun tracking(event: GWPEvent, commonTracker: CommonTracker?) {
-        val mCommonTracker = commonTracker ?: return
-
-        when (event) {
-            is GWPEvent.OnClickComponent -> {
-                trackLoadMoreClicked(
-                    title = event.data.title,
-                    componentTrackDataModel = event.data.trackData,
-                    commonTracker = mCommonTracker
-                )
-            }
-
-            is GWPEvent.OnClickShowMore -> {
-                val trackData = event.data.trackData
-                trackLoadMoreClicked(
-                    title = trackData.componentTitle,
-                    componentTrackDataModel = trackData.parentTrackData,
-                    commonTracker = mCommonTracker
-                )
-            }
-
-            is GWPEvent.OnClickProduct -> {
-                trackCardClicked(
-                    cardTrackData = event.data.trackData,
-                    commonTracker = mCommonTracker
-                )
-            }
-
-            is GWPEvent.OnCardImpress -> {
-                trackCardImpression(
-                    cardTrackData = event.card.trackData,
-                    commonTracker = mCommonTracker
-                )
-            }
-        }
-    }
+object GWPTracker {
 
     /**
      * {
@@ -82,10 +42,12 @@ class GWPTracker(
      * }
      *
      */
-    private fun trackCardImpression(
+    fun onCardImpression(
+        trackingQueue: TrackingQueue,
         cardTrackData: GWPWidgetUiModel.CardTrackData,
-        commonTracker: CommonTracker
+        commonTracker: CommonTracker?
     ) {
+        val common = commonTracker ?: return
         val action = "impression - gwp card"
         val event = "promoView"
         val eventLabel = "text:${cardTrackData.componentTitle};card_count:${cardTrackData.cardCount};"
@@ -98,8 +60,8 @@ class GWPTracker(
             "businessUnit" to "product detail page",
             "currentSite" to "tokopediamarketplace",
             "trackerId" to "48993",
-            "productId" to commonTracker.productId,
-            "layout" to TrackingUtil.generateLayoutValue(productInfo = commonTracker.productInfo),
+            "productId" to common.productId,
+            "layout" to TrackingUtil.generateLayoutValue(productInfo = common.productInfo),
             "component" to cardTrackData.parentTrackData?.getComponentData(action).orEmpty(),
             "ecommerce" to hashMapOf(
                 event to hashMapOf(
@@ -113,8 +75,8 @@ class GWPTracker(
                     )
                 )
             ),
-            "shopId" to commonTracker.shopId,
-            "userId" to commonTracker.userId
+            "shopId" to common.shopId,
+            "userId" to common.userId
         )
 
         trackingQueue.putEETracking(mapEvent)
@@ -145,10 +107,12 @@ class GWPTracker(
      * }
      *
      */
-    private fun trackCardClicked(
+    fun onCardClicked(
+        trackingQueue: TrackingQueue,
         cardTrackData: GWPWidgetUiModel.CardTrackData,
-        commonTracker: CommonTracker
+        commonTracker: CommonTracker?
     ) {
+        val common = commonTracker ?: return
         val action = "click - card on gwp"
         val event = "promoClick"
         val eventLabel = "text:${cardTrackData.componentTitle};"
@@ -161,8 +125,8 @@ class GWPTracker(
             "businessUnit" to "product detail page",
             "currentSite" to "tokopediamarketplace",
             "trackerId" to "48996",
-            "productId" to commonTracker.productId,
-            "layout" to TrackingUtil.generateLayoutValue(productInfo = commonTracker.productInfo),
+            "productId" to common.productId,
+            "layout" to TrackingUtil.generateLayoutValue(productInfo = common.productInfo),
             "component" to cardTrackData.parentTrackData?.getComponentData(action).orEmpty(),
             "ecommerce" to hashMapOf(
                 event to hashMapOf(
@@ -176,8 +140,8 @@ class GWPTracker(
                     )
                 )
             ),
-            "shopId" to commonTracker.shopId,
-            "userId" to commonTracker.userId
+            "shopId" to common.shopId,
+            "userId" to common.userId
         )
 
         trackingQueue.putEETracking(mapEvent)
@@ -199,11 +163,12 @@ class GWPTracker(
      *   "userId": "{user_id}; //user_id level hit"
      * }
      */
-    private fun trackLoadMoreClicked(
+    fun onShowMore(
         title: String,
         componentTrackDataModel: ComponentTrackDataModel?,
-        commonTracker: CommonTracker
+        commonTracker: CommonTracker?
     ) {
+        val common = commonTracker ?: return
         val action = "click - other offer on gwp"
         val event = "clickPG"
         val eventLabel = "text:$title;"
@@ -215,11 +180,11 @@ class GWPTracker(
             "businessUnit" to "product detail page",
             "currentSite" to "tokopediamarketplace",
             "trackerId" to "48997",
-            "productId" to commonTracker.productId,
-            "layout" to TrackingUtil.generateLayoutValue(productInfo = commonTracker.productInfo),
+            "productId" to common.productId,
+            "layout" to TrackingUtil.generateLayoutValue(productInfo = common.productInfo),
             "component" to componentTrackDataModel?.getComponentData(action).orEmpty(),
-            "shopId" to commonTracker.shopId,
-            "userId" to commonTracker.userId
+            "shopId" to common.shopId,
+            "userId" to common.userId
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
