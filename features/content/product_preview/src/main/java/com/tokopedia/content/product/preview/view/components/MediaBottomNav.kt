@@ -32,6 +32,7 @@ fun MediaBottomNav(
     product: BottomNavUiModel,
     onAtcClicked: () -> Unit = {}
 ) {
+    //TODO(): need to check if status bar is dark or no
     NestTheme(darkTheme = true) {
         ConstraintLayout(
             modifier = Modifier
