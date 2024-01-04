@@ -238,6 +238,9 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
         with(binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch) {
             if (!isSearchAble()) {
                 searchBarTextField.inputType = InputType.TYPE_NULL
+                searchBarTextField.setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus) searchBarActionListener?.onClickSearchBar()
+                }
                 searchBarTextField.setOnClickListener { searchBarActionListener?.onClickSearchBar() }
             } else {
                 searchBarTextField.addTextChangedListener(object : TextWatcher {
