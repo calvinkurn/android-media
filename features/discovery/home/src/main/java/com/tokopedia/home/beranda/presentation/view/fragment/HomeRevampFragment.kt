@@ -121,6 +121,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.FlashSaleWidgetCall
 import com.tokopedia.home.beranda.presentation.view.listener.HomeComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
 import com.tokopedia.home.beranda.presentation.view.listener.HomeReminderWidgetCallback
+import com.tokopedia.home.beranda.presentation.view.listener.Lego3AutoWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.Lego6AutoBannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.LegoProductCallback
 import com.tokopedia.home.beranda.presentation.view.listener.MerchantVoucherComponentCallback
@@ -153,6 +154,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ImageHandler
 import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.home_component.util.toDpInt
+import com.tokopedia.home_component.widget.lego3auto.Lego3AutoListener
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -1602,6 +1604,7 @@ open class HomeRevampFragment :
             BestSellerWidgetCallback(context, this, getHomeViewModel()),
             SpecialReleaseRevampCallback(this),
             ShopFlashSaleWidgetCallback(this, getHomeViewModel()),
+            Lego3AutoWidgetCallback(this),
             getThematicUtil()
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
