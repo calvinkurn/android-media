@@ -59,9 +59,6 @@ class SupportingBrandUseCase @Inject constructor(private val repository: Support
             )
 
             it.noOfPagesLoaded = it.pageLoadedCounter
-            Timber.d(
-                "Next page -> $nextPage"
-            )
             it.nextPageKey = nextPage
             if (shopCardListData.isEmpty()) return false else it.pageLoadedCounter += 1
             return true

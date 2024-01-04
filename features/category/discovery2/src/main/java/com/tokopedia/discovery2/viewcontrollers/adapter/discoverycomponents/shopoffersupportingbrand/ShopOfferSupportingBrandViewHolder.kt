@@ -140,11 +140,6 @@ class ShopOfferSupportingBrandViewHolder(
                     supportingBrandLayoutManager.findFirstVisibleItemPosition()
                 viewModel?.let { mShopOfferSupportingBrandViewModel ->
                     if (!mShopOfferSupportingBrandViewModel.isLoading && mShopOfferSupportingBrandViewModel.hasNextPage()) {
-                        Timber.d(
-                            "Has next page -> ${
-                                mShopOfferSupportingBrandViewModel.hasNextPage()
-                            }"
-                        )
                         if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0) {
                             mShopOfferSupportingBrandViewModel.loadMore()
                         }
