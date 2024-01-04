@@ -84,10 +84,18 @@ class ShopOfferSupportingBrandViewModel(
     fun loadMore() {
         isLoading = true
         launchCatchError(block = {
-            if (useCase?.loadPageComponents(component.id, component.pageEndPoint) == true) {
-                setSupportingBrandList {}
-            } else {
-                handleErrorPagination()
+            when {
+                useCase?.loadPageComponents(component.id, component.pageEndPoint) == true -> {
+                    setSupportingBrandList {}
+                }
+
+                hasNextPage().not() -> {
+                    setSupportingBrandList {}
+                }
+
+                else -> {
+                    handleErrorPagination()
+                }
             }
         }, onError = {
             handleErrorPagination()
