@@ -15,6 +15,12 @@ import com.tokopedia.product.detail.common.data.model.promoprice.PromoPriceUiMod
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class AtcVariantPromoPriceWidget : ConstraintLayout {
+
+    companion object {
+        private const val ICON_PROMO_RED =
+            "https://images.tokopedia.net/img/pdp/icons/promo/Promo%20icon%20red.png"
+    }
+
     constructor(context: Context) : super(context) {
         init(context)
     }
@@ -49,7 +55,7 @@ class AtcVariantPromoPriceWidget : ConstraintLayout {
                 backgroundColor = MethodChecker.getColor(context, unifyprinciplesR.color.Unify_RN50)
             )
 
-            _binding?.atcVariantPromoIconLeft?.loadImage(promoPriceData.mainIconUrl)
+            _binding?.atcVariantPromoIconLeft?.loadImage(ICON_PROMO_RED)
         }
 
         _binding?.atcVariantPromoTxtRight?.run {

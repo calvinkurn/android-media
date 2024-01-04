@@ -197,8 +197,7 @@ fun PromoPriceFooter(
                     top.linkTo(normalPrice.top)
                     bottom.linkTo(normalPrice.bottom)
                     end.linkTo(parent.absoluteRight)
-                    height = Dimension.fillToConstraints
-                }
+                }.height(16.dp)
             )
         }
 
@@ -336,7 +335,7 @@ fun PromoPriceCardPreview() {
                         priceAdditionalFmt = "Tanpa promo: Rp.9.500.000",
                         promoPriceFmt = "Rp.9.000.000",
                         promoSubtitle = "Diskon 200rb Cashback 300rb",
-                        slashPriceFmt = "Rp.11.000.000 Rp.11.000.000 Rp.11.000.000 Rp.11.000.000 Rp.11.000.000",
+                        slashPriceFmt = "Rp.11.000.000",
                         separatorColor = "#FFDBE2",
                         mainTextColor = "#F94D63",
                         cardBackgroundColor = "#FFF5F6",
@@ -345,6 +344,15 @@ fun PromoPriceCardPreview() {
                         superGraphicIconUrl = egSuperGraphic,
                         applink = ""
                     )
+                )
+
+                NormalPriceComponent(
+                    uiModel = Price(
+                        priceFmt = "Rp.11.000.000",
+                        slashPriceFmt = "Rp.15.000.000",
+                        discPercentage = "20%"
+                    ),
+                    freeOngkirImageUrl = boLogo
                 )
             }
         }
