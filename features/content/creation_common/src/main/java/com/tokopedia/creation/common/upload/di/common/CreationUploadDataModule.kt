@@ -35,14 +35,12 @@ class CreationUploadDataModule {
         mutex: Mutex,
         gson: Gson,
         creationUploadQueueDatabase: CreationUploadQueueDatabase,
-        logger: CreationUploadLogger,
     ): CreationUploadQueueRepository {
         return CreationUploadQueueRepositoryImpl(
             dispatchers = dispatchers,
             mutex = mutex,
             gson = gson,
             creationUploadQueueDatabase = creationUploadQueueDatabase,
-            logger = logger,
         )
     }
 }
