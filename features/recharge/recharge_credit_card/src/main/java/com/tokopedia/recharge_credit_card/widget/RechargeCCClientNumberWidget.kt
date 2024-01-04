@@ -131,6 +131,7 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
     }
 
     fun submitInstantCheckout(
+        headers: HashMap<String, String>,
         clientNumber: String,
         operatorId: String,
         productId: String,
@@ -139,6 +140,7 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
         token: String
     ) {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetPcidss.pcidssInstantCheckout(
+            headers,
             clientNumber,
             operatorId,
             productId,
@@ -153,12 +155,14 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(
     }
 
     fun submitCheckout(
+        headers: HashMap<String, String>,
         operatorId: String,
         productId: String,
         signature: String,
         userId: String
     ) {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetPcidss.submitCreditCard(
+            headers,
             signature,
             operatorId,
             productId,

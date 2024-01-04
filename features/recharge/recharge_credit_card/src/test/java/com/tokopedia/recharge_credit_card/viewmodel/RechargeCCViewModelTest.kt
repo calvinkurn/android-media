@@ -14,12 +14,10 @@ import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.network.authentication.HEADER_X_TKPD_APP_VERSION
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
-import com.tokopedia.recharge_credit_card.datamodel.CatalogOperator
-import com.tokopedia.recharge_credit_card.datamodel.CatalogPrefixAttributes
-import com.tokopedia.recharge_credit_card.datamodel.CatalogPrefixSelect
-import com.tokopedia.recharge_credit_card.datamodel.CatalogPrefixs
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCBank
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCBankList
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCBankListReponse
@@ -27,9 +25,7 @@ import com.tokopedia.recharge_credit_card.datamodel.RechargeCCCatalogPrefix
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetail
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetailResponse
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCUserPerso
-import com.tokopedia.recharge_credit_card.datamodel.RechargeCreditCard
 import com.tokopedia.recharge_credit_card.datamodel.TickerCreditCard
-import com.tokopedia.recharge_credit_card.datamodel.Validation
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -37,9 +33,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -419,6 +412,17 @@ class RechargeCCViewModelTest {
         Assert.assertNotNull(actualData)
         Assert.assertTrue(actualData is Fail)
         Assert.assertTrue((actualData as Fail).throwable.message == errorMessage)
+    }
+
+    // ======================================= Util ===========================================
+    @Test
+    fun getPcidssCustomHeaders_shouldReturnCorrectFormat() {
+        val customHeaders = rechargeCCViewModel.getPcidssCustomHeaders()
+        val expectedPrefix = "android-"
+
+        Assert.assertEquals(Int.ONE, customHeaders.size)
+        Assert.assertNotNull(customHeaders[HEADER_X_TKPD_APP_VERSION])
+        Assert.assertTrue(customHeaders[HEADER_X_TKPD_APP_VERSION]?.startsWith(expectedPrefix) == true)
     }
 
     // ======================================= Mock Data ===========================================

@@ -9,6 +9,7 @@ import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.repository.RechargeFavoriteNumberRepository
 import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.common_digital.common.usecase.GetDppoConsentUseCase
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -17,6 +18,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.network.authentication.HEADER_X_TKPD_APP_VERSION
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCBankList
@@ -25,14 +27,10 @@ import com.tokopedia.recharge_credit_card.datamodel.RechargeCCCatalogPrefix
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCDppoConsentUimodel
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetail
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCMenuDetailResponse
-import com.tokopedia.recharge_credit_card.isMasked
-import com.tokopedia.recharge_credit_card.util.RechargeCCConst
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -172,6 +170,12 @@ class RechargeCCViewModel @Inject constructor(
         }) {
             _dppoConsent.postValue(Fail(it))
         }
+    }
+
+    fun getPcidssCustomHeaders(): HashMap<String, String> {
+        val headers = HashMap<String, String>()
+        headers[HEADER_X_TKPD_APP_VERSION] = "android-" + GlobalConfig.VERSION_NAME
+        return headers
     }
 
     companion object {

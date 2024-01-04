@@ -350,6 +350,7 @@ class RechargeCCFragment :
 
         rechargeSubmitCCViewModel.signature.observe(viewLifecycleOwner) { signature ->
             binding?.ccWidgetClientNumber?.submitCheckout(
+                rechargeCCViewModel.getPcidssCustomHeaders(),
                 operatorIdSelected,
                 productIdSelected,
                 signature,
@@ -579,15 +580,8 @@ class RechargeCCFragment :
                 val identifier = it.getString(PARAM_IDENTIFIER) ?: ""
                 val clientNumber = it.getString(PARAM_CLIENT_NUMBER) ?: ""
 
-//                val mapParam = rechargeSubmitCCViewModel.createPcidssParamFromApplink(
-//                    clientNumber,
-//                    operatorId,
-//                    productId,
-//                    userSession.userId,
-//                    signature,
-//                    identifier
-//                )
                 binding?.ccWidgetClientNumber?.submitInstantCheckout(
+                    rechargeCCViewModel.getPcidssCustomHeaders(),
                     clientNumber,
                     operatorId,
                     productId,

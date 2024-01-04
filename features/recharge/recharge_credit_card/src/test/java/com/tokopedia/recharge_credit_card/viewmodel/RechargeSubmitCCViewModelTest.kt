@@ -1,30 +1,22 @@
 package com.tokopedia.recharge_credit_card.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.recharge_credit_card.datamodel.CCRedirectUrl
-import com.tokopedia.recharge_credit_card.datamodel.CCRedirectUrlResponse
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCSignature
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCSignatureReponse
-import com.tokopedia.recharge_credit_card.usecase.RechargeSubmitCcUseCase
 import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
-import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.io.IOException
 import java.lang.reflect.Type
-import java.net.SocketException
 
 class RechargeSubmitCCViewModelTest {
 
@@ -42,14 +34,16 @@ class RechargeSubmitCCViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        rechargeSubmitViewModel = RechargeSubmitCCViewModel(graphqlRepository,
-                Dispatchers.Unconfined)
+        rechargeSubmitViewModel = RechargeSubmitCCViewModel(
+            graphqlRepository,
+            Dispatchers.Unconfined
+        )
     }
 
-    //========================================= POST CREDIT CARD, SUCCESS GET SIGNATURE =====================================
+    // ========================================= POST CREDIT CARD, SUCCESS GET SIGNATURE =====================================
     @Test
     fun postCreditCard_SuccessGetSignature_RedirectPageToCheckout() {
-        //given
+        // given
         val signature = "abcdefg"
         val rechargeCCSignature = RechargeCCSignature(signature, "")
 
@@ -59,20 +53,20 @@ class RechargeSubmitCCViewModelTest {
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
-        //when
+        // when
         rechargeSubmitViewModel.postCreditCard("", "26")
 
-        //then
+        // then
         val actualData = rechargeSubmitViewModel.signature.value
         assertNotNull(actualData)
         assertEquals(signature, actualData)
     }
 
-    //========================================= POST CREDIT CARD, FAILED GET SIGNATURE =====================================
+    // ========================================= POST CREDIT CARD, FAILED GET SIGNATURE =====================================
 
     @Test
     fun postCreditCard_GetErrorMessageSignature_ShowErrorSignature() {
-        //given
+        // given
         val rechargeCCSignature = RechargeCCSignature("", "Error signature API")
 
         val result = HashMap<Type, Any>()
@@ -81,10 +75,10 @@ class RechargeSubmitCCViewModelTest {
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
-        //when
+        // when
         rechargeSubmitViewModel.postCreditCard("", "26")
 
-        //then
+        // then
         val actualData = rechargeSubmitViewModel.errorSignature
         assertNotNull(actualData)
         assertEquals(rechargeCCSignature.messageError, actualData.value?.message)
@@ -92,7 +86,7 @@ class RechargeSubmitCCViewModelTest {
 
     @Test
     fun postCreditCard_ErrorAPISignature_ShowErrorSignature() {
-        //given
+        // given
         val errorGql = GraphqlError()
         errorGql.message = "Error gql"
 
@@ -102,10 +96,10 @@ class RechargeSubmitCCViewModelTest {
 
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
-        //when
+        // when
         rechargeSubmitViewModel.postCreditCard("", "26")
 
-        //then
+        // then
         val actualData = rechargeSubmitViewModel.errorSignature
         assertNotNull(actualData)
         assertEquals(errorGql.message, actualData.value?.message)
