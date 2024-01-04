@@ -546,12 +546,7 @@ class CatalogSwitchingComparisonFragment :
     }
 
     override fun onFragmentBackPressed(): Boolean {
-        return if (!binding?.btnSeeCompare?.isEnabled.orFalse()) {
-            showCancelSwitch()
-            true
-        } else {
-            activity?.finish()
-            false
-        }
+        showCancelSwitch()
+        return  true
     }
 }
