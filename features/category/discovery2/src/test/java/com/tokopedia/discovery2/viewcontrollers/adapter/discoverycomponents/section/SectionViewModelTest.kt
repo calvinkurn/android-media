@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.usecase.SectionUseCase
+import com.tokopedia.discovery2.usecase.sectionusecase.SectionUseCase
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -27,9 +27,7 @@ class SectionViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
-
     }
-
 
     @Test
     fun `test for components`() {
@@ -54,7 +52,6 @@ class SectionViewModelTest {
         every { componentsItem.noOfPagesLoaded } returns 1
         every { componentsItem.verticalProductFailState } returns false
         assert(!viewModel.shouldShowShimmer())
-
     }
 
     @Test
@@ -63,7 +60,6 @@ class SectionViewModelTest {
         assert(viewModel.shouldShowError())
         every { componentsItem.verticalProductFailState } returns false
         assert(!viewModel.shouldShowError())
-
     }
 
     @Test
@@ -93,7 +89,6 @@ class SectionViewModelTest {
                 componentsItem.pageEndPoint
             )
         }
-
     }
 
     @Test
@@ -173,7 +168,6 @@ class SectionViewModelTest {
                 componentsItem.pageEndPoint
             )
         }
-
     }
 
     @Test
@@ -206,7 +200,6 @@ class SectionViewModelTest {
                 componentsItem.pageEndPoint
             )
         }
-
     }
 
     @Test
@@ -240,7 +233,5 @@ class SectionViewModelTest {
                 componentsItem.pageEndPoint
             )
         }
-
     }
-
 }

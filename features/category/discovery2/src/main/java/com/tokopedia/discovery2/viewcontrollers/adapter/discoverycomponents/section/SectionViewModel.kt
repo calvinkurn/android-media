@@ -3,7 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sec
 import android.app.Application
 import androidx.lifecycle.LiveData
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.usecase.SectionUseCase
+import com.tokopedia.discovery2.usecase.sectionusecase.SectionUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.model.NotifyPayload
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
