@@ -68,8 +68,6 @@ class RechargeCCViewModel @Inject constructor(
     var categoryName: String = ""
     var loyaltyStatus: String = ""
 
-    var validatorJob: Job? = null
-
     fun getMenuDetail(rawQuery: String, menuId: String) {
         launchCatchError(block = {
             val mapParam = mutableMapOf<String, Any>()
@@ -173,25 +171,6 @@ class RechargeCCViewModel @Inject constructor(
             _dppoConsent.postValue(Success(uiData))
         }) {
             _dppoConsent.postValue(Fail(it))
-        }
-    }
-
-    fun cancelValidatorJob() {
-        validatorJob?.cancel()
-    }
-
-    fun validateCCNumber(creditCard: String) {
-        validatorJob = launch {
-            if (creditCard.isMasked()) {
-                _prefixValidation.postValue(true)
-            } else {
-                var isValid = false
-                prefixData.prefixSelect.validations.forEach { validation ->
-                    isValid = creditCard.matches(validation.rule.toRegex())
-                }
-                delay(RechargeCCConst.VALIDATOR_DELAY_TIME)
-                _prefixValidation.postValue(isValid)
-            }
         }
     }
 

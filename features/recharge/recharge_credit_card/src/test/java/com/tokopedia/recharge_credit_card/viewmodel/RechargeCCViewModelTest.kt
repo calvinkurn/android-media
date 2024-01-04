@@ -218,89 +218,6 @@ class RechargeCCViewModelTest {
     // ========================================= PREFIX =====================================
 
     @Test
-    fun checkPrefixNumber_PrefixesNotEmpty_SuccessGetPrefixMatch() {
-        // given
-        val prefixes = getMockPrefixes()
-        val validations = getMockValidations()
-        val rechargeCCSelected = RechargeCreditCard("13", "15", "image2")
-
-        rechargeCCViewModel.prefixData = RechargeCCCatalogPrefix(
-            CatalogPrefixSelect(
-                prefixes = prefixes,
-                validations = validations
-            )
-        )
-
-        // when
-        rechargeCCViewModel.checkPrefixNumber(VALID_CC_NUMBER)
-
-        // then
-        val actualData = rechargeCCViewModel.creditCardSelected
-        Assert.assertNotNull(actualData)
-        Assert.assertEquals(rechargeCCSelected.defaultProductId, actualData.value?.defaultProductId)
-        Assert.assertEquals(rechargeCCSelected.operatorId, actualData.value?.operatorId)
-        Assert.assertEquals(rechargeCCSelected.imageUrl, actualData.value?.imageUrl)
-
-        val actualRules = rechargeCCViewModel.prefixData.prefixSelect.validations
-        Assert.assertNotNull(actualRules)
-        Assert.assertEquals(validations.size, actualRules.size)
-        Assert.assertEquals(validations[0].message, actualRules[0].message)
-        Assert.assertEquals(validations[0].title, actualRules[0].title)
-        Assert.assertEquals(validations[0].rule, actualRules[0].rule)
-        Assert.assertEquals(validations[1].message, actualRules[1].message)
-        Assert.assertEquals(validations[1].title, actualRules[1].title)
-        Assert.assertEquals(validations[1].rule, actualRules[1].rule)
-    }
-
-    @Test
-    fun checkPrefixNumber_PrefixNotFound_ReturnEmptyResult() {
-        // given
-        val prefixes = getMockPrefixes()
-        val validations = getMockValidations()
-
-        rechargeCCViewModel.prefixData = RechargeCCCatalogPrefix(
-            CatalogPrefixSelect(
-                prefixes = prefixes,
-                validations = validations
-            )
-        )
-
-        // when
-        rechargeCCViewModel.checkPrefixNumber(INVALID_CC_NUMBER)
-
-        // then
-        val actualData = rechargeCCViewModel.creditCardSelected
-        Assert.assertNotNull(actualData.value)
-        Assert.assertEquals("", actualData.value?.defaultProductId)
-        Assert.assertEquals("", actualData.value?.operatorId)
-        Assert.assertEquals("", actualData.value?.imageUrl)
-    }
-
-    @Test
-    fun checkPrefixNumber_PrefixEmpty_ReturnEmptyResult() {
-        // given
-        val prefixes = listOf<CatalogPrefixs>()
-        val validations = getMockValidations()
-
-        rechargeCCViewModel.prefixData = RechargeCCCatalogPrefix(
-            CatalogPrefixSelect(
-                prefixes = prefixes,
-                validations = validations
-            )
-        )
-
-        // when
-        rechargeCCViewModel.checkPrefixNumber(INVALID_CC_NUMBER)
-
-        // then
-        val actualData = rechargeCCViewModel.creditCardSelected
-        Assert.assertNotNull(actualData.value)
-        Assert.assertEquals("", actualData.value?.defaultProductId)
-        Assert.assertEquals("", actualData.value?.operatorId)
-        Assert.assertEquals("", actualData.value?.imageUrl)
-    }
-
-    @Test
     fun getPrefix_ErrorGetApi_FailedGetPrefix() {
         // given
         val result = HashMap<Type, Any>()
@@ -335,66 +252,6 @@ class RechargeCCViewModelTest {
         val actualData = rechargeCCViewModel.prefixSelect
         Assert.assertNotNull(actualData)
         Assert.assertEquals("Error gql", (actualData.value as RechargeNetworkResult.Fail).error.message)
-    }
-
-    @Test
-    fun validateCCNumber_GivenValidCC_ReturnTrue() {
-        rechargeCCViewModel.prefixData = RechargeCCCatalogPrefix(
-            CatalogPrefixSelect(
-                prefixes = getMockPrefixes(),
-                validations = getMockValidations()
-            )
-        )
-        runTest {
-            val clientNumber = VALID_CC_NUMBER
-            rechargeCCViewModel.validateCCNumber(clientNumber)
-            advanceUntilIdle()
-
-            val actualData = rechargeCCViewModel.prefixValidation
-            Assert.assertNotNull(actualData)
-            Assert.assertTrue(actualData.value == true)
-        }
-    }
-
-    @Test
-    fun validateCCNumber_GivenMaskedCC_ReturnTrue() {
-        rechargeCCViewModel.prefixData = RechargeCCCatalogPrefix(
-            CatalogPrefixSelect(
-                prefixes = getMockPrefixes(),
-                validations = getMockValidations()
-            )
-        )
-        testCoroutineRule.runTest {
-            val clientNumber = MASKED_CC_NUMBER
-            rechargeCCViewModel.validateCCNumber(clientNumber)
-
-            val actualData = rechargeCCViewModel.prefixValidation
-            Assert.assertNotNull(actualData)
-            Assert.assertTrue(actualData.value == true)
-        }
-    }
-
-    @Test
-    fun cancelValidatorJob_GivenNonNullJob_ShouldCancelJob() {
-        testCoroutineRule.runTest {
-            rechargeCCViewModel.validateCCNumber(VALID_CC_NUMBER)
-            rechargeCCViewModel.cancelValidatorJob()
-            Assert.assertTrue(rechargeCCViewModel.validatorJob?.isCancelled == true)
-        }
-    }
-
-    @Test
-    fun cancelValidatorJob_GivenNullJob_JobStaysNull() {
-        testCoroutineRule.runTest {
-            rechargeCCViewModel.cancelValidatorJob()
-            Assert.assertNull(rechargeCCViewModel.validatorJob)
-        }
-    }
-
-    @Test
-    fun setValidatorJob_GivenJobNull_ShouldReturnNonNullJob() {
-        rechargeCCViewModel.validatorJob = Job()
-        Assert.assertNotNull(rechargeCCViewModel.validatorJob)
     }
 
     // ======================================= Favorite Number =====================================
@@ -565,33 +422,6 @@ class RechargeCCViewModelTest {
     }
 
     // ======================================= Mock Data ===========================================
-
-    private fun getMockValidations(): List<Validation> {
-        return listOf(
-            Validation("Max 16 digits", "Maksimal 16 digits", "^\\\\d{0,16}\$"),
-            Validation("Min 15 digits", "Minimal 15 digit", "^\\d{15,}$")
-        )
-    }
-
-    private fun getMockPrefixes(): List<CatalogPrefixs> {
-        val prefixes = mutableListOf<CatalogPrefixs>()
-        prefixes.add(
-            CatalogPrefixs(
-                "1",
-                "1234",
-                CatalogOperator("12", CatalogPrefixAttributes("image1", "14"))
-            )
-        )
-        prefixes.add(
-            CatalogPrefixs(
-                "2",
-                "4111",
-                CatalogOperator("13", CatalogPrefixAttributes("image2", "15"))
-            )
-        )
-
-        return prefixes
-    }
 
     private fun getMockTickers(): List<TickerCreditCard> {
         val tickers = mutableListOf<TickerCreditCard>()

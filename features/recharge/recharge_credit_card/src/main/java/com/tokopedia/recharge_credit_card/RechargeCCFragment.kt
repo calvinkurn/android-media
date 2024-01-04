@@ -365,14 +365,6 @@ class RechargeCCFragment :
             }
         )
 
-        rechargeSubmitCCViewModel.errorSubmitCreditCard.observe(
-            viewLifecycleOwner,
-            Observer {
-                hideLoading()
-                showErrorToaster(it)
-            }
-        )
-
         rechargeCCViewModel.favoriteChipsData.observe(viewLifecycleOwner) {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetFavoriteChips(it.data)

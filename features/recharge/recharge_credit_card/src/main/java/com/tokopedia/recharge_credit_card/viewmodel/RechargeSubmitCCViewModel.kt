@@ -10,7 +10,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.recharge_credit_card.datamodel.CCRedirectUrl
 import com.tokopedia.recharge_credit_card.datamodel.CCRedirectUrlResponse
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCSignatureReponse
 import kotlinx.coroutines.CoroutineDispatcher
@@ -25,12 +24,8 @@ class RechargeSubmitCCViewModel @Inject constructor(
     BaseViewModel(dispatcher) {
 
     private val _signature = MutableLiveData<String>()
-    private val _errorSubmitCreditCard = MutableLiveData<Throwable>()
-    private val _redirectUrl = MutableLiveData<CCRedirectUrl>()
     private val _errorSignature = MutableLiveData<Throwable>()
 
-    val errorSubmitCreditCard: LiveData<Throwable> = _errorSubmitCreditCard
-    val redirectUrl: LiveData<CCRedirectUrl> = _redirectUrl
     val errorSignature: LiveData<Throwable> = _errorSignature
     val signature: LiveData<String> = _signature
 
@@ -56,68 +51,10 @@ class RechargeSubmitCCViewModel @Inject constructor(
             _errorSignature.postValue(it)
         }
     }
-    fun createMapParam(
-        clientNumber: String,
-        operatorId: String,
-        productId: String,
-        userId: String
-    ): HashMap<String, String> {
-        val mapParam = HashMap<String, String>()
-        mapParam[PARAM_ACTION] = VALUE_ACTION
-        mapParam[PARAM_CLIENT_NUMBER] = clientNumber
-        mapParam[PARAM_OPERATOR_ID] = operatorId
-        mapParam[PARAM_PRODUCT_ID] = productId
-        mapParam[PARAM_USER_ID] = userId
-        return mapParam
-    }
-
-    fun createMaskedMapParam(
-        clientNumber: String,
-        operatorId: String,
-        productId: String,
-        userId: String,
-        token: String
-    ): HashMap<String, String> {
-        val mapParam = HashMap<String, String>()
-        mapParam[PARAM_ACTION] = VALUE_ACTION
-        mapParam[PARAM_MASKED_NUMBER] = clientNumber
-        mapParam[PARAM_OPERATOR_ID] = operatorId
-        mapParam[PARAM_PRODUCT_ID] = productId
-        mapParam[PARAM_USER_ID] = userId
-        mapParam[PARAM_TOKEN] = token
-        return mapParam
-    }
-
-    fun createPcidssParamFromApplink(
-        clientNumber: String,
-        operatorId: String,
-        productId: String,
-        userId: String,
-        signature: String,
-        token: String
-    ): HashMap<String, String> {
-        val mapParam = HashMap<String, String>()
-        mapParam[PARAM_ACTION] = VALUE_ACTION
-        mapParam[PARAM_MASKED_NUMBER] = clientNumber
-        mapParam[PARAM_OPERATOR_ID] = operatorId
-        mapParam[PARAM_PRODUCT_ID] = productId
-        mapParam[PARAM_USER_ID] = userId
-        mapParam[PARAM_PCIDSS] = signature
-        mapParam[PARAM_TOKEN] = token
-        return mapParam
-    }
 
     companion object {
         private const val CATEGORY_ID = "categoryId"
-        const val PARAM_CLIENT_NUMBER = "client_number"
-        const val PARAM_OPERATOR_ID = "operator_id"
-        const val PARAM_PRODUCT_ID = "product_id"
-        const val PARAM_USER_ID = "user_id"
-        const val PARAM_ACTION = "action"
-        const val VALUE_ACTION = "init_data"
         const val PARAM_PCIDSS = "pcidss_signature"
-        const val PARAM_TOKEN = "token"
-        const val PARAM_MASKED_NUMBER = "masked_number"
 
         fun convertCCResponse(typeRestResponseMap: Map<Type, RestResponse?>): CCRedirectUrlResponse? {
             return typeRestResponseMap[CCRedirectUrlResponse::class.java]?.getData() as CCRedirectUrlResponse?
