@@ -1,12 +1,12 @@
-package com.tokopedia.deals.category.di
+package com.tokopedia.deals.ui.category.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.deals.category.ui.viewmodel.DealCategoryViewModel
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.ui.viewmodel.DealsBrandCategoryActivityViewModel
+import com.tokopedia.deals.ui.category.ui.viewmodel.DealCategoryViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

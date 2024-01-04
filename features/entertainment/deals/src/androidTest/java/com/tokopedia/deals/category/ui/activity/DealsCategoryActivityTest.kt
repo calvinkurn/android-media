@@ -25,6 +25,7 @@ import com.tokopedia.deals.DealsDummyResponseString.DUMMY_RESPONSE_SECOND_CATEGO
 import com.tokopedia.deals.DealsDummyResponseString.FILTERS_CHIP_TITLE
 import com.tokopedia.deals.R
 import com.tokopedia.deals.category.ui.activity.mock.DealsCategoryMockResponse
+import com.tokopedia.deals.ui.category.ui.activity.DealsCategoryActivity
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.espresso_component.CommonMatcher.withTagStringValue
@@ -44,7 +45,8 @@ class DealsCategoryActivityTest {
     val cassavaTestRule = CassavaTestRule(sendValidationResult = false)
 
     @get:Rule
-    var activityRule: IntentsTestRule<DealsCategoryActivity> = object : IntentsTestRule<DealsCategoryActivity>(DealsCategoryActivity::class.java) {
+    var activityRule: IntentsTestRule<DealsCategoryActivity> = object : IntentsTestRule<DealsCategoryActivity>(
+        DealsCategoryActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
 

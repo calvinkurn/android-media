@@ -1,4 +1,4 @@
-package com.tokopedia.deals.category.ui.fragment
+package com.tokopedia.deals.ui.category.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.deals.R
-import com.tokopedia.deals.category.listener.DealsCategoryFilterBottomSheetListener
 import com.tokopedia.deals.common.listener.DealsChipListener
 import com.tokopedia.deals.common.ui.adapter.DealsChipsAdapter
 import com.tokopedia.deals.common.ui.dataview.ChipDataView
 import com.tokopedia.deals.common.ui.dataview.DealsChipsDataView
 import com.tokopedia.deals.databinding.LayoutDealsCategoryFilterBottomSheetBinding
+import com.tokopedia.deals.ui.category.listener.DealsCategoryFilterBottomSheetListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class DealsCategoryFilterBottomSheet :

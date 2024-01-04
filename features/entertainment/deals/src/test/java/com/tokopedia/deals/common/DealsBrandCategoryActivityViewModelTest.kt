@@ -2,17 +2,17 @@ package com.tokopedia.deals.common
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
-import com.tokopedia.deals.category.domain.GetChipsCategoryUseCase
+import com.tokopedia.deals.DealsJsonMapper
 import com.tokopedia.deals.common.ui.viewmodel.DealsBrandCategoryActivityViewModel
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.deals.search.model.response.CuratedData
+import com.tokopedia.deals.ui.category.domain.GetChipsCategoryUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.coEvery
 import io.mockk.mockk
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import com.tokopedia.deals.DealsJsonMapper
-import org.junit.Assert.assertEquals
 
 class DealsBrandCategoryActivityViewModelTest {
 

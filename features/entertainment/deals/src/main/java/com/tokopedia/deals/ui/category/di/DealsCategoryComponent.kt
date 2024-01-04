@@ -1,8 +1,8 @@
-package com.tokopedia.deals.category.di
+package com.tokopedia.deals.ui.category.di
 
-import com.tokopedia.deals.category.ui.activity.DealsCategoryActivity
-import com.tokopedia.deals.category.ui.fragment.DealsCategoryFragment
 import com.tokopedia.deals.di.DealsComponent
+import com.tokopedia.deals.ui.category.ui.activity.DealsCategoryActivity
+import com.tokopedia.deals.ui.category.ui.fragment.DealsCategoryFragment
 import dagger.Component
 
 @DealsCategoryScope

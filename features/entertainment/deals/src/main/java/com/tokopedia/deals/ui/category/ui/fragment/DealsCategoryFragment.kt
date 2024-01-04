@@ -1,4 +1,4 @@
-package com.tokopedia.deals.category.ui.fragment
+package com.tokopedia.deals.ui.category.ui.fragment
 
 import android.content.Intent
 import android.graphics.Rect
@@ -14,11 +14,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.deals.R
-import com.tokopedia.deals.category.di.DealsCategoryComponent
-import com.tokopedia.deals.category.listener.DealsCategoryFilterBottomSheetListener
-import com.tokopedia.deals.category.ui.activity.DealsCategoryActivity
-import com.tokopedia.deals.category.ui.adapter.DealsCategoryAdapter
-import com.tokopedia.deals.category.ui.viewmodel.DealCategoryViewModel
 import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.listener.DealChipsListActionListener
 import com.tokopedia.deals.common.listener.DealsBrandActionListener
@@ -43,6 +38,11 @@ import com.tokopedia.deals.search.model.response.Category
 import com.tokopedia.deals.search.ui.activity.DealsSearchActivity
 import com.tokopedia.deals.ui.brand.DealsBrandActivity
 import com.tokopedia.deals.ui.brand.model.DealsEmptyDataView
+import com.tokopedia.deals.ui.category.di.DealsCategoryComponent
+import com.tokopedia.deals.ui.category.listener.DealsCategoryFilterBottomSheetListener
+import com.tokopedia.deals.ui.category.ui.activity.DealsCategoryActivity
+import com.tokopedia.deals.ui.category.ui.adapter.DealsCategoryAdapter
+import com.tokopedia.deals.ui.category.ui.viewmodel.DealCategoryViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -367,7 +367,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
 
     /** DealChipsListActionListener **/
     override fun onFilterChipClicked(chips: List<ChipDataView>) {
-        val filterBottomSheet = DealsCategoryFilterBottomSheet.newInstance(DealsChipsDataView(chips))
+        val filterBottomSheet =
+            DealsCategoryFilterBottomSheet.newInstance(DealsChipsDataView(chips))
         filterBottomSheet.setListener(this)
         filterBottomSheet.show(childFragmentManager, "")
     }

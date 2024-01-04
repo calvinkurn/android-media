@@ -1,4 +1,4 @@
-package com.tokopedia.deals.category.di
+package com.tokopedia.deals.ui.category.di
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository

@@ -1,15 +1,13 @@
-package com.tokopedia.deals.category.ui.activity
+package com.tokopedia.deals.ui.category.ui.activity
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.deals.category.di.DealsCategoryComponent
-import com.tokopedia.deals.category.di.DaggerDealsCategoryComponent
 import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.ui.activity.DealsBaseBrandCategoryActivity
-import com.tokopedia.deals.search.model.response.Category
+import com.tokopedia.deals.ui.category.di.DaggerDealsCategoryComponent
+import com.tokopedia.deals.ui.category.di.DealsCategoryComponent
 import javax.inject.Inject
 
 /**

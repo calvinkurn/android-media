@@ -1,4 +1,4 @@
-package com.tokopedia.deals.category.domain
+package com.tokopedia.deals.ui.category.domain
 
 import com.tokopedia.deals.domain.DealsGqlQueries
 import com.tokopedia.deals.search.model.response.CuratedData

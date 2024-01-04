@@ -1,4 +1,4 @@
-package com.tokopedia.deals.category.data
+package com.tokopedia.deals.ui.category.data
 
 import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.search.model.response.CuratedData

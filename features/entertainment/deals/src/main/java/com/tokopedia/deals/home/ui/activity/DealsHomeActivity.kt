@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.deals.category.ui.activity.DealsCategoryActivity
 import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
 import com.tokopedia.deals.di.DaggerDealsComponent
 import com.tokopedia.deals.di.DealsComponent
@@ -13,6 +12,7 @@ import com.tokopedia.deals.di.DealsModule
 import com.tokopedia.deals.home.ui.fragment.DealsHomeFragment
 import com.tokopedia.deals.location_picker.DealsLocationConstants
 import com.tokopedia.deals.location_picker.model.response.Location
+import com.tokopedia.deals.ui.category.ui.activity.DealsCategoryActivity
 
 /**
  * @author by jessica on 16/06/20

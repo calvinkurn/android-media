@@ -1,4 +1,4 @@
-package com.tokopedia.deals.category.utils
+package com.tokopedia.deals.ui.category.utils
 
 import android.content.Context
 import androidx.annotation.StringRes

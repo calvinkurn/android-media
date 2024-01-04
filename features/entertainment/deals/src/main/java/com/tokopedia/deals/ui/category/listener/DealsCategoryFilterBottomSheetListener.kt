@@ -1,4 +1,4 @@
-package com.tokopedia.deals.category.listener
+package com.tokopedia.deals.ui.category.listener
 
 import com.tokopedia.deals.common.ui.dataview.DealsChipsDataView
 

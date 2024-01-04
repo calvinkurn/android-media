@@ -1,4 +1,4 @@
-package com.tokopedia.deals.category.utils
+package com.tokopedia.deals.ui.category.utils
 
 import com.tokopedia.deals.common.model.request.RequestParam
 import com.tokopedia.deals.search.DealsSearchConstants

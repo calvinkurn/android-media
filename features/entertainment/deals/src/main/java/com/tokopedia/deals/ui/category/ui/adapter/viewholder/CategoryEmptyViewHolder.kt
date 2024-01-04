@@ -1,11 +1,11 @@
-package com.tokopedia.deals.category.ui.adapter.viewholder
+package com.tokopedia.deals.ui.category.ui.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.deals.R
-import com.tokopedia.deals.category.listener.DealsCategoryEmptyListener
-import com.tokopedia.deals.category.ui.dataview.CategoryEmptyDataView
 import com.tokopedia.deals.databinding.ItemDealsCategoryEmptyBinding
+import com.tokopedia.deals.ui.category.listener.DealsCategoryEmptyListener
+import com.tokopedia.deals.ui.category.ui.dataview.CategoryEmptyDataView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.visible
