@@ -165,7 +165,7 @@ class TrackingPageComposeActivity : AppCompatActivity() {
             composeView,
             message,
             Toaster.LENGTH_SHORT,
-            type = Toaster.TYPE_ERROR
+            Toaster.TYPE_NORMAL
         ).show()
     }
 

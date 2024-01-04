@@ -19,6 +19,11 @@ import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -75,6 +80,7 @@ import com.tokopedia.targetedticker.ui.TargetedTickerWidget
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.utils.date.DateUtil
+import kotlinx.coroutines.delay
 import com.tokopedia.logisticorder.R as logisticorderR
 
 @Composable
@@ -179,27 +185,43 @@ fun FindNewDriverSection(
     onEvent: (TrackingPageEvent) -> Unit
 ) {
     retryAvailability?.let { model ->
+        var clicked by remember { mutableStateOf(false) }
+
         Column(
             Modifier
                 .padding(horizontal = 20.dp)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.Center
         ) {
-            if (model.retryAvailability.showRetryButton) {
+            if (model.retryAvailability.showRetryButton && model.retryAvailability.availabilityRetry) {
                 NestButton(
                     modifier = Modifier.fillMaxWidth(),
                     variant = ButtonVariant.GHOST_ALTERNATE,
+                    isEnabled = !clicked,
                     text = stringResource(id = logisticorderR.string.find_new_driver),
-                    onClick = { onEvent(TrackingPageEvent.FindNewDriver) }
+                    onClick = {
+                        clicked = true
+                        onEvent(TrackingPageEvent.FindNewDriver)
+                    }
                 )
             }
-            if (model.retryAvailability.deadlineRetryUnixtime.toLong() > 0L) {
+            if (model.retryAvailability.availabilityRetry.not() && model.retryAvailability.deadlineRetryUnixtime.toLong() > 0L) {
                 val deadline = model.retryAvailability.deadlineRetryUnixtime.toLong()
                 val now = System.currentTimeMillis() / 1000L
-                val remainingTime = deadline - now
-                // todo update time in millis
-                if (remainingTime > 0) {
-                    val timeInMillis = remainingTime * 1000
+                val remainingSeconds = deadline - now
+                if (remainingSeconds > 0) {
+                    var timeInMillis by remember {
+                        mutableStateOf(remainingSeconds * 1000)
+                    }
+                    LaunchedEffect(key1 = timeInMillis) {
+                        while (timeInMillis > 0) {
+                            delay(1000L)
+                            timeInMillis -= 1000L
+                        }
+                        if (timeInMillis == 0L) {
+                            onEvent(TrackingPageEvent.CheckAvailabilityToFindNewDriver)
+                        }
+                    }
                     val formattedTime = DateUtils.formatElapsedTime(timeInMillis / 1000)
                     NestTypography(
                         modifier = Modifier.fillMaxWidth(),

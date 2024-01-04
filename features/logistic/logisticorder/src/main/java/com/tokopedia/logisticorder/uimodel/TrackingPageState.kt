@@ -15,7 +15,7 @@ sealed interface TrackingPageEvent {
     ) : TrackingPageEvent
 
     object FindNewDriver : TrackingPageEvent
-    data class CheckAvailabilityToFindNewDriver(val orderId: String) : TrackingPageEvent
+    object CheckAvailabilityToFindNewDriver : TrackingPageEvent
 }
 
 data class TrackingPageState(
