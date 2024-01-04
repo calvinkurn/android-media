@@ -49,6 +49,7 @@ import com.tokopedia.logisticorder.utils.toHyphenIfEmptyOrNull
 import com.tokopedia.logisticorder.view.bottomsheet.DriverInfoBottomSheet
 import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.targetedticker.domain.TargetedTickerPage
 import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -151,8 +152,19 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        checkRemoteConfig()
         initObserver()
         fetchData()
+    }
+
+    fun checkRemoteConfig() {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val key = "key"
+        if (remoteConfig.getBoolean(key)) {
+            val intent = Intent(requireContext(), TrackingPageComposeActivity::class.java).apply {
+                arguments = this@TrackingPageFragment.arguments
+            }
+        }
     }
 
     override fun onDestroyView() {

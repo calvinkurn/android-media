@@ -2,6 +2,7 @@ package com.tokopedia.logisticorder.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.logisticorder.view.TrackingPageComposeActivity
 import com.tokopedia.logisticorder.view.TrackingPageFragment
 import com.tokopedia.logisticorder.view.bottomsheet.DriverTippingBottomSheet
 import dagger.Component
@@ -11,4 +12,5 @@ import dagger.Component
 interface TrackingPageComponent {
     fun inject(trackingPageFragment: TrackingPageFragment)
     fun inject(driverTippingBottomSheet: DriverTippingBottomSheet)
+    fun inject(trackingPageComposeActivity: TrackingPageComposeActivity)
 }

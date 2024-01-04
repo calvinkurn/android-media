@@ -14,12 +14,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalView
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.logisticCommon.data.constant.PodConstant
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.logisticorder.R
+import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.uimodel.ProofModel
 import com.tokopedia.logisticorder.uimodel.TippingModel
 import com.tokopedia.logisticorder.uimodel.TrackingPageEvent
@@ -36,10 +38,11 @@ import com.tokopedia.logisticorder.R as logisticorderR
 class TrackingPageComposeActivity : AppCompatActivity() {
 
     companion object {
-        private const val URL_LIVE_TRACKING = "url_live_tracking"
-        private const val ORDER_CALLER = "caller"
-        private const val TX_ID = "tx_id"
-        private const val GROUP_TYPE = "group_type"
+        private const val ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID"
+        private const val ARGUMENTS_ORDER_TX_ID = "ARGUMENTS_ORDER_TX_ID"
+        private const val ARGUMENTS_GROUP_TYPE = "ARGUMENTS_GROUP_TYPE"
+        private const val ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL"
+        private const val ARGUMENTS_CALLER = "ARGUMENTS_CALLER"
     }
 
     @Inject
@@ -52,15 +55,16 @@ class TrackingPageComposeActivity : AppCompatActivity() {
         ViewModelProvider(this, viewModelFactory)[TrackingPageComposeViewModel::class.java]
     }
 
-    private val orderId by lazy { intent.data?.lastPathSegment.orEmpty() }
+    private val orderId by lazy { intent.extras?.getString(ARGUMENTS_ORDER_ID).orEmpty()}
     private val urlLiveTracking by lazy {
-        intent.data?.getQueryParameter(URL_LIVE_TRACKING).orEmpty()
+        intent.extras?.getString(ARGUMENTS_TRACKING_URL).orEmpty()
     }
-    private val orderCaller by lazy { intent.data?.getQueryParameter(ORDER_CALLER).orEmpty() }
-    private val orderTxId by lazy { intent?.data?.getQueryParameter(TX_ID).orEmpty() }
-    private val groupType by lazy { intent?.data?.getQueryParameter(GROUP_TYPE)?.toIntOrNull() }
+    private val orderCaller by lazy { intent.extras?.getString(ARGUMENTS_CALLER).orEmpty() }
+    private val orderTxId by lazy { intent?.extras?.getString(ARGUMENTS_ORDER_TX_ID).orEmpty() }
+    private val groupType by lazy { intent?.extras?.getString(ARGUMENTS_GROUP_TYPE)?.toIntOrNull() }
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        injectComponent()
         super.onCreate(savedInstanceState, persistentState)
         viewModel.onEvent(
             TrackingPageEvent.LoadTrackingData(
@@ -92,6 +96,13 @@ class TrackingPageComposeActivity : AppCompatActivity() {
                 )
             }
         }
+    }
+
+    private fun injectComponent() {
+        DaggerTrackingPageComponent.builder()
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
     }
 
     private fun openWebView(url: String) {

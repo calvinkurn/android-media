@@ -35,7 +35,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -51,7 +50,6 @@ import com.tokopedia.iconunify.getIconUnifyResourceIdRef
 import com.tokopedia.imageassets.TokopediaImageUrl.ICON_OPEN_TIPPING_GOJEK
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.uimodel.DetailModel
-import com.tokopedia.logisticorder.uimodel.EtaModel
 import com.tokopedia.logisticorder.uimodel.LastDriverModel
 import com.tokopedia.logisticorder.uimodel.ProofModel
 import com.tokopedia.logisticorder.uimodel.TickerUnificationTargets
@@ -790,29 +788,29 @@ private val DetailModel.deliveryDate: CharSequence
         return date.toHyphenIfEmptyOrNull()
     }
 
-@Preview
-@Composable
-fun TrackingPagePreview() {
-    val state = TrackingPageState(
-        isLoading = false,
-        trackingData = TrackingDataModel(
-            trackOrder = TrackOrderModel(
-                shippingRefNum = "NORESI",
-                detail = DetailModel(
-                    serviceCode = "SER20",
-                    shipperCity = "Bandung",
-                    shipperName = "Penjual",
-                    receiverName = "Pembeli",
-                    receiverCity = "Jakarta",
-                    sendDate = "10 - 11 November 2021",
-                    eta = EtaModel(
-                        userInfo = "17 - 23 Desember 2023"
-                    )
-                )
-            )
-        )
-    )
-    NestTheme {
-        TrackingPageScreen(state)
-    }
-}
+//@Preview
+//@Composable
+//fun TrackingPagePreview() {
+//    val state = TrackingPageState(
+//        isLoading = false,
+//        trackingData = TrackingDataModel(
+//            trackOrder = TrackOrderModel(
+//                shippingRefNum = "NORESI",
+//                detail = DetailModel(
+//                    serviceCode = "SER20",
+//                    shipperCity = "Bandung",
+//                    shipperName = "Penjual",
+//                    receiverName = "Pembeli",
+//                    receiverCity = "Jakarta",
+//                    sendDate = "10 - 11 November 2021",
+//                    eta = EtaModel(
+//                        userInfo = "17 - 23 Desember 2023"
+//                    )
+//                )
+//            )
+//        )
+//    )
+//    NestTheme {
+//        TrackingPageScreen(state)
+//    }
+//}
