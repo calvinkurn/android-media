@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section
 
+import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
@@ -128,7 +129,10 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
             imageUrl,
             listener = object : ImageHandler.ImageLoaderStateListener {
                 override fun successLoad(view: ImageView?) {
-                    festiveForeground.minimumHeight = 0
+                    val minHeight = view?.context?.getMinHeight()
+                    minHeight?.moreThanContainerHeight {
+                        festiveForeground.setLayoutHeight(festiveContainer.measuredHeight)
+                    }
                 }
 
                 override fun failedLoad(view: ImageView?) {
@@ -145,7 +149,10 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
             imageUrl,
             listener = object : ImageHandler.ImageLoaderStateListener {
                 override fun successLoad(view: ImageView?) {
-                    festiveBackground.minimumHeight = 0
+                    val minHeight = view?.context?.getMinHeight()
+                    minHeight?.moreThanContainerHeight {
+                        festiveBackground.setLayoutHeight(festiveContainer.measuredHeight)
+                    }
                 }
 
                 override fun failedLoad(view: ImageView?) {
@@ -155,18 +162,42 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
         )
     }
 
+    private fun Int?.moreThanContainerHeight(action: () -> Unit) {
+        this?.run {
+            if (festiveContainer.measuredHeight < this) {
+                action.invoke()
+            }
+        }
+    }
+
+    private fun Context?.getMinHeight(): Int? {
+        return this?.resources?.getDimensionPixelOffset(festive_section_min_height)
+    }
+
     private fun resetFestiveSection() {
         festiveContainer.removeAllViews()
 
-        val minHeight = itemView.context.resources.getDimensionPixelOffset(festive_section_min_height)
+        val minHeight = itemView.context.getMinHeight()
+        minHeight?.run {
+            festiveBackground.resetLayout(this)
+            festiveBackground.hide()
 
-        festiveBackground.layout(0, 0, 0, 0)
-        festiveBackground.minimumHeight = minHeight
-        festiveBackground.hide()
+            festiveForeground.resetLayout(this)
+            festiveForeground.hide()
+        }
+    }
 
-        festiveForeground.layout(0, 0, 0, 0)
-        festiveForeground.minimumHeight = minHeight
-        festiveForeground.hide()
+    private fun AppCompatImageView.resetLayout(minHeight: Int) {
+        apply {
+            layout(0, 0, 0, 0)
+            minimumHeight = minHeight
+        }
+    }
+
+    private fun AppCompatImageView.setLayoutHeight(height: Int) {
+        if (layoutParams.height == height) return
+
+        layoutParams.height = height
     }
 
     private fun addComponentView(item: ComponentsItem) {
