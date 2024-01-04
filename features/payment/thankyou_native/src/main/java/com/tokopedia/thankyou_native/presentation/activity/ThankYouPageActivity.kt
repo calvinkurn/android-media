@@ -47,7 +47,7 @@ const val SCREEN_NAME = "Finish Transaction"
 const val ARG_PAYMENT_ID = "payment_id"
 const val ARG_MERCHANT = "merchant"
 
-private const val GLOBAL_NAV_HINT = "Cari lagi barang impianmu"
+private const val GLOBAL_NAV_HINT = "Cari di Tokopedia"
 
 private const val KEY_CONFIG_NEW_NAVIGATION = "app_flag_thankyou_new_navigation"
 private const val KEY_ROLLENCE_SHARE = "share_thankyoupage"
@@ -409,7 +409,11 @@ class ThankYouPageActivity :
                 this,
                 thanksPageData.shopOrder
             )
-        }.addIcon(IconList.ID_NAV_GLOBAL) {
+        }
+        .addIcon(IconList.ID_CART) {
+            // no-op
+        }
+        .addIcon(IconList.ID_NAV_GLOBAL) {
             // no-op
         }
     }

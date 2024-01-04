@@ -7,6 +7,8 @@ import android.os.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -22,8 +24,11 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.data.mapper.InstantPaymentPage
 import com.tokopedia.thankyou_native.data.mapper.Invalid
+import com.tokopedia.thankyou_native.data.mapper.PaymentPageMapper
 import com.tokopedia.thankyou_native.data.mapper.PaymentStatusMapper
+import com.tokopedia.thankyou_native.data.mapper.ProcessingPaymentPage
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
@@ -38,6 +43,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_loader.*
 import java.util.zip.ZipInputStream
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class LoaderFragment : BaseDaggerFragment() {
 
@@ -148,28 +154,42 @@ class LoaderFragment : BaseDaggerFragment() {
             callback?.onInvalidThankYouPage()
             return
         } else {
-            val lottie = (activity as ThankYouPageActivity).findViewById<LottieAnimationView>(R.id.lottieSuccess)
-            lottie.visible()
-            lottie.playAnimation()
-            lottie.addAnimatorListener(object: AnimatorListener {
-                override fun onAnimationStart(animation: Animator) {
+            if (!IS_V2) {
+                callback?.onThankYouPageDataLoaded(thanksPageData)
+                return
+            }
+            if (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType) == InstantPaymentPage) {
+                val lottie = (activity as ThankYouPageActivity).findViewById<LottieAnimationView>(R.id.lottieSuccess)
+                lottie.visible()
+                lottie.playAnimation()
+                lottie.addAnimatorListener(object: AnimatorListener {
+                    override fun onAnimationStart(animation: Animator) {
 
-                }
+                    }
 
-                override fun onAnimationEnd(animation: Animator) {
+                    override fun onAnimationEnd(animation: Animator) {
 //                    (activity as ThankYouPageActivity).findViewById<LottieAnimationView>(R.id.lottieSuccess).animate().alpha(0f).setDuration(UnifyMotion.T5).start()
-                    callback?.onThankYouPageDataLoaded(thanksPageData)
+                        callback?.onThankYouPageDataLoaded(thanksPageData)
+                    }
+
+                    override fun onAnimationCancel(animation: Animator) {
+
+                    }
+
+                    override fun onAnimationRepeat(animation: Animator) {
+
+                    }
+                })
+            } else {
+                val header = (activity as ThankYouPageActivity).findViewById<ImageView>(R.id.header_background)
+                if (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType) == ProcessingPaymentPage) {
+                    context?.let {
+                        header.setColorFilter(ContextCompat.getColor(it, unifyprinciplesR.color.Unify_TN50))
+                    }
                 }
-
-                override fun onAnimationCancel(animation: Animator) {
-
-                }
-
-                override fun onAnimationRepeat(animation: Animator) {
-
-                }
-            })
-
+                header.animate().alpha(1f).setDuration(UnifyMotion.T5).setInterpolator(UnifyMotion.EASE_OUT).start()
+                callback?.onThankYouPageDataLoaded(thanksPageData)
+            }
         }
     }
 
@@ -187,7 +207,6 @@ class LoaderFragment : BaseDaggerFragment() {
     private fun showSuccessLottie() {
         if (!IS_V2) return
 
-        (activity as ThankYouPageActivity).findViewById<LottieAnimationView>(R.id.lottieSuccess).visible()
         lottieTask = prepareSuccessLottieTask()
         addLottieAnimationToView()
     }

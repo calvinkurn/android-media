@@ -146,7 +146,8 @@
         android:layout_marginTop="5dp"
         android:textColor="@color/Unify_GN500"
         app:layout_constraintEnd_toStartOf="@id/spaceEnd"
-        app:layout_constraintTop_toBottomOf="@id/amountLabel"
+        app:layout_constraintTop_toTopOf="@id/amount"
+        android:elevation="10dp"
         app:typographyType="paragraph_3"
         app:typographyWeight="bold"
         tools:text="Lihat Detail"/>
