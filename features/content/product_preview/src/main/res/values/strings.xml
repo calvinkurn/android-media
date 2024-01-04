@@ -9,9 +9,6 @@
     <string name="video_time_hours">%d:%02d:%02d</string>
     <string name="text_label_place_holder">%s/%s • %s</string>
     <string name="circle_dot_divider">•</string>
-    <string name="bottom_atc_wording">+ Keranjang</string>
-    <string name="bottom_remind_wording">Ingatkan saya</string>
-    <string name="bottom_oos_wording">Stok habis</string>
     <string name="bottom_atc_success_toaster">1 barang berhasil ditambahkan ke Keranjang.</string>
     <string name="bottom_atc_failed_toaster">Oops, barang gagal ditambahkan ke Keranjang. </string>
     <string name="bottom_atc_success_click_toaster">Lihat</string>

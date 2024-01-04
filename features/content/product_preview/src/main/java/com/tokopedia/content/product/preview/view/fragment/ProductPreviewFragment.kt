@@ -9,6 +9,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -32,6 +34,7 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ProductPreviewFragment @Inject constructor(
@@ -139,8 +142,10 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private fun observeData() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.miniInfo.withCache().collectLatest { (prev, curr) ->
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.miniInfo
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
+                .withCache().collectLatest { (prev, curr) ->
                 renderBottomNav(prev, curr)
             }
         }
