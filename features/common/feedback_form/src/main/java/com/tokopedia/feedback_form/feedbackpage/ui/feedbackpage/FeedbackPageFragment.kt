@@ -117,7 +117,7 @@ class FeedbackPageFragment : BaseDaggerFragment(), FeedbackPageContract.View, Im
     private var lastAccessedPage: String? = ""
     private var categoryItem: Int = -1
     private var reportType: Int = 0
-    private var labelsId: ArrayList<Int> = arrayListOf()
+    private var labelsId: ArrayList<Long> = arrayListOf()
     private var isFromScreenshot: Boolean = false
 
     private var userSession: UserSessionInterface? = null
@@ -217,7 +217,7 @@ class FeedbackPageFragment : BaseDaggerFragment(), FeedbackPageContract.View, Im
         myPreferences?.setSubmitFlag(emailTokopedia, userSession?.userId.toString())
     }
 
-    override fun checkUriImage(feedbackId: Int, imageCount: Int) {
+    override fun checkUriImage(feedbackId: Long, imageCount: Int) {
         var imageSize: Long = 0
         if (selectedImage.isNotEmpty()) {
             val totalImage = selectedImage.size
@@ -304,7 +304,7 @@ class FeedbackPageFragment : BaseDaggerFragment(), FeedbackPageContract.View, Im
         bottomSheetPage?.dismiss()
         page.setText(pageName)
         feedbackPagePresenter.setSelectedPage(selection)
-        labelsId = arrayListOf(selection)
+        labelsId = arrayListOf(selection.toLong())
     }
 
     private fun allPermissionsGranted(): Boolean {
@@ -510,10 +510,14 @@ class FeedbackPageFragment : BaseDaggerFragment(), FeedbackPageContract.View, Im
     }
 
     private fun generateScreenshotDataFromCursor(cursor: Cursor): ScreenshotData? {
-        val id = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID))
-        val fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME))
-        val path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
-        return ScreenshotData(id, fileName, path)
+        return try {
+            val id = cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID))
+            val fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME))
+            val path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
+            ScreenshotData(id, fileName, path)
+        } catch(e: Exception) {
+            null
+        }
     }
 
     private fun requestMapper(email: String, journey: String, expectedResult: String, detailFeedback: String): FeedbackFormRequest {
@@ -540,13 +544,13 @@ class FeedbackPageFragment : BaseDaggerFragment(), FeedbackPageContract.View, Im
         )
     }
 
-    private fun sendAttachmentImage(feedbackId: Int, file: File, totalImage: Int, countImage: Int) {
+    private fun sendAttachmentImage(feedbackId: Long, file: File, totalImage: Int, countImage: Int) {
         val requestFile: RequestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
         val fileData = MultipartBody.Part.createFormData("file", file.name, requestFile)
         feedbackPagePresenter.sendAttachment(feedbackId, fileData, totalImage, countImage)
     }
 
-    private fun sendAttachmentVideo(feedbackId: Int, file: File, totalImage: Int, countImage: Int) {
+    private fun sendAttachmentVideo(feedbackId: Long, file: File, totalImage: Int, countImage: Int) {
         val requestFile: RequestBody = file.asRequestBody("video/*".toMediaTypeOrNull())
         val fileData = MultipartBody.Part.createFormData("file", file.name, requestFile)
         feedbackPagePresenter.sendAttachment(feedbackId, fileData, totalImage, countImage)

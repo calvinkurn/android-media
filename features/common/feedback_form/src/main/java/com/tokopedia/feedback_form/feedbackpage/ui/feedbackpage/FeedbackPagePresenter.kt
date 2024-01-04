@@ -89,7 +89,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
 
     }
 
-    override fun sendAttachment(feedbackId: Int, filedata: MultipartBody.Part, totalImage: Int, imageCount: Int) {
+    override fun sendAttachment(feedbackId: Long, filedata: MultipartBody.Part, totalImage: Int, imageCount: Int) {
         feedbackApi.uploadAttachment("/api/v1/feedback/$feedbackId/upload-attachment", filedata)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -117,7 +117,7 @@ class FeedbackPagePresenter(private val compositeSubscription: CompositeSubscrip
     }
 
 
-    override fun commitData(feedbackId: Int) {
+    override fun commitData(feedbackId: Long) {
         feedbackApi.commitData("api/v1/feedback/$feedbackId/commit")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
