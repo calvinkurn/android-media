@@ -211,12 +211,12 @@
         android:visibility="gone"
         />
 
-    <ViewStub
-        android:id="@+id/vsEmptyState"
+    <include
+        android:id="@+id/includeEmptyState"
+        layout="@layout/layout_empty_catalog_listing_switching_page"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:layout="@layout/layout_empty_catalog_listing_switching_page"
         app:layout_constraintTop_toBottomOf="@id/barrier"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

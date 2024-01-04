@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,6 +35,7 @@ import com.tokopedia.catalog.ui.viewmodel.CatalogSwitchComparisonViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
+import com.tokopedia.imageassets.TokopediaImageUrl.CATALOG_EMPTY_STATE
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -41,13 +43,18 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.productcard.utils.findViewById
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.android.synthetic.main.fragment_catalog_switching_comparison.*
+import kotlinx.android.synthetic.main.layout_empty_catalog_listing_switching_page.view.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -74,7 +81,6 @@ class CatalogSwitchingComparisonFragment :
 
     private var initialDataFromSearch = false
 
-    private var totalUnselect = 0
 
     companion object {
 
@@ -173,7 +179,7 @@ class CatalogSwitchingComparisonFragment :
 
     override fun loadInitialData() {
         binding?.globalError?.gone()
-        binding?.vsEmptyState?.gone()
+        binding?.includeEmptyState?.root?.gone()
         visibilityLoaderForInitialPage(false)
         super.loadInitialData()
         checkingEnableOrDisableButtonSeeCompare()
@@ -197,7 +203,7 @@ class CatalogSwitchingComparisonFragment :
 
     override fun loadData(page: Int) {
         currentPage = page
-        if (isLoadingInitialData) {
+        if (isLoadingInitialData && !initialDataFromSearch) {
             viewModel.loadAllDataInOnePage(
                 catalogId = catalogId,
                 brand = String.EMPTY,
@@ -240,11 +246,8 @@ class CatalogSwitchingComparisonFragment :
     }
 
     override fun onDataEmpty() {
-        if (binding?.vsEmptyState == null) {
-            binding?.vsEmptyState?.inflate()
-        } else {
-            binding?.vsEmptyState?.show()
-        }
+        binding?.includeEmptyState?.ilEmpty?.loadImage(CATALOG_EMPTY_STATE)
+        binding?.includeEmptyState?.root?.show()
     }
 
     override fun onGetListError(message: String) {
@@ -273,16 +276,12 @@ class CatalogSwitchingComparisonFragment :
     ) {
         val listCatalogId = compareCatalogId.toMutableList()
         if (!isChecked) {
-            totalUnselect += 1
             listCatalogId.remove(item.id)
             catalogSelectionAdapter?.itemList = catalogSelectionAdapter?.itemList?.filter {
                 it.id != item.id.orEmpty()
             }.orEmpty().toMutableList()
             showMessageUnselectCatalog()
         } else {
-            if (totalUnselect > 0) {
-                totalUnselect -= 1
-            }
             if (listCatalogId.size < (LIMIT_SELECT_PRODUCT)) {
                 listCatalogId.add(item.id.orEmpty())
                 catalogSelectionAdapter?.itemList?.add(item)
@@ -301,13 +300,11 @@ class CatalogSwitchingComparisonFragment :
     override fun onActionListener(id: String) {
         val listCatalogId = compareCatalogId.toMutableList()
         listCatalogId.remove(id)
-        totalUnselect += 1
         adapter?.currentCatalogSelection = listCatalogId
         compareCatalogId = listCatalogId
-        catalogSelectionAdapter?.itemList = catalogSelectionAdapter?.itemList?.filter {
-            it.id != id
-        }.orEmpty().toMutableList()
-
+        catalogSelectionAdapter?.itemList?.removeFirst {
+            it.id == id
+        }
         catalogSelectionAdapter?.notifyDataSetChanged()
         adapter?.notifyDataSetChanged()
         showMessageUnselectCatalog()
@@ -474,6 +471,7 @@ class CatalogSwitchingComparisonFragment :
     }
 
     private fun showMessageUnselectCatalog() {
+        val totalUnselect = (LIMIT_SELECT_PRODUCT) - compareCatalogId.size
         val errorMessage =
             getString(catalogR.string.catalog_message_unselect, totalUnselect.toString())
 
