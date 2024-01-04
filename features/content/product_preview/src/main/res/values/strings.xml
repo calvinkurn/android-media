@@ -19,4 +19,5 @@
     <string name="review_report_spam">Ini adalah konten spam</string>
     <string name="review_report_social">Konten mengandung SARA, diskriminasi, vulgar, ancaman, dan pelanggaran nilai/norma sosial</string>
     <string name="review_report_other">Lainnya</string>
+    <string name="review_report_sheet_header">Laporkan ulasan</string>
 </resources>

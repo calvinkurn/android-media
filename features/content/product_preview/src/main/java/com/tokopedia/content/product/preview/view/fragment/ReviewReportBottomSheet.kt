@@ -33,7 +33,7 @@ class ReviewReportBottomSheet : BottomSheetUnify() {
             }
         }
         setChild(composeView)
-        setTitle("Laporkan ulasan")
+        setTitle(getString(R.string.review_report_sheet_header))
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
