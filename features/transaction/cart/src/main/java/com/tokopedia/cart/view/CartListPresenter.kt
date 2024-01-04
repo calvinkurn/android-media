@@ -1707,6 +1707,7 @@ class CartListPresenter @Inject constructor(
         var productPrice = ""
         var externalSource = ""
         var quantity = 0
+        var shopName = ""
 
         if (productModel is CartWishlistItemHolderData) {
             productId = productModel.id.toLongOrZero()
@@ -1716,6 +1717,7 @@ class CartListPresenter @Inject constructor(
             productPrice = productModel.price
             quantity = productModel.minOrder
             externalSource = AtcFromExternalSource.ATC_FROM_WISHLIST
+            shopName = productModel.shopName
         } else if (productModel is CartRecentViewItemHolderData) {
             productId = productModel.id.toLongOrZero()
             shopId = productModel.shopId.toIntOrZero()
@@ -1723,6 +1725,7 @@ class CartListPresenter @Inject constructor(
             productPrice = productModel.price
             quantity = productModel.minOrder
             externalSource = AtcFromExternalSource.ATC_FROM_RECENT_VIEW
+            shopName = productModel.shopName
             val clickUrl = productModel.clickUrl
             if (clickUrl.isNotEmpty() && productModel.isTopAds) {
                 view?.sendATCTrackingURLRecent(
@@ -1738,6 +1741,7 @@ class CartListPresenter @Inject constructor(
             productPrice = recommendationItem.price
             quantity = productModel.recommendationItem.minOrder
             externalSource = AtcFromExternalSource.ATC_FROM_RECOMMENDATION
+            shopName = recommendationItem.shopName
 
             val clickUrl = recommendationItem.clickUrl
             if (clickUrl.isNotEmpty()) view?.sendATCTrackingURL(recommendationItem)
@@ -1749,6 +1753,7 @@ class CartListPresenter @Inject constructor(
             productPrice = productModel.productPrice
             quantity = productModel.productMinOrder
             externalSource = AtcFromExternalSource.ATC_FROM_RECOMMENDATION
+            shopName = "" // todo :
 
             val clickUrl = productModel.adsClickUrl
             if (clickUrl.isNotEmpty()) view?.sendATCTrackingURL(productModel)
@@ -1765,6 +1770,7 @@ class CartListPresenter @Inject constructor(
             this.category = productCategory
             this.price = productPrice
             this.userId = userSessionInterface.userId
+            this.shopName = shopName
         }
 
         launch {

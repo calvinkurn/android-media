@@ -65,7 +65,8 @@ object AddToCartBaseAnalytics {
         level2Name: String,
         level3Id: String,
         level3Name: String,
-        userId: String
+        userId: String,
+        shopName: String
     ) {
         try {
             val splitCategory = catLvl1.split(CATEGORY_SPLITTER)

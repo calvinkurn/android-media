@@ -24,7 +24,7 @@ class ViewToViewViewModel @Inject constructor(
     private val getRecommendationUseCase: Lazy<GetViewToViewRecommendationUseCase>,
     private val addToCartUseCase: Lazy<AddToCartUseCase>,
     private val userSession: UserSessionInterface,
-    dispatchers: CoroutineDispatchers,
+    dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
     val viewToViewRecommendationLiveData: LiveData<Result<ViewToViewRecommendationResult>>
         get() = _viewToViewRecommendationLiveData
@@ -41,16 +41,16 @@ class ViewToViewViewModel @Inject constructor(
 
     fun getViewToViewProductRecommendation(
         queryParams: String,
-        hasAtcButton: Boolean,
+        hasAtcButton: Boolean
     ) {
         launchCatchError(block = {
             val requestParam = GetRecommendationRequestParam(
-                queryParam = queryParams,
+                queryParam = queryParams
             )
             _viewToViewRecommendationLiveData.postValue(Success(ViewToViewRecommendationResult.Loading(hasAtcButton)))
             val recommendation = getRecommendationUseCase.get().getData(requestParam)
-            val result = if (recommendation.isNotEmpty()
-                && recommendation.first().recommendationItemList.isNotEmpty()
+            val result = if (recommendation.isNotEmpty() &&
+                recommendation.first().recommendationItemList.isNotEmpty()
             ) {
                 Success(
                     ViewToViewRecommendationResult.Product(
@@ -58,7 +58,9 @@ class ViewToViewViewModel @Inject constructor(
                             .map { it.toViewToViewDataModelProduct(hasAtcButton) }
                     )
                 )
-            } else Fail(Exception("Empty Recommendation"))
+            } else {
+                Fail(Exception("Empty Recommendation"))
+            }
             _viewToViewRecommendationLiveData.postValue(result)
         }) {
             _viewToViewRecommendationLiveData.postValue(Fail(it))
@@ -68,13 +70,13 @@ class ViewToViewViewModel @Inject constructor(
 
     fun retryViewToViewProductRecommendation(
         queryParams: String,
-        hasAtcButton: Boolean,
+        hasAtcButton: Boolean
     ) {
         getViewToViewProductRecommendation(queryParams, hasAtcButton)
     }
 
     private fun RecommendationItem.toViewToViewDataModelProduct(
-        hasAtcButton: Boolean,
+        hasAtcButton: Boolean
     ): ViewToViewDataModel {
         return ViewToViewDataModel(
             productId.toString(),
@@ -83,7 +85,7 @@ class ViewToViewViewModel @Inject constructor(
             minOrder,
             price,
             toProductCardModel(hasAddToCartButton = hasAtcButton),
-            this,
+            this
         )
     }
 
@@ -95,11 +97,12 @@ class ViewToViewViewModel @Inject constructor(
             productName = productName,
             price = price,
             userId = getUserId(),
+            shopName = recommendationItem.shopName
         )
     }
 
     fun addToCart(
-        product: ViewToViewDataModel,
+        product: ViewToViewDataModel
     ) {
         if (userSession.isLoggedIn) {
             launchCatchError(
@@ -109,7 +112,7 @@ class ViewToViewViewModel @Inject constructor(
                     val result = useCase.executeOnBackground()
                     handleATCSuccess(result, product)
                 },
-                onError = ::handleATCError,
+                onError = ::handleATCError
             )
         } else {
             _viewToViewATCStatusLiveData.postValue(ViewToViewATCStatus.NonLogin)
@@ -118,7 +121,7 @@ class ViewToViewViewModel @Inject constructor(
 
     private fun handleATCSuccess(
         atcData: AddToCartDataModel,
-        product: ViewToViewDataModel,
+        product: ViewToViewDataModel
     ) {
         val atcStatus = if (atcData.isStatusError()) {
             ViewToViewATCStatus.Failure(atcData.getAtcErrorMessage() ?: "")

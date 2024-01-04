@@ -2568,7 +2568,8 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
             quantity = recommendationItem.quantity,
             shopId = recommendationItem.shopId.toString(),
             category = recommendationItem.categoryBreadcrumbs,
-            atcFromExternalSource = AtcFromExternalSource.ATC_FROM_RECOMMENDATION
+            atcFromExternalSource = AtcFromExternalSource.ATC_FROM_RECOMMENDATION,
+            shopName = recommendationItem.shopName
         )
         uohListViewModel.doAtc(atcParam)
 

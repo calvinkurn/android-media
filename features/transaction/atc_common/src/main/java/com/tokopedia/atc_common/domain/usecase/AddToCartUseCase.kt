@@ -117,7 +117,8 @@ class AddToCartUseCase @Inject constructor(
                     addToCartRequest.productId.toString(), addToCartRequest.productName, addToCartRequest.price,
                     addToCartRequest.quantity.toString(), addToCartRequest.category, addToCartRequest.categoryLevel1Id,
                     addToCartRequest.categoryLevel1Name, addToCartRequest.categoryLevel2Id, addToCartRequest.categoryLevel2Name,
-                    addToCartRequest.categoryLevel3Id, addToCartRequest.categoryLevel3Name, addToCartRequest.userId
+                    addToCartRequest.categoryLevel3Id, addToCartRequest.categoryLevel3Name, addToCartRequest.userId,
+                    addToCartRequest.shopName
                 )
             }
             result

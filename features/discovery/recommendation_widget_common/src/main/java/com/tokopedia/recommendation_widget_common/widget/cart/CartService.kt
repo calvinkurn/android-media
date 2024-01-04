@@ -13,8 +13,6 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.di.recomwidget.RecommendationWidgetScope
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMiniCart
 import javax.inject.Inject
 
 @RecommendationWidgetScope
@@ -22,13 +20,13 @@ class CartService @Inject constructor(
     private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val updateCartUseCase: UpdateCartUseCase,
-    private val deleteCartUseCase: DeleteCartUseCase,
+    private val deleteCartUseCase: DeleteCartUseCase
 ) {
 
     internal fun getMiniCart(
         shopId: String,
         miniCartSource: MiniCartSource,
-        onSuccess: (MiniCartSimplifiedData) -> Unit,
+        onSuccess: (MiniCartSimplifiedData) -> Unit
     ) {
         getMiniCartUseCase.setParams(listOf(shopId), miniCartSource)
         getMiniCartUseCase.execute(onSuccess, onError = { })
@@ -37,6 +35,7 @@ class CartService @Inject constructor(
     internal fun handleCart(
         productId: String,
         shopId: String,
+        shopName: String,
         currentQuantity: Int,
         updatedQuantity: Int,
         miniCartItem: MiniCartItem.MiniCartItemProduct?,
@@ -44,54 +43,57 @@ class CartService @Inject constructor(
         onSuccessAddToCart: (AddToCartDataModel, MiniCartSimplifiedData) -> Unit,
         onSuccessUpdateCart: (UpdateCartV2Data, MiniCartSimplifiedData) -> Unit,
         onSuccessDeleteCart: (RemoveFromCartData, MiniCartSimplifiedData) -> Unit,
-        onError: (Throwable) -> Unit,
+        onError: (Throwable) -> Unit
     ) {
         if (currentQuantity == updatedQuantity) return
 
-        if (currentQuantity == 0)
+        if (currentQuantity == 0) {
             addToCart(
                 productId,
                 shopId,
+                shopName,
                 updatedQuantity,
                 miniCartSource,
                 onSuccessAddToCart,
                 onError
             )
-        else if (updatedQuantity == 0)
+        } else if (updatedQuantity == 0) {
             deleteCart(
                 shopId,
                 miniCartItem,
                 miniCartSource,
                 onSuccessDeleteCart,
-                onError,
+                onError
             )
-        else
+        } else {
             updateCart(
                 shopId,
                 miniCartItem,
                 miniCartSource,
                 updatedQuantity,
                 onSuccessUpdateCart,
-                onError,
+                onError
             )
+        }
     }
 
     private fun addToCart(
         productId: String,
         shopId: String,
+        shopName: String,
         updatedQuantity: Int,
         miniCartSource: MiniCartSource,
         onSuccessAddToCart: (AddToCartDataModel, MiniCartSimplifiedData) -> Unit,
-        onError: (Throwable) -> Unit,
+        onError: (Throwable) -> Unit
     ) {
-        addToCartUseCase.setParams(AddToCartRequestParams(productId, shopId, updatedQuantity))
+        addToCartUseCase.setParams(AddToCartRequestParams(productId, shopId, updatedQuantity, shopName = shopName))
         addToCartUseCase.execute(
             onSuccess = { atcResponse ->
                 getMiniCart(shopId, miniCartSource) { miniCart ->
                     onSuccessAddToCart(atcResponse, miniCart)
                 }
             },
-            onError = onError,
+            onError = onError
         )
     }
 
@@ -100,7 +102,7 @@ class CartService @Inject constructor(
         miniCartItem: MiniCartItem.MiniCartItemProduct?,
         miniCartSource: MiniCartSource,
         onSuccess: (RemoveFromCartData, MiniCartSimplifiedData) -> Unit,
-        onError: (Throwable) -> Unit,
+        onError: (Throwable) -> Unit
     ) {
         miniCartItem ?: return
 
@@ -121,19 +123,19 @@ class CartService @Inject constructor(
         miniCartSource: MiniCartSource,
         updatedQuantity: Int,
         onSuccess: (UpdateCartV2Data, MiniCartSimplifiedData) -> Unit,
-        onError: (Throwable) -> Unit,
+        onError: (Throwable) -> Unit
     ) {
         miniCartItem ?: return
 
         val updateCartRequest = UpdateCartRequest(
             cartId = miniCartItem.cartId,
             quantity = updatedQuantity,
-            notes = miniCartItem.notes,
+            notes = miniCartItem.notes
         )
 
         updateCartUseCase.setParams(
             updateCartRequestList = listOf(updateCartRequest),
-            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
+            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
         )
 
         updateCartUseCase.execute(
@@ -142,7 +144,7 @@ class CartService @Inject constructor(
                     onSuccess(updateCartResponse, miniCart)
                 }
             },
-            onError = onError,
+            onError = onError
         )
     }
 }
