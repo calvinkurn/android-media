@@ -6,7 +6,6 @@ import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.feedplus.browse.data.FeedBrowseRepository
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
-import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationAction
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationData
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationMap
@@ -168,14 +167,5 @@ internal class CategoryInspirationViewModel @AssistedInject constructor(
     ): CategoryInspirationMap {
         val data = get(id) ?: return this
         return this + (id to onUpdate(data))
-    }
-
-    private fun WidgetMenuModel.toRequest(nextCursor: String): WidgetRequestModel {
-        return WidgetRequestModel(
-            group = group,
-            sourceType = sourceType,
-            sourceId = sourceId,
-            cursor = nextCursor
-        )
     }
 }

@@ -54,6 +54,16 @@ internal data class WidgetMenuModel(
 ) {
 
     val isValid: Boolean = id.isNotBlank()
+
+    fun toRequest(nextCursor: String): WidgetRequestModel {
+        return WidgetRequestModel(
+            group = group,
+            sourceType = sourceType,
+            sourceId = sourceId,
+            cursor = nextCursor
+        )
+    }
+
     companion object {
         val Empty = WidgetMenuModel(
             id = "",
