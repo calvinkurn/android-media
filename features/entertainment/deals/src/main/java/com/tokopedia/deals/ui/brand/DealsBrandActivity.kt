@@ -1,4 +1,4 @@
-package com.tokopedia.deals.ui.brand.ui.activity
+package com.tokopedia.deals.ui.brand
 
 import android.content.Context
 import android.content.Intent

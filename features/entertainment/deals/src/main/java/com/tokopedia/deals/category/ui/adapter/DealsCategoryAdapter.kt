@@ -7,7 +7,7 @@ import com.tokopedia.deals.common.listener.ProductCardListener
 import com.tokopedia.deals.common.ui.adapter.delegate.DealsCommonBrandGridAdapterDelegate
 import com.tokopedia.deals.common.ui.adapter.delegate.DealsProductCategoryAdapterDelegate
 import com.tokopedia.deals.common.ui.adapter.delegate.LoadingMoreUnifyAdapterDelegate
-import com.tokopedia.deals.ui.brand.ui.adapter.delegate.DealsBrandEmptyAdapterDelegate
+import com.tokopedia.deals.ui.brand.adapter.delegate.DealsBrandEmptyAdapterDelegate
 
 /**
  * @author by firman on 16/06/20

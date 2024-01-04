@@ -5,8 +5,8 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.tokopedia.deals.category.ui.activity.DealsCategoryActivity
 import com.tokopedia.deals.category.ui.fragment.DealsCategoryFragment
-import com.tokopedia.deals.ui.brand.ui.activity.DealsBrandActivity
-import com.tokopedia.deals.ui.brand.ui.fragment.DealsBrandFragment
+import com.tokopedia.deals.ui.brand.DealsBrandActivity
+import com.tokopedia.deals.ui.brand.DealsBrandFragment
 
 class DealsFragmentPagerAdapter(
         activity: AppCompatActivity,

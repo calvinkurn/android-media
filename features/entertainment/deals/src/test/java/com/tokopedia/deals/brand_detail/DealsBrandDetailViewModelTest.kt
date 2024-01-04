@@ -4,8 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.deals.DealsJsonMapper
 import com.tokopedia.deals.common.data.DealsNearestLocationParam
+import com.tokopedia.deals.ui.brand_detail.DealsBrandDetailViewModel
 import com.tokopedia.deals.ui.brand_detail.data.DealsBrandDetail
-import com.tokopedia.deals.ui.brand_detail.ui.viewmodel.DealsBrandDetailViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse

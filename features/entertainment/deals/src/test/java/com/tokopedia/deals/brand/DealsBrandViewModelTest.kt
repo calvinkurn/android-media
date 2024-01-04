@@ -6,7 +6,7 @@ import com.tokopedia.deals.DealsJsonMapper.getJson
 import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.domain.DealsSearchUseCase
 import com.tokopedia.deals.location_picker.model.response.Location
-import com.tokopedia.deals.ui.brand.domain.viewmodel.DealsBrandViewModel
+import com.tokopedia.deals.ui.brand.DealsBrandViewModel
 import com.tokopedia.deals.ui.brand.mapper.DealsBrandMapper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail

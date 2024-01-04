@@ -42,7 +42,7 @@ import com.tokopedia.deals.search.model.visitor.MoreBrandModel
 import com.tokopedia.deals.search.model.visitor.VoucherModel
 import com.tokopedia.deals.search.ui.typefactory.DealsSearchTypeFactory
 import com.tokopedia.deals.search.ui.typefactory.DealsSearchTypeFactoryImpl
-import com.tokopedia.deals.ui.brand.ui.activity.DealsBrandActivity
+import com.tokopedia.deals.ui.brand.DealsBrandActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

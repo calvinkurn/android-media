@@ -1,4 +1,4 @@
-package com.tokopedia.deals.ui.brand_detail.ui.bottomsheet
+package com.tokopedia.deals.ui.brand_detail
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,9 +6,9 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.deals.databinding.BottomSheetDealsBrandDetailBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class DealsBrandDetailBottomSheet {
+object DealsBrandDetailBottomSheet {
 
-    fun showBottomSheet(context: Context,
+    fun show(context: Context,
                         title: String,
                         desc: String,
                         fragmentManager: FragmentManager){

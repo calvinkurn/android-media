@@ -1,4 +1,4 @@
-package com.tokopedia.deals.ui.brand_detail.ui.fragment
+package com.tokopedia.deals.ui.brand_detail
 
 import android.app.Activity
 import android.graphics.PorterDuff
@@ -21,14 +21,10 @@ import com.tokopedia.deals.common.bottomsheet.DealsBottomSheetNoInternetConnecti
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsBrandDetailBinding
 import com.tokopedia.deals.location_picker.model.response.Location
+import com.tokopedia.deals.ui.brand_detail.DealsBrandDetailActivity.Companion.EXTRA_SEO_URL
 import com.tokopedia.deals.ui.brand_detail.data.Brand
 import com.tokopedia.deals.ui.brand_detail.data.Product
 import com.tokopedia.deals.ui.brand_detail.di.DealsBrandDetailComponent
-import com.tokopedia.deals.ui.brand_detail.ui.activity.DealsBrandDetailActivity
-import com.tokopedia.deals.ui.brand_detail.ui.activity.DealsBrandDetailActivity.Companion.EXTRA_SEO_URL
-import com.tokopedia.deals.ui.brand_detail.ui.adapter.DealsBrandDetailAdapter
-import com.tokopedia.deals.ui.brand_detail.ui.bottomsheet.DealsBrandDetailBottomSheet
-import com.tokopedia.deals.ui.brand_detail.ui.viewmodel.DealsBrandDetailViewModel
 import com.tokopedia.deals.ui.brand_detail.util.DealsBrandDetailShare
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -273,7 +269,7 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
     private fun showBottomSheetBrandDescDetail(title: String, desc: String) {
         fragmentManager?.let { fragmentManager ->
             context?.let {
-                DealsBrandDetailBottomSheet().showBottomSheet(it, getString(R.string.deals_brand_detail_title_bottom_sheet, title), desc, fragmentManager)
+                DealsBrandDetailBottomSheet.show(it, getString(R.string.deals_brand_detail_title_bottom_sheet, title), desc, fragmentManager)
             }
         }
     }

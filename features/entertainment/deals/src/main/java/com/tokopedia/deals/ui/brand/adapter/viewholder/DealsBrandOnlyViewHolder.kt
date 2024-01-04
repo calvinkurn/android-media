@@ -1,4 +1,4 @@
-package com.tokopedia.deals.ui.brand.ui.adapter.viewholder
+package com.tokopedia.deals.ui.brand.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager

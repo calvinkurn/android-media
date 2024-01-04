@@ -1,11 +1,11 @@
-package com.tokopedia.deals.ui.brand.ui.adapter.delegate
+package com.tokopedia.deals.ui.brand.adapter.delegate
 
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.deals.common.listener.EmptyStateListener
+import com.tokopedia.deals.ui.brand.adapter.viewholder.DealsEmptyViewHolder
 import com.tokopedia.deals.ui.brand.model.DealsEmptyDataView
-import com.tokopedia.deals.ui.brand.ui.adapter.viewholder.DealsEmptyViewHolder
 
 class DealsBrandEmptyAdapterDelegate(
         private val emptyStateListener: EmptyStateListener

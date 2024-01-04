@@ -41,8 +41,8 @@ import com.tokopedia.deals.home.ui.fragment.DealsHomeFragment
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.model.response.Category
 import com.tokopedia.deals.search.ui.activity.DealsSearchActivity
+import com.tokopedia.deals.ui.brand.DealsBrandActivity
 import com.tokopedia.deals.ui.brand.model.DealsEmptyDataView
-import com.tokopedia.deals.ui.brand.ui.activity.DealsBrandActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition

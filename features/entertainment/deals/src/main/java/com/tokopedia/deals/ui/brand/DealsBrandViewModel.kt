@@ -1,4 +1,4 @@
-package com.tokopedia.deals.ui.brand.domain.viewmodel
+package com.tokopedia.deals.ui.brand
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

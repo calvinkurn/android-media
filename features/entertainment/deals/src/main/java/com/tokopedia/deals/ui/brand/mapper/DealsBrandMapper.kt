@@ -3,7 +3,7 @@ package com.tokopedia.deals.ui.brand.mapper
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
-import com.tokopedia.deals.ui.brand.ui.fragment.DealsBrandFragment
+import com.tokopedia.deals.ui.brand.DealsBrandFragment
 
 object DealsBrandMapper {
 

@@ -13,7 +13,7 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.deals.test.R
-import com.tokopedia.deals.ui.brand_detail.ui.activity.DealsBrandDetailActivity
+import com.tokopedia.deals.ui.brand_detail.DealsBrandDetailActivity
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper

@@ -1,11 +1,11 @@
-package com.tokopedia.deals.ui.brand.ui.adapter.delegate
+package com.tokopedia.deals.ui.brand.adapter.delegate
 
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.deals.common.listener.DealsBrandActionListener
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
-import com.tokopedia.deals.ui.brand.ui.adapter.viewholder.DealsBrandOnlyViewHolder
+import com.tokopedia.deals.ui.brand.adapter.viewholder.DealsBrandOnlyViewHolder
 
 class DealsBrandAdapterDelegate (val listener: DealsBrandActionListener) :
         TypedAdapterDelegate<DealsBrandsDataView, Any, DealsBrandOnlyViewHolder>(

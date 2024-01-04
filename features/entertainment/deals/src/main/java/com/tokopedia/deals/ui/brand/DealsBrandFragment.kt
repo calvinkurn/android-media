@@ -1,4 +1,4 @@
-package com.tokopedia.deals.ui.brand.ui.fragment
+package com.tokopedia.deals.ui.brand
 
 import android.app.Activity
 import android.os.Bundle
@@ -28,12 +28,10 @@ import com.tokopedia.deals.databinding.FragmentDealsBrandBinding
 import com.tokopedia.deals.di.DealsComponent
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.DealsSearchConstants
-import com.tokopedia.deals.ui.brand.domain.viewmodel.DealsBrandViewModel
+import com.tokopedia.deals.ui.brand.adapter.DealsBrandAdapter
 import com.tokopedia.deals.ui.brand.listener.DealsBrandSearchTabListener
 import com.tokopedia.deals.ui.brand.mapper.DealsBrandMapper.mapBrandListToBaseItemView
 import com.tokopedia.deals.ui.brand.model.DealsEmptyDataView
-import com.tokopedia.deals.ui.brand.ui.activity.DealsBrandActivity
-import com.tokopedia.deals.ui.brand.ui.adapter.DealsBrandAdapter
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail

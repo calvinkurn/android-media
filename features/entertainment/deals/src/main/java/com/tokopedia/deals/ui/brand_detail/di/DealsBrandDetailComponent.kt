@@ -1,7 +1,7 @@
 package com.tokopedia.deals.ui.brand_detail.di
 
 import com.tokopedia.deals.di.DealsComponent
-import com.tokopedia.deals.ui.brand_detail.ui.fragment.DealsBrandDetailFragment
+import com.tokopedia.deals.ui.brand_detail.DealsBrandDetailFragment
 import dagger.Component
 
 @DealsBrandDetailScope

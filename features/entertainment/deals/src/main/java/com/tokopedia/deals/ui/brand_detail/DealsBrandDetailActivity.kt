@@ -1,4 +1,4 @@
-package com.tokopedia.deals.ui.brand_detail.ui.activity
+package com.tokopedia.deals.ui.brand_detail
 
 import android.os.Bundle
 import android.view.Menu
@@ -9,7 +9,6 @@ import com.tokopedia.deals.DealsComponentInstance
 import com.tokopedia.deals.R
 import com.tokopedia.deals.ui.brand_detail.di.DaggerDealsBrandDetailComponent
 import com.tokopedia.deals.ui.brand_detail.di.DealsBrandDetailComponent
-import com.tokopedia.deals.ui.brand_detail.ui.fragment.DealsBrandDetailFragment
 
 class DealsBrandDetailActivity: BaseSimpleActivity(), HasComponent<DealsBrandDetailComponent> {
 

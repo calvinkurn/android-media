@@ -1,4 +1,4 @@
-package com.tokopedia.deals.ui.brand_detail.ui.adapter
+package com.tokopedia.deals.ui.brand_detail
 
 import android.graphics.Paint
 import android.view.LayoutInflater
