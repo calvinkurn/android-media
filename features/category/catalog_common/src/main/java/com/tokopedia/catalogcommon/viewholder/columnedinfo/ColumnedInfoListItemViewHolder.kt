@@ -8,6 +8,7 @@ import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetItemColumnedInfoListItemBinding
 import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ColumnedInfoListItemViewHolder(
@@ -29,7 +30,7 @@ class ColumnedInfoListItemViewHolder(
         val rowColor = columnData.rowColor
         binding?.apply {
             tfTitle.text = rowData.first
-            tfValue.text = rowData.second
+            tfValue.setTextAndCheckShow(rowData.second)
             tfTitle.setTextColor(rowColor.first)
             tfValue.setTextColor(rowColor.second)
             divItem.isVisible = position < columnData.rowData.size.dec()
