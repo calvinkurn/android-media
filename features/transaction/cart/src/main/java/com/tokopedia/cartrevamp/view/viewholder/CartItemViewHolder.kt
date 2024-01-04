@@ -19,7 +19,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
-import com.tokopedia.unifyprinciples.Typography
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -55,11 +54,14 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.nest.components.quantityeditor.QtyButton
 import com.tokopedia.nest.components.quantityeditor.QtyField
 import com.tokopedia.nest.components.quantityeditor.QtyState
+import com.tokopedia.nest.components.quantityeditor.view.QuantityEditorView
 import com.tokopedia.purchase_platform.common.constant.BmGmConstant.CART_DETAIL_TYPE_BMGM
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.unifycomponents.QuantityEditorUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.resources.isDarkMode
 import kotlinx.coroutines.Dispatchers
@@ -1368,8 +1370,7 @@ class CartItemViewHolder(
     private fun renderQuantityWidget(data: CartItemHolderData) {
         if (isUsingNewQuantityEditor()) {
             renderQuantity(data, viewHolderListener)
-        }
-        else {
+        } else {
             renderOldQuantity(data, viewHolderListener)
         }
     }
@@ -1916,7 +1917,15 @@ class CartItemViewHolder(
         return if (isUsingNewQuantityEditor()) binding.qtyEditorProduct else binding.oldQtyEditorProduct
     }
 
-    private fun isUsingNewQuantityEditor(): Boolean {
+    fun getOldQuantityEditorAnchorView(): QuantityEditorUnify {
+        return binding.oldQtyEditorProduct
+    }
+
+    fun getNewQuantityEditorAnchorView(): QuantityEditorView {
+        return binding.qtyEditorProduct
+    }
+
+    fun isUsingNewQuantityEditor(): Boolean {
         return remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_NEW_CART_QUANTITY_EDITOR, false)
     }
 }
