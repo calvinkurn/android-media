@@ -100,16 +100,6 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
         }
     }
 
-    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
-        super.removeObservers(lifecycleOwner)
-        lifecycleOwner?.let {
-            viewModel?.hideSection?.removeObservers(it)
-            viewModel?.getSyncPageLiveData()?.removeObservers(it)
-            viewModel?.hideShimmerLD?.removeObservers(it)
-            viewModel?.showErrorState?.removeObservers(it)
-        }
-    }
-
     private fun addChildComponent() {
         val sectionComponent = viewModel?.components
 
