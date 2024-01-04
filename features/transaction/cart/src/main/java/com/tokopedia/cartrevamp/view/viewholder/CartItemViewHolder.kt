@@ -676,7 +676,7 @@ class CartItemViewHolder(
                 )
                 if (data.bundlingItemPosition == BUNDLING_ITEM_FOOTER || (!data.isMultipleBundleProduct)) {
                     connect(
-                        R.id.qty_editor_product,
+                        getQuantityEditorLayoutId(),
                         ConstraintSet.TOP,
                         R.id.button_change_note,
                         ConstraintSet.BOTTOM,
@@ -684,7 +684,7 @@ class CartItemViewHolder(
                     )
                 } else {
                     connect(
-                        R.id.qty_editor_product,
+                        getQuantityEditorLayoutId(),
                         ConstraintSet.TOP,
                         R.id.item_addon_cart,
                         ConstraintSet.BOTTOM,
@@ -695,66 +695,66 @@ class CartItemViewHolder(
                 clear(R.id.button_change_note_lottie, ConstraintSet.BOTTOM)
                 clear(R.id.button_toggle_wishlist, ConstraintSet.BOTTOM)
                 clear(R.id.iv_animated_wishlist, ConstraintSet.BOTTOM)
-                clear(R.id.qty_editor_product, ConstraintSet.BOTTOM)
+                clear(getQuantityEditorLayoutId(), ConstraintSet.BOTTOM)
             } else {
                 connect(
                     R.id.button_change_note,
                     ConstraintSet.TOP,
-                    R.id.qty_editor_product,
+                    getQuantityEditorLayoutId(),
                     ConstraintSet.TOP,
                     margin
                 )
                 connect(
                     R.id.button_change_note_lottie,
                     ConstraintSet.TOP,
-                    R.id.qty_editor_product,
+                    getQuantityEditorLayoutId(),
                     ConstraintSet.TOP,
                     margin
                 )
                 connect(
                     R.id.button_change_note,
                     ConstraintSet.BOTTOM,
-                    R.id.qty_editor_product,
+                    getQuantityEditorLayoutId(),
                     ConstraintSet.BOTTOM,
                     margin
                 )
                 connect(
                     R.id.button_change_note_lottie,
                     ConstraintSet.BOTTOM,
-                    R.id.qty_editor_product,
+                    getQuantityEditorLayoutId(),
                     ConstraintSet.BOTTOM,
                     margin
                 )
                 connect(
                     R.id.button_toggle_wishlist,
                     ConstraintSet.TOP,
-                    R.id.qty_editor_product,
+                    getQuantityEditorLayoutId(),
                     ConstraintSet.TOP,
                     margin
                 )
                 connect(
                     R.id.iv_animated_wishlist,
                     ConstraintSet.TOP,
-                    R.id.qty_editor_product,
+                    getQuantityEditorLayoutId(),
                     ConstraintSet.TOP,
                     margin
                 )
                 connect(
                     R.id.button_toggle_wishlist,
                     ConstraintSet.BOTTOM,
-                    R.id.qty_editor_product,
+                    getQuantityEditorLayoutId(),
                     ConstraintSet.BOTTOM,
                     margin
                 )
                 connect(
                     R.id.iv_animated_wishlist,
                     ConstraintSet.BOTTOM,
-                    R.id.qty_editor_product,
+                    getQuantityEditorLayoutId(),
                     ConstraintSet.BOTTOM,
                     margin
                 )
                 connect(
-                    R.id.qty_editor_product,
+                    getQuantityEditorLayoutId(),
                     ConstraintSet.TOP,
                     R.id.item_addon_cart,
                     ConstraintSet.BOTTOM,
@@ -1915,6 +1915,10 @@ class CartItemViewHolder(
 
     private fun getQuantityEditorView(): View {
         return if (isUsingNewQuantityEditor()) binding.qtyEditorProduct else binding.oldQtyEditorProduct
+    }
+
+    fun getQuantityEditorLayoutId(): Int {
+        return if (isUsingNewQuantityEditor()) R.id.qty_editor_product else R.id.old_qty_editor_product
     }
 
     fun getOldQuantityEditorAnchorView(): QuantityEditorUnify {
