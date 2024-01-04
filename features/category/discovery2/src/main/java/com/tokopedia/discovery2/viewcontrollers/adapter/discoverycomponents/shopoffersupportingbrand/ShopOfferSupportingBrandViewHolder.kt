@@ -12,7 +12,6 @@ import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.CarouselProductCardItemDecorator
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.PRODUCT_PER_PAGE
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.home_component.util.removeAllItemDecoration
@@ -22,7 +21,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
-import timber.log.Timber
 
 class ShopOfferSupportingBrandViewHolder(
     itemView: View,
@@ -130,23 +128,23 @@ class ShopOfferSupportingBrandViewHolder(
 
     private fun DiscoverySupportingBrandLayoutBinding.addScrollListener() {
         if (viewModel?.hasHeader() == false) return
-
-        supportingBrandRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val visibleItemCount: Int = supportingBrandLayoutManager.childCount
-                val totalItemCount: Int = supportingBrandLayoutManager.itemCount
-                val firstVisibleItemPosition: Int =
-                    supportingBrandLayoutManager.findFirstVisibleItemPosition()
-                viewModel?.let { mShopOfferSupportingBrandViewModel ->
-                    if (!mShopOfferSupportingBrandViewModel.isLoading && mShopOfferSupportingBrandViewModel.hasNextPage()) {
-                        if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0) {
-                            mShopOfferSupportingBrandViewModel.loadMore()
+        supportingBrandRV.addOnScrollListener(
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val visibleItemCount: Int = supportingBrandLayoutManager.childCount
+                    val totalItemCount: Int = supportingBrandLayoutManager.itemCount
+                    val firstVisibleItemPosition: Int =
+                        supportingBrandLayoutManager.findFirstVisibleItemPosition()
+                    viewModel?.let { mShopOfferSupportingBrandViewModel ->
+                        if (!mShopOfferSupportingBrandViewModel.isLoading && mShopOfferSupportingBrandViewModel.hasNextPage()) {
+                            if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0) {
+                                mShopOfferSupportingBrandViewModel.loadMore()
+                            }
                         }
                     }
                 }
             }
-        }
         )
     }
 }

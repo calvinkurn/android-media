@@ -9,8 +9,6 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.usecase.supportingbrand.SupportingBrandUseCase
 import com.tokopedia.discovery2.usecase.supportingbrand.SupportingBrandUseCase.Companion.BRAND_PER_PAGE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.PRODUCT_PER_PAGE
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopoffersupportingbrand.ShopOfferSupportingBrandComponentExtension.addLoadMore
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopoffersupportingbrand.ShopOfferSupportingBrandComponentExtension.addReload
 import com.tokopedia.notifications.common.launchCatchError
@@ -87,9 +85,7 @@ class ShopOfferSupportingBrandViewModel(
         isLoading = true
         launchCatchError(block = {
             if (useCase?.loadPageComponents(component.id, component.pageEndPoint) == true) {
-                setSupportingBrandList {
-
-                }
+                setSupportingBrandList {}
             } else {
                 handleErrorPagination()
             }

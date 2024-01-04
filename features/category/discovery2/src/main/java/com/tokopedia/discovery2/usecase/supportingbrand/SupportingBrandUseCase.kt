@@ -8,7 +8,6 @@ import com.tokopedia.discovery2.datamapper.getMapWithoutRpc
 import com.tokopedia.discovery2.repository.supportingbrand.SupportingBrandRepository
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import timber.log.Timber
 import javax.inject.Inject
 
 class SupportingBrandUseCase @Inject constructor(private val repository: SupportingBrandRepository) {
@@ -24,7 +23,6 @@ class SupportingBrandUseCase @Inject constructor(private val repository: Support
     ): Boolean {
         val component = getComponent(componentId, pageEndPoint)
         val paramWithoutRpc = getMapWithoutRpc(pageEndPoint)
-
         component?.let {
             it.properties?.let { properties ->
                 if (properties.limitProduct && properties.limitNumber.toIntOrZero() ==
