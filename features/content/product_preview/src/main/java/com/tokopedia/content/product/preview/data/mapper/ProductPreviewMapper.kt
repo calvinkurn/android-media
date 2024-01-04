@@ -12,7 +12,6 @@ import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 /**
  * @author by astidhiyaa on 06/12/23
@@ -48,26 +47,29 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
     private fun isOwner(author: MediaReviewResponse.ReviewerUserInfo): Boolean =
         author.userId == userSession.userId
 
-    fun mapMiniInfo(response: GetMiniProductInfoResponse): BottomNavUiModel = BottomNavUiModel(
-        title = response.data.product.name,
-        price = if (response.data.campaign.isActive) {
-            BottomNavUiModel.DiscountedPrice(
-                discountedPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    price = response.data.campaign.discountedPrice, hasSpace = false
-                ),
-                ogPriceFmt = response.data.product.priceFmt,
-                discountPercentage = "${response.data.campaign.discountPercentage.roundToInt()}%",
-            )
-        } else BottomNavUiModel.NormalPrice(priceFmt = response.data.product.priceFmt),
-        stock = response.data.product.stock,
-        shop = BottomNavUiModel.Shop(
-            id = response.data.shop.id, name = response.data.shop.name
-        ),
-        hasVariant = response.data.hasVariant,
-        buttonState = if (response.data.hasVariant) BottomNavUiModel.ButtonState.Active else BottomNavUiModel.ButtonState.getByValue(
-            response.data.buttonState
-        ) //Variant product always active, to open GVBS.
-    )
+    fun mapMiniInfo(response: GetMiniProductInfoResponse): BottomNavUiModel =
+        BottomNavUiModel(
+            title = response.data.product.name,
+            price = if (response.data.campaign.isActive) {
+                BottomNavUiModel.DiscountedPrice(
+                    discountedPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        price = response.data.campaign.discountedPrice,
+                        hasSpace = false
+                    ),
+                    ogPriceFmt = response.data.product.priceFmt,
+                    discountPercentage = "${response.data.campaign.discountPercentage}%",
+                )
+            } else BottomNavUiModel.NormalPrice(priceFmt = response.data.product.priceFmt),
+            stock = response.data.product.stock,
+            shop = BottomNavUiModel.Shop(
+                id = response.data.shop.id,
+                name = response.data.shop.name
+            ),
+            hasVariant = response.data.hasVariant,
+            buttonState = if (response.data.hasVariant) BottomNavUiModel.ButtonState.Active else BottomNavUiModel.ButtonState.getByValue(
+                response.data.buttonState
+            ) //Variant product always active, to open GVBS.
+        )
 
     fun mapLike(response: LikeReviewResponse): LikeUiState = LikeUiState(
         count = response.data.totalLike,

@@ -1,7 +1,5 @@
 package com.tokopedia.content.product.preview.view.uimodel
 
-import com.tokopedia.content.common.report_content.model.ContentMenuItem
-
 /**
  * @author by astidhiyaa on 12/12/23
  */

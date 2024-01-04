@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,6 +32,7 @@ fun MediaBottomNav(
     product: BottomNavUiModel,
     onAtcClicked: () -> Unit = {}
 ) {
+    //TODO(): need to check if status bar is dark or no
     NestTheme(darkTheme = true) {
         ConstraintLayout(
             modifier = Modifier
@@ -40,10 +40,8 @@ fun MediaBottomNav(
                 .wrapContentHeight()
                 .background(colorResource(id = unifyprinciplesR.color.Unify_Static_Black))
                 .padding(
-                    start = 16.dp,
-                    top = 8.dp,
-                    bottom = 8.dp,
-                    end = 16.dp
+                    vertical = 8.dp,
+                    horizontal = 16.dp,
                 )
         ) {
             val (title, ogPrice, slashedPrice, discountTag, atcBtn) = createRefs()
@@ -66,7 +64,7 @@ fun MediaBottomNav(
                 text = product.price.finalPrice,
                 maxLines = 1,
                 textStyle = NestTheme.typography.heading5.copy(
-                    color = colorResource(id = unifyprinciplesR.color.Unify_NN0)
+                    color = NestTheme.colors.NN._1000
                 ),
                 modifier = Modifier
                     .heightIn(0.dp, 208.dp)
@@ -78,14 +76,8 @@ fun MediaBottomNav(
                     }
             )
 
-            val btnWording = when (product.buttonState) {
-                BottomNavUiModel.ButtonState.Active -> R.string.bottom_atc_wording
-                BottomNavUiModel.ButtonState.Inactive -> R.string.bottom_remind_wording
-                BottomNavUiModel.ButtonState.OOS -> R.string.bottom_oos_wording
-                else -> R.string.bottom_atc_wording
-            }
             NestButton(
-                text = stringResource(id = btnWording),
+                text = product.buttonState.text,
                 onClick = onAtcClicked,
                 variant = ButtonVariant.GHOST_INVERTED,
                 size = ButtonSize.SMALL,
@@ -138,7 +130,7 @@ fun MediaBottomNav(
 
 @Preview
 @Composable
-fun MediaBottomNavPreview() {
+private fun MediaBottomNavPreview() {
     MediaBottomNav(
         product = BottomNavUiModel.Empty
     ) { }
