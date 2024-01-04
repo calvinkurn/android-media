@@ -184,8 +184,7 @@
         app:layout_constraintTop_toTopOf="@id/amount"
         app:typographyType="paragraph_3"
         app:typographyWeight="bold"
-        android:elevation="10dp"
-        tools:text="Lihat Detail"/>
+        android:text="@string/thank_see_detail"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/infoDivider"

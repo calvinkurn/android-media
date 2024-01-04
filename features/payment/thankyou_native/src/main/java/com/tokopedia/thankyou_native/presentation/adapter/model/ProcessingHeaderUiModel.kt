@@ -4,6 +4,7 @@ import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.domain.model.GatewayAdditionalData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.factory.BottomContentFactory
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -17,6 +18,7 @@ data class ProcessingHeaderUiModel(
     val methodImage: String,
     val amountLabel: String,
     val amount: String,
+    val installment: String,
     val note: List<String>,
     val shouldHidePrimaryButton: Boolean,
     val primaryButtonText: String,
@@ -44,6 +46,10 @@ data class ProcessingHeaderUiModel(
 
             val note = Gson().fromJson(thanksPageData.customDataMessage?.customNotes, Array<String>::class.java)
 
+            val installment = thanksPageData.gatewayAdditionalDataList?.first {
+                thanksPageData.gatewayName == it.key
+            }?.value
+
             return ProcessingHeaderUiModel(
                 title.orEmpty(),
                 description.orEmpty(),
@@ -52,6 +58,7 @@ data class ProcessingHeaderUiModel(
                 thanksPageData.gatewayImage,
                 "Total Bayar",
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(thanksPageData.amount, false),
+                installment.orEmpty(),
                 note.orEmpty().toList(),
                 thanksPageData.configFlagData?.shouldHideHomeButton == true,
                 primaryButtonText.orEmpty(),

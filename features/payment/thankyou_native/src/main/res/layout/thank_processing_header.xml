@@ -140,6 +140,18 @@
         tools:text="Rp10.000.000"/>
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/installment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="3dp"
+        app:layout_constraintStart_toEndOf="@id/amount"
+        app:layout_constraintTop_toBottomOf="@id/amountLabel"
+        app:typographyType="display_2"
+        app:typographyWeight="reguler"
+        tools:text="(Cicil 3x)"/>
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/seeDetailBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -147,10 +159,9 @@
         android:textColor="@color/Unify_GN500"
         app:layout_constraintEnd_toStartOf="@id/spaceEnd"
         app:layout_constraintTop_toTopOf="@id/amount"
-        android:elevation="10dp"
         app:typographyType="paragraph_3"
         app:typographyWeight="bold"
-        tools:text="Lihat Detail"/>
+        android:text="@string/thank_see_detail"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/infoDivider"
