@@ -189,7 +189,8 @@ class SectionUseCase @Inject constructor(
             ComponentNames.QuadrupleBanner.componentName,
             ComponentNames.CalendarWidgetCarousel.componentName,
             ComponentNames.ProductHighlight.componentName,
-            ComponentNames.ProductCardCarousel.componentName
+            ComponentNames.ProductCardCarousel.componentName,
+            ComponentNames.ShopOfferHeroBrand.componentName
         )
 
         var areComponentsSupportBG = true
