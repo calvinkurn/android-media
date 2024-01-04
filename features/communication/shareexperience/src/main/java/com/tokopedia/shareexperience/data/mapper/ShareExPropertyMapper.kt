@@ -2,6 +2,7 @@ package com.tokopedia.shareexperience.data.mapper
 
 import com.tokopedia.shareexperience.data.dto.response.ShareExBottomSheetResponseDto
 import com.tokopedia.shareexperience.data.dto.response.imagegenerator.ShareExImageGeneratorArgResponseDto
+import com.tokopedia.shareexperience.data.util.ShareExDefaultValue.DEFAULT_TITLE
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.ShareExImageGeneratorModel
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateEligibilityModel
@@ -58,19 +59,33 @@ class ShareExPropertyMapper @Inject constructor(
         )
     }
 
-    private fun List<String>.mapToChip(): List<ShareExChipModel> {
-        val result = arrayListOf<ShareExChipModel>()
-        this.forEach {
-            result.add(ShareExChipModel(it))
-        }
-        return result
-    }
-
     private fun List<ShareExImageGeneratorArgResponseDto>.mapToPayload(): Map<String, String> {
         val result = mutableMapOf<String, String>()
         this.forEach {
             result[it.key] = it.value
         }
         return result
+    }
+
+    fun mapDefault(
+        defaultUrl: String,
+        defaultImageUrl: String
+    ): ShareExBottomSheetModel {
+        val listShareProperty = arrayListOf<ShareExPropertyModel>()
+        val property = ShareExPropertyModel(
+            title = defaultUrl,
+            listImage = listOf(defaultImageUrl),
+        )
+        listShareProperty.add(property)
+        val body = ShareExBodyModel(
+            listShareProperty = listShareProperty,
+            socialChannel = channelMapper.generateSocialMediaChannel(),
+            commonChannel = channelMapper.generateDefaultChannel()
+        )
+
+        return ShareExBottomSheetModel(
+            title = DEFAULT_TITLE,
+            body = body
+        )
     }
 }

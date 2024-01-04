@@ -4,11 +4,14 @@ import android.content.Context
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
 import com.tokopedia.shareexperience.data.dto.request.ShareExAffiliateLinkEligibilityRequest
+import com.tokopedia.shareexperience.data.util.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.ShareExResult
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetAffiliateEligibilityUseCase
 import com.tokopedia.shareexperience.ui.uistate.ShareExInitializationUiState
@@ -22,6 +25,11 @@ import javax.inject.Inject
 /**
  * This class is used to prepare the share feature
  * Put anything that share feature needed to do before showing the UI in here
+ * How to use:
+ * ShareExInitializer(context).run {
+ *      initialize()
+ *      openBottomSheet()
+ * }
  */
 class ShareExInitializer(context: Context) {
 
@@ -81,9 +89,21 @@ class ShareExInitializer(context: Context) {
     }
 
     fun openShareBottomSheet(
-        defaultUrl: String
+        id: String,
+        pageSource: ShareExPageTypeEnum,
+        defaultUrl: String,
+        defaultImageUrl: String,
+        tracker: String
     ) {
-
+        contextRef.get()?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalCommunication.SHARE_EXPERIENCE)
+            intent.putExtra(ApplinkConstInternalCommunication.ID, id)
+            intent.putExtra(ApplinkConstInternalCommunication.SHARE_DEFAULT_URL, defaultUrl)
+            intent.putExtra(ApplinkConstInternalCommunication.SHARE_DEFAULT_IMAGE_URL, defaultImageUrl)
+            intent.putExtra(ApplinkConstInternalCommunication.SOURCE, pageSource.value.toString())
+            intent.putExtra(ApplinkConstInternalCommunication.SHARE_TRACKER, tracker)
+            it.startActivity(intent)
+        }
     }
 
     private fun isShareAffiliateIconEnabled(): Boolean {

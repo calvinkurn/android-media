@@ -107,6 +107,43 @@ private fun ShareExAffiliateRegistrationModel.hasEnoughData(): Boolean {
         this.appLink.isNotBlank()
 }
 
-fun Throwable.mapError(): List<Visitable<in ShareExTypeFactory>> {
-    return listOf(ShareExErrorUiModel(this))
+fun ShareExBottomSheetModel.mapError(
+    defaultUrl: String,
+    throwable: Throwable
+): List<Visitable<in ShareExTypeFactory>> {
+    return if (defaultUrl.isBlank()) {
+        listOf(ShareExErrorUiModel(throwable))
+    } else {
+        val result = arrayListOf<Visitable<in ShareExTypeFactory>>()
+
+        // Only add when property is not null
+        this.body.listShareProperty.firstOrNull()?.let { shareExPropertyModel ->
+            // Link Share Card UI
+            val linkShareUiModel = ShareExLinkShareUiModel(
+                shareExPropertyModel.title,
+                shareExPropertyModel.affiliate.commission,
+                "tokopedia.link",
+                shareExPropertyModel.listImage.firstOrNull()?: "",
+                shareExPropertyModel.affiliate.label,
+                shareExPropertyModel.affiliate.date
+            )
+            result.add(linkShareUiModel)
+        }
+
+        // Separator Ui
+        val separator = ShareExSeparatorUiModel()
+        result.add(separator)
+
+        // Channel Ui
+        val socialChannelUiModel = ShareExSocialChannelUiModel(this.body.socialChannel)
+        if (socialChannelUiModel.socialChannel.listChannel.isNotEmpty()) {
+            result.add(socialChannelUiModel)
+        }
+        val commonChannelUiModel = ShareExCommonChannelUiModel(this.body.commonChannel)
+        if (commonChannelUiModel.commonChannel.listChannel.isNotEmpty()) {
+            result.add(commonChannelUiModel)
+        }
+
+        result
+    }
 }

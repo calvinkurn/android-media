@@ -1,7 +1,14 @@
 package com.tokopedia.shareexperience.ui
 
+import com.tokopedia.shareexperience.data.util.ShareExPageTypeEnum
+
 sealed interface ShareExAction {
-    object FetchShareData : ShareExAction
+    data class FetchShareData(
+        val id: String,
+        val source: ShareExPageTypeEnum,
+        val defaultUrl: String,
+        val defaultImageUrl: String
+    ) : ShareExAction
     object InitializePage : ShareExAction
     data class UpdateShareBody(val position: Int) : ShareExAction
     data class UpdateShareImage(val imageUrl: String) : ShareExAction

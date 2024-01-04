@@ -35,6 +35,9 @@ class ShareExViewModel @Inject constructor(
 
     // Cache the model from activity and body switching when chip clicked
     private var _bottomSheetModel: ShareExBottomSheetModel? = null
+    // Cache the default url
+    private var _defaultUrl = ""
+    private var _defaultImageUrl = ""
     // Cache the throwable for showing error state
     private var _fetchThrowable: Throwable? = null
 
@@ -67,7 +70,7 @@ class ShareExViewModel @Inject constructor(
         onEach {
             when (it) {
                 is ShareExAction.FetchShareData -> {
-                    getShareData()
+                    getShareData(it.id, it.source, it.defaultUrl, it.defaultImageUrl)
                 }
                 is ShareExAction.InitializePage -> {
                     getShareBottomSheetData()
@@ -85,13 +88,20 @@ class ShareExViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun getShareData() {
+    private fun getShareData(
+        id: String,
+        pageTypeEnum: ShareExPageTypeEnum,
+        defaultUrl: String,
+        defaultImageUrl: String
+    ) {
         viewModelScope.launch {
             try {
+                _defaultUrl = defaultUrl
+                _defaultImageUrl = defaultImageUrl
                 getSharePropertiesUseCase.getData(
                     ShareExProductRequest(
-                        pageType = ShareExPageTypeEnum.PDP.value,
-                        id = 2150412049
+                        pageType = pageTypeEnum.value,
+                        id = id.toLong()
                     )
                 ).catch {
                     _fetchThrowable = it
@@ -111,24 +121,40 @@ class ShareExViewModel @Inject constructor(
     private fun getShareBottomSheetData() {
         viewModelScope.launch {
             try {
-                val uiResult = when {
-                    (_bottomSheetModel != null) -> {
-                        _bottomSheetModel?.map()
-                    }
+                when {
                     (_fetchThrowable != null) -> {
-                        _fetchThrowable?.mapError()
+                        getDefaultBottomSheetModel()
                     }
-                    else -> listOf()
-                }
-                _bottomSheetUiState.update { uiState ->
-                    uiState.copy(
-                        title = _bottomSheetModel?.title ?: "",
-                        uiModelList = uiResult
-                    )
+                    (_bottomSheetModel != null) -> {
+                        updateBottomSheetUiState()
+                    }
                 }
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
             }
+        }
+    }
+
+    private suspend fun getDefaultBottomSheetModel() {
+        getSharePropertiesUseCase.getDefaultData(_defaultUrl, _defaultImageUrl)
+            .collectLatest {
+                val uiResult = it.mapError(_defaultUrl, _fetchThrowable?: Throwable())
+                _bottomSheetUiState.update { uiState ->
+                    uiState.copy(
+                        title = it.title,
+                        uiModelList = uiResult
+                    )
+                }
+            }
+    }
+
+    private fun updateBottomSheetUiState() {
+        val uiResult = _bottomSheetModel?.map()
+        _bottomSheetUiState.update { uiState ->
+            uiState.copy(
+                title = _bottomSheetModel?.title ?: "",
+                uiModelList = uiResult
+            )
         }
     }
 

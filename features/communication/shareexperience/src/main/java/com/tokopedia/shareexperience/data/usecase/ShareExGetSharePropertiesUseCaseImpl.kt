@@ -39,6 +39,16 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
         }.flowOn(dispatchers.io)
     }
 
+    override fun getDefaultData(
+        defaultUrl: String,
+        defaultImageUrl: String
+    ): Flow<ShareExBottomSheetModel> {
+        return flow {
+            val result = mapper.mapDefault(defaultUrl, defaultImageUrl)
+            emit(result)
+        }.flowOn(dispatchers.io)
+    }
+
     private fun getDummyResponseDto(): ShareExWrapperResponseDto {
         return ShareExWrapperResponseDto(
             ShareExSharePropertiesResponseDto(

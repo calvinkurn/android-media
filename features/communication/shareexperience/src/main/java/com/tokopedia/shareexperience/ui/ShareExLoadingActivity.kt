@@ -10,10 +10,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
 import com.tokopedia.shareexperience.data.di.ShareExComponent
+import com.tokopedia.shareexperience.data.util.ShareExPageTypeEnum
+import com.tokopedia.shareexperience.ui.util.getStringExtraFromIntentOrQuery
 import com.tokopedia.unifycomponents.LoaderUnify
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -56,7 +60,19 @@ class ShareExLoadingActivity : BaseActivity(), HasComponent<ShareExComponent> {
     }
 
     private fun fetchData() {
-        viewModel.processAction(ShareExAction.FetchShareData)
+        val id = this.getStringExtraFromIntentOrQuery(ApplinkConstInternalCommunication.ID) ?: ""
+        val source = this.getStringExtraFromIntentOrQuery(ApplinkConstInternalCommunication.SOURCE).toIntOrZero()
+        val sourceEnum = ShareExPageTypeEnum.fromValue(source)
+        val defaultUrl = this.getStringExtraFromIntentOrQuery(ApplinkConstInternalCommunication.SHARE_DEFAULT_URL) ?: ""
+        val defaultImageUrl = this.getStringExtraFromIntentOrQuery(ApplinkConstInternalCommunication.SHARE_DEFAULT_IMAGE_URL) ?: ""
+        viewModel.processAction(
+            ShareExAction.FetchShareData(
+                id,
+                sourceEnum,
+                defaultUrl,
+                defaultImageUrl
+            )
+        )
     }
 
     private fun initObservers() {
