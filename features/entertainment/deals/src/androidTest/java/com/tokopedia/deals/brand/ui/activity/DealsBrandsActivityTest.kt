@@ -21,6 +21,7 @@ import com.tokopedia.deals.DealsDummyResponseString.DUMMY_USER_TYPE_STRING
 import com.tokopedia.deals.R
 import com.tokopedia.deals.category.ui.activity.mock.DealsCategoryMockResponse
 import com.tokopedia.deals.ui.brand.ui.activity.DealsBrandActivity
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -29,13 +30,15 @@ import org.hamcrest.core.AllOf
 import org.junit.Rule
 import org.junit.Test
 
+@CassavaTest
 class DealsBrandsActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @get: Rule
     var activityRule: IntentsTestRule<DealsBrandActivity> = object : IntentsTestRule<DealsBrandActivity>(
-        DealsBrandActivity::class.java) {
+        DealsBrandActivity::class.java
+    ) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupGraphqlMockResponse(DealsCategoryMockResponse())

@@ -1,5 +1,6 @@
 package com.tokopedia.deals.home.ui.activity
 
+import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
@@ -11,8 +12,12 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
@@ -34,6 +39,10 @@ class DealsHomeActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private lateinit var localCacheHandler: LocalCacheHandler
+
+    @get:Rule
+    var permissionRule: GrantPermissionRule =
+        GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
 
     @get:Rule
     var activityRule: IntentsTestRule<DealsHomeActivity> = object : IntentsTestRule<DealsHomeActivity>(DealsHomeActivity::class.java) {
@@ -97,7 +106,7 @@ class DealsHomeActivityTest {
     private fun actionOnPopularLandmarkViewHolder() {
         Thread.sleep(2000)
         onView(withId(R.id.recycler_view))
-                .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(POPULAR_LANDMARKS_POSITION))
+            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(POPULAR_LANDMARKS_POSITION))
 
         Thread.sleep(2000)
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
@@ -111,14 +120,14 @@ class DealsHomeActivityTest {
     private fun actionOnFavouriteCategoryViewHolder() {
         Thread.sleep(2000)
         onView(withId(R.id.recycler_view))
-                .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(FAVOURITE_CATEGORY_POSITION))
+            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(FAVOURITE_CATEGORY_POSITION))
 
         Thread.sleep(2000)
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(FAVOURITE_CATEGORY_POSITION)
         viewHolder?.let {
             onView(getElementFromMatchAtPosition(withId(R.id.lst_voucher_popular_place_card), 1))
-                    .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
+                .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
         }
         Thread.sleep(2000)
     }
@@ -126,7 +135,7 @@ class DealsHomeActivityTest {
     private fun actionOnProductViewHolder() {
         Thread.sleep(2000)
         onView(withId(R.id.recycler_view))
-                .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(PRODUCT_POSITION))
+            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(PRODUCT_POSITION))
 
         Thread.sleep(2000)
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
@@ -136,15 +145,17 @@ class DealsHomeActivityTest {
         }
         Thread.sleep(2000)
         onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(PRODUCT_POSITION,
-                        CommonActions.clickChildViewWithId(R.id.btn_curated_product_category_see_all))
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                PRODUCT_POSITION,
+                CommonActions.clickChildViewWithId(R.id.btn_curated_product_category_see_all)
+            )
         )
     }
 
     private fun actionOnBrandsViewHolder() {
         Thread.sleep(2000)
         onView(withId(R.id.recycler_view))
-                .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(BRAND_POSITION))
+            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(BRAND_POSITION))
 
         Thread.sleep(2000)
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
@@ -154,15 +165,17 @@ class DealsHomeActivityTest {
         }
         Thread.sleep(2000)
         onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(BRAND_POSITION,
-                        CommonActions.clickChildViewWithId(R.id.txtDealsPopularBrandSeeAll))
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                BRAND_POSITION,
+                CommonActions.clickChildViewWithId(R.id.txtDealsPopularBrandSeeAll)
+            )
         )
     }
 
     private fun actionOnCategoryViewHolder() {
         Thread.sleep(2000)
         onView(withId(R.id.recycler_view))
-                .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(CATEGORY_POSITION))
+            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(CATEGORY_POSITION))
 
         Thread.sleep(2000)
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
@@ -176,7 +189,7 @@ class DealsHomeActivityTest {
     private fun clickOnHomepageBanner() {
         Thread.sleep(2000)
         onView(withId(R.id.recycler_view))
-                .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(BANNER_POSITION))
+            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(BANNER_POSITION))
 
         Thread.sleep(2000)
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
@@ -186,8 +199,10 @@ class DealsHomeActivityTest {
         }
         Thread.sleep(2000)
         onView(withId(R.id.recycler_view)).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(BANNER_POSITION,
-                        CommonActions.clickChildViewWithId(com.tokopedia.banner.R.id.banner_see_all))
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                BANNER_POSITION,
+                CommonActions.clickChildViewWithId(com.tokopedia.banner.R.id.banner_see_all)
+            )
         )
     }
 

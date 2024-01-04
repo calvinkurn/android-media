@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.deals.category.ui.activity.DealsCategoryActivity
-import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.ui.activity.DealsBaseBrandCategoryActivity
 import com.tokopedia.deals.di.DaggerDealsComponent
 import com.tokopedia.deals.di.DealsComponent
@@ -24,7 +23,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class DealsBrandActivity :
@@ -35,9 +33,6 @@ class DealsBrandActivity :
     private val listeners: ArrayList<DealsBrandSearchTabListener> = arrayListOf()
     var userTyped = false
     var searchNotFound = false
-
-    @Inject
-    lateinit var analytics: DealsAnalytics
 
     override fun isSearchAble(): Boolean = true
 
@@ -64,8 +59,8 @@ class DealsBrandActivity :
             }
         }
 
+//        initInjector()
         super.onCreate(savedInstanceState)
-        initInjector()
         setKeywordFromPreviousPage()
         setupListener()
     }
@@ -105,9 +100,7 @@ class DealsBrandActivity :
         binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.searchBarTextField.onFocusChangeListener =
             View.OnFocusChangeListener { v, hasFocus ->
                 KeyboardHandler.showSoftKeyboard(this)
-                if (this::analytics.isInitialized) {
-                    analytics.eventClickSearchBrandPage()
-                }
+                dealsAnalytics.eventClickSearchBrandPage()
             }
         binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.searchBarTextField.afterTextChangedDelayed {
             onSearchTextChanged()
@@ -172,9 +165,7 @@ class DealsBrandActivity :
         get() = Dispatchers.Main
 
     override fun tabAnalytics(categoryName: String, position: Int) {
-        if (this::analytics.isInitialized) {
-            analytics.eventClickCategoryTabBrandPage(categoryName, position)
-        }
+        dealsAnalytics.eventClickCategoryTabBrandPage(categoryName, position)
     }
 
     companion object {
