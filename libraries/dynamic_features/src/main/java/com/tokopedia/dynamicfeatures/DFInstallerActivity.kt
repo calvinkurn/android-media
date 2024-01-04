@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.google.android.play.core.splitinstall.*
 import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
@@ -237,6 +238,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
             val timeoutTotal = TimeUnit.SECONDS.toMillis(timeout)
             while (elapsedTime < timeoutTotal) {
                 delay(TIMER_CHECK_INTERVAL)
+                SplitCompat.install(applicationContext)
                 if (DFInstaller.isInstalled(this@DFInstallerActivity, moduleName)) {
                     onSuccessfulLoad(moduleName, launch = true)
                     return@launch
@@ -395,7 +397,6 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
 
             else -> {
                 cancelAllPendingRequest()
-                toggleDfConfig()
                 updateInformationView(
                     globalerrorR.drawable.unify_globalerrors_500,
                     getString(R.string.download_error_general_title),
@@ -409,20 +410,18 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     }
 
     private fun cancelAllPendingRequest() {
-        val sessionStates = manager.sessionStates
-        if (!sessionStates.isComplete) {
-            return
-        }
-        val result = sessionStates.result
-        if (result.isNotEmpty()) {
-            result.forEach {
-                manager.cancelInstall(it.sessionId())
+        try {
+            val sessionStates = manager.sessionStates
+            if (!sessionStates.isComplete) {
+                return
             }
-        }
-    }
-
-    private fun toggleDfConfig() {
-        allowRunningServiceFromActivity = !allowRunningServiceFromActivity
+            val result = sessionStates.result
+            if (result.isNotEmpty()) {
+                result.forEach {
+                    manager.cancelInstall(it.sessionId())
+                }
+            }
+        } catch (ignored: Exception) { }
     }
 
     private fun updateInformationView(
@@ -474,6 +473,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     private fun downloadFeature() {
         if (cancelDownloadBeforeInstallInPage) {
             cancelPreviousDownload()
+            cancelAllPendingRequest()
         }
         updateInformationView(
             R.drawable.ic_ill_downloading,
@@ -609,13 +609,14 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
             // capability to auto-retry without user clicking retry button
             autoRetryCount++
             cancelAllPendingRequest()
-            toggleDfConfig()
             launch(Dispatchers.Main) {
                 delay(500)
                 val errorCodeTemp =
-                    ErrorUtils.getValidatedErrorCode(this@DFInstallerActivity,
+                    ErrorUtils.getValidatedErrorCode(
+                        this@DFInstallerActivity,
                         errorString,
-                        freeInternalStorageBeforeDownload)
+                        freeInternalStorageBeforeDownload
+                    )
                 errorList.add(errorCodeTemp)
                 downloadFeature()
             }
