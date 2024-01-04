@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.shorts.view.compose
 
+import android.net.Uri
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.compose.foundation.layout.size
@@ -18,6 +19,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.nest.principles.utils.noRippleClickable
 import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
+import com.tokopedia.play_common.player.PlayVideoWrapper
 
 /**
  * Created By : Jonathan Darwin on January 03, 2024
@@ -25,8 +27,7 @@ import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactor
 @Composable
 fun VideoPreviewLayout(
     videoUri: String,
-    exoPlayer: ExoPlayer,
-    mediaSourceFactory: PlayShortsMediaSourceFactory,
+    videoWrapper: PlayVideoWrapper,
     onClose: () -> Unit,
 ) {
     ConstraintLayout {
@@ -36,17 +37,13 @@ fun VideoPreviewLayout(
             icPlay
         ) = createRefs()
 
-        LaunchedEffect(Unit) {
-            val mediaSource = mediaSourceFactory.create(videoUri)
-            exoPlayer.prepare(mediaSource)
-            exoPlayer.seekTo(1)
-        }
-
         DisposableEffect(
             AndroidView(
                 factory = {
                     PlayerView(it).apply {
-                        player = exoPlayer
+                        videoWrapper.playUri(Uri.parse(videoUri), autoPlay = false)
+
+                        player = videoWrapper.videoPlayer
                         layoutParams = FrameLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT
@@ -61,8 +58,8 @@ fun VideoPreviewLayout(
             )
         ) {
             onDispose {
-                exoPlayer.playWhenReady = false
-                exoPlayer.release()
+                videoWrapper.stop()
+                videoWrapper.release()
             }
         }
 
@@ -86,7 +83,11 @@ fun VideoPreviewLayout(
                     )
                 }
                 .noRippleClickable {
-                    exoPlayer.playWhenReady = !exoPlayer.playWhenReady
+                    if (videoWrapper.isPlaying()) {
+                        videoWrapper.stop()
+                    } else {
+                        videoWrapper.resume()
+                    }
                 }
         )
 

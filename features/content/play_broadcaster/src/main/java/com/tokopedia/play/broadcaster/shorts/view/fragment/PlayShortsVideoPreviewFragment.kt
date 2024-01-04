@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactor
 import com.tokopedia.play.broadcaster.shorts.view.compose.VideoPreviewLayout
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
+import com.tokopedia.play_common.player.PlayVideoWrapper
 import javax.inject.Inject
 
 /**
@@ -46,8 +47,7 @@ class PlayShortsVideoPreviewFragment @Inject constructor(
                     Surface {
                         VideoPreviewLayout(
                             videoUri = viewModel.productVideo.videoUrl,
-                            exoPlayer = exoPlayer,
-                            mediaSourceFactory = mediaSourceFactory,
+                            videoWrapper = PlayVideoWrapper.Builder(requireContext()).build(),
                             onClose = {
                                 activity?.onBackPressed()
                             }
