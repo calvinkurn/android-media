@@ -8,7 +8,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,8 +48,6 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.productcard.utils.findViewById
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.android.synthetic.main.fragment_catalog_switching_comparison.*
@@ -80,7 +77,6 @@ class CatalogSwitchingComparisonFragment :
     private var currentPage = 0
 
     private var initialDataFromSearch = false
-
 
     companion object {
 
@@ -485,7 +481,6 @@ class CatalogSwitchingComparisonFragment :
                     getString(catalogR.string.catalog_label_oke)
                 )
                 toasterInfo.show()
-
             }
         }
     }
@@ -547,6 +542,6 @@ class CatalogSwitchingComparisonFragment :
 
     override fun onFragmentBackPressed(): Boolean {
         showCancelSwitch()
-        return  true
+        return true
     }
 }
