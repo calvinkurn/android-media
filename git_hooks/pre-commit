@@ -1,150 +1,150 @@
-#!/usr/bin/env bash
-# to use, copy this file into your .git/hooks folder in your git repo
-# make sure to add execute permissions using: chmod +x .git/hooks/pre-commit
-command -v tinypng >/dev/null 2>&1 || {
-    echo "Installing tinypng-cli"
-    npm install -g tinypng-cli
-    echo "Please install manually if any error occurs, you can refer to below link"
-    echo "\t Site: \033[1m\033[4mhttps://www.npmjs.com/package/tinypng-cli\033[0m"
-    #exit 1;
-}
-
-arrKey=("dW4fjqSqZB6YJ6H8lxQ52LplN4nHLX3C" "nqBXh3XCfpS3JDTcPQjkq4JDw9nNYdNn" "pBLdfsdkq7Ms08mC2H6tR4DRMzYGZ9S5" "1ZTHf25qYmmwqMlwGNHT3VNCkchhWd32" "6q4OXCyMdyCExeU4U0DZDeuhCisONRY2")
-keyArrSize=${#arrKey[@]}
-keyIndex=0
-
-CheckValidOutPut (){
-  echo $output
-  if [[ $output == *"your monthly limit has been exceeded"* ]]; then
-    keyStatus=0
-  else
-    keyStatus=1
-  fi
-}
-
-GetTinyPngKey (){
-  if [ $keyIndex -lt $keyArrSize ]; then
-    key=${arrKey[$keyIndex]}
-  else
-     echo "All quota exhausted"
-     return
-  fi
-}
-
-ExecuteImageCompression (){
-  GetTinyPngKey
-  echo $key
-  output=$(tinypng $file -k $key)
-  CheckValidOutPut
-  if [ $keyStatus == 0 ]; then
-      keyIndex=$((keyIndex+1))
-      GetTinyPngKey
-      ExecuteImageCompression
-  fi
-}
-
-IterateCommitedImages (){
-  for file in $(git diff --diff-filter=d --staged --name-only | grep ".png\|.jpg\|.jpeg")
-  do
-    echo "Crushing $file"
-    ExecuteImageCompression
-    git add $file;
-    #mv -f ${file%.jpg}.new $file
-  done
-}
-#Check duplicate drawables and xml in commit
-foundDuplicateImages (){
-  list_of_file=""
-  for file in $(git diff --diff-filter=d --staged --name-only | grep ".png\|.jpg\|.jpeg\|.xml\|.webp")
-  do
-    if [ -z "$list_of_file" ];
-    then
-          list_of_file=$file
-    else
-          list_of_file=$list_of_file","$file
-    fi
-  done
-  # echo $list_of_file
-
-  if [ ! -z "$list_of_file" ];
-  then
-    output=$(python tools/script_detect_duplicate_res.py --path $(git rev-parse --show-toplevel) --list $list_of_file)
-
-    #duplicate file found check in output
-    if [[ $output == *"command not found"* ]]; then
-        echo -e "$output"
-        echo -e "\n"
-        echo -e "After configuring python, please run following commands:"
-        echo -e "\n"
-        echo -e "pip install fnmatch"
-        echo -e "\n"
-        echo -e "pip install hashlib"
-        echo -e "\n"
-        echo -e "pip install argparse"
-        echo -e "\n"
-        exit 0
-    elif [[ $output == *"similar image/s found for file"* ]]; then
-        echo -e "\n"
-        echo "##################################"
-        echo "####   Duplicate File Found   ####"
-        echo "##################################"
-        echo -e "\n"
-        echo "Commit Failed, use \"git commit --no-verify\" to bypass the verification"
-        echo -e "\n"
-        echo -e "$output"
-        echo -e "\n"
-        exit 1
-    else
-        echo "No duplicates found for any committed files."
-        echo -e "\n"
-        exit 0
-    fi
-  fi
-}
-
-formatingCode (){
-	command -v tools/ktlint >/dev/null 2>&1 || {
-		curl -SLO https://github.com/pinterest/ktlint/releases/download/0.47.1/ktlint && chmod a+x ktlint && mv ktlint tools
-	}
-
-	stagedFilename=.tmpStagedFiles
-	unstagedFilename=.tmpUnstagedFiles
-
-	git diff --cached --name-only --diff-filter=ACM | grep '\.kt[s"]\?$' | sort > $stagedFilename
-	git diff --name-only --diff-filter=ACM | grep '\.kt[s"]\?$' | sort > $unstagedFilename
-	message=$(git log --format=%B -n 1)
-
-	# This returns a list of lines that are only in the staged list
-	filesToCheck=$(comm -23 $stagedFilename $unstagedFilename | tr '\n' ' ')
-
-	# Delete the files, which were created for temporary processing
-	rm -f $stagedFilename
-	rm -f $unstagedFilename
-
-	# If the list of files is not empty then run checks on them
-	if [ ! -z "$filesToCheck" ]
-	then
-		tools/ktlint --format --disabled_rules=package-name,no-wildcard-imports $filesToCheck
-	  #	if [ $? -ne 0 ]; then exit 1; fi
-		# If we haven't exited because of an error it means we were able to
-		# fix issues with autocorrect. However, we need to add the changes in
-		# order for them to be included in the pending commit.
-		git add $filesToCheck
-	fi
-}
-
-if [ -e .git/MERGE_MSG ]; then
-    echo "Merge commit skipping image compression"
-else
-    IterateCommitedImages
-    foundDuplicateImages
-    formatingCode
-fi
-
-#git diff --diff-filter=ACM --name-only HEAD | grep ".png\|.jpg" | xargs tinypng -k JeyuQt7BvAPMu9TQNy8C2uSMVqY3Qcsf
-
-# This gets the list of staged files that will be included in the commit (removed files are ignored).
-# If a file is only partially staged (some changes in it are unstaged), then the file is not included
-# in checks. That is because the checks re-add the file to ensure autocorrected fixes are included
-# in the commit, and we don't want to add the whole file since that would mess with the intention
-# of partial staging.
+##!/usr/bin/env bash
+## to use, copy this file into your .git/hooks folder in your git repo
+## make sure to add execute permissions using: chmod +x .git/hooks/pre-commit
+#command -v tinypng >/dev/null 2>&1 || {
+#    echo "Installing tinypng-cli"
+#    npm install -g tinypng-cli
+#    echo "Please install manually if any error occurs, you can refer to below link"
+#    echo "\t Site: \033[1m\033[4mhttps://www.npmjs.com/package/tinypng-cli\033[0m"
+#    #exit 1;
+#}
+#
+#arrKey=("dW4fjqSqZB6YJ6H8lxQ52LplN4nHLX3C" "nqBXh3XCfpS3JDTcPQjkq4JDw9nNYdNn" "pBLdfsdkq7Ms08mC2H6tR4DRMzYGZ9S5" "1ZTHf25qYmmwqMlwGNHT3VNCkchhWd32" "6q4OXCyMdyCExeU4U0DZDeuhCisONRY2")
+#keyArrSize=${#arrKey[@]}
+#keyIndex=0
+#
+#CheckValidOutPut (){
+#  echo $output
+#  if [[ $output == *"your monthly limit has been exceeded"* ]]; then
+#    keyStatus=0
+#  else
+#    keyStatus=1
+#  fi
+#}
+#
+#GetTinyPngKey (){
+#  if [ $keyIndex -lt $keyArrSize ]; then
+#    key=${arrKey[$keyIndex]}
+#  else
+#     echo "All quota exhausted"
+#     return
+#  fi
+#}
+#
+#ExecuteImageCompression (){
+#  GetTinyPngKey
+#  echo $key
+#  output=$(tinypng $file -k $key)
+#  CheckValidOutPut
+#  if [ $keyStatus == 0 ]; then
+#      keyIndex=$((keyIndex+1))
+#      GetTinyPngKey
+#      ExecuteImageCompression
+#  fi
+#}
+#
+#IterateCommitedImages (){
+#  for file in $(git diff --diff-filter=d --staged --name-only | grep ".png\|.jpg\|.jpeg")
+#  do
+#    echo "Crushing $file"
+#    ExecuteImageCompression
+#    git add $file;
+#    #mv -f ${file%.jpg}.new $file
+#  done
+#}
+##Check duplicate drawables and xml in commit
+#foundDuplicateImages (){
+#  list_of_file=""
+#  for file in $(git diff --diff-filter=d --staged --name-only | grep ".png\|.jpg\|.jpeg\|.xml\|.webp")
+#  do
+#    if [ -z "$list_of_file" ];
+#    then
+#          list_of_file=$file
+#    else
+#          list_of_file=$list_of_file","$file
+#    fi
+#  done
+#  # echo $list_of_file
+#
+#  if [ ! -z "$list_of_file" ];
+#  then
+#    output=$(python tools/script_detect_duplicate_res.py --path $(git rev-parse --show-toplevel) --list $list_of_file)
+#
+#    #duplicate file found check in output
+#    if [[ $output == *"command not found"* ]]; then
+#        echo -e "$output"
+#        echo -e "\n"
+#        echo -e "After configuring python, please run following commands:"
+#        echo -e "\n"
+#        echo -e "pip install fnmatch"
+#        echo -e "\n"
+#        echo -e "pip install hashlib"
+#        echo -e "\n"
+#        echo -e "pip install argparse"
+#        echo -e "\n"
+#        exit 0
+#    elif [[ $output == *"similar image/s found for file"* ]]; then
+#        echo -e "\n"
+#        echo "##################################"
+#        echo "####   Duplicate File Found   ####"
+#        echo "##################################"
+#        echo -e "\n"
+#        echo "Commit Failed, use \"git commit --no-verify\" to bypass the verification"
+#        echo -e "\n"
+#        echo -e "$output"
+#        echo -e "\n"
+#        exit 1
+#    else
+#        echo "No duplicates found for any committed files."
+#        echo -e "\n"
+#        exit 0
+#    fi
+#  fi
+#}
+#
+#formatingCode (){
+#	command -v tools/ktlint >/dev/null 2>&1 || {
+#		curl -SLO https://github.com/pinterest/ktlint/releases/download/0.47.1/ktlint && chmod a+x ktlint && mv ktlint tools
+#	}
+#
+#	stagedFilename=.tmpStagedFiles
+#	unstagedFilename=.tmpUnstagedFiles
+#
+#	git diff --cached --name-only --diff-filter=ACM | grep '\.kt[s"]\?$' | sort > $stagedFilename
+#	git diff --name-only --diff-filter=ACM | grep '\.kt[s"]\?$' | sort > $unstagedFilename
+#	message=$(git log --format=%B -n 1)
+#
+#	# This returns a list of lines that are only in the staged list
+#	filesToCheck=$(comm -23 $stagedFilename $unstagedFilename | tr '\n' ' ')
+#
+#	# Delete the files, which were created for temporary processing
+#	rm -f $stagedFilename
+#	rm -f $unstagedFilename
+#
+#	# If the list of files is not empty then run checks on them
+#	if [ ! -z "$filesToCheck" ]
+#	then
+#		tools/ktlint --format --disabled_rules=package-name,no-wildcard-imports $filesToCheck
+#	  #	if [ $? -ne 0 ]; then exit 1; fi
+#		# If we haven't exited because of an error it means we were able to
+#		# fix issues with autocorrect. However, we need to add the changes in
+#		# order for them to be included in the pending commit.
+#		git add $filesToCheck
+#	fi
+#}
+#
+#if [ -e .git/MERGE_MSG ]; then
+#    echo "Merge commit skipping image compression"
+#else
+#    IterateCommitedImages
+#    foundDuplicateImages
+#    formatingCode
+#fi
+#
+##git diff --diff-filter=ACM --name-only HEAD | grep ".png\|.jpg" | xargs tinypng -k JeyuQt7BvAPMu9TQNy8C2uSMVqY3Qcsf
+#
+## This gets the list of staged files that will be included in the commit (removed files are ignored).
+## If a file is only partially staged (some changes in it are unstaged), then the file is not included
+## in checks. That is because the checks re-add the file to ensure autocorrected fixes are included
+## in the commit, and we don't want to add the whole file since that would mess with the intention
+## of partial staging.
