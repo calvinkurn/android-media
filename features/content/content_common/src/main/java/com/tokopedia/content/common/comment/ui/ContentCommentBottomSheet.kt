@@ -88,10 +88,6 @@ class ContentCommentBottomSheet @Inject constructor(
         (getScreenHeight() * HEIGHT_PERCENT).roundToInt()
     }
 
-    private val keyboardThreshold by lazyThreadSafetyNone {
-        (getScreenHeight() * KEYBOARD_HEIGHT_PERCENT).roundToInt().plus(16.toPx())
-    }
-
     private var mSource: EntrySource? = null
 
     private val viewModel: ContentCommentViewModel by viewModels {
