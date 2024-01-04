@@ -101,21 +101,23 @@ object SomGetOrderDetailResponseMapper {
         expanded: Boolean
     ): AddOnSummaryUiModel? {
         return productBenefit?.let {
-            AddOnSummaryUiModel(
-                addOnIdentifier = bmgmId,
-                totalPriceText = "(${productBenefit.orderDetail.count()} hadiah)",
-                addonsLogoUrl = productBenefit.iconUrl,
-                addonsTitle = productBenefit.label,
-                addonItemList = mapBmgmProductBenefitItems(productBenefit.orderDetail, orderId)
-            ).apply { isExpand = expanded }
+            if (productBenefit.isValid()) {
+                AddOnSummaryUiModel(
+                    addOnIdentifier = bmgmId,
+                    totalPriceText = "(${productBenefit.orderDetail?.count()} hadiah)",
+                    addonsLogoUrl = productBenefit.iconUrl,
+                    addonsTitle = productBenefit.label,
+                    addonItemList = mapBmgmProductBenefitItems(productBenefit.orderDetail, orderId)
+                ).apply { isExpand = expanded }
+            } else null
         }
     }
 
     private fun mapBmgmProductBenefitItems(
-        orderDetails: List<ProductBenefit.OrderDetail>,
+        orderDetails: List<ProductBenefit.OrderDetail>?,
         orderId: String
     ): List<AddOnSummaryUiModel.AddonItemUiModel> {
-        return orderDetails.map { orderDetail ->
+        return orderDetails?.map { orderDetail ->
             AddOnSummaryUiModel.AddonItemUiModel(
                 priceText = orderDetail.totalPriceText,
                 quantity = orderDetail.quantity,
@@ -134,7 +136,7 @@ object SomGetOrderDetailResponseMapper {
                 orderId = orderId,
                 orderDetailId = orderDetail.orderDetailId.toString()
             )
-        }
+        }.orEmpty()
     }
 
     private fun getProductBundleList(

@@ -13,8 +13,13 @@ data class ProductBenefit(
     val label: String = "",
     @SerializedName("order_detail")
     @Expose
-    val orderDetail: List<OrderDetail> = listOf()
+    val orderDetail: List<OrderDetail>? = listOf()
 ) {
+
+    fun isValid(): Boolean {
+        return iconUrl.isNotBlank() && label.isNotBlank() && !orderDetail.isNullOrEmpty()
+    }
+
     data class OrderDetail(
         @SerializedName("order_detail_id")
         @Expose
