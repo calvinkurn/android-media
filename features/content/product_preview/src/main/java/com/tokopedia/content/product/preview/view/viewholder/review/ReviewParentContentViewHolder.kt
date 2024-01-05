@@ -1,6 +1,13 @@
 package com.tokopedia.content.product.preview.view.viewholder.review
 
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.view.View
+import androidx.core.text.buildSpannedString
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.databinding.ItemReviewParentContentBinding
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
@@ -11,11 +18,28 @@ import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ReviewParentContentViewHolder(
     private val binding: ItemReviewParentContentBinding,
     private val listener: Listener,
 ) : ViewHolder(binding.root) {
+
+    private val clickableSpan: (String) -> ClickableSpan = { desc ->
+        object : ClickableSpan() {
+            override fun updateDrawState(tp: TextPaint) {
+                tp.color =
+                    MethodChecker.getColor(binding.root.context, unifyprinciplesR.color.Unify_GN500)
+                tp.isUnderlineText = false
+            }
+
+            override fun onClick(widget: View) {
+                binding.tvReviewDescription.maxLines = MAX_LINES_VALUE
+                binding.tvReviewDescription.text = desc
+            }
+        }
+    }
+
     fun bind(item: ReviewUiModel) {
         bindAuthor(item.author)
         bindDescription(item.description)
@@ -49,7 +73,17 @@ class ReviewParentContentViewHolder(
             append(" $divider ")
             append(description.timestamp)
         }
-        tvReviewDescription.text = description.description
+        //TODO: check if text can be scrollable
+        tvReviewDescription.movementMethod = LinkMovementMethod.getInstance()
+        tvReviewDescription.text = buildSpannedString {
+            append(description.description.take(22)) //TODO: get text from exisiting, decrease to selengkapnya + ...
+            //TODO: it executes when line count > 2
+            append(
+                root.context.getString(R.string.product_prev_review_expand),
+                clickableSpan(description.description),
+                Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+            )
+        }
     }
 
     fun bindLike(state: LikeUiState) = with(binding.layoutLikeReview) {
@@ -73,5 +107,7 @@ class ReviewParentContentViewHolder(
     companion object {
         fun create(binding: ItemReviewParentContentBinding, listener: Listener) =
             ReviewParentContentViewHolder(binding, listener)
+
+        private const val MAX_LINES_VALUE = 100
     }
 }

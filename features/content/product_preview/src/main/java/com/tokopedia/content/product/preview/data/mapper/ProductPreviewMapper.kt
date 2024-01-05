@@ -1,5 +1,6 @@
 package com.tokopedia.content.product.preview.data.mapper
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.product.preview.data.GetMiniProductInfoResponse
 import com.tokopedia.content.product.preview.data.LikeReviewResponse
 import com.tokopedia.content.product.preview.data.MediaReviewResponse
@@ -36,9 +37,9 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                 ),
                 description = DescriptionUiModel(
                     stars = it.rating,
-                    productType = it.variantName,
+                    productType = MethodChecker.fromHtml(it.variantName).toString(),
                     timestamp = it.createTimestamp,
-                    description = it.review,
+                    description = MethodChecker.fromHtml(it.review).toString(),
                 )
             )
         }
