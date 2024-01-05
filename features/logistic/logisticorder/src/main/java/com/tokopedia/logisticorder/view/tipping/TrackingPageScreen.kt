@@ -555,7 +555,7 @@ fun TippingLayout(
                     },
                     text = tipping.buttonText,
                     onClick = { onClickTippingButton(tipping) },
-                    variant = if (tipping.status == OPEN) ButtonVariant.GHOST_INVERTED else ButtonVariant.GHOST
+                    variant = if (tipping.status == OPEN) ButtonVariant.GHOST_ALTERNATE else ButtonVariant.GHOST
                 )
             }
         }
