@@ -43,6 +43,7 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 private const val NORMAL_PROMO_UI = 1
 private val Static_950: Color = Color(0xFF212121)
+
 @Composable
 fun ProductDetailPriceComponent(
     promoPriceData: PromoPriceUiModel?,
@@ -176,17 +177,21 @@ fun PromoPriceFooter(
     ConstraintLayout(modifier = modifier.padding(8.dp).fillMaxWidth()) {
         val (normalPrice, slashPrice, boImage) = createRefs()
         val context = LocalContext.current
-        NestTypography(
-            HtmlLinkHelper(context, priceAdditionalFmt).spannedString?.toAnnotatedString() ?: "",
-            modifier = Modifier.constrainAs(normalPrice) {
-                top.linkTo(parent.top)
-                start.linkTo(parent.start)
-                bottom.linkTo(parent.bottom)
-            },
-            textStyle = NestTheme.typography.small.copy(
-                color = Static_950
+        if (priceAdditionalFmt.isNotEmpty()) {
+            NestTypography(
+                HtmlLinkHelper(context, priceAdditionalFmt).spannedString?.toAnnotatedString()
+                    ?: "",
+                modifier = Modifier.constrainAs(normalPrice) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    bottom.linkTo(parent.bottom)
+                },
+                textStyle = NestTheme.typography.small.copy(
+                    color = Static_950
+                )
             )
-        )
+        }
+
 
         if (boLogo.isNotEmpty()) {
             NestImage(
@@ -194,32 +199,34 @@ fun PromoPriceFooter(
 
                 }),
                 modifier = Modifier.constrainAs(boImage) {
-                    top.linkTo(normalPrice.top)
-                    bottom.linkTo(normalPrice.bottom)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
                     end.linkTo(parent.absoluteRight)
                 }.height(16.dp)
             )
         }
 
-        NestTypography(
-            slashPriceFmt,
-            modifier = Modifier.constrainAs(slashPrice) {
-                linkTo(
-                    start = normalPrice.end,
-                    top = normalPrice.top,
-                    bottom = normalPrice.bottom,
-                    end = boImage.start,
-                    horizontalBias = 0F
-                )
-                width = Dimension.preferredWrapContent
-            }.padding(start = 4.dp, end = 4.dp),
-            textStyle = NestTheme.typography.small.copy(
-                color = NestTheme.colors.NN._400,
-                textDecoration = TextDecoration.LineThrough
-            ),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+        if (slashPriceFmt.isNotEmpty()) {
+            NestTypography(
+                slashPriceFmt,
+                modifier = Modifier.constrainAs(slashPrice) {
+                    linkTo(
+                        start = normalPrice.end,
+                        top = normalPrice.top,
+                        bottom = normalPrice.bottom,
+                        end = boImage.start,
+                        horizontalBias = 0F
+                    )
+                    width = Dimension.preferredWrapContent
+                }.padding(start = 4.dp, end = 4.dp),
+                textStyle = NestTheme.typography.small.copy(
+                    color = NestTheme.colors.NN._400,
+                    textDecoration = TextDecoration.LineThrough
+                ),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
     }
 }
 
@@ -332,10 +339,10 @@ fun PromoPriceCardPreview() {
             Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
                 PromoPriceCard(
                     PromoPriceUiModel(
-                        priceAdditionalFmt = "Tanpa promo: Rp.9.500.000",
+                        priceAdditionalFmt = "",
                         promoPriceFmt = "Rp.9.000.000",
                         promoSubtitle = "Diskon 200rb Cashback 300rb",
-                        slashPriceFmt = "Rp.11.000.000",
+                        slashPriceFmt = "",
                         separatorColor = "#FFDBE2",
                         mainTextColor = "#F94D63",
                         cardBackgroundColor = "#FFF5F6",
