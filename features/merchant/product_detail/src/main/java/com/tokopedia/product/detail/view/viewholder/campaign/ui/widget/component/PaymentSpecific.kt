@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestNN
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -26,6 +27,7 @@ fun PaymentSpecific(description: String, modifier: Modifier = Modifier) {
         textStyle = NestTheme.typography.small.copy(
             color = Color.White
         ),
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
+        maxLines = Int.ONE
     )
 }
