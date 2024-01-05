@@ -15,6 +15,8 @@ import com.tokopedia.feedplus.browse.presentation.model.isLoading
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -36,6 +38,9 @@ internal class CategoryInspirationViewModel @AssistedInject constructor(
     private val _uiState = MutableStateFlow(
         CategoryInspirationUiState.empty(ResultState.Loading)
     )
+
+    private val jobMap = mutableMapOf<String, Job>()
+
     val uiState get() = _uiState.asStateFlow()
 
     fun onAction(action: CategoryInspirationAction) {
@@ -71,15 +76,16 @@ internal class CategoryInspirationViewModel @AssistedInject constructor(
     }
 
     private fun onLoadData(menu: WidgetMenuModel) {
-        viewModelScope.launch {
+        viewModelScope.launchKeep("${LOAD_JOB_ID}_${menu.id}") {
             loadContent(menu)
         }
     }
 
     private fun onLoadMoreData() {
-        viewModelScope.launch {
-            val selectedMenuId = _uiState.value.selectedMenuId
-            val selectedData = _uiState.value.items[selectedMenuId] ?: return@launch
+        val selectedMenuId = _uiState.value.selectedMenuId
+        val selectedData = _uiState.value.items[selectedMenuId] ?: return
+
+        viewModelScope.launchKeep("${LOAD_JOB_ID}_$selectedMenuId") {
             loadContent(selectedData.menu)
         }
     }
@@ -161,11 +167,26 @@ internal class CategoryInspirationViewModel @AssistedInject constructor(
         }
     }
 
+    private fun CoroutineScope.launchKeep(
+        jobId: String,
+        block: suspend CoroutineScope.() -> Unit
+    ) {
+        val existingJob = jobMap[jobId]
+        if (existingJob != null && existingJob.isActive) return
+
+        val newJob = launch(block = block)
+        jobMap[jobId] = newJob
+    }
+
     private fun CategoryInspirationMap.updateById(
         id: String,
         onUpdate: (CategoryInspirationData) -> CategoryInspirationData
     ): CategoryInspirationMap {
         val data = get(id) ?: return this
         return this + (id to onUpdate(data))
+    }
+
+    companion object {
+        private const val LOAD_JOB_ID = "load"
     }
 }
