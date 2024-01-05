@@ -24,8 +24,7 @@ import javax.inject.Inject
  */
 class PlayShortsVideoPreviewFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
-    private val exoPlayer: ExoPlayer,
-    private val mediaSourceFactory: PlayShortsMediaSourceFactory,
+    private val videoWrapper: PlayVideoWrapper,
 ) : PlayShortsBaseFragment() {
 
     private val viewModel by activityViewModels<PlayShortsViewModel> { viewModelFactory }
@@ -47,7 +46,7 @@ class PlayShortsVideoPreviewFragment @Inject constructor(
                     Surface {
                         VideoPreviewLayout(
                             videoUri = viewModel.productVideo.videoUrl,
-                            videoWrapper = PlayVideoWrapper.Builder(requireContext()).build(),
+                            videoWrapper = videoWrapper,
                             onClose = {
                                 activity?.onBackPressed()
                             }
