@@ -181,7 +181,7 @@
         android:layout_marginTop="5dp"
         android:textColor="@color/Unify_GN500"
         app:layout_constraintEnd_toStartOf="@id/spaceEnd"
-        app:layout_constraintTop_toTopOf="@id/amount"
+        app:layout_constraintTop_toBottomOf="@id/amountLabel"
         app:typographyType="paragraph_3"
         app:typographyWeight="bold"
         android:text="@string/thank_see_detail"/>

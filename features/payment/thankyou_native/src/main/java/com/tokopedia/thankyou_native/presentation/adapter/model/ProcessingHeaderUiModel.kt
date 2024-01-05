@@ -37,16 +37,16 @@ data class ProcessingHeaderUiModel(
                 context?.getString(R.string.thank_payment_in_progress_v2)
             else thanksPageData.customDataMessage?.title
 
-            val description = if (thanksPageData.customDataMessage?.subtitle.isNullOrEmpty())
+            val description = if (thanksPageData.customDataMessage?.customSubtitleV2.isNullOrEmpty())
                 format(context?.getString(R.string.thank_payment_in_progress_time).orEmpty(), thanksPageData.gatewayName)
-            else thanksPageData.customDataMessage?.subtitle
+            else thanksPageData.customDataMessage?.customSubtitleV2
 
             val primaryButtonText = if (thanksPageData.customDataMessage?.titleHomeButton.isNullOrEmpty()) context?.getString(R.string.thank_shop_again) else thanksPageData.customDataMessage?.titleHomeButton
             val secondaryButtonText = if (thanksPageData.customDataMessage?.titleOrderButton.isNullOrEmpty()) context?.getString(R.string.thank_see_transaction_list) else thanksPageData.customDataMessage?.titleOrderButton
 
             val note = Gson().fromJson(thanksPageData.customDataMessage?.customNotes, Array<String>::class.java)
 
-            val installment = thanksPageData.gatewayAdditionalDataList?.first {
+            val installment = thanksPageData.gatewayAdditionalDataList?.firstOrNull {
                 thanksPageData.gatewayName == it.key
             }?.value
 

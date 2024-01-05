@@ -16,7 +16,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:card_type="border"/>
+        app:card_type="border">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Unify_Background"/>
+    </com.tokopedia.unifycomponents.CardUnify2>
 
     <Space
         android:id="@+id/spaceTop"
@@ -158,7 +163,7 @@
         android:layout_marginTop="5dp"
         android:textColor="@color/Unify_GN500"
         app:layout_constraintEnd_toStartOf="@id/spaceEnd"
-        app:layout_constraintTop_toTopOf="@id/amount"
+        app:layout_constraintTop_toBottomOf="@id/amountLabel"
         app:typographyType="paragraph_3"
         app:typographyWeight="bold"
         android:text="@string/thank_see_detail"/>

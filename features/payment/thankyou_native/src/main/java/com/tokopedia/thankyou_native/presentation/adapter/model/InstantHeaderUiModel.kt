@@ -34,9 +34,9 @@ data class InstantHeaderUiModel(
                     context?.getString(R.string.thank_instant_payment_successful_v2)
                 else thanksPageData.customDataMessage?.title
 
-            val description = if (thanksPageData.customDataMessage?.subtitle.isNullOrEmpty())
+            val description = if (thanksPageData.customDataMessage?.customSubtitleV2.isNullOrEmpty())
                 format(context?.getString(R.string.thank_total_pay_rp).orEmpty(), CurrencyFormatUtil.convertPriceValueToIdrFormat(thanksPageData.amount, false))
-            else thanksPageData.customDataMessage?.subtitle
+            else thanksPageData.customDataMessage?.customSubtitleV2
 
             val primaryButtonText = if (thanksPageData.customDataMessage?.titleHomeButton.isNullOrEmpty()) context?.getString(R.string.thank_shop_again) else thanksPageData.customDataMessage?.titleHomeButton
             val secondaryButtonText = if (thanksPageData.customDataMessage?.titleOrderButton.isNullOrEmpty()) context?.getString(R.string.thank_see_transaction_list) else thanksPageData.customDataMessage?.titleOrderButton

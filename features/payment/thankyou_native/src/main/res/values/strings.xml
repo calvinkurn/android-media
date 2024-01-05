@@ -28,7 +28,7 @@
     <string name="thank_order_will_be_deliver_after_payment">Pesananmu baru diteruskan ke penjual setelah pembayaran terverifikasi.</string>
     <string name="thank_check_payment_status">Cek Status Bayar</string>
     <string name="thank_shop_again">Belanja Lagi</string>
-    <string name="thank_dan_lainnya">dan Lainnya.</string>
+    <string name="thank_dan_lainnya">&amp; Lainnya!</string>
     <string name="thank_benefit_with_plus"><![CDATA[🎉 Asyik, kamu <b><span style="color:#04837E">Hemat %s</span></b> dari]]></string>
     <string name="thank_benefit_without_plus"><![CDATA[🎉 Asyik, kamu <b><span style="color:#04837E">Hemat %s</span></b> di transaksi ini]]></string>
 
@@ -56,7 +56,7 @@
     <string name="thank_total_pay_rp">Total Bayar %s</string>
     <string name="thank_type_of_payment">Jenis Pembayaran</string>
     <string name="thank_payment_in_progress">Pembayaran sedang diproses</string>
-    <string name="thank_payment_in_progress_v2">Pembayaran diproses dulu, yas</string>
+    <string name="thank_payment_in_progress_v2">Pembayaran diproses dulu, ya</string>
     <string name="thank_payment_in_progress_time">Pembayaranmu sedang diverifikasi oleh pihak %s, harap tunggu maks. 2 x 24 jam.</string>
 
 
