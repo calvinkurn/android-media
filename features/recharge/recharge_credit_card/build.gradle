@@ -102,8 +102,7 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
 
-//    implementation 'com.tokopedia.recharge_credit_card.widget:recharge-pcidss:1.0.0'
-    implementation files('libs/rechargepcidss.aar')
+    implementation 'com.tokopedia.recharge_credit_card.widget:recharge-pcidss:1.0.0'
 }
 
 project.ext {
