@@ -154,6 +154,50 @@ class CatalogSwitchViewModelTest {
     }
 
     @Test
+    fun `When getInitComparisonSwitch is Success, Then should invoke data null catalog item selection and catalog listing`() {
+        val mockResponseCatalogListing = CatalogComparisonProductsResponse(
+            CatalogComparisonProductsResponse.CatalogComparisonList(
+                header = CatalogComparisonProductsResponse.CatalogComparisonList.Header(
+                    0,
+                    ""
+                )
+            )
+        )
+        coEvery {
+            catalogComparisonProductUseCase.getCatalogComparisonProducts(
+                "",
+                "",
+                "",
+                "",
+                "",
+                ""
+            )
+        } returns mockResponseCatalogListing
+
+//        val mockResponseCatalogDetail = ComparisonUiModel()
+
+        coEvery {
+            catalogDetailUseCase.getCatalogDetailV4Comparison(
+                any(),
+                any()
+            )
+        } returns null
+
+        viewModel.loadAllDataInOnePage(
+            "",
+            "",
+            "",
+            10,
+            listOf(),
+            ""
+        )
+        val resultCatalogListing = viewModel.catalogListingUiModel.getOrAwaitValue()
+        val resultCatalogSelection = viewModel.comparisonUiModel.getOrAwaitValue()
+        assert(resultCatalogListing is CatalogComparisonProductsUiModel)
+        assert(resultCatalogSelection == null)
+    }
+
+    @Test
     fun `When getInitComparisonSwitch is Two usecase Error, Then should invoke Throwable`() {
         coEvery {
             catalogComparisonProductUseCase.getCatalogComparisonProducts(
