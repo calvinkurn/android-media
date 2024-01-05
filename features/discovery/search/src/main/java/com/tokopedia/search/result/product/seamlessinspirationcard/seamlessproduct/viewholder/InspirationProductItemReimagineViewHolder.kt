@@ -65,6 +65,9 @@ class InspirationProductItemReimagineViewHolder(
             title = labelGroupDataView.title,
             type = labelGroupDataView.type,
             imageUrl = labelGroupDataView.imageUrl,
+            styles = labelGroupDataView.style.map { item ->
+                ProductCardModel.LabelGroup.Style(item.key, item.value)
+            }
         )
 
     private fun shopBadge(element: InspirationProductItemDataView): ProductCardModel.ShopBadge {

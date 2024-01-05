@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup.*
 import com.tokopedia.productcard.reimagine.ProductCardModel.StockInfo
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductBroadMatchLayoutBinding
@@ -134,6 +135,9 @@ class BroadMatchViewHolder(
                             position = labelGroup.position,
                             type = labelGroup.type,
                             imageUrl = labelGroup.imageUrl,
+                            styles = labelGroup.style.map { item ->
+                                Style(item.key, item.value)
+                            }
                         )
                     },
                     shopBadge = ShopBadgeReimagine(

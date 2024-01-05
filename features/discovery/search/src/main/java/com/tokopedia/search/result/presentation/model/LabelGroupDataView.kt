@@ -9,12 +9,15 @@ data class LabelGroupDataView(
     val position: String,
     val type: String,
     val title: String,
-    val imageUrl: String = ""
+    val imageUrl: String = "",
+    val style: List<StyleDataView> = emptyList(),
 ) {
 
     fun isLabelIntegrity() = position == LABEL_INTEGRITY
 
     fun isLabelFulfillment() = position == LABEL_FULFILLMENT
+
+    fun hasStyle() = style.isNotEmpty()
 
     fun getPositionTitle(): String = "$position.$title"
 
@@ -35,6 +38,7 @@ data class LabelGroupDataView(
                 labelGroup.type,
                 labelGroup.title,
                 labelGroup.url,
+                StyleDataView.create(labelGroup.style)
             )
     }
 }
