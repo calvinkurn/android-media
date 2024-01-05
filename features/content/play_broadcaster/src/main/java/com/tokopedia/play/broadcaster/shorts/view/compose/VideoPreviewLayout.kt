@@ -39,12 +39,10 @@ import com.tokopedia.play_common.state.PlayVideoState
 @Composable
 fun VideoPreviewLayout(
     videoUri: String,
+    videoState: VideoState,
     videoWrapper: PlayVideoWrapper,
-    onClose: () -> Unit,
+    listener: VideoPreviewLayoutListener,
 ) {
-    var videoState: VideoState by remember {
-        mutableStateOf(VideoState.Unknown)
-    }
 
     ConstraintLayout {
         val (
@@ -52,25 +50,6 @@ fun VideoPreviewLayout(
             videoPreview,
             icPlay
         ) = createRefs()
-
-        LaunchedEffect(Unit) {
-            videoWrapper.addListener(object : PlayVideoWrapper.Listener {
-                override fun onPlayerStateChanged(state: PlayVideoState) {
-                    super.onPlayerStateChanged(state)
-                    when (state) {
-                        is PlayVideoState.Ended -> {
-                            videoWrapper.videoPlayer.seekTo(1)
-                            videoWrapper.pause(true)
-                            videoState = VideoState.Pause
-                        }
-                        is PlayVideoState.Pause -> {
-                            videoState = VideoState.Pause
-                        }
-                        else -> {}
-                    }
-                }
-            })
-        }
 
         DisposableEffect(
             AndroidView(
@@ -86,10 +65,7 @@ fun VideoPreviewLayout(
                         useController = false
 
                         videoSurfaceView?.setOnClickListener {
-                            if (videoState == VideoState.Play) {
-                                videoState = VideoState.Pause
-                                videoWrapper.pause(false)
-                            }
+                            listener.onVideoClicked()
                         }
                     }
                 },
@@ -100,8 +76,7 @@ fun VideoPreviewLayout(
             )
         ) {
             onDispose {
-                videoWrapper.stop()
-                videoWrapper.release()
+                listener.onDispose()
             }
         }
 
@@ -122,8 +97,7 @@ fun VideoPreviewLayout(
                     .clip(CircleShape)
                     .background(Color(0f, 0f, 0f, 0.4f))
                     .noRippleClickable {
-                        videoWrapper.resume()
-                        videoState = VideoState.Play
+                        listener.onPlayIconClicked()
                     }
                     .padding(16.dp)
             )
@@ -141,11 +115,24 @@ fun VideoPreviewLayout(
                     top.linkTo(parent.top, 16.dp)
                     start.linkTo(parent.start, 16.dp)
                 }
-                .noRippleClickable { onClose() }
+                .noRippleClickable {
+                    listener.onClose()
+                }
         )
     }
 }
 
-private enum class VideoState {
+interface VideoPreviewLayoutListener {
+
+    fun onPlayIconClicked()
+
+    fun onVideoClicked()
+
+    fun onClose()
+
+    fun onDispose()
+}
+
+enum class VideoState {
     Unknown, Pause, Play
 }

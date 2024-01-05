@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.material.Surface
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
@@ -14,9 +15,13 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 import com.tokopedia.play.broadcaster.shorts.view.compose.VideoPreviewLayout
+import com.tokopedia.play.broadcaster.shorts.view.compose.VideoPreviewLayoutListener
+import com.tokopedia.play.broadcaster.shorts.view.compose.VideoState
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
+import com.tokopedia.play.broadcaster.shorts.view.manager.videoPreview.VideoPreviewManager
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
+import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import javax.inject.Inject
 
 /**
@@ -24,7 +29,7 @@ import javax.inject.Inject
  */
 class PlayShortsVideoPreviewFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
-    private val videoWrapper: PlayVideoWrapper,
+    private val videoPreviewManager: VideoPreviewManager,
 ) : PlayShortsBaseFragment() {
 
     private val viewModel by activityViewModels<PlayShortsViewModel> { viewModelFactory }
@@ -44,11 +49,31 @@ class PlayShortsVideoPreviewFragment @Inject constructor(
                     darkTheme = true
                 ) {
                     Surface {
+
+                        val videoState by videoPreviewManager.videoState.collectAsStateWithLifecycle()
+
                         VideoPreviewLayout(
                             videoUri = viewModel.productVideo.videoUrl,
-                            videoWrapper = videoWrapper,
-                            onClose = {
-                                activity?.onBackPressed()
+                            videoState = videoState,
+                            videoWrapper = videoPreviewManager.videoWrapper,
+                            listener = object : VideoPreviewLayoutListener {
+                                override fun onPlayIconClicked() {
+                                    videoPreviewManager.play()
+                                }
+
+                                override fun onVideoClicked() {
+                                    if (videoState == VideoState.Play) {
+                                        videoPreviewManager.pause()
+                                    }
+                                }
+
+                                override fun onClose() {
+                                    activity?.onBackPressed()
+                                }
+
+                                override fun onDispose() {
+                                    videoPreviewManager.dispose()
+                                }
                             }
                         )
                     }
