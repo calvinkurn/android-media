@@ -73,6 +73,7 @@ import com.tokopedia.cartrevamp.view.adapter.cart.CartAdapter
 import com.tokopedia.cartrevamp.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cartrevamp.view.bottomsheet.CartBundlingBottomSheet
 import com.tokopedia.cartrevamp.view.bottomsheet.CartBundlingBottomSheetListener
+import com.tokopedia.cartrevamp.view.bottomsheet.CartMultipleBOOnboardingBottomSheet
 import com.tokopedia.cartrevamp.view.bottomsheet.CartNoteBottomSheet
 import com.tokopedia.cartrevamp.view.bottomsheet.showGlobalErrorBottomsheet
 import com.tokopedia.cartrevamp.view.compoundview.CartToolbarListener
@@ -4165,7 +4166,12 @@ class CartRevampFragment :
             return
         }
 
-        setMainFlowCoachMark(cartData)
+        if (cartData.onboardingBottomSheet.isMultipleBOBottomSheet()) {
+            showOnboardingBottomSheet(cartData)
+        }
+        else {
+            setMainFlowCoachMark(cartData)
+        }
 
         sendAnalyticsScreenNameCartPage()
         updateStateAfterFinishGetCartList()
@@ -4865,6 +4871,14 @@ class CartRevampFragment :
         } else {
             binding?.rlTopLayout?.invisible()
         }
+    }
+
+    private fun showOnboardingBottomSheet(cartData: CartData) {
+        val bottomSheet = CartMultipleBOOnboardingBottomSheet.newInstance(cartData.onboardingBottomSheet.getMultipleBoOnboardingBottomSheetData())
+        bottomSheet.setDismissListener {
+            setMainFlowCoachMark(cartData)
+        }
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun setMainFlowCoachMark(cartData: CartData) {
