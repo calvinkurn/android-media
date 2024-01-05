@@ -9,9 +9,9 @@ import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.domain.DealsSearchUseCase
 import com.tokopedia.deals.location_picker.model.response.Location
-import com.tokopedia.deals.search.domain.DealsSearchGqlQueries
-import com.tokopedia.deals.search.domain.viewmodel.DealsSearchViewModel
 import com.tokopedia.deals.ui.brand.mapper.DealsBrandMapper.mapBrandToBaseItemViewModel
+import com.tokopedia.deals.ui.search.domain.DealsSearchGqlQueries
+import com.tokopedia.deals.ui.search.domain.viewmodel.DealsSearchViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

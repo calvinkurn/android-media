@@ -62,9 +62,9 @@ import com.tokopedia.deals.home.ui.dataview.BannersDataView
 import com.tokopedia.deals.home.ui.dataview.CuratedCategoryDataView
 import com.tokopedia.deals.home.ui.dataview.VoucherPlaceCardDataView
 import com.tokopedia.deals.home.ui.dataview.VoucherPlacePopularDataView
-import com.tokopedia.deals.search.model.visitor.VoucherModel
 import com.tokopedia.deals.ui.brand_detail.data.Category
 import com.tokopedia.deals.ui.brand_detail.data.Product
+import com.tokopedia.deals.ui.search.model.visitor.VoucherModel
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO

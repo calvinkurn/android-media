@@ -1,9 +1,9 @@
 package com.tokopedia.deals.home.domain
 
 import com.tokopedia.deals.common.data.DealsNearestLocationParam
-import com.tokopedia.deals.home.data.DealsGetHomeLayoutParam
-import com.tokopedia.deals.search.domain.DealsSearchGqlQueries
 import com.tokopedia.deals.common.model.response.SearchData
+import com.tokopedia.deals.home.data.DealsGetHomeLayoutParam
+import com.tokopedia.deals.ui.search.domain.DealsSearchGqlQueries
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -23,7 +23,8 @@ class GetEventHomeBrandPopularUseCase @Inject constructor(
     var params: Map<String, Any> = mapOf()
 
     override suspend fun executeOnBackground(): SearchData {
-        val gqlRequest = GraphqlRequest(DealsSearchGqlQueries.getEventSearchQuery(),
+        val gqlRequest = GraphqlRequest(
+            DealsSearchGqlQueries.getEventSearchQuery(),
                 SearchData::class.java, params)
         val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())

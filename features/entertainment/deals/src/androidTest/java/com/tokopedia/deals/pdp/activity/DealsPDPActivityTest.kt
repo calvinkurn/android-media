@@ -23,11 +23,11 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
-import com.tokopedia.deals.pdp.common.DealsPDPIdlingResource
 import com.tokopedia.deals.pdp.mock.DealsPDPGQLMockResponse
 import com.tokopedia.deals.pdp.rule.DealsIdlingResourceTestRule
 import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity
 import com.tokopedia.deals.test.R
+import com.tokopedia.deals.ui.pdp.ui.activity.DealsPDPActivity
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -61,7 +61,7 @@ class DealsPDPActivityTest {
         Intents.init()
         graphqlCacheManager.deleteAll()
         setupGraphqlMockResponse(DealsPDPGQLMockResponse())
-        idlingResource = DealsPDPIdlingResource.getIdlingResource()
+        idlingResource = com.tokopedia.deals.ui.pdp.common.DealsPDPIdlingResource.getIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
 
         val intent = Intent(context, DealsPDPActivity::class.java).apply {

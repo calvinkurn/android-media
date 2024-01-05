@@ -27,7 +27,6 @@ import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsBrandBinding
 import com.tokopedia.deals.di.DealsComponent
 import com.tokopedia.deals.location_picker.model.response.Location
-import com.tokopedia.deals.search.DealsSearchConstants
 import com.tokopedia.deals.ui.brand.adapter.DealsBrandAdapter
 import com.tokopedia.deals.ui.brand.listener.DealsBrandSearchTabListener
 import com.tokopedia.deals.ui.brand.mapper.DealsBrandMapper.mapBrandListToBaseItemView
@@ -227,7 +226,7 @@ class DealsBrandFragment :
         if (isAnalyticsInitialized) {
             analytics.eventClickSearchResultBrandBrandPage(brand, tabName)
         }
-        val brandApplink = DealsSearchConstants.PREFIX_DEALS_APPPLINK + DealsSearchConstants.PREFIX_APPLINK_BRAND + brand.brandUrl
+        val brandApplink = com.tokopedia.deals.ui.search.DealsSearchConstants.PREFIX_DEALS_APPPLINK + com.tokopedia.deals.ui.search.DealsSearchConstants.PREFIX_APPLINK_BRAND + brand.brandUrl
         RouteManager.route(context, brandApplink)
     }
 

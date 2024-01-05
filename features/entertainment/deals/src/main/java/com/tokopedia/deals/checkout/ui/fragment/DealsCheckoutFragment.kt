@@ -34,7 +34,6 @@ import com.tokopedia.deals.checkout.ui.viewmodel.DealsCheckoutViewModel
 import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.FragmentDealsCheckoutBinding
-import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
@@ -73,7 +72,8 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
     private var binding by autoClearedNullable<FragmentDealsCheckoutBinding>()
     private val viewModel by viewModels<DealsCheckoutViewModel> { viewModelFactory }
     private var dealsCheckoutCallbacks: DealsCheckoutCallbacks? = null
-    private var dealsDetail: ProductDetailData = ProductDetailData()
+    private var dealsDetail: com.tokopedia.deals.ui.pdp.data.ProductDetailData =
+        com.tokopedia.deals.ui.pdp.data.ProductDetailData()
     private var dealsVerify: EventVerifyResponse = EventVerifyResponse()
     private var dealsItemMap: ItemMapResponse = ItemMapResponse()
     private var promoCode = ""
@@ -111,7 +111,7 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            dealsDetail = it.getParcelable(EXTRA_DEAL_DETAIL) ?: ProductDetailData()
+            dealsDetail = it.getParcelable(EXTRA_DEAL_DETAIL) ?: com.tokopedia.deals.ui.pdp.data.ProductDetailData()
             dealsVerify = it.getParcelable(EXTRA_DEAL_VERIFY) ?: EventVerifyResponse()
             dealsItemMap = dealsVerify.metadata.itemMap.firstOrNull() ?: ItemMapResponse()
         }
@@ -561,7 +561,7 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
         private const val ZERO_LONG = 0L
 
         fun createInstance(
-            productDetailData: ProductDetailData?,
+            productDetailData: com.tokopedia.deals.ui.pdp.data.ProductDetailData?,
             verifyData: EventVerifyResponse?
         ): DealsCheckoutFragment {
             val fragment = DealsCheckoutFragment()

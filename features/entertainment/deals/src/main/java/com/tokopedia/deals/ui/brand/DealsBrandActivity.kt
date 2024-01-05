@@ -16,7 +16,6 @@ import com.tokopedia.deals.common.ui.activity.DealsBaseBrandCategoryActivity
 import com.tokopedia.deals.di.DaggerDealsComponent
 import com.tokopedia.deals.di.DealsComponent
 import com.tokopedia.deals.di.DealsModule
-import com.tokopedia.deals.search.DealsSearchConstants
 import com.tokopedia.deals.ui.brand.listener.DealsBrandSearchTabListener
 import com.tokopedia.deals.ui.category.ui.activity.DealsCategoryActivity
 import kotlinx.coroutines.CoroutineScope
@@ -66,7 +65,7 @@ class DealsBrandActivity :
     }
 
     private fun setKeywordFromPreviousPage() {
-        val keyword = intent.getStringExtra(DealsSearchConstants.KEYWORD_EXTRA)
+        val keyword = intent.getStringExtra(com.tokopedia.deals.ui.search.DealsSearchConstants.KEYWORD_EXTRA)
         binding.contentBaseDealsSearchBar.searchBarDealsBaseSearch.searchBarTextField.setText(
             keyword
         )
@@ -179,7 +178,7 @@ class DealsBrandActivity :
         ): Intent {
             val intent = Intent(context, DealsBrandActivity::class.java)
             if (keyword != null) {
-                intent.putExtra(DealsSearchConstants.KEYWORD_EXTRA, keyword)
+                intent.putExtra(com.tokopedia.deals.ui.search.DealsSearchConstants.KEYWORD_EXTRA, keyword)
             }
             intent.putExtra(DealsCategoryActivity.EXTRA_CATEGORY_ID, categoryId)
             return intent

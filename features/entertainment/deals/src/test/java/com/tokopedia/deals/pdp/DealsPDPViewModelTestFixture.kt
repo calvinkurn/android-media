@@ -3,11 +3,6 @@ package com.tokopedia.deals.pdp
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.deals.common.model.response.SearchData
-import com.tokopedia.deals.pdp.data.DealsProductDetail
-import com.tokopedia.deals.pdp.data.DealsProductEventContent
-import com.tokopedia.deals.pdp.data.DealsRatingResponse
-import com.tokopedia.deals.pdp.data.DealsRatingUpdateResponse
-import com.tokopedia.deals.pdp.data.DealsTrackingResponse
 import com.tokopedia.deals.pdp.domain.DealsPDPDetailUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPEventContentUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPGetRatingUseCase
@@ -15,14 +10,14 @@ import com.tokopedia.deals.pdp.domain.DealsPDPRecentSearchTrackingUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPRecommendTrackingUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPRecommendationUseCase
 import com.tokopedia.deals.pdp.domain.DealsPDPUpdateRatingUseCase
-import com.tokopedia.deals.pdp.ui.viewmodel.DealsPDPViewModel
+import com.tokopedia.deals.ui.pdp.ui.viewmodel.DealsPDPViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
-import java.lang.reflect.Type
 import org.junit.Before
 import org.junit.Rule
+import java.lang.reflect.Type
 
 open class DealsPDPViewModelTestFixture {
 
@@ -62,7 +57,7 @@ open class DealsPDPViewModelTestFixture {
         )
     }
 
-    protected fun onGetPDPDetail_thenReturn(dealsPDPData : DealsProductDetail) {
+    protected fun onGetPDPDetail_thenReturn(dealsPDPData : com.tokopedia.deals.ui.pdp.data.DealsProductDetail) {
         coEvery {
             dealsPDPDetailUseCase.execute(any())
         } returns dealsPDPData
@@ -74,7 +69,7 @@ open class DealsPDPViewModelTestFixture {
         } throws errorThrowable
     }
 
-    protected fun onGetContentById_thenReturn(dealsContentById : DealsProductEventContent) {
+    protected fun onGetContentById_thenReturn(dealsContentById : com.tokopedia.deals.ui.pdp.data.DealsProductEventContent) {
         coEvery {
             dealsPDPEventContentUseCase.execute("4", "12344")
         } returns dealsContentById
@@ -98,10 +93,10 @@ open class DealsPDPViewModelTestFixture {
         } throws errorThrowable
     }
 
-    protected fun onGetRating_thenReturn(rating : DealsRatingResponse) {
+    protected fun onGetRating_thenReturn(rating : com.tokopedia.deals.ui.pdp.data.DealsRatingResponse) {
         val restResponse = RestResponse(rating, 200, false)
         val dataRatingMap = mapOf<Type, RestResponse>(
-            DealsRatingResponse::class.java to restResponse
+            com.tokopedia.deals.ui.pdp.data.DealsRatingResponse::class.java to restResponse
         )
         coEvery {
             dealsPDPGetRatingUseCase.executeOnBackground()
@@ -110,7 +105,7 @@ open class DealsPDPViewModelTestFixture {
 
     protected fun onGetRating_thenReturn() {
         val dataRatingMap = mapOf<Type, RestResponse?>(
-            DealsRatingResponse::class.java to null
+            com.tokopedia.deals.ui.pdp.data.DealsRatingResponse::class.java to null
         )
         coEvery {
             dealsPDPGetRatingUseCase.executeOnBackground()
@@ -123,10 +118,10 @@ open class DealsPDPViewModelTestFixture {
         } throws errorThrowable
     }
 
-    protected fun onGetRatingUpdate_thenReturn(rating : DealsRatingUpdateResponse) {
+    protected fun onGetRatingUpdate_thenReturn(rating : com.tokopedia.deals.ui.pdp.data.DealsRatingUpdateResponse) {
         val restResponse = RestResponse(rating, 200, false)
         val dataRatingMap = mapOf<Type, RestResponse>(
-            DealsRatingUpdateResponse::class.java to restResponse
+            com.tokopedia.deals.ui.pdp.data.DealsRatingUpdateResponse::class.java to restResponse
         )
         coEvery {
             dealsPDPUpdateRatingUseCase.executeOnBackground()
@@ -135,7 +130,7 @@ open class DealsPDPViewModelTestFixture {
 
     protected fun onGetRatingUpdate_thenReturn() {
         val dataRatingMap = mapOf<Type, RestResponse?>(
-            DealsRatingUpdateResponse::class.java to null
+            com.tokopedia.deals.ui.pdp.data.DealsRatingUpdateResponse::class.java to null
         )
         coEvery {
             dealsPDPUpdateRatingUseCase.executeOnBackground()
@@ -148,10 +143,10 @@ open class DealsPDPViewModelTestFixture {
         } throws errorThrowable
     }
 
-    protected fun onGetTrackingRecommendation_thenReturn(tracking : DealsTrackingResponse) {
+    protected fun onGetTrackingRecommendation_thenReturn(tracking : com.tokopedia.deals.ui.pdp.data.DealsTrackingResponse) {
         val restResponse = RestResponse(tracking, 200, false)
         val dataTrackingMap = mapOf<Type, RestResponse>(
-            DealsTrackingResponse::class.java to restResponse
+            com.tokopedia.deals.ui.pdp.data.DealsTrackingResponse::class.java to restResponse
         )
         coEvery {
             dealsPDPRecommendTrackingUseCase.executeOnBackground()
@@ -160,7 +155,7 @@ open class DealsPDPViewModelTestFixture {
 
     protected fun onGetTrackingRecommendation_thenReturn() {
         val dataTrackingMap = mapOf<Type, RestResponse?>(
-            DealsTrackingResponse::class.java to null
+            com.tokopedia.deals.ui.pdp.data.DealsTrackingResponse::class.java to null
         )
         coEvery {
             dealsPDPRecommendTrackingUseCase.executeOnBackground()
@@ -173,10 +168,10 @@ open class DealsPDPViewModelTestFixture {
         } throws errorThrowable
     }
 
-    protected fun onGetTrackingRecentSearch_thenReturn(tracking : DealsTrackingResponse) {
+    protected fun onGetTrackingRecentSearch_thenReturn(tracking : com.tokopedia.deals.ui.pdp.data.DealsTrackingResponse) {
         val restResponse = RestResponse(tracking, 200, false)
         val dataTrackingMap = mapOf<Type, RestResponse>(
-            DealsTrackingResponse::class.java to restResponse
+            com.tokopedia.deals.ui.pdp.data.DealsTrackingResponse::class.java to restResponse
         )
         coEvery {
             dealsPDPRecentSearchTrackingUseCase.executeOnBackground()
@@ -185,7 +180,7 @@ open class DealsPDPViewModelTestFixture {
 
     protected fun onGetTrackingRecentSearch_thenReturn() {
         val dataTrackingMap = mapOf<Type, RestResponse?>(
-            DealsTrackingResponse::class.java to null
+            com.tokopedia.deals.ui.pdp.data.DealsTrackingResponse::class.java to null
         )
         coEvery {
             dealsPDPRecentSearchTrackingUseCase.executeOnBackground()

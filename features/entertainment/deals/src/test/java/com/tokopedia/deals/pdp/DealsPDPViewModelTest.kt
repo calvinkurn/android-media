@@ -22,7 +22,7 @@ class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
     fun `when getting deals pdp data should run and give the success result`() {
         onGetPDPDetail_thenReturn(createPDPData())
         val expectedResponse = createPDPData()
-        var actualResponse: Result<DealsProductDetail>? = null
+        var actualResponse: Result<com.tokopedia.deals.ui.pdp.data.DealsProductDetail>? = null
 
         runBlockingTest {
             val collectorJob = launch {
@@ -41,7 +41,7 @@ class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
     fun `when getting deals pdp data should run and give the error result`() {
         onGetPDPDetail_thenReturn(Throwable(errorMessageGeneral))
 
-        var actualResponse: Result<DealsProductDetail>? = null
+        var actualResponse: Result<com.tokopedia.deals.ui.pdp.data.DealsProductDetail>? = null
 
         runBlockingTest {
             val collectorJob = launch {
@@ -61,7 +61,7 @@ class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
     fun `when getting deals event content by id data should run and give the success result`() {
         onGetContentById_thenReturn(createContentById())
         val expectedResponse = createContentById()
-        var actualResponse: Result<DealsProductEventContent>? = null
+        var actualResponse: Result<com.tokopedia.deals.ui.pdp.data.DealsProductEventContent>? = null
 
         runBlockingTest {
             val collectorJob = launch {
@@ -80,7 +80,7 @@ class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
     fun `when getting deals event content by id data should run and give the empty result`() {
         onGetContentById_thenReturn(createContentByIdEmpty())
         val expectedResponse = createContentByIdEmpty()
-        var actualResponse: Result<DealsProductEventContent>? = null
+        var actualResponse: Result<com.tokopedia.deals.ui.pdp.data.DealsProductEventContent>? = null
 
         runBlockingTest {
             val collectorJob = launch {
@@ -100,7 +100,7 @@ class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
     fun `when getting deals event content by id pdp data should run and give the error result`() {
         onGetContentById_thenReturn(Throwable(errorMessageGeneral))
 
-        var actualResponse: Result<DealsProductEventContent>? = null
+        var actualResponse: Result<com.tokopedia.deals.ui.pdp.data.DealsProductEventContent>? = null
 
         runBlockingTest {
             val collectorJob = launch {
@@ -159,7 +159,7 @@ class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
     fun `when getting rating data should run and give the success result`() {
         onGetRating_thenReturn(createRating())
         val expectedResponse = createRating()
-        var actualResponse: Result<DealsRatingResponse>? = null
+        var actualResponse: Result<com.tokopedia.deals.ui.pdp.data.DealsRatingResponse>? = null
 
         runBlockingTest {
             val collectorJob = launch {
@@ -177,7 +177,7 @@ class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
     @Test
     fun `when getting rating data should run and give the null result`() {
         onGetRating_thenReturn()
-        var actualResponse: Result<DealsRatingResponse>? = null
+        var actualResponse: Result<com.tokopedia.deals.ui.pdp.data.DealsRatingResponse>? = null
 
         runBlockingTest {
             val collectorJob = launch {
@@ -196,7 +196,7 @@ class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
     fun `when getting rating data should run and give the error result`() {
         onGetRating_thenReturn(Throwable(errorMessageGeneral))
 
-        var actualResponse: Result<DealsRatingResponse>? = null
+        var actualResponse: Result<com.tokopedia.deals.ui.pdp.data.DealsRatingResponse>? = null
 
         runBlockingTest {
             val collectorJob = launch {
@@ -216,7 +216,7 @@ class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
     fun `when getting rating update data should run and give the success result`() {
         onGetRatingUpdate_thenReturn(createRatingUpdate())
         val expectedResponse = createRatingUpdate()
-        var actualResponse: Result<DealsRatingUpdateResponse>? = null
+        var actualResponse: Result<com.tokopedia.deals.ui.pdp.data.DealsRatingUpdateResponse>? = null
 
         runBlockingTest {
             val collectorJob = launch {
@@ -234,7 +234,7 @@ class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
     @Test
     fun `when getting rating update data should run and give the null result`() {
         onGetRatingUpdate_thenReturn()
-        var actualResponse: Result<DealsRatingUpdateResponse>? = null
+        var actualResponse: Result<com.tokopedia.deals.ui.pdp.data.DealsRatingUpdateResponse>? = null
 
         runBlockingTest {
             val collectorJob = launch {
@@ -253,7 +253,7 @@ class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
     fun `when getting rating update data should run and give the error result`() {
         onGetRatingUpdate_thenReturn(Throwable(errorMessageGeneral))
 
-        var actualResponse: Result<DealsRatingUpdateResponse>? = null
+        var actualResponse: Result<com.tokopedia.deals.ui.pdp.data.DealsRatingUpdateResponse>? = null
 
         runBlockingTest {
             val collectorJob = launch {
@@ -273,7 +273,7 @@ class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
     fun `when getting tracking recommendation data should run and give the success result`() {
         onGetTrackingRecommendation_thenReturn(createTracking())
         val expectedResponse = createTracking()
-        var actualResponse: Result<DealsTrackingResponse>? = null
+        var actualResponse: Result<com.tokopedia.deals.ui.pdp.data.DealsTrackingResponse>? = null
 
         runBlockingTest {
             val collectorJob = launch {
@@ -291,7 +291,7 @@ class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
     @Test
     fun `when getting tracking recommendation data should run and give the null result`() {
         onGetTrackingRecommendation_thenReturn()
-        var actualResponse: Result<DealsTrackingResponse>? = null
+        var actualResponse: Result<com.tokopedia.deals.ui.pdp.data.DealsTrackingResponse>? = null
 
         runBlockingTest {
             val collectorJob = launch {
@@ -310,7 +310,7 @@ class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
     fun `when getting tracking recommendation data should run and give the error result`() {
         onGetTrackingRecommendation_thenReturn(Throwable(errorMessageGeneral))
 
-        var actualResponse: Result<DealsTrackingResponse>? = null
+        var actualResponse: Result<com.tokopedia.deals.ui.pdp.data.DealsTrackingResponse>? = null
 
         runBlockingTest {
             val collectorJob = launch {
@@ -330,7 +330,7 @@ class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
     fun `when getting tracking recent search data should run and give the success result`() {
         onGetTrackingRecentSearch_thenReturn(createTracking())
         val expectedResponse = createTracking()
-        var actualResponse: Result<DealsTrackingResponse>? = null
+        var actualResponse: Result<com.tokopedia.deals.ui.pdp.data.DealsTrackingResponse>? = null
 
         runBlockingTest {
             val collectorJob = launch {
@@ -349,7 +349,7 @@ class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
     fun `when getting tracking recent search data but media is empty should run and give the success result`() {
         onGetTrackingRecentSearch_thenReturn(createTracking())
         val expectedResponse = createTracking()
-        var actualResponse: Result<DealsTrackingResponse>? = null
+        var actualResponse: Result<com.tokopedia.deals.ui.pdp.data.DealsTrackingResponse>? = null
 
         runBlockingTest {
             val collectorJob = launch {
@@ -367,7 +367,7 @@ class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
     @Test
     fun `when getting tracking recent search data should run and give the null result`() {
         onGetTrackingRecentSearch_thenReturn()
-        var actualResponse: Result<DealsTrackingResponse>? = null
+        var actualResponse: Result<com.tokopedia.deals.ui.pdp.data.DealsTrackingResponse>? = null
 
         runBlockingTest {
             val collectorJob = launch {
@@ -386,7 +386,7 @@ class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
     fun `when getting tracking recent search data should run and give the error result`() {
         onGetTrackingRecentSearch_thenReturn(Throwable(errorMessageGeneral))
 
-        var actualResponse: Result<DealsTrackingResponse>? = null
+        var actualResponse: Result<com.tokopedia.deals.ui.pdp.data.DealsTrackingResponse>? = null
 
         runBlockingTest {
             val collectorJob = launch {

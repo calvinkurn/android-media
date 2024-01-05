@@ -1,7 +1,7 @@
 package com.tokopedia.deals.ui.category.domain
 
 import com.tokopedia.deals.domain.DealsGqlQueries
-import com.tokopedia.deals.search.model.response.CuratedData
+import com.tokopedia.deals.ui.search.model.response.CuratedData
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -12,8 +12,8 @@ class GetChipsCategoryUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<CuratedData>
 ) {
     fun execute(
-            onSuccess: (CuratedData) -> Unit,
-            onError: (Throwable) -> Unit
+        onSuccess: (CuratedData) -> Unit,
+        onError: (Throwable) -> Unit
     ) {
         gqlUseCase.apply {
             setTypeClass(CuratedData::class.java)

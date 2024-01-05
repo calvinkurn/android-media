@@ -10,13 +10,12 @@ import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.domain.DealsSearchUseCase
 import com.tokopedia.deals.location_picker.model.response.Location
-import com.tokopedia.deals.search.DealsSearchConstants
-import com.tokopedia.deals.search.domain.DealsSearchGqlQueries
-import com.tokopedia.deals.search.model.response.Category
-import com.tokopedia.deals.search.model.response.CuratedData
 import com.tokopedia.deals.ui.category.domain.GetChipsCategoryUseCase
 import com.tokopedia.deals.ui.category.ui.dataview.ProductListDataView
 import com.tokopedia.deals.ui.category.utils.MapperCategoryLayout
+import com.tokopedia.deals.ui.search.domain.DealsSearchGqlQueries
+import com.tokopedia.deals.ui.search.model.response.Category
+import com.tokopedia.deals.ui.search.model.response.CuratedData
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -90,7 +89,7 @@ class DealCategoryViewModel @Inject constructor(
                     category,
                     page.toString(),
                     rawQuery,
-                    DealsSearchConstants.BRAND_PRODUCT_TREE)
+                    com.tokopedia.deals.ui.search.DealsSearchConstants.BRAND_PRODUCT_TREE)
         }
     }
 

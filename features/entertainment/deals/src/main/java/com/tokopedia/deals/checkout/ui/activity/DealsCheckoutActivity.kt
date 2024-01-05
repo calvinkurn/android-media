@@ -11,9 +11,8 @@ import com.tokopedia.deals.checkout.di.DealsCheckoutComponent
 import com.tokopedia.deals.checkout.ui.DealsCheckoutCallbacks
 import com.tokopedia.deals.checkout.ui.fragment.DealsCheckoutFragment
 import com.tokopedia.deals.checkout.ui.fragment.DealsCheckoutLocationsFragment
-import com.tokopedia.deals.pdp.data.Outlet
-import com.tokopedia.deals.R.anim as animDeals
 import com.tokopedia.abstraction.R.id as idAbstraction
+import com.tokopedia.deals.R.anim as animDeals
 
 class DealsCheckoutActivity: BaseSimpleActivity(), HasComponent<DealsCheckoutComponent>, DealsCheckoutCallbacks {
 
@@ -35,7 +34,7 @@ class DealsCheckoutActivity: BaseSimpleActivity(), HasComponent<DealsCheckoutCom
             .build()
     }
 
-    override fun onShowAllLocation(outlets: List<Outlet>) {
+    override fun onShowAllLocation(outlets: List<com.tokopedia.deals.ui.pdp.data.Outlet>) {
         supportFragmentManager.commit {
             setCustomAnimations(
                 animDeals.deals_slide_in_up,

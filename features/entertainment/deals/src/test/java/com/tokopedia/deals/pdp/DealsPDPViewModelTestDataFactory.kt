@@ -4,37 +4,32 @@ import com.google.gson.Gson
 import com.tokopedia.common_entertainment.data.DealsVerifyResponse
 import com.tokopedia.deals.DealsJsonMapper
 import com.tokopedia.deals.common.model.response.SearchData
-import com.tokopedia.deals.pdp.data.DealsProductDetail
-import com.tokopedia.deals.pdp.data.DealsProductEventContent
-import com.tokopedia.deals.pdp.data.DealsRatingResponse
-import com.tokopedia.deals.pdp.data.DealsRatingUpdateResponse
-import com.tokopedia.deals.pdp.data.DealsTrackingResponse
 
-fun createPDPData(): DealsProductDetail {
+fun createPDPData(): com.tokopedia.deals.ui.pdp.data.DealsProductDetail {
     return Gson().fromJson(
         DealsJsonMapper.getJson("pdp.json"),
-        DealsProductDetail::class.java
+        com.tokopedia.deals.ui.pdp.data.DealsProductDetail::class.java
     )
 }
 
-fun createPDPEmptyMediaData(): DealsProductDetail {
+fun createPDPEmptyMediaData(): com.tokopedia.deals.ui.pdp.data.DealsProductDetail {
     return Gson().fromJson(
         DealsJsonMapper.getJson("pdp_media_empty.json"),
-        DealsProductDetail::class.java
+        com.tokopedia.deals.ui.pdp.data.DealsProductDetail::class.java
     )
 }
 
-fun createContentById(): DealsProductEventContent {
+fun createContentById(): com.tokopedia.deals.ui.pdp.data.DealsProductEventContent {
     return Gson().fromJson(
         DealsJsonMapper.getJson("content_by_id.json"),
-        DealsProductEventContent::class.java
+        com.tokopedia.deals.ui.pdp.data.DealsProductEventContent::class.java
     )
 }
 
-fun createContentByIdEmpty(): DealsProductEventContent {
+fun createContentByIdEmpty(): com.tokopedia.deals.ui.pdp.data.DealsProductEventContent {
     return Gson().fromJson(
         DealsJsonMapper.getJson("content_by_id_empty.json"),
-        DealsProductEventContent::class.java
+        com.tokopedia.deals.ui.pdp.data.DealsProductEventContent::class.java
     )
 }
 
@@ -45,24 +40,24 @@ fun createRecommendation(): SearchData {
     )
 }
 
-fun createRating(): DealsRatingResponse {
+fun createRating(): com.tokopedia.deals.ui.pdp.data.DealsRatingResponse {
     return Gson().fromJson(
         DealsJsonMapper.getJson("rating.json"),
-        DealsRatingResponse::class.java
+        com.tokopedia.deals.ui.pdp.data.DealsRatingResponse::class.java
     )
 }
 
-fun createRatingUpdate(): DealsRatingUpdateResponse {
+fun createRatingUpdate(): com.tokopedia.deals.ui.pdp.data.DealsRatingUpdateResponse {
     return Gson().fromJson(
         DealsJsonMapper.getJson("rating_update.json"),
-        DealsRatingUpdateResponse::class.java
+        com.tokopedia.deals.ui.pdp.data.DealsRatingUpdateResponse::class.java
     )
 }
 
-fun createTracking(): DealsTrackingResponse {
+fun createTracking(): com.tokopedia.deals.ui.pdp.data.DealsTrackingResponse {
     return Gson().fromJson(
         DealsJsonMapper.getJson("tracking.json"),
-        DealsTrackingResponse::class.java
+        com.tokopedia.deals.ui.pdp.data.DealsTrackingResponse::class.java
     )
 }
 

@@ -10,12 +10,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.deals.checkout.di.DealsCheckoutComponent
 import com.tokopedia.deals.checkout.ui.activity.DealsCheckoutActivity
 import com.tokopedia.deals.databinding.FragmentDealsCheckoutLocationBinding
-import com.tokopedia.deals.pdp.data.Outlet
-import com.tokopedia.deals.pdp.ui.adapter.DealsDetailAllLocationAdapter
+import com.tokopedia.deals.ui.pdp.ui.adapter.DealsDetailAllLocationAdapter
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -23,7 +21,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 class DealsCheckoutLocationsFragment: BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<FragmentDealsCheckoutLocationBinding>()
-    private var outlets: List<Outlet>? = null
+    private var outlets: List<com.tokopedia.deals.ui.pdp.data.Outlet>? = null
     private var recycleView: RecyclerView? = null
     private var toolbar: HeaderUnify? = null
 
@@ -34,7 +32,7 @@ class DealsCheckoutLocationsFragment: BaseDaggerFragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        outlets = arguments?.getParcelableArrayList<Outlet>(EXTRA_OUTLETS).orEmpty()
+        outlets = arguments?.getParcelableArrayList<com.tokopedia.deals.ui.pdp.data.Outlet>(EXTRA_OUTLETS).orEmpty()
         super.onCreate(savedInstanceState)
     }
 
@@ -69,7 +67,7 @@ class DealsCheckoutLocationsFragment: BaseDaggerFragment() {
         (activity as DealsCheckoutActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    private fun setupRecycleView(outlets: List<Outlet>) {
+    private fun setupRecycleView(outlets: List<com.tokopedia.deals.ui.pdp.data.Outlet>) {
         context?.let { context ->
             val adapter = DealsDetailAllLocationAdapter(object : DealsDetailAllLocationAdapter.LocationCallBack {
                 override fun onClickLocation(latLang: String) {
@@ -105,7 +103,7 @@ class DealsCheckoutLocationsFragment: BaseDaggerFragment() {
         private const val PACKAGE_MAPS = "com.google.android.apps.maps"
         private const val URI_MAPS = "geo:0,0?q="
 
-        fun createInstance(outlets: List<Outlet>): DealsCheckoutLocationsFragment {
+        fun createInstance(outlets: List<com.tokopedia.deals.ui.pdp.data.Outlet>): DealsCheckoutLocationsFragment {
             val fragment = DealsCheckoutLocationsFragment()
             val bundle = Bundle()
             bundle.putParcelableArrayList(EXTRA_OUTLETS, ArrayList(outlets))

@@ -11,7 +11,6 @@ import com.tokopedia.common_entertainment.data.EventVerifyResponse
 import com.tokopedia.common_entertainment.data.ItemMapCheckout
 import com.tokopedia.common_entertainment.data.ItemMapResponse
 import com.tokopedia.common_entertainment.data.MetaDataResponse
-import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import javax.inject.Inject
@@ -22,7 +21,7 @@ class DealsCheckoutMapper @Inject constructor(val gson: Gson) {
         private const val DEFAULT_CHECKOUT_DATA_TYPE = "foodvchr"
     }
 
-    fun mapCheckoutDeals(dealsDetail: ProductDetailData, verify: EventVerifyResponse, promoCodes: List<String>):
+    fun mapCheckoutDeals(dealsDetail: com.tokopedia.deals.ui.pdp.data.ProductDetailData, verify: EventVerifyResponse, promoCodes: List<String>):
         DealCheckoutGeneral {
         val checkoutGeneral = DealCheckoutGeneral()
         val cartInfo = CartInfo(gson.toJson(mapToIntMetaData(verify.metadata)),
@@ -34,7 +33,7 @@ class DealsCheckoutMapper @Inject constructor(val gson: Gson) {
         return checkoutGeneral
     }
 
-    fun mapCheckoutDeals(dealsDetail: ProductDetailData, verify: EventVerifyResponse): DealCheckoutGeneralNoPromo {
+    fun mapCheckoutDeals(dealsDetail: com.tokopedia.deals.ui.pdp.data.ProductDetailData, verify: EventVerifyResponse): DealCheckoutGeneralNoPromo {
         val checkoutGeneral = DealCheckoutGeneralNoPromo()
         val cartInfo = CartInfo(gson.toJson(mapToIntMetaData(verify.metadata)),
             dealsDetail.checkoutDataType.ifEmpty { DEFAULT_CHECKOUT_DATA_TYPE }
@@ -44,7 +43,7 @@ class DealsCheckoutMapper @Inject constructor(val gson: Gson) {
         return checkoutGeneral
     }
 
-    fun mapCheckoutDealsInstant(dealsDetail: ProductDetailData, verify: EventVerifyResponse, promoCodes: List<String>):
+    fun mapCheckoutDealsInstant(dealsDetail: com.tokopedia.deals.ui.pdp.data.ProductDetailData, verify: EventVerifyResponse, promoCodes: List<String>):
         DealCheckoutGeneralInstant {
         val checkoutGeneral = DealCheckoutGeneralInstant()
         val cartInfo = CartInfo(gson.toJson(mapToIntMetaData(verify.metadata)),
@@ -57,7 +56,7 @@ class DealsCheckoutMapper @Inject constructor(val gson: Gson) {
         return checkoutGeneral
     }
 
-    fun mapCheckoutDealsInstant(dealsDetail: ProductDetailData, verify: EventVerifyResponse): DealCheckoutGeneralInstantNoPromo {
+    fun mapCheckoutDealsInstant(dealsDetail: com.tokopedia.deals.ui.pdp.data.ProductDetailData, verify: EventVerifyResponse): DealCheckoutGeneralInstantNoPromo {
         val checkoutGeneral = DealCheckoutGeneralInstantNoPromo()
         val cartInfo = CartInfo(gson.toJson(mapToIntMetaData(verify.metadata)),
             dealsDetail.checkoutDataType.ifEmpty { DEFAULT_CHECKOUT_DATA_TYPE }
