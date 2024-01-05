@@ -148,13 +148,13 @@ class CatalogSwitchViewModelTest {
             ""
         )
         val resultCatalogListing = viewModel.catalogListingUiModel.getOrAwaitValue()
-        val resultCatalogSelection = viewModel.catalogListingUiModel.getOrAwaitValue()
+        val resultCatalogSelection = viewModel.comparisonUiModel.getOrAwaitValue()
         assert(resultCatalogListing is CatalogComparisonProductsUiModel)
         assert(resultCatalogSelection is CatalogComparisonProductsUiModel)
     }
 
     @Test
-    fun `When getInitComparisonSwitch is Error, Then should invoke Throwanle`() {
+    fun `When getInitComparisonSwitch is Two usecase Error, Then should invoke Throwable`() {
         coEvery {
             catalogComparisonProductUseCase.getCatalogComparisonProducts(
                 any(),
@@ -165,6 +165,79 @@ class CatalogSwitchViewModelTest {
                 any()
             )
         } throws Throwable("Error")
+
+        coEvery {
+            catalogDetailUseCase.getCatalogDetailV4Comparison(
+                any(),
+                any()
+            )
+        } throws Throwable("Error")
+
+        viewModel.loadAllDataInOnePage(
+            "",
+            "",
+            "",
+            10,
+            listOf(),
+            ""
+        )
+        assert(viewModel.errorsToasterGetInitComparison.getOrAwaitValue().message == "Error")
+    }
+
+    @Test
+    fun `When getCatalogComparisonProducts Error, Then should invoke Throwable`() {
+        coEvery {
+            catalogComparisonProductUseCase.getCatalogComparisonProducts(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } throws Throwable("Error")
+
+        val mockResponseCatalogDetail = ComparisonUiModel()
+
+        coEvery {
+            catalogDetailUseCase.getCatalogDetailV4Comparison(
+                any(),
+                any()
+            )
+        } returns mockResponseCatalogDetail
+
+        viewModel.loadAllDataInOnePage(
+            "",
+            "",
+            "",
+            10,
+            listOf(),
+            ""
+        )
+        assert(viewModel.errorsToasterGetInitComparison.getOrAwaitValue().message == "Error")
+    }
+
+    @Test
+    fun `When getCatalogDetailV4Comparison Error, Then should invoke Throwable`() {
+        val mockResponseCatalogListing = CatalogComparisonProductsResponse(
+            CatalogComparisonProductsResponse.CatalogComparisonList(
+                header = CatalogComparisonProductsResponse.CatalogComparisonList.Header(
+                    0,
+                    ""
+                )
+            )
+        )
+
+        coEvery {
+            catalogComparisonProductUseCase.getCatalogComparisonProducts(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns mockResponseCatalogListing
 
         coEvery {
             catalogDetailUseCase.getCatalogDetailV4Comparison(

@@ -24,10 +24,6 @@ class CatalogSwitchComparisonViewModel @Inject constructor(
     val errorsToasterGetCatalogListing: LiveData<Throwable>
         get() = _errorsToasterGetCatalogListing
 
-    private val _errorsToasterGetComparison = MutableLiveData<Throwable>()
-    val errorsToasterGetComparison: LiveData<Throwable>
-        get() = _errorsToasterGetComparison
-
     private val _errorsToasterGetInitComparison = MutableLiveData<Throwable>()
     val errorsToasterGetInitComparison: LiveData<Throwable>
         get() = _errorsToasterGetInitComparison
@@ -79,29 +75,21 @@ class CatalogSwitchComparisonViewModel @Inject constructor(
             block = {
                 val response = withContext(dispatchers.io) {
                     val result = async {
-                        try {
-                            catalogDetailUseCase.getCatalogDetailV4Comparison(
-                                catalogId,
-                                compareCatalogId
-                            )
-                        } catch (e: Exception) {
-                            throw e
-                        }
+                        catalogDetailUseCase.getCatalogDetailV4Comparison(
+                            catalogId,
+                            compareCatalogId
+                        )
                     }
 
                     val resultComparisonProducts = async {
-                        try {
-                            catalogComparisonProductUseCase.getCatalogComparisonProducts(
-                                catalogId,
-                                brand,
-                                categoryId,
-                                limit.toString(),
-                                Int.ONE.toString(),
-                                name
-                            )
-                        } catch (e: Exception) {
-                            throw e
-                        }
+                        catalogComparisonProductUseCase.getCatalogComparisonProducts(
+                            catalogId,
+                            brand,
+                            categoryId,
+                            limit.toString(),
+                            Int.ONE.toString(),
+                            name
+                        )
                     }
 
                     result.await()?.map() to resultComparisonProducts.await().map()

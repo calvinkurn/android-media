@@ -389,7 +389,6 @@ class CatalogSwitchingComparisonFragment :
 
     private fun setupObservers(view: View) {
         viewModel.comparisonUiModel.observe(viewLifecycleOwner) {
-            // COMPARISON_CHANGED_POSITION is hardcoded position, will changed at next phase
             if (it == null) {
                 Toaster.build(
                     view,
