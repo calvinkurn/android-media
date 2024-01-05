@@ -23,8 +23,8 @@ import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.CampaignTimer
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.PaymentSpecific
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.component.campaignBackgroundColor
-import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.upcoming.secondToMs
 import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.ongoing.OngoingCampaignComposeUiModel
+import com.tokopedia.product.detail.view.viewholder.campaign.ui.widget.timebased.upcoming.secondToMs
 
 /**
  * Created by yovi.putra on 19/12/23"
@@ -76,7 +76,7 @@ private fun CampaignCountDown(
 ) {
     Column(
         modifier = Modifier.wrapContentSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.End,
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         NestTypography(
