@@ -63,7 +63,7 @@
         android:layout_marginBottom="0dp"
         android:translationX="6dp"
         android:visibility="visible"
-        app:icon_name="CHEVRON_DOWN"
+        app:icon_name="CHEVRON_UP"
         app:layout_constraintBottom_toTopOf="@id/rvAddOn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

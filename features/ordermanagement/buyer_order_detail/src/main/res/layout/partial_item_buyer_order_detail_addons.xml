@@ -57,7 +57,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/icBomDetailAddonsIcon"
         app:layout_constraintBottom_toBottomOf="@+id/icBomDetailAddonsIcon"
-        app:icon_name="CHEVRON_DOWN" />
+        app:icon_name="CHEVRON_UP" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvAddonsList"
