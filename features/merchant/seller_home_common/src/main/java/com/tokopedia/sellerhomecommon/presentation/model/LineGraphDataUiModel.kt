@@ -17,6 +17,6 @@ data class LineGraphDataUiModel(
 ) : BaseDataUiModel, LastUpdatedDataInterface {
 
     override fun isWidgetEmpty(): Boolean {
-        return list.all { it.yVal == 0f }
+        return list.all { it.yVal == 0f } || list.isEmpty()
     }
 }

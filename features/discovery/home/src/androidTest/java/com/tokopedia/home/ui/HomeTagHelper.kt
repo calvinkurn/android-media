@@ -29,19 +29,19 @@ object HomeTagHelper {
 
     fun getNotifCounterMessage(context: Context): String {
         return String.format(
-            context.getString(R.string.tag_counter_id), IconList.NAME_MESSAGE
+            context.getString(com.tokopedia.searchbar.R.string.tag_counter_id), IconList.NAME_MESSAGE
         )
     }
 
     fun getNotifCounterCart(context: Context): String {
         return String.format(
-            context.getString(R.string.tag_counter_id), IconList.NAME_CART
+            context.getString(com.tokopedia.searchbar.R.string.tag_counter_id), IconList.NAME_CART
         )
     }
 
     fun getNotifGlobalNav(context: Context): String {
         return String.format(
-            context.getString(R.string.tag_counter_id), IconList.NAME_NAV_GLOBAL
+            context.getString(com.tokopedia.searchbar.R.string.tag_counter_id), IconList.NAME_NAV_GLOBAL
         )
     }
 }

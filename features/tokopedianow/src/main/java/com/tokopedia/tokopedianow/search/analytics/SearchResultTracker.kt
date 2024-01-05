@@ -4,9 +4,12 @@ import android.os.Bundle
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_DIMENSION_81
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_IMPRESSION_PAGINATION
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOKOPEDIA_NOW_SEARCH
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_ADD_TO_CART
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_SELECT_CONTENT
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_GROCERIES
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM_LIST
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CATEGORY_ID
@@ -32,11 +35,14 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_SHOP_TYPE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_USER_ID
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_WAREHOUSE_ID
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_GROCERIES
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_HOME_AND_BROWSE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getTracker
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.joinDash
 import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_CLICK_ATC_SRP_PRODUCT
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.ACTION_CLICK_SRP_PRODUCT
@@ -45,6 +51,7 @@ import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Action.AC
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Category.CATEGORY_EMPTY_SEARCH_RESULT
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.TrackerId.TRACKER_ID_CLICK_ATC_SRP_PRODUCT
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.TrackerId.TRACKER_ID_CLICK_SRP_PRODUCT
+import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.TrackerId.TRACKER_ID_IMPRESSION_PAGINATION
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.TrackerId.TRACKER_ID_IMPRESSION_SRP_PRODUCT
 import com.tokopedia.tokopedianow.search.analytics.SearchResultTracker.Value.EMPTY
 import com.tokopedia.track.TrackApp
@@ -52,6 +59,7 @@ import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
 import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
 import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
+import com.tokopedia.track.builder.Tracker
 
 object SearchResultTracker {
 
@@ -74,6 +82,7 @@ object SearchResultTracker {
         const val TRACKER_ID_IMPRESSION_SRP_PRODUCT = "17820"
         const val TRACKER_ID_CLICK_SRP_PRODUCT = "17822"
         const val TRACKER_ID_CLICK_ATC_SRP_PRODUCT = "17823"
+        const val TRACKER_ID_IMPRESSION_PAGINATION = "47894"
     }
 
     object Value {
@@ -216,6 +225,29 @@ object SearchResultTracker {
                 KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
             )
         )
+    }
+
+    /**
+     * Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4321
+     */
+
+    // Tracker ID: 47894
+    fun sendImpressSearchPageExperimentEvent(
+        keyword: String,
+        numberOfProduct: String,
+        warehouseId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(EVENT_VIEW_GROCERIES)
+            .setEventAction(EVENT_ACTION_IMPRESSION_PAGINATION)
+            .setEventCategory(EVENT_CATEGORY_TOKOPEDIA_NOW_SEARCH)
+            .setEventLabel(joinDash(keyword, numberOfProduct))
+            .setCustomProperty(KEY_TRACKER_ID, TRACKER_ID_IMPRESSION_PAGINATION)
+            .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
+            .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
+            .setCustomProperty(KEY_WAREHOUSE_ID, warehouseId)
+            .build()
+            .send()
     }
 
     private fun getEcommerceDataLayer(

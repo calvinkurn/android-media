@@ -23,10 +23,14 @@ import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStat
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.databinding.ShopPageHeaderFragmentContentLayoutBinding
-import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.widget.ShopPageHeaderAdapterTypeFactory
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.*
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderActionButtonWidgetFollowButtonComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderPerformanceWidgetBadgeTextValueComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderPerformanceWidgetImageOnlyComponentViewHolder
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopPageHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopPageHeaderPlayWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopPageHeaderRequestUnmoderateBottomSheet
@@ -50,7 +54,7 @@ class ShopPageHeaderFragmentHeaderViewHolder(
     private val shopPageHeaderActionButtonWidgetNoteButtonComponentListener: ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder.Listener,
     private val shopPagePlayWidgetListener: ShopPageHeaderPlayWidgetViewHolder.Listener,
     private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener,
-    private val shopPageHeaderPerformanceWidgetImageTextListener: ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder.Listener
+    private val shopPageHeaderPerformanceWidgetImageTextListener: ShopPageHeaderPerformanceWidgetImageTextComponentViewHolder.Listener,
 ) {
     private var isShopFavorite = false
     private var isUserNeverFollow = false
@@ -96,7 +100,7 @@ class ShopPageHeaderFragmentHeaderViewHolder(
                 shopPageHeaderActionButtonWidgetNoteButtonComponentListener,
                 shopPageTrackingSGCPlayWidget,
                 shopPagePlayWidgetListener,
-                shopPageHeaderPerformanceWidgetImageTextListener
+                shopPageHeaderPerformanceWidgetImageTextListener,
             )
         )
         rvShopPageHeaderWidget?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -126,8 +130,8 @@ class ShopPageHeaderFragmentHeaderViewHolder(
         )
     }
 
-    fun setupSgcPlayWidget(shopPageHeaderDataModel: ShopPageHeaderDataModel) {
-        shopPageHeaderAdapter?.setPlayWidgetData(shopPageHeaderDataModel)
+    fun setupSgcPlayWidget() {
+        shopPageHeaderAdapter?.setPlayWidgetData()
     }
 
     fun updateShopTicker(
@@ -198,6 +202,7 @@ class ShopPageHeaderFragmentHeaderViewHolder(
         tickerShopStatus?.tickerType = when (shopTickerType) {
             ShopTickerType.INFO -> Ticker.TYPE_ANNOUNCEMENT
             ShopTickerType.WARNING -> Ticker.TYPE_WARNING
+            ShopTickerType.DANGER -> Ticker.TYPE_ERROR
             else -> Ticker.TYPE_WARNING
         }
         tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(statusTitle).toString()

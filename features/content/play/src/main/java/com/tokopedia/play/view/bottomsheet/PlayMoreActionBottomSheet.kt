@@ -96,7 +96,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 IconUnify.GRAPH,
                 MethodChecker.getColor(
                     requireContext(),
-                    com.tokopedia.unifycomponents.R.color.Unify_NN900
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN900
                 )
             ),
             subtitleRes = contentCommonR.string.performance_see,
@@ -122,7 +122,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 IconUnify.GRAPH_REPORT,
                 MethodChecker.getColor(
                     requireContext(),
-                    com.tokopedia.unifycomponents.R.color.Unify_NN900
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN900
                 )
             ),
             subtitleRes = contentCommonR.string.performance_learn_video_insight,
@@ -163,7 +163,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 IconUnify.VISIBILITY,
                 MethodChecker.getColor(
                     requireContext(),
-                    com.tokopedia.unifycomponents.R.color.Unify_NN900
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN900
                 )
             ),
             subtitleRes = R.string.play_kebab_watch_mode,
@@ -184,7 +184,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 IconUnify.WARNING,
                 MethodChecker.getColor(
                     requireContext(),
-                    com.tokopedia.unifycomponents.R.color.Unify_NN900
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN900
                 )
             ),
             subtitleRes = R.string.play_kebab_report_title,

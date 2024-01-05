@@ -57,7 +57,9 @@ class ProductRecommSubViewModel @Inject constructor(
     override fun loadViewToView(
         pageName: String,
         productId: String,
-        isTokoNow: Boolean
+        isTokoNow: Boolean,
+        queryParam: String,
+        thematicId: String
     ) {
         if (GlobalConfig.isSellerApp()) return
 
@@ -74,13 +76,16 @@ class ProductRecommSubViewModel @Inject constructor(
                         pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
                         pageName = pageName,
                         productIds = arrayListOf(productId),
-                        isTokonow = isTokoNow
+                        isTokonow = isTokoNow,
+                        queryParam = queryParam,
+                        criteriaThematicIDs = listOf(thematicId)
                     )
                 )
 
-                _loadViewToView.value = if (response.isNotEmpty()) {
+                _loadViewToView.value = if (!response.firstOrNull()?.recommendationItemList.isNullOrEmpty()) {
                     Success(response.first())
                 } else {
+                    alreadyHitRecom.remove(pageName)
                     Fail(MessageErrorException())
                 }
             }.onFailure {
@@ -90,7 +95,13 @@ class ProductRecommSubViewModel @Inject constructor(
         }
     }
 
-    override fun getVerticalRecommendationData(pageName: String, page: Int?, productId: String?) {
+    override fun getVerticalRecommendationData(
+        pageName: String,
+        page: Int?,
+        productId: String?,
+        queryParam: String,
+        thematicId: String
+    ) {
         val nonNullPage = page ?: ProductDetailConstant.DEFAULT_PAGE_NUMBER
         val nonNullProductId = productId.orEmpty()
 
@@ -99,7 +110,9 @@ class ProductRecommSubViewModel @Inject constructor(
                 val requestParams = GetRecommendationRequestParam(
                     pageNumber = nonNullPage,
                     pageName = pageName,
-                    productIds = arrayListOf(nonNullProductId)
+                    productIds = arrayListOf(nonNullProductId),
+                    queryParam = queryParam,
+                    criteriaThematicIDs = listOf(thematicId)
                 )
                 val recommendationResponse = getRecommendationUseCase.get().getData(requestParams)
                 val dataResponse = recommendationResponse.firstOrNull()
@@ -176,7 +189,9 @@ class ProductRecommSubViewModel @Inject constructor(
         pageName: String,
         productId: String,
         isTokoNow: Boolean,
-        miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?
+        miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>?,
+        queryParam: String,
+        thematicId: String
     ) {
         if (GlobalConfig.isSellerApp()) {
             return
@@ -195,7 +210,9 @@ class ProductRecommSubViewModel @Inject constructor(
                         productId = productId,
                         pageName = pageName,
                         isTokoNow = isTokoNow,
-                        miniCartData = miniCart
+                        miniCartData = miniCart,
+                        queryParam = queryParam,
+                        thematicId = thematicId
                     )
                 )
                 _loadTopAdsProduct.value = response.asSuccess()

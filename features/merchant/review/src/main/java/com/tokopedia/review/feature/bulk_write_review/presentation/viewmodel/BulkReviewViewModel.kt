@@ -88,7 +88,6 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
@@ -141,7 +140,11 @@ class BulkReviewViewModel @Inject constructor(
         private const val SAVE_STATE_KEY_ACTIVE_MEDIA_PICKER_INBOX_ID = "activeMediaPickerInboxID"
 
         private const val TOASTER_ID_REMOVE_REVIEW = 0
+
+        private const val REVIEW_ID_ALL = "-1"
     }
+
+    private var defaultReviewItemRating = BulkReviewRatingUiStateMapper.DEFAULT_PRODUCT_RATING
 
     // region stateflow that need to be saved and restored
     private val getFormRequestState = MutableStateFlow<BulkReviewGetFormRequestState>(BulkReviewGetFormRequestState.Requesting())
@@ -157,6 +160,7 @@ class BulkReviewViewModel @Inject constructor(
     private val reviewItemsMediaUploadBatchNumber = MutableStateFlow(emptyList<BulkReviewItemMediaUploadBatchNumberUiModel>())
     private val anonymous = MutableStateFlow(false)
     private val shouldSubmitReview = MutableStateFlow(false)
+    private val shouldApplyBadRatingToAllReviewItems = MutableStateFlow(false)
     private var activeMediaPickerInboxID = ""
 
     // endregion stateflow that need to be saved and restored
@@ -174,7 +178,7 @@ class BulkReviewViewModel @Inject constructor(
     private val reviewItemsRatingUiState = combine(
         getFormRequestState,
         reviewItemsRating,
-        bulkReviewRatingUiStateMapper::map
+        ::mapReviewRatingUiState
     ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_TIMEOUT_MILLIS),
@@ -317,6 +321,7 @@ class BulkReviewViewModel @Inject constructor(
         observeMediaUrisForUpload()
         observeSubmitReviewsResult()
         observeToasterCtaClickEvents()
+        observeShouldApplyBadRatingToAllReviewItems()
         handleMediaPickerErrorToasterQueue()
         handleSubmitReviews()
         handleTrackers()
@@ -344,8 +349,8 @@ class BulkReviewViewModel @Inject constructor(
     fun onRatingChanged(inboxID: String, rating: Int) {
         val reviewItem = getReviewItem(inboxID) ?: return
         sendReviewItemRatingChangedEventTracker(reviewItem, rating)
-        val previousRating = getAndUpdateRating(inboxID, rating)
-        shouldShowBadRatingCategoryBottomSheet(inboxID, rating, previousRating)
+        updateRating(inboxID, rating)
+        shouldShowBadRatingCategoryBottomSheet(inboxID, rating)
     }
 
     fun onRatingSet(inboxID: String) {
@@ -361,7 +366,7 @@ class BulkReviewViewModel @Inject constructor(
                         add(
                             BulkReviewItemRatingUiModel(
                                 inboxID = inboxID,
-                                rating = BulkReviewRatingUiStateMapper.DEFAULT_PRODUCT_RATING,
+                                rating = defaultReviewItemRating,
                                 animate = false
                             )
                         )
@@ -382,14 +387,77 @@ class BulkReviewViewModel @Inject constructor(
         reason: String,
         selected: Boolean
     ) {
+        val uiState = badRatingCategoryBottomSheetUiState.value
+        if (uiState is BulkReviewBadRatingCategoryBottomSheetUiState.Showing) {
+            if (uiState.inboxID == REVIEW_ID_ALL) {
+                onBadRatingCategorySelectionChangedForAllReviewItems(
+                    position = position,
+                    badRatingCategoryID = badRatingCategoryID,
+                    reason = reason,
+                    selected = selected
+                )
+            } else {
+                onBadRatingCategorySelectionChangedForReviewItems(
+                    position = position,
+                    badRatingCategoryID = badRatingCategoryID,
+                    reason = reason,
+                    selected = selected
+                )
+            }
+        }
+    }
+
+    private fun onBadRatingCategorySelectionChangedForReviewItems(
+        position: Int,
+        badRatingCategoryID: String,
+        reason: String,
+        selected: Boolean
+    ) {
         val reviewItem = getBulkReviewBadRatingCategoryBottomSheetReferencedReviewItem() ?: return
-        if (selected) sendReviewItemBadRatingCategorySelectedEventTracker(position, reason, reviewItem)
+        if (selected) sendReviewItemBadRatingCategorySelectedEventTracker(
+            position = position,
+            reason = reason,
+            reviewItem = reviewItem
+        )
+        updateBadRatingCategorySelection(
+            badRatingCategoryID = badRatingCategoryID,
+            selected = selected
+        )
+        shouldShowExpandedTextAreaBottomSheetOnBadRatingChanged(
+            badRatingCategoryID = badRatingCategoryID,
+            selected = selected,
+            inboxID = reviewItem.inboxID,
+            testimony = reviewItem.getReviewItemTextAreaText(),
+            rating = reviewItem.getReviewItemRating()
+        )
+    }
+
+    private fun onBadRatingCategorySelectionChangedForAllReviewItems(
+        position: Int,
+        badRatingCategoryID: String,
+        reason: String,
+        selected: Boolean
+    ) {
+        if (selected) {
+            bulkReviewVisitableList
+                .value
+                .filterIsInstance<BulkReviewItemUiModel>()
+                .forEach { reviewItem ->
+                    sendReviewItemBadRatingCategorySelectedEventTracker(position, reason, reviewItem)
+                }
+        }
         updateBadRatingCategorySelection(badRatingCategoryID, selected)
-        shouldShowExpandedTextAreaBottomSheetOnBadRatingChanged(badRatingCategoryID, selected, reviewItem)
+        shouldShowExpandedTextAreaBottomSheetOnBadRatingChanged(
+            badRatingCategoryID = badRatingCategoryID,
+            selected = selected,
+            inboxID = REVIEW_ID_ALL,
+            testimony = "",
+            rating = defaultReviewItemRating
+        )
     }
 
     fun onApplyBadRatingCategory() {
-        applyReviewItemBadRatingCategory()
+        applyBadRatingCategory()
         dismissBadRatingCategoryBottomSheet()
     }
 
@@ -792,6 +860,11 @@ class BulkReviewViewModel @Inject constructor(
         bulkReviewToasterCtaKeyEvents.tryEmit(data)
     }
 
+    fun setDefaultReviewItemRating(rating: Int) {
+        defaultReviewItemRating = rating
+        shouldApplyBadRatingToAllReviewItems.value = rating <= ReviewConstants.BAD_RATING_CATEGORY_THRESHOLD
+    }
+
     fun onCancelBadRatingCategoryBottomSheet() {
         val uiState = _badRatingCategoryBottomSheetUiState.value
         if (uiState is BulkReviewBadRatingCategoryBottomSheetUiState.Showing) {
@@ -799,6 +872,17 @@ class BulkReviewViewModel @Inject constructor(
                 enqueueToasterErrorNoBadRatingCategoryReasonSelected()
             }
         }
+    }
+
+    private fun mapReviewRatingUiState(
+        getFormRequestState: BulkReviewGetFormRequestState,
+        reviewItemsRating: List<BulkReviewItemRatingUiModel>
+    ): Map<String, BulkReviewRatingUiState> {
+        return bulkReviewRatingUiStateMapper.map(
+            getFormRequestState = getFormRequestState,
+            reviewItemsRating = reviewItemsRating,
+            defaultReviewItemRating = defaultReviewItemRating
+        )
     }
 
     private fun mapMediaItems(
@@ -930,6 +1014,22 @@ class BulkReviewViewModel @Inject constructor(
             bulkReviewToasterCtaKeyEvents.collect {
                 when (it.id) {
                     TOASTER_ID_REMOVE_REVIEW -> onUndoRemoveReviewItem(it.payload as? String)
+                }
+            }
+        }
+    }
+
+    private fun observeShouldApplyBadRatingToAllReviewItems() {
+        viewModelScope.launch {
+            combine(
+                shouldApplyBadRatingToAllReviewItems,
+                bulkReviewPageUiState
+            ) { shouldApplyBadRatingToAllReviewItems, bulkReviewPageUiState ->
+                shouldApplyBadRatingToAllReviewItems && bulkReviewPageUiState is BulkReviewPageUiState.Showing
+            }.distinctUntilChanged().collectLatest { applyBadRatingToAllReviewItems ->
+                if (applyBadRatingToAllReviewItems) {
+                    shouldApplyBadRatingToAllReviewItems.value = false
+                    showBadRatingCategoryBottomSheet(REVIEW_ID_ALL)
                 }
             }
         }
@@ -1309,20 +1409,41 @@ class BulkReviewViewModel @Inject constructor(
 
     private fun showBadRatingCategoryBottomSheet(inboxID: String) {
         _badRatingCategoryBottomSheetUiState.update {
-            val initialBadRatingCategories = bulkReviewBadRatingCategoryMapper.map(
-                badRatingCategoryRequestState = getBadRatingCategoryRequestState.value
-            )
-            val reviewItemBadRatingCategories = reviewItemsBadRatingCategory.value.find { reviewItemBadRatingCategory ->
-                reviewItemBadRatingCategory.inboxID == inboxID
-            }?.badRatingCategory
-            if (!reviewItemBadRatingCategories.isNullOrEmpty() || initialBadRatingCategories.isNotEmpty()) {
-                BulkReviewBadRatingCategoryBottomSheetUiState.Showing(
-                    inboxID = inboxID,
-                    badRatingCategories = reviewItemBadRatingCategories ?: initialBadRatingCategories
-                )
+            if (inboxID == REVIEW_ID_ALL) {
+                showBadRatingCategoryBottomSheetForAllReviewItems()
             } else {
-                it
+                showBadRatingCategoryBottomSheetForReviewItem(inboxID, it)
             }
+        }
+    }
+
+    private fun showBadRatingCategoryBottomSheetForAllReviewItems(): BulkReviewBadRatingCategoryBottomSheetUiState.Showing {
+        val initialBadRatingCategories = bulkReviewBadRatingCategoryMapper.map(
+            badRatingCategoryRequestState = getBadRatingCategoryRequestState.value
+        )
+        return BulkReviewBadRatingCategoryBottomSheetUiState.Showing(
+            inboxID = REVIEW_ID_ALL,
+            badRatingCategories = initialBadRatingCategories
+        )
+    }
+
+    private fun showBadRatingCategoryBottomSheetForReviewItem(
+        inboxID: String,
+        currentState: BulkReviewBadRatingCategoryBottomSheetUiState
+    ): BulkReviewBadRatingCategoryBottomSheetUiState {
+        val initialBadRatingCategories = bulkReviewBadRatingCategoryMapper.map(
+            badRatingCategoryRequestState = getBadRatingCategoryRequestState.value
+        )
+        val reviewItemBadRatingCategories = reviewItemsBadRatingCategory.value.find { reviewItemBadRatingCategory ->
+            reviewItemBadRatingCategory.inboxID == inboxID
+        }?.badRatingCategory
+        return if (!reviewItemBadRatingCategories.isNullOrEmpty() || initialBadRatingCategories.isNotEmpty()) {
+            BulkReviewBadRatingCategoryBottomSheetUiState.Showing(
+                inboxID = inboxID,
+                badRatingCategories = reviewItemBadRatingCategories ?: initialBadRatingCategories
+            )
+        } else {
+            currentState
         }
     }
 
@@ -1372,8 +1493,8 @@ class BulkReviewViewModel @Inject constructor(
         removedReviewItemsInboxID.update { it.toMutableSet().apply { remove(inboxID) } }
     }
 
-    private fun getAndUpdateRating(inboxID: String, rating: Int): Int {
-        return reviewItemsRating.getAndUpdate {
+    private fun updateRating(inboxID: String, rating: Int) {
+        reviewItemsRating.update {
             it.toMutableList().apply {
                 find { reviewItemRating ->
                     reviewItemRating.inboxID == inboxID
@@ -1386,22 +1507,15 @@ class BulkReviewViewModel @Inject constructor(
                     }
                 }
             }
-        }.find {
-            it.inboxID == inboxID
-        }?.rating ?: BulkReviewRatingUiStateMapper.DEFAULT_PRODUCT_RATING
+        }
     }
 
     private fun shouldShowBadRatingCategoryBottomSheet(
         inboxID: String,
-        currentRating: Int,
-        priorRating: Int
+        currentRating: Int
     ) {
         if (currentRating <= ReviewConstants.BAD_RATING_CATEGORY_THRESHOLD) {
-            if (priorRating > ReviewConstants.BAD_RATING_CATEGORY_THRESHOLD) {
-                showBadRatingCategoryBottomSheet(inboxID = inboxID)
-            } else {
-                // ignore, user need to click `Ubah` to show the bad rating categories bottomsheet
-            }
+            showBadRatingCategoryBottomSheet(inboxID = inboxID)
         } else {
             clearReviewItemBadRatingCategory(inboxID)
         }
@@ -1444,14 +1558,16 @@ class BulkReviewViewModel @Inject constructor(
     private fun shouldShowExpandedTextAreaBottomSheetOnBadRatingChanged(
         badRatingCategoryID: String,
         selected: Boolean,
-        reviewItem: BulkReviewItemUiModel
+        inboxID: String,
+        testimony: String,
+        rating: Int
     ) {
         if (badRatingCategoryID == ReviewConstants.BAD_RATING_OTHER_ID && selected) {
             showExpandedTextAreaBottomSheet(
-                inboxID = reviewItem.inboxID,
-                title = ResourceProvider.getExpandedTextAreaTitle(reviewItem.getReviewItemRating()),
+                inboxID = inboxID,
+                title = ResourceProvider.getExpandedTextAreaTitle(rating),
                 hint = ResourceProvider.getBadRatingCategoryExpandedTextAreaHint(),
-                text = reviewItem.getReviewItemTextAreaText(),
+                text = testimony,
                 allowEmpty = false
             )
             onApplyBadRatingCategory()
@@ -1459,32 +1575,57 @@ class BulkReviewViewModel @Inject constructor(
         }
     }
 
-    private fun applyReviewItemBadRatingCategory() {
+    private fun applyBadRatingCategory() {
         val uiState = _badRatingCategoryBottomSheetUiState.value
         if (uiState is BulkReviewBadRatingCategoryBottomSheetUiState.Showing) {
             reviewItemsBadRatingCategory.update {
-                it.toMutableList().apply {
-                    find { reviewItemBadRatingCategory ->
-                        reviewItemBadRatingCategory.inboxID == uiState.inboxID
-                    }.let { oldReviewItemBadRatingCategory ->
-                        if (oldReviewItemBadRatingCategory == null) {
-                            add(
-                                BulkReviewItemBadRatingCategoryUiModel(
-                                    inboxID = uiState.inboxID,
-                                    badRatingCategory = uiState.badRatingCategories
-                                )
-                            )
-                        } else {
-                            remove(oldReviewItemBadRatingCategory)
-                            add(
-                                oldReviewItemBadRatingCategory.copy(
-                                    badRatingCategory = uiState.badRatingCategories
-                                )
-                            )
-                        }
-                    }
+                if (uiState.inboxID == REVIEW_ID_ALL) {
+                    applyBadRatingCategoryToReviewAllItem(uiState)
+                } else {
+                    applyBadRatingCategoryToReviewItem(it, uiState)
                 }
             }
+        }
+    }
+
+    private fun applyBadRatingCategoryToReviewItem(
+        bulkReviewItemBadRatingCategoryUiModels: List<BulkReviewItemBadRatingCategoryUiModel>,
+        badRatingCategoryBottomSheetUiState: BulkReviewBadRatingCategoryBottomSheetUiState.Showing
+    ): List<BulkReviewItemBadRatingCategoryUiModel> {
+        return bulkReviewItemBadRatingCategoryUiModels.toMutableList().apply {
+            find { reviewItemBadRatingCategory ->
+                reviewItemBadRatingCategory.inboxID == badRatingCategoryBottomSheetUiState.inboxID
+            }.let { oldReviewItemBadRatingCategory ->
+                if (oldReviewItemBadRatingCategory == null) {
+                    add(
+                        BulkReviewItemBadRatingCategoryUiModel(
+                            inboxID = badRatingCategoryBottomSheetUiState.inboxID,
+                            badRatingCategory = badRatingCategoryBottomSheetUiState.badRatingCategories
+                        )
+                    )
+                } else {
+                    remove(oldReviewItemBadRatingCategory)
+                    add(
+                        oldReviewItemBadRatingCategory.copy(
+                            badRatingCategory = badRatingCategoryBottomSheetUiState.badRatingCategories
+                        )
+                    )
+                }
+            }
+        }.toList()
+    }
+
+    private fun applyBadRatingCategoryToReviewAllItem(
+        badRatingCategoryBottomSheetUiState: BulkReviewBadRatingCategoryBottomSheetUiState.Showing
+    ): List<BulkReviewItemBadRatingCategoryUiModel> {
+        return bulkReviewVisitableList
+            .value
+            .filterIsInstance<BulkReviewItemUiModel>()
+            .map { reviewItem ->
+            BulkReviewItemBadRatingCategoryUiModel(
+                inboxID = reviewItem.inboxID,
+                badRatingCategory = badRatingCategoryBottomSheetUiState.badRatingCategories
+            )
         }
     }
 
@@ -1492,25 +1633,55 @@ class BulkReviewViewModel @Inject constructor(
         val uiState = _expandedTextAreaBottomSheetUiState.value
         if (uiState is BulkReviewExpandedTextAreaBottomSheetUiState.Showing) {
             if (uiState.allowEmpty || text.isNotBlank()) {
-                reviewItemsTestimony.update {
-                    it.filterAndPut(
-                        matcher = { reviewItemTestimony ->
-                            reviewItemTestimony.inboxID != uiState.inboxID
-                        },
-                        newItem = BulkReviewItemTestimonyUiModel(
-                            inboxID = uiState.inboxID,
-                            testimonyUiModel = ReviewTestimonyUiModel(
-                                text = text,
-                                shouldShowTextArea = text.isNotBlank(),
-                                focused = false,
-                                shouldApplyText = true
-                            )
-                        )
-                    )
+                if (uiState.inboxID == REVIEW_ID_ALL) {
+                    applyExpandedTextAreaValueToReviewAllItem(text)
+                } else {
+                    applyExpandedTextAreaValueToReviewItem(uiState, text)
                 }
             } else {
                 enqueueToasterErrorEmptyBadRatingCategoryOtherReason()
             }
+        }
+    }
+
+    private fun applyExpandedTextAreaValueToReviewItem(
+        uiState: BulkReviewExpandedTextAreaBottomSheetUiState.Showing,
+        text: String
+    ) {
+        reviewItemsTestimony.update {
+            it.filterAndPut(
+                matcher = { reviewItemTestimony ->
+                    reviewItemTestimony.inboxID != uiState.inboxID
+                },
+                newItem = BulkReviewItemTestimonyUiModel(
+                    inboxID = uiState.inboxID,
+                    testimonyUiModel = ReviewTestimonyUiModel(
+                        text = text,
+                        shouldShowTextArea = text.isNotBlank(),
+                        focused = false,
+                        shouldApplyText = true
+                    )
+                )
+            )
+        }
+    }
+
+    private fun applyExpandedTextAreaValueToReviewAllItem(text: String) {
+        reviewItemsTestimony.update {
+            bulkReviewVisitableList
+                .value
+                .filterIsInstance<BulkReviewItemUiModel>()
+                .map { reviewItem ->
+                    BulkReviewItemTestimonyUiModel(
+                        inboxID = reviewItem.inboxID,
+                        testimonyUiModel = ReviewTestimonyUiModel(
+                            text = text,
+                            shouldShowTextArea = text.isNotBlank(),
+                            focused = false,
+                            shouldApplyText = true
+                        )
+                    )
+                }
         }
     }
 

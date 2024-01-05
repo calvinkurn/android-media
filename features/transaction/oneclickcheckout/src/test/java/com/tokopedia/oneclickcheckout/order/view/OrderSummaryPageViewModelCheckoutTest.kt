@@ -34,6 +34,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.oneclickcheckout.order.view.model.PriceChangeMessage
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
@@ -58,7 +59,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery {
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
@@ -115,7 +119,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery {
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
@@ -162,12 +169,21 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
             payment = OrderProfilePayment(
                 gatewayName = paymentType,
-                gatewayCode = "payment"
+                gatewayCode = "payment",
+                metadata = """
+                    {
+                        "gateway_code": "payment",
+                        "express_checkout_param" : {}
+                    }
+                """.trimIndent()
             )
         )
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery {
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
@@ -213,7 +229,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery {
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
@@ -259,7 +278,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery {
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
@@ -305,7 +327,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery {
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
@@ -350,7 +375,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery {
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
@@ -397,12 +425,21 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
             payment = OrderProfilePayment(
                 gatewayName = paymentType,
-                gatewayCode = "payment"
+                gatewayCode = "payment",
+                metadata = """
+                    {
+                        "gateway_code": "payment",
+                        "express_checkout_param" : {}
+                    }
+                """.trimIndent()
             )
         )
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = WALLET_TYPE_GOPAYLATERCICIL,
@@ -460,14 +497,17 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         val selectedTenure = 3
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
             payment = OrderProfilePayment(
-                metadata = """{"express_checkout_param":{"installment_term":"3"}}""",
+                metadata = """{"gateway_code":"payment", "express_checkout_param":{"installment_term":"3"}}""",
                 gatewayName = paymentType,
                 gatewayCode = "payment"
             )
         )
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(
             creditCard = OrderPaymentCreditCard(
                 selectedTerm = OrderPaymentInstallmentTerm(term = selectedTenure)
@@ -519,7 +559,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderShipment.value =
             helper.orderShipment.copy(insurance = OrderInsurance(isCheckInsurance = true))
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery {
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
@@ -566,7 +609,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery {
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
@@ -615,7 +661,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery {
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
@@ -661,7 +710,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         orderSummaryPageViewModel.lastValidateUsePromoRequest =
             ValidateUsePromoRequest(mutableListOf("promo"))
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
@@ -731,7 +783,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProfile.value = helper.preference
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
 
         // When
         orderSummaryPageViewModel.finalUpdate({
@@ -752,7 +807,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value =
             helper.preference.copy(payment = OrderProfilePayment())
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
 
         // When
         orderSummaryPageViewModel.finalUpdate({
@@ -772,7 +830,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProfile.value = OrderProfile()
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
 
         // When
         orderSummaryPageViewModel.finalUpdate({
@@ -790,7 +851,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
     fun `Checkout On Invalid Credit Card State`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         var preference = helper.preference
         preference = preference.copy(
             payment = preference.payment.copy(
@@ -878,7 +942,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery {
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
@@ -905,7 +972,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery {
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
@@ -938,7 +1008,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         val exception = IOException()
         coEvery { updateCartOccUseCase.executeSuspend(any()) } throws exception
 
@@ -961,7 +1034,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         val errorMessage = "cart error"
         coEvery { updateCartOccUseCase.executeSuspend(any()) } throws MessageErrorException(
             errorMessage
@@ -989,7 +1065,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery {
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
@@ -1027,7 +1106,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery {
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
@@ -1060,7 +1142,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery {
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
@@ -1089,7 +1174,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery {
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
@@ -1118,7 +1206,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery {
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
@@ -1144,7 +1235,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery {
             validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
@@ -1167,13 +1261,16 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
             payment = OrderProfilePayment(
-                metadata = """{"express_checkout_param":{"installment_term":"3"}}""",
+                metadata = """{"gateway_code":"payment", "express_checkout_param":{"installment_term":"3"}}""",
                 gatewayCode = "payment"
             )
         )
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(
             isEnable = true,
             creditCard = OrderPaymentCreditCard(
@@ -1225,13 +1322,16 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProfile.value = helper.preference.copy(
             payment = OrderProfilePayment(
-                metadata = """{"express_checkout_param":{"installment_term":"3"}}""",
+                metadata = """{"gateway_code":"payment", "express_checkout_param":{"installment_term":"3"}}""",
                 gatewayCode = "payment"
             )
         )
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(
             isEnable = true,
             creditCard = OrderPaymentCreditCard(
@@ -1305,7 +1405,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         orderSummaryPageViewModel.orderCart = OrderCart(
             products = mutableListOf(
                 helper.product.copy(
@@ -1358,7 +1461,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         orderSummaryPageViewModel.orderCart = OrderCart(
             products = mutableListOf(
                 helper.product.copy(
@@ -1411,7 +1517,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         orderSummaryPageViewModel.orderCart = OrderCart(products = mutableListOf(helper.product))
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery {
@@ -1446,7 +1555,10 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         orderSummaryPageViewModel.orderCart =
             OrderCart(products = mutableListOf(helper.product), cartString = "123")
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
@@ -1495,5 +1607,48 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
                 }
             )
         }
+    }
+
+    @Test
+    fun `Checkout Success With Blacklisted Promo Entry Point`() {
+        // Given
+        orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            isCartCheckoutRevamp = true,
+            state = OccButtonState.DISABLE,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = false,
+                statusCode = "42003"
+            )
+        )
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns ValidateUsePromoRevampUiModel()
+        coEvery {
+            checkoutOccUseCase.executeSuspend(any())
+        } returns CheckoutOccData(
+            status = STATUS_OK,
+            result = CheckoutOccResult(
+                success = 1,
+                paymentParameter = CheckoutOccPaymentParameter(
+                    redirectParam = CheckoutOccRedirectParam(
+                        url = "testurl"
+                    )
+                )
+            )
+        )
+
+        // When
+        var isOnSuccessCalled = false
+        orderSummaryPageViewModel.finalUpdate({
+            isOnSuccessCalled = true
+        }, false)
+
+        // Then
+        assertEquals(true, isOnSuccessCalled)
     }
 }

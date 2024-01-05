@@ -7,6 +7,7 @@ import android.widget.FrameLayout
 import com.tokopedia.feedplus.databinding.ViewUploadInfoBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.feedplus.R
 
 /**
  * Created by kenny.hadisaputra on 15/03/23
@@ -45,9 +46,17 @@ class UploadInfoView : FrameLayout {
         binding.failed.setThumbnail(thumbnailUrl)
     }
 
-    fun setProgress(progress: Int) {
+    fun setUploadProgress(progress: Int) {
         binding.progress.show()
-        binding.progress.setProgress(progress)
+        binding.progress.setText("$progress%")
+        binding.progress.setProgress(progress, false)
+        binding.failed.hide()
+    }
+
+    fun setOtherProgress(progress: Int) {
+        binding.progress.show()
+        binding.progress.setText(context.getString(R.string.feed_uploading_title))
+        binding.progress.setProgress(progress, false)
         binding.failed.hide()
     }
 

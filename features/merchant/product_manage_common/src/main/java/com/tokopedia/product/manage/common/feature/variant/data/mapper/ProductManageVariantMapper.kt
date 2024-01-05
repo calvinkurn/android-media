@@ -104,7 +104,11 @@ object ProductManageVariantMapper {
             }
         }
 
-        return copy(editStock = editStock, editStatus = editStatus, variantNameUpdates = variantNamesUpdate)
+        return copy(
+            editStock = editStock,
+            editStatus = editStatus,
+            variantNameUpdates = variantNamesUpdate
+        )
     }
 
     fun mapResultToUpdateParam(
@@ -131,7 +135,7 @@ object ProductManageVariantMapper {
         }
 
         val selectionInput = result.selections.map {
-            VariantSelectionInput(it.variantID, it.unitID, it.options)
+            VariantSelectionInput(it.variantID, it.variantName, it.unitID, it.options)
         }
 
         val sizeChartInput = result.sizeCharts.map {

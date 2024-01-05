@@ -182,7 +182,7 @@ class TopupBillsFavoriteNumberActivityTest {
         Thread.sleep(1000)
         favoriteNumberMenu_validateContents()
 
-        onView(withId(R.id.bottom_sheet_close)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)).perform(click())
     }
 
     fun validate_modify_bottom_sheet_favorite_number() {
@@ -332,12 +332,12 @@ class TopupBillsFavoriteNumberActivityTest {
 
     private fun deleteConfirmationDialog_clickCancel() {
         Thread.sleep(1000)
-        onView(withId(R.id.dialog_btn_secondary)).perform(click())
+        onView(withId(com.tokopedia.dialog.R.id.dialog_btn_secondary)).perform(click())
     }
 
     private fun deleteConfirmationDialog_clickConfirm() {
         Thread.sleep(1000)
-        onView(withId(R.id.dialog_btn_primary)).perform(click())
+        onView(withId(com.tokopedia.dialog.R.id.dialog_btn_primary)).perform(click())
     }
 
     companion object {

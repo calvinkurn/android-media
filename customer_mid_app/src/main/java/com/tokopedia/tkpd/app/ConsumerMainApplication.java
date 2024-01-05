@@ -17,6 +17,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MotionEvent;
+
+import com.newrelic.agent.android.FeatureFlag;
+import com.scp.auth.GotoSdk;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,19 +32,24 @@ import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
 import com.newrelic.agent.android.NewRelic;
-import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.FirebaseRemoteAppForceUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
+import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
+import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity;
 import com.tokopedia.abstraction.base.view.model.InAppCallback;
 import com.tokopedia.abstraction.newrelic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.mapper.model.EmbraceConfig;
+import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
+import com.tokopedia.analytics.performance.perf.performanceTracing.config.mapper.ConfigMapper;
+import com.tokopedia.analytics.performance.perf.performanceTracing.trace.Error;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.applink.AppUtil;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -58,6 +67,7 @@ import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallback
 import com.tokopedia.developer_options.DevOptsSubscriber;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.device.info.model.AdditionalDeviceInfo;
 import com.tokopedia.devicefingerprint.datavisor.lifecyclecallback.DataVisorLifecycleCallbacks;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.encryption.security.AESEncryptorECB;
@@ -72,9 +82,11 @@ import com.tokopedia.logger.LoggerProxy;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.loader.internal.MediaLoaderActivityLifecycle;
+import com.tokopedia.common.network.cdn.MonitoringActivityLifecycle;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks;
+import com.tokopedia.notifications.utils.PushTokenRefreshUtil;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
@@ -84,6 +96,7 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.shakedetect.ShakeDetectManager;
 import com.tokopedia.shakedetect.ShakeSubscriber;
 import com.tokopedia.telemetry.TelemetryActLifecycleCallback;
+import com.tokopedia.trackingoptimizer.activitylifecyclecallback.TrackingQueueActivityLifecycleCallback;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
@@ -114,7 +127,9 @@ import kotlin.jvm.functions.Function2;
 import timber.log.Timber;
 
 import com.tokopedia.developer_options.notification.DevOptNotificationManager;
-
+import com.tokopedia.analytics.performance.perf.performanceTracing.AppPerformanceTrace;
+import com.tokopedia.analytics.performance.perf.performanceTracing.config.DebugAppPerformanceConfig;
+import com.tokopedia.analytics.performance.perf.performanceTracing.config.DefaultAppPerformanceConfig;
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -146,6 +161,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private final String STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY = "key_strict_mode_leak_publisher_toggle";
     private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
     private final boolean STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE = false;
+    private final String PUSH_DELETION_TIME_GAP = "android_push_deletion_time_gap";
+    private final String ENABLE_PUSH_TOKEN_DELETION_WORKER = "android_push_token_deletion_rollence";
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -200,6 +217,89 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         Typography.Companion.setFontTypeOpenSauceOne(true);
 
         showDevOptNotification();
+        initGotoSDK();
+        if(RemoteConfigInstance.getInstance().getABTestPlatform().getBoolean(ENABLE_PUSH_TOKEN_DELETION_WORKER)){
+            PushTokenRefreshUtil pushTokenRefreshUtil = new PushTokenRefreshUtil();
+            pushTokenRefreshUtil.scheduleWorker(context.getApplicationContext(), remoteConfig.getLong(PUSH_DELETION_TIME_GAP));
+        }
+        initializeAppPerformanceTrace();
+    }
+
+    private void initGotoSDK() {
+        GotoSdk.init(this);
+    }
+    
+    private void initializeAppPerformanceTrace() {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            AppPerformanceTrace.Companion.init(
+                    this,
+                    new DebugAppPerformanceConfig(),
+                    new Function1<Activity, Unit>() {
+                        @Override
+                        public Unit invoke(Activity activity) {
+                            if (activity != null && activity instanceof TouchListenerActivity) {
+                                ((TouchListenerActivity) activity).addListener(
+                                        new DispatchTouchListener() {
+                                            @Override
+                                            public void onDispatchTouch(MotionEvent ev) {
+                                                AppPerformanceTrace.Companion.cancelPerformanceTracing(
+                                                        new Error("err: User Touch. Performance trace cancelled"),
+                                                        activity
+                                                );
+                                            }
+                                        }
+                                );
+                            }
+                            if (FrameMetricsMonitoring.Companion.getPerfWindow() != null) {
+                                FrameMetricsMonitoring.Companion.getPerfWindow().updatePerformanceInfo();
+                            }
+                            return null;
+                        }
+                    },
+            new Function0<Unit>() {
+                        @Override
+                        public Unit invoke() {
+                            if (FrameMetricsMonitoring.Companion.getPerfWindow() != null) {
+                                FrameMetricsMonitoring.Companion.getPerfWindow().updatePerformanceInfo();
+                            }
+                            return null;
+                        }
+                    }
+            );
+        } else if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PERFORMANCE_TRACE_V2, true)) {
+            ConfigMapper.INSTANCE.updatePerfConfig(
+                    remoteConfig.getString(RemoteConfigKey.PERFORMANCE_TRACE_CONFIG, "")
+            );
+            AppPerformanceTrace.Companion.init(
+                    this,
+                    new DefaultAppPerformanceConfig(),
+                    new Function1<Activity, Unit>() {
+                        @Override
+                        public Unit invoke(Activity activity) {
+                            if (activity != null && activity instanceof TouchListenerActivity) {
+                                ((TouchListenerActivity) activity).addListener(
+                                        new DispatchTouchListener() {
+                                            @Override
+                                            public void onDispatchTouch(MotionEvent ev) {
+                                                AppPerformanceTrace.Companion.cancelPerformanceTracing(
+                                                        new Error("err: User Touch. Performance trace cancelled"),
+                                                        activity
+                                                );
+                                            }
+                                        }
+                                );
+                            }
+                            return null;
+                        }
+                    },
+                    new Function0<Unit>() {
+                        @Override
+                        public Unit invoke() {
+                            return null;
+                        }
+                    }
+            );
+        }
     }
 
     private void initializationNewRelic() {
@@ -208,6 +308,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 @NotNull
                 @Override
                 public Object execute() {
+                    enableNetworkRequestNewRelic();
+                    enableCrashReportingNewRelic();
                     NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_MA).start(ConsumerMainApplication.this);
                     return true;
                 }
@@ -249,8 +351,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     protected abstract String getOriginalPackageApp();
 
     private void initCacheManager() {
-        PersistentCacheManager.init(this);
-        cacheManager = PersistentCacheManager.instance;
+        cacheManager = PersistentCacheManager.init(this);
     }
 
     public void registerActivityLifecycleCallbacks() {
@@ -261,6 +362,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             }
         }));
 
+        registerActivityLifecycleCallbacks(new TrackingQueueActivityLifecycleCallback(this));
         registerActivityLifecycleCallbacks(new BetaSignActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new NFCSubscriber());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
@@ -292,6 +394,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             }
         }));
         registerActivityLifecycleCallbacks(new NotificationGeneralPromptLifecycleCallbacks());
+        registerActivityLifecycleCallbacks(new MonitoringActivityLifecycle(getApplicationContext()));
     }
 
     private void onCheckAppUpdateRemoteConfig(Activity activity, Function1<? super Boolean, Unit> onSuccessCheckAppListener) {
@@ -444,9 +547,23 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             }
         });
 
+        getWidevineId();
+
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);
         return true;
+    }
+
+    private void getWidevineId() {
+        if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_ENABLE_GENERATE_WIDEVINE_ID_SUSPEND, true)) {
+            AdditionalDeviceInfo.getWidevineIdSuspend(ConsumerMainApplication.this, new Function1<String, Unit>() {
+                @Override
+                public Unit invoke(String s) {
+                    FingerprintModelGenerator.INSTANCE.expireFingerprint();
+                    return Unit.INSTANCE;
+                }
+            });
+        }
     }
 
     private boolean getLeakCanaryToggleValue() {
@@ -506,6 +623,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             @Override
             public int getVersionCode() {
                 return GlobalConfig.VERSION_CODE;
+            }
+
+            @NonNull
+            @Override
+            public String getActivityName() {
+                return AppUtil.currentActivityName;
             }
 
             @NotNull

@@ -1,6 +1,7 @@
 package com.tokopedia.cart.data.model.response.promo
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.BebasOngkirInfo
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.UsageSummaries
 
 /**
@@ -18,6 +19,9 @@ data class PromoAdditionalInfo(
 
     @SerializedName("usage_summaries")
     var usageSummaries: List<UsageSummaries> = emptyList(),
+
+    @SerializedName("bebas_ongkir_info")
+    var bebasOngkirInfo: BebasOngkirInfo = BebasOngkirInfo(),
 
     @SerializedName("poml_auto_applied")
     var pomlAutoApplied: Boolean = false

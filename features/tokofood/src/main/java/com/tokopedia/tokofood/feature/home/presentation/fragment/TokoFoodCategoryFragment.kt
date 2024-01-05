@@ -176,11 +176,6 @@ class TokoFoodCategoryFragment: BaseMultiFragment(),
         collectValue()
     }
 
-    override fun onPause() {
-        super.onPause()
-        trackingQueue.sendAll()
-    }
-
     override fun onStop() {
         collectJob?.cancel()
         super.onStop()

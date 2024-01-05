@@ -8,8 +8,8 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
-
-class ContentCardViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
+class ContentCardViewHolder(itemView: View, private val fragment: Fragment) :
+    AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
     private var mContentCardViewModel: ContentCardViewModel? = null
 

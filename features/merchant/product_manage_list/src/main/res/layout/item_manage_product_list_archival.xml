@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/product_manage_list_padding_top">
+
+    <RelativeLayout
+        android:id="@+id/rlTicker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="12dp"
+        app:layout_constraintBottom_toTopOf="@id/imageProduct"
+        app:layout_constraintTop_toTopOf="parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingVertical="10dp"
+            android:paddingHorizontal="16dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_outline_nn200">
+            <com.tokopedia.iconunify.IconUnify
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:icon_name="PRODUCT_INFO"
+                app:icon_color_light_enable="@color/Unify_NN900"
+                app:icon_color_night_enable="@color/Unify_NN900"
+                />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvInfoProductArchival"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/text_product_have_archived_by_tokopedia"
+                android:textColor="@color/Unify_NN950"
+                android:textSize="12sp"
+                android:layout_marginStart="8dp"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
+        </LinearLayout>
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/ticker_product_manage_violation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:closeButtonVisibility="gone"
+            app:descriptionText="@string/product_manage_violation_ticker_message"
+            app:tickerShapeType="loose"
+            app:tickerType="warning"
+            tools:visibility="gone" />
+    </RelativeLayout>
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/checkBoxSelect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/product_manage_checkbox_select_horizontal_spacing"
+        android:checked="false"
+        android:contentDescription="@string/content_desc_checkBoxSelect"
+        android:visibility="gone"
+        app:indeterminate="false"
+        app:layout_constraintBottom_toBottomOf="@id/imageProduct"
+        app:layout_constraintLeft_toLeftOf="@id/leftGuideline"
+        app:layout_constraintRight_toLeftOf="@id/imageProduct"
+        app:layout_constraintTop_toTopOf="@id/imageProduct"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imageProduct"
+        android:layout_width="@dimen/product_manage_list_image_size"
+        android:layout_height="@dimen/product_manage_list_image_size"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="@dimen/product_manage_list_image_horizontal_spacing"
+        app:layout_constraintBottom_toBottomOf="@id/imageProduct"
+        app:layout_constraintLeft_toRightOf="@id/checkBoxSelect"
+        app:layout_constraintRight_toLeftOf="@id/textTitle"
+        app:layout_constraintTop_toBottomOf="@id/rlTicker"
+        app:unify_image_corner_radius="6"
+        app:unify_image_type="rect" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Unify_NN950_96"
+        app:layout_constraintLeft_toRightOf="@id/imageProduct"
+        app:layout_constraintRight_toRightOf="@id/rightGuideline"
+        app:layout_constraintTop_toTopOf="@id/imageProduct"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="New Balance 1500 Genel (Limited Edition) Japan Ver. 2019, Rare Item" />
+
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelArchivalPotential"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:visibility="gone"
+        app:labelTitle="@string/text_potential_archival"
+        app:labelType="general_light_orange"
+        app:layout_constraintLeft_toLeftOf="@id/textTitle"
+        app:layout_constraintTop_toBottomOf="@id/textTitle"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelArchival"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:visibility="gone"
+        app:labelTitle="@string/text_archival"
+        app:labelType="general_light_red"
+        app:layout_constraintLeft_toLeftOf="@id/textTitle"
+        app:layout_constraintTop_toBottomOf="@id/textTitle"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="imageProduct,labelArchivalPotential,labelArchival" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnContactCS"
+        android:layout_width="0dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="@dimen/product_manage_button_horizontal_spacing_long"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
+        android:text="@string/product_manage_more"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintLeft_toRightOf="@id/leftGuideline"
+        app:layout_constraintRight_toLeftOf="@id/btnMoreOptions"
+        app:layout_constraintTop_toBottomOf="@id/barrier"
+        app:unifyButtonSize="small"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost"
+        tools:visibility="visible" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/btnMoreOptions"
+        android:layout_width="@dimen/product_manage_button_width"
+        android:layout_height="32dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
+        android:clickable="true"
+        android:contentDescription="@string/content_desc_btnMoreOptions"
+        android:focusable="true"
+        android:foreground="?selectableItemBackground"
+        android:visibility="gone"
+        app:icon_name="MENU_KEBAB_VERTICAL"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintRight_toRightOf="@id/rightGuideline"
+        app:layout_constraintTop_toBottomOf="@id/barrier"
+        tools:ignore="ContentDescription,UnusedAttribute"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="@dimen/product_manage_vertical_spacing"
+        app:layout_constraintTop_toBottomOf="@id/btnMoreOptions"
+        app:layout_goneMarginTop="@dimen/product_manage_more_option_vertical_spacing" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/leftGuideline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/product_manage_container_spacing" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/rightGuideline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/product_manage_container_spacing" />
+</androidx.constraintlayout.widget.ConstraintLayout>

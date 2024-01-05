@@ -164,7 +164,8 @@ class LogManager(val application: Application, val loggerProxy: LoggerProxy) {
                     priority,
                     tag,
                     message,
-                    thisInstance.loggerProxy.userId
+                    thisInstance.loggerProxy.userId,
+                    thisInstance.loggerProxy.activityName
                 )
                 if (processedLogger != null) {
                     instance?.getLogger()?.insert(processedLogger)
@@ -200,4 +201,5 @@ interface LoggerProxy {
     val encrypt: ((String) -> (String))?
     val decrypt: ((String) -> (String))?
     val decryptNrKey: ((String) -> (String))?
+    val activityName: String
 }

@@ -29,6 +29,20 @@ android {
         viewBinding true
         buildConfig true
     }
+    
+    sourceSets {
+        main {
+            res {
+                //TODO need to re arrange layout folder in the future so that it will be more readable
+                srcDirs = [
+                        'src/main/res/home_tab_viewholder/directpurchasebyetalase',
+                        'src/main/res/custom_view/directpurchase',
+                        'src/main/res/common',
+                        'src/main/res'
+                ]
+            }
+        }
+    }
 }
 
 dependencies {
@@ -36,6 +50,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.playWidget)
+    implementation projectOrAar(rootProject.ext.features.creationCommon)
+    implementation projectOrAar(rootProject.ext.features.createpostCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -85,6 +101,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.accordion
+    implementation rootProject.ext.unifyDependencies.viewAllCard
+    implementation rootProject.ext.unifyDependencies.header
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -107,7 +125,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.swipeRefresh
     implementation rootProject.ext.supportLibDependencies.supportV4
     implementation rootProject.ext.miscDependencies.lottie
-    implementation (rootProject.ext.miscDependencies.flexBoxLayout){
+    implementation(rootProject.ext.miscDependencies.flexBoxLayout) {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.miscDependencies.dagger
@@ -120,7 +138,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-    implementation (rootProject.ext.firebase.crashlytics) {
+    implementation(rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
     implementation projectOrAar(rootProject.ext.libraries.track)
@@ -138,7 +156,13 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.affiliateSDK)
     implementation project(rootProject.ext.libraries.foldable)
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
-
+    implementation projectOrAar(rootProject.ext.features.playCommon)
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayer
+    implementation rootProject.ext.miscDependencies.exoPlayerRtmp
+    implementation projectOrAar(rootProject.ext.features.storiesWidget)
+    implementation projectOrAar(rootProject.ext.features.reviewCommon)
+    
     // UI Test
     androidTestImplementation projectOrAar(rootProject.ext.features.shopShowcase)
     androidTestImplementation projectOrAar(rootProject.ext.features.feedShop)
@@ -150,7 +174,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
-    
+
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
 }
 
@@ -158,7 +182,7 @@ project.ext {
     artifactId = 'shop-page'
     groupId = 'com.tokopedia.merchant'
     versionName = "0.0.2"
-    artifactName ="shop_page-release"
+    artifactName = "shop_page-release"
 }
 
 apply from: '../../../publish_local.gradle'

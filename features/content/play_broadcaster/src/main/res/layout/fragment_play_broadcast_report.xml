@@ -94,7 +94,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="4dp"
             android:layout_weight="1"
-            android:text="@string/play_bro_product_summary_done"
+            android:text="@string/play_broadcaster_done"
             app:unifyButtonSize="medium"
             app:unifyButtonType="alternate"
             app:unifyButtonVariant="ghost" />

@@ -83,7 +83,7 @@ class RechargeGeneralInstrumentTest {
         onView(withText("PLN Non-Taglis")).check(matches(isDisplayed()))
 
         Thread.sleep(1000)
-        onView(withId(R.id.vg_input_dropdown_recycler_view)).check(matches(isDisplayed())).perform(
+        onView(withId(com.tokopedia.common.topupbills.R.id.vg_input_dropdown_recycler_view)).check(matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<TopupBillsInputDropdownWidget.TopupBillsInputDropdownViewHolder>(
                         0, click()
                 )
@@ -153,7 +153,7 @@ class RechargeGeneralInstrumentTest {
         onView(withText("Token Listrik")).check(matches(isDisplayed()))
         onView(withText("Tagihan Listrik")).check(matches(isDisplayed()))
         onView(withText("PLN Non-Taglis")).check(matches(isDisplayed()))
-        onView(withId(R.id.vg_input_dropdown_recycler_view)).check(matches(isDisplayed())).perform(
+        onView(withId(com.tokopedia.common.topupbills.R.id.vg_input_dropdown_recycler_view)).check(matches(isDisplayed())).perform(
                 RecyclerViewActions.actionOnItemAtPosition<TopupBillsInputDropdownWidget.TopupBillsInputDropdownViewHolder>(
                         1, click()
                 )

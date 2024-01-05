@@ -10,7 +10,9 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellO
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShipping
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippingGeneral
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.NewUpsell
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.PaymentLevelAddOnItem
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ScheduleDelivery
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAction
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentPlatformFee
@@ -18,6 +20,8 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentSu
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.SubtotalAddOn
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.TradeInInfo
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Upsell
+import com.tokopedia.checkout.domain.model.bmgm.CheckoutBmgmProductModel
+import com.tokopedia.checkout.domain.model.bmgm.CheckoutBmgmTierProductModel
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressData
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
@@ -36,6 +40,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData
 import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.ScheduleDeliveryData
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction.ShipmentActionPopup
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentSubtotalAddOnData
@@ -43,12 +48,14 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentSummaryAddOn
 import com.tokopedia.checkout.domain.model.cartshipmentform.Shop
 import com.tokopedia.checkout.domain.model.cartshipmentform.TradeInInfoData
 import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
+import com.tokopedia.checkout.revamp.view.CheckoutViewModel
 import com.tokopedia.checkout.view.uimodel.CrossSellBottomSheetModel
 import com.tokopedia.checkout.view.uimodel.CrossSellInfoModel
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.entity.address.UserAddressTokoNow
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData
@@ -59,6 +66,7 @@ import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductBottomSheetModel
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataModel
+import com.tokopedia.purchase_platform.common.feature.bmgm.data.response.BmGmTierProduct
 import com.tokopedia.purchase_platform.common.feature.coachmarkplus.CoachmarkPlusResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyEnablerResponse
@@ -79,6 +87,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOn
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.ButtonData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.AdditionalInfo
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.BebasOngkirInfo
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.CartEmptyInfo
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Data
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.ErrorDefault
@@ -89,7 +98,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSA
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.UsageSummaries
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyBebasOngkirInfo
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyBebasOngkirInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyErrorDetailUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageInfoUiModel
@@ -180,6 +189,8 @@ class ShipmentMapper @Inject constructor() {
             shipmentPlatformFee =
                 mapPlatformFee(shipmentAddressFormDataResponse.shipmentPlatformFee)
             listSummaryAddons = mapSummaryAddOn(shipmentAddressFormDataResponse.listSummaryAddOns)
+            paymentLevelAddOnsPositions =
+                mapPaymentLevelAddOns(shipmentAddressFormDataResponse.paymentLevelAddOns)
         }
     }
 
@@ -238,7 +249,9 @@ class ShipmentMapper @Inject constructor() {
                     groupInfoName = it.groupInformation.name,
                     groupInfoBadgeUrl = it.groupInformation.badgeUrl,
                     groupInfoDescription = it.groupInformation.description,
-                    groupInfoDescriptionBadgeUrl = it.groupInformation.descriptionBadgeUrl
+                    groupInfoDescriptionBadgeUrl = it.groupInformation.descriptionBadgeUrl,
+                    groupMetadata = it.groupMetadata,
+                    shipmentAction = mapShipmentAction(it.shipmentAction)
                 ).apply {
                     isError =
                         it.errors.isNotEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
@@ -288,6 +301,8 @@ class ShipmentMapper @Inject constructor() {
                     )
                     scheduleDelivery = mapScheduleDelivery(it.scheduledDelivery)
                     ratesValidationFlow = it.ratesValidationFlow
+                    shippingComponents = it.shippingComponents
+                    groupingState = it.groupingState
                     listSubtotalAddOn = mapSubtotalAddOn(it.listSubtotalAddOns)
                 }
             )
@@ -412,9 +427,31 @@ class ShipmentMapper @Inject constructor() {
                         isBundlingItem = false
                         bundleId = "0"
                     }
+                    if (cartDetail.cartDetailInfo.cartDetailType.lowercase() == CART_DETAIL_TYPE_BMGM) {
+                        isBmgmItem = true
+                        bmgmOfferId = cartDetail.cartDetailInfo.bmgmData.offerId
+                        bmgmIconUrl = cartDetail.cartDetailInfo.bmgmData.offerIcon
+                        bmgmOfferName = cartDetail.cartDetailInfo.bmgmData.offerName
+                        bmgmOfferMessage = cartDetail.cartDetailInfo.bmgmData.offerMessage
+                        bmgmOfferStatus = cartDetail.cartDetailInfo.bmgmData.offerStatus
+                        bmgmItemPosition =
+                            if (cartDetail.products.firstOrNull()?.productId == productId) {
+                                BMGM_ITEM_HEADER
+                            } else {
+                                BMGM_ITEM_DEFAULT
+                            }
+                        bmgmTotalDiscount = cartDetail.cartDetailInfo.bmgmData.totalDiscount
+                        bmgmTierProductList = mapBmgmTierProductToDomainModel(
+                            cartDetail.cartDetailInfo.bmgmData.tierProductList,
+                            cartDetail.products
+                        )
+                    } else {
+                        isBmgmItem = false
+                    }
                     addOnGiftingProduct = mapAddOnsGiftingData(product.addOns)
                     ethicalDrugs = mapEthicalDrugData(product.ethicalDrugResponse)
-                    addOnProduct = mapAddOnsProductData(product.addOnsProduct, product.productQuantity)
+                    addOnProduct =
+                        mapAddOnsProductData(product.addOnsProduct, product.productQuantity)
                     campaignId = product.campaignId
                 }
                 productListResult.add(productResult)
@@ -589,7 +626,10 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
-    private fun mapAddOnsProductData(addOn: AddOnsProduct, productQuantity: Int): AddOnProductDataModel {
+    private fun mapAddOnsProductData(
+        addOn: AddOnsProduct,
+        productQuantity: Int
+    ): AddOnProductDataModel {
         return AddOnProductDataModel().apply {
             iconUrl = addOn.iconUrl
             title = addOn.title
@@ -606,7 +646,10 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
-    private fun mapAddOnProductListData(addOnsDataList: List<AddOnsProduct.AddOnsData>, productQuantity: Int): MutableList<AddOnProductDataItemModel> {
+    private fun mapAddOnProductListData(
+        addOnsDataList: List<AddOnsProduct.AddOnsData>,
+        productQuantity: Int
+    ): ArrayList<AddOnProductDataItemModel> {
         val listAddOnDataItem = arrayListOf<AddOnProductDataItemModel>()
         addOnsDataList.forEach { item ->
             listAddOnDataItem.add(
@@ -617,8 +660,10 @@ class ShipmentMapper @Inject constructor() {
                     name = item.name
                     status = item.status
                     type = item.type
-                    qty = productQuantity
+                    qty = if (item.fixedQuantity) 1 else productQuantity
                     uniqueId = item.uniqueId
+                    iconUrl = item.iconUrl
+                    fixedQty = item.fixedQuantity
                 }
             )
         }
@@ -835,6 +880,7 @@ class ShipmentMapper @Inject constructor() {
             message = mapLastApplyMessageUiModel(promoData.message)
 //            listRedPromos = mapListRedPromos(promoData)
             listAllPromoCodes = mapListAllPromos(promoData)
+            userGroupMetadata = promoData.userGroupMetadata
         }
     }
 
@@ -857,8 +903,7 @@ class ShipmentMapper @Inject constructor() {
             promoSpIds = mapPromoSpId(additionalInfo)
             usageSummaries = mapLastApplyUsageSummariesUiModel(additionalInfo.listUsageSummaries)
             pomlAutoApplied = additionalInfo.pomlAutoApplied
-            bebasOngkirInfo =
-                LastApplyBebasOngkirInfo(additionalInfo.bebasOngkirInfo.isBoUnstackEnabled)
+            bebasOngkirInfo = mapLastApplyBebasOngkirInfo(additionalInfo.bebasOngkirInfo)
         }
     }
 
@@ -872,6 +917,13 @@ class ShipmentMapper @Inject constructor() {
                 currencyDetailsStr = it.currencyDetailsStr
             }
         }
+    }
+
+    private fun mapLastApplyBebasOngkirInfo(bebasOngkirInfo: BebasOngkirInfo): LastApplyBebasOngkirInfoUiModel {
+        return LastApplyBebasOngkirInfoUiModel(
+            isBoUnstackEnabled = bebasOngkirInfo.isBoUnstackEnabled,
+            isUseBebasOngkirOnly = bebasOngkirInfo.isUseBebasOngkirOnly
+        )
     }
 
     private fun mapLastApplyMessageInfoUiModel(messageInfo: MessageInfo): LastApplyMessageInfoUiModel {
@@ -979,6 +1031,7 @@ class ShipmentMapper @Inject constructor() {
             description = shipmentAddressFormDataResponse.donation.description
             nominal = shipmentAddressFormDataResponse.donation.nominal
             isChecked = shipmentAddressFormDataResponse.isDonationCheckboxStatus
+            iconUrl = shipmentAddressFormDataResponse.donation.iconUrl
         }
     }
 
@@ -1036,9 +1089,12 @@ class ShipmentMapper @Inject constructor() {
             subText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.subText
             tickerText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.tickerText
             tooltipText = shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.tooltipText
+            tooltipTitleText =
+                shipmentAddressFormDataResponse.egoldAttributes.egoldMessage.tooltipTitleText
             hyperlinkText = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.text
             hyperlinkUrl = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.url
             isShowHyperlink = shipmentAddressFormDataResponse.egoldAttributes.hyperlinkText.isShow
+            iconUrl = shipmentAddressFormDataResponse.egoldAttributes.iconUrl
 
             val tmpEgoldTieringModelArrayList: ArrayList<EgoldTieringModel> = arrayListOf()
             shipmentAddressFormDataResponse.egoldAttributes.egoldTieringDataArrayList.forEach {
@@ -1227,7 +1283,9 @@ class ShipmentMapper @Inject constructor() {
         return ScheduleDeliveryData(
             scheduleDelivery.timeslotId,
             scheduleDelivery.scheduleDate,
-            scheduleDelivery.validationMetadata
+            scheduleDelivery.validationMetadata,
+            scheduleDelivery.startDate,
+            scheduleDelivery.isRecommend
         )
     }
 
@@ -1260,10 +1318,69 @@ class ShipmentMapper @Inject constructor() {
         return listShipmentSummaryAddOn
     }
 
+    private fun mapBmgmTierProductToDomainModel(
+        tierProductList: List<BmGmTierProduct>,
+        products: List<com.tokopedia.checkout.data.model.response.shipmentaddressform.Product>
+    ): List<CheckoutBmgmTierProductModel> {
+        return tierProductList.map { bmgmTier ->
+            CheckoutBmgmTierProductModel(
+                tierId = bmgmTier.tierId,
+                tierName = bmgmTier.tierName,
+                tierMessage = bmgmTier.tierMessage,
+                tierDiscountText = bmgmTier.tierDiscountText,
+                tierDiscountAmount = bmgmTier.tierDiscountAmount,
+                priceBeforeBenefit = bmgmTier.priceBeforeBenefit,
+                priceAfterBenefit = bmgmTier.priceAfterBenefit,
+                listProduct = bmgmTier.listProduct.map { bmgmProduct ->
+                    val matchedProduct = products.firstOrNull {
+                        bmgmProduct.productId == it.productId.toString()
+                    }
+                    CheckoutBmgmProductModel(
+                        productId = bmgmProduct.productId,
+                        productName = matchedProduct?.productName.orEmpty(),
+                        imageUrl = matchedProduct?.productImageSrc200Square.orEmpty(),
+                        warehouseId = bmgmProduct.warehouseId,
+                        quantity = bmgmProduct.quantity,
+                        priceBeforeBenefit = bmgmProduct.priceBeforeBenefit,
+                        priceAfterBenefit = bmgmProduct.priceAfterBenefit,
+                        wholesalePrice = matchedProduct?.productWholesalePrice.orZero(),
+                        cartId = bmgmProduct.cartId
+                    )
+                }
+            )
+        }
+    }
+
+    private fun mapPaymentLevelAddOns(paymentLevelAddOns: List<PaymentLevelAddOnItem>): List<Long> {
+        return if (paymentLevelAddOns.isEmpty()) {
+            DEFAULT_PAYMENT_LEVEL_ADD_ONS_POSITION
+        } else {
+            paymentLevelAddOns.map { it.id }
+        }
+    }
+
+    private fun mapShipmentAction(shipmentAction: List<ShipmentAction>): HashMap<Long, com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction> {
+        return HashMap(
+            shipmentAction.associateBy({ it.spId }, {
+                com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction(
+                    action = it.action,
+                    popup = ShipmentActionPopup(
+                        title = it.popup.title,
+                        body = it.popup.body,
+                        primaryButton = it.popup.buttonOk,
+                        secondaryButton = it.popup.buttonCancel
+                    )
+                )
+            })
+        )
+    }
+
     companion object {
         private const val SHOP_TYPE_OFFICIAL_STORE = "official_store"
         private const val SHOP_TYPE_GOLD_MERCHANT = "gold_merchant"
         private const val SHOP_TYPE_REGULER = "reguler"
+
+        private const val CART_DETAIL_TYPE_BMGM = "bmgm"
 
         const val DISABLED_DROPSHIPPER = "dropshipper"
         const val DISABLED_ORDER_PRIORITY = "order_prioritas"
@@ -1275,5 +1392,14 @@ class ShipmentMapper @Inject constructor() {
         const val BUNDLING_ITEM_DEFAULT = 0
         const val BUNDLING_ITEM_HEADER = 1
         const val BUNDLING_ITEM_FOOTER = 2
+
+        const val BMGM_ITEM_DEFAULT = 0
+        const val BMGM_ITEM_HEADER = 1
+
+        val DEFAULT_PAYMENT_LEVEL_ADD_ONS_POSITION = listOf(
+            CheckoutViewModel.DG_ID,
+            CheckoutViewModel.EGOLD_ID,
+            CheckoutViewModel.DONATION_ID
+        )
     }
 }

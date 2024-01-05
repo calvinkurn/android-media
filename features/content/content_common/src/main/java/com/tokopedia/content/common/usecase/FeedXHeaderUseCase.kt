@@ -1,5 +1,6 @@
 package com.tokopedia.content.common.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.content.common.model.FeedXHeaderRequestFields
 import com.tokopedia.content.common.model.FeedXHeaderResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
@@ -11,7 +12,7 @@ import javax.inject.Inject
 
 @GqlQuery(FeedXHeaderUseCase.QUERY_NAME, FeedXHeaderUseCase.QUERY)
 class FeedXHeaderUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository
+    @ApplicationContext graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<FeedXHeaderResponse>(graphqlRepository) {
 
     init {
@@ -22,10 +23,11 @@ class FeedXHeaderUseCase @Inject constructor(
 
     companion object {
         private const val PARAM_FIELDS = "fields"
+        private const val PARAM_SOURCES = "sources"
         const val QUERY_NAME = "FeedXHeaderQuery"
         const val QUERY = """
-        query FeedXHeader(${'$'}$PARAM_FIELDS: [String!]!) {
-          feedXHeader(req: {fields: ${'$'}$PARAM_FIELDS}) {
+        query FeedXHeader(${'$'}$PARAM_FIELDS: [String!]!, ${'$'}$PARAM_SOURCES: [FeedXHeaderSources]) {
+          feedXHeader(req: {fields: ${'$'}$PARAM_FIELDS, sources: ${'$'}$PARAM_SOURCES}) {
             data {
               ...FeedXHeaderData
               __typename
@@ -50,6 +52,14 @@ class FeedXHeaderUseCase @Inject constructor(
           }
           userProfile {
             ...FeedXHeaderUserProfile
+            __typename
+          }
+          browse {
+            ...FeedXHeaderBrowse
+            __typename
+          }
+          cdpTitle {
+            ...FeedXHeaderCDPTitle
             __typename
           }
         }
@@ -85,6 +95,7 @@ class FeedXHeaderUseCase @Inject constructor(
             type
             title
             key
+            newContentExists
             __typename
           }
           meta {
@@ -110,14 +121,32 @@ class FeedXHeaderUseCase @Inject constructor(
           applink
           __typename
         }
+        
+        fragment FeedXHeaderBrowse on FeedXHeaderBrowse {
+          isActive
+          weblink
+          applink
+          title
+          __typename
+        }
+        
+        fragment FeedXHeaderCDPTitle on FeedXHeaderCDPTitle {
+          title
+          __typename
+        }
         """
 
         fun createParam(
-            fields: List<String> = FeedXHeaderRequestFields.values().map { it.value }
+            fields: List<String> = FeedXHeaderRequestFields.values().map { it.value },
+            sources: List<Map<String, String>> = emptyList()
         ): Map<String, Any> {
-            return mapOf(
+            val params = mutableMapOf<String, Any>(
                 PARAM_FIELDS to fields
             )
+            if (sources.isNotEmpty()) {
+                params[PARAM_SOURCES] = sources
+            }
+            return params
         }
     }
 }

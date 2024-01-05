@@ -248,7 +248,7 @@
 -keep class com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment
 -keep class com.tokopedia.home_recom.view.fragment.RecommendationFragment
 -keep class com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragment
--keep class com.tokopedia.feedplus.presentation.fragment.FeedIntermediaryFragment
+-keep class com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 -keep class com.tokopedia.cart.view.CartFragment
 -keep class com.tokopedia.dynamicfeatures.DFInstallerFragment
 -keep class com.tokopedia.review.feature.reading.presentation.fragment.ShopReviewFragment
@@ -355,3 +355,43 @@ public static com.tokopedia.stability.ChangeDelegate *;
 
 # kyc ds sdk
 -keep class com.gojek.ojosdk.** {*;}
+
+
+-dontwarn org.conscrypt.**
+-dontwarn org.openjsse.**
+-dontwarn retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+
+-keep class com.huawei.hms.ads.** { *; }
+-keep interface com.huawei.hms.ads.** { *; }
+-if class *
+-keep, allowobfuscation, allowoptimization class <1> {
+    <init>(...);
+    @com.google.gson.annotations.SerializedName <fields>;
+}
+
+-dontwarn com.gojek.clickstream.common.EventMeta$Builder
+-dontwarn com.gojek.clickstream.common.EventMeta
+
+-keepattributes EnclosingClass,InnerClasses
+-keep,allowshrinking,allowobfuscation class * implements android.os.Parcelable {}
+-keep,allowshrinking,allowobfuscation class * implements android.os.Parcelable$Creator {}
+-keepclassmembers enum com.gojek.kyc.** {*;}
+
+# FFMPEG
+-keep class com.arthenica.mobileffmpeg.Config {
+    native <methods>;
+    void log(long, int, byte[]);
+    void statistics(long, int, float, float, long , int, double, double);
+}
+
+-keep class com.arthenica.mobileffmpeg.AbiDetect {
+    native <methods>;
+}
+
+-keep class com.arthenica.mobileffmpeg.** { *; }
+-dontwarn kotlin.jvm.internal.SourceDebugExtension
+-dontwarn com.gojek.onekyc.R$drawable
+
+# BCA Flazz Library
+-keep class com.tokopedia.emoney.integration.BCALibrary {*;}
+-keep class com.tokopedia.emoney.integration.data.JNIResult {*;}

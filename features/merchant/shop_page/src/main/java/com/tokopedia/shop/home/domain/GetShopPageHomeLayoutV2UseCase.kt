@@ -51,6 +51,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                     ratio
                     isATC
                     isShowEtalaseName
+                    widgetStyle
                   }
                   data {
                     ... on BundleWidget {
@@ -94,6 +95,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                       campaignID
                       totalNotify
                       totalNotifyWording
+                      bannerID
                       dynamicRule {
                         dynamicRoleData {
                           ruleName
@@ -103,6 +105,28 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         }
                         descriptionHeader
                       }
+                      text
+                      mainBannerPosition
+                      showcaseList {
+                        showcaseID
+                        name
+                        imageURL
+                        ctaLink
+                        isMainBanner
+                      }
+                      productHotspot {
+                        productID
+                        name
+                        imageUrl
+                        productUrl
+                        displayPrice
+                        isSoldOut
+                        coordinate{
+                          x
+                          y
+                        }
+                      }
+                      warehouseID
                     }
                     ... on EtalaseWidget {
                       imageUrl
@@ -138,6 +162,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         title
                         url
                       }
+                      warehouseID
                       minimumOrder
                       maximumOrder
                       stock
@@ -170,6 +195,26 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                       status {
                         status
                         identifier
+                      }
+                    }
+                    ... on DynamicComponentWidget {
+                      tabLabel
+                      tabName
+                      componentList {
+                        componentID
+                        componentName
+                        componentType
+                        data {
+                          linkType
+                          linkID
+                          ctaText
+                          ctaLink
+                          ratio
+                          imageID
+                          imageURL
+                          desktopImageURL
+                          isShowProductInfo
+                        }
                       }
                     }
                     ... on CampaignWidget {
@@ -231,10 +276,23 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         parentID
                         showStockbar
                         rating
+                        warehouseID
                       }
                       backgroundGradientColor {
                         firstColor
                         secondColor
+                      }
+                    }
+                    ... on DirectPurchaseWidget{
+                      ratio
+                      Title
+                      Banner
+                      EtalaseList{
+                        imageUrl
+                        desktopImageUrl
+                        linkType
+                        linkID
+                        Name
                       }
                     }
                   }

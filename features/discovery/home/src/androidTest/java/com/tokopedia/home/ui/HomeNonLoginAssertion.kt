@@ -78,7 +78,7 @@ interface HomeNonLoginAssertion {
 
         Espresso.onView(
             CommonMatcher.withTagStringValue(
-                context.getString(R.string.tag_navigation_toolbar_searchbar)
+                context.getString(com.tokopedia.searchbar.R.string.tag_navigation_toolbar_searchbar)
             )
         ).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
@@ -161,7 +161,7 @@ interface HomeNonLoginAssertion {
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         }
 
-        Espresso.onView(ViewMatchers.withId(R.id.step_next))
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.coachmark.R.id.step_next))
             .inRoot(RootMatchers.isPlatformPopup())
             .perform(ViewActions.click())
     }

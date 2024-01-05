@@ -89,19 +89,20 @@ class SwitchAccountTest {
         createRobot().switchAccountSellerToBuyer()
     }
 
-    @Test
-    fun test_switchAccountSellerToBuyerAndNotHaveUsername() {
-        coEvery { mockRepo.getAccountList() } returns accountListResponse(buyerHasUsername = false, buyerHasAcceptTnc = false)
-
-        createRobot().switchAccountSellerToBuyerAndNotHaveUsername()
-    }
-
-    @Test
-    fun test_switchAccountSellerToBuyerAndNotAcceptTnc() {
-        coEvery { mockRepo.getAccountList() } returns accountListResponse(buyerHasAcceptTnc = false)
-
-        createRobot().switchAccountSellerToBuyerAndNotAcceptTnc()
-    }
+    /** Tests are not relevant since UGC is temporarily disabled */
+//    @Test
+//    fun test_switchAccountSellerToBuyerAndNotHaveUsername() {
+//        coEvery { mockRepo.getAccountList() } returns accountListResponse(buyerHasUsername = false, buyerHasAcceptTnc = false)
+//
+//        createRobot().switchAccountSellerToBuyerAndNotHaveUsername()
+//    }
+//
+//    @Test
+//    fun test_switchAccountSellerToBuyerAndNotAcceptTnc() {
+//        coEvery { mockRepo.getAccountList() } returns accountListResponse(buyerHasAcceptTnc = false)
+//
+//        createRobot().switchAccountSellerToBuyerAndNotAcceptTnc()
+//    }
 
     @Test
     fun test_switchAccountBuyerToSellerAndNotAllowed() {

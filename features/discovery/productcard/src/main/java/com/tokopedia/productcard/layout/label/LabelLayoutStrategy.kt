@@ -37,10 +37,6 @@ internal interface LabelLayoutStrategy {
 
     fun getTextCategoryBottomHeight(context: Context, productCardModel: ProductCardModel): Int
 
-    fun moveDiscountConstraint(view: View, productCardModel: ProductCardModel)
-
-    fun setDiscountMargin(label: Label)
-
     fun renderLabelPrice(view: View, productCardModel: ProductCardModel)
 
     fun configContentPosition(view: View)

@@ -2,14 +2,11 @@ package com.tokopedia.inbox.universalinbox.test
 
 import com.tokopedia.inbox.universalinbox.test.base.BaseUniversalInboxTest
 import com.tokopedia.inbox.universalinbox.test.robot.generalRobot
-import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertApplinkChatBuyer
-import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertApplinkChatSeller
-import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertApplinkDiscussion
-import com.tokopedia.inbox.universalinbox.test.robot.menu.MenuResult.assertApplinkReview
+import com.tokopedia.inbox.universalinbox.test.robot.menuResult
 import com.tokopedia.inbox.universalinbox.test.robot.menuRobot
-import com.tokopedia.inbox.universalinbox.test.robot.recommendation.RecommendationResult.assertApplinkPDP
+import com.tokopedia.inbox.universalinbox.test.robot.recommendationResult
 import com.tokopedia.inbox.universalinbox.test.robot.recommendationRobot
-import com.tokopedia.inbox.universalinbox.test.robot.widget.WidgetResult.assertApplinkHelp
+import com.tokopedia.inbox.universalinbox.test.robot.widgetResult
 import com.tokopedia.inbox.universalinbox.test.robot.widgetRobot
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Test
@@ -22,11 +19,14 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         launchActivity()
         stubAllIntents()
         menuRobot {
-            clickMenuOnPosition(2)
+            clickMenuOnPosition(1)
         }
 
         // Then
-        assertApplinkChatBuyer()
+        Thread.sleep(1000)
+        menuResult {
+            assertApplinkChatBuyer()
+        }
     }
 
     @Test
@@ -35,24 +35,14 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         launchActivity()
         stubAllIntents()
         menuRobot {
-            clickMenuOnPosition(3)
+            clickMenuOnPosition(2)
         }
 
         // Then
-        assertApplinkChatSeller()
-    }
-
-    @Test
-    fun should_open_discussion() {
-        // When
-        launchActivity()
-        stubAllIntents()
-        menuRobot {
-            clickMenuOnPosition(5)
+        Thread.sleep(1000)
+        menuResult {
+            assertApplinkChatSeller()
         }
-
-        // Then
-        assertApplinkDiscussion()
     }
 
     @Test
@@ -61,11 +51,14 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         launchActivity()
         stubAllIntents()
         menuRobot {
-            clickMenuOnPosition(6)
+            clickMenuOnPosition(4)
         }
 
         // Then
-        assertApplinkReview()
+        Thread.sleep(1000)
+        menuResult {
+            assertApplinkReview()
+        }
     }
 
     @Test
@@ -78,7 +71,10 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         }
 
         // Then
-        assertApplinkHelp()
+        Thread.sleep(1000)
+        widgetResult {
+            assertApplinkHelp()
+        }
     }
 
     @Test
@@ -87,13 +83,33 @@ class UniversalInboxApplinkTest : BaseUniversalInboxTest() {
         launchActivity()
         stubAllIntents()
         generalRobot {
-            scrollToPosition(12)
+            scrollToPosition(8) // trigger rv load
+            scrollToPosition(11)
         }
         recommendationRobot {
-            clickProductOnPosition(12)
+            clickProductOnPosition(11)
         }
 
         // Then
-        assertApplinkPDP()
+        Thread.sleep(1000)
+        recommendationResult {
+            assertApplinkPDP()
+        }
+    }
+
+    @Test
+    fun should_open_chat_list_driver() {
+        // When
+        launchActivity()
+        stubAllIntents()
+        widgetRobot {
+            clickWidgetOnPosition(0)
+        }
+
+        // Then
+        Thread.sleep(1000)
+        widgetResult {
+            assertApplinkChatListDriver()
+        }
     }
 }

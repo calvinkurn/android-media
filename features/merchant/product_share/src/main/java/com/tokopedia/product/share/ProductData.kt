@@ -9,6 +9,7 @@ data class ProductData(
         var productName: String? = "",
         var currencySymbol: String = "Rp",
         var productUrl: String? = "",
+        var hasMaskingPrice: Boolean = false,
         var shopUrl: String? = "",
         var shopName: String = "",
         var productId: String = "",

@@ -44,11 +44,11 @@ Whitelabel Instan
 
 Tokopedia facilitates seller to set up courier for a specific product with Custom Product Logistic feature. CPL page only accessible from seller app. 
 
-![](../res/customproductlogistic/background.png)
+![](https://docs-android.tokopedia.net/images/docs/editshipping/customproductlogistic/background.png)
 
 ## Navigation
 
-![](../res/customproductlogistic/navigation.png)
+![](https://docs-android.tokopedia.net/images/docs/editshipping/customproductlogistic/navigation.png)
 - 
 - Edit Product: Seller app only → tab product → Lihat preview product → Ubah product → detail pengiriman
 - Add Product: Seller app only → tab product → click icon + → detail pengiriman

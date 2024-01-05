@@ -5,11 +5,13 @@ import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestReloadWidgetUiModel
 
 class HomeListDiffer : BaseTokopediaNowDiffer() {
     private var oldList: List<Visitable<*>> = emptyList()
@@ -33,6 +35,10 @@ class HomeListDiffer : BaseTokopediaNowDiffer() {
             oldItem.id == newItem.id
         } else if (oldItem is HomeSharingReferralWidgetUiModel && newItem is HomeSharingReferralWidgetUiModel) {
             oldItem.id == newItem.id
+        } else if (oldItem is HomeHeaderUiModel && newItem is HomeHeaderUiModel) {
+            oldItem.id == newItem.id
+        } else if (oldItem is HomeQuestReloadWidgetUiModel && newItem is HomeQuestReloadWidgetUiModel) {
+            false
         } else {
             oldItem == newItem
         }

@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.model.InboxTopAdsBannerUiModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.widget.TdnBannerView
@@ -50,8 +51,8 @@ class InboxTopAdsBannerViewHolder constructor(
 
     }
 
-    private fun onTdnBannerClicked(applink: String) {
-        topAdsClickListener.onTopAdsImageViewClicked(applink)
+    private fun onTdnBannerClicked(imageData: TopAdsImageViewModel) {
+        topAdsClickListener.onTopAdsImageViewClicked(imageData.applink)
     }
 
     companion object {

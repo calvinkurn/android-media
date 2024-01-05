@@ -4,9 +4,10 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
-    <application>
+    <application
+        android:networkSecurityConfig="@xml/network_security_config">
         <activity
-            android:name="com.tokopedia.loginHelper.presentation.LoginHelperActivity"
+            android:name="com.tokopedia.loginHelper.presentation.home.LoginHelperActivity"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -17,6 +18,48 @@
                 <data
                     android:host="@string/host_global"
                     android:path="@string/path_login_helper"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.tokopedia.loginHelper.presentation.accountSettings.LoginHelperAccountSettingsActivity"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="@string/host_global"
+                    android:path="@string/path_login_helper_accounts_settings"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.tokopedia.loginHelper.presentation.searchAccount.LoginHelperSearchActivity"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="@string/host_global"
+                    android:path="@string/path_login_helper_search_account"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.tokopedia.loginHelper.presentation.addEditAccount.LoginHelperAddEditAccountActivity"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="@string/host_global"
+                    android:path="@string/path_login_helper_add_edit_account"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

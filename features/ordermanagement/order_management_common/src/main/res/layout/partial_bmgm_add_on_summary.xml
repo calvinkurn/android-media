@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivAddOnSummary"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:unify_image_corner_radius="0"
+        app:layout_constraintBottom_toBottomOf="@id/tvAddOnLabel"
+        app:layout_constraintEnd_toStartOf="@id/tvAddOnLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvAddOnLabel" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvAddOnLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivAddOnSummary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="@string/om_detail_add_on_sample_label" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvAddOn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="false"
+        app:layout_constraintStart_toStartOf="@id/ivAddOnSummary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvAddOnLabel"
+        tools:itemCount="5"
+        tools:listitem="@layout/item_bmgm_detail_add_on" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

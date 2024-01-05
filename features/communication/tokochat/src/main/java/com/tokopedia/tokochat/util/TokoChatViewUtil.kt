@@ -14,13 +14,13 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.tokochat.tokochat_config_common.util.TokoChatErrorLogger
-import com.tokochat.tokochat_config_common.util.TokoChatErrorLogger.ErrorType.ERROR_PAGE
-import com.tokochat.tokochat_config_common.util.TokoChatErrorLogger.PAGE.TOKOCHAT
+import com.tokopedia.tokochat.config.util.TokoChatErrorLogger
+import com.tokopedia.tokochat.config.util.TokoChatErrorLogger.ErrorType.ERROR_PAGE
+import com.tokopedia.tokochat.config.util.TokoChatErrorLogger.PAGE.TOKOCHAT
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.picker.common.utils.ImageCompressor
-import com.tokopedia.tokochat_common.util.TokoChatViewUtil.EIGHT_DP
+import com.tokopedia.tokochat.common.util.TokoChatViewUtil.EIGHT_DP
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.file.FileUtil

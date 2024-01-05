@@ -1,0 +1,108 @@
+{
+  "code": 103,
+  "data": {
+    "msg_id":66961,
+    "from":"Seller Testing",
+    "from_uid":148201400,
+    "from_user_name":"Seller Testing",
+    "from_role": "Shop Owner",
+    "thumbnail": "https://imagerouter.tokopedia.com/image/v1/u/143252780/user_thumbnail/desktop",
+    "is_opposite": true,
+    "to_uid": 143252780,
+    "message": {
+      "censored_reply": "Ini stoknya masih ada, Min?",
+      "original_reply": "Ini stoknya masih ada, Min?",
+      "timestamp": "2021-06-17T13:53:11.390382701+07:00",
+      "timestamp_fmt": "17 June 2021, 13:53 WIB",
+      "timestamp_unix": 1623912791390,
+      "timestamp_unix_nano": 1623912791390383000
+    },
+    "reminder_ticker":{
+      "enable":false,
+      "enable_close":false,
+      "feature_id":0,
+      "local_id":"",
+      "main_text":"",
+      "regex_message":"",
+      "sub_text":"",
+      "ticker_type":"",
+      "url":"",
+      "url_label":""
+    },
+    "start_time": "2021-06-17T06:53:08.154Z",
+    "attachment_id":1,
+    "attachment":{
+      "attributes":{
+        "product_id":4549532552,
+        "product_profile":{
+          "android_url":"tokopedia://product/4549532552?extParam=whid%3D12210375%26src%3Dchat",
+          "category_id":8,
+          "discounted_percentage":0,
+          "drop_percentage":"",
+          "free_ongkir":{
+            "image_url":"https://images.tokopedia.net/img/bo-reg-0k.png",
+            "is_active":true
+          },
+          "image_url":"https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/6/29/95d0e5ce-40da-4c12-a30d-34dc70dd9851.jpg",
+          "ios_url":"tokopedia://product/4549532552?extParam=whid%3D12210375%26src%3Dchat",
+          "is_campaign_active":false,
+          "is_upcoming_campaign_product":false,
+          "is_variant":true,
+          "list_image_url":[
+            "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/6/29/95d0e5ce-40da-4c12-a30d-34dc70dd9851.jpg"
+          ],
+          "location_stock":{
+            "address_id":0,
+            "address_name":"",
+            "district_icon":"",
+            "district_id":0,
+            "district_name":"",
+            "district_name_full_text":"Dikirim dari Tanah Abang",
+            "latlon":"",
+            "postal_code":""
+          },
+          "min_order":1,
+          "name":"[NEW]_KOPI_BIJI_SUMATRA_ROBUSTA - 1 pcs",
+          "parent_id":1747046826,
+          "playstore_product_data":{
+
+          },
+          "price":"Rp39.000",
+          "price_before_int":0,
+          "price_int":39000,
+          "rating":{
+
+          },
+          "remaining_stock":123,
+          "shop_id":10973651,
+          "status":1,
+          "stock_info":{
+
+          },
+          "text":" Testing 1 ",
+          "url":"https://www.tokopedia.com/10973651-serba-kopi/new-kopi-biji-sumatra-robusta-1-pcs?extParam=whid%3D10983402%26src%3Dchat&extParam=whid%3D12210375%26src%3Dchat",
+          "variant":[
+            {
+              "option":{
+                "id":290998158,
+                "value":"1 pcs"
+              }
+            }
+          ]
+        },
+        "source":"inbox"
+      },
+      "fallback_attachment":{
+        "html":" Testing 1 ",
+        "message":" Testing 1 "
+      },
+      "id":1,
+      "type":3
+    },
+    "show_rating":false,
+    "to_buyer":true,
+    "local_id":"cbc5fc90-710b-4249-a21c-fb9ec0c52557",
+    "client_connect_time":"0001-01-01T00:00:00Z",
+    "source":"inbox"
+  }
+}

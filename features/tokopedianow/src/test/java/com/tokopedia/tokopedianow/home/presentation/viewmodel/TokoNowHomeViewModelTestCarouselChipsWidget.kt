@@ -17,6 +17,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.domain.model.Grid
 import com.tokopedia.tokopedianow.home.domain.model.Header
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
+import com.tokopedia.tokopedianow.home.mapper.HomeHeaderMapper.createHomeHeaderUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductCarouselChipsUiModel
 import com.tokopedia.unit.test.ext.verifySuccessEquals
@@ -47,7 +48,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                     parentID = 1,
                     shopId = 5,
                     name = "Tahu Bulat",
-                    appUrl = "tokopedia://product/detail/1"
+                    appUrl = "tokopedia://product/detail/1",
+                    warehouseId = 15215612
                 )
             )
 
@@ -90,8 +92,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
-                removeAbleWidgets = listOf(),
-                enableNewRepurchase = true
+                removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -130,7 +131,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                         orderQuantity = 0,
                         usePreDraw = true,
                         needToShowQuantityEditor = true,
-                        needToChangeMaxLinesName = true
+                        needToChangeMaxLinesName = true,
+                        warehouseId = "15215612"
                     ),
                     parentId = "1"
                 )
@@ -155,7 +157,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             )
 
             val homeLayoutItems = listOf(
-                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                createHomeHeaderUiModel(),
                 productCarouselChipsUiModel
             )
 
@@ -189,7 +191,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                     parentID = 1,
                     shopId = 5,
                     name = "Tahu Bulat",
-                    appUrl = "tokopedia://product/detail/1"
+                    appUrl = "tokopedia://product/detail/1",
+                    warehouseId = 15215612
                 )
             )
 
@@ -204,7 +207,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                     parentID = 0,
                     shopId = 3,
                     name = "Tahu Kotak",
-                    appUrl = "tokopedia://product/detail/2"
+                    appUrl = "tokopedia://product/detail/2",
+                    warehouseId = 15215613
                 )
             )
 
@@ -247,8 +251,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
-                removeAbleWidgets = listOf(),
-                enableNewRepurchase = true
+                removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -292,7 +295,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                         orderQuantity = 0,
                         usePreDraw = true,
                         needToShowQuantityEditor = true,
-                        needToChangeMaxLinesName = true
+                        needToChangeMaxLinesName = true,
+                        warehouseId = "15215613"
                     ),
                     parentId = "0"
                 )
@@ -317,7 +321,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             )
 
             val homeLayoutItems = listOf(
-                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                createHomeHeaderUiModel(),
                 productCarouselChipsUiModel
             )
 
@@ -378,8 +382,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
-                removeAbleWidgets = listOf(),
-                enableNewRepurchase = true
+                removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -409,7 +412,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                     parentID = 1,
                     shopId = 5,
                     name = "Tahu Bulat",
-                    appUrl = "tokopedia://product/detail/1"
+                    appUrl = "tokopedia://product/detail/1",
+                    warehouseId = 15215612
                 )
             )
 
@@ -454,8 +458,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
-                removeAbleWidgets = listOf(),
-                enableNewRepurchase = true
+                removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -499,7 +502,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                         orderQuantity = 0,
                         usePreDraw = true,
                         needToShowQuantityEditor = true,
-                        needToChangeMaxLinesName = true
+                        needToChangeMaxLinesName = true,
+                        warehouseId = "15215612"
                     ),
                     parentId = "1"
                 )
@@ -524,7 +528,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             )
 
             val homeLayoutItems = listOf(
-                TokoNowChooseAddressWidgetUiModel(id = "0"),
+                createHomeHeaderUiModel(),
                 productCarouselChipsUiModel
             )
 
@@ -586,8 +590,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
-                removeAbleWidgets = listOf(),
-                enableNewRepurchase = true
+                removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -613,7 +616,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                     parentID = 1,
                     shopId = 2,
                     name = "Tahu Kotak",
-                    appUrl = "tokopedia://product/detail/1"
+                    appUrl = "tokopedia://product/detail/1",
+                    warehouseId = 15215612
                 ),
                 RecommendationItem(
                     productId = productId.toLong(),
@@ -621,7 +625,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                     shopId = shopId.toInt(),
                     name = "Tahu Bulat",
                     appUrl = "tokopedia://product/detail/2",
-                    stock = stock
+                    stock = stock,
+                    warehouseId = 15215613
                 )
             )
 
@@ -666,8 +671,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
-                removeAbleWidgets = listOf(),
-                enableNewRepurchase = true
+                removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(
@@ -720,7 +724,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                         orderQuantity = 0,
                         usePreDraw = true,
                         needToShowQuantityEditor = true,
-                        needToChangeMaxLinesName = true
+                        needToChangeMaxLinesName = true,
+                        warehouseId = "15215612"
                     ),
                     parentId = "1"
                 ),
@@ -738,7 +743,8 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                         usePreDraw = true,
                         needToShowQuantityEditor = true,
                         needToChangeMaxLinesName = true,
-                        availableStock = 5
+                        availableStock = 5,
+                        warehouseId = "15215613"
                     ),
                     parentId = "1"
                 )
@@ -840,8 +846,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
-                removeAbleWidgets = listOf(),
-                enableNewRepurchase = true
+                removeAbleWidgets = listOf()
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(
@@ -919,8 +924,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
-                removeAbleWidgets = listOf(),
-                enableNewRepurchase = true
+                removeAbleWidgets = listOf()
             )
             viewModel.switchProductCarouselChipTab(channelId = channelId, chipId = chipId)
             advanceTimeBy(SWITCH_PRODUCT_CAROUSEL_TAB_DELAY)
@@ -943,8 +947,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
-                removeAbleWidgets = listOf(),
-                enableNewRepurchase = true
+                removeAbleWidgets = listOf()
             )
             viewModel.switchProductCarouselChipTab(channelId = channelId, chipId = chipId)
             advanceTimeBy(SWITCH_PRODUCT_CAROUSEL_TAB_DELAY)

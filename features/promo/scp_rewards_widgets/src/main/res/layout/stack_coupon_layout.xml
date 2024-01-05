@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <com.tokopedia.scp_rewards_widgets.coupon_section.CouponViewCard
+        android:id="@+id/card_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleX="0.90"
+        android:theme="@style/Theme.MaterialComponents.Light"
+        android:translationY="-16dp"
+        app:cardCornerRadius="@dimen/dp_12"
+        app:cardElevation="@dimen/dp_1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/card_middle" />
+
+    <com.tokopedia.scp_rewards_widgets.coupon_section.CouponViewCard
+        android:id="@+id/card_middle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleX="0.95"
+        android:theme="@style/Theme.MaterialComponents.Light"
+        android:translationY="-8dp"
+        app:cardCornerRadius="@dimen/dp_12"
+        app:cardElevation="@dimen/dp_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/card_front" />
+
+    <com.tokopedia.scp_rewards_widgets.coupon_section.CouponViewCard
+        android:id="@+id/card_front"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.MaterialComponents.Light"
+        app:cardElevation="@dimen/dp_6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_more" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.MaterialComponents.Light"
+        app:cardElevation="@dimen/dp_4"
+        app:layout_constraintEnd_toEndOf="@id/card_front"
+        app:layout_constraintStart_toStartOf="@id/card_front"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/dp_12"
+            android:paddingVertical="@dimen/dp_6"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
+            tools:text="3 bonunes available" />
+    </com.google.android.material.card.MaterialCardView>
+
+</merge>

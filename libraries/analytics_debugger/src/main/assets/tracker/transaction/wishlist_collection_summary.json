@@ -1,0 +1,58 @@
+{
+  "mode": "exact",
+  "query": [
+    {
+      "businessUnit": "purchase platform",
+      "clientId": ".*",
+      "trackerId": ".*",
+      "currentSite": "tokopediamarketplace",
+      "isLoggedInStatus": ".*",
+      "screenName": "Semua Wishlist Page",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris" : ".*"
+    },
+    {
+      "businessUnit": "purchase platform",
+      "eventCategory": "all wishlist page",
+      "trackerId": ".*",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickPP",
+      "eventAction": "create new collection on wishlist page",
+      "sessionIris" : ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "businessUnit": "purchase platform",
+      "eventCategory": "all wishlist page",
+      "trackerId": ".*",
+      "currentSite": "tokopediamarketplace",
+      "pageSource": "wishlist page",
+      "event": "clickPP",
+      "eventAction": "click buat koleksi on create new collection bottomsheet",
+      "sessionIris" : ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "businessUnit": "purchase platform",
+      "eventCategory": "all wishlist page",
+      "trackerId": ".*",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickPP",
+      "eventAction": "click x on create new collection bottomsheet",
+      "sessionIris" : ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "businessUnit": "purchase platform",
+      "eventCategory": "all wishlist page",
+      "trackerId": ".*",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickPP",
+      "eventAction": "click three dots on collection folder",
+      "sessionIris" : ".*",
+      "eventLabel": ".*"
+    }
+  ],
+  "readme": "Wishlist Collection Summary"
+}

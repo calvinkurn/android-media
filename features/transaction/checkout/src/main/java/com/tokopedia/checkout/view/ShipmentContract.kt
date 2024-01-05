@@ -18,7 +18,8 @@ interface ShipmentContract {
             promoFlag: Boolean,
             eventCategory: String,
             eventAction: String,
-            eventLabel: String
+            eventLabel: String,
+            step: String
         )
 
         fun sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(

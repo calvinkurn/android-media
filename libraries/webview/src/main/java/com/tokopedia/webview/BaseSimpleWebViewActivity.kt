@@ -12,9 +12,13 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_WEBVIEW_BACK_PRESSED
 import com.tokopedia.track.TrackApp
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
@@ -115,6 +119,13 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     override fun onResume() {
         super.onResume()
         reloadWebViewIfNeeded()
+        disableBannerEnv()
+    }
+
+    private fun disableBannerEnv() {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            bannerEnv?.disable()
+        }
     }
 
     private fun reloadWebViewIfNeeded() {
@@ -141,6 +152,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         // special behavior to handle finish if the url is paylater AN-34892
         if (f is BaseSessionWebViewFragment) {
             val currentUrl = f.webView?.url
+
             if (currentUrl != null &&
                 (
                     currentUrl.contains("/paylater/acquisition/status") ||
@@ -150,6 +162,8 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 this.finish()
                 return
             }
+
+            if (checkShouldOverrideBackPress(currentUrl)) return
         }
         if (f is BaseSessionWebViewFragment && f.webView.canGoBack()) {
             if (checkForSameUrlInPreviousIndex(f.webView)) {
@@ -177,6 +191,22 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 showOnBackPressedDisabledMessage()
             }
         }
+    }
+
+    private fun checkShouldOverrideBackPress(url: String?): Boolean {
+        val shouldOverrideRc = FirebaseRemoteConfigImpl(this)
+            .getBoolean(ENABLE_WEBVIEW_BACK_PRESSED, true)
+
+        if (fragment is BaseSessionWebViewFragment && shouldOverrideRc) {
+            val query = UriUtil.uriQueryParamsToMap(url ?: "")
+
+            if (query[OVERRIDE_NATIVE_BACK_PRESSED] == "true") {
+                (fragment as BaseSessionWebViewFragment).webView.loadUrl(JAVASCRIPT_HANDLE_POP)
+                return true
+            }
+        }
+
+        return false
     }
 
     private fun getBackUrlFromQueryParameters(): String? {
@@ -330,6 +360,8 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     companion object {
         const val KEY_BACK_URL = "back_url"
+        private const val OVERRIDE_NATIVE_BACK_PRESSED = "overrideNativeBackPress"
+        private const val JAVASCRIPT_HANDLE_POP = "javascript:handlePop();"
 
         fun getStartIntent(
             context: Context,

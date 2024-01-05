@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName
 data class ShoppingSummary(
     @SerializedName("total_wording")
     val totalWording: String = "",
+    @SerializedName("total_original_value")
+    val totalOriginalValue: Double = 0.0,
     @SerializedName("total_value")
     val totalValue: Double = 0.0,
     @SerializedName("discount_total_wording")

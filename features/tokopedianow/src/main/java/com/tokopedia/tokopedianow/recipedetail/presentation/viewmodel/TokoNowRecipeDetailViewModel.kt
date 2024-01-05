@@ -15,8 +15,8 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
-import com.tokopedia.tokopedianow.common.util.CoroutineUtil.launchWithDelay
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
+import com.tokopedia.tokopedianow.common.util.CoroutineUtil.launchWithDelay
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.AddRecipeBookmarkUseCase
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.RemoveRecipeBookmarkUseCase
@@ -232,13 +232,14 @@ class TokoNowRecipeDetailViewModel @Inject constructor(
     }
 
     private fun getAddress() {
-        getAddressUseCase.getStateChosenAddress({
-            addressData.updateAddressData(it)
+        launchCatchError(block = {
+            val address = getAddressUseCase(GET_ADDRESS_SOURCE)
+            addressData.updateAddressData(address)
             checkAddressData()
-        }, {
+        }) {
             hideLoading()
             showError()
-        }, GET_ADDRESS_SOURCE)
+        }
     }
 
     private fun updateProductQuantity(miniCartData: MiniCartSimplifiedData) {

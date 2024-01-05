@@ -65,7 +65,10 @@ data class MetaDataResponse(
         @SuppressLint("Invalid Data Type")
         @SerializedName("total_price")
         @Expose
-        val totalPrice: Long = 0
+        val totalPrice: Long = 0,
+        @SerializedName("tx_expired_time")
+        @Expose
+        val txExpiredTime: String = ""
 
 ) : Parcelable
 

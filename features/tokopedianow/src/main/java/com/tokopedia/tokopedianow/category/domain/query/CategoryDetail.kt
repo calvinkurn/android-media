@@ -10,9 +10,9 @@ internal object CategoryDetail: GqlQueryInterface {
                 ${'$'}categoryID: String!, 
                 ${'$'}slug: String!, 
                 ${'$'}source: String!, 
-                ${'$'}warehouseID: String!
+                ${'$'}warehouses: [WarehousePerService!]
             ){
-              TokonowCategoryDetail(categoryID: ${'$'}categoryID, slug: ${'$'}slug, source: ${'$'}source, warehouseID: ${'$'}warehouseID) {
+              TokonowCategoryDetail(categoryID: ${'$'}categoryID, slug: ${'$'}slug, source: ${'$'}source, warehouses: ${'$'}warehouses) {
                 header {
                   process_time
                   messages

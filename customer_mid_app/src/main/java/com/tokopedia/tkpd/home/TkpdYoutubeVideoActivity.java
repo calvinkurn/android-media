@@ -57,15 +57,15 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tkpd_youtube_video);
-        youTubeView = findViewById(R.id.youtube_view);
-        imgClose = findViewById(R.id.img_cross);
-        tvHeadTitle = findViewById(R.id.tv_head_title);
-        tvTitle = findViewById(R.id.tv_title);
-        tvDesc = findViewById(R.id.tv_desc);
-        btnCta = findViewById(R.id.btn_cta);
-        viewPager = findViewById(R.id.v_push_bannerpager);
-        circlePageIndicator = findViewById(R.id.v_pager_indicator);
+        setContentView(com.tokopedia.customer_mid_app.R.layout.activity_tkpd_youtube_video);
+        youTubeView = findViewById(com.tokopedia.customer_mid_app.R.id.youtube_view);
+        imgClose = findViewById(com.tokopedia.customer_mid_app.R.id.img_cross);
+        tvHeadTitle = findViewById(com.tokopedia.customer_mid_app.R.id.tv_head_title);
+        tvTitle = findViewById(com.tokopedia.customer_mid_app.R.id.tv_title);
+        tvDesc = findViewById(com.tokopedia.customer_mid_app.R.id.tv_desc);
+        btnCta = findViewById(com.tokopedia.customer_mid_app.R.id.btn_cta);
+        viewPager = findViewById(com.tokopedia.customer_mid_app.R.id.v_push_bannerpager);
+        circlePageIndicator = findViewById(com.tokopedia.customer_mid_app.R.id.v_pager_indicator);
 
         imgClose.setOnClickListener(v -> finish());
 
@@ -104,7 +104,7 @@ public class TkpdYoutubeVideoActivity extends YouTubeBaseActivity implements
             if (!TextUtils.isEmpty(videoUrl)) {
                 player.loadVideo(videoUrl);
             } else {
-                SnackbarManager.make(TkpdYoutubeVideoActivity.this, getString(R.string.video_not_play_error), Snackbar.LENGTH_LONG).show();
+                SnackbarManager.make(TkpdYoutubeVideoActivity.this, getString(com.tokopedia.customer_mid_app.R.string.video_not_play_error), Snackbar.LENGTH_LONG).show();
             }
         }
     }

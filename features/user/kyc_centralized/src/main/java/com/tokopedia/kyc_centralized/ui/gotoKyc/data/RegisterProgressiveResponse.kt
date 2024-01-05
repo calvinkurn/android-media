@@ -34,6 +34,9 @@ data class RegisterProgressiveKYC(
     @SerializedName("errorMessages")
 	val errorMessages: List<String> = listOf(),
 
+    @SerializedName("errorCode")
+    val errorCode: String = "",
+
     @SerializedName("data")
 	val data: RegisterProgressiveKYCData = RegisterProgressiveKYCData()
 )

@@ -9,7 +9,6 @@ import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
-import com.tokopedia.unifycomponents.CardUnify2
 import kotlinx.coroutines.Dispatchers
 
 /**
@@ -38,7 +37,8 @@ class BestSellerMapper (
                 channelId = recommendationWidget.channelId,
                 name = recommendationWidget.title,
                 subtitle = recommendationWidget.subtitle,
-                applink = recommendationWidget.seeMoreAppLink
+                applink = recommendationWidget.seeMoreAppLink,
+                headerType = ChannelHeader.HeaderType.CHEVRON,
             )
         )
     }

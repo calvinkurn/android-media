@@ -95,7 +95,7 @@ class SummaryViewModelTest {
             onSuccess.invoke(data)
         }
 
-        viewModel.validateGroup("name", {})
+        viewModel.validateGroup("name", {}){}
 
         verify {
             validGroupUseCase.execute(any(), any())
@@ -113,7 +113,7 @@ class SummaryViewModelTest {
             firstArg<(ResponseGroupValidateName) -> Unit>().invoke(expected)
         }
 
-        viewModel.validateGroup("name") { actual = it }
+        viewModel.validateGroup("name", { actual = it }, {})
         verify { validGroupUseCase.setParams(any(), any()) }
         Assert.assertEquals(expected.topAdsGroupValidateName, actual)
     }
@@ -128,7 +128,7 @@ class SummaryViewModelTest {
             secondArg<(Throwable) -> Unit>().invoke(Throwable())
         }
 
-        viewModel.validateGroup("name") { actual = it }
+        viewModel.validateGroup("name", { actual = it }, {})
         Assert.assertEquals(null, actual)
     }
 
@@ -179,7 +179,13 @@ class SummaryViewModelTest {
 
     @Test
     fun `topadscreated exception check`() {
-        every { topAdsCreateUseCase.setParam(any(), any(), any(), any()) } throws Throwable()
+        every {
+            topAdsCreateUseCase.setParam(any(),
+                any(),
+                any(),
+                any())
+        } returns mockk(relaxed = true)
+        coEvery { topAdsCreateUseCase.execute(requestParams = any()) } throws Throwable()
 
         var successCalled = false
         viewModel.topAdsCreated(mockk(), mockk(), mockk(), { successCalled = true }, {})

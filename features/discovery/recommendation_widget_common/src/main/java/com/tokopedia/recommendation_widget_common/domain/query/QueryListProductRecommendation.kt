@@ -38,6 +38,7 @@ object QueryListProductRecommendation {
         "                            apps\n" +
         "                          }\n" +
         "                        }\n" +
+        "                        endDate\n" +
         "                      }\n" +
         "                      recommendation {\n" +
         "                        id\n" +
@@ -106,6 +107,7 @@ object QueryListProductRecommendation {
         "                            }\n" +
         "                        }\n" +
         "                        parentID\n" +
+        "                        gridPosition\n" +
         "                      }\n" +
         "                    }\n" +
         "                  }\n" +

@@ -1,8 +1,10 @@
 package com.tokopedia.kyc_centralized.ui
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -25,8 +27,13 @@ import timber.log.Timber
 @UiTest
 @RunWith(AndroidJUnit4::class)
 class KycAlaCarteGenerateIdTest {
+
+    private val applicationContext: Context
+        get() = InstrumentationRegistry
+            .getInstrumentation().context.applicationContext
+
     private lateinit var timber: MockTimber
-    private val testComponent = FakeKycActivityComponentFactory()
+    private val testComponent = FakeKycActivityComponentFactory(applicationContext)
     private val kycApi = testComponent.kycApi
 
     @get:Rule

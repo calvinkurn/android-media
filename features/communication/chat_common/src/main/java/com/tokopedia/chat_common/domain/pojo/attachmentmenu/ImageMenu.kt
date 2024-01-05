@@ -1,9 +1,11 @@
 package com.tokopedia.chat_common.domain.pojo.attachmentmenu
 
-import com.tokopedia.chat_common.R
+import com.tokopedia.iconunify.IconUnify
 
-class ImageMenu : AttachmentMenu(
-        R.drawable.ic_image_orange_chat_common, "Gambar", "image"
+open class ImageMenu : AttachmentMenu(
+    icon = IconUnify.IMAGE,
+    title = "Gambar",
+    label = "image"
 ) {
     override fun onClick(listener: AttachmentMenuListener) {
         listener.onClickAttachImage(this)

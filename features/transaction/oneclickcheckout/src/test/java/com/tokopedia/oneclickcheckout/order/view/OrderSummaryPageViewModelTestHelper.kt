@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view
 
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.CodDataPromo
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.EstimatedTimeArrivalPromo
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
@@ -13,6 +14,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.oneclickcheckout.order.view.mapper.PrescriptionMapper
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderData
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
@@ -21,8 +23,10 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfilePayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse
@@ -34,91 +38,145 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveA
 class OrderSummaryPageViewModelTestHelper {
 
     val firstCourierFirstDuration = ShippingCourierUiModel().apply {
-        productData = ProductData().apply {
-            shipperName = "kirimin"
-            shipperId = 1
-            shipperProductId = 1
-            insurance = InsuranceData()
-            price = PriceData().apply {
+        productData = ProductData(
+            shipperName = "kirimin",
+            shipperId = 1,
+            shipperProductId = 1,
+            insurance = InsuranceData(),
+            price = PriceData(
                 price = 1000
-            }
-        }
+            )
+        )
         ratesId = "0"
     }
 
     val secondCourierFirstDuration = ShippingCourierUiModel().apply {
-        productData = ProductData().apply {
-            shipperName = "pakirim"
-            shipperId = 2
-            shipperProductId = 2
-            insurance = InsuranceData()
-            price = PriceData().apply {
+        productData = ProductData(
+            shipperName = "pakirim",
+            shipperId = 2,
+            shipperProductId = 2,
+            insurance = InsuranceData(),
+            price = PriceData(
                 price = 1500
-            }
-        }
+            )
+        )
         ratesId = "0"
     }
 
     val firstDuration = ShippingDurationUiModel().apply {
-        serviceData = ServiceData().apply {
-            serviceId = 1
-            serviceName = "durasi (1 hari)"
-            error = ErrorServiceData()
+        serviceData = ServiceData(
+            serviceId = 1,
+            serviceName = "durasi (1 hari)",
+            error = ErrorServiceData(),
             texts = ServiceTextData()
-        }
+        )
         shippingCourierViewModelList = listOf(firstCourierFirstDuration, secondCourierFirstDuration)
     }
 
     val firstCourierSecondDuration = ShippingCourierUiModel().apply {
-        productData = ProductData().apply {
-            shipperName = "pakirim"
-            shipperId = 2
-            shipperProductId = 3
-            insurance = InsuranceData()
-            price = PriceData().apply {
+        productData = ProductData(
+            shipperName = "pakirim",
+            shipperId = 2,
+            shipperProductId = 3,
+            insurance = InsuranceData(),
+            price = PriceData(
                 price = 2000
-            }
-        }
+            )
+        )
         ratesId = "0"
     }
 
     val secondDuration = ShippingDurationUiModel().apply {
-        serviceData = ServiceData().apply {
-            serviceId = 2
-            serviceName = "durasi (2 hari)"
-            error = ErrorServiceData()
+        serviceData = ServiceData(
+            serviceId = 2,
+            serviceName = "durasi (2 hari)",
+            error = ErrorServiceData(),
             texts = ServiceTextData()
-        }
+        )
         shippingCourierViewModelList = listOf(firstCourierSecondDuration)
     }
 
+    val errorProductData = ErrorProductData().apply {
+        errorId = "111"
+        errorMessage = "error message"
+    }
+
     val logisticPromo = LogisticPromoUiModel(
-        "bbo", "bbo", "bbo", firstCourierSecondDuration.productData.shipperName,
-        secondDuration.serviceData.serviceId, firstCourierSecondDuration.productData.shipperId, firstCourierSecondDuration.productData.shipperProductId,
-        "", "", "", false, "",
-        500, 2000, 1500, false, false, CodDataPromo(), EstimatedTimeArrivalPromo(), "Bebas Ongkir (Rp 0)", "Bebas Ongkir", "Tersedia bbo", false,
+        "bbo",
+        "bbo",
+        "bbo",
+        firstCourierSecondDuration.productData.shipperName,
+        secondDuration.serviceData.serviceId,
+        firstCourierSecondDuration.productData.shipperId,
+        firstCourierSecondDuration.productData.shipperProductId,
+        "",
+        "",
+        "",
+        false,
+        "",
+        500,
+        2000,
+        1500,
+        false,
+        false,
+        CodDataPromo(),
+        EstimatedTimeArrivalPromo(),
+        "Bebas Ongkir (Rp 0)",
+        "Bebas Ongkir",
+        "Tersedia bbo",
+        false,
         freeShippingMetadata = """{"sent_shipper_partner":true}"""
     )
 
     val logisticPromoEko = LogisticPromoUiModel(
-        "boeko", "boeko", "boeko", firstCourierSecondDuration.productData.shipperName,
-        secondDuration.serviceData.serviceId, firstCourierSecondDuration.productData.shipperId, firstCourierSecondDuration.productData.shipperProductId,
-        "", "", "", false, "",
-        500, 2000, 1500, false, false, CodDataPromo(), EstimatedTimeArrivalPromo(), "Bebas Ongkir (Rp 0)", "Bebas Ongkir", "Tersedia bbo", false,
+        "boeko",
+        "boeko",
+        "boeko",
+        firstCourierSecondDuration.productData.shipperName,
+        secondDuration.serviceData.serviceId,
+        firstCourierSecondDuration.productData.shipperId,
+        firstCourierSecondDuration.productData.shipperProductId,
+        "",
+        "",
+        "",
+        false,
+        "",
+        500,
+        2000,
+        1500,
+        false,
+        false,
+        CodDataPromo(),
+        EstimatedTimeArrivalPromo(),
+        "Bebas Ongkir (Rp 0)",
+        "Bebas Ongkir",
+        "Tersedia bbo",
+        false,
         freeShippingMetadata = """{"sent_shipper_partner":false}"""
     )
 
     val shippingRecommendationData = ShippingRecommendationData().apply {
         shippingDurationUiModels = listOf(firstDuration, secondDuration)
         logisticPromo = this@OrderSummaryPageViewModelTestHelper.logisticPromo
-        listLogisticPromo = listOf(this@OrderSummaryPageViewModelTestHelper.logisticPromo, this@OrderSummaryPageViewModelTestHelper.logisticPromoEko)
+        listLogisticPromo = listOf(
+            this@OrderSummaryPageViewModelTestHelper.logisticPromo,
+            this@OrderSummaryPageViewModelTestHelper.logisticPromoEko
+        )
     }
 
     val address = OrderProfileAddress(addressId = "1", latitude = "0", longitude = "0")
 
     val shipment = OrderProfileShipment(serviceId = "1")
 
-    val payment = OrderProfilePayment(gatewayCode = "payment")
+    val payment = OrderProfilePayment(
+        gatewayCode = "payment",
+        metadata = """
+        {
+            "gateway_code": "payment",
+            "express_checkout_param" : {}
+        }
+        """.trimIndent()
+    )
 
     val preference = OrderProfile(address = address, shipment = shipment, payment = payment)
 
@@ -135,7 +193,13 @@ class OrderSummaryPageViewModelTestHelper {
 
     val product = OrderProduct(productId = Long.MAX_VALUE.toString(), orderQuantity = 1)
 
-    val orderData = OrderData(cart = OrderCart(shop = OrderShop(shopId = Long.MAX_VALUE.toString()), products = mutableListOf(product)), preference = preference)
+    val orderData = OrderData(
+        cart = OrderCart(
+            shop = OrderShop(shopId = Long.MAX_VALUE.toString()),
+            products = mutableListOf(product)
+        ),
+        preference = preference
+    )
 
     val saveAddOnStateShopLevelResult = SaveAddOnStateResult(
         addOns = listOf(
@@ -233,5 +297,12 @@ class OrderSummaryPageViewModelTestHelper {
         isError = false,
         frontEndValidation = imageUploadDataModel.frontEndValidation,
         isOcc = true
+    )
+
+    val orderPromo = OrderPromo(
+        state = OccButtonState.NORMAL,
+        entryPointInfo = PromoEntryPointInfo(
+            isSuccess = true
+        )
     )
 }

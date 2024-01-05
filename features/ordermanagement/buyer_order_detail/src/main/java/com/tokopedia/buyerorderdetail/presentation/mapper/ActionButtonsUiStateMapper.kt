@@ -3,8 +3,8 @@ package com.tokopedia.buyerorderdetail.presentation.mapper
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
+import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 
 object ActionButtonsUiStateMapper {
 

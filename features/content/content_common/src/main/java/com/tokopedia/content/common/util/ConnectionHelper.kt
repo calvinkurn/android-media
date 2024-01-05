@@ -4,12 +4,13 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import java.lang.Exception
+import java.io.InterruptedIOException
+import java.net.SocketException
+import java.net.UnknownHostException
 
 /**
  * duplicate with [PlayConnectionCommon]
  */
-
 object ConnectionHelper {
 
     @JvmStatic
@@ -78,4 +79,10 @@ object ConnectionHelper {
             false
         }
     }
+}
+
+val Throwable.isUserNetworkError: Boolean get() {
+    return this is UnknownHostException
+        || this is SocketException
+        || this is InterruptedIOException
 }

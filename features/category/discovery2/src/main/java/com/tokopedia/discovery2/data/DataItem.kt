@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery2.LABEL_PRICE
 import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
 import com.tokopedia.discovery2.StockWording
+import com.tokopedia.discovery2.data.Properties.Header.OfferTier
 import com.tokopedia.discovery2.data.contentCard.LandingPage
 import com.tokopedia.discovery2.data.contentCard.Product
 import com.tokopedia.discovery2.data.contentCard.TotalItem
@@ -33,6 +34,9 @@ data class DataItem(
 
     @SerializedName("target_component_id")
     var targetComponentId: String? = "",
+
+    @SerializedName("target_component_ids")
+    var targetComponentIds: List<Int> = emptyList(),
 
     @SerializedName("background_image")
     val backgroundImage: String? = "",
@@ -115,6 +119,9 @@ data class DataItem(
     @SerializedName("action")
     val action: String? = "",
 
+    @SerializedName("move_action")
+    val moveAction: MoveAction? = null,
+
     @SerializedName("notification_title")
     val notificationTitle: String? = "",
 
@@ -148,7 +155,7 @@ data class DataItem(
     @SerializedName("box_color", alternate = ["background_color", "header_color"])
     val boxColor: String? = "",
 
-    @SerializedName("font_color", alternate = ["text_color"])
+    @SerializedName("font_color", alternate = ["text_color", "benefit_text_color", "text_color_mode"])
     val fontColor: String? = "",
 
     @SerializedName("variant")
@@ -157,11 +164,20 @@ data class DataItem(
     @SerializedName("color")
     val color: String? = "",
 
-    @SerializedName("button_text")
+    @SerializedName("button_text", alternate = ["cta_redirection_text", "cta_copywritying"])
     var buttonText: String? = "",
 
     @SerializedName("creative_name")
     var creativeName: String? = "",
+
+    @SerializedName("inventory_id")
+    var inventoryId: String? = "",
+
+    @SerializedName("ads_count")
+    var adsCount: Int? = 0,
+
+    @SerializedName("dimension_id")
+    var dimensionId: String? = "",
 
     @SerializedName("title", alternate = ["title_copywriting"])
     var title: String? = "",
@@ -256,7 +272,7 @@ data class DataItem(
     @SerializedName("subtitle")
     val subtitle: String? = "",
 
-    @SerializedName("subtitle_1")
+    @SerializedName("subtitle_1", alternate = ["min_purchase_str"])
     val subtitle_1: String? = "",
 
     @SerializedName("thumbnail_url")
@@ -386,7 +402,7 @@ data class DataItem(
     val image: String = "",
 
     @SerializedName("lottie_image")
-    val lottieImage: String = "",
+    val lottieImage: String? = null,
 
     @SerializedName("tracking_fields")
     val trackingFields: TrackingFields? = null,
@@ -408,6 +424,21 @@ data class DataItem(
 
     @SerializedName("play_id")
     var playWidgetPlayID: String? = null,
+
+    @SerializedName("widget_type")
+    var playWidgetType: String? = null,
+
+    @SerializedName("product_ids")
+    var productIds: String? = null,
+
+    @SerializedName("category_ids")
+    var categoryIds: String? = null,
+
+    @SerializedName("mobile_banner")
+    var mobileBanner: String? = null,
+
+    @SerializedName("is_dynamic_video")
+    var playWidgetTypeIsDynamicVideo: Boolean = false,
 
     @SerializedName("campaign_code")
     var campaignCode: String? = null,
@@ -439,7 +470,7 @@ data class DataItem(
     @SerializedName("shop_type")
     val shopType: String? = null,
 
-    @SerializedName("shop_badge_image_url")
+    @SerializedName("shop_badge_image_url", alternate = ["shop_badge"])
     val shopBadgeImageUrl: String? = null,
 
     @SerializedName("benefit_title")
@@ -486,7 +517,7 @@ data class DataItem(
 
     var quantity: Int = 0,
 
-    @SerializedName("backgroud_image_url")
+    @SerializedName("backgroud_image_url", alternate = ["background_image_url"])
     var backgroundImageUrl: String? = "",
 
     @SerializedName("catalog_slugs")
@@ -536,6 +567,27 @@ data class DataItem(
 
     @field:SerializedName("target_section_id")
     val targetSectionID: String? = null,
+
+    @field:SerializedName("icon_image_url")
+    val iconImageUrl: String? = null,
+
+    @field:SerializedName("inactive_icon_image_url")
+    val inactiveIconImageUrl: String? = null,
+
+    @SerializedName("cta_color")
+    val ctaColor: String? = "",
+
+    @SerializedName("offer_id")
+    val offerId: String? = null,
+
+    @SerializedName("offer_tiers")
+    val offerTiers: List<OfferTier>? = null,
+
+    @SerializedName("tab_index")
+    val tabIndex: List<Int>? = null,
+
+    @SerializedName("title_type")
+    val titleType: String? = null,
 
     var shopAdsClickURL: String? = "",
 

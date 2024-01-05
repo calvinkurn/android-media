@@ -1,48 +1,80 @@
 package com.tokopedia.media.loader.internal
 
-import android.annotation.SuppressLint
 import android.content.Context
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.media.loader.data.Header
+import com.tokopedia.media.loader.data.failureTypeKey
 import com.tokopedia.media.loader.data.toModel
 import okhttp3.Headers
 
-class NetworkResponseManager constructor(
-    private val context: Context
-) : LocalCacheHandler(context, PREF_NAME) {
+class NetworkResponseManager(context: Context) {
 
+    private val editor = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
+    private val caches = mutableMapOf<String, String>()
+
+    /**
+     * A setter the cache of a response header.
+     *
+     * This setter maintain the caching mechanism to share the response header from [CustomOkHttpStreamFetcher]
+     * into [MediaListenerBuilder]. The setter has two pipelines to maintain the performance and
+     * efficiency, such shared-preferences for persistent data and Map literals for temporary data.
+     *
+     * If the url got hit at first, then we will gather the header response from Map. But if
+     * the second request occurred, then we will read the data from shared preferences.
+     */
     fun set(url: String, header: Headers) {
+        val headerMap = header.toMultimap()
         if (header.size <= 0) return
+
+        if (caches[url]?.isNotEmpty() == true || header(url).isNotEmpty()) return
+        if (headerMap.containsKey(failureTypeKey()).not()) return
         if (hasReachedThreshold()) forceResetCache()
 
-        val mHeader = header
-            .toMultimap()
-            .toModel()
-            .toJson()
+        try {
+            val value = headerMap.toModel().toJson()
 
-        putString(url, mHeader)
-        applyEditor()
+            caches[url] = value
+            editor.edit().putString(url, value).apply()
+        } catch (t: Throwable) {
+            FirebaseCrashlytics.getInstance().recordException(t)
+        }
     }
 
+    /**
+     * A getter of cache header.
+     *
+     * Get a cache of network response header. The data priority comes from Map literals. If the
+     * data from Map doesn't exist, then fetch from shared preferences.
+     */
     fun header(url: String): List<Header> {
-        val header = getString(url, "")
-        if (header.isEmpty()) return emptyList()
+        val header = caches[url] ?: editor.getString(url, "") ?: return emptyList()
 
-        return header.toModel()
+        return try {
+            header.toModel()
+        } catch (t: Throwable) {
+            FirebaseCrashlytics.getInstance().recordException(t)
+            emptyList()
+        }
     }
 
+    // clear cache if needed, it will be triggered by [properties.isForceClearHeaderCache]
     fun forceResetCache() {
-        clearCache()
+        caches.clear()
+
+        if (size().isMoreThanZero()) {
+            editor.edit().clear().apply()
+        }
     }
 
+    // to mitigate the over heavy computation and storage, we have to limit the amount of caches.
     private fun hasReachedThreshold(): Boolean {
-        val sharedPref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        val entrySize = sharedPref.all.size
-
-        return entrySize == CACHE_THRESHOLD
+        return size() == CACHE_THRESHOLD
     }
+
+    private fun size() = editor.all.size
 
     private fun List<Header>.toJson(): String {
         return Gson().toJson(this)
@@ -56,17 +88,15 @@ class NetworkResponseManager constructor(
     }
 
     companion object {
-        private const val PREF_NAME = "media_loader_network_response"
-        private const val CACHE_THRESHOLD = 50 // 50 images cache limit
+        private const val NAME = "media_loader_network_header.pref"
+        private const val CACHE_THRESHOLD = 100 // 100 images cache limit
 
-        @SuppressLint("StaticFieldLeak")
         @Volatile private var manager: NetworkResponseManager? = null
 
-        fun getInstance(context: Context): NetworkResponseManager {
-            return manager ?: synchronized(this) {
-                NetworkResponseManager(context).also {
-                    manager = it
-                }
+        fun instance(context: Context): NetworkResponseManager {
+            synchronized(this) {
+                return manager ?: NetworkResponseManager(context.applicationContext)
+                    .also { manager = it }
             }
         }
     }

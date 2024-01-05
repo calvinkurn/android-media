@@ -9,11 +9,11 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.AndroidFileUtil
+import com.tokopedia.topchat.chatlist.data.datastore.TopChatListDataStore
 import com.tokopedia.topchat.chatlist.di.ActivityComponentFactory
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
+import com.tokopedia.topchat.chatlist.domain.usecase.GetChatListLastVisitedTabUseCase.Companion.KEY_LAST_POSITION
 import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity
-import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder.Companion.ROLLENCE_MVC_ICON
-import com.tokopedia.topchat.chatlist.view.viewmodel.ChatTabCounterViewModel
 import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout.Companion.BROADCAST_FAB_LABEL_PREF_NAME
 import com.tokopedia.topchat.chatlist.view.widget.BroadcastButtonLayout.Companion.BROADCAST_FAB_LABEL_ROLLENCE_KEY
 import com.tokopedia.topchat.common.network.TopchatCacheManager
@@ -24,6 +24,10 @@ import com.tokopedia.topchat.stub.chatlist.usecase.GetChatListMessageUseCaseStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatWhitelistFeatureStub
 import com.tokopedia.topchat.stub.chatlist.usecase.GetOperationalInsightUseCaseStub
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -58,6 +62,9 @@ abstract class ChatListTest {
 
     @Inject
     lateinit var cacheManager: TopchatCacheManager
+
+    @Inject
+    lateinit var dataStore: TopChatListDataStore
 
     protected lateinit var activity: ChatListActivity
 
@@ -104,23 +111,12 @@ abstract class ChatListTest {
         activity = activityTestRule.activity
     }
 
-    protected fun setRollenceMVCIcon(isActive: Boolean) {
-        abTestPlatform.setString(ROLLENCE_MVC_ICON, if (isActive) ROLLENCE_MVC_ICON else "")
-    }
-
     protected fun setLastSeenTab(isSellerTab: Boolean) {
-        context.getSharedPreferences(
-            ChatTabCounterViewModel.PREF_CHAT_LIST_TAB,
-            Context.MODE_PRIVATE
-        )
-            .edit()
-            .apply {
-                putInt(
-                    ChatTabCounterViewModel.KEY_LAST_POSITION,
-                    if (isSellerTab) Int.ZERO else Int.ONE
-                )
-                apply()
+        GlobalScope.launch {
+            withContext(Dispatchers.Main) {
+                dataStore.saveCache(KEY_LAST_POSITION, if (isSellerTab) Int.ZERO else Int.ONE)
             }
+        }
     }
 
     protected fun setLabelNew(value: Boolean) {

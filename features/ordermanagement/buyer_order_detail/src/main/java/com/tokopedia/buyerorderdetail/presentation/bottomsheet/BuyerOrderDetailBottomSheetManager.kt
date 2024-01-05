@@ -3,9 +3,10 @@ package com.tokopedia.buyerorderdetail.presentation.bottomsheet
 import android.content.Context
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.domain.models.PlusComponent
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.ActionButtonClickListener
-import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
+import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 
 class BuyerOrderDetailBottomSheetManager(
         private val context: Context,
@@ -15,16 +16,23 @@ class BuyerOrderDetailBottomSheetManager(
     private var secondaryActionButtonBottomSheet: SecondaryActionButtonBottomSheet? = null
 
     private fun createReceiveConfirmationBottomSheet(
-            button: ActionButtonsUiModel.ActionButton,
-            bottomSheetManager: BuyerOrderDetailBottomSheetManager,
-            navigator: BuyerOrderDetailNavigator,
-            viewModel: BuyerOrderDetailViewModel
+        button: ActionButtonsUiModel.ActionButton,
+        bottomSheetManager: BuyerOrderDetailBottomSheetManager,
+        navigator: BuyerOrderDetailNavigator,
+        viewModel: BuyerOrderDetailViewModel
     ): ReceiveConfirmationBottomSheet {
         return ReceiveConfirmationBottomSheet(context, button, bottomSheetManager, viewModel, navigator)
     }
 
     private fun createSecondaryActionButtonBottomSheet(actionButtonClickListener: ActionButtonClickListener?): SecondaryActionButtonBottomSheet {
         return SecondaryActionButtonBottomSheet(context, actionButtonClickListener)
+    }
+
+    fun showSavingsWidgetBottomSheet(
+        plusComponent: PlusComponent
+    ) {
+        val bs = SavingsWidgetBottomSheet()
+        bs.show(fragmentManager, plusComponent)
     }
 
     fun showReceiveConfirmationBottomSheet(

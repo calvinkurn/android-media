@@ -1,6 +1,7 @@
 package com.tokopedia.thankyou_native.di.module
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -59,8 +60,24 @@ class ThankYouPageModule {
     }
 
     @Provides
-    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface,topAdsIrisSession: TopAdsIrisSession): TopAdsImageViewUseCase =
-        TopAdsImageViewUseCase(userSession.userId, TopAdsRepository(),topAdsIrisSession.getSessionId())
+    fun provideTopAdsImageViewUseCase(
+        userSession: UserSessionInterface,
+        topAdsIrisSession: TopAdsIrisSession
+    ): TopAdsImageViewUseCase =
+        TopAdsImageViewUseCase(
+            userSession.userId,
+            TopAdsRepository(),
+            topAdsIrisSession.getSessionId()
+        )
 
+    @Provides
+    fun provideSharedPref(
+        @ApplicationContext context: Context
+    ): SharedPreferences {
+        return context.getSharedPreferences(THANKYOU_PAGE_CACHE, Context.MODE_PRIVATE)
+    }
 
+    companion object {
+        private const val THANKYOU_PAGE_CACHE = "thankyou_page_cache"
+    }
 }

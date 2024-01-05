@@ -18,17 +18,18 @@ import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
 import com.tokopedia.gamification.giftbox.data.entities.CouponType
+import com.tokopedia.gamification.giftbox.data.entities.GetCouponDetail
 import com.tokopedia.gamification.giftbox.data.entities.GiftBoxRewardEntity
 import com.tokopedia.gamification.giftbox.data.entities.OvoListItem
+import com.tokopedia.gamification.giftbox.presentation.RewardContainerListener
 import com.tokopedia.gamification.giftbox.presentation.adapter.CouponAdapter
 import com.tokopedia.gamification.giftbox.presentation.fragments.DisplayType
 import com.tokopedia.gamification.giftbox.presentation.helpers.CouponItemDecoration
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
-import com.tokopedia.gamification.giftbox.presentation.helpers.dpToPx
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.utils.image.ImageUtils
 import timber.log.Timber
 import kotlin.math.min
 
@@ -51,6 +52,8 @@ open class RewardContainerDaily @JvmOverloads constructor(
     val FADE_IN_REWARDS_DURATION_TAP_TAP = 400L
     var isTablet = false
     var cancelAutoScroll = false
+
+    private var listener: RewardContainerListener? = null
 
     open fun getLayoutId() = R.layout.view_reward_container_daily
 
@@ -117,7 +120,9 @@ open class RewardContainerDaily @JvmOverloads constructor(
                 rvCoupons.context.resources.getDimension(R.dimen.gami_rv_coupons_right_margin).toInt()
         ))
 
-        couponAdapter = CouponAdapter(sourceType, couponList, isTablet)
+        couponAdapter = CouponAdapter(sourceType, couponList, isTablet) {
+            listener?.onTrigger(it)
+        }
         rvCoupons.adapter = couponAdapter
 
         userSession = UserSession(context)
@@ -243,7 +248,9 @@ open class RewardContainerDaily @JvmOverloads constructor(
                     DisplayType.IMAGE -> {
                         isRp0 = true
                         if(!benefit.imageUrl.isNullOrEmpty()){
-                            ImageUtils.loadImage(imageCircleReward, benefit.imageUrl, isAnimate = false)
+                            imageCircleReward.loadImage(benefit.imageUrl) {
+                                this.isAnimate(false)
+                            }
                             GtmEvents.viewRewards(benefit.benefitType,benefit.text, userSession?.userId)
                         }
                     }
@@ -289,4 +296,8 @@ open class RewardContainerDaily @JvmOverloads constructor(
             animatorSet.duration = duration
             return animatorSet
         }
+
+    fun setListener(listener: RewardContainerListener) {
+        this.listener = listener
     }
+}

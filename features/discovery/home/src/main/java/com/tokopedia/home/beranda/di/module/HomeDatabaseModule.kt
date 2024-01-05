@@ -11,9 +11,13 @@ import dagger.Provides
 open class HomeDatabaseModule{
     @HomeScope
     @Provides
-    open fun provideHomeDatabase(@ApplicationContext context: Context): HomeDatabase = HomeDatabase.getInstance(context)
+    open fun provideHomeDatabase(@ApplicationContext context: Context): HomeDatabase = HomeDatabase.buildDatabase(context)
 
     @HomeScope
     @Provides
     fun provideHomeDao(homeDatabase: HomeDatabase) = homeDatabase.homeDao()
+
+    @HomeScope
+    @Provides
+    fun provideHomeAtfDao(homeDatabase: HomeDatabase) = homeDatabase.homeAtfDao()
 }

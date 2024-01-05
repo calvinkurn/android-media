@@ -24,6 +24,7 @@ class AddOnBottomsheetActivity: BaseActivity() {
             val pageSource = AddOnApplinkMapper.getPageSourceFromUri(dataUri)
             val cartId = AddOnApplinkMapper.getCartIdFromUri(dataUri)
             val selectedAddonIds = AddOnApplinkMapper.getSelectedAddonIdsFromUri(dataUri)
+            val deselectedAddonIds = AddOnApplinkMapper.getDeselectedAddonIdsFromUri(dataUri)
             val atcSource = AddOnApplinkMapper.getAtcSourceFromUri(dataUri)
             val addOnParam = AddOnApplinkMapper.getAddOnWidgetParamFromUri(dataUri)
 
@@ -36,6 +37,7 @@ class AddOnBottomsheetActivity: BaseActivity() {
                 setPageSource(pageSource)
                 setCartId(cartId)
                 setSelectedAddonIds(selectedAddonIds)
+                setDeselectedAddonIds(deselectedAddonIds)
                 setAtcSource(atcSource)
             }
             bottomSheet.show(supportFragmentManager, "")

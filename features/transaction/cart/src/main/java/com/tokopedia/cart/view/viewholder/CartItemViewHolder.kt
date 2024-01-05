@@ -26,6 +26,7 @@ import com.tokopedia.cart.databinding.ItemAddonCartIdentifierBinding
 import com.tokopedia.cart.databinding.ItemCartProductBinding
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
@@ -91,6 +92,12 @@ class CartItemViewHolder constructor(
         this.viewHolderListener = viewHolderListener
         this.dataSize = dataSize
 
+        itemView.addOnImpressionListener(data, onView = {
+            if (!data.isError) {
+                actionListener?.onAvailableCartItemImpression(listOf(data))
+            }
+        })
+
         renderAlpha(data)
         renderShopInfo(data)
         renderProductInfo(data)
@@ -106,7 +113,7 @@ class CartItemViewHolder constructor(
                 vBundlingProductSeparator.show()
                 val marginStart =
                     IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
-                val marginTop = itemView.context.resources.getDimension(R.dimen.dp_4).toInt()
+                val marginTop = itemView.context.resources.getDimension(com.tokopedia.cart.R.dimen.dp_4).toInt()
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProductInformation)
                 constraintSet.connect(
@@ -149,7 +156,7 @@ class CartItemViewHolder constructor(
                 checkboxProduct.show()
                 val marginStart =
                     IMAGE_PRODUCT_MARGIN_START.dpToPx(itemView.resources.displayMetrics)
-                val marginTop = itemView.context.resources.getDimension(R.dimen.dp_4).toInt()
+                val marginTop = itemView.context.resources.getDimension(com.tokopedia.cart.R.dimen.dp_4).toInt()
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProductInformation)
                 constraintSet.connect(
@@ -709,7 +716,7 @@ class CartItemViewHolder constructor(
         if (data.variant.isNotBlank()) {
             textProductVariant.text = data.variant
             textProductVariant.show()
-            paddingRight = itemView.resources.getDimensionPixelOffset(R.dimen.dp_4)
+            paddingRight = itemView.resources.getDimensionPixelOffset(com.tokopedia.cart.R.dimen.dp_4)
         } else {
             if (data.productQtyLeft.isNotBlank()) {
                 textProductVariant.text = ""
@@ -822,7 +829,7 @@ class CartItemViewHolder constructor(
             val paddingParent = itemView.resources.getDimensionPixelSize(R.dimen.dp_16) * 2
             val textNotesChangeWidth =
                 TEXT_NOTES_CHANGE_WIDTH.dpToPx(itemView.resources.displayMetrics)
-            val paddingLeftTextNotesChange = itemView.resources.getDimensionPixelSize(R.dimen.dp_4)
+            val paddingLeftTextNotesChange = itemView.resources.getDimensionPixelSize(com.tokopedia.cart.R.dimen.dp_4)
             val screenWidth = getScreenWidth()
             var maxNotesWidth =
                 screenWidth - paddingParent - paddingLeftTextNotesChange - textNotesChangeWidth

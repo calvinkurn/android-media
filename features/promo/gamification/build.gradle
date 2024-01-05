@@ -63,7 +63,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.features.promoUiCommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.features.medialoader)
 
@@ -77,6 +77,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {

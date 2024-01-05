@@ -73,11 +73,11 @@ class NavigationChipsViewHolder(itemView: View, private val fragment: Fragment) 
             layoutManager = chipsLayoutManager
             setMargin(
                 0,
-                resources.getDimensionPixelSize(R.dimen.dp_4),
+                resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_4),
                 resources.getDimensionPixelSize(R.dimen.dp_40),
                 resources.getDimensionPixelSize(R.dimen.dp_8)
             )
-            addItemDecoration(SpaceItemDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_4), LinearLayoutManager.HORIZONTAL))
+            addItemDecoration(SpaceItemDecoration(context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_4), LinearLayoutManager.HORIZONTAL))
         }
     }
 
@@ -105,3 +105,4 @@ class NavigationChipsViewHolder(itemView: View, private val fragment: Fragment) 
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickCategoryOption(id)
     }
 }
+

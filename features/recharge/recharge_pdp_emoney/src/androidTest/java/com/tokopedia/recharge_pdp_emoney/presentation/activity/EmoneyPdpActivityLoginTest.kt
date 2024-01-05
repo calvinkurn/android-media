@@ -31,6 +31,7 @@ import com.tokopedia.recharge_pdp_emoney.presentation.fragment.EmoneyPdpFragment
 import com.tokopedia.recharge_pdp_emoney.presentation.fragment.EmoneyPdpFragment.Companion.EMONEY_PDP_PREFERENCES_NAME
 import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpResponseConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.CoreMatchers.not
@@ -41,14 +42,19 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import com.tokopedia.unifycomponents.R as unifycomponentsR
+import com.tokopedia.common.topupbills.R as commontopupbillsR
 
 /**
  * @author by jessica on 16/04/21
  */
 class EmoneyPdpActivityLoginTest {
     @get:Rule
-    var mActivityRule = ActivityTestRule(EmoneyPdpActivity::class.java,
-            false, false)
+    var mActivityRule = ActivityTestRule(
+        EmoneyPdpActivity::class.java,
+        false,
+        false
+    )
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
@@ -59,13 +65,17 @@ class EmoneyPdpActivityLoginTest {
     @Before
     fun stubAllIntent() {
         Intents.init()
-        Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK,
-                null))
+        Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(
+            Instrumentation.ActivityResult(
+                Activity.RESULT_OK,
+                null
+            )
+        )
     }
 
     @Test
     fun testUserLoginFlow() {
-        //Setup intent cart page & launch activity
+        // Setup intent cart page & launch activity
         setUpLaunchActivity()
         validateTicker()
         clickRecentNumber()
@@ -86,7 +96,7 @@ class EmoneyPdpActivityLoginTest {
         }
         setupGraphqlMockResponse(EmoneyPdpResponseConfig(isLogin = true))
         val intent = Intent(context, EmoneyPdpActivity::class.java).setData(
-                Uri.parse("tokopedia://digital/form?category_id=34&menu_id=267&template=electronicmoney")
+            Uri.parse("tokopedia://digital/form?category_id=34&menu_id=267&template=electronicmoney")
         )
         mActivityRule.launchActivity(intent)
 
@@ -101,11 +111,12 @@ class EmoneyPdpActivityLoginTest {
 
     private fun validateTicker() {
         Espresso.onView(withId(R.id.emoneyPdpTicker)).check(matches(isDisplayed()))
-        Espresso.onView(withId(R.id.ticker_description)).check(matches(isDisplayed()))
-        Espresso.onView(withId(R.id.ticker_description)).check(matches(withText("this is dummy ticker Action Text")))
+        Espresso.onView(
+            CommonMatcher.firstView(withId(unifycomponentsR.id.ticker_description))).check(matches(isDisplayed()))
+        Espresso.onView(CommonMatcher.firstView(withId(unifycomponentsR.id.ticker_description))).check(matches(withText("this is dummy ticker Action Text")))
 
-        Espresso.onView(withId(R.id.ticker_close_icon)).check(matches(isDisplayed()))
-        Espresso.onView(withId(R.id.ticker_close_icon)).perform(click())
+        Espresso.onView(CommonMatcher.firstView(withId(unifycomponentsR.id.ticker_close_icon))).check(matches(isDisplayed()))
+        Espresso.onView(CommonMatcher.firstView(withId(unifycomponentsR.id.ticker_close_icon))).perform(click())
         Thread.sleep(1000)
         Espresso.onView(withId(R.id.emoneyPdpTicker)).check(matches(not(isDisplayed())))
     }
@@ -121,74 +132,84 @@ class EmoneyPdpActivityLoginTest {
 
     private fun clickScanNfcCard() {
         Intents.intending(IntentMatchers.anyIntent())
-                .respondWith(createScanNfcCardPageResponse())
+            .respondWith(createScanNfcCardPageResponse())
         Espresso.onView(withId(R.id.emoneyHeaderViewCtaButton)).perform(click())
         Thread.sleep(2000)
 
-        Espresso.onView(AllOf.allOf(withText("8768567891012344"), withId(R.id.emoneyHeaderViewCardNumber))).check(matches(isDisplayed()))
+        Espresso.onView(AllOf.allOf(withText("8768 5678 9101 2344"), withId(R.id.emoneyHeaderViewCardNumber))).check(matches(isDisplayed()))
         Espresso.onView(AllOf.allOf(withText("Rp 65.000"), withId(R.id.emoneyHeaderViewCardBalance))).check(matches(isDisplayed()))
-        Espresso.onView(withText("8768 5678 9101 2344")).check(matches(isDisplayed()))
+        Espresso.onView(AllOf.allOf(withText("8768 5678 9101 2344"), withId(unifycomponentsR.id.text_field_input))).check(matches(isDisplayed()))
     }
 
     private fun clickCameraIconOnInputView() {
         Intents.intending(IntentMatchers.anyIntent())
-                .respondWith(createCameraOcrPageResponse())
+            .respondWith(createCameraOcrPageResponse())
         Espresso.onView(withId(R.id.emoneyPdpCardCameraIcon)).perform(click())
         Thread.sleep(2000)
 
         Espresso.onView(withText("1234 5678")).check(matches(isDisplayed()))
-        Espresso.onView(withId(R.id.text_field_icon_2)).check(matches(isDisplayed()))
-        Espresso.onView(withId(R.id.text_field_icon_2)).perform(click())
+        Espresso.onView(withId(unifycomponentsR.id.text_field_icon_2)).check(matches(isDisplayed()))
+        Espresso.onView(withId(unifycomponentsR.id.text_field_icon_2)).perform(click())
         Thread.sleep(1000)
     }
 
     private fun clickPromoTabAndSalinPromo() {
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK,
-                null))
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(
+            Instrumentation.ActivityResult(
+                Activity.RESULT_OK,
+                null
+            )
+        )
 
-        Espresso.onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Promo"))).perform(click())
+        Espresso.onView(AllOf.allOf(withId(unifycomponentsR.id.tab_item_text_id), withText("Promo"))).perform(click())
         Thread.sleep(1000)
 
         Espresso.onView(withId(R.id.emoneyPdpPromoListWidget)).check(matches(isDisplayed()))
-        Espresso.onView(AllOf.allOf(
-                withId(R.id.recycler_view_menu_component),
+        Espresso.onView(
+            AllOf.allOf(
+                withId(commontopupbillsR.id.recycler_view_menu_component),
                 isDescendantOfA(withId(R.id.emoneyPdpPromoListWidget))
-        )).check(matches(isDisplayed())).perform(
-                RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
-                        0, click()
-                )
+            )
+        ).check(matches(isDisplayed())).perform(
+            RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
+                0,
+                click()
+            )
         )
         Thread.sleep(2000)
 
-        Espresso.onView(AllOf.allOf(
-                withId(R.id.recycler_view_menu_component),
+        Espresso.onView(
+            AllOf.allOf(
+                withId(commontopupbillsR.id.recycler_view_menu_component),
                 isDescendantOfA(withId(R.id.emoneyPdpPromoListWidget))
-        )).check(matches(isDisplayed())).perform(
-                RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
-                        0, CommonActions.clickChildViewWithId(R.id.btn_copy_promo)
-                )
+            )
+        ).check(matches(isDisplayed())).perform(
+            RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
+                0,
+                CommonActions.clickChildViewWithId(commontopupbillsR.id.btn_copy_promo)
+            )
         )
         Thread.sleep(2000)
 
-        Espresso.onView(AllOf.allOf(withId(R.id.tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
+        Espresso.onView(AllOf.allOf(withId(unifycomponentsR.id.tab_item_text_id), withText("Transaksi Terakhir"))).perform(click())
         Thread.sleep(1000)
     }
 
     private fun clickOnFavNumberOnInputView() {
         Intents.intending(IntentMatchers.anyIntent())
-                .respondWith(createOrderNumberTypeManual())
-        Espresso.onView(withId(R.id.text_field_input)).perform(click())
+            .respondWith(createOrderNumberTypeManual())
+        Espresso.onView(withId(unifycomponentsR.id.text_field_input)).perform(click())
         Thread.sleep(2000)
 
         Espresso.onView(withText("8768 5678 9101 2345")).check(matches(isDisplayed()))
-        Espresso.onView(withId(R.id.text_field_icon_2)).check(matches(isDisplayed()))
-        Espresso.onView(withId(R.id.text_field_icon_2)).perform(click())
+        Espresso.onView(withId(unifycomponentsR.id.text_field_icon_2)).check(matches(isDisplayed()))
+        Espresso.onView(withId(unifycomponentsR.id.text_field_icon_2)).perform(click())
         Thread.sleep(1000)
 
         Espresso.onView(withId(R.id.emoneyRecentNumberList)).check(matches(isDisplayed()))
         Thread.sleep(1000)
 
-        Espresso.onView(withId(R.id.text_field_input)).perform(click())
+        Espresso.onView(withId(unifycomponentsR.id.text_field_input)).perform(click())
         Thread.sleep(1000)
     }
 
@@ -196,8 +217,10 @@ class EmoneyPdpActivityLoginTest {
         val orderClientNumber = TopupBillsSearchNumberDataModel(clientNumber = "8768567891012345")
         val resultData = Intent()
         resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, orderClientNumber)
-        resultData.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE,
-                TopupBillsSearchNumberFragment.InputNumberActionType.FAVORITE)
+        resultData.putExtra(
+            TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE,
+            TopupBillsSearchNumberFragment.InputNumberActionType.FAVORITE
+        )
         return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
     }
 
@@ -210,17 +233,16 @@ class EmoneyPdpActivityLoginTest {
 
     private fun createScanNfcCardPageResponse(): Instrumentation.ActivityResult {
         val cardDetail = DigitalCategoryDetailPassData.Builder()
-                .clientNumber("8768567891012344")
-                .productId("11")
-                .operatorId("100")
-                .categoryId("12")
-                .additionalETollLastBalance("Rp 65.000").build()
+            .clientNumber("8768567891012344")
+            .productId("11")
+            .operatorId("100")
+            .categoryId("12")
+            .additionalETollLastBalance("Rp 65.000").build()
 
         val resultData = Intent()
         resultData.putExtra(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA, cardDetail)
         return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
     }
-
 
     private fun clickProductAndSeeProductDetail() {
         Espresso.onView(withId(R.id.emoneyBuyWidget)).check(matches(not(isDisplayed())))
@@ -228,9 +250,10 @@ class EmoneyPdpActivityLoginTest {
         Espresso.onView(AllOf.allOf(withId(R.id.emoneyProductTitle), withText("Rp 10.000"))).check(matches(isDisplayed()))
         Espresso.onView(AllOf.allOf(withId(R.id.emoneyProductPrice), withText("Rp10.000"))).check(matches(isDisplayed()))
         Espresso.onView(withId(R.id.emoneyProductListRecyclerView)).check(matches(isDisplayed())).perform(
-                RecyclerViewActions.actionOnItemAtPosition<EmoneyPdpProductViewHolder>(
-                        0, click()
-                )
+            RecyclerViewActions.actionOnItemAtPosition<EmoneyPdpProductViewHolder>(
+                0,
+                click()
+            )
         )
         Thread.sleep(1000)
         Espresso.onView(withId(R.id.emoneyBuyWidget)).check(matches(isDisplayed()))
@@ -238,8 +261,10 @@ class EmoneyPdpActivityLoginTest {
         Espresso.onView(withId(R.id.emoneyPdpCheckoutViewTotalPayment)).check(matches(withText("Rp10.000")))
 
         Espresso.onView(withId(R.id.emoneyProductListRecyclerView)).check(matches(isDisplayed())).perform(
-                RecyclerViewActions.actionOnItemAtPosition<EmoneyPdpProductViewHolder>(0,
-                        CommonActions.clickChildViewWithId(R.id.emoneyProductSeeDetailText))
+            RecyclerViewActions.actionOnItemAtPosition<EmoneyPdpProductViewHolder>(
+                0,
+                CommonActions.clickChildViewWithId(R.id.emoneyProductSeeDetailText)
+            )
         )
         Thread.sleep(1000)
         Espresso.onView(AllOf.allOf(withId(R.id.emoneyBottomSheetProductTitle), withText("Rp 10.000"))).check(matches(isDisplayed()))

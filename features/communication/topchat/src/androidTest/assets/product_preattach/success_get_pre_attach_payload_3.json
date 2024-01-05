@@ -1,0 +1,33 @@
+{
+  "chatPreAttachPayload": {
+    "list": [
+      {
+        "id": 2495612915,
+        "type": 3,
+        "attributes": "{\"product_id\":2495612915,\"product_profile\":{\"name\":\"[NEW]_KOPI_BUBUK_TORAJA_ARABIKA\",\"parent_id\":0,\"price\":\"Rp500.000\",\"price_int\":500000,\"image_url\":\"https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/10/19/1e09436f-4e99-499d-82ee-91c0416c773b.jpg\",\"url\":\"https://www.tokopedia.com/10973651-serba-kopi/new-kopi-bubuk-toraja-arabika?extParam\u003dwhid%3D10983402%26src%3Dchat\",\"android_url\":\"tokopedia://product/2495612915?extParam\u003dwhid%3D10983402%26src%3Dchat\",\"ios_url\":\"tokopedia://product/2495612915?extParam\u003dwhid%3D10983402%26src%3Dchat\",\"is_upcoming_campaign_product\":false,\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":10973651,\"status\":1,\"min_order\":1,\"category_id\":4029,\"remaining_stock\":100,\"category_breadcrumb\":\"\",\"list_image_url\":[\"https://images.tokopedia.net/img/cache/700/VqbcmM/2022/10/19/1e09436f-4e99-499d-82ee-91c0416c773b.jpg\",\"https://images.tokopedia.net/img/cache/700/VqbcmM/2022/6/28/61f22272-98d8-420a-937d-f34c3711c188.jpg\",\"https://images.tokopedia.net/img/cache/700/VqbcmM/2022/6/28/4bc18de0-138a-43a2-9951-39945bc46362.jpg\"],\"variant\":[],\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{},\"is_fulfillment\":false,\"icon_tokocabang\":\"\",\"desc_tokocabang\":\"\",\"stock_info\":{},\"location_stock\":{\"address_id\":0,\"district_id\":0,\"district_name\":\"Tanah Abang\",\"district_icon\":\"\",\"district_name_full_text\":\"Dikirim dari Tanah Abang\",\"postal_code\":\"\",\"latlon\":\"\"}}}",
+        "fallback": {
+          "message": "",
+          "html": "https://www.tokopedia.com/10973651-serba-kopi/new-2-kopi-biji-bali-premium-robusta?extParam\u003dwhid%3D10983402%26src%3Dchat"
+        }
+      },
+      {
+        "id": 4533627959,
+        "type": 3,
+        "attributes": "{\"product_id\":4533627959,\"product_profile\":{\"name\":\"[NEW]_1_KOPI_BIJI_ESPRESSO_BLEND_ARABICA - 1 pcs\",\"parent_id\":2495753948,\"price\":\"Rp105.000\",\"price_int\":105000,\"image_url\":\"https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/6/28/eba33f6d-6539-49ee-a35a-40e8cf05f95d.jpg\",\"url\":\"https://www.tokopedia.com/10973651-serba-kopi/new-1-kopi-biji-espresso-blend-arabica-1-pcs?extParam\u003dwhid%3D10983402%26src%3Dchat\",\"android_url\":\"tokopedia://product/4533627959?extParam\u003dwhid%3D10983402%26src%3Dchat\",\"ios_url\":\"tokopedia://product/4533627959?extParam\u003dwhid%3D10983402%26src%3Dchat\",\"is_upcoming_campaign_product\":false,\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":10973651,\"status\":1,\"min_order\":1,\"category_id\":55,\"remaining_stock\":246,\"category_breadcrumb\":\"\",\"list_image_url\":[\"https://images.tokopedia.net/img/cache/700/VqbcmM/2022/6/28/eba33f6d-6539-49ee-a35a-40e8cf05f95d.jpg\"],\"variant\":[{\"identifier\":\"packaging\",\"name\":\"Kemasan\",\"option\":{\"id\":290404743,\"hex\":\"\",\"value\":\"1 pcs\"},\"position\":1,\"unit_name\":\"Pcs\"}],\"wishlist\":false,\"free_ongkir\":{\"is_active\":false,\"image_url\":\"\"},\"rating\":{},\"is_fulfillment\":false,\"icon_tokocabang\":\"\",\"desc_tokocabang\":\"\",\"stock_info\":{},\"is_variant\":true,\"location_stock\":{\"address_id\":0,\"district_id\":0,\"district_name\":\"Tanah Abang\",\"district_icon\":\"\",\"district_name_full_text\":\"Dikirim dari Tanah Abang\",\"postal_code\":\"\",\"latlon\":\"\"}}}",
+        "fallback": {
+          "message": "",
+          "html": "https://www.tokopedia.com/10973651-serba-kopi/new-2-kopi-biji-bali-premium-robusta?extParam\u003dwhid%3D10983402%26src%3Dchat"
+        }
+      },
+      {
+        "id": 1988283205,
+        "type": 3,
+        "attributes": "{\"product_id\":1988283205,\"product_profile\":{\"name\":\"[NEW]_2_KOPI_BIJI_BALI_PREMIUM_ROBUSTA\",\"parent_id\":0,\"price\":\"Rp750.000\",\"price_int\":750000,\"image_url\":\"https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/6/29/ebc12ef3-a84a-456b-ba5f-f38c29e86e88.png\",\"url\":\"https://www.tokopedia.com/10973651-serba-kopi/new-2-kopi-biji-bali-premium-robusta?extParam\u003dwhid%3D10983402%26src%3Dchat\",\"android_url\":\"tokopedia://product/1988283205?extParam\u003dwhid%3D10983402%26src%3Dchat\",\"ios_url\":\"tokopedia://product/1988283205?extParam\u003dwhid%3D10983402%26src%3Dchat\",\"is_upcoming_campaign_product\":false,\"playstore_product_data\":{},\"price_before\":\"\",\"drop_percentage\":\"\",\"shop_id\":10973651,\"status\":1,\"min_order\":1,\"category_id\":297,\"remaining_stock\":1,\"category_breadcrumb\":\"\",\"list_image_url\":[\"https://images.tokopedia.net/img/cache/700/VqbcmM/2022/6/29/ebc12ef3-a84a-456b-ba5f-f38c29e86e88.png\",\"https://images.tokopedia.net/img/cache/700/VqbcmM/2022/6/29/c23867f5-4367-46ac-9858-2da679fcb9ec.png\"],\"variant\":[],\"wishlist\":false,\"free_ongkir\":{\"is_active\":true,\"image_url\":\"https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png\"},\"rating\":{},\"is_fulfillment\":false,\"icon_tokocabang\":\"\",\"desc_tokocabang\":\"\",\"stock_info\":{},\"location_stock\":{\"address_id\":0,\"district_id\":0,\"district_name\":\"Tanah Abang\",\"district_icon\":\"\",\"district_name_full_text\":\"Dikirim dari Tanah Abang\",\"postal_code\":\"\",\"latlon\":\"\"}}}",
+        "fallback": {
+          "message": "",
+          "html": "https://www.tokopedia.com/10973651-serba-kopi/new-2-kopi-biji-bali-premium-robusta?extParam\u003dwhid%3D10983402%26src%3Dchat"
+        }
+      }
+    ]
+  }
+}

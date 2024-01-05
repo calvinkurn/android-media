@@ -339,6 +339,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     private fun showToastError() {
         view?.let {
             val errorMessage = getString(R.string.notif_network_issue)
+
             Toaster.make(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }

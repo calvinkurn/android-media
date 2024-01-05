@@ -36,6 +36,7 @@ internal class DynamicInitialStateTest: InitialStatePresenterTestFixtures() {
     fun `Test dynamic initial state`() {
         val dynamicInitialStateData = dynamicInitialStateResponse.jsonToObject<InitialStateUniverse>()
         val refreshedDynamicInitialStateData = refreshDynamicInitialStateResponse.jsonToObject<InitialStateUniverse>().data
+        `Given rollance is off`()
         `Test Dynamic Initial State`(dynamicInitialStateData, refreshedDynamicInitialStateData)
 
         `Then verify refreshPopularSearch view behavior`(7)

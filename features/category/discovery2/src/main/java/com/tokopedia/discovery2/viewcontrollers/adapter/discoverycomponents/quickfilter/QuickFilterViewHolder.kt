@@ -1,11 +1,14 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter
 
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -20,12 +23,14 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.filter.R as filterR
 
 class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner),
     SortFilterBottomSheet.Callback,
     FilterGeneralDetailBottomSheet.Callback {
     private var quickFilterViewModel: QuickFilterViewModel? = null
+    private val delay: Long = 1000L
     private val quickSortFilter: SortFilter = itemView.findViewById(R.id.quick_sort_filter)
     private var sortFilterBottomSheet: SortFilterBottomSheet = SortFilterBottomSheet()
     private val filterGeneralBottomSheet: FilterGeneralDetailBottomSheet by lazy {
@@ -33,10 +38,32 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
     }
     private var dynamicFilterModel: DynamicFilterModel? = null
     private var componentName: String? = null
+    private var runnable = Runnable {
+        (fragment as DiscoveryFragment).mSwipeRefreshLayout?.isEnabled = true
+    }
 
     init {
         quickSortFilter.dismissListener = {
             quickFilterViewModel?.clearQuickFilters()
+        }
+    }
+
+    private fun setScrollListener() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            quickSortFilter.sortFilterHorizontalScrollView.setOnScrollChangeListener { _, _, _, _, _ ->
+                try {
+                    if ((fragment as DiscoveryFragment).mSwipeRefreshLayout?.isEnabled == true) {
+                        fragment.mSwipeRefreshLayout?.isEnabled = false
+                    }
+                    quickSortFilter.removeCallbacks(runnable)
+                    runnable = Runnable {
+                        fragment.mSwipeRefreshLayout?.isEnabled = true
+                    }
+                    quickSortFilter.postDelayed(runnable, delay)
+                } catch (e: Exception) {
+                    Utils.logException(e)
+                }
+            }
         }
     }
 
@@ -96,6 +123,10 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
         if (quickFilterViewModel?.components?.data?.isEmpty() == true) return
         val sortFilterItems: ArrayList<SortFilterItem> = ArrayList()
         componentName = quickFilterViewModel?.getTargetComponent()?.name
+        val prop = quickFilterViewModel?.components?.properties
+        if (prop?.fullFilterType == Constant.FullFilterType.CATEGORY) {
+            sortFilterItems.add(createSemuaKategoriFilterItem())
+        }
         for (filter in filters) {
             if (filter.options.size == 1) {
                 sortFilterItems.add(createSortFilterItem(filter.options.first()))
@@ -104,15 +135,45 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
             }
         }
         quickSortFilter.let {
-            it.filterType = quickFilterViewModel?.components?.properties?.let { prop ->
-                if (prop.filter || prop.sort) SortFilter.TYPE_ADVANCED else SortFilter.TYPE_QUICK
+            it.filterType = prop?.let { properties ->
+                if ((properties.fullFilterType != Constant.FullFilterType.CATEGORY) && (properties.filter || properties.sort)) {
+                    SortFilter.TYPE_ADVANCED
+                } else {
+                    SortFilter.TYPE_QUICK
+                }
             } ?: SortFilter.TYPE_ADVANCED
+            if (prop?.chipSize == Constant.ChipSize.LARGE) {
+                it.filterSize = SortFilter.SIZE_LARGE
+                setScrollListener()
+                it.sortFilterHorizontalScrollView.scrollX = 0
+            } else {
+                it.filterSize = SortFilter.SIZE_DEFAULT
+            }
+            it.prefixText =
+                when {
+                    prop?.fullFilterType == Constant.FullFilterType.CATEGORY -> fragment.getString(R.string.semua_kategori)
+                    prop?.chipSize == Constant.ChipSize.LARGE -> ""
+                    else -> fragment.getString(filterR.string.filter)
+                }
             it.sortFilterItems.removeAllViews()
             it.addItem(sortFilterItems)
-            it.textView?.text = fragment.getString(com.tokopedia.filter.R.string.filter)
-            it.parentListener = { openBottomSheetFilterRevamp() }
+            setupSemuaChipAlignment(sortFilterItems)
+            it.parentListener = {
+                if (prop?.fullFilterType == Constant.FullFilterType.CATEGORY) {
+                    dynamicFilterModel?.data?.filter?.firstOrNull()?.let { filter ->
+                        openGeneralFilterForCategory(filter)
+                    }
+                } else {
+                    openBottomSheetFilterRevamp()
+                }
+            }
         }
         refreshQuickFilter(filters)
+    }
+    private fun setupSemuaChipAlignment(sortFilterItems: java.util.ArrayList<SortFilterItem>) {
+        if (sortFilterItems.isNotEmpty() && sortFilterItems[0].title == fragment.getString(R.string.semua_kategori)) {
+            sortFilterItems[0].refChipUnify.chip_text.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+        }
     }
 
     private fun createSortFilterItem(option: Option): SortFilterItem {
@@ -158,6 +219,16 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
             if (quickFilterViewModel?.isQuickFilterSelected(option) == true) {
                 item.type = ChipsUnify.TYPE_SELECTED
                 item.typeUpdated = false
+            }
+        }
+        return item
+    }
+
+    private fun createSemuaKategoriFilterItem(): SortFilterItem {
+        val item = SortFilterItem(fragment.getString(R.string.semua_kategori))
+        item.listener = {
+            dynamicFilterModel?.data?.filter?.firstOrNull()?.let { filter ->
+                openGeneralFilterForCategory(filter)
             }
         }
         return item
@@ -227,6 +298,23 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
             fragment.childFragmentManager,
             quickFilterViewModel?.getSearchParameterHashMap(),
             dynamicFilterModel,
+            this
+        )
+    }
+
+    private fun openGeneralFilterForCategory(filter: Filter) {
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+            ?.trackClickDetailedFilter(componentName)
+        for (option in filter.options) {
+            if (quickFilterViewModel?.isQuickFilterSelected(option) == true) {
+                option.inputState = true.toString()
+            } else {
+                option.inputState = ""
+            }
+        }
+        filterGeneralBottomSheet.show(
+            fragment.childFragmentManager,
+            filter,
             this
         )
     }

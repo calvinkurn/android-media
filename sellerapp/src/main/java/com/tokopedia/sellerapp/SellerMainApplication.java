@@ -20,6 +20,7 @@ import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.applink.AppUtil;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
@@ -57,6 +58,7 @@ import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.trackingoptimizer.activitylifecyclecallback.TrackingQueueActivityLifecycleCallback;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
@@ -150,6 +152,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             showDevOptNotification();
             initDevMonitoringTools();
         }
+        super.setupAppScreenMode();
     }
 
     private void initCassava() {
@@ -176,8 +179,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
     }
 
     private void initCacheManager() {
-        PersistentCacheManager.init(this);
-        cacheManager = PersistentCacheManager.instance;
+        cacheManager = PersistentCacheManager.init(this);
     }
 
     private void initLogManager(){
@@ -227,6 +229,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             @Override
             public int getVersionCode() {
                 return GlobalConfig.VERSION_CODE;
+            }
+
+            @NonNull
+            @Override
+            public String getActivityName() {
+                return AppUtil.currentActivityName;
             }
 
             @NotNull
@@ -308,7 +316,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
     }
 
     private void registerActivityLifecycleCallbacks() {
-        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall());
+        registerActivityLifecycleCallbacks(new TrackingQueueActivityLifecycleCallback(this));
+        registerActivityLifecycleCallbacks(new NewRelicInteractionActCall(getUserSession()));
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
         if (GlobalConfig.isAllowDebuggingTools()) {
             registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());

@@ -2,6 +2,7 @@ package com.tokopedia.buyerorderdetail.analytic.tracker
 
 import android.os.Bundle
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -16,6 +17,48 @@ import com.tokopedia.track.builder.Tracker
  */
 
 object BuyerOrderDetailTracker {
+
+    object SavingsWidget {
+        fun clickSavingsWidget(
+            orderId: String,
+            isPlus: Boolean,
+            isMixPromo: Boolean
+        ) {
+            val plus = if (isMixPromo) "mix" else if (isPlus) "plus" else "non plus"
+            val trackerId = if (isMixPromo) "48653" else if (isPlus) "48649" else "48651"
+
+            mutableMapOf<String, Any>().appendGeneralEventData(
+                eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PG,
+                eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
+                eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_SAVING_WIDGET +
+                        plus,
+                eventLabel = orderId
+            ).appendBusinessUnit(BUSINESS_UNIT_PHYSICAL_GOODS)
+                .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+                .appendTrackerId(trackerId)
+                .sendGeneralEvent()
+        }
+
+        fun impressSavingsWidget(
+            orderId: String,
+            isPlus: Boolean,
+            isMixPromo: Boolean
+        ) {
+            val plus = if (isMixPromo) "mix" else if (isPlus) "plus" else "non plus"
+            val trackerId = if (isMixPromo) "48654" else if (isPlus) "48650" else "48652"
+            mutableMapOf<String, Any>().appendGeneralEventData(
+                eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_VIEW_PG_IRIS,
+                eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
+                eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_IMPRESSION_SAVING_WIDGET +
+                        plus,
+                eventLabel = orderId
+            ).appendBusinessUnit(BUSINESS_UNIT_PHYSICAL_GOODS)
+                .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+                .appendTrackerId(trackerId)
+                .sendGeneralEvent()
+        }
+    }
+
     private fun MutableMap<String, Any>.appendGeneralEventData(
         eventName: String,
         eventCategory: String,
@@ -285,6 +328,33 @@ object BuyerOrderDetailTracker {
             .sendGeneralEvent()
     }
 
+    fun eventClickWarrantyClaim(
+        orderId: String
+    ) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PG,
+            eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_CLAIM_WARRANTY,
+            eventLabel = orderId
+        ).apply {
+            put(BuyerOrderDetailTrackerConstant.EVENT_KEY_TRACKER_ID, BuyerOrderDetailTrackerConstant.TRACKER_ID_47433)
+        }.appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .sendGeneralEvent()
+    }
+
+    fun eventImpressionWarrantyClaimButton(orderId: String) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_VIEW_PG_IRIS,
+            eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_IMPRESSION_CLAIM_WARRANTY,
+            eventLabel = orderId
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_48377)
+            .sendGeneralEvent()
+    }
+
     fun eventSuccessATC(
         products: List<ProductListUiModel.ProductUiModel>,
         atcResult: List<AtcMultiData.AtcMulti.BuyAgainData.AtcProduct>,
@@ -371,6 +441,30 @@ object BuyerOrderDetailTracker {
             .sendGeneralEvent()
     }
 
+    fun sendClickOnOrderGroupWidget(orderId: String) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PG,
+            eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_ON_ORDER_WIDGET,
+            eventLabel = orderId
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_44136)
+            .sendGeneralEvent()
+    }
+
+    fun sendClickViewDetailOnOrderGroupDetail(orderId: String) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_PG,
+            eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP,
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_VIEW_DETAIL_ORDER_GROUP,
+            eventLabel = orderId
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_PHYSICAL_GOODS)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_44137)
+            .sendGeneralEvent()
+    }
+
     fun sendClickOnResolutionWidgetEvent(orderStatusCode: String, orderId: String) {
         val eventLabel = "$orderStatusCode - $orderId"
         val trackerId = "38355"
@@ -384,5 +478,80 @@ object BuyerOrderDetailTracker {
             .setCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             .build()
             .send()
+    }
+
+    fun sendClickOnShareButton(orderId: String, productId: String, orderStatusId: String, userId: String) {
+        val eventLabel = "$productId - $orderId - $orderStatusId"
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_COMMUNICATION,
+            eventCategory = BuyerOrderDetailTrackerConstant.EVENT_ORDER_DETAIL_HISTORY,
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_SHARE_BUTTON,
+            eventLabel = eventLabel
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_SHARING_EXPERIENCE)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_45653)
+            .appendUserId(userId)
+            .sendGeneralEvent()
+    }
+
+    fun sendClickOnClosingBottomSheet(orderId: String, productId: String, orderStatusId: String, userId: String) {
+        val eventLabel = "$productId - $orderId - $orderStatusId"
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_COMMUNICATION,
+            eventCategory = BuyerOrderDetailTrackerConstant.EVENT_ORDER_DETAIL_HISTORY,
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_CLOSE_SHARE_BOTTOM_SHEET,
+            eventLabel = eventLabel
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_SHARING_EXPERIENCE)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_45654)
+            .appendUserId(userId)
+            .sendGeneralEvent()
+    }
+
+    fun sendClickOnSelectionOfSharingChannels(channel: String, orderId: String, productId: String, orderStatusId: String, userId: String) {
+        val eventLabel = "$channel - $productId - $orderId - $orderStatusId"
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_COMMUNICATION,
+            eventCategory = BuyerOrderDetailTrackerConstant.EVENT_ORDER_DETAIL_HISTORY,
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_SHARING_CHANNEL,
+            eventLabel = eventLabel
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_SHARING_EXPERIENCE)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_45655)
+            .appendUserId(userId)
+            .sendGeneralEvent()
+    }
+
+    fun eventImpressionShareBottomSheet(orderId: String, productId: String, orderStatusId: String, userId: String) {
+        val eventLabel = "$productId - $orderId - $orderStatusId"
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_VIEW_COMMUNICATION_IRIS,
+            eventCategory = BuyerOrderDetailTrackerConstant.EVENT_ORDER_DETAIL_HISTORY,
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_IMPRESSION_SHARE_BOTTOM_SHEET,
+            eventLabel = eventLabel
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_SHARING_EXPERIENCE)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_45656)
+            .appendUserId(userId)
+            .sendGeneralEvent()
+    }
+
+    fun sendClickChatButton(
+        orderStatus: String,
+        tokopediaOrderId: String,
+        gojekOrderId: String,
+        source: String,
+        counter: String
+    ) {
+        val eventLabel = "$orderStatus - $tokopediaOrderId - $gojekOrderId - $source - ${BuyerOrderDetailTrackerConstant.ROLE_BUYER} - $counter"
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = BuyerOrderDetailTrackerConstant.EVENT_NAME_CLICK_COMMUNICATION,
+            eventCategory = BuyerOrderDetailTrackerConstant.EVENT_CATEGORY_PG_ORDER_DETAIL,
+            eventAction = BuyerOrderDetailTrackerConstant.EVENT_ACTION_CLICK_CHAT,
+            eventLabel = eventLabel
+        ).appendBusinessUnit(BuyerOrderDetailTrackerConstant.BUSINESS_UNIT_COMMMUNICATION)
+            .appendCurrentSite(BuyerOrderDetailTrackerConstant.CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
+            .appendTrackerId(BuyerOrderDetailTrackerConstant.TRACKER_ID_48479)
+            .sendGeneralEvent()
     }
 }

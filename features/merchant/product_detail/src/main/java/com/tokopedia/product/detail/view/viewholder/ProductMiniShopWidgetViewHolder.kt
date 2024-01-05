@@ -1,15 +1,14 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -37,7 +36,6 @@ class ProductMiniShopWidgetViewHolder(
     private val shimmering: View? = view.findViewById(R.id.mini_shop_widget_shimmering)
 
     override fun bind(element: ProductMiniShopWidgetDataModel) = with(view) {
-
         if (element.shopName.isEmpty()) return
 
         val componentTracker = getComponentTrackData(element)
@@ -58,7 +56,12 @@ class ProductMiniShopWidgetViewHolder(
         shopLocation?.text = element.shopLocation
 
         hideLoading()
-        addOnImpressionListener(element.impressHolder) {
+        addOnImpressionListener(
+            holder = element.impressHolder,
+            holders = listener.getImpressionHolders(),
+            name = element.name,
+            useHolders = listener.isRemoteCacheableActive()
+        ) {
             listener.onImpressComponent(componentTracker)
         }
     }

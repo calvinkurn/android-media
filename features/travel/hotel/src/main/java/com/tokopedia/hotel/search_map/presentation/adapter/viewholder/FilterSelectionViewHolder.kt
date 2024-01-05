@@ -5,19 +5,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.SpanningLinearLayoutManager
+import com.tokopedia.hotel.databinding.LayoutHotelFilterSelectionBinding
 import com.tokopedia.hotel.search_map.data.model.FilterStarEnum
 import com.tokopedia.hotel.search_map.data.model.FilterV2
 import com.tokopedia.hotel.search_map.presentation.adapter.HotelSearchResultFilterAdapter
 import com.tokopedia.hotel.search_map.presentation.adapter.HotelSearchResultFilterV2Adapter
-import kotlinx.android.synthetic.main.layout_hotel_filter_selection.view.*
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by jessica on 12/08/20
  */
 
-class FilterSelectionViewHolder(view: View, val listener: OnSelectedFilterChangedListener, var isOverFlowLayout: Boolean = false)
-    : HotelSearchResultFilterV2Adapter.FilterBaseViewHolder(view),
-        HotelSearchResultFilterAdapter.ActionListener {
+class FilterSelectionViewHolder(view: View, val listener: OnSelectedFilterChangedListener, var isOverFlowLayout: Boolean = false) :
+    HotelSearchResultFilterV2Adapter.FilterBaseViewHolder(view),
+    HotelSearchResultFilterAdapter.ActionListener {
+
+    private val binding = LayoutHotelFilterSelectionBinding.bind(view)
 
     override var filterName: String = ""
 
@@ -28,41 +31,52 @@ class FilterSelectionViewHolder(view: View, val listener: OnSelectedFilterChange
     override fun bind(filter: FilterV2) {
         filterName = filter.name
 
-        with(itemView) {
-            hotel_filter_selection_title.text = filter.displayName
+        with(binding) {
+            hotelFilterSelectionTitle.text = filter.displayName
             var hotelFilterItems = filter.options.map {
-                HotelSearchResultFilterAdapter.HotelFilterItem(it, it, filter.name == SELECTION_STAR_TYPE) }
+                HotelSearchResultFilterAdapter.HotelFilterItem(it, it, filter.name == SELECTION_STAR_TYPE)
+            }
 
             if (filter.name == SELECTION_STAR_TYPE) {
                 if (hotelFilterItems.isEmpty()) {
-                    hotelFilterItems = listOf(FilterStarEnum.STAR_ONE.value,
-                            FilterStarEnum.STAR_TWO.value,
-                            FilterStarEnum.STAR_THREE.value,
-                            FilterStarEnum.STAR_FOUR.value,
-                            FilterStarEnum.STAR_FIVE.value).map {
+                    hotelFilterItems = listOf(
+                        FilterStarEnum.STAR_ONE.value,
+                        FilterStarEnum.STAR_TWO.value,
+                        FilterStarEnum.STAR_THREE.value,
+                        FilterStarEnum.STAR_FOUR.value,
+                        FilterStarEnum.STAR_FIVE.value
+                    ).map {
                         HotelSearchResultFilterAdapter.HotelFilterItem(it, it, filter.name == SELECTION_STAR_TYPE)
                     }
                 }
-                hotel_filter_selection_rv.layoutManager = SpanningLinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,
-                        false, resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2))
+                hotelFilterSelectionRv.layoutManager = SpanningLinearLayoutManager(
+                    root.context,
+                    LinearLayoutManager.HORIZONTAL,
+                    false,
+                    root.resources.getDimensionPixelSize(unifyprinciplesR.dimen.spacing_lvl2)
+                )
             } else {
                 if (!isOverFlowLayout) {
-                    hotel_filter_selection_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                    hotelFilterSelectionRv.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.HORIZONTAL, false)
                 } else {
-                    hotel_filter_selection_rv.layoutManager = ChipsLayoutManager.newBuilder(context)
-                            .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                            .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                            .build()
+                    hotelFilterSelectionRv.layoutManager = ChipsLayoutManager.newBuilder(root.context)
+                        .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                        .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                        .build()
                 }
             }
 
-            while (hotel_filter_selection_rv.itemDecorationCount > 0) {
-                hotel_filter_selection_rv.removeItemDecorationAt(0)
+            while (hotelFilterSelectionRv.itemDecorationCount > 0) {
+                hotelFilterSelectionRv.removeItemDecorationAt(0)
             }
-            hotel_filter_selection_rv.addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1),
-                    LinearLayoutManager.HORIZONTAL))
+            hotelFilterSelectionRv.addItemDecoration(
+                SpaceItemDecoration(
+                    root.resources.getDimensionPixelSize(unifyprinciplesR.dimen.layout_lvl1),
+                    LinearLayoutManager.HORIZONTAL
+                )
+            )
 
-            hotel_filter_selection_rv.adapter = adapter
+            hotelFilterSelectionRv.adapter = adapter
             adapter.updateItems(hotelFilterItems, filter.optionSelected.toSet())
         }
     }

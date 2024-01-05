@@ -12,5 +12,7 @@ data class AddOnData(
     @SerializedName("type")
     val type: Int = -1,
     @SerializedName("price")
-    val price: Double = 0.0
+    val price: Double = 0.0,
+    @SerializedName("fixed_quantity")
+    val fixedQuantity: Boolean = false
 )

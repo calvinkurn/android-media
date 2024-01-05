@@ -69,14 +69,14 @@ class TrackingPageViewModelTest {
     @Test
     fun `Get Tracking Data Success`() {
         coEvery { getTrackingUseCase(any()) } returns GetLogisticTrackingResponse()
-        trackingPageViewModel.getTrackingData("12234")
+        trackingPageViewModel.getTrackingData("12234", "1", 2)
         verify { trackingDataObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get Tracking Data Fail`() {
         coEvery { getTrackingUseCase(any()) } throws defaultThrowable
-        trackingPageViewModel.getTrackingData("12234")
+        trackingPageViewModel.getTrackingData("12234", "1", 2)
         verify { trackingDataObserver.onChanged(match { it is Fail }) }
     }
 

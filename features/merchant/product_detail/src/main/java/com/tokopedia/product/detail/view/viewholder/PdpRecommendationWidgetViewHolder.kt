@@ -38,4 +38,13 @@ class PdpRecommendationWidgetViewHolder(
             }
         }
     }
+
+    override fun bind(element: PdpRecommendationWidgetDataModel, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
+    override fun onViewRecycled() {
+        super.onViewRecycled()
+        binding?.recomWidget?.recycle()
+    }
 }

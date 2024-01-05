@@ -6,6 +6,8 @@ import com.tokopedia.inbox.universalinbox.di.UniversalInboxFragmentModule
 import com.tokopedia.inbox.universalinbox.di.UniversalInboxUseCaseModule
 import com.tokopedia.inbox.universalinbox.di.UniversalInboxViewModelModule
 import com.tokopedia.inbox.universalinbox.stub.di.base.UniversalInboxFakeBaseAppComponent
+import com.tokopedia.inbox.universalinbox.stub.di.tokochat.UniversalInboxTokoChatCourierConversationModule
+import com.tokopedia.inbox.universalinbox.stub.di.tokochat.UniversalInboxTokoChatNetworkModuleStub
 import com.tokopedia.inbox.universalinbox.test.base.BaseUniversalInboxTest
 import dagger.Component
 
@@ -14,6 +16,9 @@ import dagger.Component
     modules = [
         // Stub modules
         UniversalInboxModuleStub::class,
+        UniversalInboxTokoChatNetworkModuleStub::class,
+        UniversalInboxTokoChatCourierConversationModule::class,
+        UniversalInboxUseCaseModuleStub::class,
 
         // Real modules
         UniversalInboxUseCaseModule::class,

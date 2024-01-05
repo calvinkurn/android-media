@@ -16,12 +16,32 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.unifyorderhistory.data.model.*
-import com.tokopedia.unifyorderhistory.domain.*
-import com.tokopedia.unifyorderhistory.util.UohConsts
+import com.tokopedia.unifyorderhistory.data.model.FlightResendEmail
+import com.tokopedia.unifyorderhistory.data.model.LsPrintData
+import com.tokopedia.unifyorderhistory.data.model.PmsNotification
+import com.tokopedia.unifyorderhistory.data.model.RechargeSetFailData
+import com.tokopedia.unifyorderhistory.data.model.TrainResendEmail
+import com.tokopedia.unifyorderhistory.data.model.TrainResendEmailParam
+import com.tokopedia.unifyorderhistory.data.model.UohAtcBuyAgainWidgetData
+import com.tokopedia.unifyorderhistory.data.model.UohFilterCategory
+import com.tokopedia.unifyorderhistory.data.model.UohFinishOrder
+import com.tokopedia.unifyorderhistory.data.model.UohFinishOrderParam
+import com.tokopedia.unifyorderhistory.data.model.UohListOrder
+import com.tokopedia.unifyorderhistory.data.model.UohListParam
+import com.tokopedia.unifyorderhistory.domain.FlightResendEmailUseCase
+import com.tokopedia.unifyorderhistory.domain.GetUohFilterCategoryUseCase
+import com.tokopedia.unifyorderhistory.domain.GetUohPmsCounterUseCase
+import com.tokopedia.unifyorderhistory.domain.LsPrintFinishOrderUseCase
+import com.tokopedia.unifyorderhistory.domain.RechargeSetFailUseCase
+import com.tokopedia.unifyorderhistory.domain.TrainResendEmailUseCase
+import com.tokopedia.unifyorderhistory.domain.UohFinishOrderUseCase
+import com.tokopedia.unifyorderhistory.domain.UohListUseCase
+import com.tokopedia.unifyorderhistory.util.UohConsts.BUY_AGAIN_PAGE_NAME
+import com.tokopedia.unifyorderhistory.util.UohConsts.PAGE_NAME
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_ADS_COUNT
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_DIMEN_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_INVENTORY_ID
@@ -107,6 +127,14 @@ class UohListViewModel @Inject constructor(
     private val _getUohPmsCounterResult = MutableLiveData<Result<PmsNotification>>()
     val getUohPmsCounterResult: LiveData<Result<PmsNotification>>
         get() = _getUohPmsCounterResult
+
+    private val _buyAgainWidgetResult = MutableLiveData<Result<List<RecommendationWidget>>>()
+    val buyAgainWidgetResult: LiveData<Result<List<RecommendationWidget>>>
+        get() = _buyAgainWidgetResult
+
+    private val _atcBuyAgainResult = MutableLiveData<UohAtcBuyAgainWidgetData>()
+    val atcBuyAgainResult: LiveData<UohAtcBuyAgainWidgetData>
+        get() = _atcBuyAgainResult
 
     fun loadOrderList(paramOrder: UohListParam) {
         UohIdlingResource.increment()
@@ -201,7 +229,7 @@ class UohListViewModel @Inject constructor(
                 val recommendationData = getRecommendationUseCase.getData(
                     GetRecommendationRequestParam(
                         pageNumber = pageNumber,
-                        pageName = UohConsts.PAGE_NAME
+                        pageName = PAGE_NAME
                     )
                 )
                 _recommendationListResult.value = (recommendationData.asSuccess())
@@ -213,11 +241,45 @@ class UohListViewModel @Inject constructor(
         }
     }
 
+    fun loadBuyAgain() {
+        UohIdlingResource.increment()
+        launch {
+            try {
+                val recommendationData = getRecommendationUseCase.getData(
+                    GetRecommendationRequestParam(
+                        pageNumber = 0,
+                        pageName = BUY_AGAIN_PAGE_NAME
+                    )
+                )
+                _buyAgainWidgetResult.value = (recommendationData.asSuccess())
+            } catch (e: Exception) {
+                Timber.d(e)
+                _buyAgainWidgetResult.value = Fail(e.fillInStackTrace())
+            }
+            UohIdlingResource.decrement()
+        }
+    }
+
     fun doAtcMulti(userId: String, atcMultiQuery: String, listParam: ArrayList<AddToCartMultiParam>, verticalCategory: String) {
         UohIdlingResource.increment()
         launch {
             val result = (atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
             _atcMultiResult.value = result
+            UohIdlingResource.decrement()
+        }
+    }
+
+    fun doAtcBuyAgain(
+        userId: String,
+        atcMultiQuery: String,
+        listParam: ArrayList<AddToCartMultiParam>,
+        recommItem: RecommendationItem,
+        index: Int
+    ) {
+        UohIdlingResource.increment()
+        launch {
+            val result = (atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
+            _atcBuyAgainResult.value = UohAtcBuyAgainWidgetData(recommItem, index, result)
             UohIdlingResource.decrement()
         }
     }

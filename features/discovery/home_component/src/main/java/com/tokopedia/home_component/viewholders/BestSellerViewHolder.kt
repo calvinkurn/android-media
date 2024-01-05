@@ -25,6 +25,7 @@ import com.tokopedia.home_component.visitable.BestSellerProductDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.utils.view.binding.viewBinding
 
 class BestSellerViewHolder(
@@ -170,6 +171,16 @@ class BestSellerViewHolder(
         val productDataModel =
             chipProductDataModel?.productModelList?.getOrNull(itemPosition) ?: return
 
+        if (productDataModel.isTopAds) {
+            TopAdsUrlHitter(itemView.context).hitImpressionUrl(
+                CLASSNAME,
+                productDataModel.trackerImageUrl,
+                productDataModel.productId,
+                productDataModel.name,
+                productDataModel.productCardModel.productImageUrl
+            )
+        }
+
         bestSellerListener.onBestSellerImpress(
             element,
             productDataModel,
@@ -187,6 +198,16 @@ class BestSellerViewHolder(
         }
         val productDataModel =
             chipProductDataModel?.productModelList?.getOrNull(itemPosition) ?: return
+
+        if (productDataModel.isTopAds) {
+            TopAdsUrlHitter(itemView.context).hitClickUrl(
+                CLASSNAME,
+                productDataModel.clickUrl,
+                productDataModel.productId,
+                productDataModel.name,
+                productDataModel.productCardModel.productImageUrl
+            )
+        }
 
         bestSellerListener.onBestSellerClick(
             element,
@@ -247,5 +268,6 @@ class BestSellerViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = com.tokopedia.home_component.R.layout.home_component_best_seller
+        private const val CLASSNAME = "com.tokopedia.home_component.viewholders.BestSellerViewHolder"
     }
 }

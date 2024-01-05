@@ -37,6 +37,7 @@ import com.tokopedia.statistic.common.utils.logger.StatisticLogger
 import com.tokopedia.statistic.databinding.ActivityStcStatisticBinding
 import com.tokopedia.statistic.di.DaggerStatisticComponent
 import com.tokopedia.statistic.di.StatisticComponent
+import com.tokopedia.statistic.di.module.StatisticModule
 import com.tokopedia.statistic.view.fragment.StatisticFragment
 import com.tokopedia.statistic.view.model.StatisticPageUiModel
 import com.tokopedia.statistic.view.viewhelper.FragmentListener
@@ -50,6 +51,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.resources.isDarkMode
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By @ilhamsuaib on 08/06/20
@@ -106,7 +108,6 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         }
 
         binding = ActivityStcStatisticBinding.inflate(layoutInflater).apply {
-            root.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
             setContentView(root)
         }
 
@@ -123,6 +124,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     override fun getComponent(): StatisticComponent {
         return DaggerStatisticComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+            .statisticModule(StatisticModule(this))
             .build()
     }
 
@@ -151,6 +153,15 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     override fun setHeaderSubTitle(subTitle: String) {
         binding?.headerStcStatistic?.headerSubTitle = subTitle
+    }
+
+    override fun isTabCoachMarkShowing(): Boolean {
+        return coachMark.isShowing
+    }
+
+    private fun setContentBackground() {
+        val background = getResColor(unifyprinciplesR.color.Unify_Background)
+        window.decorView.setBackgroundColor(background)
     }
 
     private fun initInjector() {
@@ -201,6 +212,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
             dismissCoachMarkOnTabSelected()
             StatisticTracker.sendPageTabClickEvent(userSession.userId, title)
         }
+        setContentBackground()
     }
 
     private fun setupViewPager(isWhiteListed: Boolean) {

@@ -61,7 +61,7 @@ class HomeNavMenuViewHolder(
         binding?.menuImage?.gone()
         binding?.menuImageUnify?.visible()
 
-        binding?.menuImageUnify?.loadImage(element.srcImage, com.tokopedia.homenav.R.drawable.grey_button_rounded)
+        binding?.menuImageUnify?.loadImage(element.srcImage, com.tokopedia.resources.common.R.drawable.grey_button_rounded)
     }
 
     private fun setImageByMappingToIconUnify(element: HomeNavMenuDataModel) {
@@ -93,21 +93,29 @@ class HomeNavMenuViewHolder(
             listener.onMenuClick(element)
         }
 
-        if (element.notifCount.isNotEmpty()) {
+        if(element.showCta) {
+            binding?.navMenuIconCta?.visibility = View.VISIBLE
+            binding?.menuNotificationTypography?.visibility = View.GONE
+            binding?.menuNotification?.visibility = View.GONE
+        } else if (element.notifCount.isNotEmpty()) {
             if(listener.getReviewCounterAbIsUnify()) {
                 binding?.menuNotification?.setNotification(
-                        notif = element.notifCount,
-                        notificationType = NotificationUnify.COUNTER_TYPE,
-                        colorType = NotificationUnify.COLOR_PRIMARY
+                    notif = element.notifCount,
+                    notificationType = NotificationUnify.COUNTER_TYPE,
+                    colorType = NotificationUnify.COLOR_PRIMARY
                 )
                 binding?.menuNotification?.visibility = View.VISIBLE
+                binding?.menuNotificationTypography?.visibility = View.GONE
             } else {
                 binding?.menuNotificationTypography?.setNotification(element.notifCount, NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_PRIMARY)
                 binding?.menuNotificationTypography?.visibility = View.VISIBLE
+                binding?.menuNotification?.visibility = View.GONE
             }
+            binding?.navMenuIconCta?.visibility = View.GONE
         } else {
             binding?.menuNotificationTypography?.visibility = View.GONE
             binding?.menuNotification?.visibility = View.GONE
+            binding?.navMenuIconCta?.visibility = View.GONE
         }
     }
 }

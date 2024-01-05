@@ -1,10 +1,13 @@
 package com.tokopedia.home_component.visitable
 
 import android.os.Bundle
-import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
-import com.tokopedia.analytics.performance.perf.LoadableComponent
+import com.tokopedia.analytics.performance.perf.performanceTracing.components.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.DynamicIconComponent
+import com.tokopedia.home_component.util.DynamicIconBigUtil
+import com.tokopedia.home_component.util.DynamicIconSmallUtil
+import com.tokopedia.home_component.util.DynamicIconUtil
 import com.tokopedia.kotlin.model.ImpressHolder
 import java.util.*
 
@@ -12,15 +15,29 @@ import java.util.*
  * Created by Lukas on 1/8/21.
  */
 data class DynamicIconComponentDataModel(
-        val id: String,
-        val isCache: Boolean,
-        val type: Int,
-        val dynamicIconComponent: DynamicIconComponent,
-        val currentFetch: Long = Calendar.getInstance().timeInMillis
+    val id: String,
+    val isCache: Boolean,
+    val dynamicIconComponent: DynamicIconComponent,
+    val currentFetch: Long = Calendar.getInstance().timeInMillis,
+    val numOfRows: Int = 1,
+    val type: Type = Type.BIG,
 ) : HomeComponentVisitable, ImpressHolder(), LoadableComponent by BlocksLoadableComponent(
     { dynamicIconComponent.dynamicIcon.size > 3 },
     "HomeDynamicIcon"
 ) {
+    enum class Type(val scrollableItemThreshold: Int) {
+        BIG(3),
+        SMALL(0);
+
+        fun isBigIcons() = this == BIG
+        fun isSmallIcons() = this == SMALL
+    }
+
+    val dynamicIconUtil: DynamicIconUtil = when(type) {
+        Type.SMALL -> DynamicIconSmallUtil()
+        else -> DynamicIconBigUtil()
+    }
+
     override fun visitableId(): String {
         return id
     }

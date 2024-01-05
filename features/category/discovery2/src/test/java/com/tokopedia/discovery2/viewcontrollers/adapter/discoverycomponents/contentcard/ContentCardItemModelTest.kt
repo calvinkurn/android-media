@@ -7,6 +7,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.MoveAction
 import com.tokopedia.discovery2.data.contentCard.LandingPage
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentCard.ContentCardItemViewModel
 import io.mockk.*
@@ -82,7 +83,7 @@ class ContentCardItemModelTest {
         val list = null
         every { componentsItem.data } returns list
 
-        assert(viewModel.getNavigationUrl() == null)
+        assert(viewModel.getNavigationAction() == null)
     }
 
     @Test
@@ -90,14 +91,14 @@ class ContentCardItemModelTest {
         val list = mutableListOf<DataItem>()
         every { componentsItem.data } returns list
 
-        assert(viewModel.getNavigationUrl() == null)
+        assert(viewModel.getNavigationAction() == null)
     }
 
     @Test
     fun `test for getNavigationUrl`() {
-        val list = mutableListOf(DataItem(landingPage = LandingPage(appLink = "xyz")))
+        val list = mutableListOf(DataItem(landingPage = LandingPage(moveAction = MoveAction("navigation",value = "activeTab=2&componentID=24"))))
         every { componentsItem.data } returns list
-        assert(viewModel.getNavigationUrl() == "xyz")
+        assert(viewModel.getNavigationAction() == list.first().landingPage?.moveAction)
     }
 
     @Test

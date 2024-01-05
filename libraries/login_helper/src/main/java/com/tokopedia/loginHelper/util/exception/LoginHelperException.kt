@@ -17,3 +17,6 @@ class LocationAdminRedirectionException :
 
 class ErrorGetAdminTypeException :
     Exception("Account not whitelisted. Error get admin type got called. Please try another account.")
+
+class NoUserInfoException:
+    Exception("No User details found, switch to Local")

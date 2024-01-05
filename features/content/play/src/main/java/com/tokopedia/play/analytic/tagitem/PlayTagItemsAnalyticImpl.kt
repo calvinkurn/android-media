@@ -236,16 +236,6 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         )
     }
 
-    override fun clickActionProductWithVariant(productId: String, productAction: ProductAction) {
-        when (productAction) {
-            ProductAction.AddToCart -> clickAtcButtonProductWithVariant(productId)
-            ProductAction.Buy, ProductAction.OCC -> clickBeliButtonProductWithVariant(productId)
-            else -> {
-                // no-op
-            }
-        }
-    }
-
     override fun clickProductAction(
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section,
@@ -382,24 +372,6 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         productId: String,
         campaignId: String
     ): String = "$channelId - $productId - ${channelType.value} - $campaignId"
-
-    private fun clickBeliButtonProductWithVariant(productId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            Event.clickGroupChat,
-            EventCategory.groupChatRoom,
-            "click buy in bottom sheet with varian",
-            "$channelId - $productId - ${channelType.value}"
-        )
-    }
-
-    private fun clickAtcButtonProductWithVariant(productId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            Event.clickGroupChat,
-            EventCategory.groupChatRoom,
-            "click atc in bottom sheet with varian",
-            "$channelId - $productId - ${channelType.value}"
-        )
-    }
 
     private fun clickBeliButtonProductWithNoVariant(
         trackingQueue: TrackingQueue,

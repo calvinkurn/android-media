@@ -7,7 +7,6 @@ import android.widget.Space
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
@@ -76,8 +75,7 @@ internal class LabelLayoutStrategyListView : LabelLayoutStrategy {
             && productCardModel.isShowLabelBestSeller()
 
         return if (hasLabelBestSeller)
-            context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_height) +
-                context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_margintop)
+            context.resources.getDimensionPixelSize(R.dimen.product_card_label_best_seller_height)
         else 0
     }
 
@@ -89,7 +87,7 @@ internal class LabelLayoutStrategyListView : LabelLayoutStrategy {
             && productCardModel.isShowLabelBestSeller()
 
         return if (hasLabelBestSeller)
-            context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin_top)
+            0
         else context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin)
     }
 
@@ -130,23 +128,12 @@ internal class LabelLayoutStrategyListView : LabelLayoutStrategy {
         else 0
     }
 
-    override fun moveDiscountConstraint(view: View, productCardModel: ProductCardModel) {
-
-    }
-
-    override fun setDiscountMargin(label: Label) {
-
-    }
-
     override fun renderLabelPrice(view: View, productCardModel: ProductCardModel) {
         val labelPrice = view.findViewById<Label?>(R.id.labelPrice)
+
+        labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
+
         val labelPriceReposition = view.findViewById<Label?>(R.id.labelPriceReposition)
-
-        if (productCardModel.isShowDiscountOrSlashPrice())
-            labelPrice?.initLabelGroup(null)
-        else
-            labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
-
         labelPriceReposition?.initLabelGroup(null)
     }
 
@@ -178,21 +165,21 @@ internal class LabelLayoutStrategyListView : LabelLayoutStrategy {
             it.connect(
                 R.id.imageShopBadge,
                 ConstraintSet.TOP,
-                R.id.labelPriceBarrier,
+                R.id.labelPrice,
                 ConstraintSet.BOTTOM,
                 shopBadgeMarginTop,
             )
             it.connect(
                 R.id.textViewShopLocation,
                 ConstraintSet.TOP,
-                R.id.labelPriceBarrier,
+                R.id.labelPrice,
                 ConstraintSet.BOTTOM,
                 textViewShopLocationMarginTop,
             )
             it.connect(
                 R.id.imageFulfillment,
                 ConstraintSet.TOP,
-                R.id.labelPriceBarrier,
+                R.id.labelPrice,
                 ConstraintSet.BOTTOM,
                 imageFulfillmentMarginTop,
             )

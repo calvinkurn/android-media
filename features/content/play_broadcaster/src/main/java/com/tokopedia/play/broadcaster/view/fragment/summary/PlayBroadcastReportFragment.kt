@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastReportBinding
-import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
@@ -165,7 +165,6 @@ class PlayBroadcastReportFragment @Inject constructor(
                             actionLabel = getString(R.string.play_ok),
                         )
                     }
-
                     PlayBroadcastSummaryEvent.CloseReportPage -> requireActivity().onBackPressed()
                     PlayBroadcastSummaryEvent.OpenLeaderboardBottomSheet -> openInteractiveLeaderboardSheet()
                     PlayBroadcastSummaryEvent.OpenPostVideoPage -> mListener?.onClickPostButton()

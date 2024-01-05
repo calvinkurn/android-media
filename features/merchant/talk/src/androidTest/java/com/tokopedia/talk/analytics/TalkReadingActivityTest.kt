@@ -35,7 +35,7 @@ class TalkReadingActivityTest : TalkCassavaTestFixture() {
     fun validateClickCreateNewQuestion() {
         actionTest {
             intendingIntent()
-            clickAction(R.id.fb_circle_icon)
+            clickAction(com.tokopedia.unifycomponents.R.id.fb_circle_icon)
         } assertTest {
             performClose(activityRule)
             validate(cassavaTestRule, TALK_CLICK_CREATE_NEW_QUESTION_PATH)

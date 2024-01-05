@@ -140,17 +140,11 @@ class AffiliateTransactionDetailFragment :
     private fun showError(it: Throwable?) {
         view?.findViewById<GlobalError>(R.id.commision_global_error)?.run {
             when (it) {
-                is UnknownHostException, is SocketTimeoutException -> {
-                    setType(GlobalError.NO_CONNECTION)
-                }
+                is UnknownHostException, is SocketTimeoutException -> setType(GlobalError.NO_CONNECTION)
 
-                is IllegalStateException -> {
-                    setType(GlobalError.PAGE_FULL)
-                }
+                is IllegalStateException -> setType(GlobalError.PAGE_FULL)
 
-                else -> {
-                    setType(GlobalError.SERVER_ERROR)
-                }
+                else -> setType(GlobalError.SERVER_ERROR)
             }
             show()
             setActionClickListener {
@@ -172,12 +166,12 @@ class AffiliateTransactionDetailFragment :
     }
 
     private fun setData(commissionData: AffiliateCommissionDetailsData.GetAffiliateCommissionDetail?) {
-        if (commissionData?.data?.commissionType != TRAFFIC_TYPE) {
+        if (commissionData?.commissionDetailData?.commissionType != TRAFFIC_TYPE) {
             showView()
-            sendOrderOpenScreenEvent(commissionData?.data?.pageType)
+            sendOrderOpenScreenEvent(commissionData?.commissionDetailData?.pageType)
             setProductTransactionData(commissionData)
         } else {
-            sendTrafficOpenScreenEvent(commissionData.data?.pageType)
+            sendTrafficOpenScreenEvent(commissionData.commissionDetailData?.pageType)
             setTrafficTransactionView()
         }
     }
@@ -224,19 +218,19 @@ class AffiliateTransactionDetailFragment :
     private fun setProductTransactionData(
         commissionData: AffiliateCommissionDetailsData.GetAffiliateCommissionDetail?
     ) {
-        commissionData?.data?.cardDetail?.image?.androidURL?.let { url ->
+        commissionData?.commissionDetailData?.cardDetail?.image?.androidURL?.let { url ->
             view?.findViewById<ImageUnify>(R.id.product_image)?.setImageUrl(
                 url
             )
         }
         view?.findViewById<Typography>(R.id.product_name)?.text =
-            commissionData?.data?.cardDetail?.cardTitle
+            commissionData?.commissionDetailData?.cardDetail?.cardTitle
         view?.findViewById<Typography>(R.id.product_status)?.text =
-            commissionData?.data?.cardDetail?.cardPriceFormatted
+            commissionData?.commissionDetailData?.cardDetail?.cardPriceFormatted
         view?.findViewById<Typography>(R.id.shop_name)?.text =
-            commissionData?.data?.cardDetail?.shopName
+            commissionData?.commissionDetailData?.cardDetail?.shopName
         view?.findViewById<Typography>(R.id.transaction_date)?.text =
-            commissionData?.data?.createdAt?.let {
+            commissionData?.commissionDetailData?.createdAt?.let {
                 DateUtils().formatDate(newFormat = NEW_DATE_FORMAT, dateString = it)
             }
         view?.findViewById<Typography>(R.id.promotion_link)?.text = getPageType(commissionData)
@@ -247,7 +241,7 @@ class AffiliateTransactionDetailFragment :
                 append(getPageType(commissionData))
             }
             this.setOnClickListener {
-                commissionData?.data?.cardDetail?.hyperlink?.androidURL?.let { url ->
+                commissionData?.commissionDetailData?.cardDetail?.hyperlink?.androidURL?.let { url ->
                     affiliateVM?.extractBranchLink(url)
                 }
             }
@@ -255,10 +249,11 @@ class AffiliateTransactionDetailFragment :
     }
 
     private fun getPageType(commissionData: AffiliateCommissionDetailsData.GetAffiliateCommissionDetail?): String {
-        return when (commissionData?.data?.pageType?.uppercase()) {
+        return when (commissionData?.commissionDetailData?.pageType?.uppercase()) {
             PAGE_PDP -> "Produk"
             PAGE_SHOP -> "Toko"
             PAGE_EVENT -> "Event"
+            PAGE_WISHLIST -> "Koleksi"
             else -> "None"
         }
     }
@@ -308,6 +303,7 @@ class AffiliateTransactionDetailFragment :
         private const val PAGE_PDP = "PDP"
         private const val PAGE_SHOP = "SHOP"
         private const val PAGE_EVENT = "CAMPAIGN"
+        private const val PAGE_WISHLIST = "WISHLIST"
         fun newInstance(transactionId: String?): Fragment {
             return AffiliateTransactionDetailFragment().apply {
                 arguments = Bundle().apply {

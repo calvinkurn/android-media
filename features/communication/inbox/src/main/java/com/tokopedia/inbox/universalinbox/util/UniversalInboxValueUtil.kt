@@ -1,7 +1,5 @@
 package com.tokopedia.inbox.universalinbox.util
 
-import com.tokopedia.inbox.universalinbox.util.toggle.UniversalInboxAbPlatform
-import com.tokopedia.inbox.universalinbox.view.UniversalInboxMenuMapper
 import com.tokopedia.topads.sdk.utils.PARAM_DEVICE
 import com.tokopedia.topads.sdk.utils.PARAM_EP
 import com.tokopedia.topads.sdk.utils.PARAM_HEADLINE_PRODUCT_COUNT
@@ -17,7 +15,6 @@ import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
 import com.tokopedia.topads.sdk.utils.VALUE_ITEM
 import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
 import com.tokopedia.user.session.UserSessionInterface
-import timber.log.Timber
 
 object UniversalInboxValueUtil {
 
@@ -26,31 +23,8 @@ object UniversalInboxValueUtil {
     /**
      * Rollence
      */
-    const val ROLLENCE_KEY = "inbox_universal"
-    const val ROLLENCE_TYPE_A = "inbox_varA"
-    const val ROLLENCE_TYPE_B = "inbox_varB"
-    private const val VAR_A = "var_a"
-    private const val VAR_B = "var_b"
-    fun getVariant(abTestPlatform: UniversalInboxAbPlatform): UniversalInboxMenuMapper.VariantType {
-        return try {
-            val variantAB = abTestPlatform.getString(ROLLENCE_KEY, ROLLENCE_TYPE_B)
-            if (variantAB == ROLLENCE_TYPE_A) {
-                UniversalInboxMenuMapper.VariantType.INBOX_VAR_A
-            } else {
-                UniversalInboxMenuMapper.VariantType.INBOX_VAR_B
-            }
-        } catch (throwable: Throwable) {
-            Timber.d(throwable)
-            UniversalInboxMenuMapper.VariantType.INBOX_VAR_B
-        }
-    }
-    fun getVariantTracker(abTestPlatform: UniversalInboxAbPlatform): String {
-        return when (getVariant(abTestPlatform).type) {
-            ROLLENCE_TYPE_A -> VAR_A
-            ROLLENCE_TYPE_B -> VAR_B
-            else -> ""
-        }
-    }
+    const val VAR_B = "var_b" // for analytics only
+    const val INBOX_ADS_REFRESH_KEY = "inbox_ads_refresh"
 
     /**
      * User Session
@@ -79,6 +53,8 @@ object UniversalInboxValueUtil {
     const val CHATBOT_TYPE = 1
     const val GOJEK_TYPE = 101
 
+    const val GOJEK_REPLACE_TEXT = "{order_counter}"
+
     /**
      * Static Menu
      */
@@ -90,12 +66,10 @@ object UniversalInboxValueUtil {
      * Recommendation
      */
     // PDP
-    const val REQUEST_FROM_PDP = 138
     const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
 
     // TopAds
     const val COMPONENT_NAME_TOP_ADS = "Inbox Recommendation Top Ads"
-    const val SHIFTING_INDEX = 1
 
     // TopAds - Banner
     const val TOP_ADS_BANNER_COUNT = 2
@@ -124,5 +98,6 @@ object UniversalInboxValueUtil {
     const val WISHLIST_STATUS_IS_WISHLIST = "isWishlist"
 
     // Widget
-    const val WIDGET_PAGE_NAME = "inbox_pre-purchase"
+    const val WIDGET_PAGE_NAME_PRE_PURCHASE = "inbox_pre-purchase"
+    const val WIDGET_PAGE_NAME_POST_PURCHASE = "inbox_post-purchase"
 }

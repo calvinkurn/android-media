@@ -2,15 +2,14 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchItemDataView
 import com.tokopedia.search.result.product.broadmatch.DynamicCarouselOption
-import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
 import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST

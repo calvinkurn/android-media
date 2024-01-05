@@ -1,5 +1,6 @@
 package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.cart.data.model.response.promo.CartPromoData
 import com.tokopedia.cartcommon.data.response.common.OutOfService
@@ -41,5 +42,10 @@ data class CartData(
     @SerializedName("placeholder_note")
     val placeholderNote: String = "",
     @SerializedName("coachmark")
-    val coachmark: CoachmarkPlusResponse = CoachmarkPlusResponse()
+    val coachmark: CoachmarkPlusResponse = CoachmarkPlusResponse(),
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("show_bundle_price")
+    val showBundlePrice: Boolean = true,
+    @SerializedName("onboarding_data")
+    val onboardingData: List<CartOnBoardingData> = emptyList()
 )

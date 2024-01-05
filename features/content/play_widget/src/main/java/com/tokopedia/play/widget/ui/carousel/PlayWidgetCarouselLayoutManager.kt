@@ -1,8 +1,7 @@
 package com.tokopedia.play.widget.ui.carousel
 
 import android.content.Context
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.content.common.ui.layoutmanager.FocusedCarouselLayoutManager
 import com.tokopedia.kotlin.extensions.view.dpToPx
 
 /**
@@ -10,15 +9,9 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
  */
 class PlayWidgetCarouselLayoutManager(
     context: Context
-) : LinearLayoutManager(context, RecyclerView.HORIZONTAL, false) {
+) : FocusedCarouselLayoutManager(context) {
 
-    private val maxWidth = 234.dpToPx(context.resources.displayMetrics)
-
-    override fun checkLayoutParams(lp: RecyclerView.LayoutParams?): Boolean {
-        if (lp != null) {
-            lp.width = (0.65 * width).toInt().coerceAtMost(maxWidth)
-            lp.height = (1 / 0.5625 * lp.width).toInt()
-        }
-        return super.checkLayoutParams(lp)
-    }
+    override val maxWidth: Int = 168.dpToPx(context.resources.displayMetrics)
+    override val itemWidthToScreenWidthPercentage: Double = 0.52
+    override val heightRatio: Double = 1 / 0.566
 }

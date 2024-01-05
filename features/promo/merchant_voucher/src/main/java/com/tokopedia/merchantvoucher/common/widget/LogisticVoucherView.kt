@@ -72,7 +72,7 @@ class LogisticVoucherView : CustomVoucherView {
                 context,
                 ivVoucherType,
                 DELIVERY_VOUCHER_IMAGE_URL,
-                R.drawable.ic_loading_image
+            com.tokopedia.design.R.drawable.ic_loading_image
         )
         btnUseVoucher?.isEnabled = !isApplied
         btnUseVoucher?.text = if (isApplied) context.getString(R.string.applied) else

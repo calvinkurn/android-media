@@ -61,13 +61,17 @@ data class CourierItemData(
     var merchantVoucherProductModel: MerchantVoucherProductModel? = null,
     var preOrderModel: PreOrderModel? = null,
     var freeShippingChosenCourierTitle: String = "",
+    var freeShippingChosenImage: String = "",
     var isHideChangeCourierCard: Boolean = false,
     var durationCardDescription: String = "",
     var freeShippingMetadata: String = "",
     var benefitClass: String = "",
     var shippingSubsidy: Long = 0,
     var boCampaignId: Long = 0,
-    var scheduleDeliveryUiModel: ScheduleDeliveryUiModel? = null
+    var scheduleDeliveryUiModel: ScheduleDeliveryUiModel? = null,
+    // new OFOC
+    var boOrderMessage: String = "",
+    var courierOrderMessage: String = ""
 ) : Parcelable, ShipmentOptionData {
 
     val selectedShipper: SelectedShipperModel

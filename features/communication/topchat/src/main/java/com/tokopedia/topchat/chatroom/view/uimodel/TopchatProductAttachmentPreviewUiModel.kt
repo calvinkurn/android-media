@@ -49,7 +49,7 @@ class TopchatProductAttachmentPreviewUiModel(
         return this.apply {
             updateCanShowFooter(
                 canShowFooterProductAttachment(
-                    true,
+                    !isSender,
                     roomMetaData.sender.role
                 )
             )
@@ -57,8 +57,13 @@ class TopchatProductAttachmentPreviewUiModel(
     }
 
     private fun canShowFooterProductAttachment(isOpposite: Boolean, role: String): Boolean {
-        return (!isOpposite && role.equals(ChatRoomHeaderUiModel.Companion.ROLE_USER, ignoreCase = true)) ||
-            (isOpposite && !role.equals(ChatRoomHeaderUiModel.Companion.ROLE_USER, ignoreCase = true))
+        return (
+            // Sender && Buyer
+            !isOpposite && role.equals(ChatRoomHeaderUiModel.Companion.ROLE_USER, ignoreCase = true)
+            ) || (
+            // Receiver && Seller
+            isOpposite && !role.equals(ChatRoomHeaderUiModel.Companion.ROLE_USER, ignoreCase = true)
+            )
     }
 
     class Builder : ProductAttachmentUiModel.Builder() {

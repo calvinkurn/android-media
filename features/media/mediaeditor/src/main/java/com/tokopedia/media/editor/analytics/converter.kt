@@ -11,6 +11,19 @@ import com.tokopedia.media.editor.data.entity.AddTextToolId
 import com.tokopedia.picker.common.types.EditorToolType
 
 // for analytics purpose
+fun getToolEditorTextAnalytics(editorToolType: Int): Int {
+    return when (editorToolType) {
+        EditorToolType.BRIGHTNESS -> R.string.tracker_tool_name_brightness
+        EditorToolType.CONTRAST -> R.string.tracker_tool_name_contrast
+        EditorToolType.WATERMARK -> R.string.tracker_tool_name_watermark
+        EditorToolType.ROTATE -> R.string.tracker_tool_name_rotate
+        EditorToolType.CROP -> R.string.tracker_tool_name_crop
+        EditorToolType.ADD_LOGO -> R.string.tracker_tool_name_add_logo
+        EditorToolType.ADD_TEXT -> R.string.tracker_tool_name_add_text
+        else -> R.string.tracker_tool_name_remove_bg
+    }
+}
+
 fun getToolEditorText(editorToolType: Int): Int {
     return when (editorToolType) {
         EditorToolType.BRIGHTNESS -> R.string.editor_tool_brightness
@@ -60,15 +73,20 @@ fun addTextToText(textDetail: EditorAddTextUiModel?, colorOnText: String): Strin
     return textDetail?.let { textValue ->
         var text = ""
 
-        text += when (textValue.textTemplate) {
-            AddTextTemplateMode.FREE -> ADD_TEXT_BEBAS
-            else -> ADD_TEXT_TEMPLATE
-        }
+        when (textValue.textTemplate) {
+            AddTextTemplateMode.FREE -> {
+                text += ADD_TEXT_BEBAS
+            }
+            else -> {
+                text += ADD_TEXT_TEMPLATE
 
-        text += "_$colorOnText"
+                text += "_$colorOnText"
 
-        textValue.getBackgroundTemplate()?.let {
-            text += "_${it.addTextBackgroundModel.value}"
+                textValue.getBackgroundTemplate()?.let {
+                    // +1 for normalize from index [0] to DA data
+                    text += "_${it.addTextBackgroundModel.value + 1}"
+                }
+            }
         }
 
         text += when (textValue.textPosition) {

@@ -13,8 +13,8 @@ data class OrderShipment(
     val serviceName: String? = null,
     val serviceId: Int? = null,
     val serviceDuration: String? = null,
-    val serviceEta: String? = null,
-    val whitelabelDescription: String? = null,
+    val serviceEta: String? = "",
+    val whitelabelDescription: String? = "",
     val shippingEta: String? = null,
     val serviceErrorMessage: String? = null,
     val isServicePickerEnable: Boolean = false,
@@ -23,8 +23,8 @@ data class OrderShipment(
     val shipperId: Int? = null,
     val shipperProductId: Int? = null,
     val ratesId: String? = null,
-    val ut: String? = null,
-    val checksum: String? = null,
+    val ut: String? = "",
+    val checksum: String? = "",
     val shippingPrice: Int? = null,
     val logisticPromoTickerMessage: String? = null,
     val isShowLogisticPromoTickerMessage: Boolean = true,
@@ -95,6 +95,35 @@ data class OrderShipment(
             0
         }
     }
+
+    fun getRealServiceName(): String {
+        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
+            logisticPromoViewModel.title
+        } else {
+            serviceName ?: ""
+        }
+    }
+
+    fun getRealShipperName(): String {
+        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
+            logisticPromoViewModel.shipperName
+        } else {
+            shipperName ?: ""
+        }
+    }
+
+    fun getRealServiceEta(): String {
+        return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) {
+            logisticPromoViewModel.etaData.textEta
+        } else {
+            shippingEta ?: ""
+        }
+    }
+
+    val promoCode: String
+        get() {
+            return if (isApplyLogisticPromo && logisticPromoShipping != null && logisticPromoViewModel != null) logisticPromoViewModel.promoCode else ""
+        }
 }
 
 data class OrderInsurance(

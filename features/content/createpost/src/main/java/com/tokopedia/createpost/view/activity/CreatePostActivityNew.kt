@@ -9,17 +9,23 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.MimeTypeMap
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.content.common.types.BundleData
+import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
+import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
 import com.tokopedia.createpost.common.SHOP_ID_PARAM
+import com.tokopedia.createpost.common.TYPE_AFFILIATE
+import com.tokopedia.createpost.common.TYPE_CONTENT_USER
 import com.tokopedia.createpost.common.USER_ID_PARAM
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
-import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
-import com.tokopedia.createpost.common.view.service.SubmitPostService
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaType
@@ -29,13 +35,12 @@ import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
 import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
 import com.tokopedia.createpost.view.fragment.CreatePostPreviewFragmentNew
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
+import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
+import com.tokopedia.creation.common.upload.model.CreationUploadData
+import com.tokopedia.creation.common.upload.uploader.CreationUploader
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.content.common.types.BundleData
-import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
-import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
-import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -54,6 +59,9 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
     @Inject
     lateinit var feedAccountAnalytic: FeedAccountTypeAnalytic
+
+    @Inject
+    lateinit var creationUploader: CreationUploader
 
     var selectedContentAccount: ContentAccountUiModel = ContentAccountUiModel.Empty
     var isOpenFrom: String = ""
@@ -141,6 +149,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         DaggerCreatePostComponent.factory()
             .create(
                 baseAppComponent = (applicationContext as BaseMainApplication).baseAppComponent,
+                creationUploaderComponent = CreationUploaderComponentProvider.get(this),
                 context = this
             )
             .inject(this)
@@ -149,9 +158,6 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     companion object {
         const val TYPE_CONTENT_TAGGING_PAGE = "content-tagging-page"
         const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
-        const val PARAM_SHOW_PROGRESS_BAR = "show_posting_progress_bar"
-        const val PARAM_IS_EDIT_STATE = "is_edit_state"
-        const val PARAM_MEDIA_PREVIEW = "media_preview"
         const val EXTRA_SELECTED_FEED_ACCOUNT_ID = "EXTRA_SELECTED_FEED_ACCOUNT_ID"
         private const val DEFAULT_CACHE_DURATION = 7L
 
@@ -282,35 +288,51 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     override fun postFeed() {
         createPostAnalytics.eventClickPostOnPreviewPage()
         KeyboardHandler.hideSoftKeyboard(this)
+
         val cacheManager = SaveInstanceCacheManager(this, true)
         val createPostViewModel = (fragment as? BaseCreatePostFragmentNew)?.getLatestCreatePostData()
         createPostViewModel?.authorType = selectedContentAccount.type
+
         cacheManager.put(
             CreatePostViewModel.TAG,
             createPostViewModel,
             TimeUnit.DAYS.toMillis(DEFAULT_CACHE_DURATION)
         )
+
+        if (createPostViewModel == null) return
+
         cacheManager.id?.let { draftId ->
-            SubmitPostService.startService(applicationContext, draftId)
+            lifecycleScope.launch {
+                val uploadData = CreationUploadData.buildForPost(
+                    creationId = createPostViewModel.postId,
+                    coverUri = createPostViewModel.completeImageList.firstOrNull()?.path.orEmpty(),
+                    authorId = if (isTypeAffiliate(createPostViewModel.authorType) || isTypeBuyer(createPostViewModel.authorType)) {
+                        userSession.userId
+                    } else {
+                        userSession.shopId
+                    },
+                    authorType = createPostViewModel.authorType,
+                    draftId = draftId
+                )
+
+                creationUploader.upload(uploadData)
+            }
         }
 
         when (isOpenFrom) {
             BundleData.VALUE_IS_OPEN_FROM_USER_PROFILE -> goToUserProfile()
             BundleData.VALUE_IS_OPEN_FROM_SHOP_PAGE -> goToShopPage()
-            else -> createPostViewModel?.let { goToFeed(it) }
+            else -> goToFeed()
         }
     }
 
-    private fun goToFeed(createPostViewModel: CreatePostViewModel) {
+    private fun isTypeAffiliate(authorType: String) = authorType == TYPE_AFFILIATE
+    private fun isTypeBuyer(authorType: String) = authorType == TYPE_CONTENT_USER
+
+    private fun goToFeed() {
         this.let {
-            val applink = ApplinkConst.FEED_FOLLOWING
-            val intent = RouteManager.getIntent(it, applink)
-            intent.putExtra(PARAM_SHOW_PROGRESS_BAR, true)
-            val isEditState = createPostViewModel.isEditState
-            intent.putExtra(PARAM_IS_EDIT_STATE, isEditState)
-            intent.putExtra(PARAM_MEDIA_PREVIEW,
-                if (!isEditState) createPostViewModel.completeImageList.first().path else "")
-            startActivity(intent)
+            val applink = ApplinkConst.FEED
+            RouteManager.route(it, applink)
             finish()
         }
     }

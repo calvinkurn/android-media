@@ -7,6 +7,7 @@ import com.tokopedia.buyerorderdetail.presentation.coachmark.DriverTippingCoachM
 import com.tokopedia.kotlin.extensions.view.orZero
 
 data class ShipmentInfoUiModel(
+    val owocInfoUiModel: OwocBomDetailSectionUiModel?,
     val awbInfoUiModel: AwbInfoUiModel,
     val courierDriverInfoUiModel: CourierDriverInfoUiModel,
     val driverTippingInfoUiModel: DriverTippingInfoUiModel,
@@ -87,12 +88,15 @@ data class ShipmentInfoUiModel(
             val key: String,
             val icon: String,
             val actionValue: String,
-            val value: String
+            val value: String,
+            val counter: Int
         )
     }
 
     data class DriverTippingInfoUiModel(
-        val imageUrl: String, val title: String, val description: String
+        val imageUrl: String,
+        val title: String,
+        val description: String
     ) : BaseVisitableUiModel {
         override fun shouldShow(context: Context?): Boolean {
             return imageUrl.isNotBlank() && title.isNotBlank() && description.isNotBlank()

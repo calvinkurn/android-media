@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class FilterRequest(
     @SerializedName("DayRange")
-    val DayRange: Int,
+    val dayRange: Int,
     @SerializedName("Page")
-    val Page: Int,
+    val page: Int,
     @SerializedName("Limit")
-    val Limit: Int
+    val limit: Int
 )

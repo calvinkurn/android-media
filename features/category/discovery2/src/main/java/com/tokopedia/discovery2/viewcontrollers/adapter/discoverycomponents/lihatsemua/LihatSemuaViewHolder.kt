@@ -31,6 +31,8 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
@@ -66,9 +68,10 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
                         setupTitleImage(data)
                         setupBackgroundImage(data)
                         setupLihat(data, componentItem, backgroundImageView.isVisible)
-                        setupTextColours(backgroundImageView.isVisible)
+                        setupTitleTextColours(data.fontColor, backgroundImageView.isVisible)
+                        setupSubtitleTextColours(data.fontColor, backgroundImageView.isVisible)
                         setupTimer(data, backgroundImageView.isVisible)
-                        setupPadding(backgroundImageView.isVisible, titleImageViewParent.isVisible)
+                        setComponentSpace(data.isDynamicTitle())
                     }
                 }
             )
@@ -80,9 +83,23 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         }
     }
 
-    private fun setupLihat(data: DataItem, componentsItem: ComponentsItem, backgroundPresent: Boolean) {
+    private fun setComponentSpace(isDynamicTitle: Boolean) {
+        if (isDynamicTitle) {
+            setupMargin()
+        } else {
+            setupPadding(backgroundImageView.isVisible, titleImageViewParent.isVisible)
+        }
+    }
+
+    private fun DataItem.isDynamicTitle() = titleType == DYNAMIC_TITLE_TYPE
+
+    private fun setupLihat(
+        data: DataItem,
+        componentsItem: ComponentsItem,
+        backgroundPresent: Boolean
+    ) {
         if (!data.btnApplink.isNullOrEmpty()) {
-            if (backgroundPresent) {
+            if (backgroundPresent || data.isDynamicTitle()) {
                 lihatImageView.show()
                 lihatTextView.hide()
             } else {
@@ -94,6 +111,8 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
                 }
                 lihatTextView.show()
                 lihatImageView.hide()
+
+                setupCTATextColor(data.ctaColor)
             }
         } else {
             lihatImageView.hide()
@@ -104,6 +123,12 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         }
         lihatImageView.setOnClickListener {
             navigateLihat(data, componentsItem)
+        }
+    }
+
+    private fun setupCTATextColor(ctaColor: String?) {
+        if (!ctaColor.isNullOrEmpty()) {
+            lihatTextView.setTextColor(Color.parseColor(ctaColor))
         }
     }
 
@@ -135,15 +160,47 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         lihatSubTitleTextView.setTextAndCheckShow(subtitle)
     }
 
-    private fun setupTextColours(backgroundPresent: Boolean) {
+    private fun setupTitleTextColours(fontColor: String?, backgroundPresent: Boolean) {
         fragment.context?.let {
-            if (backgroundPresent) {
-                lihatTitleTextView.setTextColor(MethodChecker.getColor(it, R.color.discovery2_dms_white))
-                lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it, R.color.discovery2_dms_white_95))
-            } else {
-                lihatTitleTextView.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_96))
-                lihatSubTitleTextView.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
+            val defaultColorWithBG = MethodChecker.getColor(
+                it,
+                R.color.discovery2_dms_white
+            )
+
+            val defaultColorWithoutBG = MethodChecker.getColor(
+                it,
+                unifyprinciplesR.color.Unify_NN950_96
+            )
+
+            val textColor = when {
+                backgroundPresent -> defaultColorWithBG
+                !backgroundPresent && !fontColor.isNullOrEmpty() -> Color.parseColor(fontColor)
+                else -> defaultColorWithoutBG
             }
+
+            lihatTitleTextView.setTextColor(textColor)
+        }
+    }
+
+    private fun setupSubtitleTextColours(fontColor: String?, backgroundPresent: Boolean) {
+        fragment.context?.let {
+            val defaultColorWithBG = MethodChecker.getColor(
+                it,
+                R.color.discovery2_dms_white_95
+            )
+
+            val defaultColorWithoutBG = MethodChecker.getColor(
+                it,
+                unifyprinciplesR.color.Unify_NN950_68
+            )
+
+            val textColor = when {
+                backgroundPresent -> defaultColorWithBG
+                !backgroundPresent && !fontColor.isNullOrEmpty() -> Color.parseColor(fontColor)
+                else -> defaultColorWithoutBG
+            }
+
+            lihatSubTitleTextView.setTextColor(textColor)
         }
     }
 
@@ -197,7 +254,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
             } else {
                 textTitleParent.setPadding(
                     if (isTitleImagePresent) {
-                        it.getDimensionPixelOffset(R.dimen.dp_4)
+                        it.getDimensionPixelOffset(abstractionR.dimen.dp_4)
                     } else {
                         it.getDimensionPixelOffset(
                             R.dimen.dp_16
@@ -217,26 +274,41 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
         }
     }
 
+    private fun setupMargin() {
+        fragment.context?.resources?.let {
+            val leftMargin = if (titleImageViewParent.isVisible) {
+                R.dimen.dp_8
+            } else {
+                R.dimen.dp_22
+            }
+
+            textTitleParent.setMargin(it.getDimensionPixelSize(leftMargin), 0, 0, 0)
+        }
+    }
+
     private fun setupTitleImage(data: DataItem) {
         if (data.imageTitle.isNullOrEmpty()) {
             titleImageViewParent.hide()
         } else {
             titleImageView.loadImage(data.imageTitle)
             val lp = titleImageView.layoutParams
-            val height = Utils.extractDimension(data.imageTitle, "height")
-            val width = Utils.extractDimension(data.imageTitle, "width")
-            if (width != null && height != null) {
-                val aspectRatio = width.toFloat() / height.toFloat()
+            val heightParamValue = Utils.extractDimension(data.imageTitle, "height")
+            val widthParamValue = Utils.extractDimension(data.imageTitle, "width")
+            if (widthParamValue != null && heightParamValue != null) {
+                val aspectRatio = widthParamValue.toFloat() / heightParamValue.toFloat()
                 fragment.context?.resources?.let {
                     Utils.corners(titleImageViewParent, 0 - it.getDimension(R.dimen.dp_12).toInt(), 0, 0, 0 + it.getDimension(R.dimen.dp_12).toInt(), it.getDimension(R.dimen.dp_12))
                     Utils.corners(titleImageView, 0, 0, 0, 0, it.getDimension(R.dimen.dp_8))
-                    if (lihatSubTitleTextView.isVisible) {
-                        lp.height = it.getDimensionPixelOffset(R.dimen.dp_56)
-                        lp.width = (aspectRatio * it.getDimensionPixelOffset(R.dimen.dp_56)).toInt()
-                    } else {
-                        lp.height = it.getDimensionPixelOffset(R.dimen.dp_44)
-                        lp.width = (aspectRatio * it.getDimensionPixelOffset(R.dimen.dp_44)).toInt()
+
+                    val dimenHeight = when {
+                        data.isDynamicTitle() -> R.dimen.dp_40
+                        lihatSubTitleTextView.isVisible -> R.dimen.dp_56
+                        else -> R.dimen.dp_44
                     }
+
+                    val height = it.getDimensionPixelOffset(dimenHeight)
+                    lp.height = height
+                    lp.width = (aspectRatio * height).toInt()
                 }
             }
             titleImageView.layoutParams = lp
@@ -264,7 +336,11 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
     }
 
     private fun navigateToAppLink(data: DataItem) {
-        lihatSemuaViewModel?.navigate(fragment.activity, data.btnApplink)
+        if (data.moveAction?.type != null) {
+            Utils.routingBasedOnMoveAction(data.moveAction, fragment)
+        } else {
+            lihatSemuaViewModel?.navigate(fragment.activity, data.btnApplink)
+        }
     }
 
     interface OnLihatSemuaClickListener {
@@ -315,5 +391,7 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
     companion object {
         const val BERAKHIR_DALAM = "Berakhir dalam"
         const val SUDAH_BERAKHIR = "Sudah berakhir"
+
+        private const val DYNAMIC_TITLE_TYPE = "Dynamic_Title+Image"
     }
 }

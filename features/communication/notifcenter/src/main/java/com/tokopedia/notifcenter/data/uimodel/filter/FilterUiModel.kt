@@ -3,7 +3,7 @@ package com.tokopedia.notifcenter.data.uimodel.filter
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationFilterTypeFactory
+import com.tokopedia.notifcenter.view.adapter.typefactory.NotificationFilterTypeFactory
 
 data class FilterUiModel(
     // need to suppress as data type is expected (Long)

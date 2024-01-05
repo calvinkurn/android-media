@@ -1,42 +1,58 @@
 package com.tokopedia.notifcenter.domain
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.inboxcommon.RoleType
-import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.common.network.NotifcenterCacheManager
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.notifcenter.data.state.Resource
+import com.tokopedia.notifcenter.util.cache.NotifCenterCacheManager
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
-import javax.inject.Named
 
-open class NotifOrderListUseCase @Inject constructor(
-        @Named(QUERY_ORDER_LIST)
-        private val query: String,
-        private val gqlUseCase: GraphqlUseCase<NotifOrderListResponse>,
-        private val cacheManager: NotifcenterCacheManager,
-        private val userSession: UserSessionInterface
-) {
+class NotifOrderListUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    private val cacheManager: NotifCenterCacheManager,
+    private val userSession: UserSessionInterface,
+    dispatchers: CoroutineDispatchers
+) : FlowUseCase<Int, Resource<NotifOrderListResponse>>(dispatchers.io) {
 
-    fun getOrderList(
-            @RoleType
-            userType: Int
-    ) = flow {
+    override fun graphqlQuery(): String = """
+        query notifcenter_notifOrderList(
+            $$PARAM_TYPE_USER: Int
+        ) {
+          notifcenter_notifOrderList(
+            type_of_user: $$PARAM_TYPE_USER
+          ) {
+            list {
+              icon
+              text
+              counter_str
+              link {
+                android_link
+              }
+            }
+          }
+        }
+    """.trimIndent()
+
+    override suspend fun execute(
+        @RoleType params: Int
+    ): Flow<Resource<NotifOrderListResponse>> = flow {
         emit(Resource.loading(null))
-        val param = generateParam(userType)
-        val cache = getOrderListFromCache(userType)
+        val param = generateParam(params)
+        val cache = getOrderListFromCache(params)
         cache?.let {
             it.clearAllCounter()
             emit(Resource.loading(it))
         }
-        val response = gqlUseCase.apply {
-            setTypeClass(NotifOrderListResponse::class.java)
-            setRequestParams(param)
-            setGraphqlQuery(query)
-        }.executeOnBackground()
+        val response = repository.request<Map<*, *>, NotifOrderListResponse>(graphqlQuery(), param)
         emit(Resource.success(response))
-        saveOrderListToCache(userType, response)
+        saveOrderListToCache(params, response)
     }
 
     private fun getOrderListFromCache(userType: Int): NotifOrderListResponse? {
@@ -49,22 +65,20 @@ open class NotifOrderListUseCase @Inject constructor(
         return cacheManager.saveCache(cacheKey, response)
     }
 
-    protected fun getCacheKey(userType: Int): String {
+    private fun getCacheKey(userType: Int): String {
         return "notif_order_list_$userType-${userSession.userId}"
     }
 
     private fun generateParam(
-            @RoleType
-            userType: Int
+        @RoleType
+        userType: Int
     ): Map<String, Any?> {
         return mapOf(
-                PARAM_TYPE_USER to userType
+            PARAM_TYPE_USER to userType
         )
     }
 
     companion object {
-        const val QUERY_ORDER_LIST = "notif_order_list"
         const val PARAM_TYPE_USER = "type_of_user"
-        val queryRes = R.raw.query_notifcenter_order_list
     }
 }

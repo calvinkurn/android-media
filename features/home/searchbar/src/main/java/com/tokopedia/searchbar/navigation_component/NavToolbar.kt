@@ -64,7 +64,7 @@ import com.tokopedia.searchbar.navigation_component.viewModel.NavigationViewMode
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.utils.resources.isDarkMode
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
@@ -132,6 +132,8 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
     private var searchbarType: Int? = null
     private var darkIconColor: Int? = getDarkIconColor()
     private var lightIconColor: Int? = getLightIconColor()
+    private var navToolbarIconCustomDarkColor: Int? = null
+    private var navToolbarIconCustomLightColor: Int? = null
 
     private val navIconRecyclerView: RecyclerView by lazy(LazyThreadSafetyMode.NONE) {
         findViewById(R.id.rv_icon_list)
@@ -255,7 +257,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         val iconConfig = iconBuilder.build()
         viewModel?.setRegisteredIconList(iconConfig)
         this.useCentralizedIconNotification = iconConfig.useCentralizedIconNotification
-        navIconAdapter = NavToolbarIconAdapter(iconConfig, this)
+        navIconAdapter = NavToolbarIconAdapter(iconConfig, this, {navToolbarIconCustomLightColor}, {navToolbarIconCustomDarkColor})
         navIconAdapter?.setHasStableIds(true)
         navIconRecyclerView.adapter = navIconAdapter
         navIconRecyclerView.itemAnimator = null
@@ -347,6 +349,14 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
             setBackButtonColorBasedOnTheme()
             setTitleTextColorBasedOnTheme()
         }
+    }
+
+    /**
+     * Switch toolbar based on UI mode (light/dark mode)
+     */
+    fun switchToolbarBasedOnUiMode() {
+        if(context?.isDarkMode() == true) switchToDarkToolbar()
+        else switchToLightToolbar()
     }
 
     /**
@@ -546,7 +556,7 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
         return null
     }
 
-    // this needed to enable coachmark on wishlist detail page
+    // this needed to enable coachmark on wishlist detail page & thankyou page
     fun getShareIconView(): View? {
         val shareIconPosition = navIconAdapter?.getShareIconPosition()
         shareIconPosition?.let {
@@ -930,5 +940,23 @@ class NavToolbar : Toolbar, LifecycleObserver, TopNavComponentListener {
                 activity = activity
             )
         }
+    }
+
+    fun setupSearchBarWithStaticLightModeColor() {
+        val searchBackgroundColor = getDrawable(R.drawable.nav_toolbar_searchbar_bg_corner_static)
+        val blendIconSearchColor =
+            blendColor(getColor(R.color.searchbar_dms_search_icon_dark_color))
+        val hintTextColor = getColor(R.color.searchbar_dms_text_color)
+        layoutSearch.background = searchBackgroundColor
+        iconSearchMagnify.colorFilter = blendIconSearchColor
+        etSearch.setHintTextColor(hintTextColor)
+    }
+
+    fun setNavToolbarIconCustomColor(
+        navToolbarIconCustomLightColor: Int,
+        navToolbarIconCustomDarkColor: Int
+    ){
+        this.navToolbarIconCustomLightColor = navToolbarIconCustomLightColor
+        this.navToolbarIconCustomDarkColor = navToolbarIconCustomDarkColor
     }
 }

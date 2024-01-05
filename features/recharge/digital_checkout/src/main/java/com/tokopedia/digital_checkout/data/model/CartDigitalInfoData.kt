@@ -1,6 +1,7 @@
 package com.tokopedia.digital_checkout.data.model
 
 import android.os.Parcelable
+import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -41,7 +42,9 @@ data class CartDigitalInfoData(
 
         var collectionPointId: String = "",
 
-        var collectionPointVersion: String = ""
+        var collectionPointVersion: String = "",
+
+        var collectionDataElements: List<RechargeGetCart.CollectionDataElements> = emptyList()
 ) : Parcelable {
 
     @Parcelize

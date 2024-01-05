@@ -16,7 +16,7 @@ class InactivePhoneOnboardingRobot {
     }
 
     fun clickOnButtonLanjut() {
-        scrollToView(R.id.button_next)
-        clickOnButton(R.id.button_next)
+        scrollToView(com.tokopedia.updateinactivephone.R.id.button_next)
+        clickOnButton(com.tokopedia.updateinactivephone.R.id.button_next)
     }
 }

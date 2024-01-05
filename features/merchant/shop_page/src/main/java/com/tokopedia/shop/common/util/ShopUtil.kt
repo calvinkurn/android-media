@@ -14,7 +14,9 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_KEY
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant
@@ -32,6 +34,7 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.SHOP_NAME_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.TYPE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.USER_ID_KEY
+import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -39,9 +42,9 @@ object ShopUtil {
     var isFoldableAndHorizontalScreen: Boolean = false
     var isFoldable: Boolean = true
 
-    fun getProductPerPage(context: Context?): Int{
-        return context?.let{
-            if(DeviceScreenInfo.isTablet(context)){
+    fun getProductPerPage(context: Context?): Int {
+        return context?.let {
+            if (DeviceScreenInfo.isTablet(context)) {
                 DEFAULT_PER_PAGE_TABLET
             } else {
                 DEFAULT_PER_PAGE_NON_TABLET
@@ -156,6 +159,7 @@ object ShopUtil {
         return try {
             Color.parseColor(colorHex)
         } catch (e: Exception) {
+            // TODO need to add default color from unify, but need to pass context on param
             FirebaseCrashlytics.getInstance().recordException(e)
             Int.ZERO
         }
@@ -170,6 +174,21 @@ object ShopUtil {
             displayedPrice.replace("\\D".toRegex(), "")
         } else {
             ""
+        }
+    }
+
+    fun isEnableShopPageReImagined(context: Context?): Boolean {
+        return FirebaseRemoteConfigImpl(context).getBoolean(
+            RemoteConfigKey.ENABLE_SHOP_PAGE_REIMAGINED,
+            true
+        )
+    }
+
+    fun isFulfillmentByGroupLabel(labelGroupList: List<LabelGroup>): Boolean? {
+        return if (labelGroupList.isEmpty()) {
+            null
+        } else {
+            labelGroupList.any { it.position == ShopPageTrackingConstant.LABEL_GROUP_POSITION_FULFILLMENT }
         }
     }
 }

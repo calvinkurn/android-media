@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
+import com.tokopedia.analytics.performance.perf.performanceTracing.components.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
@@ -24,8 +26,13 @@ data class ProductContentDataModel(
 
     // Upcoming Data
     var upcomingNplData: UpcomingNplDataModel = UpcomingNplDataModel(),
-    var shouldShowCampaign: Boolean = false
-) : DynamicPdpDataModel {
+    var shouldShowCampaign: Boolean = false,
+    var shouldShowShareWidget: Boolean = false,
+) : DynamicPdpDataModel,
+    LoadableComponent by BlocksLoadableComponent(
+        { false },
+        "ProductContentDataModel"
+    ) {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
 
@@ -72,7 +79,7 @@ data class ProductContentDataModel(
     }
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
-        val bundle = Bundle()
+
         return if (newData is ProductContentDataModel) {
             if (data?.hashCode() != newData.data?.hashCode() ||
                 upcomingNplData.hashCode() != newData.upcomingNplData.hashCode()
@@ -81,19 +88,31 @@ data class ProductContentDataModel(
                 return null
             }
 
-            if (shouldShowTradein != newData.shouldShowTradein || freeOngkirImgUrl != newData.freeOngkirImgUrl) {
-                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_TRADEIN_AND_BOE)
+            val bundle = Bundle()
+            if (shouldShowTradein != newData.shouldShowTradein ||
+                freeOngkirImgUrl != newData.freeOngkirImgUrl ||
+                shouldShowShareWidget != newData.shouldShowShareWidget) {
+                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, PAYLOAD_TRADEIN_BOE_SHARE)
                 return bundle
             }
 
             if (isWishlisted != newData.isWishlisted) {
-                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_WISHLIST)
+                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, PAYLOAD_WISHLIST)
                 return bundle
             }
             null
         } else {
             null
         }
+    }
+
+    override fun isLoading(): Boolean {
+        return data == null
+    }
+
+    companion object{
+        const val PAYLOAD_WISHLIST = 1
+        const val PAYLOAD_TRADEIN_BOE_SHARE = 421321
     }
 }
 

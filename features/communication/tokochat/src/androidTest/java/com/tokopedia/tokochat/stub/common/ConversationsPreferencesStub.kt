@@ -2,7 +2,7 @@ package com.tokopedia.tokochat.stub.common
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
+import com.tokopedia.tokochat.config.di.qualifier.TokoChatQualifier
 import javax.inject.Inject
 
 class ConversationsPreferencesStub @Inject constructor(

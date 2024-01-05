@@ -90,6 +90,7 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
     @Test
     fun `Test get initial state impression with see more`() {
         val initialStateData = initialStateWithShowMoreResponse.jsonToObject<InitialStateUniverse>()
+        `Given rollance is off`()
         `Given view already get initial state`(initialStateData)
 
         `Then verify initial state impression is called`()

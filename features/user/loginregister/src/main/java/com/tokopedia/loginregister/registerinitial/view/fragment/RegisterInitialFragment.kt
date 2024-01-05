@@ -28,6 +28,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.scp.auth.common.utils.ScpUtils
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -49,6 +50,7 @@ import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.graphql.util.getParamBoolean
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
@@ -124,6 +126,7 @@ class RegisterInitialFragment :
     private var phoneNumber: String? = ""
     private var source: String = ""
     private var email: String = ""
+    private var loginCredential = ""
     private var isSmartLogin: Boolean = false
     private var isSmartRegister: Boolean = false
     private var isPending: Boolean = false
@@ -192,7 +195,7 @@ class RegisterInitialFragment :
             mGoogleSignInClient = GoogleSignIn.getClient(it, gso)
         }
 
-        phoneNumber = getParamString(PHONE_NUMBER, arguments, savedInstanceState, "")
+        phoneNumber = getParamString(ApplinkConstInternalUserPlatform.PHONE_NUMBER, arguments, savedInstanceState, "")
         source = getParamString(
             ApplinkConstInternalGlobal.PARAM_SOURCE,
             arguments,
@@ -213,6 +216,12 @@ class RegisterInitialFragment :
         )
         email = getParamString(
             ApplinkConstInternalGlobal.PARAM_EMAIL,
+            arguments,
+            savedInstanceState,
+            ""
+        )
+        loginCredential = getParamString(
+            ApplinkConstInternalUserPlatform.LOGIN_SDK_CREDENTIAL,
             arguments,
             savedInstanceState,
             ""
@@ -249,27 +258,12 @@ class RegisterInitialFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepareView()
-        if (isSmartLogin) {
-            showProgressBar()
-            activity?.let {
-                if (isPending) {
-                    val intent = registerInitialRouter.goToVerification(
-                        email = email,
-                        otpType = RegisterConstants.OtpType.OTP_TYPE_ACTIVATE,
-                        context = requireContext()
-                    )
-                    startActivityForResult(
-                        intent,
-                        RegisterConstants.Request.REQUEST_PENDING_OTP_VALIDATE
-                    )
-                } else {
-                    val intent = registerInitialRouter.goToVerification(
-                        email = email,
-                        otpType = RegisterConstants.OtpType.OTP_TYPE_REGISTER,
-                        context = requireContext()
-                    )
-                    startActivityForResult(intent, RegisterConstants.Request.REQUEST_OTP_VALIDATE)
-                }
+        when {
+            isSmartLogin -> {
+                handleSmartLogin()
+            }
+            loginCredential.isNotEmpty() -> {
+                handleAutoRegister()
             }
         }
 
@@ -278,6 +272,38 @@ class RegisterInitialFragment :
         initObserver()
         initData()
         setupToolbar()
+    }
+
+    private fun handleAutoRegister() {
+        if (loginCredential?.isNotEmpty() == true) {
+            viewBinding?.registerInputView?.inputEmailPhoneField?.editText?.setText(loginCredential)
+            onActionPartialClick(loginCredential)
+        }
+    }
+
+    @SuppressLint("PII Data Exposure")
+    private fun handleSmartLogin() {
+        showProgressBar()
+        activity?.let {
+            if (isPending) {
+                val intent = registerInitialRouter.goToVerification(
+                    email = email,
+                    otpType = RegisterConstants.OtpType.OTP_TYPE_ACTIVATE,
+                    context = requireContext()
+                )
+                startActivityForResult(
+                    intent,
+                    RegisterConstants.Request.REQUEST_PENDING_OTP_VALIDATE
+                )
+            } else {
+                val intent = registerInitialRouter.goToVerification(
+                    email = email,
+                    otpType = RegisterConstants.OtpType.OTP_TYPE_REGISTER,
+                    context = requireContext()
+                )
+                startActivityForResult(intent, RegisterConstants.Request.REQUEST_OTP_VALIDATE)
+            }
+        }
     }
 
     private fun initInputType() {
@@ -593,7 +619,7 @@ class RegisterInitialFragment :
     private fun onFailedGetProvider(throwable: Throwable) {
         if (isUsingRedefineRegisterEmailMandatoryOptionalVariant()) {
             registerInitialViewModel.setOtherMethodState(
-                OtherMethodState.Failed(context?.getString(R.string.default_request_error_unknown))
+                OtherMethodState.Failed(context?.getString(com.tokopedia.network.R.string.default_request_error_unknown))
             )
             bottomSheetOtherMethod?.setState(registerInitialViewModel.otherMethodState)
         }
@@ -726,7 +752,11 @@ class RegisterInitialFragment :
                 if (registerCheckData.isExist) {
                     showRegisteredPhoneDialog(registerCheckData.view)
                 } else {
-                    showProceedWithPhoneDialog(registerCheckData.view)
+                    if (loginCredential.isNotEmpty()) {
+                        startVerificationFlow(registerCheckData.view)
+                    } else {
+                        showProceedWithPhoneDialog(registerCheckData.view)
+                    }
                 }
             }
             LoginConstants.LoginType.EMAIL_TYPE -> {
@@ -843,11 +873,11 @@ class RegisterInitialFragment :
         registerInitialRouter.goToRegisterEmail(this)
     }
 
-    override fun goToRegisterEmailPageWithEmail(email: String, token: String, source: String) {
+    override fun goToRegisterEmailPageWithEmail(email: String, token: String, source: String, isFromScp: Boolean) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
         activity?.let {
             showProgressBar()
-            registerInitialRouter.goToRegisterEmailPageWithParams(this, email, token, source)
+            registerInitialRouter.goToRegisterEmailPageWithParams(this, email, token, source, isFromScp)
         }
     }
 
@@ -916,12 +946,16 @@ class RegisterInitialFragment :
                 validateToken =
                     data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
                 val uuid = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID).orEmpty()
-                goToAddName(uuid)
+                val isFromScp = data?.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_SCP, false).orFalse()
+                goToAddName(uuid, isFromScp)
             }
 
             Activity.RESULT_CANCELED -> {
                 dismissProgressBar()
                 activity?.setResult(Activity.RESULT_CANCELED)
+                if (loginCredential.isNotEmpty()) {
+                    activity?.finish()
+                }
             }
         }
     }
@@ -997,15 +1031,17 @@ class RegisterInitialFragment :
                     val email = bundle.getString(ApplinkConstInternalGlobal.PARAM_EMAIL)
                     val token = bundle.getString(ApplinkConstInternalGlobal.PARAM_TOKEN)
                     val source = bundle.getString(ApplinkConstInternalGlobal.PARAM_SOURCE)
+                    val isFromScp = bundle.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_SCP, false)
                     if (!email.isNullOrEmpty() && !token.isNullOrEmpty()) {
                         if (!source.isNullOrEmpty()) {
                             goToRegisterEmailPageWithEmail(
                                 email,
                                 token,
-                                source
+                                source,
+                                isFromScp
                             )
                         } else {
-                            goToRegisterEmailPageWithEmail(email, token, "")
+                            goToRegisterEmailPageWithEmail(email, token, "", isFromScp)
                         }
                     }
                 }
@@ -1013,6 +1049,9 @@ class RegisterInitialFragment :
 
             Activity.RESULT_CANCELED -> {
                 activity?.setResult(Activity.RESULT_CANCELED)
+                if (loginCredential.isNotEmpty()) {
+                    activity?.finish()
+                }
             }
         }
     }
@@ -1112,9 +1151,9 @@ class RegisterInitialFragment :
         registerInitialRouter.goToAddPin2FA(this, enableSkip2FA, validateToken)
     }
 
-    private fun goToAddName(uuid: String) {
+    private fun goToAddName(uuid: String, isFromScp: Boolean) {
         phoneNumber?.run {
-            registerInitialRouter.goToAddName(this@RegisterInitialFragment, uuid, this)
+            registerInitialRouter.goToAddName(this@RegisterInitialFragment, uuid, this, isFromScp)
         }
     }
 
@@ -1264,25 +1303,29 @@ class RegisterInitialFragment :
         registerInitialRouter.goToChooseAccountPage(this, accessToken, phoneNumber)
     }
 
+    private fun startVerificationFlow(phone: String) {
+        showProgressBar()
+        registerAnalytics.trackClickYesButtonPhoneDialog()
+        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
+        activity?.let {
+            val intent = registerInitialRouter.goToVerification(
+                phone = phone,
+                otpType = RegisterConstants.OtpType.OTP_REGISTER_PHONE_NUMBER,
+                context = requireContext()
+            )
+            startActivityForResult(
+                intent,
+                RegisterConstants.Request.REQUEST_VERIFY_PHONE_REGISTER_PHONE
+            )
+        }
+    }
+
     private fun showProceedWithPhoneDialog(phone: String) {
         val dialog = ProceedWithPhoneDialog.createDialog(context, phone)
         registerAnalytics.trackClickPhoneSignUpButton()
         dialog?.setPrimaryCTAClickListener {
-            showProgressBar()
-            registerAnalytics.trackClickYesButtonPhoneDialog()
             dialog.dismiss()
-            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-            activity?.let {
-                val intent = registerInitialRouter.goToVerification(
-                    phone = phone,
-                    otpType = RegisterConstants.OtpType.OTP_REGISTER_PHONE_NUMBER,
-                    context = requireContext()
-                )
-                startActivityForResult(
-                    intent,
-                    RegisterConstants.Request.REQUEST_VERIFY_PHONE_REGISTER_PHONE
-                )
-            }
+            startVerificationFlow(phone)
         }
         dialog?.setSecondaryCTAClickListener {
             registerAnalytics.trackClickChangeButtonPhoneDialog()
@@ -1333,6 +1376,8 @@ class RegisterInitialFragment :
         activityShouldEnd = true
         registerPushNotif()
         submitIntegrityApi()
+
+        ScpUtils.saveTokens(userSession.accessToken, EncoderDecoder.Decrypt(userSession.freshToken, userSession.refreshTokenIV))
 
         activity?.let {
             val bundle = Bundle()
@@ -1437,7 +1482,8 @@ class RegisterInitialFragment :
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putString(PHONE_NUMBER, phoneNumber)
+        outState.putString(ApplinkConstInternalUserPlatform.PHONE_NUMBER, phoneNumber)
+        outState.putString(ApplinkConstInternalUserPlatform.LOGIN_SDK_CREDENTIAL, loginCredential)
         outState.putString(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
         super.onSaveInstanceState(outState)
     }
@@ -1654,14 +1700,12 @@ class RegisterInitialFragment :
         private const val ABTEST_REDEFINE_REGISTER_EMAIL_VARIANT_MANDATORY = "mandatory_variant"
         private const val ABTEST_REDEFINE_REGISTER_EMAIL_VARIANT_OPTIONAL = "optional_variant"
 
-        private const val PHONE_NUMBER = "phonenumber"
-
         private const val REGISTER_BUTTON_CORNER_SIZE = 10
         private const val SOCMED_BUTTON_MARGIN_SIZE = 10
         private const val SOCMED_BUTTON_CORNER_SIZE = 10
 
         private const val TERM_AND_CONDITION = "Syarat & Ketentuan"
-        private const val PRIVACY_POLICY = "Kebijakan Privasi"
+        private const val PRIVACY_POLICY = "Pemberitahuan Privasi"
 
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 

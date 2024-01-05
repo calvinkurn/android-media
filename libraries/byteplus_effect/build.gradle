@@ -2,6 +2,14 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
+android {
+    namespace 'com.tokopedia.byteplus.effect'
+    testNamespace 'com.tokopedia.byteplus.effect.test'
+    buildFeatures {
+        viewBinding true
+    }
+}
+
 buildscript {
     repositories {
         google()

@@ -14,7 +14,7 @@ import com.tokopedia.editshipping.databinding.ItemShippingEditorCardBinding
 import com.tokopedia.editshipping.domain.model.shippingEditor.FeatureInfoModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperModel
 import com.tokopedia.editshipping.util.EditShippingConstant
-import com.tokopedia.editshipping.util.EditShippingConstant.KURIR_REKOMENDASI_SHIPPER_ID
+import com.tokopedia.editshipping.util.EditShippingConstant.SHIPPER_ID_SAMEDAY_ON_DEMAND
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageFitCenter
@@ -75,18 +75,9 @@ class ShippingEditorItemAdapter(
         return activatedListIds
     }
 
-    fun getWhitelabelServicePosition(): Int {
+    fun getSamedayServicePosition(): Int {
         for (i in shipperModels.indices) {
-            if (shipperModels[i].isWhitelabel) {
-                return i
-            }
-        }
-        return RecyclerView.NO_POSITION
-    }
-
-    fun getFirstNormalServicePosition(): Int {
-        for (i in shipperModels.indices) {
-            if (!shipperModels[i].isWhitelabel && shipperModels[i].shipperId != KURIR_REKOMENDASI_SHIPPER_ID.toLong()) {
+            if (shipperModels[i].shipperId == SHIPPER_ID_SAMEDAY_ON_DEMAND) {
                 return i
             }
         }
@@ -161,6 +152,7 @@ class ShippingEditorItemAdapter(
                     binding.tickerShipper.tickerType = Ticker.TYPE_ERROR
                     binding.tickerShipper.setHtmlDescription(itemView.context.getString(R.string.shipper_ticker_red))
                 }
+
                 EditShippingConstant.TICKER_STATE_WARNING -> {
                     binding.tickerShipper.visibility = View.VISIBLE
                     binding.tickerShipper.tickerType = Ticker.TYPE_WARNING
@@ -180,6 +172,7 @@ class ShippingEditorItemAdapter(
                         }
                     })
                 }
+
                 else -> {
                     binding.tickerShipper.visibility = View.GONE
                 }

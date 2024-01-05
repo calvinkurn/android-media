@@ -22,7 +22,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent">
 
-        <com.tokopedia.notifcenter.widget.RoundedImageView
+        <com.tokopedia.notifcenter.view.customview.widget.RoundedImageView
             android:id="@+id/iv_thumbnail"
             android:layout_width="@dimen/notif_dp_96"
             android:layout_height="@dimen/notif_dp_96"
@@ -33,13 +33,19 @@
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/lb_product_label"
+            app:layout_constraintTop_toTopOf="@id/iv_thumbnail"
+            app:layout_constraintLeft_toLeftOf="@id/iv_thumbnail"
+            app:layout_constraintRight_toRightOf="@id/iv_thumbnail"
+            app:layout_constraintBottom_toBottomOf="@id/iv_thumbnail"
+            app:layout_constraintVertical_bias="1"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constrainedWidth="true"
+            app:layout_constrainedHeight="true"
             app:labelType="general_light_grey"
-            android:text="@string/title_empty_stock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_lvl2"
-            app:layout_constraintBottom_toBottomOf="@id/iv_thumbnail"
-            app:layout_constraintStart_toStartOf="@id/iv_thumbnail" />
+            android:layout_margin="4dp"
+            tools:text="Stock Habis hehe" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_name"
@@ -58,7 +64,7 @@
             app:typographyType="body_3"
             tools:text="This is really long product name that appear on the screen" />
 
-        <com.tokopedia.notifcenter.widget.ProductVariantLayout
+        <com.tokopedia.notifcenter.view.customview.widget.ProductVariantLayout
             android:id="@+id/pvl_variant"
             android:layout_width="@dimen/notif_dp_0"
             android:layout_height="@dimen/notif_dp_20"
@@ -73,7 +79,7 @@
             app:layout_constraintTop_toBottomOf="@id/tv_product_name"
             tools:visibility="visible"/>
 
-        <com.tokopedia.notifcenter.widget.CampaignRedView
+        <com.tokopedia.notifcenter.view.customview.widget.CampaignRedView
             android:id="@+id/cl_campaign"
             android:layout_width="@dimen/notif_dp_0"
             android:layout_height="wrap_content"

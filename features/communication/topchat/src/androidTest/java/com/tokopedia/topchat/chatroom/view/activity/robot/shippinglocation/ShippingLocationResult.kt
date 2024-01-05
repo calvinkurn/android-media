@@ -4,7 +4,7 @@ import android.view.View
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
+import com.tokopedia.topchat.chatroom.view.activity.robot.generalResult
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
 
@@ -22,10 +22,12 @@ object ShippingLocationResult {
     }
 
     private fun assertShippingLocationAt(position: Int, matcher: Matcher<View>) {
-        assertViewInRecyclerViewAt(
-            position = position,
-            viewId = R.id.tv_shipping_location,
-            matcher = matcher
-        )
+        generalResult {
+            assertViewInRecyclerViewAt(
+                position = position,
+                viewId = R.id.tv_shipping_location,
+                matcher = matcher
+            )
+        }
     }
 }

@@ -18,6 +18,7 @@ import com.tokopedia.shop.databinding.WidgetCampaignSliderBannerViewHolderBindin
 import com.tokopedia.shop.databinding.WidgetSliderBannerItemBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
@@ -32,6 +33,7 @@ class ShopCampaignSliderBannerViewHolder(
         @LayoutRes
         val LAYOUT_RES = R.layout.widget_campaign_slider_banner_view_holder
         const val DURATION_SLIDER_BANNER = 5000L
+        private const val CORNER_RADIUS = 4f
     }
     private val viewBinding: WidgetCampaignSliderBannerViewHolderBinding? by viewBinding()
     private var viewBindingSliderBannerItem: WidgetSliderBannerItemBinding? = null
@@ -43,6 +45,7 @@ class ShopCampaignSliderBannerViewHolder(
     private var itmListener = { view: View, data: Any ->
         viewBindingSliderBannerItem = WidgetSliderBannerItemBinding.bind(view)
         val img: ShopCarouselBannerImageUnify? = viewBindingSliderBannerItem?.imageCarousel
+        img?.cornerRadius = CORNER_RADIUS.dpToPx().toInt()
         val carouselItem = data as CarouselData
         val index = carouselData?.indexOf(carouselItem) ?: 0
         bannerData?.let { bannerData ->

@@ -104,4 +104,6 @@
     <string name="seller_reputation">Reputasi Toko</string>
     <string name="no_reputation_yet">Belum ada nilai reputasi</string>
 
+    <string name="bulk_review_card_background">https://images.tokopedia.net/img/android/review/bulk_review_card_background_new.png</string>
+
 </resources>

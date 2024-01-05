@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,20 +10,25 @@
         android:id="@+id/tv_deactivate_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/title_deactivate_location"
-        android:textColor="@color/Unify_NN950_96"
+        tools:text="@string/title_deactivate_location"
+        android:textColor="@color/Unify_NN950"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_2"
         app:typographyWeight="bold"/>
 
-    <ImageView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/iv_point_one"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_no_1_warehouse"
+        android:text="@string/deactivate_info_one_pointer"
+        android:gravity="center"
+        app:typographyType="small"
+        android:textColor="@color/Unify_GN500"
+        app:typographyWeight="bold"
+        android:background="@drawable/manageaddress_circle_border"
         app:layout_constraintTop_toBottomOf="@id/tv_deactivate_location" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -31,19 +37,24 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginLeft="12dp"
-        android:textColor="@color/Unify_NN950_68"
+        android:textColor="@color/Unify_NN950"
         android:text="@string/deactivate_info_one"
         app:typographyType="body_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_point_one"
         app:layout_constraintTop_toTopOf="@id/iv_point_one" />
 
-    <ImageView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/iv_point_two"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginTop="16dp"
-        app:srcCompat="@drawable/ic_no_2_warehouse"
+        android:text="@string/deactivate_info_two_pointer"
+        android:gravity="center"
+        app:typographyType="small"
+        android:textColor="@color/Unify_GN500"
+        app:typographyWeight="bold"
+        android:background="@drawable/manageaddress_circle_border"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/point_one" />
 
@@ -53,7 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginLeft="12dp"
-        android:textColor="@color/Unify_NN950_68"
+        android:textColor="@color/Unify_NN950"
         android:text="@string/deactivate_info_two"
         app:typographyType="body_2"
         app:layout_constraintEnd_toEndOf="parent"

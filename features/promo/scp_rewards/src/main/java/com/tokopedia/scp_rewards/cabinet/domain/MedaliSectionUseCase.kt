@@ -7,9 +7,9 @@ import com.tokopedia.scp_rewards.common.utils.API_VERSION_PARAM
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class MedaliSectionUseCase @Inject constructor() {
+@GqlQuery("ScpRewardsGetMedaliSectionLayoutGQL", GET_MEDALI_SECTION_GQL)
+class MedaliSectionUseCase @Inject constructor() : GraphqlUseCase<ScpRewardsGetMedaliSectionResponse>() {
 
-    @GqlQuery("ScpRewardsGetMedaliSectionLayoutGQL", GET_MEDALI_SECTION_GQL)
     suspend fun getMedaliHomePageSection(sectionParams: RequestParams): ScpRewardsGetMedaliSectionResponse {
         GraphqlUseCase<ScpRewardsGetMedaliSectionResponse>().apply {
             setTypeClass(ScpRewardsGetMedaliSectionResponse::class.java)

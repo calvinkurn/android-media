@@ -4,12 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.content.common.databinding.ItemContentProductSheetSectionBinding
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.play.databinding.ItemPlayProductSheetSectionBinding
 import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.type.ProductSectionType
@@ -18,7 +18,6 @@ import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
-import com.tokopedia.utils.date.toDate
 import java.util.*
 import com.tokopedia.unifyprinciples.R as unifyR
 
@@ -26,7 +25,7 @@ import com.tokopedia.unifyprinciples.R as unifyR
  * Created by kenny.hadisaputra on 18/08/22
  */
 class ProductSheetSectionViewHolder(
-    internal val binding: ItemPlayProductSheetSectionBinding,
+    internal val binding: ItemContentProductSheetSectionBinding,
     private val listener: Listener,
 ) : BaseViewHolder(binding.root) {
 
@@ -131,7 +130,7 @@ class ProductSheetSectionViewHolder(
             parent: ViewGroup,
             listener: Listener,
         ) = ProductSheetSectionViewHolder(
-            ItemPlayProductSheetSectionBinding.inflate(
+            ItemContentProductSheetSectionBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false

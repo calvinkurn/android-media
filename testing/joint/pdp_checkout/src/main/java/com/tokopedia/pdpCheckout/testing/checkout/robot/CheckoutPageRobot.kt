@@ -81,7 +81,7 @@ class CheckoutPageRobot {
             .perform(
                 RecyclerViewActions.actionOnHolderItem(
                     isA(ShipmentCartItemBottomViewHolder::class.java),
-                    clickOnViewChild(R.id.layout_state_no_selected_shipping)
+                    clickOnViewChild(com.tokopedia.logisticcart.R.id.layout_state_no_selected_shipping)
                 )
             )
     }
@@ -141,20 +141,20 @@ class CheckoutPageRobot {
                         override fun getDescription(): String = "Assert Single Shipment Selected UI"
 
                         override fun perform(uiController: UiController?, view: View) {
-                            assertEquals(View.VISIBLE, view.findViewById<View>(R.id.layout_state_has_selected_single_shipping).visibility)
-                            assertEquals(title, view.findViewById<Typography>(R.id.label_selected_single_shipping_title).text)
+                            assertEquals(View.VISIBLE, view.findViewById<View>(com.tokopedia.logisticcart.R.id.layout_state_has_selected_single_shipping).visibility)
+                            assertEquals(title, view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.label_selected_single_shipping_title).text)
                             if (originalPrice != null) {
-                                Assert.assertTrue((view.findViewById<Typography>(R.id.label_selected_single_shipping_title).text).contains(originalPrice))
+                                Assert.assertTrue((view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.label_selected_single_shipping_title).text).contains(originalPrice))
                             }
                             if (discountedPrice != null) {
-                                Assert.assertTrue((view.findViewById<Typography>(R.id.label_selected_single_shipping_title).text).contains(discountedPrice))
+                                Assert.assertTrue((view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.label_selected_single_shipping_title).text).contains(discountedPrice))
                             }
-                            assertEquals(eta, view.findViewById<Typography>(R.id.label_single_shipping_eta).text)
+                            assertEquals(eta, view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.label_single_shipping_eta).text)
                             if (message != null) {
-                                assertEquals(message, view.findViewById<Typography>(R.id.label_single_shipping_message).text.toString())
-                                assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.label_single_shipping_message).visibility)
+                                assertEquals(message, view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.label_single_shipping_message).text.toString())
+                                assertEquals(View.VISIBLE, view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.label_single_shipping_message).visibility)
                             } else {
-                                assertEquals(View.GONE, view.findViewById<Typography>(R.id.label_single_shipping_message).visibility)
+                                assertEquals(View.GONE, view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.label_single_shipping_message).visibility)
                             }
                         }
                     }

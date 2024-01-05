@@ -11,6 +11,9 @@ data class GetAddOnByProductRequest (
 )
 
 data class Additional (
+    @SerializedName("ProductID")
+    var productID: String? = null,
+
     @SerializedName("CategoryID")
     var categoryID: String = "",
 

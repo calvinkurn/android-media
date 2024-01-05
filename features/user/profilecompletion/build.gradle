@@ -33,6 +33,8 @@ android {
 }
 
 dependencies {
+    implementation projectOrAar(rootProject.ext.features.scpAuth)
+
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.features.mediauploader)
@@ -49,6 +51,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.otp)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.webview)
+    implementation projectOrAar(rootProject.ext.libraries.interceptors)
 
     implementation rootProject.ext.playServicesDependencies.core
 

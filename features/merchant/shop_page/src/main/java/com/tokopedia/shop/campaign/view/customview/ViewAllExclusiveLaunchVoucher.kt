@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.CustomViewViewAllVoucherBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ViewAllExclusiveLaunchVoucher @JvmOverloads constructor(
     context: Context,
@@ -29,11 +30,10 @@ class ViewAllExclusiveLaunchVoucher @JvmOverloads constructor(
         binding?.tpgText?.text = MethodChecker.fromHtml(text)
     }
 
-
     fun useDarkBackground() {
         binding?.run {
             imgBackground.setBackgroundResource(R.drawable.bg_view_all_voucher_dark)
-            tpgText.setTextColorCompat(R.color.Unify_Static_White)
+            tpgText.setTextColorCompat(unifyprinciplesR.color.Unify_Static_White)
         }
     }
 

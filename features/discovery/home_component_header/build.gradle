@@ -20,6 +20,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.home_component_header'
+    testNamespace 'com.tokopedia.home_component_header.test'
     buildFeatures {
         viewBinding true
     }
@@ -27,7 +29,7 @@ android {
         exclude 'META-INF/**'
     }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
+        jvmTarget = JavaVersion.VERSION_17
     }
     defaultConfig {
         multiDexEnabled true

@@ -40,8 +40,8 @@
     <string name="special_release_item_tag_fs_toko">Flash Sale s.d.</string>
 
     <string name="content_desc_vps_widget">VPS Widget Image</string>
-    <string name="mission_widget_failed_title">Konten gagal ditampilkan</string>
-    <string name="mission_widget_failed_description">Klik ikon di samping buat coba lagi.</string>
+    <string name="home_default_error_title">Konten gagal ditampilkan</string>
+    <string name="home_default_error_desc">Klik ikon di samping buat coba lagi.</string>
 
     <string name="content_desc_todo_widget">Todo widget image</string>
     <string name="todo_close_button">Todo Close Button</string>

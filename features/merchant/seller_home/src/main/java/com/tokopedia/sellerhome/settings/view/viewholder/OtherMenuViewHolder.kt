@@ -20,14 +20,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking
 import com.tokopedia.seller.menu.common.analytics.sendClickShopNameTracking
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoClickNextButtonTracking
@@ -58,7 +56,7 @@ class OtherMenuViewHolder(
     private val context: Context,
     private val lifecycleOwner: LifecycleOwner?,
     private val userSession: UserSessionInterface,
-    private var listener: Listener,
+    private var listener: Listener
 ) : LifecycleObserver {
 
     companion object {
@@ -84,7 +82,6 @@ class OtherMenuViewHolder(
     private var headerShopNextButton: IconUnify? = null
     private var headerShopShareButton: IconUnify? = null
     private var shopStatusCurvedImage: AppCompatImageView? = null
-    private var imgAnnivToped: ImageUnify? = null
     private var shopAvatarImage: ImageUnify? = null
     private var shopNameTextView: Typography? = null
     private var shopNextButton: IconUnify? = null
@@ -237,13 +234,41 @@ class OtherMenuViewHolder(
         }
     }
 
-    fun setTopAdsShop(isUsed: Boolean){
+    fun setTopAdsShop(isUsed: Boolean) {
         otherMenuAdapter?.addIklanTopadsMenu(isUsed)
     }
 
     private fun initView() {
         view?.run {
-            contentMotionLayout = findViewById(R.id.motion_layout_sah_new_other)
+            contentMotionLayout = findViewById<MotionLayout?>(R.id.motion_layout_sah_new_other).apply {
+                setTransitionListener(object : MotionLayout.TransitionListener {
+                    override fun onTransitionStarted(p0: MotionLayout?, p1: Int, p2: Int) {
+                        // NO-OP
+                    }
+
+                    override fun onTransitionChange(
+                        p0: MotionLayout?,
+                        p1: Int,
+                        p2: Int,
+                        p3: Float
+                    ) {
+                        // NO-OP
+                    }
+
+                    override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
+                        listener.onFinishTransition()
+                    }
+
+                    override fun onTransitionTrigger(
+                        p0: MotionLayout?,
+                        p1: Int,
+                        p2: Boolean,
+                        p3: Float
+                    ) {
+                        // NO-OP
+                    }
+                })
+            }
             scrollView = findViewById(R.id.sv_sah_new_other)
             otherMenuHeader = findViewById(R.id.view_sah_new_other_header)
             secondaryInfoRecyclerView = findViewById(R.id.rv_sah_new_other_secondary_info)
@@ -253,7 +278,6 @@ class OtherMenuViewHolder(
             headerShopNextButton = findViewById(R.id.ic_sah_new_other_header_name)
             headerShopShareButton = findViewById(R.id.ic_sah_new_other_header_share)
             shopStatusCurvedImage = findViewById(R.id.iv_sah_new_other_curved_header)
-            imgAnnivToped = findViewById(R.id.imgAnnivToped)
             shopAvatarImage = findViewById(R.id.iv_sah_new_other_shop_avatar)
             shopNameTextView = findViewById(R.id.tv_sah_new_other_shop_name)
             shopNextButton = findViewById(R.id.iv_sah_new_other_shop_name)
@@ -471,9 +495,6 @@ class OtherMenuViewHolder(
         }
 
         shopStatusCurvedImage?.setImageResource(imageResource)
-        imgAnnivToped?.loadImage(TokopediaImageUrl.IMG_14TH_ANNIV_TOPED) {
-            setPlaceHolder(-1)
-        }
 
         otherMenuHeader?.setBackgroundResource(headerBackgroundResource)
     }
@@ -547,5 +568,6 @@ class OtherMenuViewHolder(
         fun onTokoPlusClicked()
         fun onTokoPlusImpressed()
         fun onImpressionTokoMember()
+        fun onFinishTransition()
     }
 }

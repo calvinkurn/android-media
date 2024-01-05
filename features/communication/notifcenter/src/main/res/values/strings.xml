@@ -136,4 +136,7 @@
     <string name="affiliate_notification_empty_filter_title">Hmm, belum ada notifikasi di filter ini</string>
     <string name="affiliate_notification_empty_msg">Coba cek lagi nanti, yuk.</string>
     <string name="affiliate_notification_empty_filter_msg">Coba cek di filter yang lain, yuk.</string>
+
+    <string name="notifcenter_title_change_role">Akun sudah diganti ke %s.</string>
+    <string name="notifcenter_title_change_account">Ganti akun</string>
 </resources>

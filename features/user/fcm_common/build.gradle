@@ -30,6 +30,7 @@ android {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }

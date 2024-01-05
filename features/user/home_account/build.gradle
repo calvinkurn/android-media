@@ -19,12 +19,15 @@ android {
     buildFeatures {
         viewBinding true
         buildConfig true
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
     }
     packagingOptions {
         exclude 'META-INF/**'
     }
     defaultConfig {
-        multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 
@@ -69,6 +72,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.loginfingerprint)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.usercomponents)
+    implementation projectOrAar(rootProject.ext.features.scpAuth)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -78,6 +82,15 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.unifyDependencies.carousel
     implementation rootProject.ext.unifyDependencies.loader_dialog
+    implementation rootProject.ext.unifyDependencies.nestComponents
+    implementation rootProject.ext.unifyDependencies.nestPrinciples
+    implementation rootProject.ext.composeDependencies.composeUi
+    implementation rootProject.ext.composeDependencies.composeFoundation
+    implementation rootProject.ext.composeDependencies.composeLiveData
+    implementation rootProject.ext.composeDependencies.composeActivity
+    implementation rootProject.ext.unifyDependencies.header
+    implementation rootProject.ext.composeDependencies.composeUiTooling
+    debugImplementation rootProject.ext.composeDependencies.composePreview
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.network)
@@ -100,7 +113,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
     //test
     // Test Dependencies
@@ -128,6 +141,8 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+    androidTestImplementation rootProject.ext.composeDependencies.composeUiTest
+    debugImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib

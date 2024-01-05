@@ -26,10 +26,14 @@ internal fun getTokonowQueryParam(requestParams: RequestParams): Map<String?, An
     return requestParams.parameters[TOKONOW_QUERY_PARAMS] as? Map<String?, Any> ?: mapOf()
 }
 
-internal fun createGetProductAdsRequest(requestParams: RequestParams) = GraphqlRequest(
+internal fun getProductAdsQueryParam(requestParams: RequestParams): Map<String?, Any> {
+    return requestParams.parameters[PRODUCT_ADS_PARAMS] as? Map<String?, Any> ?: mapOf()
+}
+
+internal fun createGetProductAdsRequest(params: Map<String?, Any>) = GraphqlRequest(
     GetProductAdsQuery.getQuery(),
     GetProductAdsResponse::class.java,
-    mapOf(GetProductAdsQuery.DISPLAY_PARAMS to requestParams.parameters[PRODUCT_ADS_PARAMS])
+    mapOf(GetProductAdsQuery.DISPLAY_PARAMS to generateUrlParamString(params))
 )
 
 internal fun createAceSearchProductRequest(params: Map<String?, Any>) = GraphqlRequest(

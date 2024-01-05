@@ -19,7 +19,6 @@ import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
 import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
@@ -373,13 +372,6 @@ class ShipmentViewModelLoadShipmentAddressFormTest : BaseShipmentViewModelTest()
             )
         }
         coEvery { getShipmentAddressFormV4UseCase(any()) } returns data
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            firstArg<(KeroAddrIsEligibleForAddressFeatureData) -> Unit>().invoke(
-                KeroAddrIsEligibleForAddressFeatureData()
-            )
-        }
 
         // When
         viewModel.processInitialLoadCheckoutPage(
@@ -394,83 +386,7 @@ class ShipmentViewModelLoadShipmentAddressFormTest : BaseShipmentViewModelTest()
             view.resetPromoBenefit()
             view.clearTotalBenefitPromoStacking()
             view.hideLoading()
-            view.renderCheckoutPageNoAddress(any(), any())
-            view.stopTrace()
-        }
-    }
-
-    @Test
-    fun `WHEN should navigate to add new address page failed THEN should show toaster`() {
-        // Given
-        val data = CartShipmentAddressFormData().apply {
-            errorCode = CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS
-            groupAddress = listOf(
-                GroupAddress().apply {
-                    userAddress = UserAddress(state = UserAddress.STATE_NO_ADDRESS)
-                }
-            )
-        }
-
-        coEvery { getShipmentAddressFormV4UseCase(any()) } returns data
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(Throwable())
-        }
-
-        // When
-        viewModel.processInitialLoadCheckoutPage(
-            true,
-            false,
-            false
-        )
-
-        // Then
-        verifyOrder {
-            view.setHasRunningApiCall(false)
-            view.resetPromoBenefit()
-            view.clearTotalBenefitPromoStacking()
-            view.hideLoading()
-            view.showToastError(any())
-            view.stopTrace()
-        }
-    }
-
-    @Test
-    fun `WHEN should navigate to add new address page failed with error message THEN should show toaster`() {
-        // Given
-        val data = CartShipmentAddressFormData().apply {
-            errorCode = CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS
-            groupAddress = listOf(
-                GroupAddress().apply {
-                    userAddress = UserAddress(state = UserAddress.STATE_NO_ADDRESS)
-                }
-            )
-        }
-
-        val errorMessage = "error"
-
-        coEvery { getShipmentAddressFormV4UseCase(any()) } returns data
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(Throwable(errorMessage))
-        }
-
-        // When
-        viewModel.processInitialLoadCheckoutPage(
-            true,
-            false,
-            false
-        )
-
-        // Then
-        verifyOrder {
-            view.setHasRunningApiCall(false)
-            view.resetPromoBenefit()
-            view.clearTotalBenefitPromoStacking()
-            view.hideLoading()
-            view.showToastError(errorMessage)
+            view.renderCheckoutPageNoAddress(any())
             view.stopTrace()
         }
     }
@@ -1092,7 +1008,6 @@ class ShipmentViewModelLoadShipmentAddressFormTest : BaseShipmentViewModelTest()
 
         // Then
         verify {
-            eligibleForAddressUseCase.cancelJobs()
             epharmacyUseCase.cancelJobs()
         }
     }

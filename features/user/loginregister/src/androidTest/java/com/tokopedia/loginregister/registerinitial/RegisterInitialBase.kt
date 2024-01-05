@@ -1,9 +1,14 @@
 package com.tokopedia.loginregister.registerinitial
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
+import com.scp.auth.GotoSdk
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.loginregister.di.FakeActivityComponentFactory
 import com.tokopedia.loginregister.di.RegisterInitialComponentStub
 import com.tokopedia.loginregister.login.behaviour.base.LoginRegisterBase
@@ -14,6 +19,7 @@ import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitial
 import com.tokopedia.loginregister.stub.FakeGraphqlRepository
 import com.tokopedia.loginregister.stub.usecase.GetProfileUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.GraphqlUseCaseStub
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -44,12 +50,17 @@ open class RegisterInitialBase : LoginRegisterBase() {
     @Inject
     lateinit var fakeGraphqlRepository: FakeGraphqlRepository
 
+    private val applicationContext: Context
+        get() = InstrumentationRegistry
+            .getInstrumentation().context.applicationContext
+
     @Before
     open fun before() {
         var registerComponent: RegisterInitialComponentStub
         ActivityComponentFactory.instance = FakeActivityComponentFactory().also {
             registerComponent = it.registerComponent
         }
+        GotoSdk.init(applicationContext as BaseMainApplication)
         registerComponent.inject(this)
     }
 
@@ -64,7 +75,15 @@ open class RegisterInitialBase : LoginRegisterBase() {
         val intent = Intent()
 
         intentModifier(intent)
+        setupRollence()
         activityTestRule.launchActivity(intent)
+    }
+
+    private fun setupRollence() {
+        RemoteConfigInstance.getInstance().abTestPlatform.setString(
+            DeeplinkMapperUser.ROLLENCE_GOTO_LOGIN,
+            ""
+        )
     }
 
     protected fun setRegisterCheckDefaultResponse() {

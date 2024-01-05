@@ -43,7 +43,6 @@ import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.manageaddress.databinding.BottomsheetActionAddressBinding
 import com.tokopedia.manageaddress.databinding.FragmentMainAddressBinding
 import com.tokopedia.manageaddress.di.ManageAddressComponent
-import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.domain.response.SetDefaultPeopleAddressResponse
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressFragment
@@ -53,7 +52,6 @@ import com.tokopedia.manageaddress.ui.shareaddress.bottomsheets.ShareAddressBott
 import com.tokopedia.manageaddress.ui.shareaddress.bottomsheets.ShareAddressConfirmationBottomSheet
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
-import com.tokopedia.manageaddress.util.ManageAddressConstant.EDIT_PARAM
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_REF
 import com.tokopedia.manageaddress.util.ManageAddressConstant.KERO_TOKEN
 import com.tokopedia.manageaddress.util.ManageAddressConstant.LABEL_LAINNYA
@@ -69,8 +67,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
-import com.tokopedia.usercomponents.userconsent.ui.UserConsentWidget
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -166,7 +162,6 @@ class MainAddressFragment :
         observerGetChosenAddress()
         observerSetChosenAddress()
         observerRemovedAddress()
-        observerEligibleForAddressFeature()
     }
 
     private fun initArguments() {
@@ -410,36 +405,15 @@ class MainAddressFragment :
                     viewModel.searchAddress(viewModel.savedQuery, prevState, it.data.chosenAddressData.addressId, true)
                 }
 
-                else -> {
-                    // no-op
-                }
-            }
-        }
-    }
-
-    private fun observerEligibleForAddressFeature() {
-        viewModel.eligibleForAddressFeature.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    when (it.data.featureId) {
-                        ANA_REVAMP_FEATURE_ID -> {
-                            goToAddAddress(it.data.eligible)
-                        }
-                        EDIT_ADDRESS_REVAMP_FEATURE_ID -> {
-                            it.data.data?.let { recipientAddressModel ->
-                                goToEditAddress(
-                                    it.data.eligible,
-                                    recipientAddressModel
-                                )
-                            }
-                        }
+                is ManageAddressState.Fail -> {
+                    it.throwable?.run {
+                        showToaster(message.orEmpty(), toastType = Toaster.TYPE_ERROR)
+                        logToCrashlytics(this)
                     }
                 }
-                is Fail -> {
-                    showToaster(
-                        message = it.throwable.message ?: DEFAULT_ERROR_MESSAGE,
-                        toastType = Toaster.TYPE_ERROR
-                    )
+
+                else -> {
+                    // no-op
                 }
             }
         }
@@ -504,7 +478,7 @@ class MainAddressFragment :
         }
     }
 
-    private fun goToAddAddress(eligible: Boolean) {
+    private fun goToAddAddress() {
         val token = viewModel.token
         val screenName = if (isFromCheckoutChangeAddress == true && isLocalization == false) {
             SCREEN_NAME_CART_EXISTING_USER
@@ -513,39 +487,21 @@ class MainAddressFragment :
         } else {
             SCREEN_NAME_USER_NEW
         }
-        if (eligible) {
-            val intent =
-                RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
-            intent.putExtra(KERO_TOKEN, token)
-            intent.putExtra(EXTRA_REF, screenName)
-            intent.putExtra(PARAM_SOURCE, viewModel.source)
-            startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
-        } else {
-            val intent =
-                RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
-            intent.putExtra(KERO_TOKEN, token)
-            intent.putExtra(EXTRA_REF, screenName)
-            startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
-        }
+
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+        intent.putExtra(KERO_TOKEN, token)
+        intent.putExtra(EXTRA_REF, screenName)
+        intent.putExtra(PARAM_SOURCE, viewModel.source)
+        startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
     }
 
-    private fun goToEditAddress(eligibleForEditRevamp: Boolean, data: RecipientAddressModel) {
-        if (eligibleForEditRevamp) {
-            val intent = RouteManager.getIntent(
-                context,
-                "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${data.id}"
-            )
-            intent.putExtra(PARAM_SOURCE, viewModel.source)
-            startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
-        } else {
-            val token = viewModel.token
-            val intent =
-                RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
-            val mapper = AddressModelMapper()
-            intent.putExtra(EDIT_PARAM, mapper.transform(data))
-            intent.putExtra(KERO_TOKEN, token)
-            startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
-        }
+    private fun goToEditAddress(data: RecipientAddressModel) {
+        val intent = RouteManager.getIntent(
+            context,
+            "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${data.id}"
+        )
+        intent.putExtra(PARAM_SOURCE, viewModel.source)
+        startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
     }
 
     private fun initScrollListener() {
@@ -650,10 +606,10 @@ class MainAddressFragment :
 
     private fun openFormAddressView(data: RecipientAddressModel?) {
         if (data == null) {
-            viewModel.checkUserEligibilityForAnaRevamp()
+            goToAddAddress()
         } else {
             ManageAddressAnalytics.sendClickButtonUbahAlamatEvent()
-            viewModel.checkUserEligibilityForEditAddressRevamp(data)
+            goToEditAddress(data)
         }
     }
 
@@ -1032,24 +988,7 @@ class MainAddressFragment :
         }
     }
 
-    private fun generateUserConsentWidget(): UserConsentWidget? {
-        return try {
-            val userConsent = UserConsentWidget(requireContext())
-            userConsent.load(
-                viewLifecycleOwner,
-                this,
-                ConsentCollectionParam(
-                    collectionId = viewModel.deleteCollectionId
-                )
-            )
-            userConsent
-        } catch (e: Exception) {
-            logToCrashlytics(e)
-            null
-        }
-    }
-
-    private fun logToCrashlytics(exception: Exception) {
+    private fun logToCrashlytics(exception: Throwable) {
         if (!GlobalConfig.DEBUG) {
             FirebaseCrashlytics.getInstance().recordException(exception)
         } else {
@@ -1059,8 +998,6 @@ class MainAddressFragment :
 
     private fun showDeleteAddressDialog(addressId: String) {
         context?.apply {
-            val userConsent = generateUserConsentWidget()
-
             DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(getString(R.string.title_delete_address_dialog))
                 setSecondaryCTAText(getString(R.string.action_cancel_delete_address))
@@ -1071,8 +1008,7 @@ class MainAddressFragment :
                 setPrimaryCTAClickListener {
                     dismiss()
                     viewModel.deletePeopleAddress(
-                        id = addressId,
-                        consentJson = userConsent?.generatePayloadData().orEmpty()
+                        id = addressId
                     )
                 }
             }.show()

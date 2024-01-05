@@ -1,13 +1,10 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import android.view.ViewStub
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -16,6 +13,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.getColorChecker
+import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAYLOAD_TOOGLE_FAVORITE
@@ -30,6 +28,8 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.gm.common.R as gmcommonR
 
 /**
  * Created by Yehezkiel on 15/06/20
@@ -99,7 +99,12 @@ class ProductShopCredibilityViewHolder(
                 binding = this
             )
 
-            view.addOnImpressionListener(element.impressHolder) {
+            view.addOnImpressionListener(
+                holder = element.impressHolder,
+                holders = listener.getImpressionHolders(),
+                name = element.name,
+                useHolders = listener.isRemoteCacheableActive()
+            ) {
                 listener.onShopCredibilityImpressed(element.shopWarehouseCount, componentTracker)
             }
         }
@@ -202,7 +207,6 @@ class ProductShopCredibilityViewHolder(
                 override fun onDismiss() {
                     // no op
                 }
-
             })
         }
     }
@@ -211,7 +215,7 @@ class ProductShopCredibilityViewHolder(
         super.bind(element, payloads)
         if (element == null || payloads.isEmpty()) return
         when (payloads[0] as Int) {
-            PAYLOAD_TOOGLE_FAVORITE -> enableButton() //Will only invoke if fail follow shop
+            PAYLOAD_TOOGLE_FAVORITE -> enableButton() // Will only invoke if fail follow shop
             else -> renderFollow(element.isFavorite)
         }
     }
@@ -260,15 +264,15 @@ class ProductShopCredibilityViewHolder(
     ) = with(binding) {
         val context = root.context
         shopCredibilityLastActive.text = HtmlLinkHelper(context, shopLastActiveData).spannedString
-        if (shopLastActiveData == context.getString(R.string.shop_online)) {
+        if (shopLastActiveData == context.getString(R.string.pdp_shop_online)) {
             shopCredibilityLastActive.setWeight(Typography.BOLD)
             shopCredibilityLastActive.setTextColor(
-                context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                context.getColorChecker(unifyprinciplesR.color.Unify_GN500)
             )
         } else {
             shopCredibilityLastActive.setType(Typography.DISPLAY_3)
             shopCredibilityLastActive.setTextColor(
-                context.getColorChecker(com.tokopedia.unifyprinciples.R.color.Unify_NN950_68)
+                context.getColorChecker(unifyprinciplesR.color.Unify_NN950_68)
             )
         }
     }
@@ -295,7 +299,9 @@ class ProductShopCredibilityViewHolder(
             if (data1?.iconIsNotEmpty() == true) {
                 shopCredibilityIcon1.show()
                 shopCredibilityIcon1.setImage(data1.icon)
-            } else shopCredibilityIcon1.hide()
+            } else {
+                shopCredibilityIcon1.hide()
+            }
         }
 
         val data2 = infoShopData.getOrNull(1)
@@ -314,7 +320,9 @@ class ProductShopCredibilityViewHolder(
             if (data2?.iconIsNotEmpty() == true) {
                 shopCredibilityIcon2.show()
                 shopCredibilityIcon2.setImage(data2.icon)
-            } else shopCredibilityIcon2.hide()
+            } else {
+                shopCredibilityIcon2.hide()
+            }
         }
     }
 
@@ -329,6 +337,7 @@ class ProductShopCredibilityViewHolder(
         }
 
         shopCredibilityAva.loadImageCircle(element.shopAva)
+        listener.getStoriesWidgetManager().manage(storiesBorder, element.shopId)
     }
 
     private fun isNewShopBadgeEnabled() = true
@@ -351,11 +360,11 @@ class ProductShopCredibilityViewHolder(
         val drawable = when {
             isOs -> MethodChecker.getDrawable(
                 view.context,
-                com.tokopedia.gm.common.R.drawable.ic_official_store_product
+                gmcommonR.drawable.ic_official_store_product
             )
             isPm -> MethodChecker.getDrawable(
                 view.context,
-                com.tokopedia.gm.common.R.drawable.ic_power_merchant
+                gmcommonR.drawable.ic_power_merchant
             )
             else -> null
         }

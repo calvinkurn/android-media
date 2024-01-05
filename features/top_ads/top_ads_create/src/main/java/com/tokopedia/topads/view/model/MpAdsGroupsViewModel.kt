@@ -16,7 +16,6 @@ import com.tokopedia.topads.common.domain.usecase.GetTopAdsGroupsStatisticsUseCa
 import com.tokopedia.topads.common.domain.usecase.GetTopAdsGroupsUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
-import com.tokopedia.topads.common.domain.usecase.TopAdsManageGroupAdsUseCase
 import com.tokopedia.topads.data.AdGroupCompleteData
 import com.tokopedia.topads.data.AdGroupStatsData
 import com.tokopedia.topads.data.mappers.AdGroupMapper
@@ -37,7 +36,6 @@ class MpAdsGroupsViewModel @Inject constructor(
     private val getTopAdsGroupsUseCase: GetTopAdsGroupsUseCase,
     private val getTopAdsGroupStatsUseCase: GetTopAdsGroupsStatisticsUseCase,
     private val getTopadsDepositsUseCase: TopAdsGetDepositUseCase,
-    private val topAdsManageGroupAdsUseCase: TopAdsManageGroupAdsUseCase,
     private val topAdsCreateUseCase: TopAdsCreateUseCase,
     userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers

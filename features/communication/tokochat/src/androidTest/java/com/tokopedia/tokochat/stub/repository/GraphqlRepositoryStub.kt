@@ -8,8 +8,10 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.chatBackgroundResponse
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.chatFirstTickerResponse
-import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.chatOrderHistoryResponse
+import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.chatOrderHistoryLogisticResponse
+import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.chatOrderHistoryTokoFoodResponse
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.getNeedConsentResponse
+import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub.getTkpdOrderIdResponse
 import com.tokopedia.tokochat.stub.domain.response.ResponseStub
 import javax.inject.Inject
 
@@ -19,10 +21,13 @@ class GraphqlRepositoryStub @Inject constructor() : GraphqlRepository {
         requests: List<GraphqlRequest>,
         cacheStrategy: GraphqlCacheStrategy
     ): GraphqlResponse {
-        return getResponseFromQuery(requests.first().query)
+        return getResponseFromQuery(requests.first().query, requests.first().variables)
     }
 
-    private fun getResponseFromQuery(query: String): GraphqlResponse {
+    private fun getResponseFromQuery(
+        query: String,
+        variables: Map<String, Any?>?
+    ): GraphqlResponse {
         return when {
             query.contains(chatBackgroundResponse.query) -> {
                 shouldThrow(chatBackgroundResponse)
@@ -36,16 +41,34 @@ class GraphqlRepositoryStub @Inject constructor() : GraphqlRepository {
                     chatFirstTickerResponse.responseObject
                 )
             }
-            query.contains(chatOrderHistoryResponse.query) -> {
-                shouldThrow(chatOrderHistoryResponse)
+            (
+                query.contains(chatOrderHistoryTokoFoodResponse.query) &&
+                    variables?.get("serviceType") == "tokofood"
+                ) -> {
+                shouldThrow(chatOrderHistoryTokoFoodResponse)
                 GqlMockUtil.createSuccessResponse(
-                    chatOrderHistoryResponse.responseObject
+                    chatOrderHistoryTokoFoodResponse.responseObject
+                )
+            }
+            (
+                query.contains(chatOrderHistoryLogisticResponse.query) &&
+                    variables?.get("serviceType") == "logistic"
+                ) -> {
+                shouldThrow(chatOrderHistoryLogisticResponse)
+                GqlMockUtil.createSuccessResponse(
+                    chatOrderHistoryLogisticResponse.responseObject
                 )
             }
             query.contains(getNeedConsentResponse.query) -> {
                 shouldThrow(getNeedConsentResponse)
                 GqlMockUtil.createSuccessResponse(
                     getNeedConsentResponse.responseObject
+                )
+            }
+            query.contains(getTkpdOrderIdResponse.query) -> {
+                shouldThrow(getTkpdOrderIdResponse)
+                GqlMockUtil.createSuccessResponse(
+                    getTkpdOrderIdResponse.responseObject
                 )
             }
             else -> GqlMockUtil.createSuccessResponse(Unit)

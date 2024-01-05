@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.variant.presentation.model
 
 import android.os.Parcelable
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -46,6 +47,8 @@ data class VariantInputModel(
         }?.pictures?.firstOrNull()
 
         fun isVariantCampaignActive() = products.any { it.isCampaign }
+
+        fun isSingleProductVariant() = products.size == Int.ONE
 }
 
 @Parcelize

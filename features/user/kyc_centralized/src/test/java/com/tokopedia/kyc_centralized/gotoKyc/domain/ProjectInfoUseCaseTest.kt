@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.gotoKyc.domain
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kyc_centralized.gotoKyc.utils.createSuccessResponse
@@ -15,6 +16,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class ProjectInfoUseCaseTest {
@@ -25,11 +27,12 @@ class ProjectInfoUseCaseTest {
     private lateinit var useCase: ProjectInfoUseCase
 
     private val repository = mockk<GraphqlRepository>(relaxed = true)
+    private val context = mockk<Context>(relaxed = true)
     private val dispatcher = CoroutineTestDispatchersProvider
 
     @Before
     fun setup() {
-        useCase = ProjectInfoUseCase(repository, dispatcher)
+        useCase = ProjectInfoUseCase(repository, context, dispatcher)
     }
 
     @Test
@@ -113,5 +116,68 @@ class ProjectInfoUseCaseTest {
         assertEquals(status, result.status)
         assertEquals(rejectionReason.joinToString(), result.rejectionReason)
         assertEquals(messageWaiting, result.waitMessage)
+    }
+
+    @Test
+    fun `get project info then return blocked general`() = runBlocking {
+        val projectId = 7
+        val isBlocked = true
+        val nonEligibleGoToKYCReason = "Terjadi kesalahan!"
+        val response = createSuccessResponse(
+            ProjectInfoResponse(
+                KycProjectInfo(
+                    isBlocked = isBlocked,
+                    nonEligibleGoToKYCReason = nonEligibleGoToKYCReason
+                )
+            )
+        )
+
+        coEvery { repository.response(any(), any()) } returns response
+
+        val result = useCase(projectId)
+        assertTrue(result is ProjectInfoResult.Blocked)
+        assertFalse(result.isMultipleAccount)
+    }
+
+    @Test
+    fun `get project info then return blocked multiple account - reason 1`() = runBlocking {
+        val projectId = 7
+        val isBlocked = true
+        val nonEligibleGoToKYCReason = "ALREADY_REGISTERED_OTHER_PROFILE"
+        val response = createSuccessResponse(
+            ProjectInfoResponse(
+                KycProjectInfo(
+                    isBlocked = isBlocked,
+                    nonEligibleGoToKYCReason = nonEligibleGoToKYCReason
+                )
+            )
+        )
+
+        coEvery { repository.response(any(), any()) } returns response
+
+        val result = useCase(projectId)
+        assertTrue(result is ProjectInfoResult.Blocked)
+        assertTrue(result.isMultipleAccount)
+    }
+
+    @Test
+    fun `get project info then return blocked multiple account - reason 2`() = runBlocking {
+        val projectId = 7
+        val isBlocked = true
+        val nonEligibleGoToKYCReason = "NOT_ELIGIBLE_ACC_LINK"
+        val response = createSuccessResponse(
+            ProjectInfoResponse(
+                KycProjectInfo(
+                    isBlocked = isBlocked,
+                    nonEligibleGoToKYCReason = nonEligibleGoToKYCReason
+                )
+            )
+        )
+
+        coEvery { repository.response(any(), any()) } returns response
+
+        val result = useCase(projectId)
+        assertTrue(result is ProjectInfoResult.Blocked)
+        assertTrue(result.isMultipleAccount)
     }
 }

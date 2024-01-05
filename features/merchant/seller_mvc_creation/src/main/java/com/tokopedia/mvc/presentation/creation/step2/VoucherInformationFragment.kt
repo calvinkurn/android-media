@@ -1,9 +1,13 @@
 package com.tokopedia.mvc.presentation.creation.step2
 
+import android.content.Context
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -95,6 +99,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
         private const val DEBOUNCE = 300L
         private const val minimumActivePeriodCountToShowFullSchedule = 2
+        private const val MAX_VOUCHER_CODE_COUNT = 10
     }
 
     // binding
@@ -308,6 +313,18 @@ class VoucherInformationFragment : BaseDaggerFragment() {
             viewVoucherName.setOnInflateListener { _, view ->
                 voucherNameSectionBinding =
                     SmvcVoucherCreationStepTwoVoucherNameSectionBinding.bind(view)
+                voucherNameSectionBinding?.tfVoucherName?.run {
+                    editText.setOnEditorActionListener { _, actionId, event ->
+                        if (actionId == EditorInfo.IME_ACTION_DONE || event != null &&
+                            event.action == KeyEvent.ACTION_DOWN && event.keyCode == KeyEvent.KEYCODE_ENTER
+                        ) {
+                            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            imm.hideSoftInputFromWindow(windowToken, 0)
+                            return@setOnEditorActionListener true
+                        }
+                        return@setOnEditorActionListener false
+                    }
+                }
             }
             viewVoucherCode.setOnInflateListener { _, view ->
                 voucherCodeSectionBinding =
@@ -342,7 +359,9 @@ class VoucherInformationFragment : BaseDaggerFragment() {
         }
         if (pageMode == PageMode.EDIT) {
             voucherCodeSectionBinding?.run {
-                tfVoucherCode.disable()
+                tfVoucherCode.apply {
+                    disable()
+                }
             }
             voucherPeriodSectionBinding?.run {
                 cbRepeatPeriod.disable()
@@ -543,6 +562,7 @@ class VoucherInformationFragment : BaseDaggerFragment() {
 
         voucherCodeSectionBinding?.run {
             tfVoucherCode.apply {
+                if (pageMode != PageMode.EDIT) setCounter(MAX_VOUCHER_CODE_COUNT)
                 editText.setOnFocusChangeListener { _, isFocus ->
                     if (isFocus) tracker.sendClickFieldKodeKuponEvent(voucherConfiguration.voucherId)
                 }

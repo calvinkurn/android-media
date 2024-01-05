@@ -14,9 +14,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignSliderBannerViewHolder
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.util.ShopUtil.setElement
-import com.tokopedia.shop.home.WidgetName
-import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderBannerViewHolder
+import com.tokopedia.shop.home.WidgetNameEnum
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
@@ -152,7 +150,7 @@ class ShopCampaignTabAdapter(
     fun pauseSliderBannerAutoScroll() {
         val listSliderBannerViewModel =
             visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>().filter {
-                it.name == WidgetName.SLIDER_BANNER
+                it.name == WidgetNameEnum.SLIDER_BANNER.value
             }
         listSliderBannerViewModel.forEach {
             (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopCampaignSliderBannerViewHolder)?.pauseTimer()
@@ -162,7 +160,7 @@ class ShopCampaignTabAdapter(
     fun resumeSliderBannerAutoScroll() {
         val listSliderBannerViewModel =
             visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>().filter {
-                it.name == WidgetName.SLIDER_BANNER
+                it.name == WidgetNameEnum.SLIDER_BANNER.value
             }
         listSliderBannerViewModel.forEach {
             (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopCampaignSliderBannerViewHolder)?.resumeTimer()
@@ -274,6 +272,11 @@ class ShopCampaignTabAdapter(
             }
             submitList(newList)
         }
+    }
+
+    fun getCampaignBanner() : ShopWidgetDisplayBannerTimerUiModel?{
+        return visitables.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().firstOrNull()
+
     }
 
 }

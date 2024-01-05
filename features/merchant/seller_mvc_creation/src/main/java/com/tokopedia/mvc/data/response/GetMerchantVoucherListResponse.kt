@@ -91,8 +91,12 @@ data class MerchantVoucherModel(
     val labelVoucher: LabelVoucher = LabelVoucher(),
     @SerializedName("is_editable")
     val isEditable: Boolean = false,
+    @SerializedName("is_stoppable")
+    val isStoppable: Boolean = false,
     @SerializedName("subsidy_detail")
-    val subsidyDetail: SubsidyDetail = SubsidyDetail()
+    val subsidyDetail: SubsidyDetail = SubsidyDetail(),
+    @SerializedName("galadriel_voucher_id")
+    val galadrielVoucherId: Long = 0
 ) {
     data class ProductId(
         @SerializedName("parent_product_id")

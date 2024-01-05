@@ -212,36 +212,53 @@
         tools:text="Rp7.999.000"
         tools:visibility="visible" />
 
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/labelDiscount"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/product_card_label_discount_height"
-        android:layout_marginTop="@dimen/product_card_label_discount_margin_top"
-        android:gravity="center_vertical"
-        android:visibility="gone"
-        app:labelType="general_light_red"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewPrice"
-        tools:text="20%"
-        tools:visibility="visible" />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewSlashedPrice"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/product_card_label_discount_height"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/product_card_text_view_slashed_price_height"
         android:layout_marginStart="4dp"
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:maxLines="1"
         android:textColor="@color/Unify_NN950_44"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/labelDiscount"
-        app:layout_constraintTop_toTopOf="@id/labelDiscount"
+        app:layout_constraintStart_toEndOf="@id/textViewPrice"
+        app:layout_constraintTop_toTopOf="@id/textViewPrice"
+        app:layout_constraintBottom_toBottomOf="@id/textViewPrice"
+        app:layout_constraintEnd_toStartOf="@+id/textViewDiscount"
         app:layout_goneMarginLeft="0dp"
         app:typographyType="small"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintHorizontal_bias="0.0"
         tools:text="Rp8.499.000"
         tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewDiscount"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/product_card_text_view_slashed_price_height"
+        android:layout_marginStart="2dp"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:textColor="@color/Unify_RN500"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/textViewSlashedPrice"
+        app:layout_constraintBottom_toBottomOf="@id/textViewSlashedPrice"
+        app:layout_constraintStart_toEndOf="@id/textViewSlashedPrice"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="10%"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierDiscount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="textViewDiscount, textViewSlashedPrice, textViewPrice" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/labelPrice"
@@ -251,17 +268,9 @@
         android:visibility="gone"
         app:labelType="general_light_green"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewSlashedPrice"
+        app:layout_constraintTop_toBottomOf="@id/barrierDiscount"
         tools:visibility="visible"
         tools:text="Cashback" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/labelPriceBarrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="textViewPrice, labelDiscount, textViewSlashedPrice, labelPrice"
-        />
 
     <ImageView
         android:id="@+id/imageShopBadge"
@@ -271,7 +280,7 @@
         android:layout_marginTop="@dimen/product_card_shop_badge_margin_top"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/labelPriceBarrier"
+        app:layout_constraintTop_toBottomOf="@id/labelPrice"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -287,7 +296,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/imageShopBadge"
-        app:layout_constraintTop_toBottomOf="@id/labelPriceBarrier"
+        app:layout_constraintTop_toBottomOf="@id/labelPrice"
         app:layout_goneMarginStart="0dp"
         app:layout_goneMarginLeft="0dp"
         app:typographyType="body_3"
@@ -316,7 +325,7 @@
         android:layout_marginStart="2dp"
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@id/dividerFulfillment"
-        app:layout_constraintTop_toBottomOf="@id/labelPriceBarrier"
+        app:layout_constraintTop_toBottomOf="@id/labelPrice"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography

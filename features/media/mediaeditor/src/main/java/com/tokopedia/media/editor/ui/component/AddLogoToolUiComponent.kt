@@ -173,6 +173,11 @@ class AddLogoToolUiComponent constructor(
         )
     }
 
+    // for tracker only
+    fun getUploadState(): String {
+        return uploadText.text.toString()
+    }
+
     private fun isLogoChosen(finishedUrl: String) {
         // restore previous selected logo from state
         if (selectedLogoUrl.isNotEmpty() && selectedLogoUrl == finishedUrl) {
@@ -251,6 +256,8 @@ class AddLogoToolUiComponent constructor(
     private fun shopLoadFailedToaster() {
         toaster?.dismiss()
         Handler().postDelayed({
+            listener.onLoadFailedToasterShow()
+
             toaster = Toaster.build(
                 container(),
                 resources().getString(editorR.string.editor_add_logo_toast_text),
@@ -260,8 +267,6 @@ class AddLogoToolUiComponent constructor(
                 clickListener = {
                     if (retryNumber >= RETRY_LIMIT) {
                         listener.onLoadFailed()
-                    } else {
-                        listener.onLoadRetry()
                     }
                     retryNumber++
                     initShopAvatar()
@@ -275,7 +280,7 @@ class AddLogoToolUiComponent constructor(
         fun onLogoChosen(bitmap: Bitmap?, newSize: Pair<Int, Int>, isCircular: Boolean)
         fun onUpload()
         fun onLoadFailed()
-        fun onLoadRetry()
+        fun onLoadFailedToasterShow()
 
         fun onStandardizeAvatar(source: Bitmap, cropRotateData: EditorCropRotateUiModel): Bitmap?
     }

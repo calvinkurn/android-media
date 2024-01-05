@@ -100,8 +100,20 @@ data class UohListOrder(
                 val queryParams: String = "",
 
                 @SerializedName("listProducts")
-                val listProducts: String = ""
+                val listProducts: String = "",
+
+                @SerializedName("extraComponents")
+                val extraComponents: List<ExtraComponent> = listOf()
             ) {
+
+                fun getReviewRatingComponent(): ExtraComponent? {
+                    return extraComponents.find {
+                        it.type == ExtraComponent.TYPE_REVIEW_GOPAY_COINS_WITH_STARS ||
+                            it.type == ExtraComponent.TYPE_REVIEW_INTERACTIVE_STARS ||
+                            it.type == ExtraComponent.TYPE_REVIEW_GOPAY_COINS
+                    }
+                }
+
                 data class DetailUrl(
                     @SerializedName("appURL")
                     val appURL: String = "",
@@ -236,6 +248,29 @@ data class UohListOrder(
                     @SerializedName("bgColor")
                     val bgColor: String = ""
                 )
+
+                data class ExtraComponent(
+                    @SerializedName("type")
+                    val type: String = "",
+
+                    @SerializedName("action")
+                    val action: Action = Action(),
+
+                    @SerializedName("label")
+                    val label: String = ""
+                ) {
+
+                    companion object {
+                        const val TYPE_REVIEW_GOPAY_COINS_WITH_STARS = "gopay_coins_with_stars"
+                        const val TYPE_REVIEW_INTERACTIVE_STARS = "interactive_stars"
+                        const val TYPE_REVIEW_GOPAY_COINS = "gopay_coins"
+                    }
+
+                    data class Action(
+                        @SerializedName("appURL")
+                        val appUrl: String = ""
+                    )
+                }
             }
         }
 

@@ -1,15 +1,30 @@
 package com.tokopedia.feedplus.presentation.adapter.listener
 
-import com.tokopedia.content.common.report_content.model.FeedMenuItem
+import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
-import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
+import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
+import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedShareModel
+import com.tokopedia.feedplus.presentation.model.FeedTopAdsTrackerDataModel
+import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
+import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 
 interface FeedListener {
+    fun isMuted(): Boolean
+    fun checkLiveStatus(channelId: String)
+
     fun onMenuClicked(
         id: String,
-        menuItems: List<FeedMenuItem>,
+        menuItems: List<ContentMenuItem>,
         trackerModel: FeedTrackerDataModel
+    )
+
+    fun onProfileClicked(
+        appLink: String,
+        type: AuthorType
     )
 
     fun onFollowClicked(
@@ -28,14 +43,9 @@ interface FeedListener {
         type: FeedCampaignRibbonType
     )
 
-    fun onTopAdsImpression(
-        adViewUrl: String,
-        id: String,
-        shopId: String,
-        uri: String,
-        fullEcs: String?,
-        position: Int
-    )
+    fun onTopAdsImpression(topadsTrackerData: FeedTopAdsTrackerDataModel)
+
+    fun onTopAdsClick(topadsTrackerData: FeedTopAdsTrackerDataModel)
 
     fun onProductTagButtonClicked(
         postId: String,
@@ -99,6 +109,8 @@ interface FeedListener {
      * Video
      */
     fun getVideoPlayer(id: String): FeedExoPlayer
+
+    fun isAllowedToPlayVideo(): Boolean
 
     fun detachPlayer(player: FeedExoPlayer)
     fun onPauseVideoPost(trackerModel: FeedTrackerDataModel)

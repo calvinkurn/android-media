@@ -36,7 +36,6 @@ class StaticMenuGenerator @Inject constructor(val context: Context, val abTestPl
                 CommonDataView(applink = ApplinkConstInternalUserPlatform.PAYMENT_SETTING, title = context.getString(R.string.menu_account_title_instant_payment), body = context.getString(R.string.menu_account_desc_instant_payment), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.CARD, id = AccountConstants.SettingCode.SETTING_INSTANT_PAYMENT),
                 CommonDataView(applink = ApplinkConstInternalUserPlatform.ACCOUNT_SETTING, title = context.getString(R.string.menu_account_title_security), body = context.getString(R.string.menu_account_desc_security), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.LOCK, id = AccountConstants.SettingCode.SETTING_SECURITY),
                 CommonDataView(applink = ApplinkConst.SETTING_NOTIFICATION, title = context.getString(R.string.menu_account_title_notification), body = context.getString(R.string.menu_account_desc_notification), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.BELL_RING, id = AccountConstants.SettingCode.SETTING_NOTIFICATION),
-                CommonDataView(applink = ApplinkConstInternalUserPlatform.LINK_ACCOUNT, title = context.getString(R.string.menu_account_title_account_link), body = context.getString(R.string.menu_account_desc_account_link), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.LINK, id = AccountConstants.SettingCode.SETTING_LINK_ACCOUNT),
                 CommonDataView(
                     applink = if (!isUsingPrivacyCenter()) {
                         ApplinkConstInternalUserPlatform.PRIVACY_ACCOUNT
@@ -59,7 +58,8 @@ class StaticMenuGenerator @Inject constructor(val context: Context, val abTestPl
         accountPref: AccountPreference,
         permissionChecker: PermissionChecker,
         showDarkModeToggle: Boolean,
-        showScreenRecorder: Boolean
+        showScreenRecorder: Boolean,
+        isExpanded: Boolean = false
     ): SettingDataView {
         val listSetting = mutableListOf(
             CommonDataView(
@@ -113,10 +113,9 @@ class StaticMenuGenerator @Inject constructor(val context: Context, val abTestPl
                     id = AccountConstants.SettingCode.SETTING_DARK_MODE,
                     title = context.getString(R.string.menu_account_title_dark_mode),
                     body = context.getString(R.string.menu_account_desc_dark_mode),
-                    type = CommonViewHolder.TYPE_SWITCH,
+                    type = CommonViewHolder.TYPE_DEFAULT,
                     icon = IconUnify.MODE_SCREEN,
-                    isChecked = accountPref.isItemSelected(TkpdCache.Key.KEY_DARK_MODE, false),
-                    labelText = getLabelText(R.string.new_home_account_label_beta)
+                    applink = ApplinkConstInternalGlobal.DARK_MODE_CONFIG
                 )
             )
         }
@@ -138,7 +137,7 @@ class StaticMenuGenerator @Inject constructor(val context: Context, val abTestPl
                 )
             )
         }
-        return SettingDataView(context.getString(R.string.menu_account_section_title_app_setting), listSetting, showArrowDown = true)
+        return SettingDataView(context.getString(R.string.menu_account_section_title_app_setting), listSetting, showArrowDown = true, isExpanded = isExpanded)
     }
 
     fun generateAboutTokopediaSettingMenu(): SettingDataView {

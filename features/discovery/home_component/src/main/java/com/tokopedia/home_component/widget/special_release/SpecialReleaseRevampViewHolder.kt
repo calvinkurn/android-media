@@ -3,18 +3,18 @@ package com.tokopedia.home_component.widget.special_release
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.HomeComponentSpecialReleaseRevampBinding
-import com.tokopedia.home_component.mapper.ChannelModelMapper
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
-import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.util.ChannelWidgetUtil
-import com.tokopedia.home_component.widget.common.CarouselListAdapter
-import com.tokopedia.home_component.widget.common.AbstractHomeViewHolder
-import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.home_component.util.NpaLinearLayoutManager
+import com.tokopedia.home_component.widget.common.carousel.CarouselListAdapter
+import com.tokopedia.home_component.widget.common.carousel.CommonCarouselDiffUtilCallback
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.home_component.R as home_componentR
 
 /**
  * Created by frenzel
@@ -22,18 +22,16 @@ import com.tokopedia.utils.view.binding.viewBinding
 class SpecialReleaseRevampViewHolder(
     itemView: View,
     private val specialReleaseRevampListener: SpecialReleaseRevampListener
-) : AbstractHomeViewHolder<SpecialReleaseRevampDataModel>(itemView) {
+) : AbstractViewHolder<SpecialReleaseRevampDataModel>(itemView) {
 
     companion object {
         @LayoutRes
-        val LAYOUT = com.tokopedia.home_component.R.layout.home_component_special_release_revamp
+        val LAYOUT = home_componentR.layout.home_component_special_release_revamp
     }
 
     private val binding: HomeComponentSpecialReleaseRevampBinding? by viewBinding()
-    private val typeFactory: CommonCarouselProductCardTypeFactory by lazy { CommonCarouselProductCardTypeFactoryImpl() }
-    private val adapter: CarouselListAdapter<SpecialReleaseRevampItemDataModel, CommonCarouselProductCardTypeFactory> by lazy {
-        CarouselListAdapter(typeFactory, SpecialReleaseDiffUtil())
-    }
+    private val typeFactory: CommonCarouselProductCardTypeFactory by lazy { SpecialReleaseRevampItemTypeFactoryImpl(specialReleaseRevampListener) }
+    private val adapter by lazy { CarouselListAdapter(typeFactory, CommonCarouselDiffUtilCallback()) }
 
     override fun bind(element: SpecialReleaseRevampDataModel) {
         binding?.let {
@@ -48,8 +46,8 @@ class SpecialReleaseRevampViewHolder(
         bind(element)
     }
 
-    override fun initAdapter() {
-        val layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+    private fun initAdapter() {
+        val layoutManager = NpaLinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL)
         binding?.homeComponentSpecialReleaseRv?.apply {
             setLayoutManager(layoutManager)
             if(itemDecorationCount == 0) {
@@ -59,7 +57,7 @@ class SpecialReleaseRevampViewHolder(
         }
     }
 
-    override fun setChannelDivider(channelModel: ChannelModel) {
+    private fun setChannelDivider(channelModel: ChannelModel) {
         binding?.let {
             ChannelWidgetUtil.validateHomeComponentDivider(
                 channelModel = channelModel,
@@ -69,7 +67,7 @@ class SpecialReleaseRevampViewHolder(
         }
     }
 
-    override fun setHeaderComponent(channelModel: ChannelModel) {
+    private fun setHeaderComponent(channelModel: ChannelModel) {
         binding?.homeComponentHeaderView?.setChannel(
             channelModel,
             object: HeaderListener {
@@ -80,22 +78,7 @@ class SpecialReleaseRevampViewHolder(
         )
     }
 
-    override fun setData(model: SpecialReleaseRevampDataModel) {
-        val items = model.channelModel.channelGrids.map {
-            SpecialReleaseRevampItemDataModel(
-                it,
-                ChannelModelMapper.mapToProductCardModel(
-                    channelGrid = it,
-                    animateOnPress = CardUnify2.ANIMATE_NONE,
-                    cardType = CardUnify2.TYPE_CLEAR,
-                    productCardListType = ProductCardModel.ProductListType.BEST_SELLER,
-                    excludeShop = true
-                ),
-                model.channelModel.trackingAttributionModel,
-                cardInteraction = CardUnify2.ANIMATE_NONE,
-                listener = specialReleaseRevampListener
-            )
-        }
-        adapter.submitList(items)
+    private fun setData(model: SpecialReleaseRevampDataModel) {
+        adapter.submitList(model.specialReleaseItems as? List<Visitable<CommonCarouselProductCardTypeFactory>>)
     }
 }

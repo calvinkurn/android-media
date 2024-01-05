@@ -9,6 +9,7 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactory
 
 data class MultiLineGraphWidgetUiModel(
     override val id: String,
+    override val sectionId: String,
     override val widgetType: String,
     override val title: String,
     override val subtitle: String,
@@ -29,6 +30,7 @@ data class MultiLineGraphWidgetUiModel(
     override var emptyState: WidgetEmptyStateUiModel,
     override var useRealtime: Boolean = false,
     val isComparePeriodOnly: Boolean,
+    var isMultiComponentWidget: Boolean = false
 ) : BaseWidgetUiModel<MultiLineGraphDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {

@@ -82,17 +82,6 @@ object DeeplinkMapperHome {
         return UriUtil.buildUri(ApplinkConstInternalMechant.BRANDLIST, categoryId)
     }
 
-    fun getRegisteredNavigationHomeFeed(): String {
-        return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_FEED))
-    }
-
-    fun getRegisteredNavigationHomeContentExplore(deeplink: String): String {
-        val params = UriUtil.destructureUriToMap(ApplinkConst.CONTENT_EXPLORE, Uri.parse(deeplink), true)
-        params[EXTRA_TAB_POSITION] = TAB_POSITION_FEED
-
-        return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, params.toMap())
-    }
-
     fun getRegisteredExplore(deeplink: String): String {
         val uri = Uri.parse(deeplink)
         return when {

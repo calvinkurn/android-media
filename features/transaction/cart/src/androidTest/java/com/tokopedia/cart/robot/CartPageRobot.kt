@@ -83,7 +83,7 @@ class CartPageRobot {
                     override fun perform(uiController: UiController?, view: View) {
                         assertEquals(
                             View.VISIBLE,
-                            view.findViewById<Ticker>(R.id.cartTicker).visibility
+                            view.findViewById<Ticker>(com.tokopedia.purchase_platform.common.R.id.cartTicker).visibility
                         )
                     }
                 }
@@ -125,7 +125,7 @@ class CartPageRobot {
                     override fun perform(uiController: UiController?, view: View) {
                         assertEquals(
                             message,
-                            view.findViewById<Typography>(R.id.ticker_description).text
+                            view.findViewById<Typography>(com.tokopedia.unifycomponents.R.id.ticker_description).text
                         )
                     }
                 }

@@ -7,11 +7,23 @@ import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
 import android.widget.ListView
 import androidx.core.content.ContextCompat
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.product.addedit.common.util.ListUnifyConstant.CATEGORY_ID_INDEX
+import com.tokopedia.product.addedit.common.util.ListUnifyConstant.CONFIDENCE_INDEX
+import com.tokopedia.product.addedit.common.util.ListUnifyConstant.DELIMITER
+import com.tokopedia.product.addedit.common.util.ListUnifyConstant.PRECISION_INDEX
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
+
+object ListUnifyConstant{
+    const val DELIMITER = ", "
+    const val CATEGORY_ID_INDEX = 0
+    const val CONFIDENCE_INDEX = 1
+    const val PRECISION_INDEX = 2
+}
 
 internal fun ListItemUnify.getShownRadioButton() = run {
     if (listLeftRadiobtn?.visibility == View.VISIBLE) {
@@ -53,7 +65,19 @@ internal fun ListUnify.setSelected(items: List<ListItemUnify>, position: Int, on
 }
 
 internal fun ListItemUnify.getCategoryId() = run {
-    listActionText?.toLong().orZero()
+    listActionText?.split(DELIMITER)?.getOrNull(CATEGORY_ID_INDEX).toLongOrZero()
+}
+
+internal fun ListItemUnify.getPrecision() = run {
+    listActionText?.split(DELIMITER)?.getOrNull(PRECISION_INDEX).toDoubleOrZero()
+}
+
+internal fun ListItemUnify.getConfidence() = run {
+    listActionText?.split(DELIMITER)?.getOrNull(CONFIDENCE_INDEX).toDoubleOrZero()
+}
+
+internal fun ListItemUnify.getCategoryName() = run {
+    listTitleText.replace(" / ", "/")
 }
 
 internal fun ListItemUnify.setPrimarySelected(context: Context?, isChecked: Boolean) = let {
@@ -81,10 +105,6 @@ internal fun ListItemUnify.setTextColorToUnify(context: Context) = let {
 internal fun ListItemUnify.setFixedTextColorToUnify(context: Context) = let {
     val unifyGrayColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400)
     it.listTitle?.setTextColor(unifyGrayColor)
-}
-
-internal fun ListItemUnify.getCategoryName() = run {
-    listTitleText.replace(" / ", "/")
 }
 
 internal fun ListUnify.setToDisplayText(text: String, context: Context) = apply {

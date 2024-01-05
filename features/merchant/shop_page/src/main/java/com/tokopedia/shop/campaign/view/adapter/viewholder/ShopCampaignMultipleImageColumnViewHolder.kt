@@ -14,16 +14,19 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.campaign.view.customview.ShopCampaignTabWidgetHeaderView
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
 import com.tokopedia.shop.databinding.WidgetShopCampaignMultipleImageColumnBinding
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeMultipleImageColumnAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
+import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopCampaignMultipleImageColumnViewHolder(
     itemView: View,
     private val listener: ShopHomeDisplayWidgetListener,
-    private val shopCampaignInterface: ShopCampaignInterface
+    private val shopCampaignInterface: ShopCampaignInterface,
+    private val recyclerviewPoolListener: RecyclerviewPoolListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(itemView) {
 
     companion object {
@@ -34,6 +37,7 @@ class ShopCampaignMultipleImageColumnViewHolder(
         private const val SPAN_SIZE_TRIPLE = 2
         private const val SPAN_SIZE_DOUBLE_DATA_SIZE = 2
         private const val SPAN_SIZE_TRIPLE_DATA_SIZE = 3
+        private const val CORNER_RADIUS = 4f
     }
     private val viewBinding: WidgetShopCampaignMultipleImageColumnBinding? by viewBinding()
     private var shopHomeMultipleImageColumnAdapter: ShopHomeMultipleImageColumnAdapter? = null
@@ -43,7 +47,7 @@ class ShopCampaignMultipleImageColumnViewHolder(
     override fun bind(element: ShopHomeDisplayWidgetUiModel) {
         setHeader(element)
         setWidgetImpressionListener(element)
-        val cornerRadius = itemView.context?.resources?.getDimension(R.dimen.dp_4).orZero()
+        val cornerRadius = CORNER_RADIUS.dpToPx()
         shopHomeMultipleImageColumnAdapter = ShopHomeMultipleImageColumnAdapter(listener, cornerRadius)
         val gridLayoutManager = GridLayoutManager(itemView.context, SPAN_SIZE_SINGLE)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -63,6 +67,7 @@ class ShopCampaignMultipleImageColumnViewHolder(
                 addItemDecoration(PaddingItemDecorationShopPage(element.name))
             }
             adapter = shopHomeMultipleImageColumnAdapter
+            setRecycledViewPool(recyclerviewPoolListener.parentPool)
         }
         shopHomeMultipleImageColumnAdapter?.setShopHomeDisplayWidgetUiModelData(element)
         shopHomeMultipleImageColumnAdapter?.setParentPosition(adapterPosition)

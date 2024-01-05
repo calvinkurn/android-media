@@ -4,7 +4,8 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
-import com.tokopedia.topchat.chatroom.view.activity.robot.header.HeaderRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.composeAreaRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.headerRobot
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -23,8 +24,10 @@ class ChatRoomCassavaTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        HeaderRobot.clickThreeDotsMenu()
-        HeaderRobot.clickFollowMenu()
+        headerRobot {
+            clickThreeDotsMenu()
+            clickFollowMenu()
+        }
 
         // Then
         assertThat(cassavaTestRule.validate(journeyId), hasAllSuccess())
@@ -36,11 +39,13 @@ class ChatRoomCassavaTest : TopchatRoomTest() {
         val journeyId = "125"
         getChatUseCase.response = getChatUseCase.defaultChatWithBuyerResponse
         launchChatRoomActivity()
-        preventOpenOtherActivity()
+        stubIntents()
 
         // When
-        HeaderRobot.clickThreeDotsMenu()
-        HeaderRobot.clickReportUserMenu()
+        headerRobot {
+            clickThreeDotsMenu()
+            clickReportUserMenu()
+        }
 
         // Then
         assertThat(cassavaTestRule.validate(journeyId), hasAllSuccess())
@@ -54,9 +59,11 @@ class ChatRoomCassavaTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         // When
-        clickComposeArea()
-        typeMessage("Hello")
-        clickSendBtn()
+        composeAreaRobot {
+            clickComposeArea()
+            typeMessageComposeArea("Hello")
+            clickSendBtn()
+        }
 
         // Then
         assertThat(cassavaTestRule.validate(journeyId), hasAllSuccess())
@@ -69,7 +76,7 @@ class ChatRoomCassavaTest : TopchatRoomTest() {
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
-        preventOpenOtherActivity()
+        stubIntents()
 
         // Then
         assertThat(cassavaTestRule.validate(journeyId), hasAllSuccess())

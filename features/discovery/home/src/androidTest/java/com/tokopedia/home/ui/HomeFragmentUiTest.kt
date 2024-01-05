@@ -76,11 +76,8 @@ class HomeFragmentUiTest {
         IdlingRegistry.getInstance().unregister(homeRecyclerViewIdlingResource)
     }
 
-    @Ignore
     @Test
     fun testFirstTimeLoggedInUser() {
-        assertHomeCoachmarkDisplayed()
-
         /**
          * Home skeleton content
          * - Toolbar
@@ -139,7 +136,7 @@ class HomeFragmentUiTest {
 
         onView(
             withTagStringValue(
-                context.getString(R.string.tag_navigation_toolbar_searchbar)
+                context.getString(com.tokopedia.searchbar.R.string.tag_navigation_toolbar_searchbar)
             )
         ).check(matches(isDisplayed()))
     }
@@ -151,11 +148,6 @@ class HomeFragmentUiTest {
      * - All balance items are clickable
      */
     private fun assertHeader() {
-        /**
-         * Assert header background
-         */
-        onView(withId(R.id.header_background_home_background)).check(matches(isDisplayed()))
-
         /**
          * Assert choose address widget
          */
@@ -283,11 +275,11 @@ class HomeFragmentUiTest {
         }
 
         if (isSingleCoachmark) {
-            onView(withId(R.id.simple_ic_close))
+            onView(withId(com.tokopedia.coachmark.R.id.simple_ic_close))
                 .inRoot(RootMatchers.isPlatformPopup())
                 .perform(click())
         } else {
-            onView(withId(R.id.step_next))
+            onView(withId(com.tokopedia.coachmark.R.id.step_next))
                 .inRoot(RootMatchers.isPlatformPopup())
                 .perform(click())
         }

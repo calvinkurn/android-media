@@ -3,11 +3,13 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeEtalaseListSliderSmallBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
@@ -15,6 +17,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * author by Rafli Syam on 05/08/2021
@@ -71,5 +74,27 @@ class ShopHomeShowcaseListSliderSmallViewHolder(
                 parentPosition
             )
         }
+        configColorTheme(shopHomeShowcaseListSliderUiModel)
+    }
+
+    private fun configColorTheme(shopHomeShowcaseListSliderUiModel: ShopHomeShowcaseListSliderUiModel) {
+        if (shopHomeShowcaseListSliderUiModel.header.isOverrideTheme) {
+            configReimaginedColor(shopHomeShowcaseListSliderUiModel.header.colorSchema)
+        } else {
+            configDefaultColor()
+        }
+    }
+
+    private fun configDefaultColor() {
+        val titleColor = MethodChecker.getColor(
+            itemView.context,
+            unifyprinciplesR.color.Unify_NN950_96
+        )
+        showcaseItemName?.setTextColor(titleColor)
+    }
+
+    private fun configReimaginedColor(colorSchema: ShopPageColorSchema) {
+        val titleColor = colorSchema.getColorIntValue(ShopPageColorSchema.ColorSchemaName.TEXT_HIGH_EMPHASIS)
+        showcaseItemName?.setTextColor(titleColor)
     }
 }

@@ -28,6 +28,8 @@ class DeveloperOptionAdapter(
         const val KEYWORD_RESET_ONBOARDING = "Reset OnBoarding"
         const val KEYWORD_FORCE_CRASH = "Force Crash"
         const val KEYWORD_FORCE_LOGOUT = "Force Logout"
+        const val KEYWORD_FORCE_SCP_LOGIN = "Force Scp Login"
+        const val KEYWORD_RANDOMIZE_TOKEN = "Randomize Access Token"
         const val KEYWORD_SEND_FIREBASE_EXCEPTION = "Send Firebase Exception"
         const val KEYWORD_OPEN_SCREEN_RECORDER = "Open Screen Recorder"
         const val KEYWORD_ENABLE_NETWORK_LOG_ON_NOTIFICATION = "Enable Network Log on Notification"
@@ -88,6 +90,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_PLAY_WEB_SOCKET_SSE_LOGGING = "Play - Web Socket and SSE Logging"
         const val KEYWORD_VIEW_SSE_LOGGING = "View SSE Logging"
         const val KEYWORD_TYPOGRAPHY_NEW_FONT = "Switch Typography Guideline"
+        const val KEYWORD_BANNER_ENVIRONMENT = "Switch banner environment"
         const val KEYWORD_CONVERT_RESOURCE_ID = "Convert Resource ID to Resource Name"
         const val KEYWORD_VIEW_HANSEL_PATCH_LIST = "View Hansel Patch List"
         const val KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING = "Topchat - Web Socket Logging"
@@ -96,6 +99,8 @@ class DeveloperOptionAdapter(
         const val KEYWORD_DEPRECATED_API_SWITCHER_TOASTER = "Depcreated API Switcher Toaster"
         const val KEYWORD_EXTRACT_BRANCH_LINK = "Extract Branchlink"
         const val FPI_MONITORING = "FPI Monitoring"
+        const val KEYWORD_GET_USER_ID = "Get User Id"
+        const val KEYWORD_GET_SHOP_ID = "Get Shop Id"
     }
 
     /**
@@ -117,7 +122,9 @@ class DeveloperOptionAdapter(
         ForceLogoutUiModel(listOf(KEYWORD_FORCE_LOGOUT)),
         ForceCrashUiModel(listOf(KEYWORD_FORCE_CRASH)),
         OpenScreenRecorderUiModel(listOf(KEYWORD_OPEN_SCREEN_RECORDER)),
+        ForceScpLoginUiModel(listOf(KEYWORD_FORCE_SCP_LOGIN)),
         TypographySwitchUiModel(listOf(KEYWORD_TYPOGRAPHY_NEW_FONT)),
+        BannerEnvironmentUiModel(listOf(KEYWORD_BANNER_ENVIRONMENT)),
         ForceDarkModeUiModel(listOf(KEYWORD_FORCE_DARK_MODE)),
         RouteManagerUiModel(listOf(KEYWORD_ROUTE_MANAGER, KEYWORD_VIEW_APPLINK_LIST)),
         TranslatorUiModel(
@@ -148,7 +155,8 @@ class DeveloperOptionAdapter(
             listOf(KEYWORD_CONVERT_RESOURCE_ID)
         ),
         ViewHanselPatchUiModel(listOf(KEYWORD_VIEW_HANSEL_PATCH_LIST)),
-        BranchLinkUiModel(listOf(KEYWORD_EXTRACT_BRANCH_LINK))
+        BranchLinkUiModel(listOf(KEYWORD_EXTRACT_BRANCH_LINK)),
+        RandomizeAccessTokenUiModel(listOf(KEYWORD_RANDOMIZE_TOKEN))
     )
 
     private val hiddenItems = mutableListOf(
@@ -213,7 +221,9 @@ class DeveloperOptionAdapter(
             )
         ),
         TopchatWebSocketLoggingUiModel(listOf(KEYWORD_TOPCHAT_WEB_SOCKET_LOGGING)),
-        FpiMonitoringUiModel(listOf(FPI_MONITORING))
+        FpiMonitoringUiModel(listOf(FPI_MONITORING)),
+        UserIdUiModel(listOf(KEYWORD_GET_USER_ID)),
+        ShopIdUiModel(listOf(KEYWORD_GET_SHOP_ID))
     )
 
     /**
@@ -270,7 +280,7 @@ class DeveloperOptionAdapter(
         removeWidget(SellerAppReviewDebuggingUiModel::class.java)
     }
 
-    private fun <T> removeWidget(itemClass: Class<T>) {
+    fun <T> removeWidget(itemClass: Class<T>) {
         val items = defaultItems
         val widget = getItem(itemClass)
         widget?.let {

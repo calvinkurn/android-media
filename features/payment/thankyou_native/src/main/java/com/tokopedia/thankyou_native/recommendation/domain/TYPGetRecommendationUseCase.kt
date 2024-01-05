@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.thankyou_native.data.mapper.ThankPageTypeMapper.DIGITAL_MERCHANT_CODE
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.recommendation.data.ProductRecommendationData
 import com.tokopedia.thankyou_native.recommendation.data.mapper.ProductRecommendationDataMapper
@@ -25,8 +26,9 @@ class TYPGetRecommendationUseCase @Inject constructor(
         val productIdList = thanksPageData.shopOrder.map {
             it.purchaseItemList.map { pItem -> pItem.productId }
         }.flatten()
+        val pageName = if (thanksPageData.merchantCode == DIGITAL_MERCHANT_CODE) PAGE_NAME_DG else PAGE_NAME
         val recommendationWidgetList = getData(GetRecommendationRequestParam(
-                pageName = PAGE_NAME,
+                pageName = pageName,
                 xSource = X_SOURCE,
                 productIds = productIdList))
         if (recommendationWidgetList.isNullOrEmpty())
@@ -38,5 +40,6 @@ class TYPGetRecommendationUseCase @Inject constructor(
     companion object {
         const val X_SOURCE = "recom_widget"
         const val PAGE_NAME = "thankyou_page"
+        const val PAGE_NAME_DG = "thankyou_page_dg"
     }
 }

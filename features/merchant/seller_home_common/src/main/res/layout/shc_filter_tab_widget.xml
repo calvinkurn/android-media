@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginTop="12dp"
+    app:card_type="border">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFilterTabTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:lines="1"
+        android:paddingStart="12dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="8dp"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="display_3"
+        tools:text="Evaluasi berdasarkan: Pesanan Baru" />
+
+</com.tokopedia.unifycomponents.CardUnify2>

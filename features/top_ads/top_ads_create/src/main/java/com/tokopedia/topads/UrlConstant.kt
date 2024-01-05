@@ -20,4 +20,5 @@ object UrlConstant {
     const val FRAGMENT_NUMBER_2 = 2
     const val FRAGMENT_NUMBER_3 = 3
     const val FRAGMENT_NUMBER_4 = 4
+    const val FRAGMENT_NUMBER_5 = 5
 }

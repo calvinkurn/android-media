@@ -31,7 +31,7 @@ import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetMediumUiModel
 import com.tokopedia.videoTabComponent.util.PlayFeedDateTimeFormatter
 
 private const val FEED_TYPE_PINNED_FEEDS = "pinnedFeeds"
-private const val FEED_TYPE_CHANNEL_BLOCK = "channelBlock"
+const val FEED_TYPE_CHANNEL_BLOCK = "channelBlock"
 const val FEED_TYPE_TAB_MENU = "tabMenu"
 private const val FEED_TYPE_CHANNEL_RECOM = "channelRecom"
 private const val FEED_TYPE_CHANNEL_HIGHLIGHT = "channelHighlight"

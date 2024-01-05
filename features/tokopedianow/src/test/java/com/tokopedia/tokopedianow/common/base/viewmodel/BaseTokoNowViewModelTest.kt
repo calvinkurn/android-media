@@ -566,12 +566,22 @@ class BaseTokoNowViewModelTest : BaseTokoNowViewModelTestFixture() {
     @Test
     fun `when getTickerDataAsync error should return null`() {
         runTest {
-            onGetTickerDataAsync_thenReturn(NullPointerException())
+            onGetTickerDataAsync_thenReturn(Exception(), warehouseId = "1", page = "1")
 
             val actualResult = viewModel
                 .getTickerDataAsync(warehouseId = "1", page = "1").await()
 
             assertEquals(null, actualResult)
         }
+    }
+
+    @Test
+    fun `when get deviceId should return deviceId from userSession`() {
+        onGetDeviceId_thenReturn(deviceId = "91251")
+
+        val expectedDeviceId = "91251"
+        val actualDeviceId = viewModel.getDeviceId()
+
+        assertEquals(expectedDeviceId, actualDeviceId)
     }
 }

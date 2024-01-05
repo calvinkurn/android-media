@@ -301,7 +301,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="12dp"
         android:layout_marginBottom="@dimen/unify_space_8"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_NN600"
         android:paddingTop="12dp"
         app:layout_constraintBottom_toTopOf="@id/withdrawalButton"
         app:layout_constraintEnd_toEndOf="parent"

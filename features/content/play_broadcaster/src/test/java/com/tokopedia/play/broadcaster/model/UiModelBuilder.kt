@@ -11,8 +11,8 @@ import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelRespon
 import com.tokopedia.play.broadcaster.domain.model.GetLiveFollowersResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
-import com.tokopedia.play.broadcaster.type.PriceUnknown
-import com.tokopedia.play.broadcaster.type.ProductPrice
+import com.tokopedia.content.product.picker.seller.model.PriceUnknown
+import com.tokopedia.content.product.picker.seller.model.ProductPrice
 import com.tokopedia.play.broadcaster.type.ProductStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleConfigUiModel
@@ -32,6 +32,7 @@ import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditSt
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.BroadcasterCheckAffiliateResponseUiModel
 import com.tokopedia.play.broadcaster.ui.model.shortsaffiliate.OnboardAffiliateUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagItem
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
@@ -67,12 +68,12 @@ class UiModelBuilder {
      * Pojo
      */
     fun buildProductData(
-            id: String = "1",
-            name: String = "Product 1",
-            imageUrl: String = "https://www.tokopedia.com",
-            originalImageUrl: String = "https://www.tokopedia.com",
-            stock: ProductStock = StockAvailable(1),
-            price: ProductPrice = PriceUnknown,
+        id: String = "1",
+        name: String = "Product 1",
+        imageUrl: String = "https://www.tokopedia.com",
+        originalImageUrl: String = "https://www.tokopedia.com",
+        stock: ProductStock = StockAvailable(1),
+        price: ProductPrice = PriceUnknown,
     ) = ProductData(id, name, imageUrl, originalImageUrl, stock, price)
 
     private fun loadJsonToString(path: String): String {
@@ -320,18 +321,25 @@ class UiModelBuilder {
     }
 
     fun buildTags(
-        size: Int = 5
-    ): Set<PlayTagUiModel> {
-        return mutableSetOf<PlayTagUiModel>().apply {
-            for(i in 0 until size) {
-                add(
-                    PlayTagUiModel(
-                        tag = "Tag $i",
-                        isChosen = false,
+        size: Int = 5,
+        minTags: Int = 1,
+        maxTags: Int = 2,
+    ): PlayTagUiModel {
+        return PlayTagUiModel(
+            tags = mutableSetOf<PlayTagItem>().apply {
+                for(i in 0 until size) {
+                    add(
+                        PlayTagItem(
+                            tag = "Tag $i",
+                            isChosen = false,
+                            isActive = true,
+                        )
                     )
-                )
-            }
-        }
+                }
+            },
+            minTags = minTags,
+            maxTags = maxTags,
+        )
     }
 
     fun buildTncList(

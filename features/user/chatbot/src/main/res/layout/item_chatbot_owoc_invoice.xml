@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    app:card_type="clear"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@color/Unify_NN50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/product_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="fitCenter"
+            android:layout_marginStart="8dp"
+            app:unify_image_corner_radius="8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/background_countdown" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/shop_badge"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="8dp"
+            tools:visibility="visible"
+            app:layout_constraintStart_toEndOf="@id/product_image"
+            app:layout_constraintTop_toTopOf="@id/product_image"
+            tools:src="@drawable/ic_tanya_dark_mode" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_shop_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN950"
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toEndOf="@id/shop_badge"
+            app:layout_constraintTop_toTopOf="@id/product_image"
+            app:typographyType="display_3"
+            tools:text="Test Shop Name" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_product_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_NN950"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="2dp"
+            app:layout_constraintStart_toEndOf="@id/product_image"
+            app:layout_constraintTop_toBottomOf="@id/text_shop_name"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
+            tools:text="Test Shop Name" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_product_description"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintBottom_toBottomOf="@id/product_image"
+            app:layout_constraintStart_toEndOf="@id/product_image"
+            android:layout_marginStart="8dp"
+            tools:text= "Test Test Test "
+            app:typographyWeight="reguler"
+            app:typographyType="display_3"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify2>

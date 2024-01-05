@@ -14,6 +14,7 @@ class ImmersiveFeedOnboarding private constructor(
     private val context: Context,
     private val createContentView: View?,
     private val profileEntryPointView: View?,
+    private val browseIconView: View?,
     private val listener: Listener,
 ) {
 
@@ -27,6 +28,10 @@ class ImmersiveFeedOnboarding private constructor(
 
             if (createContentView != null) {
                 add(createContentCoachMarkItem(createContentView))
+            }
+
+            if (browseIconView != null) {
+                add(browseEntryPointCoachMarkItem(browseIconView))
             }
         }
 
@@ -91,6 +96,9 @@ class ImmersiveFeedOnboarding private constructor(
             profileEntryPointView -> {
                 listener.onCompleteProfileEntryPointOnboarding()
             }
+            browseIconView -> {
+                listener.onCompleteBrowseEntryPointOnboarding()
+            }
         }
     }
 
@@ -98,12 +106,15 @@ class ImmersiveFeedOnboarding private constructor(
 
         private var createContentView: View? = null
         private var profileEntryPointView: View? = null
+        private var browseIconView: View? = null
         private var listener: Listener = object : Listener {
             override fun onStarted() {}
 
             override fun onCompleteCreateContentOnboarding() {}
 
             override fun onCompleteProfileEntryPointOnboarding() {}
+
+            override fun onCompleteBrowseEntryPointOnboarding() {}
 
             override fun onFinished(isForcedDismiss: Boolean) {}
         }
@@ -116,6 +127,10 @@ class ImmersiveFeedOnboarding private constructor(
             profileEntryPointView = view
         }
 
+        fun setBrowseIconView(view: View?) = builder {
+            browseIconView = view
+        }
+
         fun setListener(listener: Listener) = builder {
             this.listener = listener
         }
@@ -125,6 +140,7 @@ class ImmersiveFeedOnboarding private constructor(
                 context = context,
                 createContentView = createContentView,
                 profileEntryPointView = profileEntryPointView,
+                browseIconView = browseIconView,
                 listener = listener,
             )
         }
@@ -153,10 +169,20 @@ class ImmersiveFeedOnboarding private constructor(
         )
     }
 
+    private fun browseEntryPointCoachMarkItem(view: View): CoachMark2Item {
+        return CoachMark2Item(
+            anchorView = view,
+            title = context.getString(R.string.feed_onboarding_browse_entry_point_title),
+            description = context.getString(R.string.feed_onboarding_browse_entry_point_subtitle),
+            position = CoachMark2.POSITION_BOTTOM,
+        )
+    }
+
     interface Listener {
         fun onStarted()
         fun onCompleteCreateContentOnboarding()
         fun onCompleteProfileEntryPointOnboarding()
+        fun onCompleteBrowseEntryPointOnboarding()
         fun onFinished(isForcedDismiss: Boolean)
     }
 }

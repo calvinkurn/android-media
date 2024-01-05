@@ -46,7 +46,7 @@ class TopAdsProductImagePreviewAdapter : RecyclerView.Adapter<TopAdsProductImage
         } else {
             imageList?.getOrNull(position)?.let {
                 holder.productImage.loadImage(it)
-                holder.deleteButton.setImageDrawable(holder.itemView.context.getResDrawable(R.drawable.unify_chips_ic_close))
+                holder.deleteButton.setImageDrawable(holder.itemView.context.getResDrawable(com.tokopedia.unifycomponents.R.drawable.unify_chips_ic_close))
                 holder.deleteButton.show()
                 holder.deleteButton.setOnClickListener {
                     imageList?.removeAt(position)

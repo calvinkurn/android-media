@@ -170,7 +170,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -202,7 +202,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Olahraga,Otomotif,Handphone & Tablet,Fashion Pria",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -234,7 +234,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -267,7 +267,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "$previousKeyword - none",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -301,7 +301,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Fashion Wanita,Fashion Pria",
             relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.related.relatedKeyword}",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -337,7 +337,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
                 "${searchProductModel.searchProduct.data.related.relatedKeyword}," +
                 searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword },
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -372,7 +372,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             relatedKeyword = "$previousKeyword - " +
                 searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword },
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -408,7 +408,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
                 "${searchProductModel.searchProduct.data.related.relatedKeyword}," +
                 searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword },
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -442,7 +442,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Fashion Wanita,Fashion Pria",
             relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.related.relatedKeyword}",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -476,7 +476,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Fashion Wanita,Fashion Pria",
             relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.suggestion.suggestion}",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -509,7 +509,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Fashion Wanita,Fashion Pria",
             relatedKeyword = "$NONE - $NONE",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -541,7 +541,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "",
             relatedKeyword = "$NONE - $NONE",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -573,7 +573,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -605,7 +605,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -637,7 +637,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -679,7 +679,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -721,7 +721,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -769,7 +769,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
                 "${searchParameter[SearchApiConst.NAVSOURCE]}." +
                 "local_search." +
                 "${searchParameter[SearchApiConst.SRP_PAGE_ID]}",
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -811,7 +811,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = searchRef,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = "",
         )
@@ -853,7 +853,7 @@ internal class SearchProductGeneralSearchTrackingTest : ProductListPresenterTest
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = searchProductModel.backendFilters,
+            searchFilter = searchProductModel.searchProduct.data.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
             externalReference = externalReference,
         )

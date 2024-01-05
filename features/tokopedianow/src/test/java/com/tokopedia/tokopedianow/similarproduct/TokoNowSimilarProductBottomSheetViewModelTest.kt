@@ -91,9 +91,9 @@ class TokoNowSimilarProductBottomSheetViewModelTest {
             "",
             "",
             "",
-            ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem.Shop("", "", 0),
+            ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem.Shop("", "", "0"),
             "",
-            0,
+            "0",
             0,
             "",
             true,
@@ -105,9 +105,8 @@ class TokoNowSimilarProductBottomSheetViewModelTest {
             "",
             "",
             0F,
-            0,0,"","","",
-            0,"","",0,
-            listOf(ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem.WholesalePriceItem(0, 0, 0, "")),0
+            0,0,"","","", "",
+            "0","","",0
         )
 
         val response = ProductRecommendationResponse(productRecommendationWidgetSingle = ProductRecommendationResponse.ProductRecommendationWidgetSingle(data = ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data(recommendation = listOf(recommendationItem))))
@@ -116,9 +115,9 @@ class TokoNowSimilarProductBottomSheetViewModelTest {
             getSimilarProductUseCase.execute(any(), any(), any())
         } returns response
 
-        addressData = TokoNowLocalAddress(mockk(relaxed = true))
+        addressData = mockk(relaxed = true)
 
-        addressData.mockPrivateField("localAddressData", returnLocalCacheModel())
+        coEvery { addressData.getWarehouseId() } returns returnLocalCacheModel().warehouse_id.toLong()
 
         viewModel = TokoNowSimilarProductBottomSheetViewModel(
             getSimilarProductUseCase,

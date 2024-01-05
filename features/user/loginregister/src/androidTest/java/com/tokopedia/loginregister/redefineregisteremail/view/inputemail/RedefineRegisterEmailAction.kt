@@ -90,8 +90,8 @@ fun isDialogOfferLoginDisplayed() {
         "Lanjut masuk dengan e-mail ini\n$validEmail"
     )
     isDisplayed(
-        R.id.dialog_btn_secondary,
-        R.id.dialog_btn_primary
+        com.tokopedia.dialog.R.id.dialog_btn_secondary,
+        com.tokopedia.dialog.R.id.dialog_btn_primary
     )
 }
 

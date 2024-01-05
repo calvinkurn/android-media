@@ -40,7 +40,7 @@ import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_DASHBOARD
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS
 import com.tokopedia.play.broadcaster.ui.model.beautification.*
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
@@ -54,7 +54,7 @@ import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetType
 import com.tokopedia.play.broadcaster.ui.model.livetovod.TickerBottomSheetUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.*
@@ -188,6 +188,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     val productSectionList: List<ProductTagSectionUiModel>
         get() = _productSectionList.value
+
+    val bannerPreparation: List<PlayBroadcastPreparationBannerModel>
+        get() = _bannerPreparation.value
 
     private val _bannerPreparation = MutableStateFlow<List<PlayBroadcastPreparationBannerModel>>(emptyList())
 
@@ -612,7 +615,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _accountStateInfo.value = AccountStateInfo()
         _observableConfigInfo.value = NetworkResult.Loading
 
-        val accountList = repo.getAccountList()
+        val accountList = repo.getAccountList().filterNot { it.isUser && !it.enable }
         _accountListState.value = accountList
 
         if (accountList.isNotEmpty()) {
@@ -669,7 +672,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     getChannelById(channelId)
                 }) { it }
                 val deferredProductMap = asyncCatchError(block = {
-                    repo.getProductTagSummarySection(channelID = channelId)
+                    repo.getProductTagSummarySection(creationId = channelId)
                 }) { emptyList() }
 
                 val error = deferredChannel.await()
@@ -1545,6 +1548,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     IllegalStateException("Not allowed to create session")
                 )
             )
+            return // dont  create giveaway
         }
 
         viewModelScope.launchCatchError(dispatcher.io, block = {
@@ -1725,10 +1729,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleBroadcasterStart() {
         viewModelScope.launchCatchError(block = {
-            handleResetUploadState()
             updateChannelStatus(PlayChannelStatusType.Live)
             getChannelById(channelId)
             _uiEvent.emit(PlayBroadcastEvent.BroadcastStarted)
+            handleResetUploadState()
             startWebSocket()
             getPinnedMessage()
             getInteractiveConfig()

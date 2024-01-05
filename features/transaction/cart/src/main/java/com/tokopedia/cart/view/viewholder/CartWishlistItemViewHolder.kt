@@ -68,7 +68,7 @@ class CartWishlistItemViewHolder(private val binding: ItemProductWishlistBinding
     private fun renderShopName(element: CartWishlistItemHolderData) {
         binding.textShopName.apply {
             text = Utils.getHtmlFormat(element.shopName)
-            val marginFour = itemView.context.resources.getDimension(R.dimen.dp_4).toInt()
+            val marginFour = itemView.context.resources.getDimension(com.tokopedia.cart.R.dimen.dp_4).toInt()
             val marginNine = itemView.context.resources.getDimension(R.dimen.dp_9).toInt()
             if (binding.imgShopBadge.visibility == View.VISIBLE) {
                 setMargin(marginFour, marginFour, 0, 0)

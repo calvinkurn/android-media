@@ -36,7 +36,7 @@ public class TkpdAndroidBenchmarkTestRunner extends AndroidBenchmarkRunner {
         });
         if (!isResumed[0]) {
             IsolationActivity.Companion.launchSingleton();
-            TkpdIsolationActivity.Companion.launchSingleton(R.style.Theme_AppCompat_Light_NoActionBar);
+            TkpdIsolationActivity.Companion.launchSingleton(androidx.appcompat.R.style.Theme_AppCompat_Light_NoActionBar);
         }
     }
 

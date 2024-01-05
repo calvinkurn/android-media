@@ -21,7 +21,7 @@ class FeedXGetActivityProductsUseCase @Inject constructor(
         graphqlRepository.request(
             graphqlQuery(),
             params,
-            GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build()
+            GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
         )
 
     override fun graphqlQuery(): String = """
@@ -90,7 +90,7 @@ class FeedXGetActivityProductsUseCase @Inject constructor(
             PARAM_ACTIVITY_ID to detailId,
             PARAM_CURSOR to cursor,
             PARAM_LIMIT to LIMIT_DETAIL,
-            PARAMS_WH_ID to whId,
+            PARAMS_WH_ID to whId
         )
         return mapOf("req" to queryMap)
     }

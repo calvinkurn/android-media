@@ -47,8 +47,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicIconSectionViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicIconTwoRowsSectionViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.EmptyBannerViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderAtf2ViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderOvoViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeHeaderViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomeLoadingMoreViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.HomePayLaterWidgetViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder
@@ -69,12 +68,12 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.ShimmeringChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.ShimmeringIconViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
-import com.tokopedia.home.beranda.presentation.view.helper.HomeRollenceController
+import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CarouselPlayWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
+import com.tokopedia.home.beranda.presentation.view.uimodel.HomeInitialShimmerDataModel
+import com.tokopedia.home.beranda.presentation.view.uimodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.BestSellerListener
@@ -145,6 +144,9 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetListener
+import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetViewHolder
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampDataModel
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampListener
 import com.tokopedia.home_component.widget.special_release.SpecialReleaseRevampViewHolder
@@ -198,7 +200,9 @@ class HomeAdapterFactory(
     private val flashSaleWidgetListener: FlashSaleWidgetListener,
     private val carouselPlayWidgetCallback: CarouselPlayWidgetCallback,
     private val bestSellerListener: BestSellerListener,
-    private val specialReleaseRevampListener: SpecialReleaseRevampListener
+    private val specialReleaseRevampListener: SpecialReleaseRevampListener,
+    private val shopFlashSaleWidgetListener: ShopFlashSaleWidgetListener,
+    private val homeThematicUtil: HomeThematicUtil
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -337,12 +341,8 @@ class HomeAdapterFactory(
         return EmptyBannerViewHolder.LAYOUT
     }
 
-    override fun type(homeHeaderOvoDataModel: HomeHeaderDataModel): Int {
-        return if (HomeRollenceController.isUsingAtf2Variant()) {
-            HomeHeaderAtf2ViewHolder.LAYOUT
-        } else {
-            HomeHeaderOvoViewHolder.LAYOUT
-        }
+    override fun type(homeHeaderDataModel: HomeHeaderDataModel): Int {
+        return HomeHeaderViewHolder.LAYOUT
     }
 
     override fun type(homeInitialShimmerDataModel: HomeInitialShimmerDataModel): Int {
@@ -422,7 +422,8 @@ class HomeAdapterFactory(
     }
 
     override fun type(bannerRevampDataModel: BannerRevampDataModel): Int {
-        return BannerRevampViewHolder.LAYOUT
+        return if(bannerRevampDataModel.isBleeding) BannerRevampViewHolder.LAYOUT_BLEEDING
+        else BannerRevampViewHolder.LAYOUT
     }
 
     override fun type(todoWidgetListDataModel: TodoWidgetListDataModel): Int {
@@ -445,12 +446,15 @@ class HomeAdapterFactory(
         return SpecialReleaseRevampViewHolder.LAYOUT
     }
 
+    override fun type(shopFlashSaleWidgetDataModel: ShopFlashSaleWidgetDataModel): Int {
+        return ShopFlashSaleWidgetViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         val viewHolder: AbstractViewHolder<*>
         when (type) {
             EmptyBannerViewHolder.LAYOUT -> viewHolder = EmptyBannerViewHolder(view, listener)
-            HomeHeaderOvoViewHolder.LAYOUT -> viewHolder = HomeHeaderOvoViewHolder(view, listener)
-            HomeHeaderAtf2ViewHolder.LAYOUT -> viewHolder = HomeHeaderAtf2ViewHolder(view, listener)
+            HomeHeaderViewHolder.LAYOUT -> viewHolder = HomeHeaderViewHolder(view, listener, homeThematicUtil)
             HomeInitialShimmerViewHolder.LAYOUT -> viewHolder = HomeInitialShimmerViewHolder(view, listener)
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
@@ -540,7 +544,7 @@ class HomeAdapterFactory(
                     BannerComponentViewHolder(view, bannerComponentListener, homeComponentListener)
             DynamicIconViewHolder.LAYOUT ->
                 viewHolder =
-                    DynamicIconViewHolder(view, dynamicIconComponentListener, HomeRollenceController.isUsingAtf2Variant())
+                    DynamicIconViewHolder(view, dynamicIconComponentListener)
             ErrorStateIconViewHolder.LAYOUT -> viewHolder = ErrorStateIconViewHolder(view, listener)
             ErrorStateChannelOneViewHolder.LAYOUT ->
                 viewHolder =
@@ -590,7 +594,7 @@ class HomeAdapterFactory(
             )
             CueWidgetCategoryViewHolder.LAYOUT -> viewHolder = CueWidgetCategoryViewHolder(view, cueWidgetCategoryListener)
             VpsWidgetViewHolder.LAYOUT -> viewHolder = VpsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener)
-            MissionWidgetViewHolder.LAYOUT -> viewHolder = MissionWidgetViewHolder(view, missionWidgetComponentListener, cardInteraction = true)
+            MissionWidgetViewHolder.LAYOUT -> viewHolder = MissionWidgetViewHolder(view, missionWidgetComponentListener)
             Lego4ProductViewHolder.LAYOUT -> viewHolder = Lego4ProductViewHolder(view, legoProductListener, homeComponentListener, cardInteraction = true)
             MixLeftPaddingComponentViewHolder.LAYOUT ->
                 viewHolder =
@@ -606,7 +610,7 @@ class HomeAdapterFactory(
                         view,
                         todoWidgetComponentListener
                     )
-            BannerRevampViewHolder.LAYOUT ->
+            BannerRevampViewHolder.LAYOUT, BannerRevampViewHolder.LAYOUT_BLEEDING ->
                 viewHolder =
                     BannerRevampViewHolder(view, bannerComponentListener, cardInteraction = true)
             DealsWidgetViewHolder.LAYOUT ->
@@ -619,6 +623,7 @@ class HomeAdapterFactory(
                     parentRecycledViewPool
                 )
             SpecialReleaseRevampViewHolder.LAYOUT -> viewHolder = SpecialReleaseRevampViewHolder(view, specialReleaseRevampListener)
+            ShopFlashSaleWidgetViewHolder.LAYOUT -> viewHolder = ShopFlashSaleWidgetViewHolder(view, shopFlashSaleWidgetListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

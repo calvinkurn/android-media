@@ -51,5 +51,5 @@ data class ChannelGrid(
         val categoryBreadcrumbs: String = "",
         val param: String = "",
         val expiredTime: String = "",
-        val position: Int = -1
+        val position: Int = -1,
 ): ImpressHolder()

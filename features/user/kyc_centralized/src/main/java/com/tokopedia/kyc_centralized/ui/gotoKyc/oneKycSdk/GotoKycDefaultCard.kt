@@ -4,10 +4,6 @@ import android.app.Activity
 import android.view.View
 import com.gojek.kyc.plus.card.KycPlusCard
 import com.gojek.kyc.plus.card.KycPlusCardFactory
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kyc_centralized.R
-import com.tokopedia.kyc_centralized.databinding.LayoutGotoKycBottomSheetBinding
 
 class GotoKycDefaultCard : KycPlusCardFactory {
     override fun getDialogCard(
@@ -18,10 +14,8 @@ class GotoKycDefaultCard : KycPlusCardFactory {
         return if (activity.isFinishing) {
             null
         } else {
-            val bottomSheetDialog = getBottomSheet(
-                activity = activity,
-                view = contentView
-            )
+            val bottomSheetDialog = GotoKycBottomSheetDialog.newInstance(true)
+            bottomSheetDialog.setView(contentView)
             return GotoKycSdkBottomSheet(
                 activity = activity,
                 bottomSheetDialog = bottomSheetDialog,
@@ -39,10 +33,8 @@ class GotoKycDefaultCard : KycPlusCardFactory {
         return if (activity.isFinishing) {
             null
         } else {
-            val bottomSheetDialog = getBottomSheet(
-                activity = activity,
-                view = contentView
-            )
+            val bottomSheetDialog = GotoKycBottomSheetDialog.newInstance(true)
+            bottomSheetDialog.setView(contentView)
             return GotoKycSdkBottomSheet(
                 activity = activity,
                 bottomSheetDialog = bottomSheetDialog,
@@ -60,34 +52,13 @@ class GotoKycDefaultCard : KycPlusCardFactory {
         return if (activity.isFinishing) {
             null
         } else {
-            val bottomSheetDialog = getBottomSheet(
-                activity = activity,
-                view = contentView,
-                showCloseIcon = false
-            )
+            val bottomSheetDialog = GotoKycBottomSheetDialog.newInstance(false)
+            bottomSheetDialog.setView(contentView)
             return GotoKycSdkBottomSheet(
                 activity = activity,
                 bottomSheetDialog = bottomSheetDialog,
                 onDismiss = onUserDismiss
             )
         }
-    }
-
-    private fun getBottomSheet(activity: Activity, view: View, showCloseIcon: Boolean = true): BottomSheetDialog {
-        val bottomSheet = BottomSheetDialog(activity, R.style.BottomSheetDialogStyle)
-
-        val binding = LayoutGotoKycBottomSheetBinding.inflate(activity.layoutInflater)
-
-        binding.root.addView(view)
-
-        binding.icDismiss.setOnClickListener {
-            bottomSheet.dismiss()
-        }
-        binding.spacing.showWithCondition(!showCloseIcon)
-        binding.icDismiss.showWithCondition(showCloseIcon)
-
-        bottomSheet.setContentView(binding.root)
-
-        return bottomSheet
     }
 }

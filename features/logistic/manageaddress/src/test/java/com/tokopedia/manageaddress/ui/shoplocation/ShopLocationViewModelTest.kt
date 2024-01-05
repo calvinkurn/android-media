@@ -4,7 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.logisticCommon.data.entity.shoplocation.ShopLocationModel
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
-import com.tokopedia.logisticCommon.data.response.shoplocation.*
+import com.tokopedia.logisticCommon.data.response.shoplocation.GetShopLocationResponse
+import com.tokopedia.logisticCommon.data.response.shoplocation.SetShopLocationStatusResponse
+import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocationSetStatusResponse
 import com.tokopedia.manageaddress.domain.mapper.ShopLocationMapper
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationState
 import io.mockk.coEvery
@@ -29,7 +31,6 @@ class ShopLocationViewModelTest {
 
     private val shopLocationObserver: Observer<ShopLocationState<ShopLocationModel>> = mockk(relaxed = true)
     private val resultObserver: Observer<ShopLocationState<ShopLocationSetStatusResponse>> = mockk(relaxed = true)
-    private val shopWhitelistObserver: Observer<ShopLocationState<KeroGetRolloutEligibility>> = mockk(relaxed = true)
 
     private lateinit var shopLocationViewModel: ShopLocationViewModel
 
@@ -41,14 +42,13 @@ class ShopLocationViewModelTest {
         shopLocationViewModel = ShopLocationViewModel(repo, mapper)
         shopLocationViewModel.shopLocation.observeForever(shopLocationObserver)
         shopLocationViewModel.result.observeForever(resultObserver)
-        shopLocationViewModel.shopWhitelist.observeForever(shopWhitelistObserver)
     }
 
     @Test
     fun `Get Shop Location Warehouse success`() {
         coEvery { repo.getShopLocation(any()) } returns GetShopLocationResponse()
         shopLocationViewModel.getShopLocationList(123)
-        verify { shopLocationObserver.onChanged(match { it is ShopLocationState.Success}) }
+        verify { shopLocationObserver.onChanged(match { it is ShopLocationState.Success }) }
     }
 
     @Test
@@ -71,20 +71,4 @@ class ShopLocationViewModelTest {
         shopLocationViewModel.setShopLocationState(123, 1)
         verify { resultObserver.onChanged(match { it is ShopLocationState.Fail }) }
     }
-
-    @Test
-    fun `Get Whitelisted User success`() {
-        coEvery { repo.getShopLocationWhitelist(any()) } returns KeroGetRolloutEligibilityResponse()
-        shopLocationViewModel.getWhitelistData(123)
-        verify { shopWhitelistObserver.onChanged(match { it is ShopLocationState.Success }) }
-    }
-
-    @Test
-    fun `Get Whitelisted User failed`() {
-        coEvery { repo.getShopLocationWhitelist(any()) } throws defaultThrowable
-        shopLocationViewModel.getWhitelistData(123)
-        verify { shopWhitelistObserver.onChanged(match { it is ShopLocationState.Fail }) }
-    }
-
-
 }

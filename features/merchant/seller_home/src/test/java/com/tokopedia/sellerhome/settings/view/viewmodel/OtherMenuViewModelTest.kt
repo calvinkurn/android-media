@@ -834,7 +834,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
     @Test
     fun `when getIsTopAdsShopUsed is success and should set live data true`() =
         runTest {
-            val topAdsShopInfo = TopadsGetShopInfoV2_1(data = Data(ads = listOf(Ad(type = "Product", isUsed = true))))
+            val topAdsShopInfo = TopadsGetShopInfoV2_1(data = Data(ads = listOf(Ad(type = "product", isUsed = true),Ad(type = "headline", isUsed = false))))
             onGetTopAdsShopInfo_thenReturn(userSession.shopId, topAdsShopInfo)
 
             mViewModel.getIsTopAdsShopUsed()
@@ -847,7 +847,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
     @Test
     fun `when getIsTopAdsShopUsed is success and should set live data false`() =
         runTest {
-            val topAdsShopInfo = TopadsGetShopInfoV2_1(data = Data(ads = listOf(Ad(type = "Product", isUsed = false))))
+            val topAdsShopInfo = TopadsGetShopInfoV2_1(data = Data(ads = listOf(Ad(type = "product", isUsed = false),Ad(type = "headline", isUsed = false))))
             onGetTopAdsShopInfo_thenReturn(userSession.shopId, topAdsShopInfo)
 
             mViewModel.getIsTopAdsShopUsed()

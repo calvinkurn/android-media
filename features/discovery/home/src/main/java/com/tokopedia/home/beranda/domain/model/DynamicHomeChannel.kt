@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.home_component.model.AtfContent
 import com.tokopedia.kotlin.model.ImpressHolder
 import kotlin.collections.ArrayList
 
@@ -11,7 +12,7 @@ data class DynamicHomeChannel(
     @Expose
     @SerializedName("channels")
     var channels: List<Channels> = listOf()
-) {
+): AtfContent {
 
     data class Channels(
         @Expose
@@ -102,7 +103,10 @@ data class DynamicHomeChannel(
         var isCache: Boolean = true,
         @SerializedName("styleParam")
         @Expose
-        var styleParam: String = ""
+        var styleParam: String = "",
+        @SerializedName("isShimmer")
+        @Expose
+        var isShimmer: Boolean = true,
     ) : ImpressHolder() {
 
         private var position: Int = 0
@@ -168,12 +172,14 @@ data class DynamicHomeChannel(
             const val LAYOUT_PAYLATER_CICIL: String = "gpl_cicil"
             const val LAYOUT_CUE_WIDGET: String = "cue_widget"
             const val LAYOUT_MISSION_WIDGET: String = "mission_widget"
+            const val LAYOUT_MISSION_WIDGET_V2: String = "mission_widget_v2"
             const val LAYOUT_VPS_WIDGET: String = "4_banners_auto_vps_v2"
             const val LAYOUT_LEGO_4_PRODUCT: String = "lego_4_product"
             const val LAYOUT_TODO_WIDGET_REVAMP: String = "todo_widget_carousel"
             const val LAYOUT_DEALS_WIDGET: String = "content_card"
             const val LAYOUT_FLASH_SALE_WIDGET: String = "kejar_diskon_carousel"
             const val LAYOUT_SPECIAL_RELEASE_REVAMP: String = "rilisan_spesial"
+            const val LAYOUT_SPECIAL_SHOP_FLASH_SALE: String = "flash_sale_toko"
             const val channelId: String = "channelId"
             const val DIVIDER_NO_DIVIDER = 0
         }

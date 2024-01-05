@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
@@ -16,6 +16,9 @@ buildscript {
 android {
     namespace 'com.tokopedia.topads.edit'
     testNamespace 'com.tokopedia.topads.edit.test'
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -27,6 +30,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.supportLibDependencies.swipeRefresh
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -34,10 +38,15 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.unifyDependencies.header
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation rootProject.ext.unifyDependencies.dialog
     implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.swipeRefresh
+    implementation project(path: ':libraries:base_list')
+    testImplementation project(path: ':libraries:unit_test')
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -59,3 +68,4 @@ project.ext {
 apply from: '../../../jacoco_task.gradle'
 apply from: '../../../sonar_config.gradle'
 apply from: '../../../publish_local.gradle'
+apply plugin: 'org.jetbrains.kotlin.android'

@@ -24,17 +24,46 @@ object ChannelWidgetUtil {
     private const val DEFAULT_DIVIDER_HEIGHT = 1
     private const val BOTTOM_PADDING_WITHOUT_DIVIDER = 8
 
+    @Deprecated("pass ChannelConfig instead")
     fun validateHomeComponentDivider(
         channelModel: ChannelModel?,
         dividerTop: DividerUnify?,
         dividerBottom: DividerUnify?,
-        useBottomPadding: Boolean = false
     ) {
         val dividerSize = channelModel?.channelConfig?.dividerSize?.toPx()
             ?: DEFAULT_DIVIDER_HEIGHT.toPx()
         dividerTop?.layoutParams?.height = dividerSize
         dividerBottom?.layoutParams?.height = dividerSize
         when (channelModel?.channelConfig?.dividerType) {
+            ChannelConfig.DIVIDER_NO_DIVIDER -> {
+                dividerTop?.gone()
+            }
+            ChannelConfig.DIVIDER_TOP -> {
+                dividerTop?.visible()
+                dividerBottom?.gone()
+            }
+            ChannelConfig.DIVIDER_BOTTOM -> {
+                dividerTop?.gone()
+                dividerBottom?.visible()
+            }
+            ChannelConfig.DIVIDER_TOP_AND_BOTTOM -> {
+                dividerTop?.visible()
+                dividerBottom?.visible()
+            }
+        }
+    }
+
+    fun validateHomeComponentDivider(
+        channelConfig: ChannelConfig?,
+        dividerTop: DividerUnify?,
+        dividerBottom: DividerUnify?,
+        useBottomPadding: Boolean = false
+    ) {
+        val dividerSize = channelConfig?.dividerSize?.toPx()
+            ?: DEFAULT_DIVIDER_HEIGHT.toPx()
+        dividerTop?.layoutParams?.height = dividerSize
+        dividerBottom?.layoutParams?.height = dividerSize
+        when (channelConfig?.dividerType) {
             ChannelConfig.DIVIDER_NO_DIVIDER -> {
                 dividerTop?.gone()
                 if (useBottomPadding) dividerBottom?.setAsPadding(BOTTOM_PADDING_WITHOUT_DIVIDER) else dividerBottom?.gone()

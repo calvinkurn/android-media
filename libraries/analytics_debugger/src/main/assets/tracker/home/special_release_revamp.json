@@ -26,7 +26,8 @@
         }
       ],
       "userId": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "hits_time": ".*"
     },
     {
       "event": "select_content",
@@ -50,6 +51,7 @@
           "price": ".*"
         }
       ],
+      "campaignCode": ".*",
       "userId": ".*",
       "sessionIris": ".*"
     },
@@ -81,6 +83,7 @@
           "item_name": "/ - p.* - dynamic channel rilisan spesial home - banner - .*"
         }
       ],
+      "campaignCode": ".*",
       "userId": ".*",
       "sessionIris": ".*"
     },
@@ -102,7 +105,8 @@
         }
       ],
       "userId": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "hits_time": ".*"
     }
   ]
 }

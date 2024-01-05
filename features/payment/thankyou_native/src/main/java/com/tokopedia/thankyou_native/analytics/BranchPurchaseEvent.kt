@@ -1,5 +1,7 @@
 package com.tokopedia.thankyou_native.analytics
 
+import android.text.TextUtils
+import androidx.compose.ui.unit.TextUnit
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -16,6 +18,10 @@ import com.tokopedia.user.session.UserSessionInterface
 
 const val CATEGORY_LEVEL_ONE_EGOLD = "egold"
 const val CATEGORY_LEVEL_ONE_PURCHASE_PROTECTION = "purchase-protection"
+const val DIGITAL_PLUS_IDENTIFIER = "PULSA_PLUS"
+const val MARKETPLACE_PLUS_IDENTIFIER = "PLUS"
+const val NONE_OTHER_IDENTIFIER = "none / other"
+
 class BranchPurchaseEvent(val userSession: UserSessionInterface,
                           val thanksPageData: ThanksPageData) {
 
@@ -27,6 +33,7 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
             sendBranchEvent(linkerCommerceData)
             sendGoPayBranchEvent(thanksPageData, shopOrder)
         }
+        sendSubscribePlusEvent(thanksPageData)
     }
 
     private fun sendGoPayBranchEvent(
@@ -62,7 +69,7 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
         shopOrder.purchaseItemList.forEach { purchaseItem ->
             if (isItemPartOfRevenue(purchaseItem)) {
                 revenue += purchaseItem.totalPrice
-                paymentData.setProduct(getPurchasedItemBranch(purchaseItem))
+                paymentData.setProduct(getPurchasedItemBranch(purchaseItem, shopOrder.storeName))
             }
         }
         paymentData.setRevenue(revenue.toString())
@@ -76,13 +83,20 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
                         categoryLevelOne == CATEGORY_LEVEL_ONE_PURCHASE_PROTECTION))
     }
 
-    private fun getPurchasedItemBranch(productItem: PurchaseItem): HashMap<String, String> {
+    private fun getPurchasedItemBranch(productItem: PurchaseItem, storeName: String?): HashMap<String, String> {
         val product = HashMap<String, String>()
         product[LinkerConstants.ID] = productItem.productId
         product[LinkerConstants.NAME] = productItem.productName
         product[LinkerConstants.PRICE] = productItem.price.toString()
         product[LinkerConstants.PRICE_IDR_TO_DOUBLE] = productItem.price.toString()
         product[LinkerConstants.QTY] = productItem.quantity.toString()
+        if(TextUtils.isEmpty(productItem.productBrand) ||
+            productItem.productBrand == NONE_OTHER_IDENTIFIER
+        ) {
+            product[LinkerConstants.PRODUCT_BRAND] = storeName ?: ""
+        }else{
+            product[LinkerConstants.PRODUCT_BRAND] = productItem.productBrand
+        }
         product[LinkerConstants.CATEGORY] = getCategoryLevel1(productItem.category)
         return product
     }
@@ -115,6 +129,64 @@ class BranchPurchaseEvent(val userSession: UserSessionInterface,
         LinkerManager.getInstance()
                 .sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_COMMERCE_VAL,
                         linkerCommerceData))
+    }
+
+    private fun sendBranchEvent(linkerCommerceData: LinkerCommerceData, branchEventType: Int) {
+        LinkerManager.getInstance()
+            .sendEvent(LinkerUtils.createGenericRequest(branchEventType,
+                linkerCommerceData))
+    }
+
+    private fun sendSubscribePlusEvent(thanksPageData: ThanksPageData){
+        when(getProductTypeForBranch()){
+            LinkerConstants.PRODUCTTYPE_DIGITAL -> {
+                //check profile_code = PULSA_PLUS
+                if(!TextUtils.isEmpty(thanksPageData.profileCode) &&
+                    thanksPageData.profileCode == DIGITAL_PLUS_IDENTIFIER){
+                    //send subscribe plus event
+                    val linkerCommerceData = getLinkerCommerceData(getLinkerUserData(),
+                        getPaymentDataForSubscribePlus(thanksPageData, thanksPageData.amount.toString(),
+                            LinkerConstants.PRODUCTTYPE_DIGITAL))
+                    sendBranchEvent(linkerCommerceData, LinkerConstants.EVENT_SUBSCRIBE_PLUS)
+                }
+            }
+            LinkerConstants.PRODUCTTYPE_MARKETPLACE -> {
+                //check payment_items have item_name containing PLUS
+                val iterator = thanksPageData.paymentItems?.iterator()
+                if (iterator != null) {
+                    while (iterator.hasNext()){
+                        val paymentItem = iterator.next()
+                        if(paymentItem.itemName == MARKETPLACE_PLUS_IDENTIFIER){
+                            // send subscribe plus event
+                            val linkerCommerceData = getLinkerCommerceData(getLinkerUserData(),
+                                getPaymentDataForSubscribePlus(thanksPageData, paymentItem.amount.toString(),
+                                    LinkerConstants.PRODUCTTYPE_MARKETPLACE))
+                            sendBranchEvent(linkerCommerceData, LinkerConstants.EVENT_SUBSCRIBE_PLUS)
+                            break
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getPaymentDataForSubscribePlus(thanksPageData: ThanksPageData,
+                                               revenue: String, productType: String) : PaymentData{
+        val paymentData = PaymentData()
+        paymentData.isFromNative = true
+        paymentData.setPaymentId(thanksPageData.paymentID)
+        paymentData.setProductType(productType)
+        paymentData.isNewBuyer = thanksPageData.isNewUser
+        paymentData.isMonthlyNewBuyer = thanksPageData.isMonthlyNewUser
+        paymentData.revenue = revenue
+        return paymentData
+    }
+
+    private fun getLinkerCommerceData(userData: UserData, paymentData: PaymentData): LinkerCommerceData{
+        val linkerCommerceData = LinkerCommerceData()
+        linkerCommerceData.userData = userData
+        linkerCommerceData.paymentData = paymentData
+        return linkerCommerceData
     }
 
     companion object {

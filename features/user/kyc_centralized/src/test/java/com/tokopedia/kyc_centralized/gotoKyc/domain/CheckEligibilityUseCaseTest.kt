@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.gotoKyc.domain
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.gojek.OneKycSdk
 import com.gojek.kyc.sdk.core.network.model.UnifiedKycResponse
@@ -23,11 +24,12 @@ class CheckEligibilityUseCaseTest {
 
     private lateinit var useCase: CheckEligibilityUseCase
     private val oneKycSdk = mockk<OneKycSdk>(relaxed = true)
+    private val context = mockk<Context>(relaxed = true)
     private val dispatcher = CoroutineTestDispatchersProvider
 
     @Before
     fun setup() {
-        useCase = CheckEligibilityUseCase(oneKycSdk, dispatcher)
+        useCase = CheckEligibilityUseCase(oneKycSdk, context, dispatcher)
     }
 
     @Test
@@ -170,7 +172,7 @@ class CheckEligibilityUseCaseTest {
 
         val result = useCase.invoke()
         assertTrue(result is CheckEligibilityResult.Failed)
-        assertEquals(message, result.throwable.message)
+        assertEquals("$message ", result.throwable.message)
     }
 
 }

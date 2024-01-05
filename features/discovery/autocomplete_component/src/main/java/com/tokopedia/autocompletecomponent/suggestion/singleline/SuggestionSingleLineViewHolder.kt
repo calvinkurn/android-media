@@ -13,6 +13,7 @@ import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteSingleLineItemBinding
 import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
 import com.tokopedia.autocompletecomponent.suggestion.SuggestionListener
+import com.tokopedia.autocompletecomponent.util.getBoldStyle
 import com.tokopedia.autocompletecomponent.util.safeSetSpan
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -68,13 +69,13 @@ class SuggestionSingleLineViewHolder(
             else {
                 binding.singleLineTitle.setWeight(Typography.REGULAR)
                 highlightedTitle.safeSetSpan(
-                    StyleSpan(Typeface.BOLD),
+                    getBoldStyle(itemView.context),
                     0,
                     startIndex,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
                 highlightedTitle.safeSetSpan(
-                    StyleSpan(Typeface.BOLD),
+                    getBoldStyle(itemView.context),
                     startIndex + item.searchTerm.length,
                     highlightedTitle.length,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE

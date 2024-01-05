@@ -43,6 +43,7 @@ import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
 import com.tokopedia.product.addedit.common.util.StringValidationUtil.fromHtmlWithSpaceAndLinebreak
 import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionModule
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
+import com.tokopedia.product.addedit.description.domain.model.GetYoutubeVideoSnippetResponse
 import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
 import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.MAX_DESCRIPTION_CHAR
 import com.tokopedia.product.addedit.description.presentation.constant.AddEditProductDescriptionConstants.Companion.MAX_VIDEOS
@@ -81,7 +82,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
@@ -255,6 +255,7 @@ class AddEditProductDescriptionFragment :
         observeProductVideo()
         observeIsHampersProduct()
         observeHasDTStock()
+        observeIsRemovingSingleVariant()
 
         // PLT Monitoring
         stopPreparePagePerformanceMonitoring()
@@ -548,6 +549,14 @@ class AddEditProductDescriptionFragment :
         }
     }
 
+    private fun observeIsRemovingSingleVariant() {
+        descriptionViewModel.isRemovingSingleVariant.observe(viewLifecycleOwner) {
+            view?.post {
+                if (it) sendDataBack()
+            }
+        }
+    }
+
     private fun updateVariantLayout() {
         if (descriptionViewModel.hasVariant) {
             tvEditVariant?.visible()
@@ -581,17 +590,23 @@ class AddEditProductDescriptionFragment :
         descriptionViewModel.videoYoutube.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    val id = result.data.id
-                    if (id == null) {
-                        displayErrorOnSelectedVideo(youtubeAdapterPosition)
-                    } else {
+                    val resultData = result.data.getYoutubeVideoSnippet.items
+                    if (resultData.size.isMoreThanZero()) {
                         stopNetworkRequestPerformanceMonitoring()
                         startRenderPerformanceMonitoring()
-                        setDataOnSelectedVideo(result.data, youtubeAdapterPosition)
+                        setDataOnSelectedVideo(resultData[0], youtubeAdapterPosition)
+                    } else {
+                        displayErrorOnSelectedVideo(
+                            position = youtubeAdapterPosition,
+                            errMessage = result.data.getYoutubeVideoSnippet.error.messages
+                        )
                     }
                 }
                 is Fail -> {
-                    displayErrorOnSelectedVideo(youtubeAdapterPosition)
+                    displayErrorOnSelectedVideo(
+                        position = youtubeAdapterPosition,
+                        errMessage = getString(R.string.error_video_not_valid)
+                    )
                     AddEditProductErrorHandler.logExceptionToCrashlytics(result.throwable)
                 }
             }
@@ -612,20 +627,20 @@ class AddEditProductDescriptionFragment :
         }
     }
 
-    private fun displayErrorOnSelectedVideo(position: Int) {
+    private fun displayErrorOnSelectedVideo(position: Int, errMessage: String) {
         adapter.data.getOrNull(position)?.apply {
             inputTitle = ""
             inputDescription = ""
             inputImage = ""
-            errorMessage = if (inputUrl.isBlank()) "" else getString(R.string.error_video_not_valid)
+            errorMessage = if (inputUrl.isBlank()) "" else errMessage
         }
     }
 
-    private fun setDataOnSelectedVideo(youtubeVideoModel: YoutubeVideoDetailModel, position: Int) {
+    private fun setDataOnSelectedVideo(youtubeVideoModel: GetYoutubeVideoSnippetResponse.GetYoutubeVideoSnippet.Items, position: Int) {
         adapter.data.getOrNull(position)?.apply {
-            inputTitle = youtubeVideoModel.title.orEmpty()
-            inputDescription = youtubeVideoModel.description.orEmpty()
-            inputImage = youtubeVideoModel.thumbnailUrl.orEmpty()
+            inputTitle = youtubeVideoModel.snippet.title
+            inputDescription = youtubeVideoModel.snippet.description
+            inputImage = youtubeVideoModel.snippet.thumbnails.default.url
             errorMessage = descriptionViewModel.validateDuplicateVideo(adapter.data, inputUrl)
         }
     }

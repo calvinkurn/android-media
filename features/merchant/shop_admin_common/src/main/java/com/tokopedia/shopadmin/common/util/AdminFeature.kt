@@ -17,7 +17,12 @@ import androidx.annotation.StringDef
     AdminFeature.MANAGE_SHOP,
     AdminFeature.STATISTIC,
     AdminFeature.ADS_AND_PROMOTION,
-    AdminFeature.SHOP_SCORE
+    AdminFeature.SHOP_SCORE,
+    AdminFeature.SHOP_SETTINGS_INFO,
+    AdminFeature.SHOP_SETTINGS_NOTES,
+    AdminFeature.SHOP_OPERATIONAL_HOURS,
+    AdminFeature.SHOP_SETTING_ADDR,
+    AdminFeature.SHIPPING_EDITOR
 )
 annotation class AdminFeature {
     companion object {
@@ -34,5 +39,10 @@ annotation class AdminFeature {
         const val STATISTIC = "STATISTIC"
         const val ADS_AND_PROMOTION = "PROMO"
         const val SHOP_SCORE = "SHOP_SCORE"
+        const val SHOP_SETTINGS_INFO = "SHOP_SETTINGS_INFO"
+        const val SHOP_SETTINGS_NOTES = "SHOP_SETTINGS_NOTES"
+        const val SHOP_OPERATIONAL_HOURS = "SHOP_OPERATIONAL_HOURS"
+        const val SHOP_SETTING_ADDR = "SHOP_SETTING_ADDRESS"
+        const val SHIPPING_EDITOR = "SHIPPING_EDITOR"
     }
 }

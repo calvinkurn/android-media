@@ -28,6 +28,7 @@ object AddOnConstant {
     const val QUERY_PARAM_PAGE_ATC_SOURCE = "atcSource"
     const val QUERY_PARAM_CART_ID = "cartId"
     const val QUERY_PARAM_SELECTED_ADDON_IDS = "selectedAddonIds"
+    const val QUERY_PARAM_DESELECTED_ADDON_IDS = "deselectedAddonIds"
     const val QUERY_PARAM_IS_TOKOCABANG = "isTokoCabang"
     const val QUERY_PARAM_ADDON_PRODUCT = "{addon_id}"
     const val QUERY_PARAM_WAREHOUSE_ID = "warehouseId"

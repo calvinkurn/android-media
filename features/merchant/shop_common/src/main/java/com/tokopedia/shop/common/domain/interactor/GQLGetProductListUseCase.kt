@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductListData
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapper
@@ -46,6 +47,7 @@ class GQLGetProductListUseCase @Inject constructor(
         private const val PARAM_SORT = "sort"
         private const val PARAM_EXTRA_INFO = "extraInfo"
         private const val PARAM_PAGE_SOURCE = "pageSource"
+        private const val PARAM_PAGE_SOURCE_PRODUCT_MANAGE = "manage_product"
 
         /**
          * Create request params for GetProductList GQL
@@ -96,7 +98,7 @@ class GQLGetProductListUseCase @Inject constructor(
                     putObject(PARAM_EXTRA_INFO, extraInfoParams)
                 }
 
-                putString(PARAM_PAGE_SOURCE, "manage_product")
+                putString(PARAM_PAGE_SOURCE, PARAM_PAGE_SOURCE_PRODUCT_MANAGE)
             }
         }
     }

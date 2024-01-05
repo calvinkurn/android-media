@@ -7,14 +7,16 @@ object ApplinkConsInternalDigital {
     const val HOST_DIGITAL = "digital"
     const val HOST_RECHARGE = "recharge"
     const val HOME_RECHARGE = "home"
+    const val HOST_GLOBAL = "global"
 
     const val PARAM_SMARTCARD = "calling_page_check_saldo"
     const val PARAM_BRIZZI = "brizzi_page"
 
     const val INTERNAL_DIGITAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_DIGITAL"
     const val INTERNAL_RECHARGE = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_RECHARGE"
+    const val INTERNAL_GLOBAL = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_GLOBAL"
 
-    //new cart checkout applink
+    // new cart checkout applink
     const val CHECKOUT_DIGITAL = "$INTERNAL_DIGITAL/checkout"
 
     const val TELCO_PREPAID_DIGITAL = "$INTERNAL_DIGITAL/telcopre"
@@ -23,8 +25,6 @@ object ApplinkConsInternalDigital {
     const val GENERAL_TEMPLATE = "$INTERNAL_DIGITAL/general"
     const val CAMERA_OCR = "$INTERNAL_RECHARGE/ocr"
     const val CREDIT_CARD_TEMPLATE = "$INTERNAL_RECHARGE/cc"
-    const val SMART_BILLS = "$INTERNAL_RECHARGE/bayarsekaligus"
-    const val ADD_TELCO = "$INTERNAL_RECHARGE/add_telco?template={template}"
     const val DYNAMIC_SUBHOMEPAGE = "$INTERNAL_RECHARGE/home/dynamic"
     const val DYNAMIC_SUBHOMEPAGE_WITHOUT_PERSONALIZE = "$INTERNAL_RECHARGE/home/dynamic?platform_id={platform_id}"
     const val DYNAMIC_SUBHOMEPAGE_WITH_PARAM = "$INTERNAL_RECHARGE/home/dynamic?platform_id={platform_id}&personalize={bool_personalize}"
@@ -42,6 +42,7 @@ object ApplinkConsInternalDigital {
     const val APPLINK_RECHARGE_SLICE = "tokopedia-android-internal://recharge_slice/main"
     const val SEARCH_NUMBER = "$INTERNAL_DIGITAL/searchnumber"
     const val FAVORITE_NUMBER = "$INTERNAL_DIGITAL/favoritenumber"
+    const val KELOLA_TAGIHAN = "$INTERNAL_GLOBAL/webview?titlebar=false&url=https%3A%2F%2Fwww.tokopedia.com%2Fmybills%2F%3Fshow%3Dbills"
 
     /**
      * Applink Digital PDP Revamp 2022

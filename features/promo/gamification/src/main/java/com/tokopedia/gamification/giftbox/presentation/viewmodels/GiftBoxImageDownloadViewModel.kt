@@ -3,23 +3,26 @@ package com.tokopedia.gamification.giftbox.presentation.viewmodels
 import android.app.Application
 import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.gamification.giftbox.data.di.IO
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gamification.giftbox.presentation.LidImagesDownloaderUseCase
 import com.tokopedia.gamification.pdp.data.LiveDataResult
-import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import kotlinx.coroutines.CoroutineDispatcher
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.withTimeout
 import javax.inject.Inject
-import javax.inject.Named
 
-class GiftBoxImageDownloadViewModel @Inject constructor(@Named(IO) workerDispatcher: CoroutineDispatcher,
-                                                        val lidImagesDownloaderUseCase: LidImagesDownloaderUseCase,
-                                                        val app: Application)
-    : BaseAndroidViewModel(workerDispatcher, app) {
+class GiftBoxImageDownloadViewModel @Inject constructor(
+    private val lidImagesDownloaderUseCase: LidImagesDownloaderUseCase,
+    private val application: Application,
+    dispatchers: CoroutineDispatchers
+) : BaseViewModel(dispatchers.io) {
+    companion object {
+        const val TIMEOUT_DURATION = 6000L
+    }
 
     fun downloadImages(urlList: List<String>, imageListLiveData: MutableLiveData<LiveDataResult<List<Bitmap>?>>) {
         launchCatchError(block = {
-            val drawableList = lidImagesDownloaderUseCase.downloadImages(getApplication(), urlList)
+            val drawableList = lidImagesDownloaderUseCase.downloadImages(application, urlList)
             if (urlList.size == drawableList.size) {
                 imageListLiveData.postValue(LiveDataResult.success(drawableList))
             } else {
@@ -33,8 +36,8 @@ class GiftBoxImageDownloadViewModel @Inject constructor(@Named(IO) workerDispatc
     fun downloadImage(url: String, imageLiveData: MutableLiveData<LiveDataResult<Bitmap?>>) {
         launchCatchError(block = {
             var responseReceived = false
-            withTimeout(6000L) {
-                val drawable = lidImagesDownloaderUseCase.downloadBgImage(app, url)
+            withTimeout(TIMEOUT_DURATION) {
+                val drawable = lidImagesDownloaderUseCase.downloadBgImage(application, url)
                 if (drawable != null) {
                     responseReceived = true
                     imageLiveData.postValue(LiveDataResult.success(drawable))

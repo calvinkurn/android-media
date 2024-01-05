@@ -7,5 +7,7 @@ class ShipmentAddressFormRequest(
     val cornerId: String?,
     val deviceId: String?,
     val leasingId: String?,
-    val isPlusSelected: Boolean
+    val isPlusSelected: Boolean,
+    val isCheckoutReimagine: Boolean,
+    val shipmentAction: String
 )

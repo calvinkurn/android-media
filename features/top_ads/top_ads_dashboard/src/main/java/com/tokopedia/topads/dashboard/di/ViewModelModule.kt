@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.topads.credit.history.view.viewmodel.TopAdsCreditHistoryViewModel
+import com.tokopedia.topads.dashboard.recommendation.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.RecommendationViewModel
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.TopAdsListAllInsightViewModel
 import com.tokopedia.topads.dashboard.viewmodel.GroupDetailViewModel
@@ -68,5 +69,8 @@ abstract class ViewModelModule {
     @ViewModelKey(com.tokopedia.topads.dashboard.recommendation.viewmodel.GroupDetailViewModel::class)
     internal abstract fun bindsGroupDetailViewModel(viewModel: com.tokopedia.topads.dashboard.recommendation.viewmodel.GroupDetailViewModel): ViewModel
 
-
+    @Binds
+    @IntoMap
+    @ViewModelKey(ProductRecommendationViewModel::class)
+    internal abstract fun bindsProductRecommendationViewModel(viewModel: ProductRecommendationViewModel): ViewModel
 }

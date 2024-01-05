@@ -32,7 +32,7 @@ abstract class BaseShopCreationFragment : BaseDaggerFragment() {
                 setDisplayHomeAsUpEnabled(true)
                 setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(
                     it,
-                    com.tokopedia.loginregister.R.color.transparent
+                    android.R.color.transparent
                 )))
             }
         }

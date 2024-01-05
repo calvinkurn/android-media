@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.payment.creditcard.installment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.util.Base64
@@ -11,9 +12,11 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.BottomSheetCreditCardInstallmentBinding
 import com.tokopedia.oneclickcheckout.databinding.ItemInstallmentDetailBinding
+import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePaymentProcessor
@@ -26,6 +29,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: OrderSummaryPagePaymentProcessor) : CoroutineScope {
 
@@ -39,9 +43,10 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Order
 
     fun show(
         fragment: OrderSummaryPageFragment,
-        creditCard: OrderPaymentCreditCard,
+        payment: OrderPayment,
         orderCart: OrderCart,
         orderCost: OrderCost,
+        paymentRequest: PaymentRequest,
         userId: String,
         listener: InstallmentDetailBottomSheetListener
     ) {
@@ -55,7 +60,7 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Order
                 showHeader = true
                 setTitle(fragment.getString(R.string.lbl_choose_installment_type))
                 binding = BottomSheetCreditCardInstallmentBinding.inflate(LayoutInflater.from(fragment.context))
-                setupChild(context, fragment, creditCard, orderCart, orderCost, userId)
+                setupChild(context, fragment, payment, orderCart, orderCost, paymentRequest, userId)
                 fragment.view?.height?.div(2)?.let { height ->
                     customPeekHeight = height
                 }
@@ -72,18 +77,20 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Order
     private fun setupChild(
         context: Context,
         fragment: OrderSummaryPageFragment,
-        creditCard: OrderPaymentCreditCard,
+        payment: OrderPayment,
         orderCart: OrderCart,
         orderCost: OrderCost,
+        paymentRequest: PaymentRequest,
         userId: String
     ) {
+        val creditCard = payment.creditCard
         setupTerms(creditCard.tncInfo)
         if (creditCard.isAfpb && creditCard.availableTerms.isEmpty()) {
             binding?.termsContent?.gone()
             binding?.tvInstallmentMessage?.gone()
             binding?.loaderInstallment?.visible()
             launch {
-                val installmentTermList = paymentProcessor.getCreditCardAdminFee(creditCard, userId, orderCost, orderCart)
+                val installmentTermList = paymentProcessor.getCreditCardAdminFee(payment, userId, orderCost, orderCart, paymentRequest)
                 if (installmentTermList != null) {
                     setupInstallments(context, fragment, creditCard.copy(availableTerms = installmentTermList))
                 } else {
@@ -96,6 +103,7 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Order
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupInstallments(context: Context, fragment: OrderSummaryPageFragment, creditCard: OrderPaymentCreditCard) {
         SplitCompat.installActivity(context)
         binding?.loaderInstallment?.gone()
@@ -145,10 +153,10 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Order
 
     private fun setupTerms(tncInfo: String) {
         binding?.run {
-            val backgroundColor = generateColorRGBAString(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
-            val headerColor = generateColorRGBAString(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN800))
-            val ulColor = generateColorRGBAString(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
-            val pColor = generateColorRGBAString(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
+            val backgroundColor = generateColorRGBAString(ContextCompat.getColor(root.context, unifyprinciplesR.color.Unify_NN0))
+            val headerColor = generateColorRGBAString(ContextCompat.getColor(root.context, unifyprinciplesR.color.Unify_NN800))
+            val ulColor = generateColorRGBAString(ContextCompat.getColor(root.context, unifyprinciplesR.color.Unify_GN500))
+            val pColor = generateColorRGBAString(ContextCompat.getColor(root.context, unifyprinciplesR.color.Unify_NN950_44))
             val htmlText = """
 <html>
 	<style>

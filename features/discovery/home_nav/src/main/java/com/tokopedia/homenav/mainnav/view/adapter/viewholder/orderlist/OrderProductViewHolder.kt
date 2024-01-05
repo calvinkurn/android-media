@@ -81,7 +81,7 @@ class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListene
         //status
         binding?.orderProductStatus?.text = productModel.navProductModel.statusText
         binding?.orderProductStatus?.setTextColor(
-                ContextCompat.getColor(context, R.color.Unify_YN400)
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN400)
         )
 
         //more than 1 product
@@ -100,7 +100,9 @@ class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListene
         itemView.setOnClickListener {
             mainNavListener.onOrderCardClicked(
                 productModel.navProductModel.applink,
-                productModel.navProductModel.statusText
+                productModel.navProductModel.statusText,
+                productModel.navProductModel.id,
+                productModel.position
             )
         }
     }

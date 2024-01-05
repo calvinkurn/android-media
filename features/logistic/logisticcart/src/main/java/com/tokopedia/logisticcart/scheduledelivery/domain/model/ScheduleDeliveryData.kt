@@ -6,7 +6,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Error
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class ScheduleDeliveryData(
+data class ScheduleDeliveryData(
     @SerializedName("rates_id")
     val ratesId: Long = 0,
     @SerializedName("available")
@@ -14,7 +14,7 @@ class ScheduleDeliveryData(
     @SerializedName("hidden")
     val hidden: Boolean = true,
     @SerializedName("recommend")
-    val recommend: Boolean = false,
+    var recommend: Boolean = false,
     @SerializedName("delivery_type")
     val deliveryType: Int = 0,
     @SerializedName("title")

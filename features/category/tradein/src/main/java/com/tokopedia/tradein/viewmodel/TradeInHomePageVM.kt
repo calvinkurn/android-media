@@ -2,10 +2,11 @@ package com.tokopedia.tradein.viewmodel
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
-import com.laku6.tradeinsdk.api.Laku6TradeIn
+import com.laku6.tradeinsdk.api.TradeInApiService
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
@@ -28,17 +29,18 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
 class TradeInHomePageVM @Inject constructor(
     private val userSession: UserSessionInterface,
     private val insertLogisticPreferenceUseCase: InsertLogisticPreferenceUseCase,
-    private val addToCartOcsUseCase: AddToCartOcsUseCase,
+    private val addToCartOcsUseCase: AddToCartOcsUseCase
 ) : BaseTradeInViewModel(), CoroutineScope {
 
     var data: TradeInPDPData? = null
-    private val dispatcher : CoroutineDispatcher = Dispatchers.IO
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 
     val askUserLogin = MutableLiveData<Int>()
     val laku6DeviceModel = MutableLiveData<Laku6DeviceModel>()
@@ -55,7 +57,7 @@ class TradeInHomePageVM @Inject constructor(
     val deviceId: String
         get() = userSession.deviceId
 
-    private var laku6TradeIn: Laku6TradeIn? = null
+    private var tradeInApiService: TradeInApiService? = null
     var imei: String = ""
     var isDiagnosed: Boolean = false
     var tradeInPrice: String = ""
@@ -71,28 +73,49 @@ class TradeInHomePageVM @Inject constructor(
 
     fun setLaku6(context: Context) {
         var campaignId = TradeinConstants.CAMPAIGN_ID_PROD
-        if (TokopediaUrl.getInstance().TYPE == Env.STAGING) campaignId =
-            TradeinConstants.CAMPAIGN_ID_STAGING
-        laku6TradeIn = Laku6TradeIn.getInstance(
-            context, campaignId,
-            TokopediaUrl.getInstance().TYPE == Env.STAGING, TradeinConstants.TRADEIN_EXCHANGE
+        if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            campaignId =
+                TradeinConstants.CAMPAIGN_ID_STAGING
+        }
+        tradeInApiService = TradeInApiService.getInstance(
+            context,
+            campaignId,
+            TokopediaUrl.getInstance().TYPE == Env.STAGING,
+            TradeinConstants.TRADEIN_EXCHANGE
         )
-        laku6TradeIn?.setTokopediaTestType(TradeinConstants.TRADEIN_EXCHANGE)
+        tradeInApiService?.setTokopediaTestType(TradeinConstants.TRADEIN_EXCHANGE)
     }
 
     fun isPermissionGranted(): Boolean {
-        return laku6TradeIn?.permissionGranted() ?: false
+        return tradeInApiService?.ispermissionGranted() ?: false
     }
 
     fun getDeviceModel() {
-        try{
+        try {
             val deviceModel =
-                Gson().fromJson(laku6TradeIn?.deviceModel.toString(), Laku6DeviceModel::class.java)
-            deviceModel.modelInfoBase64 = Base64.getEncoder().encodeToString(laku6TradeIn?.deviceModel.toString().toByteArray())
+                Gson().fromJson(
+                    tradeInApiService?.getDeviceModel().toString(),
+                    Laku6DeviceModel::class.java
+                )
+            deviceModel.modelInfoBase64 = getEncodedDeviceModelString()
             tradeInUniqueCode = deviceModel?.uniqueCode ?: ""
             laku6DeviceModel.value = deviceModel
-        } catch (e: Exception){
-           e.printStackTrace()
+        } catch (e: Exception) {
+            Timber.d(e)
+        }
+    }
+
+    private fun getEncodedDeviceModelString(): String {
+        tradeInApiService?.getDeviceModel().toString().toByteArray().let { deviceModelBytes ->
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Base64.getEncoder()
+                    .encodeToString(deviceModelBytes)
+            } else {
+                android.util.Base64.encodeToString(
+                    deviceModelBytes,
+                    android.util.Base64.DEFAULT
+                )
+            }
         }
     }
 
@@ -104,8 +127,9 @@ class TradeInHomePageVM @Inject constructor(
     private fun setTestData(deviceAttribute: TradeInDetailModel.GetTradeInDetail.DeviceAttribute?) {
         laku6DeviceModel.value?.apply {
             deviceAttribute?.let { deviceAttribute ->
-                if(deviceAttribute.imei.isNotEmpty())
+                if (deviceAttribute.imei.isNotEmpty()) {
                     this@TradeInHomePageVM.imei = deviceAttribute.imei.firstOrNull() ?: ""
+                }
                 val json = Gson().toJson(
                     Laku6TestDataModel(
                         rootBlocked = rootDetected,
@@ -130,7 +154,10 @@ class TradeInHomePageVM @Inject constructor(
                     )
                 )
                 try {
-                    laku6TradeIn?.setTestData(json, if(is3PLSelected.value == true) TradeinConstants.CAMPAIGN_TAG_SELECTION3PL else TradeinConstants.CAMPAIGN_TAG_SELECTION1PL)
+                    tradeInApiService?.setTestData(
+                        json,
+                        if (is3PLSelected.value == true) TradeinConstants.CAMPAIGN_TAG_SELECTION3PL else TradeinConstants.CAMPAIGN_TAG_SELECTION1PL
+                    )
                 } catch (exception: Exception) {
                     errorMessage.value = exception
                 }
@@ -141,16 +168,16 @@ class TradeInHomePageVM @Inject constructor(
     fun startLaku6Testing(deviceAttribute: TradeInDetailModel.GetTradeInDetail.DeviceAttribute?) {
         setTestData(deviceAttribute)
         try {
-            laku6TradeIn?.startGUITest()
+            tradeInApiService?.startGUITest()
         } catch (exception: Exception) {
             errorMessage.value = exception
         }
     }
 
     fun checkLogin() {
-        if (!userSession.isLoggedIn)
+        if (!userSession.isLoggedIn) {
             askUserLogin.value = TradeinConstants.LOGIN_REQUIRED
-        else {
+        } else {
             askUserLogin.value = TradeinConstants.LOGGED_IN
         }
     }
@@ -160,7 +187,8 @@ class TradeInHomePageVM @Inject constructor(
     }
 
     fun goToCheckout() {
-        tradeInHomeStateLiveData.value = GoToCheckout(imei, laku6DeviceModel.value?.model ?: "", tradeInPrice)
+        tradeInHomeStateLiveData.value =
+            GoToCheckout(imei, laku6DeviceModel.value?.model ?: "", tradeInPrice)
     }
 
     fun insertLogisticOptions(intent: Intent) {
@@ -169,7 +197,9 @@ class TradeInHomePageVM @Inject constructor(
             val diagnosticsData = getDiagnosticData(intent)
             val insertData = insertLogisticPreferenceUseCase.insertLogistic(
                 is3PL = is3PLSelected.value ?: false,
-                finalPrice = data?.productPrice?.minus(diagnosticsData.tradeInPrice?.toDouble() ?: tradeInPriceDouble) ?: finalPriceDouble,
+                finalPrice = data?.productPrice?.minus(
+                    diagnosticsData.tradeInPrice?.toDouble() ?: tradeInPriceDouble
+                ) ?: finalPriceDouble,
                 tradeInPrice = diagnosticsData.tradeInPrice?.toDouble() ?: tradeInPriceDouble,
                 imei = imei,
                 diagnosticsData = diagnosticsData,
@@ -184,17 +214,20 @@ class TradeInHomePageVM @Inject constructor(
             }
             progBarVisibility.value = false
         }, onError = {
-            it.printStackTrace()
-            progBarVisibility.value = false
-            warningMessage.value = it.localizedMessage
-        })
+                it.printStackTrace()
+                progBarVisibility.value = false
+                warningMessage.value = it.localizedMessage
+            })
     }
 
     fun getAddToCartOcsUseCase(addToCartOcsRequestParams: AddToCartOcsRequestParams) {
         progBarVisibility.value = true
         launchCatchError(block = {
             val requestParams = RequestParams.create()
-            requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartOcsRequestParams)
+            requestParams.putObject(
+                AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST,
+                addToCartOcsRequestParams
+            )
             val result = withContext(dispatcher) {
                 addToCartOcsUseCase.createObservable(requestParams).toBlocking().single()
             }
@@ -208,9 +241,9 @@ class TradeInHomePageVM @Inject constructor(
             }
             progBarVisibility.value = false
         }, onError = {
-            it.printStackTrace()
-            progBarVisibility.value = false
-            warningMessage.value = it.localizedMessage
-        })
+                it.printStackTrace()
+                progBarVisibility.value = false
+                warningMessage.value = it.localizedMessage
+            })
     }
 }

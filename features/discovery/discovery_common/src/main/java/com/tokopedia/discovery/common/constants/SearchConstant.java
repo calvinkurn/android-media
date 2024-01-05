@@ -153,6 +153,8 @@ public interface SearchConstant {
         String TYPE_INSPIRATION_CAROUSEL_SINGLE_BUNDLING = "single_bundling";
         String TYPE_INSPIRATION_CAROUSEL_MULTIPLE_BUNDLING = "multiple_bundling";
         String TYPE_SAME_SESSION_RECOMMENDATION = "same_session";
+
+        String TYPE_DILAYANI_TOKOPEDIA = "dilayani_tokopedia";
     }
 
     interface TopAdsComponent {

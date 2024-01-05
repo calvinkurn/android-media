@@ -5,7 +5,6 @@ import com.tokopedia.homenav.base.diffutil.HomeNavTypeFactory
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 
 data class HomeNavMenuDataModel(
-        val trackerName: String = "",
         val sectionId: Int = 0,
         val id: Int = 0,
         val srcImage: String = "",
@@ -13,7 +12,8 @@ data class HomeNavMenuDataModel(
         val itemTitle: String = "",
         val applink: String = "",
         var notifCount: String = "",
-        val submenus: List<HomeNavMenuDataModel> = listOf()
+        val submenus: List<HomeNavMenuDataModel> = listOf(),
+        val showCta: Boolean = false,
 ): HomeNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 

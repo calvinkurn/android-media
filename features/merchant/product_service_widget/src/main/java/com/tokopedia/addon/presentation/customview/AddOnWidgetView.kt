@@ -107,7 +107,10 @@ class AddOnWidgetView : BaseCustomView {
                 }
             }
             viewModel.autoSave.observe(this) {
-                if (it.isActive)
+                val selectedAddons = AddOnMapper.flatmapToChangedAddonSelection(
+                    viewModel.modifiedAddOnGroups.value
+                )
+                if (it.isActive && selectedAddons.isNotEmpty())
                     viewModel.saveAddOnState(it.cartId, it.atcSource)
             }
         }
@@ -209,6 +212,10 @@ class AddOnWidgetView : BaseCustomView {
         viewModel.setPreselectedAddOn(selectedAddonIds)
     }
 
+    fun setDeselectedAddons(deselectedAddonIds: List<String>) {
+        viewModel.setPredeselectedAddOn(deselectedAddonIds)
+    }
+
     fun saveAddOnState(cartId: Long, source: String) {
         viewModel.saveAddOnState(cartId, source)
     }
@@ -216,9 +223,10 @@ class AddOnWidgetView : BaseCustomView {
     fun getAddOnAggregatedData(
         addOnIds: List<String>,
         addOnTypes: List<String>,
+        selectedAddOns: List<AddOnUIModel>,
         addOnWidgetParam: AddOnParam
     ) {
-        viewModel.getAddOnAggregatedData(addOnIds, addOnTypes, addOnWidgetParam)
+        viewModel.getAddOnAggregatedData(addOnIds, addOnTypes, selectedAddOns, addOnWidgetParam)
     }
 
     fun setAutosaveAddon(cartId: Long, atcSource: String) {

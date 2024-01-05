@@ -14,7 +14,11 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ContentCardViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class ContentCardViewModel(
+    val application: Application,
+    val components: ComponentsItem,
+    val position: Int
+) : DiscoveryBaseViewModel(), CoroutineScope {
 
     @JvmField
     @Inject
@@ -27,7 +31,11 @@ class ContentCardViewModel(val application: Application, val components: Compone
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
         launchCatchError(block = {
-            this@ContentCardViewModel.syncData.value = contentCardUseCase?.loadFirstPageComponents(components.id, components.pageEndPoint, isDarkMode = isDarkMode)
+            this@ContentCardViewModel.syncData.value = contentCardUseCase?.loadFirstPageComponents(
+                components.id,
+                components.pageEndPoint,
+                isDarkMode = isDarkMode
+            )
         }, onError = {
                 getComponent(components.id, components.pageEndPoint)?.verticalProductFailState = true
                 this@ContentCardViewModel.syncData.value = true

@@ -9,17 +9,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.gojek.conversations.babble.message.data.SendMessageMetaData
-import com.gojek.conversations.babble.network.data.OrderChatType
 import com.gojek.conversations.channel.ConversationsChannel
 import com.gojek.conversations.database.chats.ConversationsMessage
 import com.gojek.conversations.extensions.ExtensionMessage
-import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tokochat.common.util.TokoChatCacheManager
+import com.tokopedia.tokochat.common.util.TokoChatCacheManagerImpl.Companion.TOKOCHAT_IMAGE_ATTACHMENT_MAP
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.IMAGE_ATTACHMENT_MSG
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.getSourceCategory
+import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
+import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.tokochat.domain.cache.TokoChatBubblesCache
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionPayload
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
@@ -27,13 +32,15 @@ import com.tokopedia.tokochat.domain.response.orderprogress.param.TokoChatOrderP
 import com.tokopedia.tokochat.domain.response.ticker.TokochatRoomTickerResponse
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatBackgroundUseCase
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatRoomTickerUseCase
-import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetChatHistoryUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetImageUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatGetTokopediaOrderIdUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetTypingUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatMarkAsReadUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatMemberUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatOrderProgressUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatRegistrationChannelUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatRoomUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatSendMessageUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatUploadImageUseCase
 import com.tokopedia.tokochat.util.TokoChatValueUtil.BUBBLES_PREF
@@ -42,10 +49,7 @@ import com.tokopedia.tokochat.util.TokoChatValueUtil.PICTURE
 import com.tokopedia.tokochat.util.TokoChatViewUtil
 import com.tokopedia.tokochat.util.TokoChatViewUtil.Companion.getTokoChatPhotoPath
 import com.tokopedia.tokochat.view.chatroom.uimodel.TokoChatImageAttachmentExtensionProvider
-import com.tokopedia.tokochat_common.util.TokoChatCacheManager
-import com.tokopedia.tokochat_common.util.TokoChatCacheManagerImpl.Companion.TOKOCHAT_IMAGE_ATTACHMENT_MAP
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil.IMAGE_ATTACHMENT_MSG
+import com.tokopedia.tokochat.view.chatroom.uistate.TokoChatGroupBookingUiState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -55,6 +59,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -70,8 +75,10 @@ import java.util.*
 import javax.inject.Inject
 
 class TokoChatViewModel @Inject constructor(
-    private val chatChannelUseCase: TokoChatChannelUseCase,
+    private val groupBookingUseCase: TokoChatGroupBookingUseCase,
+    private val chatRoomUseCase: TokoChatRoomUseCase,
     private val getChatHistoryUseCase: TokoChatGetChatHistoryUseCase,
+    private val memberUseCase: TokoChatMemberUseCase,
     private val markAsReadUseCase: TokoChatMarkAsReadUseCase,
     private val registrationChannelUseCase: TokoChatRegistrationChannelUseCase,
     private val sendMessageUseCase: TokoChatSendMessageUseCase,
@@ -82,6 +89,7 @@ class TokoChatViewModel @Inject constructor(
     private val getImageUrlUseCase: TokoChatGetImageUseCase,
     private val uploadImageUseCase: TokoChatUploadImageUseCase,
     private val getNeedConsentUseCase: GetNeedConsentUseCase,
+    private val getTkpdOrderIdUseCase: TokoChatGetTokopediaOrderIdUseCase,
     private val viewUtil: TokoChatViewUtil,
     private val imageAttachmentExtensionProvider: TokoChatImageAttachmentExtensionProvider,
     private val cacheManager: TokoChatCacheManager,
@@ -122,9 +130,15 @@ class TokoChatViewModel @Inject constructor(
     val imageUploadError: LiveData<Pair<String, Throwable>>
         get() = _imageUploadError
 
+    private val _isTkpdOrderStatus = MutableSharedFlow<Boolean>()
+    val isTkpdOrderStatus = _isTkpdOrderStatus.asSharedFlow()
+
     private val _error = MutableLiveData<Pair<Throwable, String>>()
     val error: LiveData<Pair<Throwable, String>>
         get() = _error
+
+    private val _groupBookingUiState = MutableSharedFlow<TokoChatGroupBookingUiState>()
+    val groupBookingUiState = _groupBookingUiState.asSharedFlow()
 
     var gojekOrderId: String = ""
     var source: String = ""
@@ -139,7 +153,7 @@ class TokoChatViewModel @Inject constructor(
 
     @VisibleForTesting
     var connectionCheckJob: Job? = null
-    val orderStatusParamFlow = MutableSharedFlow<Pair<String, String>>(Int.ONE)
+    private val orderStatusParamFlow = MutableSharedFlow<Pair<String, String>>(Int.ONE)
 
     init {
         viewModelScope.launch {
@@ -163,7 +177,7 @@ class TokoChatViewModel @Inject constructor(
 
     override fun onCreate(owner: LifecycleOwner) {
         super.onCreate(owner)
-        chatChannelUseCase.registerExtensionProvider(imageAttachmentExtensionProvider)
+        chatRoomUseCase.registerExtensionProvider(imageAttachmentExtensionProvider)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -185,7 +199,7 @@ class TokoChatViewModel @Inject constructor(
 
     override fun onDestroy(owner: LifecycleOwner) {
         super.onDestroy(owner)
-        chatChannelUseCase.unRegisterExtensionProvider(imageAttachmentExtensionProvider)
+        chatRoomUseCase.unRegisterExtensionProvider(imageAttachmentExtensionProvider)
     }
 
     fun sendMessage(channelId: String, text: String) {
@@ -201,27 +215,49 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
-    fun initGroupBooking(
-        orderId: String,
-        serviceType: Int = TOKOFOOD_SERVICE_TYPE,
-        groupBookingListener: ConversationsGroupBookingListener,
-        orderChatType: OrderChatType = OrderChatType.Unknown
-    ) {
-        try {
-            chatChannelUseCase.initGroupBookingChat(
-                orderId = orderId,
-                serviceType = serviceType,
-                groupBookingListener = groupBookingListener,
-                orderChatType = orderChatType
-            )
-        } catch (throwable: Throwable) {
-            _error.value = Pair(throwable, ::initGroupBooking.name)
+    fun initGroupBooking() {
+        viewModelScope.launch {
+            try {
+                groupBookingUseCase.initGroupBookingChat(
+                    orderId = gojekOrderId,
+                    serviceType = groupBookingUseCase.getServiceType(source)
+                ).collectLatest { result ->
+                    when (result) {
+                        is TokoChatResult.Success -> {
+                            onSuccessInitGroupBooking(result.data)
+                        }
+                        is TokoChatResult.Error -> {
+                            onErrorInitGroupBooking(result.throwable)
+                        }
+                        TokoChatResult.Loading -> Unit // no-op
+                    }
+                }
+            } catch (throwable: Throwable) {
+                _error.value = Pair(throwable, ::initGroupBooking.name)
+            }
         }
+    }
+
+    private suspend fun onSuccessInitGroupBooking(channelUrl: String) {
+        _groupBookingUiState.emit(
+            TokoChatGroupBookingUiState(
+                channelUrl = channelUrl
+            )
+        )
+    }
+
+    private suspend fun onErrorInitGroupBooking(throwable: Throwable) {
+        _groupBookingUiState.emit(
+            TokoChatGroupBookingUiState(
+                error = throwable
+            )
+        )
+        _error.value = Pair(throwable, ::onErrorInitGroupBooking.name)
     }
 
     fun getGroupBookingChannel(channelId: String) {
         try {
-            chatChannelUseCase.getRemoteGroupBookingChannel(channelId, onSuccess = {
+            chatRoomUseCase.getRemoteGroupBookingChannel(channelId, onSuccess = {
                 _channelDetail.postValue(Success(it))
             }, onError = {
                     _channelDetail.postValue(Fail(it))
@@ -300,17 +336,22 @@ class TokoChatViewModel @Inject constructor(
 
     fun doCheckChatConnection() {
         cancelCheckConnection()
-        connectionCheckJob = launch {
-            withContext(dispatcher.io) {
-                try {
-                    while (true) {
-                        delay(DELAY_UPDATE_ORDER_STATE)
-                        _isChatConnected.postValue(chatChannelUseCase.isChatConnected())
-                    }
-                } catch (throwable: Throwable) {
-                    Timber.d(throwable)
-                    _isChatConnected.postValue(false)
+        connectionCheckJob = viewModelScope.launch {
+            try {
+                // Check if the chat is connected
+                var isConnected = chatRoomUseCase.isChatConnected()
+                _isChatConnected.value = isConnected
+
+                // While chat is connected, do nothing
+                // When the connection breaks, break loop and post false
+                while (isConnected) {
+                    delay(DELAY_UPDATE_ORDER_STATE)
+                    isConnected = chatRoomUseCase.isChatConnected()
                 }
+                _isChatConnected.value = false
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+                _isChatConnected.value = true // When fail, do not intervene with chatroom
             }
         }
     }
@@ -336,7 +377,7 @@ class TokoChatViewModel @Inject constructor(
         launch {
             withContext(dispatcher.io) {
                 try {
-                    val result = getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
+                    val result = getTokoChatRoomTickerUseCase(getSourceCategory(source))
                     _chatRoomTicker.postValue(Success(result))
                 } catch (throwable: Throwable) {
                     _chatRoomTicker.postValue(Fail(throwable))
@@ -351,7 +392,7 @@ class TokoChatViewModel @Inject constructor(
 
     fun getMemberLeft(): MutableLiveData<String>? {
         return try {
-            chatChannelUseCase.getMemberLeftLiveData()
+            memberUseCase.getMemberLeftLiveData()
         } catch (throwable: Throwable) {
             _error.value = Pair(throwable, ::getMemberLeft.name)
             MutableLiveData()
@@ -359,7 +400,7 @@ class TokoChatViewModel @Inject constructor(
     }
 
     fun resetMemberLeft() {
-        chatChannelUseCase.resetMemberLeftLiveData()
+        memberUseCase.resetMemberLeftLiveData()
     }
 
     /*
@@ -387,14 +428,19 @@ class TokoChatViewModel @Inject constructor(
         serviceType: String
     ): Flow<Result<TokoChatOrderProgressResponse>> {
         return flow {
-            val result = getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(orderId, serviceType))
+            val result = getTokoChatOrderProgressUseCase(
+                TokoChatOrderProgressParam(
+                    orderId,
+                    serviceType
+                )
+            )
             emit(Success(result))
         }
     }
 
     fun getLiveChannel(channelId: String): LiveData<ConversationsChannel?>? {
         return try {
-            chatChannelUseCase.getLiveChannel(channelId)
+            chatRoomUseCase.getLiveChannel(channelId)
         } catch (throwable: Throwable) {
             _error.value = Pair(throwable, ::getLiveChannel.name)
             MutableLiveData()
@@ -594,12 +640,13 @@ class TokoChatViewModel @Inject constructor(
     }
 
     fun getUserConsent() {
-        launch {
+        viewModelScope.launch {
             try {
-                val result = getNeedConsentUseCase(TokoChatValueUtil.consentParam)
+                val result = getNeedConsentUseCase(TokoChatCommonValueUtil.consentParam)
                 _isNeedConsent.value = result
             } catch (throwable: Throwable) {
                 _error.value = Pair(throwable, ::getUserConsent.name)
+                _isNeedConsent.value = Fail(throwable)
             }
         }
     }
@@ -634,9 +681,22 @@ class TokoChatViewModel @Inject constructor(
         )
     }
 
+    fun translateGojekOrderId(gojekOrderId: String) {
+        viewModelScope.launch {
+            try {
+                getTkpdOrderIdUseCase(gojekOrderId).collectLatest {
+                    tkpdOrderId = it
+                    _isTkpdOrderStatus.emit(true)
+                }
+            } catch (throwable: Throwable) {
+                _isTkpdOrderStatus.emit(false)
+                _error.value = Pair(throwable, ::translateGojekOrderId.name)
+            }
+        }
+    }
+
     companion object {
-        const val TOKOFOOD_SERVICE_TYPE = 5
-        const val DELAY_UPDATE_ORDER_STATE = 5000L
+        const val DELAY_UPDATE_ORDER_STATE = 15000L
         private const val DELAY_FETCH_IMAGE = 500L
         private const val ERROR_COMPRESSED_IMAGE_NULL = "Compressed image null"
         private const val ERROR_RENAMED_IMAGE_NULL = "Renamed image null"

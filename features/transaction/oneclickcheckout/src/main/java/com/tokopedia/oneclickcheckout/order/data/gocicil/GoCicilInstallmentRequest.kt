@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.order.data.gocicil
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
@@ -17,7 +18,9 @@ data class GoCicilInstallmentRequest(
     val address: OrderProfileAddress = OrderProfileAddress(),
     val shop: OrderShop = OrderShop(),
     val products: MutableList<OrderProduct> = ArrayList(),
-    val promoCodes: List<String> = emptyList()
+    val promoCodes: List<String> = emptyList(),
+    val additionalData: String = "",
+    val detailData: PaymentRequest
 ) {
     val userDefinedValue
         get() = JsonObject().apply {

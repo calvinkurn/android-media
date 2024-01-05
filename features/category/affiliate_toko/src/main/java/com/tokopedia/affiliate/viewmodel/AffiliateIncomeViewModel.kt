@@ -2,7 +2,6 @@ package com.tokopedia.affiliate.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY
 import com.tokopedia.affiliate.PROJECT_ID
@@ -12,22 +11,17 @@ import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.model.response.AffiliateBalance
 import com.tokopedia.affiliate.model.response.AffiliateKycDetailsData
 import com.tokopedia.affiliate.model.response.AffiliateTransactionHistoryData
-import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.repository.AffiliateRepository
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTransactionHistoryItemModel
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliateBalanceDataUseCase
-import com.tokopedia.affiliate.usecase.AffiliateGetUnreadNotificationUseCase
 import com.tokopedia.affiliate.usecase.AffiliateKycUseCase
 import com.tokopedia.affiliate.usecase.AffiliateTransactionHistoryUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.ZERO
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.launch
-import timber.log.Timber
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 class AffiliateIncomeViewModel : BaseViewModel() {
 
@@ -40,8 +34,6 @@ class AffiliateIncomeViewModel : BaseViewModel() {
     private var affiliateDataList =
         MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var rangeChanged = MutableLiveData<Boolean>()
-    private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()
-    private var progressBar = MutableLiveData<Boolean>()
     private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementDataV2>()
     private var isUserBlackListed: Boolean = false
     var hasNext = true
@@ -54,37 +46,15 @@ class AffiliateIncomeViewModel : BaseViewModel() {
         AffiliateValidateUserStatusUseCase(AffiliateRepository())
     val affiliateAffiliateAnnouncementUseCase =
         AffiliateAnnouncementUseCase(AffiliateRepository())
-    val affiliateUnreadNotificationUseCase: AffiliateGetUnreadNotificationUseCase =
-        AffiliateGetUnreadNotificationUseCase(
-            AffiliateRepository()
-        )
-    private val _unreadNotificationCount = MutableLiveData(Int.ZERO)
-
-    fun getUnreadNotificationCount(): LiveData<Int> = _unreadNotificationCount
     fun getAffiliateBalance() {
         launchCatchError(
             block = {
-                affiliateBalanceDataUseCase.getAffiliateBalance().affiliateBalance?.data?.let {
+                affiliateBalanceDataUseCase.getAffiliateBalance().affiliateBalance?.balanceData?.let {
                     affiliateBalanceData.value = it
                 }
             },
             onError = {
                 it.printStackTrace()
-            }
-        )
-    }
-
-    fun getAffiliateValidateUser(email: String) {
-        launchCatchError(
-            block = {
-                validateUserdata.value =
-                    affiliateValidateUseCaseUseCase.validateUserStatus(email)
-                progressBar.value = false
-            },
-            onError = {
-                progressBar.value = false
-                it.printStackTrace()
-                errorMessage.value = it
             }
         )
     }
@@ -125,12 +95,12 @@ class AffiliateIncomeViewModel : BaseViewModel() {
         launchCatchError(
             block = {
                 affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(
-                    selectedDateValue.toInt(),
+                    selectedDateValue.toIntOrZero(),
                     page
-                ).getAffiliateTransactionHistory?.data?.let {
+                ).getAffiliateTransactionHistory?.transactionData?.let {
                     hasNext = it.hasNext
-                    convertDataToVisitables(it)?.let { visitables ->
-                        affiliateDataList.value = visitables
+                    convertDataToVisitables(it)?.let { visitable ->
+                        affiliateDataList.value = visitable
                     }
                 }
             },
@@ -155,20 +125,6 @@ class AffiliateIncomeViewModel : BaseViewModel() {
             return tempList
         }
         return null
-    }
-
-    fun fetchUnreadNotificationCount() {
-        val coroutineExceptionHandler = CoroutineExceptionHandler { _, e ->
-            Timber.e(e)
-        }
-        viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
-            _unreadNotificationCount.value =
-                affiliateUnreadNotificationUseCase.getUnreadNotifications()
-        }
-    }
-
-    fun resetNotificationCount() {
-        _unreadNotificationCount.value = Int.ZERO
     }
 
     private var selectedDateRange = AffiliateBottomDatePicker.THIRTY_DAYS
@@ -205,6 +161,5 @@ class AffiliateIncomeViewModel : BaseViewModel() {
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
     fun getKycErrorMessage(): LiveData<String> = affiliateKycError
     fun getRangeChange(): LiveData<Boolean> = rangeChanged
-    fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
     fun getAffiliateAnnouncement(): LiveData<AffiliateAnnouncementDataV2> = affiliateAnnouncement
 }

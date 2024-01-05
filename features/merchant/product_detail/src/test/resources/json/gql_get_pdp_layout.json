@@ -743,6 +743,11 @@
             "data": [],
             "name": "play_carousel",
             "type": "content_widget"
+          },
+          {
+            "data": [],
+            "name": "pdp_fbt_hatc",
+            "type": "product_list"
           }
         ],
         "name": "Default Layout",

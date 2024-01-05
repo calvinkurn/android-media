@@ -42,6 +42,8 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.EXTRA_IS_FROM_ANA
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.EXTRA_SELECTED_ADDRESS_DATA
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.locationmanager.DeviceLocation
+import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
@@ -170,6 +172,9 @@ class ChooseAddressBottomSheet :
                 fusedLocationClient?.lastLocation?.addOnSuccessListener { location: Location? ->
                     if (location != null) {
                         setStateWithLocation(location)
+                        LocationDetectorHelper(it).saveToCache(
+                            location.latitude, location.longitude
+                        )
                     }
                 }
             }
@@ -431,40 +436,6 @@ class ChooseAddressBottomSheet :
                 }
             }
         )
-
-        viewModel.eligibleForAnaRevamp.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        if (it.data.eligible) {
-                            startActivityForResult(
-                                RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
-                                    putExtra(EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
-                                    putExtra(EXTRA_IS_FULL_FLOW, true)
-                                    putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                                    putExtra(PARAM_SOURCE, AddEditAddressSource.ADDRESS_LOCALIZATION_WIDGET.source)
-                                },
-                                REQUEST_CODE_ADD_ADDRESS
-                            )
-                        } else {
-                            startActivityForResult(
-                                RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-                                    putExtra(EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
-                                    putExtra(EXTRA_IS_FULL_FLOW, true)
-                                    putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                                },
-                                REQUEST_CODE_ADD_ADDRESS
-                            )
-                        }
-                    }
-
-                    is Fail -> {
-                        showToaster(it.throwable.message ?: getString(com.tokopedia.abstraction.R.string.default_request_error_internal_server), Toaster.TYPE_ERROR)
-                    }
-                }
-            }
-        )
     }
 
     private fun showToaster(message: String, type: Int) {
@@ -472,6 +443,18 @@ class ChooseAddressBottomSheet :
         view?.rootView?.let { v ->
             toaster.build(v, message, Toaster.LENGTH_SHORT, type, "").show()
         }
+    }
+
+    private fun navigateAddAddress() {
+        startActivityForResult(
+            RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
+                putExtra(EXTRA_REF, SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER)
+                putExtra(EXTRA_IS_FULL_FLOW, true)
+                putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                putExtra(PARAM_SOURCE, AddEditAddressSource.ADDRESS_LOCALIZATION_WIDGET.source)
+            },
+            REQUEST_CODE_ADD_ADDRESS
+        )
     }
 
     private fun setInitialViewState() {
@@ -529,7 +512,7 @@ class ChooseAddressBottomSheet :
 
         buttonAddAddress?.setOnClickListener {
             ChooseAddressTracking.onClickButtonTambahAlamatBottomSheet(userSession.userId)
-            viewModel.checkUserEligibilityForAnaRevamp()
+            navigateAddAddress()
         }
 
         buttonSnippet?.setOnClickListener {
@@ -658,7 +641,8 @@ class ChooseAddressBottomSheet :
                 hasAskedPermission = true
                 if (permissionCheckerHelper?.hasPermission(it, getPermissions()) == false) {
                     permissionCheckerHelper?.checkPermissions(
-                        this, getPermissions(),
+                        this,
+                        getPermissions(),
                         object : PermissionCheckerHelper.PermissionCheckListener {
                             override fun onPermissionDenied(permissionText: String) {
                                 ChooseAddressTracking.onClickDontAllowLocation(userSession.userId)

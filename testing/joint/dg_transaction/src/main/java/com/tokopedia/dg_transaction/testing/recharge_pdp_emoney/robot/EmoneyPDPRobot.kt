@@ -35,18 +35,18 @@ class EmoneyPDPRobot {
         Intents.intending(IntentMatchers.hasComponent(
             ComponentNameMatchers.hasClassName("com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity")))
             .respondWith(createOrderNumberTypeManual())
-        onView(withId(R.id.text_field_input)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
         Thread.sleep(2000)
 
         onView(withText("8768 5678 9101 2345")).check(matches(isDisplayed()))
-        onView(withId(R.id.text_field_icon_2)).check(matches(isDisplayed()))
-        onView(withId(R.id.text_field_icon_2)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_2)).check(matches(isDisplayed()))
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_2)).perform(click())
         Thread.sleep(1000)
 
         onView(withId(R.id.emoneyRecentNumberList)).check(matches(isDisplayed()))
         Thread.sleep(1000)
 
-        onView(withId(R.id.text_field_input)).perform(click())
+        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
         Thread.sleep(1000)
     }
 

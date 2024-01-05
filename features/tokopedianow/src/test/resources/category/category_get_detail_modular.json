@@ -1,0 +1,187 @@
+{
+  "header": {
+    "code": 200,
+    "message": ""
+  },
+  "basicInfo": {
+    "id": 4826,
+    "name": "Bawang ",
+    "tree": 2,
+    "parent": 4858,
+    "rootId": 4858,
+    "url": "/p/tokonow-sayur-buah-segar/bawang",
+    "redirectionURL": "/now/category/4807/4826",
+    "appRedirectionURL": "tokopedia://now/category/4807/4826",
+    "applinks": "tokopedia://category/4826?categoryName\u003dBawang+",
+    "redirectTo": "",
+    "iconImageURL": "https://images.tokopedia.net/img/cache/200-square/WgKiGm/2021/7/7/756050bc-045b-46d9-9994-ded115f6b534.png",
+    "hidden": 1,
+    "view": 0,
+    "intermediary": 0,
+    "isAdult": 0,
+    "isBanned": 0,
+    "appRedirection": "",
+    "bannedMsgHeader": "",
+    "bannedMsg": "",
+    "titleTag": "Bawang Pilihan Terlengkap \u0026 Produk Terbaru",
+    "description": "Pilihan Bawang Terlengkap, Original, Harga Terbaik. Beli Bawang terbaik hanya di Tokopedia",
+    "metaDescription": "",
+    "useDiscoPage": false,
+    "discoIdentifier": "",
+    "relatedCategory": [
+      {
+        "id": 4846
+      },
+      {
+        "id": 5432
+      },
+      {
+        "id": 4848
+      },
+      {
+        "id": 4850
+      }
+    ],
+    "longDescription": []
+  },
+  "components": [
+    {
+      "id": 1,
+      "name": "Headline L1",
+      "type": "headline-l1",
+      "targetID": 2,
+      "sticky": true,
+      "properties": {
+        "background": "",
+        "dynamic": false,
+        "categoryDetail": false,
+        "backgroundColor": "",
+        "backgroundTransparentImageURL": "",
+        "backgroundImageURL": ""
+      },
+      "data": [
+        {
+          "text": "Sayur \u0026 Buah Segar"
+        },
+        {
+          "text": "Kategori Lainnya",
+          "applink": "tokopedia://now/see-all-category"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "tabs",
+      "type": "tabs-horizontal-scroll",
+      "targetID": 0,
+      "sticky": false,
+      "properties": {
+        "background": "plain",
+        "dynamic": false,
+        "categoryDetail": true,
+        "backgroundColor": "",
+        "backgroundTransparentImageURL": "",
+        "backgroundImageURL": ""
+      },
+      "data": [
+        {
+          "id": 4826,
+          "categoryName": "Bawang ",
+          "url": "/p/tokonow-sayur-buah-segar/bawang",
+          "isAdult": 0,
+          "targetComponentId": "1,3,4,5"
+        },
+        {
+          "id": 4860,
+          "categoryName": "Buah",
+          "url": "/p/tokonow-sayur-buah-segar/tokonow-buah",
+          "isAdult": 0,
+          "targetComponentId": "1,3,4,5"
+        },
+        {
+          "id": 4863,
+          "categoryName": "Jamur",
+          "url": "/p/tokonow-sayur-buah-segar/tokonow-jamur",
+          "isAdult": 0,
+          "targetComponentId": "1,3,4,5"
+        },
+        {
+          "id": 4865,
+          "categoryName": "Paket Sayur",
+          "url": "/p/tokonow-sayur-buah-segar/tokonow-paket-sayur",
+          "isAdult": 0,
+          "targetComponentId": "1,3,4,5"
+        },
+        {
+          "id": 4948,
+          "categoryName": "Rempah",
+          "url": "/p/tokonow-sayur-buah-segar/rempah",
+          "isAdult": 0,
+          "targetComponentId": "1,3,4,5"
+        },
+        {
+          "id": 4859,
+          "categoryName": "Sayur",
+          "url": "/p/tokonow-sayur-buah-segar/tokonow-sayur",
+          "isAdult": 0,
+          "targetComponentId": "1,3,4,5"
+        },
+        {
+          "id": 4864,
+          "categoryName": "Tahu \u0026 Tempe",
+          "url": "/p/tokonow-sayur-buah-segar/tokonow-tahu-tempe",
+          "isAdult": 0,
+          "targetComponentId": "1,3,4,5"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Product Filter",
+      "type": "product-list-filter",
+      "targetID": 4,
+      "sticky": true,
+      "properties": {
+        "background": "",
+        "dynamic": false,
+        "categoryDetail": false,
+        "backgroundColor": "",
+        "backgroundTransparentImageURL": "",
+        "backgroundImageURL": ""
+      },
+      "data": []
+    },
+    {
+      "id": 4,
+      "name": "Special Minggu Ini",
+      "type": "featured-product",
+      "targetID": 0,
+      "sticky": false,
+      "properties": {
+        "background": "",
+        "dynamic": false,
+        "categoryDetail": false,
+        "backgroundColor": "",
+        "backgroundTransparentImageURL": "",
+        "backgroundImageURL": ""
+      },
+      "data": []
+    },
+    {
+      "id": 5,
+      "name": "Product List",
+      "type": "product-list-infinite-scroll",
+      "targetID": 0,
+      "sticky": false,
+      "properties": {
+        "background": "",
+        "dynamic": false,
+        "categoryDetail": false,
+        "backgroundColor": "",
+        "backgroundTransparentImageURL": "",
+        "backgroundImageURL": ""
+      },
+      "data": []
+    }
+  ]
+}

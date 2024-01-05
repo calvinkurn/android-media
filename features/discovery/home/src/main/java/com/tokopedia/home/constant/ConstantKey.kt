@@ -33,12 +33,6 @@ object ConstantKey {
         }
     }
 
-    object LocationCache {
-        const val KEY_LOCATION = "KEY_FP_LOCATION"
-        const val KEY_LOCATION_LAT = "KEY_FP_LOCATION_LAT"
-        const val KEY_LOCATION_LONG = "KEY_FP_LOCATION_LONG"
-    }
-
     object FirstInstallCache {
         const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
         const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"

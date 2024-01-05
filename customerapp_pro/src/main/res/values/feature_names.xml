@@ -155,7 +155,7 @@
     <string name="label_kategori">Belanja di Tokopedia</string>
     <string name="label_category">category</string>
     <string name="hotlist_label">hotlist</string>
-    <string name="label_affiliate">Affiliate</string>
+    <string name="title_category_affiliate">Affiliate</string>
     <string name="title_category_epharmacy">E-Pharmacy</string>
 
     <!--Contact Us-->

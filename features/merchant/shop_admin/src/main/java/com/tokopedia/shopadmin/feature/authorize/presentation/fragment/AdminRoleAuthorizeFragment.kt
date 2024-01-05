@@ -155,7 +155,7 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
             errorTitle.text = title
             errorDescription.text = desc
         }
-        errorAction.text = context?.getString(R.string.admin_no_permission_back_to_seller_account)
+        errorAction.text = context?.getString(com.tokopedia.shopadmin.common.R.string.admin_no_permission_back_to_seller_account)
 
         setActionClickListener {
             activity?.finish()
@@ -176,20 +176,20 @@ class AdminRoleAuthorizeFragment: BaseDaggerFragment() {
         val desc: String
         when(featureName) {
             AdminFeature.ADD_PRODUCT -> {
-                title = context?.getString(R.string.admin_no_permission_product_add_title).orEmpty()
-                desc = context?.getString(R.string.admin_no_permission_product_add_desc).orEmpty()
+                title = context?.getString(com.tokopedia.shopadmin.common.R.string.admin_no_permission_product_add_title).orEmpty()
+                desc = context?.getString(com.tokopedia.shopadmin.common.R.string.admin_no_permission_product_add_desc).orEmpty()
             }
             AdminFeature.MANAGE_PRODUCT -> {
-                title = context?.getString(R.string.admin_no_permission_product_list_title).orEmpty()
-                desc = context?.getString(R.string.admin_no_permission_contact_shop_owner).orEmpty()
+                title = context?.getString(com.tokopedia.shopadmin.common.R.string.admin_no_permission_product_list_title).orEmpty()
+                desc = context?.getString(com.tokopedia.shopadmin.common.R.string.admin_no_permission_contact_shop_owner).orEmpty()
             }
             AdminFeature.ORDER_HISTORY, AdminFeature.READY_TO_SHIP_ORDER, AdminFeature.NEW_ORDER -> {
-                title = context?.getString(R.string.admin_no_permission_order_title).orEmpty()
-                desc = context?.getString(R.string.admin_no_permission_contact_shop_owner).orEmpty()
+                title = context?.getString(com.tokopedia.shopadmin.common.R.string.admin_no_permission_order_title).orEmpty()
+                desc = context?.getString(com.tokopedia.shopadmin.common.R.string.admin_no_permission_contact_shop_owner).orEmpty()
             }
             else -> {
-                title = context?.getString(R.string.admin_no_permission_oops).orEmpty()
-                desc = context?.getString(R.string.admin_no_permission_contact_shop_owner).orEmpty()
+                title = context?.getString(com.tokopedia.shopadmin.common.R.string.admin_no_permission_oops).orEmpty()
+                desc = context?.getString(com.tokopedia.shopadmin.common.R.string.admin_no_permission_contact_shop_owner).orEmpty()
             }
         }
         return Pair(title, desc)

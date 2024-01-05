@@ -42,32 +42,32 @@ This custom view has functionality to select schedule delivery when the buyer wa
 
 - Available 2 hours option, but not available schedule delivery option
 
-![](../res/shippingschedulewidget/widget_with_no_available_schedule_delivery_option.png)![](../res/shippingschedulewidget/flow_diagram.png)
+![](../res/shippingschedulewidget/widget_with_no_available_schedule_delivery_option.png)![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingschedulewidget/flow_diagram.png)
 - Available 2 hours option, schedule delivery not available in warehouse (hide schedule delivery widget and show existing widget for 2 hours)
 
-![](../res/shippingschedulewidget/schedule_delivery_not_available_in_warehouse.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingschedulewidget/schedule_delivery_not_available_in_warehouse.png)
 
 - Available for 2 hours and schedule delivery option
 
-![](../res/shippingschedulewidget/both_option_available.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingschedulewidget/both_option_available.png)
 
 - Available for 2 hours and schedule delivery option, but not meet minimum purchase for free ongkir
 
-![](../res/shippingschedulewidget/not_meet_min_transaction_requirement.png)![](../res/shippingschedulewidget/not_meet_min_transaction_requirement_two.png)
+![](../res/shippingschedulewidget/not_meet_min_transaction_requirement.png)![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingschedulewidget/not_meet_min_transaction_requirement_two.png)
 
 - Available for 2 hours and schedule delivery option, but not have free ongkir quota anymore
 
-![](../res/shippingschedulewidget/no_free_ongkir_kuota.png)![](../res/shippingschedulewidget/no_free_ongkir_kuota_two.png)
+![](../res/shippingschedulewidget/no_free_ongkir_kuota.png)![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingschedulewidget/no_free_ongkir_kuota_two.png)
 
 ## Navigation
 
 This widget will show on checkout page when product tokopedia now and support schedule delivery.
 
-![](../res/shippingschedulewidget/navigation.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingschedulewidget/navigation.png)
 
 ## Flow Diagram
 
-![](../res/shippingschedulewidget/schedule_delivery_widget_drawio.png)
+![](https://docs-android.tokopedia.net/images/docs/logisticcart/shippingschedulewidget/schedule_delivery_widget_drawio.png)
 
 ## How-to
 

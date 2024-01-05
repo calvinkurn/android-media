@@ -20,14 +20,15 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
+import com.tokopedia.tokopedianow.common.domain.model.GetTickerData
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.NowAffiliateAtcData
 import com.tokopedia.tokopedianow.common.model.ProductCartItem
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.CoroutineUtil.launchWithDelay
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
-import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -76,7 +77,7 @@ open class BaseTokoNowViewModel(
     private val _updateCartItem = MutableLiveData<Result<Triple<String, UpdateCartV2Data, Int>>>()
     private val _openLoginPage = MutableLiveData<Unit>()
 
-    private var changeQuantityJob: Job? = null
+    private var changeQuantityJob: MutableMap<String, Job> = mutableMapOf()
     private var getMiniCartJob: Job? = null
 
     var miniCartSource: MiniCartSource? = null
@@ -149,9 +150,12 @@ open class BaseTokoNowViewModel(
 
     fun getWarehouseId(): String = addressData.getWarehouseId().toString()
 
-    fun updateAddressData() = addressData.updateLocalData()
+    fun getWarehouseIds(): String {
+        val localCacheModel = addressData.getAddressData()
+        return AddressMapper.mapToWarehouseIds(localCacheModel)
+    }
 
-    fun getAddressData() = addressData.getAddressData()
+    fun updateAddressData() = addressData.updateLocalDataIfAddressHasUpdated()
 
     fun createAffiliateLink(url: String) = affiliateService.createAffiliateLink(url)
 
@@ -171,10 +175,10 @@ open class BaseTokoNowViewModel(
         }
     }
 
-    suspend fun getTickerDataAsync(
+    fun getTickerDataAsync(
         warehouseId: String,
         page: String
-    ): Deferred<Pair<Boolean, List<TickerData>>?> {
+    ): Deferred<GetTickerData?> {
         return asyncCatchError(block = {
             val tickerList = getTargetedTickerUseCase.execute(
                 warehouseId = warehouseId,
@@ -225,8 +229,9 @@ open class BaseTokoNowViewModel(
             // this only blocks add to cart when using repurchase widget
             _blockAddToCart.postValue(Unit)
         } else {
-            changeQuantityJob?.cancel()
             val productId = product.id
+            changeQuantityJob[productId]?.cancel()
+
             val quantity = product.quantity
 
             val miniCartItem = getMiniCartItem(productId)
@@ -239,8 +244,9 @@ open class BaseTokoNowViewModel(
                     quantity.isZero() -> deleteCartItem(miniCartItem, onSuccessDeleteCart, onError)
                     else -> updateCartItem(product, miniCartItem, onSuccessUpdateCart, onError)
                 }
+                removeChangeQuantityJob(productId)
             }, delay = CHANGE_QUANTITY_DELAY).let {
-                changeQuantityJob = it
+                changeQuantityJob[productId] = it
             }
         }
     }
@@ -330,5 +336,9 @@ open class BaseTokoNowViewModel(
         val warehouseId = addressData.getWarehouseId()
         val outOfCoverage = warehouseId == OOC_WAREHOUSE_ID
         return shopId != INVALID_SHOP_ID && !outOfCoverage && userSession.isLoggedIn
+    }
+
+    private fun removeChangeQuantityJob(productId: String) {
+        changeQuantityJob.remove(productId)
     }
 }

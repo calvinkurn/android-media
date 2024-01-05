@@ -83,7 +83,7 @@ class RechargeGeneralLoginInstrumentTest {
         Thread.sleep(1000)
         onView(
             AllOf.allOf(
-                withId(R.id.recycler_view_menu_component),
+                withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component),
                 ViewMatchers.isDescendantOfA(withId(R.id.recent_transaction_widget))
             )
         ).check(matches(isDisplayed())).perform(
@@ -161,7 +161,7 @@ class RechargeGeneralLoginInstrumentTest {
     private fun validate_promo() {
         onView(
             AllOf.allOf(
-                withId(R.id.tab_item_text_id),
+                withId(com.tokopedia.unifycomponents.R.id.tab_item_text_id),
                 withText("Promo")
             )
         ).perform(ViewActions.click())
@@ -169,12 +169,12 @@ class RechargeGeneralLoginInstrumentTest {
         onView(withId(R.id.promo_list_widget)).check(matches(isDisplayed()))
         onView(
             AllOf.allOf(
-                withId(R.id.recycler_view_menu_component),
+                withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component),
                 ViewMatchers.isDescendantOfA(withId(R.id.promo_list_widget))
             )
         ).check(matches(isDisplayed())).perform(
             RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
-                0, CommonActions.clickChildViewWithId(R.id.btn_copy_promo)
+                0, CommonActions.clickChildViewWithId(com.tokopedia.common.topupbills.R.id.btn_copy_promo)
             )
         )
         Thread.sleep(1000)

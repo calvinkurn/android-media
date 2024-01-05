@@ -23,7 +23,6 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.library.subviewmodel.ParentSubViewModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -32,6 +31,7 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.ProductDetailPrefetch
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -43,7 +43,6 @@ import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
-import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
@@ -83,17 +82,18 @@ import com.tokopedia.product.detail.usecase.GetProductInfoP2LoginUseCase
 import com.tokopedia.product.detail.usecase.GetProductInfoP2OtherUseCase
 import com.tokopedia.product.detail.usecase.ToggleNotifyMeUseCase
 import com.tokopedia.product.detail.view.util.ProductDetailLogger
-import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.product.detail.view.viewmodel.product_detail.mediator.GetProductDetailDataMediator
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.PlayWidgetSubViewModel
 import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ProductRecommSubViewModel
+import com.tokopedia.product.detail.view.viewmodel.product_detail.sub_viewmodel.ThumbnailVariantSubViewModel
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliate
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.extension.DEFAULT_QTY_1
+import com.tokopedia.recommendation_widget_common.extension.PAGENAME_IDENTIFIER_RECOM_ATC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -164,16 +164,17 @@ class DynamicProductDetailViewModel @Inject constructor(
     val userSessionInterface: UserSessionInterface,
     private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>,
     private val productRecommSubViewModel: ProductRecommSubViewModel,
-    playWidgetSubViewModel: PlayWidgetSubViewModel
-) : ParentSubViewModel(dispatcher.main, productRecommSubViewModel, playWidgetSubViewModel),
+    playWidgetSubViewModel: PlayWidgetSubViewModel,
+    thumbnailVariantSubViewModel: ThumbnailVariantSubViewModel
+) : ParentSubViewModel(dispatcher.main, productRecommSubViewModel, playWidgetSubViewModel, thumbnailVariantSubViewModel),
     IProductRecommSubViewModel by productRecommSubViewModel,
     IPlayWidgetSubViewModel by playWidgetSubViewModel,
+    IThumbnailVariantSubViewModel by thumbnailVariantSubViewModel,
     GetProductDetailDataMediator {
 
     companion object {
         private const val TEXT_ERROR = "ERROR"
         private const val ATC_ERROR_TYPE = "error_atc"
-        private const val REMOVE_WISHLIST = "false"
         private const val P2_LOGIN_ERROR_TYPE = "error_p2_login"
         private const val P2_DATA_ERROR_TYPE = "error_p2_data"
         private const val TIMEOUT_QUANTITY_FLOW = 500L
@@ -181,8 +182,6 @@ class DynamicProductDetailViewModel @Inject constructor(
         private const val PARAM_TXSC = "txsc"
         private const val CODE_200 = 200
         private const val CODE_300 = 300
-        private const val VARIANT_LEVEL_TWO_INDEX = 1
-        private const val MAX_VARIANT_LEVEL = 2
     }
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
@@ -222,15 +221,6 @@ class DynamicProductDetailViewModel @Inject constructor(
     private val _addToCartLiveData = MutableLiveData<Result<AddToCartDataModel>>()
     val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
         get() = _addToCartLiveData
-
-    private val _singleVariantData = MutableLiveData<VariantCategory?>()
-    val singleVariantData: LiveData<VariantCategory?>
-        get() = _singleVariantData
-
-    // slicing from _onVariantClickedData, because thumbnail variant feature using vbs for refresh pdp info
-    private val _onThumbnailVariantSelectedData = MutableLiveData<ProductSingleVariantDataModel?>()
-    val onThumbnailVariantSelectedData: LiveData<ProductSingleVariantDataModel?>
-        get() = _onThumbnailVariantSelectedData
 
     private val _toggleTeaserNotifyMe = MutableLiveData<Result<NotifyMeUiData>>()
     val toggleTeaserNotifyMe: LiveData<Result<NotifyMeUiData>>
@@ -278,12 +268,12 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     var videoTrackerData: Pair<Long, Long>? = null
-
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
     var variantData: ProductVariant? = null
     var listOfParentMedia: MutableList<Media>? = null
     var buttonActionText: String = ""
     var tradeinDeviceId: String = ""
+    val impressionHolders = mutableListOf<String>()
 
     // used only for bringing product id to edit product
     var parentProductId: String? = null
@@ -316,6 +306,8 @@ class DynamicProductDetailViewModel @Inject constructor(
         get() = userSessionInterface.userId
 
     var deviceId: String = userSessionInterface.deviceId ?: ""
+
+    private var aPlusContentExpanded: Boolean = ProductDetailConstant.A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE
 
     override fun getP1(): DynamicProductInfoP1? = getDynamicProductInfoP1
 
@@ -454,13 +446,18 @@ class DynamicProductDetailViewModel @Inject constructor(
         }
     }
 
-    private fun getP2RatesEstimateByProductId(): P2RatesEstimate? {
-        val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
-        var result: P2RatesEstimate? = null
-        p2Data.value?.ratesEstimate?.forEach {
-            if (productId in it.listfProductId) result = it
+    fun getP2RatesEstimateByProductId(): P2RatesEstimate? {
+        val p1 = getDynamicProductInfoP1 ?: return null
+        val p2 = p2Data.value ?: return null
+        val productId = p1.basic.productID
+
+        p2.ratesEstimate.forEach {
+            if (productId in it.listfProductId) {
+                return it
+            }
         }
-        return result
+
+        return null
     }
 
     fun getP2RatesEstimateDataByProductId(): P2RatesEstimateData? {
@@ -476,42 +473,21 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     fun getBebasOngkirDataByProductId(): BebasOngkirImage {
-        val productId = getDynamicProductInfoP1?.basic?.productID ?: ""
-        val boType =
-            p2Data.value?.bebasOngkir?.boProduct?.firstOrNull { it.productId == productId }?.boType
-                ?: 0
-        val image = p2Data.value?.bebasOngkir?.boImages?.firstOrNull { it.boType == boType }
-            ?: BebasOngkirImage()
-        return image
+        val p1 = getDynamicProductInfoP1 ?: return BebasOngkirImage()
+        val p2 = p2Data.value ?: return BebasOngkirImage()
+
+        val productId = p1.basic.productID
+        val boType = p2.bebasOngkir.boProduct.firstOrNull { it.productId == productId }?.boType ?: 0
+        return p2.bebasOngkir.boImages.firstOrNull { it.boType == boType } ?: BebasOngkirImage()
     }
 
     /**
      * If variant change, make sure this function is called after update product Id
      */
     fun getMultiOriginByProductId(): WarehouseInfo {
-        getDynamicProductInfoP1?.let {
-            return p2Data.value?.nearestWarehouseInfo?.get(it.basic.productID) ?: WarehouseInfo()
-        }
-
-        return WarehouseInfo()
-    }
-
-    fun processVariant(
-        data: ProductVariant,
-        mapOfSelectedVariant: MutableMap<String, String>?
-    ) {
-        launch(dispatcher.io) {
-            runCatching {
-                ProductDetailVariantLogic.determineVariant(
-                    mapOfSelectedOptionIds = mapOfSelectedVariant.orEmpty(),
-                    productVariant = data
-                )
-            }.onSuccess {
-                launch(dispatcher.main) {
-                    _singleVariantData.postValue(it)
-                }
-            }
-        }
+        val p1Data = getDynamicProductInfoP1 ?: return WarehouseInfo()
+        val p2Data = p2Data.value ?: return WarehouseInfo()
+        return p2Data.nearestWarehouseInfo[p1Data.basic.productID] ?: WarehouseInfo()
     }
 
     fun getProductP1(
@@ -520,59 +496,117 @@ class DynamicProductDetailViewModel @Inject constructor(
         layoutId: String = "",
         userLocationLocal: LocalCacheModel,
         urlQuery: String = "",
-        extParam: String = ""
-    ) {
-        launch(context = dispatcher.io) {
-            runCatching {
-                productRecommSubViewModel.onResetAlreadyRecomHit()
-                shopDomain = productParams.shopDomain
-                forceRefresh = refreshPage
+        extParam: String = "",
+        prefetchData: ProductDetailPrefetch.Data? = null
+    ) = launch(context = coroutineContext) {
+        runCatching {
+            processPrefetch(
+                prefetchData,
+                productParams.productId ?: "",
+                refreshPage
+            )
+            resetVariables(
+                shopDomain = productParams.shopDomain.orEmpty(),
+                forceRefresh = refreshPage,
                 userLocationCache = userLocationLocal
-                getPdpLayout(
-                    productId = productParams.productId.orEmpty(),
-                    shopDomain = productParams.shopDomain.orEmpty(),
-                    productKey = productParams.productName.orEmpty(),
-                    whId = productParams.warehouseId.orEmpty(),
-                    layoutId = layoutId,
-                    extParam = extParam
-                ).also { pdpLayout ->
-                    /**
-                     * When wishlist clicked, so viewModel should hit addWishlist api and refresh page.
-                     * refresh page in p1 the isWishlist field value doesn't updated, should updated after hit p2Login.
-                     * so then, for keep wishlist value didn't replace from p1, so using previous value
-                     */
-                    val p1 = getDynamicProductInfoP1 ?: DynamicProductInfoP1()
-                    val isWishlist = p1.data.isWishlist.orFalse()
-                    getDynamicProductInfoP1 = pdpLayout.layoutData.run {
-                        listOfParentMedia = data.media.toMutableList()
-                        copy(data = data.copy(isWishlist = isWishlist))
-                    }
+            )
 
-                    variantData = if (getDynamicProductInfoP1?.isProductVariant() == false) {
-                        null
-                    } else {
-                        pdpLayout.variantData
-                    }
-                    parentProductId = pdpLayout.layoutData.parentProductId
-
-                    // Remove all component that can be remove by using p1 data
-                    // So we don't have to inflate to UI
-                    val processedList = DynamicProductDetailMapper.removeUnusedComponent(
-                        getDynamicProductInfoP1,
-                        variantData,
-                        isShopOwner(),
-                        pdpLayout.listOfLayout
-                    )
-
-                    // Render initial data
-                    _productLayout.postValue(processedList.asSuccess())
+            GetPdpLayoutUseCase.createParams(
+                productId = productParams.productId.orEmpty(),
+                shopDomain = productParams.shopDomain.orEmpty(),
+                productKey = productParams.productName.orEmpty(),
+                whId = productParams.warehouseId.orEmpty(),
+                layoutId = layoutId,
+                userLocationRequest = generateUserLocationRequest(userLocationCache),
+                extParam = extParam,
+                tokonow = generateTokoNowRequest(userLocationCache),
+                refreshPage = refreshPage
+            )
+        }.onSuccess {
+            getPdpLayoutUseCase.get()
+                .apply { requestParams = it }
+                .executeOnBackground()
+                .collect {
+                    pdpLayoutCollector(urlQuery = urlQuery, data = it)
                 }
-                // Then update the following, it will not throw anything when error
-                getProductP2(urlQuery)
-            }.onFailure {
-                _productLayout.postValue(it.asFail())
-            }
+        }.onFailure {
+            _productLayout.value = it.asFail()
         }
+    }
+
+    private fun processPrefetch(
+        data: ProductDetailPrefetch.Data?,
+        productId: String,
+        refreshPage: Boolean
+    ) {
+        if (data != null && !refreshPage) {
+            val prefetch = PDPPrefetch.toProductDetailDataModel(productId, data)
+            processPdpLayout(prefetch)
+        }
+    }
+
+    private fun resetVariables(
+        shopDomain: String,
+        forceRefresh: Boolean,
+        userLocationCache: LocalCacheModel
+    ) {
+        impressionHolders.clear()
+        aPlusContentExpanded = ProductDetailConstant.A_PLUS_CONTENT_DEFAULT_EXPANDED_STATE
+        productRecommSubViewModel.onResetAlreadyRecomHit()
+        this.shopDomain = shopDomain
+        this.forceRefresh = forceRefresh
+        this.userLocationCache = userLocationCache
+    }
+
+    private fun pdpLayoutCollector(
+        urlQuery: String,
+        data: kotlin.Result<ProductDetailDataModel>
+    ) {
+        data.onSuccess {
+            val p1 = processPdpLayout(pdpLayout = it)
+            getProductP2(p1 = p1, urlQuery = urlQuery)
+        }.onFailure {
+            _productLayout.value = it.asFail()
+        }
+    }
+
+    private fun processPdpLayout(pdpLayout: ProductDetailDataModel): DynamicProductInfoP1 {
+        /**
+         * When wishlist clicked, so viewModel should hit addWishlist api and refresh page.
+         * refresh page in p1 the isWishlist field value doesn't updated, should updated after hit p2Login.
+         * so then, for keep wishlist value didn't replace from p1, so using previous value
+         */
+        var p1 = getDynamicProductInfoP1 ?: DynamicProductInfoP1()
+        val isWishlist = p1.data.isWishlist.orFalse()
+
+        parentProductId = pdpLayout.layoutData.parentProductId
+        getDynamicProductInfoP1 = pdpLayout.layoutData.let {
+            listOfParentMedia = it.data.media.toMutableList()
+            it.copy(data = it.data.copy(isWishlist = isWishlist))
+        }.also { p1 = it }
+
+        // process variant
+        processInitialVariant(pdpLayout = pdpLayout)
+
+        // Remove all component that can be remove by using p1 data
+        // So we don't have to inflate to UI
+        val processedList = DynamicProductDetailMapper.removeUnusedComponent(
+            getDynamicProductInfoP1,
+            variantData,
+            isShopOwner(),
+            pdpLayout.listOfLayout
+        )
+
+        // Render initial data
+        _productLayout.value = processedList.asSuccess()
+
+        return p1
+    }
+
+    private fun processInitialVariant(pdpLayout: ProductDetailDataModel) {
+        variantData = pdpLayout.variantData.takeIf {
+            pdpLayout.layoutData.isProductVariant()
+        } ?: return
     }
 
     fun addToCart(atcParams: Any) {
@@ -621,7 +655,7 @@ class DynamicProductDetailViewModel @Inject constructor(
             val isTokoNow = getDynamicProductInfoP1?.basic?.isTokoNow ?: false
             if (isTokoNow) {
                 updateMiniCartData(
-                    result.data.productId.toString(),
+                    result.data.productId,
                     result.data.cartId,
                     result.data.quantity,
                     result.data.notes
@@ -675,38 +709,58 @@ class DynamicProductDetailViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getProductP2(urlQuery: String = "") {
-        getDynamicProductInfoP1?.let {
-            val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive) {
-                getProductInfoP2LoginAsync(
-                    it.basic.getShopId(),
-                    it.basic.productID
-                )
-            } else {
-                null
+    private fun getProductP2(p1: DynamicProductInfoP1, urlQuery: String) {
+        launch(context = coroutineContext) {
+            runCatching {
+                if (p1.cacheState.isFromCache) {
+                    doBasicProductP2(p1 = p1)
+                } else {
+                    getProductP2WhenCloud(p1 = p1, urlQuery = urlQuery)
+                }
+            }.onFailure {
+                _productLayout.postValue(it.asFail())
             }
-            val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(
-                productId = it.basic.productID,
-                pdpSession = it.pdpSession,
-                shopId = it.basic.shopID,
-                isTokoNow = it.basic.isTokoNow
-            )
-            val p2OtherDeffered: Deferred<ProductInfoP2Other> =
-                getProductInfoP2OtherAsync(it.basic.productID, it.basic.getShopId())
-
-            p2DataDeffered.await().let { p2 ->
-                _p2Data.postValue(p2)
-            }
-
-            p2LoginDeferred?.let {
-                _p2Login.postValue(it.await())
-            }
-
-            _p2Other.postValue(p2OtherDeffered.await())
-
-            getTopAdsImageViewData(it.basic.productID)
-            getProductTopadsStatus(it.basic.productID, urlQuery)
         }
+    }
+
+    private suspend fun getProductP2WhenCloud(p1: DynamicProductInfoP1, urlQuery: String) {
+        doBasicProductP2(p1 = p1)
+        getTopAdsImageViewData(p1.basic.productID)
+        getProductTopadsStatus(p1.basic.productID, urlQuery)
+    }
+
+    private suspend fun doBasicProductP2(p1: DynamicProductInfoP1) {
+        val productLayout = (_productLayout.value as? Success)?.data.orEmpty()
+        val hasQuantityEditor = productLayout.any {
+            it.name().contains(PAGENAME_IDENTIFIER_RECOM_ATC)
+        }
+        val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive) {
+            getProductInfoP2LoginAsync(
+                shopId = p1.basic.getShopId(),
+                productId = p1.basic.productID,
+                isFromCache = p1.cacheState.isFromCache
+            )
+        } else {
+            null
+        }
+        val p2DataDeferred: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(
+            productId = p1.basic.productID,
+            pdpSession = p1.pdpSession,
+            shopId = p1.basic.shopID,
+            hasQuantityEditor = p1.basic.isTokoNow || hasQuantityEditor
+        )
+        val p2OtherDeferred: Deferred<ProductInfoP2Other> =
+            getProductInfoP2OtherAsync(p1.basic.productID, p1.basic.getShopId())
+
+        p2DataDeferred.await().let { p2 ->
+            this@DynamicProductDetailViewModel._p2Data.postValue(p2)
+        }
+
+        p2LoginDeferred?.let {
+            this@DynamicProductDetailViewModel._p2Login.postValue(it.await())
+        }
+
+        this@DynamicProductDetailViewModel._p2Other.postValue(p2OtherDeferred.await())
     }
 
     private fun getTopAdsImageViewData(productID: String) {
@@ -1110,11 +1164,17 @@ class DynamicProductDetailViewModel @Inject constructor(
 
     private fun getProductInfoP2LoginAsync(
         shopId: Int,
-        productId: String
+        productId: String,
+        isFromCache: Boolean
     ): Deferred<ProductInfoP2Login> {
         return async(dispatcher.io) {
             getProductInfoP2LoginUseCase.get().requestParams =
-                GetProductInfoP2LoginUseCase.createParams(shopId, productId, isShopOwner())
+                GetProductInfoP2LoginUseCase.createParams(
+                    shopId,
+                    productId,
+                    isShopOwner(),
+                    isFromCache
+                )
             getProductInfoP2LoginUseCase.get().setErrorLogListener { logP2Login(it, productId) }
             getProductInfoP2LoginUseCase.get().executeOnBackground()
         }
@@ -1124,18 +1184,18 @@ class DynamicProductDetailViewModel @Inject constructor(
         productId: String,
         pdpSession: String,
         shopId: String,
-        isTokoNow: Boolean
+        hasQuantityEditor: Boolean
     ): Deferred<ProductInfoP2UiData> {
         return async(dispatcher.io) {
             getP2DataAndMiniCartUseCase.get().executeOnBackground(
                 requestParams = GetProductInfoP2DataUseCase.createParams(
                     productId,
                     pdpSession,
-                    generatePdpSessionWithDeviceId(),
+                    deviceId,
                     generateUserLocationRequest(userLocationCache),
                     generateTokoNowRequest(userLocationCache)
                 ),
-                isTokoNow = isTokoNow,
+                hasQuantityEditor = hasQuantityEditor,
                 shopId = shopId,
                 forceRefresh = forceRefresh,
                 isLoggedIn = isUserSessionActive,
@@ -1144,35 +1204,6 @@ class DynamicProductDetailViewModel @Inject constructor(
                 }
             )
         }
-    }
-
-    private fun generatePdpSessionWithDeviceId(): String {
-        return if (getDynamicProductInfoP1?.data?.isTradeIn == false) {
-            ""
-        } else {
-            deviceId
-        }
-    }
-
-    private suspend fun getPdpLayout(
-        productId: String,
-        shopDomain: String,
-        productKey: String,
-        whId: String,
-        layoutId: String,
-        extParam: String
-    ): ProductDetailDataModel {
-        getPdpLayoutUseCase.get().requestParams = GetPdpLayoutUseCase.createParams(
-            productId,
-            shopDomain,
-            productKey,
-            whId,
-            layoutId,
-            generateUserLocationRequest(userLocationCache),
-            extParam,
-            generateTokoNowRequest(userLocationCache)
-        )
-        return getPdpLayoutUseCase.get().executeOnBackground()
     }
 
     private fun logP2Login(throwable: Throwable, productId: String) {
@@ -1197,79 +1228,14 @@ class DynamicProductDetailViewModel @Inject constructor(
     }
 
     fun getChildOfVariantSelected(singleVariant: ProductSingleVariantDataModel?): VariantChild? {
-        val mapOfSelectedVariants = singleVariant?.mapOfSelectedVariant ?: mutableMapOf()
+        val singleVariant = singleVariant ?: return null
+        val mapOfSelectedVariants = singleVariant.mapOfSelectedVariant
         val selectedOptionIds = mapOfSelectedVariants.values.toList()
         val variantDataNonNull = variantData ?: ProductVariant()
 
         return variantDataNonNull.children.firstOrNull {
             it.optionIds == selectedOptionIds
         }
-    }
-
-    /**
-     * Thumbnail variant selected is variant level one only
-     */
-    fun onThumbnailVariantSelected(
-        uiData: ProductSingleVariantDataModel?,
-        variantId: String,
-        categoryKey: String
-    ) {
-        val singleVariant = uiData ?: return
-        val variantSelected = singleVariant.mapOfSelectedVariant
-        val variantDataNonNull = variantData ?: ProductVariant()
-        val variantSelectUpdated = selectVariantTwoOnThumbnailVariantSelected(
-            productVariant = variantDataNonNull,
-            variantsSelected = variantSelected,
-            newVariantId = variantId,
-            newVariantCategoryKey = categoryKey
-        )
-        val variantLevelOneUpdated = ProductDetailVariantLogic.determineVariant(
-            variantSelectUpdated,
-            variantDataNonNull
-        )
-
-        if (variantLevelOneUpdated != null) {
-            _onThumbnailVariantSelectedData.postValue(
-                singleVariant.copy(
-                    mapOfSelectedVariant = variantSelectUpdated,
-                    variantLevelOne = variantLevelOneUpdated
-                )
-            )
-        }
-    }
-
-    private fun selectVariantTwoOnThumbnailVariantSelected(
-        productVariant: ProductVariant,
-        variantsSelected: Map<String, String>,
-        newVariantId: String,
-        newVariantCategoryKey: String
-    ): MutableMap<String, String> {
-        val variants = variantsSelected.toMutableMap()
-        val variantLevelTwo = productVariant.variants.getOrNull(VARIANT_LEVEL_TWO_INDEX)
-
-        // in case, when swipe media but media is not variant
-        if (newVariantId.isEmpty()) {
-            // set empty to variant level 1, and keep variant level2 if available
-            val variantLevelOne = productVariant.variants.getOrNull(Int.ZERO)
-
-            if (variantLevelOne != null) {
-                variants[variantLevelOne.pv.orEmpty()] = ""
-            }
-
-            return variants
-        }
-
-        // don't move this order, because level 1 always on top and level 2 always below lvl1 in map
-        variants[newVariantCategoryKey] = newVariantId
-
-        // if mapOfSelected still don't select yet with variant lvl two, so set default lvl2 with fist lvl2 item
-        if (variantLevelTwo != null && variantsSelected.size < MAX_VARIANT_LEVEL) {
-            // in case, thumb variant selected but variant two never select from vbs
-            val variantLevelTwoId = variantLevelTwo.options.firstOrNull()?.id
-            variants[variantLevelTwo.pv.orEmpty()] = variantLevelTwoId.orEmpty()
-        }
-
-        return variants
     }
 
     fun changeOneTimeMethod(event: OneTimeMethodEvent) {
@@ -1388,4 +1354,10 @@ class DynamicProductDetailViewModel @Inject constructor(
             error = error
         )
     }
+
+    fun setAPlusContentExpandedState(expanded: Boolean) {
+        aPlusContentExpanded = expanded
+    }
+
+    fun isAPlusContentExpanded() = aPlusContentExpanded
 }

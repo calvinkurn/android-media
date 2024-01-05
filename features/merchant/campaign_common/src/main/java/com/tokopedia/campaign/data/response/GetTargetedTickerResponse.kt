@@ -16,7 +16,7 @@ data class GetTargetedTickerResponse(
             @SerializedName("Content")
             val content: String,
             @SerializedName("ID")
-            val ID: Int,
+            val ID: Long,
             @SerializedName("Priority")
             val priority: Int,
             @SerializedName("Title")

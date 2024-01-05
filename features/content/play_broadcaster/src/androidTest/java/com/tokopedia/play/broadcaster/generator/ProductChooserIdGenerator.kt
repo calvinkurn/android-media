@@ -15,28 +15,28 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.play.broadcaster.R
+import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.factory.PlayBroTestFragmentFactory
-import com.tokopedia.play.broadcaster.setup.product.analytic.EtalaseListAnalyticManager
-import com.tokopedia.play.broadcaster.setup.product.analytic.ProductChooserAnalyticManager
-import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
-import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
-import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
-import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSortBottomSheet
-import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
-import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
-import com.tokopedia.play.broadcaster.type.DiscountedPrice
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
-import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
-import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
-import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
+import com.tokopedia.content.product.picker.seller.analytic.manager.EtalaseListAnalyticManager
+import com.tokopedia.content.product.picker.seller.analytic.manager.ProductChooserAnalyticManager
+import com.tokopedia.content.product.picker.ProductSetupFragment
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.EtalaseListBottomSheet
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductChooserBottomSheet
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductSortBottomSheet
+import com.tokopedia.content.product.picker.seller.view.bottomsheet.ProductSummaryBottomSheet
+import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSellerViewModel
+import com.tokopedia.content.product.picker.seller.model.DiscountedPrice
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatus
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignStatusUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.CampaignUiModel
+import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.content.product.picker.seller.model.etalase.EtalaseUiModel
+import com.tokopedia.content.product.picker.seller.model.paged.PagedDataUiModel
+import com.tokopedia.content.product.picker.seller.model.pinnedproduct.PinProductUiModel
+import com.tokopedia.content.product.picker.seller.model.product.ProductUiModel
+import com.tokopedia.content.common.util.bottomsheet.NavigationBarColorDialogCustomizer
+import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
@@ -49,6 +49,7 @@ import org.hamcrest.Matcher
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.*
+import com.tokopedia.empty_state.R as empty_stateR
 
 /**
  * Created by kenny.hadisaputra on 23/02/22
@@ -107,28 +108,30 @@ class ProductChooserIdGenerator {
     private val mockProductSections = emptyList<ProductTagSectionUiModel>()
 
     private val repo = mockk<PlayBroadcastRepository>(relaxed = true)
+    private val productPickerCommonRepo = mockk<ProductPickerSellerCommonRepository>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
-    private val mockProductSetupViewModelFactory = object : PlayBroProductSetupViewModel.Factory {
+    private val mockProductSetupViewModelFactory = object : ContentProductPickerSellerViewModel.Factory {
         override fun create(
             creationId: String,
             maxProduct: Int,
             productSectionList: List<ProductTagSectionUiModel>,
             savedStateHandle: SavedStateHandle,
-            source: PlayBroPageSource,
+            isNumerationShown: Boolean,
             isEligibleForPin: Boolean,
             fetchCommissionProduct: Boolean
-        ): PlayBroProductSetupViewModel {
-            return PlayBroProductSetupViewModel(
+        ): ContentProductPickerSellerViewModel {
+            return ContentProductPickerSellerViewModel(
                 creationId = creationId,
                 maxProduct = maxProduct,
                 productSectionList = mockProductSections,
                 savedStateHandle = savedStateHandle,
                 isEligibleForPin = isEligibleForPin,
                 repo = repo,
+                commonRepo = productPickerCommonRepo,
                 userSession = userSession,
                 dispatchers = CoroutineDispatchersProvider,
-                source = source,
+                isNumerationShown = isNumerationShown,
                 fetchCommissionProduct = fetchCommissionProduct,
             )
         }
@@ -161,8 +164,8 @@ class ProductChooserIdGenerator {
                             return 30
                         }
 
-                        override fun getPageSource(): PlayBroPageSource {
-                            return PlayBroPageSource.Live
+                        override fun isNumerationShown(): Boolean {
+                            return true
                         }
 
                         override fun fetchCommissionProduct(): Boolean {
@@ -175,6 +178,7 @@ class ProductChooserIdGenerator {
                 ProductSummaryBottomSheet(
                     analytic = mockk(relaxed = true),
                     coachMarkSharedPref = mockk(relaxed = true),
+                    pinnedProductAnalytic = mockk(relaxed = true)
                 )
             },
             ProductChooserBottomSheet::class.java to {
@@ -199,6 +203,7 @@ class ProductChooserIdGenerator {
             },
             ProductSummaryBottomSheet::class.java to {
                 ProductSummaryBottomSheet(
+                    mockk(relaxed = true),
                     mockk(relaxed = true),
                     mockk(relaxed = true),
                 )
@@ -246,15 +251,15 @@ class ProductChooserIdGenerator {
             hasNextPage = false
         )
 
-        coEvery { repo.getEtalaseList() } returns etalaseList
-        coEvery { repo.getCampaignList() } returns campaignList
+        coEvery { productPickerCommonRepo.getEtalaseList() } returns etalaseList
+        coEvery { productPickerCommonRepo.getCampaignList() } returns campaignList
     }
 
     @Test
     fun productChooserBottomSheet() {
         val scenario = launchFragment<ProductSetupFragment>(
             factory = fragmentFactory,
-            themeResId = R.style.AppTheme
+            themeResId = empty_stateR.style.AppTheme
         )
 
         scenario.moveToState(Lifecycle.State.RESUMED)
@@ -273,13 +278,13 @@ class ProductChooserIdGenerator {
     fun sortFilterBottomSheet() {
         val scenario = launchFragment<ProductSetupFragment>(
             factory = fragmentFactory,
-            themeResId = R.style.AppTheme
+            themeResId = empty_stateR.style.AppTheme
         )
 
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         onView(isRoot()).perform(waitFor(500))
-        onView(withId(R.id.chips_sort)).perform(click())
+        onView(withId(contentproductpickerR.id.chips_sort)).perform(click())
 
         scenario.onFragment {
             val chooserBottomSheet = ProductChooserBottomSheet.getFragment(it.childFragmentManager, it.requireActivity().classLoader)
@@ -296,13 +301,13 @@ class ProductChooserIdGenerator {
     fun etalaseListBottomSheet() {
         val scenario = launchFragment<ProductSetupFragment>(
             factory = fragmentFactory,
-            themeResId = R.style.AppTheme
+            themeResId = empty_stateR.style.AppTheme
         )
 
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         onView(isRoot()).perform(waitFor(500))
-        onView(withId(R.id.chips_etalase)).perform(click())
+        onView(withId(contentproductpickerR.id.chips_etalase)).perform(click())
         onView(isRoot()).perform(waitFor(500))
 
         scenario.onFragment {

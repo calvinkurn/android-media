@@ -10,7 +10,7 @@
         android:background="@null"
         app:elevation="0dp">
 
-        <com.tokopedia.notifcenter.widget.NotificationFilterView
+        <com.tokopedia.notifcenter.view.customview.widget.NotificationFilterView
             android:id="@+id/sv_filter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

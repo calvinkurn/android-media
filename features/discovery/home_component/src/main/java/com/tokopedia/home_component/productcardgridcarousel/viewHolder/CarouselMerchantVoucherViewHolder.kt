@@ -3,6 +3,7 @@ package com.tokopedia.home_component.productcardgridcarousel.viewHolder
 import com.tokopedia.imageassets.TokopediaImageUrl
 
 import android.view.View
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
@@ -45,14 +46,14 @@ class CarouselMerchantVoucherViewHolder (
             binding?.imageDividerVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
             binding?.imageBackgroundVoucher?.loadImageNoRounded(
                 BACKGROUND_MVC_DARK,
-                com.tokopedia.home_component.R.drawable.placeholder_grey
+                com.tokopedia.topads.sdk.R.drawable.placeholder_grey
             )
         }
         else {
             binding?.imageDividerVoucher?.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50))
             binding?.imageBackgroundVoucher?.loadImageNormal(
                 BACKGROUND_MVC_WHITE,
-                com.tokopedia.home_component.R.drawable.placeholder_grey
+                com.tokopedia.topads.sdk.R.drawable.placeholder_grey
             )
         }
         binding?.shopName?.text = element.shopName.parseAsHtml()
@@ -64,18 +65,18 @@ class CarouselMerchantVoucherViewHolder (
             binding?.shopName?.setMargin(4f.toDpInt(), 7f.toDpInt(), 0f.toDpInt(), 0f.toDpInt())
             binding?.imageBadge?.loadImageNoRounded(
                 element.iconBadge,
-                com.tokopedia.home_component.R.drawable.placeholder_grey,
+                com.tokopedia.topads.sdk.R.drawable.placeholder_grey,
                 listener = object : ImageHandler.ImageLoaderStateListener {
-                    override fun successLoad() {}
+                    override fun successLoad(view: ImageView?) {}
 
-                    override fun failedLoad() {
+                    override fun failedLoad(view: ImageView?) {
                         failedLoadShopBadge()
                     }
                 })
         } else {
             failedLoadShopBadge()
         }
-        binding?.imageProduct?.loadImageNoRounded(element.imageProduct, com.tokopedia.home_component.R.drawable.placeholder_grey)
+        binding?.imageProduct?.loadImageNoRounded(element.imageProduct, com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
         binding?.containerShop?.setOnClickListener {
             element.merchantVoucherComponentListener.onShopClicked(element, adapterPosition)
         }

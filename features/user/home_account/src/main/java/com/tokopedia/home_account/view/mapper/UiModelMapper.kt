@@ -5,7 +5,6 @@ import com.tokopedia.home_account.data.model.AssetConfig
 import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
 import com.tokopedia.home_account.view.adapter.uimodel.BalanceAndPointShimmerUiModel
 import com.tokopedia.home_account.view.adapter.uimodel.BalanceAndPointUiModel
-import com.tokopedia.home_account.view.adapter.uimodel.WalletShimmeringUiModel
 import com.tokopedia.home_account.view.adapter.uimodel.WalletUiModel
 
 object UiModelMapper {
@@ -27,7 +26,8 @@ object UiModelMapper {
             applink = walletappGetAccountBalance.applink,
             isActive = walletappGetAccountBalance.isActive,
             hideTitle = walletappGetAccountBalance.hideTitle,
-            type = walletappGetAccountBalance.type
+            type = walletappGetAccountBalance.type,
+            statusName = walletappGetAccountBalance.statusName
         )
     }
 
@@ -92,57 +92,8 @@ object UiModelMapper {
             subtitle = subTitleWallet,
             urlImage = walletappGetAccountBalance.icon,
             applink = walletappGetAccountBalance.applink,
-            isActive = walletappGetAccountBalance.isActive
-        )
-    }
-
-    fun getWalletShimmeringUiModel(assetConfig: AssetConfig): WalletShimmeringUiModel {
-        val title = if (assetConfig.id == AccountConstants.WALLET.SALDO) assetConfig.subtitle else assetConfig.title
-        val subtitle = if (assetConfig.id == AccountConstants.WALLET.SALDO) assetConfig.title else assetConfig.subtitle
-        return WalletShimmeringUiModel(
-            id = assetConfig.id,
-            title = title,
-            subtitle = subtitle,
-            urlImage = assetConfig.icon,
-            applink = assetConfig.applink,
-            isActive = assetConfig.isActive
-        )
-    }
-
-    fun getWalletShimmeringUiModel(walletUiModel: WalletUiModel): WalletShimmeringUiModel {
-        return WalletShimmeringUiModel(
-            id = walletUiModel.id,
-            title = walletUiModel.title,
-            subtitle = walletUiModel.subtitle,
-            urlImage = walletUiModel.urlImage,
-            applink = walletUiModel.applink,
-            isActive = walletUiModel.isActive
-        )
-    }
-
-    fun getWalletUiModel(assetConfig: AssetConfig): WalletUiModel {
-        return WalletUiModel(
-            id = assetConfig.id,
-            title = assetConfig.title,
-            subtitle = assetConfig.subtitle,
-            urlImage = assetConfig.icon,
-            applink = assetConfig.applink,
-            isActive = assetConfig.isActive
-        )
-    }
-
-    fun getWalletUiModel(
-        walletShimmeringUiModel: WalletShimmeringUiModel,
-        isFailed: Boolean
-    ): WalletUiModel {
-        return WalletUiModel(
-            id = walletShimmeringUiModel.id,
-            title = walletShimmeringUiModel.title,
-            subtitle = walletShimmeringUiModel.subtitle,
-            urlImage = walletShimmeringUiModel.urlImage,
-            applink = walletShimmeringUiModel.applink,
-            isActive = walletShimmeringUiModel.isActive,
-            isFailed = isFailed
+            isActive = walletappGetAccountBalance.isActive,
+            statusName = walletappGetAccountBalance.statusName
         )
     }
 }

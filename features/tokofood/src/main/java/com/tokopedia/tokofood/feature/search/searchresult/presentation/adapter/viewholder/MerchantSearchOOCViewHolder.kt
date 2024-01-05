@@ -1,11 +1,10 @@
 package com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodSearchOocBinding
@@ -26,7 +25,7 @@ class MerchantSearchOOCViewHolder(
 
     override fun bind(element: MerchantSearchOOCUiModel) {
         when (element.type) {
-            MerchantSearchOOCUiModel.NO_ADDRESS, MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP -> {
+            MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP -> {
                 setNoAddressGlobalEmptyState(element.type)
             }
             MerchantSearchOOCUiModel.NO_PINPOINT -> {
@@ -86,7 +85,6 @@ class MerchantSearchOOCViewHolder(
         val secondaryButtonMessage =
             getStringFromId(com.tokopedia.tokofood.R.string.search_srp_ooc_out_of_coverage_secondary_button)
 
-
         setGlobalErrorWording(title, subtitle, buttonMessage, secondaryButtonMessage)
     }
 
@@ -140,9 +138,8 @@ class MerchantSearchOOCViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_search_ooc
-        
+
         private const val IMG_STATIC_URI_NO_PIN_POIN = TokopediaImageUrl.IMG_STATIC_URI_NO_PIN_POIN
         private const val IMG_STATIC_URI_NO_ADDRESS = TokopediaImageUrl.IMG_STATIC_URI_NO_ADDRESS
     }
-
 }

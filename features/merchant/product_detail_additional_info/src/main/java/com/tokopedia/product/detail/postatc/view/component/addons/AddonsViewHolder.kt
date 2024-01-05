@@ -21,6 +21,7 @@ class AddonsViewHolder(
         val data = element.data ?: return
         if (dataHash != data.hashCode()) {
             setSelectedAddons(data.selectedAddonsIds)
+            setDeselectedAddons(data.deselectedAddonsIds)
             setTitleText(data.title)
             setAutosaveAddon(data.cartId.toLongOrZero(), "normal")
             getAddonData(

@@ -8,7 +8,9 @@
 
     <include layout="@layout/tp_shimmer_coupon_detail" />
 
-    <include layout="@layout/tp_content_coupon_detail" />
+    <include
+        android:id="@+id/tp_content_coupon_detail"
+        layout="@layout/tp_content_coupon_detail" />
 
     <com.tokopedia.tokopoints.view.customview.ServerErrorView
         android:id="@+id/server_error_view"

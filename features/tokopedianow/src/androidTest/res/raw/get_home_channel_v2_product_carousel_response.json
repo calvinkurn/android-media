@@ -1,0 +1,1317 @@
+{
+  "getHomeChannelV2": {
+    "channels": [
+      {
+        "id": 291580,
+        "groupID": 301,
+        "galaxyAttribution": "PG",
+        "persona": "",
+        "brandID": "",
+        "categoryPersona": "",
+        "styleParam": "dividerSize=1",
+        "name": "27/11 6am - ATF NOW! Daily thematic",
+        "layout": "top_carousel_tokonow",
+        "type": "",
+        "campaignID": 0,
+        "showPromoBadge": false,
+        "categoryID": "{}",
+        "persoType": 1,
+        "pageName": "injection_sort_tokonow",
+        "campaignCode": "",
+        "hasCloseButton": false,
+        "header": {
+          "id": 311155,
+          "name": "Spesial Gajian",
+          "subtitle": "Diskon hingga 70%",
+          "url": "",
+          "applink": "",
+          "serverTime": 0,
+          "expiredTime": "",
+          "backColor": "",
+          "backImage": "",
+          "textColor": "#212121"
+        },
+        "grids": [
+          {
+            "id": 1904942085,
+            "name": "Prim-a Air Mineral Cup 220 ml Dus isi 48",
+            "url": "https://www.tokopedia.com/now/prim-a-air-mineral-cup-220-ml-dus-isi-48",
+            "applink": "tokopedia://product/9587176901",
+            "price": "Rp25.020",
+            "slashedPrice": "",
+            "discount": "",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/5/19/a66349d1-483c-4bd2-aed0-9434a9fd3696.jpg.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=5032\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=9587176901\u0026pos=1\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/prim-a-air-mineral-cup-220-ml-dus-isi-48?catid5032=%26ref=injection_sort_tokonow_pa1_po1%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/5/19/a66349d1-483c-4bd2-aed0-9434a9fd3696.jpg",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "4.9",
+            "categoryBreadcrumbs": "Minuman/Air Mineral/Air Mineral Botol",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 18,
+            "stock": 18,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "250+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Beli 2 Diskon 4%",
+                "type": "lightGreen",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 1904942546,
+            "name": "Ladang Lima Cookies Pumpbery Bebas MSG 180 gram",
+            "url": "https://www.tokopedia.com/now/ladang-lima-cookies-pumpbery-bebas-msg-180-gram",
+            "applink": "tokopedia://product/9521979139",
+            "price": "Rp29.050",
+            "slashedPrice": "Rp35.000",
+            "discount": "17%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/5/16/a0d392f1-3a84-485f-90e6-bbdffd3350c6.png.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4690\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=9521979139\u0026pos=2\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/ladang-lima-cookies-pumpbery-bebas-msg-180-gram?catid4690=%26ref=injection_sort_tokonow_pa1_po2%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/5/16/a0d392f1-3a84-485f-90e6-bbdffd3350c6.png",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Snack \u0026 Es Krim/Biskuit \u0026 Wafer/Biskuit",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 1,
+            "stock": 29,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "100+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 9083376106,
+            "name": "Munik Bumbu Instan Sayur Asam 180 gram",
+            "url": "https://www.tokopedia.com/now/munik-bumbu-instan-sayur-asam-180-gram",
+            "applink": "tokopedia://product/9083376106",
+            "price": "Rp34.528",
+            "slashedPrice": "Rp41.600",
+            "discount": "17%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/4/9/9de0a33b-0596-4a26-8e7a-427d75549636.jpg.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4854\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=9083376106\u0026pos=3\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/munik-bumbu-instan-sayur-asam-180-gram?catid4854=%26ref=injection_sort_tokonow_pa1_po3%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/4/9/9de0a33b-0596-4a26-8e7a-427d75549636.jpg",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Bumbu Masakan/Bumbu Instan/Bumbu Masak Indonesia",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 1,
+            "stock": 29,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "70+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 10555079499,
+            "name": "Lemonilo Mie Instan Soto Koya 60 gram",
+            "url": "https://www.tokopedia.com/now/lemonilo-mie-instan-soto-koya-60-gram",
+            "applink": "tokopedia://product/10555079499",
+            "price": "Rp6.138",
+            "slashedPrice": "Rp6.600",
+            "discount": "7%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/7/6/67946e70-f947-43c2-96af-69189b8bf872.jpg.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4668\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=10555079499\u0026pos=4\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/lemonilo-mie-instan-soto-koya-60-gram?catid4668=%26ref=injection_sort_tokonow_pa1_po4%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/7/6/67946e70-f947-43c2-96af-69189b8bf872.jpg",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Mie, Pasta \u0026 Bihun/Mie/Mie Instant",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 2,
+            "stock": 2,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "500+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 1904942027,
+            "name": "Rose Brand Bihun Jagung 320 gram",
+            "url": "https://www.tokopedia.com/now/rose-brand-bihun-jagung-320-gram",
+            "applink": "tokopedia://product/1904942027",
+            "price": "Rp8.010",
+            "slashedPrice": "Rp8.900",
+            "discount": "10%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/10/5/fcf380a1-4727-4f6d-9ba9-f9de9244433f.jpg.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4679\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=1904942027\u0026pos=5\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/rose-brand-bihun-jagung-320-gram?catid4679=%26ref=injection_sort_tokonow_pa1_po5%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/10/5/fcf380a1-4727-4f6d-9ba9-f9de9244433f.jpg",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Mie, Pasta \u0026 Bihun/Bihun \u0026 Soun/Bihun",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 17,
+            "stock": 17,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "10rb+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 6915118481,
+            "name": "Promina Makanan Bayi Baby Crunchies Cheese 20 gram",
+            "url": "https://www.tokopedia.com/now/promina-makanan-bayi-baby-crunchies-cheese-20-gram",
+            "applink": "tokopedia://product/6915118481",
+            "price": "Rp9.660",
+            "slashedPrice": "Rp11.500",
+            "discount": "16%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/11/8/4005a070-2aa9-4d07-b7bf-be7f8d61a590.jpg.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4712\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=6915118481\u0026pos=6\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/promina-makanan-bayi-baby-crunchies-cheese-20-gram?catid4712=%26ref=injection_sort_tokonow_pa1_po6%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/11/8/4005a070-2aa9-4d07-b7bf-be7f8d61a590.jpg",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Ibu \u0026 Bayi/Makanan Bayi/Biskuit Bayi",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 3,
+            "stock": 3,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "4rb+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 8098603994,
+            "name": "Merbabu Jagung Popcorn 250 gram",
+            "url": "https://www.tokopedia.com/now/merbabu-jagung-popcorn-250-gram",
+            "applink": "tokopedia://product/8098603994",
+            "price": "Rp7.326",
+            "slashedPrice": "Rp9.900",
+            "discount": "26%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/2/21/37d16eb2-3f24-4370-82ba-0c7f26c3539c.jpg.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=5437\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=8098603994\u0026pos=7\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/merbabu-jagung-popcorn-250-gram?catid5437=%26ref=injection_sort_tokonow_pa1_po7%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/2/21/37d16eb2-3f24-4370-82ba-0c7f26c3539c.jpg",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Beras \u0026 Makanan Kering/Biji-bijian/Biji Jagung",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 9,
+            "stock": 9,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "1rb+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 2431157371,
+            "name": "Topi Koki Sentra Ramos Beras Putih 5 kg",
+            "url": "https://www.tokopedia.com/now/topi-koki-sentra-ramos-beras-putih-5-kg",
+            "applink": "tokopedia://product/2431157371",
+            "price": "Rp70.300",
+            "slashedPrice": "Rp72.600",
+            "discount": "3%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/7/24/c8e8cb99-9f6c-4329-9da8-5e22af355ad4.png.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=5006\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=2431157371\u0026pos=8\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/topi-koki-sentra-ramos-beras-putih-5-kg?catid5006=%26ref=injection_sort_tokonow_pa1_po8%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/7/24/c8e8cb99-9f6c-4329-9da8-5e22af355ad4.png",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Beras \u0026 Makanan Kering/Beras/Beras Putih",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 50,
+            "stock": 629,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "100rb+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 2117143721,
+            "name": "Telur Ayam Negeri Omega 3 15 pcs",
+            "url": "https://www.tokopedia.com/now/telur-ayam-negeri-omega-3-15-pcs",
+            "applink": "tokopedia://product/2117143721",
+            "price": "Rp33.500",
+            "slashedPrice": "Rp36.000",
+            "discount": "7%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/11/14/7b0f7a2e-7608-47fb-9c37-ab97ba4415ec.png.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4820\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=2117143721\u0026pos=9\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/telur-ayam-negeri-omega-3-15-pcs?catid4820=%26ref=injection_sort_tokonow_pa1_po9%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/11/14/7b0f7a2e-7608-47fb-9c37-ab97ba4415ec.png",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "4.9",
+            "categoryBreadcrumbs": "Telur \u0026 Olahan Susu/Telur/Telur Ayam",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 26,
+            "stock": 26,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "100rb+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 4177131346,
+            "name": "Jiwa Pagi Mie Instan Ayam Bawang 80 gram - Clearance Sale",
+            "url": "https://www.tokopedia.com/now/jiwa-pagi-mie-instan-ayam-bawang-80-gram-clearance-sale",
+            "applink": "tokopedia://product/4177131346",
+            "price": "Rp1.470",
+            "slashedPrice": "Rp4.900",
+            "discount": "70%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/6/8/5c421bf6-1b62-44a9-9b58-cc81dabc0ddd.png.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4668\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=4177131346\u0026pos=10\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/jiwa-pagi-mie-instan-ayam-bawang-80-gram-clearance-sale?catid4668=%26ref=injection_sort_tokonow_pa1_po10%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/6/8/5c421bf6-1b62-44a9-9b58-cc81dabc0ddd.png",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "4.9",
+            "categoryBreadcrumbs": "Mie, Pasta \u0026 Bihun/Mie/Mie Instant",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 67,
+            "stock": 67,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "2rb+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 4919984191,
+            "name": "Head \u0026 Shoulders Cool Menthol Shampoo 400 ml",
+            "url": "https://www.tokopedia.com/now/head-shoulders-cool-menthol-shampoo-400-ml",
+            "applink": "tokopedia://product/4919984191",
+            "price": "Rp68.800",
+            "slashedPrice": "Rp75.200",
+            "discount": "9%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/10/26/73238c76-ec03-4117-9e49-6301252af061.jpg.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4777\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=4919984191\u0026pos=11\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/head-shoulders-cool-menthol-shampoo-400-ml?catid4777=%26ref=injection_sort_tokonow_pa1_po11%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/10/26/73238c76-ec03-4117-9e49-6301252af061.jpg",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Perawatan Tubuh \u0026 Kecantikan/Perawatan Rambut/Shampoo",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 18,
+            "stock": 18,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "2rb+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 10359984381,
+            "name": "Vitalife Vitamin D3 4000 30 capsule",
+            "url": "https://www.tokopedia.com/now/vitalife-vitamin-d3-4000-30-capsule",
+            "applink": "tokopedia://product/10359984381",
+            "price": "Rp36.955",
+            "slashedPrice": "Rp38.900",
+            "discount": "5%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/6/22/9879f273-7e2e-4caf-90da-57faa41477a9.png.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4803\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=10359984381\u0026pos=12\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/vitalife-vitamin-d3-4000-30-capsule?catid4803=%26ref=injection_sort_tokonow_pa1_po12%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/6/22/9879f273-7e2e-4caf-90da-57faa41477a9.png",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "4.9",
+            "categoryBreadcrumbs": "Perlindungan Tubuh/Vitamin \u0026 Suplemen/Vitamin A, B, C, D, E, K",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 11,
+            "stock": 11,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "50+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 10670657298,
+            "name": "Molto Pewangi \u0026 Pelembut Pakaian Flower Shower Pouch 1.7 liter",
+            "url": "https://www.tokopedia.com/now/molto-pewangi-pelembut-pakaian-flower-shower-pouch-1-7-liter",
+            "applink": "tokopedia://product/10670657298",
+            "price": "Rp30.430",
+            "slashedPrice": "Rp35.800",
+            "discount": "15%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/9/4/a5184034-6e66-4fef-9877-9db65cff4aab.jpg.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4741\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=10670657298\u0026pos=13\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/molto-pewangi-pelembut-pakaian-flower-shower-pouch-1-7-liter?catid4741=%26ref=injection_sort_tokonow_pa1_po13%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/9/4/a5184034-6e66-4fef-9877-9db65cff4aab.jpg",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Perlengkapan Kebersihan/Detergent \u0026 Pemutih/Pewangi \u0026 Pelembut, Pemutih",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 6,
+            "stock": 6,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "100+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 10670657055,
+            "name": "Pledge Pembersih Lantai Kayu Wood With Almond Oil Pouch 400 ml",
+            "url": "https://www.tokopedia.com/now/pledge-pembersih-lantai-kayu-wood-with-almond-oil-pouch-400-ml",
+            "applink": "tokopedia://product/10670657055",
+            "price": "Rp18.612",
+            "slashedPrice": "Rp19.800",
+            "discount": "6%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/7/14/0ad28bd8-8666-476b-89de-afc37fa8740d.jpg.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4757\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=10670657055\u0026pos=14\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/pledge-pembersih-lantai-kayu-wood-with-almond-oil-pouch-400-ml?catid4757=%26ref=injection_sort_tokonow_pa1_po14%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/7/14/0ad28bd8-8666-476b-89de-afc37fa8740d.jpg",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Perlengkapan Kebersihan/Karbol /Pembersih Lantai",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 1,
+            "stock": 13,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "100+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 6780818670,
+            "name": "ACMIC Kabel Data Type C 100cm Fast Charger 1 pcs Cable",
+            "url": "https://www.tokopedia.com/now/acmic-kabel-data-type-c-100cm-fast-charger-1-pcs-cable",
+            "applink": "tokopedia://product/6780818670",
+            "price": "Rp27.434",
+            "slashedPrice": "Rp31.900",
+            "discount": "14%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/2/8/040e5ec6-b652-49b3-b94a-7dc74aeb6aab.png.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=5168\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=6780818670\u0026pos=15\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/acmic-kabel-data-type-c-100cm-fast-charger-1-pcs-cable?catid5168=%26ref=injection_sort_tokonow_pa1_po15%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/2/8/040e5ec6-b652-49b3-b94a-7dc74aeb6aab.png",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Gadget \u0026 Elektronik/Kabel \u0026 Konektor/Kabel \u0026 Charger",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 6,
+            "stock": 6,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "750+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 8694450567,
+            "name": "Sleek Baby Deterjen Baby 1200 ml",
+            "url": "https://www.tokopedia.com/now/sleek-baby-deterjen-baby-1200-ml",
+            "applink": "tokopedia://product/8694450567",
+            "price": "Rp61.748",
+            "slashedPrice": "Rp71.800",
+            "discount": "14%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/3/23/7a8b8fbf-3ef5-4010-9314-17b7281689a0.jpg.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=5391\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=8694450567\u0026pos=16\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/sleek-baby-deterjen-baby-1200-ml?catid5391=%26ref=injection_sort_tokonow_pa1_po16%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/3/23/7a8b8fbf-3ef5-4010-9314-17b7281689a0.jpg",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Ibu \u0026 Bayi/Perlengkapan Bayi/Detergent Bayi",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 2,
+            "stock": 2,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "100+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 7654057914,
+            "name": "Softex Pembalut Daun Sirih Wing 23 cm 30 pcs Pads",
+            "url": "https://www.tokopedia.com/now/softex-pembalut-daun-sirih-wing-23-cm-30-pcs-pads",
+            "applink": "tokopedia://product/7654057914",
+            "price": "Rp24.100",
+            "slashedPrice": "Rp27.600",
+            "discount": "13%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/9/1/ee37ad76-3c1c-4cd6-be0e-da4610ac0810.png.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4792\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=7654057914\u0026pos=17\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/softex-pembalut-daun-sirih-wing-23-cm-30-pcs-pads?catid4792=%26ref=injection_sort_tokonow_pa1_po17%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/9/1/ee37ad76-3c1c-4cd6-be0e-da4610ac0810.png",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Perawatan Tubuh \u0026 Kecantikan/Produk Kewanitaan/Pembalut Wing",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 2,
+            "stock": 2,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "750+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 2383559661,
+            "name": "Lifebuoy Sabun Mandi Batang Lemon Fresh 70 gram",
+            "url": "https://www.tokopedia.com/now/lifebuoy-sabun-mandi-batang-lemon-fresh-70-gram",
+            "applink": "tokopedia://product/2383559661",
+            "price": "Rp4.090",
+            "slashedPrice": "Rp5.700",
+            "discount": "28%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/3/10/a44d9b3d-3c95-49b6-9a5c-0ff4b8ee856b.jpg.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=5386\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=2383559661\u0026pos=18\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/lifebuoy-sabun-mandi-batang-lemon-fresh-70-gram?catid5386=%26ref=injection_sort_tokonow_pa1_po18%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/3/10/a44d9b3d-3c95-49b6-9a5c-0ff4b8ee856b.jpg",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Perawatan Tubuh \u0026 Kecantikan/Kebutuhan Mandi/Sabun Mandi Batang",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 50,
+            "stock": 50,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "10rb+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 3872614765,
+            "name": "SoSoft Deterjen Cair Nature Fresh Botol 700 ml - Wings",
+            "url": "https://www.tokopedia.com/now/sosoft-deterjen-cair-nature-fresh-botol-700-ml-wings",
+            "applink": "tokopedia://product/3872614765",
+            "price": "Rp16.985",
+            "slashedPrice": "Rp21.500",
+            "discount": "21%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/11/6/8f03ea18-0392-4d2f-b2fd-048dd8432df6.png.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=5390\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=3872614765\u0026pos=19\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/sosoft-deterjen-cair-nature-fresh-botol-700-ml-wings?catid5390=%26ref=injection_sort_tokonow_pa1_po19%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/11/6/8f03ea18-0392-4d2f-b2fd-048dd8432df6.png",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Perlengkapan Kebersihan/Detergent \u0026 Pemutih/Detergent Cair",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 8,
+            "stock": 8,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "3rb+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 1928749260,
+            "name": "Dada Ayam Boneless Fillet Frozen 500 gram",
+            "url": "https://www.tokopedia.com/now/dada-ayam-boneless-fillet-frozen-500-gram",
+            "applink": "tokopedia://product/1928749260",
+            "price": "Rp36.000",
+            "slashedPrice": "Rp37.000",
+            "discount": "3%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/9/12/ddb6f41f-914a-4785-bac4-814c110ecbc0.png.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=5083\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=1928749260\u0026pos=20\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/dada-ayam-boneless-fillet-frozen-500-gram?catid5083=%26ref=injection_sort_tokonow_pa1_po20%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/9/12/ddb6f41f-914a-4785-bac4-814c110ecbc0.png",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Daging \u0026 Seafood/Daging Ayam/Ayam Boneless",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 50,
+            "stock": 108,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "100rb+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 4425876789,
+            "name": "SoSoft Deterjen Cair Sweet Bouquet Botol 700 ml - Wings",
+            "url": "https://www.tokopedia.com/now/sosoft-deterjen-cair-sweet-bouquet-botol-700-ml-wings",
+            "applink": "tokopedia://product/4425876789",
+            "price": "Rp16.985",
+            "slashedPrice": "Rp21.500",
+            "discount": "21%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/4/18/24139c52-7577-437d-875e-1f22e532b19c.png.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=5390\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=4425876789\u0026pos=21\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/sosoft-deterjen-cair-sweet-bouquet-botol-700-ml-wings?catid5390=%26ref=injection_sort_tokonow_pa1_po21%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/4/18/24139c52-7577-437d-875e-1f22e532b19c.png",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Perlengkapan Kebersihan/Detergent \u0026 Pemutih/Detergent Cair",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 1,
+            "stock": 4,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "2rb+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 10553920843,
+            "name": "Nuvo Sabun Mandi Batang Family Pink 3x 110 gram - Wings",
+            "url": "https://www.tokopedia.com/now/nuvo-sabun-mandi-batang-family-pink-3x-110-gram-wings",
+            "applink": "tokopedia://product/10553920843",
+            "price": "Rp16.500",
+            "slashedPrice": "Rp18.400",
+            "discount": "10%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/7/6/fb05a201-6974-46b4-bf2e-240d256bcd37.png.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=5386\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=10553920843\u0026pos=22\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/nuvo-sabun-mandi-batang-family-pink-3x-110-gram-wings?catid5386=%26ref=injection_sort_tokonow_pa1_po22%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/7/6/fb05a201-6974-46b4-bf2e-240d256bcd37.png",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Perawatan Tubuh \u0026 Kecantikan/Kebutuhan Mandi/Sabun Mandi Batang",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 4,
+            "stock": 4,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "100+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 2084918227,
+            "name": "Listerine Mouthwash Cool Mint 500 ml Obat Kumur",
+            "url": "https://www.tokopedia.com/now/listerine-mouthwash-cool-mint-500-ml-obat-kumur",
+            "applink": "tokopedia://product/2084918227",
+            "price": "Rp43.100",
+            "slashedPrice": "Rp46.600",
+            "discount": "8%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2021/8/18/2e27f663-f133-403f-a536-8a0c56e664ab.jpg.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4784\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=2084918227\u0026pos=23\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/listerine-mouthwash-cool-mint-500-ml-obat-kumur?catid4784=%26ref=injection_sort_tokonow_pa1_po23%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2021/8/18/2e27f663-f133-403f-a536-8a0c56e664ab.jpg",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Perawatan Tubuh \u0026 Kecantikan/Kesehatan Gigi \u0026 Mulut/Obat Kumur",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 6,
+            "stock": 6,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "2rb+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "title": "Beli 3 Diskon 25%",
+                "position": "price",
+                "type": "lightGreen",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 9781578492,
+            "name": "Holanda Wafer Cream Cokelat 300 gram - Clearance Sale",
+            "url": "https://www.tokopedia.com/now/holanda-wafer-cream-cokelat-300-gram-clearance-sale",
+            "applink": "tokopedia://product/9781578492",
+            "price": "Rp56.034",
+            "slashedPrice": "Rp56.600",
+            "discount": "1%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/5/29/cb62dd81-af30-4875-8b4b-3037d4193e96.jpg.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4692\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=9781578492\u0026pos=24\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/holanda-wafer-cream-cokelat-300-gram-clearance-sale?catid4692=%26ref=injection_sort_tokonow_pa1_po24%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/5/29/cb62dd81-af30-4875-8b4b-3037d4193e96.jpg",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "4.9",
+            "categoryBreadcrumbs": "Snack \u0026 Es Krim/Biskuit \u0026 Wafer/Wafer",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 3,
+            "stock": 3,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "80+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 9521977575,
+            "name": "Bourbon Biskuit Every Burger 66 gram - Clearance Sale",
+            "url": "https://www.tokopedia.com/now/bourbon-biskuit-every-burger-66-gram-clearance-sale",
+            "applink": "tokopedia://product/9521977575",
+            "price": "Rp31.680",
+            "slashedPrice": "Rp32.000",
+            "discount": "1%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/5/16/a8f8fd94-2059-4fc1-bd1c-ceedd234d746.png.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4690\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=9521977575\u0026pos=25\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/bourbon-biskuit-every-burger-66-gram-clearance-sale?catid4690=%26ref=injection_sort_tokonow_pa1_po25%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2023/5/16/a8f8fd94-2059-4fc1-bd1c-ceedd234d746.png",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Snack \u0026 Es Krim/Biskuit \u0026 Wafer/Biskuit",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 33,
+            "stock": 33,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "70+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 3590249505,
+            "name": "Kapal Api Special Kopi Bubuk 60 gram - Clearance Sale",
+            "url": "https://www.tokopedia.com/now/kapal-api-special-kopi-bubuk-60-gram-clearance-sale",
+            "applink": "tokopedia://product/3590249505",
+            "price": "Rp5.976",
+            "slashedPrice": "Rp7.200",
+            "discount": "17%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/2/23/3d4a6302-e871-4077-bac3-f50e25c46730.png.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=5062\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=3590249505\u0026pos=26\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/kapal-api-special-kopi-bubuk-60-gram-clearance-sale?catid5062=%26ref=injection_sort_tokonow_pa1_po26%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/2/23/3d4a6302-e871-4077-bac3-f50e25c46730.png",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Minuman/Kopi, Teh, dan Cokelat/Kopi Bubuk",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 235,
+            "stock": 235,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "4rb+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 3529389907,
+            "name": "Homelab Hojicha Premium 200 gram",
+            "url": "https://www.tokopedia.com/now/homelab-hojicha-premium-200-gram",
+            "applink": "tokopedia://product/3529389907",
+            "price": "Rp89.001",
+            "slashedPrice": "Rp89.900",
+            "discount": "1%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/4/12/a747613e-fbd2-4dfa-a938-05eae95b78fe.png.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=5090\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=3529389907\u0026pos=27\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/homelab-hojicha-premium-200-gram?catid5090=%26ref=injection_sort_tokonow_pa1_po27%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/4/12/a747613e-fbd2-4dfa-a938-05eae95b78fe.png",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "4.9",
+            "categoryBreadcrumbs": "Minuman/Kopi, Teh, dan Cokelat/Teh Bubuk",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 50,
+            "stock": 50,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "100+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 2196764082,
+            "name": "Oreo Biskuit Chocolate 119.6 gram - Clearance Sale",
+            "url": "https://www.tokopedia.com/now/oreo-biskuit-chocolate-119-6-gram-clearance-sale",
+            "applink": "tokopedia://product/2196764082",
+            "price": "Rp7.446",
+            "slashedPrice": "Rp10.200",
+            "discount": "27%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/5/5/286939c2-a5cc-4ec0-96fc-7cfa991bf8b0.jpg.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4690\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=2196764082\u0026pos=28\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/oreo-biskuit-chocolate-119-6-gram-clearance-sale?catid4690=%26ref=injection_sort_tokonow_pa1_po28%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/5/5/286939c2-a5cc-4ec0-96fc-7cfa991bf8b0.jpg",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Snack \u0026 Es Krim/Biskuit \u0026 Wafer/Biskuit",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 95,
+            "stock": 95,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "10rb+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 2042778966,
+            "name": "Frozz Permen Mint Cherry 15 gr - Clearance Sale",
+            "url": "https://www.tokopedia.com/now/frozz-permen-mint-cherry-15-gr-clearance-sale",
+            "applink": "tokopedia://product/2042778966",
+            "price": "Rp3.325",
+            "slashedPrice": "Rp9.500",
+            "discount": "65%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/10/5/6261e356-08ce-44bc-9089-8920c1a4828e.png.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=5120\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=2042778966\u0026pos=29\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/frozz-permen-mint-cherry-15-gr-clearance-sale?catid5120=%26ref=injection_sort_tokonow_pa1_po29%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/10/5/6261e356-08ce-44bc-9089-8920c1a4828e.png",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "4.9",
+            "categoryBreadcrumbs": "Snack \u0026 Es Krim/Cokelat \u0026 Permen/Permen",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 10,
+            "stock": 229,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "1rb+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 1928748687,
+            "name": "Ultra Milk Cokelat Susu UHT 1 liter",
+            "url": "https://www.tokopedia.com/now/ultra-milk-cokelat-susu-uht-1-liter",
+            "applink": "tokopedia://product/1928748687",
+            "price": "Rp17.512",
+            "slashedPrice": "Rp19.900",
+            "discount": "12%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/9/12/3c3fe403-2fd1-48ac-a334-302e743453e4.png.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4833\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=1928748687\u0026pos=30\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/ultra-milk-cokelat-susu-uht-1-liter?catid4833=%26ref=injection_sort_tokonow_pa1_po30%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/9/12/3c3fe403-2fd1-48ac-a334-302e743453e4.png",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Telur \u0026 Olahan Susu/Susu/Susu UHT",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 15,
+            "stock": 15,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "50rb+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          },
+          {
+            "id": 1928748713,
+            "name": "Ultra Milk Full Cream Susu UHT 1 liter",
+            "url": "https://www.tokopedia.com/now/ultra-milk-full-cream-susu-uht-1-liter",
+            "applink": "tokopedia://product/1928748713",
+            "price": "Rp17.388",
+            "slashedPrice": "Rp18.900",
+            "discount": "8%",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/9/12/12b95b5e-9a4b-4d65-a3b2-cbe59ac252a7.png.webp",
+            "label": "",
+            "labelTextColor": "",
+            "soldPercentage": 0,
+            "attribution": "",
+            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=4833\u0026event=click\u0026experimentVersion=v1.4\u0026page=1\u0026page_name=injection_sort_tokonow\u0026pid=1928748713\u0026pos=31\u0026recommendation=injection\u0026rectype=injection\u0026redirect=https://www.tokopedia.com/now/ultra-milk-full-cream-susu-uht-1-liter?catid4833=%26ref=injection_sort_tokonow_pa1_po31%26src=r3injection\u0026tid=Ay_W1LRwzgr5SC4rENkii9zX4dY=\u0026uid=0\u0026unique_id=\u0026utime=1701067344\u0026widget=r3_widget\u0026xdevice=android-3.150",
+            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/9/12/12b95b5e-9a4b-4d65-a3b2-cbe59ac252a7.png",
+            "cashback": "",
+            "isTopads": false,
+            "ratingAverage": "5.0",
+            "categoryBreadcrumbs": "Telur \u0026 Olahan Susu/Susu/Susu UHT",
+            "recommendationType": "injection",
+            "productViewCountFormatted": "",
+            "isOutOfStock": false,
+            "warehouseID": 12210375,
+            "parentProductID": 0,
+            "minOrder": 1,
+            "maxOrder": 12,
+            "stock": 15,
+            "shop": {
+              "id": 11530573
+            },
+            "labelGroup": [
+              {
+                "title": "100rb+ terjual",
+                "position": "integrity",
+                "type": "textDarkGrey",
+                "url": ""
+              }
+            ],
+            "param": ""
+          }
+        ],
+        "banner": {
+          "id": 70486,
+          "title": "",
+          "description": "",
+          "url": "",
+          "backColor": "",
+          "cta": {
+            "type": "",
+            "mode": "",
+            "text": "",
+            "couponCode": ""
+          },
+          "applink": "",
+          "textColor": "#ffffff",
+          "imageUrl": "",
+          "attribution": "",
+          "gradientColor": []
+        },
+        "token": "",
+        "widgetParam": "rtr_interaction=true\u0026rtr_pagename=rtr_default"
+      }
+    ]
+  }
+}

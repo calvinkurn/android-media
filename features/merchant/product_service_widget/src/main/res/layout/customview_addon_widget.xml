@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout"
     android:orientation="vertical"
+    android:paddingBottom="16dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -11,6 +12,8 @@
         android:textColor="@color/Unify_NN950"
         app:typographyType="display_1"
         app:typographyWeight="bold"
+        android:ellipsize="end"
+        android:singleLine="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -29,7 +32,7 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/ll_see_all"
         android:orientation="horizontal"
-        android:paddingVertical="16dp"
+        android:paddingTop="16dp"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

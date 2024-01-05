@@ -23,8 +23,14 @@ import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.CapabilityInfo
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
+import com.newrelic.agent.android.NewRelic
+import com.tokopedia.keys.Keys
+import com.tokopedia.logger.LogManager
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.sellerapp.R
 import com.tokopedia.sellerapp.data.datasource.remote.ActivityMessageListener
 import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
 import com.tokopedia.sellerapp.presentation.screen.ConnectionFailureScreen
@@ -33,9 +39,8 @@ import com.tokopedia.sellerapp.presentation.screen.StateStatus
 import com.tokopedia.sellerapp.presentation.screen.getMessageBasedOnState
 import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
 import com.tokopedia.sellerapp.util.CapabilityConstant.CAPABILITY_PHONE_APP
-import com.tokopedia.sellerapp.util.MessageConstant
-import com.tokopedia.sellerapp.R
 import com.tokopedia.sellerapp.util.MarketURIConstant
+import com.tokopedia.sellerapp.util.MessageConstant
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -51,8 +56,6 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
         private const val timeoutMaxProgress = 1f
         private const val timeoutStartProgress = 0f
         private const val transitionDelay = 800L
-        private const val TAG_WEAROS_OPEN_SCREEN = "WEAROS_OPEN_SCREEN"
-        private const val DEVICE_MODEL = "deviceModel"
     }
 
     private lateinit var navController: NavHostController
@@ -71,8 +74,12 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
     private var timer: CountDownTimer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        NewRelic.withApplicationToken(Keys.NEW_RELIC_TOKEN_SA)
+            .start(this.application)
         super.onCreate(savedInstanceState)
-        ServerLogger.log(Priority.P2, TAG_WEAROS_OPEN_SCREEN, mapOf(DEVICE_MODEL to Build.MODEL))
+
+        val remoteConfig = FirebaseRemoteConfigImpl(this)
+        remoteConfig.fetch(getRemoteConfigListener())
 
         lifecycleScope.launch {
             sharedViewModel.ifPhoneHasApp.collect {
@@ -165,6 +172,12 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
                 phoneStateFlow.value = STATE.getStateByString(data)
                 phoneStateProgressFlow.value = timeoutMaxProgress
                 validatePhoneState()
+
+                ServerLogger.log(
+                    Priority.P2, SharedViewModel.TAG_WEAROS_OPEN_SCREEN, mapOf(
+                        SharedViewModel.DEVICE_MODEL to Build.MODEL,
+                        SharedViewModel.WEAR_OS_APP_STATE to data
+                    ))
             }
             MessageConstant.ACCEPT_BULK_ORDER_PATH ->  {
                 sharedViewModel.setAcceptOrderSuccess()
@@ -178,6 +191,22 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
         phoneStateFlow.value = STATE.SYNC
         startStateTimeoutTimer()
         sharedViewModel.checkIfPhoneHasApp()
+    }
+
+    private fun getRemoteConfigListener(): RemoteConfig.Listener? {
+        return object : RemoteConfig.Listener {
+            override fun onComplete(remoteConfig: RemoteConfig) {
+                val logManager = LogManager.instance
+                logManager?.refreshConfig()
+
+                ServerLogger.log(
+                    Priority.P2, SharedViewModel.TAG_WEAROS_OPEN_APP, mapOf(
+                        SharedViewModel.DEVICE_MODEL to Build.MODEL
+                    ))
+            }
+
+            override fun onError(e: Exception) {}
+        }
     }
 
     private fun startStateTimeoutTimer() {

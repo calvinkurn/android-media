@@ -19,11 +19,12 @@ import com.tokopedia.oneclickcheckout.order.view.mapper.PrescriptionMapper
 import com.tokopedia.oneclickcheckout.order.view.mapper.SaveAddOnStateMapper.generateSaveAddOnStateRequestParams
 import com.tokopedia.oneclickcheckout.order.view.mapper.SaveAddOnStateMapper.generateSaveAllAddOnsStateRequestParams
 import com.tokopedia.oneclickcheckout.order.view.model.AddressState
-import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPreference
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
@@ -72,17 +73,23 @@ class OrderSummaryPageCartProcessor @Inject constructor(
         return result
     }
 
-    suspend fun getOccCart(source: String, gatewayCode: String, tenor: Int): ResultGetOccCart {
+    suspend fun getOccCart(
+        source: String,
+        gatewayCode: String,
+        tenor: Int,
+        isCartReimagine: Boolean
+    ): ResultGetOccCart {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val orderData = getOccCartUseCase.executeSuspend(getOccCartUseCase.createRequestParams(source, gatewayCode, tenor))
+                val orderData = getOccCartUseCase
+                    .executeSuspend(getOccCartUseCase.createRequestParams(source, gatewayCode, tenor, isCartReimagine))
                 return@withContext ResultGetOccCart(
                     orderCart = orderData.cart,
                     orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.preference.isValidProfile),
                     orderProfile = orderData.preference,
                     orderPayment = orderData.payment,
-                    orderPromo = orderData.promo.copy(state = OccButtonState.NORMAL),
+                    orderPromo = orderData.promo,
                     globalEvent = when {
                         orderData.prompt.shouldShowPrompt() -> {
                             OccGlobalEvent.Prompt(orderData.prompt)
@@ -154,35 +161,54 @@ class OrderSummaryPageCartProcessor @Inject constructor(
             }
             var metadata = orderProfile.payment.metadata
             val selectedTerm = orderPayment.creditCard.selectedTerm
-            if (selectedTerm != null) {
-                try {
-                    val parse = JsonParser().parse(metadata)
-                    val expressCheckoutParams = parse.asJsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM)
+            try {
+                val parse = JsonParser().parse(metadata)
+                val jsonObject = parse.asJsonObject
+                val expressCheckoutParams = jsonObject.getAsJsonObject(UpdateCartOccProfileRequest.EXPRESS_CHECKOUT_PARAM)
+                if (jsonObject.get(UpdateCartOccProfileRequest.GATEWAY_CODE) == null) {
+                    throw Exception()
+                }
+                jsonObject.addProperty(UpdateCartOccProfileRequest.GATEWAY_CODE, orderPayment.gatewayCode)
+                if (selectedTerm != null) {
                     if (expressCheckoutParams.get(UpdateCartOccProfileRequest.INSTALLMENT_TERM) == null) {
                         throw Exception()
                     }
                     expressCheckoutParams.addProperty(UpdateCartOccProfileRequest.INSTALLMENT_TERM, selectedTerm.term.toString())
-                    metadata = parse.toString()
-                } catch (e: Exception) {
-                    return null
                 }
+                metadata = parse.toString()
+            } catch (e: Exception) {
+                Timber.d(e)
+                return null
             }
             val realServiceId = orderShipment.getRealServiceId()
             val selectedGoCicilTerm = orderPayment.walletData.goCicilData.selectedTerm
             val profile = UpdateCartOccProfileRequest(
-                gatewayCode = orderProfile.payment.gatewayCode,
+                gatewayCode = orderPayment.gatewayCode,
                 metadata = metadata,
                 addressId = orderProfile.address.addressId,
                 serviceId = if (realServiceId == 0) orderProfile.shipment.serviceId.toIntOrZero() else realServiceId,
                 shippingId = orderShipment.getRealShipperId().toString(),
                 spId = orderShipment.getRealShipperProductId().toString(),
                 isFreeShippingSelected = orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && orderShipment.logisticPromoViewModel != null,
-                tenureType = selectedGoCicilTerm?.installmentTerm ?: 0,
+                tenureType = getTenureType(selectedGoCicilTerm, selectedTerm),
                 optionId = selectedGoCicilTerm?.optionId ?: ""
             )
             return UpdateCartOccRequest(cart, profile)
         }
         return null
+    }
+
+    private fun getTenureType(
+        selectedGoCicilTerm: OrderPaymentGoCicilTerms?,
+        selectedTerm: OrderPaymentInstallmentTerm?
+    ): Int {
+        if (selectedGoCicilTerm != null) {
+            return selectedGoCicilTerm.installmentTerm
+        }
+        if (selectedTerm != null) {
+            return selectedTerm.term
+        }
+        return 0
     }
 
     internal fun shouldSkipShippingValidationWhenUpdateCart(orderShipment: OrderShipment): Boolean {

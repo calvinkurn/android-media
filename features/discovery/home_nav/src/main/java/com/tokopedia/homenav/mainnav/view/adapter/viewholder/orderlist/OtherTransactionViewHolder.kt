@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.homenav.R
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.databinding.HolderOtherTransactionProductBinding
 import com.tokopedia.homenav.mainnav.view.datamodel.orderlist.OtherTransactionModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
@@ -26,7 +27,7 @@ class OtherTransactionViewHolder(itemView: View, val mainNavListener: MainNavLis
         binding?.transactionOthersCount?.text = context.getString(R.string.transaction_others_count)
 
         itemView.setOnClickListener {
-            mainNavListener.onOrderCardClicked(ApplinkConst.PURCHASE_ORDER, otherTrackingLabel)
+            mainNavListener.onViewAllCardClicked(ID_ALL_TRANSACTION, ApplinkConst.PURCHASE_ORDER)
         }
     }
 }

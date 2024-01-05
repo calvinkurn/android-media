@@ -18,107 +18,23 @@
     },
     {
       "event": "clickTopNav",
-      "eventCategory": "top nav - homepage",
-      "eventAction": "click - recent search autocomplete",
-      "eventLabel": ".+",
-      "sessionIris": ".*",
-      "businessUnit": "search",
-      "currentSite": "tokopediamarketplace",
-      "pageSource": ".*"
-    },
-    {
-      "event": "clickTopNav",
-      "eventCategory": "top nav",
-      "eventAction": "click - shop autocomplete",
-      "eventLabel": ".+ - keyword: .+ - shop: .+",
-      "sessionIris": ".*",
-      "businessUnit": "search",
-      "currentSite": "tokopediamarketplace",
-      "pageSource": ".*"
-    },
-    {
-      "event": "clickTopNav",
-      "eventCategory": "top nav",
-      "eventAction": "click - product autocomplete",
-      "eventLabel": "keyword: .+ - value: .+ - po: .+ - applink: .+",
-      "sessionIris": ".*",
-      "businessUnit": "search",
-      "currentSite": "tokopediamarketplace",
-      "pageSource": ".*"
-    },
-    {
-      "event": "clickTopNav",
-      "eventCategory": "top nav",
-      "eventAction": "click - digital product suggestion",
-      "eventLabel": "keyword: .+ - product: .+ - po: .+ - page: .+",
-      "campaignCode": ".*",
-      "sessionIris": ".*",
-      "businessUnit": "search",
-      "currentSite": "tokopediamarketplace",
-      "pageSource": ".*"
-    },
-    {
-      "event": "clickSearch",
-      "eventCategory": "top nav",
-      "eventAction": "click - search",
+      "eventCategory": "top nav - /",
+      "eventAction": "click - .+ - .+",
       "eventLabel": ".+",
       "sessionIris": ".*"
     },
     {
-      "event": "clickTopNav",
-      "eventCategory": "top nav - /",
-      "eventAction": "click - autocomplete local",
-      "eventLabel": "keyword: .+ - value: .+ - applink: .+ - campaign: .+",
-      "currentSite": "tokopediamarketplace",
-      "userId": ".+",
+      "component": ".+",
       "businessUnit": "search",
-      "sessionIris": ".*",
-      "pageSource": ".*"
-    },
-    {
-      "event": "clickTopNav",
-      "eventCategory": "top nav - /",
-      "eventAction": "click - autocomplete global",
-      "eventLabel": "keyword: .+ - value: .+ - applink: .+",
+      "eventCategory": "search component",
       "currentSite": "tokopediamarketplace",
-      "userId": ".+",
-      "businessUnit": "search",
-      "sessionIris": ".*",
-      "pageSource": ".*"
-    },
-    {
-      "event": "select_content",
-      "eventAction": "click - product autocomplete campaign",
-      "eventCategory": "top nav",
-      "eventLabel": "keyword: .+ - value: .+ - applink: .+",
-      "businessUnit": "search",
-      "currentSite": "tokopediamarketplace",
-      "item_list": "/search - product autocomplete campaign",
-      "items": [
-        {
-          "index": "\\d*.\\d*",
-          "item_brand": "none / other",
-          "item_category": "none / other",
-          "item_id": ".+",
-          "item_name": ".+",
-          "item_variant": "none / other",
-          "price": "\\d*.\\d*|\\d.\\d+E\\d",
-          "dimension40": "/search - product autocomplete campaign",
-          "dimension90": ".*"
-        }
-      ],
-      "userId": ".+",
-      "sessionIris": ".+"
-    },
-    {
-      "event": "clickTopNav",
-      "eventCategory": "top nav",
-      "eventAction": "click - related autocomplete",
-      "eventLabel": "keyword: .+ - value: .+ - po: .+ - page: .+",
+      "pageSource": ".*",
+      "pageDestination": ".+",
+      "event": "clickSearch",
+      "eventAction": "click",
       "sessionIris": ".+",
-      "businessUnit": "search",
-      "currentSite": "tokopediamarketplace",
-      "pageSource": ".*"
+      "eventLabel": "keyword:.* \\| value_id:.* \\| value_name:.*",
+      "campaignCode": "none"
     }
   ]
 }

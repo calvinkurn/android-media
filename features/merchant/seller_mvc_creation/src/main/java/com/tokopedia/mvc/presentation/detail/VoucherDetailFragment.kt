@@ -63,6 +63,7 @@ import com.tokopedia.mvc.domain.entity.GenerateVoucherImageMetadata
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
 import com.tokopedia.mvc.domain.entity.VoucherDetailWithVoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.ProgramStatus
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.PromotionStatus
 import com.tokopedia.mvc.domain.entity.enums.SubsidyInfo
@@ -90,6 +91,7 @@ import com.tokopedia.mvc.util.extension.isDiscount
 import com.tokopedia.mvc.util.tracker.ShareBottomSheetTracker
 import com.tokopedia.mvc.util.tracker.VoucherDetailTracker
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
+import com.tokopedia.unifyprinciples.R.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.constants.BroadcastChannelType
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -343,7 +345,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     iconChevron.setImage(IconUnify.CHEVRON_UP)
                 }
             }
-            val usedQuota = data.confirmedGlobalQuota + data.subsidyDetail.quotaSubsidized.confirmedGlobalQuota
+            iconChevron.gone()
+            val usedQuota = data.confirmedGlobalQuota
             tpgUsedQuota.text = getString(
                 R.string.smvc_placeholder_total_used_quota,
                 usedQuota,
@@ -374,7 +377,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             tpgDateTimeStart.dateTime = data.voucherStartTime
             tpgDateTimeEnd.dateTime = data.voucherFinishTime
             setPackage(data)
-            val usedQuota = data.confirmedGlobalQuota + data.subsidyDetail.quotaSubsidized.confirmedGlobalQuota
+            val usedQuota = data.confirmedGlobalQuota
             val usedQuotaPercentage = viewModel.getPercentage(usedQuota, data.remainingQuota)
             tpgUsedVoucherQuota.text = usedQuota.toString()
             tpgAvailableVoucherQuota.text = getString(
@@ -390,6 +393,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     voucherDetailTracker.sendClickDownloadEvent(data)
                 }
             }
+            groupHeaderUsedQuota.showWithCondition(!data.isGetSubsidy())
         }
     }
 
@@ -435,7 +439,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 VoucherStatus.NOT_STARTED -> {
                     tpgVoucherStatus.apply {
                         text = getString(R.string.smvc_status_upcoming_label)
-                        setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                        setTextColorCompat(color.Unify_NN600)
                     }
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
                 }
@@ -443,7 +447,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 VoucherStatus.ONGOING -> {
                     tpgVoucherStatus.apply {
                         text = getString(R.string.smvc_status_ongoing_label)
-                        setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Green_G500)
+                        setTextColorCompat(color.Green_G500)
                     }
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREEN)
                 }
@@ -451,7 +455,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 VoucherStatus.STOPPED -> {
                     tpgVoucherStatus.apply {
                         text = getString(R.string.smvc_status_stopped_label)
-                        setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Red_R500)
+                        setTextColorCompat(color.Red_R500)
                     }
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_RED)
                 }
@@ -459,7 +463,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 else -> {
                     tpgVoucherStatus.apply {
                         text = getString(R.string.smvc_status_ended_label)
-                        setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                        setTextColorCompat(color.Unify_NN600)
                     }
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
                 }
@@ -561,7 +565,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                         iconChevron.setImage(IconUnify.CHEVRON_UP)
                     }
                 }
-                val usedQuota = data.confirmedGlobalQuota + data.subsidyDetail.quotaSubsidized.confirmedGlobalQuota
+                iconChevron.gone()
+                val usedQuota = data.confirmedGlobalQuota
                 tpgUsedQuota.text = getString(
                     R.string.smvc_placeholder_total_used_quota,
                     usedQuota,
@@ -1018,7 +1023,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
         val shareComponentParam = ShareComponentInstanceBuilder.Param(
             isVoucherProduct = voucherDetail.isVoucherProduct,
-            voucherId = voucherDetail.voucherId,
+            galadrielVoucherId = voucherDetail.galadrielVoucherId,
             isPublic = voucherDetail.isPublic == TRUE,
             voucherCode = voucherDetail.voucherCode,
             voucherStartDate = voucherStartDate,
@@ -1071,7 +1076,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             onShareOptionsClicked = { shareModel ->
                 handleShareOptionSelection(
                     voucherDetail.isVoucherProduct,
-                    shareComponentParam.voucherId,
+                    shareComponentParam.galadrielVoucherId,
                     shareModel,
                     title,
                     description,
@@ -1131,7 +1136,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             shopDomain,
             shareModel,
             title,
-            outgoingDescription
+            outgoingDescription,
+            isProductVoucher
         )
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(
@@ -1174,19 +1180,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     }
 
     private fun deleteOrStopVoucher(data: VoucherDetailData) {
-        if (data.isFromVps() ||
-            data.isGetSubsidy() ||
-            !data.isEditable
-        ) {
-            if (data.subsidyDetail.programDetail.promotionStatus == PromotionStatus.APPROVED ||
-                data.subsidyDetail.programDetail.promotionStatus == PromotionStatus.REGISTERED
-            ) {
-                showCallTokopediaCareDialog(data.voucherStatus)
-            } else {
-                showConfirmationStopVoucherDialog(data)
-            }
-        } else {
+        if (data.isStoppable) {
             showConfirmationStopVoucherDialog(data)
+        } else {
+            showCallTokopediaCareDialog(data.voucherStatus)
         }
     }
 
@@ -1333,10 +1330,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun Typography.isEditable(isEditable: Boolean) {
         this.isEnabled = isEditable
         if (isEditable) {
-            setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+            setTextColorCompat(color.Unify_GN500)
             headerBinding?.iconInfo?.gone()
         } else {
-            setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+            setTextColorCompat(color.Unify_NN500)
             headerBinding?.iconInfo?.visible()
         }
     }

@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
+import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_DILAYANI_TOKOPEDIA
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -18,7 +19,7 @@ import com.tokopedia.search.result.product.inspirationcarousel.analytics.Inspira
 import com.tokopedia.search.utils.getFormattedPositionName
 import com.tokopedia.search.utils.orNone
 
-class InspirationCarouselDataView(
+data class InspirationCarouselDataView(
     val title: String = "",
     val type: String = "",
     val position: Int = 0,
@@ -31,8 +32,22 @@ class InspirationCarouselDataView(
         return typeFactory.type(this)
     }
 
+    fun isDynamicProductLayout() = layout == LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT
+
+    fun isVideoLayout() = layout == LAYOUT_INSPIRATION_CAROUSEL_VIDEO
+
+    fun isBundleLayout() = layout == LAYOUT_INSPIRATION_CAROUSEL_BUNDLE
+
+    fun isListAtcLayout() = layout == LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC
+
+    fun isChipsLayout() = layout == LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+
+    fun isCarouselSeamlessLayout() = layout == LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS
+
+    fun isSeamlessProductLayout() = layout == LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS_PRODUCT
+
     @Suppress("LongParameterList")
-    class Option(
+    data class Option(
         val title: String = "",
         val subtitle: String = "",
         val iconSubtitle: String = "",
@@ -82,7 +97,7 @@ class InspirationCarouselDataView(
         fun isShowChipsIcon() = hexColor.isNotEmpty() || chipImageUrl.isNotEmpty()
 
         @Suppress("LongParameterList")
-        class Product(
+        data class Product(
             val id: String = "",
             val name: String = "",
             val price: Int = 0,
@@ -174,12 +189,13 @@ class InspirationCarouselDataView(
                     "variant", "none / other",
                     "list", getInspirationCarouselUnificationListName(inspirationCarouselType, componentId),
                     "index", optionPosition.toString(),
+                    "dimension40", getInspirationCarouselUnificationListName(inspirationCarouselType, componentId),
                     "dimension115", labelGroupDataList.getFormattedPositionName(),
                     "dimension61", filterSortParams,
                     "dimension90", dimension90,
                     "dimension131", externalReference.orNone(),
                     "dimension56", warehouseID.ifNullOrBlank { "0" },
-                    "dimension58", hasFulfillment(labelGroupDataList).toString(),
+                    "dimension58", isFulfillment(),
                 )
             }
 
@@ -196,6 +212,7 @@ class InspirationCarouselDataView(
                     "item_category", "none / other",
                     "list", getInspirationCarouselUnificationListName(inspirationCarouselType, componentId),
                     "index", optionPosition.toString(),
+                    "dimension40", getInspirationCarouselUnificationListName(inspirationCarouselType, componentId),
                     "dimension115", labelGroupDataList.getFormattedPositionName(),
                     "dimension61", filterSortParams,
                     "dimension90", dimension90,
@@ -207,9 +224,13 @@ class InspirationCarouselDataView(
                     "shop_type", "none / other",
                     "variant", "none / other",
                     "dimension56", warehouseID.ifNullOrBlank { "0" },
-                    "dimension58", hasFulfillment(labelGroupDataList).toString(),
+                    "dimension58", isFulfillment(),
                 )
             }
+
+            private fun isFulfillment() =
+                (hasFulfillment(labelGroupDataList)
+                    || inspirationCarouselType == TYPE_DILAYANI_TOKOPEDIA).toString()
 
             fun asSearchComponentTracking(keyword: String): SearchComponentTracking =
                 searchComponentTracking(
