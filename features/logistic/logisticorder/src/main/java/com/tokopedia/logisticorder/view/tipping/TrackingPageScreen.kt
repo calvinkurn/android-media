@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.Visibility
@@ -123,15 +125,9 @@ fun TrackingPageScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             TrackingDetail(state, copyShippingRefNumber, seeEtaChangesInfo)
-            Divider(
-                thickness = 8.dp
-            )
             DriverWidget(state.trackingData, callDriver, openTippingInfo, onClickTippingButton)
             ShippingStatusSection(state.trackingData?.trackOrder?.status)
             TargetedTicker(state.trackingData?.page?.tickerUnificationTargets)
-            Divider(
-                thickness = 4.dp
-            )
             TrackingHistory(state.trackingData?.trackOrder, seeProofOfDelivery)
             LiveTrackingButton(state.trackingData?.trackOrder?.detail?.trackingUrl, openWebview)
             FindNewDriverSection(state.retryAvailability, onEvent)
@@ -145,15 +141,16 @@ private fun TargetedTicker(tickerUnificationTargets: List<TickerUnificationTarge
         AndroidView(factory = { context ->
             TargetedTickerWidget(context).apply {
                 setTickerShape(Ticker.SHAPE_LOOSE)
+            }
+        }, update = { targetedTicker ->
                 val param = TargetedTickerParamModel(
                     page = TargetedTickerPage.TRACKING_PAGE,
                     targets = tickerUnificationTargets.map {
                         TargetedTickerParamModel.Target(it.type, it.values)
                     }
                 )
-                loadAndShow(param)
-            }
-        })
+                targetedTicker.loadAndShow(param)
+            })
     }
 }
 
@@ -172,6 +169,10 @@ fun ShippingStatusSection(status: String?) {
             NestTypography(
                 text = status,
                 textStyle = NestTheme.typography.heading4.copy(color = NestTheme.colors.NN._950)
+            )
+            Divider(
+                thickness = 1.dp,
+                modifier = Modifier.padding(top = 16.dp)
             )
         }
     }
@@ -211,6 +212,7 @@ fun FindNewDriverSection(
                     var timeInMillis by remember {
                         mutableStateOf(remainingSeconds * 1000)
                     }
+                    // todo DisposableEffect ?
                     LaunchedEffect(key1 = timeInMillis) {
                         while (timeInMillis > 0) {
                             delay(1000L)
@@ -248,7 +250,7 @@ fun LiveTrackingButton(trackingUrl: String?, openWebview: (url: String) -> Unit)
 @Composable
 fun EmptyTracking(history: TrackOrderModel) {
     ConstraintLayout(modifier = Modifier.padding(16.dp)) {
-        val (icon, description, step1, step2, step3) = createRefs()
+        val (icon, description, invalidTrackingNotes) = createRefs()
         NestImage(
             modifier = Modifier.constrainAs(icon) {
                 top.linkTo(parent.top)
@@ -263,29 +265,32 @@ fun EmptyTracking(history: TrackOrderModel) {
             },
             text = history.emptyTrackingTitle
         )
+        if (history.invalid) {
+            InvalidTrackingNotes(
+                Modifier.constrainAs(invalidTrackingNotes) {
+                    top.linkTo(description.bottom)
+                    start.linkTo(parent.start)
+                }
+            )
+        }
+    }
+}
 
+@Composable
+private fun InvalidTrackingNotes(modifier: Modifier) {
+    Column(modifier) {
+        InvalidTrackingNotesItem(text = stringResource(id = logisticorderR.string.empty_notes_1))
+        InvalidTrackingNotesItem(text = stringResource(id = logisticorderR.string.empty_notes_2))
+        InvalidTrackingNotesItem(text = stringResource(id = logisticorderR.string.empty_notes_3))
+    }
+}
+
+@Composable
+private fun InvalidTrackingNotesItem(text: String) {
+    Row(Modifier.padding(top = 8.dp)) {
+        NestImage(source = ImageSource.Painter(source = logisticorderR.drawable.circle_border_logistic))
         NestTypography(
-            modifier = Modifier.constrainAs(step1) {
-                top.linkTo(description.bottom, margin = 8.dp)
-                start.linkTo(parent.start)
-            },
             text = stringResource(id = R.string.empty_notes_1)
-        )
-
-        NestTypography(
-            modifier = Modifier.constrainAs(step2) {
-                top.linkTo(step1.bottom, margin = 4.dp)
-                start.linkTo(parent.start)
-            },
-            text = stringResource(id = R.string.empty_notes_2)
-        )
-
-        NestTypography(
-            modifier = Modifier.constrainAs(step3) {
-                top.linkTo(step2.bottom, margin = 4.dp)
-                start.linkTo(parent.start)
-            },
-            text = stringResource(id = R.string.empty_notes_3)
         )
     }
 }
@@ -426,32 +431,75 @@ fun DriverWidget(
     onClickTippingButton: (tipping: TippingModel) -> Unit
 ) {
     trackingDataModel?.takeIf { it.hasDriverInfo }?.let {
-        Column(
+        ConstraintLayout(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            val (title, driverInfo, tipping, divider) = createRefs()
+            val startGuideline = createGuidelineFromStart(20.dp)
+            val endGuideline = createGuidelineFromEnd(20.dp)
             NestTypography(
+                modifier = Modifier.constrainAs(title) {
+                    top.linkTo(parent.top)
+                    start.linkTo(startGuideline)
+                },
                 text = stringResource(id = logisticorderR.string.driver_section_tracking_title),
                 textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold)
             )
-            DriverInfoLayout(it.lastDriver, callDriver, openTippingInfo)
-            TippingLayout(it.tipping, onClickTippingButton)
+            DriverInfoLayout(
+                modifier = Modifier.constrainAs(driverInfo) {
+                    top.linkTo(title.bottom, margin = 16.dp)
+                    start.linkTo(startGuideline)
+                    end.linkTo(endGuideline)
+                    width = Dimension.fillToConstraints
+                },
+                it.lastDriver,
+                callDriver,
+                openTippingInfo
+            )
+            TippingLayout(
+                modifier = Modifier.constrainAs(tipping) {
+                    top.linkTo(driverInfo.bottom, margin = 16.dp)
+                    start.linkTo(startGuideline)
+                    end.linkTo(endGuideline)
+                    width = Dimension.fillToConstraints
+                },
+                it.tipping, onClickTippingButton
+            )
+            Divider(
+                modifier = Modifier.constrainAs(divider) {
+                    top.linkTo(tipping.bottom, margin = 16.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                },
+                thickness = 8.dp
+            )
         }
     }
 }
 
 @Composable
-fun TippingLayout(tipping: TippingModel, onClickTippingButton: (model: TippingModel) -> Unit) {
+fun TippingLayout(
+    modifier: Modifier,
+    tipping: TippingModel,
+    onClickTippingButton: (model: TippingModel) -> Unit
+) {
     if (tipping.eligibleForTipping) {
         Card(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = modifier,
             backgroundColor = if (tipping.status == OPEN) colorResource(id = logisticorderR.color.dms_background_tipping_gojek_open) else NestTheme.colors.NN._0
         ) {
             ConstraintLayout {
                 val (tippingLogo, tippingText, tippingDescription, tippingButton, tippingBg) = createRefs()
+                val verticalChain = createVerticalChain(
+                    tippingText,
+                    tippingDescription,
+                    chainStyle = ChainStyle.Packed
+                )
+                constrain(verticalChain) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                }
                 NestImage(
                     modifier = Modifier.constrainAs(tippingBg) {
                         end.linkTo(parent.end)
@@ -472,7 +520,7 @@ fun TippingLayout(tipping: TippingModel, onClickTippingButton: (model: TippingMo
                             visibility =
                                 if (tipping.status == OPEN) Visibility.Visible else Visibility.Gone
                         },
-                    type = NestImageType.Circle,
+                    type = NestImageType.Rect(),
                     source = ImageSource.Remote(ICON_OPEN_TIPPING_GOJEK)
                 )
                 NestTypography(
@@ -516,11 +564,12 @@ fun TippingLayout(tipping: TippingModel, onClickTippingButton: (model: TippingMo
 
 @Composable
 fun DriverInfoLayout(
+    modifier: Modifier,
     lastDriver: LastDriverModel,
     callDriver: (phoneNumber: String) -> Unit,
     openTippingInfo: () -> Unit
 ) {
-    ConstraintLayout(Modifier.fillMaxWidth()) {
+    ConstraintLayout(modifier) {
         val (driverImage, driverName, driverLicense, driverInfo, callButton) = createRefs()
         NestImage(
             modifier = Modifier
@@ -605,14 +654,15 @@ fun TrackingDetail(
         ConstraintLayout(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp)
         ) {
-            val (ref, shippingDate, serviceCode, seller, buyer, eta) = createRefs()
-            val startGuideline = createGuidelineFromStart(0.5f)
+            val (ref, shippingDate, serviceCode, seller, buyer, eta, divider) = createRefs()
+            val secondColumnStartGuideline = createGuidelineFromStart(0.5f)
+            val startGuideline = createGuidelineFromStart(20.dp)
+            val endGuideline = createGuidelineFromEnd(20.dp)
             TrackingDetailsItemWithIcon(
                 modifier = Modifier.constrainAs(ref) {
                     top.linkTo(parent.top)
-                    start.linkTo(parent.start)
+                    start.linkTo(startGuideline)
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 },
@@ -625,8 +675,8 @@ fun TrackingDetail(
             TrackingDetailsItem(
                 modifier = Modifier.constrainAs(shippingDate) {
                     top.linkTo(ref.bottom, margin = 8.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(startGuideline)
+                    start.linkTo(startGuideline)
+                    end.linkTo(secondColumnStartGuideline)
                     width = Dimension.fillToConstraints
                 },
                 stringResource(logisticorderR.string.label_delivery_date),
@@ -635,8 +685,8 @@ fun TrackingDetail(
             TrackingDetailsItem(
                 modifier = Modifier.constrainAs(serviceCode) {
                     top.linkTo(shippingDate.top)
-                    start.linkTo(startGuideline)
-                    end.linkTo(parent.end)
+                    start.linkTo(secondColumnStartGuideline)
+                    end.linkTo(endGuideline)
                     width = Dimension.fillToConstraints
                 },
                 stringResource(logisticorderR.string.label_service_code),
@@ -645,8 +695,8 @@ fun TrackingDetail(
             TrackingDetailsItem(
                 modifier = Modifier.constrainAs(seller) {
                     top.linkTo(shippingDate.bottom, margin = 8.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(startGuideline)
+                    start.linkTo(startGuideline)
+                    end.linkTo(secondColumnStartGuideline)
                     width = Dimension.fillToConstraints
                 },
                 stringResource(logisticorderR.string.label_seller_courier_tracking),
@@ -659,8 +709,8 @@ fun TrackingDetail(
             TrackingDetailsItem(
                 modifier = Modifier.constrainAs(buyer) {
                     top.linkTo(seller.top)
-                    start.linkTo(startGuideline)
-                    end.linkTo(parent.end)
+                    start.linkTo(secondColumnStartGuideline)
+                    end.linkTo(endGuideline)
                     width = Dimension.fillToConstraints
                 },
                 stringResource(logisticorderR.string.label_buyer),
@@ -670,8 +720,8 @@ fun TrackingDetail(
             TrackingDetailsItemWithIcon(
                 modifier = Modifier.constrainAs(eta) {
                     top.linkTo(seller.bottom, margin = 8.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
+                    start.linkTo(startGuideline)
+                    end.linkTo(endGuideline)
                     width = Dimension.fillToConstraints
                 },
                 title = stringResource(logisticorderR.string.tracking_label_eta),
@@ -679,6 +729,15 @@ fun TrackingDetail(
                 icon = IconUnify.INFORMATION,
                 showIcon = data.trackOrder.detail.eta.isChanged,
                 onIconClicked = { seeEtaChangesInfo(data.trackOrder.detail.eta.userUpdatedInfo) }
+            )
+            Divider(
+                modifier = Modifier.constrainAs(divider) {
+                    top.linkTo(eta.bottom, margin = 16.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.start)
+                    width = Dimension.matchParent
+                },
+                thickness = 8.dp
             )
         }
     }
@@ -708,7 +767,6 @@ fun TrackingDetailsItemWithIcon(
         )
         NestTypography(
             modifier = Modifier
-                .fillMaxWidth()
                 .constrainAs(valueLayout) {
                     top.linkTo(titleLayout.bottom)
                     start.linkTo(parent.start)
@@ -788,9 +846,9 @@ private val DetailModel.deliveryDate: CharSequence
         return date.toHyphenIfEmptyOrNull()
     }
 
-//@Preview
-//@Composable
-//fun TrackingPagePreview() {
+// @Preview
+// @Composable
+// fun TrackingPagePreview() {
 //    val state = TrackingPageState(
 //        isLoading = false,
 //        trackingData = TrackingDataModel(
@@ -813,4 +871,4 @@ private val DetailModel.deliveryDate: CharSequence
 //    NestTheme {
 //        TrackingPageScreen(state)
 //    }
-//}
+// }

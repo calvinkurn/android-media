@@ -3,6 +3,7 @@ package com.tokopedia.logisticorder.view
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logisticorder.mapper.TrackingPageMapperNew
 import com.tokopedia.logisticorder.uimodel.TrackingPageEvent
 import com.tokopedia.logisticorder.uimodel.TrackingPageState
@@ -38,7 +39,7 @@ class TrackingPageComposeViewModel @Inject constructor(
         }
         when (event) {
             is TrackingPageEvent.CheckAvailabilityToFindNewDriver -> {
-                retryAvailability(event.orderId)
+                retryAvailability(orderId)
             }
 
             is TrackingPageEvent.FindNewDriver -> {
@@ -73,8 +74,8 @@ class TrackingPageComposeViewModel @Inject constructor(
         this.groupType = groupType
         this.trackingUrl = trackingUrlFromOrder
         this.caller = pageCaller
-        viewModelScope.launch {
-            try {
+        launchCatchError(
+            block = {
                 val trackingParam = trackingUseCase.getParam(orderId, orderTxId, groupType, "")
                 val getTrackingData = trackingUseCase(trackingParam)
                 val uiModel = mapper.mapTrackingDataCompose(
@@ -94,12 +95,13 @@ class TrackingPageComposeViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(isLoading = false, trackingData = uiModel)
                 }
-            } catch (e: Throwable) {
+            },
+            onError = { e ->
                 _uiState.update {
                     it.copy(isLoading = false, error = e)
                 }
             }
-        }
+        )
     }
 
     private fun retryBooking(orderId: String) {

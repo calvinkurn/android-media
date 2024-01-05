@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.View
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -55,7 +54,7 @@ class TrackingPageComposeActivity : AppCompatActivity() {
         ViewModelProvider(this, viewModelFactory)[TrackingPageComposeViewModel::class.java]
     }
 
-    private val orderId by lazy { intent.extras?.getString(ARGUMENTS_ORDER_ID).orEmpty()}
+    private val orderId by lazy { intent.extras?.getString(ARGUMENTS_ORDER_ID).orEmpty() }
     private val urlLiveTracking by lazy {
         intent.extras?.getString(ARGUMENTS_TRACKING_URL).orEmpty()
     }
@@ -63,9 +62,9 @@ class TrackingPageComposeActivity : AppCompatActivity() {
     private val orderTxId by lazy { intent?.extras?.getString(ARGUMENTS_ORDER_TX_ID).orEmpty() }
     private val groupType by lazy { intent?.extras?.getString(ARGUMENTS_GROUP_TYPE)?.toIntOrNull() }
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         injectComponent()
-        super.onCreate(savedInstanceState, persistentState)
+        super.onCreate(savedInstanceState)
         viewModel.onEvent(
             TrackingPageEvent.LoadTrackingData(
                 orderId,

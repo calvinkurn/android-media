@@ -160,11 +160,18 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
     fun checkRemoteConfig() {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
         val key = "key"
-        if (remoteConfig.getBoolean(key)) {
-            val intent = Intent(requireContext(), TrackingPageComposeActivity::class.java).apply {
-                arguments = this@TrackingPageFragment.arguments
-            }
+//        todo uncomment this
+//        if (remoteConfig.getBoolean(key)) {
+        val intent = Intent(requireContext(), TrackingPageComposeActivity::class.java).apply {
+            putExtra(ARGUMENTS_ORDER_ID, mOrderId)
+            putExtra(ARGUMENTS_CALLER, mCaller)
+            putExtra(ARGUMENTS_GROUP_TYPE, mGroupType)
+            putExtra(ARGUMENTS_TRACKING_URL, mTrackingUrl)
+            putExtra(ARGUMENTS_ORDER_TX_ID, mOrderTxId)
         }
+        startActivity(intent)
+        activity?.finish()
+//        }
     }
 
     override fun onDestroyView() {
