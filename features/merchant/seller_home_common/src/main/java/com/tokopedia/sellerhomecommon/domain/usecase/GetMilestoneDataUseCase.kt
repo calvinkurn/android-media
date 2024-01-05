@@ -50,7 +50,7 @@ class GetMilestoneDataUseCase(
                     questStatus == MilestoneItemRewardUiModel.QuestStatus.NOT_STARTED_OR_ONGOING && !rewardId.isZero()
                 return if (shouldLoadRewardDetail) {
                     val rewardDetail = getRewardDetailById(rewardId)
-                    mapper.mapRemoteDataToUiData(it, isFromCache, REWARD_KEY to rewardDetail)
+                    mapper.mapRemoteDataToUiData(it, isFromCache, mapOf(REWARD_KEY to rewardDetail))
                 } else {
                     mapper.mapRemoteDataToUiData(it, isFromCache)
                 }

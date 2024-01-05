@@ -8,6 +8,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcItemTableColumnHtmlWithMetaBinding
@@ -17,7 +18,7 @@ import com.tokopedia.utils.view.DarkModeUtil
 class TableColumnHtmlWithMetaViewHolder(
     itemView: View,
     private val listener: Listener
-): AbstractViewHolder<TableRowsUiModel.RowColumnHtmlWithMeta>(itemView) {
+) : AbstractViewHolder<TableRowsUiModel.RowColumnHtmlWithMeta>(itemView) {
 
     companion object {
         @LayoutRes
@@ -33,7 +34,7 @@ class TableColumnHtmlWithMetaViewHolder(
 
     private fun setupValue(element: TableRowsUiModel.RowColumnHtmlWithMeta) {
         with(binding.tvTableColumnHtmlMeta) {
-            text = element.valueStr
+            text = element.valueStr.parseAsHtml()
             gravity = if (element.isLeftAlign) {
                 Gravity.START
             } else {
@@ -64,7 +65,6 @@ class TableColumnHtmlWithMetaViewHolder(
                         PorterDuff.Mode.SRC_ATOP
                     )
                 } catch (ignored: Exception) {
-
                 }
             }
         }
@@ -73,5 +73,4 @@ class TableColumnHtmlWithMetaViewHolder(
     interface Listener {
         fun onLabelMetaClicked(htmlMeta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta)
     }
-
 }

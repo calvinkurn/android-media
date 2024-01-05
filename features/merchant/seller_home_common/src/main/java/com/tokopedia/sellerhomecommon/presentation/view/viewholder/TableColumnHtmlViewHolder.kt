@@ -16,6 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.setClickableUrlHtml
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhomecommon.R
@@ -29,7 +30,8 @@ import timber.log.Timber
  */
 
 class TableColumnHtmlViewHolder(
-    itemView: View, private val listener: Listener
+    itemView: View,
+    private val listener: Listener
 ) : AbstractViewHolder<TableRowsUiModel.RowColumnHtml>(itemView) {
 
     companion object {
@@ -67,7 +69,8 @@ class TableColumnHtmlViewHolder(
     private fun setOnHtmlTextClicked(element: TableRowsUiModel.RowColumnHtml) {
         with(binding) {
             val textColorInt = element.colorInt ?: MethodChecker.getColor(
-                root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                root.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN900
             )
             element.colorInt = textColorInt
             tvTableColumnHtml.run {
@@ -76,19 +79,19 @@ class TableColumnHtmlViewHolder(
                     color = textColorInt
                     applyTypographyFont(context)
                 }, onTouchListener = { spannable ->
-                    SpannableTouchListener(spannable)
-                }, onUrlClicked = { url, text ->
-                    listener.onHyperlinkClicked(url, text, element.meta)
-                    Uri.parse(url).let { uri ->
-                        if (isAppLink(uri)) {
-                            RouteManager.route(context, url)
-                        } else {
-                            if (!checkUrlForNativePage(context, uri)) {
-                                goToDefaultIntent(context, uri)
+                        SpannableTouchListener(spannable)
+                    }, onUrlClicked = { url, text ->
+                        listener.onHyperlinkClicked(url, text, element.meta)
+                        Uri.parse(url).let { uri ->
+                            if (isAppLink(uri)) {
+                                RouteManager.route(context, url)
+                            } else {
+                                if (!checkUrlForNativePage(context, uri)) {
+                                    goToDefaultIntent(context, uri)
+                                }
                             }
                         }
-                    }
-                })
+                    })
                 setTextColor(textColorInt)
             }
         }
@@ -101,7 +104,7 @@ class TableColumnHtmlViewHolder(
         } else {
             binding.tvTableColumnHtmlDesc.run {
                 show()
-                text = additionalValueString
+                text = additionalValueString.parseAsHtml()
             }
             binding.tvTableColumnHtml.maxLines = Int.ONE
         }
