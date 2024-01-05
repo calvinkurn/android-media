@@ -58,7 +58,7 @@ class BmgmAddOnViewHolder(
     private fun setupProductAddOn(addOnUiModel: AddOnSummaryUiModel.AddonItemUiModel) {
         binding?.run {
             setupAddOnImage(addOnUiModel.addOnsThumbnailUrl)
-            setupAddOnName(addOnUiModel.type, addOnUiModel.addOnsName)
+            setupAddOnName(addOnUiModel.addOnsName)
             setupAddOnPrice(addOnUiModel.quantity, addOnUiModel.priceText)
             setupAddOnDescriptions(addOnUiModel)
             setupInfoLink(addOnUiModel.infoLink, addOnUiModel.type)
@@ -82,11 +82,8 @@ class BmgmAddOnViewHolder(
         }
     }
 
-    private fun ItemBmgmDetailAddOnBinding.setupAddOnName(
-        type: String,
-        name: String
-    ) {
-        tvAddOnName.text = composeAddOnName(type, name)
+    private fun ItemBmgmDetailAddOnBinding.setupAddOnName(name: String) {
+        tvAddOnName.text = name
     }
 
     private fun ItemBmgmDetailAddOnBinding.setupAddOnPrice(quantity: Int, priceText: String) {
@@ -116,13 +113,6 @@ class BmgmAddOnViewHolder(
             listener = this@BmgmAddOnViewHolder
             show()
         }
-    }
-
-    private fun composeAddOnName(
-        type: String,
-        name: String
-    ): CharSequence {
-        return listOf(type, name).filter { it.isNotBlank() }.joinToString(" - ")
     }
 
     interface Listener {

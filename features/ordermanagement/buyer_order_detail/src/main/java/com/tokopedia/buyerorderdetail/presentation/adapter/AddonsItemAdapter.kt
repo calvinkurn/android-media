@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter
 
-import android.content.Context
 import android.graphics.Color
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod
@@ -80,7 +79,7 @@ class AddonsItemAdapter(
         }
 
         private fun ItemBuyerOrderDetailAddonsListBinding.setDataViews(item: AddonsListUiModel.AddonItemUiModel) {
-            tvBomDetailAddonsName.text = getAddonNameText(root.context, item)
+            tvBomDetailAddonsName.text = item.addOnsName
             ivBomDetailAddonsThumbnail.showIfWithBlock(item.addOnsThumbnailUrl.isNotEmpty()) {
                 ivBomDetailAddonsThumbnail.setImageUrl(item.addOnsThumbnailUrl)
             }
@@ -90,18 +89,6 @@ class AddonsItemAdapter(
                     item.quantity,
                     item.priceText
                 )
-        }
-
-        private fun getAddonNameText(context: Context, item: AddonsListUiModel.AddonItemUiModel): String {
-            return if (item.providedByShopItself) {
-                context.getString(
-                    R.string.order_addons_type_and_name,
-                    item.type,
-                    item.addOnsName
-                )
-            } else {
-                item.type
-            }
         }
 
         private fun ItemBuyerOrderDetailAddonsListBinding.setupToMetadata(toStr: String) {
