@@ -167,7 +167,7 @@ internal abstract class FeedBrowseItemAdapter<Input : Any>(
             Banner.Placeholder -> TYPE_BANNER_PLACEHOLDER
             is Title -> TYPE_TITLE
             is HorizontalAuthors -> TYPE_HORIZONTAL_CREATORS
-            LoadingModel -> TYPE_HORIZONTAL_CREATORS
+            LoadingModel -> TYPE_LOADING
             is InspirationCard.Item -> TYPE_INSPIRATION_CARD
             is InspirationCard.Placeholder -> TYPE_INSPIRATION_CARD_PLACEHOLDER
             else -> error("Item $item is not supported")

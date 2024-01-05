@@ -11,7 +11,6 @@ import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationData
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationMap
 import com.tokopedia.feedplus.browse.presentation.model.CategoryInspirationUiState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChannelListState
-import com.tokopedia.feedplus.browse.presentation.model.isLoading
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -103,7 +102,7 @@ internal class CategoryInspirationViewModel @AssistedInject constructor(
 
     private suspend fun loadContent(menu: WidgetMenuModel) {
         val data = _uiState.value.items[menu.id]
-        if (data != null && (data.items.isLoading || !data.items.hasNextPage)) return
+        if (data != null && !data.items.hasNextPage) return
 
         _uiState.update {
             it.copy(
@@ -126,7 +125,7 @@ internal class CategoryInspirationViewModel @AssistedInject constructor(
                         it.copy(
                             items = response.menu.associate { menu ->
                                 menu.id to
-                                    CategoryInspirationData(menu, FeedBrowseChannelListState.initSuccess(emptyList()))
+                                    CategoryInspirationData(menu, FeedBrowseChannelListState.initLoading())
                             },
                             selectedMenuId = response.menu.firstOrNull()?.id.orEmpty()
                         )
