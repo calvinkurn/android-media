@@ -269,13 +269,8 @@ class ContentCommentBottomSheet @Inject constructor(
                     ResultState.Success -> {
                         showError(false)
                         scrollListener.updateStateAfterGetData()
-                        commentAdapter.setItemsAndAnimateChanges(
-                            it.list.ifEmpty {
-                                listOf(
-                                    CommentUiModel.Empty
-                                )
-                            }
-                        )
+                        commentAdapter.setItemsAndAnimateChanges(it.list)
+                        binding.vCommentEmpty.root.showWithCondition(it.list.isEmpty())
                     }
                     ResultState.Loading -> {
                         showError(false)

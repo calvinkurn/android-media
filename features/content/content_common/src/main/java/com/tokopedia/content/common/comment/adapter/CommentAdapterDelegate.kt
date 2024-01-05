@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.R
-import com.tokopedia.content.common.databinding.ItemCommentEmptyBinding
 import com.tokopedia.content.common.databinding.ItemCommentExpandableBinding
 import com.tokopedia.content.common.databinding.ItemCommentShimmeringBinding
 import com.tokopedia.content.common.databinding.ItemContentCommentBinding
@@ -31,26 +30,6 @@ class CommentAdapterDelegate {
                 false
             )
             return CommentViewHolder.Item(view, listener)
-        }
-    }
-
-    internal class Empty :
-        TypedAdapterDelegate<CommentUiModel.Empty, CommentUiModel, CommentViewHolder.Empty>(R.layout.item_comment_empty) {
-        override fun onBindViewHolder(
-            item: CommentUiModel.Empty,
-            holder: CommentViewHolder.Empty
-        ) {}
-
-        override fun onCreateViewHolder(
-            parent: ViewGroup,
-            basicView: View
-        ): CommentViewHolder.Empty {
-            val view = ItemCommentEmptyBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-            return CommentViewHolder.Empty(view)
         }
     }
 
