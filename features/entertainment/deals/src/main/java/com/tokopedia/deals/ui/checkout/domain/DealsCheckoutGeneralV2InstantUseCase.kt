@@ -1,8 +1,8 @@
-package com.tokopedia.deals.checkout.domain
+package com.tokopedia.deals.ui.checkout.domain
 
 import com.tokopedia.common_entertainment.data.DealsCheckoutInstantResponse
 import com.tokopedia.common_entertainment.data.DealsInstant
-import com.tokopedia.deals.checkout.domain.query.CheckoutGeneralV2InstantMutation
+import com.tokopedia.deals.ui.checkout.domain.query.CheckoutGeneralV2InstantMutation
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject

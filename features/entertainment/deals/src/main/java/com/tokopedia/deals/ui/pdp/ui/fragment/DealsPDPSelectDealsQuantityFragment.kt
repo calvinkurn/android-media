@@ -15,10 +15,10 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.deals.checkout.ui.activity.DealsCheckoutActivity
 import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.FragmentDealsDetailSelectQuantityBinding
+import com.tokopedia.deals.ui.checkout.ui.activity.DealsCheckoutActivity
 import com.tokopedia.deals.ui.pdp.di.DealsPDPComponent
 import com.tokopedia.deals.ui.pdp.ui.activity.DealsPDPActivity
 import com.tokopedia.deals.ui.pdp.ui.viewmodel.DealsPDPSelectQuantityViewModel

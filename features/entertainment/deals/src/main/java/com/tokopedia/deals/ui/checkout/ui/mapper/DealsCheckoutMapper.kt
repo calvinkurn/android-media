@@ -1,4 +1,4 @@
-package com.tokopedia.deals.checkout.ui.mapper
+package com.tokopedia.deals.ui.checkout.ui.mapper
 
 import com.google.gson.Gson
 import com.tokopedia.common_entertainment.data.CartInfo

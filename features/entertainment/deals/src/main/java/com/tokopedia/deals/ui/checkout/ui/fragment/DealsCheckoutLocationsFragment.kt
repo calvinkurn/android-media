@@ -1,4 +1,4 @@
-package com.tokopedia.deals.checkout.ui.fragment
+package com.tokopedia.deals.ui.checkout.ui.fragment
 
 import android.content.Context
 import android.content.Intent
@@ -10,9 +10,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.deals.checkout.di.DealsCheckoutComponent
-import com.tokopedia.deals.checkout.ui.activity.DealsCheckoutActivity
 import com.tokopedia.deals.databinding.FragmentDealsCheckoutLocationBinding
+import com.tokopedia.deals.ui.checkout.di.DealsCheckoutComponent
+import com.tokopedia.deals.ui.checkout.ui.activity.DealsCheckoutActivity
 import com.tokopedia.deals.ui.pdp.ui.adapter.DealsDetailAllLocationAdapter
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -32,7 +32,9 @@ class DealsCheckoutLocationsFragment: BaseDaggerFragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        outlets = arguments?.getParcelableArrayList<com.tokopedia.deals.ui.pdp.data.Outlet>(EXTRA_OUTLETS).orEmpty()
+        outlets = arguments?.getParcelableArrayList<com.tokopedia.deals.ui.pdp.data.Outlet>(
+            EXTRA_OUTLETS
+        ).orEmpty()
         super.onCreate(savedInstanceState)
     }
 
@@ -81,7 +83,7 @@ class DealsCheckoutLocationsFragment: BaseDaggerFragment() {
     }
 
     private fun openGoogleMaps(context: Context, latLng: String) {
-        val gmmIntentUri = Uri.parse("${URI_MAPS}$latLng")
+        val gmmIntentUri = Uri.parse("$URI_MAPS$latLng")
         val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
         mapIntent.setPackage(PACKAGE_MAPS)
         if (mapIntent.resolveActivity(context.packageManager) != null) {

@@ -1,4 +1,4 @@
-package com.tokopedia.deals.checkout.ui.viewmodel
+package com.tokopedia.deals.ui.checkout.ui.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -6,8 +6,8 @@ import com.tokopedia.common_entertainment.data.DealsCheckoutInstantResponse
 import com.tokopedia.common_entertainment.data.DealsCheckoutResponse
 import com.tokopedia.common_entertainment.data.DealsGeneral
 import com.tokopedia.common_entertainment.data.DealsInstant
-import com.tokopedia.deals.checkout.domain.DealsCheckoutGeneralV2InstantUseCase
-import com.tokopedia.deals.checkout.domain.DealsCheckoutGeneralV2UseCase
+import com.tokopedia.deals.ui.checkout.domain.DealsCheckoutGeneralV2InstantUseCase
+import com.tokopedia.deals.ui.checkout.domain.DealsCheckoutGeneralV2UseCase
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result

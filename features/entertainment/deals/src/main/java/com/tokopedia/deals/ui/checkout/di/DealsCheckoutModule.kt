@@ -1,7 +1,7 @@
-package com.tokopedia.deals.checkout.di
+package com.tokopedia.deals.ui.checkout.di
 
 import com.google.gson.Gson
-import com.tokopedia.deals.checkout.ui.mapper.DealsCheckoutMapper
+import com.tokopedia.deals.ui.checkout.ui.mapper.DealsCheckoutMapper
 import dagger.Module
 import dagger.Provides
 

@@ -1,10 +1,10 @@
-package com.tokopedia.deals.checkout.di
+package com.tokopedia.deals.ui.checkout.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.deals.checkout.ui.viewmodel.DealsCheckoutViewModel
+import com.tokopedia.deals.ui.checkout.ui.viewmodel.DealsCheckoutViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

@@ -1,7 +1,7 @@
-package com.tokopedia.deals.checkout.domain.query
+package com.tokopedia.deals.ui.checkout.domain.query
 
-import com.tokopedia.deals.checkout.domain.query.DealsCheckoutGeneralV2Query.DEALS_CHECKOUT_GENERAL_V2_NAME
-import com.tokopedia.deals.checkout.domain.query.DealsCheckoutGeneralV2Query.DEALS_CHECKOUT_GENERAL_V2_QUERY
+import com.tokopedia.deals.ui.checkout.domain.query.DealsCheckoutGeneralV2Query.DEALS_CHECKOUT_GENERAL_V2_NAME
+import com.tokopedia.deals.ui.checkout.domain.query.DealsCheckoutGeneralV2Query.DEALS_CHECKOUT_GENERAL_V2_QUERY
 import com.tokopedia.gql_query_annotation.GqlQuery
 
 @GqlQuery(DEALS_CHECKOUT_GENERAL_V2_NAME, DEALS_CHECKOUT_GENERAL_V2_QUERY)

@@ -1,4 +1,4 @@
-package com.tokopedia.deals.checkout.ui.fragment
+package com.tokopedia.deals.ui.checkout.ui.fragment
 
 import android.app.Activity
 import android.content.Intent
@@ -24,16 +24,16 @@ import com.tokopedia.common_entertainment.data.DealsGeneral
 import com.tokopedia.common_entertainment.data.DealsInstant
 import com.tokopedia.common_entertainment.data.EventVerifyResponse
 import com.tokopedia.common_entertainment.data.ItemMapResponse
-import com.tokopedia.deals.checkout.di.DealsCheckoutComponent
-import com.tokopedia.deals.checkout.ui.DealsCheckoutCallbacks
-import com.tokopedia.deals.checkout.ui.activity.DealsCheckoutActivity
-import com.tokopedia.deals.checkout.ui.activity.DealsCheckoutActivity.Companion.EXTRA_DEAL_DETAIL
-import com.tokopedia.deals.checkout.ui.activity.DealsCheckoutActivity.Companion.EXTRA_DEAL_VERIFY
-import com.tokopedia.deals.checkout.ui.mapper.DealsCheckoutMapper
-import com.tokopedia.deals.checkout.ui.viewmodel.DealsCheckoutViewModel
 import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.FragmentDealsCheckoutBinding
+import com.tokopedia.deals.ui.checkout.di.DealsCheckoutComponent
+import com.tokopedia.deals.ui.checkout.ui.DealsCheckoutCallbacks
+import com.tokopedia.deals.ui.checkout.ui.activity.DealsCheckoutActivity
+import com.tokopedia.deals.ui.checkout.ui.activity.DealsCheckoutActivity.Companion.EXTRA_DEAL_DETAIL
+import com.tokopedia.deals.ui.checkout.ui.activity.DealsCheckoutActivity.Companion.EXTRA_DEAL_VERIFY
+import com.tokopedia.deals.ui.checkout.ui.mapper.DealsCheckoutMapper
+import com.tokopedia.deals.ui.checkout.ui.viewmodel.DealsCheckoutViewModel
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone

@@ -13,9 +13,9 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.deals.checkout.mock.DealsCheckoutMockData
-import com.tokopedia.deals.checkout.ui.activity.DealsCheckoutActivity
-import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.deals.test.R
+import com.tokopedia.deals.ui.checkout.ui.activity.DealsCheckoutActivity
+import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.annotations.CassavaTest
 import org.junit.Assert
 import org.junit.Before

@@ -1,4 +1,4 @@
-package com.tokopedia.deals.checkout.ui.activity
+package com.tokopedia.deals.ui.checkout.ui.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,15 +6,16 @@ import androidx.fragment.app.commit
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.deals.DealsComponentInstance
-import com.tokopedia.deals.checkout.di.DaggerDealsCheckoutComponent
-import com.tokopedia.deals.checkout.di.DealsCheckoutComponent
-import com.tokopedia.deals.checkout.ui.DealsCheckoutCallbacks
-import com.tokopedia.deals.checkout.ui.fragment.DealsCheckoutFragment
-import com.tokopedia.deals.checkout.ui.fragment.DealsCheckoutLocationsFragment
+import com.tokopedia.deals.ui.checkout.di.DaggerDealsCheckoutComponent
+import com.tokopedia.deals.ui.checkout.di.DealsCheckoutComponent
+import com.tokopedia.deals.ui.checkout.ui.DealsCheckoutCallbacks
+import com.tokopedia.deals.ui.checkout.ui.fragment.DealsCheckoutFragment
+import com.tokopedia.deals.ui.checkout.ui.fragment.DealsCheckoutLocationsFragment
 import com.tokopedia.abstraction.R.id as idAbstraction
 import com.tokopedia.deals.R.anim as animDeals
 
-class DealsCheckoutActivity: BaseSimpleActivity(), HasComponent<DealsCheckoutComponent>, DealsCheckoutCallbacks {
+class DealsCheckoutActivity: BaseSimpleActivity(), HasComponent<DealsCheckoutComponent>,
+    DealsCheckoutCallbacks {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

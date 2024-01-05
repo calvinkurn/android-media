@@ -1,4 +1,4 @@
-package com.tokopedia.deals.checkout.di
+package com.tokopedia.deals.ui.checkout.di
 
 import javax.inject.Scope
 

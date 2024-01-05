@@ -1,8 +1,8 @@
-package com.tokopedia.deals.checkout.di
+package com.tokopedia.deals.ui.checkout.di
 
-import com.tokopedia.deals.checkout.ui.fragment.DealsCheckoutFragment
-import com.tokopedia.deals.checkout.ui.fragment.DealsCheckoutLocationsFragment
 import com.tokopedia.deals.di.DealsComponent
+import com.tokopedia.deals.ui.checkout.ui.fragment.DealsCheckoutFragment
+import com.tokopedia.deals.ui.checkout.ui.fragment.DealsCheckoutLocationsFragment
 import dagger.Component
 
 @DealsCheckoutScope
