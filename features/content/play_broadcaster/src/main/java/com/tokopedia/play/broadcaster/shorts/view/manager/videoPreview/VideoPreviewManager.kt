@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.shorts.view.manager.videoPreview
 
-import androidx.compose.runtime.MutableState
 import com.tokopedia.play.broadcaster.shorts.view.compose.VideoState
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.state.PlayVideoState
@@ -16,7 +15,7 @@ class VideoPreviewManager @Inject constructor(
     val videoWrapper: PlayVideoWrapper,
 ) {
 
-    private val _videoState = MutableStateFlow<VideoState>(VideoState.Unknown)
+    private val _videoState = MutableStateFlow(VideoState.Unknown)
     val videoState = _videoState.asStateFlow()
 
     private val videoListener = object : PlayVideoWrapper.Listener {
