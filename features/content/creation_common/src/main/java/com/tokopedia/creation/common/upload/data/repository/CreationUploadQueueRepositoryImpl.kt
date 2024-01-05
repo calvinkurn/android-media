@@ -3,13 +3,10 @@ package com.tokopedia.creation.common.upload.data.repository
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.creation.common.upload.data.local.database.CreationUploadQueueDatabase
+import com.tokopedia.creation.common.upload.data.local.entity.CreationUploadQueueEntity
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
 import com.tokopedia.creation.common.upload.model.CreationUploadData
-import com.tokopedia.creation.common.upload.util.logger.CreationUploadLogger
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -23,23 +20,12 @@ class CreationUploadQueueRepositoryImpl @Inject constructor(
     private val mutex: Mutex,
     private val gson: Gson,
     private val creationUploadQueueDatabase: CreationUploadQueueDatabase,
-    private val logger: CreationUploadLogger,
 ) : CreationUploadQueueRepository {
 
-    override fun observeTopQueue(): Flow<CreationUploadData> {
+    override fun observeTopQueue(): Flow<CreationUploadQueueEntity?> {
         return creationUploadQueueDatabase
             .creationUploadQueueDao()
             .observeTopQueue()
-            .distinctUntilChanged()
-            .filterNotNull()
-            .mapNotNull { data ->
-                try {
-                    CreationUploadData.parseFromEntity(data, gson)
-                } catch (throwable: Throwable) {
-                    logger.sendLog(data.toString(), throwable)
-                    null
-                }
-            }
     }
 
     override suspend fun insert(data: CreationUploadData) {
