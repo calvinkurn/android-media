@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.top_ads_on_boarding.constant.TopAdsOnBoardingConstant.ONBOARDING_IMG_URL
 import com.tokopedia.top_ads_on_boarding.data.mapper.OnboardingMapper
 import com.tokopedia.top_ads_on_boarding.databinding.TopadsAutoPsOnboardingActivityLayoutBinding
 import com.tokopedia.top_ads_on_boarding.di.DaggerTopAdsOnBoardingComponent
@@ -39,6 +40,8 @@ class AutoPsOnboardingActivity : BaseActivity(), HasComponent<TopAdsOnBoardingCo
         )
         binding?.rvFaq?.adapter = faqListAdapter
         faqListAdapter.submitList(faqList)
+
+        binding?.image?.urlSrc = ONBOARDING_IMG_URL
 
         binding?.submit?.setOnClickListener{
             startActivity(RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE))

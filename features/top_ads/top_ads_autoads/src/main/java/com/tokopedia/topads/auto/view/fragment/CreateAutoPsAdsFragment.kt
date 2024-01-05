@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.TextPaint
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +31,7 @@ import com.tokopedia.topads.auto.R as topadsautoR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.DAILY_BUDGET_MULTIPLIER
 import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.SEEKBAR_DEFAULT_INCREMENT
+import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.TURNOFF_AUTO_PS_DIALOG_IMG_URL
 import com.tokopedia.topads.auto.databinding.TopadsAutoadsPsLayoutBinding
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.view.viewmodel.AutoPsViewModel
@@ -58,6 +60,7 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
     private var minDailyBudget = Int.ZERO
     private var maxDailyBudget = Int.ZERO
     private var confirmationDailog: DialogUnify? = null
+    private var autoPsToggleOn: Boolean = false
 
     @JvmField
     @Inject
@@ -92,6 +95,7 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
     }
 
     private fun setViews(){
+        binding?.autoAdsCta?.movementMethod = LinkMovementMethod.getInstance()
         binding?.autoAdsCta?.text = getClickableString()
     }
 
@@ -169,12 +173,14 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
                 binding?.manualAdsCard?.show()
                 binding?.btnSubmit?.text = getString(topadsautoR.string.iklankan)
                 binding?.btnSubmit?.isEnabled = true
+                autoPsToggleOn = false
             }
             else -> {
                 binding?.autoAdsCard?.show()
                 binding?.manualAdsCard?.gone()
                 binding?.btnSubmit?.text = getString(topadscommonR.string.topads_common_save_butt)
                 binding?.btnSubmit?.isEnabled = false
+                autoPsToggleOn = true
             }
         }
     }
@@ -192,10 +198,17 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
         val intent = RouteManager.getIntent(
             context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
         ).apply {
-            putExtra(
-                TopAdsCommonConstant.TOPADS_AUTOADS_BUDGET_UPDATED,
-                TopAdsCommonConstant.PARAM_AUTOADS_BUDGET
-            )
+            if(autoPsToggleOn){
+                putExtra(
+                    TopAdsCommonConstant.TOPADS_AUTOPS_ON,
+                    TopAdsCommonConstant.PARAM_AUTOPS_ON
+                )
+            } else {
+                putExtra(
+                    TopAdsCommonConstant.TOPADS_AUTOPS_OFF,
+                    TopAdsCommonConstant.PARAM_AUTOPS_OFF
+                )
+            }
         }
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
@@ -307,7 +320,7 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
 
         confirmationDailog?.let {
             it.setTitle(title)
-//            it.setImageUrl()
+            it.setImageUrl(TURNOFF_AUTO_PS_DIALOG_IMG_URL)
             it.setDescription(description)
 
             it.setPrimaryCTAText(getString(topadsautoR.string.topads_auto_ps_dailog_submit_cta))
@@ -318,6 +331,7 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
                     viewModel?.postAutoPs(TopadsCommonUtil.convertMoneyToValue(editText.text.toString()),
                         TopadsAutoPsConstants.AUTO_PS_TOGGLE_OFF
                     )
+                    autoPsToggleOn = false
                 }
             }
 
@@ -345,6 +359,7 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
                     viewModel?.postAutoPs(TopadsCommonUtil.convertMoneyToValue(it.text.toString()),
                         TopadsAutoPsConstants.AUTO_PS_TOGGLE_ON
                     )
+                    autoPsToggleOn = true
                     binding?.btnSubmit?.isLoading = true
                 }
             }

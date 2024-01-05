@@ -636,4 +636,8 @@
     <string name="topads_insight_centre_create_new_group">Buat Grup Baru</string>
     <string name="topads_insight_centre_add_to_another_group">Tambah ke Grup Lain</string>
     <string name="topads_insight_centre_create_group_title_info">Nama grup dapat disesuaikan berdasarkan kategori atau tema iklanmu.</string>
+
+<!--    Auto PS-->
+    <string name="topads_auto_ps_turn_on_msg">Iklan berhasil dibuat. Pantau terus Performa Iklan-mu di sini, ya!</string>
+    <string name="topads_auto_ps_turn_off_msg">Kamu telah menonaktifkan pengaturan Iklan Otomatis.</string>
 </resources>

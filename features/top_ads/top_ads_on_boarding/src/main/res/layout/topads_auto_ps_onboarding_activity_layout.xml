@@ -51,8 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/article_link"
-            app:srcCompat="@drawable/autops_thumbnail"/>
+            app:layout_constraintTop_toBottomOf="@id/article_link"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
