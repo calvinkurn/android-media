@@ -7,15 +7,17 @@ import com.tokopedia.deals.DealsJsonMapper
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.domain.GetNearestLocationUseCase
-import com.tokopedia.deals.home.data.DealsEventHome
 import com.tokopedia.deals.home.domain.GetEventHomeBrandPopularUseCase
 import com.tokopedia.deals.home.domain.GetEventHomeLayoutUseCase
 import com.tokopedia.deals.home.ui.dataview.BannersDataView
 import com.tokopedia.deals.home.ui.viewmodel.DealsHomeViewModel
 import com.tokopedia.deals.home.util.DealsHomeMapper
 import com.tokopedia.deals.location_picker.model.response.Location
-import com.tokopedia.deals.location_picker.model.response.LocationData
-import com.tokopedia.deals.location_picker.model.response.LocationType
+import com.tokopedia.deals.ui.home.domain.GetEventHomeBrandPopularUseCase
+import com.tokopedia.deals.ui.home.domain.GetEventHomeLayoutUseCase
+import com.tokopedia.deals.ui.home.ui.dataview.BannersDataView
+import com.tokopedia.deals.ui.home.ui.viewmodel.DealsHomeViewModel
+import com.tokopedia.deals.ui.home.util.DealsHomeMapper
 import com.tokopedia.deals.ui.location_picker.DealsLocationConstants
 import com.tokopedia.deals.ui.location_picker.model.response.LocationData
 import com.tokopedia.deals.ui.location_picker.model.response.LocationType
@@ -42,7 +44,7 @@ class DealsHomeViewModelTest {
 
     private lateinit var viewModel: DealsHomeViewModel
     private lateinit var mapper: DealsHomeMapper
-    private lateinit var mockHomeResponse: DealsEventHome.Response
+    private lateinit var mockHomeResponse: com.tokopedia.deals.ui.home.data.DealsEventHome.Response
     private lateinit var mockSearchData: SearchData
     private lateinit var mockLocationData: LocationData
     private lateinit var mockBannersData: BannersDataView
@@ -61,7 +63,7 @@ class DealsHomeViewModelTest {
 
         mockHomeResponse = Gson().fromJson(
             DealsJsonMapper.getJson("event_home.json"),
-            DealsEventHome.Response::class.java
+            com.tokopedia.deals.ui.home.data.DealsEventHome.Response::class.java
         )
         mockSearchData = Gson().fromJson(
             DealsJsonMapper.getJson("event_search.json"),

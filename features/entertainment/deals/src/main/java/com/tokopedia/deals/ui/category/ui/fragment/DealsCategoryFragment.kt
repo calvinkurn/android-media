@@ -32,7 +32,6 @@ import com.tokopedia.deals.common.ui.fragment.DealsBaseFragment
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsCategoryBinding
-import com.tokopedia.deals.home.ui.fragment.DealsHomeFragment
 import com.tokopedia.deals.ui.brand.DealsBrandActivity
 import com.tokopedia.deals.ui.brand.model.DealsEmptyDataView
 import com.tokopedia.deals.ui.category.di.DealsCategoryComponent
@@ -40,6 +39,7 @@ import com.tokopedia.deals.ui.category.listener.DealsCategoryFilterBottomSheetLi
 import com.tokopedia.deals.ui.category.ui.activity.DealsCategoryActivity
 import com.tokopedia.deals.ui.category.ui.adapter.DealsCategoryAdapter
 import com.tokopedia.deals.ui.category.ui.viewmodel.DealCategoryViewModel
+import com.tokopedia.deals.ui.home.ui.fragment.DealsHomeFragment
 import com.tokopedia.deals.ui.location_picker.model.response.Location
 import com.tokopedia.deals.ui.search.model.response.Category
 import com.tokopedia.deals.ui.search.ui.activity.DealsSearchActivity

@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.ui.viewmodel.DealsBrandCategoryActivityViewModel
-import com.tokopedia.deals.home.ui.viewmodel.DealsHomeViewModel
 import com.tokopedia.deals.ui.brand.DealsBrandViewModel
+import com.tokopedia.deals.ui.home.ui.viewmodel.DealsHomeViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
