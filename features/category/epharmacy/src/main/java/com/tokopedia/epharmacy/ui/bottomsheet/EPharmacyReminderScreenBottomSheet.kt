@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.epharmacy.databinding.EpharmacyReminderScreenBottomSheetBinding
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
@@ -48,6 +49,7 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
     private var openTime = String.EMPTY
     private var closeTime = String.EMPTY
     private var isOutsideWorkingHours = false
+    private val APPLNK_HOME = "tokopedia://home"
 
     companion object {
         fun newInstance(
@@ -187,6 +189,7 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                 epharmacyGlobalError.errorSecondaryAction.show()
                 epharmacyGlobalError.setSecondaryActionClickListener {
                     activity?.finish()
+                    RouteManager.route(context, APPLNK_HOME)
                 }
             }
         }
