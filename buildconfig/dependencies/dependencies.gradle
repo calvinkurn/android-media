@@ -369,6 +369,7 @@ ext {
             profileInstaller      : "androidx.profileinstaller:profileinstaller:$profileInstallerVersion",
             desugarJdk            : "com.android.tools:desugar_jdk_libs:$desugarJdkVersion",
             ffmpeg                : "com.arthenica:mobileffmpeg:4.4@aar",
+            influxInteractor      : "com.tokopedia.skynet:db-interactor:1.0-alpha-05"
     ]
 
     testDependencies = [

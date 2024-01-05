@@ -8,7 +8,7 @@ data class OrderPromo(
     var lastApply: LastApplyUiModel = LastApplyUiModel(),
     var promoErrorDefault: PromoCheckoutErrorDefault = PromoCheckoutErrorDefault(),
     var entryPointInfo: PromoEntryPointInfo = PromoEntryPointInfo(),
-    var state: OccButtonState = OccButtonState.DISABLE,
+    var state: OccButtonState = OccButtonState.LOADING,
 
     var enableNewInterface: Boolean = false,
     var isCartCheckoutRevamp: Boolean = false,
