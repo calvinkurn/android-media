@@ -137,21 +137,20 @@ fun TrackingPageScreen(
 
 @Composable
 private fun TargetedTicker(tickerUnificationTargets: List<TickerUnificationTargets>?) {
-    if (tickerUnificationTargets != null) {
-        AndroidView(factory = { context ->
-            TargetedTickerWidget(context).apply {
-                setTickerShape(Ticker.SHAPE_LOOSE)
-            }
-        }, update = { targetedTicker ->
+    AndroidView(factory = { context ->
+        TargetedTickerWidget(context)
+    }, update = { targetedTicker ->
+            if (!tickerUnificationTargets.isNullOrEmpty()) {
                 val param = TargetedTickerParamModel(
                     page = TargetedTickerPage.TRACKING_PAGE,
                     targets = tickerUnificationTargets.map {
                         TargetedTickerParamModel.Target(it.type, it.values)
                     }
                 )
+                targetedTicker.setTickerShape(Ticker.SHAPE_LOOSE)
                 targetedTicker.loadAndShow(param)
-            })
-    }
+            }
+        })
 }
 
 @Composable
@@ -464,7 +463,8 @@ fun DriverWidget(
                     end.linkTo(endGuideline)
                     width = Dimension.fillToConstraints
                 },
-                it.tipping, onClickTippingButton
+                it.tipping,
+                onClickTippingButton
             )
             Divider(
                 modifier = Modifier.constrainAs(divider) {
