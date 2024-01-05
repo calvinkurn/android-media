@@ -126,7 +126,7 @@ fun OngoingCampaignPreview() {
         timerLabel = "Berakhir dalam",
         stockPercentage = 30,
         stockLabel = "Habiss",
-        backgroundColorString = "#862E31",
+        backgroundColorString = "862E31",
         paymentSpecific = "Kusus bayar dengan OVO"
     )
 

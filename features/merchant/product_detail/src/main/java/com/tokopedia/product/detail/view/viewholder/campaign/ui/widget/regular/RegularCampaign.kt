@@ -47,7 +47,7 @@ fun RegularCampaignPreview() {
             RegularCampaign(title = "Serbu Offial Store", logoUrl = "", backgroundColorString = "DDD8FF")
             RegularCampaign(title = "Serbu Offial Store", logoUrl = logoUrl, backgroundColorString = "   DDD8FF")
             RegularCampaign(title = "Serbu Offial Store", logoUrl = "", backgroundColorString = "DDD8FF")
-            RegularCampaign(title = "Serbu Offial Store", logoUrl = logoUrl, backgroundColorString = "#DDD8FF, 47DB6D,DDD8FF,")
+            RegularCampaign(title = "Serbu Offial Store", logoUrl = logoUrl, backgroundColorString = "DDD8FF, 47DB6D,DDD8FF,")
         }
     }
 }
