@@ -66,7 +66,8 @@ class AddToCartExternalUseCase @Inject constructor(
                     data.productId, data.productName, data.price.roundToLong().toString(),
                     data.quantity.toString(), data.category, "",
                     "", "", "",
-                    "", "", params.second
+                    "", "", params.second,
+                    data.shopName
                 )
                 return result
             } else {

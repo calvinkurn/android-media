@@ -813,7 +813,8 @@ class MiniCartViewModel @Inject constructor(
                             quantity = miniCartItem.quantity.toString(),
                             notes = miniCartItem.notes,
                             warehouseId = miniCartItem.warehouseId,
-                            attribution = miniCartItem.attribution
+                            attribution = miniCartItem.attribution,
+                            shopName = miniCartItem.shopName
                         )
                     )
                 }
@@ -836,7 +837,8 @@ class MiniCartViewModel @Inject constructor(
                             quantity = visitable.productQty.toString(),
                             notes = visitable.productNotes,
                             warehouseId = visitable.warehouseId,
-                            attribution = visitable.attribution
+                            attribution = visitable.attribution,
+                            shopName = visitable.shopName
                         )
                     )
                 }

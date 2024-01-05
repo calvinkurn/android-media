@@ -38,6 +38,7 @@ class AddToCartExternalDataMapper @Inject constructor() {
             isMultiOrigin = dataResponse.isMultiOrigin
             isFreeOngkir = dataResponse.isFreeOngkir
             isFreeOngkirExtra = dataResponse.isFreeOngkirExtra
+            shopName = dataResponse.shopName
         }
     }
 
