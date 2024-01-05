@@ -80,18 +80,6 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getCategoryInspirationTemplate(
-        source: String,
-        entryPoint: String
-    ): List<FeedBrowseSlotUiModel> {
-        return withContext(dispatchers.io) {
-            val response = feedXHomeUseCase(
-                feedXHomeUseCase.createParams(source = source, entryPoint = entryPoint)
-            )
-            mapper.mapSlotsResponse(response)
-        }
-    }
-
     override suspend fun getWidgetContentSlot(
         extraParam: WidgetRequestModel
     ): ContentSlotModel = withContext(dispatchers.io) {

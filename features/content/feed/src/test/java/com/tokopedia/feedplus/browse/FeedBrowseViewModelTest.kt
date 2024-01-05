@@ -5,10 +5,7 @@ import com.tokopedia.content.test.util.assertEqualTo
 import com.tokopedia.content.test.util.assertNotEqualTo
 import com.tokopedia.content.test.util.assertType
 import com.tokopedia.feedplus.browse.data.FeedBrowseRepository
-import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
-import com.tokopedia.feedplus.browse.data.model.BannerWidgetModel
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
-import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
@@ -31,7 +28,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.UUID
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FeedBrowseViewModelTest {
@@ -40,67 +36,9 @@ class FeedBrowseViewModelTest {
     val coroutineRule = UnconfinedTestRule()
 
     private val mockChannel = mockk<PlayWidgetChannelUiModel>(relaxed = true)
-
-    private val indexGenerator = generateSequence(1) { it + 1 }
-    private val widgetMenuModelGenerator = indexGenerator.map {
-        WidgetMenuModel(
-            id = it.toString(),
-            label = "Menu $it",
-            group = "Menu Group $it",
-            sourceType = "Source type $it",
-            sourceId = "Source Id $it"
-        )
-    }
-    private val bannerModelGenerator = indexGenerator.map {
-        BannerWidgetModel(
-            title = "Banner $it",
-            imageUrl = "Url Banner $it",
-            appLink = "AppLink Banner $it"
-        )
-    }
-    private val authorModelGenerator = indexGenerator.map {
-        AuthorWidgetModel(
-            id = it.toString(),
-            name = "Author widget $it",
-            avatarUrl = "Avatar $it",
-            coverUrl = "Cover $it",
-            totalViewFmt = "$it rb",
-            appLink = "AppLink Author $it",
-            contentAppLink = "Content AppLink $it",
-            channelType = "live"
-        )
-    }
-
-    private val channelWithMenusSlotGenerator = indexGenerator.map {
-        val randomSlotId = UUID.randomUUID().mostSignificantBits.toString()
-        FeedBrowseSlotUiModel.ChannelsWithMenus(
-            slotId = randomSlotId,
-            title = "Channel with Menus $it",
-            group = "Group $it",
-            menus = emptyMap(),
-            selectedMenuId = ""
-        )
-    }
-    private val bannerSlotGenerator = indexGenerator.map {
-        val randomSlotId = UUID.randomUUID().mostSignificantBits.toString()
-        FeedBrowseSlotUiModel.InspirationBanner(
-            slotId = randomSlotId,
-            title = "Banner Slot model $it",
-            identifier = "banner_slot_$it",
-            bannerList = emptyList()
-        )
-    }
-    private val authorSlotGenerator = indexGenerator.map {
-        val randomSlotId = UUID.randomUUID().mostSignificantBits.toString()
-        FeedBrowseSlotUiModel.Authors(
-            slotId = randomSlotId,
-            title = "Author Slot model $it",
-            identifier = "author_slot_$it",
-            authorList = emptyList()
-        )
-    }
-
     private val mockTitle = "Feed Browse Title"
+
+    private val modelGen = ModelGenerator()
 
     @Before
     fun setUp() {
@@ -108,12 +46,12 @@ class FeedBrowseViewModelTest {
 
     @Test
     fun `test load initial data`() = runTestUnconfined {
-        val slotChannel = channelWithMenusSlotGenerator.first()
-        val slotAuthor = authorSlotGenerator.first()
-        val slotBanner = bannerSlotGenerator.first()
+        val slotChannel = modelGen.channelWithMenusSlot.first()
+        val slotAuthor = modelGen.authorSlot.first()
+        val slotBanner = modelGen.bannerSlot.first()
 
-        val mockAuthorModel = authorModelGenerator.first()
-        val mockBannerModel = bannerModelGenerator.first()
+        val mockAuthorModel = modelGen.authorModel.first()
+        val mockBannerModel = modelGen.bannerModel.first()
 
         val slots = listOf(slotChannel, slotAuthor, slotBanner)
 
@@ -174,8 +112,8 @@ class FeedBrowseViewModelTest {
     @Test
     fun `test select chip from channel with menus`() = runTestUnconfined {
         val mockRepo = mockk<FeedBrowseRepository>(relaxed = true)
-        val widgetMenus = widgetMenuModelGenerator.take(2).toList()
-        val channelMenuSlotModel = channelWithMenusSlotGenerator.first()
+        val widgetMenus = modelGen.widgetMenuModel.take(2).toList()
+        val channelMenuSlotModel = modelGen.channelWithMenusSlot.first()
         coEvery { mockRepo.getTitle() } returns mockTitle
         coEvery { mockRepo.getSlots() } returns listOf(channelMenuSlotModel)
         coEvery { mockRepo.getWidgetContentSlot(WidgetRequestModel(channelMenuSlotModel.group)) } returns ContentSlotModel.TabMenus(
@@ -218,11 +156,11 @@ class FeedBrowseViewModelTest {
     @Test
     fun `test trigger fetch banner widgets from outside (mostly for retry purpose)`() = runTestUnconfined {
         val mockRepo = mockk<FeedBrowseRepository>(relaxed = true)
-        val bannerSlotModel = bannerSlotGenerator.first()
+        val bannerSlotModel = modelGen.bannerSlot.first()
         coEvery { mockRepo.getTitle() } returns mockTitle
         coEvery { mockRepo.getSlots() } returns listOf(bannerSlotModel)
         coEvery { mockRepo.getWidgetRecommendation(bannerSlotModel.identifier) } returns WidgetRecommendationModel.Banners(
-            listOf(bannerModelGenerator.first())
+            listOf(modelGen.bannerModel.first())
         )
 
         val viewModel = FeedBrowseViewModel(mockRepo)
@@ -234,14 +172,14 @@ class FeedBrowseViewModelTest {
                 listOf(
                     FeedBrowseStatefulModel(
                         ResultState.Success,
-                        bannerSlotModel.copy(bannerList = listOf(bannerModelGenerator.first()))
+                        bannerSlotModel.copy(bannerList = listOf(modelGen.bannerModel.first()))
                     )
                 )
             )
         }
 
         coEvery { mockRepo.getWidgetRecommendation(bannerSlotModel.identifier) } returns WidgetRecommendationModel.Banners(
-            listOf(bannerModelGenerator.elementAt(1))
+            listOf(modelGen.bannerModel.elementAt(1))
         )
         viewModel.onIntent(FeedBrowseIntent.FetchCardsWidget(bannerSlotModel.slotId, WidgetMenuModel.Empty))
         viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
@@ -249,7 +187,7 @@ class FeedBrowseViewModelTest {
                 listOf(
                     FeedBrowseStatefulModel(
                         ResultState.Success,
-                        bannerSlotModel.copy(bannerList = listOf(bannerModelGenerator.first()))
+                        bannerSlotModel.copy(bannerList = listOf(modelGen.bannerModel.first()))
                     )
                 )
             )
@@ -257,7 +195,7 @@ class FeedBrowseViewModelTest {
                 listOf(
                     FeedBrowseStatefulModel(
                         ResultState.Success,
-                        bannerSlotModel.copy(bannerList = listOf(bannerModelGenerator.elementAt(1)))
+                        bannerSlotModel.copy(bannerList = listOf(modelGen.bannerModel.elementAt(1)))
                     )
                 )
             )
@@ -267,11 +205,11 @@ class FeedBrowseViewModelTest {
     @Test
     fun `test trigger fetch author widgets from outside (mostly for retry purpose)`() = runTestUnconfined {
         val mockRepo = mockk<FeedBrowseRepository>(relaxed = true)
-        val authorSlotModel = authorSlotGenerator.first()
+        val authorSlotModel = modelGen.authorSlot.first()
         coEvery { mockRepo.getTitle() } returns mockTitle
         coEvery { mockRepo.getSlots() } returns listOf(authorSlotModel)
         coEvery { mockRepo.getWidgetRecommendation(authorSlotModel.identifier) } returns WidgetRecommendationModel.Authors(
-            listOf(authorModelGenerator.first())
+            listOf(modelGen.authorModel.first())
         )
 
         val viewModel = FeedBrowseViewModel(mockRepo)
@@ -283,14 +221,14 @@ class FeedBrowseViewModelTest {
                 listOf(
                     FeedBrowseStatefulModel(
                         ResultState.Success,
-                        authorSlotModel.copy(authorList = listOf(authorModelGenerator.first()))
+                        authorSlotModel.copy(authorList = listOf(modelGen.authorModel.first()))
                     )
                 )
             )
         }
 
         coEvery { mockRepo.getWidgetRecommendation(authorSlotModel.identifier) } returns WidgetRecommendationModel.Authors(
-            listOf(authorModelGenerator.elementAt(1))
+            listOf(modelGen.authorModel.elementAt(1))
         )
         viewModel.onIntent(FeedBrowseIntent.FetchCardsWidget(authorSlotModel.slotId, WidgetMenuModel.Empty))
         viewModel.uiState.value.assertType<FeedBrowseUiState.Success> {
@@ -298,7 +236,7 @@ class FeedBrowseViewModelTest {
                 listOf(
                     FeedBrowseStatefulModel(
                         ResultState.Success,
-                        authorSlotModel.copy(authorList = listOf(authorModelGenerator.first()))
+                        authorSlotModel.copy(authorList = listOf(modelGen.authorModel.first()))
                     )
                 )
             )
@@ -306,7 +244,7 @@ class FeedBrowseViewModelTest {
                 listOf(
                     FeedBrowseStatefulModel(
                         ResultState.Success,
-                        authorSlotModel.copy(authorList = listOf(authorModelGenerator.elementAt(1)))
+                        authorSlotModel.copy(authorList = listOf(modelGen.authorModel.elementAt(1)))
                     )
                 )
             )
@@ -316,8 +254,8 @@ class FeedBrowseViewModelTest {
     @Test
     fun `test trigger fetch channel menus from outside`() = runTestUnconfined {
         val mockRepo = mockk<FeedBrowseRepository>(relaxed = true)
-        val menusModel = widgetMenuModelGenerator.take(2).toList()
-        val channelWithMenuSlotModel = channelWithMenusSlotGenerator.first()
+        val menusModel = modelGen.widgetMenuModel.take(2).toList()
+        val channelWithMenuSlotModel = modelGen.channelWithMenusSlot.first()
         val menuResponse = ContentSlotModel.ChannelBlock(
             channels = listOf(mockChannel),
             config = PlayWidgetConfigUiModel.Empty,

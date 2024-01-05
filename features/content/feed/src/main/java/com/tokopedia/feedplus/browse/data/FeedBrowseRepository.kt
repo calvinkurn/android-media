@@ -16,11 +16,6 @@ internal interface FeedBrowseRepository {
 
     suspend fun getSlots(): List<FeedBrowseSlotUiModel>
 
-    suspend fun getCategoryInspirationTemplate(
-        source: String,
-        entryPoint: String
-    ): List<FeedBrowseSlotUiModel>
-
     suspend fun getWidgetContentSlot(extraParam: WidgetRequestModel): ContentSlotModel
 
     suspend fun getWidgetRecommendation(identifier: String): WidgetRecommendationModel
