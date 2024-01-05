@@ -18,7 +18,6 @@ android {
                     pathSources + 'detail/bmgm',
                     pathSources + 'detail/shipment',
                     pathSources + 'detail/review',
-                    pathSources + 'detail/promo_price',
             ]
         }
         androidTest {
