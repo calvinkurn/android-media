@@ -11,16 +11,19 @@ import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.AUTO_PS_CHANNEL
 import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.AUTO_PS_SOURCE
 import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.AUTO_PS_TOGGLE_ON
 import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.AUTO_PS_REQUEST_TYPE
+import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.GET_AUTO_ADS_SOURCE
 import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.STATISTICS_ESTIMATION_TYPE
 import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.TOPADS_AUTO_PS_SOURCE
 import com.tokopedia.topads.auto.domain.usecase.TopadsStatisticsEstimationAttributeUseCase
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.common.data.model.DataSuggestions
+import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.data.response.TopadsGetBudgetRecommendationResponse
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.model.TopAdsAutoAdsModel
+import com.tokopedia.topads.common.domain.usecase.TopAdsGetAutoAdsUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsQueryPostAutoadsUseCase
 import com.tokopedia.topads.common.domain.usecase.TopadsGetBudgetRecommendationUseCase
@@ -30,6 +33,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -41,6 +45,7 @@ class AutoPsViewModel @Inject constructor(
     private val topAdsQueryPostAutoadsUseCase: TopAdsQueryPostAutoadsUseCase,
     private val getBudgetRecommendationUseCase: TopadsGetBudgetRecommendationUseCase,
     private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
+    private val topAdsGetAutoAdsUseCase: TopAdsGetAutoAdsUseCase,
 ) : BaseViewModel(dispatcher.main), CoroutineScope {
 
     private var lowClickDivider = Int.ONE
@@ -55,10 +60,14 @@ class AutoPsViewModel @Inject constructor(
         MutableLiveData()
     val budgetrecommendation: LiveData<Result<TopadsGetBudgetRecommendationResponse>>
         get() = _budgetRecommendation
+    private val _topAdsGetAutoAds: MutableLiveData<AutoAdsResponse.TopAdsGetAutoAds> =
+        MutableLiveData()
+    val topAdsGetAutoAds: LiveData<AutoAdsResponse.TopAdsGetAutoAds> = _topAdsGetAutoAds
 
 
     fun loadData() {
         launchCatchError(dispatcher.io, {
+            getAutoAds()
             getBudgetRecommendations()
             getTopAdsDeposit()
             val statisticEstimatorJob = async { getStatisticsEstimator() }
@@ -76,6 +85,16 @@ class AutoPsViewModel @Inject constructor(
                 lowClickDivider = it.lowClickDivider
             }
         }, {})
+    }
+
+    private fun getAutoAds(){
+        launchCatchError(block = {
+            val response = withContext(dispatcher.io) {
+                topAdsGetAutoAdsUseCase.setSource(GET_AUTO_ADS_SOURCE)
+                topAdsGetAutoAdsUseCase.executeOnBackground()
+            }
+            _topAdsGetAutoAds.postValue(response)
+        }) {}
     }
 
     fun getBudgetInfo(

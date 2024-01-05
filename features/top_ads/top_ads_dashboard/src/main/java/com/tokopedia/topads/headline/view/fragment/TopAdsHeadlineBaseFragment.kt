@@ -162,12 +162,15 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
                 autoadsDeactivationProgress?.gone()
                 autoAdsWidget?.gone()
                 recommendationWidget?.show()
+                headlineAdsViePager?.show()
+
             }
             else -> {
                 autoadsDeactivationProgress?.gone()
                 autoAdsWidget?.show()
                 recommendationWidget?.gone()
                 autoAdsWidget?.loadData(0)
+                headlineAdsViePager?.gone()
             }
         }
     }

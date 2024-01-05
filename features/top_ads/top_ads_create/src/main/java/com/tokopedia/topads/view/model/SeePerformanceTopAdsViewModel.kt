@@ -202,6 +202,7 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
     fun getAutoAdsInfo() {
         launchCatchError(block = {
             val response = withContext(dispatchers.io) {
+                topAdsGetAutoAdsUseCase.setSource(GET_AUTO_ADS_SOURCE)
                 topAdsGetAutoAdsUseCase.executeOnBackground()
             }
             _topAdsGetAutoAds.postValue(response)
@@ -212,5 +213,6 @@ class SeePerformanceTopAdsViewModel @Inject constructor(
         private const val PARAM_KEY = "queryInput"
         private const val EMPTY_AD_ID = "0"
         private const val EMPTY_GROUP_ID = "0"
+        private const val GET_AUTO_ADS_SOURCE = "android.see_ads_performance"
     }
 }

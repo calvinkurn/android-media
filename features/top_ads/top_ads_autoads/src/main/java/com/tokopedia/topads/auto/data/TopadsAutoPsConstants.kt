@@ -9,4 +9,5 @@ object TopadsAutoPsConstants {
     const val AUTO_PS_TOGGLE_ON = "toggle_on"
     const val AUTO_PS_CHANNEL = "topchat"
     const val AUTO_PS_SOURCE = "sellerapp_autoads_creation"
+    const val GET_AUTO_ADS_SOURCE = "android.topads_product_iklan"
 }

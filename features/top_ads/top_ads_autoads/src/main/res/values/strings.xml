@@ -42,7 +42,10 @@
     <string name="cancel_btn">Batalkan</string>
     <string name="topads_auto_ps_set_daily_budget_title">Berapa banyak anggaran harian untuk iklanmu?</string>
     <string name="topads_auto_ps_set_manual_ads_title">Mau atur iklan dengan strategimu sendiri?</string>
+    <string name="topads_auto_ps_set_auto_ads_title">Nonaktifkan pengaturan Iklan Otomatis?</string>
     <string name="topads_auto_ps_set_manual_ads_cta">Atur Iklan Manual</string>
+    <string name="topads_auto_ps_set_auto_ads_cta_desc">Iklanmu sedang dimaksimalkan untuk mencapai algoritma terbaik.</string>
+    <string name="topads_auto_ps_set_auto_ads_cta">Nonaktifkan Sekarang</string>
     <string name="topads_auto_ps_info_text">Sistem TopAds melindungi iklanmu dari klik yang tidak valid.</string>
     <string name="topads_auto_ps_info_text_cta">Pelajari Selengkapnya</string>
 

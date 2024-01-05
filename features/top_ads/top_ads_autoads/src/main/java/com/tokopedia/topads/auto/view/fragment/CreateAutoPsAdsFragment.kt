@@ -3,6 +3,9 @@ package com.tokopedia.topads.auto.view.fragment
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.TextPaint
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +21,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.auto.R as topadsautoR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.DAILY_BUDGET_MULTIPLIER
@@ -28,6 +33,8 @@ import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.view.viewmodel.AutoPsViewModel
 import com.tokopedia.topads.auto.view.widget.Range
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus
+import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.utils.TopadsCommonUtil
 import com.tokopedia.topads.common.utils.TopadsCommonUtil.showErrorAutoAds
@@ -75,9 +82,14 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel?.loadData()
+        setViews()
         setupTooltip(view)
         setupObservers()
         setupListeners()
+    }
+
+    private fun setViews(){
+        binding?.autoAdsCta?.text = getClickableString()
     }
 
     private fun setupTooltip(view: View) {
@@ -104,6 +116,10 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
     }
 
     private fun setupObservers() {
+        viewModel?.topAdsGetAutoAds?.observe(viewLifecycleOwner){
+            setAutoAds(it.data)
+        }
+
         viewModel?.bidInfo?.observe(viewLifecycleOwner) {
             it.data.firstOrNull()?.let { dataItem ->
                 binding?.loading?.hide()
@@ -143,10 +159,25 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
         }
     }
 
+    private fun setAutoAds(data: AutoAdsResponse.TopAdsGetAutoAds.Data) {
+        when (data.status) {
+            AutoAdsStatus.STATUS_INACTIVE -> {
+                binding?.autoAdsCard?.gone()
+                binding?.manualAdsCard?.show()
+                binding?.btnSubmit?.text = getString(topadsautoR.string.iklankan)
+            }
+            else -> {
+                binding?.autoAdsCard?.show()
+                binding?.manualAdsCard?.gone()
+                binding?.btnSubmit?.text = getString(topadscommonR.string.topads_common_save_butt)
+            }
+        }
+    }
+
     private fun postAutoPsSuccess() {
         if(viewModel?.checkDeposits() == true){
-//            moveToDashboard()
-            showInsufficientCredits()
+            moveToDashboard()
+//            showInsufficientCredits()
         } else {
             showInsufficientCredits()
         }
@@ -230,6 +261,29 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
         else if (budget % DAILY_BUDGET_MULTIPLIER != Int.ZERO)
             getString(topadscommonR.string.error_bid_multiple_50)
         else String.EMPTY
+    }
+
+    private fun getClickableString() : SpannableString {
+        val desc = getString(topadsautoR.string.topads_auto_ps_set_auto_ads_cta_desc)
+        val ctaText = getString(topadsautoR.string.topads_auto_ps_set_auto_ads_cta)
+        val ss = SpannableString("$desc $ctaText")
+        val cs = object : ClickableSpan(){
+            override fun onClick(p0: View) {
+
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                ds.isUnderlineText = false
+                ds.color = ContextCompat.getColor(
+                    requireContext(),
+                    unifyprinciplesR.color.Unify_GN500
+                )
+                ds.isFakeBoldText = true
+            }
+        }
+
+        ss.setSpan(cs, desc.length, desc.length + ctaText.length+1, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return ss
     }
 
     override fun onClick(view: View?) {
