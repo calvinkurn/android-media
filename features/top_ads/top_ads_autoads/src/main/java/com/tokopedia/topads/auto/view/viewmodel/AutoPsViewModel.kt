@@ -112,10 +112,10 @@ class AutoPsViewModel @Inject constructor(
         }) {}
     }
 
-    fun postAutoPs(budget: Int) {
+    fun postAutoPs(budget: Int, toggle: String) {
         val param = AutoAdsParam(
             AutoAdsParam.Input(
-                AUTO_PS_TOGGLE_ON, AUTO_PS_CHANNEL, budget, userSession.shopId, AUTO_PS_SOURCE
+                toggle, AUTO_PS_CHANNEL, budget, userSession.shopId, AUTO_PS_SOURCE
             )
         )
         topAdsQueryPostAutoadsUseCase.executeQuery(param) {

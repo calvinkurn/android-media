@@ -18,12 +18,14 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.topads.auto.data.TopadsAutoPsConstants
 import com.tokopedia.topads.auto.R as topadsautoR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.DAILY_BUDGET_MULTIPLIER
@@ -55,6 +57,7 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
 
     private var minDailyBudget = Int.ZERO
     private var maxDailyBudget = Int.ZERO
+    private var confirmationDailog: DialogUnify? = null
 
     @JvmField
     @Inject
@@ -165,11 +168,13 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
                 binding?.autoAdsCard?.gone()
                 binding?.manualAdsCard?.show()
                 binding?.btnSubmit?.text = getString(topadsautoR.string.iklankan)
+                binding?.btnSubmit?.isEnabled = true
             }
             else -> {
                 binding?.autoAdsCard?.show()
                 binding?.manualAdsCard?.gone()
                 binding?.btnSubmit?.text = getString(topadscommonR.string.topads_common_save_butt)
+                binding?.btnSubmit?.isEnabled = false
             }
         }
     }
@@ -269,7 +274,7 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
         val ss = SpannableString("$desc $ctaText")
         val cs = object : ClickableSpan(){
             override fun onClick(p0: View) {
-
+                showManualAdsConfirmationDailog()
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -284,6 +289,42 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
 
         ss.setSpan(cs, desc.length, desc.length + ctaText.length+1, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
         return ss
+    }
+
+    private fun showManualAdsConfirmationDailog(){
+        if (confirmationDailog?.isShowing != true) {
+            confirmationDailog =
+                DialogUnify(
+                    requireContext(),
+                    DialogUnify.HORIZONTAL_ACTION,
+                    DialogUnify.WITH_ILLUSTRATION
+                )
+            confirmationDailog?.show()
+        }
+
+        val description = getString(topadsautoR.string.topads_auto_ps_manual_confirmation_desc)
+        val title = getString(topadsautoR.string.topads_auto_ps_manual_confirmation_title)
+
+        confirmationDailog?.let {
+            it.setTitle(title)
+//            it.setImageUrl()
+            it.setDescription(description)
+
+            it.setPrimaryCTAText(getString(topadsautoR.string.topads_auto_ps_dailog_submit_cta))
+            it.setSecondaryCTAText(getString(topadsautoR.string.topads_auto_ps_dailog_cancel_cta))
+
+            it.setPrimaryCTAClickListener {
+                binding?.dailyBudget?.editText?.let { editText ->
+                    viewModel?.postAutoPs(TopadsCommonUtil.convertMoneyToValue(editText.text.toString()),
+                        TopadsAutoPsConstants.AUTO_PS_TOGGLE_OFF
+                    )
+                }
+            }
+
+            it.setSecondaryCTAClickListener {
+                it.dismiss()
+            }
+        }
     }
 
     override fun onClick(view: View?) {
@@ -301,7 +342,9 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
 
             binding?.btnSubmit?.id -> {
                 binding?.dailyBudget?.editText?.let {
-                    viewModel?.postAutoPs(TopadsCommonUtil.convertMoneyToValue(it.text.toString()))
+                    viewModel?.postAutoPs(TopadsCommonUtil.convertMoneyToValue(it.text.toString()),
+                        TopadsAutoPsConstants.AUTO_PS_TOGGLE_ON
+                    )
                     binding?.btnSubmit?.isLoading = true
                 }
             }

@@ -48,6 +48,10 @@
     <string name="topads_auto_ps_set_auto_ads_cta">Nonaktifkan Sekarang</string>
     <string name="topads_auto_ps_info_text">Sistem TopAds melindungi iklanmu dari klik yang tidak valid.</string>
     <string name="topads_auto_ps_info_text_cta">Pelajari Selengkapnya</string>
+    <string name="topads_auto_ps_manual_confirmation_title">Yakin ingin nonaktifkan Iklan Produk dan Iklan Tokomu?</string>
+    <string name="topads_auto_ps_manual_confirmation_desc">Jika dinonaktifkan, iklan yang sudah dibuat tidak akan tayang lagi, lho.</string>
+    <string name="topads_auto_ps_dailog_cancel_cta">Tetap Gunakan</string>
+    <string name="topads_auto_ps_dailog_submit_cta">Ya, Nonaktifkan</string>
 
     <!--Auto ads Onboarding-->
     <string name="autoads_lottie_title1">Semakin mudah beriklan</string>
