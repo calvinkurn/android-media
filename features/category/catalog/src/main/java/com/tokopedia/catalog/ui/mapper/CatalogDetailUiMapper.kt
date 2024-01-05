@@ -1,6 +1,7 @@
 package com.tokopedia.catalog.ui.mapper
 
 import android.content.Context
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -43,7 +44,10 @@ import com.tokopedia.kotlin.extensions.view.isOdd
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.oldcatalog.model.raw.CatalogResponseData
 import com.tokopedia.oldcatalog.model.raw.LayoutData
-import okhttp3.internal.toImmutableList
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.time.TimeHelper
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 import com.tokopedia.catalog.R as catalogR
 import com.tokopedia.catalogcommon.R as catalogcommonR
@@ -64,6 +68,8 @@ class CatalogDetailUiMapper @Inject constructor(
         private const val BACKGROUND_ALPHA = 20
         private const val USER_STATS_KEY_TOTAL_COMPLETE_REVIEW = "total-complete-review"
         private const val USER_STATS_KEY_TOTAL_LIKES = "total-likes"
+        private const val SERVICE_LANG = "en"
+        private const val SERVICE_COUNTRY = "US"
     }
 
     fun mapToWidgetVisitables(
@@ -116,6 +122,20 @@ class CatalogDetailUiMapper @Inject constructor(
         val items = data?.buyerReviewList.orEmpty().take(maxDisplay).map { buyerReview ->
             val totalCompleteReview = buyerReview.userStats.firstOrNull { it.key == USER_STATS_KEY_TOTAL_COMPLETE_REVIEW }?.count.orZero()
             val totalHelpedPeople = buyerReview.userStats.firstOrNull { it.key == USER_STATS_KEY_TOTAL_LIKES }?.count.orZero()
+            val reviewDate = try {
+                val simpleDateFormat = SimpleDateFormat(
+                    DateUtil.DEFAULT_VIEW_FORMAT,
+                    Locale(
+                        SERVICE_LANG,
+                        SERVICE_COUNTRY
+                    )
+                )
+                val reviewDate = simpleDateFormat.parse(buyerReview.reviewDate)
+                TimeHelper.getRelativeTimeFromNow(reviewDate.time)
+            } catch (e: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(e)
+                buyerReview.reviewDate
+            }
             BuyerReviewUiModel.ItemBuyerReviewUiModel(
                 shopIcon = buyerReview.shopBadge,
                 shopName = buyerReview.shopName,
@@ -125,7 +145,7 @@ class CatalogDetailUiMapper @Inject constructor(
                 totalCompleteReview = totalCompleteReview,
                 totalHelpedPeople = totalHelpedPeople,
                 description = buyerReview.reviewText,
-                datetime = buyerReview.reviewDate,
+                datetime = reviewDate,
                 rating = buyerReview.rating.toFloat(),
                 variantName = buyerReview.productVariantName,
                 images = buyerReview.imageAttachments.map { attachment ->
@@ -146,14 +166,6 @@ class CatalogDetailUiMapper @Inject constructor(
                 items = items
             )
         }
-    }
-
-    private fun mapToNewWidgetVisitables(
-        widgets: List<Visitable<*>>
-    ): List<Visitable<*>> {
-        val _widgets = widgets.toMutableList()
-        _widgets.add(BuyerReviewUiModel.dummyBuyerReviewData())
-        return _widgets.toImmutableList()
     }
 
     private fun mapToPriceCtaProperties(remoteModel: CatalogResponseData.CatalogGetDetailModular): PriceCtaProperties {
