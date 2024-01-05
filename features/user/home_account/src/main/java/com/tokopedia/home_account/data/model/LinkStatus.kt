@@ -1,4 +1,4 @@
-package com.tokopedia.home_account.privacy_account.data
+package com.tokopedia.home_account.data.model
 
 import com.google.gson.annotations.SerializedName
 

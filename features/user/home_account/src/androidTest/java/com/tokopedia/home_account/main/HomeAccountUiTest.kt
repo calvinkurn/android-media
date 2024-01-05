@@ -7,7 +7,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.toPackage
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.filters.LargeTest
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.applink.user.DeeplinkMapperUser.ROLLENCE_PRIVACY_CENTER
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.di.ActivityComponentFactory
 import com.tokopedia.home_account.stub.di.ActivityComponentFactoryStub
@@ -69,14 +68,13 @@ class HomeAccountUiTest {
 
     @Test
     fun privacyCenter_toggledOn() {
-        every { abTest.getString(ROLLENCE_PRIVACY_CENTER) } returns "true"
         activityTestRule.launchActivity(Intent())
         stubInternalIntent()
 
         homeAccountRobot {
             scrollToPengaturanAkun()
 
-            clickSectionWithText(R.string.title_privacy_account)
+            clickSectionWithText(R.string.menu_account_title_privacy_account)
             hasApplinkOf(ApplinkConstInternalUserPlatform.PRIVACY_CENTER)
 
             scrollToPengaturanAplikasi()

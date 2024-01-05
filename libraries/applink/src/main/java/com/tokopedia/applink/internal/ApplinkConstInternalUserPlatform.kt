@@ -106,12 +106,6 @@ object ApplinkConstInternalUserPlatform {
     const val GOTO_SEAMLESS_LOGIN = "$NEW_INTERNAL_USER/goto-seamless-login"
 
     /**
-     * PrivacyAccountActivity
-     * @Applink : tokopedia-android-internal://user/privacy-account
-     **/
-    const val PRIVACY_ACCOUNT = "$NEW_INTERNAL_USER/privacy-account"
-
-    /**
      * ChooseAccountActivity
      * @Applink : tokopedia-android-internal://user/choose-account
      **/

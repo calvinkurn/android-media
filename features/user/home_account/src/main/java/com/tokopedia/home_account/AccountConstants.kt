@@ -167,8 +167,6 @@ object AccountConstants {
         const val SETTING_PRIVACY_ID = 6
         const val SETTING_IP = 7
         const val SETTING_OUT_ID = 8
-        const val SETTING_SHAKE_ID = 9
-        const val SETTING_GEOLOCATION_ID = 98
         const val SETTING_SAFE_SEARCH_ID = 99
         const val SETTING_ACCOUNT_PERSONAL_DATA_ID = 11
         const val SETTING_ACCOUNT_ADDRESS_ID = 13
@@ -195,14 +193,9 @@ object AccountConstants {
     }
 
     object KEY {
-        const val KEY_PREF_SHAKE = "notification_shake_shake"
         const val KEY_PREF_SAFE_SEARCH = "notification_safe_mode"
         const val KEY_SHOW_COACHMARK = "home_account_coachmark"
         const val KEY_PREF_PLAY_WIDGET_AUTOPLAY = "play_widget_autoplay"
-    }
-
-    object REQUEST {
-        const val REQUEST_LOCATION_PERMISSION = 888
     }
 
     object TDNBanner {

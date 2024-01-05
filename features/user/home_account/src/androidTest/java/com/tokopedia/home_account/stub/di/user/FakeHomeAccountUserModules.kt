@@ -7,7 +7,6 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.applink.user.DeeplinkMapperUser.ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE
-import com.tokopedia.applink.user.DeeplinkMapperUser.ROLLENCE_PRIVACY_CENTER
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -104,7 +103,6 @@ class FakeHomeAccountUserModules(val context: Context) {
     @ActivityScope
     fun provideAbTestPlatform(): AbTestPlatform {
         return mockk() {
-            every { getString(ROLLENCE_PRIVACY_CENTER) } returns ""
             every { getString(OCL_ROLLENCE, any()) } returns ""
             every { getString(BIOMETRIC_ENTRY_POINT, any()) } returns "true"
             every { getString(ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE) } returns "true"

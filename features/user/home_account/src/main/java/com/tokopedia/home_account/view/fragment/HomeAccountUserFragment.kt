@@ -240,10 +240,6 @@ open class HomeAccountUserFragment :
         getComponent(HomeAccountUserComponents::class.java).inject(this)
     }
 
-    private fun isEnablePrivacyAccount(): Boolean {
-        return remoteConfig.getBoolean(REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT, false)
-    }
-
     // feature explicit profile for temporary disabled, because Product Manager have not capacity for this.
     // the rollout will set up back by announce of product team
     private fun isEnableExplicitProfileMenu(): Boolean {
@@ -412,21 +408,6 @@ open class HomeAccountUserFragment :
 
     override fun onSwitchChanged(item: CommonDataView, isActive: Boolean, switch: SwitchUnify) {
         when (item.id) {
-            AccountConstants.SettingCode.SETTING_SHAKE_ID -> {
-                homeAccountAnalytic.eventClickAppSettingShake(isActive)
-                accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SHAKE, isActive)
-            }
-
-            AccountConstants.SettingCode.SETTING_GEOLOCATION_ID -> {
-                homeAccountAnalytic.eventClickAppSettingGeolocation(isActive)
-                if (isActive) {
-                    switch.isChecked = false
-                    createAndShowLocationAlertDialog(isActive)
-                } else {
-                    goToApplicationDetailActivity()
-                }
-            }
-
             AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID -> {
                 homeAccountAnalytic.eventClickAppSettingSafeMode(isActive)
                 switch.isChecked = !isActive
@@ -441,24 +422,6 @@ open class HomeAccountUserFragment :
             }
 
             else -> {
-            }
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            AccountConstants.REQUEST.REQUEST_LOCATION_PERMISSION -> {
-                if (grantResults.isNotEmpty() &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED
-                ) {
-                    updateLocationSwitch(true)
-                } else {
-                    goToApplicationDetailActivity()
-                }
             }
         }
     }
@@ -1210,10 +1173,6 @@ open class HomeAccountUserFragment :
 
             settingsMenuIterator.shouldRemove(
                 when (value.id) {
-                    AccountConstants.SettingCode.SETTING_PRIVACY_ACCOUNT -> {
-                        !isEnablePrivacyAccount()
-                    }
-
                     AccountConstants.SettingCode.SETTING_EXPLICIT_PROFILE -> {
                         !isEnableExplicitProfileMenu()
                     }
@@ -1608,49 +1567,6 @@ open class HomeAccountUserFragment :
         }
     }
 
-    private fun createAndShowLocationAlertDialog(currentValue: Boolean) {
-        if (!currentValue) {
-            homeAccountAnalytic.eventClickToggleOnGeolocation()
-        } else {
-            homeAccountAnalytic.eventClickToggleOffGeolocation()
-        }
-
-        context?.run {
-            val dialog =
-                DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                    setTitle(getString(R.string.new_home_account_title_geolocation_alertdialog))
-                    setDescription(getString(R.string.new_home_account_body_geolocation_alertdialog))
-                    setPrimaryCTAText(getString(R.string.new_home_account_ok_geolocation_alertdialog))
-                    setPrimaryCTAClickListener {
-                        askPermissionLocation()
-                        dismiss()
-                    }
-                    setSecondaryCTAText(getString(R.string.new_home_account_batal_geolocation_alertdialog))
-                    setSecondaryCTAClickListener {
-                        dismiss()
-                    }
-                }
-            dialog.show()
-        }
-    }
-
-    private fun askPermissionLocation() {
-        requestPermissions(
-            arrayOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ),
-            AccountConstants.REQUEST.REQUEST_LOCATION_PERMISSION
-        )
-    }
-
-    private fun updateLocationSwitch(isEnable: Boolean) {
-        commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_GEOLOCATION_ID }?.isChecked =
-            isEnable
-        commonAdapter?.notifyItemChanged(POSITION_1)
-        adapter?.notifyItemChanged(POSITION_3)
-    }
-
     private fun shouldScrollToSafeMode(): Boolean {
         return arguments?.containsKey(AccountConstants.PARAM_SCROLL_TO) ?: false &&
             arguments?.getString(
@@ -1670,18 +1586,12 @@ open class HomeAccountUserFragment :
     private fun updateSafeModeSwitch(isEnable: Boolean) {
         commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID }?.isChecked =
             isEnable
-        commonAdapter?.notifyItemChanged(POSITION_2)
-        adapter?.notifyItemChanged(POSITION_3)
-    }
-
-    private fun goToApplicationDetailActivity() {
-        activity?.let {
-            val intent = Intent()
-            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-            val uri = Uri.fromParts("package", it.packageName, null)
-            intent.data = uri
-            it.startActivity(intent)
+        val element = commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID }
+        val index = commonAdapter?.list?.indexOf(element)
+        if (index != null) {
+            commonAdapter?.notifyItemChanged(index)
         }
+        adapter?.notifyItemChanged(POSITION_3)
     }
 
     private fun goToReviewApp() {
