@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.oldcatalog.usecase.detail.CatalogDetailUseCase
 import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CatalogSwitchComparisonViewModel @Inject constructor(
@@ -18,7 +19,6 @@ class CatalogSwitchComparisonViewModel @Inject constructor(
     private val catalogDetailUseCase: CatalogDetailUseCase,
     private val catalogComparisonProductUseCase: CatalogComparisonProductUseCase
 ) : BaseViewModel(dispatchers.main) {
-
 
     private val _errorsToasterGetCatalogListing = MutableLiveData<Throwable>()
     val errorsToasterGetCatalogListing: LiveData<Throwable>
@@ -28,33 +28,36 @@ class CatalogSwitchComparisonViewModel @Inject constructor(
     val errorsToasterGetComparison: LiveData<Throwable>
         get() = _errorsToasterGetComparison
 
-
     private val _errorsToasterGetInitComparison = MutableLiveData<Throwable>()
     val errorsToasterGetInitComparison: LiveData<Throwable>
         get() = _errorsToasterGetInitComparison
-
 
     private val _comparisonUiModel = MutableLiveData<CatalogComparisonProductsUiModel?>()
     val comparisonUiModel: LiveData<CatalogComparisonProductsUiModel?>
         get() = _comparisonUiModel
 
-
     private val _catalogListingUiModel = MutableLiveData<CatalogComparisonProductsUiModel?>()
     val catalogListingUiModel: LiveData<CatalogComparisonProductsUiModel?>
         get() = _catalogListingUiModel
 
-
     fun getComparisonProducts(
-        catalogId: String, brand: String, categoryId: String,
-        limit: Int, page: Int, name: String
+        catalogId: String,
+        brand: String,
+        categoryId: String,
+        limit: Int,
+        page: Int,
+        name: String
     ) {
-
         launchCatchError(
             dispatchers.io,
             block = {
                 val result = catalogComparisonProductUseCase.getCatalogComparisonProducts(
-                    catalogId, brand,
-                    categoryId, limit.toString(), page.toString(), name
+                    catalogId,
+                    brand,
+                    categoryId,
+                    limit.toString(),
+                    page.toString(),
+                    name
                 )
                 _catalogListingUiModel.postValue(result.map())
             },
@@ -65,41 +68,51 @@ class CatalogSwitchComparisonViewModel @Inject constructor(
     }
 
     fun loadAllDataInOnePage(
-        catalogId: String, brand: String, categoryId: String,
-        limit: Int, compareCatalogId: List<String>, name: String
+        catalogId: String,
+        brand: String,
+        categoryId: String,
+        limit: Int,
+        compareCatalogId: List<String>,
+        name: String
     ) {
         launchCatchError(
             block = {
-                val result = async {
-                    try {
-                        catalogDetailUseCase.getCatalogDetailV4Comparison(
-                            catalogId,
-                            compareCatalogId
-                        )
-                    }catch (e:Exception){
-                        throw e
+                val response = withContext(dispatchers.io) {
+                    val result = async {
+                        try {
+                            catalogDetailUseCase.getCatalogDetailV4Comparison(
+                                catalogId,
+                                compareCatalogId
+                            )
+                        } catch (e: Exception) {
+                            throw e
+                        }
                     }
-                }.await()
 
-                val resultComparisonProducts = async {
-                    try {
-                        catalogComparisonProductUseCase.getCatalogComparisonProducts(
-                            catalogId, brand,
-                            categoryId, limit.toString(), Int.ONE.toString(), name
-                        )
-                    }catch (e:Exception){
-                        throw e
+                    val resultComparisonProducts = async {
+                        try {
+                            catalogComparisonProductUseCase.getCatalogComparisonProducts(
+                                catalogId,
+                                brand,
+                                categoryId,
+                                limit.toString(),
+                                Int.ONE.toString(),
+                                name
+                            )
+                        } catch (e: Exception) {
+                            throw e
+                        }
                     }
-                }.await()
 
-                _comparisonUiModel.postValue(result?.map())
-                _catalogListingUiModel.postValue(resultComparisonProducts.map())
+                    result.await()?.map() to resultComparisonProducts.await().map()
+                }
+
+                _comparisonUiModel.postValue(response.first)
+                _catalogListingUiModel.postValue(response.second)
             },
             onError = {
                 _errorsToasterGetInitComparison.postValue(it)
             }
         )
     }
-
-
 }

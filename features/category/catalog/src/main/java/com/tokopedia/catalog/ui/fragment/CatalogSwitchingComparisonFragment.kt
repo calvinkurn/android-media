@@ -423,7 +423,7 @@ class CatalogSwitchingComparisonFragment :
             }
             binding?.globalError?.errorDescription?.text = errorMessage
             binding?.globalError?.show()
-            visibilityLoaderForInitialPage(false)
+            visibilityLoaderForInitialPage(false, isInitLoadFailed = true)
         }
 
         viewModel.errorsToasterGetCatalogListing.observe(viewLifecycleOwner) {
@@ -511,13 +511,14 @@ class CatalogSwitchingComparisonFragment :
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    private fun visibilityLoaderForInitialPage(isShow: Boolean) = binding.apply {
+    private fun visibilityLoaderForInitialPage(isShow: Boolean, isInitLoadFailed: Boolean = false) = binding.apply {
         loaderCatalogList.showWithCondition(isShow)
         loaderSearch.showWithCondition(isShow)
-        clSearch.showWithCondition(!isShow)
-        btnSeeCompare.showWithCondition(!isShow)
-        rvCatalogSelection.showWithCondition(!isShow)
         loaderCatalogSelection.showWithCondition(isShow)
+        clSearch.showWithCondition(!isShow && !isInitLoadFailed)
+        btnSeeCompare.showWithCondition(!isShow && !isInitLoadFailed)
+        rvCatalogSelection.showWithCondition(!isShow && !isInitLoadFailed)
+        divider.showWithCondition(!isInitLoadFailed)
     }
 
     private fun showCancelSwitch(
