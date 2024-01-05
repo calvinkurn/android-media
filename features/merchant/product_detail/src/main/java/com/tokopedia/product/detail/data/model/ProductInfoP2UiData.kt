@@ -20,7 +20,6 @@ import com.tokopedia.product.detail.data.model.generalinfo.ObatKeras
 import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVoucherSummary
 import com.tokopedia.product.detail.data.model.navbar.NavBar
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
-import com.tokopedia.product.detail.data.model.review.ProductRatingCount
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.review.ReviewImage
 import com.tokopedia.product.detail.data.model.shop_additional.ProductShopAdditional
@@ -28,6 +27,7 @@ import com.tokopedia.product.detail.data.model.ticker.ProductTicker
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
+import com.tokopedia.product.detail.view.viewholder.review.ui.ReviewRatingUiModel
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 
@@ -60,7 +60,7 @@ data class ProductInfoP2UiData(
     var helpfulReviews: List<Review>? = null,
     var miniCart: MutableMap<String, MiniCartItem.MiniCartItemProduct>? = null,
     var alternateCopy: List<AlternateCopy> = listOf(),
-    var rating: ProductRatingCount = ProductRatingCount(),
+    var rating: ReviewRatingUiModel = ReviewRatingUiModel(),
     var ticker: ProductTicker = ProductTicker(),
     var navBar: NavBar = NavBar(),
     var shopFinishRate: String = "",

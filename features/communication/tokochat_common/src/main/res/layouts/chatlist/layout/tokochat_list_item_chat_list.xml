@@ -29,14 +29,14 @@
         tools:src="@color/Unify_GN300" />
 
     <View
-        android:id="@+id/tokochat_list_bg_logo"
+        android:id="@+id/tokochat_list_bg_logo_border"
         android:layout_width="20dp"
         android:layout_height="20dp"
         app:layout_constraintTop_toTopOf="@id/tokochat_list_iv_logo"
         app:layout_constraintLeft_toLeftOf="@id/tokochat_list_iv_logo"
         app:layout_constraintRight_toRightOf="@id/tokochat_list_iv_logo"
         app:layout_constraintBottom_toBottomOf="@id/tokochat_list_iv_logo"
-        android:background="@drawable/tokochat_list_bg_icon_logo" />
+        android:background="@drawable/tokochat_list_bg_icon_logo_border" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/tokochat_list_layout_driver"

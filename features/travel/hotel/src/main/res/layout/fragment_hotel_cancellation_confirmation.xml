@@ -51,4 +51,16 @@
         layout="@layout/item_network_error_view"
         android:visibility="gone"
         tools:visibility="visible" />
+
+    <include
+        android:id="@+id/container_loading_state"
+        layout="@layout/item_hotel_fragment_loading_state"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible"/>
 </LinearLayout>

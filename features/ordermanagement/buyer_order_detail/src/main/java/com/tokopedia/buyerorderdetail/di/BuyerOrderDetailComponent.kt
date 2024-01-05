@@ -8,12 +8,13 @@ import com.tokopedia.buyerorderdetail.presentation.bottomsheet.SubmissionOrderEx
 import com.tokopedia.buyerorderdetail.presentation.fragment.BuyerOrderDetailFragment
 import com.tokopedia.buyerorderdetail.presentation.fragment.BuyerOrderExtensionFragment
 import com.tokopedia.buyerorderdetail.presentation.fragment.PartialOrderFulfillmentFragment
+import com.tokopedia.tokochat.config.di.component.TokoChatConfigComponent
 import dagger.Component
 
 @BuyerOrderDetailScope
 @Component(
     modules = [BuyerOrderDetailModule::class, BuyerOrderDetailViewModelModule::class],
-    dependencies = [BaseAppComponent::class]
+    dependencies = [BaseAppComponent::class, TokoChatConfigComponent::class]
 )
 interface BuyerOrderDetailComponent {
     fun inject(buyerOrderDetailFragment: BuyerOrderDetailFragment)

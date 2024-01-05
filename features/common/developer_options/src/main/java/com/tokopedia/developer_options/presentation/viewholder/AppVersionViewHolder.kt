@@ -7,14 +7,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.AppVersionUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import java.lang.Exception
 
 class AppVersionViewHolder(
     itemView: View
-): AbstractViewHolder<AppVersionUiModel>(itemView)
-{
+) : AbstractViewHolder<AppVersionUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_app_version
@@ -44,6 +44,7 @@ class AppVersionViewHolder(
                             GlobalConfig.VERSION_NAME = versionName
                             GlobalConfig.VERSION_CODE = versionCode.toInt()
                             Toast.makeText(this, "Version has been changed: $versionName - $versionCode", Toast.LENGTH_SHORT).show()
+                            DevOpsTracker.trackEntryEvent(DevopsFeature.VERSION_CHANGER)
                         } catch (e: Exception) {
                             Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show()
                         }

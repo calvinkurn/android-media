@@ -2,20 +2,18 @@
 
 package com.tokopedia.editor.ui.text
 
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
+import android.content.Context
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.graphics.Typeface
-import android.os.Build
+import android.os.Handler
 import android.view.Gravity
-import android.widget.EditText
-import android.widget.LinearLayout
+import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.editor.base.BaseEditorFragment
 import com.tokopedia.editor.databinding.FragmentInputTextBinding
+import com.tokopedia.editor.ui.widget.EditorEditTextView
 import com.tokopedia.editor.ui.widget.InputTextColorItemView
 import com.tokopedia.editor.ui.widget.InputTextStyleItemView
 import com.tokopedia.editor.util.FontAlignment
@@ -34,6 +32,7 @@ class InputTextFragment @Inject constructor(
 
     private val viewModel: InputTextViewModel by activityViewModels { viewModelFactory }
     private val viewBinding: FragmentInputTextBinding? by viewBinding()
+    private var handler: Handler? = null
 
     override fun initView() {
         initFontSelection()
@@ -41,10 +40,9 @@ class InputTextFragment @Inject constructor(
 
         initListener()
 
-        viewBinding?.addTextInput?.let {
-            it.setText(viewModel.textValue.value)
-            it.requestFocus()
-        }
+        viewBinding?.addTextInput?.setText(viewModel.textValue.value)
+
+        this.showSoftKeyboard()
     }
 
     override fun initObserver() {
@@ -54,25 +52,22 @@ class InputTextFragment @Inject constructor(
         initFontStyleObserver()
     }
 
+    override fun onPause() {
+        handler?.removeCallbacksAndMessages(null)
+        super.onPause()
+    }
+
     private fun initAlignmentObserver() {
         viewModel.selectedAlignment.observe(viewLifecycleOwner) {
             updateAlignmentIcon(it)
 
-            viewBinding?.addTextInput?.let { viewRef: EditText ->
-                val lp = viewRef.layoutParams as LinearLayout.LayoutParams
-                lp.gravity = when (it) {
-                    FontAlignment.CENTER -> Gravity.CENTER
-                    FontAlignment.LEFT -> Gravity.START
-                    else -> Gravity.END
-                }
-
-                viewRef.layoutParams = lp
-
+            viewBinding?.addTextInput?.let { viewRef: EditorEditTextView ->
                 viewRef.gravity = when (it) {
                     FontAlignment.CENTER -> Gravity.CENTER
                     FontAlignment.LEFT -> Gravity.START
                     else -> Gravity.END
                 }
+                viewRef.setAlignment(it.value)
             }
         }
     }
@@ -120,13 +115,13 @@ class InputTextFragment @Inject constructor(
                 it.addTextInput.requestFocus()
             }
 
-            it.addTextInput.addTextChangedListener { newText ->
-                updateHint(newText?.toString()?.isNotEmpty() == true)
-                viewModel.updateText(newText.toString())
+            it.addTextInputWrapper.setOnClickListener {
+                handler?.removeCallbacksAndMessages(null)
+                viewModel.saveInputText()
             }
 
-            it.addTextInputWrapper.setOnClickListener {
-                viewModel.saveInputText()
+            it.addTextInput.addTextChangedListener { newText ->
+                viewModel.updateText(newText?.toString() ?: "")
             }
         }
     }
@@ -233,31 +228,10 @@ class InputTextFragment @Inject constructor(
         viewBinding?.addTextInput?.let {
             // config text with background
             viewModel.backgroundColorSet.value?.let { (textColor, backgroundColor) ->
-                updateEditTextDrawable(backgroundColor)
-                it.setTextColor(textColor)
+                it.setColor(textColor, backgroundColor)
             } ?: run {
-                updateEditTextDrawable(Color.TRANSPARENT)
-                it.setTextColor(viewModel.selectedTextColor.value ?: DEFAULT_TEXT_COLOR)
-            }
-        }
-    }
-
-    private fun updateEditTextDrawable(colorInt: Int) {
-        val textInput = viewBinding?.addTextInput
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            textInput?.background?.colorFilter = BlendModeColorFilter(colorInt, BlendMode.DST_ATOP)
-        } else {
-            textInput?.background?.setColorFilter(colorInt, PorterDuff.Mode.DST_ATOP)
-        }
-    }
-
-    private fun updateHint(isClear: Boolean) {
-        viewBinding?.addTextInput?.let {
-            if (isClear) {
-                it.hint = ""
-            } else {
-                it.hint = getString(editorR.string.universal_editor_input_text_hint)
+                val textColor = viewModel.selectedTextColor.value ?: DEFAULT_TEXT_COLOR
+                it.setColor(textColor, Color.TRANSPARENT)
             }
         }
     }
@@ -275,7 +249,21 @@ class InputTextFragment @Inject constructor(
         }
     }
 
+    private fun showSoftKeyboard() {
+        handler = Handler()
+        handler?.postDelayed({
+            viewBinding?.addTextInput?.requestFocus()
+            context?.getSystemService(Context.INPUT_METHOD_SERVICE)?.let {
+                (it as InputMethodManager).toggleSoftInput(
+                    InputMethodManager.SHOW_IMPLICIT,
+                    InputMethodManager.HIDE_IMPLICIT_ONLY
+                )
+            }
+        }, SOFT_KEYBOARD_SHOW_DELAY)
+    }
+
     companion object {
         private const val DEFAULT_TEXT_COLOR = -1
+        private const val SOFT_KEYBOARD_SHOW_DELAY = 100L
     }
 }

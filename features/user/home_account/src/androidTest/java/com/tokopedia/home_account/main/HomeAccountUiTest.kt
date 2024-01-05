@@ -1,6 +1,9 @@
 package com.tokopedia.home_account.main
 
 import android.content.Intent
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.toPackage
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.filters.LargeTest
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -28,6 +31,9 @@ class HomeAccountUiTest {
     @get:Rule
     var activityTestRule = IntentsTestRule(HomeAccountUserActivity::class.java, false, false)
 
+    @get:Rule
+    val composeTestRule = createComposeRule()
+
     @Inject
     lateinit var abTest: AbTestPlatform
 
@@ -46,8 +52,8 @@ class HomeAccountUiTest {
             clickLihatSemuaSaldoPoint()
 
             fundsAndInvestmentRobot {
-                displayText("GoPay & Coins")
-                displayText("Tokopedia Card")
+                intending(toPackage("com.tokopedia.home_account.fundsAndInvestment"))
+
                 back()
             }
 

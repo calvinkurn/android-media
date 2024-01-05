@@ -394,6 +394,26 @@ class WithdrawAnalytics @Inject constructor(
         sendTrackingData(map)
     }
 
+    fun eventClickAutoTopAdsRecommendationWithdrawal(recommWDAmount: Long, originalWDAmount: Long) {
+        val map = TrackAppUtils.gtmData(
+            EVENT_CLICK_TOPADS,
+            EVENT_CATEGORY_SALDO_PAGE,
+            EVENT_ACTION_CLICK_RECOMMENDED_AMOUNT_WD,
+            "$recommWDAmount|$originalWDAmount"
+        )
+        sendTrackingData(map)
+    }
+
+    fun eventClickAutoTopAdsOriginalWithdrawal(recommWDAmount: Long, originalWDAmount: Long) {
+        val map = TrackAppUtils.gtmData(
+            EVENT_CLICK_TOPADS,
+            EVENT_CATEGORY_SALDO_PAGE,
+            EVENT_ACTION_CLICK_ORIGINAL_AMOUNT_WD,
+            "$recommWDAmount|$originalWDAmount"
+        )
+        sendTrackingData(map)
+    }
+
     private fun sendTrackingData(map: MutableMap<String, Any>) {
         map[KEY_USER_ID] = userSession.get().userId
         map[KEY_BUSINESS_UNIT] = KEY_BUSINESS_UNIT_VALUE
@@ -409,12 +429,14 @@ class WithdrawAnalytics @Inject constructor(
         private const val EVENT_NAME_CLICK_SALDO_IRIS = "viewWithdrawalIris"
         private const val EVENT_VIEW_ITEM = "view_item"
         private const val EVENT_SELECT_CONTENT = "select_content"
+        private const val EVENT_CLICK_TOPADS = "clickTopAds"
 
         private const val EVENT_NAME_PROMO = "promoView"
         private const val EVENT_NAME_PROMO_CLICK = "promoClick"
 
         private const val EVENT_CATEGORY_WITHDRAWAL_PAGE = "withdrawal page"
         private const val EVENT_CATEGORY_WITHDRAWAL_THANK_YOU_PAGE = "wd thank you page"
+        private const val EVENT_CATEGORY_SALDO_PAGE = "saldo page"
         private const val EVENT_ACTION_CLICK_WITHDRAWAL = "click withdrawal"
         private const val EVENT_ACTION_CLICK_REKENING_PREMIUM_LOGO = "click rekening premium logo"
         private const val EVENT_ACTION_CLOSE_REKENING_PREMIUM_ACCOUNT_INFO = "click back from rekening premium"
@@ -441,6 +463,8 @@ class WithdrawAnalytics @Inject constructor(
         private const val EVENT_BANNER_LABEL_YES_WIDGET = "%s - widget yes"
         private const val EVENT_ACTION_CLICK_REKENING_BANNER = "click widget rekening premium"
         private const val EVENT_ACTION_BACK_FROM_WITHDRAWAL = "click back from penarikan saldo rekening premium"
+        private const val EVENT_ACTION_CLICK_RECOMMENDED_AMOUNT_WD = "click - tarik sesuai rekomendasi"
+        private const val EVENT_ACTION_CLICK_ORIGINAL_AMOUNT_WD = "click - tetap lanjut tarik"
 
         private const val EVENT_ACTION_OPEN_DISABLE_ACCOUNT_INFO = "view hanya bisa tarik saldo ke rekprem"
         private const val EVENT_ACTION_CLICK_WITHDRAWAL_ALL = "click tarik semua"

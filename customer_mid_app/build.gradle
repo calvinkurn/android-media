@@ -77,13 +77,14 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.promoCheckout)
     implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)
     implementation projectOrAar(rootProject.ext.features.playCommon)
+    implementation projectOrAar(rootProject.ext.features.creationCommon)
+    implementation projectOrAar(rootProject.ext.features.contentProductPicker)
     implementation projectOrAar(rootProject.ext.features.productShare)
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.dynamicFeatures)
     implementation projectOrAar(rootProject.ext.libraries.imageuploader)
     implementation projectOrAar(rootProject.ext.libraries.datePickerRange)
-    implementation projectOrAar(rootProject.ext.libraries.baseListSeller)
     implementation projectOrAar(rootProject.ext.libraries.locationmanager)
     implementation projectOrAar(rootProject.ext.libraries.imagePreviewSlider)
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)
@@ -240,6 +241,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.agerestriction)
     implementation projectOrAar(rootProject.ext.features.scpRewardsCommon)
     implementation projectOrAar(rootProject.ext.features.scpRewardsWidgets)
+    implementation projectOrAar(rootProject.ext.features.targetedticker)
+
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.features.developerOptions)
     } else {
@@ -392,6 +395,8 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.benchmark
     androidTestImplementation rootProject.ext.testDependencies.testCore
     androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
+    androidTestImplementation rootProject.ext.composeDependencies.composeUiTest
+    debugImplementation rootProject.ext.composeDependencies.composeAndroidUiTest
 
     androidTestImplementation rootProject.ext.testDependencies.fragmentTest
 }

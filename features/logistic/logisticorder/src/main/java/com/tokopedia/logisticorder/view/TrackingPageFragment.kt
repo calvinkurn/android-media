@@ -35,7 +35,6 @@ import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
 import com.tokopedia.logisticorder.uimodel.EtaModel
 import com.tokopedia.logisticorder.uimodel.LastDriverModel
-import com.tokopedia.logisticorder.uimodel.PageModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.utils.TippingConstant.OPEN
@@ -49,13 +48,11 @@ import com.tokopedia.logisticorder.view.bottomsheet.DriverInfoBottomSheet
 import com.tokopedia.logisticorder.view.bottomsheet.DriverTippingBottomSheet
 import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.targetedticker.domain.TargetedTickerPage
+import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifycomponents.ticker.TickerData
-import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -67,6 +64,8 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import com.tokopedia.logisticCommon.R as logisticCommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImageClicked {
 
@@ -231,7 +230,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         setHistoryView(model)
         setEmptyHistoryView(model)
         setLiveTrackingButton(model)
-        setTicketInfoCourier(trackingDataModel.page)
+        setTicketInfoCourier(trackingDataModel)
         initClickToCopy(model.shippingRefNum.toHyphenIfEmptyOrNull())
         setHeader(trackingDataModel)
     }
@@ -267,7 +266,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         binding?.let {
             it.referenceNumber.text = model.shippingRefNum.toHyphenIfEmptyOrNull()
 
-            it.storeName.text = model.detail.shipperName.toHyphenIfEmptyOrNull()
+            it.storeName.text = HtmlLinkHelper(it.rootView.context, model.detail.shipperName.toHyphenIfEmptyOrNull()).spannedString
             it.storeAddress.text = model.detail.shipperCity
 
             it.serviceCode.text = model.detail.serviceCode.toHyphenIfEmptyOrNull()
@@ -343,12 +342,12 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                     tippingLayout.setCardBackgroundColor(
                         MethodChecker.getColor(
                             ctx,
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                            unifyprinciplesR.color.Unify_NN0
                         )
                     )
                     val textColor = MethodChecker.getColor(
                         ctx,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                        unifyprinciplesR.color.Unify_NN950
                     )
                     tippingText.setTextColor(textColor)
                     tippingDescription.setTextColor(textColor)
@@ -464,7 +463,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                 binding?.eta?.setCompoundDrawablesRelativeWithIntrinsicBounds(
                     0,
                     0,
-                    com.tokopedia.logisticCommon.R.drawable.eta_info,
+                    logisticCommonR.drawable.eta_info,
                     0
                 )
                 binding?.eta?.setOnClickListener {
@@ -550,56 +549,17 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         }
     }
 
-    private fun setTicketInfoCourier(page: PageModel) {
-        if (page.additionalInfo.isEmpty()) {
-            binding?.tickerInfoLayout?.visibility = View.GONE
-        } else {
-            binding?.tickerInfoLayout?.visibility = View.VISIBLE
-            if (page.additionalInfo.size > 1) {
-                val message = ArrayList<TickerData>()
-                for (item in page.additionalInfo) {
-                    val formattedDes = formatTitleHtml(item.notes, item.urlDetail, item.urlText)
-                    message.add(
-                        TickerData(
-                            item.title,
-                            formattedDes,
-                            Ticker.TYPE_ANNOUNCEMENT,
-                            true
-                        )
-                    )
+    private fun setTicketInfoCourier(trackOrder: TrackingDataModel) {
+        binding?.tickerInfoCourier?.apply { ->
+            setTickerShape(Ticker.SHAPE_LOOSE)
+            val param = TargetedTickerParamModel(
+                page = TargetedTickerPage.TRACKING_PAGE,
+                targets = trackOrder.page.tickerUnificationTargets.map {
+                    TargetedTickerParamModel.Target(it.type, it.values)
                 }
-                val tickerPageAdapter = TickerPagerAdapter(context, message)
-                tickerPageAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
-                    override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                        openWebViewFromTicker(linkUrl)
-                    }
-                })
-                binding?.tickerInfoCourier?.addPagerView(tickerPageAdapter, message)
-            } else {
-                val formattedDesc = formatTitleHtml(
-                    page.additionalInfo[0].notes,
-                    page.additionalInfo[0].urlDetail,
-                    page.additionalInfo[0].urlText
-                )
-                binding?.tickerInfoCourier?.setHtmlDescription(formattedDesc)
-                binding?.tickerInfoCourier?.tickerTitle = page.additionalInfo[0].title
-                binding?.tickerInfoCourier?.tickerType = Ticker.TYPE_ANNOUNCEMENT
-                binding?.tickerInfoCourier?.tickerShape = Ticker.SHAPE_LOOSE
-                binding?.tickerInfoCourier?.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        openWebViewFromTicker(linkUrl)
-                    }
-
-                    override fun onDismiss() {
-                        // no-op
-                    }
-                })
-            }
+            )
+            loadAndShow(param)
         }
-    }
-
-    private fun openWebViewFromTicker(linkUrl: CharSequence) {
-        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=$linkUrl")
     }
 
     private fun setEmptyHistoryView(model: TrackOrderModel) {
@@ -638,10 +598,6 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         }
         val intent = context?.let { LiveTrackingActivity.createIntent(it, trackingUrl) }
         startActivityForResult(intent, LIVE_TRACKING_VIEW_REQ)
-    }
-
-    private fun formatTitleHtml(desc: String, urlText: String, url: String): String {
-        return String.format("%s <a href=\"%s\">%s</a>", desc, urlText, url)
     }
 
     // POD: navigate to pod activity

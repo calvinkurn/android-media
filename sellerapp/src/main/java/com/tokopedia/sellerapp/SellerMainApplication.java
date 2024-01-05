@@ -152,6 +152,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             showDevOptNotification();
             initDevMonitoringTools();
         }
+        super.setupAppScreenMode();
     }
 
     private void initCassava() {
@@ -178,8 +179,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
     }
 
     private void initCacheManager() {
-        PersistentCacheManager.init(this);
-        cacheManager = PersistentCacheManager.instance;
+        cacheManager = PersistentCacheManager.init(this);
     }
 
     private void initLogManager(){

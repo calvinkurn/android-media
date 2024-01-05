@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -36,6 +37,7 @@ import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTransactionHistoryItemModel
 import com.tokopedia.affiliate.viewmodel.AffiliateIncomeViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.affiliate_toko.databinding.AffiliateIncomeFragmentLayoutBinding
 import com.tokopedia.applink.RouteManager
@@ -73,6 +75,7 @@ class AffiliateIncomeFragment :
     private val userSession by lazy { context?.let { UserSession(it) } }
 
     private var affiliateIncomeViewModel: AffiliateIncomeViewModel? = null
+    private var affiliateViewModel: AffiliateViewModel? = null
     private var userName: String = ""
     private var profilePicture: String = ""
     private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory())
@@ -108,13 +111,14 @@ class AffiliateIncomeFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        return AffiliateIncomeFragmentLayoutBinding.inflate(inflater, container, false)
-            .also { binding = it }.root
+    ): View? {
+        binding = AffiliateIncomeFragmentLayoutBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        affiliateViewModel = activity?.let { ViewModelProvider(it)[AffiliateViewModel::class.java] }
         setObservers()
     }
 
@@ -204,7 +208,7 @@ class AffiliateIncomeFragment :
                 )
             }
         }
-        affiliateIncomeViewModel?.getUnreadNotificationCount()?.observe(this) { count ->
+        affiliateViewModel?.getUnreadNotificationCount()?.observe(this) { count ->
             binding?.withdrawalNavToolbar?.apply {
                 setCentralizedBadgeCounter(IconList.ID_NOTIFICATION, count)
             }
@@ -409,7 +413,7 @@ class AffiliateIncomeFragment :
                 IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.AFFILIATE))
             if (isAffiliateNCEnabled()) {
                 iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
-                    affiliateIncomeViewModel?.resetNotificationCount()
+                    affiliateViewModel?.resetNotificationCount()
                     sendNotificationClickEvent()
                     RouteManager.route(
                         context,
@@ -426,7 +430,7 @@ class AffiliateIncomeFragment :
         }
         initDateRangeClickListener()
         if (isAffiliateNCEnabled()) {
-            affiliateIncomeViewModel?.fetchUnreadNotificationCount()
+            affiliateViewModel?.fetchUnreadNotificationCount()
         }
     }
 

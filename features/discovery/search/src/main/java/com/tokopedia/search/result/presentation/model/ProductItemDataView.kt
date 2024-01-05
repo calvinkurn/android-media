@@ -1,14 +1,13 @@
 package com.tokopedia.search.result.presentation.model
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView.Companion.hasFulfillment
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.addtocart.AddToCartConstant.DEFAULT_PARENT_ID
+import com.tokopedia.search.result.product.productitem.ProductItemVisitable
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.DEFAULT_KEYWORD_INTENT
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.KEYWORD_INTENT_LOW
 import com.tokopedia.search.result.product.wishlist.Wishlistable
@@ -21,7 +20,7 @@ import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.StringUtils
 import com.tokopedia.topads.sdk.domain.model.Data as TopAdsProductData
 
-class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, Wishlistable {
+class ProductItemDataView : ImpressHolder(), ProductItemVisitable, Wishlistable {
     var productID: String = ""
     var warehouseID: String = ""
     var productName: String = ""
@@ -74,6 +73,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
     var showButtonAtc: Boolean = false
     var parentId: String = DEFAULT_PARENT_ID
     var isPortrait: Boolean = false
+    var isImageBlurred: Boolean = false
 
     override fun setWishlist(productID: String, isWishlisted: Boolean) {
         if (this.productID == productID) {
@@ -169,7 +169,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
     private val isFreeOngkirActive: Boolean
         get() = freeOngkirDataView.isActive
 
-    val hasLabelGroupFulfillment: Boolean
+    override val hasLabelGroupFulfillment: Boolean
         get() = hasFulfillment(labelGroupList)
 
     fun getDimension115(positionMap: Map<String, String>): String {
@@ -178,10 +178,21 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory>, 
             .joinToString { it }
     }
 
+    fun createAdditionalLabel(
+        positionMap: Map<String, String>,
+    ): Map<String, String> {
+        return when {
+            isImageBlurred -> positionMap.plus(LABEL_POSITION_SHOW_BLUR to LABEL_POSITION_BLUR)
+            else -> positionMap
+        }
+    }
+
     val isKeywordIntentionLow : Boolean
         get() = keywordIntention == KEYWORD_INTENT_LOW
 
     companion object {
+        private const val LABEL_POSITION_SHOW_BLUR = "show"
+        private const val LABEL_POSITION_BLUR = "blur"
         fun create(
             topAds: TopAdsProductData,
             position: Int,

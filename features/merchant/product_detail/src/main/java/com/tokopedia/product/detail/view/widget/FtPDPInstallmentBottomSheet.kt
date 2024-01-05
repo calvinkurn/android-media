@@ -14,7 +14,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.design.bottomsheet.BottomSheetViewPager
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.view.adapter.InstallmentDataPagerAdapter

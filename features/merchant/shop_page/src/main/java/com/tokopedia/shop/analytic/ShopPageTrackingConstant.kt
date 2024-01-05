@@ -243,6 +243,7 @@ object ShopPageTrackingConstant {
     const val PRODUCT_ID = "productId"
     const val ITEMS_PRODUCT_ID = "product_id"
     const val PAGE_SOURCE = "pageSource"
+    const val SCREEN_NAME = "screenName"
     const val RELATED_KEYWORD = "relatedKeyword"
     const val ECOMMERCE = "ecommerce"
     const val ACTION_FIELD = "actionField"
@@ -293,6 +294,8 @@ object ShopPageTrackingConstant {
     const val DIMENSION_45 = "dimension45"
     const val DIMENSION_38 = "dimension38"
     const val DIMENSION_40 = "dimension40"
+    const val DIMENSION_56 = "dimension56" // warehouse id
+    const val DIMENSION_58 = "dimension58" // is fulfilment
     const val DIMENSION_83 = "dimension83"
     const val DIMENSION_87 = "dimension87"
     const val DIMENSION_117 = "dimension117"
@@ -494,6 +497,13 @@ object ShopPageTrackingConstant {
         const val IMPRESSION_REIMAGINED_PRODUCT_CAROUSEL = "reimagined - impression product advanced carousel"
         const val CLICK_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "reimagined - click banner advanced carousel"
         const val CLICK_REIMAGINED_PRODUCT_CAROUSEL = "reimagined - click product advanced carousel"
+
+        // Shop Info Reimagine
+        const val CLICK_CTA_EXPAND_PHARMACY_INFORMATION = "shop info - click expand information"
+        const val CLICK_CTA_PHARMACY_LOCATION = "shop info - click lihat lokasi"
+        const val CLICK_ICON_SHOP_REVIEW = "shop info - click cta all reviews"
+        const val IMPRESSION_SHOP_REVIEW = "shop info - impression review highlight"
+        const val CLICK_SHOP_NOTE = "shop info - click shop notes"
     }
 
     object EventCategory {
@@ -584,7 +594,7 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_IMPRESSION_REIMAGINED_PRODUCT_CAROUSEL = "46621"
         const val TRACKER_ID_CLICK_REIMAGINED_BANNER_PRODUCT_CAROUSEL = "45951"
         const val TRACKER_ID_CLICK_REIMAGINED_PRODUCT_CAROUSEL = "45952"
-        
+
         const val TRACKER_ID_REIMAGINED_IMPRESSION_HEADER_SHOP = "45906"
         const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_NAME = "45907"
         const val TRACKER_ID_REIMAGINED_CLICK_HEADER_SHOP_REVIEW = "45908"
@@ -603,11 +613,23 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_REIMAGINED_CLICK_ADD_TO_CART_DIRECT_PURCHASE_WIDGET = "45958"
         const val TRACKER_ID_REIMAGINED_IMPRESSION_PRODUCT_DIRECT_PURCHASE_WIDGET = "46620"
         const val TRACKER_ID_REIMAGINED_CLICK_PRODUCT_DIRECT_PURCHASE_WIDGET = "45959"
+
+        // Shop Info Reimagine
+        const val TRACKER_ID_OPEN_SHOP_INFO_SCREEN_IMPRESSION = "48699"
+        const val TRACKER_ID_CTA_EXPAND_PHARMACY_INFO_CLICK = "48700"
+        const val TRACKER_ID_CTA_VIEW_PHARMACY_LOCATION_CLICK = "48701"
+        const val TRACKER_ID_ICON_VIEW_ALL_SHOP_REVIEW_CLICK = "48702"
+        const val TRACKER_ID_SHOP_REVIEW_IMPRESSION = "48703"
+        const val TRACKER_ID_SHOP_NOTE_CLICK = "48704"
     }
 
     object Key {
         const val CAMPAIGN_ID = "campaign_id"
         const val VARIANT_ID = "variant_id"
         const val AFFILIATE_CHANNEL_ID = "channelId"
+    }
+
+    object PageType {
+        const val SHOP_INFO = "/shoppage - info page"
     }
 }

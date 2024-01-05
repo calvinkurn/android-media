@@ -6,77 +6,75 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecommendationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationItemDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.productcard.ProductCardListView
-import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
-import com.tokopedia.smart_recycler_helper.SmartListener
+import com.tokopedia.productcard.ProductCardGridView
 
 /**
  * Created by Lukas on 2019-07-15
  */
 
-class HomeRecommendationItemListViewHolder(itemView: View, private val cardInteraction: Boolean = false) : SmartAbstractViewHolder<HomeRecommendationItemDataModel>(itemView) {
+class HomeRecommendationItemListViewHolder(
+    itemView: View,
+    private val homeRecommendationListener: HomeRecommendationListener
+) : BaseRecommendationForYouViewHolder<HomeRecommendationItemDataModel>(
+    itemView,
+    HomeRecommendationItemDataModel::class.java
+) {
 
-    companion object{
+    companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_feed_item_list
     }
 
-    private val productCardView by lazy { itemView.findViewById<ProductCardListView>(R.id.productCardView) }
+    private val productCardView by lazy { itemView.findViewById<ProductCardGridView>(R.id.productCardView) }
 
-    private fun setLayout(element: HomeRecommendationItemDataModel, listener: HomeRecommendationListener){
-        val productCardModelLabelGroupList = element.product.labelGroup.map {
-            ProductCardModel.LabelGroup(position = it.position, type = it.type, title = it.title, imageUrl = it.imageUrl)
+    override fun bind(element: HomeRecommendationItemDataModel) {
+        setLayout(element)
+        productCardImpressionListener(element)
+        setItemProductCardClickListener(element)
+        setItemThreeDotsClickListener(element)
+    }
+
+    override fun bindPayload(newItem: HomeRecommendationItemDataModel?) {
+        newItem?.let {
+            setItemThreeDotsClickListener(it)
         }
+    }
 
-        productCardView?.run{
-            setProductModel(
-                    ProductCardModel(
-                            slashedPrice = element.product.slashedPrice,
-                            productName = element.product.name,
-                            formattedPrice = element.product.price,
-                            productImageUrl = element.product.imageUrl,
-                            isTopAds = element.product.isTopads,
-                            discountPercentage = if (element.product.discountPercentage > 0) "${element.product.discountPercentage}%" else "",
-                            ratingCount = element.product.rating,
-                            reviewCount = element.product.countReview,
-                            countSoldRating = element.product.ratingFloat,
-                            shopLocation = element.product.shop.city,
-                            isWishlistVisible = true,
-                            isWishlisted = element.product.isWishlist,
-                            shopBadgeList = element.product.badges.map {
-                                ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
-                            },
-                            freeOngkir = ProductCardModel.FreeOngkir(
-                                    isActive = element.product.freeOngkirInformation.isActive,
-                                    imageUrl = element.product.freeOngkirInformation.imageUrl
-                            ),
-                            labelGroupList = productCardModelLabelGroupList,
-                            hasThreeDots = true,
-                            cardInteraction = cardInteraction
-                    )
-            )
-            setImageProductViewHintListener(element, object: ViewHintListener {
+    private fun setLayout(
+        element: HomeRecommendationItemDataModel
+    ) {
+        productCardView.setProductModel(element.productCardModel)
+    }
+
+    private fun productCardImpressionListener(element: HomeRecommendationItemDataModel) {
+        productCardView.setImageProductViewHintListener(
+            element,
+            object : ViewHintListener {
                 override fun onViewHint() {
-                    listener.onProductImpression(element, adapterPosition)
+                    homeRecommendationListener.onProductImpression(
+                        element,
+                        bindingAdapterPosition
+                    )
                 }
-            })
-            setOnClickListener { listener.onProductClick(element, adapterPosition) }
-
-            setThreeDotsOnClickListener {
-                listener.onProductThreeDotsClick(element, adapterPosition)
             }
+        )
+    }
+
+    private fun setItemProductCardClickListener(element: HomeRecommendationItemDataModel) {
+        productCardView.setOnClickListener {
+            homeRecommendationListener.onProductClick(
+                element,
+                bindingAdapterPosition
+            )
         }
     }
 
-    override fun bind(element: HomeRecommendationItemDataModel, listener: SmartListener) {
-        setLayout(element, listener as HomeRecommendationListener)
-    }
-
-    override fun bind(element: HomeRecommendationItemDataModel, listener: SmartListener, payloads: List<Any>) {
-        productCardView?.setThreeDotsOnClickListener {
-            (listener as HomeRecommendationListener).onProductThreeDotsClick(element, adapterPosition)
+    private fun setItemThreeDotsClickListener(element: HomeRecommendationItemDataModel) {
+        productCardView.setThreeDotsOnClickListener {
+            homeRecommendationListener.onProductThreeDotsClick(
+                element,
+                bindingAdapterPosition
+            )
         }
     }
 }
-

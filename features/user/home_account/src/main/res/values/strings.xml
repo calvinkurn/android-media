@@ -54,14 +54,14 @@
     <string name="menu_account_title_shake">Shake Shake</string>
     <string name="menu_account_title_geolocation">Geolokasi</string>
     <string name="menu_account_title_safe_mode">Safe Mode</string>
-    <string name="menu_account_title_dark_mode">Dark Mode</string>
+    <string name="menu_account_title_dark_mode">Tampilan</string>
     <string name="menu_account_title_quality_setting">Kualitas Gambar</string>
     <string name="menu_account_title_clear_cache">Bersihkan Cache</string>
     <string name="menu_account_title_screen_recorder">Perekam Layar</string>
     <string name="menu_account_title_play_widget_autoplay">Putar Otomatis Video</string>
     <string name="menu_account_title_about_us">Kenali Tokopedia</string>
     <string name="menu_account_title_terms">Syarat dan Ketentuan</string>
-    <string name="menu_account_title_privacy_policy">Kebijakan Privasi</string>
+    <string name="menu_account_title_privacy_policy">Pemberitahuan Privasi</string>
     <string name="menu_account_title_intellectual_property">Hak Kekayaan Intelektual</string>
     <string name="menu_account_title_review">Ulas Aplikasi Ini</string>
     <string name="menu_account_title_sign_out">Keluar Akun</string>
@@ -81,7 +81,7 @@
     <string name="menu_account_desc_shake">Goyang HP untuk dapat promo menarik</string>
     <string name="menu_account_desc_geolocation">Atur rekomendasi berdasarkan lokasi</string>
     <string name="menu_account_desc_safe_mode">Hasil pencarian aman untuk segala usia</string>
-    <string name="menu_account_desc_dark_mode">Aktifkan dark mode di Tokopedia</string>
+    <string name="menu_account_desc_dark_mode">Atur tampilan warna di Tokopedia</string>
     <string name="menu_account_desc_quality_setting">Atur kualitas gambar yang kamu lihat</string>
     <string name="menu_account_desc_clear_cache">Solusi cepat untuk atasi masalah aplikasi</string>
     <string name="menu_account_desc_screen_recorder">Lampiran video untuk laporan kendala</string>
@@ -186,7 +186,7 @@
     <string name="title_notification_setting">Notifikasi</string>
     <string name="title_touch_id_setting">Touch ID</string>
     <string name="title_tnc_setting">Syarat dan Ketentuan</string>
-    <string name="title_privacy_setting">Kebijakan Privasi</string>
+    <string name="title_privacy_setting">Pemberitahuan Privasi</string>
     <string name="title_help_center_setting">Tokopedia Care</string>
     <string name="image_quality_low_title">Rendah</string>
     <string name="image_quality_low_subtitle">Dapat mempermudah proses muat gambar, berlaku di semua jaringan HP.</string>
@@ -224,6 +224,7 @@
     <string name="title_password_setting">Ubah Kata Sandi</string>
     <string name="title_setting_pin">PIN Tokopedia</string>
     <string name="title_kyc_setting">Verifikasi Data Diri</string>
+    <string name="title_fingerprint">Sidik Jari</string>
     <string name="title_signin_with_notification">Masuk Lewat Notifikasi</string>
     <string name="image_quality_setting_subtitle">Pilihanmu akan menentukan kejelasan gambar yang kamu lihat di berbagai halaman Tokopedia.</string>
     <string name="message_success_change_profile">Sukses mengubah profil</string>
@@ -251,7 +252,7 @@
     <string name="opt_link_account_desc">Atur akun yang tersambung ke Tokopedia.</string>
     <string name="opt_bottom_sheet_verification_enabled_title">Aktifkan penggunaan data akun?</string>
     <string name="opt_bottom_sheet_verification_enabled_sub_title">Kami akan kasih rekomendasi teman yang bisa di-follow di Feed kamu, berdasarkan datamu di fitur Referral dan Berbagi Alamat.</string>
-    <string name="opt_bottom_sheet_verification_enabled_checkbox_desc">Saya telah membaca dan menyetujui Syarat &amp; Ketentuan serta Kebijakan Privasi yang berlaku.</string>
+    <string name="opt_bottom_sheet_verification_enabled_checkbox_desc">Saya telah membaca dan menyetujui Syarat &amp; Ketentuan serta Pemberitahuan Privasi yang berlaku.</string>
     <string name="opt_bottom_sheet_verification_enabled_button_title">Aktifkan Sekarang</string>
     <string name="opt_bottom_sheet_header_info_lengkap">Info lengkap</string>
     <string name="opt_bottom_sheet_header_clarification_data_usage">Data yang dipakai</string>

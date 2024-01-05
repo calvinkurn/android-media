@@ -37,7 +37,6 @@ import com.tokopedia.stories.widget.StoriesWidgetManager
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.universal_sharing.view.customview.UniversalShareWidget
-import com.tokopedia.universal_sharing.view.model.ShareWidgetParam
 import com.tokopedia.user.session.UserSessionInterface
 
 interface DynamicProductDetailListener {
@@ -59,23 +58,11 @@ interface DynamicProductDetailListener {
     fun onVideoVolumeCLicked(isMute: Boolean)
     fun onVideoStateChange(stopDuration: Long, videoDuration: Long)
     fun getProductVideoCoordinator(): ProductVideoCoordinator?
-    fun onThumbnailImpress(
-        position: Int,
-        media: MediaDataModel,
-        componentTrackDataModel: ComponentTrackDataModel?
-    )
-
-    fun trackThumbnailClicked(
-        position: Int,
-        media: MediaDataModel,
-        componentTrackDataModel: ComponentTrackDataModel?
-    )
 
     fun onMerchantVoucherSummaryClicked(
         @MvcSource source: Int,
         uiModel: ProductMerchantVoucherSummaryDataModel.UiModel
     )
-    fun showThumbnailImage(): Boolean
     fun onShowProductMediaRecommendationClicked()
 
     /**
@@ -529,7 +516,6 @@ interface DynamicProductDetailListener {
         itemPosition: Int,
         adapterPosition: Int
     )
-    fun onViewToViewReload(pageName: String, queryParam: String, thematicId: String)
 
     /**
      * Thumbnail Variant

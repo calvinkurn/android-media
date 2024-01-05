@@ -244,4 +244,8 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
     override fun clickSearchWhenParamChanged(search: String) {
         /** Not applicable for shorts */
     }
+
+    override fun clickSortingTypeItem(sortName: String) {
+        /** Not applicable for shorts */
+    }
 }

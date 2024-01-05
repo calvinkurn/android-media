@@ -43,12 +43,10 @@ public abstract class HomeFeedEndlessScrollListener extends RecyclerView.OnScrol
     public HomeFeedEndlessScrollListener(RecyclerView.LayoutManager layoutManager) {
         resetState();
         this.layoutManager = layoutManager;
-        resetState();
         if (layoutManager instanceof GridLayoutManager) {
             visibleThreshold = visibleThreshold * ((GridLayoutManager)layoutManager).getSpanCount();
         } else if (layoutManager instanceof StaggeredGridLayoutManager){
             visibleThreshold = visibleThreshold * ((StaggeredGridLayoutManager)layoutManager).getSpanCount();
-//            visibleThreshold+=6;
         }
     }
 

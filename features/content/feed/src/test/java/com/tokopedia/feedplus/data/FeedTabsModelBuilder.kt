@@ -44,6 +44,7 @@ class FeedTabsModelBuilder {
             title = "Untuk Kamu",
             key = "foryou",
             isSelected = false,
+            hasNewContent = false
         ),
         FeedDataModel(
             isActive = true,
@@ -52,6 +53,7 @@ class FeedTabsModelBuilder {
             title = "Following",
             key = "following",
             isSelected = false,
+            hasNewContent = true
         )
     )
 
@@ -63,6 +65,7 @@ class FeedTabsModelBuilder {
             title = "Untuk Kamu",
             key = "foryou",
             isSelected = false,
+            hasNewContent = false
         ),
         FeedDataModel(
             isActive = true,
@@ -71,6 +74,7 @@ class FeedTabsModelBuilder {
             title = "Following",
             key = "following",
             isSelected = false,
+            hasNewContent = true
         )
     )
 

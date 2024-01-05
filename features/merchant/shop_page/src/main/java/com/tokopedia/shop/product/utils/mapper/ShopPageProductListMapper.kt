@@ -2,6 +2,7 @@ package com.tokopedia.shop.product.utils.mapper
 
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.data.model.Actions
 import com.tokopedia.shop.common.data.model.RestrictionEngineModel
@@ -82,6 +83,8 @@ object ShopPageProductListMapper {
                 it.stock = stock.toLong()
                 it.maximumOrder = getMaximumOrder(shopProduct)
                 it.isEnableDirectPurchase = isEnableDirectPurchase
+                it.isFulfillment = shopProduct.labelGroupList.any { it.position == ShopPageTrackingConstant.LABEL_GROUP_POSITION_FULFILLMENT }
+                it.warehouseId = shopProduct.warehouseId
                 when (it.etalaseType) {
                     ShopEtalaseTypeDef.ETALASE_CAMPAIGN -> {
                         it.isUpcoming = campaign.isUpcoming
@@ -108,7 +111,7 @@ object ShopPageProductListMapper {
                             }
                             it.stockLabel = labelGroupList.firstOrNull { labelGroup ->
                                 labelGroup.position.isEmpty()
-                            }?.title ?: ""
+                            }?.title.takeIf { showStockBar }.orEmpty()
                             it.stockBarPercentage = campaign.stockSoldPercentage.toInt()
                             it.displayedPrice = campaign.discountedPriceFmt.toFloatOrNull()?.getCurrencyFormatted() ?: price.textIdr
                         } else {

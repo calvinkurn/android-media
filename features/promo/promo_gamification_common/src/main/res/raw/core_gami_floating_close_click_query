@@ -1,5 +1,5 @@
-query gamiFloatingClick($floatingID: Int!) {
-  gamiFloatingClick(floatingID: $floatingID) {
+query gamiFloatingClick($floatingID: Int!, $isCloseAction: Boolean!) {
+  gamiFloatingClick(floatingID: $floatingID, isCloseAction: $isCloseAction) {
     resultStatus {
       code
       message
