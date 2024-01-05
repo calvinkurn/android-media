@@ -24,7 +24,7 @@ class VideoPreviewManager @Inject constructor(
             super.onPlayerStateChanged(state)
             when (state) {
                 is PlayVideoState.Ended -> {
-                    videoWrapper.videoPlayer.seekTo(1)
+                    videoWrapper.videoPlayer.seekTo(0)
                     videoWrapper.pause(true)
 
                     _videoState.update { VideoState.Pause }
