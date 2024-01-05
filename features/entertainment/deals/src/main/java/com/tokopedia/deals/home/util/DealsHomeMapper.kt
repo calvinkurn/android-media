@@ -8,13 +8,22 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.deals.R
 import com.tokopedia.deals.common.model.response.Brand
-import com.tokopedia.deals.common.ui.dataview.*
+import com.tokopedia.deals.common.ui.dataview.CuratedProductCategoryDataView
+import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
+import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
+import com.tokopedia.deals.common.ui.dataview.DealsTickerDataView
+import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.common.utils.DealsUtils.getLabelColor
 import com.tokopedia.deals.home.data.DealsEventHome
 import com.tokopedia.deals.home.data.EventHomeLayout
-import com.tokopedia.deals.home.ui.dataview.*
-import com.tokopedia.deals.location_picker.model.response.Location
+import com.tokopedia.deals.home.ui.dataview.BannersDataView
+import com.tokopedia.deals.home.ui.dataview.CategoriesDataView
+import com.tokopedia.deals.home.ui.dataview.CuratedCategoryDataView
+import com.tokopedia.deals.home.ui.dataview.DealsCategoryDataView
+import com.tokopedia.deals.home.ui.dataview.VoucherPlaceCardDataView
+import com.tokopedia.deals.home.ui.dataview.VoucherPlacePopularDataView
+import com.tokopedia.deals.ui.location_picker.model.response.Location
 import javax.inject.Inject
 import kotlin.math.min
 
@@ -24,10 +33,12 @@ import kotlin.math.min
 
 class DealsHomeMapper @Inject constructor(@ApplicationContext private val context: Context) {
 
-    fun mapLayoutToBaseItemViewModel(homeLayout: List<EventHomeLayout>, brands: List<Brand>,
-                                     nearestLocations: List<Location>, tickerData: DealsEventHome.TickerHome)
-            : List<DealsBaseItemDataView> {
-
+    fun mapLayoutToBaseItemViewModel(
+        homeLayout: List<EventHomeLayout>,
+        brands: List<Brand>,
+        nearestLocations: List<Location>,
+        tickerData: DealsEventHome.TickerHome
+    ): List<DealsBaseItemDataView> {
         val layouts = mutableListOf<DealsBaseItemDataView>()
 
         var bannersDataView = BannersDataView()
@@ -45,75 +56,90 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
                     banner
                 }
                 bannersDataView = BannersDataView(list = banners, seeAllUrl = ApplinkConstInternalDeals.DEALS_PROMO)
-
             } else if (it.isCard == 0 && it.isHidden == 0) {
                 val category = DealsCategoryDataView(id = it.id, imageUrl = it.mediaUrl, title = it.title, appUrl = it.appUrl)
                 categoriesDataView.list.add(category)
-
             } else if (it.isCard == 1) {
-
                 if (curatedProductCategoryDataViews.size < MAX_CURATED_PRODUCT_SECTION && it.productDetails.isNotEmpty()) {
-                    val items = it.productDetails.subList(0,
-                            min(MAX_ITEM_ON_CURATED_SECTION_ITEMS, it.productDetails.size)).map { product ->
+                    val items = it.productDetails.subList(
+                        0,
+                        min(MAX_ITEM_ON_CURATED_SECTION_ITEMS, it.productDetails.size)
+                    ).map { product ->
                         ProductCardDataView(
-                                id = product.id,
-                                imageUrl = product.imageApp,
-                                title = product.title,
-                                discount = product.savingPercentage,
-                                oldPrice = DealsUtils.convertToCurrencyString(product.mrp.toLong()),
-                                price = DealsUtils.convertToCurrencyString(product.salesPrice.toLong()),
-                                priceNonCurrency = product.salesPrice,
-                                categoryName =  product.category.firstOrNull()?.title ?: "",
-                                shop = product.brand.title,
-                                appUrl = product.appUrl,
-                                productCategory = getLabelColor(context, product.displayTags),
-                                brand = product.brand.title
+                            id = product.id,
+                            imageUrl = product.imageApp,
+                            title = product.title,
+                            discount = product.savingPercentage,
+                            oldPrice = DealsUtils.convertToCurrencyString(product.mrp.toLong()),
+                            price = DealsUtils.convertToCurrencyString(product.salesPrice.toLong()),
+                            priceNonCurrency = product.salesPrice,
+                            categoryName = product.category.firstOrNull()?.title ?: "",
+                            shop = product.brand.title,
+                            appUrl = product.appUrl,
+                            productCategory = getLabelColor(context, product.displayTags),
+                            brand = product.brand.title
                         )
                     }
 
-                    curatedProductCategoryDataViews.add(CuratedProductCategoryDataView(
+                    curatedProductCategoryDataViews.add(
+                        CuratedProductCategoryDataView(
                             title = it.title,
                             subtitle = it.description,
                             productCards = items,
                             hasSeeAllButton = items.size >= 4,
                             seeAllUrl = it.appUrl
-                    ))
-
+                        )
+                    )
                 } else if (!it.url.equals(getString(TYPE_TOPDEALS), true) && it.isHidden == 0) {
                     if (foodSection.curatedCategories.size <= 5) {
-                        foodSection.curatedCategories.add(CuratedCategoryDataView.CuratedCategory(
-                                id = it.id, name = it.title, imageUrl = it.mediaUrl, url = it.appUrl))
+                        foodSection.curatedCategories.add(
+                            CuratedCategoryDataView.CuratedCategory(
+                                id = it.id,
+                                name = it.title,
+                                imageUrl = it.mediaUrl,
+                                url = it.appUrl
+                            )
+                        )
                     }
                 }
             }
         }
 
         val brandLayout = brands.map { brand ->
-            DealsBrandsDataView.Brand(brand.id, brand.title, brand.featuredThumbnailImage,
-                    UriUtil.buildUri(ApplinkConst.DEALS_BRAND_DETAIL, brand.seoUrl))
+            DealsBrandsDataView.Brand(
+                brand.id,
+                brand.title,
+                brand.featuredThumbnailImage,
+                UriUtil.buildUri(ApplinkConst.DEALS_BRAND_DETAIL, brand.seoUrl)
+            )
         }
-        brandsDataView = DealsBrandsDataView(title = getString(BRAND_POPULAR_SECTION_TITLE),
-                seeAllText = getString(DEALS_SEE_ALL), brands = brandLayout)
+        brandsDataView = DealsBrandsDataView(
+            title = getString(BRAND_POPULAR_SECTION_TITLE),
+            seeAllText = getString(DEALS_SEE_ALL),
+            brands = brandLayout
+        )
 
         val popularPlaces = nearestLocations.map { location ->
             VoucherPlaceCardDataView(
-                    id = location.id,
-                    imageUrl = location.imageApp,
-                    name = location.name,
-                    location = location
+                id = location.id,
+                imageUrl = location.imageApp,
+                name = location.name,
+                location = location
             )
         }
-        popularDataView = VoucherPlacePopularDataView(title = getString(PLACE_POPULAR_SECTION_TITLE),
-                subtitle = getString(PLACE_POPULAR_SECTION_SUBTITLE),
-                voucherPlaceCards = popularPlaces.toMutableList())
+        popularDataView = VoucherPlacePopularDataView(
+            title = getString(PLACE_POPULAR_SECTION_TITLE),
+            subtitle = getString(PLACE_POPULAR_SECTION_SUBTITLE),
+            voucherPlaceCards = popularPlaces.toMutableList()
+        )
 
         if (bannersDataView.list.isNotEmpty()) {
             bannersDataView.isLoadedAndSuccess()
             layouts.add(bannersDataView)
         }
 
-        if(tickerData.message.isNotEmpty() && tickerData.devices.isNotEmpty()){
-            if(tickerData.devices.contains(TYPE_TICKER_DEVICE)) {
+        if (tickerData.message.isNotEmpty() && tickerData.devices.isNotEmpty()) {
+            if (tickerData.devices.contains(TYPE_TICKER_DEVICE)) {
                 val tickerDeals = DealsTickerDataView(tickerData.devices, tickerData.message)
                 tickerDeals.isLoadedAndSuccess()
                 layouts.add(tickerDeals)

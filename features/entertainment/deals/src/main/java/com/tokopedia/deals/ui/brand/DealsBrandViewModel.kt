@@ -8,8 +8,8 @@ import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.domain.DealsSearchUseCase
-import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.ui.brand.mapper.DealsBrandMapper.mapBrandToBaseItemViewModel
+import com.tokopedia.deals.ui.location_picker.model.response.Location
 import com.tokopedia.deals.ui.search.domain.DealsSearchGqlQueries
 import com.tokopedia.deals.ui.search.domain.viewmodel.DealsSearchViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -17,10 +17,10 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class DealsBrandViewModel @Inject constructor (
+class DealsBrandViewModel @Inject constructor(
     private val dealsSearchUseCase: DealsSearchUseCase,
     dispatcher: CoroutineDispatchers
-): BaseViewModel(dispatcher.main) {
+) : BaseViewModel(dispatcher.main) {
 
     private val _dealsSearchResponse = MutableLiveData<Result<DealsBrandsDataView>>()
     val dealsSearchResponse: LiveData<Result<DealsBrandsDataView>>
@@ -34,20 +34,23 @@ class DealsBrandViewModel @Inject constructor (
         getInitialData()
     }
 
-    fun getBrandList(searchQuery: String,
-                     location: Location?,
-                     childCategoryIds: String?,
-                     page: Int) {
+    fun getBrandList(
+        searchQuery: String,
+        location: Location?,
+        childCategoryIds: String?,
+        page: Int
+    ) {
         val currentLocation = getLocationOrDefault(location)
         val rawQuery = DealsSearchGqlQueries.getEventSearchQuery()
-        dealsSearchUseCase.getDealsSearchResult(onSuccessSearch(page), onErrorSearch(),
-                searchQuery,
-                currentLocation.coordinates,
-                currentLocation.locType.name,
-                childCategoryIds,
-                page.toString(),
-                rawQuery,
-                TREE_BRAND
+        dealsSearchUseCase.getDealsSearchResult(
+            onSuccessSearch(page), onErrorSearch(),
+            searchQuery,
+            currentLocation.coordinates,
+            currentLocation.locType.name,
+            childCategoryIds,
+            page.toString(),
+            rawQuery,
+            TREE_BRAND
         )
     }
 

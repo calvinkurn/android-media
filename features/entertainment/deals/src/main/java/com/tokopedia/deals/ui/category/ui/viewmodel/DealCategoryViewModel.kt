@@ -9,10 +9,10 @@ import com.tokopedia.deals.common.ui.dataview.ChipDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.domain.DealsSearchUseCase
-import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.ui.category.domain.GetChipsCategoryUseCase
 import com.tokopedia.deals.ui.category.ui.dataview.ProductListDataView
 import com.tokopedia.deals.ui.category.utils.MapperCategoryLayout
+import com.tokopedia.deals.ui.location_picker.model.response.Location
 import com.tokopedia.deals.ui.search.domain.DealsSearchGqlQueries
 import com.tokopedia.deals.ui.search.model.response.Category
 import com.tokopedia.deals.ui.search.model.response.CuratedData
@@ -48,7 +48,7 @@ class DealCategoryViewModel @Inject constructor(
         get() = privateObservableProducts
 
     private val privateObservableCategories = MutableLiveData<List<Category>>()
-    val observableCategories:LiveData<List<Category>> get() = privateObservableCategories
+    val observableCategories: LiveData<List<Category>> get() = privateObservableCategories
 
     init {
         shimmeringCategory()
@@ -64,9 +64,9 @@ class DealCategoryViewModel @Inject constructor(
         return {
             privateObservableChips.value = mapCategoryLayout.mapCategoryToChips(it.eventChildCategory.categories)
             privateObservableCategories.value = it.eventChildCategory.categories.map { category ->
-                return@map if (category.id == CATEGORY_ID){
+                return@map if (category.id == CATEGORY_ID) {
                     category.copy(isCard = 1)
-                }else{
+                } else {
                     category
                 }
             }
@@ -82,14 +82,16 @@ class DealCategoryViewModel @Inject constructor(
     fun getCategoryBrandData(category: String, coordinates: String, location: String, page: Int = 1, isFilter: Boolean) {
         launch {
             val rawQuery = DealsSearchGqlQueries.getEventSearchQuery()
-            dealsSearchUseCase.getDealsSearchResult(onSuccessSearch(page, isFilter, category), onErrorSearch(),
-                    "",
-                    coordinates,
-                    location,
-                    category,
-                    page.toString(),
-                    rawQuery,
-                    com.tokopedia.deals.ui.search.DealsSearchConstants.BRAND_PRODUCT_TREE)
+            dealsSearchUseCase.getDealsSearchResult(
+                onSuccessSearch(page, isFilter, category), onErrorSearch(),
+                "",
+                coordinates,
+                location,
+                category,
+                page.toString(),
+                rawQuery,
+                com.tokopedia.deals.ui.search.DealsSearchConstants.BRAND_PRODUCT_TREE
+            )
         }
     }
 
@@ -101,8 +103,9 @@ class DealCategoryViewModel @Inject constructor(
     private fun onSuccessSearch(page: Int, isFilter: Boolean, category: String): (SearchData) -> Unit {
         return {
             if (page == 1) {
-                val categoryLayout = if (it.eventSearch.brands.isNotEmpty()
-                        || it.eventSearch.products.isNotEmpty()) {
+                val categoryLayout = if (it.eventSearch.brands.isNotEmpty() ||
+                    it.eventSearch.products.isNotEmpty()
+                ) {
                     mapCategoryLayout.mapCategoryLayout(it, page, category)
                 } else {
                     mapCategoryLayout.getEmptyLayout(isFilter)

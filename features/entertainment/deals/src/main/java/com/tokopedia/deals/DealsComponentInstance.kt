@@ -6,9 +6,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.deals.di.DaggerDealsComponent
 import com.tokopedia.deals.di.DealsComponent
 import com.tokopedia.deals.di.DealsModule
-import com.tokopedia.deals.location_picker.di.component.DaggerDealsLocationComponent
-import com.tokopedia.deals.location_picker.di.component.DealsLocationComponent
-import com.tokopedia.deals.location_picker.di.module.DealsLocationModule
+import com.tokopedia.deals.ui.location_picker.di.component.DaggerDealsLocationComponent
+import com.tokopedia.deals.ui.location_picker.di.component.DealsLocationComponent
+import com.tokopedia.deals.ui.location_picker.di.module.DealsLocationModule
 
 /**
  * @author by jessica on 11/06/20

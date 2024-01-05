@@ -26,11 +26,11 @@ import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsBrandBinding
 import com.tokopedia.deals.di.DealsComponent
-import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.ui.brand.adapter.DealsBrandAdapter
 import com.tokopedia.deals.ui.brand.listener.DealsBrandSearchTabListener
 import com.tokopedia.deals.ui.brand.mapper.DealsBrandMapper.mapBrandListToBaseItemView
 import com.tokopedia.deals.ui.brand.model.DealsEmptyDataView
+import com.tokopedia.deals.ui.location_picker.model.response.Location
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail

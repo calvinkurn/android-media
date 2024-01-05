@@ -41,8 +41,8 @@ import com.tokopedia.deals.home.ui.dataview.DealsCategoryDataView
 import com.tokopedia.deals.home.ui.dataview.VoucherPlaceCardDataView
 import com.tokopedia.deals.home.ui.dataview.VoucherPlacePopularDataView
 import com.tokopedia.deals.home.ui.viewmodel.DealsHomeViewModel
-import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.ui.brand.DealsBrandActivity
+import com.tokopedia.deals.ui.location_picker.model.response.Location
 import com.tokopedia.deals.ui.search.ui.activity.DealsSearchActivity
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.usecase.coroutines.Fail

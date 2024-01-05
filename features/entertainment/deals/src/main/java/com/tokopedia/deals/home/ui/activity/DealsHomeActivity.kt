@@ -10,9 +10,8 @@ import com.tokopedia.deals.di.DaggerDealsComponent
 import com.tokopedia.deals.di.DealsComponent
 import com.tokopedia.deals.di.DealsModule
 import com.tokopedia.deals.home.ui.fragment.DealsHomeFragment
-import com.tokopedia.deals.location_picker.DealsLocationConstants
-import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.ui.category.ui.activity.DealsCategoryActivity
+import com.tokopedia.deals.ui.location_picker.model.response.Location
 
 /**
  * @author by jessica on 16/06/20
@@ -37,7 +36,7 @@ class DealsHomeActivity : DealsBaseActivity(), HasComponent<DealsComponent> {
         if (location.name.isEmpty()) {
             baseViewModel.getCurrentLocation(location.coordinates)
         } else {
-            if (location.locType.name.equals(DealsLocationConstants.LANDMARK, true)) {
+            if (location.locType.name.equals(com.tokopedia.deals.ui.location_picker.DealsLocationConstants.LANDMARK, true)) {
                 dealsLocationUtils.updateLocation(location)
                 startActivityForResult(
                     DealsCategoryActivity.getCallingIntent(this, "", true),

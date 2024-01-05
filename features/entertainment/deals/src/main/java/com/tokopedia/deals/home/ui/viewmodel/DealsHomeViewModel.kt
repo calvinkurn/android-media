@@ -14,8 +14,8 @@ import com.tokopedia.deals.home.domain.GetEventHomeBrandPopularUseCase
 import com.tokopedia.deals.home.domain.GetEventHomeLayoutUseCase
 import com.tokopedia.deals.home.domain.GetInitialHomeLayoutModelUseCase
 import com.tokopedia.deals.home.util.DealsHomeMapper
-import com.tokopedia.deals.location_picker.DealsLocationConstants.LANDMARK
-import com.tokopedia.deals.location_picker.model.response.Location
+import com.tokopedia.deals.ui.location_picker.DealsLocationConstants.LANDMARK
+import com.tokopedia.deals.ui.location_picker.model.response.Location
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -26,13 +26,14 @@ import javax.inject.Inject
  * @author by jessica on 19/06/20
  */
 
-class DealsHomeViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
-                                             private val dealsHomeMapper: DealsHomeMapper,
-                                             private val getEventHomeLayoutUseCase: GetEventHomeLayoutUseCase,
-                                             private val getEventHomeBrandPopularUseCase: GetEventHomeBrandPopularUseCase,
-                                             private val getNearestLocationUseCase: GetNearestLocationUseCase
-)
-    : BaseViewModel(dispatcher.main) {
+class DealsHomeViewModel @Inject constructor(
+    dispatcher: CoroutineDispatchers,
+    private val dealsHomeMapper: DealsHomeMapper,
+    private val getEventHomeLayoutUseCase: GetEventHomeLayoutUseCase,
+    private val getEventHomeBrandPopularUseCase: GetEventHomeBrandPopularUseCase,
+    private val getNearestLocationUseCase: GetNearestLocationUseCase
+) :
+    BaseViewModel(dispatcher.main) {
 
     private val _observableEventHomeLayout = MutableLiveData<Result<List<DealsBaseItemDataView>>>()
     val observableEventHomeLayout: LiveData<Result<List<DealsBaseItemDataView>>>
@@ -90,19 +91,24 @@ class DealsHomeViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                     useParams(
                         GetNearestLocationUseCase.createParams(
                             DealsNearestLocationParam.VALUE_LOCATION_TYPE_LANDMARK,
-                            location.coordinates, NEAREST_LOCATION_SIZE_NUM_VALUE,
+                            location.coordinates,
+                            NEAREST_LOCATION_SIZE_NUM_VALUE,
                             NEAREST_LOCATION_PAGE_NUM_VALUE,
                             DealsNearestLocationParam.VALUE_CATEGORY_ID_DEFAULT,
-                            DealsNearestLocationParam.VALUE_DISTANCE_20KM))
+                            DealsNearestLocationParam.VALUE_DISTANCE_20KM
+                        )
+                    )
                 }.executeOnBackground()
                 data.eventLocationSearch.locations
-            } else emptyList()
+            } else {
+                emptyList()
+            }
         } catch (t: Throwable) {
             emptyList()
         }
     }
 
-    private fun setTickerData(tickerData: DealsEventHome.TickerHome){
+    private fun setTickerData(tickerData: DealsEventHome.TickerHome) {
         mutableTickerData = tickerData
     }
 
@@ -113,5 +119,4 @@ class DealsHomeViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
 
         const val POPULAR_BRAND_SIZE = "16"
     }
-
 }

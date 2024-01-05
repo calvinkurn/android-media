@@ -1,6 +1,6 @@
 package com.tokopedia.deals.home.ui.dataview
 
-import com.tokopedia.deals.location_picker.model.response.Location
+import com.tokopedia.deals.ui.location_picker.model.response.Location
 
 data class VoucherPlaceCardDataView(
     val id: String = "",

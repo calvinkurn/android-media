@@ -20,12 +20,12 @@ import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.bottomsheet.DealsBottomSheetNoInternetConnection
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsBrandDetailBinding
-import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.ui.brand_detail.DealsBrandDetailActivity.Companion.EXTRA_SEO_URL
 import com.tokopedia.deals.ui.brand_detail.data.Brand
 import com.tokopedia.deals.ui.brand_detail.data.Product
 import com.tokopedia.deals.ui.brand_detail.di.DealsBrandDetailComponent
 import com.tokopedia.deals.ui.brand_detail.util.DealsBrandDetailShare
+import com.tokopedia.deals.ui.location_picker.model.response.Location
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.observe
@@ -136,7 +136,7 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
         setRVBrandList(products)
     }
 
-    private fun showEmptyLayout(){
+    private fun showEmptyLayout() {
         hideShimmering()
         showEmptyState()
     }
@@ -154,7 +154,7 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
             it.appBarLayoutBrandDetail.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
                 override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
                     context?.let { context ->
-                        if(it.toolbarBrandDetail.menu.size() > 0) {
+                        if (it.toolbarBrandDetail.menu.size() > 0) {
                             var colorInt = 0
                             if (abs(verticalOffset) - appBarLayout.totalScrollRange == 0) {
                                 it.collapsingToolbarBrandDetail.title = title
@@ -201,8 +201,10 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
     private fun setRVBrandList(listProduct: List<Product>) {
         binding?.let {
             if (listProduct.size != 0) {
-                it.tgDescBrandDetailCount.text = getString(R.string.deals_brand_detail_count,
-                        listProduct.size.toString())
+                it.tgDescBrandDetailCount.text = getString(
+                    R.string.deals_brand_detail_count,
+                    listProduct.size.toString()
+                )
             }
             it.rvBrandDetail.apply {
                 adapter = adapterBrandDetail
@@ -231,13 +233,16 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
                     if (throwable is UnknownHostException) {
                         context?.let { context ->
                             fragmentManager?.let {
-                                DealsBottomSheetNoInternetConnection().showErroNoConnection(context, it,
-                                        object : DealsBottomSheetNoInternetConnection.
-                                        DealsOnClickBottomSheetNoConnectionListener {
-                                            override fun onDismissBottomsheet() {
-                                                reLoadData()
-                                            }
-                                        })
+                                DealsBottomSheetNoInternetConnection().showErroNoConnection(
+                                    context,
+                                    it,
+                                    object : DealsBottomSheetNoInternetConnection
+                                        .DealsOnClickBottomSheetNoConnectionListener {
+                                        override fun onDismissBottomsheet() {
+                                            reLoadData()
+                                        }
+                                    }
+                                )
                             }
                         }
                     } else {
@@ -248,7 +253,7 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
         }
     }
 
-    private fun reLoadData(){
+    private fun reLoadData() {
         showShimmering()
         loadData()
     }
@@ -277,7 +282,7 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
     private fun share(brandDetail: Brand) {
         activity?.let { activity ->
             val activity = WeakReference<Activity>(activity)
-            if(!::dealsShareBrandDetail.isInitialized) dealsShareBrandDetail = DealsBrandDetailShare(activity)
+            if (!::dealsShareBrandDetail.isInitialized) dealsShareBrandDetail = DealsBrandDetailShare(activity)
             dealsShareBrandDetail.shareEvent(brandDetail, brandDetail.title, requireContext(), { showShareLoading() }, { hideShareLoading() })
         }
     }
@@ -298,7 +303,7 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
         binding?.shimmeringBrandDetailDeals?.shimmeringBrandDetail?.show()
     }
 
-    private fun showEmptyState(){
+    private fun showEmptyState() {
         binding?.emptyStateBrandDetailDeals?.containerEmptyStateDeals?.show()
         binding?.emptyStateBrandDetailDeals?.geDealsEmpty?.apply {
             show()
@@ -310,7 +315,7 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
         }
     }
 
-    private fun hideEmptyState(){
+    private fun hideEmptyState() {
         binding?.emptyStateBrandDetailDeals?.let {
             it.geDealsEmpty?.hide()
             it.containerEmptyStateDeals?.hide()
@@ -321,10 +326,16 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
         context?.let {
             val errorMessage = ErrorHandler.getErrorMessage(it, throwable)
             binding?.root?.let {
-                Toaster.build(it, errorMessage, Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
-                        getString(R.string.deals_error_reload), View.OnClickListener {
-                    reLoadData()
-                }).show()
+                Toaster.build(
+                    it,
+                    errorMessage,
+                    Toaster.LENGTH_INDEFINITE,
+                    Toaster.TYPE_ERROR,
+                    getString(R.string.deals_error_reload),
+                    View.OnClickListener {
+                        reLoadData()
+                    }
+                ).show()
             }
         }
     }

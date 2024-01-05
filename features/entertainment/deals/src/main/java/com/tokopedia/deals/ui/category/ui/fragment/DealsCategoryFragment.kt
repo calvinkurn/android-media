@@ -33,7 +33,6 @@ import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsCategoryBinding
 import com.tokopedia.deals.home.ui.fragment.DealsHomeFragment
-import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.ui.brand.DealsBrandActivity
 import com.tokopedia.deals.ui.brand.model.DealsEmptyDataView
 import com.tokopedia.deals.ui.category.di.DealsCategoryComponent
@@ -41,6 +40,7 @@ import com.tokopedia.deals.ui.category.listener.DealsCategoryFilterBottomSheetLi
 import com.tokopedia.deals.ui.category.ui.activity.DealsCategoryActivity
 import com.tokopedia.deals.ui.category.ui.adapter.DealsCategoryAdapter
 import com.tokopedia.deals.ui.category.ui.viewmodel.DealCategoryViewModel
+import com.tokopedia.deals.ui.location_picker.model.response.Location
 import com.tokopedia.deals.ui.search.model.response.Category
 import com.tokopedia.deals.ui.search.ui.activity.DealsSearchActivity
 import com.tokopedia.kotlin.extensions.view.hide
@@ -53,16 +53,22 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
-class DealsCategoryFragment : DealsBaseFragment(),
-        OnBaseLocationActionListener, SearchBarActionListener,
-        DealsBrandActionListener, ProductCardListener,
-        DealChipsListActionListener, DealsCategoryFilterBottomSheetListener,
-        EmptyStateListener {
+class DealsCategoryFragment :
+    DealsBaseFragment(),
+    OnBaseLocationActionListener,
+    SearchBarActionListener,
+    DealsBrandActionListener,
+    ProductCardListener,
+    DealChipsListActionListener,
+    DealsCategoryFilterBottomSheetListener,
+    EmptyStateListener {
 
     @Inject
     lateinit var dealsLocationUtils: DealsLocationUtils
+
     @Inject
     lateinit var analytics: DealsAnalytics
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var dealCategoryViewModel: DealCategoryViewModel
@@ -89,7 +95,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
         savedInstanceState: Bundle?,
         x: (inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) -> View
     ): View {
-        val view =  super.inflate_tmp(inflater, container, savedInstanceState, x)
+        val view = super.inflate_tmp(inflater, container, savedInstanceState, x)
         binding = FragmentDealsCategoryBinding.bind(view)
         return view
     }
@@ -153,15 +159,14 @@ class DealsCategoryFragment : DealsBaseFragment(),
     }
 
     private fun handleShimering(list: List<DealsBaseItemDataView>) {
-
-        list.forEach {dealsBaseItemDataView ->
+        list.forEach { dealsBaseItemDataView ->
             when (dealsBaseItemDataView) {
                 is DealsBrandsDataView -> {
                     if (dealsBaseItemDataView.isSuccess) {
                         binding.oneRowShimmering.root.hide()
                         binding.shimmering.root.hide()
                         binding.dealsCategoryRecyclerView.show()
-                    }  else {
+                    } else {
                         binding.oneRowShimmering.root.show()
                         binding.shimmering.root.show()
                         binding.dealsCategoryRecyclerView.hide()
@@ -237,8 +242,11 @@ class DealsCategoryFragment : DealsBaseFragment(),
         binding.container.sortFilterDealsCategory.let { sortFilter ->
             sortFilter.chipItems?.let { chipItems ->
                 for ((i, item) in chipItems.withIndex()) {
-                    if (chips[i].isSelected) item.type = ChipsUnify.TYPE_SELECTED
-                    else item.type = ChipsUnify.TYPE_NORMAL
+                    if (chips[i].isSelected) {
+                        item.type = ChipsUnify.TYPE_SELECTED
+                    } else {
+                        item.type = ChipsUnify.TYPE_NORMAL
+                    }
                 }
 
                 sortFilter.indicatorCounter -= additionalSelectedFilterCount
@@ -261,7 +269,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
         }
     }
 
-    private fun showOrNotFilter(categories: List<Category>){
+    private fun showOrNotFilter(categories: List<Category>) {
         val category = categories.single { it.id == categoryID }
         val isShowFilter = category.isCard == 1 && category.isHidden == 0
         binding.container.root.showWithCondition(isShowFilter)
@@ -271,11 +279,11 @@ class DealsCategoryFragment : DealsBaseFragment(),
         val layoutManager = GridLayoutManager(context, PRODUCT_SPAN_COUNT)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-              return when (position) {
-                0 -> if (adapter.getItems().first()::class == DealsBrandsDataView::class) 2 else if (adapter.getItems().first()::class == DealsEmptyDataView::class) 2 else 1
-                adapter.getItems().lastIndex -> if (adapter.getItems()[adapter.getItems().lastIndex]::class == LoadingMoreUnifyModel::class) 2 else 1
-                else -> 1
-              }
+                return when (position) {
+                    0 -> if (adapter.getItems().first()::class == DealsBrandsDataView::class) 2 else if (adapter.getItems().first()::class == DealsEmptyDataView::class) 2 else 1
+                    adapter.getItems().lastIndex -> if (adapter.getItems()[adapter.getItems().lastIndex]::class == LoadingMoreUnifyModel::class) 2 else 1
+                    else -> 1
+                }
             }
         }
 
@@ -295,7 +303,6 @@ class DealsCategoryFragment : DealsBaseFragment(),
     }
 
     private fun handleRecycler() {
-
         val decoration = object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                 super.getItemOffsets(outRect, view, parent, state)
@@ -303,7 +310,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
                 val position = parent.getChildAdapterPosition(view)
                 val totalSpanCount = getTotalSpanCount(parent)
 
-                context?.let { context->
+                context?.let { context ->
                     if (position != RecyclerView.NO_POSITION) {
                         outRect.bottom = if (isInTheFirstRow(position + ADDITIONAL_POSITION, totalSpanCount)) context.resources.getInteger(R.integer.sixteen).toPx() else context.resources.getInteger(R.integer.four).toPx()
                         outRect.left = if (isFirstInRow(position + ADDITIONAL_POSITION, totalSpanCount)) context.resources.getInteger(R.integer.two).toPx() else context.resources.getInteger(R.integer.sixteen).toPx()
@@ -313,7 +320,6 @@ class DealsCategoryFragment : DealsBaseFragment(),
             }
         }
         recyclerView.addItemDecoration(decoration)
-
     }
 
     private fun isInTheFirstRow(position: Int, spanCount: Int): Boolean {
@@ -336,11 +342,11 @@ class DealsCategoryFragment : DealsBaseFragment(),
     override fun loadData(page: Int) {
         getCurrentLocation().let {
             dealCategoryViewModel.getCategoryBrandData(
-                    categoryID,
-                    it.coordinates,
-                    it.locType.name,
-                    page,
-                    false
+                categoryID,
+                it.coordinates,
+                it.locType.name,
+                page,
+                false
             )
         }
     }
@@ -395,7 +401,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
 
     override fun onResume() {
         super.onResume()
-        if (categories.isNotEmpty()){
+        if (categories.isNotEmpty()) {
             showOrNotFilter(categories)
         }
     }

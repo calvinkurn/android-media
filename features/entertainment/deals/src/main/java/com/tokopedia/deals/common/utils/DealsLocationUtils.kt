@@ -2,12 +2,11 @@ package com.tokopedia.deals.common.utils
 
 import android.app.Activity
 import android.content.Context
-import com.google.android.gms.location.LocationServices
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.deals.common.listener.CurrentLocationCallback
-import com.tokopedia.deals.location_picker.model.response.Location
+import com.tokopedia.deals.ui.location_picker.model.response.Location
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.locationmanager.RequestLocationType
@@ -47,7 +46,9 @@ class DealsLocationUtils(val context: Context) {
             val json = gson.toJson(location)
             localCacheHandler.putString(TkpdCache.Key.KEY_DEALS_LOCATION, json)
             localCacheHandler.applyEditor()
-        } else updateLocationToDefault()
+        } else {
+            updateLocationToDefault()
+        }
     }
 
     fun updateLocationAndCallback(location: Location, callback: CurrentLocationCallback) {
@@ -56,19 +57,23 @@ class DealsLocationUtils(val context: Context) {
     }
 
     fun detectAndSendLocation(
-        activity: Activity, permissionCheckerHelper: PermissionCheckerHelper,
+        activity: Activity,
+        permissionCheckerHelper: PermissionCheckerHelper,
         currentLocationCallBack: CurrentLocationCallback
     ) {
         val locationDetectorHelper = LocationDetectorHelper(activity.applicationContext)
         locationDetectorHelper.getLocation(
-            onGetLocation(currentLocationCallBack), activity,
-            LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD, RequestLocationType.APPROXIMATE,
-            permissionCheckerHelper, ""
+            onGetLocation(currentLocationCallBack),
+            activity,
+            LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+            RequestLocationType.APPROXIMATE,
+            permissionCheckerHelper,
+            ""
         )
     }
 
     private fun onGetLocation(currentLocationCallBack: CurrentLocationCallback):
-            Function1<DeviceLocation?, Unit> {
+        Function1<DeviceLocation?, Unit> {
         return { deviceLocation: DeviceLocation? ->
             if (deviceLocation != null && deviceLocation.latitude != 0.0 && deviceLocation.longitude != 0.0) {
                 val coordinate = "${deviceLocation.latitude}, ${deviceLocation.longitude}"

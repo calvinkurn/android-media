@@ -1,7 +1,7 @@
 package com.tokopedia.deals.pdp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.deals.pdp.ui.viewmodel.DealsPDPAllLocationViewModel
+import com.tokopedia.deals.ui.pdp.ui.viewmodel.DealsPDPAllLocationViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import org.junit.Before

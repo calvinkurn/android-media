@@ -28,9 +28,9 @@ import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsSearchBinding
 import com.tokopedia.deals.databinding.LayoutDealsSearchBarBinding
-import com.tokopedia.deals.location_picker.model.response.Location
-import com.tokopedia.deals.location_picker.ui.customview.SelectLocationBottomSheet
 import com.tokopedia.deals.ui.brand.DealsBrandActivity
+import com.tokopedia.deals.ui.location_picker.model.response.Location
+import com.tokopedia.deals.ui.location_picker.ui.customview.SelectLocationBottomSheet
 import com.tokopedia.deals.ui.search.di.component.DealsSearchComponent
 import com.tokopedia.deals.ui.search.domain.viewmodel.DealsSearchViewModel
 import com.tokopedia.deals.ui.search.listener.DealsSearchListener
@@ -53,8 +53,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class DealsSearchFragment : BaseListFragment<Visitable<*>,
-    BaseAdapterTypeFactory>(),
+class DealsSearchFragment :
+    BaseListFragment<Visitable<*>,
+        BaseAdapterTypeFactory>(),
     DealsSearchListener,
     CurrentLocationCallback,
     CoroutineScope {
@@ -124,8 +125,10 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
 
     private fun initViews() {
         binding2.tvLocation.setCompoundDrawablesWithIntrinsicBounds(
-            null, null,
-            MethodChecker.getDrawable(context, R.drawable.ic_deals_dropdown_down_24dp), null
+            null,
+            null,
+            MethodChecker.getDrawable(context, R.drawable.ic_deals_dropdown_down_24dp),
+            null
         )
         initObserver()
         setListener()
@@ -146,31 +149,35 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
     }
 
     private fun initialObserver() {
-        viewModel.dealsInitialResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when (it) {
-                is Success -> {
-                    initialDataList = DealsSearchMapper.displayInitialDataSearch(
-                        it.data, currentLocation?.name
-                            ?: DealsLocationUtils.DEFAULT_LOCATION_NAME
-                    )
-                    DealsSearchMapper.initialProductList = it.data.eventSearch.products
-                    totalItem = it.data.eventSearch.products.size
-                    if (totalItem >= THRESHOLD_ITEMS) {
-                        renderList(initialDataList.toList(), true)
-                    } else {
-                        renderList(initialDataList.toList(), false)
+        viewModel.dealsInitialResponse.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer {
+                when (it) {
+                    is Success -> {
+                        initialDataList = DealsSearchMapper.displayInitialDataSearch(
+                            it.data,
+                            currentLocation?.name
+                                ?: DealsLocationUtils.DEFAULT_LOCATION_NAME
+                        )
+                        DealsSearchMapper.initialProductList = it.data.eventSearch.products
+                        totalItem = it.data.eventSearch.products.size
+                        if (totalItem >= THRESHOLD_ITEMS) {
+                            renderList(initialDataList.toList(), true)
+                        } else {
+                            renderList(initialDataList.toList(), false)
+                        }
+                        chipsAnalytics(it.data)
                     }
-                    chipsAnalytics(it.data)
-                }
 
-                is Fail -> {
-                    createToaster(
-                        getString(R.string.deals_search_load_initial_error),
-                        Toaster.TYPE_ERROR
-                    )
+                    is Fail -> {
+                        createToaster(
+                            getString(R.string.deals_search_load_initial_error),
+                            Toaster.TYPE_ERROR
+                        )
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun chipsAnalytics(data: InitialLoadData) {
@@ -186,74 +193,87 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
     }
 
     private fun loadMoreObserver() {
-        viewModel.dealsLoadMoreResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when (it) {
-                is Success -> {
-                    totalItem = it.data.products.size
-                    if (totalItem >= THRESHOLD_ITEMS) {
-                        loadMore(DealsSearchMapper.displayMoreData(it.data, currentPage), true)
-                    } else {
-                        loadMore(DealsSearchMapper.displayMoreData(it.data, currentPage), false)
+        viewModel.dealsLoadMoreResponse.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer {
+                when (it) {
+                    is Success -> {
+                        totalItem = it.data.products.size
+                        if (totalItem >= THRESHOLD_ITEMS) {
+                            loadMore(DealsSearchMapper.displayMoreData(it.data, currentPage), true)
+                        } else {
+                            loadMore(DealsSearchMapper.displayMoreData(it.data, currentPage), false)
+                        }
+                    }
+
+                    is Fail -> {
+                        createToaster(
+                            getString(R.string.deals_search_load_more_error),
+                            Toaster.TYPE_ERROR
+                        )
                     }
                 }
-
-                is Fail -> {
-                    createToaster(
-                        getString(R.string.deals_search_load_more_error),
-                        Toaster.TYPE_ERROR
-                    )
-                }
             }
-        })
+        )
     }
 
     private fun searchObserver() {
-        viewModel.dealsSearchResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when (it) {
-                is Success -> {
-                    clearAllData()
-                    totalItem = it.data.products.size
+        viewModel.dealsSearchResponse.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer {
+                when (it) {
+                    is Success -> {
+                        clearAllData()
+                        totalItem = it.data.products.size
 
-                    if (it.data.products.isNotEmpty()) {
-                        analytics.eventSearchResultCaseShownOnCategoryPage(
-                            getSearchKeyword(), currentLocation?.name
-                                ?: "", it.data.products, THRESHOLD_ITEMS, currentPage
-                        )
-                    }
-
-                    if (totalItem >= THRESHOLD_ITEMS) {
-                        renderList(
-                            DealsSearchMapper.displayDataSearchResult(
-                                it.data,
+                        if (it.data.products.isNotEmpty()) {
+                            analytics.eventSearchResultCaseShownOnCategoryPage(
+                                getSearchKeyword(),
                                 currentLocation?.name
-                                    ?: DealsLocationUtils.DEFAULT_LOCATION_NAME, getSearchKeyword()
-                            ),
-                            true
-                        )
-                    } else {
-                        if (totalItem == 0) {
-                            searchNotFound = true
-                            analytics.eventViewSearchNoResultSearchPage(
-                                getSearchKeyword(), currentLocation?.name
-                                    ?: ""
+                                    ?: "",
+                                it.data.products,
+                                THRESHOLD_ITEMS,
+                                currentPage
                             )
                         }
-                        renderList(
-                            DealsSearchMapper.displayDataSearchResult(
-                                it.data,
-                                currentLocation?.name
-                                    ?: DealsLocationUtils.DEFAULT_LOCATION_NAME, getSearchKeyword()
-                            ),
-                            searchNotFound
-                        )
+
+                        if (totalItem >= THRESHOLD_ITEMS) {
+                            renderList(
+                                DealsSearchMapper.displayDataSearchResult(
+                                    it.data,
+                                    currentLocation?.name
+                                        ?: DealsLocationUtils.DEFAULT_LOCATION_NAME,
+                                    getSearchKeyword()
+                                ),
+                                true
+                            )
+                        } else {
+                            if (totalItem == 0) {
+                                searchNotFound = true
+                                analytics.eventViewSearchNoResultSearchPage(
+                                    getSearchKeyword(),
+                                    currentLocation?.name
+                                        ?: ""
+                                )
+                            }
+                            renderList(
+                                DealsSearchMapper.displayDataSearchResult(
+                                    it.data,
+                                    currentLocation?.name
+                                        ?: DealsLocationUtils.DEFAULT_LOCATION_NAME,
+                                    getSearchKeyword()
+                                ),
+                                searchNotFound
+                            )
+                        }
+                    }
+
+                    is Fail -> {
+                        createToaster(getString(R.string.deals_search_error), Toaster.TYPE_ERROR)
                     }
                 }
-
-                is Fail -> {
-                    createToaster(getString(R.string.deals_search_error), Toaster.TYPE_ERROR)
-                }
             }
-        })
+        )
     }
 
     private fun observerNearestLocation() {
@@ -271,7 +291,8 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
 
                 dealsLocationUtils.updateLocation(currentLocation)
                 setChangedLocation()
-            })
+            }
+        )
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
@@ -377,7 +398,8 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
                     "%s %s",
                     getString(R.string.deals_location_deals_changed_toast),
                     location.name
-                ), Toaster.TYPE_NORMAL
+                ),
+                Toaster.TYPE_NORMAL
             )
             currentLocation = location
             binding2.tvLocation?.text = location.name
@@ -398,8 +420,9 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val searchText = s.toString().trim()
-                if (searchText == searchFor)
+                if (searchText == searchFor) {
                     return
+                }
 
                 searchFor = searchText
 
@@ -466,7 +489,8 @@ class DealsSearchFragment : BaseListFragment<Visitable<*>,
                 DealsBrandActivity.getCallingIntent(
                     requireContext(),
                     getSearchKeyword()
-                ), DEALS_BRAND_REQUEST_CODE
+                ),
+                DEALS_BRAND_REQUEST_CODE
             )
         }
     }

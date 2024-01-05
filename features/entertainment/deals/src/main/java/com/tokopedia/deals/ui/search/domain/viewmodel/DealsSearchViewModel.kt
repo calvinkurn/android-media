@@ -8,7 +8,7 @@ import com.tokopedia.deals.common.model.response.EventSearch
 import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.domain.DealsSearchUseCase
-import com.tokopedia.deals.location_picker.model.response.Location
+import com.tokopedia.deals.ui.location_picker.model.response.Location
 import com.tokopedia.deals.ui.search.domain.DealsSearchGqlQueries
 import com.tokopedia.deals.ui.search.domain.usecase.DealsSearchInitialLoadUseCase
 import com.tokopedia.deals.ui.search.model.response.InitialLoadData
@@ -17,11 +17,11 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class DealsSearchViewModel @Inject constructor (
+class DealsSearchViewModel @Inject constructor(
     private val dealsLoadInitialData: DealsSearchInitialLoadUseCase,
     private val dealsSearchUseCase: DealsSearchUseCase,
     dispatcher: CoroutineDispatchers
-): BaseViewModel(dispatcher.main) {
+) : BaseViewModel(dispatcher.main) {
 
     private val _dealsSearchResponse = MutableLiveData<Result<EventSearch>>()
     val dealsSearchResponse: LiveData<Result<EventSearch>>
@@ -35,45 +35,58 @@ class DealsSearchViewModel @Inject constructor (
     val dealsLoadMoreResponse: LiveData<Result<EventSearch>>
         get() = _dealsSearchLoadMore
 
-    fun getInitialData(location: Location?,
-                       childCategoryIds: String?) {
+    fun getInitialData(
+        location: Location?,
+        childCategoryIds: String?
+    ) {
         val currentLocation = getLocationOrDefault(location)
-        dealsLoadInitialData.getDealsInitialLoadResult(onSuccessLoadInitialData(), onErrorLoadInitialData(),
-                currentLocation.coordinates,
-                currentLocation.locType.name,
-                childCategoryIds)
+        dealsLoadInitialData.getDealsInitialLoadResult(
+            onSuccessLoadInitialData(),
+            onErrorLoadInitialData(),
+            currentLocation.coordinates,
+            currentLocation.locType.name,
+            childCategoryIds
+        )
     }
 
-    fun loadMoreData(searchQuery: String,
-                     location: Location?,
-                     childCategoryIds: String?,
-                     page: Int){
+    fun loadMoreData(
+        searchQuery: String,
+        location: Location?,
+        childCategoryIds: String?,
+        page: Int
+    ) {
         val currentLocation = getLocationOrDefault(location)
         val rawQuery = DealsSearchGqlQueries.getSearchLoadModeQuery()
-        dealsSearchUseCase.getDealsSearchResult(onSuccessLoadMoreData(), onErrorLoadMoreData(),
-                searchQuery,
-                currentLocation.coordinates,
-                currentLocation.locType.name,
-                childCategoryIds,
-                page.toString(),
-                rawQuery,
-                com.tokopedia.deals.ui.search.DealsSearchConstants.TREE_PRODUCT)
+        dealsSearchUseCase.getDealsSearchResult(
+            onSuccessLoadMoreData(), onErrorLoadMoreData(),
+            searchQuery,
+            currentLocation.coordinates,
+            currentLocation.locType.name,
+            childCategoryIds,
+            page.toString(),
+            rawQuery,
+            com.tokopedia.deals.ui.search.DealsSearchConstants.TREE_PRODUCT
+        )
     }
 
-    fun searchDeals(searchQuery: String,
-                    location: Location?,
-                    childCategoryIds: String?,
-                    page: Int){
+    fun searchDeals(
+        searchQuery: String,
+        location: Location?,
+        childCategoryIds: String?,
+        page: Int
+    ) {
         val currentLocation = getLocationOrDefault(location)
         val rawQuery = DealsSearchGqlQueries.getEventSearchQuery()
-        dealsSearchUseCase.getDealsSearchResult(onSuccessSearch(), onErrorSearch(),
-                searchQuery,
-                currentLocation.coordinates,
-                currentLocation.locType.name,
-                childCategoryIds,
-                page.toString(),
-                rawQuery,
-                com.tokopedia.deals.ui.search.DealsSearchConstants.TREE_BRAND_PRODUCT)
+        dealsSearchUseCase.getDealsSearchResult(
+            onSuccessSearch(), onErrorSearch(),
+            searchQuery,
+            currentLocation.coordinates,
+            currentLocation.locType.name,
+            childCategoryIds,
+            page.toString(),
+            rawQuery,
+            com.tokopedia.deals.ui.search.DealsSearchConstants.TREE_BRAND_PRODUCT
+        )
     }
 
     private fun getLocationOrDefault(location: Location?): Location {
