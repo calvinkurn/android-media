@@ -1,4 +1,4 @@
-package com.tokopedia.deals.common.utils
+package com.tokopedia.deals.utils
 
 import android.app.Activity
 import android.content.Context

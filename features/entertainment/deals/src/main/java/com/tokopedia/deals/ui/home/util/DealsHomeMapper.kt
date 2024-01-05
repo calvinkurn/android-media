@@ -13,8 +13,6 @@ import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.common.ui.dataview.DealsTickerDataView
 import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
-import com.tokopedia.deals.common.utils.DealsUtils
-import com.tokopedia.deals.common.utils.DealsUtils.getLabelColor
 import com.tokopedia.deals.ui.home.ui.dataview.BannersDataView
 import com.tokopedia.deals.ui.home.ui.dataview.CategoriesDataView
 import com.tokopedia.deals.ui.home.ui.dataview.CuratedCategoryDataView
@@ -22,6 +20,8 @@ import com.tokopedia.deals.ui.home.ui.dataview.DealsCategoryDataView
 import com.tokopedia.deals.ui.home.ui.dataview.VoucherPlaceCardDataView
 import com.tokopedia.deals.ui.home.ui.dataview.VoucherPlacePopularDataView
 import com.tokopedia.deals.ui.location_picker.model.response.Location
+import com.tokopedia.deals.utils.DealsUtils
+import com.tokopedia.deals.utils.DealsUtils.getLabelColor
 import javax.inject.Inject
 import kotlin.math.min
 

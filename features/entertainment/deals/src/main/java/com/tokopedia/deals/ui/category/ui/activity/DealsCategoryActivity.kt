@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.deals.common.analytics.DealsAnalytics
+import com.tokopedia.deals.analytics.DealsAnalytics
 import com.tokopedia.deals.common.ui.activity.DealsBaseBrandCategoryActivity
 import com.tokopedia.deals.ui.category.di.DaggerDealsCategoryComponent
 import com.tokopedia.deals.ui.category.di.DealsCategoryComponent
@@ -35,8 +35,8 @@ class DealsCategoryActivity : DealsBaseBrandCategoryActivity(), HasComponent<Dea
 
     override fun getComponent(): DealsCategoryComponent {
         return DaggerDealsCategoryComponent.builder()
-                .dealsComponent(getDealsComponent())
-                .build()
+            .dealsComponent(getDealsComponent())
+            .build()
     }
 
     private fun initInjector() {
@@ -44,7 +44,7 @@ class DealsCategoryActivity : DealsBaseBrandCategoryActivity(), HasComponent<Dea
     }
 
     override fun tabAnalytics(categoryName: String, position: Int) {
-        if(this::analytics.isInitialized) {
+        if (this::analytics.isInitialized) {
             analytics.eventClickCategoryTabCategoryPage(categoryName)
         }
     }
@@ -67,11 +67,13 @@ class DealsCategoryActivity : DealsBaseBrandCategoryActivity(), HasComponent<Dea
         const val IS_LANDMARK_PAGE = "is_landmark_page"
 
         val TAG = DealsCategoryActivity::class.simpleName
-        fun getCallingIntent(context: Context, categoryId: String? = null,
-                             isLandmarkPage: Boolean = false): Intent = Intent(context, DealsCategoryActivity::class.java).apply {
+        fun getCallingIntent(
+            context: Context,
+            categoryId: String? = null,
+            isLandmarkPage: Boolean = false
+        ): Intent = Intent(context, DealsCategoryActivity::class.java).apply {
             putExtra(EXTRA_CATEGORY_ID, categoryId)
             putExtra(IS_LANDMARK_PAGE, isLandmarkPage)
         }
     }
-
 }

@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.deals.common.data.DealsNearestLocationParam
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
+import com.tokopedia.deals.data.DealsNearestLocationParam
 import com.tokopedia.deals.domain.GetNearestLocationUseCase
 import com.tokopedia.deals.ui.home.domain.GetEventHomeBrandPopularUseCase
 import com.tokopedia.deals.ui.home.domain.GetEventHomeLayoutUseCase

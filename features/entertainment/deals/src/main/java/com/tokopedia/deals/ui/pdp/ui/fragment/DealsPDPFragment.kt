@@ -34,13 +34,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.deals.R
-import com.tokopedia.deals.common.analytics.DealsAnalytics
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Event.EVENT_CLICK_CHECK_DESCRIPTION_PRODUCT_DETAIL
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Event.EVENT_CLICK_CHECK_LOCATION_PRODUCT_DETAIL
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Event.EVENT_CLICK_CHECK_REDEEM_INS_PRODUCT_DETAIL
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Event.EVENT_CLICK_CHECK_TNC_PRODUCT_DETAIL
+import com.tokopedia.deals.analytics.DealsAnalytics
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.Event.EVENT_CLICK_CHECK_DESCRIPTION_PRODUCT_DETAIL
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.Event.EVENT_CLICK_CHECK_LOCATION_PRODUCT_DETAIL
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.Event.EVENT_CLICK_CHECK_REDEEM_INS_PRODUCT_DETAIL
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.Event.EVENT_CLICK_CHECK_TNC_PRODUCT_DETAIL
 import com.tokopedia.deals.common.model.response.EventProductDetail
-import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.FragmentDealsDetailBinding
 import com.tokopedia.deals.ui.pdp.di.DealsPDPComponent
 import com.tokopedia.deals.ui.pdp.share.DealsPDPShare
@@ -51,6 +50,7 @@ import com.tokopedia.deals.ui.pdp.ui.callback.DealsPDPCallbacks
 import com.tokopedia.deals.ui.pdp.ui.utils.DealsPDPMapper
 import com.tokopedia.deals.ui.pdp.ui.viewmodel.DealsPDPViewModel
 import com.tokopedia.deals.ui.pdp.widget.WidgetDealsPDPCarousel
+import com.tokopedia.deals.utils.DealsUtils
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -292,7 +292,6 @@ class DealsPDPFragment : BaseDaggerFragment() {
                                 setRating(it.productId.toString(), it.totalLikes, it.isLiked)
                             }
                         }
-
                     }
 
                     is Fail -> {
@@ -326,7 +325,7 @@ class DealsPDPFragment : BaseDaggerFragment() {
     private fun observeTrackerAPIRecommendation() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.flowRecommendationTracking.collect {
-                //do nothing
+                // do nothing
             }
         }
     }
@@ -334,7 +333,7 @@ class DealsPDPFragment : BaseDaggerFragment() {
     private fun observeTrackerAPIRecentSearch() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.flowRecentSearchTracking.collect {
-                //do nothing
+                // do nothing
             }
         }
     }
@@ -626,8 +625,9 @@ class DealsPDPFragment : BaseDaggerFragment() {
         tgExpiredDate?.text = String.format(
             getString(
                 stringDeals.deals_pdp_valid_through,
-                DealsUtils.convertEpochToString(maxEndDate.toIntSafely()
-            )
+                DealsUtils.convertEpochToString(
+                    maxEndDate.toIntSafely()
+                )
             )
         )
     }
@@ -642,7 +642,9 @@ class DealsPDPFragment : BaseDaggerFragment() {
             imgFavorite?.setOnClickListener {
                 if (!getIsLiked()) {
                     setTotalLikes(getTotalLikes() + Int.ONE)
-                } else setTotalLikes(getTotalLikes() - Int.ONE)
+                } else {
+                    setTotalLikes(getTotalLikes() - Int.ONE)
+                }
                 updateRating(productId, !getIsLiked())
             }
         }
@@ -716,7 +718,7 @@ class DealsPDPFragment : BaseDaggerFragment() {
                                 setDrawableColorFilter(toolbar.menu.getItem(Int.ZERO)?.icon, colorInt)
                             }
                         }
-                   }
+                    }
                 }
             })
         }

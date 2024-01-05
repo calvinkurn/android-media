@@ -7,9 +7,9 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.deals.R
-import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.ui.search.listener.DealsSearchListener
 import com.tokopedia.deals.ui.search.model.visitor.VoucherModel
+import com.tokopedia.deals.utils.DealsUtils
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography

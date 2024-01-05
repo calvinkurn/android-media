@@ -1,57 +1,57 @@
-package com.tokopedia.deals.common.analytics
+package com.tokopedia.deals.analytics
 
 import android.os.Bundle
 import android.util.Log
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.CART_PAGE_LOADED
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.CHECKOUT_STEP_1
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.CHECKOUT_STEP_2
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.CLICK_PAYMENT_OPTION
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.CLICK_PROCEED_PAYMENT
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.CLICK_PROMO
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Action.VIEW_CHECKOUT
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.BRAND
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.BUSINESS_UNIT
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CART_ID
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CATEGORY_ID
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CATEGORY_LABEL
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CHECKOUT_OPTION
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CHECKOUT_STEP
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CURRENT_SITE
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.DASH_STRING
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.DEALS
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.DIMENSION_40
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Event.BEGIN_CHECKOUT
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Event.CHECKOUT_PROGRESS
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Event.EVENT_DEALS_CLICK
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.INDEX
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEMS
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_BRAND
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_CATEGORY
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_ID
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_LIST
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_LIST_NAME
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_NAME
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ITEM_VARIANT
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Item.none
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Label.FOUR_STRING_PATTERN
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Label.THREE_STRING_PATTERN
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Label.TWO_STRING_PATTERN
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.NON_PROMO
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PRICE
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PRODUCT_CARD
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PROMO
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.QUANTITY
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SCREEN_NAME
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SCREEN_NAME_DEALS_CHECKOUT
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SCREEN_NAME_DEALS_PDP
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SHOP_ID
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SHOP_NAME
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SHOP_TYPE
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SLASH_DEALS
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.TOKOPEDIA_DIGITAL_DEALS
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.TRAVELENTERTAINMENT_BU
-import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ZERO_STRING
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.Action.CART_PAGE_LOADED
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.Action.CHECKOUT_STEP_1
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.Action.CHECKOUT_STEP_2
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.Action.CLICK_PAYMENT_OPTION
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.Action.CLICK_PROCEED_PAYMENT
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.Action.CLICK_PROMO
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.Action.VIEW_CHECKOUT
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.BRAND
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.BUSINESS_UNIT
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.CART_ID
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.CATEGORY_ID
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.CATEGORY_LABEL
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.CHECKOUT_OPTION
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.CHECKOUT_STEP
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.CURRENT_SITE
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.DASH_STRING
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.DEALS
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.DIMENSION_40
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.Event.BEGIN_CHECKOUT
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.Event.CHECKOUT_PROGRESS
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.Event.EVENT_DEALS_CLICK
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.INDEX
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.ITEMS
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.ITEM_BRAND
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.ITEM_CATEGORY
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.ITEM_ID
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.ITEM_LIST
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.ITEM_LIST_NAME
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.ITEM_NAME
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.ITEM_VARIANT
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.Item.none
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.Label.FOUR_STRING_PATTERN
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.Label.THREE_STRING_PATTERN
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.Label.TWO_STRING_PATTERN
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.NON_PROMO
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.PRICE
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.PRODUCT_CARD
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.PROMO
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.QUANTITY
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.SCREEN_NAME
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.SCREEN_NAME_DEALS_CHECKOUT
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.SCREEN_NAME_DEALS_PDP
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.SHOP_ID
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.SHOP_NAME
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.SHOP_TYPE
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.SLASH_DEALS
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.TOKOPEDIA_DIGITAL_DEALS
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.TRAVELENTERTAINMENT_BU
+import com.tokopedia.deals.analytics.DealsAnalyticsConstants.ZERO_STRING
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.model.response.EventProductDetail
 import com.tokopedia.deals.common.ui.dataview.CuratedProductCategoryDataView
@@ -227,7 +227,10 @@ class DealsAnalytics @Inject constructor(
             DealsAnalyticsConstants.CLICK,
             DataLayer.mapOf(
                 DealsAnalyticsConstants.ACTION_FIELD,
-                DataLayer.mapOf(DealsAnalyticsConstants.Item.list, DealsAnalyticsConstants.SEARCH_RESULT_LIST),
+                DataLayer.mapOf(
+                    DealsAnalyticsConstants.Item.list,
+                    DealsAnalyticsConstants.SEARCH_RESULT_LIST
+                ),
                 DealsAnalyticsConstants.PRODUCTS,
                 getECommerceDataVoucherSearchPage(item)
             )
@@ -516,7 +519,8 @@ class DealsAnalytics @Inject constructor(
                     DealsAnalyticsConstants.Promotions.creative, banner.bannerName,
                     DealsAnalyticsConstants.Promotions.creative_url, banner.bannerImageUrl,
                     DealsAnalyticsConstants.Promotions.position, startPosition + index + 1,
-                    DealsAnalyticsConstants.Promotions.category, DealsAnalyticsConstants.Category.DIGITAL_DEALS
+                    DealsAnalyticsConstants.Promotions.category,
+                    DealsAnalyticsConstants.Category.DIGITAL_DEALS
                 )
             )
         }
@@ -653,7 +657,10 @@ class DealsAnalytics @Inject constructor(
             DealsAnalyticsConstants.CLICK,
             DataLayer.mapOf(
                 DealsAnalyticsConstants.ACTION_FIELD,
-                DataLayer.mapOf(DealsAnalyticsConstants.Item.list, DealsAnalyticsConstants.FOOD_VOUCHER_LIST),
+                DataLayer.mapOf(
+                    DealsAnalyticsConstants.Item.list,
+                    DealsAnalyticsConstants.FOOD_VOUCHER_LIST
+                ),
                 DealsAnalyticsConstants.PRODUCTS,
                 getECommerceDataClickBrandPopular(item, position)
             )
@@ -733,7 +740,10 @@ class DealsAnalytics @Inject constructor(
             DealsAnalyticsConstants.CLICK,
             DataLayer.mapOf(
                 DealsAnalyticsConstants.ACTION_FIELD,
-                DataLayer.mapOf(DealsAnalyticsConstants.Item.list, DealsAnalyticsConstants.PRODUCT_HOME_PAGE_LIST),
+                DataLayer.mapOf(
+                    DealsAnalyticsConstants.Item.list,
+                    DealsAnalyticsConstants.PRODUCT_HOME_PAGE_LIST
+                ),
                 DealsAnalyticsConstants.PRODUCTS,
                 getCuratedProductClick(productCardDataView, position)
             )
@@ -905,7 +915,8 @@ class DealsAnalytics @Inject constructor(
             item.apply {
                 val promotions = DataLayer.mapOf(
                     DealsAnalyticsConstants.Promotions.id, item.id,
-                    DealsAnalyticsConstants.Promotions.name, DealsAnalyticsConstants.DEALS_POPULAR_LANDMARK,
+                    DealsAnalyticsConstants.Promotions.name,
+                    DealsAnalyticsConstants.DEALS_POPULAR_LANDMARK,
                     DealsAnalyticsConstants.Promotions.creative, item.name,
                     DealsAnalyticsConstants.Promotions.creative_url, imageUrl,
                     DealsAnalyticsConstants.Promotions.position, index + 1 + startPosition
@@ -957,7 +968,8 @@ class DealsAnalytics @Inject constructor(
             item.apply {
                 val promotions = DataLayer.mapOf(
                     DealsAnalyticsConstants.Promotions.id, item.id,
-                    DealsAnalyticsConstants.Promotions.name, DealsAnalyticsConstants.DEALS_CURATED_CARD,
+                    DealsAnalyticsConstants.Promotions.name,
+                    DealsAnalyticsConstants.DEALS_CURATED_CARD,
                     DealsAnalyticsConstants.Promotions.creative, item.name,
                     DealsAnalyticsConstants.Promotions.creative_url, item.imageUrl,
                     DealsAnalyticsConstants.Promotions.position, startingPosition + index + 1
@@ -995,7 +1007,8 @@ class DealsAnalytics @Inject constructor(
                     DealsAnalyticsConstants.Impressions.id, item.brandId,
                     DealsAnalyticsConstants.Impressions.brand, item.brand.title,
                     DealsAnalyticsConstants.Impressions.category, item.category.firstOrNull()?.title ?: "",
-                    DealsAnalyticsConstants.Impressions.list, DealsAnalyticsConstants.FOOD_VOUCHER_LIST,
+                    DealsAnalyticsConstants.Impressions.list,
+                    DealsAnalyticsConstants.FOOD_VOUCHER_LIST,
                     DealsAnalyticsConstants.Impressions.price, item.salesPrice,
                     DealsAnalyticsConstants.Impressions.position, (pageSize * page) + index + 1
 
@@ -1054,7 +1067,9 @@ class DealsAnalytics @Inject constructor(
             DealsAnalyticsConstants.CLICK,
             DataLayer.mapOf(
                 DealsAnalyticsConstants.ACTION_FIELD,
-                DataLayer.mapOf(DealsAnalyticsConstants.Item.list, String.format(DealsAnalyticsConstants.Label.SEARCH_RESULT_BRAND_CLICK, position.toString(), product.displayName)),
+                DataLayer.mapOf(
+                    DealsAnalyticsConstants.Item.list, String.format(
+                        DealsAnalyticsConstants.Label.SEARCH_RESULT_BRAND_CLICK, position.toString(), product.displayName)),
                 DealsAnalyticsConstants.PRODUCTS,
                 getECommerceDataProductBrandDetailClick(brandName, product, position)
             )

@@ -6,10 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.FragmentDealsDetailDescBinding
 import com.tokopedia.deals.ui.pdp.di.DealsPDPComponent
 import com.tokopedia.deals.ui.pdp.ui.activity.DealsPDPActivity
+import com.tokopedia.deals.utils.DealsUtils
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.lifecycle.autoClearedNullable

@@ -6,7 +6,7 @@ import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.deals.common.model.response.SearchData
-import com.tokopedia.deals.common.utils.DealsLocationUtils
+import com.tokopedia.deals.utils.DealsLocationUtils
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase

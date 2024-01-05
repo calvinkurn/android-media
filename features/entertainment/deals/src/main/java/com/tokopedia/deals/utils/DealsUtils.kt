@@ -1,4 +1,4 @@
-package com.tokopedia.deals.common.utils
+package com.tokopedia.deals.utils
 
 import android.content.Context
 import android.content.res.Resources
@@ -8,9 +8,7 @@ import com.tokopedia.deals.common.ui.dataview.ProductCategoryDataView
 import com.tokopedia.kotlin.extensions.view.ONE
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.TimeZone
-import java.util.Date
+import java.util.*
 
 object DealsUtils {
 

@@ -21,11 +21,10 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.deals.R
-import com.tokopedia.deals.common.analytics.DealsAnalytics
+import com.tokopedia.deals.analytics.DealsAnalytics
 import com.tokopedia.deals.common.listener.CurrentLocationCallback
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
-import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsSearchBinding
 import com.tokopedia.deals.databinding.LayoutDealsSearchBarBinding
 import com.tokopedia.deals.ui.brand.DealsBrandActivity
@@ -42,6 +41,7 @@ import com.tokopedia.deals.ui.search.model.visitor.MoreBrandModel
 import com.tokopedia.deals.ui.search.model.visitor.VoucherModel
 import com.tokopedia.deals.ui.search.ui.typefactory.DealsSearchTypeFactory
 import com.tokopedia.deals.ui.search.ui.typefactory.DealsSearchTypeFactoryImpl
+import com.tokopedia.deals.utils.DealsLocationUtils
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

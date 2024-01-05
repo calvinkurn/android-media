@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.domain.GetNearestLocationUseCase
 import com.tokopedia.deals.ui.location_picker.model.response.Location
 import com.tokopedia.deals.ui.location_picker.model.response.LocationType
+import com.tokopedia.deals.utils.DealsLocationUtils
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

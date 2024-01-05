@@ -1,4 +1,4 @@
-package com.tokopedia.deals.common.analytics
+package com.tokopedia.deals.analytics
 
 object DealsAnalyticsConstants {
 

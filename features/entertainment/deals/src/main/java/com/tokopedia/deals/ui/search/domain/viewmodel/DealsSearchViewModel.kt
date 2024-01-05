@@ -6,12 +6,12 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.deals.common.model.response.EventSearch
 import com.tokopedia.deals.common.model.response.SearchData
-import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.domain.DealsSearchUseCase
 import com.tokopedia.deals.ui.location_picker.model.response.Location
 import com.tokopedia.deals.ui.search.domain.DealsSearchGqlQueries
 import com.tokopedia.deals.ui.search.domain.usecase.DealsSearchInitialLoadUseCase
 import com.tokopedia.deals.ui.search.model.response.InitialLoadData
+import com.tokopedia.deals.utils.DealsLocationUtils
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

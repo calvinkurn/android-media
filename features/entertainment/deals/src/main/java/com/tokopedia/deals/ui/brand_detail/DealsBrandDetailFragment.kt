@@ -16,9 +16,8 @@ import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.deals.R
-import com.tokopedia.deals.common.analytics.DealsAnalytics
+import com.tokopedia.deals.analytics.DealsAnalytics
 import com.tokopedia.deals.common.bottomsheet.DealsBottomSheetNoInternetConnection
-import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsBrandDetailBinding
 import com.tokopedia.deals.ui.brand_detail.DealsBrandDetailActivity.Companion.EXTRA_SEO_URL
 import com.tokopedia.deals.ui.brand_detail.data.Brand
@@ -26,6 +25,7 @@ import com.tokopedia.deals.ui.brand_detail.data.Product
 import com.tokopedia.deals.ui.brand_detail.di.DealsBrandDetailComponent
 import com.tokopedia.deals.ui.brand_detail.util.DealsBrandDetailShare
 import com.tokopedia.deals.ui.location_picker.model.response.Location
+import com.tokopedia.deals.utils.DealsLocationUtils
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.observe

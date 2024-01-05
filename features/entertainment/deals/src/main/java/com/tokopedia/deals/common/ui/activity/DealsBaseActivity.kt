@@ -18,15 +18,15 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.deals.DealsComponentInstance
 import com.tokopedia.deals.R
-import com.tokopedia.deals.common.analytics.DealsAnalytics
+import com.tokopedia.deals.analytics.DealsAnalytics
 import com.tokopedia.deals.common.listener.CurrentLocationCallback
 import com.tokopedia.deals.common.listener.SearchBarActionListener
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
-import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.ActivityBaseDealsBinding
 import com.tokopedia.deals.di.DealsComponent
 import com.tokopedia.deals.ui.location_picker.model.response.Location
 import com.tokopedia.deals.ui.location_picker.ui.customview.SelectLocationBottomSheet
+import com.tokopedia.deals.utils.DealsLocationUtils
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.permission.PermissionCheckerHelper

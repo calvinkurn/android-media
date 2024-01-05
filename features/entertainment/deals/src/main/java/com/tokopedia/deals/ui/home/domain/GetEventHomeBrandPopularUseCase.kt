@@ -1,7 +1,7 @@
 package com.tokopedia.deals.ui.home.domain
 
-import com.tokopedia.deals.common.data.DealsNearestLocationParam
 import com.tokopedia.deals.common.model.response.SearchData
+import com.tokopedia.deals.data.DealsNearestLocationParam
 import com.tokopedia.deals.ui.search.domain.DealsSearchGqlQueries
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -16,7 +16,7 @@ import javax.inject.Inject
  */
 
 class GetEventHomeBrandPopularUseCase @Inject constructor(
-        private val graphqlRepository: GraphqlRepository
+    private val graphqlRepository: GraphqlRepository
 ) : UseCase<SearchData>() {
 
     var params: Map<String, Any> = mapOf()
@@ -24,9 +24,14 @@ class GetEventHomeBrandPopularUseCase @Inject constructor(
     override suspend fun executeOnBackground(): SearchData {
         val gqlRequest = GraphqlRequest(
             DealsSearchGqlQueries.getEventSearchQuery(),
-                SearchData::class.java, params)
-        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
-                .Builder(CacheType.ALWAYS_CLOUD).build())
+            SearchData::class.java,
+            params
+        )
+        val gqlResponse = graphqlRepository.response(
+            listOf(gqlRequest),
+            GraphqlCacheStrategy
+                .Builder(CacheType.ALWAYS_CLOUD).build()
+        )
         val errors = gqlResponse.getError(SearchData::class.java)
         if (!errors.isNullOrEmpty()) {
             throw MessageErrorException(errors[0].message)
@@ -48,7 +53,8 @@ class GetEventHomeBrandPopularUseCase @Inject constructor(
         private const val PARAM_SIZE = "page_size"
 
         fun createParams(coordinates: String, locationType: String, size: String): Map<String, Any> =
-                mapOf(PARAM_ADDITIONAL_PARAMS to arrayListOf(
+            mapOf(
+                PARAM_ADDITIONAL_PARAMS to arrayListOf(
                     com.tokopedia.deals.ui.home.data.DealsGetHomeLayoutParam(
                         PARAM_CATEGORY,
                         PARAM_CATEGORY_DEALS
@@ -66,6 +72,7 @@ class GetEventHomeBrandPopularUseCase @Inject constructor(
                         locationType
                     ),
                     com.tokopedia.deals.ui.home.data.DealsGetHomeLayoutParam(PARAM_SIZE, size)
-                ))
+                )
+            )
     }
 }

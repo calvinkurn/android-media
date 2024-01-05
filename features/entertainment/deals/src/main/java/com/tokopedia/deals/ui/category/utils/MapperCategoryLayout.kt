@@ -11,17 +11,19 @@ import com.tokopedia.deals.common.ui.dataview.ChipDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
-import com.tokopedia.deals.common.utils.DealsUtils
-import com.tokopedia.deals.common.utils.DealsUtils.getLabelColor
 import com.tokopedia.deals.ui.brand.model.DealsEmptyDataView
 import com.tokopedia.deals.ui.search.model.response.Category
+import com.tokopedia.deals.utils.DealsUtils
+import com.tokopedia.deals.utils.DealsUtils.getLabelColor
 import javax.inject.Inject
 
 class MapperCategoryLayout @Inject constructor(@ApplicationContext private val context: Context) {
     val layout = mutableListOf<DealsBaseItemDataView>()
 
     fun mapCategoryLayout(
-            brandProduct: SearchData, page: Int, categoryId: String
+        brandProduct: SearchData,
+        page: Int,
+        categoryId: String
     ): List<DealsBaseItemDataView> {
         layout.clear()
         mapBrandtoLayout(brandProduct, categoryId)
@@ -30,36 +32,40 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
     }
 
     fun getEmptyLayout(
-            isFilter: Boolean
+        isFilter: Boolean
     ): List<DealsBaseItemDataView> {
         layout.clear()
         layout.add(
-            DealsEmptyDataView(getString(EMPTY_TITLE),
+            DealsEmptyDataView(
+                getString(EMPTY_TITLE),
                 if (isFilter) getString(EMPTY_DESC_FILTER) else getString(EMPTY_DESC),
                 isFilter
-        )
+            )
         )
         return layout
     }
 
     private fun mapBrandtoLayout(searchData: SearchData, categoryId: String) {
         var maxValue = 0
-        if (searchData.eventSearch.brands.size >= MAX_BRAND_SHOWING) maxValue = MAX_BRAND_SHOWING
-        else maxValue = searchData.eventSearch.brands.size
+        if (searchData.eventSearch.brands.size >= MAX_BRAND_SHOWING) {
+            maxValue = MAX_BRAND_SHOWING
+        } else {
+            maxValue = searchData.eventSearch.brands.size
+        }
         val brandLayout = searchData.eventSearch.brands.subList(0, maxValue).map { brand ->
             DealsBrandsDataView.Brand(
-                    brand.id,
-                    brand.title,
-                    brand.featuredThumbnailImage,
-                    UriUtil.buildUri(ApplinkConst.DEALS_BRAND_DETAIL, brand.seoUrl)
+                brand.id,
+                brand.title,
+                brand.featuredThumbnailImage,
+                UriUtil.buildUri(ApplinkConst.DEALS_BRAND_DETAIL, brand.seoUrl)
             )
         }
         val brandsDataView = DealsBrandsDataView(
-                title = getString(BRAND_POPULAR_TITLE),
-                seeAllText = getString(BRAND_SEE_ALL_TEXT),
-                brands = brandLayout,
-                oneRow = true,
-                category = categoryId
+            title = getString(BRAND_POPULAR_TITLE),
+            seeAllText = getString(BRAND_SEE_ALL_TEXT),
+            brands = brandLayout,
+            oneRow = true,
+            category = categoryId
         )
 
         brandsDataView.isLoadedAndSuccess()
@@ -67,23 +73,22 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
     }
 
     fun mapProducttoLayout(searchData: SearchData, page: Int): List<ProductCardDataView> {
-
         val productsLayout = searchData.eventSearch.products.mapIndexed { index, it ->
             ProductCardDataView(
-                    id = it.id,
-                    imageUrl = it.thumbnailApp,
-                    page = page,
-                    position = index,
-                    title = it.displayName,
-                    oldPrice = DealsUtils.convertToCurrencyString(it.mrp.toLong()),
-                    price = DealsUtils.convertToCurrencyString(it.salesPrice.toLong()),
-                    priceNonCurrency = it.salesPrice,
-                    brand = it.brand.title,
-                    categoryName = it.category.firstOrNull()?.title ?: "",
-                    appUrl = it.appUrl,
-                    discount = it.savingPercentage,
-                    shop = it.brand.title,
-                    productCategory = getLabelColor(context, it.displayTags)
+                id = it.id,
+                imageUrl = it.thumbnailApp,
+                page = page,
+                position = index,
+                title = it.displayName,
+                oldPrice = DealsUtils.convertToCurrencyString(it.mrp.toLong()),
+                price = DealsUtils.convertToCurrencyString(it.salesPrice.toLong()),
+                priceNonCurrency = it.salesPrice,
+                brand = it.brand.title,
+                categoryName = it.category.firstOrNull()?.title ?: "",
+                appUrl = it.appUrl,
+                discount = it.savingPercentage,
+                shop = it.brand.title,
+                productCategory = getLabelColor(context, it.displayTags)
             )
         }
         val productCardDataView = productsLayout
@@ -119,5 +124,4 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
         private val EMPTY_DESC = R.string.deals_category_empty_description
         private val EMPTY_DESC_FILTER = R.string.deals_category_empty_desc_filter
     }
-
 }

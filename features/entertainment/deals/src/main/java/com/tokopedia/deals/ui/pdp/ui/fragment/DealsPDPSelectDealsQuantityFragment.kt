@@ -15,13 +15,13 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.deals.common.analytics.DealsAnalytics
-import com.tokopedia.deals.common.utils.DealsUtils
+import com.tokopedia.deals.analytics.DealsAnalytics
 import com.tokopedia.deals.databinding.FragmentDealsDetailSelectQuantityBinding
 import com.tokopedia.deals.ui.checkout.ui.activity.DealsCheckoutActivity
 import com.tokopedia.deals.ui.pdp.di.DealsPDPComponent
 import com.tokopedia.deals.ui.pdp.ui.activity.DealsPDPActivity
 import com.tokopedia.deals.ui.pdp.ui.viewmodel.DealsPDPSelectQuantityViewModel
+import com.tokopedia.deals.utils.DealsUtils
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -185,8 +185,14 @@ class DealsPDPSelectDealsQuantityFragment : BaseDaggerFragment() {
 
     private fun verifyCheckout() {
         productDetailData?.let {
-            analytics.checkoutCartPageLoaded(getCurrentQuantity(), it.categoryId, it.id, it.displayName,
-                it.brand.title, it.salesPrice)
+            analytics.checkoutCartPageLoaded(
+                getCurrentQuantity(),
+                it.categoryId,
+                it.id,
+                it.displayName,
+                it.brand.title,
+                it.salesPrice
+            )
             viewModel.setVerifyRequest(it)
         }
     }
@@ -209,10 +215,10 @@ class DealsPDPSelectDealsQuantityFragment : BaseDaggerFragment() {
                     is Success -> {
                         context?.let { context ->
                             productDetailData?.let { productDetailData ->
-                                    val intent = Intent(context, DealsCheckoutActivity::class.java)
-                                    intent.putExtra(EXTRA_DEAL_DETAIL,productDetailData)
-                                    intent.putExtra(EXTRA_DEAL_VERIFY, it.data.eventVerify)
-                                    startActivity(intent)
+                                val intent = Intent(context, DealsCheckoutActivity::class.java)
+                                intent.putExtra(EXTRA_DEAL_DETAIL, productDetailData)
+                                intent.putExtra(EXTRA_DEAL_VERIFY, it.data.eventVerify)
+                                startActivity(intent)
                             }
                         }
                     }

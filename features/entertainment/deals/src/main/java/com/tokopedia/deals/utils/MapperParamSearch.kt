@@ -1,4 +1,4 @@
-package com.tokopedia.deals.common.utils
+package com.tokopedia.deals.utils
 
 import com.tokopedia.deals.common.model.request.RequestParam
 import com.tokopedia.deals.ui.search.DealsSearchConstants.SEARCH_PARAM
@@ -13,7 +13,8 @@ object MapperParamSearch {
             page: String,
             tree: String): Map<String, Any> {
         return mapOf(SEARCH_PARAM to
-                generateSearchParams(searchQuery, locationCoordinates, locationType, childCategoryIds, page, tree))
+                generateSearchParams(searchQuery, locationCoordinates, locationType, childCategoryIds, page, tree)
+        )
     }
 
     private fun generateSearchParams(

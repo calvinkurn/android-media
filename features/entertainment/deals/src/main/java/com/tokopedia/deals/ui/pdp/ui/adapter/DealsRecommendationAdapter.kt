@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.deals.common.model.response.EventProductDetail
-import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.ItemDealsCardShortBinding
+import com.tokopedia.deals.utils.DealsUtils
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -34,7 +34,7 @@ class DealsRecommendationAdapter(private val recommendationListener: Recommendat
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-       holder.bind(products[position])
+        holder.bind(products[position])
     }
 
     fun addProducts(products: List<EventProductDetail>) {

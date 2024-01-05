@@ -24,7 +24,6 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.deals.DealsComponentInstance
 import com.tokopedia.deals.R
 import com.tokopedia.deals.common.listener.CurrentLocationCallback
-import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsSelectLocationBinding
 import com.tokopedia.deals.databinding.LayoutDealsSearchLocationBottomsheetBinding
 import com.tokopedia.deals.ui.location_picker.domain.viewmodel.DealsLocationViewModel
@@ -33,6 +32,7 @@ import com.tokopedia.deals.ui.location_picker.mapper.DealsLocationMapper
 import com.tokopedia.deals.ui.location_picker.model.response.Location
 import com.tokopedia.deals.ui.location_picker.ui.typefactory.DealsSelectLocationTypeFactory
 import com.tokopedia.deals.ui.location_picker.ui.typefactory.DealsSelectLocationTypeFactoryImpl
+import com.tokopedia.deals.utils.DealsLocationUtils
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoCleared
@@ -44,10 +44,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class DealsSelectLocationFragment : BaseListFragment<Visitable<*>,
+class DealsSelectLocationFragment :
+    BaseListFragment<Visitable<*>,
         BaseAdapterTypeFactory>(),
-        DealsLocationListener,
-        CoroutineScope {
+    DealsLocationListener,
+    CoroutineScope {
 
     private var callback: CurrentLocationCallback? = null
 
@@ -109,108 +110,129 @@ class DealsSelectLocationFragment : BaseListFragment<Visitable<*>,
     }
 
     private fun observerPopularCities() {
-        viewModel.dealsPopularCitiesResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    if (DealsLocationMapper.listPopularCities.isNotEmpty()) {
-                        DealsLocationMapper.listPopularCities.clear()
+        viewModel.dealsPopularCitiesResponse.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        if (DealsLocationMapper.listPopularCities.isNotEmpty()) {
+                            DealsLocationMapper.listPopularCities.clear()
+                        }
+                        DealsLocationMapper.listPopularCities.addAll(it.data.locations)
                     }
-                    DealsLocationMapper.listPopularCities.addAll(it.data.locations)
+                    is Fail -> {
+                        createToaster(getString(R.string.deals_location_popular_cities_error))
+                    }
                 }
-                is Fail -> {
-                    createToaster(getString(R.string.deals_location_popular_cities_error))
-                }
+                location?.coordinates?.let { coordinates -> viewModel.getInitialPopularLocation(coordinates) }
             }
-            location?.coordinates?.let { coordinates -> viewModel.getInitialPopularLocation(coordinates) }
-        })
+        )
     }
 
     private fun observerPopularLocation() {
-        viewModel.dealsPopularLocationResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    if (DealsLocationMapper.listPopularLocation.isNotEmpty()) {
-                        DealsLocationMapper.listPopularLocation.clear()
+        viewModel.dealsPopularLocationResponse.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        if (DealsLocationMapper.listPopularLocation.isNotEmpty()) {
+                            DealsLocationMapper.listPopularLocation.clear()
+                        }
+                        DealsLocationMapper.listPopularLocation.addAll(it.data.locations)
+                        initialDataList = DealsLocationMapper.displayInitialStateLocationBottomSheet()
+                        renderList(initialDataList.toList(), it.data.page.nextPage.isNotEmpty())
                     }
-                    DealsLocationMapper.listPopularLocation.addAll(it.data.locations)
-                    initialDataList = DealsLocationMapper.displayInitialStateLocationBottomSheet()
-                    renderList(initialDataList.toList(), it.data.page.nextPage.isNotEmpty())
-                }
-                is Fail -> {
-                    createToaster(getString(R.string.deals_location_popular_location_error))
+                    is Fail -> {
+                        createToaster(getString(R.string.deals_location_popular_location_error))
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun observerLoadMorePopularLocation() {
-        viewModel.dealsLoadMorePopularLocationResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    loadMore(DealsLocationMapper.displayLoadMoreLocationBottomSheet(it.data.locations), it.data.page.nextPage.isNotEmpty())
-                }
-                is Fail -> {
-                    createToaster(getString(R.string.deals_location_popular_location_more_error))
+        viewModel.dealsLoadMorePopularLocationResponse.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        loadMore(DealsLocationMapper.displayLoadMoreLocationBottomSheet(it.data.locations), it.data.page.nextPage.isNotEmpty())
+                    }
+                    is Fail -> {
+                        createToaster(getString(R.string.deals_location_popular_location_more_error))
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun observerLandmarkLocation() {
-        viewModel.dealsDataLandmarkLocationResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    initialDataList = DealsLocationMapper.displayInitialStateLandmarkLocationBottomSheet(it.data.locations)
-                    renderList(initialDataList.toList(), it.data.page.nextPage.isNotEmpty())
-                }
-                is Fail -> {
-                    createToaster(getString(R.string.deals_location_landmark_error))
+        viewModel.dealsDataLandmarkLocationResponse.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        initialDataList = DealsLocationMapper.displayInitialStateLandmarkLocationBottomSheet(it.data.locations)
+                        renderList(initialDataList.toList(), it.data.page.nextPage.isNotEmpty())
+                    }
+                    is Fail -> {
+                        createToaster(getString(R.string.deals_location_landmark_error))
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun observerLandmarkMoreLocation() {
-        viewModel.dealsLoadMoreDataLandmarkLocationResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    loadMore(DealsLocationMapper.displayMoreLandmarkLocationBottomSheet(it.data.locations), it.data.page.nextPage.isNotEmpty())
-                }
-                is Fail -> {
-                    createToaster(getString(R.string.deals_location_landmark_more_error))
+        viewModel.dealsLoadMoreDataLandmarkLocationResponse.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        loadMore(DealsLocationMapper.displayMoreLandmarkLocationBottomSheet(it.data.locations), it.data.page.nextPage.isNotEmpty())
+                    }
+                    is Fail -> {
+                        createToaster(getString(R.string.deals_location_landmark_more_error))
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun observerSearchLocation() {
-        viewModel.dealsSearchedLocationResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    clearAllData()
-                    if (it.data.locations.isEmpty()) {
-                        searchNotFound = true
+        viewModel.dealsSearchedLocationResponse.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        clearAllData()
+                        if (it.data.locations.isEmpty()) {
+                            searchNotFound = true
+                        }
+                        renderList(DealsLocationMapper.displayInitialStateLandmarkLocationBottomSheet(it.data.locations).toList(), it.data.page.nextPage.isNotEmpty())
                     }
-                    renderList(DealsLocationMapper.displayInitialStateLandmarkLocationBottomSheet(it.data.locations).toList(), it.data.page.nextPage.isNotEmpty())
-                }
-                is Fail -> {
-                    createToaster(getString(R.string.deals_search_location_error))
+                    is Fail -> {
+                        createToaster(getString(R.string.deals_search_location_error))
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun observerSearchMoreLocation() {
-        viewModel.dealsLoadMoreSearchedLocationResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    loadMore(DealsLocationMapper.displayMoreLandmarkLocationBottomSheet(it.data.locations), it.data.page.nextPage.isNotEmpty())
-                }
-                is Fail -> {
-                    createToaster(getString(R.string.deals_search_location_more_error))
+        viewModel.dealsLoadMoreSearchedLocationResponse.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        loadMore(DealsLocationMapper.displayMoreLandmarkLocationBottomSheet(it.data.locations), it.data.page.nextPage.isNotEmpty())
+                    }
+                    is Fail -> {
+                        createToaster(getString(R.string.deals_search_location_more_error))
+                    }
                 }
             }
-        })
+        )
     }
 
     override fun loadInitialData() {
@@ -307,8 +329,9 @@ class DealsSelectLocationFragment : BaseListFragment<Visitable<*>,
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val searchText = s.toString().trim()
-                if (searchText == searchFor)
+                if (searchText == searchFor) {
                     return
+                }
 
                 searchFor = searchText
 
@@ -335,24 +358,31 @@ class DealsSelectLocationFragment : BaseListFragment<Visitable<*>,
     }
 
     private fun getCurrentLocation() {
-        permissionCheckerHelper.checkPermission(activity as Activity, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION,
-                object : PermissionCheckerHelper.PermissionCheckListener {
-                    override fun onNeverAskAgain(permissionText: String) {}
-                    override fun onPermissionDenied(permissionText: String) {}
-                    override fun onPermissionGranted() {
-                        callback?.let { callback ->
-                            dealsLocationUtils.detectAndSendLocation(activity as Activity, permissionCheckerHelper, callback)
-                        }
+        permissionCheckerHelper.checkPermission(
+            activity as Activity,
+            PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION,
+            object : PermissionCheckerHelper.PermissionCheckListener {
+                override fun onNeverAskAgain(permissionText: String) {}
+                override fun onPermissionDenied(permissionText: String) {}
+                override fun onPermissionGranted() {
+                    callback?.let { callback ->
+                        dealsLocationUtils.detectAndSendLocation(activity as Activity, permissionCheckerHelper, callback)
                     }
-                })
+                }
+            }
+        )
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            permissionCheckerHelper.onRequestPermissionsResult(context,
-                    requestCode, permissions, grantResults)
+            permissionCheckerHelper.onRequestPermissionsResult(
+                context,
+                requestCode,
+                permissions,
+                grantResults
+            )
         }
     }
 
@@ -397,9 +427,11 @@ class DealsSelectLocationFragment : BaseListFragment<Visitable<*>,
     companion object {
         const val SCREEN_NAME = "deals select location"
 
-        fun createInstance(selectedLocation: String?,
-                           location: Location?,
-                           isLandmarkPage: Boolean): DealsSelectLocationFragment {
+        fun createInstance(
+            selectedLocation: String?,
+            location: Location?,
+            isLandmarkPage: Boolean
+        ): DealsSelectLocationFragment {
             val fragment = DealsSelectLocationFragment()
             val bundle = Bundle()
             bundle.putString(com.tokopedia.deals.ui.location_picker.DealsLocationConstants.SELECTED_LOCATION, selectedLocation)

@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.deals.R
-import com.tokopedia.deals.common.analytics.DealsAnalytics
+import com.tokopedia.deals.analytics.DealsAnalytics
 import com.tokopedia.deals.common.listener.DealsBrandActionListener
 import com.tokopedia.deals.common.listener.EmptyStateListener
 import com.tokopedia.deals.common.listener.OnBaseLocationActionListener
@@ -23,7 +23,6 @@ import com.tokopedia.deals.common.ui.activity.DealsBaseBrandCategoryActivity
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.common.ui.fragment.DealsBaseFragment
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
-import com.tokopedia.deals.common.utils.DealsLocationUtils
 import com.tokopedia.deals.databinding.FragmentDealsBrandBinding
 import com.tokopedia.deals.di.DealsComponent
 import com.tokopedia.deals.ui.brand.adapter.DealsBrandAdapter
@@ -31,6 +30,7 @@ import com.tokopedia.deals.ui.brand.listener.DealsBrandSearchTabListener
 import com.tokopedia.deals.ui.brand.mapper.DealsBrandMapper.mapBrandListToBaseItemView
 import com.tokopedia.deals.ui.brand.model.DealsEmptyDataView
 import com.tokopedia.deals.ui.location_picker.model.response.Location
+import com.tokopedia.deals.utils.DealsLocationUtils
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail

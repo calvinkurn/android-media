@@ -1,6 +1,6 @@
 package com.tokopedia.deals.domain
 
-import com.tokopedia.deals.common.data.DealsNearestLocationParam
+import com.tokopedia.deals.data.DealsNearestLocationParam
 import com.tokopedia.deals.ui.location_picker.model.response.LocationData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType

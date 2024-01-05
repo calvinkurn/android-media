@@ -24,8 +24,7 @@ import com.tokopedia.common_entertainment.data.DealsGeneral
 import com.tokopedia.common_entertainment.data.DealsInstant
 import com.tokopedia.common_entertainment.data.EventVerifyResponse
 import com.tokopedia.common_entertainment.data.ItemMapResponse
-import com.tokopedia.deals.common.analytics.DealsAnalytics
-import com.tokopedia.deals.common.utils.DealsUtils
+import com.tokopedia.deals.analytics.DealsAnalytics
 import com.tokopedia.deals.databinding.FragmentDealsCheckoutBinding
 import com.tokopedia.deals.ui.checkout.di.DealsCheckoutComponent
 import com.tokopedia.deals.ui.checkout.ui.DealsCheckoutCallbacks
@@ -34,6 +33,7 @@ import com.tokopedia.deals.ui.checkout.ui.activity.DealsCheckoutActivity.Compani
 import com.tokopedia.deals.ui.checkout.ui.activity.DealsCheckoutActivity.Companion.EXTRA_DEAL_VERIFY
 import com.tokopedia.deals.ui.checkout.ui.mapper.DealsCheckoutMapper
 import com.tokopedia.deals.ui.checkout.ui.viewmodel.DealsCheckoutViewModel
+import com.tokopedia.deals.utils.DealsUtils
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone

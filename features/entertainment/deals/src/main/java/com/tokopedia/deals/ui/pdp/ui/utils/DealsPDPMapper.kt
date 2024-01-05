@@ -4,7 +4,7 @@ import com.tokopedia.common_entertainment.data.CartData
 import com.tokopedia.common_entertainment.data.DealsVerifyRequest
 import com.tokopedia.common_entertainment.data.ItemMap
 import com.tokopedia.common_entertainment.data.MetaData
-import com.tokopedia.deals.common.utils.DealsUtils
+import com.tokopedia.deals.utils.DealsUtils
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import java.text.SimpleDateFormat
