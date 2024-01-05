@@ -25,6 +25,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
+import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.common.extensions.getDrawableChecker
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
@@ -247,6 +248,13 @@ class CampaignRibbon @JvmOverloads constructor(
             }
             tpgCampaignNameS3.showIfWithBlock(thematic.campaignLogo.isBlank()) {
                 tpgCampaignNameS3.text = thematic.campaignName
+                tpgCampaignNameS3.setTextColor(
+                    if (thematic.superGraphicURL.isBlank()) {
+                        context.getColorChecker(unifyprinciplesR.color.Unify_Static_Black)
+                    } else {
+                        context.getColorChecker(unifyprinciplesR.color.Unify_Static_White)
+                    }
+                )
             }
 
             tpgCampaignSupergraphicS3.showIfWithBlock(thematic.superGraphicURL.isNotBlank()) {
