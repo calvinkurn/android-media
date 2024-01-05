@@ -58,9 +58,7 @@ class CategoryInspirationViewModelTest {
             menus.associate {
                 it.id to CategoryInspirationData(
                     it,
-                    FeedBrowseChannelListState.initSuccess(
-                        emptyList()
-                    )
+                    FeedBrowseChannelListState.initLoading()
                 )
             }
         )
@@ -102,7 +100,7 @@ class CategoryInspirationViewModelTest {
                 ),
                 menus[1].id to CategoryInspirationData(
                     menus[1],
-                    FeedBrowseChannelListState.initSuccess(emptyList())
+                    FeedBrowseChannelListState.initLoading()
                 )
             )
         )
@@ -151,7 +149,7 @@ class CategoryInspirationViewModelTest {
                 ),
                 menus[1].id to CategoryInspirationData(
                     menus[1],
-                    FeedBrowseChannelListState.initSuccess(emptyList())
+                    FeedBrowseChannelListState.initLoading()
                 )
             )
         )
