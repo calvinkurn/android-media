@@ -759,7 +759,7 @@ object ProductListUiStateMapper {
                     bmgm.productBenefit,
                     orderId,
                     bmgm.id,
-                    bmgmProductBenefitExpandableState.contains(bmgm.id)
+                    !bmgmProductBenefitExpandableState.contains(bmgm.id)
                 )
             )
         }.orEmpty()
