@@ -487,14 +487,14 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
 
     private fun cancelPreviousDownload() {
         try {
-            if (allowRunningServiceFromActivity) {
-                DFInstaller.stopInstall(applicationContext)
-            } else {
-                sessionId?.let {
-                    manager.cancelInstall(it)
-                }
-                sessionId = null
+            // stop install in background
+            DFInstaller.stopInstall(applicationContext)
+
+            // stop install in foreground
+            sessionId?.let {
+                manager.cancelInstall(it)
             }
+            sessionId = null
         } catch (ignored: Exception) {
         }
     }
