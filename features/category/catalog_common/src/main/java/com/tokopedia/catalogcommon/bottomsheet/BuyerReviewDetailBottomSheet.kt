@@ -59,6 +59,7 @@ class BuyerReviewDetailBottomSheet : BottomSheetUnify() {
                     putString(REVIEWER_AVATAR, reviewData.avatar)
                     putString(REVIEWER_NAME, reviewData.reviewerName)
                     putString(REVIEWER_STATUS, reviewData.reviewerStatus)
+                    putString(VARIANT_TYPE, reviewData.variantName)
                     putInt(TOTAL_REVIEW, reviewData.totalCompleteReview.orZero())
                     putInt(TOTAL_HELP, reviewData.totalHelpedPeople.orZero())
                     putString(TIMESTAMP, reviewData.datetime)
