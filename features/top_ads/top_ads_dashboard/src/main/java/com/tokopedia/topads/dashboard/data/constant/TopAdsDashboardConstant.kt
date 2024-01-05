@@ -130,6 +130,8 @@ object TopAdsDashboardConstant {
     const val CONST_EFECTIVITAS_IKLAN = 5
     const val DATE_PICKER_DEFAULT_INDEX = 2
     const val QUERY_PARAM_TAB= "tab"
+    const val IKLAN_PRODUCT_AD_TYPE_IMG_URL = "https://images.tokopedia.net/img/android/topads/dashboard/iklan_produk.png"
+    const val IKLAN_TOKO_AD_TYPE_IMG_URL = "https://images.tokopedia.net/img/android/topads/dashboard/iklan_toko.png"
 
     object TopAdsCreditTopUpConstant {
         const val TOP_UP_FREQUENCY_FOUR = 4

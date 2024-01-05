@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<ScrollView
     android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:viewBindingIgnore="true"
-    android:orientation="vertical"
-    android:background="@color/Unify_Background">
+    tools:viewBindingIgnore="true">
 
-    <include layout="@layout/partial_base_toolbar" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_Background"
+        android:orientation="vertical">
 
-    <include
-        android:id="@+id/topads_ad_card1"
-        layout="@layout/item_topads_added_ads" />
+        <include layout="@layout/partial_base_toolbar" />
 
-    <include
-        android:id="@+id/topads_ad_card2"
-        layout="@layout/item_topads_added_ads" />
-</LinearLayout>
+        <include
+            android:id="@+id/topads_ad_card1"
+            layout="@layout/item_topads_added_ads" />
+
+        <include
+            android:id="@+id/topads_ad_card2"
+            layout="@layout/item_topads_added_ads" />
+    </LinearLayout>
+</ScrollView>

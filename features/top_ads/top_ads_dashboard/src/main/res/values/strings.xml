@@ -309,7 +309,7 @@
     <string name="topads_dash_reload_title">Sedang diproses</string>
     <string name="topads_dash_auto_ads_enable_msg">Iklanmu sedang dibuat. Setelah 5-10 menit, coba muat ulang halaman.</string>
     <string name="topads_dash_auto_ads_disable_msg">Iklanmu sedang dimatikan. Setelah 5-10 menit, coba muat ulang halaman.</string>
-    <string name="topads_dashboard_ad_type_selection_title">Tambah Iklan</string>
+    <string name="topads_dashboard_ad_type_selection_title">Pilih Jenis Iklan Manual</string>
     <string name="topads_dashboard_ad_product_type_selection_title">Iklan Produk</string>
     <string name="topads_dashboard_ad_product_type_selection_subtitle">Produk pilihanmu akan tampil di halaman strategis Tokopedia.</string>
     <string name="topads_dashboard_ad_headline_type_selection_title">Iklan Toko</string>
@@ -527,8 +527,20 @@
     <string name="top_ads_tool_tip_frequency_description">Seberapa sering tambah kredit dalam sehari untuk menjaga iklanmu terus aktif.</string>
     <string name="top_ads_tool_tip_max_credit_limit_description">Kredit TopAds akan bertambah secara otomatis setiap kreditmu kurang dari angka yang tertera di sini.</string>
     <string name="topads_layout_chips_text">Semua</string>
+    <string name="topads_ad_type_selection_product_subtitle">Iklan Produk meningkatkan potensi produkmu diklik lebih cepat dan muncul paling atas di halaman pencarian dan rekomendasi.</string>
+    <string name="topads_ad_type_selection_product_accordian_title">Tentang Iklan Produk</string>
+    <string name="topads_ad_type_selection_product_accordian_item1">Pilih produk yang ingin diiklankan secara spesifik</string>
+    <string name="topads_ad_type_selection_product_accordian_item2">Atur biaya iklan sesuai kebutuhan produk</string>
+    <string name="topads_ad_type_selection_product_accordian_item3">Performa Iklan tiap produk dapat dipantau dengan mudah</string>
+    <string name="topads_dashboard_create_product_advertisement">Buat Iklan Product</string>
+    <string name="topads_ad_type_selection_shop_subtitle">Iklan Toko akan muncul di tempat strategis yang meningkatkan probabilitas toko dan produkmu dilihat pembeli.</string>
+    <string name="topads_ad_type_selection_shop_accordian_title">Tentang Iklan Toko</string>
+    <string name="topads_ad_type_selection_shop_accordian_item1">Tampil dengan tampilan dan posisi yang lebih eksklusif</string>
+    <string name="topads_ad_type_selection_shop_accordian_item2">Berpotensi meningkatkan kunjungan tokomu</string>
+    <string name="topads_ad_type_selection_shop_accordian_item3">Biaya iklan diatur sesuai kebutuhan tokomu</string>
+    <string name="topads_dashboard_create_shop_advertisement">Buat Iklan Toko</string>
 
-<!--    <string name="topads_group_card_insight_count_format">%s saran untukmu</string>-->
+    <!--    <string name="topads_group_card_insight_count_format">%s saran untukmu</string>-->
     <string name="topads_group_card_insight_count_format"><![CDATA["<b>%s</b> ]]> saran untukmu</string>
     <string name="topads_beranda_saran">Saran Topads</string>
     <string name="topads_beranda_saran_see_full">Lihat Selengkapnya</string>
