@@ -18,6 +18,10 @@ abstract class TokoNowAllAnnotationViewModelTestFixture {
 
     protected lateinit var viewModel: TokoNowAllAnnotationViewModel
 
+    protected val categoryId = "123"
+    protected val warehouses = "1234%232h%2C54321%23f"
+    protected val annotationType = "BRAND"
+
     @get: Rule
     val rule = InstantTaskExecutorRule()
 
@@ -31,9 +35,6 @@ abstract class TokoNowAllAnnotationViewModelTestFixture {
     }
 
     protected fun stubGetAllAnnotation(
-        categoryId: String,
-        warehouses: String,
-        annotationType: String,
         pageLastId: String,
         response: TokoNowGetAnnotationListResponse.GetAnnotationListResponse
     ) {
@@ -48,9 +49,6 @@ abstract class TokoNowAllAnnotationViewModelTestFixture {
     }
 
     protected fun stubGetAllAnnotation(
-        categoryId: String,
-        warehouses: String,
-        annotationType: String,
         pageLastId: String,
         throwable: Throwable
     ) {
@@ -65,9 +63,6 @@ abstract class TokoNowAllAnnotationViewModelTestFixture {
     }
 
     protected fun verifyGetAllAnnotation(
-        categoryId: String,
-        warehouses: String,
-        annotationType: String,
         pageLastId: String,
         inverse: Boolean = false
     ) {

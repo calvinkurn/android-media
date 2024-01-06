@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.annotation.analytic.AllAnnotationAnalytics
 import com.tokopedia.tokopedianow.annotation.di.component.DaggerAllAnnotationComponent
 import com.tokopedia.tokopedianow.annotation.presentation.activity.TokoNowAllAnnotationActivity.Companion.KEY_ANNOTATION_TYPE
@@ -158,7 +159,7 @@ class TokoNowAllAnnotationFragment : Fragment() {
 
         observe(viewModel.headerTitle) { result ->
             header.isShowShadow = false
-            header.headerTitle = if (result is Success && result.data.isNotBlank()) result.data else "Semua brand"
+            header.headerTitle = if (result is Success && result.data.isNotBlank()) result.data else getString(R.string.tokopedianow_all_annotation_page_title)
         }
     }
 
