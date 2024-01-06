@@ -13,7 +13,7 @@ class AllAnnotationAdapterTypeFactory(
     private val annotationListener: AnnotationViewHolder.AnnotationListener
 ): BaseAdapterTypeFactory(), AllAnnotationTypeFactory {
     override fun type(uiModel: AnnotationUiModel): Int = AnnotationViewHolder.LAYOUT
-    override fun type(viewModel: LoadingMoreModel?): Int = TokoNowLoadingMoreViewHolder.LAYOUT
+    override fun type(viewModel: LoadingMoreModel): Int = TokoNowLoadingMoreViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {

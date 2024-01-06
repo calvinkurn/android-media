@@ -93,7 +93,12 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
                                 pageLastId = response.pagination.pageLastID
                             )
                         } else {
-                            needToLoadMoreData.copy(isNeededToLoadMore = false)
+                            layout.removeLoadMore()
+                            _loadMore.postValue(layout)
+
+                            needToLoadMoreData.copy(
+                                isNeededToLoadMore = false
+                            )
                         }
                     }) {
                         layout.removeLoadMore()
