@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.annotation.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
@@ -28,11 +29,18 @@ class AnnotationViewHolder(
             ivAnnotationImage.loadImage(data.imageUrl)
 
             root.setOnClickListener {
+                directToAnotherPage(data.appLink)
                 listener?.onClick(data, layoutPosition)
             }
             root.addOnImpressionListener(data) {
                 listener?.onImpress(data, layoutPosition)
             }
+        }
+    }
+
+    private fun ItemTokopedianowAllAnnotationBinding.directToAnotherPage(appLink: String) {
+        if (appLink.isNotBlank()) {
+            RouteManager.route(root.context, appLink)
         }
     }
 

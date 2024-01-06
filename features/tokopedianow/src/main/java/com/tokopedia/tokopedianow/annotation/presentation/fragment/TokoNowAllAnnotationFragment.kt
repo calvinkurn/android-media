@@ -14,13 +14,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.tokopedianow.annotation.analytic.AllAnnotationAnalytics
 import com.tokopedia.tokopedianow.annotation.di.component.DaggerAllAnnotationComponent
-import com.tokopedia.tokopedianow.annotation.presentation.activity.TokoNowAllAnnotationActivity.Companion.KEY_ANNOTATION_ID
 import com.tokopedia.tokopedianow.annotation.presentation.activity.TokoNowAllAnnotationActivity.Companion.KEY_ANNOTATION_TYPE
 import com.tokopedia.tokopedianow.annotation.presentation.activity.TokoNowAllAnnotationActivity.Companion.KEY_CATEGORY_ID
+import com.tokopedia.tokopedianow.annotation.presentation.activity.TokoNowAllAnnotationActivity.Companion.KEY_WAREHOUSES
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowAllAnnotationBinding
-import com.tokopedia.tokopedianow.seeallcategory.analytic.SeeAllCategoryAnalytics
 import com.tokopedia.tokopedianow.annotation.presentation.adapter.AllAnnotationAdapter
 import com.tokopedia.tokopedianow.annotation.presentation.adapter.AllAnnotationAdapterTypeFactory
 import com.tokopedia.tokopedianow.annotation.presentation.decoration.AllAnnotationDecoration
@@ -28,7 +28,6 @@ import com.tokopedia.tokopedianow.annotation.presentation.uimodel.AnnotationUiMo
 import com.tokopedia.tokopedianow.annotation.presentation.viewholder.AnnotationViewHolder
 import com.tokopedia.tokopedianow.annotation.presentation.viewmodel.TokoNowAllAnnotationViewModel
 import com.tokopedia.tokopedianow.common.util.GlobalErrorUtil.setupLayout
-import com.tokopedia.tokopedianow.recipebookmark.persentation.fragment.TokoNowRecipeBookmarkFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -39,15 +38,16 @@ class TokoNowAllAnnotationFragment : Fragment() {
     companion object {
         private const val SPAN_COUNT = 3
         private const val SPAN_FULL_SPACE = 1
+        private const val SCROLL_DOWN_DIRECTION = 1
 
         fun newInstance(
             categoryId: String?,
-            annotationId: String?,
+            warehouses: String?,
             annotationType: String?
         ): TokoNowAllAnnotationFragment = TokoNowAllAnnotationFragment().apply {
             val bundle = Bundle()
             bundle.putString(KEY_CATEGORY_ID, categoryId)
-            bundle.putString(KEY_ANNOTATION_ID, annotationId)
+            bundle.putString(KEY_WAREHOUSES, warehouses)
             bundle.putString(KEY_ANNOTATION_TYPE, annotationType)
             arguments = bundle
         }
@@ -57,12 +57,15 @@ class TokoNowAllAnnotationFragment : Fragment() {
     lateinit var viewModel: TokoNowAllAnnotationViewModel
 
     @Inject
-    lateinit var analytics: SeeAllCategoryAnalytics
+    lateinit var analytics: AllAnnotationAnalytics
 
-    private val categoryId: String
+    internal val categoryId: String
         by lazy { arguments?.getString(KEY_CATEGORY_ID).orEmpty() }
-    private val annotationType: String
+    internal val warehouses: String
+        by lazy { arguments?.getString(KEY_WAREHOUSES).orEmpty() }
+    internal val annotationType: String
         by lazy { arguments?.getString(KEY_ANNOTATION_TYPE).orEmpty() }
+
     private val loadMoreListener: RecyclerView.OnScrollListener
         by lazy { createLoadMoreListener() }
 
@@ -101,6 +104,10 @@ class TokoNowAllAnnotationFragment : Fragment() {
             isShowShadow = false
             setNavigationOnClickListener {
                 activity?.onBackPressedDispatcher?.onBackPressed()
+                analytics.trackClickBackAllAnnotationPage(
+                    categoryIdL1 = categoryId,
+                    annotationType = annotationType
+                )
             }
         }
     }
@@ -130,7 +137,13 @@ class TokoNowAllAnnotationFragment : Fragment() {
             hideShimmering()
 
             when (result) {
-                is Success -> loadLayout(result.data)
+                is Success -> {
+                    loadLayout(result.data)
+                    analytics.trackImpressAllAnnotationPage(
+                        categoryIdL1 = categoryId,
+                        annotationType = annotationType
+                    )
+                }
                 is Fail -> showGlobalError(result.throwable)
             }
         }
@@ -184,6 +197,7 @@ class TokoNowAllAnnotationFragment : Fragment() {
         showShimmering()
         viewModel.getFirstPage(
             categoryId = categoryId,
+            warehouses = warehouses,
             annotationType = annotationType
         )
     }
@@ -195,11 +209,10 @@ class TokoNowAllAnnotationFragment : Fragment() {
     private fun createLoadMoreListener(): RecyclerView.OnScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
-            val isAtTheBottomOfThePage = !recyclerView.canScrollVertically(
-                TokoNowRecipeBookmarkFragment.SCROLL_DOWN_DIRECTION
-            )
+            val isAtTheBottomOfThePage = !recyclerView.canScrollVertically(SCROLL_DOWN_DIRECTION)
             viewModel.loadMore(
                 categoryId,
+                warehouses,
                 annotationType,
                 isAtTheBottomOfThePage
             )
@@ -208,11 +221,19 @@ class TokoNowAllAnnotationFragment : Fragment() {
 
     private fun annotationCallback(): AnnotationViewHolder.AnnotationListener = object : AnnotationViewHolder.AnnotationListener {
         override fun onClick(data: AnnotationUiModel, position: Int) {
-            //track
+            analytics.trackClickAnnotationCard(
+                categoryIdL1 = categoryId,
+                annotationType = annotationType,
+                annotationValue = data.name
+            )
         }
 
         override fun onImpress(data: AnnotationUiModel, position: Int) {
-            //track
+            analytics.trackImpressAnnotationCard(
+                categoryIdL1 = categoryId,
+                annotationType = annotationType,
+                annotationValue = data.name
+            )
         }
     }
 }

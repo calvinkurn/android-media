@@ -7,13 +7,12 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokopedianow.annotation.domain.mapper.VisitableMapper.addAnnotations
 import com.tokopedia.tokopedianow.annotation.domain.mapper.VisitableMapper.addLoadMore
 import com.tokopedia.tokopedianow.annotation.domain.mapper.VisitableMapper.removeLoadMore
 import com.tokopedia.tokopedianow.annotation.domain.usecase.GetAllAnnotationPageUseCase
 import com.tokopedia.tokopedianow.annotation.presentation.model.LoadMoreDataModel
-import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper.mapToWarehouseIds
-import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -21,13 +20,8 @@ import javax.inject.Inject
 
 class TokoNowAllAnnotationViewModel @Inject constructor(
     private val getAllAnnotationPageUseCase: GetAllAnnotationPageUseCase,
-    private val addressData: TokoNowLocalAddress,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
-    companion object {
-        private const val FIRST_PAGE_LAST_ID = "0"
-    }
-
     private val _headerTitle = MutableLiveData<Result<String>>()
     private val _firstPage = MutableLiveData<Result<List<Visitable<*>>>>()
     private val _loadMore = MutableLiveData<List<Visitable<*>>>()
@@ -47,15 +41,15 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
 
     fun getFirstPage(
         categoryId: String,
+        warehouses: String,
         annotationType: String
     ) {
         launchCatchError(block = {
-            val warehouseIds = mapToWarehouseIds(addressData.getAddressData())
             val response = getAllAnnotationPageUseCase.execute(
                 categoryId = categoryId,
-                warehouseId = warehouseIds,
+                warehouses = warehouses,
                 annotationType = annotationType,
-                pageLastId = FIRST_PAGE_LAST_ID
+                pageLastId = String.EMPTY
             )
 
             layout.addAnnotations(response)
@@ -74,6 +68,7 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
 
     fun loadMore(
         categoryId: String,
+        warehouses: String,
         annotationType: String,
         isAtTheBottomOfThePage: Boolean
     ) {
@@ -81,10 +76,9 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
             when {
                 layout.last() is LoadingMoreModel -> {
                     launchCatchError(block = {
-                        val warehouseIds = mapToWarehouseIds(addressData.getAddressData())
                         val response = getAllAnnotationPageUseCase.execute(
                             categoryId = categoryId,
-                            warehouseId = warehouseIds,
+                            warehouses = warehouses,
                             annotationType = annotationType,
                             pageLastId = needToLoadMoreData.pageLastId
                         )
