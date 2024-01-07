@@ -369,7 +369,7 @@ class CampaignRibbon @JvmOverloads constructor(
             }
 
             // render campaign name
-            val campaignName = if (thematicCampaign.campaignName.isNotBlank()) thematicCampaign.campaignName else campaign.campaignTypeName
+            val campaignName = thematicCampaign.campaignName.ifBlank { campaign.campaignTypeName }
             tpgCampaignNameS2.text = campaignName
             // render ongoing count down
             renderOnGoingCountDownTimer(campaign = campaign, timerView = tusTimerViewS2)
