@@ -16,7 +16,6 @@ import com.tokopedia.product.detail.component.shipment.ShipmentUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
-import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.ProductNotifyMeUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel

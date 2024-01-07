@@ -173,7 +173,6 @@ import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
-import com.tokopedia.product.detail.view.viewholder.campaign.ui.model.ProductNotifyMeUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
