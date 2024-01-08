@@ -20,6 +20,7 @@ public interface ApplinkConst {
     String FEED_EXPLORE = "tokopedia://feed/explore";
     String FEED_VIDEO = "tokopedia://feed/video";
     String FEED_FOLLOWING = "tokopedia://feed/following";
+    String FEED_RELEVANT_POST = FEED + "/{post_id}";
     String FIND = "tokopedia://find";
     String AMP_FIND = "tokopedia://amp/find";
     String FEED_HASHTAG = "tokopedia://feed/hashtag/{hashtag}";

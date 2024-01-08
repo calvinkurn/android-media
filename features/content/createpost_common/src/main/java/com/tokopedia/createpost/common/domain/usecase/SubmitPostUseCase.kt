@@ -4,13 +4,11 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.createpost.common.domain.entity.request.MediaTag
 import com.tokopedia.createpost.common.domain.entity.request.SubmitPostMedium
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
-import com.tokopedia.createpost.common.TYPE_CONTENT_SHOP
 import com.tokopedia.createpost.common.view.util.PostUpdateProgressManager
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.createpost.common.domain.entity.SubmitPostResult
-import com.tokopedia.createpost.common.domain.entity.UploadMediaDataModel
 import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
 import com.tokopedia.createpost.common.domain.usecase.cache.SaveMediaPostCacheUseCase
 import com.tokopedia.gql_query_annotation.GqlQuery
@@ -58,7 +56,7 @@ open class SubmitPostUseCase @Inject constructor(
         mediaWidth: Int,
         mediaHeight: Int,
         onSuccessUploadPerMedia: suspend () -> Unit,
-    ) {
+    ): SubmitPostData {
         val mediumList = getMediumList(media, mediaList)
 
         /** Save Media Post Cache Reference */
@@ -97,6 +95,8 @@ open class SubmitPostUseCase @Inject constructor(
         }
 
         deleteMediaPostCacheUseCase(Unit)
+
+        return result
     }
 
     /**

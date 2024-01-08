@@ -65,24 +65,33 @@ class ContentCreationPostUploadActivity : BaseActivity() {
     private fun redirectToViewerRoom() {
         val appLink = intent.getStringExtra(EXTRA_APP_LINK).orEmpty()
 
-        if (GlobalConfig.isSellerApp()) {
-            if (isAppInstalled(GlobalConfig.PACKAGE_CONSUMER_APP)) {
-                startActivity(
-                    Intent(Intent.ACTION_VIEW).apply {
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        data = Uri.parse(appLink)
+        when (uploadType) {
+            CreationUploadType.Post -> route(appLink)
+            else -> {
+                if (GlobalConfig.isSellerApp()) {
+                    if (isAppInstalled(GlobalConfig.PACKAGE_CONSUMER_APP)) {
+                        startActivity(
+                            Intent(Intent.ACTION_VIEW).apply {
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                data = Uri.parse(appLink)
+                            }
+                        )
+                        finish()
+                    } else {
+                        installMainAppDialog.openPlayStore(this) {
+                            finish()
+                        }
                     }
-                )
-                finish()
-            } else {
-                installMainAppDialog.openPlayStore(this) {
-                    finish()
+                } else {
+                    route(appLink)
                 }
             }
-        } else {
-            RouteManager.route(this, appLink)
-            finish()
         }
+    }
+
+    private fun route(appLink: String) {
+        RouteManager.route(this, appLink)
+        finish()
     }
 
     companion object {
