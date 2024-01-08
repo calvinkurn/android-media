@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:parentTag="android.widget.LinearLayout"
+    tools:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/home_component_ribbon_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_Static_White"
+        android:paddingVertical="4dp"
+        android:paddingHorizontal="8dp"
+        android:background="@drawable/home_component_ribbon_background"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="20%"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/home_component_ribbon_slip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/home_component_ribbon_slip" />
+
+</merge>

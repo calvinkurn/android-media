@@ -586,6 +586,9 @@ data class DataItem(
     @SerializedName("tab_index")
     val tabIndex: List<Int>? = null,
 
+    @SerializedName("title_type")
+    val titleType: String? = null,
+
     var shopAdsClickURL: String? = "",
 
     var shopAdsViewURL: String? = "",

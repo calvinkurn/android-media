@@ -19,7 +19,6 @@ import com.tokopedia.oneclickcheckout.order.view.mapper.PrescriptionMapper
 import com.tokopedia.oneclickcheckout.order.view.mapper.SaveAddOnStateMapper.generateSaveAddOnStateRequestParams
 import com.tokopedia.oneclickcheckout.order.view.mapper.SaveAddOnStateMapper.generateSaveAllAddOnsStateRequestParams
 import com.tokopedia.oneclickcheckout.order.view.model.AddressState
-import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
@@ -90,7 +89,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(
                     orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.preference.isValidProfile),
                     orderProfile = orderData.preference,
                     orderPayment = orderData.payment,
-                    orderPromo = orderData.promo.copy(state = OccButtonState.NORMAL),
+                    orderPromo = orderData.promo,
                     globalEvent = when {
                         orderData.prompt.shouldShowPrompt() -> {
                             OccGlobalEvent.Prompt(orderData.prompt)

@@ -6,7 +6,6 @@ import com.tokopedia.creation.common.upload.data.local.database.CreationUploadQu
 import com.tokopedia.creation.common.upload.data.local.entity.CreationUploadQueueEntity
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
 import com.tokopedia.creation.common.upload.model.CreationUploadData
-import com.tokopedia.creation.common.upload.util.logger.CreationUploadLogger
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock

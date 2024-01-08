@@ -8,7 +8,6 @@ import com.tokopedia.creation.common.upload.data.local.database.CreationUploadQu
 import com.tokopedia.creation.common.upload.data.repository.CreationUploadQueueRepositoryImpl
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
 import com.tokopedia.creation.common.upload.util.CreationUploadMutex
-import com.tokopedia.creation.common.upload.util.logger.CreationUploadLogger
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.sync.Mutex
