@@ -13,8 +13,6 @@ import com.tokopedia.people.views.uimodel.state.FollowListState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -22,7 +20,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-private typealias DataWithCursor<T> = Pair<List<T>, String>
+private typealias ResultWithCursor<T> = Pair<Result<T>, String>
 internal class FollowListViewModel @AssistedInject constructor(
     @Assisted private val type: FollowListType,
     @Assisted private val profileIdentifier: String,
@@ -36,16 +34,20 @@ internal class FollowListViewModel @AssistedInject constructor(
 
     private val _followList = MutableStateFlow<List<PeopleUiModel>>(emptyList())
     private val _nextCursor = MutableStateFlow<String?>(null)
-
-    private var loadDataJob: Job? = null
+    private val _isLoading = MutableStateFlow(false)
+    private val _result = MutableStateFlow<Result<Unit>?>(null)
 
     val state = combine(
         _followList,
-        _nextCursor
-    ) { followList, nextCursor ->
+        _nextCursor,
+        _result,
+        _isLoading
+    ) { followList, nextCursor, result, isLoading ->
         FollowListState(
             followList = followList,
-            hasNextPage = nextCursor == null || nextCursor.isNotBlank()
+            hasNextPage = nextCursor == null || nextCursor.isNotBlank(),
+            result = result,
+            isLoading = isLoading
         )
     }.stateIn(
         viewModelScope,
@@ -56,12 +58,17 @@ internal class FollowListViewModel @AssistedInject constructor(
     fun onAction(action: FollowListAction) {
         when (action) {
             FollowListAction.Init -> onInit()
+            FollowListAction.Refresh -> onRefresh()
             FollowListAction.LoadMore -> onLoadMore()
             is FollowListAction.Follow -> onFollow(action.people)
         }
     }
 
     private fun onInit() {
+        loadData(cursor = "")
+    }
+
+    private fun onRefresh() {
         loadData(cursor = "")
     }
 
@@ -77,7 +84,7 @@ internal class FollowListViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun getFollowers(cursor: String): DataWithCursor<PeopleUiModel> {
+    private suspend fun getFollowers(cursor: String): ResultWithCursor<List<PeopleUiModel>> {
         var nextCursor = cursor
         return try {
             var result: FollowListUiModel.Follower
@@ -87,11 +94,13 @@ internal class FollowListViewModel @AssistedInject constructor(
                 nextCursor = result.nextCursor
             } while (result.followers.isEmpty() && nextCursor.isNotEmpty())
 
-            result.followers to nextCursor
-        } catch (e: Throwable) { emptyList<PeopleUiModel>() to nextCursor }
+            Result.success(result.followers) to nextCursor
+        } catch (e: Throwable) {
+            Result.failure<List<PeopleUiModel>>(e) to nextCursor
+        }
     }
 
-    private suspend fun getFollowings(cursor: String): DataWithCursor<PeopleUiModel> {
+    private suspend fun getFollowings(cursor: String): ResultWithCursor<List<PeopleUiModel>> {
         var nextCursor = cursor
         return try {
             var result: FollowListUiModel.Following
@@ -101,20 +110,24 @@ internal class FollowListViewModel @AssistedInject constructor(
                 nextCursor = result.nextCursor
             } while (result.followingList.isEmpty() && nextCursor.isNotEmpty())
 
-            result.followingList to nextCursor
-        } catch (e: Throwable) { emptyList<PeopleUiModel>() to nextCursor }
+            Result.success(result.followingList) to nextCursor
+        } catch (e: Throwable) {
+            Result.failure<List<PeopleUiModel>>(e) to nextCursor
+        }
     }
 
     private fun loadData(cursor: String = "") {
-        if (loadDataJob?.isActive == true) return
-        loadDataJob = viewModelScope.launch {
-            delay(1500)
-            val (followList, nextCursor) = when (type) {
+        if (_isLoading.value) return
+
+        _isLoading.value = true
+        viewModelScope.launch {
+            val (result, nextCursor) = when (type) {
                 FollowListType.Follower -> getFollowers(cursor)
                 FollowListType.Following -> getFollowings(cursor)
             }
-            _followList.update { it + followList }
+            _result.value = result.onSuccess { followList -> _followList.update { it + followList } }.map {}
             _nextCursor.value = nextCursor
+            _isLoading.value = false
         }
     }
 

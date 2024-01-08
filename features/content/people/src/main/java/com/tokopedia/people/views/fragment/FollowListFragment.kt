@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -17,6 +18,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.content.common.util.getAsSerializable
 import com.tokopedia.people.viewmodels.FollowListViewModel
+import com.tokopedia.people.views.screen.FollowListErrorScreen
 import com.tokopedia.people.views.screen.FollowListScreen
 import com.tokopedia.people.views.uimodel.FollowListType
 import com.tokopedia.people.views.uimodel.PeopleUiModel
@@ -59,16 +61,29 @@ class FollowListFragment @Inject internal constructor(
                 viewModel.onAction(FollowListAction.LoadMore)
             }
 
+            val onRefresh: () -> Unit = {
+                viewModel.onAction(FollowListAction.Refresh)
+            }
+
             setContent {
                 val state: FollowListState by viewModel.state.collectAsStateWithLifecycle()
 
-                FollowListScreen(
-                    people = state.followList.toPersistentList(),
-                    hasNextPage = state.hasNextPage,
-                    onLoadMore = onLoadMore,
-                    onFollowClicked = onFollowClicked,
-                    Modifier.fillMaxSize()
-                )
+                if (state.result?.isFailure == true && state.followList.isEmpty()) {
+                    Box(Modifier.fillMaxSize()) {
+                        FollowListErrorScreen(
+                            isLoading = state.isLoading,
+                            onRefreshButtonClicked = onRefresh
+                        )
+                    }
+                } else {
+                    FollowListScreen(
+                        people = state.followList.toPersistentList(),
+                        hasNextPage = state.hasNextPage,
+                        onLoadMore = onLoadMore,
+                        onFollowClicked = onFollowClicked,
+                        Modifier.fillMaxSize()
+                    )
+                }
             }
         }
     }
