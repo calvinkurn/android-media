@@ -122,12 +122,15 @@ data class ProductCardModel (
     )
 
     data class LabelGroup(
-            val position: String = "",
-            val title: String = "",
-            val type: String = "",
-            val imageUrl: String = ""
+        val position: String = "",
+        val title: String = "",
+        val type: String = "",
+        val imageUrl: String = "",
+        val styleList: List<Style> = listOf(),
     ) {
         fun isGimmick() = position == LABEL_GIMMICK
+
+        data class Style(val key: String, val value: String)
     }
 
     data class LabelGroupVariant(
