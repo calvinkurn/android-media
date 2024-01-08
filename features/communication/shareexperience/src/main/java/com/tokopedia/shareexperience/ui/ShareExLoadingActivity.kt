@@ -12,13 +12,16 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
 import com.tokopedia.shareexperience.data.di.ShareExComponent
 import com.tokopedia.shareexperience.data.util.ShareExPageTypeEnum
+import com.tokopedia.shareexperience.databinding.ShareexperienceLoadingActivityBinding
 import com.tokopedia.shareexperience.ui.util.getStringExtraFromIntentOrQuery
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,6 +30,8 @@ class ShareExLoadingActivity : BaseActivity(), HasComponent<ShareExComponent> {
 
     private var bottomSheet: ShareExBottomSheet? = null
     private var shareExComponent: ShareExComponent? = null
+
+    private val binding: ShareexperienceLoadingActivityBinding? by viewBinding()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -75,6 +80,8 @@ class ShareExLoadingActivity : BaseActivity(), HasComponent<ShareExComponent> {
         )
     }
 
+
+
     private fun initObservers() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -89,23 +96,29 @@ class ShareExLoadingActivity : BaseActivity(), HasComponent<ShareExComponent> {
     private suspend fun observeFetchedDataState() {
         viewModel.fetchedDataState.collectLatest {
             initBottomSheet()
+            openBottomSheet()
         }
     }
 
     private fun initBottomSheet() {
         if (bottomSheet == null) {
             bottomSheet = ShareExBottomSheet()
-            bottomSheet?.setOnDismissListener {
+            bottomSheet?.setCloseClickListener {
                 finishActivityWithoutAnimation()
             }
-            openBottomSheet()
         }
     }
 
     private fun openBottomSheet() {
-        findViewById<LoaderUnify>(R.id.shareex_loader).hide()
-        findViewById<View>(R.id.shareex_dim_overlay).hide()
+        binding?.shareexLoader?.hide()
+        binding?.shareexDimOverlay?.hide()
         bottomSheet?.show(supportFragmentManager, "")
+    }
+
+    private fun closeBottomSheet() {
+        binding?.shareexLoader?.show()
+        binding?.shareexDimOverlay?.show()
+        bottomSheet?.dismiss()
     }
 
     private fun finishActivityWithoutAnimation() {
@@ -118,5 +131,10 @@ class ShareExLoadingActivity : BaseActivity(), HasComponent<ShareExComponent> {
             R.anim.shareexperience_no_animation_transition,
             R.anim.shareexperience_no_animation_transition
         )
+    }
+
+    fun refreshPage() {
+        closeBottomSheet()
+        fetchData()
     }
 }

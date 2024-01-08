@@ -70,6 +70,7 @@ class ShareExBottomSheet :
         viewBinding = ShareexperienceBottomSheetBinding.inflate(inflater)
         setChild(viewBinding?.root)
         clearContentPadding = true
+        overlayClickDismiss = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -167,11 +168,8 @@ class ShareExBottomSheet :
     }
 
     override fun onErrorActionClicked() {
-        //TODO
-        /**
-         * 1. Close bottom sheet
-         * 2. Show Activity & Loading (re-hit query)
-         * 3. Open Bottom Sheet again
-         */
+        if (activity is ShareExLoadingActivity) {
+            (activity as? ShareExLoadingActivity)?.refreshPage()
+        }
     }
 }

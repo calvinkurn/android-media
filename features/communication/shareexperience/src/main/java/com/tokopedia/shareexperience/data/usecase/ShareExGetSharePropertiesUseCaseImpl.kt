@@ -2,6 +2,7 @@ package com.tokopedia.shareexperience.data.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shareexperience.data.dto.ShareExBottomSheetResponseDto
 import com.tokopedia.shareexperience.data.dto.ShareExPropertyResponseDto
@@ -15,6 +16,7 @@ import com.tokopedia.shareexperience.data.mapper.ShareExPropertyMapper
 import com.tokopedia.shareexperience.data.repository.ShareExGetSharePropertiesQuery
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExBottomSheetRequest
+import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExBottomSheetWrapperRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExDiscoveryBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExProductBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExShopBottomSheetRequest
@@ -56,13 +58,18 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
 
     private suspend fun getShareBottomSheetResponse(params: ShareExBottomSheetRequest): Flow<ShareExBottomSheetModel> {
         return flow {
-//            val dto = repository.request<ShareExBottomSheetRequest, ShareExWrapperResponseDto>(
-//                sharePropertiesQuery, params
-//            )
-            val dto = getDummyResponseDto()
+            val request = getRequest(params)
+            val dto = repository.request<ShareExBottomSheetWrapperRequest, ShareExWrapperResponseDto>(
+                sharePropertiesQuery, request
+            )
+//            val dto = getDummyResponseDto()
             val result = mapper.map(dto.response.bottomSheet)
             emit(result)
         }.flowOn(dispatchers.io)
+    }
+
+    private fun getRequest(params: ShareExBottomSheetRequest): ShareExBottomSheetWrapperRequest {
+        return ShareExBottomSheetWrapperRequest(params)
     }
 
     private fun getDummyResponseDto(): ShareExWrapperResponseDto {
@@ -102,12 +109,7 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                     label = "BARU",
                     link = "tokopedia://topchat"
                 ),
-                affiliateEligibility = ShareExAffiliateEligibilityResponseDto(
-                    eligible = false,
-                    commission = "",
-                    label = "Komisi Extra",
-                    date = "Hingga 31 Des 2024"
-                )
+                affiliateEligibility = null
             ),
             ShareExPropertyResponseDto(
                 shareBody = ShareExShareBodyResponseDto(
@@ -122,10 +124,9 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                     link = ""
                 ),
                 affiliateEligibility = ShareExAffiliateEligibilityResponseDto(
-                    eligible = true,
-                    commission = "Rp16.000",
-                    label = "Komisi Extra",
-                    date = "Hingga 31 Des 2024"
+                    commission = "<b>Komisi Rp16.000</b> / barang dijual",
+                    badge = "Komisi Extra",
+                    expiredDate = "Hingga 31 Des 2024"
                 )
             ),
             ShareExPropertyResponseDto(
@@ -141,8 +142,7 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                     link = "tokopedia://topchat"
                 ),
                 affiliateEligibility = ShareExAffiliateEligibilityResponseDto(
-                    eligible = true,
-                    commission = "Rp16.000"
+                    commission = "<b>Komisi Rp16.000</b> / barang dijual"
                 )
             ),
             ShareExPropertyResponseDto(
@@ -151,12 +151,7 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                     thumbnailUrls = getImageThumbnails(0)
                 ),
                 affiliateRegistrationWidget = ShareExAffiliateRegistrationWidgetResponseDto(),
-                affiliateEligibility = ShareExAffiliateEligibilityResponseDto(
-                    eligible = false,
-                    commission = "Rp16.000",
-                    label = "Komisi Extra",
-                    date = "Hingga 31 Des 2024"
-                )
+                affiliateEligibility = null
             ),
             ShareExPropertyResponseDto(
                 shareBody = ShareExShareBodyResponseDto(

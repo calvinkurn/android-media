@@ -42,7 +42,6 @@ class ShareExLinkShareViewHolder(
         val htmlCommissionText = HtmlUtil.fromHtml(element.commissionText)
         binding?.shareexTvCommisionLink?.text = htmlCommissionText
         binding?.shareexTvCommisionLink?.showWithCondition(htmlCommissionText.isNotBlank())
-        binding?.shareexIconCommision?.showWithCondition(htmlCommissionText.isNotBlank())
     }
 
     private fun bindLabel(element: ShareExLinkShareUiModel) {

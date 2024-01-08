@@ -10,5 +10,5 @@ data class ShareExPropertyResponseDto(
     @SerializedName("affiliateRegistrationWidget")
     val affiliateRegistrationWidget: ShareExAffiliateRegistrationWidgetResponseDto = ShareExAffiliateRegistrationWidgetResponseDto(),
     @SerializedName("affiliateEligibility")
-    val affiliateEligibility: ShareExAffiliateEligibilityResponseDto = ShareExAffiliateEligibilityResponseDto()
+    val affiliateEligibility: ShareExAffiliateEligibilityResponseDto? = null
 )

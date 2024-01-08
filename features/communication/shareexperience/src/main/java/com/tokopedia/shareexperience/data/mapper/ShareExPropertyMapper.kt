@@ -26,12 +26,10 @@ class ShareExPropertyMapper @Inject constructor(
                     description = it.affiliateRegistrationWidget.description,
                     appLink = it.affiliateRegistrationWidget.link
                 ),
-                eligibility = ShareExAffiliateEligibilityModel(
-                    isEligible = it.affiliateEligibility.eligible
-                ),
-                commission = it.affiliateEligibility.commission,
-                label = it.affiliateEligibility.label,
-                date = it.affiliateEligibility.date
+                isEligible = it.affiliateEligibility != null,
+                commission = it.affiliateEligibility?.commission ?: "",
+                label = it.affiliateEligibility?.badge ?: "",
+                expiredDate = it.affiliateEligibility?.expiredDate ?: ""
             )
             val property = ShareExPropertyModel(
                 title = it.shareBody.title,

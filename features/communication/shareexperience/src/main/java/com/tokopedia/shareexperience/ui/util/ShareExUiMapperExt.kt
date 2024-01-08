@@ -49,21 +49,14 @@ fun ShareExBottomSheetModel.map(position: Int = 0): List<Visitable<in ShareExTyp
         }
 
         // Link Share Card UI
-        // TODO: Ask BE if this copy can be from them
-        val commissionText = if (shareExPropertyModel.affiliate.commission.isNotBlank()) {
-            "<b>Komisi ${shareExPropertyModel.affiliate.commission}</b> / barang dijual"
-        } else {
-            ""
-        }
-
-        if (shareExPropertyModel.affiliate.eligibility != null) {
+        if (shareExPropertyModel.affiliate.isEligible) {
             val linkShareUiModel = ShareExLinkShareUiModel(
                 shareExPropertyModel.title,
-                commissionText,
+                shareExPropertyModel.affiliate.commission,
                 "tokopedia.link",
                 listImageUiModel.firstOrNull()?.imageUrl.toString(),
                 shareExPropertyModel.affiliate.label,
-                shareExPropertyModel.affiliate.date
+                shareExPropertyModel.affiliate.expiredDate
             )
             result.add(linkShareUiModel)
         }
@@ -125,7 +118,7 @@ fun ShareExBottomSheetModel.mapError(
                 "tokopedia.link",
                 shareExPropertyModel.listImage.firstOrNull()?: "",
                 shareExPropertyModel.affiliate.label,
-                shareExPropertyModel.affiliate.date
+                shareExPropertyModel.affiliate.expiredDate
             )
             result.add(linkShareUiModel)
         }
