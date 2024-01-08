@@ -5,10 +5,12 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.annotation.presentation.uimodel.BrandWidgetUiModel
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.annotation.analytic.AnnotationWidgetAnalytic
 import com.tokopedia.tokopedianow.annotation.presentation.adapter.typefactory.BrandWidgetItemAdapter
 import com.tokopedia.tokopedianow.annotation.presentation.itemdecoration.BrandWidgetItemDecoration
 import com.tokopedia.tokopedianow.annotation.presentation.uimodel.BrandWidgetUiModel.BrandWidgetState
@@ -18,6 +20,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class BrandWidgetViewHolder(
     itemView: View,
+    private val analytic: AnnotationWidgetAnalytic,
     private val listener: BrandWidgetListener?
 ) : AbstractViewHolder<BrandWidgetUiModel>(itemView), TokoNowDynamicHeaderListener {
 
@@ -28,7 +31,7 @@ class BrandWidgetViewHolder(
 
     private val binding: ItemTokopedianowBrandWidgetBinding? by viewBinding()
 
-    private val adapter by lazy { BrandWidgetItemAdapter() }
+    private val adapter by lazy { BrandWidgetItemAdapter(analytic) }
 
     init {
         setupRecyclerView()
@@ -59,7 +62,14 @@ class BrandWidgetViewHolder(
             header.setModel(uiModel.header)
             header.setListener(this@BrandWidgetViewHolder)
             adapter.setVisitables(uiModel.items)
+            addImpressionListener(uiModel)
             widgetGroup.show()
+        }
+    }
+
+    private fun addImpressionListener(uiModel: BrandWidgetUiModel) {
+        itemView.addOnImpressionListener(uiModel) {
+            analytic.sendImpressionAnnotationWidgetEvent()
         }
     }
 
@@ -108,6 +118,7 @@ class BrandWidgetViewHolder(
         widgetId: String
     ) {
         listener?.onSeeAllClicked(context, channelId, headerName, appLink, widgetId)
+        analytic.sendClickArrowButtonEvent()
     }
 
     override fun onChannelExpired() {

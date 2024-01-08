@@ -5,6 +5,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.tokopedianow.annotation.analytic.AnnotationWidgetAnalytic
 import com.tokopedia.tokopedianow.annotation.presentation.adapter.typefactory.BrandWidgetTypeFactory
 import com.tokopedia.tokopedianow.annotation.presentation.uimodel.BrandWidgetUiModel
 import com.tokopedia.tokopedianow.annotation.presentation.viewholder.BrandWidgetViewHolder
@@ -46,6 +47,7 @@ class CategoryAdapterTypeFactory(
     private var tokoNowCategoryMenuListener: TokoNowCategoryMenuListener? = null,
     private var tokoNowProductRecommendationListener: TokoNowProductRecommendationListener? = null,
     private var brandWidgetListener: BrandWidgetListener? = null,
+    private val brandWidgetAnalytic: AnnotationWidgetAnalytic,
     private var recycledViewPool: RecyclerView.RecycledViewPool? = null,
     private val lifecycleOwner: LifecycleOwner? = null,
     tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetListener,
@@ -110,6 +112,7 @@ class CategoryAdapterTypeFactory(
             )
             BrandWidgetViewHolder.LAYOUT -> BrandWidgetViewHolder(
                 itemView = view,
+                analytic = brandWidgetAnalytic,
                 listener = brandWidgetListener
             )
             else -> super.createViewHolder(view, type)

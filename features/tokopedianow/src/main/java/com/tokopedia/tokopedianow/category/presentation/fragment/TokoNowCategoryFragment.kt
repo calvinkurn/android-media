@@ -28,7 +28,8 @@ import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.annotation.presentation.viewholder.BrandWidgetViewHolder
+import com.tokopedia.tokopedianow.annotation.analytic.AnnotationWidgetAnalytic
+import com.tokopedia.tokopedianow.annotation.analytic.AnnotationWidgetAnalytic.Companion.ANNOTATION_TYPE_BRAND
 import com.tokopedia.tokopedianow.annotation.presentation.viewholder.BrandWidgetViewHolder.BrandWidgetListener
 import com.tokopedia.tokopedianow.category.di.component.DaggerCategoryComponent
 import com.tokopedia.tokopedianow.category.di.module.CategoryContextModule
@@ -122,6 +123,7 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
             tokoNowProductRecommendationListener = createProductRecommendationCallback(),
             productAdsCarouselListener = createProductCardAdsCallback(),
             brandWidgetListener = createBrandWidgetListener(),
+            brandWidgetAnalytic = createBrandWidgetAnalytic(),
             recycledViewPool = recycledViewPool,
             lifecycleOwner = viewLifecycleOwner
         )
@@ -693,5 +695,9 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
             },
             fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
         )
+    }
+
+    private fun createBrandWidgetAnalytic(): AnnotationWidgetAnalytic {
+        return AnnotationWidgetAnalytic(categoryIdL1, ANNOTATION_TYPE_BRAND)
     }
 }

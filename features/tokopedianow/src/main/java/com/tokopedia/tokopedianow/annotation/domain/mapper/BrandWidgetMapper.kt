@@ -33,6 +33,7 @@ object BrandWidgetMapper {
         val brandList = annotationList.map {
             BrandWidgetItemUiModel(
                 id = it.annotationID,
+                name = it.name,
                 imageUrl = it.imageURL,
                 appLink = it.appLink
             )

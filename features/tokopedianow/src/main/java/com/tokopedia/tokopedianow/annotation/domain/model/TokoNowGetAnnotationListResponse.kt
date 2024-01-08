@@ -46,6 +46,8 @@ data class TokoNowGetAnnotationListResponse(
     data class AnnotationResponse(
         @SerializedName("annotationID")
         val annotationID: String = "",
+        @SerializedName("name")
+        val name: String = "",
         @SerializedName("imageURL")
         val imageURL: String = "",
         @SerializedName("appLink")

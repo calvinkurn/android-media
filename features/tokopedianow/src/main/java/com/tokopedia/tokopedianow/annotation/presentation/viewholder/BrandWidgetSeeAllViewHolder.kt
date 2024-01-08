@@ -7,12 +7,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.annotation.analytic.AnnotationWidgetAnalytic
 import com.tokopedia.tokopedianow.annotation.presentation.uimodel.BrandWidgetSeeAllUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowBrandWidgetSeeAllItemBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
 class BrandWidgetSeeAllViewHolder(
-    itemView: View
+    itemView: View,
+    private val analytic: AnnotationWidgetAnalytic
 ) : AbstractViewHolder<BrandWidgetSeeAllUiModel>(itemView) {
 
     companion object {
@@ -27,6 +29,7 @@ class BrandWidgetSeeAllViewHolder(
         binding?.apply {
             root.setOnClickListener {
                 RouteManager.route(it.context, uiModel.appLink)
+                analytic.sendClickViewAllEvent()
             }
             imageSupergraphic.loadImage(TokopediaImageUrl.TOKOPEDIANOW_SEE_ALL_BRAND_SUPERGRAPHIC)
         }
