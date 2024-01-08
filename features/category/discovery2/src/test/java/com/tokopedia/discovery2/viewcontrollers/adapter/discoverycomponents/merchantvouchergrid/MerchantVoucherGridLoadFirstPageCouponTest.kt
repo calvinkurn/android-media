@@ -6,8 +6,11 @@ import com.tokopedia.discovery2.data.Redirection
 import com.tokopedia.discovery2.data.TotalProductData
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridComponentExtension.addShimmer
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridComponentExtension.addVoucherList
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchergrid.MerchantVoucherGridViewModel.Companion.ERROR_MESSAGE_UNAVAILABLE_NEXT_PAGE
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
+import com.tokopedia.usecase.coroutines.Success
 import org.junit.Test
 
 class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelFixture() {
@@ -145,7 +148,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
         viewModel.noMorePages
             .verifyValueEquals(Unit)
         viewModel.seeMore
-            .verifyValueEquals(null)
+            .verifyFailEquals(ERROR_MESSAGE_UNAVAILABLE_NEXT_PAGE)
         viewModel.couponList
             .verifySuccessEquals(expected)
     }
@@ -198,7 +201,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
         viewModel.noMorePages
             .verifyValueEquals(Unit)
         viewModel.seeMore
-            .verifyValueEquals(null)
+            .verifyFailEquals(ERROR_MESSAGE_UNAVAILABLE_NEXT_PAGE)
         viewModel.couponList
             .verifySuccessEquals(expected)
     }
@@ -207,7 +210,8 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
     fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && cta text is empty, so the result should get only voucher list`() {
         // stub necessary data
         val redirection = Redirection(
-            ctaText = String.EMPTY
+            ctaText = String.EMPTY,
+            applink = String.EMPTY
         )
         val componentItems = listOf(
             ComponentsItem(
@@ -254,7 +258,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
         viewModel.noMorePages
             .verifyValueEquals(Unit)
         viewModel.seeMore
-            .verifyValueEquals(redirection)
+            .verifyFailEquals(ERROR_MESSAGE_UNAVAILABLE_NEXT_PAGE)
         viewModel.couponList
             .verifySuccessEquals(expected)
     }
@@ -310,7 +314,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
         viewModel.noMorePages
             .verifyValueEquals(Unit)
         viewModel.seeMore
-            .verifyValueEquals(redirection)
+            .verifyFailEquals(ERROR_MESSAGE_UNAVAILABLE_NEXT_PAGE)
         viewModel.couponList
             .verifySuccessEquals(expected)
     }
@@ -319,7 +323,8 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
     fun `When use case is true and voucher list has 3 items with additional info that component has next page && cta text is not empty, so the result should get only voucher list`() {
         // stub necessary data
         val redirection = Redirection(
-            ctaText = "Lihat Semua Kupon"
+            ctaText = "Lihat Semua Kupon",
+            applink = "tokopedia://discovery/mvc-next-page"
         )
         val componentItems = listOf(
             ComponentsItem(
@@ -366,7 +371,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
         viewModel.noMorePages
             .verifyValueEquals(Unit)
         viewModel.seeMore
-            .verifyValueEquals(redirection)
+            .verifySuccessEquals(Success(redirection))
         viewModel.couponList
             .verifySuccessEquals(expected)
     }
@@ -422,7 +427,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelF
         viewModel.noMorePages
             .verifyValueEquals(Unit)
         viewModel.seeMore
-            .verifyValueEquals(redirection)
+            .verifyFailEquals(ERROR_MESSAGE_UNAVAILABLE_NEXT_PAGE)
         viewModel.couponList
             .verifySuccessEquals(expected)
     }
