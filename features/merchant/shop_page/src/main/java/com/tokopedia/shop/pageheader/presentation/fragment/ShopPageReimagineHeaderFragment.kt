@@ -509,31 +509,12 @@ class ShopPageReimagineHeaderFragment :
                     }
 
                     ContentCreationTypeEnum.POST -> {
-                        val intent = RouteManager.getIntent(
-                            context,
-                            ApplinkConst.IMAGE_PICKER_V2
-                        ).apply {
-                            putExtra(
-                                ContentCreationConsts.IS_CREATE_POST_AS_BUYER,
-                                data.authorType.asBuyer
-                            )
-                            putExtra(
-                                ContentCreationConsts.APPLINK_AFTER_CAMERA_CAPTURE,
-                                ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
-                            )
-                            putExtra(
-                                ContentCreationConsts.MAX_MULTI_SELECT_ALLOWED,
-                                ContentCreationConsts.VALUE_MAX_MULTI_SELECT_ALLOWED
-                            )
-                            putExtra(
-                                ContentCreationConsts.TITLE,
-                                getString(creationcommonR.string.content_creation_post_as_label)
-                            )
-                            putExtra(
-                                ContentCreationConsts.APPLINK_FOR_GALLERY_PROCEED,
-                                ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
-                            )
-                        }
+                        val intent = ContentCreationConsts.getPostIntent(
+                            context = context,
+                            asABuyer =  data.authorType.asBuyer,
+                            title = getString(creationcommonR.string.content_creation_post_as_label),
+                            sourcePage = if (GlobalConfig.isSellerApp()) ContentCreationConsts.VALUE_IS_OPEN_FROM_SHOP_PAGE else "",
+                        )
                         startActivity(intent)
                     }
 

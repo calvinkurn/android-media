@@ -3,10 +3,15 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sho
 import android.animation.AnimatorSet
 import android.view.View
 import android.view.ViewTreeObserver
+import android.widget.FrameLayout
+import android.widget.Space
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.imageview.ShapeableImageView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.ComponentNames
@@ -15,7 +20,6 @@ import com.tokopedia.discovery2.Utils.Companion.toDecodedString
 import com.tokopedia.discovery2.Utils.Companion.verticalScrollAnimation
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.Properties
-import com.tokopedia.discovery2.databinding.ItemDiscoveryShopOfferHeroBrandLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -39,9 +43,12 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_MAIN_APP_ENABLE_DISCO_SHOP_OFFER_HERO_BRAND
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.LocalLoad
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -72,12 +79,30 @@ class ShopOfferHeroBrandViewHolder(
     private val coroutineScope
         by lazy { CoroutineScope(Dispatchers.Main) }
 
-    private val remoteConfig : RemoteConfig by lazy(LazyThreadSafetyMode.NONE) {
+    private val remoteConfig: RemoteConfig by lazy(LazyThreadSafetyMode.NONE) {
         FirebaseRemoteConfigImpl(fragment.context)
     }
 
-    private val binding: ItemDiscoveryShopOfferHeroBrandLayoutBinding?
-        by viewBinding()
+    private val rootLayout = itemView.findViewById<ConstraintLayout>(R.id.layout_root)
+    private val progressBarLayout = itemView
+        .findViewById<ConstraintLayout>(R.id.progress_bar_layout)
+    private val errorHolder = itemView.findViewById<FrameLayout>(R.id.error_holder)
+
+    private val rvProductCarousel = itemView.findViewById<RecyclerView>(R.id.rv_product_carousel)
+    private val sivShopIcon = itemView.findViewById<ShapeableImageView>(R.id.siv_shop_icon)
+    private val sivSeeAll = itemView.findViewById<ShapeableImageView>(R.id.siv_see_all)
+    private val headerSpace = itemView.findViewById<Space>(R.id.header_space)
+    private val progressBar = itemView.findViewById<CardView>(R.id.progress_bar)
+    private val progressBarSpace = itemView.findViewById<Space>(R.id.progress_bar_space)
+
+    private val tpShopName = itemView.findViewById<Typography>(R.id.tp_shop_name)
+    private val tpShopTierWording = itemView.findViewById<Typography>(R.id.tp_shop_tier_wording)
+    private val tpProgressBarTierWording = itemView
+        .findViewById<Typography>(R.id.tp_progress_bar_tier_wording)
+
+    private val localLoad = itemView.findViewById<LocalLoad>(R.id.local_load)
+    private val progressBarShimmer = itemView.findViewById<LoaderUnify>(R.id.progress_bar_shimmer)
+    private val iuProgressBarIcon = itemView.findViewById<ImageUnify>(R.id.iu_progress_bar_icon)
 
     private var viewModel: ShopOfferHeroBrandViewModel? = null
     private var progressBarJob: Job? = null
@@ -85,9 +110,7 @@ class ShopOfferHeroBrandViewHolder(
 
     init {
         if (isShopOfferHeroBrandEnabled()) {
-            binding?.apply {
-                setupRecyclerView()
-            }
+            setupRecyclerView()
         }
     }
 
@@ -102,7 +125,7 @@ class ShopOfferHeroBrandViewHolder(
                 addShimmer()
             }
 
-            binding?.showProductCarousel()
+            showProductCarousel()
         }
     }
 
@@ -118,7 +141,7 @@ class ShopOfferHeroBrandViewHolder(
             }
 
             header.observe(lifecycleOwner) { header ->
-                binding?.showHeader(header)
+                showHeader(header)
             }
 
             productList.observe(lifecycleOwner) { item ->
@@ -133,7 +156,7 @@ class ShopOfferHeroBrandViewHolder(
             }
 
             tierChange.observe(lifecycleOwner) {
-                binding?.showProgressBar(it)
+                showProgressBar(it)
             }
         }
     }
@@ -149,7 +172,7 @@ class ShopOfferHeroBrandViewHolder(
         }
     }
 
-    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.setupRecyclerView() {
+    private fun setupRecyclerView() {
         mAdapter.setHasStableIds(true)
         rvProductCarousel.layoutManager = mLayoutManager
         rvProductCarousel.adapter = mAdapter
@@ -158,7 +181,7 @@ class ShopOfferHeroBrandViewHolder(
         addScrollListener()
     }
 
-    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.executeShopTierWordingAnimation() {
+    private fun executeShopTierWordingAnimation() {
         if (!hasRunScrollingAnimation) {
             tpShopTierWording.viewTreeObserver.addOnGlobalLayoutListener(
                 object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -194,10 +217,11 @@ class ShopOfferHeroBrandViewHolder(
         }
     }
 
-    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.addScrollListener() {
+    private fun addScrollListener() {
         if (viewModel?.hasHeader() == false) return
 
-        rvProductCarousel.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        rvProductCarousel.addOnScrollListener(
+            object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     val visibleItemCount: Int = mLayoutManager.childCount
@@ -215,14 +239,14 @@ class ShopOfferHeroBrandViewHolder(
         )
     }
 
-    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.addItemDecorator() {
+    private fun addItemDecorator() {
         if (rvProductCarousel.itemDecorationCount.isMoreThanZero()) {
             rvProductCarousel.removeAllItemDecoration()
         }
         rvProductCarousel.addItemDecoration(CarouselProductCardItemDecorator())
     }
 
-    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.showHeader(
+    private fun showHeader(
         header: Properties.Header?
     ) {
         if (header == null) {
@@ -253,7 +277,7 @@ class ShopOfferHeroBrandViewHolder(
         }
     }
 
-    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.showProgressBar(
+    private fun showProgressBar(
         tierData: TierData
     ) {
         progressBarJob?.cancel()
@@ -265,7 +289,8 @@ class ShopOfferHeroBrandViewHolder(
             } else {
                 showProgressBarInfo()
 
-                tpProgressBarTierWording.text = MethodChecker.fromHtml(tierData.offerMessages.firstOrNull())
+                tpProgressBarTierWording.text =
+                    MethodChecker.fromHtml(tierData.offerMessages.firstOrNull())
                 if (tierData.offerMessages.size.isMoreThanZero()) {
                     changeProgressBarInfoWithDelay(tierData.offerMessages)
                 }
@@ -275,7 +300,7 @@ class ShopOfferHeroBrandViewHolder(
         }
     }
 
-    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.showProgressBarShimmering() {
+    private fun showProgressBarShimmering() {
         progressBar.show()
         progressBarSpace.show()
 
@@ -283,10 +308,15 @@ class ShopOfferHeroBrandViewHolder(
         tpProgressBarTierWording.hide()
 
         progressBarShimmer.show()
-        progressBarLayout.setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_NN0))
+        progressBarLayout.setBackgroundColor(
+            MethodChecker.getColor(
+                itemView.context,
+                unifyprinciplesR.color.Unify_NN0
+            )
+        )
     }
 
-    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.showProgressBarInfo() {
+    private fun showProgressBarInfo() {
         progressBar.show()
         progressBarSpace.show()
 
@@ -295,17 +325,22 @@ class ShopOfferHeroBrandViewHolder(
 
         progressBarSpace.show()
         progressBarShimmer.hide()
-        progressBarLayout.setBackgroundColor(MethodChecker.getColor(itemView.context, unifyprinciplesR.color.Unify_TN100))
+        progressBarLayout.setBackgroundColor(
+            MethodChecker.getColor(
+                itemView.context,
+                unifyprinciplesR.color.Unify_TN100
+            )
+        )
 
         tpProgressBarTierWording.show()
     }
 
-    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.hideProgressBar() {
+    private fun hideProgressBar() {
         progressBar.hide()
         progressBarSpace.hide()
     }
 
-    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.changeProgressBarInfoWithDelay(
+    private fun changeProgressBarInfoWithDelay(
         list: List<String>?
     ) {
         progressBarJob = coroutineScope.launch {
@@ -325,16 +360,17 @@ class ShopOfferHeroBrandViewHolder(
         }
     }
 
-    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.showProductCarousel() {
+    private fun showProductCarousel() {
         rvProductCarousel.show()
         localLoad.hide()
         errorHolder.gone()
     }
 
-    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.showLocalLoad() {
+    private fun showLocalLoad() {
         localLoad.run {
             title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
-            description?.text = context?.getString(R.string.discovery_section_empty_state_description).orEmpty()
+            description?.text =
+                context?.getString(R.string.discovery_section_empty_state_description).orEmpty()
             refreshBtn?.setOnClickListener {
                 progressState = !progressState
                 reloadComponent()
@@ -345,7 +381,7 @@ class ShopOfferHeroBrandViewHolder(
         errorHolder.gone()
     }
 
-    private fun ItemDiscoveryShopOfferHeroBrandLayoutBinding.reloadComponent() {
+    private fun reloadComponent() {
         rvProductCarousel.show()
         localLoad.hide()
         viewModel?.apply {
@@ -361,7 +397,8 @@ class ShopOfferHeroBrandViewHolder(
 
         setOnClickListener {
             viewModel?.let {
-                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackEventProductBmGmClickSeeMore(it.component)
+                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+                    ?.trackEventProductBmGmClickSeeMore(it.component)
             }
             RouteManager.route(fragment.context, appLink)
         }
@@ -381,11 +418,9 @@ class ShopOfferHeroBrandViewHolder(
     }
 
     private fun setMaxHeight(height: Int) {
-        binding?.apply {
-            val carouselLayoutParams = rvProductCarousel.layoutParams
-            carouselLayoutParams?.height = height
-            rvProductCarousel.layoutParams = carouselLayoutParams
-        }
+        val carouselLayoutParams = rvProductCarousel.layoutParams
+        carouselLayoutParams?.height = height
+        rvProductCarousel.layoutParams = carouselLayoutParams
     }
 
     private fun addShimmer() {
@@ -400,34 +435,36 @@ class ShopOfferHeroBrandViewHolder(
             mAdapter.setDataList(components)
             viewModel?.getHeader()
         } else {
-            binding?.root?.hide()
+            rootLayout.hide()
         }
     }
 
     private fun handleFailState() {
-        binding?.apply {
-            viewModel?.apply {
-                val productList = getProductList()
-                if (!productList.isNullOrEmpty()) {
-                    showLocalLoad()
-                } else if (productList.isNullOrEmpty() && areFiltersApplied()) {
-                    if (errorHolder.childCount.isMoreThanZero()) {
-                        errorHolder.removeAllViews()
-                    }
-                    errorHolder.addView(
-                        getErrorStateComponent(component).let {
-                            CustomViewCreator.getCustomViewObject(
-                                itemView.context,
-                                ComponentsList.ProductListEmptyState,
-                                it,
-                                fragment
-                            )
-                        }
-                    )
-                    errorHolder.show()
-                    localLoad.gone()
-                    rvProductCarousel.gone()
+        viewModel?.apply {
+            val productList = getProductList()
+            if (!productList.isNullOrEmpty()) {
+                showLocalLoad()
+            } else if (productList.isNullOrEmpty() && areFiltersApplied()) {
+                if (errorHolder.childCount.isMoreThanZero()) {
+                    errorHolder.removeAllViews()
                 }
+                errorHolder.addView(
+                    getErrorStateComponent(component).let {
+                        CustomViewCreator.getCustomViewObject(
+                            itemView.context,
+                            ComponentsList.ProductListEmptyState,
+                            it,
+                            fragment
+                        )
+                    }
+                )
+                errorHolder.show()
+                localLoad.gone()
+                rvProductCarousel.gone()
+            } else {
+                errorHolder.gone()
+                localLoad.gone()
+                rvProductCarousel.gone()
             }
         }
     }

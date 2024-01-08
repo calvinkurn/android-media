@@ -6,12 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.fakeresponse.FakeResponseActivityProvider
 import com.tokopedia.developer_options.presentation.model.FakeResponseActivityUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.unifycomponents.UnifyButton
 
 class FakeResponseActivityViewHolder(
     itemView: View
-): AbstractViewHolder<FakeResponseActivityUiModel>(itemView)
-{
+) : AbstractViewHolder<FakeResponseActivityUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_fake_response_activity
@@ -20,7 +21,8 @@ class FakeResponseActivityViewHolder(
     override fun bind(element: FakeResponseActivityUiModel?) {
         val btn = itemView.findViewById<UnifyButton>(R.id.fake_response_btn)
         btn.setOnClickListener {
-            FakeResponseActivityProvider().startActivity(itemView.context);
+            DevOpsTracker.trackEntryEvent(DevopsFeature.VIEW_FAKE_RESPONSE)
+            FakeResponseActivityProvider().startActivity(itemView.context)
         }
     }
 }
