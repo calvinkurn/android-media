@@ -5,6 +5,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.stfalcon.imageviewer.StfalconImageViewer
+import com.tokopedia.imagepreviewslider.R
 import com.tokopedia.imagepreviewslider.presentation.adapter.ImagePreviewSliderAdapter
 import com.tokopedia.imagepreviewslider.presentation.adapter.SpaceItemDecoration
 import com.tokopedia.imagepreviewslider.presentation.listener.ImageSliderListener
@@ -94,7 +95,7 @@ class ImagePreviewViewer {
 
     private fun loadImages(imageView: ImageView?, imageList: String?) {
         imageView?.let {
-            it.loadImage(imageList ?: "", com.tokopedia.design.R.drawable.ic_loading_image)
+            it.loadImage(imageList ?: "", R.drawable.ic_loading_image)
         }
     }
 }

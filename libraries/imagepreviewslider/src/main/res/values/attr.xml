@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LabelView">
+        <attr name="lv_image" format="reference" />
+        <attr name="lv_image_width" format="dimension" />
+        <attr name="lv_image_height" format="dimension" />
+        <attr name="lv_image_margin_right" format="dimension" />
+        <attr name="lv_title" format="string" />
+        <attr name="lv_badge" format="string" />
+        <attr name="lv_title_text_size" format="dimension" />
+        <attr name="lv_title_color" format="color" />
+        <attr name="lv_title_min_width" format="dimension" />
+        <attr name="lv_title_text_style">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+        </attr>
+        <attr name="lv_sub_title" format="string" />
+        <attr name="lv_sub_title_text_size" format="dimension" />
+        <attr name="lv_sub_title_color" format="color" />
+        <attr name="lv_content" format="string" />
+        <attr name="lv_content_color" format="color" />
+        <attr name="lv_content_text_size" format="dimension" />
+        <attr name="lv_content_max_lines" format="integer" />
+        <attr name="lv_content_text_style">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+        </attr>
+        <!-- value from 0 to 1 -->
+        <attr name="lv_content_max_width_percentage" format="float" />
+        <attr name="lv_show_arrow" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="SelectionLabelView">
+        <attr name="slv_title" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="SearchInputView">
+        <attr name="siv_search_icon" format="reference" />
+        <attr name="siv_search_text" format="string" />
+        <attr name="siv_search_hint" format="string" />
+        <attr name="isEditable" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="DecimalRangeInputView">
+        <attr name="driv_label_min" format="string" />
+        <attr name="driv_label_max" format="string" />
+        <attr name="driv_typable" format="boolean" />
+        <attr name="driv_label_text_appearance" format="reference" />
+        <attr name="driv_value_text_appearance" format="reference" />
+        <attr name="driv_value_max_length" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="DynamicBackgroundSeekBar">
+        <attr name="dbsb_background_color" format="color" />
+        <attr name="dbsb_foreground_color" format="color" />
+    </declare-styleable>
+
+    <attr name="bottomSheetBuilderBackgroundColor" format="color" />
+    <attr name="bottomSheetBuilderItemTextColor" format="color" />
+    <attr name="bottomSheetBuilderTitleTextColor" format="color" />
+
+    <declare-styleable name="Tabs">
+        <attr name="tabType" format="enum">
+            <enum name="main" value="1" />
+            <enum name="secondary" value="2" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="PrefixEditText">
+        <attr name="prefix" format="string" />
+        <attr name="prefixTextColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="TextViewCompat">
+        <attr name="fontSize" format="enum">
+            <enum name="headline" value="1" />
+            <enum name="subHeadline" value="2" />
+            <enum name="titleBig" value="3" />
+            <enum name="title" value="4" />
+            <enum name="small" value="5" />
+            <enum name="micro" value="6" />
+        </attr>
+        <attr name="weight" format="enum">
+            <enum name="regular" value="1" />
+            <enum name="medium" value="2" />
+        </attr>
+        <attr name="textViewTheme" format="enum">
+            <enum name="lightPrimary" value="1" />
+            <enum name="lightSecondary" value="2" />
+            <enum name="lightDisabled" value="3" />
+            <enum name="darkPrimary" value="4" />
+            <enum name="darkSecondary" value="5" />
+            <enum name="darkDisabled" value="6" />
+        </attr>
+        <attr name="drawableLeftCompat" format="reference" />
+        <attr name="drawableRightCompat" format="reference" />
+        <attr name="drawableTopCompat" format="reference" />
+        <attr name="drawableBottomCompat" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="EditTextCompat">
+        <attr name="editTextDrawableLeftCompat" format="reference" />
+        <attr name="editTextDrawableRightCompat" format="reference" />
+        <attr name="editTextDrawableTopCompat" format="reference" />
+        <attr name="editTextDrawableBottomCompat" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="ButtonCompat">
+        <attr name="buttonCompatTextAllCaps" format="boolean" />
+        <attr name="buttonCompatType" format="enum">
+            <enum name="primary" value="1" />
+            <enum name="secondary" value="2" />
+            <enum name="transaction" value="3" />
+            <enum name="disable" value="4" />
+            <enum name="white_transparent" value="5" />
+            <enum name="ghost" value="6" />
+            <enum name="white" value="7" />
+            <enum name="primary_disabled" value="8" />
+
+        </attr>
+        <attr name="buttonCompatSize" format="enum">
+            <enum name="big" value="4" />
+            <enum name="medium" value="5" />
+            <enum name="small" value="6" />
+        </attr>
+        <attr name="buttonDrawableLeftCompat" format="reference" />
+        <attr name="buttonDrawableRightCompat" format="reference" />
+        <attr name="buttonDrawableTopCompat" format="reference" />
+        <attr name="buttonDrawableBottomCompat" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="DeletableItemView">
+        <attr name="layout" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="CardWithActionView">
+        <attr name="cmv_title" format="string" />
+        <attr name="cmv_content" format="string" />
+        <attr name="cmv_content_info" format="string" />
+        <attr name="cmw_subcontent" format="string" />
+        <attr name="cmw_subcontent_info" format="string" />
+        <attr name="cmw_action" format="string" />
+    </declare-styleable>
+    <declare-styleable name="TouchViewPager">
+        <attr name="can_swipe" format="boolean" />
+        <attr name="default_measure" format="boolean" />
+    </declare-styleable>
+</resources>
