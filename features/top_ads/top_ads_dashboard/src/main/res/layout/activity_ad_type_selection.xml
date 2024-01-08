@@ -15,8 +15,12 @@
         <include layout="@layout/partial_base_toolbar" />
 
         <include
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             android:id="@+id/topads_ad_card1"
-            layout="@layout/item_topads_added_ads" />
+            layout="@layout/item_topads_added_ads"
+            android:layout_marginTop="16dp"
+            android:layout_marginHorizontal="16dp"/>
 
         <include
             android:id="@+id/topads_ad_card2"

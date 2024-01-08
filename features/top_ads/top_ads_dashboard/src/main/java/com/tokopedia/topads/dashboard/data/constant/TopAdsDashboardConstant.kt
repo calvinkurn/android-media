@@ -104,6 +104,7 @@ object TopAdsDashboardConstant {
     const val INVALID_KEYWORD_TAG = "INVALID_KEYWORD_TAG"
     const val SEVEN_DAYS_RANGE_INDEX = 2
     const val DATE_PICKER_SHEET = "datepicker"
+    const val BERANDA_CREATION_SHEET = "berandaCreationSheet"
     const val GROUP_TYPE_HEADLINE = 3
     const val GROUP_TYPE_PRODUCT = 1
     const val CONST_0 = 0

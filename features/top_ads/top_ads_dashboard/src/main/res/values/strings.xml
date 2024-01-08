@@ -652,4 +652,9 @@
 <!--    Auto PS-->
     <string name="topads_auto_ps_turn_on_msg">Iklan berhasil dibuat. Pantau terus Performa Iklan-mu di sini, ya!</string>
     <string name="topads_auto_ps_turn_off_msg">Kamu telah menonaktifkan pengaturan Iklan Otomatis.</string>
+    <string name="topads_auto_ps_add_ad_group">Tambah Grup Iklan</string>
+    <string name="topads_auto_ps_confirming_to_activate_auto_ps">Ingin iklankan produk dan tokomu lebih praktis?</string>
+    <string name="topads_enable_auto_ps">Aktifkan Iklan Otomatis</string>
+    <string name="topads_auto_ps_edit_ads">Atur Iklan</string>
+    <string name="topads_auto_ps_beranda_modal_title">Buat atau atur iklanmu, yuk!</string>
 </resources>

@@ -34,6 +34,8 @@ import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_AUTOADS_B
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_AUTOPS_OFF
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_AUTOPS_ON
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD
+import com.tokopedia.topads.common.data.internal.AutoAdsStatus
+import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.getPdpAppLink
 import com.tokopedia.topads.common.isFromPdpSellerMigration
 import com.tokopedia.topads.dashboard.R
@@ -77,6 +79,7 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.dashboard.view.sheet.NoProductBottomSheet
+import com.tokopedia.topads.dashboard.view.sheet.TopadsBerandaCreationBottomSheet
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineBaseFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -139,6 +142,7 @@ class TopAdsDashboardActivity :
     private var isNoProduct = false
     private var redirectToTab = 0
     private var redirectToTabInsight = 0
+    private var autoPsData : AutoAdsResponse.TopAdsGetAutoAds.Data? = null
 
     companion object {
         const val INSIGHT_PAGE = 3
@@ -158,6 +162,7 @@ class TopAdsDashboardActivity :
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         topAdsDashboardPresenter.getShopListHiddenTrial(resources)
+        topAdsDashboardPresenter.getAutoAdsStatus(resources, ::setAutoAds)
         setContentView(R.layout.topads_dash_activity_base_layout)
 
         initView()
@@ -206,8 +211,7 @@ class TopAdsDashboardActivity :
                             ivEducationTopAdsActionBar.show()
                             ivCalendarTopAdsActionBar.show()
                             txtBuatIklan.hide()
-//                            bottom?.visible()
-                            bottom?.gone()
+                            bottom?.visible()
                             multiActionBtn?.buttonSize = UnifyButton.Size.LARGE
                             multiActionBtn?.text =
                                 getString(R.string.topads_dash_button_submit_beranda)
@@ -264,7 +268,9 @@ class TopAdsDashboardActivity :
 
         multiActionBtn?.setOnClickListener {
             if (tabLayout?.getUnifyTabLayout()?.selectedTabPosition == CONST_0) {
-                navigateToAdTypeSelection()
+                val sheet = TopadsBerandaCreationBottomSheet()
+                sheet.overlayClickDismiss = false
+                sheet.show(supportFragmentManager,autoPsData)
             }
             if (tabLayout?.getUnifyTabLayout()?.selectedTabPosition == CONST_3) {
                 val fragments = (viewPager.adapter as TopAdsDashboardBasePagerAdapter).getList()
@@ -548,6 +554,10 @@ class TopAdsDashboardActivity :
                 }
             }
         }
+    }
+
+    private fun setAutoAds(data: AutoAdsResponse.TopAdsGetAutoAds.Data) {
+        autoPsData = data
     }
 
     override fun getComponent(): TopAdsDashboardComponent =
