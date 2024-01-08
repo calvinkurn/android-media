@@ -197,6 +197,9 @@ class InspirationListAtcViewHolder(
                             position = labelGroup.position,
                             type = labelGroup.type,
                             imageUrl = labelGroup.imageUrl,
+                            styles = labelGroup.styleList.map { item ->
+                                LabelGroupReimagine.Style(item.key, item.value)
+                            }
                         )
                     },
                     shopBadge = ShopBadgeReimagine(

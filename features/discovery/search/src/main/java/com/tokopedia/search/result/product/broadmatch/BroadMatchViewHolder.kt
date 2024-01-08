@@ -134,6 +134,12 @@ class BroadMatchViewHolder(
                             position = labelGroup.position,
                             type = labelGroup.type,
                             imageUrl = labelGroup.imageUrl,
+                            styles = labelGroup.styleList.map { item ->
+                                LabelGroupReimagine.Style(
+                                    item.key,
+                                    item.value
+                                )
+                            }
                         )
                     },
                     shopBadge = ShopBadgeReimagine(
@@ -143,7 +149,6 @@ class BroadMatchViewHolder(
                     freeShipping = FreeShippingReimagine(
                         imageUrl = item.freeOngkirDataView.imageUrl,
                     ),
-                    hasMultilineName = reimagineSearch2Component.hasMultilineProductName(),
                     stockInfo = StockInfo(
                         percentage = item.stockBarDataView.percentageValue,
                         label = item.stockBarDataView.value,

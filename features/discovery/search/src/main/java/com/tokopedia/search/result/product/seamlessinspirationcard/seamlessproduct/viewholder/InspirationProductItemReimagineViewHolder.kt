@@ -7,6 +7,7 @@ import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationSeamlessReimagineProductCardBinding
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
+import com.tokopedia.search.result.presentation.model.StyleDataView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductItemDataView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductListener
 import com.tokopedia.utils.view.binding.viewBinding
@@ -65,7 +66,11 @@ class InspirationProductItemReimagineViewHolder(
             title = labelGroupDataView.title,
             type = labelGroupDataView.type,
             imageUrl = labelGroupDataView.imageUrl,
+            styles = labelGroupDataView.styleList.map(::style)
         )
+
+    private fun style(item: StyleDataView) =
+        ProductCardModel.LabelGroup.Style(item.key, item.value)
 
     private fun shopBadge(element: InspirationProductItemDataView): ProductCardModel.ShopBadge {
         val shopBadge = element.badgeItemDataViewList.firstOrNull()

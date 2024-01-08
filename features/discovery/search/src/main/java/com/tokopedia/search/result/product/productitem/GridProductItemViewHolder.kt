@@ -8,6 +8,7 @@ import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductCardReimagineGridBinding
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.presentation.model.StyleDataView
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.video_widget.VideoPlayer
@@ -74,7 +75,11 @@ class GridProductItemViewHolder(
             title = labelGroupDataView.title,
             type = labelGroupDataView.type,
             imageUrl = labelGroupDataView.imageUrl,
+            styles = labelGroupDataView.styleList.map(::style)
         )
+
+    private fun style(item: StyleDataView) =
+        ProductCardModel.LabelGroup.Style(item.key, item.value)
 
     private fun shopBadge(element: ProductItemDataView): ProductCardModel.ShopBadge {
         val shopBadge = element.badgesList?.firstOrNull()

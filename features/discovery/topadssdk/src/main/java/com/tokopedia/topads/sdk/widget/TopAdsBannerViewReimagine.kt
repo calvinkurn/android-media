@@ -39,7 +39,6 @@ import java.util.*
 
 class TopAdsBannerViewReimagine : TopAdsBannerView {
     override val className: String = "com.tokopedia.topads.sdk.widget.TopAdsBannerViewReimagine"
-    private var hasMultilineProductName: Boolean = false
 
     constructor(context: Context) : super(context) {
     }
@@ -62,7 +61,7 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
 
             findViewById<TextView>(R.id.topAdsShopName)?.text = escapeHTML(cpmData?.cpm?.name.orEmpty())
             bannerAdsAdapter = BannerAdsAdapter(
-                BannerAdsAdapterTypeFactoryReimagine(topAdsBannerViewClickListener, impressionListener, hasMultilineProductName)
+                BannerAdsAdapterTypeFactoryReimagine(topAdsBannerViewClickListener, impressionListener)
             )
             val list = findViewById<RecyclerView>(R.id.topAdsList)
             list.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -322,10 +321,5 @@ class TopAdsBannerViewReimagine : TopAdsBannerView {
             },
             null,
         )
-    }
-
-    fun displayHeadlineAds(cpmModel: CpmModel?, index: Int = 0, hasMultilineProductName: Boolean = false) {
-        this.hasMultilineProductName = hasMultilineProductName
-        displayAds(cpmModel, index)
     }
 }
