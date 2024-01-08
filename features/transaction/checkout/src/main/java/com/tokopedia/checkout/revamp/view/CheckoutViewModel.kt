@@ -631,7 +631,7 @@ class CheckoutViewModel @Inject constructor(
                 (!recipientAddressModel.isTradeIn && shipmentCartItemModel.shippingId != 0 && shipmentCartItemModel.spId != 0 && !recipientAddressModel.provinceName.isNullOrEmpty()) ||
                 (!recipientAddressModel.isTradeIn && shipmentCartItemModel.boCode.isNotEmpty() && !recipientAddressModel.provinceName.isNullOrEmpty()) || // normal address auto apply BO
                 shipmentCartItemModel.isAutoCourierSelection // tokopedia now
-            )
+            ) && !shipmentCartItemModel.isError
     }
 
     fun prepareFullCheckoutPage() {

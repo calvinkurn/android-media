@@ -179,7 +179,8 @@ class ShopCampaignViewModelTest {
             mockShopId,
             mockExtParam,
             addressWidgetData,
-            "CampaignTab"
+            "CampaignTab",
+            "LTE"
         )
         val result = viewModel.latestShopCampaignWidgetLayoutData.value
         assert(result is Success)
@@ -213,7 +214,8 @@ class ShopCampaignViewModelTest {
             mockShopId,
             mockExtParam,
             addressWidgetData,
-            "CampaignTab"
+            "CampaignTab",
+            "LTE"
         )
         val result = viewModel.latestShopCampaignWidgetLayoutData.value
         assert(result is Success)
@@ -247,7 +249,8 @@ class ShopCampaignViewModelTest {
             mockShopId,
             mockExtParam,
             addressWidgetData,
-            "CampaignTab"
+            "CampaignTab",
+            "LTE"
         )
         val result = viewModel.latestShopCampaignWidgetLayoutData.value
         assert(result is Success)
@@ -263,7 +266,8 @@ class ShopCampaignViewModelTest {
             mockShopId,
             mockExtParam,
             addressWidgetData,
-            "CampaignTab"
+            "CampaignTab",
+            "LTE"
         )
         val result = viewModel.latestShopCampaignWidgetLayoutData.value
         assert(result is Fail)

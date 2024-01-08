@@ -1,12 +1,17 @@
 package com.tokopedia.developer_options.presentation.viewholder
 
 import android.view.View
-import android.widget.*
+import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.Toast
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.UrlEnvironmentUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl.Companion.deleteInstance
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
@@ -16,8 +21,7 @@ import com.tokopedia.url.TokopediaUrl.Companion.setEnvironment
 class UrlEnvironmentViewHolder(
     itemView: View,
     private val listener: UrlEnvironmentListener
-): AbstractViewHolder<UrlEnvironmentUiModel>(itemView)
-{
+) : AbstractViewHolder<UrlEnvironmentUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_url_environment
@@ -59,6 +63,7 @@ class UrlEnvironmentViewHolder(
                 id: Long
             ) {
                 if (isUserEditEnvironment) {
+                    DevOpsTracker.trackEntryEvent(DevopsFeature.ENV_CHANGER)
                     setEnvironment(itemView.context, Env.values()[position])
                     deleteInstance()
                     init(itemView.context)

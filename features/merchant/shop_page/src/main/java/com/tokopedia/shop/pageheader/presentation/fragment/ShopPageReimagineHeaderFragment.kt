@@ -55,6 +55,7 @@ import com.tokopedia.creation.common.presentation.bottomsheet.ViewContentInfoBot
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
 import com.tokopedia.creation.common.presentation.utils.ContentCreationEntryPointSharedPref
+import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -508,31 +509,12 @@ class ShopPageReimagineHeaderFragment :
                     }
 
                     ContentCreationTypeEnum.POST -> {
-                        val intent = RouteManager.getIntent(
-                            context,
-                            ApplinkConst.IMAGE_PICKER_V2
-                        ).apply {
-                            putExtra(
-                                ContentCreationConsts.IS_CREATE_POST_AS_BUYER,
-                                data.authorType.asBuyer
-                            )
-                            putExtra(
-                                ContentCreationConsts.APPLINK_AFTER_CAMERA_CAPTURE,
-                                ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
-                            )
-                            putExtra(
-                                ContentCreationConsts.MAX_MULTI_SELECT_ALLOWED,
-                                ContentCreationConsts.VALUE_MAX_MULTI_SELECT_ALLOWED
-                            )
-                            putExtra(
-                                ContentCreationConsts.TITLE,
-                                getString(creationcommonR.string.content_creation_post_as_label)
-                            )
-                            putExtra(
-                                ContentCreationConsts.APPLINK_FOR_GALLERY_PROCEED,
-                                ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
-                            )
-                        }
+                        val intent = ContentCreationConsts.getPostIntent(
+                            context = context,
+                            asABuyer =  data.authorType.asBuyer,
+                            title = getString(creationcommonR.string.content_creation_post_as_label),
+                            sourcePage = if (GlobalConfig.isSellerApp()) ContentCreationConsts.VALUE_IS_OPEN_FROM_SHOP_PAGE else "",
+                        )
                         startActivity(intent)
                     }
 
@@ -1428,6 +1410,7 @@ class ShopPageReimagineHeaderFragment :
             widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
             extParam = extParam,
             tabName = getSelectedTabName().takeIf { it.isNotEmpty() } ?: queryParamTab,
+            connectionType = activity?.let { DeviceConnectionInfo.getConnectionType(it) }.orEmpty(),
             shopPageColorSchemaDefaultConfigColor = getShopPageColorSchemaDefaultConfigColor(),
             isEnableShopReimagined = ShopUtil.isEnableShopPageReImagined(context)
         )

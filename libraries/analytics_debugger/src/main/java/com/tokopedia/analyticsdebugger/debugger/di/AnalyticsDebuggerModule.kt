@@ -57,4 +57,12 @@ class AnalyticsDebuggerModule {
     ): AnalyticsDebugger.Presenter {
         return AnalyticsIrisSendDebuggerPresenter(getIrisSendLogUseCase, getIrisSendCountLogUseCase, deleteIrisSendLogUseCase)
     }
+
+    @Provides
+    fun provideServerLogPresenter(
+        getServerLogUseCase: GetServerLogUseCase,
+        deleteServerLogUseCase: DeleteServerLogUseCase
+    ): AnalyticsServerLogDebuggerPresenter {
+        return AnalyticsServerLogDebuggerPresenter(getServerLogUseCase, deleteServerLogUseCase)
+    }
 }

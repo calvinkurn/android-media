@@ -10,6 +10,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import io.mockk.coEvery
@@ -143,7 +144,10 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         orderSummaryPageViewModel.uploadPrescriptionUiModel.value =
             helper.uploadPrescriptionUiModel.copy(
                 prescriptionIds = arrayListOf(),
@@ -204,7 +208,10 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
         orderSummaryPageViewModel.uploadPrescriptionUiModel.value = helper.uploadPrescriptionUiModel
 
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
@@ -270,7 +277,10 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(isSuccess = true)
+        )
 
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         coEvery {

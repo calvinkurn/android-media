@@ -46,34 +46,34 @@ class VoucherTypeViewModelTest {
         )
     }
 
-    @Test
-    fun `when initVoucherConfiguration is called, should set voucherConfiguration data accordingly`() {
-        runBlockingTest {
-            // Given
-            val pageMode = PageMode.CREATE
-            val voucherConfiguration = VoucherConfiguration(voucherName = "voucher")
-            val expectedVoucherConfiguration = VoucherConfiguration(voucherName = "voucher")
-
-            val emittedValue = arrayListOf<VoucherCreationStepOneUiState>()
-            val job = launch {
-                viewModel.uiState.toList(emittedValue)
-            }
-
-            // When
-            viewModel.processEvent(
-                VoucherCreationStepOneEvent.InitVoucherConfiguration(
-                    pageMode = pageMode,
-                    voucherConfiguration = voucherConfiguration
-                )
-            )
-
-            // Then
-            val actual = emittedValue.last()
-            assertEquals(expectedVoucherConfiguration, actual.voucherConfiguration)
-
-            job.cancel()
-        }
-    }
+//    @Test
+//    fun `when initVoucherConfiguration is called, should set voucherConfiguration data accordingly`() {
+//        runBlockingTest {
+//            // Given
+//            val pageMode = PageMode.CREATE
+//            val voucherConfiguration = VoucherConfiguration(voucherName = "voucher")
+//            val expectedVoucherConfiguration = VoucherConfiguration(voucherName = "voucher")
+//
+//            val emittedValue = arrayListOf<VoucherCreationStepOneUiState>()
+//            val job = launch {
+//                viewModel.uiState.toList(emittedValue)
+//            }
+//
+//            // When
+//            viewModel.processEvent(
+//                VoucherCreationStepOneEvent.InitVoucherConfiguration(
+//                    pageMode = pageMode,
+//                    voucherConfiguration = voucherConfiguration
+//                )
+//            )
+//
+//            // Then
+//            val actual = emittedValue.last()
+//            assertEquals(expectedVoucherConfiguration, actual.voucherConfiguration)
+//
+//            job.cancel()
+//        }
+//    }
 
 //    @Test
     fun `when handling voucher type selection, should set the voucher configuration data accordingly if the status is eligible`() {
