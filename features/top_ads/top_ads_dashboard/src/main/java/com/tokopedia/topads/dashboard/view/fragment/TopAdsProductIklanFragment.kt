@@ -1,11 +1,9 @@
 package com.tokopedia.topads.dashboard.view.fragment
 
 import android.content.Context
-import android.graphics.drawable.VectorDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -23,22 +21,20 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
-import com.tokopedia.topads.common.constant.TopAdsFeature
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus.*
-import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.AD_TYPE_PRODUCT_ADS
 import com.tokopedia.topads.common.data.internal.ParamObject.KEY_AD_TYPE
-import com.tokopedia.topads.common.data.model.WhiteListUserResponse
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
-import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTIVATE_AUTO_PS_CONFIRMATION_IMG_URL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
@@ -68,6 +64,7 @@ import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
+import com.tokopedia.topads.dashboard.R as topadsdashboardR
 
 /**
  * Created by hadi.putra on 23/04/18.
@@ -100,35 +97,36 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     private var autoadsEditWidget: AutoAdsWidgetCommon? = null
     private var graphLayout: CardUnify? = null
     private var tabLayout: TabsUnify? = null
+    private var confirmationDailog: DialogUnify? = null
 
     private var adCurrentState = 0
     private var datePickerSheet: DatePickerSheet? = null
     private var currentDateText: String = ""
 
     override fun getLayoutId(): Int {
-        return R.layout.topads_dash_fragment_product_iklan
+        return topadsdashboardR.layout.topads_dash_fragment_product_iklan
     }
 
     override fun setUpView(view: View) {
-        recyclerView = view.findViewById(R.id.auto_ads_list)
-        imgBg = view.findViewById(R.id.progressImg)
-        searchBar = view.findViewById(R.id.searchBar)
-        filterCount = view.findViewById(R.id.filterCount)
-        pager = view.findViewById(R.id.pager)
-        loader = view.findViewById(R.id.loader)
-        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
-        emptyView = view.findViewById(R.id.empty_view)
-        progressView = view.findViewById(R.id.progressView)
-        description = view.findViewById(R.id.description)
-        btnReload = view.findViewById(R.id.btnReload)
-        viewPagerFrag = view.findViewById(R.id.view_pager_frag)
-        autoadsLayout = view.findViewById(R.id.autoads_layout)
-        appBarLayout2 = view.findViewById(R.id.app_bar_layout_2)
-        autoadsOnboarding = view.findViewById(R.id.autoadsOnboarding)
-        autoadsDeactivationProgress = view.findViewById(R.id.autoadsDeactivationProgress)
-        autoadsEditWidget = view.findViewById(R.id.autoads_edit_widget)
-        graphLayout = view.findViewById(R.id.graph_layout)
-        tabLayout = view.findViewById(R.id.tab_layout)
+        recyclerView = view.findViewById(topadsdashboardR.id.auto_ads_list)
+        imgBg = view.findViewById(topadsdashboardR.id.progressImg)
+        searchBar = view.findViewById(topadsdashboardR.id.searchBar)
+        filterCount = view.findViewById(topadsdashboardR.id.filterCount)
+        pager = view.findViewById(topadsdashboardR.id.pager)
+        loader = view.findViewById(topadsdashboardR.id.loader)
+        swipeRefreshLayout = view.findViewById(topadsdashboardR.id.swipe_refresh_layout)
+        emptyView = view.findViewById(topadsdashboardR.id.empty_view)
+        progressView = view.findViewById(topadsdashboardR.id.progressView)
+        description = view.findViewById(topadsdashboardR.id.description)
+        btnReload = view.findViewById(topadsdashboardR.id.btnReload)
+        viewPagerFrag = view.findViewById(topadsdashboardR.id.view_pager_frag)
+        autoadsLayout = view.findViewById(topadsdashboardR.id.autoads_layout)
+        appBarLayout2 = view.findViewById(topadsdashboardR.id.app_bar_layout_2)
+        autoadsOnboarding = view.findViewById(topadsdashboardR.id.autoadsOnboarding)
+        autoadsDeactivationProgress = view.findViewById(topadsdashboardR.id.autoadsDeactivationProgress)
+        autoadsEditWidget = view.findViewById(topadsdashboardR.id.autoads_edit_widget)
+        graphLayout = view.findViewById(topadsdashboardR.id.graph_layout)
+        tabLayout = view.findViewById(topadsdashboardR.id.tab_layout)
     }
 
     override fun getChildScreenName(): String {
@@ -199,17 +197,17 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         topAdsDashboardPresenter.attachView(this)
-        view.findViewById<ImageUnify>(R.id.auto_ad_status_image)
-            ?.setImageDrawable(context?.getResDrawable(R.drawable.ill_iklan_otomatis))
-        view.findViewById<UnifyButton>(R.id.onBoarding)?.setOnClickListener {
-            RouteManager.route(activity, ApplinkConstInternalTopAds.TOPADS_AUTOADS_ONBOARDING)
+        view.findViewById<ImageUnify>(topadsdashboardR.id.auto_ad_status_image)
+            ?.setImageDrawable(context?.getResDrawable(topadsdashboardR.drawable.ill_iklan_otomatis))
+        view.findViewById<UnifyButton>(topadsdashboardR.id.onBoarding)?.setOnClickListener {
+            showActivateAutoPsConfirmationDailog()
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_COBA_SEKARANG,
                 "")
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(
                 CLICK_COBA_AUO_ADS, "")
         }
         loadData()
-        view.findViewById<UnifyImageButton>(R.id.btnFilter)?.setOnClickListener {
+        view.findViewById<UnifyImageButton>(topadsdashboardR.id.btnFilter)?.setOnClickListener {
             groupFilterSheet.show(childFragmentManager, "")
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
@@ -259,6 +257,38 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
                 }
             })
         Utils.setSearchListener(context, view, ::fetchData)
+    }
+
+    private fun showActivateAutoPsConfirmationDailog(){
+        if (confirmationDailog?.isShowing != true) {
+            confirmationDailog =
+                DialogUnify(
+                    requireContext(),
+                    DialogUnify.HORIZONTAL_ACTION,
+                    DialogUnify.WITH_ILLUSTRATION
+                )
+            confirmationDailog?.show()
+        }
+
+        val description = getString(topadsdashboardR.string.topads_auto_ps_activation_confirmation_desc)
+        val title = getString(topadsdashboardR.string.topads_auto_ps_activation_confirmation_title)
+
+        confirmationDailog?.let {
+            it.setTitle(title)
+            it.setImageUrl(ACTIVATE_AUTO_PS_CONFIRMATION_IMG_URL)
+            it.setDescription(description)
+
+            it.setPrimaryCTAText(getString(topadsdashboardR.string.topads_dash_aktifan))
+            it.setSecondaryCTAText(getString(topadsdashboardR.string.top_ads_batal))
+
+            it.setPrimaryCTAClickListener {
+                RouteManager.route(context,ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
+            }
+
+            it.setSecondaryCTAClickListener {
+                it.dismiss()
+            }
+        }
     }
 
     private fun renderManualViewPager() {
@@ -356,9 +386,9 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
             loadData()
         }
         if (STATUS_IN_PROGRESS_ACTIVE == adCurrentState)
-            description?.text = getString(R.string.topads_dash_auto_ads_enable_msg)
+            description?.text = getString(topadsdashboardR.string.topads_dash_auto_ads_enable_msg)
         else if (STATUS_IN_PROGRESS_INACTIVE == adCurrentState)
-            description?.text = getString(R.string.topads_dash_auto_ads_disable_msg)
+            description?.text = getString(topadsdashboardR.string.topads_dash_auto_ads_disable_msg)
         autoadsOnboarding?.gone()
         graphLayout?.gone()
         progressView?.visible()
@@ -372,10 +402,10 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         viewPagerFrag?.gone()
         autoadsLayout?.gone()
         appBarLayout2?.gone()
-        emptyView?.findViewById<ImageUnify>(R.id.image_empty)
-            ?.setImageDrawable(context?.getResDrawable(R.drawable.topads_dashboard_empty_product))
+        emptyView?.findViewById<ImageUnify>(topadsdashboardR.id.image_empty)
+            ?.setImageDrawable(context?.getResDrawable(topadsdashboardR.drawable.topads_dashboard_empty_product))
         emptyView?.visible()
-        view?.findViewById<UnifyButton>(R.id.mulai_beriklan)?.setOnClickListener {
+        view?.findViewById<UnifyButton>(topadsdashboardR.id.mulai_beriklan)?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendAutoAdsEvent(
                 CLICK_MULAI_BERIKLAN, "")
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
@@ -387,12 +417,12 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         viewPagerFrag?.gone()
         autoadsLayout?.gone()
         appBarLayout2?.gone()
-        emptyView?.findViewById<ImageUnify>(R.id.image_empty)
-            ?.setImageDrawable(context?.getResDrawable(R.drawable.topads_dashboard_no_ads))
-        emptyView?.findViewById<Typography>(R.id.text_desc)?.text =
-            getString(R.string.topads_dashboard_empty_ads_desc)
+        emptyView?.findViewById<ImageUnify>(topadsdashboardR.id.image_empty)
+            ?.setImageDrawable(context?.getResDrawable(topadsdashboardR.drawable.topads_dashboard_no_ads))
+        emptyView?.findViewById<Typography>(topadsdashboardR.id.text_desc)?.text =
+            getString(topadsdashboardR.string.topads_dashboard_empty_ads_desc)
         emptyView?.visible()
-        view?.findViewById<UnifyButton>(R.id.mulai_beriklan)?.setOnClickListener {
+        view?.findViewById<UnifyButton>(topadsdashboardR.id.mulai_beriklan)?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendAutoAdsEvent(
                 CLICK_MULAI_BERIKLAN, "")
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
@@ -571,7 +601,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
             val resources = context?.resources
             if (this.dataStatistic != null && dataStatistic.cells.isNotEmpty() && resources != null) {
                 topAdsTabAdapter?.setSummary(dataStatistic.summary,
-                    resources.getStringArray(R.array.top_ads_tab_statistics_labels))
+                    resources.getStringArray(topadsdashboardR.array.top_ads_tab_statistics_labels))
             }
             val fragment =
                 pager?.let { it.adapter?.instantiateItem(it, it.currentItem) } as? Fragment

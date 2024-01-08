@@ -75,7 +75,7 @@ class TopadsBerandaCreationBottomSheet : BottomSheetUnify() {
         binding?.createProduct?.submitBtn?.setOnClickListener {
             val intent = RouteManager.getIntent(
                 context,
-                ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER
+                ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE_MANUAL_ADS
             )
             startActivity(intent)
         }

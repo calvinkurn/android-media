@@ -153,17 +153,6 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
             }
             binding?.btnSubmit?.isLoading = false
         }
-
-        viewModel?.budgetrecommendation?.observe(viewLifecycleOwner){
-            when(it){
-                is Success -> {
-                    // under discussion
-                }
-                is Fail -> {
-                    // under discussion
-                }
-            }
-        }
     }
 
     private fun setAutoAds(data: AutoAdsResponse.TopAdsGetAutoAds.Data) {
@@ -188,7 +177,6 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
     private fun postAutoPsSuccess() {
         if(viewModel?.checkDeposits() == true){
             moveToDashboard()
-//            showInsufficientCredits()
         } else {
             showInsufficientCredits()
         }

@@ -657,4 +657,6 @@
     <string name="topads_enable_auto_ps">Aktifkan Iklan Otomatis</string>
     <string name="topads_auto_ps_edit_ads">Atur Iklan</string>
     <string name="topads_auto_ps_beranda_modal_title">Buat atau atur iklanmu, yuk!</string>
+    <string name="topads_auto_ps_activation_confirmation_title">Waktunya beriklan lebih praktis dengan Iklan Otomatis!</string>
+    <string name="topads_auto_ps_activation_confirmation_desc">Atur Iklan Produk dan Iklan Tokomu secara otomatis, yuk! Grup Iklan Produk &amp; Toko yang telah dibuat akan tersimpan dan tetap bisa digunakan kembali nanti.</string>
 </resources>

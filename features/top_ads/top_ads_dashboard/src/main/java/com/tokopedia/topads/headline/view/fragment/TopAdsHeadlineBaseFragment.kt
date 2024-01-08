@@ -11,21 +11,21 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsFeature
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_INACTIVE
-import com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_IN_PROGRESS_ACTIVE
-import com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_IN_PROGRESS_AUTOMANAGE
-import com.tokopedia.topads.common.data.internal.AutoAdsStatus.STATUS_IN_PROGRESS_INACTIVE
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.AD_TYPE_SHOP_ADS
 import com.tokopedia.topads.common.data.model.WhiteListUserResponse
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
+import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.recommendation.RecommendationWidget
 import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
 import com.tokopedia.topads.dashboard.R
@@ -33,6 +33,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
+import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
@@ -68,10 +69,12 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     private var headlineAdsViePager: ViewPager? = null
     private var headlineTabLayout: TabsUnify? = null
     private var noTabSpace: View? = null
-    private var recommendationWidget: RecommendationWidget? = null
+    private var autoadsOnboarding: CardUnify? = null
     private var autoadsEditWidget: AutoAdsWidgetCommon? = null
     private var autoadsDeactivationProgress: CardUnify? = null
     private var recommendationWidgetCTAListener: RecommendationWidgetCTAListener? = null
+    private var autoPsStatisticTable: CardUnify? = null
+    private var confirmationDailog: DialogUnify? = null
 
     private val autoAdsWidget: AutoAdsWidgetCommon?
         get() = autoadsEditWidget
@@ -87,6 +90,15 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     private var currentDateText: String = ""
     private var groupPagerAdapter: TopAdsDashboardBasePagerAdapter? = null
     private var isDeletedTabEnabled: Boolean = false
+    private var tampil: Typography? = null
+    private var click: Typography? = null
+    private var percentClick: Typography? = null
+    private var pengeluaran: Typography? = null
+    private var pendapatan: Typography? = null
+    private var efektivitas: Typography? = null
+    private var produkTenjual: Typography? = null
+    private var totalTenjual: Typography? = null
+    private var onBoardingCta: UnifyButton? = null
 
     companion object {
         fun createInstance(): TopAdsHeadlineBaseFragment {
@@ -111,9 +123,19 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         appBarLayout = view.findViewById(R.id.app_bar_layout_2)
         hariIni = view.findViewById(R.id.hari_ini)
         pager = view.findViewById(R.id.pager)
-        recommendationWidget = view.findViewById(R.id.insightCentreEntryPointHeadline)
+        autoadsOnboarding = view.findViewById(R.id.autoadsOnboarding)
         autoadsDeactivationProgress = view.findViewById(R.id.autoadsDeactivationProgress)
         autoadsEditWidget = view.findViewById(R.id.autoads_edit_widget)
+        autoPsStatisticTable = view.findViewById(R.id.auto_ps_statistic_table)
+        tampil = view.findViewById(R.id.tampil_count)
+        click = view.findViewById(R.id.klik_count)
+        percentClick = view.findViewById(R.id.persentase_klik_count)
+        pendapatan = view.findViewById(R.id.pendapatan_count)
+        efektivitas = view.findViewById(R.id.efektivitas_iklan_count)
+        produkTenjual = view.findViewById(R.id.produk_terjual_count)
+        pengeluaran = view.findViewById(R.id.pengeluaran_count)
+        totalTenjual = view.findViewById(R.id.total_terjual_count)
+        onBoardingCta = view.findViewById(R.id.onBoarding)
     }
 
     override fun getChildScreenName(): String {
@@ -136,18 +158,6 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         loadStatisticsData()
     }
 
-    private fun setUpObserver() {
-        presenter.groupAdsInsight.observe(viewLifecycleOwner) {
-            if (it is TopAdsListAllInsightState.Success) {
-                recommendationWidget?.renderWidget(it.data.remainingAdsGroup, it.data.totalAdsGroup)
-                recommendationWidget?.binding?.widgetCTAButton?.setOnClickListener {
-                    RecommendationTracker.clickLihatSelengkapnyaSaranTopadsHeadline()
-                    recommendationWidgetCTAListener?.onWidgetCTAClick()
-                }
-            }
-        }
-    }
-
     private fun getAutoAdsStatus() {
         try {
             presenter.getAutoAdsStatus(requireContext().resources, ::setAutoAds)
@@ -161,17 +171,80 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
             STATUS_INACTIVE -> {
                 autoadsDeactivationProgress?.gone()
                 autoAdsWidget?.gone()
-                recommendationWidget?.show()
+                autoadsOnboarding?.show()
                 headlineAdsViePager?.show()
-
+                headlineTabLayout?.show()
+                autoPsStatisticTable?.gone()
+                setupOnboarding()
             }
             else -> {
                 autoadsDeactivationProgress?.gone()
                 autoAdsWidget?.show()
-                recommendationWidget?.gone()
+                autoadsOnboarding?.gone()
                 autoAdsWidget?.loadData(0)
                 headlineAdsViePager?.gone()
+                headlineTabLayout?.gone()
+                autoPsStatisticTable?.show()
+                val resources = context?.resources
+                if(resources != null) {
+                    presenter.getProductStats(
+                        resources,
+                        Utils.format.format(startDate),
+                        Utils.format.format(endDate),
+                        mutableListOf(),
+                        String.EMPTY,
+                        Int.ZERO,
+                        ::setAutoPsStatistics
+                    )
+                }
             }
+        }
+    }
+
+    private fun setupOnboarding(){
+        onBoardingCta?.setOnClickListener {
+            if (confirmationDailog?.isShowing != true) {
+                confirmationDailog =
+                    DialogUnify(
+                        requireContext(),
+                        DialogUnify.HORIZONTAL_ACTION,
+                        DialogUnify.WITH_ILLUSTRATION
+                    )
+                confirmationDailog?.show()
+            }
+
+            val description = getString(R.string.topads_auto_ps_activation_confirmation_desc)
+            val title = getString(R.string.topads_auto_ps_activation_confirmation_title)
+
+            confirmationDailog?.let {
+                it.setTitle(title)
+                it.setImageUrl(TopAdsDashboardConstant.ACTIVATE_AUTO_PS_CONFIRMATION_IMG_URL)
+                it.setDescription(description)
+
+                it.setPrimaryCTAText(getString(R.string.topads_dash_aktifan))
+                it.setSecondaryCTAText(getString(R.string.top_ads_batal))
+
+                it.setPrimaryCTAClickListener {
+                    RouteManager.route(context,ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
+                }
+
+                it.setSecondaryCTAClickListener {
+                    it.dismiss()
+                }
+            }
+        }
+    }
+
+    private fun setAutoPsStatistics(data: GetDashboardProductStatistics){
+        if(data.data.isNotEmpty()) {
+            tampil?.text = data.data.firstOrNull()?.adPriceDailyFmt
+            click?.text = data.data.firstOrNull()?.adPriceBidFmt
+            percentClick?.text = data.data.firstOrNull()?.adPriceBid.toString()
+            pendapatan?.text = data.data.firstOrNull()?.statTotalImpression
+            efektivitas?.text = data.data.firstOrNull()?.statTotalSpent
+            produkTenjual?.text = data.data.firstOrNull()?.statTotalCtr
+            pengeluaran?.text = data.data.firstOrNull()?.statTotalConversion
+            totalTenjual?.text = data.data.firstOrNull()?.statTotalSold
         }
     }
 
@@ -214,7 +287,6 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
             }
         })
         presenter.getAdGroupWithInsight(RecommendationConstants.HEADLINE_KEY)
-        setUpObserver()
     }
 
     private fun onSuccessWhiteListing(response: WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) {
