@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.databinding.HomeComponentShopFlashSaleTabItemBinding
 import com.tokopedia.home_component.util.getHexColorFromIdColor
 import com.tokopedia.home_component.util.setGradientBackground
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -44,6 +45,9 @@ internal class ShopTabViewHolder(
     }
 
     private fun setTabListener(tab: ShopTabDataModel) {
+        itemView.addOnImpressionListener(tab) {
+            shopTabListener?.onShopTabImpressed(tab)
+        }
         binding?.containerShopFlashSaleTab?.setOnClickListener {
             shopTabListener?.onShopTabClick(tab)
         }

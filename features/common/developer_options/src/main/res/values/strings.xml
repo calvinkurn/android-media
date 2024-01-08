@@ -49,7 +49,8 @@
     <string name="view_network_log">View Network Log</string>
     <string name="device_id">DEVICE ID:</string>
     <string name="force_dark_mode">Force Dark Mode</string>
-    <string name="fpi_monitoring">Enable FPI Monitoring PopUp</string>
+    <string name="fpi_monitoring">Enable Universal Performance Trace</string>
+    <string name="force_scp_login">Use Scp Login</string>
     <string name="enable_topads_notif">Enable TopAds Log on Notification</string>
     <string name="view_topads_log">View TopAds Log</string>
     <string name="enable_applink_notif">Enable Applink Log on Notification</string>
@@ -65,6 +66,7 @@
     <string name="view_analytics_log">View Analytics Log</string>
     <string name="view_iris_save_log">View Iris Save Log</string>
     <string name="view_iris_send_log">View Iris Send Log</string>
+    <string name="view_server_log">View Server Log (New Relic)</string>
     <string name="enable_leak_canary">Enable Leak Canary</string>
     <string name="str_to_be_put">String to be put in RouteManager.route(…)</string>
     <string name="try_routemanager">Try RouteManager.route</string>

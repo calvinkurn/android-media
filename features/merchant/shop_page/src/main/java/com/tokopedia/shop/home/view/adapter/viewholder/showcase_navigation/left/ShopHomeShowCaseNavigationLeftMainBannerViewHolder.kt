@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.left
 
 import android.graphics.Color
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -139,6 +140,10 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
                 tab.customView = tabView
 
                 val tabTitle: Typography? = tabView.findViewById(R.id.tpgTabTitle)
+                tabTitle?.setTextSize(
+                    TypedValue.COMPLEX_UNIT_PX,
+                    tabTitle.context.resources.getDimension(R.dimen.tab_name_font_size)
+                )
                 tabTitle?.text = tabs[currentPosition].text
 
                 if (currentPosition == 0) tab.select(uiModel) else tab.unselect(uiModel)
@@ -216,7 +221,7 @@ class ShopHomeShowCaseNavigationLeftMainBannerViewHolder(
 
                     val screenWidth = getScreenWidth()
                     if (tabTotalWidth < screenWidth || tabs.size <= THREE_TAB) {
-                        tabsUnify.customTabMode = TabLayout.MODE_FIXED
+                        tabsUnify.customTabMode = TabLayout.MODE_AUTO
                         tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
                     } else {
                         tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE

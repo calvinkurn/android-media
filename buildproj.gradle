@@ -66,6 +66,9 @@ allprojects {
                 username = properties.getProperty("laku.usr") ?: System.getenv("LAKU_USR")
                 password = properties.getProperty("laku.key") ?: System.getenv("LAKU_API_KEY")
             }
+            content {
+                includeGroupByRegex("com\\.github\\.carousell.*")
+            }
         }
         maven {
             url "https://jitpack.io"

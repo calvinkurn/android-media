@@ -18,4 +18,7 @@
 
     <color name="content_dms_campaign_progress_0_color">#D6001C</color>
     <color name="content_dms_campaign_progress_100_color">#FA591D</color>
+
+    <!--Video Seekbar-->
+    <color name="content_dms_seekbar_unplayed_color">#66FFFFFF</color>
 </resources>

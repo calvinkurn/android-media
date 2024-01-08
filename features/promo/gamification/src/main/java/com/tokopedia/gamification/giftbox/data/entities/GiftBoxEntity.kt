@@ -8,7 +8,7 @@ data class GiftBoxEntity(@SerializedName("gamiLuckyHome") val gamiLuckyHome: Gam
 data class ResultStatus(
 
     @SerializedName("code") val code: String?,
-    @SerializedName("message") val message: List<String>,
+    @SerializedName("message") val message: List<String>?,
     @SerializedName("reason") val reason: String
 )
 

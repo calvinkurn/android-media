@@ -3,8 +3,10 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sec
 import android.app.Application
 import androidx.lifecycle.LiveData
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.usecase.SectionUseCase
+import com.tokopedia.discovery2.usecase.sectionusecase.SectionUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.model.NotifyPayload
+import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
@@ -16,7 +18,7 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class SectionViewModel(
-    application: Application,
+    val application: Application,
     val components: ComponentsItem,
     val position: Int
 ) : DiscoveryBaseViewModel(), CoroutineScope {
@@ -32,6 +34,9 @@ class SectionViewModel(
 
     private val _hideSection = SingleLiveEvent<Boolean>()
     val hideSection: LiveData<Boolean> = _hideSection
+
+    private val _notifyChild = SingleLiveEvent<NotifyPayload>()
+    val notifyChild: LiveData<NotifyPayload> = _notifyChild
 
     @JvmField
     @Inject
@@ -81,5 +86,13 @@ class SectionViewModel(
 
     fun getSectionID(): String {
         return components.sectionId
+    }
+
+    fun notifyChildViewModel(
+        identifier: String,
+        data: Any,
+        type: ComponentsList
+    ) {
+        _notifyChild.value = NotifyPayload(identifier, type, data)
     }
 }

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/recom_reload_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:clickable="true"
+    android:focusable="true">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@color/Unify_NN100"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_constraintLeft_toLeftOf="@id/recom_ic_reload"
+        app:layout_constraintRight_toRightOf="@id/recom_ic_reload"
+        app:layout_constraintTop_toTopOf="@id/recom_ic_reload"
+        app:layout_constraintBottom_toBottomOf="@id/recom_ic_reload"
+        app:srcCompat="@drawable/recom_circle_reload"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/recom_ic_reload"
+        android:layout_width="@dimen/steal_the_look_ic_reload_size"
+        android:layout_height="@dimen/steal_the_look_ic_reload_size"
+        android:clickable="false"
+        android:focusable="false"
+        app:icon_name="RELOAD"
+        app:icon_color_light_enable="@color/Unify_NN0"
+        app:icon_color_night_enable="@color/Unify_NN0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/recom_reload_loader"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:loader_type="rect"
+        android:visibility="gone"
+        app:loader_corner_radius="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

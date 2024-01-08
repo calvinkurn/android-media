@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.inbox.pending.presentation.adapter.viewhold
 import android.graphics.Rect
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingCredibilityUiModel
@@ -42,15 +43,18 @@ class ReviewPendingCredibilityViewHolder(
                     index
                 )
             }
-            itemView.viewTreeObserver.addOnGlobalLayoutListener {
-                if (!element.impressHolder.isInvoke && itemView.shouldHitImpressTracker()) {
-                    reviewPendingItemListener.onReviewCredibilityWidgetImpressed(
-                        element.title,
-                        index
-                    )
-                    element.impressHolder.invoke()
+            itemView.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    if (!element.impressHolder.isInvoke && itemView.shouldHitImpressTracker()) {
+                        reviewPendingItemListener.onReviewCredibilityWidgetImpressed(
+                            element.title,
+                            index
+                        )
+                        element.impressHolder.invoke()
+                        itemView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
                 }
-            }
+            })
         }
     }
 

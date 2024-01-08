@@ -6,7 +6,7 @@ package com.tokopedia.sellerhome.analytic
 
 object TrackingConstant {
 
-    //key
+    // key
     const val EVENT = "event"
     const val EVENT_CATEGORY = "eventCategory"
     const val EVENT_ACTION = "eventAction"
@@ -17,19 +17,19 @@ object TrackingConstant {
     const val BUSINESS_UNIT = "businessUnit"
     const val TRACKER_ID = "trackerId"
 
-    //event
+    // event
     const val VIEW_HOMEPAGE_IRIS = "viewHomepageIris"
     const val VIEW_PG_IRIS = "viewPGIris"
     const val CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer"
     const val CLICK_HOMEPAGE = "clickHomepage"
     const val CLICK_PG = "clickPG"
 
-    //category
+    // category
     const val TOP_NAV = "top nav"
     const val BOTTOM_NAV = "bottom nav"
     const val SELLER_APP_HOME = "seller app - home"
 
-    //action
+    // action
     const val IMPRESSION_WIDGET_CARD = "impression widget card"
     const val CLICK_WIDGET_CARD = "click widget card"
     const val IMPRESSION_WIDGET_LINE_GRAPH = "impression widget trendline"
@@ -101,12 +101,12 @@ object TrackingConstant {
     const val CLICK_WIDGET_MRP_NOT_ELIGIBLE = "click widget mrp - click cta not eligible"
     const val IMPRESSION_WIDGET_MRP_NOT_ELIGIBLE = "impression widget mrp - not eligible"
 
-    //search
+    // search
     const val CLICK_SEARCH = "clickSearch"
     const val GLOBAL_SEARCH = "global search"
     const val CLICK_SEARCH_BUTTON = "click search button"
 
-    //other value
+    // other value
     const val SCREEN_NAME_SELLER_HOME = "Seller Home"
     const val TOKOPEDIA_SELLER = "tokopediaseller"
     const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
@@ -128,8 +128,10 @@ object TrackingConstant {
     const val PG = "Physical Goods"
     const val DATA_KEY_LOW_STOCK = "lowStock"
     const val NOTIFY_ME = "notify me"
+    const val CLAIMED = "claimed"
+    const val NOT_STARTED_OR_ONGOING = "not_started_or_ongoing"
 
-    //performance
+    // performance
     const val CLICK_SHOP_SCORE = "clickShopScore"
     const val ACTION_SHOP_SCORE = "click - performa toko"
     const val ACTION_SHOP_SCORE_NEW_SELLER = "click - performa"
@@ -143,10 +145,9 @@ object TrackingConstant {
     const val SHOP_TYPE_OS = "OS"
     const val VIEW_SHOP_SCORE_IRIS = "viewShopScoreIris"
 
-    //ticker
+    // ticker
     const val TICKER_ANNOUNCEMENT = "announcement"
     const val TICKER_WARNING = "warning"
     const val TICKER_INFO = "info"
     const val TICKER_DANGER = "danger"
-
 }
