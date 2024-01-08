@@ -48,7 +48,7 @@ class ShareExChannelMapper @Inject constructor(
             )
         }
         return ShareExChannelModel(
-            description = "Mau bagikan lewat sosmed apa?",
+            description = "",
             listChannel = socialMediaChannelList
         )
     }
@@ -207,7 +207,7 @@ class ShareExChannelMapper @Inject constructor(
         )
 
         return ShareExChannelModel(
-            description = "Mau bagikan lewat apa?",
+            description = "",
             listChannel = generalChannelList
         )
     }

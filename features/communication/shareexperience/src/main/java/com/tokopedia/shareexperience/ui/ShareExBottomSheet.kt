@@ -116,7 +116,6 @@ class ShareExBottomSheet :
                 }
             }
         }
-        viewModel.setupViewModelObserver()
     }
 
     private suspend fun observeBottomSheetUiState() {
@@ -164,7 +163,7 @@ class ShareExBottomSheet :
     }
 
     override fun onChannelClicked(element: ShareExChannelItemModel) {
-        //TODO
+        // TODO
     }
 
     override fun onErrorActionClicked() {

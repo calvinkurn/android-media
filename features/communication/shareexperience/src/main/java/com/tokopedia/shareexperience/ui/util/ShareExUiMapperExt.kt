@@ -29,7 +29,7 @@ fun ShareExBottomSheetModel.map(position: Int = 0): List<Visitable<in ShareExTyp
         val chipUiModel = ShareExChipUiModel(it)
         listChipUiModel.add(chipUiModel)
     }
-    if (listChipUiModel.isNotEmpty()) { // Only add when chip is not empty
+    if (listChipUiModel.size > 1) { // Only add when chip size is more than 1
         val selectedChipUiModel = listChipUiModel[position].copy(isSelected = true)
         listChipUiModel[position] = selectedChipUiModel
 
@@ -49,17 +49,15 @@ fun ShareExBottomSheetModel.map(position: Int = 0): List<Visitable<in ShareExTyp
         }
 
         // Link Share Card UI
-        if (shareExPropertyModel.affiliate.isEligible) {
-            val linkShareUiModel = ShareExLinkShareUiModel(
-                shareExPropertyModel.title,
-                shareExPropertyModel.affiliate.commission,
-                "tokopedia.link",
-                listImageUiModel.firstOrNull()?.imageUrl.toString(),
-                shareExPropertyModel.affiliate.label,
-                shareExPropertyModel.affiliate.expiredDate
-            )
-            result.add(linkShareUiModel)
-        }
+        val linkShareUiModel = ShareExLinkShareUiModel(
+            shareExPropertyModel.title,
+            shareExPropertyModel.affiliate.commission,
+            "tokopedia.link",
+            listImageUiModel.firstOrNull()?.imageUrl.toString(),
+            shareExPropertyModel.affiliate.label,
+            shareExPropertyModel.affiliate.expiredDate
+        )
+        result.add(linkShareUiModel)
 
         // Separator Ui
         val separator = ShareExSeparatorUiModel()
@@ -116,7 +114,7 @@ fun ShareExBottomSheetModel.mapError(
                 shareExPropertyModel.title,
                 shareExPropertyModel.affiliate.commission,
                 "tokopedia.link",
-                shareExPropertyModel.listImage.firstOrNull()?: "",
+                shareExPropertyModel.listImage.firstOrNull() ?: "",
                 shareExPropertyModel.affiliate.label,
                 shareExPropertyModel.affiliate.expiredDate
             )

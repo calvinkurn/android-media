@@ -2,7 +2,6 @@ package com.tokopedia.shareexperience.data.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shareexperience.data.dto.ShareExBottomSheetResponseDto
 import com.tokopedia.shareexperience.data.dto.ShareExPropertyResponseDto
@@ -59,10 +58,10 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
     private suspend fun getShareBottomSheetResponse(params: ShareExBottomSheetRequest): Flow<ShareExBottomSheetModel> {
         return flow {
             val request = getRequest(params)
-            val dto = repository.request<ShareExBottomSheetWrapperRequest, ShareExWrapperResponseDto>(
-                sharePropertiesQuery, request
-            )
-//            val dto = getDummyResponseDto()
+//            val dto = repository.request<ShareExBottomSheetWrapperRequest, ShareExWrapperResponseDto>(
+//                sharePropertiesQuery, request
+//            )
+            val dto = getDummyResponseDto()
             val result = mapper.map(dto.response.bottomSheet)
             emit(result)
         }.flowOn(dispatchers.io)
@@ -78,26 +77,16 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                 ShareExBottomSheetResponseDto(
                     title = "Bagikan ke teman kamu",
                     subtitle = "Mau bagi halaman yang mana?",
-                    chips = getChips(),
-                    properties = getProperties(),
-                    imageGeneratorPayload = ShareExImageGeneratorResponseDto() // TODO: setup this
+                    properties = getProperties()
                 )
             )
-        )
-    }
-
-    private fun getChips(): List<String> {
-        return listOf(
-            "Halaman Toko",
-            "Semua Produk",
-            "Etalase",
-            "Feed"
         )
     }
 
     private fun getProperties(): List<ShareExPropertyResponseDto> {
         return listOf(
             ShareExPropertyResponseDto(
+                chipTitle = "Halaman Toko",
                 shareBody = ShareExShareBodyResponseDto(
                     title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
                     thumbnailUrls = getImageThumbnails(5)
@@ -109,9 +98,11 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                     label = "BARU",
                     link = "tokopedia://topchat"
                 ),
-                affiliateEligibility = null
+                affiliateEligibility = null,
+                imageGeneratorPayload = ShareExImageGeneratorResponseDto() // TODO: setup this
             ),
             ShareExPropertyResponseDto(
+                chipTitle = "Semua Produk",
                 shareBody = ShareExShareBodyResponseDto(
                     title = "Lorem ipsum dolor sit amet.",
                     thumbnailUrls = getImageThumbnails(3)
@@ -127,9 +118,11 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                     commission = "<b>Komisi Rp16.000</b> / barang dijual",
                     badge = "Komisi Extra",
                     expiredDate = "Hingga 31 Des 2024"
-                )
+                ),
+                imageGeneratorPayload = ShareExImageGeneratorResponseDto() // TODO: setup this
             ),
             ShareExPropertyResponseDto(
+                chipTitle = "Etalase",
                 shareBody = ShareExShareBodyResponseDto(
                     title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
                     thumbnailUrls = getImageThumbnails(1)
@@ -143,23 +136,18 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                 ),
                 affiliateEligibility = ShareExAffiliateEligibilityResponseDto(
                     commission = "<b>Komisi Rp16.000</b> / barang dijual"
-                )
+                ),
+                imageGeneratorPayload = ShareExImageGeneratorResponseDto() // TODO: setup this
             ),
             ShareExPropertyResponseDto(
+                chipTitle = "Feed",
                 shareBody = ShareExShareBodyResponseDto(
                     title = "",
                     thumbnailUrls = getImageThumbnails(0)
                 ),
                 affiliateRegistrationWidget = ShareExAffiliateRegistrationWidgetResponseDto(),
-                affiliateEligibility = null
-            ),
-            ShareExPropertyResponseDto(
-                shareBody = ShareExShareBodyResponseDto(
-                    title = "",
-                    thumbnailUrls = getImageThumbnails(0)
-                ),
-                affiliateRegistrationWidget = ShareExAffiliateRegistrationWidgetResponseDto(),
-                affiliateEligibility = ShareExAffiliateEligibilityResponseDto()
+                affiliateEligibility = null,
+                imageGeneratorPayload = ShareExImageGeneratorResponseDto() // TODO: setup this
             )
         )
     }

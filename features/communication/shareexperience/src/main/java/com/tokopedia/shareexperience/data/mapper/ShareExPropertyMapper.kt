@@ -5,7 +5,6 @@ import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExImageGenerat
 import com.tokopedia.shareexperience.data.util.ShareExDefaultValue.DEFAULT_TITLE
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.ShareExImageGeneratorModel
-import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateEligibilityModel
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateModel
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateRegistrationModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExBodyModel
@@ -17,6 +16,7 @@ class ShareExPropertyMapper @Inject constructor(
 ) {
     fun map(dto: ShareExBottomSheetResponseDto): ShareExBottomSheetModel {
         val listShareProperty = arrayListOf<ShareExPropertyModel>()
+        val listChip = arrayListOf<String>()
         dto.properties.forEach {
             val affiliate = ShareExAffiliateModel(
                 registration = ShareExAffiliateRegistrationModel(
@@ -26,33 +26,33 @@ class ShareExPropertyMapper @Inject constructor(
                     description = it.affiliateRegistrationWidget.description,
                     appLink = it.affiliateRegistrationWidget.link
                 ),
-                isEligible = it.affiliateEligibility != null,
                 commission = it.affiliateEligibility?.commission ?: "",
                 label = it.affiliateEligibility?.badge ?: "",
                 expiredDate = it.affiliateEligibility?.expiredDate ?: ""
             )
+            val imageGeneratorModel = ShareExImageGeneratorModel(
+                sourceId = it.imageGeneratorPayload.sourceId,
+                payload = it.imageGeneratorPayload.args.mapToPayload()
+            )
             val property = ShareExPropertyModel(
                 title = it.shareBody.title,
                 listImage = it.shareBody.thumbnailUrls,
-                affiliate = affiliate
+                affiliate = affiliate,
+                imageGenerator = imageGeneratorModel
             )
+            listChip.add(it.chipTitle)
             listShareProperty.add(property)
         }
         val body = ShareExBodyModel(
-            listChip = dto.chips,
+            listChip = listChip,
             listShareProperty = listShareProperty,
             socialChannel = channelMapper.generateSocialMediaChannel(),
             commonChannel = channelMapper.generateDefaultChannel()
         )
-        val imageGeneratorModel = ShareExImageGeneratorModel(
-            sourceId = dto.imageGeneratorPayload.sourceId,
-            payload = dto.imageGeneratorPayload.args.mapToPayload()
-        )
         return ShareExBottomSheetModel(
             title = dto.title,
             subtitle = dto.subtitle,
-            body = body,
-            imageGenerator = imageGeneratorModel
+            body = body
         )
     }
 

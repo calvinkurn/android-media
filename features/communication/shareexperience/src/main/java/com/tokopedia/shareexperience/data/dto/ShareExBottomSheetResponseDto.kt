@@ -1,17 +1,12 @@
 package com.tokopedia.shareexperience.data.dto
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExImageGeneratorResponseDto
 
 data class ShareExBottomSheetResponseDto(
     @SerializedName("title")
     val title: String = "",
     @SerializedName("subtitle")
     val subtitle: String = "",
-    @SerializedName("chips")
-    val chips: List<String> = listOf(),
     @SerializedName("properties")
-    val properties: List<ShareExPropertyResponseDto> = listOf(),
-    @SerializedName("imageGeneratorPayload")
-    val imageGeneratorPayload: ShareExImageGeneratorResponseDto = ShareExImageGeneratorResponseDto()
+    val properties: List<ShareExPropertyResponseDto> = listOf()
 )
