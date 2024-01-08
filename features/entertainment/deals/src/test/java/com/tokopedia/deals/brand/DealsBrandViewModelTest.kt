@@ -5,9 +5,9 @@ import com.google.gson.Gson
 import com.tokopedia.deals.DealsJsonMapper.getJson
 import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.domain.DealsSearchUseCase
-import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.ui.brand.DealsBrandViewModel
 import com.tokopedia.deals.ui.brand.mapper.DealsBrandMapper
+import com.tokopedia.deals.ui.location_picker.model.response.Location
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -52,7 +52,7 @@ class DealsBrandViewModelTest {
         val mockThrowable = Throwable("Fetch failed")
         coEvery {
             useCase.getDealsSearchResult(
-                    any(), any(), any(), any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(), any(), any(), any(), any()
             )
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
@@ -62,9 +62,8 @@ class DealsBrandViewModelTest {
         viewModel.getBrandList("", Location(), "", 0)
 
         // then
-        assertEquals((viewModel.dealsSearchResponse.value as Fail).throwable,mockThrowable)
+        assertEquals((viewModel.dealsSearchResponse.value as Fail).throwable, mockThrowable)
     }
-
 
     @Test
     fun getBrandList_fetchSuccess_searchResponseShouldBeSuccess() {
@@ -73,7 +72,7 @@ class DealsBrandViewModelTest {
         // given
         coEvery {
             useCase.getDealsSearchResult(
-                    any(), any(), any(), any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(), any(), any(), any(), any()
             )
         } coAnswers {
             firstArg<(SearchData) -> Unit>().invoke(mockSearhData)
@@ -94,7 +93,7 @@ class DealsBrandViewModelTest {
         // given
         coEvery {
             useCase.getDealsSearchResult(
-                    any(), any(), any(), any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(), any(), any(), any(), any()
             )
         } coAnswers {
             firstArg<(SearchData) -> Unit>().invoke(mockSearhData)
@@ -115,7 +114,7 @@ class DealsBrandViewModelTest {
         // given
         coEvery {
             useCase.getDealsSearchResult(
-                    any(), any(), any(), any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(), any(), any(), any(), any()
             )
         } coAnswers {
             firstArg<(SearchData) -> Unit>().invoke(mockSearhData)
@@ -130,7 +129,7 @@ class DealsBrandViewModelTest {
     }
 
     @Test
-    fun onClearedViewModel(){
+    fun onClearedViewModel() {
         every { useCase.cancelJobs() } just runs
 
         val method = viewModel::class.java.getDeclaredMethod("onCleared")

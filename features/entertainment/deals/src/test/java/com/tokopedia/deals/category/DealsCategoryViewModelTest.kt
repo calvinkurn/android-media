@@ -8,12 +8,12 @@ import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.domain.DealsSearchUseCase
-import com.tokopedia.deals.location_picker.model.response.Location
-import com.tokopedia.deals.search.model.response.CuratedData
 import com.tokopedia.deals.ui.category.domain.GetChipsCategoryUseCase
 import com.tokopedia.deals.ui.category.ui.dataview.ProductListDataView
 import com.tokopedia.deals.ui.category.ui.viewmodel.DealCategoryViewModel
 import com.tokopedia.deals.ui.category.utils.MapperCategoryLayout
+import com.tokopedia.deals.ui.location_picker.model.response.Location
+import com.tokopedia.deals.ui.search.model.response.CuratedData
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.coEvery
 import io.mockk.every
@@ -40,37 +40,37 @@ class DealsCategoryViewModelTest {
     private lateinit var viewModel: DealCategoryViewModel
     val mContextMock = mockk<Context>(relaxed = true)
 
-    lateinit var mapper : MapperCategoryLayout
+    lateinit var mapper: MapperCategoryLayout
 
     @Before
     fun setup() {
-        mapper  = MapperCategoryLayout(mContextMock)
+        mapper = MapperCategoryLayout(mContextMock)
         viewModel = DealCategoryViewModel(
-                mapper,
-                getChipsCategoryUseCase,
-                dealsSearchUseCase,
-                dispatcher
+            mapper,
+            getChipsCategoryUseCase,
+            dealsSearchUseCase,
+            dispatcher
         )
     }
 
     @Test
-    fun getChipFilter_fetchFailed_shouldShowErrorMessage(){
-        //given
+    fun getChipFilter_fetchFailed_shouldShowErrorMessage() {
+        // given
         val mockThrowable = Throwable("Fetch chip failed")
         coEvery {
             getChipsCategoryUseCase.execute(any(), any())
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        //when
+        // when
         viewModel.getChipsData()
-        //then
+        // then
         assert(viewModel.errorMessage.value?.message == "Fetch chip failed")
     }
 
     @Test
-    fun getChipFilter_fetchSuccess_shouldShowSuccessMessage(){
-        //given
+    fun getChipFilter_fetchSuccess_shouldShowSuccessMessage() {
+        // given
         val mockCuratedData = Gson().fromJson(DealsJsonMapper.getJson("curateddata.json"), CuratedData::class.java)
         val mockFilterChip = mapper.mapCategoryToChips(mockCuratedData.eventChildCategory.categories)
         coEvery {
@@ -78,9 +78,9 @@ class DealsCategoryViewModelTest {
         } coAnswers {
             firstArg<(CuratedData) -> Unit>().invoke(mockCuratedData)
         }
-        //when
+        // when
         viewModel.getChipsData()
-        //then
+        // then
         val curatedData = viewModel.observableChips.value
         assertEquals(curatedData, mockFilterChip)
         val categories = viewModel.observableCategories.value
@@ -94,7 +94,7 @@ class DealsCategoryViewModelTest {
         val mockThrowable = Throwable("Fetch chip failed")
         coEvery {
             dealsSearchUseCase.getDealsSearchResult(
-                    any(), any(), any(), any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(), any(), any(), any(), any()
             )
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
@@ -113,7 +113,7 @@ class DealsCategoryViewModelTest {
         val mockThrowable = Throwable("Fetch brand product category failed")
         coEvery {
             dealsSearchUseCase.getDealsSearchResult(
-                    any(), any(), any(), any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(), any(), any(), any(), any()
             )
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
@@ -133,7 +133,7 @@ class DealsCategoryViewModelTest {
         // given
         coEvery {
             dealsSearchUseCase.getDealsSearchResult(
-                    any(), any(), any(), any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(), any(), any(), any(), any()
             )
         } coAnswers {
             firstArg<(SearchData) -> Unit>().invoke(mockEvent)
@@ -190,7 +190,7 @@ class DealsCategoryViewModelTest {
         // given
         coEvery {
             dealsSearchUseCase.getDealsSearchResult(
-                    any(), any(), any(), any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(), any(), any(), any(), any()
             )
         } coAnswers {
             firstArg<(SearchData) -> Unit>().invoke(mockEvent)
@@ -204,15 +204,15 @@ class DealsCategoryViewModelTest {
     }
 
     @Test
-    fun getShimmeringData_fetchSuccess_shimmeringShouldShimmering(){
-        //given
+    fun getShimmeringData_fetchSuccess_shimmeringShouldShimmering() {
+        // given
         val layouts = mutableListOf<DealsBaseItemDataView>()
         layouts.add(DealCategoryViewModel.BRAND_POPULAR, DealsBrandsDataView(oneRow = true))
         layouts.add(DealCategoryViewModel.PRODUCT_LIST, ProductListDataView())
-        //when
+        // when
         viewModel.shimmeringCategory()
-        //then
-        assertEquals(viewModel.observableDealsCategoryLayout.value,layouts)
+        // then
+        assertEquals(viewModel.observableDealsCategoryLayout.value, layouts)
     }
 
     @Test
@@ -222,7 +222,7 @@ class DealsCategoryViewModelTest {
         // given
         coEvery {
             dealsSearchUseCase.getDealsSearchResult(
-                    any(), any(), any(), any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(), any(), any(), any(), any()
             )
         } coAnswers {
             firstArg<(SearchData) -> Unit>().invoke(mockEvent)
@@ -235,7 +235,7 @@ class DealsCategoryViewModelTest {
     }
 
     @Test
-    fun onClearedViewModel(){
+    fun onClearedViewModel() {
         every { dealsSearchUseCase.cancelJobs() } just runs
 
         val method = viewModel::class.java.getDeclaredMethod("onCleared")

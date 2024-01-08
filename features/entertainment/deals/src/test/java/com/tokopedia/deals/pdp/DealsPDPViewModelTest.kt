@@ -1,7 +1,6 @@
 package com.tokopedia.deals.pdp
 
 import com.tokopedia.deals.common.model.response.SearchData
-import com.tokopedia.deals.pdp.data.*
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -13,7 +12,7 @@ import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 
-class DealsPDPViewModelTest: DealsPDPViewModelTestFixture() {
+class DealsPDPViewModelTest : DealsPDPViewModelTestFixture() {
 
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
