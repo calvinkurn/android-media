@@ -2,7 +2,6 @@ package com.tokopedia.notifications.inApp.ketupat
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import androidx.constraintlayout.widget.ConstraintLayout
 import android.content.Context
 import android.graphics.Point
 import android.util.AttributeSet
@@ -10,12 +9,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnClickListener
+import android.view.View.OnTouchListener
+import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.airbnb.lottie.RenderMode
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.notifications.databinding.LayoutInappAnimationBinding
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+
+import com.tokopedia.notifications.R
 
 
 open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val activity: Activity):
@@ -31,6 +35,7 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
          binding.lottieViewPopup.setRenderMode(RenderMode.HARDWARE)
         binding.lottieViewPopup.setMinFrame("Tutorial")
         binding.lottieViewPopup.setMaxFrame(119)
+         onCloseClick(binding.root)
     }
 
     private fun handleLottieSlice() {
@@ -70,16 +75,6 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    private fun playAnimation() {
-        binding.lottieViewPopup.playAnimation()
-        GlobalScope.launch {
-            delay(3000)
-            binding.lottieViewPopup.setMinProgress(0.72f)
-            binding.lottieViewPopup.setMaxProgress(1.0f)
-        }
-    }
-
     private fun playAnimationInDirection(direction: MyGestureListener.Direction) {
         when(direction) {
             MyGestureListener.Direction.up_right -> {
@@ -111,8 +106,10 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
                 binding.lottieViewPopup.setMinFrame(120)
             }
         }
-//        playPrizeSound(context)
+        playPrizeSound(activity.applicationContext)
         binding.lottieViewPopup.loop(false)
+        couponAnimation()
+        couponButtonAnimation()
     }
 
     private fun playPrizeSound(context: Context?) {
@@ -121,8 +118,29 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
             if (rewardSoundManager == null) {
                 rewardSoundManager = AudioFactory.createAudio(soundIt)
             }
-//            rewardSoundManager?.playAudio(android.R.raw.)
+            rewardSoundManager?.playAudio(R.raw.gf_giftbox_prize)
         }
+    }
+
+    private fun onCloseClick(view: View) {
+        val onClickListener = OnClickListener { _: View? ->
+            (view.parent as ViewGroup).removeView(view)
+        }
+        binding.icClose.setOnClickListener(onClickListener)
+    }
+
+    private fun couponAnimation() {
+        binding.couponContainer.visible()
+        val layout = binding.couponContainer
+        val anim: Animation = AnimationUtils.loadAnimation(activity, R.anim.coupon_scale)
+        layout.startAnimation(anim)
+    }
+
+    private fun couponButtonAnimation() {
+        binding.ivButtonShare.visible()
+        val layout = binding.ivButtonShare
+        val anim: Animation = AnimationUtils.loadAnimation(activity, R.anim.button_translate)
+        layout.startAnimation(anim)
     }
 
 }

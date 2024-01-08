@@ -17,10 +17,9 @@ import java.lang.ref.WeakReference
 open class ActivityLifecycleHandler: Application.ActivityLifecycleCallbacks {
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         val activityName = activity::class.java.simpleName
-//        showLottiePopup(activity)
-//        if (activityName == HomePageActivity) {
-//            showLottiePopup(activity)
-//        }
+        if (activityName == HomePageActivity) {
+            showLottiePopup(activity)
+        }
     }
 
     open fun showLottiePopup(activity: Activity) {

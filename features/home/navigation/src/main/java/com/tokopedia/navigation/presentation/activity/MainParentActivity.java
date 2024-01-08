@@ -322,7 +322,7 @@ public class MainParentActivity extends BaseActivity implements
         if (userSession.get().isLoggedIn()) {
             new NotificationUserSettingsTracker(getApplicationContext()).sendNotificationUserSettings();
         }
-        new ActivityLifecycleHandler().showLottiePopup(this);
+//        new ActivityLifecycleHandler().showLottiePopup(this);
     }
 
     private void runRiskWorker() {

@@ -40,7 +40,8 @@ open class MyGestureListener {
             && Direction.inRange(x2, 0, 100)
             && Direction.inRange(y1, 30, 75)
             && Direction.inRange(y2, 30, 75)
-            && direction != Direction.horizontol) {
+            && direction != Direction.horizontol
+            && direction != Direction.vertical) {
             return true
         }
         return false
@@ -62,7 +63,10 @@ open class MyGestureListener {
         if (percentageDy > 15 || percentageDx > 15) {
             return if (isHorizontalCut(direction, percentageY1, percentageY2)) {
                 true
-            } else isInRange
+            } else if (isVerticalCut(direction, percentageX1, percentageX2))  {
+                true
+            }
+            else isInRange
         }
         return false
     }
@@ -71,6 +75,15 @@ open class MyGestureListener {
         if (direction == Direction.horizontol
             && Direction.inRange(percentageY1, 45, 67)
             && Direction.inRange(percentageY2, 45, 67)) {
+            return true
+        }
+        return false
+    }
+
+    private fun isVerticalCut(direction: Direction, percentageX1: Float, percentageX2: Float): Boolean {
+        if (direction == Direction.vertical
+            && Direction.inRange(percentageX1, 30, 70)
+            && Direction.inRange(percentageX2, 30, 70)) {
             return true
         }
         return false
