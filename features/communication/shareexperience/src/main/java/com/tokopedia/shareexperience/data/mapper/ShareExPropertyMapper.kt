@@ -1,7 +1,7 @@
 package com.tokopedia.shareexperience.data.mapper
 
-import com.tokopedia.shareexperience.data.dto.response.ShareExBottomSheetResponseDto
-import com.tokopedia.shareexperience.data.dto.response.imagegenerator.ShareExImageGeneratorArgResponseDto
+import com.tokopedia.shareexperience.data.dto.ShareExBottomSheetResponseDto
+import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExImageGeneratorArgResponseDto
 import com.tokopedia.shareexperience.data.util.ShareExDefaultValue.DEFAULT_TITLE
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.ShareExImageGeneratorModel
@@ -9,7 +9,6 @@ import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateElig
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateModel
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateRegistrationModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExBodyModel
-import com.tokopedia.shareexperience.domain.model.property.ShareExChipModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExPropertyModel
 import javax.inject.Inject
 
@@ -74,7 +73,7 @@ class ShareExPropertyMapper @Inject constructor(
         val listShareProperty = arrayListOf<ShareExPropertyModel>()
         val property = ShareExPropertyModel(
             title = defaultUrl,
-            listImage = listOf(defaultImageUrl),
+            listImage = listOf(defaultImageUrl)
         )
         listShareProperty.add(property)
         val body = ShareExBodyModel(

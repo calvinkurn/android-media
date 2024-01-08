@@ -1,8 +1,8 @@
-package com.tokopedia.shareexperience.data.dto.response
+package com.tokopedia.shareexperience.data.dto
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.shareexperience.data.dto.response.affiliate.ShareExAffiliateEligibilityResponseDto
-import com.tokopedia.shareexperience.data.dto.response.affiliate.ShareExAffiliateRegistrationWidgetResponseDto
+import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateEligibilityResponseDto
+import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateRegistrationWidgetResponseDto
 
 data class ShareExPropertyResponseDto(
     @SerializedName("shareBody")

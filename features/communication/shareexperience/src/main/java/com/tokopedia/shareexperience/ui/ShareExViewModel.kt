@@ -3,9 +3,9 @@ package com.tokopedia.shareexperience.ui
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.shareexperience.data.dto.request.ShareExProductRequest
 import com.tokopedia.shareexperience.data.util.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
+import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExProductBottomSheetRequest
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
 import com.tokopedia.shareexperience.ui.uistate.ShareExBottomSheetUiState
 import com.tokopedia.shareexperience.ui.uistate.ShareExNavigationUiState
@@ -35,9 +35,11 @@ class ShareExViewModel @Inject constructor(
 
     // Cache the model from activity and body switching when chip clicked
     private var _bottomSheetModel: ShareExBottomSheetModel? = null
+
     // Cache the default url
     private var _defaultUrl = ""
     private var _defaultImageUrl = ""
+
     // Cache the throwable for showing error state
     private var _fetchThrowable: Throwable? = null
 
@@ -99,7 +101,7 @@ class ShareExViewModel @Inject constructor(
                 _defaultUrl = defaultUrl
                 _defaultImageUrl = defaultImageUrl
                 getSharePropertiesUseCase.getData(
-                    ShareExProductRequest(
+                    ShareExProductBottomSheetRequest(
                         pageType = pageTypeEnum.value,
                         id = id.toLong()
                     )
@@ -113,6 +115,7 @@ class ShareExViewModel @Inject constructor(
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
                 _fetchThrowable = throwable
+                _fetchedDataState.emit(Unit)
                 _fetchedDataState.emit(Unit)
             }
         }
@@ -138,7 +141,7 @@ class ShareExViewModel @Inject constructor(
     private suspend fun getDefaultBottomSheetModel() {
         getSharePropertiesUseCase.getDefaultData(_defaultUrl, _defaultImageUrl)
             .collectLatest {
-                val uiResult = it.mapError(_defaultUrl, _fetchThrowable?: Throwable())
+                val uiResult = it.mapError(_defaultUrl, _fetchThrowable ?: Throwable())
                 _bottomSheetUiState.update { uiState ->
                     uiState.copy(
                         title = it.title,

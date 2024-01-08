@@ -1,4 +1,4 @@
-package com.tokopedia.shareexperience.data.dto.response.affiliate
+package com.tokopedia.shareexperience.data.dto.affiliate
 
 import com.google.gson.annotations.SerializedName
 

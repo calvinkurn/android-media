@@ -4,12 +4,13 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.shareexperience.data.dto.response.affiliate.ShareExAffiliateLinkWrapperResponseDto
+import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateLinkWrapperResponseDto
 import com.tokopedia.shareexperience.data.repository.ShareExGetAffiliateEligibilityQuery
 import com.tokopedia.shareexperience.domain.ShareExResult
 import com.tokopedia.shareexperience.domain.asFlowResult
-import com.tokopedia.shareexperience.domain.model.ShareExRequest
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateEligibilityModel
+import com.tokopedia.shareexperience.domain.model.request.affiliate.ShareExAffiliateEligibilityRequest
+import com.tokopedia.shareexperience.domain.model.request.affiliate.ShareExAffiliateLinkEligibilityRequest
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetAffiliateEligibilityUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -23,11 +24,11 @@ class ShareExGetAffiliateEligibilityUseCaseImpl @Inject constructor(
 
     private val affiliateEligibilityQuery = ShareExGetAffiliateEligibilityQuery()
 
-    override suspend fun getData(params: ShareExRequest): Flow<ShareExResult<ShareExAffiliateEligibilityModel>> {
+    override suspend fun getData(params: ShareExAffiliateEligibilityRequest): Flow<ShareExResult<ShareExAffiliateEligibilityModel>> {
         return flow {
-            val dto = repository.request<ShareExRequest, ShareExAffiliateLinkWrapperResponseDto>(
+            val dto = repository.request<ShareExAffiliateLinkEligibilityRequest, ShareExAffiliateLinkWrapperResponseDto>(
                 affiliateEligibilityQuery,
-                params
+                ShareExAffiliateLinkEligibilityRequest(params)
             )
             val result = ShareExAffiliateEligibilityModel(
                 dto.affiliateLinkEligibilityResponseDto.eligibleCommission.isEligible

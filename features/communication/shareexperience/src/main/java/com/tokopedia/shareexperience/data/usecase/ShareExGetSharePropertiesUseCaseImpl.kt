@@ -3,18 +3,21 @@ package com.tokopedia.shareexperience.data.usecase
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.shareexperience.data.dto.response.ShareExBottomSheetResponseDto
-import com.tokopedia.shareexperience.data.dto.response.ShareExPropertyResponseDto
-import com.tokopedia.shareexperience.data.dto.response.ShareExShareBodyResponseDto
-import com.tokopedia.shareexperience.data.dto.response.ShareExSharePropertiesResponseDto
-import com.tokopedia.shareexperience.data.dto.response.ShareExWrapperResponseDto
-import com.tokopedia.shareexperience.data.dto.response.affiliate.ShareExAffiliateEligibilityResponseDto
-import com.tokopedia.shareexperience.data.dto.response.affiliate.ShareExAffiliateRegistrationWidgetResponseDto
-import com.tokopedia.shareexperience.data.dto.response.imagegenerator.ShareExImageGeneratorResponseDto
+import com.tokopedia.shareexperience.data.dto.ShareExBottomSheetResponseDto
+import com.tokopedia.shareexperience.data.dto.ShareExPropertyResponseDto
+import com.tokopedia.shareexperience.data.dto.ShareExShareBodyResponseDto
+import com.tokopedia.shareexperience.data.dto.ShareExSharePropertiesResponseDto
+import com.tokopedia.shareexperience.data.dto.ShareExWrapperResponseDto
+import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateEligibilityResponseDto
+import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateRegistrationWidgetResponseDto
+import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExImageGeneratorResponseDto
 import com.tokopedia.shareexperience.data.mapper.ShareExPropertyMapper
 import com.tokopedia.shareexperience.data.repository.ShareExGetSharePropertiesQuery
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
-import com.tokopedia.shareexperience.domain.model.ShareExRequest
+import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExBottomSheetRequest
+import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExDiscoveryBottomSheetRequest
+import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExProductBottomSheetRequest
+import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExShopBottomSheetRequest
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -28,16 +31,6 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
 ) : ShareExGetSharePropertiesUseCase {
 
     private val sharePropertiesQuery = ShareExGetSharePropertiesQuery()
-    override suspend fun getData(params: ShareExRequest): Flow<ShareExBottomSheetModel> {
-        return flow {
-            //                val response = repository.request<ShareExRequest, ShareExWrapperResponseDto>(
-//                    sharePropertiesQuery, params
-//                )
-            val dto = getDummyResponseDto()
-            val result = mapper.map(dto.response.bottomSheet)
-            emit(result)
-        }.flowOn(dispatchers.io)
-    }
 
     override fun getDefaultData(
         defaultUrl: String,
@@ -45,6 +38,29 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
     ): Flow<ShareExBottomSheetModel> {
         return flow {
             val result = mapper.mapDefault(defaultUrl, defaultImageUrl)
+            emit(result)
+        }.flowOn(dispatchers.io)
+    }
+
+    override suspend fun getData(params: ShareExProductBottomSheetRequest): Flow<ShareExBottomSheetModel> {
+        return getShareBottomSheetResponse(params)
+    }
+
+    override suspend fun getData(params: ShareExShopBottomSheetRequest): Flow<ShareExBottomSheetModel> {
+        return getShareBottomSheetResponse(params)
+    }
+
+    override suspend fun getData(params: ShareExDiscoveryBottomSheetRequest): Flow<ShareExBottomSheetModel> {
+        return getShareBottomSheetResponse(params)
+    }
+
+    private suspend fun getShareBottomSheetResponse(params: ShareExBottomSheetRequest): Flow<ShareExBottomSheetModel> {
+        return flow {
+//            val dto = repository.request<ShareExBottomSheetRequest, ShareExWrapperResponseDto>(
+//                sharePropertiesQuery, params
+//            )
+            val dto = getDummyResponseDto()
+            val result = mapper.map(dto.response.bottomSheet)
             emit(result)
         }.flowOn(dispatchers.io)
     }
@@ -82,7 +98,7 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                 affiliateRegistrationWidget = ShareExAffiliateRegistrationWidgetResponseDto(
                     icon = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png",
                     title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-                    description  = "Daftar dan raih komisi Rp16.000/barang terjual dengan bagikan link ini.",
+                    description = "Daftar dan raih komisi Rp16.000/barang terjual dengan bagikan link ini.",
                     label = "BARU",
                     link = "tokopedia://topchat"
                 ),
@@ -101,7 +117,7 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                 affiliateRegistrationWidget = ShareExAffiliateRegistrationWidgetResponseDto(
                     icon = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png",
                     title = "Tokopedia Affiliate",
-                    description  = "Daftar dan raih komisi Rp16.000/barang terjual dengan bagikan link ini.",
+                    description = "Daftar dan raih komisi Rp16.000/barang terjual dengan bagikan link ini.",
                     label = "BARU",
                     link = ""
                 ),
@@ -120,7 +136,7 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                 affiliateRegistrationWidget = ShareExAffiliateRegistrationWidgetResponseDto(
                     icon = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/6/29/2aa21dbc-42e5-45e8-9fc1-3c0a0eca67d4.png",
                     title = "Tokopedia Affiliate",
-                    description  = "Daftar dan raih komisi Rp16.000/barang terjual dengan bagikan link ini.",
+                    description = "Daftar dan raih komisi Rp16.000/barang terjual dengan bagikan link ini.",
                     label = "BARU BARU BARU BARU BARU BARU BARU BARU BARU BARU BARU BARU BARU BARU BARU BARU",
                     link = "tokopedia://topchat"
                 ),

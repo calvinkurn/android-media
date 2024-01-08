@@ -1,7 +1,7 @@
-package com.tokopedia.shareexperience.data.dto.response
+package com.tokopedia.shareexperience.data.dto
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.shareexperience.data.dto.response.imagegenerator.ShareExImageGeneratorResponseDto
+import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExImageGeneratorResponseDto
 
 data class ShareExBottomSheetResponseDto(
     @SerializedName("title")

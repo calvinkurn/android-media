@@ -10,9 +10,9 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
-import com.tokopedia.shareexperience.data.dto.request.ShareExAffiliateLinkEligibilityRequest
 import com.tokopedia.shareexperience.data.util.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.ShareExResult
+import com.tokopedia.shareexperience.domain.model.request.affiliate.ShareExAffiliateEligibilityRequest
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetAffiliateEligibilityUseCase
 import com.tokopedia.shareexperience.ui.uistate.ShareExInitializationUiState
 import kotlinx.coroutines.flow.collectLatest
@@ -58,7 +58,7 @@ class ShareExInitializer(context: Context) {
 
     fun initialize(
         scope: LifecycleCoroutineScope,
-        affiliateLinkEligibilityRequest: ShareExAffiliateLinkEligibilityRequest,
+        affiliateEligibilityRequest: ShareExAffiliateEligibilityRequest,
         onSuccess: (ShareExInitializationUiState) -> Unit = {},
         onError: (Throwable) -> Unit = {},
         onLoading: () -> Unit = {}
@@ -66,7 +66,7 @@ class ShareExInitializer(context: Context) {
         scope.launch {
             try {
                 // Use combine when we need more use case to be called
-                useCase.getData(affiliateLinkEligibilityRequest).collectLatest {
+                useCase.getData(affiliateEligibilityRequest).collectLatest {
                     withContext(dispatchers.main) { // Make sure that the thread is main
                         when (it) {
                             is ShareExResult.Success -> {
