@@ -622,20 +622,6 @@ class RechargeCCFragment :
     }
 
     private fun onSuccessGetFavoriteChips(favoriteChips: List<FavoriteChipModel>) {
-//        val favoriteChips = listOf(
-//            FavoriteChipModel(
-//                clientName = "Credit Card A - 1",
-//                clientNumber = "4111 11** **** 4444",
-//                token = "Token A - 1",
-//                operatorId = "856"
-//            ),
-//            FavoriteChipModel(
-//                clientName = "Credit Card B - 1",
-//                clientNumber = "4111 11** **** 9999",
-//                token = "Token B - 1",
-//                operatorId = "856"
-//            )
-//        )
         binding?.ccWidgetClientNumber?.run {
             setFilterChipShimmer(false, favoriteChips.isEmpty())
             setFavoriteNumber(
@@ -645,18 +631,6 @@ class RechargeCCFragment :
     }
 
     private fun onSuccessGetAutoComplete(autoComplete: List<AutoCompleteModel>) {
-//        val autoComplete = listOf(
-//            AutoCompleteModel(
-//                clientName = "Credit Card A - 2",
-//                clientNumber = "4111 11** **** 4444",
-//                token = "Token A - 2"
-//            ),
-//            AutoCompleteModel(
-//                clientName = "Credit Card B - 2",
-//                clientNumber = "4111 11** **** 9999",
-//                token = "Token B - 2"
-//            )
-//        )
         binding?.ccWidgetClientNumber?.setAutoCompleteList(
             RechargeCCWidgetMapper.mapAutoCompletesToWidgetModels(autoComplete)
         )
