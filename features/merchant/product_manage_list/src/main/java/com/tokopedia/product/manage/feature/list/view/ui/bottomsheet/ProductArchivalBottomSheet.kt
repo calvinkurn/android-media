@@ -2,12 +2,10 @@ package com.tokopedia.product.manage.feature.list.view.ui.bottomsheet
 
 import android.graphics.Color
 import android.os.Bundle
-import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
@@ -28,7 +26,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
-
 
 class ProductArchivalBottomSheet : BottomSheetUnify(), HasComponent<ProductManageListComponent> {
 
@@ -51,7 +48,6 @@ class ProductArchivalBottomSheet : BottomSheetUnify(), HasComponent<ProductManag
                     putString(PRODUCT_ID_KEY, productId)
                     putBoolean(IS_ARCHIVED_KEY, isArchived)
                     putBoolean(IS_GRACE_PERIOD_KEY, isGracePeriod)
-
                 }
                 onErrorArchivalInfoListener = listener
             }
@@ -91,10 +87,6 @@ class ProductArchivalBottomSheet : BottomSheetUnify(), HasComponent<ProductManag
     override fun onCreate(savedInstanceState: Bundle?) {
         component?.inject(this)
         super.onCreate(savedInstanceState)
-        setStyle(
-            DialogFragment.STYLE_NORMAL,
-            com.tokopedia.product.manage.common.R.style.DialogStyle
-        )
     }
 
     override fun getComponent(): ProductManageListComponent? {
@@ -118,7 +110,7 @@ class ProductArchivalBottomSheet : BottomSheetUnify(), HasComponent<ProductManag
     }
 
     fun show(
-        fm: FragmentManager,
+        fm: FragmentManager
     ) {
         show(fm, TAG)
     }
@@ -147,19 +139,17 @@ class ProductArchivalBottomSheet : BottomSheetUnify(), HasComponent<ProductManag
     }
 
     private fun setupContent(content: ProductArchivalInfo.ProductarchivalGetProductArchiveInfo) {
-
         binding?.apply {
             shimmerGroup.gone()
             productArchivalGroup.show()
-            tvProductArchivalTime.text = if (isGracePeriod){
+            tvProductArchivalTime.text = if (isGracePeriod) {
                 getString(R.string.product_archival_info_time_grace_period, content.archiveTime).parseAsHtml()
-            }else{
+            } else {
                 getString(R.string.product_archival_info_time_archived, content.archiveTime).parseAsHtml()
             }
 
-
             tvProductArchivalReason.text = content.reason
-            tvProductArchivalSellerEdu.apply{
+            tvProductArchivalSellerEdu.apply {
                 val htmlText = context?.let {
                     HtmlLinkHelper(
                         it,
@@ -169,7 +159,7 @@ class ProductArchivalBottomSheet : BottomSheetUnify(), HasComponent<ProductManag
                 this.movementMethod = LinkMovementMethod.getInstance()
                 this.highlightColor = Color.TRANSPARENT
                 htmlText?.urlList?.getOrNull(Int.ZERO)?.setOnClickListener {
-                    RouteManager.route(requireContext(),content.sellerEduArticleURL)
+                    RouteManager.route(requireContext(), content.sellerEduArticleURL)
                 }
                 this.text = htmlText?.spannedString
             }
