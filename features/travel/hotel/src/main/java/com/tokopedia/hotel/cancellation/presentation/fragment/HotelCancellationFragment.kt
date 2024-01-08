@@ -330,6 +330,15 @@ class HotelCancellationFragment : HotelBaseFragment() {
         binding?.hotelCancellationContainer?.visible()
         binding?.containerError?.root?.gone()
     }
+
+    private fun showLoadingState() {
+        binding?.containerLoadingState?.mainLoading?.show()
+    }
+
+    private fun hideLoadingState() {
+        binding?.containerLoadingState?.mainLoading?.hide()
+    }
+
     companion object {
         const val HOTEL_CANCELLATION_SCREEN_NAME = "/hotel/ordercancel"
         const val ADD_LINE_SPACING = 6f

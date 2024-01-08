@@ -83,6 +83,10 @@ data class ShopProduct(
     @SerializedName("show_stockbar")
     @Expose
     val showStockBar: Boolean = false,
+
+    @SerializedName("warehouse_id")
+    @Expose
+    val warehouseId: String = ""
 ) {
     data class Response(
         @SerializedName("GetShopProduct")

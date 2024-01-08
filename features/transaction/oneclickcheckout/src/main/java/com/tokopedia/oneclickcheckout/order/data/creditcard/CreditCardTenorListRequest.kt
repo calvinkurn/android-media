@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.data.creditcard
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
 
 data class CreditCardTenorListRequest(
 
@@ -34,7 +35,10 @@ data class CreditCardTenorListRequest(
     val timestamp: String = "",
 
     @SerializedName("additional_data")
-    val additionalData: String = ""
+    val additionalData: String = "",
+
+    @SerializedName("detail_data")
+    val detailData: PaymentRequest
 )
 
 data class CartDetailsItem(

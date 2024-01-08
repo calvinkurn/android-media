@@ -294,6 +294,8 @@ object ShopPageTrackingConstant {
     const val DIMENSION_45 = "dimension45"
     const val DIMENSION_38 = "dimension38"
     const val DIMENSION_40 = "dimension40"
+    const val DIMENSION_56 = "dimension56" // warehouse id
+    const val DIMENSION_58 = "dimension58" // is fulfilment
     const val DIMENSION_83 = "dimension83"
     const val DIMENSION_87 = "dimension87"
     const val DIMENSION_117 = "dimension117"

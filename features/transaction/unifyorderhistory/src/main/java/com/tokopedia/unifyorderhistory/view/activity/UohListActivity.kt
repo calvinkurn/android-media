@@ -10,11 +10,7 @@ import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.unifyorderhistory.R
 import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
 
-/**
- * Created by fwidjaja on 29/06/20.
- */
-
-// Uoh = Unified Order History
+// Uoh = Unify Order History
 class UohListActivity : BaseSimpleActivity() {
 
     override fun getLayoutRes() = R.layout.activity_uoh

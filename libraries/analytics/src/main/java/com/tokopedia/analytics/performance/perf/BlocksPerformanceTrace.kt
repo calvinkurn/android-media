@@ -13,6 +13,7 @@ import android.view.View
 import androidx.lifecycle.LifecycleCoroutineScope
 import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.IrisPerformanceData
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -40,6 +41,8 @@ class BlocksPerformanceTrace(
 ) {
     companion object {
         const val TYPE_TTIL = "TTIL"
+        const val TYPE_TTFL = "TTFL"
+
         const val ATTR_CONDITION = "State"
         const val ATTR_BLOCKS = "Blocks"
 
@@ -56,6 +59,7 @@ class BlocksPerformanceTrace(
 
     private var summaryModel: AtomicReference<BlocksSummaryModel> =
         AtomicReference(BlocksSummaryModel())
+    private var pagePerformanceMonitoring: PerformanceMonitoring? = PerformanceMonitoring()
     private var TTFLperformanceMonitoring: PerformanceMonitoring? = PerformanceMonitoring()
     private var TTILperformanceMonitoring: PerformanceMonitoring? = PerformanceMonitoring()
 
@@ -130,6 +134,7 @@ class BlocksPerformanceTrace(
                 "PageLoadTime.AsyncTTIL$traceName",
                 COOKIE_TTIL
             )
+            pagePerformanceMonitoring?.startTrace("block_perf_trace_$traceName")
             TTFLperformanceMonitoring?.startTrace("ttfl_perf_trace_$traceName")
             TTILperformanceMonitoring?.startTrace("ttil_perf_trace_$traceName")
 
@@ -304,10 +309,25 @@ class BlocksPerformanceTrace(
         )
         finishTTIL(BlocksPerfState.STATE_SUCCESS, listOfLoadableComponent)
         trackIris()
+        trackFirebase()
+
         this.onLaunchTimeFinished = null
         TTILperformanceMonitoring = null
         performanceTraceJob?.cancel()
         Log.d("BlocksTrace", "TTIL: " + summaryModel.get().ttil())
+    }
+
+    private fun trackFirebase() {
+        pagePerformanceMonitoring?.putMetric(
+            TYPE_TTFL,
+            summaryModel.get().ttfl()
+        )
+        pagePerformanceMonitoring?.putMetric(
+            TYPE_TTIL,
+            summaryModel.get().ttil()
+        )
+        pagePerformanceMonitoring?.stopTrace()
+        pagePerformanceMonitoring = null
     }
 
     private fun trackIris() {

@@ -2114,6 +2114,17 @@ class CheckoutViewModelLogisticTest : BaseCheckoutViewModelTest() {
                 }
             )
         )
+        assertEquals(
+            false,
+            viewModel.shouldAutoLoadCourier(
+                CheckoutOrderModel("123", shippingId = 1, spId = 1, isError = true),
+                RecipientAddressModel().apply {
+                    this.isTradeIn = true
+                    this.selectedTabIndex = 0
+                    this.provinceName = "a"
+                }
+            )
+        )
     }
 
     @Test

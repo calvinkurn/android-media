@@ -32,7 +32,8 @@ class DynamicPaymentFeeUseCase @Inject constructor(
                         PROFILE_CODE_PARAM to params.profileCode,
                         GATEWAY_CODE_PARAM to params.gatewayCode,
                         PAYMENT_AMOUNT_PARAM to params.transactionAmount,
-                        ADDITIONAL_DATA_PARAM to params.additionalData
+                        ADDITIONAL_DATA_PARAM to params.additionalData,
+                        DETAIL_DATA_PARAM to params.paymentRequest
                     )
                 )
             )
@@ -57,10 +58,11 @@ class DynamicPaymentFeeUseCase @Inject constructor(
         private const val GATEWAY_CODE_PARAM = "gatewayCode"
         private const val PAYMENT_AMOUNT_PARAM = "paymentAmount"
         private const val ADDITIONAL_DATA_PARAM = "additionalData"
+        private const val DETAIL_DATA_PARAM = "detailData"
 
         private const val QUERY = """
-            query getPaymentFee(${"$"}profileCode: String!, ${"$"}gatewayCode: String!, ${"$"}paymentAmount: Float!, ${"$"}additionalData: String!) {
-                getPaymentFee(profileCode: ${"$"}profileCode, gatewayCode: ${"$"}gatewayCode, paymentAmount: ${"$"}paymentAmount, additionalData: ${"$"}additionalData) {
+            query getPaymentFee(${"$"}profileCode: String!, ${"$"}gatewayCode: String!, ${"$"}paymentAmount: Float!, ${"$"}additionalData: String!, ${"$"}detailData: JSONType) {
+                getPaymentFee(profileCode: ${"$"}profileCode, gatewayCode: ${"$"}gatewayCode, paymentAmount: ${"$"}paymentAmount, additionalData: ${"$"}additionalData, detailData: ${"$"}detailData) {
                     success
                     errors {
                         code
