@@ -20,6 +20,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -234,6 +236,10 @@ open class HomeAccountUserFragment :
     var balanceAndPointCardView: CardUnify? = null
     var memberCardView: CardUnify? = null
 
+    private val startEditProfileForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _: ActivityResult ->
+        viewModel.getBuyerData(BiometricPromptHelper.isBiometricAvailableActivity(activity))
+    }
+
     override fun getScreenName(): String = "homeAccountUserFragment"
 
     override fun initInjector() {
@@ -386,7 +392,15 @@ open class HomeAccountUserFragment :
     override fun onEditProfileClicked() {
         val label = getLabelProfileManagement()
         homeAccountAnalytic.eventClickProfile(label)
-        goToApplink(ApplinkConstInternalUserPlatform.SETTING_PROFILE)
+        goToEditProfile()
+    }
+
+    private fun goToEditProfile() {
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalUserPlatform.SETTING_PROFILE
+        )
+        startEditProfileForResult.launch(intent)
     }
 
     override fun onMemberItemClicked(applink: String, type: Int) {
