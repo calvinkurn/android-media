@@ -1,7 +1,7 @@
 package com.tokopedia.analyticsdebugger.debugger.data.repository
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.analyticsdebugger.debugger.data.source.IrisSaveLogDBSource
+import com.tokopedia.analyticsdebugger.debugger.data.source.ServerLogDBSource
 import com.tokopedia.analyticsdebugger.debugger.helper.formatDataExcerpt
 import com.tokopedia.analyticsdebugger.debugger.ui.model.AnalyticsDebuggerViewModel
 import com.tokopedia.usecase.RequestParams
@@ -11,8 +11,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import javax.inject.Inject
 
-class IrisSaveLogLocalRepository @Inject
-internal constructor(private val dbSource: IrisSaveLogDBSource) {
+class ServerLogLocalRepository @Inject
+internal constructor(private val dbSource: ServerLogDBSource) {
     private val dateFormat: DateFormat
 
     init {
@@ -38,9 +38,5 @@ internal constructor(private val dbSource: IrisSaveLogDBSource) {
 
                     Observable.just(viewModel)
                 }.toList()
-    }
-
-    fun getCount():Int {
-        return dbSource.count()
     }
 }
