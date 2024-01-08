@@ -10,9 +10,9 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
-class MerchantVoucherGridLoadFirstPageCouponTest: MerchantVoucherGridViewModelFixture() {
+class MerchantVoucherGridLoadFirstPageCouponTest : MerchantVoucherGridViewModelFixture() {
     @Test
-    fun `When use case is null then the result of loading the first page coupon should be shimmer`() {
+    fun `When use case is null then the result of loading the first page coupon should be an error`() {
         // inject use case
         viewModel.useCase = null
 
@@ -26,36 +26,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest: MerchantVoucherGridViewModelFi
 
         // compare to the expected result
         viewModel.couponList
-            .verifySuccessEquals(expected)
-    }
-
-    @Test
-    fun `When use case is false then the result of loading the first page coupon should be shimmer`() {
-        // stub necessary data
-        stubComponent(
-            componentAdditionalInfo = ComponentAdditionalInfo(
-                nextPage = String.EMPTY,
-                enabled = false,
-                totalProductData = TotalProductData()
-            ),
-            componentItems = emptyList()
-        )
-
-        stubLoadFirstPage(
-            hasLoaded = false
-        )
-
-        // create expected result
-        val expected = arrayListOf<ComponentsItem>()
-
-        expected.addShimmer()
-
-        // load first page
-        viewModel.loadFirstPageCoupon()
-
-        // compare to the expected result
-        viewModel.couponList
-            .verifySuccessEquals(expected)
+            .verifyFailEquals(MerchantVoucherGridViewModel.ERROR_MESSAGE_EMPTY_DATA)
     }
 
     @Test
@@ -132,20 +103,20 @@ class MerchantVoucherGridLoadFirstPageCouponTest: MerchantVoucherGridViewModelFi
     }
 
     @Test
-    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && component additional info is null, so the result should get only voucher list`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && component additional info is null, so the result should get only voucher list`() {
         // stub necessary data
         val componentItems = listOf(
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             )
         )
 
@@ -180,20 +151,20 @@ class MerchantVoucherGridLoadFirstPageCouponTest: MerchantVoucherGridViewModelFi
     }
 
     @Test
-    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && redirection is null, so the result should get only voucher list`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && redirection is null, so the result should get only voucher list`() {
         // stub necessary data
         val componentItems = listOf(
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             )
         )
 
@@ -233,7 +204,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest: MerchantVoucherGridViewModelFi
     }
 
     @Test
-    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && cta text is empty, so the result should get only voucher list`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && cta text is empty, so the result should get only voucher list`() {
         // stub necessary data
         val redirection = Redirection(
             ctaText = String.EMPTY
@@ -241,15 +212,15 @@ class MerchantVoucherGridLoadFirstPageCouponTest: MerchantVoucherGridViewModelFi
         val componentItems = listOf(
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             )
         )
 
@@ -289,7 +260,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest: MerchantVoucherGridViewModelFi
     }
 
     @Test
-    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && cta text is null, so the result should get only voucher list`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && cta text is null, so the result should get only voucher list`() {
         // stub necessary data
         val redirection = Redirection(
             ctaText = null
@@ -297,15 +268,15 @@ class MerchantVoucherGridLoadFirstPageCouponTest: MerchantVoucherGridViewModelFi
         val componentItems = listOf(
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             )
         )
 
@@ -345,7 +316,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest: MerchantVoucherGridViewModelFi
     }
 
     @Test
-    fun `When use case is true and voucher list has 3 items with additional info that component has next page && cta text is not empty, so the result should get only voucher list`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component has next page && cta text is not empty, so the result should get only voucher list`() {
         // stub necessary data
         val redirection = Redirection(
             ctaText = "Lihat Semua Kupon"
@@ -353,15 +324,15 @@ class MerchantVoucherGridLoadFirstPageCouponTest: MerchantVoucherGridViewModelFi
         val componentItems = listOf(
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             )
         )
 
@@ -401,7 +372,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest: MerchantVoucherGridViewModelFi
     }
 
     @Test
-    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && cta text is not empty, so the result should get only voucher list`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && cta text is not empty, so the result should get only voucher list`() {
         // stub necessary data
         val redirection = Redirection(
             ctaText = "Lihat Semua Kupon"
@@ -409,15 +380,15 @@ class MerchantVoucherGridLoadFirstPageCouponTest: MerchantVoucherGridViewModelFi
         val componentItems = listOf(
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             )
         )
 
@@ -457,20 +428,20 @@ class MerchantVoucherGridLoadFirstPageCouponTest: MerchantVoucherGridViewModelFi
     }
 
     @Test
-    fun `When use case is true and voucher list has 3 items with additional info that component has next page && redirection is null, so the result should get voucher list and shimmer`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component has next page && redirection is null, so the result should get voucher list and shimmer`() {
         // stub necessary data
         val componentItems = listOf(
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             )
         )
 
@@ -507,7 +478,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest: MerchantVoucherGridViewModelFi
     }
 
     @Test
-    fun `When use case is true and voucher list has 3 items with additional info that component has next page && cta text is null, so the result should get voucher list and shimmer`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component has next page && cta text is null, so the result should get voucher list and shimmer`() {
         // stub necessary data
         val redirection = Redirection(
             ctaText = null
@@ -515,15 +486,15 @@ class MerchantVoucherGridLoadFirstPageCouponTest: MerchantVoucherGridViewModelFi
         val componentItems = listOf(
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             )
         )
 
@@ -560,7 +531,7 @@ class MerchantVoucherGridLoadFirstPageCouponTest: MerchantVoucherGridViewModelFi
     }
 
     @Test
-    fun `When use case is true and voucher list has 3 items with additional info that component has next page && cta text is empty, so the result should get voucher list and shimmer`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component has next page && cta text is empty, so the result should get voucher list and shimmer`() {
         // stub necessary data
         val redirection = Redirection(
             ctaText = String.EMPTY
@@ -568,15 +539,15 @@ class MerchantVoucherGridLoadFirstPageCouponTest: MerchantVoucherGridViewModelFi
         val componentItems = listOf(
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             )
         )
 
