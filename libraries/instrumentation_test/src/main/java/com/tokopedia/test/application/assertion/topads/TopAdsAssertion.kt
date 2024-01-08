@@ -21,12 +21,20 @@ import org.junit.Assert
  * Created by DevAra
  * TopAds Assertion for instrumentation test
  */
-class TopAdsAssertion(val context: Context,
-                      val topAdsVerificatorInterface: TopAdsVerificatorInterface) {
+class TopAdsAssertion(
+    val context: Context,
+    topAdsVerificatorInterface: TopAdsVerificatorInterface
+) {
+
     private var requestParams: RequestParams = RequestParams.create()
+    private var mTopAdsVerificatorInterface: TopAdsVerificatorInterface = topAdsVerificatorInterface
 
     init {
         deleteTopAdsVerificatorReportData(context)
+    }
+
+    fun setTopAdsCount(topAdsVerificatorInterface: TopAdsVerificatorInterface) {
+        mTopAdsVerificatorInterface = topAdsVerificatorInterface
     }
 
     /**
@@ -56,7 +64,7 @@ class TopAdsAssertion(val context: Context,
 
         verifyTopAdsExists(allCount)
         verifyImpressionMoreThanClick(allCount, impressedCount, clickCount)
-        verifyImpressionMoreThanResponse(impressedCount, topAdsVerificatorInterface)
+        verifyImpressionMoreThanResponse(impressedCount, mTopAdsVerificatorInterface)
         verifyUrlWithTopAdsVerificator(callerClass)
     }
 
