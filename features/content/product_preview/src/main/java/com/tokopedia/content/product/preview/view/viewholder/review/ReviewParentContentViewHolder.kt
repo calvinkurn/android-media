@@ -1,5 +1,7 @@
 package com.tokopedia.content.product.preview.view.viewholder.review
 
+import android.view.GestureDetector
+import android.view.MotionEvent
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.databinding.ItemReviewParentContentBinding
@@ -20,10 +22,7 @@ class ReviewParentContentViewHolder(
         bindAuthor(item.author)
         bindDescription(item.description)
         bindLike(item.likeState)
-
-        binding.ivReviewMenu.setOnClickListener {
-            listener.onMenuClicked(item.menus)
-        }
+        setupTap(item)
     }
 
     private fun bindAuthor(author: AuthorUiModel) = with(binding.layoutAuthorReview) {
@@ -61,6 +60,24 @@ class ReviewParentContentViewHolder(
         tvLikeCount.text = state.count.toString()
         root.setOnClickListener {
             listener.onLike(state)
+        }
+    }
+
+    private fun setupTap(item: ReviewUiModel) {
+        binding.ivReviewMenu.setOnClickListener {
+            listener.onMenuClicked(item.menus)
+        }
+
+        val gesture = GestureDetector(
+            binding.root.context,
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onDoubleTap(e: MotionEvent): Boolean = true
+            })
+
+        //TODO: adjust click animation, move [FeedLikeAnimationComponent, view_like] to content_common
+        binding.layoutLikeReview.root.setOnTouchListener { _, motionEvent ->
+            gesture.onTouchEvent(motionEvent)
+            true
         }
     }
 
