@@ -11,8 +11,10 @@ import android.widget.LinearLayout
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -89,7 +91,10 @@ class AppDownloadingBottomSheet :
                     }
 
                     is DownloadingUiState.Downloading -> {
-                        val apkUrl = APK_URL.format(appBetaVersionInfoModel?.versionName, appBetaVersionInfoModel?.versionCode)
+                        val apkUrl = APK_URL.format(
+                            appBetaVersionInfoModel?.versionName,
+                            appBetaVersionInfoModel?.versionCode
+                        )
                         viewModel.startDownload(apkUrl)
 
                         AppDownloadingState(
@@ -160,15 +165,17 @@ class AppDownloadingBottomSheet :
 
     private fun hideKnobDownloadingUiState(view: View) {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.downloadingUiState.collectLatest {
-                when (it) {
-                    is DownloadingUiState.Downloading -> {
-                        val viewTarget: LinearLayout =
-                            view.findViewById(unifycomponentsR.id.bottom_sheet_wrapper)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.downloadingUiState.collectLatest {
+                    when (it) {
+                        is DownloadingUiState.Downloading -> {
+                            val viewTarget: LinearLayout =
+                                view.findViewById(unifycomponentsR.id.bottom_sheet_wrapper)
 
-                        isCancelable = false
-                        dialog?.setCanceledOnTouchOutside(false)
-                        BottomSheetUnify.bottomSheetBehaviorKnob(viewTarget, false)
+                            isCancelable = false
+                            dialog?.setCanceledOnTouchOutside(false)
+                            BottomSheetUnify.bottomSheetBehaviorKnob(viewTarget, false)
+                        }
                     }
                 }
             }
@@ -180,6 +187,7 @@ class AppDownloadingBottomSheet :
             is AppDownloadingUiEvent.OnDownloadSuccess -> {
                 onDownloadSuccess(uiEvent.fileNamePath)
             }
+
             is AppDownloadingUiEvent.OnDownloadFailed -> {
                 if (uiEvent.statusColumn == DownloadManager.ERROR_INSUFFICIENT_SPACE) {
                     viewModel.updateInsufficientSpaceState()
