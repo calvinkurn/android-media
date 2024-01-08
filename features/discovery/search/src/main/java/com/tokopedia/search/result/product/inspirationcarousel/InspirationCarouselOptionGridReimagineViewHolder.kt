@@ -12,7 +12,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 class InspirationCarouselOptionGridReimagineViewHolder(
     itemView: View,
     private val inspirationCarouselListener: InspirationCarouselListener,
-    private val hasMultilineName: Boolean,
 ): AbstractViewHolder<InspirationCarouselDataView.Option.Product>(itemView) {
 
     private val binding: SearchInspirationCarouselOptionGridReimagineBinding? by viewBinding()
@@ -50,7 +49,7 @@ class InspirationCarouselOptionGridReimagineViewHolder(
                     position = labelGroup.position,
                     type = labelGroup.type,
                     imageUrl = labelGroup.imageUrl,
-                    styles = labelGroup.style.map { item ->
+                    styles = labelGroup.styleList.map { item ->
                         LabelGroup.Style(item.key, item.value)
                     }
                 )
@@ -59,7 +58,6 @@ class InspirationCarouselOptionGridReimagineViewHolder(
                 title = shopBadge?.title ?: "",
                 imageUrl = shopBadge?.imageUrl ?: "",
             ),
-            hasMultilineName = hasMultilineName,
         )
     }
 

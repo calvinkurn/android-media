@@ -12,7 +12,6 @@ import com.tokopedia.home_component_header.view.HomeComponentHeaderListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup.*
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationCarouselOptionListAtcBinding
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
@@ -198,8 +197,8 @@ class InspirationListAtcViewHolder(
                             position = labelGroup.position,
                             type = labelGroup.type,
                             imageUrl = labelGroup.imageUrl,
-                            styles = labelGroup.style.map { item ->
-                                Style(item.key, item.value)
+                            styles = labelGroup.styleList.map { item ->
+                                LabelGroupReimagine.Style(item.key, item.value)
                             }
                         )
                     },

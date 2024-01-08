@@ -11,7 +11,6 @@ data class ProductCardModel(
     val rating: String = "",
     val shopBadge: ShopBadge = ShopBadge(),
     val freeShipping: FreeShipping = FreeShipping(),
-    val hasMultilineName: Boolean = false,
     val hasAddToCart: Boolean = false,
     val videoUrl: String = "",
     val hasThreeDots: Boolean = false,

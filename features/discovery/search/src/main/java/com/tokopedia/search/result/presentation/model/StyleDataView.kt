@@ -7,13 +7,7 @@ data class StyleDataView(
     val value: String = "",
 ) {
     companion object {
-        fun create(style: List<SearchProductV5.Data.Style>): List<StyleDataView> {
-            return style.map { item ->
-                StyleDataView(
-                    item.key,
-                    item.value
-                )
-            }
-        }
+        fun create(style: SearchProductV5.Data.Style): StyleDataView =
+            StyleDataView(style.key, style.value)
     }
 }

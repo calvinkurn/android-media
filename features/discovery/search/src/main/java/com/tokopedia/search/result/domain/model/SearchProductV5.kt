@@ -450,7 +450,7 @@ data class SearchProductV5(
 
             @SerializedName("styles")
             @Expose
-            val style: List<Style> = emptyList(),
+            val styleList: List<Style> = listOf(),
         )
 
         data class Style(

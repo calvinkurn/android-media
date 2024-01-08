@@ -10,14 +10,14 @@ data class LabelGroupDataView(
     val type: String,
     val title: String,
     val imageUrl: String = "",
-    val style: List<StyleDataView> = emptyList(),
+    val styleList: List<StyleDataView> = listOf(),
 ) {
 
     fun isLabelIntegrity() = position == LABEL_INTEGRITY
 
     fun isLabelFulfillment() = position == LABEL_FULFILLMENT
 
-    fun hasStyle() = style.isNotEmpty()
+    fun hasStyle() = styleList.isNotEmpty()
 
     fun getPositionTitle(): String = "$position.$title"
 
@@ -29,6 +29,7 @@ data class LabelGroupDataView(
                 productLabelGroup.title,
                 productLabelGroup.url,
             )
+
         fun hasFulfillment(labelGroupList: List<LabelGroupDataView>?): Boolean =
             labelGroupList?.any(LabelGroupDataView::isLabelFulfillment) == true
 
@@ -38,7 +39,7 @@ data class LabelGroupDataView(
                 labelGroup.type,
                 labelGroup.title,
                 labelGroup.url,
-                StyleDataView.create(labelGroup.style)
+                labelGroup.styleList.map(StyleDataView::create),
             )
     }
 }

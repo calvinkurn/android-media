@@ -569,11 +569,19 @@ internal open class ProductListPresenterTestFixtures {
         productItem.categoryBreadcrumb shouldBe organicProduct.category.breadcrumb
 
         productItem.labelGroupList?.size shouldBe organicProduct.labelGroupList.size
-        productItem.labelGroupList!!.forEachIndexed { index, labelGroupDataView ->
-            labelGroupDataView.position shouldBe organicProduct.labelGroupList[index].position
-            labelGroupDataView.title shouldBe organicProduct.labelGroupList[index].title
-            labelGroupDataView.type shouldBe organicProduct.labelGroupList[index].type
-            labelGroupDataView.imageUrl shouldBe organicProduct.labelGroupList[index].url
+        productItem.labelGroupList!!.forEachIndexed { labelGroupIndex, labelGroupDataView ->
+            val expectedLabelGroup = organicProduct.labelGroupList[labelGroupIndex]
+
+            labelGroupDataView.position shouldBe expectedLabelGroup.position
+            labelGroupDataView.title shouldBe expectedLabelGroup.title
+            labelGroupDataView.type shouldBe expectedLabelGroup.type
+            labelGroupDataView.imageUrl shouldBe expectedLabelGroup.url
+
+            labelGroupDataView.styleList.forEachIndexed { styleIndex, styleDataView ->
+                val expectedStyle = expectedLabelGroup.styleList[styleIndex]
+                styleDataView.key shouldBe expectedStyle.key
+                styleDataView.value shouldBe expectedStyle.value
+            }
         }
 
         productItem.labelGroupVariantList.size shouldBe organicProduct.labelGroupVariantList.size

@@ -22,7 +22,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup.*
+import com.tokopedia.productcard.reimagine.ProductCardModel.LabelGroup.Style
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationCarouselBinding
@@ -264,7 +264,7 @@ class InspirationCarouselViewHolder(
                             position = labelGroup.position,
                             type = labelGroup.type,
                             imageUrl = labelGroup.imageUrl,
-                            styles = labelGroup.style.map { item ->
+                            styles = labelGroup.styleList.map { item ->
                                 Style(item.key, item.value)
                             }
                         )
@@ -273,7 +273,6 @@ class InspirationCarouselViewHolder(
                         title = shopBadge?.title ?: "",
                         imageUrl = shopBadge?.imageUrl ?: "",
                     ),
-                    hasMultilineName = reimagineSearch2Component.hasMultilineProductName(),
                 ),
                 impressHolder = { product },
                 onImpressed = {
