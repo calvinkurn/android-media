@@ -7,7 +7,8 @@ sealed interface ShareExAction {
         val id: String,
         val source: ShareExPageTypeEnum,
         val defaultUrl: String,
-        val defaultImageUrl: String
+        val defaultImageUrl: String,
+        val selectedIdChip: String
     ) : ShareExAction
     object InitializePage : ShareExAction
     data class UpdateShareBody(val position: Int) : ShareExAction

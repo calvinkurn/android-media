@@ -23,3 +23,7 @@ fun Activity.getStringExtraFromIntentOrQuery(key: String): String? {
     // If not found in either intent extra or query parameters, return null
     return null
 }
+
+fun List<String>.findIndexIgnoreCase(searchItem: String): Int {
+    return this.indexOfFirst { it.equals(searchItem, ignoreCase = true) }
+}

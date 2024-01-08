@@ -35,6 +35,7 @@ class ShareExViewModel @Inject constructor(
 
     // Cache the model from activity and body switching when chip clicked
     private var _bottomSheetModel: ShareExBottomSheetModel? = null
+    private var _selectedIdChip: String = ""
 
     // Cache the default url
     private var _defaultUrl = ""
@@ -72,7 +73,7 @@ class ShareExViewModel @Inject constructor(
         onEach {
             when (it) {
                 is ShareExAction.FetchShareData -> {
-                    getShareData(it.id, it.source, it.defaultUrl, it.defaultImageUrl)
+                    getShareData(it.id, it.source, it.defaultUrl, it.defaultImageUrl, it.selectedIdChip)
                 }
                 is ShareExAction.InitializePage -> {
                     getShareBottomSheetData()
@@ -94,12 +95,14 @@ class ShareExViewModel @Inject constructor(
         id: String,
         pageTypeEnum: ShareExPageTypeEnum,
         defaultUrl: String,
-        defaultImageUrl: String
+        defaultImageUrl: String,
+        selectedIdChip: String
     ) {
         viewModelScope.launch {
             try {
                 _defaultUrl = defaultUrl
                 _defaultImageUrl = defaultImageUrl
+                _selectedIdChip = selectedIdChip
                 getSharePropertiesUseCase.getData(
                     ShareExProductBottomSheetRequest(
                         pageType = pageTypeEnum.value,
@@ -152,7 +155,7 @@ class ShareExViewModel @Inject constructor(
     }
 
     private fun updateBottomSheetUiState() {
-        val uiResult = _bottomSheetModel?.map()
+        val uiResult = _bottomSheetModel?.map(_selectedIdChip)
         _bottomSheetUiState.update { uiState ->
             uiState.copy(
                 title = _bottomSheetModel?.title ?: "",

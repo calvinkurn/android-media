@@ -16,7 +16,16 @@ import com.tokopedia.shareexperience.ui.model.chip.ShareExChipsUiModel
 import com.tokopedia.shareexperience.ui.model.image.ShareExImageCarouselUiModel
 import com.tokopedia.shareexperience.ui.model.image.ShareExImageUiModel
 
-fun ShareExBottomSheetModel.map(position: Int = 0): List<Visitable<in ShareExTypeFactory>> {
+fun ShareExBottomSheetModel.map(
+    selectedIdChip: String
+): List<Visitable<in ShareExTypeFactory>> {
+    val position = this.body.listChip.findIndexIgnoreCase(selectedIdChip).coerceAtLeast(0)
+    return map(position = position)
+}
+
+fun ShareExBottomSheetModel.map(
+    position: Int
+): List<Visitable<in ShareExTypeFactory>> {
     val result = arrayListOf<Visitable<in ShareExTypeFactory>>()
 
     // Subtitle UI

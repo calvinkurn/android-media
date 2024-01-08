@@ -1,7 +1,6 @@
 package com.tokopedia.shareexperience.ui
 
 import android.os.Bundle
-import android.view.View
 import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -20,7 +19,6 @@ import com.tokopedia.shareexperience.data.di.ShareExComponent
 import com.tokopedia.shareexperience.data.util.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.databinding.ShareexperienceLoadingActivityBinding
 import com.tokopedia.shareexperience.ui.util.getStringExtraFromIntentOrQuery
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -70,17 +68,17 @@ class ShareExLoadingActivity : BaseActivity(), HasComponent<ShareExComponent> {
         val sourceEnum = ShareExPageTypeEnum.fromValue(source)
         val defaultUrl = this.getStringExtraFromIntentOrQuery(ApplinkConstInternalCommunication.SHARE_DEFAULT_URL) ?: ""
         val defaultImageUrl = this.getStringExtraFromIntentOrQuery(ApplinkConstInternalCommunication.SHARE_DEFAULT_IMAGE_URL) ?: ""
+        val selectedIdChip = this.getStringExtraFromIntentOrQuery(ApplinkConstInternalCommunication.SELECTED_ID) ?: ""
         viewModel.processAction(
             ShareExAction.FetchShareData(
                 id,
                 sourceEnum,
                 defaultUrl,
-                defaultImageUrl
+                defaultImageUrl,
+                selectedIdChip
             )
         )
     }
-
-
 
     private fun initObservers() {
         lifecycleScope.launch {
