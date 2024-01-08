@@ -20,7 +20,7 @@ class SupportingBrandUseCase @Inject constructor(private val repository: Support
         componentId: String,
         pageEndPoint: String,
         limit: Int = BRAND_PER_PAGE
-    ): Boolean {
+    ): SupportingBrandLoadState {
         val component = getComponent(componentId, pageEndPoint)
         val paramWithoutRpc = getMapWithoutRpc(pageEndPoint)
         component?.let {
@@ -28,7 +28,7 @@ class SupportingBrandUseCase @Inject constructor(private val repository: Support
                 if (properties.limitProduct && properties.limitNumber.toIntOrZero() ==
                     it.getComponentsItem()?.size
                 ) {
-                    return false
+                    return SupportingBrandLoadState.FAILED
                 }
             }
             val isDynamic = it.properties?.dynamic ?: false
@@ -58,10 +58,10 @@ class SupportingBrandUseCase @Inject constructor(private val repository: Support
 
             it.noOfPagesLoaded = it.pageLoadedCounter
             it.nextPageKey = nextPage
-            if (shopCardListData.isEmpty()) return false else it.pageLoadedCounter += 1
-            return true
+            if (shopCardListData.isEmpty()) return SupportingBrandLoadState.REACH_END_OF_PAGE else it.pageLoadedCounter += 1
+            return SupportingBrandLoadState.LOAD_MORE
         }
-        return false
+        return SupportingBrandLoadState.FAILED
     }
 
     private fun ComponentsItem.appendNextPageData(

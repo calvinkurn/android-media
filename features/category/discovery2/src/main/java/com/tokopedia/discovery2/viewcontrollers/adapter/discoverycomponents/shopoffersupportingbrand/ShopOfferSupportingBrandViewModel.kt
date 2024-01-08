@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.usecase.supportingbrand.SupportingBrandLoadState
 import com.tokopedia.discovery2.usecase.supportingbrand.SupportingBrandUseCase
 import com.tokopedia.discovery2.usecase.supportingbrand.SupportingBrandUseCase.Companion.BRAND_PER_PAGE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -56,18 +57,20 @@ class ShopOfferSupportingBrandViewModel(
 
     fun hasHeader(): Boolean = component.getPropertyHeader() != null
 
-    fun getProductList(): List<ComponentsItem>? = component.getComponentsItem()
+    private fun getProductList(): List<ComponentsItem>? = component.getComponentsItem()
 
     fun loadPageBrand() {
         launchCatchError(
             block = {
-                useCase?.loadPageComponents(
+                val loadState = useCase?.loadPageComponents(
                     componentId = component.id,
                     pageEndPoint = component.pageEndPoint
                 )
                 component.shouldRefreshComponent = null
-                setSupportingBrandList {
-                    _brands.value = Fail(Throwable(EMPTY_DATA_MESSAGE))
+                loadState?.let {
+                    setSupportingBrandList(it) {
+                        _brands.value = Fail(Throwable(EMPTY_DATA_MESSAGE))
+                    }
                 }
             },
             onError = {
@@ -84,13 +87,14 @@ class ShopOfferSupportingBrandViewModel(
     fun loadMore() {
         isLoading = true
         launchCatchError(block = {
-            when {
-                useCase?.loadPageComponents(component.id, component.pageEndPoint) == true -> {
-                    setSupportingBrandList {}
+            when (val loadState =
+                useCase?.loadPageComponents(component.id, component.pageEndPoint)) {
+                SupportingBrandLoadState.LOAD_MORE -> {
+                    setSupportingBrandList(loadState) {}
                 }
 
-                hasNextPage().not() -> {
-                    setSupportingBrandList {}
+                SupportingBrandLoadState.REACH_END_OF_PAGE -> {
+                    setSupportingBrandList(loadState) {}
                 }
 
                 else -> {
@@ -110,23 +114,27 @@ class ShopOfferSupportingBrandViewModel(
     }
 
     private fun setSupportingBrandList(
+        loadState: SupportingBrandLoadState,
         onEmptyListener: () -> Unit
     ) {
         isLoading = false
         val productList = getProductList()
 
         if (!productList.isNullOrEmpty()) {
-            _brands.value = Success(ArrayList(addLoadMore(productList)))
+            _brands.value = Success(ArrayList(addLoadMore(productList, loadState)))
         } else {
             onEmptyListener.invoke()
         }
     }
 
-    private fun addLoadMore(productDataList: List<ComponentsItem>): ArrayList<ComponentsItem> {
+    private fun addLoadMore(
+        productDataList: List<ComponentsItem>,
+        loadState: SupportingBrandLoadState
+    ): ArrayList<ComponentsItem> {
         val productList: ArrayList<ComponentsItem> = ArrayList()
         productList.addAll(productDataList)
 
-        return if (hasNextPage()) {
+        return if (loadState == SupportingBrandLoadState.LOAD_MORE) {
             productList.addLoadMore(component)
             productList
         } else {
