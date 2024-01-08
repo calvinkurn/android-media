@@ -239,6 +239,10 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         animateScannerLaser();
     }
 
+    @Override
+    public void openActivity(String url) {
+        RouteManager.route(this, url);
+    }
 
     private DecoratedBarcodeView.TorchListener getListener() {
         return new DecoratedBarcodeView.TorchListener() {

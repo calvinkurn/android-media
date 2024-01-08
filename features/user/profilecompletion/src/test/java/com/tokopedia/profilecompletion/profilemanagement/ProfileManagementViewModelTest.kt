@@ -1,8 +1,9 @@
 package com.tokopedia.profilecompletion.profilemanagement
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.profilecompletion.domain.GetUrlProfileManagementResult
-import com.tokopedia.profilecompletion.domain.GetUrlProfileManagementUseCase
+import com.tokopedia.profilecompletion.data.SeamlessData
+import com.tokopedia.profilecompletion.domain.GetGotoCookieResult
+import com.tokopedia.profilecompletion.domain.GetGotoCookieUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import io.mockk.coEvery
@@ -21,52 +22,55 @@ class ProfileManagementViewModelTest {
     private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var viewModel: ProfileManagementViewModel
 
-    private val getUrlProfileManagementUseCase = mockk<GetUrlProfileManagementUseCase>(relaxed = true)
+    private val getGotoCookieUseCase = mockk<GetGotoCookieUseCase>(relaxed = true)
 
     @Before
     fun setup() {
         viewModel = ProfileManagementViewModel(
-            getUrlProfileManagementUseCase,
+            getGotoCookieUseCase,
             dispatcher
         )
     }
 
     @Test
     fun `when get url profile management then return success`() {
-        val url = "https://accounts.goto-products.com"
-        val expected = GetUrlProfileManagementResult.Success(url)
+        val seamlessData = SeamlessData(
+            backUrl = "tokopedia://back",
+            expiredAt = 100000L,
+            token = "qwerty"
+        )
+        val expected = GetGotoCookieResult.Success(seamlessData)
 
-        coEvery { getUrlProfileManagementUseCase.invoke(Unit) } returns expected
+        coEvery { getGotoCookieUseCase.invoke(any()) } returns expected
         viewModel.getProfileManagementData()
 
         val result = viewModel.getUrlProfileManagement.getOrAwaitValue()
-        assertTrue(result is GetUrlProfileManagementResult.Success)
-        assertEquals(url, viewModel.url)
+        assertTrue(result is GetGotoCookieResult.Success)
+        assertEquals(seamlessData, result.seamlessData)
     }
 
     @Test
     fun `when get url profile management then return failed`() {
-        val url = ""
-        val expected = GetUrlProfileManagementResult.Failed(Throwable())
+        val throwable = Throwable(message = "error")
+        val expected = GetGotoCookieResult.Failed(throwable)
 
-        coEvery { getUrlProfileManagementUseCase.invoke(Unit) } returns expected
+        coEvery { getGotoCookieUseCase.invoke(any()) } returns expected
         viewModel.getProfileManagementData()
 
         val result = viewModel.getUrlProfileManagement.getOrAwaitValue()
-        assertTrue(result is GetUrlProfileManagementResult.Failed)
-        assertEquals(url, viewModel.url)
+        assertTrue(result is GetGotoCookieResult.Failed)
+        assertEquals(throwable, result.throwable)
     }
 
     @Test
     fun `when get url profile management then return error`() {
         val throwable = Throwable()
 
-        coEvery { getUrlProfileManagementUseCase.invoke(Unit) } throws throwable
+        coEvery { getGotoCookieUseCase.invoke(any()) } throws throwable
         viewModel.getProfileManagementData()
 
         val result = viewModel.getUrlProfileManagement.getOrAwaitValue()
-        assertTrue(result is GetUrlProfileManagementResult.Failed)
-        assertTrue(viewModel.url.isEmpty())
+        assertTrue(result is GetGotoCookieResult.Failed)
         assertEquals(throwable, result.throwable)
     }
 
