@@ -140,11 +140,11 @@ class QrEventBottomSheet: BottomSheetUnify() {
     }
 
     private fun enableScreenCapture() {
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
     }
 
     private fun disableScreenCapture() {
-        activity?.window?.setFlags(
+        dialog?.window?.setFlags(
             WindowManager.LayoutParams.FLAG_SECURE,
             WindowManager.LayoutParams.FLAG_SECURE
         )
