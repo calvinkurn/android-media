@@ -66,6 +66,7 @@
     <string name="view_analytics_log">View Analytics Log</string>
     <string name="view_iris_save_log">View Iris Save Log</string>
     <string name="view_iris_send_log">View Iris Send Log</string>
+    <string name="view_server_log">View Server Log (New Relic)</string>
     <string name="enable_leak_canary">Enable Leak Canary</string>
     <string name="str_to_be_put">String to be put in RouteManager.route(…)</string>
     <string name="try_routemanager">Try RouteManager.route</string>

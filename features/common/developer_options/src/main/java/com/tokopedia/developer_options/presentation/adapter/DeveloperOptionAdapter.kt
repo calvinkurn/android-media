@@ -58,6 +58,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_LOGGING_TO_SERVER = "Logging To Server"
         const val KEYWORD_SEND_LOG_TO_SERVER = "Send Log To Server"
         const val KEYWORD_VIEW_SERVER_LOGGER = "View Server Logger"
+        const val KEYWORD_VIEW_NEW_RELIC = "View New Relic Log"
         const val KEYWORD_SHARED_PREFERENCES_EDITOR = "Shared Preferences Editor"
         const val KEYWORD_APP_VERSION = "Version change is for api purpose - api kill will change back"
         const val KEYWORD_CHOOSE_URL_ENVIRONMENT = "Choose URL Environment"
@@ -192,7 +193,12 @@ class DeveloperOptionAdapter(
             listOf(
                 KEYWORD_LOGGING_TO_SERVER,
                 KEYWORD_SEND_LOG_TO_SERVER,
-                KEYWORD_VIEW_SERVER_LOGGER
+            )
+        ),
+        ViewServerLogUiModel(
+            listOf(
+                KEYWORD_VIEW_SERVER_LOGGER,
+                KEYWORD_VIEW_NEW_RELIC
             )
         ),
         SellerAppReviewDebuggingUiModel(listOf(KEYWORD_ENABLE_SELLER_APP_REVIEW_DEBUGGING)),
