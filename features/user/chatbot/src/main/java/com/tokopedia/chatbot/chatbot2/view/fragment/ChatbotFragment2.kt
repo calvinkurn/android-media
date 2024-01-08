@@ -2824,19 +2824,19 @@ class ChatbotFragment2 :
 
     override fun goToBigReplyBoxBottomSheet(isError: Boolean) {
         activity?.let {
-            if (bigReplyBoxBottomSheet == null) {
-                bigReplyBoxBottomSheet = BigReplyBoxBottomSheet
-                    .newInstance(
-                        replyBoxBottomSheetPlaceHolder,
-                        replyBoxBottomSheetTitle,
-                        showAddAttachmentMenu,
-                        ""
-                    )
-            }
-            bigReplyBoxBottomSheet?.setErrorStatus(isError)
-            BigReplyBoxBottomSheet.replyBoxClickListener = this
-            bigReplyBoxBottomSheet?.clearContentPadding = true
             if (bigReplyBox?.sendButton?.isSlowModeRunning == false) {
+                if (bigReplyBoxBottomSheet == null) {
+                    bigReplyBoxBottomSheet = BigReplyBoxBottomSheet
+                        .newInstance(
+                            replyBoxBottomSheetPlaceHolder,
+                            replyBoxBottomSheetTitle,
+                            showAddAttachmentMenu,
+                            ""
+                        )
+                }
+                bigReplyBoxBottomSheet?.setErrorStatus(isError)
+                BigReplyBoxBottomSheet.replyBoxClickListener = this
+                bigReplyBoxBottomSheet?.clearContentPadding = true
                 bigReplyBoxBottomSheet?.show(childFragmentManager, "")
             }
         }
@@ -2874,6 +2874,7 @@ class ChatbotFragment2 :
             bigReplyBox?.disableSendButton()
         }
         hideKeyboard()
+        bigReplyBox?.sendButton?.forceStartSlowDown()
     }
 
     override fun onDestroyView() {

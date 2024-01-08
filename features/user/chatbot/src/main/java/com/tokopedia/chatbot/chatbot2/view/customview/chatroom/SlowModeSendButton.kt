@@ -75,6 +75,16 @@ class SlowModeSendButton(context: Context, attributeSet: AttributeSet) :
         }
     }
 
+    fun forceStartSlowDown() {
+        if (isSlowModeEnabled) {
+            isSlowModeRunning = true
+            circleAnimation?.loading(slowModeDurationInSecond)
+            iconSend?.gone()
+            textTimer?.show()
+            initCountDownTimer()
+        }
+    }
+
     fun cancelSlowDown() {
         if (isSlowModeEnabled) {
             countDownTimer?.cancel()
