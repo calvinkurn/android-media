@@ -28,6 +28,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboardingCoachMark
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboardingCoachMarkDetail
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboardingTicker
+import com.tokopedia.oneclickcheckout.order.view.model.OccPromoExternalAutoApply
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccPromptButton
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
@@ -90,7 +91,7 @@ import kotlin.math.min
 
 class GetOccCartMapper @Inject constructor() {
 
-    fun mapGetOccCartDataToOrderData(data: GetOccCartData): OrderData {
+    fun mapGetOccCartDataToOrderData(data: GetOccCartData, promoExternalAutoApplyCode: OccPromoExternalAutoApply): OrderData {
         val groupShop = data.groupShop.first()
         val orderCart = OrderCart().apply {
             cartData = data.cartData
@@ -110,7 +111,15 @@ class GetOccCartMapper @Inject constructor() {
             onboarding = mapOnboarding(data.occMainOnboarding),
             cart = orderCart,
             preference = mapProfile(data.profileResponse, groupShop),
-            promo = LastApplyMapper.mapPromo(data.promo),
+            promo = if (promoExternalAutoApplyCode.code.isNotEmpty()) {
+                LastApplyMapper.mapPromoExternalAutoApply(
+                    promoExternalAutoApplyCode,
+                    data.promo,
+                    groupShop.cartString
+                )
+            } else {
+                LastApplyMapper.mapPromo(data.promo)
+            },
             payment = mapOrderPayment(data),
             prompt = mapPrompt(data.prompt),
             errorCode = data.errorCode,

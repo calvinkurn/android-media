@@ -19,6 +19,7 @@ import com.tokopedia.oneclickcheckout.order.view.mapper.PrescriptionMapper
 import com.tokopedia.oneclickcheckout.order.view.mapper.SaveAddOnStateMapper.generateSaveAddOnStateRequestParams
 import com.tokopedia.oneclickcheckout.order.view.mapper.SaveAddOnStateMapper.generateSaveAllAddOnsStateRequestParams
 import com.tokopedia.oneclickcheckout.order.view.model.AddressState
+import com.tokopedia.oneclickcheckout.order.view.model.OccPromoExternalAutoApply
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
@@ -77,13 +78,22 @@ class OrderSummaryPageCartProcessor @Inject constructor(
         source: String,
         gatewayCode: String,
         tenor: Int,
-        isCartReimagine: Boolean
+        isCartReimagine: Boolean,
+        promoExternalAutoApplyCode: OccPromoExternalAutoApply
     ): ResultGetOccCart {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
                 val orderData = getOccCartUseCase
-                    .executeSuspend(getOccCartUseCase.createRequestParams(source, gatewayCode, tenor, isCartReimagine))
+                    .executeSuspend(
+                        getOccCartUseCase.createRequestParams(
+                            source,
+                            gatewayCode,
+                            tenor,
+                            isCartReimagine
+                        ),
+                        promoExternalAutoApplyCode
+                    )
                 return@withContext ResultGetOccCart(
                     orderCart = orderData.cart,
                     orderPreference = OrderPreference(orderData.ticker, orderData.onboarding, orderData.preference.isValidProfile),

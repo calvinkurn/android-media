@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.domain.mapper
 
+import com.tokopedia.oneclickcheckout.order.view.model.OccPromoExternalAutoApply
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.AdditionalInfo
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.LastApply
@@ -18,6 +19,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 
 object LastApplyMapper {
+
+    private val TYPE_PROMO_MV = "mv"
 
     fun mapPromo(promo: PromoSAFResponse): OrderPromo {
         return OrderPromo(
@@ -98,6 +101,39 @@ object LastApplyMapper {
         return PromoCheckoutErrorDefault(
             promo.errorDefault.title,
             promo.errorDefault.description
+        )
+    }
+
+    fun mapPromoExternalAutoApply(
+        promoAutoApply: OccPromoExternalAutoApply,
+        promoSaf: PromoSAFResponse,
+        uniqueId: String
+    ): OrderPromo {
+        return OrderPromo(
+            lastApply = mapExternalPromoAsLastApply(promoAutoApply, promoSaf, uniqueId),
+            promoErrorDefault = mapPromoErrorDefault(promoSaf)
+        )
+    }
+
+    private fun mapExternalPromoAsLastApply(
+        promoAutoApply: OccPromoExternalAutoApply,
+        promoSaf: PromoSAFResponse,
+        uniqueId: String
+    ): LastApplyUiModel {
+        return LastApplyUiModel(
+            codes = if (promoAutoApply.type != TYPE_PROMO_MV) listOf(promoAutoApply.code) else emptyList(),
+            userGroupMetadata = promoSaf.lastApply.data.userGroupMetadata,
+            voucherOrders = if (promoAutoApply.type == TYPE_PROMO_MV) {
+                listOf(
+                    LastApplyVoucherOrdersItemUiModel(
+                        code = promoAutoApply.code,
+                        uniqueId = uniqueId,
+                        type = TYPE_PROMO_MV
+                    )
+                )
+            } else {
+                emptyList()
+            }
         )
     }
 }

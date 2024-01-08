@@ -11,6 +11,7 @@ import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.order.data.get.GetOccCartGqlResponse
 import com.tokopedia.oneclickcheckout.order.domain.mapper.GetOccCartMapper
+import com.tokopedia.oneclickcheckout.order.view.model.OccPromoExternalAutoApply
 import com.tokopedia.oneclickcheckout.order.view.model.OrderData
 import javax.inject.Inject
 
@@ -38,7 +39,7 @@ class GetOccCartUseCase @Inject constructor(
     }
 
     @GqlQuery(GetOccMultiQuery, GET_OCC_CART_PAGE_QUERY)
-    suspend fun executeSuspend(params: Map<String, Any?>): OrderData {
+    suspend fun executeSuspend(params: Map<String, Any?>, promoExternalAutoApplyCode: OccPromoExternalAutoApply): OrderData {
         val request = GraphqlRequest(GetOccMultiQuery(), GetOccCartGqlResponse::class.java, params)
         val response = graphqlRepository.response(listOf(request)).getSuccessData<GetOccCartGqlResponse>()
         if (response.response.status.equals(STATUS_OK, true)) {
@@ -48,7 +49,7 @@ class GetOccCartUseCase @Inject constructor(
             if (!errorMessage.isNullOrEmpty() || cart == null || products.isNullOrEmpty()) {
                 throw MessageErrorException(errorMessage ?: DEFAULT_ERROR_MESSAGE)
             }
-            return mapper.mapGetOccCartDataToOrderData(response.response.data)
+            return mapper.mapGetOccCartDataToOrderData(response.response.data, promoExternalAutoApplyCode)
         } else {
             throw MessageErrorException(
                 response.response.errorMessages.firstOrNull()

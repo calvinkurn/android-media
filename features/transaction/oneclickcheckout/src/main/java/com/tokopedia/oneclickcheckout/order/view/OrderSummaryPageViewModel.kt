@@ -34,6 +34,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.AddressState
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
+import com.tokopedia.oneclickcheckout.order.view.model.OccPromoExternalAutoApply
 import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
 import com.tokopedia.oneclickcheckout.order.view.model.OccUIMessage
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
@@ -158,13 +159,20 @@ class OrderSummaryPageViewModel @Inject constructor(
         source: String,
         uiMessage: OccUIMessage? = null,
         gatewayCode: String = "",
-        tenor: Int = 0
+        tenor: Int = 0,
+        promoExternalAutoApplyCode: OccPromoExternalAutoApply = OccPromoExternalAutoApply()
     ) {
         promoProcessor.isCartCheckoutRevamp = isCartCheckoutRevamp
         getCartJob?.cancel()
         getCartJob = launch(executorDispatchers.immediate) {
             globalEvent.value = OccGlobalEvent.Normal
-            val result = cartProcessor.getOccCart(source, gatewayCode, tenor, isCartCheckoutRevamp)
+            val result = cartProcessor.getOccCart(
+                source,
+                gatewayCode,
+                tenor,
+                isCartCheckoutRevamp,
+                promoExternalAutoApplyCode
+            )
             val isPromoRevamp =
                 PromoUsageRollenceManager().isRevamp(result.orderPromo.lastApply.userGroupMetadata)
             addressState.value = result.addressState

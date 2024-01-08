@@ -25,7 +25,9 @@ open class OrderSummaryPageActivity :
             intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_PRODUCT_ID),
             intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_GATEWAY_CODE),
             intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_TENURE_TYPE),
-            intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_SOURCE)
+            intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_SOURCE),
+            intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_PROMO_CODE),
+            intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_PROMO_TYPE)
         )
     }
 

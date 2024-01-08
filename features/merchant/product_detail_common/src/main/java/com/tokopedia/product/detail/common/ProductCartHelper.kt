@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.product.detail.common.bottomsheet.OvoFlashDealsBottomSheet
@@ -33,12 +34,13 @@ object ProductCartHelper {
         }
     }
 
-    fun validateOvo(activity: FragmentActivity?,
-                    result: AddToCartDataModel,
-                    parentProductId: String,
-                    userId: String,
-                    refreshPage: () -> Unit,
-                    onError: () -> Unit
+    fun validateOvo(
+        activity: FragmentActivity?,
+        result: AddToCartDataModel,
+        parentProductId: String,
+        userId: String,
+        refreshPage: () -> Unit,
+        onError: () -> Unit
     ) {
         if (result.data.refreshPrerequisitePage) {
             refreshPage.invoke()
@@ -47,18 +49,20 @@ object ProductCartHelper {
                 when (result.data.ovoValidationDataModel.status) {
                     ProductDetailCommonConstant.OVO_INACTIVE_STATUS -> {
                         val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${
-                            parentProductId
+                        parentProductId
                         }"
                         ProductTrackingCommon.eventActivationOvo(
-                                parentProductId,
-                                userId)
+                            parentProductId,
+                            userId
+                        )
                         RouteManager.route(it, applink)
                     }
                     ProductDetailCommonConstant.OVO_INSUFFICIENT_BALANCE_STATUS -> {
                         val bottomSheetOvoDeals = OvoFlashDealsBottomSheet(
-                                parentProductId,
-                                userId,
-                                result.data.ovoValidationDataModel)
+                            parentProductId,
+                            userId,
+                            result.data.ovoValidationDataModel
+                        )
                         bottomSheetOvoDeals.show(it.supportFragmentManager, "Ovo Deals")
                     }
                     else -> onError.invoke()
@@ -101,6 +105,16 @@ object ProductCartHelper {
         activity.startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
     }
 
+    fun goToOneClickCheckoutWithAutoApplyPromo(activity: Activity, promoCode: String, promoType: String) {
+        val applinkBeliPakaiPromo = UriUtil.buildUri(
+            ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PROMO,
+            promoCode,
+            promoType
+        )
+        val intent = RouteManager.getIntent(activity.applicationContext, applinkBeliPakaiPromo)
+        activity.startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
+    }
+
     fun goToCartCheckout(activity: Activity, cartId: String) {
         val intent = RouteManager.getIntent(activity.applicationContext, ApplinkConst.CART)
         intent?.run {
@@ -108,5 +122,4 @@ object ProductCartHelper {
             activity.startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
         }
     }
-
 }

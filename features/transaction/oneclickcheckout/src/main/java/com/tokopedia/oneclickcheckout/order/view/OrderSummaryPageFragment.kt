@@ -99,6 +99,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE
+import com.tokopedia.oneclickcheckout.order.view.model.OccPromoExternalAutoApply
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccPromptButton
 import com.tokopedia.oneclickcheckout.order.view.model.OccUIMessage
@@ -239,6 +240,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
     private var tenor: Int = 0
     private var gatewayCode: String = ""
     private var shouldShowToaster: Boolean = false
+    private var promoExternalAutoApply: OccPromoExternalAutoApply = OccPromoExternalAutoApply()
 
     private var binding by autoCleared<FragmentOrderSummaryPageBinding> {
         try {
@@ -544,6 +546,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
 
         // first load
         if (viewModel.orderProducts.value.isEmpty()) {
+            checkPromoFromPdp()
             val productIds = arguments?.getString(QUERY_PRODUCT_ID)
             if (productIds.isNullOrBlank() || savedInstanceState?.getBoolean(SAVE_HAS_DONE_ATC) == true) {
                 setSourceFromPDP()
@@ -1272,7 +1275,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         binding.layoutNoAddress.root.animateGone()
         binding.globalError.animateGone()
         binding.loaderContent.animateShow()
-        viewModel.getOccCart(source, uiMessage, gatewayCode, tenor)
+        viewModel.getOccCart(source, uiMessage, gatewayCode, tenor, promoExternalAutoApply)
     }
 
     private fun setSourceFromPDP() {
@@ -2223,6 +2226,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         }
     }
 
+    private fun checkPromoFromPdp() {
+        val promoCode = arguments?.getString(QUERY_PROMO_CODE, "") ?: ""
+        val promoType = arguments?.getString(QUERY_PROMO_TYPE, "") ?: ""
+        if (promoCode.isNotEmpty() && promoType.isNotEmpty()) {
+            promoExternalAutoApply = OccPromoExternalAutoApply(code = promoCode, type = promoType)
+        }
+    }
+
     companion object {
         const val REQUEST_CODE_COURIER_PINPOINT = 13
 
@@ -2254,6 +2265,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         const val QUERY_SOURCE = "source"
         const val QUERY_GATEWAY_CODE = "gateway_code"
         const val QUERY_TENURE_TYPE = "tenure_type"
+        const val QUERY_PROMO_CODE = "promo_code"
+        const val QUERY_PROMO_TYPE = "promo_type"
 
         private const val NO_ADDRESS_IMAGE = TokopediaImageUrl.NO_ADDRESS_IMAGE
 
@@ -2276,7 +2289,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
             productId: String?,
             gatewayCode: String?,
             tenureType: String?,
-            source: String?
+            source: String?,
+            promoCode: String?,
+            promoType: String?
         ): OrderSummaryPageFragment {
             return OrderSummaryPageFragment().apply {
                 arguments = Bundle().apply {
@@ -2284,6 +2299,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                     putString(QUERY_GATEWAY_CODE, gatewayCode)
                     putString(QUERY_TENURE_TYPE, tenureType)
                     putString(QUERY_SOURCE, source)
+                    putString(QUERY_PROMO_CODE, promoCode)
+                    putString(QUERY_PROMO_TYPE, promoType)
                 }
             }
         }
