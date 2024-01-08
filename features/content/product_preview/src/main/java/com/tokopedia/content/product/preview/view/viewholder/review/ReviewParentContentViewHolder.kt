@@ -5,9 +5,10 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
-import androidx.core.text.buildSpannedString
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.content.common.util.buildSpannedString
+import com.tokopedia.content.common.util.doOnLayout
 import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.databinding.ItemReviewParentContentBinding
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
@@ -74,15 +75,22 @@ class ReviewParentContentViewHolder(
             append(description.timestamp)
         }
         //TODO: check if text can be scrollable
-        tvReviewDescription.movementMethod = LinkMovementMethod.getInstance()
-        tvReviewDescription.text = buildSpannedString {
-            append(description.description.take(22)) //TODO: get text from exisiting, decrease to selengkapnya + ...
-            //TODO: it executes when line count > 2
-            append(
-                root.context.getString(R.string.product_prev_review_expand),
-                clickableSpan(description.description),
-                Spanned.SPAN_EXCLUSIVE_INCLUSIVE
-            )
+        tvReviewDescription.text = description.description
+        tvReviewDescription.doOnLayout {
+            val text = tvReviewDescription.layout.text
+            if (text == description.description) return@doOnLayout
+
+            val length = text.filter { it.isLetterOrDigit() }.length
+            tvReviewDescription.text = buildSpannedString {
+                append(text.take(length))
+                append(root.context.getString(R.string.product_prev_review_ellipsize))
+                append(
+                    root.context.getString(R.string.product_prev_review_expand),
+                    clickableSpan(description.description),
+                    Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+                )
+            }
+            tvReviewDescription.movementMethod = LinkMovementMethod.getInstance()
         }
     }
 
