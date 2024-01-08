@@ -9,9 +9,6 @@ import com.tokopedia.unifyorderhistory.data.model.UohTypeData
 import com.tokopedia.unifyorderhistory.databinding.UohRecommendationItemBinding
 import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
 
-/**
- * Created by fwidjaja on 22/07/20.
- */
 class UohRecommendationItemViewHolder(private val binding: UohRecommendationItemBinding, private val actionListener: UohItemAdapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
     private val productCardView: ProductCardGridView by lazy { binding.uohProductItem }
 
@@ -34,10 +31,7 @@ class UohRecommendationItemViewHolder(private val binding: UohRecommendationItem
                     item.dataObject,
                     object : ViewHintListener {
                         override fun onViewHint() {
-                            actionListener?.trackProductViewRecommendation(
-                                item.dataObject,
-                                position
-                            )
+                            actionListener?.trackProductViewRecommendation(item.dataObject, position)
                         }
                     }
                 )

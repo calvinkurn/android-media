@@ -1,22 +1,22 @@
 package com.tokopedia.developer_options.presentation.viewholder
 
+import android.content.Intent
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.developer_options.R
+import com.tokopedia.developer_options.ab_test_rollence.AbTestRollenceConfigFragmentActivity
 import com.tokopedia.developer_options.presentation.model.RollenceAbTestingManualSwitcherUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.developer_options.ab_test_rollence.AbTestRollenceConfigFragmentActivity
-
-import android.content.Intent
 
 class RollenceAbTestingManualSwitcherViewHolder(
     itemView: View
-): AbstractViewHolder<RollenceAbTestingManualSwitcherUiModel>(itemView)
-{
+) : AbstractViewHolder<RollenceAbTestingManualSwitcherUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_rollence_ab_testing_manual_switcher
@@ -39,6 +39,7 @@ class RollenceAbTestingManualSwitcherViewHolder(
                     Toast.makeText(itemView.context, "Please Insert Rollence Variant", Toast.LENGTH_SHORT).show()
                 }
                 else -> {
+                    DevOpsTracker.trackEntryEvent(DevopsFeature.AB_TEST_MANUAL_APPLY)
                     RemoteConfigInstance.getInstance().abTestPlatform.setString(rollenceKey.toString().trim { it <= ' ' }, rollenceVariant.toString().trim { it <= ' ' })
                     Toast.makeText(itemView.context, "Rollence Key Applied", Toast.LENGTH_SHORT).show()
                 }
@@ -48,6 +49,7 @@ class RollenceAbTestingManualSwitcherViewHolder(
         btnListAbTest.setOnClickListener {
             itemView.context.apply {
                 val intent = Intent(this, AbTestRollenceConfigFragmentActivity::class.java)
+                DevOpsTracker.trackEntryEvent(DevopsFeature.VIEW_AB_TEST_LIST)
                 startActivity(intent)
             }
         }

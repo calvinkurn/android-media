@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.usecase
+package com.tokopedia.discovery2.usecase.sectionusecase
 
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
@@ -168,7 +168,10 @@ class SectionUseCase @Inject constructor(
     ) {
         val isFestiveBackgroundEnable = remoteConfig.getBoolean(SECTION_FESTIVE_BACKGROUND_TOGGLE)
 
-        if (isFestiveBackgroundEnable && isBackgroundAvailable && components.allowedToHaveBackground()) {
+        val policy = FestiveEligibilityPolicy(isFestiveBackgroundEnable, isBackgroundAvailable)
+        val componentNames = components.map { it.name }
+
+        if (policy.isAllowed(componentNames)) {
             val offsetPosition = 1
             components.forEachIndexed { index, item ->
                 item.apply {
@@ -177,28 +180,6 @@ class SectionUseCase @Inject constructor(
                 }
             }
         }
-    }
-
-    private fun List<ComponentsItem>.allowedToHaveBackground(): Boolean {
-        val componentsSupportBG = arrayOf(
-            ComponentNames.LihatSemua.componentName,
-            ComponentNames.ProductCardSingle.componentName,
-            ComponentNames.SingleBanner.componentName,
-            ComponentNames.DoubleBanner.componentName,
-            ComponentNames.TripleBanner.componentName,
-            ComponentNames.QuadrupleBanner.componentName,
-            ComponentNames.CalendarWidgetCarousel.componentName,
-            ComponentNames.ProductHighlight.componentName,
-            ComponentNames.ProductCardCarousel.componentName
-        )
-
-        var areComponentsSupportBG = true
-
-        forEach { item ->
-            areComponentsSupportBG = componentsSupportBG.find { item.name == it } != null
-        }
-
-        return areComponentsSupportBG
     }
 
     private fun getQueryFilterString(

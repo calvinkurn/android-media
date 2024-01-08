@@ -1,4 +1,4 @@
-package com.tokopedia.analytics.performance.perf
+package com.tokopedia.analytics.performance.perf.performanceTracing.components
 
 interface LoadableComponent {
     fun isLoading(): Boolean

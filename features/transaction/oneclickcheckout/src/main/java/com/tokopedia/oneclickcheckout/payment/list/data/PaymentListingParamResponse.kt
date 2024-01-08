@@ -36,5 +36,7 @@ data class ListingParam(
     @SerializedName("hash")
     val hash: String = "",
     @SerializedName("bid")
-    val bid: String = ""
+    val bid: String = "",
+    @SerializedName("unique_key")
+    val uniqueKey: String = ""
 )

@@ -16,11 +16,16 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.content.common.types.BundleData
+import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
+import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
 import com.tokopedia.createpost.common.SHOP_ID_PARAM
+import com.tokopedia.createpost.common.TYPE_AFFILIATE
+import com.tokopedia.createpost.common.TYPE_CONTENT_USER
 import com.tokopedia.createpost.common.USER_ID_PARAM
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
-import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
-import com.tokopedia.createpost.common.view.service.SubmitPostService
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaType
@@ -30,17 +35,10 @@ import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
 import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
 import com.tokopedia.createpost.view.fragment.CreatePostPreviewFragmentNew
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
-import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.content.common.types.BundleData
-import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
-import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
-import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.ui.toolbar.ContentAccountToolbar
-import com.tokopedia.createpost.common.TYPE_AFFILIATE
-import com.tokopedia.createpost.common.TYPE_CONTENT_USER
 import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponentProvider
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.uploader.CreationUploader
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.launch
 import java.util.*
@@ -160,9 +158,6 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     companion object {
         const val TYPE_CONTENT_TAGGING_PAGE = "content-tagging-page"
         const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
-        const val PARAM_SHOW_PROGRESS_BAR = "show_posting_progress_bar"
-        const val PARAM_IS_EDIT_STATE = "is_edit_state"
-        const val PARAM_MEDIA_PREVIEW = "media_preview"
         const val EXTRA_SELECTED_FEED_ACCOUNT_ID = "EXTRA_SELECTED_FEED_ACCOUNT_ID"
         private const val DEFAULT_CACHE_DURATION = 7L
 
@@ -327,23 +322,17 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         when (isOpenFrom) {
             BundleData.VALUE_IS_OPEN_FROM_USER_PROFILE -> goToUserProfile()
             BundleData.VALUE_IS_OPEN_FROM_SHOP_PAGE -> goToShopPage()
-            else -> goToFeed(createPostViewModel)
+            else -> goToFeed()
         }
     }
 
     private fun isTypeAffiliate(authorType: String) = authorType == TYPE_AFFILIATE
     private fun isTypeBuyer(authorType: String) = authorType == TYPE_CONTENT_USER
 
-    private fun goToFeed(createPostViewModel: CreatePostViewModel) {
+    private fun goToFeed() {
         this.let {
-            val applink = ApplinkConst.FEED_FOLLOWING
-            val intent = RouteManager.getIntent(it, applink)
-            intent.putExtra(PARAM_SHOW_PROGRESS_BAR, true)
-            val isEditState = createPostViewModel.isEditState
-            intent.putExtra(PARAM_IS_EDIT_STATE, isEditState)
-            intent.putExtra(PARAM_MEDIA_PREVIEW,
-                if (!isEditState) createPostViewModel.completeImageList.first().path else "")
-            startActivity(intent)
+            val applink = ApplinkConst.FEED
+            RouteManager.route(it, applink)
             finish()
         }
     }

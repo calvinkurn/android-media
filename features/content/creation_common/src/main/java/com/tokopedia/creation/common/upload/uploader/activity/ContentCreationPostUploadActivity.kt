@@ -35,7 +35,7 @@ class ContentCreationPostUploadActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         hitAnalytic()
-        redirectToPlayRoom()
+        redirectToViewerRoom()
     }
 
     override fun onDestroy() {
@@ -62,7 +62,7 @@ class ContentCreationPostUploadActivity : BaseActivity() {
         }
     }
 
-    private fun redirectToPlayRoom() {
+    private fun redirectToViewerRoom() {
         val appLink = intent.getStringExtra(EXTRA_APP_LINK).orEmpty()
 
         if (GlobalConfig.isSellerApp()) {
