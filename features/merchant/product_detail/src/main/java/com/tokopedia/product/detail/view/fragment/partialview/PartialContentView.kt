@@ -1,20 +1,32 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ImageSpan
 import android.view.View
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
+import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.databinding.ItemProductContentBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.common_tradein.R as common_tradeinR
 import com.tokopedia.product.detail.common.R as productdetailcommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -27,8 +39,15 @@ class PartialContentView(
     private val listener: DynamicProductDetailListener
 ) : CampaignRibbon.CampaignCountDownCallback {
 
+    companion object {
+        private val KVI_ICON_HEIGHT = 16.toPx()
+    }
+
     private val context = view.context
     private val binding = ItemProductContentBinding.bind(view)
+    private val glideApp by lazyThreadSafetyNone {
+        GlideApp.with(context).asDrawable()
+    }
 
     fun renderData(
         data: ProductContentMainData,
@@ -36,14 +55,22 @@ class PartialContentView(
         freeOngkirImgUrl: String,
         shouldShowCampaign: Boolean
     ) = with(binding) {
-        txtMainPrice.contentDescription = context.getString(R.string.content_desc_txt_main_price, data.price.value)
-        productName.contentDescription = context.getString(R.string.content_desc_product_name, MethodChecker.fromHtml(data.productName))
-        productName.text = MethodChecker.fromHtml(data.productName)
+        txtMainPrice.contentDescription =
+            context.getString(R.string.content_desc_txt_main_price, data.price.value)
+        productName.contentDescription = context.getString(
+            R.string.content_desc_product_name,
+            MethodChecker.fromHtml(data.productName)
+        )
+
+        setProductName(kviIcon = data.kviIcon, data.productName)
 
         renderFreeOngkir(freeOngkirImgUrl)
 
         textCashbackGreen.shouldShowWithAction(data.cashbackPercentage > 0) {
-            textCashbackGreen.text = context.getString(productdetailcommonR.string.template_cashback, data.cashbackPercentage.toString())
+            textCashbackGreen.text = context.getString(
+                productdetailcommonR.string.template_cashback,
+                data.cashbackPercentage.toString()
+            )
         }
 
         campaignRibbon.setCampaignCountDownCallback(this@PartialContentView)
@@ -136,7 +163,66 @@ class PartialContentView(
         hideGimmick(campaign)
     }
 
-    private fun renderStockAvailable(campaign: CampaignModular, isVariant: Boolean, stockWording: String, isProductActive: Boolean) = with(binding) {
+    private fun setProductName(kviIcon: String, title: String) {
+        if (kviIcon.isBlank()) {
+            setProductNameText(title = title)
+        } else {
+            setProductNameWithIcon(icon = kviIcon, title = title)
+        }
+    }
+
+    private fun setProductNameText(title: String) {
+        binding.productName.text = title.parseAsHtmlLink(context, false)
+    }
+
+    private fun setProductNameWithIcon(icon: String, title: String) {
+        val textView = binding.productName
+        val stringBuilder = SpannableStringBuilder().apply {
+            append(title.parseAsHtmlLink(context, false))
+        }
+        textView.text = stringBuilder
+
+        loadIcon(url = icon, onSuccess = { resource ->
+            resource.resizeToKviIconSpec()
+            stringBuilder.setKviImageSpan(drawable = resource)
+            textView.text = stringBuilder
+        })
+    }
+
+    private fun Drawable.resizeToKviIconSpec() {
+        val ratio = intrinsicWidth.toFloat() / intrinsicHeight.toFloat()
+        val bottom = if (intrinsicHeight > KVI_ICON_HEIGHT) KVI_ICON_HEIGHT else intrinsicHeight
+        val right = bottom * ratio
+        setBounds(Int.ZERO, Int.ZERO, right.toInt(), bottom)
+    }
+
+    private fun SpannableStringBuilder.setKviImageSpan(drawable: Drawable) {
+        val imageSpan = ImageSpan(drawable, ImageSpan.ALIGN_BOTTOM)
+
+        insert(Int.ZERO, "  ")
+        setSpan(imageSpan, Int.ZERO, Int.ONE, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+    }
+
+    private fun loadIcon(url: String, onSuccess: (resource: Drawable) -> Unit) {
+        glideApp.load(url)
+            .into(object : CustomTarget<Drawable>() {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    transition: Transition<in Drawable>?
+                ) {
+                    onSuccess(resource)
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {}
+            })
+    }
+
+    private fun renderStockAvailable(
+        campaign: CampaignModular,
+        isVariant: Boolean,
+        stockWording: String,
+        isProductActive: Boolean
+    ) = with(binding) {
         textStockAvailable.text = MethodChecker.fromHtml(stockWording)
         textStockAvailable.showWithCondition(!campaign.activeAndHasId && !isVariant && stockWording.isNotEmpty() && isProductActive)
     }
@@ -152,7 +238,7 @@ class PartialContentView(
     }
 
     private fun hideProductCampaign(campaign: CampaignModular) = with(binding) {
-        txtMainPrice.text = campaign.slashPriceFmt
+        setProductName("", campaign.slashPriceFmt)
         campaignRibbon.hide()
         textDiscountRed.gone()
         textSlashPrice.gone()

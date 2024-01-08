@@ -27,7 +27,7 @@ data class ProductContentDataModel(
     // Upcoming Data
     var upcomingNplData: UpcomingNplDataModel = UpcomingNplDataModel(),
     var shouldShowCampaign: Boolean = false,
-    var shouldShowShareWidget: Boolean = false,
+    var shouldShowShareWidget: Boolean = false
 ) : DynamicPdpDataModel,
     LoadableComponent by BlocksLoadableComponent(
         { false },
@@ -79,7 +79,6 @@ data class ProductContentDataModel(
     }
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
-
         return if (newData is ProductContentDataModel) {
             if (data?.hashCode() != newData.data?.hashCode() ||
                 upcomingNplData.hashCode() != newData.upcomingNplData.hashCode()
@@ -91,7 +90,8 @@ data class ProductContentDataModel(
             val bundle = Bundle()
             if (shouldShowTradein != newData.shouldShowTradein ||
                 freeOngkirImgUrl != newData.freeOngkirImgUrl ||
-                shouldShowShareWidget != newData.shouldShowShareWidget) {
+                shouldShowShareWidget != newData.shouldShowShareWidget
+            ) {
                 bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, PAYLOAD_TRADEIN_BOE_SHARE)
                 return bundle
             }
@@ -110,7 +110,7 @@ data class ProductContentDataModel(
         return data == null
     }
 
-    companion object{
+    companion object {
         const val PAYLOAD_WISHLIST = 1
         const val PAYLOAD_TRADEIN_BOE_SHARE = 421321
     }
@@ -124,5 +124,6 @@ data class ProductContentMainData(
     var stockWording: String = "",
     var isVariant: Boolean = false,
     var productName: String = "",
+    var kviIcon: String = "https://images.tokopedia.net/img/jdvdtx/2024/1/8/46b0110b-bf10-4452-88bb-8157d7993878.jpg",
     var isProductActive: Boolean = false
 )
