@@ -27,14 +27,14 @@ public class TouchImageAdapter extends PagerAdapter {
 
     private Context context;
     private ArrayList<String> FileLoc;
-    private com.tokopedia.design.list.adapter.TouchImageAdapter.OnImageStateChange ImageStateChangeListener;
+    private TouchImageAdapter.OnImageStateChange ImageStateChangeListener;
 
     public TouchImageAdapter(Context context, ArrayList<String> FileLoc) {
         this.context = context;
         this.FileLoc = FileLoc;
     }
 
-    public void SetonImageStateChangeListener(com.tokopedia.design.list.adapter.TouchImageAdapter.OnImageStateChange Listener) {
+    public void SetonImageStateChangeListener(TouchImageAdapter.OnImageStateChange Listener) {
         ImageStateChangeListener = Listener;
     }
 

@@ -10,8 +10,8 @@ import android.widget.ImageView;
 
 import androidx.viewpager.widget.PagerAdapter;
 
-import com.tokopedia.design.image.ImageLoader;
 import com.tokopedia.design.image.TouchImageView;
+import com.tokopedia.media.loader.JvmMediaLoader;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public class TouchImageAdapter extends PagerAdapter {
         });
         String thumbnail = FileLoc.get(position);
         if (URLUtil.isNetworkUrl(thumbnail)) {
-            ImageLoader.LoadImage(imageView, thumbnail);
+            JvmMediaLoader.loadImage(imageView, thumbnail);
         } else {
             loadImageFromFile(context, imageView, thumbnail);
         }
