@@ -4,15 +4,13 @@ import android.view.View
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.foldable.FoldableInfo
-import com.tokopedia.foldable.FoldableSupportManager
 
 interface ScalableCanvasViewDelegate {
 
     fun scalableCanvasRegister(activity: AppCompatActivity, canvas: View?)
 }
 
-internal class ScalableCanvasViewDelegateImpl : ScalableCanvasViewDelegate, FoldableSupportManager.FoldableInfoCallback {
+internal class ScalableCanvasViewDelegateImpl : ScalableCanvasViewDelegate, FoldableSupportManager.Listener {
 
     private var canvasContainer: View? = null
 
@@ -23,8 +21,8 @@ internal class ScalableCanvasViewDelegateImpl : ScalableCanvasViewDelegate, Fold
         FoldableSupportManager(this, activity)
     }
 
-    override fun onChangeLayout(foldableInfo: FoldableInfo) {
-        if (foldableInfo.isFoldableDevice()) {
+    override fun onLayoutChanged(info: ScreenInfo) {
+        if (info.isFoldableDevice()) {
             setLargeScreenMode()
         } else {
             setCompactMode()
