@@ -4,12 +4,14 @@ import android.content.Context
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.TextPaint
-import android.text.style.URLSpan
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerhomecommon.databinding.ShcBottomSheetHtmlMetaBinding
 import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
@@ -52,6 +54,7 @@ class HtmlMetaBottomSheet: BaseBottomSheet<ShcBottomSheetHtmlMetaBinding>() {
 
     override fun setupView() {
         setTitle(meta?.title.orEmpty())
+        setMovementMethod()
         setDescription()
     }
 
@@ -64,12 +67,32 @@ class HtmlMetaBottomSheet: BaseBottomSheet<ShcBottomSheetHtmlMetaBinding>() {
         show(fm, TAG)
     }
 
+    private fun setMovementMethod() {
+        binding?.tvShcHtmlMeta?.movementMethod = LinkMovementMethod.getInstance()
+    }
+
+    /**
+     * Set the description of bottomsheet.
+     *
+     * If the cta text is not blank and the full text contains the cta text,
+     * this code will apply the spannable string so the cta text can be clicked.
+     */
     private fun setDescription() {
-        binding?.tvShcHtmlMeta?.text = getSpannableStringBuilder(
-            meta?.value.orEmpty(),
-            meta?.cta.orEmpty(),
-            meta?.url.orEmpty()
-        )
+        val cta = meta?.cta
+        val shouldUseSpannedString = cta?.takeIf { it.isNotBlank() }?.let {
+            meta?.value.orEmpty().contains(it)
+        }.orFalse()
+        val metaText =
+            if (shouldUseSpannedString) {
+                getSpannableStringBuilder(
+                    meta?.value.orEmpty(),
+                    cta.orEmpty(),
+                    meta?.url.orEmpty()
+                )
+            } else {
+                meta?.value.orEmpty()
+            }
+        binding?.tvShcHtmlMeta?.text = metaText
     }
 
     private fun getSpannableStringBuilder(
@@ -98,9 +121,9 @@ class HtmlMetaBottomSheet: BaseBottomSheet<ShcBottomSheetHtmlMetaBinding>() {
         }
     }
 
-    inner class ClickableSpanWithCustomStyle(applink: String,
+    inner class ClickableSpanWithCustomStyle(private val applink: String,
                                              private val context: Context?,
-                                             private val onUrlClicked: (String) -> Unit) : URLSpan(applink) {
+                                             private val onUrlClicked: (String) -> Unit) : ClickableSpan() {
         override fun updateDrawState(ds: TextPaint) {
             super.updateDrawState(ds)
             try {
@@ -123,7 +146,7 @@ class HtmlMetaBottomSheet: BaseBottomSheet<ShcBottomSheetHtmlMetaBinding>() {
         }
 
         override fun onClick(widget: View) {
-            onUrlClicked(url)
+            onUrlClicked(applink)
         }
     }
 

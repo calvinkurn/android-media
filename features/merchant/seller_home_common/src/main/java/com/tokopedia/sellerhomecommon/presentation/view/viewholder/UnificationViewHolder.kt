@@ -218,7 +218,6 @@ class UnificationViewHolder(
             shcTableViewPageControl.setIndicator(tableData.dataSet.size)
 
             tableShcUnification.visible()
-            tableShcUnification.showTable(tableData.dataSet)
             tableShcUnification.resetHeight()
             tableShcUnification.setPageIndicatorEnabled(false)
             tableShcUnification.setOnSwipeListener { position, _, _ ->
@@ -234,6 +233,7 @@ class UnificationViewHolder(
             tableShcUnification.addOnImpressionListener(tab.impressHolder) {
                 listener.sendUnificationTabImpressionEvent(element)
             }
+            tableShcUnification.showTable(tableData.dataSet)
         }
     }
 

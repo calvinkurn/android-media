@@ -92,7 +92,6 @@ class TableViewHolder(
                     tvShcTableEmptyDescription.gone()
                     btnShcTableEmpty.gone()
                     shcTableView.visible()
-                    shcTableView.showTable(element.data?.dataSet.orEmpty())
                     shcTableView.addOnSlideImpressionListener { position, maxPosition, isEmpty ->
                         listener.sendTableImpressionEvent(element, absoluteAdapterPosition, position, maxPosition, isEmpty)
                     }
@@ -105,6 +104,7 @@ class TableViewHolder(
                     shcTableView.addOnMetaLabelClickListener { meta ->
                         listener.onHtmlMetaClick(meta)
                     }
+                    shcTableView.showTable(element.data?.dataSet.orEmpty())
                 }
                 setupLastUpdatedInfo(element)
             } else {
