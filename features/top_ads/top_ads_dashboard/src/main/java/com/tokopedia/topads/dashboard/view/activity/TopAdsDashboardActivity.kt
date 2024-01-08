@@ -637,9 +637,19 @@ class TopAdsDashboardActivity :
                 "{${userSession.shopId}}",
                 userSession.userId
             )
-            val intent =
-                RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_ADS_SELECTION)
-            startActivityForResult(intent, AUTO_ADS_DISABLED)
+            if(tabLayout?.getUnifyTabLayout()?.selectedTabPosition == IKLANKAN_PRODUK_TAB){
+                val intent = RouteManager.getIntent(
+                    this,
+                    ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE_MANUAL_ADS
+                )
+                startActivity(intent)
+            } else if(tabLayout?.getUnifyTabLayout()?.selectedTabPosition == HEADLINE_ADS_TAB){
+                val intent = RouteManager.getIntent(
+                    this,
+                    ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION
+                )
+                startActivity(intent)
+            }
         }
     }
 
