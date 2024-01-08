@@ -1,4 +1,4 @@
-package com.tokopedia.deals.pdp.rule
+package com.tokopedia.deals.ui.pdp
 
 import androidx.test.espresso.IdlingRegistry
 import org.junit.rules.TestRule

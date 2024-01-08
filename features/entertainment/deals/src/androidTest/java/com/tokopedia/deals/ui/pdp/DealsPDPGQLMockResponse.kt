@@ -1,4 +1,4 @@
-package com.tokopedia.deals.pdp.mock
+package com.tokopedia.deals.ui.pdp
 
 import android.content.Context
 import com.tokopedia.deals.test.R
@@ -8,11 +8,13 @@ import com.tokopedia.test.application.util.InstrumentationMockHelper
 class DealsPDPGQLMockResponse: MockModelConfig() {
 
     override fun createMockModel(context: Context): MockModelConfig {
-        addMockResponse(KEY_DEALS_PDP_DETAIL_DATA,
+        addMockResponse(
+            KEY_DEALS_PDP_DETAIL_DATA,
             InstrumentationMockHelper.getRawString(context, R.raw.mock_gql_deals_pdp),
             FIND_BY_CONTAINS
         )
-        addMockResponse(KEY_DEALS_PDP_RECOMMENDATION_DATA,
+        addMockResponse(
+            KEY_DEALS_PDP_RECOMMENDATION_DATA,
             InstrumentationMockHelper.getRawString(context, R.raw.mock_gql_deals_pdp_recommendation),
             FIND_BY_CONTAINS
         )

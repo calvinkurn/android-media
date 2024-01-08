@@ -1,4 +1,4 @@
-package com.tokopedia.deals.home.ui.activity
+package com.tokopedia.deals.ui.home
 
 import android.Manifest
 import android.app.Activity
@@ -24,7 +24,7 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_LOCATION_ONE_STRING
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_LOCATION_TWO_STRING
 import com.tokopedia.deals.R
-import com.tokopedia.deals.home.ui.activity.mock.DealsHomeMockResponse
+import com.tokopedia.deals.ui.home.ui.activity.DealsHomeActivity
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
@@ -106,7 +106,9 @@ class DealsHomeActivityTest {
     private fun actionOnPopularLandmarkViewHolder() {
         Thread.sleep(2000)
         onView(withId(R.id.recycler_view))
-            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(POPULAR_LANDMARKS_POSITION))
+            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
+                POPULAR_LANDMARKS_POSITION
+            ))
 
         Thread.sleep(2000)
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
@@ -120,7 +122,9 @@ class DealsHomeActivityTest {
     private fun actionOnFavouriteCategoryViewHolder() {
         Thread.sleep(2000)
         onView(withId(R.id.recycler_view))
-            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(FAVOURITE_CATEGORY_POSITION))
+            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(
+                FAVOURITE_CATEGORY_POSITION
+            ))
 
         Thread.sleep(2000)
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)

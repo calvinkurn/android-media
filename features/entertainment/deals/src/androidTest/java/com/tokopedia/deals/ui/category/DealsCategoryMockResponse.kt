@@ -1,4 +1,4 @@
-package com.tokopedia.deals.category.ui.activity.mock
+package com.tokopedia.deals.ui.category
 
 import android.content.Context
 import com.tokopedia.deals.test.R
@@ -11,13 +11,16 @@ import com.tokopedia.test.application.util.InstrumentationMockHelper
 
 class DealsCategoryMockResponse : MockModelConfig() {
     override fun createMockModel(context: Context): MockModelConfig {
-        addMockResponse(KEY_EVENT_BRAND,
+        addMockResponse(
+            KEY_EVENT_BRAND,
                 InstrumentationMockHelper.getRawString(context, R.raw.mock_gql_deals_search_brands),
                 FIND_BY_CONTAINS)
-        addMockResponse(KEY_EVENT_LOCATION_SEARCH,
+        addMockResponse(
+            KEY_EVENT_LOCATION_SEARCH,
                 InstrumentationMockHelper.getRawString(context, R.raw.mock_gql_deals_get_nearest_location),
                 FIND_BY_CONTAINS)
-        addMockResponse(KEY_EVENT_CHILD_CATEGORY,
+        addMockResponse(
+            KEY_EVENT_CHILD_CATEGORY,
                 InstrumentationMockHelper.getRawString(context, R.raw.mock_gql_deals_event_child_category),
                 FIND_BY_CONTAINS)
         return this

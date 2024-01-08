@@ -1,4 +1,4 @@
-package com.tokopedia.deals.checkout.activity
+package com.tokopedia.deals.ui.checkout
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -12,7 +12,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
-import com.tokopedia.deals.checkout.mock.DealsCheckoutMockData
 import com.tokopedia.deals.test.R
 import com.tokopedia.deals.ui.checkout.ui.activity.DealsCheckoutActivity
 import com.tokopedia.graphql.GraphqlCacheManager

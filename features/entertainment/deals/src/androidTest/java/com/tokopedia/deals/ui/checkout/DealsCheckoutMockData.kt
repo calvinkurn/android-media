@@ -1,4 +1,4 @@
-package com.tokopedia.deals.checkout.mock
+package com.tokopedia.deals.ui.checkout
 
 import com.tokopedia.common_entertainment.data.EventVerifyResponse
 import com.tokopedia.common_entertainment.data.ItemMapResponse

@@ -1,4 +1,4 @@
-package com.tokopedia.deals.pdp.activity
+package com.tokopedia.deals.ui.pdp
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -23,9 +23,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
-import com.tokopedia.deals.pdp.mock.DealsPDPGQLMockResponse
-import com.tokopedia.deals.pdp.rule.DealsIdlingResourceTestRule
-import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity
 import com.tokopedia.deals.test.R
 import com.tokopedia.deals.ui.pdp.ui.activity.DealsPDPActivity
 import com.tokopedia.graphql.GraphqlCacheManager
@@ -85,7 +82,8 @@ class DealsPDPActivityTest {
         clickATC()
 
         Assert.assertThat(cassavaTestRule.validate(
-            ANALYTIC_VALIDATOR_QUERY_DEALS_PRODUCT_DETAIL_PAGE), hasAllSuccess())
+            ANALYTIC_VALIDATOR_QUERY_DEALS_PRODUCT_DETAIL_PAGE
+        ), hasAllSuccess())
     }
 
     @After

@@ -1,4 +1,4 @@
-package com.tokopedia.deals.search.ui.activity.mock
+package com.tokopedia.deals.ui.search.mock
 
 import android.content.Context
 import com.tokopedia.deals.test.R
@@ -8,15 +8,18 @@ import com.tokopedia.test.application.util.InstrumentationMockHelper
 class DealsSearchNotFoundMockResponse : MockModelConfig() {
 
     override fun createMockModel(context: Context): MockModelConfig {
-        addMockResponse(KEY_EVENT_CHILD_CATEGORY,
+        addMockResponse(
+            KEY_EVENT_CHILD_CATEGORY,
                 InstrumentationMockHelper.getRawString(context, R.raw.mock_gql_deals_get_recent_search),
                 FIND_BY_CONTAINS)
 
-        addMockResponse(KEY_EVENT_LOCATION_SEARCH,
+        addMockResponse(
+            KEY_EVENT_LOCATION_SEARCH,
                 InstrumentationMockHelper.getRawString(context, R.raw.mock_gql_deals_get_nearest_location),
                 FIND_BY_CONTAINS)
 
-        addMockResponse(KEY_EVENT_BRAND,
+        addMockResponse(
+            KEY_EVENT_BRAND,
                 InstrumentationMockHelper.getRawString(context, R.raw.mock_gql_deals_search_brands_not_found),
                 FIND_BY_CONTAINS)
 

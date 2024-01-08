@@ -1,4 +1,4 @@
-package com.tokopedia.deals.brand_detail.ui.activity
+package com.tokopedia.deals.ui.brand_detail
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -13,7 +13,6 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.deals.test.R
-import com.tokopedia.deals.ui.brand_detail.DealsBrandDetailActivity
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -41,7 +40,8 @@ class DealsBrandDetailActivityTest {
         Intents.init()
         graphqlCacheManager.deleteAll()
         setupGraphqlMockResponse{
-            addMockResponse(KEY_EVENT_BRAND_DETAIL,
+            addMockResponse(
+                KEY_EVENT_BRAND_DETAIL,
                     InstrumentationMockHelper.getRawString(context, R.raw.mock_gql_deals_brand_detail),
                     MockModelConfig.FIND_BY_CONTAINS)
         }

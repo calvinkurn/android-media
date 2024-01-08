@@ -1,4 +1,4 @@
-package com.tokopedia.deals.category.ui.activity
+package com.tokopedia.deals.ui.category
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -24,7 +24,6 @@ import com.tokopedia.deals.DealsDummyResponseString.DUMMY_RESPONSE_FIRST_CATEGOR
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_RESPONSE_SECOND_CATEGORY_TITLE
 import com.tokopedia.deals.DealsDummyResponseString.FILTERS_CHIP_TITLE
 import com.tokopedia.deals.R
-import com.tokopedia.deals.category.ui.activity.mock.DealsCategoryMockResponse
 import com.tokopedia.deals.ui.category.ui.activity.DealsCategoryActivity
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher

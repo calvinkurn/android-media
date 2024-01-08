@@ -1,4 +1,4 @@
-package com.tokopedia.deals.search.ui.activity
+package com.tokopedia.deals.ui.search
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -11,7 +11,10 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
@@ -21,8 +24,9 @@ import com.tokopedia.deals.DealsDummyResponseString.DUMMY_RESPONSE_CATEGORY_TITL
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_RESPONSE_LAST_SEEN_TITLE
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_USER_TYPE_STRING
 import com.tokopedia.deals.R
-import com.tokopedia.deals.search.ui.activity.mock.DealsSearchMockResponse
-import com.tokopedia.deals.search.ui.activity.mock.DealsSearchNotFoundMockResponse
+import com.tokopedia.deals.ui.search.mock.DealsSearchMockResponse
+import com.tokopedia.deals.ui.search.mock.DealsSearchNotFoundMockResponse
+import com.tokopedia.deals.ui.search.ui.activity.DealsSearchActivity
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.Before

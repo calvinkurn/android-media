@@ -1,4 +1,4 @@
-package com.tokopedia.deals.brand.ui.activity
+package com.tokopedia.deals.ui.brand
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -19,8 +19,7 @@ import com.tokopedia.deals.DealsDummyResponseString
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_RESPONSE_SECOND_CATEGORY_TITLE
 import com.tokopedia.deals.DealsDummyResponseString.DUMMY_USER_TYPE_STRING
 import com.tokopedia.deals.R
-import com.tokopedia.deals.category.ui.activity.mock.DealsCategoryMockResponse
-import com.tokopedia.deals.ui.brand.DealsBrandActivity
+import com.tokopedia.deals.ui.category.DealsCategoryMockResponse
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
