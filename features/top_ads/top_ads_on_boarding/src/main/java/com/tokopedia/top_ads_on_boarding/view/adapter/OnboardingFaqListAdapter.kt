@@ -27,7 +27,7 @@ class OnboardingFaqListAdapter :
     }
 
     fun onAccordianItemClicked(id : Int){
-        currentList.map { it.isExpanded = it.id == id }
+        currentList.map { it.isExpanded = it.id == id && !it.isExpanded }
         notifyDataSetChanged()
     }
 }
