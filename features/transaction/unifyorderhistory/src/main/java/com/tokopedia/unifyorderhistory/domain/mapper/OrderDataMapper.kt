@@ -25,7 +25,8 @@ object OrderDataMapper {
                         warehouseId = objParam.get(UohConsts.WAREHOUSE_ID).asString,
 
                         productName = objParam.get(UohConsts.PRODUCT_NAME).asString,
-                        price = objParam.get(UohConsts.PRODUCT_PRICE).asString
+                        price = objParam.get(UohConsts.PRODUCT_PRICE).asString,
+                        shopName = objParam.get(UohConsts.SHOP_NAME).asString
                     )
                 )
             }
