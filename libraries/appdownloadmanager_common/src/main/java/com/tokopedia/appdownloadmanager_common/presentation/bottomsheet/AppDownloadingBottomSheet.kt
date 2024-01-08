@@ -80,10 +80,16 @@ class AppDownloadingBottomSheet :
                             downloadManagerUpdateModel = downloadManagerUpdateModel,
                             onDownloadClick = {
                                 activity?.let { mActivity ->
-                                    AppDownloadManagerPermission.checkAndRequestPermission(mActivity) {
-                                        if (it) {
-                                            startDownloadingAndChangeState()
-                                        }
+                                    if (AppDownloadManagerPermission.isAllPermissionNotGranted(
+                                            mActivity
+                                        )
+                                    ) {
+                                        requestPermissions(
+                                            AppDownloadManagerPermission.requiredPermissions,
+                                            AppDownloadManagerPermission.PERMISSIONS_REQUEST_EXTERNAL_STORAGE
+                                        )
+                                    } else {
+                                        startDownloadingAndChangeState()
                                     }
                                 }
                             }
@@ -132,12 +138,14 @@ class AppDownloadingBottomSheet :
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        AppDownloadManagerPermission.checkRequestPermissionResult(
-            requestCode,
-            grantResults
-        ) { hasGrantPermission ->
-            if (hasGrantPermission) {
-                startDownloadingAndChangeState()
+        activity?.let {
+            AppDownloadManagerPermission.checkRequestPermissionResult(
+                grantResults,
+                requestCode
+            ) { hasGrantPermission ->
+                if (hasGrantPermission) {
+                    startDownloadingAndChangeState()
+                }
             }
         }
     }

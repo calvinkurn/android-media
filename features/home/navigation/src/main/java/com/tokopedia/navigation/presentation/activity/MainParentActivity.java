@@ -832,7 +832,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private void checkWritePermissionResultAndInstallApk(int requestCode, @NonNull int[] grantResults) {
         if (GlobalConfig.IS_NAKAMA_VERSION) {
-            AppDownloadManagerPermission.checkRequestPermissionResult(requestCode, grantResults, hasPermission -> {
+            AppDownloadManagerPermission.checkRequestPermissionResult(grantResults, requestCode, hasPermission -> {
                 if (hasPermission) {
                     if (appDownloadManagerHelper != null) {
                         appDownloadManagerHelper.startDownloadApk();
