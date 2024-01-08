@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.minicart.cartlist.MiniCartListActionListener
+import com.tokopedia.minicart.cartlist.MiniCartProgressiveInfoListener
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartGwpGiftUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductBundleRecomShimmeringUiModel
@@ -52,7 +53,8 @@ import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleLis
 class MiniCartListAdapterTypeFactory(
     private val listener: MiniCartListActionListener,
     private val multipleProductBundleListener: MultipleProductBundleListener? = null,
-    private val singleProductBundleListener: SingleProductBundleListener? = null
+    private val singleProductBundleListener: SingleProductBundleListener? = null,
+    private val progressiveInfoListener: MiniCartProgressiveInfoListener? = null
 ) : BaseAdapterTypeFactory(), MiniCartListTypeFactory {
 
     override fun type(uiModel: MiniCartAccordionUiModel): Int {
@@ -218,7 +220,10 @@ class MiniCartListAdapterTypeFactory(
                     view as ViewGroup,
                     false
                 )
-                MiniCartProgressiveInfoViewHolder(viewBinding)
+                MiniCartProgressiveInfoViewHolder(
+                    viewBinding,
+                    progressiveInfoListener
+                )
             }
 
             MiniCartGwpGiftViewHolder.LAYOUT -> {

@@ -218,7 +218,7 @@ class MiniCartListBottomSheet @Inject constructor(
     }
 
     private fun initializeRecyclerView(viewBinding: LayoutBottomsheetMiniCartListBinding) {
-        val adapterTypeFactory = MiniCartListAdapterTypeFactory(this, multiProductBundleCallback(), singleProductBundleCallback())
+        val adapterTypeFactory = MiniCartListAdapterTypeFactory(this, multiProductBundleCallback(), singleProductBundleCallback(), progressiveInfoCallback())
         adapter = MiniCartListAdapter(adapterTypeFactory)
         viewBinding.rvMiniCartList.adapter = adapter
         viewBinding.rvMiniCartList.layoutManager = LinearLayoutManager(viewBinding.root.context, LinearLayoutManager.VERTICAL, false)
@@ -411,6 +411,12 @@ class MiniCartListBottomSheet @Inject constructor(
                 priceCut = selectedSingleBundle.displayPrice,
                 state = STATE_PRODUCT_BUNDLE_RECOM_IMPRESSED
             )
+        }
+    }
+
+    private fun progressiveInfoCallback() = object: MiniCartProgressiveInfoListener {
+        override fun onRefreshClicked() {
+            viewModel?.getGroupProductTicker()
         }
     }
 

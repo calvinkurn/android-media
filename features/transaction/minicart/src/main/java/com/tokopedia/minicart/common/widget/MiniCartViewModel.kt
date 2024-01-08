@@ -712,7 +712,7 @@ class MiniCartViewModel @Inject constructor(
     }
 
     var count = 1
-    private fun getGroupProductTicker() {
+    fun getGroupProductTicker() {
         groupProductTickerJob?.cancel()
         groupProductTickerJob = launchCatchError(
             block = {
