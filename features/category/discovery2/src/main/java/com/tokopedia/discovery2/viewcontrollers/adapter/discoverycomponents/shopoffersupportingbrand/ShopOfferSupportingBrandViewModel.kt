@@ -66,7 +66,6 @@ class ShopOfferSupportingBrandViewModel(
                     componentId = component.id,
                     pageEndPoint = component.pageEndPoint
                 )
-                component.shouldRefreshComponent = null
                 loadState?.let {
                     setSupportingBrandList(it) {
                         _brands.value = Fail(Throwable(EMPTY_DATA_MESSAGE))
@@ -76,7 +75,6 @@ class ShopOfferSupportingBrandViewModel(
             onError = {
                 component.noOfPagesLoaded = 1
                 component.verticalProductFailState = true
-                component.shouldRefreshComponent = null
                 Timber.e(it)
                 _brands.value = Fail(it)
                 isLoading = false
@@ -88,7 +86,8 @@ class ShopOfferSupportingBrandViewModel(
         isLoading = true
         launchCatchError(block = {
             when (val loadState =
-                useCase?.loadPageComponents(component.id, component.pageEndPoint)) {
+                useCase?.loadPageComponents(component.id, component.pageEndPoint)
+            ) {
                 SupportingBrandLoadState.LOAD_MORE -> {
                     setSupportingBrandList(loadState) {}
                 }
