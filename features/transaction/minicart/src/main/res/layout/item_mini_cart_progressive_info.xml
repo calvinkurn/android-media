@@ -12,6 +12,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -20,7 +21,7 @@
         android:id="@+id/tp_progressive_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:textColor="@color/Unify_TN500"
         app:typographyType="display_3"
@@ -31,9 +32,9 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icu_chevron"
-        android:layout_width="16dp"
-        android:layout_height="wrap_content"
-        app:icon_name="CHEVRON_RIGHT"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:icon_name="RELOAD"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

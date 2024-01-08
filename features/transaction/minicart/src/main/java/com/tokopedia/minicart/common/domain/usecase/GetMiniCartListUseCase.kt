@@ -52,6 +52,7 @@ class GetMiniCartListUseCase @Inject constructor(
         if (response.miniCart.status == "OK") {
             return response.miniCart.copy(data = response.miniCart.data.copy(availableSection = response.miniCart.data.availableSection.copy(
                 availableGroup = response.miniCart.data.availableSection.availableGroup.map { it.copy(cartDetails = it.cartDetails.map { it.copy(cartDetailInfo = it.cartDetailInfo.copy(cartDetailType = "BMGM", bmgmData = BmGmData(
+                    offerId = 1212,
                     offerMessage = listOf("<b>Testing aja</b> * mana ada"),
                     offerLandingPageLink = "tokopedia://now",
                     offerIcon = "https://images.tokopedia.net/img/android/res/singleDpi/catalog_library_logo.png",

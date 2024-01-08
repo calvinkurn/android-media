@@ -14,11 +14,17 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.BundleInfo
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.data.response.bmgm.BmGmData
+import com.tokopedia.cartcommon.data.response.bmgm.BmGmProductBenefit
+import com.tokopedia.cartcommon.data.response.bmgm.BmGmTierProduct
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataResponse
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.data.RemoveFromCartDomainModel
 import com.tokopedia.cartcommon.domain.data.UndoDeleteCartDomainModel
+import com.tokopedia.cartcommon.domain.model.bmgm.request.BmGmGetGroupProductTickerParams
+import com.tokopedia.cartcommon.domain.model.bmgm.response.BmGmGetGroupProductTickerResponse
+import com.tokopedia.cartcommon.domain.usecase.BmGmGetGroupProductTickerUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
@@ -27,9 +33,11 @@ import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet.Companion.STATE_PRODUCT_BUNDLE_RECOM_ATC
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartGwpGiftUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductBundleRecomShimmeringUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartProgressiveInfoUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerErrorUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerWarningUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableHeaderUiModel
@@ -51,9 +59,11 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetProductBundleRecomUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Job
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
@@ -70,6 +80,7 @@ class MiniCartViewModel @Inject constructor(
     private val addToCartOccMultiUseCase: AddToCartOccMultiUseCase,
     private val miniCartListUiModelMapper: MiniCartListUiModelMapper,
     private val miniCartChatListUiModelMapper: MiniCartChatListUiModelMapper,
+    private val getGroupProductTickerUseCase: BmGmGetGroupProductTickerUseCase,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(executorDispatchers.main) {
 
@@ -78,6 +89,8 @@ class MiniCartViewModel @Inject constructor(
         const val DEFAULT_PERCENTAGE = 100.0
         const val DEFAULT_WEIGHT = 1000.0f
     }
+
+    private var groupProductTickerJob: Job? = null
 
     // Global Data
     private val _currentShopIds = MutableLiveData<List<String>>()
@@ -690,7 +703,59 @@ class MiniCartViewModel @Inject constructor(
         }
         updateCartUseCase.setParams(miniCartProductUiModels, source)
         // No-op for booth onSuccess & onError
-        updateCartUseCase.execute(onSuccess = {}, onError = {})
+        updateCartUseCase.execute(
+            onSuccess = {
+                getGroupProductTicker()
+            },
+            onError = { /* do nothing */ }
+        )
+    }
+
+    var count = 1
+    private fun getGroupProductTicker() {
+        groupProductTickerJob?.cancel()
+        groupProductTickerJob = launchCatchError(
+            block = {
+                val param = BmGmGetGroupProductTickerParams()
+                val response = getGroupProductTickerUseCase.invoke(param)
+                if (count == 1) {
+                    count++
+                    throw MessageErrorException()
+                }
+                updateSuccessGwpDataInCart(response)
+            },
+            onError = {
+                updateFailGwpDataInCart()
+            }
+        )
+    }
+
+    private fun updateSuccessGwpDataInCart(
+        response: BmGmGetGroupProductTickerResponse
+    ) {
+        _miniCartListBottomSheetUiModel.value = _miniCartListBottomSheetUiModel.value?.copy(
+            visitables = getVisitables().mapNotNull { uiModel ->
+                when (uiModel) {
+                    is MiniCartProgressiveInfoUiModel -> miniCartListUiModelMapper.updateSuccessMiniCartProgressiveInfoUiModel(
+                        response = response,
+                        uiModel = uiModel
+                    )
+                    is MiniCartGwpGiftUiModel -> miniCartListUiModelMapper.updateMiniCartGwpGiftUiModel(
+                        response = response,
+                        uiModel = uiModel
+                    )
+                    else -> uiModel
+                }
+            }.toMutableList()
+        )
+    }
+
+    private fun updateFailGwpDataInCart() {
+        _miniCartListBottomSheetUiModel.value = _miniCartListBottomSheetUiModel.value?.copy(
+            visitables = getVisitables().filter { visitable -> visitable !is MiniCartGwpGiftUiModel }.map { uiModel ->
+                if (uiModel is MiniCartProgressiveInfoUiModel) miniCartListUiModelMapper.updateFailMiniCartProgressiveInfoUiModel(uiModel) else uiModel
+            }.toMutableList()
+        )
     }
 
     fun goToCheckout(observer: Int) {

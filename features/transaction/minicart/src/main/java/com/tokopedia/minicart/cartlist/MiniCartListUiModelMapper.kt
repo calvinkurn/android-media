@@ -5,6 +5,8 @@ import com.tokopedia.atc_common.data.model.request.ProductDetail
 import com.tokopedia.atc_common.domain.model.response.ProductDataModel
 import com.tokopedia.bmsm_widget.presentation.model.ProductGiftUiModel
 import com.tokopedia.cartcommon.data.response.bmgm.BmGmData
+import com.tokopedia.cartcommon.domain.model.bmgm.response.BmGmGetGroupProductTickerResponse
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
@@ -81,6 +83,56 @@ class MiniCartListUiModelMapper @Inject constructor() {
         title = widgetResponse.tokonowBundleWidget.data.widgetName,
         productBundleList = mapToProductBundleListItemUiModel(widgetResponse.tokonowBundleWidget.data.widgetData)
     )
+
+    fun updateSuccessMiniCartProgressiveInfoUiModel(
+        response: BmGmGetGroupProductTickerResponse,
+        uiModel: MiniCartProgressiveInfoUiModel
+    ): MiniCartProgressiveInfoUiModel? {
+        return response.getGroupProductTicker.data.multipleData.find { data -> data.bmgmData.offerId == uiModel.offerId }?.run {
+            uiModel.copy(
+                message = bmgmData.offerMessage.firstOrNull().orEmpty(),
+                icon = bmgmData.offerIcon,
+                appLink = bmgmData.offerLandingPageLink,
+                isRefreshLayout = false
+            )
+        }
+    }
+
+    fun updateFailMiniCartProgressiveInfoUiModel(
+        uiModel: MiniCartProgressiveInfoUiModel
+    ): MiniCartProgressiveInfoUiModel {
+        return uiModel.copy(
+            message = String.EMPTY,
+            icon = String.EMPTY,
+            appLink = String.EMPTY,
+            isRefreshLayout = true
+        )
+    }
+
+    fun updateMiniCartGwpGiftUiModel(
+        response: BmGmGetGroupProductTickerResponse,
+        uiModel: MiniCartGwpGiftUiModel
+    ): MiniCartGwpGiftUiModel? {
+        response.getGroupProductTicker.data.multipleData.find { data ->
+            return data.bmgmData.tierProductList.find { it.tierId == uiModel.tierId }?.run {
+                uiModel.copy(
+                    tierId = tierId,
+                    ribbonText = benefitWording,
+                    ctaText = actionWording,
+                    giftList = productsBenefit.map { productBenefit ->
+                        ProductGiftUiModel(
+                            id = productBenefit.productId,
+                            name = productBenefit.productName,
+                            imageUrl = productBenefit.productImage,
+                            qty = productBenefit.quantity,
+                            isUnlocked = true
+                        )
+                    }
+                )
+            }
+        }
+        return null
+    }
 
     private fun mapToProductBundleListItemUiModel(
         widgetData: List<ProductBundleRecomResponse.TokonowBundleWidget.Data.WidgetData>
@@ -221,7 +273,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     val lastCartItem = cartIndex == cartItemsCount - 1
 
                     // Add progressive info if bmgm only
-                    if (cartDetail.isBmgm()) {
+                    if (cartDetail.isBmgm() && cartDetail.cartDetailInfo.bmgmData.offerMessage.isNotEmpty()) {
                         miniCartAvailableSectionUiModels.add(mapProgressiveInfo(cartDetail.cartDetailInfo.bmgmData))
                     }
 
@@ -252,7 +304,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     miniCartAvailableSectionUiModels.addAll(miniCartProductUiModels)
 
                     // Add gwp gift if bmgm only
-                    if (cartDetail.isBmgm()) {
+                    if (cartDetail.isBmgm() && cartDetail.cartDetailInfo.bmgmData.tierProductList.isNotEmpty()) {
                         miniCartAvailableSectionUiModels.addAll(mapGwpGift(cartDetail.cartDetailInfo.bmgmData))
                     }
                 }
@@ -365,9 +417,11 @@ class MiniCartListUiModelMapper @Inject constructor() {
         bmgmData: BmGmData
     ): MiniCartProgressiveInfoUiModel {
         return MiniCartProgressiveInfoUiModel(
+            offerId = bmgmData.offerId,
             message = bmgmData.offerMessage.firstOrNull().orEmpty(),
             icon = bmgmData.offerIcon,
-            appLink = bmgmData.offerLandingPageLink
+            appLink = bmgmData.offerLandingPageLink,
+            isRefreshLayout = false
         )
     }
 
@@ -375,19 +429,19 @@ class MiniCartListUiModelMapper @Inject constructor() {
         bmgmData: BmGmData
     ): List<MiniCartGwpGiftUiModel> {
         return bmgmData.tierProductList.map { tierProduct ->
-            val giftList = tierProduct.productsBenefit.map { productBenefit ->
-                ProductGiftUiModel(
-                    id = productBenefit.productId,
-                    name = productBenefit.productName,
-                    imageUrl = productBenefit.productImage,
-                    qty = productBenefit.quantity,
-                    isUnlocked = true
-                )
-            }
             MiniCartGwpGiftUiModel(
+                tierId = tierProduct.tierId,
                 ribbonText = tierProduct.benefitWording,
                 ctaText = tierProduct.actionWording,
-                giftList = giftList
+                giftList = tierProduct.productsBenefit.map { productBenefit ->
+                    ProductGiftUiModel(
+                        id = productBenefit.productId,
+                        name = productBenefit.productName,
+                        imageUrl = productBenefit.productImage,
+                        qty = productBenefit.quantity,
+                        isUnlocked = true
+                    )
+                }
             )
         }
     }
@@ -497,6 +551,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             isLastProductItem = lastProductItem
             editBundleApplink = cartDetail.bundleDetail.editBundleApplink
             this.isBmgm = isBmgm
+            isProductBenefitNotEmpty = cartDetail.cartDetailInfo.bmgmData.tierProductList.any { it.productsBenefit.isNotEmpty() }
             if (bundlingItem) {
                 bundleMultiplier = productQuantity / bundleQuantity
                 bundleLabelQty = productQuantity / bundleQuantity

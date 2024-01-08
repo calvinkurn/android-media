@@ -722,7 +722,7 @@ class MiniCartProductViewHolder(
     private fun renderBottomDivider(element: MiniCartProductUiModel) {
         with(viewBinding) {
             if (element.showBottomDivider) {
-                if (element.isBmgm) {
+                if (element.isBmgm && !element.isBundlingItem) {
                     dividerBottom.invisible()
                 } else {
                     dividerBottom.show()
@@ -878,7 +878,7 @@ class MiniCartProductViewHolder(
         with(viewBinding) {
             val lp = containerProduct.layoutParams
 
-            val margin = if (element.showBottomDivider) {
+            val margin = if (element.showBottomDivider || (element.isBmgm && element.isProductBenefitNotEmpty)) {
                 itemView.context.resources.getDimensionPixelSize(
                     abstractionR.dimen.dp_0
                 )
