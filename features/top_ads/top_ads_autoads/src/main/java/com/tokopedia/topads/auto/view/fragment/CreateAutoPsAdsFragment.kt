@@ -37,6 +37,7 @@ import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.view.viewmodel.AutoPsViewModel
 import com.tokopedia.topads.auto.view.widget.Range
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.AUTO_PS_DAILY_BUDGET_DEFAULT_VALUE
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
@@ -59,6 +60,7 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
 
     private var minDailyBudget = Int.ZERO
     private var maxDailyBudget = Int.ZERO
+    private var currentDailyBudget = 0.0
     private var confirmationDailog: DialogUnify? = null
     private var autoPsToggleOn: Boolean = false
 
@@ -135,7 +137,7 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
                 binding?.rangeEnd?.text = dataItem.maxDailyBudgetFmt
                 minDailyBudget = dataItem.minDailyBudget
                 maxDailyBudget = dataItem.maxDailyBudget
-                binding?.dailyBudget?.editText?.setText(dataItem.minDailyBudgetFmt.removeCommaRawString())
+                binding?.dailyBudget?.editText?.setText(AUTO_PS_DAILY_BUDGET_DEFAULT_VALUE)
                 binding?.seekbar?.range = Range(
                     dataItem.minDailyBudget,
                     dataItem.maxDailyBudget,
@@ -156,6 +158,7 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
     }
 
     private fun setAutoAds(data: AutoAdsResponse.TopAdsGetAutoAds.Data) {
+        currentDailyBudget = data.dailyBudget.toDouble()
         when (data.status) {
             AutoAdsStatus.STATUS_INACTIVE -> {
                 binding?.autoAdsCard?.gone()
@@ -187,10 +190,17 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
             context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
         ).apply {
             if(autoPsToggleOn){
-                putExtra(
-                    TopAdsCommonConstant.TOPADS_AUTOPS_ON,
-                    TopAdsCommonConstant.PARAM_AUTOPS_ON
-                )
+                if(binding?.btnSubmit?.text == getString(topadscommonR.string.topads_common_save_butt)){
+                    putExtra(
+                        TopAdsCommonConstant.TOPADS_AUTOPS_BUDGET_UPDATED,
+                        TopAdsCommonConstant.PARAM_AUTOPS_BUDGET_UPDATED
+                    )
+                } else {
+                    putExtra(
+                        TopAdsCommonConstant.TOPADS_AUTOPS_ON,
+                        TopAdsCommonConstant.PARAM_AUTOPS_ON
+                    )
+                }
             } else {
                 putExtra(
                     TopAdsCommonConstant.TOPADS_AUTOPS_OFF,
@@ -240,7 +250,9 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
                 }
                 binding?.dailyBudget?.editText?.selectionEnd
                 setSubmitCtaEnabled(errorMsg.isEmpty())
-
+                if (autoPsToggleOn && number == currentDailyBudget){
+                    setSubmitCtaEnabled(false)
+                }
             }
         })
     }
@@ -264,8 +276,6 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
                 getString(topadscommonR.string.topads_min_bid_error_msg_format),
                 maxDailyBudget
             )
-        else if (budget % DAILY_BUDGET_MULTIPLIER != Int.ZERO)
-            getString(topadscommonR.string.error_bid_multiple_50)
         else String.EMPTY
     }
 

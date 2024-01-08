@@ -20,12 +20,15 @@ object TopAdsCommonConstant {
     const val TOPADS_AUTOADS_BUDGET_UPDATED = "budget_updated"
     const val TOPADS_AUTOPS_ON = "autops_on"
     const val TOPADS_AUTOPS_OFF = "autops_off"
+    const val TOPADS_AUTOPS_BUDGET_UPDATED = "autops_budget_updated"
+    const val AUTO_PS_DAILY_BUDGET_DEFAULT_VALUE = 50000
     const val PARAM_TOPADS_HOMEPAGE = 0
     const val PARAM_PRODUK_IKLAN = 1
     const val PARAM_IKLAN_TOKO = 2
     const val PARAM_AUTOADS_BUDGET = 1
     const val PARAM_AUTOPS_ON = 1
     const val PARAM_AUTOPS_OFF = 2
+    const val PARAM_AUTOPS_BUDGET_UPDATED = 3
     const val ERROR_TOO_MANY_REQUEST = "TOO_MANY_REQUESTS"
     const val ERROR_INVALID_ITEM_ID = "INVALID_ITEM_ID"
     const val ERROR_INVALID_KEYWORD = "INVALID_KEYWORD_TAG"

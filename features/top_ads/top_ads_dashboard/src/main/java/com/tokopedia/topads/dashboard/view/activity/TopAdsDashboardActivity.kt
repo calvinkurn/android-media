@@ -31,6 +31,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_AUTOADS_BUDGET
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_AUTOPS_BUDGET_UPDATED
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_AUTOPS_OFF
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_AUTOPS_ON
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD
@@ -365,41 +366,47 @@ class TopAdsDashboardActivity :
 
     private fun setToast() {
         val bundle = intent.extras
-        if (bundle?.getInt(
-                TopAdsCommonConstant.TOPADS_AUTOADS_BUDGET_UPDATED,
-                0
-            ) == PARAM_AUTOADS_BUDGET
-        ) {
-            Toaster.build(
-                this.findViewById(android.R.id.content),
-                getString(R.string.topads_dashboard_updated_daily_budget),
-                TopAdsDashboardConstant.TOASTER_DURATION.toInt(),
-                Toaster.TYPE_NORMAL
-            ).show()
-        } else if (bundle?.getInt(
-                TopAdsCommonConstant.TOPADS_AUTOPS_ON,
-                0
-            ) == PARAM_AUTOPS_ON
-        ){
-            Toaster.build(
-                this.findViewById(android.R.id.content),
-                getString(R.string.topads_auto_ps_turn_on_msg),
-                TopAdsDashboardConstant.TOASTER_DURATION.toInt(),
-                Toaster.TYPE_NORMAL,
-                getString(R.string.topads_insight_oke_button)
-            ).show()
-        } else if (bundle?.getInt(
-                TopAdsCommonConstant.TOPADS_AUTOPS_OFF,
-                0
-            ) == PARAM_AUTOPS_OFF
-        ){
-            Toaster.build(
-                this.findViewById(android.R.id.content),
-                getString(R.string.topads_auto_ps_turn_off_msg),
-                TopAdsDashboardConstant.TOASTER_DURATION.toInt(),
-                Toaster.TYPE_NORMAL,
-                getString(R.string.topads_insight_oke_button)
-            ).show()
+        when {
+            bundle?.getInt(
+                TopAdsCommonConstant.TOPADS_AUTOADS_BUDGET_UPDATED, 0
+            ) == PARAM_AUTOADS_BUDGET ->
+                Toaster.build(
+                    this.findViewById(android.R.id.content),
+                    getString(R.string.topads_dashboard_updated_daily_budget),
+                    TopAdsDashboardConstant.TOASTER_DURATION.toInt(),
+                    Toaster.TYPE_NORMAL
+                ).show()
+
+            bundle?.getInt(TopAdsCommonConstant.TOPADS_AUTOPS_ON, 0) == PARAM_AUTOPS_ON ->
+                Toaster.build(
+                    this.findViewById(android.R.id.content),
+                    getString(R.string.topads_auto_ps_turn_on_msg),
+                    TopAdsDashboardConstant.TOASTER_DURATION.toInt(),
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.topads_insight_oke_button)
+                ).show()
+
+            bundle?.getInt(
+                TopAdsCommonConstant.TOPADS_AUTOPS_OFF, 0
+            ) == PARAM_AUTOPS_OFF ->
+                Toaster.build(
+                    this.findViewById(android.R.id.content),
+                    getString(R.string.topads_auto_ps_turn_off_msg),
+                    TopAdsDashboardConstant.TOASTER_DURATION.toInt(),
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.topads_insight_oke_button)
+                ).show()
+
+            bundle?.getInt(
+                TopAdsCommonConstant.TOPADS_AUTOPS_BUDGET_UPDATED, 0
+            ) == PARAM_AUTOPS_BUDGET_UPDATED ->
+                Toaster.build(
+                    this.findViewById(android.R.id.content),
+                    getString(R.string.topads_auto_ps_daily_budget_updated_successfully),
+                    TopAdsDashboardConstant.TOASTER_DURATION.toInt(),
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.topads_insight_oke_button)
+                ).show()
         }
     }
 
