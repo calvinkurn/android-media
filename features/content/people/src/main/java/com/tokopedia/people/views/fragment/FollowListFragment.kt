@@ -19,6 +19,7 @@ import com.tokopedia.content.common.util.getAsSerializable
 import com.tokopedia.people.viewmodels.FollowListViewModel
 import com.tokopedia.people.views.screen.FollowListScreen
 import com.tokopedia.people.views.uimodel.FollowListType
+import com.tokopedia.people.views.uimodel.PeopleUiModel
 import com.tokopedia.people.views.uimodel.action.FollowListAction
 import com.tokopedia.people.views.uimodel.state.FollowListState
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
@@ -49,17 +50,23 @@ class FollowListFragment @Inject internal constructor(
     ): View {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+
+            val onFollowClicked: (PeopleUiModel) -> Unit = {
+                viewModel.onAction(FollowListAction.Follow(it))
+            }
+
+            val onLoadMore: () -> Unit = {
+                viewModel.onAction(FollowListAction.LoadMore)
+            }
+
             setContent {
                 val state: FollowListState by viewModel.state.collectAsStateWithLifecycle()
+
                 FollowListScreen(
                     people = state.followList.toPersistentList(),
                     hasNextPage = state.hasNextPage,
-                    onLoadMore = {
-                        viewModel.onAction(FollowListAction.LoadMore)
-                    },
-                    onFollowClicked = {
-                        viewModel.onAction(FollowListAction.Follow(it))
-                    },
+                    onLoadMore = onLoadMore,
+                    onFollowClicked = onFollowClicked,
                     Modifier.fillMaxSize()
                 )
             }

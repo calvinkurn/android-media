@@ -1,13 +1,16 @@
 package com.tokopedia.people.utils
 
-import androidx.compose.foundation.lazy.LazyItemScope
-import androidx.compose.foundation.lazy.LazyListScope
+import android.content.pm.ApplicationInfo
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.currentRecomposeScope
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 internal fun LazyListState.onLoadMore(
@@ -33,48 +36,22 @@ internal fun LazyListState.onLoadMore(
     }
 }
 
-internal object LoadingModel
+class RecompositionCounter(var value: Int)
 
-@Suppress("UNCHECKED_CAST")
-internal inline fun <T : Any> LazyListScope.itemsLoadMore(
-    items: List<T>,
-    hasNextPage: Boolean = false,
-    noinline key: ((item: T) -> Any)? = null,
-    noinline contentType: (item: T) -> Any? = { null },
-    crossinline loadingContent: @Composable LazyItemScope.() -> Unit = {},
-    crossinline itemContent: @Composable LazyItemScope.(item: T) -> Unit
-) {
-    val newItems = if (hasNextPage) {
-        buildList<Any> {
-            addAll(items)
-            add(LoadingModel)
-        }
+@Composable
+inline fun LogCompositions(tag: String, msg: String) {
+    val context = LocalContext.current
+    val isDebuggable = if (context !is AppCompatActivity) {
+        false
     } else {
-        items
+        val appInfo = context.applicationInfo
+        (appInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
     }
 
-    items(
-        count = newItems.size,
-        key = if (key != null) {
-            { index: Int ->
-                when (val item = newItems[index]) {
-                    LoadingModel -> "loading_key"
-                    else -> key(item as T)
-                }
-            }
-        } else {
-            null
-        },
-        contentType = { index: Int ->
-            when (val item = newItems[index]) {
-                LoadingModel -> LoadingModel
-                else -> contentType(item as T)
-            }
-        }
-    ) {
-        when (val item = newItems[it]) {
-            LoadingModel -> loadingContent()
-            else -> itemContent(item as T)
-        }
+    if (isDebuggable) {
+        val recompositionCounter = remember { RecompositionCounter(0) }
+
+        Log.d(tag, "$msg ${recompositionCounter.value} $currentRecomposeScope")
+        recompositionCounter.value++
     }
 }

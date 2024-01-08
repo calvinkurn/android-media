@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
@@ -31,7 +32,7 @@ import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.nest.principles.utils.noRippleClickable
-import com.tokopedia.people.utils.itemsLoadMore
+import com.tokopedia.people.utils.LogCompositions
 import com.tokopedia.people.utils.onLoadMore
 import com.tokopedia.people.views.uimodel.PeopleUiModel
 import kotlinx.collections.immutable.ImmutableList
@@ -51,24 +52,12 @@ internal fun FollowListScreen(
     val listState = rememberLazyListState()
 
     LazyColumn(modifier, listState) {
-        itemsLoadMore(
+        items(
             people,
-            hasNextPage = hasNextPage,
             key = {
                 when (it) {
                     is PeopleUiModel.ShopUiModel -> "shop_${it.id}"
                     is PeopleUiModel.UserUiModel -> "user_${it.id}"
-                }
-            },
-            loadingContent = {
-                Box(Modifier.fillParentMaxWidth()) {
-                    NestLoader(
-                        variant = NestLoaderType.Circular(),
-                        Modifier
-                            .padding(8.dp)
-                            .requiredSize(40.dp)
-                            .align(Alignment.Center)
-                    )
                 }
             }
         ) {
@@ -90,6 +79,20 @@ internal fun FollowListScreen(
                 }
             }
         }
+
+        if (hasNextPage) {
+            item {
+                Box(Modifier.fillParentMaxWidth()) {
+                    NestLoader(
+                        variant = NestLoaderType.Circular(),
+                        Modifier
+                            .padding(8.dp)
+                            .requiredSize(40.dp)
+                            .align(Alignment.Center)
+                    )
+                }
+            }
+        }
     }
 
     listState.onLoadMore { onLoadMore() }
@@ -101,6 +104,7 @@ private fun ShopFollowListItemRow(
     onFollowClicked: (PeopleUiModel) -> Unit,
     onItemClicked: (PeopleUiModel.ShopUiModel) -> Unit
 ) {
+    LogCompositions("Shop ${item.id}", "Draw - $item, OnFollowClicked: ${onFollowClicked.hashCode()}")
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -151,6 +155,7 @@ private fun UserFollowListItemRow(
     onFollowClicked: (PeopleUiModel) -> Unit,
     onItemClicked: (PeopleUiModel.UserUiModel) -> Unit
 ) {
+    LogCompositions("User ${item.id}", "Draw - $item, OnFollowClicked: ${onFollowClicked.hashCode()}")
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
