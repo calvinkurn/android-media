@@ -25,7 +25,7 @@ import com.tokopedia.tokopedianow.seeallcategory.analytic.SeeAllCategoryAnalytic
 import com.tokopedia.tokopedianow.seeallcategory.di.component.DaggerSeeAllCategoryComponent
 import com.tokopedia.tokopedianow.seeallcategory.persentation.adapter.SeeAllCategoryAdapter
 import com.tokopedia.tokopedianow.seeallcategory.persentation.adapter.SeeAllCategoryAdapterTypeFactory
-import com.tokopedia.tokopedianow.seeallcategory.persentation.decoration.SeeAllCategoryDecoration
+import com.tokopedia.tokopedianow.common.decoration.SeeAllPageDecoration
 import com.tokopedia.tokopedianow.seeallcategory.persentation.uimodel.SeeAllCategoryItemUiModel
 import com.tokopedia.tokopedianow.seeallcategory.persentation.viewholder.SeeAllCategoryItemViewHolder
 import com.tokopedia.tokopedianow.seeallcategory.persentation.viewmodel.TokoNowSeeAllCategoryViewModel
@@ -106,7 +106,7 @@ class TokoNowSeeAllCategoryFragment : Fragment(), SeeAllCategoryItemViewHolder.S
     private fun FragmentTokopedianowSeeAllCategoryBinding.setupRecyclerView() {
         adapter = SeeAllCategoryAdapter(SeeAllCategoryAdapterTypeFactory(this@TokoNowSeeAllCategoryFragment))
         rvCategoryMenu.apply {
-            addItemDecoration(SeeAllCategoryDecoration(getDpFromDimen(context, com.tokopedia.unifyprinciples.R.dimen.unify_space_16).toIntSafely()))
+            addItemDecoration(SeeAllPageDecoration(getDpFromDimen(context, com.tokopedia.unifyprinciples.R.dimen.unify_space_16).toIntSafely()))
             adapter = this@TokoNowSeeAllCategoryFragment.adapter
             layoutManager = GridLayoutManager(context, SPAN_COUNT)
         }

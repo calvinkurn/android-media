@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.seeallcategory.persentation.decoration
+package com.tokopedia.tokopedianow.common.decoration
 
 import android.graphics.Rect
 import android.view.View
@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokopedianow.R
 
-class SeeAllCategoryDecoration(
+class SeeAllPageDecoration(
     private val spacing: Int,
 ): RecyclerView.ItemDecoration() {
 
@@ -29,7 +29,7 @@ class SeeAllCategoryDecoration(
         val absolutePos = parent.getChildAdapterPosition(view)
         val halfSpace = spacing / DIVIDED_BY_TWO
 
-        if (isSeeAllCategoryItem(parent, absolutePos)) {
+        if (isAllCategoryItem(parent, absolutePos) || isAllAnnotationItem(parent, absolutePos)) {
             val spanIndex = getSpanIndex(view)
 
             outRect.left = getLeftProductOffset(spanIndex, halfSpace)
@@ -60,7 +60,9 @@ class SeeAllCategoryDecoration(
         }
     }
 
-    private fun isSeeAllCategoryItem(parent: RecyclerView, viewPosition: Int): Boolean = R.layout.item_tokopedianow_see_all_category == getRecyclerViewViewType(parent, viewPosition)
+    private fun isAllCategoryItem(parent: RecyclerView, viewPosition: Int): Boolean = R.layout.item_tokopedianow_see_all_category == getRecyclerViewViewType(parent, viewPosition)
+
+    private fun isAllAnnotationItem(parent: RecyclerView, viewPosition: Int): Boolean = R.layout.item_tokopedianow_all_annotation == getRecyclerViewViewType(parent, viewPosition)
 
     private fun getRecyclerViewViewType(parent: RecyclerView, viewPosition: Int): Int {
         val adapter = parent.adapter ?: return INVALID_VIEW_TYPE
