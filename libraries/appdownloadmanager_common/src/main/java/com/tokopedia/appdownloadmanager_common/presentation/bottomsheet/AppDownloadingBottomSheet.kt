@@ -138,14 +138,12 @@ class AppDownloadingBottomSheet :
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        activity?.let {
-            AppDownloadManagerPermission.checkRequestPermissionResult(
-                grantResults,
-                requestCode
-            ) { hasGrantPermission ->
-                if (hasGrantPermission) {
-                    startDownloadingAndChangeState()
-                }
+        AppDownloadManagerPermission.checkRequestPermissionResult(
+            grantResults,
+            requestCode
+        ) { hasGrantPermission ->
+            if (hasGrantPermission) {
+                startDownloadingAndChangeState()
             }
         }
     }
