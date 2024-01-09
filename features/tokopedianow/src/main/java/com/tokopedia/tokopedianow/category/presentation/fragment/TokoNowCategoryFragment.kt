@@ -665,7 +665,6 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
                 appLink: String,
                 widgetId: String
             ) {
-                RouteManager.route(context, appLink)
             }
 
             override fun onChannelExpired() {

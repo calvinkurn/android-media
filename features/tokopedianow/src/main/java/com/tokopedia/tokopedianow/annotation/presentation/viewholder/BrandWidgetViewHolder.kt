@@ -5,6 +5,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -117,7 +118,7 @@ class BrandWidgetViewHolder(
         appLink: String,
         widgetId: String
     ) {
-        listener?.onSeeAllClicked(context, channelId, headerName, appLink, widgetId)
+        RouteManager.route(context, appLink)
         analytic.sendClickArrowButtonEvent()
     }
 
