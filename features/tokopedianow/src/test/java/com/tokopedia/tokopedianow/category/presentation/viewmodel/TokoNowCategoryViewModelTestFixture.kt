@@ -19,16 +19,27 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.network.authentication.AuthHelper
+import com.tokopedia.tokopedianow.annotation.domain.model.TokoNowGetAnnotationListResponse
+import com.tokopedia.tokopedianow.annotation.domain.model.TokoNowGetAnnotationListResponse.GetAnnotationListResponse
+import com.tokopedia.tokopedianow.annotation.domain.param.AnnotationPageSource
+import com.tokopedia.tokopedianow.annotation.domain.param.AnnotationType
+import com.tokopedia.tokopedianow.annotation.domain.usecase.GetAnnotationWidgetUseCase
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToCategoryTitle
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToChooseAddress
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToHeaderSpace
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToTicker
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryPageMapper.mapToShowcaseProductCard
+import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper
 import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryDetailUseCase
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
-import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationItemUiModel
 import com.tokopedia.tokopedianow.category.mapper.MiniCartMapper
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationItemUiModel
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel.Companion.BATCH_SHOWCASE_TOTAL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.mapper.AceSearchParamMapper
+import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetProductAdsResponse.ProductAdsResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
@@ -91,7 +102,7 @@ open class TokoNowCategoryViewModelTestFixture {
     )
     protected val shopId: String = "11122"
     protected val navToolbarHeight: Int = 100
-    protected val uniqueId: String = "someuniqueId"
+    private val uniqueId: String = "someuniqueId"
 
     protected val categoryDetailResponse = "category/category-detail.json".jsonToObject<CategoryDetailResponse>()
     protected val targetedTickerResponse = "category/targeted-ticker.json".jsonToObject<GetTargetedTickerResponse>()
@@ -99,6 +110,7 @@ open class TokoNowCategoryViewModelTestFixture {
     protected val updateProductInCartResponse = "category/update-product-in-cart.json".jsonToObject<UpdateCartGqlResponse>()
     protected val removeProductFromCartResponse = "category/remove-product-from-cart.json".jsonToObject<RemoveFromCartData>()
     protected val getProductAdsResponse = "common/get-product-ads-response.json".jsonToObject<GetProductAdsResponse>()
+    protected val getBrandWidgetResponse = "annotation/get_brand_widget.json".jsonToObject<TokoNowGetAnnotationListResponse>()
 
     protected val categoryProductResponseMap = mapOf(
         "4859" to categoryProductResponse1,
@@ -122,6 +134,9 @@ open class TokoNowCategoryViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var getProductAdsUseCase: GetProductAdsUseCase
+
+    @RelaxedMockK
+    lateinit var getAnnotationWidgetUseCase: GetAnnotationWidgetUseCase
 
     @RelaxedMockK
     lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
@@ -171,6 +186,7 @@ open class TokoNowCategoryViewModelTestFixture {
             getCategoryProductUseCase = getCategoryProductUseCase,
             getCategoryDetailUseCase = getCategoryDetailUseCase,
             getProductAdsUseCase = getProductAdsUseCase,
+            getAnnotationWidgetUseCase = getAnnotationWidgetUseCase,
             getTargetedTickerUseCase = getTargetedTickerUseCase,
             getShopAndWarehouseUseCase = getShopAndWarehouseUseCase,
             addressData = localAddress,
@@ -287,7 +303,19 @@ open class TokoNowCategoryViewModelTestFixture {
         coEvery { getProductAdsUseCase.execute(any()) } returns response
     }
 
-    private fun onGetIsLoggedIn_thenReturn(loggedIn: Boolean) {
+    protected fun onGetProductAds_thenReturn(error: Throwable) {
+        coEvery { getProductAdsUseCase.execute(any()) } throws error
+    }
+
+    protected fun onGetAnnotationWidget_thenReturn(response: GetAnnotationListResponse) {
+        coEvery { getAnnotationWidgetUseCase.execute(any(), any(), any(), any()) } returns response
+    }
+
+    protected fun onGetAnnotationWidget_thenReturn(error: Throwable) {
+        coEvery { getAnnotationWidgetUseCase.execute(any(), any(), any(), any()) } throws error
+    }
+
+    protected fun onGetIsLoggedIn_thenReturn(loggedIn: Boolean) {
         coEvery { userSession.isLoggedIn } returns loggedIn
     }
 
@@ -387,15 +415,50 @@ open class TokoNowCategoryViewModelTestFixture {
         coVerify { getProductAdsUseCase.execute(expectedParam) }
     }
 
+    protected fun verifyGetAnnotationWidgetUseCaseCalled(
+        categoryId: String,
+        warehouses: String,
+        annotationType: AnnotationType,
+        pageSource: AnnotationPageSource
+    ) {
+        coVerify {
+            getAnnotationWidgetUseCase.execute(categoryId, warehouses, annotationType, pageSource)
+        }
+    }
+
     /**
      * protected other function section
      */
 
-    protected fun getUniqueId(
-        isLoggedIn: Boolean,
-        userId: String,
-        deviceId: String
-    ) = if (isLoggedIn) AuthHelper.getMD5Hash(userId) else AuthHelper.getMD5Hash(deviceId)
+    protected fun setupAddressAndUserData() {
+        val isLoggedIn = true
+        val userId = "12223"
+        val deviceId = "11111"
+        val shopId = "1502"
+
+        val warehouses = listOf(
+            LocalWarehouseModel(
+                warehouse_id = 15125512,
+                service_type = "fc"
+            ),
+            LocalWarehouseModel(
+                warehouse_id = 14231455,
+                service_type = "hub"
+            )
+        )
+
+        setAddressData(
+            warehouseId = warehouseId,
+            shopId = shopId,
+            warehouses = warehouses
+        )
+
+        onUserSession_thenReturns(
+            isLoggedIn = isLoggedIn,
+            userId = userId,
+            deviceId = deviceId
+        )
+    }
 
     protected fun mapShowcaseProduct(
         expectedCategoryIdL2Failed: String = String.EMPTY,
@@ -445,7 +508,48 @@ open class TokoNowCategoryViewModelTestFixture {
             }
         }
     }
-    
+
+    protected fun createVisitableList(): MutableList<Visitable<*>> {
+        // map header space
+        val headerSpaceUiModel = categoryDetailResponse
+            .mapToHeaderSpace(
+                space = navToolbarHeight
+            )
+
+        // map choose address
+        val chooseAddressUiModel = categoryDetailResponse
+            .mapToChooseAddress(addressData)
+
+        // map ticker
+        val tickerDataList = TickerMapper.mapTickerData(
+            targetedTickerResponse
+        )
+        val tickerUiModel = categoryDetailResponse
+            .mapToTicker(tickerDataList.tickerList)
+
+        // map title
+        val titleUiModel = categoryDetailResponse
+            .mapToCategoryTitle()
+
+        // map category navigation
+        val categoryNavigationUiModel = categoryDetailResponse
+            .mapToCategoryNavigation()
+
+        // map product recommendation
+        val productRecommendationUiModel = ProductRecommendationMapper.createProductRecommendation(
+            categoryIds = listOf(categoryIdL1)
+        )
+
+        return mutableListOf(
+            headerSpaceUiModel,
+            chooseAddressUiModel,
+            tickerUiModel,
+            titleUiModel,
+            categoryNavigationUiModel,
+            productRecommendationUiModel
+        )
+    }
+
     private fun createGetProductQueryParams(srpPageId: String): Map<String?, Any?> {
         return mutableMapOf<String?, Any?>().apply {
             put(SearchApiConst.USER_CITY_ID, addressData.city_id)

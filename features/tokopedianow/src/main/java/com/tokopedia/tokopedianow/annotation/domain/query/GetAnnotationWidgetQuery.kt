@@ -5,7 +5,7 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 internal object GetAnnotationWidgetQuery : GqlQueryInterface {
 
     const val PARAM_CATEGORY_ID = "categoryID"
-    const val PARAM_WAREHOUSE_IDS = "warehouseIDs"
+    const val PARAM_WAREHOUSES = "warehouses"
     const val PARAM_ANNOTATION_TYPE = "annotationType"
     const val PARAM_PAGE_SOURCE = "pageSource"
 
@@ -19,13 +19,13 @@ internal object GetAnnotationWidgetQuery : GqlQueryInterface {
         return """
             query TokonowGetAnnotationList(
                 ${'$'}$PARAM_CATEGORY_ID: String!, 
-                ${'$'}$PARAM_WAREHOUSE_IDS: String!, 
+                ${'$'}$PARAM_WAREHOUSES: String!, 
                 ${'$'}$PARAM_ANNOTATION_TYPE: String!, 
                 ${'$'}$PARAM_PAGE_SOURCE: String!
             ){
               TokonowGetAnnotationList(req: {
                 $PARAM_CATEGORY_ID: ${'$'}$PARAM_CATEGORY_ID,
-                $PARAM_WAREHOUSE_IDS: ${'$'}$PARAM_WAREHOUSE_IDS,
+                $PARAM_WAREHOUSES: ${'$'}$PARAM_WAREHOUSES,
                 $PARAM_ANNOTATION_TYPE: ${'$'}$PARAM_ANNOTATION_TYPE,
               }, $PARAM_PAGE_SOURCE: ${'$'}$PARAM_PAGE_SOURCE){
                 header{
