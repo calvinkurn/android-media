@@ -7,9 +7,6 @@ import com.tokopedia.unifyorderhistory.data.model.UohTypeData
 import com.tokopedia.unifyorderhistory.databinding.UohEmptyStateBinding
 import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
 
-/**
- * Created by fwidjaja on 22/07/20.
- */
 class UohEmptyStateViewHolder(private val binding: UohEmptyStateBinding, private val actionListener: UohItemAdapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: UohTypeData) {
         if (item.dataObject is UohEmptyState) {

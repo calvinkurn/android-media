@@ -133,7 +133,9 @@ class ShopPageTrackingBuyer(
                     ShopPageTrackingConstant.DIMENSION_79, shopId,
                     ShopPageTrackingConstant.DIMENSION_90, shopRef,
                     ShopPageTrackingConstant.DIMENSION_83, boe,
-                    ShopPageTrackingConstant.DIMENSION_61, sortAndFilterValue
+                    ShopPageTrackingConstant.DIMENSION_61, sortAndFilterValue,
+                    ShopPageTrackingConstant.DIMENSION_58, viewModel.isFulfillment?.run { toString() } ?: "",
+                    ShopPageTrackingConstant.DIMENSION_56, viewModel.warehouseId.orEmpty()
                 )
             )
             list.add(event)
@@ -170,7 +172,9 @@ class ShopPageTrackingBuyer(
                     ShopPageTrackingConstant.DIMENSION_81, shopTypeDef,
                     ShopPageTrackingConstant.DIMENSION_79, shopId,
                     ShopPageTrackingConstant.DIMENSION_90, dimension90,
-                    ShopPageTrackingConstant.DIMENSION_61, sortAndFilterValue
+                    ShopPageTrackingConstant.DIMENSION_61, sortAndFilterValue,
+                    ShopPageTrackingConstant.DIMENSION_58, viewModel.isFulfillment?.run { toString() } ?: "",
+                    ShopPageTrackingConstant.DIMENSION_56, viewModel.warehouseId.orEmpty()
                 )
             )
             list.add(event)
@@ -1122,6 +1126,7 @@ class ShopPageTrackingBuyer(
 
     fun impressionProductListEmptyState(
         isLogin: Boolean,
+
         customDimensionShopPage: CustomDimensionShopPageAttribution,
         shopProductUiModel: ShopProductUiModel,
         productPosStart: Int,

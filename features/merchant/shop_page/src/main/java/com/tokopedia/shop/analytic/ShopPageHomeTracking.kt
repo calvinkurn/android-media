@@ -65,6 +65,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_118
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_38
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_40
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_45
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_56
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_58
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_61
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_79
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_80
@@ -588,7 +590,8 @@ class ShopPageHomeTracking(
         customDimensionShopPage: CustomDimensionShopPageAttribution,
         sortAndFilterValue: String,
         userId: String,
-        selectedTabName: String
+        selectedTabName: String,
+        warehouseId: String?
     ) {
         val etalaseChip = String.format(SELECTED_ETALASE_CHIP, ALL_PRODUCT)
         val loginNonLoginEventValue = if (isLogin) LOGIN else NON_LOGIN
@@ -617,7 +620,8 @@ class ShopPageHomeTracking(
                     customDimensionShopPage,
                     sortAndFilterValue,
                     listEventValue,
-                    selectedTabName
+                    selectedTabName,
+                    warehouseId
                 )
             )
         )
@@ -658,7 +662,9 @@ class ShopPageHomeTracking(
                             productId,
                             productName,
                             productDisplayedPrice,
-                            widgetName
+                            widgetName,
+                            isFulfilment,
+                            warehouseId
                         )
                     )
                 )
@@ -675,7 +681,9 @@ class ShopPageHomeTracking(
         productId: String,
         productName: String,
         productDisplayedPrice: String,
-        itemListValue: String
+        itemListValue: String,
+        isFulfillment: Boolean?,
+        warehouseId: String?
     ): Bundle {
         return Bundle().apply {
             putString(DIMENSION_40, itemListValue)
@@ -686,6 +694,8 @@ class ShopPageHomeTracking(
             putString(ITEM_NAME, productName)
             putString(ITEM_VARIANT, "")
             putString(PRICE, formatPrice(productDisplayedPrice))
+            putString(DIMENSION_58, isFulfillment?.run { toString() } ?: "")
+            putString(DIMENSION_56, warehouseId.orEmpty())
         }
     }
 
@@ -699,7 +709,8 @@ class ShopPageHomeTracking(
         customDimensionShopPage: CustomDimensionShopPageAttribution,
         sortAndFilterValue: String,
         userId: String,
-        selectedTabName: String
+        selectedTabName: String,
+        warehouseId: String?
     ) {
         val etalaseChip = String.format(SELECTED_ETALASE_CHIP, ALL_PRODUCT)
         val loginNonLoginEventValue = if (isLogin) LOGIN else NON_LOGIN
@@ -728,7 +739,8 @@ class ShopPageHomeTracking(
                         customDimensionShopPage,
                         sortAndFilterValue,
                         listEventValue,
-                        selectedTabName
+                        selectedTabName,
+                        warehouseId
                     )
                 )
             )
@@ -770,7 +782,9 @@ class ShopPageHomeTracking(
                             productId,
                             productName,
                             productDisplayedPrice,
-                            widgetName
+                            widgetName,
+                            isFulfilment,
+                            warehouseId
                         )
                     )
                 )
@@ -1238,7 +1252,8 @@ class ShopPageHomeTracking(
         customDimensionShopPage: CustomDimensionShopPageAttribution,
         sortAndFilterValue: String,
         listEventValue: String,
-        selectedTabName: String
+        selectedTabName: String,
+        warehouseId: String?
     ): Map<String, Any> {
         val boe = if (customDimensionShopPage.isFulfillmentExist == true && customDimensionShopPage.isFreeOngkirActive == true) {
             BOE
@@ -1259,7 +1274,9 @@ class ShopPageHomeTracking(
             DIMENSION_81 to customDimensionShopPage.shopType.orEmpty(),
             DIMENSION_79 to customDimensionShopPage.shopId.orEmpty(),
             DIMENSION_90 to customDimensionShopPage.shopRef.orEmpty(),
-            DIMENSION_83 to boe
+            DIMENSION_83 to boe,
+            DIMENSION_58 to customDimensionShopPage.isFulfillmentExist.toString(),
+            DIMENSION_56 to warehouseId.orEmpty()
         ).apply {
             if (sortAndFilterValue.isNotEmpty()) {
                 put(DIMENSION_61, sortAndFilterValue)
@@ -1828,7 +1845,9 @@ class ShopPageHomeTracking(
                             productId,
                             productName,
                             productPrice,
-                            itemList
+                            itemList,
+                            isFulfilment,
+                            warehouseId
                         )
                     )
                 )
@@ -1908,7 +1927,9 @@ class ShopPageHomeTracking(
                             productId,
                             productName,
                             productPrice,
-                            itemList
+                            itemList,
+                            isFulfilment,
+                            warehouseId
                         )
                     )
                 )
@@ -1925,7 +1946,9 @@ class ShopPageHomeTracking(
         productId: String,
         productName: String,
         productDisplayedPrice: String,
-        itemListValue: String
+        itemListValue: String,
+        isFulfillment: Boolean?,
+        warehouseId: String?
     ): Bundle {
         return Bundle().apply {
             putString(DIMENSION_40, itemListValue)
@@ -1936,6 +1959,8 @@ class ShopPageHomeTracking(
             putString(ITEM_NAME, productName)
             putString(ITEM_VARIANT, "")
             putString(PRICE, formatPrice(productDisplayedPrice))
+            putString(DIMENSION_58, isFulfillment?.run { toString() } ?: "")
+            putString(DIMENSION_56, warehouseId.orEmpty())
         }
     }
 
@@ -2290,7 +2315,9 @@ class ShopPageHomeTracking(
         shopId: String,
         userId: String,
         widgetMasterId: String,
-        isFestivity: Boolean
+        isFestivity: Boolean,
+        isFulfillment: Boolean?,
+        warehouseId: String?
     ) {
         var eventLabel = joinDash(
             LABEL_SHOP_DECOR_IMPRESSION,
@@ -2324,6 +2351,8 @@ class ShopPageHomeTracking(
             )
             putString(SHOP_ID, shopId)
             putString(USER_ID, userId)
+            putString(DIMENSION_58, isFulfillment?.run { toString() } ?: "")
+            putString(DIMENSION_56, warehouseId.orEmpty())
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventBundle)
     }
@@ -2336,7 +2365,9 @@ class ShopPageHomeTracking(
         shopId: String,
         userId: String,
         widgetMasterId: String,
-        isFestivity: Boolean
+        isFestivity: Boolean,
+        isFulfillment: Boolean? = null,
+        warehouseId: String? = null
     ) {
         var eventLabel = joinDash(
             LABEL_SHOP_DECOR_CLICK,
@@ -2370,6 +2401,8 @@ class ShopPageHomeTracking(
             )
             putString(SHOP_ID, shopId)
             putString(USER_ID, userId)
+            putString(DIMENSION_58, isFulfillment?.run { toString() } ?: "")
+            putString(DIMENSION_56, warehouseId.orEmpty())
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
     }
@@ -2828,7 +2861,9 @@ class ShopPageHomeTracking(
                         productId = productCardUiModel.id.orEmpty(),
                         productName = productCardUiModel.name.orEmpty(),
                         productPrice = productCardUiModel.displayedPrice?.getDigits().orZero().toLong(),
-                        itemListValue = itemListValue
+                        itemListValue = itemListValue,
+                        isFulfillment = productCardUiModel.isFulfillment,
+                        warehouseId = productCardUiModel.warehouseId
                     )
                 )
             }
@@ -2870,7 +2905,9 @@ class ShopPageHomeTracking(
                         productId = product.id.orEmpty(),
                         productName = product.name.orEmpty(),
                         productPrice = product.displayedPrice?.getDigits().orZero().toLong(),
-                        itemListValue = itemListValue
+                        itemListValue = itemListValue,
+                        isFulfillment = product.isFulfillment,
+                        warehouseId = product.warehouseId
                     )
                 )
             )
@@ -2981,7 +3018,9 @@ class ShopPageHomeTracking(
         productBrand: String = "",
         productCategory: String = "",
         productVariant: String = "",
-        itemListValue: String
+        itemListValue: String,
+        isFulfillment: Boolean?,
+        warehouseId: String
     ): Bundle {
         return Bundle().apply {
             putString(INDEX, position.toString())
@@ -2992,6 +3031,8 @@ class ShopPageHomeTracking(
             putString(ITEM_VARIANT, productVariant)
             putString(DIMENSION_40, itemListValue)
             putLong(PRICE, productPrice)
+            putString(DIMENSION_58, isFulfillment?.run { toString() } ?: "")
+            putString(DIMENSION_56, warehouseId.orEmpty())
         }
     }
 
@@ -3689,7 +3730,6 @@ class ShopPageHomeTracking(
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(PROMO_VIEW, bundle)
     }
 
-
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
     // Tracker ID: 46621
     fun sendProductCarouselImpression(
@@ -3715,7 +3755,7 @@ class ShopPageHomeTracking(
         val eventLabel = "$bannerVariant - $productCardVariant"
 
         val productBundles = productCarouselItemType.toProductBundles()
-        
+
         val bundle = Bundle().apply {
             putString(EVENT, VIEW_ITEM_LIST)
             putString(EVENT_ACTION, IMPRESSION_REIMAGINED_PRODUCT_CAROUSEL)
@@ -3736,7 +3776,7 @@ class ShopPageHomeTracking(
     private fun List<ShopHomeBannerProductGroupItemType>.toProductBundles(): ArrayList<Bundle> {
         val productBundles = ArrayList<Bundle>()
         val products = filterIsInstance<ProductItemType>()
-        
+
         products.forEachIndexed { index, product ->
             val price = try {
                 product.price.digitsOnly().toDouble()
@@ -3744,7 +3784,7 @@ class ShopPageHomeTracking(
                 FirebaseCrashlytics.getInstance().recordException(e)
                 Int.ZERO.toDouble()
             }
-            
+
             val productBundle = Bundle().apply {
                 putString(DIMENSION_40, ITEM_LIST_REIMAGINED_ADVANCED_PRODUCT_CAROUSEL)
                 putInt(INDEX, index.inc())
@@ -3758,10 +3798,10 @@ class ShopPageHomeTracking(
 
             productBundles.add(productBundle)
         }
-        
+
         return productBundles
     }
-    
+
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4148
     // Tracker ID: 45951
     fun sendProductCarouselBannerClick(
@@ -3823,7 +3863,7 @@ class ShopPageHomeTracking(
             FirebaseCrashlytics.getInstance().recordException(e)
             Int.ZERO.toDouble()
         }
-        
+
         val bundledProduct = Bundle().apply {
             putString(DIMENSION_40, ITEM_LIST_REIMAGINED_ADVANCED_PRODUCT_CAROUSEL)
             putInt(INDEX, index)
@@ -3834,7 +3874,7 @@ class ShopPageHomeTracking(
             putString(ITEM_VARIANT, "")
             putDouble(PRICE, price)
         }
-        
+
         val bundle = Bundle().apply {
             putString(EVENT, SELECT_CONTENT)
             putString(EVENT_ACTION, CLICK_REIMAGINED_PRODUCT_CAROUSEL)
@@ -4414,7 +4454,7 @@ class ShopPageHomeTracking(
             FirebaseCrashlytics.getInstance().recordException(e)
             Int.ZERO.toDouble()
         }
-        
+
         return Bundle().apply {
             putString(DIMENSION_40, "$ITEM_LIST_SHOP_PAGE_REIMAGINED $TERLARIS_WIDGET_VALUE")
             putString(INDEX, trackerModel.position.toString())

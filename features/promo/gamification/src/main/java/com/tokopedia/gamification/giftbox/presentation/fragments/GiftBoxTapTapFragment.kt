@@ -24,6 +24,7 @@ import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieTask
 import com.tkpd.remoteresourcerequest.view.ImageDensityType
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gamification.R
@@ -137,6 +138,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
             val component = DaggerGiftBoxComponent.builder()
                 .activityContextModule(ActivityContextModule(it))
                 .appModule(AppModule((context as AppCompatActivity).application))
+                .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
                 .build()
             component.inject(this)
 
