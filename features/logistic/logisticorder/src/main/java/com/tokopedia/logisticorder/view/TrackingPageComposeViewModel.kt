@@ -15,8 +15,11 @@ import com.tokopedia.targetedticker.domain.GetTargetedTickerUseCase
 import com.tokopedia.targetedticker.domain.TargetedTickerMapper
 import com.tokopedia.targetedticker.domain.TargetedTickerPage
 import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -38,6 +41,8 @@ class TrackingPageComposeViewModel @Inject constructor(
     private var caller: String? = null
     private val _uiState = MutableStateFlow(TrackingPageState())
     val uiState: StateFlow<TrackingPageState> = _uiState.asStateFlow()
+    private val _error = MutableSharedFlow<Throwable>(replay = 1)
+    val error: SharedFlow<Throwable> = _error.asSharedFlow()
 
     fun onEvent(event: TrackingPageEvent) {
         _uiState.update {
@@ -104,9 +109,7 @@ class TrackingPageComposeViewModel @Inject constructor(
                 getTickerData(uiModel.page.tickerUnificationTargets)
             },
             onError = { e ->
-                _uiState.update {
-                    it.copy(isLoading = false, error = e)
-                }
+                _error.emit(e)
             }
         )
     }
@@ -125,7 +128,7 @@ class TrackingPageComposeViewModel @Inject constructor(
             _uiState.update {
                 it.copy(tickerData = model)
             }
-        }, onError = {})
+        }, onError = { _error.emit(it) })
     }
 
     private fun retryBooking(orderId: String) {
@@ -136,9 +139,7 @@ class TrackingPageComposeViewModel @Inject constructor(
                     it.copy(isLoading = false, retryBooking = retryBooking)
                 }
             } catch (e: Throwable) {
-                _uiState.update {
-                    it.copy(isLoading = false, error = e)
-                }
+                _error.emit(e)
             }
         }
     }
@@ -151,9 +152,7 @@ class TrackingPageComposeViewModel @Inject constructor(
                     it.copy(isLoading = false, retryAvailability = retryAvailability)
                 }
             } catch (e: Throwable) {
-                _uiState.update {
-                    it.copy(isLoading = false, error = e)
-                }
+                _error.emit(e)
             }
         }
     }

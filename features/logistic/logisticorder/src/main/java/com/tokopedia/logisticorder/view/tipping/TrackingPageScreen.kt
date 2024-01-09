@@ -216,7 +216,6 @@ fun FindNewDriverSection(
                     var timeInMillis by remember {
                         mutableStateOf(remainingSeconds * 1000)
                     }
-                    // todo DisposableEffect ?
                     LaunchedEffect(key1 = timeInMillis) {
                         while (timeInMillis > 0) {
                             delay(1000L)

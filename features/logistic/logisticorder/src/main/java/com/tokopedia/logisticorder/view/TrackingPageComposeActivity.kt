@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalView
 import androidx.lifecycle.ViewModelProvider
@@ -31,6 +32,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.logisticorder.R as logisticorderR
 
@@ -78,9 +80,15 @@ class TrackingPageComposeActivity : AppCompatActivity() {
         )
 
         setContent {
+            val view = LocalView.current
+            LaunchedEffect(key1 = viewModel.error, block = {
+                viewModel.error.collectLatest {
+                    showToaster(view, it.message.orEmpty(), type = Toaster.TYPE_ERROR)
+                }
+            })
             NestTheme {
                 val state = viewModel.uiState.collectAsState()
-                val view = LocalView.current
+
                 TrackingPageScreen(
                     state = state.value,
                     openWebview = ::openWebView,
@@ -170,12 +178,12 @@ class TrackingPageComposeActivity : AppCompatActivity() {
         showToaster(composeView, getString(R.string.success_copy_reference_number))
     }
 
-    private fun showToaster(composeView: View, message: String) {
+    private fun showToaster(composeView: View, message: String, type: Int = Toaster.TYPE_NORMAL) {
         Toaster.build(
             composeView,
             message,
             Toaster.LENGTH_SHORT,
-            Toaster.TYPE_NORMAL
+            type
         ).show()
     }
 
