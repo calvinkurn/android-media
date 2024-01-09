@@ -58,7 +58,6 @@ import com.tokopedia.deals.common.ui.dataview.CuratedProductCategoryDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.common.ui.dataview.DealsChipsDataView
 import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
-import com.tokopedia.deals.data.entity.Category
 import com.tokopedia.deals.data.entity.Product
 import com.tokopedia.deals.ui.home.ui.dataview.BannersDataView
 import com.tokopedia.deals.ui.home.ui.dataview.CuratedCategoryDataView
@@ -1033,7 +1032,7 @@ class DealsAnalytics @Inject constructor(
             )
         )
         eventDataLayer.generalBusiness()
-        val category = product.category.firstOrNull() ?: Category()
+        val category = product.category.firstOrNull() ?: Product.Category()
         val itemBundles = arrayListOf<Bundle>()
         itemBundles.add(
             Bundle().apply {
