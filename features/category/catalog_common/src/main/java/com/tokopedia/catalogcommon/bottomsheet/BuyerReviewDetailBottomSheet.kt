@@ -41,7 +41,8 @@ class BuyerReviewDetailBottomSheet : BottomSheetUnify() {
 
         fun show(
             manager: FragmentManager?,
-            reviewData: BuyerReviewUiModel.ItemBuyerReviewUiModel
+            reviewData: BuyerReviewUiModel.ItemBuyerReviewUiModel,
+            listener: (position: Int) -> Unit = {}
         ) {
             val itemBundle = ArrayList<Bundle>()
             reviewData.images.forEachIndexed { index, imgReview ->
@@ -53,6 +54,7 @@ class BuyerReviewDetailBottomSheet : BottomSheetUnify() {
                 )
             }
             BuyerReviewDetailBottomSheet().apply {
+                setImageClickListener(listener)
                 arguments = Bundle().apply {
                     putString(SHOP_ICON, reviewData.shopIcon)
                     putString(SHOP_NAME, reviewData.shopName)
@@ -87,6 +89,7 @@ class BuyerReviewDetailBottomSheet : BottomSheetUnify() {
     private var txtTimestamp: Typography? = null
     private var txtReviewDescription: Typography? = null
     private var rvImageProducts: RecyclerView? = null
+    private var imageClickListener: (position: Int) -> Unit = {}
 
     init {
         setCloseClickListener { dismiss() }
@@ -156,7 +159,7 @@ class BuyerReviewDetailBottomSheet : BottomSheetUnify() {
                 }
 
                 rvImageProducts?.apply {
-                    adapter = ItemProductImageReviewAdapter(imgList)
+                    adapter = ItemProductImageReviewAdapter(imgList, imageClickListener)
                     layoutManager = LinearLayoutManager(
                         context,
                         LinearLayoutManager.HORIZONTAL,
@@ -193,5 +196,9 @@ class BuyerReviewDetailBottomSheet : BottomSheetUnify() {
         }
 
         setChild(contentView)
+    }
+
+    fun setImageClickListener(listener: (position: Int) -> Unit) {
+        imageClickListener = listener
     }
 }
