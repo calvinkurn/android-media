@@ -1,5 +1,6 @@
 package com.tokopedia.deals.ui.location_picker.di.module
 
+import com.tokopedia.deals.ui.location_picker.DealsLocationConstants
 import com.tokopedia.deals.ui.location_picker.di.DealsLocationScope
 import com.tokopedia.deals.ui.location_picker.model.response.LocationData
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -12,24 +13,24 @@ import javax.inject.Named
 class DealsLocationModule {
     @DealsLocationScope
     @Provides
-    @Named(com.tokopedia.deals.ui.location_picker.DealsLocationConstants.GQL_SEARCH_LOCATION)
+    @Named(DealsLocationConstants.GQL_SEARCH_LOCATION)
     fun provideGraphqlUseCaseSearchLocationData(graphqlRepository: GraphqlRepository): GraphqlUseCase<LocationData> =
         GraphqlUseCase(graphqlRepository)
 
     @DealsLocationScope
     @Provides
-    @Named(com.tokopedia.deals.ui.location_picker.DealsLocationConstants.GQL_POPULAR_LOCATION)
+    @Named(DealsLocationConstants.GQL_POPULAR_LOCATION)
     fun provideGraphqlUseCasePopularLocationData(graphqlRepository: GraphqlRepository): GraphqlUseCase<LocationData> =
         GraphqlUseCase(graphqlRepository)
 
     @Provides
-    @Named(com.tokopedia.deals.ui.location_picker.DealsLocationConstants.GQL_POPULAR_CITIES)
+    @Named(DealsLocationConstants.GQL_POPULAR_CITIES)
     fun provideGraphqlUseCasePopularCitiesData(graphqlRepository: GraphqlRepository): GraphqlUseCase<LocationData> =
         GraphqlUseCase(graphqlRepository)
 
     @DealsLocationScope
     @Provides
-    @Named(com.tokopedia.deals.ui.location_picker.DealsLocationConstants.GQL_LANDMARK)
+    @Named(DealsLocationConstants.GQL_LANDMARK)
     fun provideGraphqlUseCaseLandmarkData(graphqlRepository: GraphqlRepository): GraphqlUseCase<LocationData> =
         GraphqlUseCase(graphqlRepository)
 }

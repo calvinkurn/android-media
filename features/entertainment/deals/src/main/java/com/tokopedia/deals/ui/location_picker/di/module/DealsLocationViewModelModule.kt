@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.deals.ui.location_picker.di.DealsLocationScope
 import com.tokopedia.deals.ui.location_picker.domain.viewmodel.DealsLocationViewModel
 import dagger.Binds
 import dagger.Module
@@ -18,6 +19,6 @@ abstract class DealsLocationViewModelModule {
     abstract fun provideDealsLocationViewModel(viewModel: DealsLocationViewModel): ViewModel
 
     @Binds
-    @com.tokopedia.deals.ui.location_picker.di.DealsLocationScope
+    @DealsLocationScope
     abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 }

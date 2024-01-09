@@ -21,12 +21,7 @@ class GetChipsCategoryUseCase @Inject constructor(
         .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`()).build()
 
     override suspend fun execute(params: Unit): CuratedData {
-        val response: CuratedData = repository.request(
-            graphqlQuery(),
-            params,
-            cacheStrategy()
-        )
-        return response
+        return repository.request(graphqlQuery(), params, cacheStrategy())
     }
 
     override fun graphqlQuery(): String = """
