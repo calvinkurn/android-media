@@ -11,4 +11,6 @@ interface BroadMatchView {
     fun trackEventClickSeeMoreBroadMatch(broadMatchDataView: BroadMatchDataView)
 
     fun openLink(applink: String, url: String)
+
+    fun openLink(broadMatchItemDataView: BroadMatchItemDataView)
 }
