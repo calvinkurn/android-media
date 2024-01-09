@@ -25,6 +25,7 @@
 -dontwarn okio.**
 -dontwarn com.viewpagerindicator.LinePageIndicator
 -dontwarn sun.misc.**
+-dontwarn sun.nio.ch.DirectBuffer
 
 -keep class id.co.veritrans.android.api.**{ *;}
 -keepclassmembers class id.co.veritrans.android.api.**{
