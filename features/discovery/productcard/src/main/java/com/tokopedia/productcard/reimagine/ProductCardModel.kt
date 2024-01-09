@@ -17,6 +17,7 @@ data class ProductCardModel(
     val hasThreeDots: Boolean = false,
     val stockInfo: StockInfo = StockInfo(),
     val isSafeProduct: Boolean = false,
+    val isInBackground: Boolean = false,
 ) {
 
     fun labelBenefit(): LabelGroup? =

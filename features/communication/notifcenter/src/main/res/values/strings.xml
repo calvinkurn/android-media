@@ -139,4 +139,6 @@
 
     <string name="notifcenter_title_change_role">Akun sudah diganti ke %s.</string>
     <string name="notifcenter_title_change_account">Ganti akun</string>
+
+    <string name="notifcenter_cta_widget_see_others">Lihat lainnya</string>
 </resources>

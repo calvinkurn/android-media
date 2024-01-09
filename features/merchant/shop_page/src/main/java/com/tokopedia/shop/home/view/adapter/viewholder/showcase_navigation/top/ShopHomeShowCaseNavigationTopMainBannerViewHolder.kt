@@ -14,6 +14,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeShowcaseNavigationTopMainBannerBinding
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.view.adapter.viewholder.showcase_navigation.ShopHomeShowCaseNavigationAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeReimagineShowcaseNavigationListener
 import com.tokopedia.shop.home.view.model.showcase_navigation.Showcase
@@ -25,7 +26,8 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
     itemView: View,
-    private val listener: ShopHomeReimagineShowcaseNavigationListener
+    private val listener: ShopHomeReimagineShowcaseNavigationListener,
+    private val recyclerviewPoolListener: RecyclerviewPoolListener
 ) : AbstractViewHolder<ShowcaseNavigationUiModel>(itemView) {
 
     companion object {
@@ -127,6 +129,7 @@ class ShopHomeShowCaseNavigationTopMainBannerViewHolder(
             layoutManager =
                 LinearLayoutManager(recyclerView.context, LinearLayoutManager.HORIZONTAL, false)
             adapter = showCaseAdapter
+            setRecycledViewPool(recyclerviewPoolListener.parentPool)
         }
 
         showCaseAdapter.submit(filteredShowcases)

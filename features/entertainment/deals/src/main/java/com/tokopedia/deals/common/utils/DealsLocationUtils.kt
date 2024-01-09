@@ -55,14 +55,16 @@ class DealsLocationUtils(val context: Context) {
         callback.setChangedLocation()
     }
 
-    fun detectAndSendLocation(activity: Activity, permissionCheckerHelper: PermissionCheckerHelper,
-                              currentLocationCallBack: CurrentLocationCallback) {
-        val locationDetectorHelper = LocationDetectorHelper(
-                permissionCheckerHelper,
-                LocationServices.getFusedLocationProviderClient(activity.applicationContext),
-                activity.applicationContext)
-        locationDetectorHelper.getLocation(onGetLocation(currentLocationCallBack), activity,
-                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD, RequestLocationType.APPROXIMATE,"")
+    fun detectAndSendLocation(
+        activity: Activity, permissionCheckerHelper: PermissionCheckerHelper,
+        currentLocationCallBack: CurrentLocationCallback
+    ) {
+        val locationDetectorHelper = LocationDetectorHelper(activity.applicationContext)
+        locationDetectorHelper.getLocation(
+            onGetLocation(currentLocationCallBack), activity,
+            LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD, RequestLocationType.APPROXIMATE,
+            permissionCheckerHelper, ""
+        )
     }
 
     private fun onGetLocation(currentLocationCallBack: CurrentLocationCallback):

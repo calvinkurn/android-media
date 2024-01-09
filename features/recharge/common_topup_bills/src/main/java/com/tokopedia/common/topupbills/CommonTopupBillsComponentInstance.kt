@@ -14,7 +14,6 @@ object CommonTopupBillsComponentInstance {
 
     fun getCommonTopupBillsComponent(application: Application): CommonTopupBillsComponent {
         if (!::commonTopupBillsComponent.isInitialized) {
-
             val digitalCommonComponent = DaggerDigitalCommonComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
             commonTopupBillsComponent = DaggerCommonTopupBillsComponent.builder()

@@ -420,6 +420,12 @@ class MainNavViewModel @Inject constructor(
         }) { }
     }
 
+    fun refreshReviewData() {
+        launch {
+            getReview()
+        }
+    }
+
     fun refreshTransactionListData() {
         launch {
             getOnGoingTransaction()
@@ -446,7 +452,7 @@ class MainNavViewModel @Inject constructor(
                     othersTransactionCount
                 )
 
-                findShimmerPosition<InitialShimmerTransactionDataModel>()?.let {
+                findPosition<InitialShimmerTransactionDataModel>()?.let {
                     updateWidget(transactionListItemViewModel, it)
                 }
             } else {
@@ -454,7 +460,7 @@ class MainNavViewModel @Inject constructor(
             }
         } catch (e: Exception) {
             // find shimmering and change with result value
-            findShimmerPosition<InitialShimmerTransactionDataModel>()?.let {
+            findPosition<InitialShimmerTransactionDataModel>()?.let {
                 updateWidget(ErrorStateOngoingTransactionModel(), it)
             }
         }
@@ -476,7 +482,7 @@ class MainNavViewModel @Inject constructor(
                     isUsingMePageRollenceVariant()
                 )
 
-                findShimmerPosition<InitialShimmerTransactionRevampDataModel>()?.let {
+                findPosition<InitialShimmerTransactionRevampDataModel>()?.let {
                     updateWidget(transactionListItemViewModel, it)
                 }
                 updateMenu(ID_ALL_TRANSACTION, showCta = true)
@@ -495,7 +501,8 @@ class MainNavViewModel @Inject constructor(
             val reviewList = getReviewProductUseCase.get().executeOnBackground()
 
             if (reviewList.isNotEmpty()) {
-                findShimmerPosition<ShimmerReviewDataModel>()?.let {
+                val position = findPosition<ShimmerReviewDataModel>() ?: findPosition<ReviewListDataModel>()
+                position?.let {
                     updateWidget(
                         ReviewListDataModel(reviewList.take(MAX_CARD_SHOWN_REVAMP)),
                         it
@@ -812,11 +819,11 @@ class MainNavViewModel @Inject constructor(
         return adminDataResponse
     }
 
-    private inline fun <reified T> findShimmerPosition(): Int? {
-        val shimmer = _mainNavListVisitable.firstOrNull {
+    private inline fun <reified T> findPosition(): Int? {
+        val model = _mainNavListVisitable.firstOrNull {
             it is T
         }
-        shimmer?.let {
+        model?.let {
             return _mainNavListVisitable.indexOf(it)
         }
         return null

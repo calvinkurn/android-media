@@ -10,18 +10,19 @@ import com.tokopedia.productcard.layout.stockbar.StockBarLayoutStrategyControl
 import com.tokopedia.productcard.layout.stockbar.StockBarLayoutStrategyTop
 import com.tokopedia.unifycomponents.CardUnify2.Companion.TYPE_BORDER
 import com.tokopedia.unifycomponents.CardUnify2.Companion.TYPE_CLEAR
+import com.tokopedia.unifycomponents.CardUnify2.Companion.TYPE_SHADOW_OLD
 
 internal object LayoutStrategyFactory {
 
     fun create(
         productListType: ProductListType,
         isTopStockBar: Boolean,
-        cardType: Int,
-    ) : LayoutStrategy =
+        cardType: Int
+    ): LayoutStrategy =
         productListTypeStrategy(
             productListType,
             stockBarLayoutStrategy(isTopStockBar),
-            shadowLayoutStrategy(cardType),
+            shadowLayoutStrategy(cardType)
         )
 
     private fun stockBarLayoutStrategy(useTopStockBar: Boolean) =
@@ -31,25 +32,26 @@ internal object LayoutStrategyFactory {
         when (cardType) {
             TYPE_BORDER -> ShadowLayoutStrategyBorder()
             TYPE_CLEAR -> ShadowLayoutStrategyClear()
-            else -> ShadowLayoutStrategyControl()
+            TYPE_SHADOW_OLD -> ShadowLayoutStrategyControl()
+            else -> ShadowLayoutStrategyBorder()
         }
 
     private fun productListTypeStrategy(
         productListType: ProductListType,
         stockBarLayoutStrategy: StockBarLayoutStrategy,
-        shadowLayoutStrategy: ShadowLayoutStrategy,
+        shadowLayoutStrategy: ShadowLayoutStrategy
     ) = when (productListType) {
-            ProductListType.CONTROL -> LayoutStrategyControl(
-                stockBarLayoutStrategy,
-                shadowLayoutStrategy,
-            )
-            ProductListType.REPOSITION -> LayoutStrategyFashionReposition()
-            ProductListType.LONG_IMAGE -> LayoutStrategyFashionLongImage()
-            ProductListType.GIMMICK -> LayoutStrategyReposition()
-            ProductListType.PORTRAIT -> LayoutStrategyPortrait()
-            ProductListType.ETA -> LayoutStrategyEta()
-            ProductListType.BEST_SELLER -> LayoutStrategyBestSeller()
-            ProductListType.FIXED_GRID -> LayoutStrategyFixedGrid()
-            ProductListType.LIST_VIEW -> LayoutStrategyListView()
-        }
+        ProductListType.CONTROL -> LayoutStrategyControl(
+            stockBarLayoutStrategy,
+            shadowLayoutStrategy
+        )
+        ProductListType.REPOSITION -> LayoutStrategyFashionReposition()
+        ProductListType.LONG_IMAGE -> LayoutStrategyFashionLongImage()
+        ProductListType.GIMMICK -> LayoutStrategyReposition()
+        ProductListType.PORTRAIT -> LayoutStrategyPortrait()
+        ProductListType.ETA -> LayoutStrategyEta()
+        ProductListType.BEST_SELLER -> LayoutStrategyBestSeller()
+        ProductListType.FIXED_GRID -> LayoutStrategyFixedGrid()
+        ProductListType.LIST_VIEW -> LayoutStrategyListView()
+    }
 }

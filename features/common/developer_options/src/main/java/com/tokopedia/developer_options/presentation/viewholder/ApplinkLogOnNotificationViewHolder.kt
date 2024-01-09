@@ -11,8 +11,7 @@ import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 
 class ApplinkLogOnNotificationViewHolder(
     itemView: View
-): AbstractViewHolder<ApplinkLogOnNotificationUiModel>(itemView)
-{
+) : AbstractViewHolder<ApplinkLogOnNotificationUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_applink_log_on_notification

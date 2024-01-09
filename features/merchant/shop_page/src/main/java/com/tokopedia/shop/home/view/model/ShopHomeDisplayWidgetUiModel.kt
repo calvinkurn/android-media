@@ -27,7 +27,9 @@ data class ShopHomeDisplayWidgetUiModel(
         val webLinkL: String = "",
         val videoUrl: String = "",
         val bannerId: String = "",
-        var youTubeVideoDetail: YoutubeVideoDetailModel? = null
+        var youTubeVideoDetail: YoutubeVideoDetailModel? = null,
+        val isFulfillment: Boolean? = null,
+        val warehouseId: String? = null
     ) : ImpressHolder()
 
     override fun type(typeFactory: ShopWidgetTypeFactory): Int {

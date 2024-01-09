@@ -1,10 +1,12 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section
 
+import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.discovery2.R
@@ -12,6 +14,8 @@ import com.tokopedia.discovery2.R.dimen.festive_section_min_height
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.model.NotifyPayload
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopofferherobrand.ShopOfferHeroBrandViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
@@ -76,6 +80,23 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
                     handleError()
                 }
             }
+
+            viewModel?.notifyChild?.observe(it) { payload ->
+                notifyChildViewModel(payload)
+            }
+        }
+    }
+
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        super.removeObservers(lifecycleOwner)
+
+        val lifecycle = lifecycleOwner ?: return
+        viewModel?.run {
+            hideSection.removeObservers(lifecycle)
+            getSyncPageLiveData().removeObservers(lifecycle)
+            hideShimmerLD.removeObservers(lifecycle)
+            showErrorState.removeObservers(lifecycle)
+            notifyChild.removeObservers(lifecycle)
         }
     }
 
@@ -86,7 +107,7 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
 
         val shouldSupportFestive = items.find { !it.isBackgroundPresent } == null
 
-        if (!shouldSupportFestive) return
+        if (!shouldSupportFestive || items.isEmpty()) return
 
         items.forEach { item ->
             addComponentView(item)
@@ -108,7 +129,10 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
             imageUrl,
             listener = object : ImageHandler.ImageLoaderStateListener {
                 override fun successLoad(view: ImageView?) {
-                    festiveForeground.minimumHeight = 0
+                    val minHeight = view?.context?.getMinHeight()
+                    minHeight?.moreThanContainerHeight {
+                        festiveForeground.setLayoutHeight(festiveContainer.measuredHeight)
+                    }
                 }
 
                 override fun failedLoad(view: ImageView?) {
@@ -125,7 +149,10 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
             imageUrl,
             listener = object : ImageHandler.ImageLoaderStateListener {
                 override fun successLoad(view: ImageView?) {
-                    festiveBackground.minimumHeight = 0
+                    val minHeight = view?.context?.getMinHeight()
+                    minHeight?.moreThanContainerHeight {
+                        festiveBackground.setLayoutHeight(festiveContainer.measuredHeight)
+                    }
                 }
 
                 override fun failedLoad(view: ImageView?) {
@@ -135,18 +162,42 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
         )
     }
 
+    private fun Int?.moreThanContainerHeight(action: () -> Unit) {
+        this?.run {
+            if (festiveContainer.measuredHeight < this) {
+                action.invoke()
+            }
+        }
+    }
+
+    private fun Context?.getMinHeight(): Int? {
+        return this?.resources?.getDimensionPixelOffset(festive_section_min_height)
+    }
+
     private fun resetFestiveSection() {
         festiveContainer.removeAllViews()
 
-        val minHeight = itemView.context.resources.getDimensionPixelOffset(festive_section_min_height)
+        val minHeight = itemView.context.getMinHeight()
+        minHeight?.run {
+            festiveBackground.resetLayout(this)
+            festiveBackground.hide()
 
-        festiveBackground.layout(0, 0, 0, 0)
-        festiveBackground.minimumHeight = minHeight
-        festiveBackground.hide()
+            festiveForeground.resetLayout(this)
+            festiveForeground.hide()
+        }
+    }
 
-        festiveForeground.layout(0, 0, 0, 0)
-        festiveForeground.minimumHeight = minHeight
-        festiveForeground.hide()
+    private fun AppCompatImageView.resetLayout(minHeight: Int) {
+        apply {
+            layout(0, 0, 0, 0)
+            minimumHeight = minHeight
+        }
+    }
+
+    private fun AppCompatImageView.setLayoutHeight(height: Int) {
+        if (layoutParams.height == height) return
+
+        layoutParams.height = height
     }
 
     private fun addComponentView(item: ComponentsItem) {
@@ -156,16 +207,6 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
             festiveContainer.addView(
                 CustomViewCreator.getCustomViewObject(itemView.context, it, item, fragment)
             )
-        }
-    }
-
-    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
-        super.removeObservers(lifecycleOwner)
-        lifecycleOwner?.let {
-            viewModel?.hideSection?.removeObservers(it)
-            viewModel?.getSyncPageLiveData()?.removeObservers(it)
-            viewModel?.hideShimmerLD?.removeObservers(it)
-            viewModel?.showErrorState?.removeObservers(it)
         }
     }
 
@@ -182,5 +223,40 @@ class SectionViewHolder(itemView: View, val fragment: Fragment) :
         }
         carouselEmptyState.visible()
         shimmer.hide()
+    }
+
+    private fun notifyChildViewModel(payload: NotifyPayload) {
+        run loop@{
+            festiveContainer.children.forEach { child ->
+                val childViewModel = (child as? CustomViewCreator)?.viewModel
+                childViewModel?.let { viewModel ->
+                    when (payload.type) {
+                        ComponentsList.ShopOfferHeroBrand -> {
+                            val isFound = notifyShopHeroComponent(viewModel, payload)
+                            if (isFound) return@loop
+                        }
+                        else -> return@loop
+                    }
+                }
+            }
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun notifyShopHeroComponent(
+        childViewModel: DiscoveryBaseViewModel,
+        payload: NotifyPayload
+    ): Boolean {
+        if (childViewModel !is ShopOfferHeroBrandViewModel) return false
+
+        val uniqueId = childViewModel.component.properties?.header?.offerId
+        if (uniqueId == payload.identifier) {
+            val offerMessages = payload.data as? List<String> ?: emptyList()
+            childViewModel.changeTier(false, offerMessages)
+
+            return true
+        }
+
+        return false
     }
 }

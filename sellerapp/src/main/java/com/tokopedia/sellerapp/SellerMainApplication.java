@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp;
 
 import android.annotation.SuppressLint;
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -9,6 +10,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.work.Configuration;
 
@@ -20,6 +22,8 @@ import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.analyticsdebugger.debugger.ServerLogLogger;
+import com.tokopedia.analyticsdebugger.debugger.ServerLogLoggerInterface;
 import com.tokopedia.applink.AppUtil;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
@@ -43,6 +47,7 @@ import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
 import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.repository.InternalLoggerInterface;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.loader.internal.MediaLoaderActivityLifecycle;
 import com.tokopedia.network.authentication.AuthHelper;
@@ -179,12 +184,19 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
     }
 
     private void initCacheManager() {
-        PersistentCacheManager.init(this);
-        cacheManager = PersistentCacheManager.instance;
+        cacheManager = PersistentCacheManager.init(this);
     }
 
     private void initLogManager(){
         LogManager.init(SellerMainApplication.this, new LoggerProxy() {
+
+            @NonNull
+            @Override
+            public InternalLoggerInterface getInternalLogger() {
+                ServerLogLoggerInterface logger = ServerLogLogger.getInstance(SellerMainApplication.this);
+                return logger::putServerLoggerEvent;
+            }
+
             final AESEncryptorECB encryptor = new AESEncryptorECB();
             final SecretKey secretKey = encryptor.generateKey(com.tokopedia.sellerapp.utils.constants.Constants.ENCRYPTION_KEY);
 

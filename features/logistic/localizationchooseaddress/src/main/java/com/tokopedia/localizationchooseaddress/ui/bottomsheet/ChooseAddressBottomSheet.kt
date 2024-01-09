@@ -42,6 +42,8 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.EXTRA_IS_FROM_ANA
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.EXTRA_SELECTED_ADDRESS_DATA
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.locationmanager.DeviceLocation
+import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
@@ -170,6 +172,9 @@ class ChooseAddressBottomSheet :
                 fusedLocationClient?.lastLocation?.addOnSuccessListener { location: Location? ->
                     if (location != null) {
                         setStateWithLocation(location)
+                        LocationDetectorHelper(it).saveToCache(
+                            location.latitude, location.longitude
+                        )
                     }
                 }
             }

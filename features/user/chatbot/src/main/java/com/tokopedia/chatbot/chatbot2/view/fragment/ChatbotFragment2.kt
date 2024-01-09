@@ -1273,15 +1273,20 @@ class ChatbotFragment2 :
 
     override fun onSwipeRefresh() {
         if (!isChatRefreshed && isFirstPage) {
-            hideSnackBarRetry()
-            viewModel.getExistingChat(messageId)
-            swipeToRefresh.isRefreshing = true
-            isChatRefreshed = true
+            refreshFirstPage()
         } else {
             swipeToRefresh.isRefreshing = false
             swipeToRefresh.isEnabled = false
             swipeToRefresh.setOnRefreshListener(null)
         }
+    }
+
+    private fun refreshFirstPage() {
+        hideSnackBarRetry()
+        getViewState()?.clearChatOnLoadChatHistory()
+        viewModel.getExistingChat(messageId)
+        swipeToRefresh.isRefreshing = true
+        isChatRefreshed = true
     }
 
     override fun getSwipeRefreshLayoutResourceId() = 0
