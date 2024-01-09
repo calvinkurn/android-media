@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.deals.ui.category.domain.GetChipsCategoryCoroutineUseCase
+import com.tokopedia.deals.ui.category.domain.GetChipsCategoryUseCase
 import com.tokopedia.deals.ui.search.model.response.CuratedData
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -14,7 +14,7 @@ import javax.inject.Inject
  */
 
 class DealsBrandCategoryActivityViewModel @Inject constructor(
-    private val chipsCategoryCoroutine: GetChipsCategoryCoroutineUseCase,
+    private val chipsCategoryCoroutine: GetChipsCategoryUseCase,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 

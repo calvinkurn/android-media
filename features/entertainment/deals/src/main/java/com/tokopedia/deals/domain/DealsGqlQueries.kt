@@ -45,36 +45,6 @@ object DealsGqlQueries {
         }
     """
 
-    fun getChildCategory() = """
-        {
-        event_child_category(categoryName: "deal", categoryID: 15, verticalID: 2)
-                  {
-                    categories{
-                        id,
-                        parent_id,
-                        name,
-                        title,
-                        description,
-                        meta_title,
-                        meta_description,
-                        url,
-                        media_url,
-                        seo_url,
-                        priority,
-                        status,
-                        message,
-                        code,
-                        message_error,
-                        web_url,
-                        app_url,
-                        is_card,
-                      	is_hidden,
-                        inactiveMediaUrl,
-                    }
-                  }
-                  }
-    """.trimIndent()
-
     fun getCategoryBrandProduct() = """
         query (${'$'}params: [MapParamData]!){
           event_search(searchParams:${'$'}params)
@@ -192,6 +162,6 @@ object DealsGqlQueries {
             }
             count
         }
-        }""".trimIndent()
-
+        }
+    """.trimIndent()
 }

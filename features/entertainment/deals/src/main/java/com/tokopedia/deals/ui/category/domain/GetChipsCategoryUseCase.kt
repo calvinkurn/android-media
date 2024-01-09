@@ -1,35 +1,12 @@
 package com.tokopedia.deals.ui.category.domain
 
-import com.tokopedia.deals.domain.DealsGqlQueries
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.deals.ui.search.model.response.CuratedData
 import com.tokopedia.graphql.GraphqlConstant
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
-
-class GetChipsCategoryUseCase @Inject constructor(
-        private val gqlUseCase: GraphqlUseCase<CuratedData>
-) {
-    fun execute(
-        onSuccess: (CuratedData) -> Unit,
-        onError: (Throwable) -> Unit
-    ) {
-        gqlUseCase.apply {
-            setTypeClass(CuratedData::class.java)
-            setGraphqlQuery(DealsGqlQueries.getChildCategory())
-            setCacheStrategy(GraphqlCacheStrategy
-                    .Builder(CacheType.CACHE_FIRST)
-                    .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`()).build())
-            execute({ result ->
-                onSuccess(result)
-            }, { error ->
-                onError(error)
-            })
-        }
-    }
-
-    fun cancelJobs() {
-        gqlUseCase.cancelJobs()
-    }
-}

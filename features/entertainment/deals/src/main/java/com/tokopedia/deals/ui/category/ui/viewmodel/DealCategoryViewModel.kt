@@ -9,7 +9,7 @@ import com.tokopedia.deals.common.ui.dataview.ChipDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.domain.DealsSearchUseCase
-import com.tokopedia.deals.ui.category.domain.GetChipsCategoryCoroutineUseCase
+import com.tokopedia.deals.ui.category.domain.GetChipsCategoryUseCase
 import com.tokopedia.deals.ui.category.ui.dataview.ProductListDataView
 import com.tokopedia.deals.ui.category.utils.MapperCategoryLayout
 import com.tokopedia.deals.ui.location_picker.model.response.Location
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 class DealCategoryViewModel @Inject constructor(
     private val mapCategoryLayout: MapperCategoryLayout,
-    private val chipsCategoryCoroutine: GetChipsCategoryCoroutineUseCase,
+    private val chipsCategoryCoroutine: GetChipsCategoryUseCase,
     private val dealsSearchUseCase: DealsSearchUseCase,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
