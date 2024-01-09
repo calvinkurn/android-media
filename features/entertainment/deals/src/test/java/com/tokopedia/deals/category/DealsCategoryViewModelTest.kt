@@ -56,12 +56,10 @@ class DealsCategoryViewModelTest {
     @Test
     fun getChipFilter_fetchFailed_shouldShowErrorMessage() {
         // given
-        val mockThrowable = Throwable("Fetch chip failed")
+        val mockThrowable = Exception("Fetch chip failed")
         coEvery {
-            getChipsCategoryUseCase.execute(any(), any())
-        } coAnswers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
+            getChipsCategoryUseCase.invoke(Unit)
+        } throws mockThrowable
         // when
         viewModel.getChipsData()
         // then
@@ -71,13 +69,13 @@ class DealsCategoryViewModelTest {
     @Test
     fun getChipFilter_fetchSuccess_shouldShowSuccessMessage() {
         // given
-        val mockCuratedData = Gson().fromJson(DealsJsonMapper.getJson("curateddata.json"), CuratedData::class.java)
-        val mockFilterChip = mapper.mapCategoryToChips(mockCuratedData.eventChildCategory.categories)
+        val mockCuratedData =
+            Gson().fromJson(DealsJsonMapper.getJson("curateddata.json"), CuratedData::class.java)
+        val mockFilterChip =
+            mapper.mapCategoryToChips(mockCuratedData.eventChildCategory.categories)
         coEvery {
-            getChipsCategoryUseCase.execute(any(), any())
-        } coAnswers {
-            firstArg<(CuratedData) -> Unit>().invoke(mockCuratedData)
-        }
+            getChipsCategoryUseCase.invoke(Unit)
+        } returns mockCuratedData
         // when
         viewModel.getChipsData()
         // then
@@ -128,7 +126,8 @@ class DealsCategoryViewModelTest {
 
     @Test
     fun getCategoryBrandData_fetchSuccessOnPageOne_dealsCategoryShouldContainsData() {
-        val mockEvent = Gson().fromJson(DealsJsonMapper.getJson("brandproduct.json"), SearchData::class.java)
+        val mockEvent =
+            Gson().fromJson(DealsJsonMapper.getJson("brandproduct.json"), SearchData::class.java)
         val mockResult = mapper.mapCategoryLayout(mockEvent, 1, "")
         // given
         coEvery {
@@ -147,7 +146,10 @@ class DealsCategoryViewModelTest {
 
     @Test
     fun getCategoryBrandData_fetchSuccessOnPageOne_dealsCategoryProductEmpty() {
-        val mockEvent = Gson().fromJson(DealsJsonMapper.getJson("product_empty_page.json"), SearchData::class.java)
+        val mockEvent = Gson().fromJson(
+            DealsJsonMapper.getJson("product_empty_page.json"),
+            SearchData::class.java
+        )
         val mockResult = mapper.mapCategoryLayout(mockEvent, 1, "")
         // given
         coEvery {
@@ -166,7 +168,10 @@ class DealsCategoryViewModelTest {
 
     @Test
     fun getCategoryBrandData_fetchSuccessOnPageOne_dealsCategoryProductEmptyandBrandEmpty() {
-        val mockEvent = Gson().fromJson(DealsJsonMapper.getJson("product_and_brand_empty_page.json"), SearchData::class.java)
+        val mockEvent = Gson().fromJson(
+            DealsJsonMapper.getJson("product_and_brand_empty_page.json"),
+            SearchData::class.java
+        )
         val mockResult = mapper.mapCategoryLayout(mockEvent, 1, "")
         // given
         coEvery {
@@ -185,7 +190,8 @@ class DealsCategoryViewModelTest {
 
     @Test
     fun getCategoryBrandData_fetchSuccessOnPageGreaterThanOne_productsShouldContainsData() {
-        val mockEvent = Gson().fromJson(DealsJsonMapper.getJson("brandproduct.json"), SearchData::class.java)
+        val mockEvent =
+            Gson().fromJson(DealsJsonMapper.getJson("brandproduct.json"), SearchData::class.java)
         val mockResult = mapper.mapProducttoLayout(mockEvent, 2)
         // given
         coEvery {
@@ -217,7 +223,8 @@ class DealsCategoryViewModelTest {
 
     @Test
     fun getCategoryBrandData_fetchSuccessUpdateChips_dealsCategoryShouldContainsData() {
-        val mockEvent = Gson().fromJson(DealsJsonMapper.getJson("brandproduct.json"), SearchData::class.java)
+        val mockEvent =
+            Gson().fromJson(DealsJsonMapper.getJson("brandproduct.json"), SearchData::class.java)
         val mockResult = mapper.mapCategoryLayout(mockEvent, 1, "")
         // given
         coEvery {
