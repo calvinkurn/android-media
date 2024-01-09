@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.logisticcart.databinding.ViewholderTitleSectionBinding
 import com.tokopedia.logisticcart.scheduledelivery.utils.ScheduleSlotListener
 import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.TitleSectionUiModel
+import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.logisticcart.R as logisticcartR
 
 class TitleSectionViewHolder(
     private val viewBinding: ViewholderTitleSectionBinding,
@@ -21,7 +23,8 @@ class TitleSectionViewHolder(
         }
 
         if (element.content.isNotEmpty()) {
-            viewBinding.tvDescription.text = element.content
+            viewBinding.tvDescription.text =
+                HtmlLinkHelper(viewBinding.root.context, element.content).spannedString
             viewBinding.tvDescription.visibility = View.VISIBLE
         } else {
             viewBinding.tvDescription.visibility = View.GONE
@@ -40,7 +43,7 @@ class TitleSectionViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT_RES = com.tokopedia.logisticcart.R.layout.viewholder_title_section
+        val LAYOUT_RES = logisticcartR.layout.viewholder_title_section
         private const val NO_ICON = -1
     }
 }

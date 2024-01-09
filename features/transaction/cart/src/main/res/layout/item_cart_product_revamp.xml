@@ -18,9 +18,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            app:icon_name="DELETE"
             app:icon_color_light_enable="@color/Unify_RN500"
-            app:icon_color_night_enable="@color/Unify_RN700" />
+            app:icon_color_night_enable="@color/Unify_RN700"
+            app:icon_name="DELETE" />
 
     </FrameLayout>
 
@@ -123,10 +123,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        app:icon_name="DELETE"
                         app:icon_color_light_enable="@color/Unify_RN500"
                         app:icon_color_night_enable="@color/Unify_RN700"
-                        />
+                        app:icon_name="DELETE" />
 
                 </FrameLayout>
 
@@ -134,9 +133,9 @@
                     android:id="@+id/cl_product_bundling_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/Unify_Background"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:background="@color/Unify_Background">
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                         android:id="@+id/checkbox_bundle"
@@ -449,6 +448,24 @@
             </com.google.android.flexbox.FlexboxLayout>
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_product_tag_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:textColor="@color/Unify_NN600"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/fl_image_product"
+                app:layout_constraintTop_toBottomOf="@id/layout_product_price"
+                app:typographyType="small"
+                app:typographyWeight="reguler"
+                tools:text="2 jam Tiba"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_product_variant"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -461,7 +478,7 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/fl_image_product"
-                app:layout_constraintTop_toBottomOf="@+id/layout_product_price"
+                app:layout_constraintTop_toBottomOf="@+id/text_product_tag_info"
                 app:typographyType="display_3"
                 tools:text="Biru, XL"
                 tools:visibility="visible" />
@@ -624,13 +641,26 @@
                 app:layout_constraintTop_toBottomOf="@+id/item_addon_cart"
                 tools:visibility="visible" />
 
-            <com.tokopedia.unifycomponents.QuantityEditorUnify
+            <com.tokopedia.nest.components.quantityeditor.view.QuantityEditorView
                 android:id="@+id/qty_editor_product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:layout_marginBottom="12dp"
                 android:layout_marginEnd="16dp"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"
+                android:textColor="@color/Unify_NN950"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/item_addon_cart" />
+
+            <com.tokopedia.unifycomponents.QuantityEditorUnify
+                android:id="@+id/old_qty_editor_product"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="12dp"
+                android:visibility="gone"
                 android:textColor="@color/Unify_NN950"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/item_addon_cart" />

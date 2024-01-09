@@ -4,6 +4,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.databinding.DiscoverySupportingBrandLayoutBinding
@@ -55,7 +56,7 @@ class ShopOfferSupportingBrandViewHolder(
         viewModel?.apply {
             getSubComponent().inject(this)
 
-            loadFirstPageBrand()
+            loadPageBrand()
         }
     }
 
@@ -84,6 +85,7 @@ class ShopOfferSupportingBrandViewHolder(
                         trackImpression(result.data)
                         showWidget(result.data)
                     }
+
                     is Fail -> hideWidget()
                 }
             }
@@ -113,6 +115,7 @@ class ShopOfferSupportingBrandViewHolder(
             layoutManager = supportingBrandLayoutManager
         }
         addItemDecorator()
+        addScrollListener()
     }
 
     private fun DiscoverySupportingBrandLayoutBinding.addItemDecorator() {
@@ -121,5 +124,27 @@ class ShopOfferSupportingBrandViewHolder(
         }
 
         supportingBrandRV.addItemDecoration(CarouselProductCardItemDecorator())
+    }
+
+    private fun DiscoverySupportingBrandLayoutBinding.addScrollListener() {
+        if (viewModel?.hasHeader() == false) return
+        supportingBrandRV.addOnScrollListener(
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val visibleItemCount: Int = supportingBrandLayoutManager.childCount
+                    val totalItemCount: Int = supportingBrandLayoutManager.itemCount
+                    val firstVisibleItemPosition: Int =
+                        supportingBrandLayoutManager.findFirstVisibleItemPosition()
+                    viewModel?.let { mShopOfferSupportingBrandViewModel ->
+                        if (!mShopOfferSupportingBrandViewModel.isLoading && mShopOfferSupportingBrandViewModel.hasNextPage()) {
+                            if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0) {
+                                mShopOfferSupportingBrandViewModel.loadMore()
+                            }
+                        }
+                    }
+                }
+            }
+        )
     }
 }

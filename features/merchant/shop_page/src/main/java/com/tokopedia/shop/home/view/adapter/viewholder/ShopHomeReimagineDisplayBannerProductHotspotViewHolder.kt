@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -8,6 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.carousellayoutmanager.CarouselHorizontalFlingSwipeEffect
 import com.tokopedia.carousellayoutmanager.CarouselLayoutManager
 import com.tokopedia.carousellayoutmanager.CarouselZoomPostLayoutListener
 import com.tokopedia.carousellayoutmanager.CenterScrollListener
@@ -23,6 +25,7 @@ import com.tokopedia.shop.common.view.customview.bannerhotspot.ImageHotspotView
 import com.tokopedia.shop.common.view.model.ImageHotspotData
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopHomeDisplayBannerProductHotspotViewHolderLayoutBinding
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.view.adapter.ShopWidgetProductHotspotAdapter
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerProductHotspotUiModel
 import com.tokopedia.unifycomponents.PageControl
@@ -32,7 +35,8 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
     itemView: View,
-    private val listener: Listener
+    private val listener: Listener,
+    private val recyclerviewPoolListener: RecyclerviewPoolListener
 ) : AbstractViewHolder<ShopWidgetDisplayBannerProductHotspotUiModel>(itemView),
     ImageHotspotView.Listener {
 
@@ -67,11 +71,29 @@ class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
     private val bannerIndicator: PageControl? = viewBinding?.pageControl
     private var adapterShopWidgetProductHotspot: ShopWidgetProductHotspotAdapter? = null
     private var uiModel: ShopWidgetDisplayBannerProductHotspotUiModel? = null
+    private var currentSelectedItemPositionWhenUserTouchItem = 0
+    private var carouselLayoutManager: CarouselLayoutManager? = null
     private val itemSelectListener: CarouselLayoutManager.OnCenterItemSelectionListener =
         CarouselLayoutManager.OnCenterItemSelectionListener { adapterPosition ->
             bannerIndicator?.setCurrentIndicator(
                 adapterPosition
             )
+        }
+    private val itemTouchListener: RecyclerView.OnItemTouchListener =
+        object : RecyclerView.OnItemTouchListener {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                when (e.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        currentSelectedItemPositionWhenUserTouchItem = carouselLayoutManager?.centerItemPosition.orZero()
+                    }
+                }
+                return false
+            }
+
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
+
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+
         }
 
     override fun bind(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel) {
@@ -159,6 +181,10 @@ class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
     private fun setupImageBannerHotspotData(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel) {
         val ratio = uiModel.header.ratio.takeIf { it.isNotEmpty() } ?: DEFAULT_RATIO
         (imageBannerHotspot?.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = ratio
+        val isShowIntroAnimation = uiModel.isShowIntroAnimation
+        if (uiModel.isShowIntroAnimation) {
+            uiModel.isShowIntroAnimation = false
+        }
         uiModel.data.firstOrNull()?.let {
             imageBannerHotspot?.setData(
                 ImageHotspotData(
@@ -174,7 +200,8 @@ class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
                     }
                 ),
                 listenerBubbleView = this,
-                ratio = ratio
+                ratio = ratio,
+                isShowIntroAnimation = isShowIntroAnimation
             )
         }
     }
@@ -198,20 +225,38 @@ class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
 
     private fun initRecyclerView(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel) {
         val ratio = uiModel.header.ratio.takeIf { it.isNotEmpty() } ?: DEFAULT_RATIO
-        val layoutManager = CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, isCircularRvLayout(uiModel), false)
-        layoutManager.setPostLayoutListener(CarouselZoomPostLayoutListener())
-        layoutManager.maxVisibleItems = Int.ONE
-        layoutManager.removeOnItemSelectionListener(itemSelectListener)
-        layoutManager.addOnItemSelectionListener(itemSelectListener)
+        carouselLayoutManager = CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL, isCircularRvLayout(uiModel), false)
+        carouselLayoutManager?.setPostLayoutListener(CarouselZoomPostLayoutListener())
+        carouselLayoutManager?.maxVisibleItems = Int.ONE
+        carouselLayoutManager?.removeOnItemSelectionListener(itemSelectListener)
+        carouselLayoutManager?.addOnItemSelectionListener(itemSelectListener)
         recyclerViewProductHotspot?.apply {
             isNestedScrollingEnabled = false
             (this@apply.layoutParams as? ConstraintLayout.LayoutParams)?.dimensionRatio = ratio
-            this.layoutManager = layoutManager
+            this.layoutManager = carouselLayoutManager
             this.setHasFixedSize(true)
             this.addOnScrollListener(CenterScrollListener())
             this.adapter = adapterShopWidgetProductHotspot
+            this.setRecycledViewPool(recyclerviewPoolListener.parentPool)
+            this.removeOnItemTouchListener(itemTouchListener)
+            this.addOnItemTouchListener(itemTouchListener)
+            carouselLayoutManager?.let {
+                setupFlingListener(this, it)
+            }
         }
         updateRecyclerViewHeightBasedOnFirstChild()
+    }
+
+    private fun setupFlingListener(
+        recyclerView: RecyclerView,
+        carouselLayoutManager: CarouselLayoutManager
+    ) {
+        recyclerView.onFlingListener = null
+        recyclerView.onFlingListener = CarouselHorizontalFlingSwipeEffect(
+            recyclerView,
+            carouselLayoutManager,
+            uiModel?.data?.size.orZero()
+        ) { currentSelectedItemPositionWhenUserTouchItem }
     }
 
     private fun isCircularRvLayout(uiModel: ShopWidgetDisplayBannerProductHotspotUiModel): Boolean {
@@ -225,7 +270,7 @@ class ShopHomeReimagineDisplayBannerProductHotspotViewHolder(
                     val firstChildHeight = recyclerViewProductHotspot.findViewHolderForAdapterPosition(
                         Int.ZERO
                     )?.itemView?.height.orZero()
-                    val lp = recyclerViewProductHotspot.layoutParams as? ViewGroup.LayoutParams
+                    val lp = recyclerViewProductHotspot.layoutParams
                     lp?.height = firstChildHeight
                     recyclerViewProductHotspot.layoutParams = lp
                     recyclerViewProductHotspot.viewTreeObserver.removeOnGlobalLayoutListener(this)

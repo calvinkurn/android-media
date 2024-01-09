@@ -53,7 +53,7 @@ data class DFConfig(
 
     @SerializedName("dl_in_bg_show_fallback_time")
     @Expose
-    val timeout: Long = 30,
+    val timeout: Long = 45,
 
     @SerializedName("cancel_dl_before_install")
     @Expose

@@ -100,6 +100,8 @@
                   ],
                   "group_type": 1,
                   "ui_group_type": 0,
+                  "shipping_components": 1,
+                  "grouping_state": 1,
                   "group_information": {
                     "name": "11515028tknw",
                     "badge_url": "https://images.tokopedia.net/img/now/now-clock-badge.png",
@@ -132,7 +134,9 @@
                   "scheduled_delivery": {
                     "timeslot_id": 0,
                     "schedule_date": "",
-                    "validation_metadata": ""
+                    "validation_metadata": "",
+                    "start_date": "",
+                    "is_recommend": true
                   },
                   "rates_validation_flow": true,
                   "bo_code": "",

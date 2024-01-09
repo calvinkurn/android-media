@@ -65,6 +65,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.miscDependencies.influxInteractor
 
     implementation rootProject.ext.firebase.messaging
     

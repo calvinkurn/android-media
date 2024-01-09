@@ -2,9 +2,12 @@
 
 package com.tokopedia.editor.ui.text
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
+import android.os.Handler
 import android.view.Gravity
+import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -29,6 +32,7 @@ class InputTextFragment @Inject constructor(
 
     private val viewModel: InputTextViewModel by activityViewModels { viewModelFactory }
     private val viewBinding: FragmentInputTextBinding? by viewBinding()
+    private var handler: Handler? = null
 
     override fun initView() {
         initFontSelection()
@@ -36,10 +40,9 @@ class InputTextFragment @Inject constructor(
 
         initListener()
 
-        viewBinding?.addTextInput?.let {
-            it.setText(viewModel.textValue.value)
-            it.requestFocus()
-        }
+        viewBinding?.addTextInput?.setText(viewModel.textValue.value)
+
+        this.showSoftKeyboard()
     }
 
     override fun initObserver() {
@@ -47,6 +50,11 @@ class InputTextFragment @Inject constructor(
         initBackgroundObserver()
         initColorObserver()
         initFontStyleObserver()
+    }
+
+    override fun onPause() {
+        handler?.removeCallbacksAndMessages(null)
+        super.onPause()
     }
 
     private fun initAlignmentObserver() {
@@ -108,6 +116,7 @@ class InputTextFragment @Inject constructor(
             }
 
             it.addTextInputWrapper.setOnClickListener {
+                handler?.removeCallbacksAndMessages(null)
                 viewModel.saveInputText()
             }
 
@@ -240,7 +249,21 @@ class InputTextFragment @Inject constructor(
         }
     }
 
+    private fun showSoftKeyboard() {
+        handler = Handler()
+        handler?.postDelayed({
+            viewBinding?.addTextInput?.requestFocus()
+            context?.getSystemService(Context.INPUT_METHOD_SERVICE)?.let {
+                (it as InputMethodManager).toggleSoftInput(
+                    InputMethodManager.SHOW_IMPLICIT,
+                    InputMethodManager.HIDE_IMPLICIT_ONLY
+                )
+            }
+        }, SOFT_KEYBOARD_SHOW_DELAY)
+    }
+
     companion object {
         private const val DEFAULT_TEXT_COLOR = -1
+        private const val SOFT_KEYBOARD_SHOW_DELAY = 100L
     }
 }
