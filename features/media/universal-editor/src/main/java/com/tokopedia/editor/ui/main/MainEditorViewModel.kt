@@ -74,11 +74,9 @@ class MainEditorViewModel @Inject constructor(
                 analytics.toolTextClick()
 
                 setAction(MainEditorEffect.OpenInputText(InputTextModel.default()))
-                setAction(MainEditorEffect.ParentToolbarVisibility(false))
             }
             is MainEditorEvent.EditInputTextPage -> {
-                setAction(MainEditorEffect.OpenInputText(event.model))
-                setAction(MainEditorEffect.ParentToolbarVisibility(false))
+                setAction(MainEditorEffect.OpenInputText(event.model, event.viewId))
                 updateViewIdOnUiParam(event.viewId)
             }
             is MainEditorEvent.ExportMedia -> {
@@ -94,7 +92,6 @@ class MainEditorViewModel @Inject constructor(
             }
             is MainEditorEvent.PlacementImagePage -> {
                 analytics.toolAdjustCropClick()
-
                 navigateToPlacementPage()
             }
             is MainEditorEvent.PlacementImageResult -> {
@@ -208,7 +205,6 @@ class MainEditorViewModel @Inject constructor(
     private fun getInputTextResult(model: InputTextModel) {
         updateModelOnUiParam(model)
         setAction(MainEditorEffect.UpdateTextAddedState)
-        setAction(MainEditorEffect.ParentToolbarVisibility(true))
     }
 
     private fun updateCurrentPlacementModel(model: ImagePlacementModel?) {

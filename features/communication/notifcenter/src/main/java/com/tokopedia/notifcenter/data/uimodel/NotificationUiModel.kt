@@ -59,6 +59,8 @@ data class NotificationUiModel(
     val templateKey: String = "",
     @SerializedName("title")
     val title: String = "",
+    @SerializedName("title_html")
+    val titleHtml: String = "",
     @SerializedName("total_product")
     val totalProduct: Int = 0,
     @SerializedName("type_bottomsheet")
@@ -76,7 +78,7 @@ data class NotificationUiModel(
     @SerializedName("notif_order_type")
     val widgetType: Int = 0,
     @SerializedName("track_history")
-    val trackHistory: List<TrackHistory> = listOf(),
+    var trackHistory: List<TrackHistory> = listOf(),
     @SerializedName("widget")
     val widget: Widget = Widget(),
     @SerializedName("is_last_journey")
@@ -88,7 +90,9 @@ data class NotificationUiModel(
     @SerializedName("is_pinned")
     var isPinned: Boolean = false,
     @SerializedName("pinned_text")
-    var pinnedText: String = ""
+    var pinnedText: String = "",
+    @SerializedName("thumbnail_urls")
+    var thumbnailImageList: List<String> = listOf()
 ) : Visitable<NotificationTypeFactory> {
 
     @delegate:Transient
@@ -192,13 +196,17 @@ data class NotificationUiModel(
         return isSingleLineWidget() && widget.description.isNotEmpty()
     }
 
-    fun noWidgetWithTrackHistory(): Boolean {
-        return typeLink == TYPE_TRACK_HISTORY && widgetType == NO_WIDGET &&
+    fun noWidgetOrderWithTrackHistory(): Boolean {
+        return typeLink == TYPE_TRACK_HISTORY_ORDER && widgetType == NO_WIDGET &&
             trackHistory.isNotEmpty()
     }
 
-    fun isTrackHistory(): Boolean {
-        return typeLink == TYPE_TRACK_HISTORY
+    fun isTrackHistoryOrder(): Boolean {
+        return typeLink == TYPE_TRACK_HISTORY_ORDER
+    }
+
+    fun isTrackHistoryFeed(): Boolean {
+        return typeLink == TYPE_TRACK_HISTORY_FEED
     }
 
     fun hasTrackHistory(): Boolean {
@@ -214,11 +222,12 @@ data class NotificationUiModel(
         const val STATUS_READ = 2
 
         const val TYPE_DEFAULT = 0
+        const val TYPE_RECOM = 2
+        const val TYPE_ATC = 3
         const val TYPE_BANNER = 4
         const val TYPE_BUY = 5
-        const val TYPE_ATC = 3
-        const val TYPE_TRACK_HISTORY = 8
-        const val TYPE_RECOM = 2
+        const val TYPE_TRACK_HISTORY_ORDER = 8
+        const val TYPE_TRACK_HISTORY_FEED = 9
 
         const val BS_TYPE_LongerContent = 0
         const val BS_TYPE_ProductCheckout = 1

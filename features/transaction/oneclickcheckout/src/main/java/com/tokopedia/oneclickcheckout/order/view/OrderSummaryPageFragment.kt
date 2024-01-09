@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
@@ -83,6 +84,7 @@ import com.tokopedia.oneclickcheckout.common.view.utils.animateGone
 import com.tokopedia.oneclickcheckout.common.view.utils.animateShow
 import com.tokopedia.oneclickcheckout.databinding.FragmentOrderSummaryPageBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
+import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
@@ -213,6 +215,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
 
     @Inject
     lateinit var promoEntryPointAnalytics: PromoUsageEntryPointAnalytics
+
+    @Inject
+    lateinit var gson: Lazy<Gson>
 
     private val viewModel: OrderSummaryPageViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[OrderSummaryPageViewModel::class.java]
@@ -1723,6 +1728,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                     PaymentListingActivity.EXTRA_CALLBACK_URL,
                     payment.creditCard.additionalData.callbackUrl
                 )
+                val paymentRequest = viewModel.generatePaymentRequest(orderCost)
+                putExtra(PaymentListingActivity.EXTRA_PAYMENT_REQUEST, gson.get().toJson(paymentRequest, PaymentRequest::class.java))
             }
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
         }
@@ -1735,6 +1742,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                     payment,
                     viewModel.orderCart,
                     orderTotal.orderCost,
+                    viewModel.generatePaymentRequest(orderTotal.orderCost),
                     userSession.get().userId,
                     object : CreditCardInstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
                         override fun onSelectInstallment(selectedInstallment: OrderPaymentInstallmentTerm, installmentList: List<OrderPaymentInstallmentTerm>) {

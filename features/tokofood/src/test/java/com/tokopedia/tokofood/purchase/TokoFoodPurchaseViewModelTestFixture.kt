@@ -1,10 +1,11 @@
 package com.tokopedia.tokofood.purchase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.tokofood.common.domain.param.KeroAddressParamData
+import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
+import com.tokopedia.logisticCommon.domain.param.GetDetailAddressParam
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressDetailByIdUseCase
+import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointWithAddressIdUseCase
 import com.tokopedia.tokofood.common.domain.response.CartGeneralCartListData
-import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
-import com.tokopedia.tokofood.common.domain.usecase.KeroGetAddressUseCase
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.model.response.CheckoutGeneralTokoFoodResponse
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.CheckoutGeneralTokoFoodUseCase
 import com.tokopedia.tokofood.feature.purchase.purchasepage.domain.usecase.CheckoutTokoFoodUseCase
@@ -21,7 +22,6 @@ import kotlinx.coroutines.FlowPreview
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
-import org.mockito.ArgumentMatchers.anyString
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -34,10 +34,10 @@ abstract class TokoFoodPurchaseViewModelTestFixture {
     val coroutineTestRule = CoroutineTestRule()
 
     @RelaxedMockK
-    protected lateinit var keroEditAddressUseCase: Lazy<KeroEditAddressUseCase>
+    protected lateinit var keroEditAddressUseCase: Lazy<UpdatePinpointWithAddressIdUseCase>
 
     @RelaxedMockK
-    protected lateinit var keroGetAddressUseCase: Lazy<KeroGetAddressUseCase>
+    protected lateinit var getAddressDetailByIdUseCase: Lazy<GetAddressDetailByIdUseCase>
 
     @RelaxedMockK
     protected lateinit var checkoutTokoFoodUseCase: Lazy<CheckoutTokoFoodUseCase>
@@ -52,7 +52,7 @@ abstract class TokoFoodPurchaseViewModelTestFixture {
         MockKAnnotations.init(this)
         viewModel = TokoFoodPurchaseViewModel(
             keroEditAddressUseCase,
-            keroGetAddressUseCase,
+            getAddressDetailByIdUseCase,
             checkoutTokoFoodUseCase,
             checkoutGeneralTokoFoodUseCase,
             CoroutineTestDispatchersProvider
@@ -76,30 +76,36 @@ abstract class TokoFoodPurchaseViewModelTestFixture {
         } throws throwable
     }
 
-    protected fun onCheckoutGeneral_thenReturn(cartListData: CartGeneralCartListData,
-                                               response: CheckoutGeneralTokoFoodResponse) {
+    protected fun onCheckoutGeneral_thenReturn(
+        cartListData: CartGeneralCartListData,
+        response: CheckoutGeneralTokoFoodResponse
+    ) {
         coEvery {
             checkoutGeneralTokoFoodUseCase.get().execute(cartListData)
         } returns response
     }
 
-    protected fun onCheckoutGeneral_thenThrow(cartListData: CartGeneralCartListData,
-                                              throwable: Throwable) {
+    protected fun onCheckoutGeneral_thenThrow(
+        cartListData: CartGeneralCartListData,
+        throwable: Throwable
+    ) {
         coEvery {
             checkoutGeneralTokoFoodUseCase.get().execute(cartListData)
         } throws throwable
     }
 
-    protected fun onGetAddressUseCase_thenReturn(addressId: String,
-                                                 keroAddressParamData: KeroAddressParamData?) {
+    protected fun onGetAddressUseCase_thenReturn(
+        addressId: String,
+        keroAddressParamData: KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse
+    ) {
         coEvery {
-            keroGetAddressUseCase.get().execute(addressId)
+            getAddressDetailByIdUseCase.get()(GetDetailAddressParam(addressId, isManageAddressFlow = false, source = "tokofood"))
         } returns keroAddressParamData
     }
 
     protected fun onGetAddressUseCase_thenThrow(throwable: Throwable) {
         coEvery {
-            keroGetAddressUseCase.get().execute(anyString())
+            getAddressDetailByIdUseCase.get()(any())
         } throws throwable
     }
 
@@ -115,6 +121,4 @@ abstract class TokoFoodPurchaseViewModelTestFixture {
 
         private const val CHECKOUT_PAGE_SOURCE = "checkout_page"
     }
-
-
 }

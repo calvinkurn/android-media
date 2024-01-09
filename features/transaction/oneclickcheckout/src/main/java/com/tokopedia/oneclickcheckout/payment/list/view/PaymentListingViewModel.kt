@@ -61,7 +61,8 @@ class PaymentListingViewModel @Inject constructor(
             "amount=${getUrlEncoded(amount.toString())}&" +
             "bid=${getUrlEncoded(param.bid)}&" +
             "order_metadata=${getUrlEncoded(orderMetadata)}&" +
-            "promo_param=${getUrlEncoded(promoParam)}"
+            "promo_param=${getUrlEncoded(promoParam)}&" +
+            "unique_key=${getUrlEncoded(param.uniqueKey)}"
     }
 
     private fun getUrlEncoded(valueStr: String): String {

@@ -19,6 +19,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
@@ -85,6 +86,7 @@ open class GiftBoxDailyView : FrameLayout {
             val component = DaggerGiftBoxComponent.builder()
                 .activityContextModule(ActivityContextModule(it))
                 .appModule(AppModule((context as AppCompatActivity).application))
+                .baseAppComponent((context.applicationContext as? BaseMainApplication)?.baseAppComponent)
                 .build()
             component.inject(this)
 

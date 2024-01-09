@@ -20,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.GsonBuilder
+import com.scp.auth.common.utils.ScpUtils
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -35,6 +36,8 @@ import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionDiffe
 import com.tokopedia.developer_options.presentation.adapter.typefactory.DeveloperOptionTypeFactoryImpl
 import com.tokopedia.developer_options.presentation.di.DaggerDevOptComponent
 import com.tokopedia.developer_options.presentation.di.DevOptModule
+import com.tokopedia.developer_options.presentation.model.ForceScpLoginUiModel
+import com.tokopedia.developer_options.presentation.model.RandomizeAccessTokenUiModel
 import com.tokopedia.developer_options.presentation.viewholder.AccessTokenViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.BranchLinkViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.DevOptsAuthorizationViewHolder
@@ -46,6 +49,7 @@ import com.tokopedia.developer_options.presentation.viewholder.UrlEnvironmentVie
 import com.tokopedia.developer_options.presentation.viewholder.UserIdViewHolder
 import com.tokopedia.developer_options.session.DevOptLoginSession
 import com.tokopedia.encryption.security.sha256
+import com.tokopedia.developer_options.tracker.DevOpsTracker
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -87,6 +91,9 @@ class DeveloperOptionActivity :
         const val SHOW_AND_COPY_APPLINK_TOGGLE_NAME = "show_and_copy_applink_toggle_name"
         const val SHOW_AND_COPY_APPLINK_TOGGLE_KEY = "show_and_copy_applink_toggle_key"
         const val SHOW_AND_COPY_APPLINK_TOGGLE_DEFAULT_VALUE = false
+        const val SCP_LOGIN_TOGGLE = "mainapp_scp_login_toggle"
+        const val SCP_LOGIN_TOGGLE_KEY = "key_scp_login_toggle"
+
         const val LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle"
         const val LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle"
         const val LEAK_CANARY_TOGGLE_KEY_SELLER = "key_leakcanary_toggle_seller"
@@ -150,6 +157,7 @@ class DeveloperOptionActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        DevOpsTracker.init(this)
         checkDebuggingModeOrNot()
         inject()
         autoAuthorized()
@@ -286,6 +294,16 @@ class DeveloperOptionActivity :
         adapter.setValueIsAuthorized(loggedIn)
         adapter.initializeList()
         adapter.setDefaultItem()
+        shouldShowScpLogin()
+    }
+
+    private fun shouldShowScpLogin() {
+        if (ScpUtils.isGotoLoginEnabled()) {
+            adapter.removeWidget(ForceScpLoginUiModel::class.java)
+        }
+        if (!UserSession(this).isLoggedIn) {
+            adapter.removeWidget(RandomizeAccessTokenUiModel::class.java)
+        }
     }
 
     private fun handleUri(uri: Uri) {
@@ -495,6 +513,7 @@ class DeveloperOptionActivity :
             adapter.setValueIsAuthorized(true)
             adapter.initializeList()
             adapter.setDefaultItem()
+            shouldShowScpLogin()
             showToaster("You are authorized !!")
         } else {
             if (!isAuto) {

@@ -33,6 +33,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getTracker
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_56
 import com.tokopedia.tokopedianow.home.analytic.HomeRealTimeRecomAnalytics.ACTION.ACTION_ADD_TO_CART_PRODUCT
 import com.tokopedia.tokopedianow.home.analytic.HomeRealTimeRecomAnalytics.ACTION.ACTION_CLICK_CLOSE_BUTTON
 import com.tokopedia.tokopedianow.home.analytic.HomeRealTimeRecomAnalytics.ACTION.ACTION_CLICK_RTR_PRODUCT
@@ -136,7 +137,8 @@ class HomeRealTimeRecomAnalytics(
                 productId = item.getProductId(),
                 productName = item.getProductName(),
                 price = item.getProductPrice().filter { it.isDigit() }.toLongOrZero(),
-                productCategory = item.categoryBreadcrumbs
+                productCategory = item.categoryBreadcrumbs,
+                warehouseId = item.productCardModel.warehouseId
             )
         )
 
@@ -169,7 +171,8 @@ class HomeRealTimeRecomAnalytics(
                 productId = item.getProductId(),
                 productName = item.getProductName(),
                 price = item.getProductPrice().filter { it.isDigit() }.toLongOrZero(),
-                productCategory = item.categoryBreadcrumbs
+                productCategory = item.categoryBreadcrumbs,
+                warehouseId = item.productCardModel.warehouseId
             )
         )
 
@@ -222,11 +225,15 @@ class HomeRealTimeRecomAnalytics(
         price: Long = 0L,
         productBrand: String = "",
         productCategory: String = "",
-        productVariant: String = ""
+        productVariant: String = "",
+        warehouseId: String = ""
     ): Bundle {
         return Bundle().apply {
             if (index.isNotBlank()) {
                 putString(KEY_INDEX, index)
+            }
+            if (warehouseId.isNotBlank()) {
+                putString(KEY_DIMENSION_56, warehouseId)
             }
             putString(KEY_ITEM_BRAND, productBrand)
             putString(KEY_ITEM_CATEGORY, productCategory)
@@ -251,6 +258,7 @@ class HomeRealTimeRecomAnalytics(
         val shopId = item.shopId.toIntOrZero()
         val shopName = item.shopName
         val shopType = item.shopType
+        val warehouseId = item.productCardModel.warehouseId
 
         return Bundle().apply {
             putString(KEY_CATEGORY_ID, categoryId)
@@ -264,6 +272,7 @@ class HomeRealTimeRecomAnalytics(
             putInt(KEY_SHOP_ID, shopId)
             putString(KEY_SHOP_NAME, shopName)
             putString(KEY_SHOP_TYPE, shopType)
+            putString(KEY_DIMENSION_56, warehouseId)
         }
     }
 

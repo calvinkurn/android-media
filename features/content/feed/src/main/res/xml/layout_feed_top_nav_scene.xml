@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<MotionScene
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:motion="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
 
     <Transition
         motion:constraintSetEnd="@+id/end"
-        motion:constraintSetStart="@id/start">
-    </Transition>
+        motion:constraintSetStart="@id/start" />
 
     <ConstraintSet android:id="@+id/start">
         <Constraint
@@ -27,18 +25,17 @@
             app:layout_constraintBottom_toBottomOf="@id/v_menu_center"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/v_menu_center"
-            app:visibilityMode="ignore"
-            />
+            app:visibilityMode="ignore" />
 
         <Constraint
             android:id="@+id/ty_feed_first_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            app:layout_goneMarginStart="16dp"
             app:layout_constraintBottom_toBottomOf="@id/v_menu_center"
             app:layout_constraintStart_toEndOf="@id/btn_feed_browse"
             app:layout_constraintTop_toTopOf="@id/v_menu_center"
+            app:layout_goneMarginStart="16dp"
             app:visibilityMode="ignore" />
 
         <Constraint
@@ -66,11 +63,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
-            app:layout_constraintTop_toTopOf="@id/v_menu_center"
             app:layout_constraintBottom_toBottomOf="@id/v_menu_center"
             app:layout_constraintEnd_toStartOf="@id/feed_user_profile_image"
-            app:visibilityMode="ignore"
-            />
+            app:layout_constraintTop_toTopOf="@id/v_menu_center"
+            app:visibilityMode="ignore" />
 
         <Constraint
             android:id="@+id/feed_user_profile_image"
@@ -91,6 +87,26 @@
             app:layout_constraintStart_toEndOf="@id/btn_feed_create_post"
             app:layout_constraintTop_toTopOf="@id/v_menu_center"
             app:layout_goneMarginStart="16dp"
+            app:visibilityMode="ignore" />
+
+        <Constraint
+            android:id="@+id/v_first_tab_red_dot"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:padding="4dp"
+            app:layout_constraintEnd_toEndOf="@id/ty_feed_first_tab"
+            app:layout_constraintStart_toEndOf="@id/ty_feed_first_tab"
+            app:layout_constraintTop_toTopOf="@id/ty_feed_first_tab"
+            app:visibilityMode="ignore" />
+
+        <Constraint
+            android:id="@+id/v_second_tab_red_dot"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:padding="4dp"
+            app:layout_constraintEnd_toEndOf="@id/ty_feed_second_tab"
+            app:layout_constraintStart_toEndOf="@id/ty_feed_second_tab"
+            app:layout_constraintTop_toTopOf="@id/ty_feed_second_tab"
             app:visibilityMode="ignore" />
     </ConstraintSet>
 
@@ -118,10 +134,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            app:layout_goneMarginStart="16dp"
             app:layout_constraintBottom_toBottomOf="@id/v_menu_center"
             app:layout_constraintStart_toEndOf="@id/btn_feed_browse"
             app:layout_constraintTop_toTopOf="@id/v_menu_center"
+            app:layout_goneMarginStart="16dp"
             app:visibilityMode="ignore" />
         <Constraint
             android:id="@+id/ty_feed_second_tab"
@@ -150,7 +166,7 @@
             app:layout_constraintBottom_toBottomOf="@id/v_menu_center"
             app:layout_constraintEnd_toStartOf="@id/feed_user_profile_image"
             app:layout_constraintTop_toTopOf="@id/v_menu_center"
-            app:visibilityMode="ignore"/>
+            app:visibilityMode="ignore" />
         <Constraint
             android:id="@+id/feed_user_profile_image"
             android:layout_width="28dp"
@@ -170,6 +186,26 @@
             app:layout_constraintStart_toEndOf="@id/btn_feed_create_post"
             app:layout_constraintTop_toTopOf="@id/v_menu_center"
             app:layout_goneMarginStart="16dp"
+            app:visibilityMode="ignore" />
+
+        <Constraint
+            android:id="@+id/v_first_tab_red_dot"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:padding="4dp"
+            app:layout_constraintEnd_toEndOf="@id/ty_feed_first_tab"
+            app:layout_constraintStart_toEndOf="@id/ty_feed_first_tab"
+            app:layout_constraintTop_toTopOf="@id/ty_feed_first_tab"
+            app:visibilityMode="ignore" />
+
+        <Constraint
+            android:id="@+id/v_second_tab_red_dot"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:padding="4dp"
+            app:layout_constraintEnd_toEndOf="@id/ty_feed_second_tab"
+            app:layout_constraintStart_toEndOf="@id/ty_feed_second_tab"
+            app:layout_constraintTop_toTopOf="@id/ty_feed_second_tab"
             app:visibilityMode="ignore" />
     </ConstraintSet>
 </MotionScene>

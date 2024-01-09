@@ -113,6 +113,7 @@ class FeedDetailActivity : BaseActivity() {
                         position = TAB_FIRST_INDEX,
                         isActive = true,
                         isSelected = false,
+                        hasNewContent = false
                     ),
                     extrasData,
                     intent?.getStringExtra(ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT)

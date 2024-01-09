@@ -21,6 +21,7 @@ import com.tokopedia.developer_options.presentation.model.FakeResponseActivityUi
 import com.tokopedia.developer_options.presentation.model.ForceCrashUiModel
 import com.tokopedia.developer_options.presentation.model.ForceDarkModeUiModel
 import com.tokopedia.developer_options.presentation.model.ForceLogoutUiModel
+import com.tokopedia.developer_options.presentation.model.ForceScpLoginUiModel
 import com.tokopedia.developer_options.presentation.model.FpiMonitoringUiModel
 import com.tokopedia.developer_options.presentation.model.FpmLogOnFileUiModel
 import com.tokopedia.developer_options.presentation.model.FpmLogOnNotificationUiModel
@@ -60,6 +61,7 @@ import com.tokopedia.developer_options.presentation.model.ViewHanselPatchUiModel
 import com.tokopedia.developer_options.presentation.model.ViewIrisLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewJourneyLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewNetworkLogUiModel
+import com.tokopedia.developer_options.presentation.model.ViewServerLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewTopAdsLogUiModel
 import com.tokopedia.developer_options.presentation.viewholder.AccessTokenViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.AnalyticsLogOnNotificationViewHolder
@@ -79,6 +81,7 @@ import com.tokopedia.developer_options.presentation.viewholder.FakeResponseActiv
 import com.tokopedia.developer_options.presentation.viewholder.ForceCrashViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ForceDarkModeViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ForceLogoutViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.ForceScpLoginViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.FpmLogOnFileViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.FpmLogOnNotificationViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.HomeAndNavigationRevampSwitcherViewHolder
@@ -118,6 +121,7 @@ import com.tokopedia.developer_options.presentation.viewholder.ViewHanselPatchVi
 import com.tokopedia.developer_options.presentation.viewholder.ViewIrisLogViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ViewJourneyLogViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ViewNetworkLogViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.ViewServerLogViewHolder
 import com.tokopedia.developer_options.presentation.viewholder.ViewTopAdsLogViewHolder
 
 /**
@@ -150,6 +154,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ViewNetworkLogUiModel): Int = ViewNetworkLogViewHolder.LAYOUT
     override fun type(uiModel: DeviceIdUiModel): Int = DeviceIdViewHolder.LAYOUT
     override fun type(uiModel: ForceDarkModeUiModel): Int = ForceDarkModeViewHolder.LAYOUT
+    override fun type(uiModel: ForceScpLoginUiModel): Int = ForceScpLoginViewHolder.LAYOUT
     override fun type(uiModel: TopAdsLogOnNotificationUiModel): Int = TopAdsLogOnNotificationViewHolder.LAYOUT
     override fun type(uiModel: ViewTopAdsLogUiModel): Int = ViewTopAdsLogViewHolder.LAYOUT
     override fun type(uiModel: ApplinkLogOnNotificationUiModel): Int = ApplinkLogOnNotificationViewHolder.LAYOUT
@@ -187,6 +192,8 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: RandomizeAccessTokenUiModel): Int = RandomizeTokenViewHolder.LAYOUT
     override fun type(uiModel: ViewHanselPatchUiModel): Int = ViewHanselPatchViewHolder.LAYOUT
     override fun type(uiModel: TopchatWebSocketLoggingUiModel): Int = TopchatWebSocketLoggingViewHolder.LAYOUT
+
+    override fun type(uiModel: ViewServerLogUiModel): Int = ViewServerLogViewHolder.LAYOUT
     override fun type(uiModel: LoginHelperUiModel): Int = LoginHelperViewHolder.LAYOUT
     override fun type(uiModel: DevOptsAuthorizationUiModel): Int = DevOptsAuthorizationViewHolder.LAYOUT
     override fun type(uiModel: DeprecatedApiSwitcherToasterUiModel): Int = DeprecatedAPISwitcherToasterViewHolder.LAYOUT
@@ -212,6 +219,7 @@ class DeveloperOptionTypeFactoryImpl(
             ViewNetworkLogViewHolder.LAYOUT -> ViewNetworkLogViewHolder(view)
             DeviceIdViewHolder.LAYOUT -> DeviceIdViewHolder(view)
             ForceDarkModeViewHolder.LAYOUT -> ForceDarkModeViewHolder(view)
+            ForceScpLoginViewHolder.LAYOUT -> ForceScpLoginViewHolder(view)
             TopAdsLogOnNotificationViewHolder.LAYOUT -> TopAdsLogOnNotificationViewHolder(view)
             ViewTopAdsLogViewHolder.LAYOUT -> ViewTopAdsLogViewHolder(view)
             ApplinkLogOnNotificationViewHolder.LAYOUT -> ApplinkLogOnNotificationViewHolder(view)
@@ -225,6 +233,7 @@ class DeveloperOptionTypeFactoryImpl(
             CassavaViewHolder.LAYOUT -> CassavaViewHolder(view)
             ViewAnalyticsLogViewHolder.LAYOUT -> ViewAnalyticsLogViewHolder(view)
             ViewIrisLogViewHolder.LAYOUT -> ViewIrisLogViewHolder(view)
+            ViewServerLogViewHolder.LAYOUT -> ViewServerLogViewHolder(view)
             LeakCanaryViewHolder.LAYOUT -> LeakCanaryViewHolder(view)
             StrictModeLeakPublisherViewHolder.LAYOUT -> StrictModeLeakPublisherViewHolder(view)
             RemoteConfigEditorViewHolder.LAYOUT -> RemoteConfigEditorViewHolder(view)
