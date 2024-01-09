@@ -218,7 +218,8 @@ public class BranchHelper {
                                 .setQuantity(LinkerUtils.convertToDouble(linkerData.getQuantity(), "Product quantity-ADD_TO_CART"))
                                 .setSku(linkerData.getId())
                                 .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT)
-                                .addCustomMetadata(LinkerConstants.ProductCategory, String.valueOf(linkerData.getCatLvl1())));
+                                .addCustomMetadata(LinkerConstants.ProductCategory, String.valueOf(linkerData.getCatLvl1()))
+                                .setProductBrand(linkerData.getShopName()));
         BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.ADD_TO_CART)
                 .addCustomDataProperty(LinkerConstants.USER_ID, linkerData.getUserId())
                 .addCustomDataProperty(LinkerConstants.PRODUCT_ID, linkerData.getSku())
@@ -232,7 +233,6 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.LEVEL3_ID, linkerData.getLevel3Id())
                 .addCustomDataProperty(LinkerConstants.SKU, linkerData.getId())
                 .addCustomDataProperty(LinkerConstants.CONTENT_ID, linkerData.getContentId())
-                .addCustomDataProperty(LinkerConstants.SHOP_NAME, linkerData.getShopName())
                 .setRevenue(Double.parseDouble(linkerData.getQuantity()) * Double.parseDouble(linkerData.getPrice()))
                 .setCurrency(CurrencyType.IDR)
                 .addCustomDataProperty(LinkerConstants.KEY_GOOGLE_BUSINESS_VERTICAL, LinkerConstants.LABEL_RETAIL)

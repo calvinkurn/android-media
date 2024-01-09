@@ -137,7 +137,6 @@ public interface LinkerConstants {
     String CATEGORY_LEVEL_1 = "Category Level 1";
     String DESCRIPTION = "description";
     String SHOP_ID = "shop_id";
-    String SHOP_NAME = "shop_name";
     String CURRENCY = "currency";
     String PRODUCT_CATEGORY = "product_category";
     String PRODUCT_NAME = "product_name";
