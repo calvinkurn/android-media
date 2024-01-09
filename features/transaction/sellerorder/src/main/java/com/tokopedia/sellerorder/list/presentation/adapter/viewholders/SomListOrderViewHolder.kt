@@ -490,7 +490,7 @@ open class SomListOrderViewHolder(
 
     private fun getIsMultiSelectEnabled(element: SomListOrderUiModel): Boolean {
         val isCancelRequest = element.cancelRequest != Int.ZERO && element.cancelRequestStatus != Int.ZERO
-        return isCancelRequest || element.isBulkSelectable
+        return isCancelRequest && element.isBulkSelectable
     }
 
     private val SomListOrderUiModel.Button.isRequestOrConfirmPickup: Boolean
