@@ -125,8 +125,8 @@ data class TickerUnificationParams(
             @SerializedName("key")
             val key: String = "",
 
-            @SerializedName("values")
-            val values: List<String> = listOf()
+            @SerializedName("value")
+            val values: String = ""
         )
     }
 

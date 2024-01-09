@@ -20,7 +20,7 @@ data class TargetedTickerParamModel(
             @SuppressLint("ParamFieldAnnotation")
             val key: String = "",
             @SuppressLint("ParamFieldAnnotation")
-            val values: List<String> = listOf()
+            val value: String = ""
         )
     }
 
@@ -28,6 +28,6 @@ data class TargetedTickerParamModel(
         @SuppressLint("ParamFieldAnnotation")
         val type: String = "",
         @SuppressLint("ParamFieldAnnotation")
-        val value: List<String> = listOf()
+        val values: List<String> = listOf()
     )
 }

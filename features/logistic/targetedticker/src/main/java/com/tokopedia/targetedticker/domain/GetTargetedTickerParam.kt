@@ -29,7 +29,7 @@ data class GetTargetedTickerParam(
             val key: String = "",
 
             @SerializedName("values")
-            val values: List<String> = listOf()
+            val values: String = ""
         )
     }
 

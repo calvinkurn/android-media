@@ -51,8 +51,8 @@ data class SomCourierList(
                             @SerializedName("key")
                             val key: String = "",
 
-                            @SerializedName("values")
-                            val values: List<String> = listOf()
+                            @SerializedName("value")
+                            val value: String = ""
                         )
                     }
                 }

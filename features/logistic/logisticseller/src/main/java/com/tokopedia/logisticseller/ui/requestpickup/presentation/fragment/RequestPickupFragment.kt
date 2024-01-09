@@ -210,7 +210,7 @@ class RequestPickupFragment :
 
             val template = TargetedTickerParamModel.Template().copy(
                 contents = tickerParam.template.contents.map {
-                    TargetedTickerParamModel.Template.Content(it.key, it.values)
+                    TargetedTickerParamModel.Template.Content(it.key, it.value)
                 }
             )
             val target = tickerParam.target.map {
