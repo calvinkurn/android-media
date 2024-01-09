@@ -27,7 +27,6 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
 
         viewModel.getFirstPage(
             categoryId = categoryId,
-            warehouses = warehouses,
             annotationType = annotationType
         )
 
@@ -64,7 +63,6 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
 
         viewModel.getFirstPage(
             categoryId = categoryId,
-            warehouses = warehouses,
             annotationType = annotationType
         )
 
@@ -101,7 +99,6 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
 
         viewModel.getFirstPage(
             categoryId = categoryId,
-            warehouses = warehouses,
             annotationType = annotationType
         )
 
@@ -111,7 +108,6 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
 
         viewModel.loadMore(
             categoryId = categoryId,
-            warehouses = warehouses,
             annotationType = annotationType,
             isAtTheBottomOfThePage = true
         )
@@ -133,7 +129,6 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
 
         viewModel.getFirstPage(
             categoryId = categoryId,
-            warehouses = warehouses,
             annotationType = annotationType
         )
 
@@ -143,7 +138,6 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
 
         viewModel.loadMore(
             categoryId = categoryId,
-            warehouses = warehouses,
             annotationType = annotationType,
             isAtTheBottomOfThePage = true
         )
@@ -171,7 +165,6 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
 
         viewModel.getFirstPage(
             categoryId = categoryId,
-            warehouses = warehouses,
             annotationType = annotationType
         )
 
@@ -191,7 +184,6 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
         // add load more ui model
         viewModel.loadMore(
             categoryId = categoryId,
-            warehouses = warehouses,
             annotationType = annotationType,
             isAtTheBottomOfThePage = true
         )
@@ -199,7 +191,6 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
         // add more annotation data
         viewModel.loadMore(
             categoryId = categoryId,
-            warehouses = warehouses,
             annotationType = annotationType,
             isAtTheBottomOfThePage = true
         )
@@ -231,7 +222,6 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
 
         viewModel.getFirstPage(
             categoryId = categoryId,
-            warehouses = warehouses,
             annotationType = annotationType
         )
 
@@ -251,7 +241,6 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
         // add load more ui model
         viewModel.loadMore(
             categoryId = categoryId,
-            warehouses = warehouses,
             annotationType = annotationType,
             isAtTheBottomOfThePage = true
         )
@@ -259,7 +248,6 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
         // add more annotation data
         viewModel.loadMore(
             categoryId = categoryId,
-            warehouses = warehouses,
             annotationType = annotationType,
             isAtTheBottomOfThePage = true
         )
@@ -291,7 +279,6 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
 
         viewModel.getFirstPage(
             categoryId = categoryId,
-            warehouses = warehouses,
             annotationType = annotationType
         )
 
@@ -311,7 +298,6 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
         // add load more ui model
         viewModel.loadMore(
             categoryId = categoryId,
-            warehouses = warehouses,
             annotationType = annotationType,
             isAtTheBottomOfThePage = true
         )
@@ -319,7 +305,6 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
         // add more annotation data
         viewModel.loadMore(
             categoryId = categoryId,
-            warehouses = warehouses,
             annotationType = annotationType,
             isAtTheBottomOfThePage = true
         )
@@ -349,7 +334,6 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
 
         viewModel.getFirstPage(
             categoryId = categoryId,
-            warehouses = warehouses,
             annotationType = annotationType
         )
 
@@ -363,7 +347,6 @@ class TokoNowAllAnnotationViewModelTestGetAllAnnotation: TokoNowAllAnnotationVie
 
         viewModel.loadMore(
             categoryId = categoryId,
-            warehouses = warehouses,
             annotationType = annotationType,
             isAtTheBottomOfThePage = false
         )

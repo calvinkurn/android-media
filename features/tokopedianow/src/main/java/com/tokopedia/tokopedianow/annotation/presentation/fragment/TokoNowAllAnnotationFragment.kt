@@ -20,7 +20,6 @@ import com.tokopedia.tokopedianow.annotation.di.component.DaggerAllAnnotationCom
 import com.tokopedia.tokopedianow.annotation.di.module.AllAnnotationModule
 import com.tokopedia.tokopedianow.annotation.presentation.activity.TokoNowAllAnnotationActivity.Companion.KEY_ANNOTATION_TYPE
 import com.tokopedia.tokopedianow.annotation.presentation.activity.TokoNowAllAnnotationActivity.Companion.KEY_CATEGORY_ID
-import com.tokopedia.tokopedianow.annotation.presentation.activity.TokoNowAllAnnotationActivity.Companion.KEY_WAREHOUSES
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowAllAnnotationBinding
 import com.tokopedia.tokopedianow.annotation.presentation.adapter.AllAnnotationAdapter
@@ -44,12 +43,10 @@ class TokoNowAllAnnotationFragment : Fragment() {
 
         fun newInstance(
             categoryId: String?,
-            warehouses: String?,
             annotationType: String?
         ): TokoNowAllAnnotationFragment = TokoNowAllAnnotationFragment().apply {
             val bundle = Bundle()
             bundle.putString(KEY_CATEGORY_ID, categoryId)
-            bundle.putString(KEY_WAREHOUSES, warehouses)
             bundle.putString(KEY_ANNOTATION_TYPE, annotationType)
             arguments = bundle
         }
@@ -63,8 +60,6 @@ class TokoNowAllAnnotationFragment : Fragment() {
 
     internal val categoryId: String
         by lazy { arguments?.getString(KEY_CATEGORY_ID).orEmpty() }
-    internal val warehouses: String
-        by lazy { arguments?.getString(KEY_WAREHOUSES).orEmpty() }
     internal val annotationType: String
         by lazy { arguments?.getString(KEY_ANNOTATION_TYPE).orEmpty() }
 
@@ -194,7 +189,6 @@ class TokoNowAllAnnotationFragment : Fragment() {
         showShimmering()
         viewModel.getFirstPage(
             categoryId = categoryId,
-            warehouses = warehouses,
             annotationType = annotationType
         )
     }
@@ -209,7 +203,6 @@ class TokoNowAllAnnotationFragment : Fragment() {
             val isAtTheBottomOfThePage = !recyclerView.canScrollVertically(SCROLL_DOWN_DIRECTION)
             viewModel.loadMore(
                 categoryId,
-                warehouses,
                 annotationType,
                 isAtTheBottomOfThePage
             )
