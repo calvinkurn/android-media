@@ -267,7 +267,7 @@ class AppDownloadingBottomSheet :
                 reason,
                 Toaster.LENGTH_SHORT,
                 Toaster.TYPE_ERROR,
-                actionText = getString(appdownloadmanager_commonR.string.app_download_try_again),
+                actionText = getString(appdownloadmanager_commonR.string.update_app_version_toaster_oke),
                 clickListener = {
                     viewModel.updateDownloadingState()
                 }

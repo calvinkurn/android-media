@@ -211,7 +211,7 @@ class DownloadManagerService @Inject constructor(
 
         val currentApk = File(currentApkNamePath).name
 
-        if (downloadDir.exists() && downloadDir.isDirectory) {
+        if (downloadDir.exists()) {
             val files = downloadDir.listFiles()
 
             files?.forEach { file ->
