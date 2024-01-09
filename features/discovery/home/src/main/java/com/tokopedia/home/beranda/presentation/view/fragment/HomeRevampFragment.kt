@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
-import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -121,7 +120,6 @@ import com.tokopedia.home.beranda.presentation.view.listener.FlashSaleWidgetCall
 import com.tokopedia.home.beranda.presentation.view.listener.HomeComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
 import com.tokopedia.home.beranda.presentation.view.listener.HomeReminderWidgetCallback
-import com.tokopedia.home.beranda.presentation.view.listener.Lego3AutoWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.Lego6AutoBannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.LegoProductCallback
 import com.tokopedia.home.beranda.presentation.view.listener.MerchantVoucherComponentCallback
@@ -154,7 +152,6 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ImageHandler
 import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
 import com.tokopedia.home_component.util.toDpInt
-import com.tokopedia.home_component.widget.lego3auto.Lego3AutoListener
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -170,9 +167,6 @@ import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.locationmanager.DeviceLocation
-import com.tokopedia.locationmanager.LocationDetectorHelper
-import com.tokopedia.locationmanager.RequestLocationType
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.HomeBottomNavListener
@@ -229,8 +223,6 @@ import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import dagger.Lazy
 import kotlinx.coroutines.FlowPreview
-import rx.Observable
-import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 import java.util.*
@@ -1604,7 +1596,6 @@ open class HomeRevampFragment :
             BestSellerWidgetCallback(context, this, getHomeViewModel()),
             SpecialReleaseRevampCallback(this),
             ShopFlashSaleWidgetCallback(this, getHomeViewModel()),
-            Lego3AutoWidgetCallback(this),
             getThematicUtil()
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())

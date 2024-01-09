@@ -7,15 +7,18 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.annotation.LayoutRes
 import androidx.core.view.marginLeft
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.HomeComponentLegoBanner3AutoBinding
+import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.loadImage
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.home_component.R as home_componentR
@@ -25,7 +28,7 @@ import com.tokopedia.home_component.R as home_componentR
  */
 class Lego3AutoViewHolder(
     itemView: View,
-    private val lego3AutoListener: Lego3AutoListener
+    private val legoListener: DynamicLegoBannerListener,
 ) : AbstractViewHolder<Lego3AutoModel>(itemView) {
 
     companion object {
@@ -35,12 +38,13 @@ class Lego3AutoViewHolder(
     }
 
     private val binding: HomeComponentLegoBanner3AutoBinding? by viewBinding()
-    private val adapter by lazy { Lego3AutoAdapter(lego3AutoListener) }
+    private val adapter by lazy { Lego3AutoAdapter(legoListener) }
 
     override fun bind(element: Lego3AutoModel) {
         binding?.let {
             initAdapter()
             setData(element)
+            setupImpression(element.channelModel)
             setHeaderComponent(element.channelModel)
             setChannelDivider(element.channelModel)
         }
@@ -63,6 +67,12 @@ class Lego3AutoViewHolder(
         }
     }
 
+    private fun setupImpression(channelModel: ChannelModel) {
+        itemView.addOnImpressionListener(channelModel) {
+            legoListener.onViewportImpression(channelModel)
+        }
+    }
+
     private fun setChannelDivider(channelModel: ChannelModel) {
         binding?.let {
             ChannelWidgetUtil.validateHomeComponentDivider(
@@ -78,7 +88,7 @@ class Lego3AutoViewHolder(
             channelModel,
             object: HeaderListener {
                 override fun onSeeAllClick(link: String) {
-//                    lego3AutoListener.onSeeAllClick(channelModel.trackingAttributionModel, link)
+                    legoListener.onSeeAllThreemage(channelModel, channelModel.verticalPosition)
                 }
             }
         )
@@ -89,24 +99,21 @@ class Lego3AutoViewHolder(
     }
 
     class Lego3AutoAdapter(
-        private val listener: Lego3AutoListener,
+        private val listener: DynamicLegoBannerListener,
     ) : RecyclerView.Adapter<Lego3AutoItemViewHolder>() {
 
         private var model: Lego3AutoModel? = null
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Lego3AutoItemViewHolder {
             val view = FrameLayout(parent.context)
-            return Lego3AutoItemViewHolder(view)
+            return Lego3AutoItemViewHolder(view, listener)
         }
 
         override fun onBindViewHolder(holder: Lego3AutoItemViewHolder, position: Int) {
             try {
-                val grid = model?.channelModel?.channelGrids?.get(position) ?: return
-                holder.bind(grid)
-                holder.setClickListener(grid, position)
-                if (model?.isCache == false) {
-                    setImpressionListener()
-                }
+                val channel = model?.channelModel ?: return
+                val grid = channel.channelGrids.getOrNull(position) ?: return
+                holder.bind(channel, grid, position)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -116,25 +123,23 @@ class Lego3AutoViewHolder(
             this.model = model
         }
 
-        fun setImpressionListener() {
-
-        }
-
         override fun getItemCount(): Int {
             return SPAN
         }
     }
 
-    class Lego3AutoItemViewHolder(private val view: FrameLayout) : RecyclerView.ViewHolder(view) {
-        fun setClickListener(
-            grid: ChannelGrid,
+    class Lego3AutoItemViewHolder(
+        private val view: FrameLayout,
+        private val listener: DynamicLegoBannerListener,
+    ) : RecyclerView.ViewHolder(view) {
+
+        fun bind(
+            channelModel: ChannelModel,
+            channelGrid: ChannelGrid,
             position: Int
         ) {
-
-        }
-
-        fun bind(grid: ChannelGrid) {
-            grid.imageList.forEach {
+            setClickListener(channelModel, channelGrid, position)
+            channelGrid.imageList.forEach {
                 val imageUrl = it.imageUrl
                 val imageView = ImageView(view.context).apply {
                     layoutParams = FrameLayout.LayoutParams(
@@ -145,10 +150,18 @@ class Lego3AutoViewHolder(
                     scaleType = ImageView.ScaleType.FIT_CENTER
                     val leftPadding = (view.width * (it.leftPadding/100)).toInt()
                     val rightPadding = (view.width * (it.rightPadding/100)).toInt()
-                    setMargin(leftPadding, 0, rightPadding, 0)
+                    updatePadding(left = leftPadding, right = rightPadding)
                 }
                 view.addView(imageView)
             }
+        }
+
+        private fun setClickListener(
+            channelModel: ChannelModel,
+            channelGrid: ChannelGrid,
+            position: Int
+        ) {
+            listener.onClickGridThreeImage(channelModel, channelGrid, position, channelModel.verticalPosition)
         }
     }
 }

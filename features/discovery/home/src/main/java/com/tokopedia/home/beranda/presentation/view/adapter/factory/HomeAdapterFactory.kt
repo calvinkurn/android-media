@@ -144,7 +144,6 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
 import com.tokopedia.home_component.visitable.VpsDataModel
-import com.tokopedia.home_component.widget.lego3auto.Lego3AutoListener
 import com.tokopedia.home_component.widget.lego3auto.Lego3AutoModel
 import com.tokopedia.home_component.widget.lego3auto.Lego3AutoViewHolder
 import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDataModel
@@ -205,7 +204,6 @@ class HomeAdapterFactory(
     private val bestSellerListener: BestSellerListener,
     private val specialReleaseRevampListener: SpecialReleaseRevampListener,
     private val shopFlashSaleWidgetListener: ShopFlashSaleWidgetListener,
-    private val lego3AutoListener: Lego3AutoListener,
     private val homeThematicUtil: HomeThematicUtil
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
@@ -632,7 +630,7 @@ class HomeAdapterFactory(
                 )
             SpecialReleaseRevampViewHolder.LAYOUT -> viewHolder = SpecialReleaseRevampViewHolder(view, specialReleaseRevampListener)
             ShopFlashSaleWidgetViewHolder.LAYOUT -> viewHolder = ShopFlashSaleWidgetViewHolder(view, shopFlashSaleWidgetListener)
-            Lego3AutoViewHolder.LAYOUT -> viewHolder = Lego3AutoViewHolder(view, lego3AutoListener)
+            Lego3AutoViewHolder.LAYOUT -> viewHolder = Lego3AutoViewHolder(view, legoListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 
