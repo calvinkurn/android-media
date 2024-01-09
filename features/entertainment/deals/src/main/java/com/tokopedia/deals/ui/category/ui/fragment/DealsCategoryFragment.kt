@@ -77,7 +77,6 @@ class DealsCategoryFragment :
     private var additionalSelectedFilterCount = 0
     private var categoryID: String = ""
     private var chips: List<ChipDataView> = listOf()
-    private var categories: List<Category> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
@@ -101,42 +100,43 @@ class DealsCategoryFragment :
     }
 
     private fun initViewModel() {
-        dealCategoryViewModel = ViewModelProvider(this, viewModelFactory).get(DealCategoryViewModel::class.java)
-        baseViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(DealsBaseViewModel::class.java)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        observeLayout()
+        dealCategoryViewModel =
+            ViewModelProvider(this, viewModelFactory).get(DealCategoryViewModel::class.java)
+        baseViewModel = ViewModelProvider(
+            requireActivity(),
+            viewModelFactory
+        ).get(DealsBaseViewModel::class.java)
     }
 
     private fun observeLayout() {
-        dealCategoryViewModel.observableDealsCategoryLayout.observe(viewLifecycleOwner, {
+        dealCategoryViewModel.observableDealsCategoryLayout.observe(viewLifecycleOwner) {
             isLoadingInitialData = true
             handleRanderList(it)
             handleShimering(it)
-        })
+        }
 
-        dealCategoryViewModel.errorMessage.observe(viewLifecycleOwner, {
+        dealCategoryViewModel.errorMessage.observe(viewLifecycleOwner) {
             isLoadingInitialData = true
             renderList(listOf(getErrorNetworkModel()), false)
-        })
+        }
 
-        dealCategoryViewModel.observableProducts.observe(viewLifecycleOwner, {
+        dealCategoryViewModel.observableProducts.observe(viewLifecycleOwner) {
             val nextPage = it.size >= DEFAULT_MIN_ITEMS_PRODUCT
             renderList(it, nextPage)
-        })
+        }
 
-        dealCategoryViewModel.observableChips.observe(viewLifecycleOwner, {
+        dealCategoryViewModel.observableChips.observe(viewLifecycleOwner) {
             chips = it
             renderChips()
-        })
+        }
 
-        baseViewModel.observableCurrentLocation.observe(viewLifecycleOwner, {
+        baseViewModel.observableCurrentLocation.observe(viewLifecycleOwner) {
             onBaseLocationChanged(it)
-        })
+        }
 
-        dealCategoryViewModel.observableCategories.observe(viewLifecycleOwner, { categories = it })
+        dealCategoryViewModel.observableCategories.observe(viewLifecycleOwner) {
+            showOrNotFilter(it)
+        }
 
         handleRecycler()
     }
@@ -196,7 +196,8 @@ class DealsCategoryFragment :
                 val item = SortFilterItem(it.title)
                 filterItems.add(item)
             }
-        } catch (e: Exception) { }
+        } catch (e: Exception) {
+        }
 
         for (chip in chips) {
             if (chip.id == categoryID) chip.isSelected = true
@@ -270,8 +271,8 @@ class DealsCategoryFragment :
     }
 
     private fun showOrNotFilter(categories: List<Category>) {
-        val category = categories.single { it.id == categoryID }
-        val isShowFilter = category.isCard == 1 && category.isHidden == 0
+        val category = categories.firstOrNull { it.id == categoryID }
+        val isShowFilter = category?.isCard == 1 && category.isHidden == 0
         binding.container.root.showWithCondition(isShowFilter)
     }
 
@@ -280,7 +281,18 @@ class DealsCategoryFragment :
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (position) {
-                    0 -> if (adapter.getItems().first()::class == DealsBrandsDataView::class) 2 else if (adapter.getItems().first()::class == DealsEmptyDataView::class) 2 else 1
+                    0 -> if (adapter.getItems()
+                        .first()::class == DealsBrandsDataView::class
+                    ) {
+                        2
+                    } else if (adapter.getItems()
+                        .first()::class == DealsEmptyDataView::class
+                    ) {
+                        2
+                    } else {
+                        1
+                    }
+
                     adapter.getItems().lastIndex -> if (adapter.getItems()[adapter.getItems().lastIndex]::class == LoadingMoreUnifyModel::class) 2 else 1
                     else -> 1
                 }
@@ -288,12 +300,13 @@ class DealsCategoryFragment :
         }
 
         if (endlessRecyclerViewScrollListener == null) {
-            endlessRecyclerViewScrollListener = object : EndlessRecyclerViewScrollListener(layoutManager) {
-                override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                    showLoadMoreLoading()
-                    loadData(page)
+            endlessRecyclerViewScrollListener =
+                object : EndlessRecyclerViewScrollListener(layoutManager) {
+                    override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                        showLoadMoreLoading()
+                        loadData(page)
+                    }
                 }
-            }
         }
         endlessRecyclerViewScrollListener?.let {
             recyclerView.addOnScrollListener(it)
@@ -304,7 +317,12 @@ class DealsCategoryFragment :
 
     private fun handleRecycler() {
         val decoration = object : RecyclerView.ItemDecoration() {
-            override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            override fun getItemOffsets(
+                outRect: Rect,
+                view: View,
+                parent: RecyclerView,
+                state: RecyclerView.State
+            ) {
                 super.getItemOffsets(outRect, view, parent, state)
 
                 val position = parent.getChildAdapterPosition(view)
@@ -312,9 +330,36 @@ class DealsCategoryFragment :
 
                 context?.let { context ->
                     if (position != RecyclerView.NO_POSITION) {
-                        outRect.bottom = if (isInTheFirstRow(position + ADDITIONAL_POSITION, totalSpanCount)) context.resources.getInteger(R.integer.sixteen).toPx() else context.resources.getInteger(R.integer.four).toPx()
-                        outRect.left = if (isFirstInRow(position + ADDITIONAL_POSITION, totalSpanCount)) context.resources.getInteger(R.integer.two).toPx() else context.resources.getInteger(R.integer.sixteen).toPx()
-                        outRect.right = if (isFirstInRow(position + ADDITIONAL_POSITION, totalSpanCount)) context.resources.getInteger(R.integer.sixteen).toPx() else context.resources.getInteger(R.integer.two).toPx()
+                        outRect.bottom = if (isInTheFirstRow(
+                                position + ADDITIONAL_POSITION,
+                                totalSpanCount
+                            )
+                        ) {
+                            context.resources.getInteger(R.integer.sixteen)
+                                .toPx()
+                        } else {
+                            context.resources.getInteger(R.integer.four).toPx()
+                        }
+                        outRect.left = if (isFirstInRow(
+                                position + ADDITIONAL_POSITION,
+                                totalSpanCount
+                            )
+                        ) {
+                            context.resources.getInteger(R.integer.two)
+                                .toPx()
+                        } else {
+                            context.resources.getInteger(R.integer.sixteen).toPx()
+                        }
+                        outRect.right = if (isFirstInRow(
+                                position + ADDITIONAL_POSITION,
+                                totalSpanCount
+                            )
+                        ) {
+                            context.resources.getInteger(R.integer.sixteen)
+                                .toPx()
+                        } else {
+                            context.resources.getInteger(R.integer.two).toPx()
+                        }
                     }
                 }
             }
@@ -358,7 +403,8 @@ class DealsCategoryFragment :
     }
 
     override fun getInitialLayout(): Int = R.layout.fragment_deals_category
-    override fun getRecyclerView(view: View): RecyclerView = view.findViewById(R.id.deals_category_recycler_view)
+    override fun getRecyclerView(view: View): RecyclerView =
+        view.findViewById(R.id.deals_category_recycler_view)
 
     /** DealsBrandActionListener **/
     override fun onClickBrand(brand: DealsBrandsDataView.Brand, position: Int) {
@@ -399,13 +445,6 @@ class DealsCategoryFragment :
         return errorModel
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (categories.isNotEmpty()) {
-            showOrNotFilter(categories)
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         categoryID = arguments?.getString(DealsCategoryActivity.EXTRA_CATEGORY_ID, "") ?: ""
@@ -414,6 +453,7 @@ class DealsCategoryFragment :
         (activity as DealsBaseActivity).searchBarActionListener = this
 
         dealCategoryViewModel.getChipsData()
+        observeLayout()
     }
 
     override fun onBaseLocationChanged(location: Location) {
@@ -422,7 +462,10 @@ class DealsCategoryFragment :
         applyFilter()
 
         if ((activity as DealsBaseActivity).currentLoc != location) {
-            analytics.eventClickChangeLocationCategoryPage(oldLocation = (activity as DealsBaseActivity).currentLoc.name, newLocation = location.name)
+            analytics.eventClickChangeLocationCategoryPage(
+                oldLocation = (activity as DealsBaseActivity).currentLoc.name,
+                newLocation = location.name
+            )
         }
         setCurrentLocation(location)
         recyclerView.smoothScrollToPosition(0)
@@ -439,7 +482,10 @@ class DealsCategoryFragment :
 
     override fun onClickSearchBar() {
         analytics.eventClickSearchCategoryPage()
-        startActivityForResult(Intent(activity, DealsSearchActivity::class.java), DEALS_SEARCH_REQUEST_CODE)
+        startActivityForResult(
+            Intent(activity, DealsSearchActivity::class.java),
+            DEALS_SEARCH_REQUEST_CODE
+        )
     }
 
     override fun afterSearchBarTextChanged(text: String) { /* do nothing */
@@ -449,11 +495,19 @@ class DealsCategoryFragment :
         analytics.eventScrollToBrandPopular(brand, position)
     }
 
-    override fun onProductClicked(itemView: View, productCardDataView: ProductCardDataView, position: Int) {
+    override fun onProductClicked(
+        itemView: View,
+        productCardDataView: ProductCardDataView,
+        position: Int
+    ) {
         RouteManager.route(context, productCardDataView.appUrl)
     }
 
-    override fun onImpressionProduct(productCardDataView: ProductCardDataView, productItemPosition: Int, page: Int) {
+    override fun onImpressionProduct(
+        productCardDataView: ProductCardDataView,
+        productItemPosition: Int,
+        page: Int
+    ) {
         analytics.impressionProductCategory(productCardDataView, productItemPosition, page)
     }
 
@@ -466,7 +520,11 @@ class DealsCategoryFragment :
     private fun applyFilter() {
         var categoryIDs = chips.filter { it.isSelected }.joinToString(separator = ",") { it.id }
         if (categoryIDs.isEmpty()) categoryIDs = categoryID
-        dealCategoryViewModel.updateChips(getCurrentLocation(), categoryIDs, categoryIDs.isNotEmpty())
+        dealCategoryViewModel.updateChips(
+            getCurrentLocation(),
+            categoryIDs,
+            categoryIDs.isNotEmpty()
+        )
     }
 
     override fun showTitle(brand: DealsBrandsDataView) {
@@ -493,13 +551,14 @@ class DealsCategoryFragment :
 
         private const val EXTRA_TAB_NAME = ""
 
-        fun getInstance(categoryId: String?, tabName: String = ""): DealsCategoryFragment = DealsCategoryFragment().also {
-            it.arguments = Bundle().apply {
-                categoryId?.let { id ->
-                    putString(DealsCategoryActivity.EXTRA_CATEGORY_ID, id)
+        fun getInstance(categoryId: String?, tabName: String = ""): DealsCategoryFragment =
+            DealsCategoryFragment().also {
+                it.arguments = Bundle().apply {
+                    categoryId?.let { id ->
+                        putString(DealsCategoryActivity.EXTRA_CATEGORY_ID, id)
+                    }
+                    putString(EXTRA_TAB_NAME, tabName)
                 }
-                putString(EXTRA_TAB_NAME, tabName)
             }
-        }
     }
 }

@@ -9,27 +9,21 @@ import com.tokopedia.deals.common.ui.dataview.ChipDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.domain.DealsSearchUseCase
-import com.tokopedia.deals.ui.category.domain.GetChipsCategoryUseCase
+import com.tokopedia.deals.ui.category.domain.GetChipsCategoryCoroutineUseCase
 import com.tokopedia.deals.ui.category.ui.dataview.ProductListDataView
 import com.tokopedia.deals.ui.category.utils.MapperCategoryLayout
 import com.tokopedia.deals.ui.location_picker.model.response.Location
 import com.tokopedia.deals.ui.search.domain.DealsSearchGqlQueries
 import com.tokopedia.deals.ui.search.model.response.Category
-import com.tokopedia.deals.ui.search.model.response.CuratedData
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 class DealCategoryViewModel @Inject constructor(
     private val mapCategoryLayout: MapperCategoryLayout,
-    private val chipsCategoryUseCase: GetChipsCategoryUseCase,
+    private val chipsCategoryCoroutine: GetChipsCategoryCoroutineUseCase,
     private val dealsSearchUseCase: DealsSearchUseCase,
-    private val dispatcher: CoroutineDispatchers
+    dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
-
-    override val coroutineContext: CoroutineContext
-        get() = dispatcher.main + SupervisorJob()
 
     private val privateObservableChips = MutableLiveData<List<ChipDataView>>()
     val observableChips: LiveData<List<ChipDataView>>
@@ -56,26 +50,19 @@ class DealCategoryViewModel @Inject constructor(
 
     fun getChipsData() {
         launch {
-            chipsCategoryUseCase.execute(onGetCategorySuccess(), onErrorGetCategory())
-        }
-    }
-
-    private fun onGetCategorySuccess(): (CuratedData) -> Unit {
-        return {
-            privateObservableChips.value = mapCategoryLayout.mapCategoryToChips(it.eventChildCategory.categories)
-            privateObservableCategories.value = it.eventChildCategory.categories.map { category ->
-                return@map if (category.id == CATEGORY_ID) {
-                    category.copy(isCard = 1)
-                } else {
-                    category
+            runCatching {
+                val result = chipsCategoryCoroutine(Unit)
+                privateObservableChips.value = mapCategoryLayout.mapCategoryToChips(result.eventChildCategory.categories)
+                privateObservableCategories.value = result.eventChildCategory.categories.map { category ->
+                    return@map if (category.id == CATEGORY_ID) {
+                        category.copy(isCard = 1)
+                    } else {
+                        category
+                    }
                 }
+            }.onFailure {
+                privateErrorMessage.value = it
             }
-        }
-    }
-
-    private fun onErrorGetCategory(): (Throwable) -> Unit {
-        return {
-            privateErrorMessage.value = it
         }
     }
 
