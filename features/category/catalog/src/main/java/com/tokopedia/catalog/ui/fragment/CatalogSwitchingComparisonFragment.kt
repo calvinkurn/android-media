@@ -450,12 +450,13 @@ class CatalogSwitchingComparisonFragment :
     }
 
     private fun resetCatalogSelection() {
-        catalogSelectionAdapter?.itemList = defaultComparisonlist
+        catalogSelectionAdapter?.itemList?.clear()
+        catalogSelectionAdapter?.itemList?.addAll(defaultComparisonlist)
         adapter?.currentCatalogSelection = defaultComparison
         compareCatalogId = defaultComparison
         catalogSelectionAdapter?.notifyDataSetChanged()
         adapter?.notifyItemRangeChanged(Int.ZERO, adapter?.currentList?.size.orZero())
-        binding?.btnSeeCompare?.isEnabled = true
+        checkingEnableOrDisableButtonSeeCompare()
     }
 
     private fun checkingEnableOrDisableButtonSeeCompare() {
@@ -553,14 +554,14 @@ class CatalogSwitchingComparisonFragment :
             activity?.apply {
                 KeyboardHandler.hideSoftKeyboard(this)
             }
-            true
+            false
         }
 
-        binding?.rvCatalogSelection?.setOnTouchListener { _, _ ->
+        binding?.rvCatalogSelection?.setOnTouchListener { _, event ->
             activity?.apply {
                 KeyboardHandler.hideSoftKeyboard(this)
             }
-            true
+            false
         }
 
         binding?.divider?.setOnTouchListener { _, _ ->
