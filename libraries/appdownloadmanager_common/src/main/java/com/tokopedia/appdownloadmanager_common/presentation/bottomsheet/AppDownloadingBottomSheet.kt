@@ -260,11 +260,13 @@ class AppDownloadingBottomSheet :
     }
 
     private fun showErrorToaster(reason: String) {
-        activity?.window?.decorView?.let {
+        val view = view?.rootView
+
+        view?.let {
             Toaster.build(
                 it,
                 reason,
-                Toaster.LENGTH_SHORT,
+                Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
                 actionText = getString(appdownloadmanager_commonR.string.update_app_version_toaster_oke),
                 clickListener = {
