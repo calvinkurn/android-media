@@ -1,6 +1,7 @@
 package com.tokopedia.appdownloadmanager
 
 import android.app.Activity
+import android.app.DownloadManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -98,11 +99,15 @@ class AppDownloadManagerHelper(
             Uri.fromFile(folder)
         }
 
-        return Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(downloadUri, DocumentsContract.Document.MIME_TYPE_DIR)
+        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            Intent(DownloadManager.ACTION_VIEW_DOWNLOADS)
+        } else {
+            Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(downloadUri, DocumentsContract.Document.MIME_TYPE_DIR)
 
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
         }
     }
 
