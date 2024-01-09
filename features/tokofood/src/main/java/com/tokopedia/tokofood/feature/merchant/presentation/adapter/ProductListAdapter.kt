@@ -22,8 +22,10 @@ import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.CategoryH
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder.OnProductCardItemClickListener
 
-class ProductListAdapter(private val clickListener: OnProductCardItemClickListener,
-                         private val tokofoodScrollChangedListener: TokofoodScrollChangedListener) :
+class ProductListAdapter(
+    private val clickListener: OnProductCardItemClickListener,
+    private val tokofoodScrollChangedListener: TokofoodScrollChangedListener
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var productListItems: MutableList<ProductListItem> = mutableListOf()
@@ -70,6 +72,13 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
 
     override fun getItemCount(): Int {
         return productListItems.size
+    }
+
+    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+        if (holder is ProductCardViewHolder) {
+            holder.removeListeners()
+        }
+        super.onViewDetachedFromWindow(holder)
     }
 
     @SuppressLint("NotifyDataSetChanged")
