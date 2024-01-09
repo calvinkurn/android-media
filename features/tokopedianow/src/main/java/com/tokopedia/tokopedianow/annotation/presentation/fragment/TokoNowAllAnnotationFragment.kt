@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.annotation.analytic.AllAnnotationAnalytics
 import com.tokopedia.tokopedianow.annotation.di.component.DaggerAllAnnotationComponent
+import com.tokopedia.tokopedianow.annotation.di.module.AllAnnotationModule
 import com.tokopedia.tokopedianow.annotation.presentation.activity.TokoNowAllAnnotationActivity.Companion.KEY_ANNOTATION_TYPE
 import com.tokopedia.tokopedianow.annotation.presentation.activity.TokoNowAllAnnotationActivity.Companion.KEY_CATEGORY_ID
 import com.tokopedia.tokopedianow.annotation.presentation.activity.TokoNowAllAnnotationActivity.Companion.KEY_WAREHOUSES
@@ -105,10 +106,7 @@ class TokoNowAllAnnotationFragment : Fragment() {
             isShowShadow = false
             setNavigationOnClickListener {
                 activity?.onBackPressedDispatcher?.onBackPressed()
-                analytics.trackClickBackAllAnnotationPage(
-                    categoryIdL1 = categoryId,
-                    annotationType = annotationType
-                )
+                analytics.trackClickBackAllAnnotationPage()
             }
         }
     }
@@ -140,10 +138,7 @@ class TokoNowAllAnnotationFragment : Fragment() {
             when (result) {
                 is Success -> {
                     loadLayout(result.data)
-                    analytics.trackImpressAllAnnotationPage(
-                        categoryIdL1 = categoryId,
-                        annotationType = annotationType
-                    )
+                    analytics.trackImpressAllAnnotationPage()
                 }
                 is Fail -> showGlobalError(result.throwable)
             }
@@ -190,6 +185,7 @@ class TokoNowAllAnnotationFragment : Fragment() {
     private fun initInjector() {
         DaggerAllAnnotationComponent.builder()
             .baseAppComponent((context?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+            .allAnnotationModule(AllAnnotationModule(categoryId, annotationType))
             .build()
             .inject(this)
     }
@@ -223,16 +219,12 @@ class TokoNowAllAnnotationFragment : Fragment() {
     private fun annotationCallback(): AnnotationViewHolder.AnnotationListener = object : AnnotationViewHolder.AnnotationListener {
         override fun onClick(data: AnnotationUiModel, position: Int) {
             analytics.trackClickAnnotationCard(
-                categoryIdL1 = categoryId,
-                annotationType = annotationType,
                 annotationValue = data.name
             )
         }
 
         override fun onImpress(data: AnnotationUiModel, position: Int) {
             analytics.trackImpressAnnotationCard(
-                categoryIdL1 = categoryId,
-                annotationType = annotationType,
                 annotationValue = data.name
             )
         }

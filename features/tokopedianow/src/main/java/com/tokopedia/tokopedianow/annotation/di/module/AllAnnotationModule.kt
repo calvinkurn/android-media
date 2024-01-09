@@ -8,8 +8,10 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class AllAnnotationModule {
-
+class AllAnnotationModule(
+    val categoryId: String,
+    val annotationType: String
+) {
     @AllAnnotationScope
     @Provides
     fun provideGrqphqlRepository(): GraphqlRepository {
@@ -19,6 +21,9 @@ class AllAnnotationModule {
     @AllAnnotationScope
     @Provides
     fun provideAllAnnotationAnalytics(): AllAnnotationAnalytics {
-        return AllAnnotationAnalytics()
+        return AllAnnotationAnalytics(
+            categoryId = categoryId,
+            annotationType = annotationType
+        )
     }
 }

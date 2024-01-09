@@ -22,7 +22,10 @@ import com.tokopedia.track.builder.Tracker
  * Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4417
  **/
 
-class AllAnnotationAnalytics {
+class AllAnnotationAnalytics(
+    val categoryId: String,
+    val annotationType: String
+) {
     internal object CATEGORY {
         const val EVENT_CATEGORY_PAGE = "tokonow - all annotation page"
     }
@@ -42,15 +45,13 @@ class AllAnnotationAnalytics {
     }
 
     fun trackImpressAnnotationCard(
-        categoryIdL1: String,
-        annotationType: String,
         annotationValue: String
     ) {
         Tracker.Builder()
             .setEvent(EVENT_VIEW_GROCERIES)
             .setEventAction(EVENT_ACTION_IMPRESS_ANNOTATION_CARD)
             .setEventCategory(EVENT_CATEGORY_PAGE)
-            .setEventLabel(joinDash(categoryIdL1, annotationType, annotationValue))
+            .setEventLabel(joinDash(categoryId, annotationType, annotationValue))
             .setCustomProperty(KEY_TRACKER_ID, ID_IMPRESS_ANNOTATION_CARD)
             .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
@@ -59,15 +60,13 @@ class AllAnnotationAnalytics {
     }
 
     fun trackClickAnnotationCard(
-        categoryIdL1: String,
-        annotationType: String,
         annotationValue: String
     ) {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_GROCERIES)
             .setEventAction(EVENT_ACTION_CLICK_ANNOTATION_CARD)
             .setEventCategory(EVENT_CATEGORY_PAGE)
-            .setEventLabel(joinDash(categoryIdL1, annotationType, annotationValue))
+            .setEventLabel(joinDash(categoryId, annotationType, annotationValue))
             .setCustomProperty(KEY_TRACKER_ID, ID_CLICK_ANNOTATION_CARD)
             .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
@@ -75,15 +74,12 @@ class AllAnnotationAnalytics {
             .send()
     }
 
-    fun trackImpressAllAnnotationPage(
-        categoryIdL1: String,
-        annotationType: String
-    ) {
+    fun trackImpressAllAnnotationPage() {
         Tracker.Builder()
             .setEvent(EVENT_VIEW_GROCERIES)
             .setEventAction(EVENT_ACTION_IMPRESS_ALL_ANNOTATION_PAGE)
             .setEventCategory(EVENT_CATEGORY_PAGE)
-            .setEventLabel(joinDash(categoryIdL1, annotationType))
+            .setEventLabel(joinDash(categoryId, annotationType))
             .setCustomProperty(KEY_TRACKER_ID, ID_IMPRESS_ALL_ANNOTATION_PAGE)
             .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
@@ -91,15 +87,12 @@ class AllAnnotationAnalytics {
             .send()
     }
 
-    fun trackClickBackAllAnnotationPage(
-        categoryIdL1: String,
-        annotationType: String
-    ) {
+    fun trackClickBackAllAnnotationPage() {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_GROCERIES)
             .setEventAction(EVENT_CLICK_BACK_ALL_ANNOTATION_PAGE)
             .setEventCategory(EVENT_CATEGORY_PAGE)
-            .setEventLabel(joinDash(categoryIdL1, annotationType))
+            .setEventLabel(joinDash(categoryId, annotationType))
             .setCustomProperty(KEY_TRACKER_ID, ID_BACK_ALL_ANNOTATION_PAGE)
             .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
