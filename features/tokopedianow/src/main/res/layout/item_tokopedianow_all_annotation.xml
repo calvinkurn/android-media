@@ -13,12 +13,11 @@
         android:padding="8dp">
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iv_annotation_image"
+            android:id="@+id/iu_annotation_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            app:cardCornerRadius="4dp" />
+            android:scaleType="fitCenter" />
     </FrameLayout>
 
     <com.tokopedia.unifyprinciples.Typography

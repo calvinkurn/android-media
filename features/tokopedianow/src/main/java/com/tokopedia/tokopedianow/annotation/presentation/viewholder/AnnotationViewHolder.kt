@@ -26,7 +26,7 @@ class AnnotationViewHolder(
     override fun bind(data: AnnotationUiModel) {
         binding?.apply {
             tpAnnotationTitle.text = data.name
-            ivAnnotationImage.loadImage(data.imageUrl)
+            iuAnnotationImage.loadImage(data.imageUrl)
 
             root.setOnClickListener {
                 directToAnotherPage(data.appLink)
