@@ -17,6 +17,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import com.tokopedia.shop_widget.R
 import com.tokopedia.shop_widget.databinding.ShopPageWidgetLabelViewBinding
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by zulfikarrahman on 12/29/16.
@@ -55,6 +56,7 @@ class ShopPageLabelView : ShopPageBaseCustomView {
     private var contentMaxWidthPercentage = 0f
     private var minTitleWidth = 0
     private var isArrowShown = false
+    private var isTitleBold = false
     private var enabled = false
     private var viewBinding : ShopPageWidgetLabelViewBinding? = null
 
@@ -96,6 +98,7 @@ class ShopPageLabelView : ShopPageBaseCustomView {
             subTitleTextSize = styledAttributes.getDimension(R.styleable.ShopPageLabelView_shop_lv_sub_title_text_size, resources.getDimension(com.tokopedia.shop_widget.R.dimen.sp_12))
             minTitleWidth = styledAttributes.getDimensionPixelSize(R.styleable.ShopPageLabelView_shop_lv_title_min_width, 0)
             isArrowShown = styledAttributes.getBoolean(R.styleable.ShopPageLabelView_shop_lv_show_arrow, false)
+            isTitleBold = styledAttributes.getBoolean(R.styleable.ShopPageLabelView_shop_lv_bold, false)
         } finally {
             styledAttributes.recycle()
         }
@@ -129,6 +132,9 @@ class ShopPageLabelView : ShopPageBaseCustomView {
         titleTextView?.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize)
         titleTextView?.setTextColor(titleColorValue)
         titleTextView?.minWidth = minTitleWidth
+        if (isTitleBold) {
+            (titleTextView as? Typography)?.setWeight(Typography.BOLD)
+        }
         subTitleTextView?.setTextSize(TypedValue.COMPLEX_UNIT_PX, subTitleTextSize)
         subTitleTextView?.setTextColor(subtitleColorValue)
         if (!TextUtils.isEmpty(subTitleText)) {

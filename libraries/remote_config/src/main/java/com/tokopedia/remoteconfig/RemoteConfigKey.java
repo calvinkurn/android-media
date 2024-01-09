@@ -315,4 +315,6 @@ public class RemoteConfigKey {
     public static final String ANDROID_ENABLE_AUTO_TOPADS_WD_RECOMMENDATION = "android_enable_auto_topads_wd_recommendation";
 
     public static final String ANDROID_SALDO_ENABLE_AUTO_WD_INIT_GQL = "android_saldo_enable_auto_wd_init_gql";
+
+    public static final String ANDROID_ENABLE_NEW_CART_QUANTITY_EDITOR = "android_enable_new_quantity_editor_cart";
 }

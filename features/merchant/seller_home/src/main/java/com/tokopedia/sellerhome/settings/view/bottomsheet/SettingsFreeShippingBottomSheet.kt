@@ -12,6 +12,7 @@ import com.tokopedia.seller.menu.common.constant.SellerMenuFreeShippingUrl
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.databinding.BottomSheetSettingsFreeShippingBinding
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.di.module.SellerHomeModule
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -68,6 +69,7 @@ class SettingsFreeShippingBottomSheet : BottomSheetUnify() {
     private fun initInjector() {
         DaggerSellerHomeComponent.builder()
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .sellerHomeModule(SellerHomeModule(requireContext()))
             .build()
             .inject(this)
     }
