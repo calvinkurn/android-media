@@ -12,7 +12,11 @@ data class FeaturedShopDataModel(
         val channelModel: ChannelModel,
         val state: Int = STATE_LOADING,
         val page: Int = PAGE_HOME
-) : HomeComponentVisitable {
+) : HomeComponentVisitable, HasChannelModel {
+
+    override val model: ChannelModel
+        get() = channelModel
+
     override fun visitableId(): String = when(page) {
         PAGE_HOME -> channelModel.id
         PAGE_OS -> String.format(HASH_FORMAT, state.hashCode(),channelModel.hashCode())

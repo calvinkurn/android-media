@@ -11,7 +11,11 @@ data class FlashSaleDataModel(
         val channelModel: ChannelModel,
         val cardInteraction: Boolean,
         val isCache: Boolean = false
-): HomeComponentVisitable {
+): HomeComponentVisitable, HasChannelModel {
+
+    override val model: ChannelModel
+        get() = channelModel
+
     override fun visitableId(): String? {
         return channelModel.id
     }

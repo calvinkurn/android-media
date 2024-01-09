@@ -7,7 +7,11 @@ import com.tokopedia.home_component.model.ChannelModel
 data class MixTopDataModel(
         val channelModel: ChannelModel,
         val isCache: Boolean = false
-): HomeComponentVisitable {
+): HomeComponentVisitable, HasChannelModel {
+
+    override val model: ChannelModel
+        get() = channelModel
+
     override fun visitableId(): String? {
         return channelModel.id
     }

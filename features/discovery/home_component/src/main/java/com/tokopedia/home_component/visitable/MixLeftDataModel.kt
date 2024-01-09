@@ -9,10 +9,14 @@ import com.tokopedia.home_component.model.ChannelModel
 data class MixLeftDataModel(
         val channelModel: ChannelModel,
         val isCache: Boolean = false
-): HomeComponentVisitable,  LoadableComponent by BlocksLoadableComponent(
+): HomeComponentVisitable, HasChannelModel, LoadableComponent by BlocksLoadableComponent(
     { channelModel.channelGrids.size > 3 },
     "HomeMixLeft"
 ) {
+
+    override val model: ChannelModel
+        get() = channelModel
+
     override fun visitableId(): String? {
         return channelModel.id
     }
