@@ -6,8 +6,6 @@ import com.tokopedia.deals.DealsJsonMapper
 import com.tokopedia.deals.data.entity.DealsBrandDetail
 import com.tokopedia.deals.domain.GetBrandDetailsUseCase
 import com.tokopedia.deals.ui.brand_detail.DealsBrandDetailViewModel
-import com.tokopedia.graphql.data.model.GraphqlError
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
@@ -19,7 +17,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
-import java.lang.reflect.Type
 
 class DealsBrandDetailViewModelTest {
 
@@ -30,8 +27,6 @@ class DealsBrandDetailViewModelTest {
 
     private lateinit var viewModel: DealsBrandDetailViewModel
     private lateinit var mockResponse: DealsBrandDetail
-
-    private val mapParams = mapOf<String, String>()
 
     var getBrandDetail: GetBrandDetailsUseCase = mockk()
 
@@ -51,10 +46,6 @@ class DealsBrandDetailViewModelTest {
     @Test
     fun getbranddetail_success_shouldsuccess() {
         // given
-        val result = HashMap<Type, Any>()
-        val errors = HashMap<Type, List<GraphqlError>>()
-        val objectType = DealsBrandDetail::class.java
-        result[objectType] = mockResponse
 
         coEvery { getBrandDetail.invoke(any()) } returns mockResponse
 
@@ -71,14 +62,6 @@ class DealsBrandDetailViewModelTest {
     fun getbranddetail_error_shoulderror() {
         // given
         val message = "Error Fetch History"
-        val result = HashMap<Type, Any>()
-        val errors = HashMap<Type, List<GraphqlError>>()
-        val errorGql = GraphqlError()
-        val objectType = DealsBrandDetail::class.java
-        errorGql.message = message
-        errors[objectType] = listOf(errorGql)
-        val gqlResponseError = GraphqlResponse(result, errors, false)
-
         coEvery { getBrandDetail.invoke(any()) } throws Exception(message)
 
         // when
