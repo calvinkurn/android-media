@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
     private static Retrofit retrofit = null;
     public static final String BASE_URL_API = "https://tokopedia.atlassian.net/rest/api/3/";
-    public static final String BASE_URL_JIRA = "https://apps-staging.tokopedia.net";
+    public static final String BASE_URL_JIRA = "https://apps.tokopedia.net";
 
     public static Retrofit getClient(String baseUrl) {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
