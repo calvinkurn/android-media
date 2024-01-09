@@ -1,6 +1,5 @@
 package com.tokopedia.catalog.ui.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncDifferConfig
@@ -19,7 +18,7 @@ class CatalogListingAdapterDiffUtil(
     asyncDifferConfig: AsyncDifferConfig<CatalogComparisonProductsUiModel.CatalogComparisonUIModel>,
     var currentCatalogSelection: List<String> = listOf(),
     val listener: CatalogListingListener,
-    var isShowLoadMore:Boolean = false
+    var isShowLoadMore: Boolean = false
 ) : ListAdapter<CatalogComparisonProductsUiModel.CatalogComparisonUIModel, RecyclerView.ViewHolder>(
     asyncDifferConfig
 ) {
@@ -29,7 +28,6 @@ class CatalogListingAdapterDiffUtil(
         parent: ViewGroup,
         viewType: Int
     ): RecyclerView.ViewHolder {
-
         return if (viewType == LOAD_MORE) {
             val binding = ItemCatalogListInChangeComparisonLoadMoreBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -45,11 +43,10 @@ class CatalogListingAdapterDiffUtil(
             )
             ViewHolder(binding)
         }
-
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (isShowLoadMore && (position == itemCount-1)) {
+        return if (isShowLoadMore && (position == itemCount - 1)) {
             LOAD_MORE
         } else {
             super.getItemViewType(position)
@@ -64,9 +61,8 @@ class CatalogListingAdapterDiffUtil(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is ViewHolder){
+        if (holder is ViewHolder) {
             val itemUiModel = getItem(position)
-            Log.d("TESS",currentCatalogSelection.toString())
             val isCurrentCatalog = currentCatalogSelection.getOrNull(Int.ZERO) == itemUiModel.id
             holder.bindToView(itemUiModel, isCurrentCatalog)
         }
@@ -81,7 +77,6 @@ class CatalogListingAdapterDiffUtil(
         private val cbCatalog = itemView.cbCatalog
         private val ivCurrentCatalog = itemView.ivPinCurrentCatalog
 
-
         fun bindToView(
             itemUiModel: CatalogComparisonProductsUiModel.CatalogComparisonUIModel,
             isCurrentCatalog: Boolean
@@ -90,13 +85,15 @@ class CatalogListingAdapterDiffUtil(
             tvTitle.text = itemUiModel?.name
             tvPrice.text = itemUiModel.price
             cbCatalog.isEnabled =
-                !(currentCatalogSelection.size == (LIMIT_SELECT_PRODUCT) && !currentCatalogSelection.contains(
-                    itemUiModel.id.orEmpty()
-                ))
-            if (isCurrentCatalog){
+                !(
+                    currentCatalogSelection.size == (LIMIT_SELECT_PRODUCT) && !currentCatalogSelection.contains(
+                        itemUiModel.id.orEmpty()
+                    )
+                    )
+            if (isCurrentCatalog) {
                 ivCurrentCatalog.show()
                 cbCatalog.gone()
-            }else{
+            } else {
                 ivCurrentCatalog.gone()
                 cbCatalog.isChecked = currentCatalogSelection.contains(itemUiModel?.id.orEmpty())
                 cbCatalog.setOnClickListener {
@@ -108,9 +105,7 @@ class CatalogListingAdapterDiffUtil(
     }
 
     inner class LoadMoreViewHolder(itemView: ItemCatalogListInChangeComparisonLoadMoreBinding) :
-        RecyclerView.ViewHolder(itemView.root) {
-
-    }
+        RecyclerView.ViewHolder(itemView.root)
 }
 
 interface CatalogListingListener {
@@ -119,4 +114,3 @@ interface CatalogListingListener {
         isChecked: Boolean
     )
 }
-
