@@ -48,9 +48,11 @@ class AppUpdateVersionDialog(
                 activityRef.get()?.getString(appdownloadmanager_commonR.string.app_download_error_network_message)
             }.orEmpty()
 
+            val apkUrl = APK_URL.format(appVersionBetaInfoModel?.versionName, appVersionBetaInfoModel?.versionCode)
+
             onFailDownload(errorMessage)
 
-            FirebaseCrashlytics.getInstance().recordException(RuntimeException(reason))
+            FirebaseCrashlytics.getInstance().recordException(RuntimeException("status: $statusColumn | reason: $reason | apkUrl: $apkUrl"))
         }
 
         override suspend fun onDownloading(downloadingProgressUiModel: DownloadingProgressUiModel) {

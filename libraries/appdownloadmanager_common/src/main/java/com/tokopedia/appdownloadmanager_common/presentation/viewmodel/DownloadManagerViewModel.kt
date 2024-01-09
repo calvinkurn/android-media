@@ -49,7 +49,7 @@ class DownloadManagerViewModel @Inject constructor(
 
                 override suspend fun onFailedDownload(reason: String, statusColumn: Int) {
                     _downloadingState.emit(DownloadingState.DownloadFailed(reason, statusColumn))
-                    FirebaseCrashlytics.getInstance().recordException(RuntimeException(reason))
+                    FirebaseCrashlytics.getInstance().recordException(RuntimeException("status: $statusColumn | reason: $reason | apkUrl: $apkUrl"))
                 }
 
                 override suspend fun onDownloading(downloadingProgressUiModel: DownloadingProgressUiModel) {
