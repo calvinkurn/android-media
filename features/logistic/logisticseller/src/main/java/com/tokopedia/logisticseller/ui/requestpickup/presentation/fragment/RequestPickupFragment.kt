@@ -207,15 +207,20 @@ class RequestPickupFragment :
             setTickerShape(Ticker.SHAPE_LOOSE)
 
             val tickerParam = confirmReqPickupResponse.dataSuccess.tickerUnificationParams
+
+            val template = TargetedTickerParamModel.Template().copy(
+                contents = tickerParam.template.contents.map {
+                    TargetedTickerParamModel.Template.Content(it.key, it.values)
+                }
+            )
+            val target = tickerParam.target.map {
+                TargetedTickerParamModel.Target(it.type, it.values)
+            }
+
             val param = TargetedTickerParamModel(
-
                 page = tickerParam.page,
-
-                template = TargetedTickerParamModel.Template(
-                    contents = tickerParam.template.contents.map {
-                        TargetedTickerParamModel.Template.Content(it.key, it.values)
-                    }
-                )
+                target = target,
+                template = template
             )
 
             loadAndShow(param)
