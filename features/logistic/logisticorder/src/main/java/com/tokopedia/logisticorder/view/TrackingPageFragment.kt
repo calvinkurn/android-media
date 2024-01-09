@@ -556,11 +556,11 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
 
             val template = TargetedTickerParamModel.Template().copy(
                 contents = tickerParam.template.contents.map {
-                    TargetedTickerParamModel.Template.Content(it.key, it.values)
+                    TargetedTickerParamModel.Template.Content(it.key, it.value)
                 }
             )
             val target = tickerParam.target.map {
-                TargetedTickerParamModel.Target(it.type, it.value)
+                TargetedTickerParamModel.Target(it.type, it.values)
             }
             val param = TargetedTickerParamModel(
                 page = tickerParam.page,

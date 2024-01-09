@@ -108,7 +108,7 @@ class TrackingPageMapperNew @Inject constructor() {
                 },
                 template = TargetedTickerParamModel.Template(
                     responseTicker.template.contents.map {
-                        TargetedTickerParamModel.Template.Content(it.key, it.values)
+                        TargetedTickerParamModel.Template.Content(it.key, it.value)
                     }
                 )
 

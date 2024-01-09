@@ -85,14 +85,14 @@ data class TargetedTickerParamModel(
         @Parcelize
         data class Content(
             val key: String = "",
-            val values: String = ""
+            val value: String = ""
         ) : Parcelable
     }
 
     @Parcelize
     data class Target(
         val type: String = "",
-        val value: List<String> = listOf()
+        val values: List<String> = listOf()
     ) : Parcelable
 }
 
