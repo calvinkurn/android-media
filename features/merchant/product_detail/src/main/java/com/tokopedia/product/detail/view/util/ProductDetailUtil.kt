@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.util
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
@@ -21,6 +22,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.imagepreview.ImagePreviewActivity
@@ -30,6 +32,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyCustomTypefaceSpan
@@ -374,4 +378,25 @@ fun ViewStub.inflateWithBinding(onInflate: (View) -> Unit) {
 
 fun ViewStub.isInflated(): Boolean {
     return this.parent == null
+}
+
+internal fun Sequence<DynamicPdpDataModel>.componentDevFilter(
+    sharedPref: SharedPreferences
+): Sequence<DynamicPdpDataModel> {
+    if (!GlobalConfig.isAllowDebuggingTools()) return this
+
+    val componentValue = sharedPref.getString(
+        RawQueryKeyConstant.PDP_COMPONENT_FILTER_VALUE,
+        ""
+    ) ?: return this
+    val componentFilterOption = sharedPref.getString(
+        RawQueryKeyConstant.PDP_COMPONENT_FILTER_OPTION,
+        ""
+    ) ?: return this
+
+    return if (componentFilterOption.equals("type", true))
+        filterNot { it.type() == componentValue }
+    else if (componentFilterOption.equals("name", true))
+        filterNot { it.name() == componentValue }
+    else this
 }

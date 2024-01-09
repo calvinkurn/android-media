@@ -8,4 +8,10 @@ object RawQueryKeyConstant {
     const val NAME_LAYOUT_ID_DAGGER = "layoutIdPdp"
     const val PDP_LAYOUT_ID_SHARED_PREF_KEY = "layoutIdSharedPref"
     const val PDP_LAYOUT_ID_KEY = "layoutIdTest"
+
+    const val NAME_COMPONENT_FILTER = "componentFilter"
+    const val PDP_COMPONENT_FILTER_SHARED_PREF_KEY = "componentFilterSharedPref"
+    const val PDP_COMPONENT_FILTER_VALUE = "componentFilterValue"
+    const val PDP_COMPONENT_FILTER_CONDITION = "componentFilterCondition"
+    const val PDP_COMPONENT_FILTER_OPTION = "componentFilterOption"
 }
