@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokopedianow.annotation.domain.mapper.VisitableMapper.addAnnotations
 import com.tokopedia.tokopedianow.annotation.domain.mapper.VisitableMapper.addLoadMore
 import com.tokopedia.tokopedianow.annotation.domain.mapper.VisitableMapper.removeLoadMore
+import com.tokopedia.tokopedianow.annotation.domain.param.AnnotationType
 import com.tokopedia.tokopedianow.annotation.domain.usecase.GetAllAnnotationPageUseCase
 import com.tokopedia.tokopedianow.annotation.presentation.model.LoadMoreDataModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -48,7 +49,7 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
             val response = getAllAnnotationPageUseCase.execute(
                 categoryId = categoryId,
                 warehouses = warehouses,
-                annotationType = annotationType,
+                annotationType = AnnotationType.valueOf(annotationType),
                 pageLastId = String.EMPTY
             )
 
@@ -79,7 +80,7 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
                         val response = getAllAnnotationPageUseCase.execute(
                             categoryId = categoryId,
                             warehouses = warehouses,
-                            annotationType = annotationType,
+                            annotationType = AnnotationType.valueOf(annotationType),
                             pageLastId = needToLoadMoreData.pageLastId
                         )
 

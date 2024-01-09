@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokopedianow.annotation.domain.model.TokoNowGetAnnotationListResponse
 import com.tokopedia.tokopedianow.annotation.domain.param.AnnotationPageSource
+import com.tokopedia.tokopedianow.annotation.domain.param.AnnotationType
 import com.tokopedia.tokopedianow.annotation.domain.query.GetAllAnnotationPageQuery
 import com.tokopedia.tokopedianow.annotation.domain.query.GetAllAnnotationPageQuery.PARAM_ANNOTATION_TYPE
 import com.tokopedia.tokopedianow.annotation.domain.query.GetAllAnnotationPageQuery.PARAM_CATEGORY_ID
@@ -23,14 +24,14 @@ class GetAllAnnotationPageUseCase @Inject constructor(
     suspend fun execute(
         categoryId: String,
         warehouses: String,
-        annotationType: String,
+        annotationType: AnnotationType,
         pageLastId: String
     ): TokoNowGetAnnotationListResponse.GetAnnotationListResponse {
         graphql.apply {
             val requestParams = RequestParams().apply {
                 putString(PARAM_CATEGORY_ID, categoryId)
                 putString(PARAM_WAREHOUSES, warehouses)
-                putString(PARAM_ANNOTATION_TYPE, annotationType)
+                putString(PARAM_ANNOTATION_TYPE, annotationType.name)
                 putString(PARAM_PAGE_LAST_ID, pageLastId)
                 putString(PARAM_PAGE_SOURCE, AnnotationPageSource.ALL_ANNOTATION.name)
             }.parameters

@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.annotation
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.tokopedianow.annotation.domain.model.TokoNowGetAnnotationListResponse
+import com.tokopedia.tokopedianow.annotation.domain.param.AnnotationType
 import com.tokopedia.tokopedianow.annotation.domain.usecase.GetAllAnnotationPageUseCase
 import com.tokopedia.tokopedianow.annotation.presentation.viewmodel.TokoNowAllAnnotationViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -42,7 +43,7 @@ abstract class TokoNowAllAnnotationViewModelTestFixture {
             getAllAnnotationPageUseCase.execute(
                 categoryId = categoryId,
                 warehouses = warehouses,
-                annotationType = annotationType,
+                annotationType = AnnotationType.valueOf(annotationType),
                 pageLastId = pageLastId
             )
         } returns response
@@ -56,7 +57,7 @@ abstract class TokoNowAllAnnotationViewModelTestFixture {
             getAllAnnotationPageUseCase.execute(
                 categoryId = categoryId,
                 warehouses = warehouses,
-                annotationType = annotationType,
+                annotationType = AnnotationType.valueOf(annotationType),
                 pageLastId = pageLastId
             )
         } throws throwable
@@ -70,7 +71,7 @@ abstract class TokoNowAllAnnotationViewModelTestFixture {
             getAllAnnotationPageUseCase.execute(
                 categoryId = categoryId,
                 warehouses = warehouses,
-                annotationType = annotationType,
+                annotationType = AnnotationType.valueOf(annotationType),
                 pageLastId = pageLastId
             )
         }
