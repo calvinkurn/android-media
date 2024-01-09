@@ -99,6 +99,7 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
                           id
                           name
                           type
+                          badge_url
                           thumbnail_url
                           app_link
                         }
