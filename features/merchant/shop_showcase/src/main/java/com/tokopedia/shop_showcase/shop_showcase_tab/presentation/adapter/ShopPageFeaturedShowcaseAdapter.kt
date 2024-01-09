@@ -3,7 +3,6 @@ package com.tokopedia.shop_showcase.shop_showcase_tab.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.shop_showcase_tab.presentation.adapter.viewholder.ShopPageFeaturedShowcaseListener
 import com.tokopedia.shop_showcase.shop_showcase_tab.presentation.adapter.viewholder.ShopPageFeaturedShowcaseViewHolder
@@ -14,7 +13,6 @@ import com.tokopedia.shop_showcase.shop_showcase_tab.presentation.model.Featured
  */
 class ShopPageFeaturedShowcaseAdapter(
     private val shouldForceToLightMode: Boolean,
-    private val colorSchema: ShopPageColorSchema,
     private val shopPageFeaturedShowcaseListener: ShopPageFeaturedShowcaseListener
 ) : RecyclerView.Adapter<ShopPageFeaturedShowcaseViewHolder>() {
 
@@ -31,8 +29,7 @@ class ShopPageFeaturedShowcaseAdapter(
                 false
             ),
             listener = shopPageFeaturedShowcaseListener,
-            shouldForceToLightMode = shouldForceToLightMode,
-            colorSchema = colorSchema
+            shouldForceToLightMode = shouldForceToLightMode
         )
     }
 

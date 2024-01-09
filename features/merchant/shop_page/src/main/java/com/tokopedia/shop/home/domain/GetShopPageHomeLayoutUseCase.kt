@@ -66,6 +66,7 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
                       videoUrl
                       appLink
                       webLink
+                      warehouseID
                     }
                     ... on EtalaseWidget {
                       imageUrl
@@ -95,6 +96,7 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
                           title
                           url
                       }
+                      warehouseID
                     }
                     ... on CampaignWidget {
                       campaignID
@@ -143,6 +145,7 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
                           title
                           url
                         }
+                        warehouseID
                       }
                     }
                   }

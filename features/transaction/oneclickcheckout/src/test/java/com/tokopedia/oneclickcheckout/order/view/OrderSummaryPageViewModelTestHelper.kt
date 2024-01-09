@@ -14,6 +14,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.oneclickcheckout.order.view.mapper.PrescriptionMapper
+import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderData
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
@@ -22,8 +23,10 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfilePayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse
@@ -294,5 +297,12 @@ class OrderSummaryPageViewModelTestHelper {
         isError = false,
         frontEndValidation = imageUploadDataModel.frontEndValidation,
         isOcc = true
+    )
+
+    val orderPromo = OrderPromo(
+        state = OccButtonState.NORMAL,
+        entryPointInfo = PromoEntryPointInfo(
+            isSuccess = true
+        )
     )
 }

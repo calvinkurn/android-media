@@ -6223,10 +6223,6 @@ open class DynamicProductDetailFragment :
         identifier: SocialProofUiModel.Identifier,
         trackData: ComponentTrackDataModel?
     ) {
-        openFtInstallmentBottomSheet(
-            viewModel.p2Data.value?.productFinancingCalculationData
-                ?: FtInstallmentCalculationDataResponse()
-        )
         when (identifier) {
             SocialProofUiModel.Identifier.Talk -> socialProofTalkTracking(trackData = trackData)
             SocialProofUiModel.Identifier.Media -> socialProofMediaTracking(trackData = trackData)

@@ -25,6 +25,13 @@ import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListR
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentData
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOption
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentTicker
+import com.tokopedia.oneclickcheckout.order.data.payment.AdditionalInfoData
+import com.tokopedia.oneclickcheckout.order.data.payment.BenefitSummaryInfoData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartDetail
+import com.tokopedia.oneclickcheckout.order.data.payment.PaymentData
+import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
+import com.tokopedia.oneclickcheckout.order.data.payment.PromoDetail
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccCartRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
@@ -61,6 +68,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
 import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
+import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -1158,7 +1166,16 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
         orderSummaryPageViewModel.orderCart = helper.orderData.cart
-        orderSummaryPageViewModel.orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
         val occPrompt = OccPrompt()
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns occPrompt
 
@@ -1329,6 +1346,16 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 1000, shipperProductId = 1, serviceName = "service")
         val additionalData = OrderPaymentCreditCardAdditionalData(profileCode = "TKPD_DEFAULT", totalProductPrice = "52000")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(isAfpb = true, additionalData = additionalData, selectedTerm = OrderPaymentInstallmentTerm()))
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         val creditCardTenorListData = CreditCardTenorListData(
             tenorList = listOf(
@@ -1343,7 +1370,16 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 0.0,
                 "TKPD_DEFAULT",
                 0.0,
-                listOf(CartDetailsItem(1, 11000.0))
+                listOf(CartDetailsItem(1, 11000.0)),
+                detailData = PaymentRequest(
+                    payment = PaymentData(),
+                    cartDetail = CartDetail(cart = CartData(data = emptyList())),
+                    promoDetail = PromoDetail(
+                        benefitSummaryInfo = BenefitSummaryInfoData(),
+                        voucherOrders = emptyList(),
+                        additionalInfo = AdditionalInfoData()
+                    )
+                )
             )
         )
 
@@ -1381,6 +1417,16 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 1000, shipperProductId = 1, serviceName = "service")
         val additionalData = OrderPaymentCreditCardAdditionalData(profileCode = "TKPD_DEFAULT", totalProductPrice = "52000")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(isAfpb = true, additionalData = additionalData, selectedTerm = OrderPaymentInstallmentTerm()))
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         val creditCardTenorListData = CreditCardTenorListData(errorMsg = "Invalid Siggy(00)")
         val ccTenorListRequest = mapOf(
@@ -1391,7 +1437,16 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 0.0,
                 "TKPD_DEFAULT",
                 0.0,
-                listOf(CartDetailsItem(1, 11000.0))
+                listOf(CartDetailsItem(1, 11000.0)),
+                detailData = PaymentRequest(
+                    payment = PaymentData(),
+                    cartDetail = CartDetail(cart = CartData(data = emptyList())),
+                    promoDetail = PromoDetail(
+                        benefitSummaryInfo = BenefitSummaryInfoData(),
+                        voucherOrders = emptyList(),
+                        additionalInfo = AdditionalInfoData()
+                    )
+                )
             )
         )
 
@@ -1419,6 +1474,16 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 1000, shipperProductId = 1, serviceName = "service")
         val additionalData = OrderPaymentCreditCardAdditionalData(profileCode = "TKPD_DEFAULT", totalProductPrice = "52000")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(isAfpb = true, additionalData = additionalData, selectedTerm = OrderPaymentInstallmentTerm()))
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         every { userSessionInterface.userId } returns "123"
         coEvery { creditCardTenorListUseCase.executeSuspend(any()) } throws Exception()
@@ -1443,6 +1508,16 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.orderShipment.value = OrderShipment(shippingPrice = 1000, shipperProductId = 1, serviceName = "service")
         val additionalData = OrderPaymentCreditCardAdditionalData(profileCode = "TKPD_DEFAULT", totalProductPrice = "52000")
         orderSummaryPageViewModel.orderPayment.value = OrderPayment(isEnable = true, creditCard = OrderPaymentCreditCard(isAfpb = true, additionalData = additionalData))
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         val creditCardTenorListData = CreditCardTenorListData(
             tenorList = listOf(
@@ -1457,7 +1532,16 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 0.0,
                 "TKPD_DEFAULT",
                 0.0,
-                listOf(CartDetailsItem(1, 11000.0))
+                listOf(CartDetailsItem(1, 11000.0)),
+                detailData = PaymentRequest(
+                    payment = PaymentData(),
+                    cartDetail = CartDetail(cart = CartData(data = emptyList())),
+                    promoDetail = PromoDetail(
+                        benefitSummaryInfo = BenefitSummaryInfoData(),
+                        voucherOrders = emptyList(),
+                        additionalInfo = AdditionalInfoData()
+                    )
+                )
             )
         )
 
@@ -1490,6 +1574,16 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 2)
+            )
+        )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
             )
         )
 
@@ -1555,6 +1649,16 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = 3))
             )
         )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         val option1 = GoCicilInstallmentOption(
             isActive = true,
@@ -1616,6 +1720,16 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(installmentTerm = 3))
+            )
+        )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
             )
         )
 
@@ -1681,6 +1795,16 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 0)
+            )
+        )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
             )
         )
 
@@ -1749,6 +1873,16 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 0)
             )
         )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         val option1 = GoCicilInstallmentOption(
             isActive = true,
@@ -1815,6 +1949,16 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 0)
             )
         )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
+            )
+        )
 
         val option1 = GoCicilInstallmentOption(
             isActive = false,
@@ -1879,6 +2023,16 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             walletData = OrderPaymentWalletAdditionalData(
                 walletType = 4,
                 goCicilData = OrderPaymentGoCicilData(selectedTenure = 2, selectedTerm = OrderPaymentGoCicilTerms(isActive = true), availableTerms = listOf(OrderPaymentGoCicilTerms(isActive = true)))
+            )
+        )
+        orderSummaryPageViewModel.orderPromo.value = OrderPromo(
+            state = OccButtonState.NORMAL,
+            entryPointInfo = PromoEntryPointInfo(
+                isSuccess = true,
+                statusCode = "200",
+                messages = listOf("message"),
+                color = PromoEntryPointInfo.COLOR_GREEN,
+                isClickable = true
             )
         )
 

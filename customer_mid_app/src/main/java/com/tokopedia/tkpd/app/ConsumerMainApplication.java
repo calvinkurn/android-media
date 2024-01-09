@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 
 import com.newrelic.agent.android.FeatureFlag;
 import com.scp.auth.GotoSdk;
@@ -35,14 +36,21 @@ import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.FirebaseRemoteAppForceUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
+import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
+import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity;
 import com.tokopedia.abstraction.base.view.model.InAppCallback;
 import com.tokopedia.abstraction.newrelic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.mapper.model.EmbraceConfig;
+import com.tokopedia.analytics.performance.fpi.FrameMetricsMonitoring;
+import com.tokopedia.analytics.performance.perf.performanceTracing.config.mapper.ConfigMapper;
+import com.tokopedia.analytics.performance.perf.performanceTracing.trace.Error;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.analyticsdebugger.debugger.ServerLogLogger;
+import com.tokopedia.analyticsdebugger.debugger.ServerLogLoggerInterface;
 import com.tokopedia.applink.AppUtil;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
@@ -74,6 +82,7 @@ import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
 import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.repository.InternalLoggerInterface;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.loader.internal.MediaLoaderActivityLifecycle;
 import com.tokopedia.common.network.cdn.MonitoringActivityLifecycle;
@@ -121,7 +130,9 @@ import kotlin.jvm.functions.Function2;
 import timber.log.Timber;
 
 import com.tokopedia.developer_options.notification.DevOptNotificationManager;
-
+import com.tokopedia.analytics.performance.perf.performanceTracing.AppPerformanceTrace;
+import com.tokopedia.analytics.performance.perf.performanceTracing.config.DebugAppPerformanceConfig;
+import com.tokopedia.analytics.performance.perf.performanceTracing.config.DefaultAppPerformanceConfig;
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -178,7 +189,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                         @NonNull
                         @Override
                         public String getToken() {
-                            return  getString(com.tokopedia.keys.R.string.thanos_token_key);
+                            return getString(com.tokopedia.keys.R.string.thanos_token_key);
                         }
                     })
                     .setLocalRootPath("tracker")
@@ -210,14 +221,88 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
         showDevOptNotification();
         initGotoSDK();
-        if(RemoteConfigInstance.getInstance().getABTestPlatform().getBoolean(ENABLE_PUSH_TOKEN_DELETION_WORKER)){
+        if (RemoteConfigInstance.getInstance().getABTestPlatform().getBoolean(ENABLE_PUSH_TOKEN_DELETION_WORKER)) {
             PushTokenRefreshUtil pushTokenRefreshUtil = new PushTokenRefreshUtil();
             pushTokenRefreshUtil.scheduleWorker(context.getApplicationContext(), remoteConfig.getLong(PUSH_DELETION_TIME_GAP));
         }
+        initializeAppPerformanceTrace();
     }
 
     private void initGotoSDK() {
         GotoSdk.init(this);
+    }
+    
+    private void initializeAppPerformanceTrace() {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            AppPerformanceTrace.Companion.init(
+                    this,
+                    new DebugAppPerformanceConfig(),
+                    new Function1<Activity, Unit>() {
+                        @Override
+                        public Unit invoke(Activity activity) {
+                            if (activity != null && activity instanceof TouchListenerActivity) {
+                                ((TouchListenerActivity) activity).addListener(
+                                        new DispatchTouchListener() {
+                                            @Override
+                                            public void onDispatchTouch(MotionEvent ev) {
+                                                AppPerformanceTrace.Companion.cancelPerformanceTracing(
+                                                        new Error("err: User Touch. Performance trace cancelled"),
+                                                        activity
+                                                );
+                                            }
+                                        }
+                                );
+                            }
+                            if (FrameMetricsMonitoring.Companion.getPerfWindow() != null) {
+                                FrameMetricsMonitoring.Companion.getPerfWindow().updatePerformanceInfo();
+                            }
+                            return null;
+                        }
+                    },
+            new Function0<Unit>() {
+                        @Override
+                        public Unit invoke() {
+                            if (FrameMetricsMonitoring.Companion.getPerfWindow() != null) {
+                                FrameMetricsMonitoring.Companion.getPerfWindow().updatePerformanceInfo();
+                            }
+                            return null;
+                        }
+                    }
+            );
+        } else if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PERFORMANCE_TRACE_V2, true)) {
+            ConfigMapper.INSTANCE.updatePerfConfig(
+                    remoteConfig.getString(RemoteConfigKey.PERFORMANCE_TRACE_CONFIG, "")
+            );
+            AppPerformanceTrace.Companion.init(
+                    this,
+                    new DefaultAppPerformanceConfig(),
+                    new Function1<Activity, Unit>() {
+                        @Override
+                        public Unit invoke(Activity activity) {
+                            if (activity != null && activity instanceof TouchListenerActivity) {
+                                ((TouchListenerActivity) activity).addListener(
+                                        new DispatchTouchListener() {
+                                            @Override
+                                            public void onDispatchTouch(MotionEvent ev) {
+                                                AppPerformanceTrace.Companion.cancelPerformanceTracing(
+                                                        new Error("err: User Touch. Performance trace cancelled"),
+                                                        activity
+                                                );
+                                            }
+                                        }
+                                );
+                            }
+                            return null;
+                        }
+                    },
+                    new Function0<Unit>() {
+                        @Override
+                        public Unit invoke() {
+                            return null;
+                        }
+                    }
+            );
+        }
     }
 
     private void initializationNewRelic() {
@@ -433,7 +518,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     /**
      * cannot reference BuildConfig of an app.
-     *
      */
     @NonNull
     public abstract String versionName();
@@ -494,6 +578,13 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     private void initLogManager() {
         LogManager.init(ConsumerMainApplication.this, new LoggerProxy() {
+            @NonNull
+            @Override
+            public InternalLoggerInterface getInternalLogger() {
+                ServerLogLoggerInterface logger = ServerLogLogger.getInstance(ConsumerMainApplication.this);
+                return logger::putServerLoggerEvent;
+            }
+
             final AESEncryptorECB encryptor = new AESEncryptorECB();
             final SecretKey secretKey = encryptor.generateKey(NewRelicConstants.ENCRYPTION_KEY);
 
