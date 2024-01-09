@@ -108,7 +108,7 @@ class CampaignRibbon @JvmOverloads constructor(
      * UI State for Campign Compose
      */
     private val _campaignTypeState = MutableStateFlow<CampaignType>(CampaignType.None)
-    val campaignTypeState get() = _campaignTypeState.asStateFlow()
+    private val campaignTypeState get() = _campaignTypeState.asStateFlow()
 
     /**
      * data tracker
@@ -519,7 +519,6 @@ class CampaignRibbon @JvmOverloads constructor(
             onCampaignEnded.invoke(data)
         }
 
-        // renderCampaignRibbonCompose(type = onGoing)
         _campaignTypeState.value = onGoing
     }
 
@@ -549,7 +548,7 @@ class CampaignRibbon @JvmOverloads constructor(
                 backgroundColorString = thematic.background
             )
         }
-        // renderCampaignRibbonCompose(type = type)
+
         _campaignTypeState.value = type
     }
 
@@ -593,7 +592,7 @@ class CampaignRibbon @JvmOverloads constructor(
                 onRemindMeClick.invoke(data, trackDataModel ?: ComponentTrackDataModel())
             }
         )
-        // renderCampaignRibbonCompose(type = type)
+
         _campaignTypeState.value = type
     }
 
