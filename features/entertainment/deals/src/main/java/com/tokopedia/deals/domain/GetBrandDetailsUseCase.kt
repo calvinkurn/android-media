@@ -3,8 +3,8 @@ package com.tokopedia.deals.domain
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.deals.data.DealsNearestLocationParam
+import com.tokopedia.deals.data.entity.DealsBrandDetail
 import com.tokopedia.deals.ui.brand_detail.DealsBrandDetailViewModel
-import com.tokopedia.deals.ui.brand_detail.data.DealsBrandDetail
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase

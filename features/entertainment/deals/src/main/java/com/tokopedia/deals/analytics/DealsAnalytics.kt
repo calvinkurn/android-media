@@ -58,8 +58,8 @@ import com.tokopedia.deals.common.ui.dataview.CuratedProductCategoryDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.common.ui.dataview.DealsChipsDataView
 import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
-import com.tokopedia.deals.ui.brand_detail.data.Category
-import com.tokopedia.deals.ui.brand_detail.data.Product
+import com.tokopedia.deals.data.entity.Category
+import com.tokopedia.deals.data.entity.Product
 import com.tokopedia.deals.ui.home.ui.dataview.BannersDataView
 import com.tokopedia.deals.ui.home.ui.dataview.CuratedCategoryDataView
 import com.tokopedia.deals.ui.home.ui.dataview.VoucherPlaceCardDataView
@@ -1068,8 +1068,13 @@ class DealsAnalytics @Inject constructor(
             DataLayer.mapOf(
                 DealsAnalyticsConstants.ACTION_FIELD,
                 DataLayer.mapOf(
-                    DealsAnalyticsConstants.Item.list, String.format(
-                        DealsAnalyticsConstants.Label.SEARCH_RESULT_BRAND_CLICK, position.toString(), product.displayName)),
+                    DealsAnalyticsConstants.Item.list,
+                    String.format(
+                        DealsAnalyticsConstants.Label.SEARCH_RESULT_BRAND_CLICK,
+                        position.toString(),
+                        product.displayName
+                    )
+                ),
                 DealsAnalyticsConstants.PRODUCTS,
                 getECommerceDataProductBrandDetailClick(brandName, product, position)
             )

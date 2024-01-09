@@ -1,10 +1,10 @@
-package com.tokopedia.deals.ui.brand_detail.util
+package com.tokopedia.deals.utils
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import com.tokopedia.deals.R
-import com.tokopedia.deals.ui.brand_detail.data.Brand
+import com.tokopedia.deals.data.entity.Brand
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback

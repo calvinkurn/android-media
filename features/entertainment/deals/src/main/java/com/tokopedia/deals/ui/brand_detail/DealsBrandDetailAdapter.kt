@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.deals.R
+import com.tokopedia.deals.data.entity.Product
 import com.tokopedia.deals.databinding.ItemDealsBrandDetailBinding
-import com.tokopedia.deals.ui.brand_detail.data.Product
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -17,9 +17,11 @@ class DealsBrandDetailAdapter(private val callback: DealsBrandDetailCallback) : 
 
     var listProduct = emptyList<Product>()
 
-    inner class DealsBrandDetailViewHolder(private val callback: DealsBrandDetailCallback,
-                                           private val binding: ItemDealsBrandDetailBinding) :
-            RecyclerView.ViewHolder(binding.root) {
+    inner class DealsBrandDetailViewHolder(
+        private val callback: DealsBrandDetailCallback,
+        private val binding: ItemDealsBrandDetailBinding
+    ) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(product: Product) {
             with(binding) {
                 imgItemBrandDetail.loadImage(product.imageApp)
@@ -28,11 +30,14 @@ class DealsBrandDetailAdapter(private val callback: DealsBrandDetailCallback) : 
                 tgItemPriceBrandDetail.text = product.price
                 if (product.savingPercentage.isNotEmpty() && !product.savingPercentage.startsWith(
                         ZERO_PERCENT
-                    )) {
+                    )
+                ) {
                     labelItemPercentageBrandDetail.text = product.savingPercentage
                     tgSlashPriceBrandDetail.apply {
-                        val rupiahResult = resources.getString(R.string.deals_brand_detail_item_slash_price,
-                                CurrencyFormatHelper.convertToRupiah(product.mrp.toString()))
+                        val rupiahResult = resources.getString(
+                            R.string.deals_brand_detail_item_slash_price,
+                            CurrencyFormatHelper.convertToRupiah(product.mrp.toString())
+                        )
                         text = rupiahResult
                         paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     }
