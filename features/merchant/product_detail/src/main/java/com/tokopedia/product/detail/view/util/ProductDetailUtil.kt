@@ -44,7 +44,6 @@ import com.tokopedia.usecase.coroutines.Success
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-
 object ProductDetailUtil {
 
     const val HOURS_IN_A_DAY = 24
@@ -74,8 +73,11 @@ fun getIntentImagePreviewWithoutDownloadButton(context: Context, imageUrl: Array
     return ImagePreviewActivity.getCallingIntent(context = context, imageUris = imageUrl, disableDownloadButton = true)
 }
 
-fun String.boldOrLinkText(isLink: Boolean, context: Context,
-                          vararg textToBold: Pair<String, () -> Unit>): SpannableString {
+fun String.boldOrLinkText(
+    isLink: Boolean,
+    context: Context,
+    vararg textToBold: Pair<String, () -> Unit>
+): SpannableString {
     val builder = SpannableString(this)
 
     if (this.isNotEmpty() || this.isNotBlank()) {
@@ -95,18 +97,21 @@ fun String.boldOrLinkText(isLink: Boolean, context: Context,
             } else {
                 builder.setSpan(StyleSpan(Typeface.BOLD), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 builder.setSpan(CustomTypeSpan(typographyBoldTypeFace), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                builder.setSpan(object : ClickableSpan() {
-                    override fun onClick(widget: View) {
-                        it.second.invoke()
-                    }
+                builder.setSpan(
+                    object : ClickableSpan() {
+                        override fun onClick(widget: View) {
+                            it.second.invoke()
+                        }
 
-                    override fun updateDrawState(ds: TextPaint) {
-                        super.updateDrawState(ds)
-                        ds.isUnderlineText = false
-                        val textColor = if (isLink) com.tokopedia.unifyprinciples.R.color.Unify_GN500 else com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
-                        ds.color = MethodChecker.getColor(context, textColor)
-                    }
-                }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        override fun updateDrawState(ds: TextPaint) {
+                            super.updateDrawState(ds)
+                            ds.isUnderlineText = false
+                            val textColor = if (isLink) com.tokopedia.unifyprinciples.R.color.Unify_GN500 else com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+                            ds.color = MethodChecker.getColor(context, textColor)
+                        }
+                    },
+                    startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
             }
         }
     }
@@ -216,8 +221,11 @@ internal fun String.getRelativeDate(context: Context): String {
         context.getString(R.string.pdp_shop_online_hours_ago, diff / hourDivider)
     } else {
         val minutes = diff / minuteDivider
-        if (minutes in 0..ProductDetailUtil.LAST_ONLINE_MINUTES_RANGE_END) context.getString(R.string.pdp_shop_online) else
+        if (minutes in 0..ProductDetailUtil.LAST_ONLINE_MINUTES_RANGE_END) {
+            context.getString(R.string.pdp_shop_online)
+        } else {
             context.getString(R.string.pdp_shop_online_minute_ago, minutes)
+        }
     }
 }
 
@@ -297,8 +305,11 @@ internal fun View?.animateExpand(duration: Long = 200) = this?.run {
     show()
     val animation = object : Animation() {
         override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
-            layoutParams.height = if (interpolatedTime == 1f) ConstraintLayout.LayoutParams.WRAP_CONTENT
-            else (targetHeight * interpolatedTime).toInt()
+            layoutParams.height = if (interpolatedTime == 1f) {
+                ConstraintLayout.LayoutParams.WRAP_CONTENT
+            } else {
+                (targetHeight * interpolatedTime).toInt()
+            }
             alpha = interpolatedTime
             requestLayout()
         }
@@ -380,9 +391,9 @@ fun ViewStub.isInflated(): Boolean {
     return this.parent == null
 }
 
-internal fun Sequence<DynamicPdpDataModel>.componentDevFilter(
+internal fun List<DynamicPdpDataModel>.componentDevFilter(
     sharedPref: SharedPreferences
-): Sequence<DynamicPdpDataModel> {
+): List<DynamicPdpDataModel> {
     if (!GlobalConfig.isAllowDebuggingTools()) return this
 
     val componentValue = sharedPref.getString(
@@ -394,9 +405,15 @@ internal fun Sequence<DynamicPdpDataModel>.componentDevFilter(
         ""
     ) ?: return this
 
-    return if (componentFilterOption.equals("type", true))
-        filterNot { it.type() == componentValue }
-    else if (componentFilterOption.equals("name", true))
-        filterNot { it.name() == componentValue }
-    else this
+    val multiComponent = componentValue.split(",").map {
+        it.trim()
+    }
+
+    return if (componentFilterOption.equals("type", true)) {
+        filter { it.type() !in multiComponent }
+    } else if (componentFilterOption.equals("name", true)) {
+        filter { it.name() !in multiComponent }
+    } else {
+        this
+    }
 }
