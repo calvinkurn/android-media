@@ -11,7 +11,7 @@ data class FeedbackFormResponse(
 
 data class Data(
         @SerializedName("feedbackID")
-        var feedbackID: Int = 0,
+        var feedbackID: Long = 0,
         @SerializedName("message")
         var message: String = ""
 )
