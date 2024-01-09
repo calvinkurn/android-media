@@ -166,9 +166,9 @@ class AppUpdateVersionDialog(
             Toaster.build(
                 it,
                 message,
-                Toaster.LENGTH_SHORT,
+                Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
-                actionText = activityRef.get()?.getString(appdownloadmanager_commonR.string.app_download_try_again).orEmpty()
+                actionText = activityRef.get()?.getString(appdownloadmanager_commonR.string.update_app_version_toaster_oke).orEmpty()
             ).show()
         }
     }
