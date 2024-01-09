@@ -37,7 +37,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -54,7 +53,6 @@ import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.uimodel.DetailModel
 import com.tokopedia.logisticorder.uimodel.LastDriverModel
 import com.tokopedia.logisticorder.uimodel.ProofModel
-import com.tokopedia.logisticorder.uimodel.TickerUnificationTargets
 import com.tokopedia.logisticorder.uimodel.TippingModel
 import com.tokopedia.logisticorder.uimodel.TrackHistoryModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
@@ -70,15 +68,17 @@ import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.NestImageType
+import com.tokopedia.nest.components.ticker.NestTicker
+import com.tokopedia.nest.components.ticker.NestTickerData
+import com.tokopedia.nest.components.ticker.TickerType
+import com.tokopedia.nest.components.ticker.TickerVariant
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.nest.principles.utils.toAnnotatedString
-import com.tokopedia.targetedticker.domain.TargetedTickerPage
-import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
-import com.tokopedia.targetedticker.ui.TargetedTickerWidget
+import com.tokopedia.targetedticker.domain.TargetedTickerHelper.toTickerData
+import com.tokopedia.targetedticker.domain.TickerModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.utils.date.DateUtil
 import kotlinx.coroutines.delay
 import com.tokopedia.logisticorder.R as logisticorderR
@@ -127,7 +127,7 @@ fun TrackingPageScreen(
             TrackingDetail(state, copyShippingRefNumber, seeEtaChangesInfo)
             DriverWidget(state.trackingData, callDriver, openTippingInfo, onClickTippingButton)
             ShippingStatusSection(state.trackingData?.trackOrder?.status)
-            TargetedTicker(state.trackingData?.page?.tickerUnificationTargets)
+            TargetedTicker(state.tickerData, openWebview)
             TrackingHistory(state.trackingData?.trackOrder, seeProofOfDelivery)
             LiveTrackingButton(state.trackingData?.trackOrder?.detail?.trackingUrl, openWebview)
             FindNewDriverSection(state.retryAvailability, onEvent)
@@ -136,21 +136,26 @@ fun TrackingPageScreen(
 }
 
 @Composable
-private fun TargetedTicker(tickerUnificationTargets: List<TickerUnificationTargets>?) {
-    AndroidView(factory = { context ->
-        TargetedTickerWidget(context)
-    }, update = { targetedTicker ->
-            if (!tickerUnificationTargets.isNullOrEmpty()) {
-                val param = TargetedTickerParamModel(
-                    page = TargetedTickerPage.TRACKING_PAGE,
-                    targets = tickerUnificationTargets.map {
-                        TargetedTickerParamModel.Target(it.type, it.values)
-                    }
-                )
-                targetedTicker.setTickerShape(Ticker.SHAPE_LOOSE)
-                targetedTicker.loadAndShow(param)
-            }
-        })
+private fun TargetedTicker(tickerData: TickerModel?, openWebview: (url: String) -> Unit) {
+    if (tickerData?.item?.isNotEmpty() == true) {
+        val model = tickerData.toTickerData().map {
+            NestTickerData(
+                tickerTitle = it.title.orEmpty(),
+                tickerDescription = HtmlLinkHelper(
+                    LocalContext.current,
+                    it.description
+                ).spannedString?.toAnnotatedString() ?: "",
+                tickerVariant = TickerVariant.LOOSE,
+                tickerType = it.type.toTickerType
+            )
+        }
+        NestTicker(
+            modifier = Modifier.padding(horizontal = 20.dp),
+            ticker = model
+        ) { spannedRange ->
+            if (spannedRange.tag == "url") openWebview(spannedRange.item)
+        }
+    }
 }
 
 @Composable
@@ -812,6 +817,14 @@ fun TrackingDetailsItem(
     }
 }
 
+private val Int.toTickerType: TickerType
+    get() {
+        return when (this) {
+            1 -> TickerType.ERROR
+            3 -> TickerType.WARNING
+            else -> TickerType.ANNOUNCEMENT
+        }
+    }
 private val TrackOrderModel.emptyTrackingTitle: String
     @Composable get() {
         return if (invalid) {

@@ -5,11 +5,16 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logisticorder.mapper.TrackingPageMapperNew
+import com.tokopedia.logisticorder.uimodel.TickerUnificationTargets
 import com.tokopedia.logisticorder.uimodel.TrackingPageEvent
 import com.tokopedia.logisticorder.uimodel.TrackingPageState
 import com.tokopedia.logisticorder.usecase.GetTrackingUseCase
 import com.tokopedia.logisticorder.usecase.SetRetryAvailabilityUseCase
 import com.tokopedia.logisticorder.usecase.SetRetryBookingUseCase
+import com.tokopedia.targetedticker.domain.GetTargetedTickerUseCase
+import com.tokopedia.targetedticker.domain.TargetedTickerMapper
+import com.tokopedia.targetedticker.domain.TargetedTickerPage
+import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,6 +27,7 @@ class TrackingPageComposeViewModel @Inject constructor(
     private val trackingUseCase: GetTrackingUseCase,
     private val setRetryBookingUseCase: SetRetryBookingUseCase,
     private val setRetryAvailabilityUseCase: SetRetryAvailabilityUseCase,
+    private val targetedTickerUseCase: GetTargetedTickerUseCase,
     private val mapper: TrackingPageMapperNew
 ) : BaseViewModel(dispatcher.main) {
 
@@ -85,6 +91,9 @@ class TrackingPageComposeViewModel @Inject constructor(
                     orderId,
                     trackingUrlFromOrder
                 )
+                _uiState.update {
+                    it.copy(isLoading = false, trackingData = uiModel)
+                }
                 if ((!trackingUrl.isNullOrEmpty()) && caller.equals(
                         "seller",
                         ignoreCase = true
@@ -92,9 +101,7 @@ class TrackingPageComposeViewModel @Inject constructor(
                 ) {
                     retryAvailability(orderId)
                 }
-                _uiState.update {
-                    it.copy(isLoading = false, trackingData = uiModel)
-                }
+                getTickerData(uiModel.page.tickerUnificationTargets)
             },
             onError = { e ->
                 _uiState.update {
@@ -102,6 +109,23 @@ class TrackingPageComposeViewModel @Inject constructor(
                 }
             }
         )
+    }
+
+    private fun getTickerData(tickerUnificationTargets: List<TickerUnificationTargets>) {
+        launchCatchError(block = {
+            val param = TargetedTickerParamModel(
+                page = TargetedTickerPage.TRACKING_PAGE,
+                targets = tickerUnificationTargets.map {
+                    TargetedTickerParamModel.Target(it.type, it.values)
+                }
+            )
+            val response = targetedTickerUseCase(param)
+            val model =
+                TargetedTickerMapper.convertTargetedTickerToUiModel(response.getTargetedTickerData)
+            _uiState.update {
+                it.copy(tickerData = model)
+            }
+        }, onError = {})
     }
 
     private fun retryBooking(orderId: String) {

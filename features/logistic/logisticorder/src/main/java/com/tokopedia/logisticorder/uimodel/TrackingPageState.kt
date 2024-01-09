@@ -2,6 +2,7 @@ package com.tokopedia.logisticorder.uimodel
 
 import com.tokopedia.logisticorder.usecase.entity.RetryAvailabilityResponse
 import com.tokopedia.logisticorder.usecase.entity.RetryBookingResponse
+import com.tokopedia.targetedticker.domain.TickerModel
 
 sealed interface TrackingPageEvent {
     data class LoadTrackingData(
@@ -23,5 +24,6 @@ data class TrackingPageState(
     val trackingData: TrackingDataModel? = null,
     val retryBooking: RetryBookingResponse? = null,
     val retryAvailability: RetryAvailabilityResponse? = null,
+    val tickerData: TickerModel? = null,
     val error: Throwable? = null
 )
