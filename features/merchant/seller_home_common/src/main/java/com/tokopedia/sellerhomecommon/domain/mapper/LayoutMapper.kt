@@ -734,13 +734,12 @@ class LayoutMapper @Inject constructor(
         val selectedIndex = indexOfFirst { it.value == selectedSort }
         val shouldUpdateFilter = selectedIndex > Int.ZERO // This means either the filter is not found or already at the first index
         return if (shouldUpdateFilter) {
-            val mutableFilters = this.toMutableList()
-            val selectedFilter = mutableFilters.getOrNull(selectedIndex)
-            selectedFilter?.let {
-                mutableFilters.remove(it)
-                mutableFilters.add(Int.ZERO, it)
+            val mappedFilters = this.map {
+                it.copy(
+                    isSelected = it.value == selectedSort
+                )
             }
-            return mutableFilters
+            return mappedFilters
         } else {
             this
         }
