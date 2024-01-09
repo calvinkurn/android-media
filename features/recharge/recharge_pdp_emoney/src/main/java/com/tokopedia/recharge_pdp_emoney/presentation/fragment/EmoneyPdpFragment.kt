@@ -43,6 +43,8 @@ import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.common_digital.common.constant.EmoneyConstant.MAX_NON_TAPCASH
+import com.tokopedia.common_digital.common.constant.EmoneyConstant.MAX_TAPCASH
 import com.tokopedia.common_digital.common.presentation.bottomsheet.DigitalDppoConsentBottomSheet
 import com.tokopedia.common_digital.common.presentation.model.DigitalAtcTrackingModel
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
@@ -1154,8 +1156,6 @@ open class EmoneyPdpFragment :
         private const val REQUEST_CODE_LOGIN = 1010
 
         private const val MAX_CHAR_EMONEY_CARD_NUMBER = 16
-        private const val MAX_NON_TAPCASH = 1700000
-        private const val MAX_TAPCASH = 700000
 
         const val EXTRA_PARAM_DIGITAL_CATEGORY_DETAIL_PASS_DATA = "EXTRA_PARAM_PASS_DATA"
         private const val EXTRA_USER_INPUT_EMONEY_NUMBER = "EXTRA_USER_INPUT_EMONEY_NUMBER"
