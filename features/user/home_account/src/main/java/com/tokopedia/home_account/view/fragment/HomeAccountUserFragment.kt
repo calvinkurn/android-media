@@ -1001,6 +1001,10 @@ open class HomeAccountUserFragment :
         displayBalanceAndPointLocalLoad(false)
         adapter?.run {
             if (isFirstItemIsProfile()) {
+                val item = (getItem(POSITION_0) as ProfileDataView)
+                buyerAccount.isSuccessGetTokopediaPlusData = item.isSuccessGetTokopediaPlusData
+                buyerAccount.tokopediaPlusWidget = item.tokopediaPlusWidget
+
                 removeItemAt(POSITION_0)
             }
             addItem(POSITION_0, buyerAccount)
