@@ -18,7 +18,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.design.component.Dialog
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.analytic.MerchantVoucherTracking
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
@@ -34,6 +35,8 @@ import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
+import com.tokopedia.abstraction.R as abstractionR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 
 open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewModel,
@@ -137,7 +140,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
         if (loadingUseMerchantVoucher == null) {
             loadingUseMerchantVoucher = ProgressDialog(activity)
             loadingUseMerchantVoucher!!.setCancelable(false)
-            loadingUseMerchantVoucher!!.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
+            loadingUseMerchantVoucher!!.setMessage(getString(abstractionR.string.title_loading))
         }
         if (loadingUseMerchantVoucher!!.isShowing()) {
             loadingUseMerchantVoucher!!.dismiss()
@@ -188,7 +191,7 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyModel = EmptyModel()
-        emptyModel.iconRes = com.tokopedia.design.R.drawable.ic_empty_state
+        emptyModel.iconRes = R.drawable.ic_empty_state
         emptyModel.title = getString(R.string.no_voucher)
         return emptyModel
     }
@@ -210,8 +213,8 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
         activity?.run {
             val snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.title_voucher_code_copied),
                     Snackbar.LENGTH_LONG)
-            snackbar.setAction(activity!!.getString(com.tokopedia.design.R.string.close)) { snackbar.dismiss() }
-            snackbar.setActionTextColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+            snackbar.setAction(requireActivity().getString(R.string.mvc_label_close)) { snackbar.dismiss() }
+            snackbar.setActionTextColor(androidx.core.content.ContextCompat.getColor(this, unifyprinciplesR.color.Unify_NN0))
             snackbar.show()
         }
     }
@@ -219,13 +222,11 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
     override fun onSuccessUseVoucher(useMerchantVoucherQueryResult: UseMerchantVoucherQueryResult) {
         hideUseMerchantVoucherLoading()
         activity?.let { it ->
-            Dialog(it, Dialog.Type.PROMINANCE).apply {
+            DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(useMerchantVoucherQueryResult.errorMessageTitle)
-                setDesc(useMerchantVoucherQueryResult.errorMessage)
-                setBtnOk(getString(com.tokopedia.design.R.string.label_close))
-                setOnOkClickListener {
-                    dismiss()
-                }
+                setDescription(useMerchantVoucherQueryResult.errorMessage.toBlankOrString())
+                setPrimaryCTAText(getString(R.string.mvc_label_close))
+                setPrimaryCTAClickListener { dismiss() }
                 show()
             }
 
@@ -240,19 +241,17 @@ open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewMod
         hideUseMerchantVoucherLoading()
         if (e is MessageTitleErrorException) {
             activity?.let { it ->
-                Dialog(it, Dialog.Type.PROMINANCE).apply {
+                DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
                     setTitle(e.errorMessageTitle)
-                    setDesc(e.message)
-                    setBtnOk(getString(com.tokopedia.design.R.string.label_close))
-                    setOnOkClickListener {
-                        dismiss()
-                    }
+                    setDescription(e.message.toBlankOrString())
+                    setPrimaryCTAText(getString(R.string.mvc_label_close))
+                    setPrimaryCTAClickListener { dismiss() }
                     show()
                 }
             }
         } else {
             activity?.let {
-                Toaster.make(view!!, ErrorHandler.getErrorMessage(it, e), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                Toaster.make(requireView(), ErrorHandler.getErrorMessage(it, e), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
             }
         }
     }
