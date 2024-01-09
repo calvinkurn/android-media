@@ -193,8 +193,9 @@ data class SomListOrderListResponse(
                 )
 
                 data class BulkAction(
+                    // Set default to true because on existing logic, this field is unused
                     @SerializedName("selectable")
-                    val selectable: Boolean = false,
+                    val selectable: Boolean = true,
                     @SerializedName("message")
                     val message: String = String.EMPTY
                 )
