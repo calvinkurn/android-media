@@ -83,7 +83,7 @@ class AppDownloadManagerHelper(
         }
     }
 
-    private fun onFailDownloaded(reason: String, statusColumn: Int) {
+    private fun onFailDownloaded(reason: String) {
         showErrorToaster(reason)
     }
 

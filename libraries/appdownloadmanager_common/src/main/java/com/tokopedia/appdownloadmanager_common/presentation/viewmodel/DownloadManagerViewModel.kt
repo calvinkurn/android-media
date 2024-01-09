@@ -2,6 +2,7 @@ package com.tokopedia.appdownloadmanager_common.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.appdownloadmanager_common.domain.service.DownloadManagerService
 import com.tokopedia.appdownloadmanager_common.presentation.model.DownloadingProgressUiModel
 import com.tokopedia.appdownloadmanager_common.presentation.model.DownloadingState
@@ -9,7 +10,6 @@ import com.tokopedia.appdownloadmanager_common.presentation.model.DownloadingUiS
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -49,6 +49,7 @@ class DownloadManagerViewModel @Inject constructor(
 
                 override suspend fun onFailedDownload(reason: String, statusColumn: Int) {
                     _downloadingState.emit(DownloadingState.DownloadFailed(reason, statusColumn))
+                    FirebaseCrashlytics.getInstance().recordException(RuntimeException(reason))
                 }
 
                 override suspend fun onDownloading(downloadingProgressUiModel: DownloadingProgressUiModel) {

@@ -16,6 +16,7 @@
     <string name="dialog_update_app_version_btn_secondary">Nanti Aja</string>
     
     <string name="app_download_error_network_message">Wah, internet putus. Cek Wi-Fi atau paket datamu, ya.</string>
+    <string name="app_download_error_insufficient_message">Perangkat ini tidak memiliki cukup ruang. Coba  atur ruang penyimpanan dan coba lagi.</string>
     <string name="app_download_try_again">Coba Lagi</string>
 
     <string name="app_download_error_insufficient_space_title">Ruang penyimpanan penuh</string>

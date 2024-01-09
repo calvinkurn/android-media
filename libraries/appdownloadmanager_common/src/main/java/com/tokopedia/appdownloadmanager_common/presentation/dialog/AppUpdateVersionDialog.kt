@@ -1,7 +1,9 @@
 package com.tokopedia.appdownloadmanager_common.presentation.dialog
 
 import android.app.Activity
+import android.app.DownloadManager
 import androidx.fragment.app.FragmentActivity
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -15,6 +17,7 @@ import com.tokopedia.appdownloadmanager_common.presentation.util.AppDownloadMana
 import com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.Companion.APK_URL
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.unifycomponents.Toaster
+import java.lang.RuntimeException
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 import com.tokopedia.appdownloadmanager_common.R as appdownloadmanager_commonR
@@ -24,7 +27,7 @@ class AppUpdateVersionDialog(
     val downloadManagerUpdateModel: DownloadManagerUpdateModel? = null,
     val appVersionBetaInfoModel: AppVersionBetaInfoModel? = null,
     val onSuccessDownload: (fileNamePath: String) -> Unit,
-    val onFailDownload: (reason: String, statusColumn: Int) -> Unit,
+    val onFailDownload: (reason: String) -> Unit,
     val setCacheExpire: () -> Unit
 ) : HasComponent<DownloadManagerComponent> {
 
@@ -39,7 +42,15 @@ class AppUpdateVersionDialog(
 
     val downloadManagerListener = object : DownloadManagerService.DownloadManagerListener {
         override suspend fun onFailedDownload(reason: String, statusColumn: Int) {
-            onFailDownload(reason, statusColumn)
+            val errorMessage = if (statusColumn == DownloadManager.ERROR_INSUFFICIENT_SPACE) {
+                activityRef.get()?.getString(appdownloadmanager_commonR.string.app_download_error_insufficient_message)
+            } else {
+                activityRef.get()?.getString(appdownloadmanager_commonR.string.app_download_error_network_message)
+            }.orEmpty()
+
+            onFailDownload(errorMessage)
+
+            FirebaseCrashlytics.getInstance().recordException(RuntimeException(reason))
         }
 
         override suspend fun onDownloading(downloadingProgressUiModel: DownloadingProgressUiModel) {

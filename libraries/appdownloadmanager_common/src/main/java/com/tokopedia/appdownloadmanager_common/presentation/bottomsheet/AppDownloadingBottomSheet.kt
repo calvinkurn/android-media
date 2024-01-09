@@ -223,7 +223,6 @@ class AppDownloadingBottomSheet :
 
     private fun onDownloadFailed(reason: String) {
         showErrorToaster(reason)
-        dismiss()
     }
 
     private fun onDownloadSuccess(fileNamePath: String) {
@@ -261,7 +260,7 @@ class AppDownloadingBottomSheet :
     }
 
     private fun showErrorToaster(reason: String) {
-        view?.let {
+        activity?.window?.decorView?.let {
             Toaster.build(
                 it,
                 reason,
