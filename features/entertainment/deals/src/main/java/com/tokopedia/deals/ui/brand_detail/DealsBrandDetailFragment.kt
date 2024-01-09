@@ -259,7 +259,7 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
     }
 
     private fun getBrandDetail() {
-        viewModel.getBrandDetail(viewModel.createParams(currentLocation?.coordinates.orEmpty(), seoUrl))
+        viewModel.getBrandDetail(currentLocation?.coordinates.orEmpty(), seoUrl)
     }
 
     private fun getLocation(): Location? = dealsLocationUtils.getLocation()
