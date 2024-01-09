@@ -12,4 +12,5 @@ object TopadsAutoPsConstants {
     const val AUTO_PS_SOURCE = "sellerapp_autoads_creation"
     const val GET_AUTO_ADS_SOURCE = "android.topads_product_iklan"
     const val TURNOFF_AUTO_PS_DIALOG_IMG_URL = "https://images.tokopedia.net/img/android/topads/autops/autops_turnoff.png"
+    const val AUTO_PS_DAILY_BUDGET_DEFAULT_VALUE = 50000
 }

@@ -21,7 +21,6 @@ object TopAdsCommonConstant {
     const val TOPADS_AUTOPS_ON = "autops_on"
     const val TOPADS_AUTOPS_OFF = "autops_off"
     const val TOPADS_AUTOPS_BUDGET_UPDATED = "autops_budget_updated"
-    const val AUTO_PS_DAILY_BUDGET_DEFAULT_VALUE = 50000
     const val PARAM_TOPADS_HOMEPAGE = 0
     const val PARAM_PRODUK_IKLAN = 1
     const val PARAM_IKLAN_TOKO = 2

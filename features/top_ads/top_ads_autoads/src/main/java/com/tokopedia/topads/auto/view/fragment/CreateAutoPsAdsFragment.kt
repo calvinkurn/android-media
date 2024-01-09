@@ -27,9 +27,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.auto.data.TopadsAutoPsConstants
+import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.AUTO_PS_DAILY_BUDGET_DEFAULT_VALUE
 import com.tokopedia.topads.auto.R as topadsautoR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.DAILY_BUDGET_MULTIPLIER
 import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.SEEKBAR_DEFAULT_INCREMENT
 import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.TURNOFF_AUTO_PS_DIALOG_IMG_URL
 import com.tokopedia.topads.auto.databinding.TopadsAutoadsPsLayoutBinding
@@ -37,10 +37,8 @@ import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.view.viewmodel.AutoPsViewModel
 import com.tokopedia.topads.auto.view.widget.Range
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant.AUTO_PS_DAILY_BUDGET_DEFAULT_VALUE
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
-import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.utils.TopadsCommonUtil
 import com.tokopedia.topads.common.utils.TopadsCommonUtil.showErrorAutoAds
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
@@ -52,7 +50,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.text.currency.NumberTextWatcher
-import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.topads.common.R as topadscommonR
 
@@ -137,7 +134,7 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
                 binding?.rangeEnd?.text = dataItem.maxDailyBudgetFmt
                 minDailyBudget = dataItem.minDailyBudget
                 maxDailyBudget = dataItem.maxDailyBudget
-                binding?.dailyBudget?.editText?.setText(AUTO_PS_DAILY_BUDGET_DEFAULT_VALUE)
+                binding?.dailyBudget?.editText?.setText(AUTO_PS_DAILY_BUDGET_DEFAULT_VALUE.toString())
                 binding?.seekbar?.range = Range(
                     dataItem.minDailyBudget,
                     dataItem.maxDailyBudget,
