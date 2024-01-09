@@ -125,7 +125,6 @@ class DealsModule(val context: Context) {
     fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase =
         MultiRequestGraphqlUseCase(graphqlRepository)
 
-    @ActivityScope
     @Provides
     fun provideGraphqlUseCaseDealsSearch(graphqlRepository: GraphqlRepository): GraphqlUseCase<SearchData> =
         GraphqlUseCase(graphqlRepository)

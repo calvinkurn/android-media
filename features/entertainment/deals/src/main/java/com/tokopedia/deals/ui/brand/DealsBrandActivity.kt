@@ -9,13 +9,8 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.deals.common.ui.activity.DealsBaseBrandCategoryActivity
-import com.tokopedia.deals.di.DaggerDealsComponent
-import com.tokopedia.deals.di.DealsComponent
-import com.tokopedia.deals.di.DealsModule
 import com.tokopedia.deals.ui.brand.listener.DealsBrandSearchTabListener
 import com.tokopedia.deals.ui.category.ui.activity.DealsCategoryActivity
 import kotlinx.coroutines.CoroutineScope
@@ -26,7 +21,6 @@ import kotlin.coroutines.CoroutineContext
 
 class DealsBrandActivity :
     DealsBaseBrandCategoryActivity(),
-    HasComponent<DealsComponent>,
     CoroutineScope {
 
     private val listeners: ArrayList<DealsBrandSearchTabListener> = arrayListOf()
@@ -34,18 +28,6 @@ class DealsBrandActivity :
     var searchNotFound = false
 
     override fun isSearchAble(): Boolean = true
-
-    override fun getComponent(): DealsComponent {
-        val appComponent = (application as BaseMainApplication).baseAppComponent
-        return DaggerDealsComponent.builder()
-            .baseAppComponent(appComponent)
-            .dealsModule(DealsModule(this))
-            .build()
-    }
-
-    private fun initInjector() {
-        component.inject(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data

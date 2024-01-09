@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.AppBarLayout.ScrollingViewBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.deals.DealsComponentInstance
@@ -37,11 +38,10 @@ import kotlin.math.abs
  * @author by jessica on 11/06/20
  */
 
-abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback {
+abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback, HasComponent<DealsComponent> {
 
     lateinit var viewGroup: ViewGroup
     private lateinit var binding: ActivityBaseDealsBinding
-    private lateinit var dealsComponent: DealsComponent
     private var permissionCheckerHelper = PermissionCheckerHelper()
 
     @Inject
@@ -59,6 +59,10 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     var searchBarActionListener: SearchBarActionListener? = null
 
     private lateinit var locationBottomSheet: SelectLocationBottomSheet
+
+    override fun getComponent(): DealsComponent {
+        return DealsComponentInstance.getDealsComponent(application, this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         supportFragmentManager.addFragmentOnAttachListener { _, fragment ->
@@ -84,7 +88,7 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
     }
 
     private fun initInjector() {
-        getDealsComponent().inject(this)
+        component.inject(this)
     }
 
     private fun initViewModel() {
@@ -270,13 +274,6 @@ abstract class DealsBaseActivity : BaseSimpleActivity(), CurrentLocationCallback
 
     private fun setupBackButton() {
         binding.contentBaseToolbar.imgDealsBaseBackIcon.setOnClickListener { this.onBackPressed() }
-    }
-
-    protected fun getDealsComponent(): DealsComponent {
-        if (!::dealsComponent.isInitialized) {
-            dealsComponent = DealsComponentInstance.getDealsComponent(application, this)
-        }
-        return dealsComponent
     }
 
     var currentLoc = Location()

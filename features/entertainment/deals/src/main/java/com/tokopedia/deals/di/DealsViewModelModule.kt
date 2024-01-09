@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.common.ui.viewmodel.DealsBrandCategoryActivityViewModel
 import com.tokopedia.deals.ui.brand.DealsBrandViewModel
+import com.tokopedia.deals.ui.category.ui.viewmodel.DealCategoryViewModel
 import com.tokopedia.deals.ui.home.ui.viewmodel.DealsHomeViewModel
 import dagger.Binds
 import dagger.Module
@@ -32,7 +33,7 @@ abstract class DealsViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(DealsBrandCategoryActivityViewModel::class)
-    abstract fun dealsCategoryViewModel(activityViewModelBrand: DealsBrandCategoryActivityViewModel): ViewModel
+    abstract fun dealsBrandCategoryViewModel(activityViewModelBrand: DealsBrandCategoryActivityViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -43,4 +44,9 @@ abstract class DealsViewModelModule {
     @IntoMap
     @ViewModelKey(DealsBrandViewModel::class)
     abstract fun dealsBrandViewModel(viewModel: DealsBrandViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DealCategoryViewModel::class)
+    abstract fun dealsCategoryVM(viewModel: DealCategoryViewModel): ViewModel
 }

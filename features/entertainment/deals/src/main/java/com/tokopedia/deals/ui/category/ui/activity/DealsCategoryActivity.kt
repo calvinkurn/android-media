@@ -3,21 +3,13 @@ package com.tokopedia.deals.ui.category.ui.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.deals.analytics.DealsAnalytics
 import com.tokopedia.deals.common.ui.activity.DealsBaseBrandCategoryActivity
-import com.tokopedia.deals.ui.category.di.DaggerDealsCategoryComponent
-import com.tokopedia.deals.ui.category.di.DealsCategoryComponent
-import javax.inject.Inject
 
 /**
  * @author by firman on 22/06/20
  */
 
-class DealsCategoryActivity : DealsBaseBrandCategoryActivity(), HasComponent<DealsCategoryComponent> {
-
-    @Inject
-    lateinit var analytics: DealsAnalytics
+class DealsCategoryActivity : DealsBaseBrandCategoryActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
@@ -29,24 +21,11 @@ class DealsCategoryActivity : DealsBaseBrandCategoryActivity(), HasComponent<Dea
 
         isLandmarkPage = intent.getBooleanExtra(IS_LANDMARK_PAGE, false)
         super.onCreate(savedInstanceState)
-        initInjector()
     }
     override fun isSearchAble(): Boolean = false
 
-    override fun getComponent(): DealsCategoryComponent {
-        return DaggerDealsCategoryComponent.builder()
-            .dealsComponent(getDealsComponent())
-            .build()
-    }
-
-    private fun initInjector() {
-        component.inject(this)
-    }
-
     override fun tabAnalytics(categoryName: String, position: Int) {
-        if (this::analytics.isInitialized) {
-            analytics.eventClickCategoryTabCategoryPage(categoryName)
-        }
+        dealsAnalytics.eventClickCategoryTabCategoryPage(categoryName)
     }
 
     override fun getPageTAG(): String = TAG ?: "DealsCategoryActivity"

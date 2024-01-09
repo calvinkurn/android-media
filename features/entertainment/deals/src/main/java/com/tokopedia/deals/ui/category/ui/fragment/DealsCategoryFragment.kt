@@ -31,9 +31,9 @@ import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
 import com.tokopedia.deals.common.ui.fragment.DealsBaseFragment
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
 import com.tokopedia.deals.databinding.FragmentDealsCategoryBinding
+import com.tokopedia.deals.di.DealsComponent
 import com.tokopedia.deals.ui.brand.DealsBrandActivity
 import com.tokopedia.deals.ui.brand.model.DealsEmptyDataView
-import com.tokopedia.deals.ui.category.di.DealsCategoryComponent
 import com.tokopedia.deals.ui.category.listener.DealsCategoryFilterBottomSheetListener
 import com.tokopedia.deals.ui.category.ui.activity.DealsCategoryActivity
 import com.tokopedia.deals.ui.category.ui.adapter.DealsCategoryAdapter
@@ -354,7 +354,7 @@ class DealsCategoryFragment :
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        getComponent(DealsCategoryComponent::class.java).inject(this)
+        getComponent(DealsComponent::class.java).inject(this)
     }
 
     override fun getInitialLayout(): Int = R.layout.fragment_deals_category

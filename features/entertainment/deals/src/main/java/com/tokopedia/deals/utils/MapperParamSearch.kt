@@ -1,38 +1,42 @@
 package com.tokopedia.deals.utils
 
 import com.tokopedia.deals.common.model.request.RequestParam
+import com.tokopedia.deals.ui.search.DealsSearchConstants
 import com.tokopedia.deals.ui.search.DealsSearchConstants.SEARCH_PARAM
 
 object MapperParamSearch {
 
     fun generateParams(
-            searchQuery: String,
-            locationCoordinates: String,
-            locationType: String,
-            childCategoryIds: String?,
-            page: String,
-            tree: String): Map<String, Any> {
-        return mapOf(SEARCH_PARAM to
+        searchQuery: String,
+        locationCoordinates: String,
+        locationType: String,
+        childCategoryIds: String?,
+        page: String,
+        tree: String
+    ): Map<String, Any> {
+        return mapOf(
+            SEARCH_PARAM to
                 generateSearchParams(searchQuery, locationCoordinates, locationType, childCategoryIds, page, tree)
         )
     }
 
     private fun generateSearchParams(
-            searchQuery: String,
-            locationCoordinates: String,
-            locationType: String,
-            childCategoryIds: String?,
-            page: String,
-            tree: String): ArrayList<RequestParam> {
+        searchQuery: String,
+        locationCoordinates: String,
+        locationType: String,
+        childCategoryIds: String?,
+        page: String,
+        tree: String
+    ): ArrayList<RequestParam> {
         val searchParams: ArrayList<RequestParam> = arrayListOf()
-        searchParams.add(RequestParam(com.tokopedia.deals.ui.search.DealsSearchConstants.MAP_CATEGORY, com.tokopedia.deals.ui.search.DealsSearchConstants.DEFAULT_CATEGORY))
-        searchParams.add(RequestParam(com.tokopedia.deals.ui.search.DealsSearchConstants.MAP_TREE, tree))
+        searchParams.add(RequestParam(DealsSearchConstants.MAP_CATEGORY, DealsSearchConstants.DEFAULT_CATEGORY))
+        searchParams.add(RequestParam(DealsSearchConstants.MAP_TREE, tree))
         if (childCategoryIds != null) {
-            searchParams.add(RequestParam(com.tokopedia.deals.ui.search.DealsSearchConstants.MAP_CHILD_CATEGORY_IDS, childCategoryIds))
+            searchParams.add(RequestParam(DealsSearchConstants.MAP_CHILD_CATEGORY_IDS, childCategoryIds))
         }
-        searchParams.add(RequestParam(com.tokopedia.deals.ui.search.DealsSearchConstants.MAP_COORDINATES, locationCoordinates))
-        searchParams.add(RequestParam(com.tokopedia.deals.ui.search.DealsSearchConstants.MAP_LOCATION_TYPE, locationType))
-        searchParams.add(RequestParam(com.tokopedia.deals.ui.search.DealsSearchConstants.MAP_PAGE, page))
+        searchParams.add(RequestParam(DealsSearchConstants.MAP_COORDINATES, locationCoordinates))
+        searchParams.add(RequestParam(DealsSearchConstants.MAP_LOCATION_TYPE, locationType))
+        searchParams.add(RequestParam(DealsSearchConstants.MAP_PAGE, page))
         if (searchQuery.isNotEmpty()) {
             searchParams.add(RequestParam(com.tokopedia.deals.ui.search.DealsSearchConstants.MAP_TAGS, searchQuery))
         }

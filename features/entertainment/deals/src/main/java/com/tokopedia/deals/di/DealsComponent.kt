@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
 import com.tokopedia.deals.ui.brand.DealsBrandFragment
+import com.tokopedia.deals.ui.category.ui.fragment.DealsCategoryFragment
 import com.tokopedia.deals.ui.home.ui.fragment.DealsHomeFragment
 import com.tokopedia.deals.utils.DealsLocationUtils
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -47,4 +48,6 @@ interface DealsComponent {
 
     fun inject(dealsHomeFragment: DealsHomeFragment)
     fun inject(dealsHomeFragment: DealsBrandFragment)
+
+    fun inject(dealsCategoryFragment: DealsCategoryFragment)
 }
