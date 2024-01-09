@@ -64,6 +64,7 @@ import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.ResultBalanceAndPoint
+import com.tokopedia.home_account.account_settings.presentation.activity.TkpdPaySettingActivity
 import com.tokopedia.home_account.analytics.AddVerifyPhoneAnalytics
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.analytics.TokopediaCardAnalytics
@@ -1366,7 +1367,7 @@ open class HomeAccountUserFragment :
 
             AccountConstants.SettingCode.SETTING_INSTANT_PAYMENT -> {
                 homeAccountAnalytic.eventClickAccountSettingInstantPayment()
-                goToApplink(item.applink)
+                goToPaymentSetting()
             }
 
             AccountConstants.SettingCode.SETTING_INSTANT_BUY -> {
@@ -1672,6 +1673,11 @@ open class HomeAccountUserFragment :
             isEnable
         commonAdapter?.notifyItemChanged(POSITION_2)
         adapter?.notifyItemChanged(POSITION_3)
+    }
+
+    private fun goToPaymentSetting() {
+        val intent = Intent(activity, TkpdPaySettingActivity::class.java)
+        startActivity(intent)
     }
 
     private fun goToApplicationDetailActivity() {
