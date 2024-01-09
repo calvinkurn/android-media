@@ -317,7 +317,7 @@
     <string name="topads_dashboard_no_product_sheet_header">Kamu belum punya produk</string>
     <string name="topads_dashboard_no_product_sheet_body">Tambah produk terlebih dahulu untuk mulai beriklan</string>
     <string name="topads_dashboard_no_product_sheet_button">Tambah produk</string>
-    <string name="topads_dashboard_updated_daily_budget">Anggaran harian diperbaharui</string>
+    <string name="topads_dashboard_updated_daily_budget">Anggaran harian berhasil diubah.</string>
 
     <string name="topads_insight_select_ads_type">Pilih tipe iklan</string>
     <string name="topads_insight_title_bid_keyword">Rekomendasi biaya kata kunci (%d)</string>
@@ -657,7 +657,6 @@
     <string name="topads_enable_auto_ps">Aktifkan Iklan Otomatis</string>
     <string name="topads_auto_ps_edit_ads">Atur Iklan</string>
     <string name="topads_auto_ps_beranda_modal_title">Buat atau atur iklanmu, yuk!</string>
-    <string name="topads_auto_ps_daily_budget_updated_successfully">Waktunya beriklan lebih praktis dengan Iklan Otomatis!</string>
-    <string name="topads_auto_ps_activation_confirmation_title">Anggaran harian berhasil diubah.</string>
+    <string name="topads_auto_ps_confirmation_title_to_activate_auto_ps">Waktunya beriklan lebih praktis dengan Iklan Otomatis!</string>
     <string name="topads_auto_ps_activation_confirmation_desc">Atur Iklan Produk dan Iklan Tokomu secara otomatis, yuk! Grup Iklan Produk &amp; Toko yang telah dibuat akan tersimpan dan tetap bisa digunakan kembali nanti.</string>
 </resources>

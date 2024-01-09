@@ -69,6 +69,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     private var headlineAdsViePager: ViewPager? = null
     private var headlineTabLayout: TabsUnify? = null
     private var noTabSpace: View? = null
+    private var recommendationWidget: RecommendationWidget? = null
     private var autoadsOnboarding: CardUnify? = null
     private var autoadsEditWidget: AutoAdsWidgetCommon? = null
     private var autoadsDeactivationProgress: CardUnify? = null
@@ -124,6 +125,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         hariIni = view.findViewById(R.id.hari_ini)
         pager = view.findViewById(R.id.pager)
         autoadsOnboarding = view.findViewById(R.id.autoadsOnboarding)
+        recommendationWidget = view.findViewById(R.id.insightCentreEntryPointHeadline)
         autoadsDeactivationProgress = view.findViewById(R.id.autoadsDeactivationProgress)
         autoadsEditWidget = view.findViewById(R.id.autoads_edit_widget)
         autoPsStatisticTable = view.findViewById(R.id.auto_ps_statistic_table)
@@ -156,6 +158,19 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
             }
         }
         loadStatisticsData()
+    }
+
+
+    private fun setUpObserver() {
+        presenter.groupAdsInsight.observe(viewLifecycleOwner) {
+            if (it is TopAdsListAllInsightState.Success) {
+                recommendationWidget?.renderWidget(it.data.remainingAdsGroup, it.data.totalAdsGroup)
+                recommendationWidget?.binding?.widgetCTAButton?.setOnClickListener {
+                    RecommendationTracker.clickLihatSelengkapnyaSaranTopadsHeadline()
+                    recommendationWidgetCTAListener?.onWidgetCTAClick()
+                }
+            }
+        }
     }
 
     private fun getAutoAdsStatus() {
@@ -214,7 +229,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
             }
 
             val description = getString(R.string.topads_auto_ps_activation_confirmation_desc)
-            val title = getString(R.string.topads_auto_ps_activation_confirmation_title)
+            val title = getString(R.string.topads_auto_ps_confirmation_title_to_activate_auto_ps)
 
             confirmationDailog?.let {
                 it.setTitle(title)
@@ -287,6 +302,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
             }
         })
         presenter.getAdGroupWithInsight(RecommendationConstants.HEADLINE_KEY)
+        setUpObserver()
     }
 
     private fun onSuccessWhiteListing(response: WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) {

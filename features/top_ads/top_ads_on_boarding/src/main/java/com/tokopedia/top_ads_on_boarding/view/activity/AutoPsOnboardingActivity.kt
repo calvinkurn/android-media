@@ -14,6 +14,8 @@ import com.tokopedia.top_ads_on_boarding.databinding.TopadsAutoPsOnboardingActiv
 import com.tokopedia.top_ads_on_boarding.di.DaggerTopAdsOnBoardingComponent
 import com.tokopedia.top_ads_on_boarding.di.TopAdsOnBoardingComponent
 import com.tokopedia.top_ads_on_boarding.view.adapter.OnboardingFaqListAdapter
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.ONBOARDING_PARAM
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_FEATURE
 
 class AutoPsOnboardingActivity : BaseActivity(), HasComponent<TopAdsOnBoardingComponent> {
 
@@ -44,7 +46,15 @@ class AutoPsOnboardingActivity : BaseActivity(), HasComponent<TopAdsOnBoardingCo
         binding?.image?.urlSrc = ONBOARDING_IMG_URL
 
         binding?.submit?.setOnClickListener{
-            startActivity(RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE))
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE).apply {
+                putExtra(PARAM_FEATURE,ONBOARDING_PARAM)
+            }
+            startActivity(intent)
+        }
+
+        binding?.header?.title = this.title
+        binding?.header?.setNavigationOnClickListener {
+            onBackPressed()
         }
     }
 

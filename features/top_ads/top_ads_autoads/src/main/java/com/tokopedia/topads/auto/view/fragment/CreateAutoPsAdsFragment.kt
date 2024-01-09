@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.auto.data.TopadsAutoPsConstants
 import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.AUTO_PS_DAILY_BUDGET_DEFAULT_VALUE
 import com.tokopedia.topads.auto.R as topadsautoR
@@ -36,7 +37,6 @@ import com.tokopedia.topads.auto.databinding.TopadsAutoadsPsLayoutBinding
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.view.viewmodel.AutoPsViewModel
 import com.tokopedia.topads.auto.view.widget.Range
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.utils.TopadsCommonUtil
@@ -134,7 +134,6 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
                 binding?.rangeEnd?.text = dataItem.maxDailyBudgetFmt
                 minDailyBudget = dataItem.minDailyBudget
                 maxDailyBudget = dataItem.maxDailyBudget
-                binding?.dailyBudget?.editText?.setText(AUTO_PS_DAILY_BUDGET_DEFAULT_VALUE.toString())
                 binding?.seekbar?.range = Range(
                     dataItem.minDailyBudget,
                     dataItem.maxDailyBudget,
@@ -154,23 +153,38 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
         }
     }
 
+    private fun setDefaultDailyBudget(){
+        if(autoPsToggleOn){
+            binding?.dailyBudget?.editText?.setText(currentDailyBudget.toString())
+        } else {
+            binding?.dailyBudget?.editText?.setText(AUTO_PS_DAILY_BUDGET_DEFAULT_VALUE.toString())
+        }
+    }
+
     private fun setAutoAds(data: AutoAdsResponse.TopAdsGetAutoAds.Data) {
         currentDailyBudget = data.dailyBudget.toDouble()
         when (data.status) {
             AutoAdsStatus.STATUS_INACTIVE -> {
                 binding?.autoAdsCard?.gone()
-                binding?.manualAdsCard?.show()
                 binding?.btnSubmit?.text = getString(topadsautoR.string.iklankan)
                 binding?.btnSubmit?.isEnabled = true
                 autoPsToggleOn = false
+                setManualAdsWidget()
             }
             else -> {
                 binding?.autoAdsCard?.show()
-                binding?.manualAdsCard?.gone()
                 binding?.btnSubmit?.text = getString(topadscommonR.string.topads_common_save_butt)
                 binding?.btnSubmit?.isEnabled = false
                 autoPsToggleOn = true
             }
+        }
+        setDefaultDailyBudget()
+    }
+
+    private fun setManualAdsWidget(){
+        activity?.intent?.extras?.let {
+            val feature = it.getString(com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_FEATURE)
+            binding?.manualAdsCard?.showWithCondition(feature == com.tokopedia.topads.common.constant.TopAdsCommonConstant.ONBOARDING_PARAM)
         }
     }
 
@@ -189,19 +203,19 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
             if(autoPsToggleOn){
                 if(binding?.btnSubmit?.text == getString(topadscommonR.string.topads_common_save_butt)){
                     putExtra(
-                        TopAdsCommonConstant.TOPADS_AUTOPS_BUDGET_UPDATED,
-                        TopAdsCommonConstant.PARAM_AUTOPS_BUDGET_UPDATED
+                        com.tokopedia.topads.common.constant.TopAdsCommonConstant.TOPADS_AUTOADS_BUDGET_UPDATED,
+                        com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_AUTOADS_BUDGET
                     )
                 } else {
                     putExtra(
-                        TopAdsCommonConstant.TOPADS_AUTOPS_ON,
-                        TopAdsCommonConstant.PARAM_AUTOPS_ON
+                        com.tokopedia.topads.common.constant.TopAdsCommonConstant.TOPADS_AUTOPS_ON,
+                        com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_AUTOPS_ON
                     )
                 }
             } else {
                 putExtra(
-                    TopAdsCommonConstant.TOPADS_AUTOPS_OFF,
-                    TopAdsCommonConstant.PARAM_AUTOPS_OFF
+                    com.tokopedia.topads.common.constant.TopAdsCommonConstant.TOPADS_AUTOPS_OFF,
+                    com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_AUTOPS_OFF
                 )
             }
         }

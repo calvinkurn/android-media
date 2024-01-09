@@ -271,7 +271,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         }
 
         val description = getString(topadsdashboardR.string.topads_auto_ps_activation_confirmation_desc)
-        val title = getString(topadsdashboardR.string.topads_auto_ps_activation_confirmation_title)
+        val title = getString(topadsdashboardR.string.topads_auto_ps_confirmation_title_to_activate_auto_ps)
 
         confirmationDailog?.let {
             it.setTitle(title)
