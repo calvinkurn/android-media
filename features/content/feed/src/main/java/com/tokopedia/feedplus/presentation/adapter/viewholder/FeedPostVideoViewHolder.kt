@@ -34,7 +34,7 @@ import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.uiview.*
-import com.tokopedia.content.common.util.ContentTapLikeAnimationComponent
+import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
 import com.tokopedia.feedplus.presentation.util.animation.FeedPostAlphaAnimator
 import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -80,7 +80,7 @@ class FeedPostVideoViewHolder(
     private val productButtonView = FeedProductButtonView(binding.productTagButton, listener)
     private val asgcTagsView = FeedAsgcTagsView(binding.rvFeedAsgcTags)
     private val campaignView = FeedCampaignRibbonView(binding.feedCampaignRibbon, listener)
-    private val likeAnimationView = ContentTapLikeAnimationComponent(binding.root)
+    private val likeAnimationView = FeedLikeAnimationComponent(binding.root)
     private val smallLikeAnimationView = FeedSmallLikeIconAnimationComponent(binding.root)
     private val commentButtonView = FeedCommentButtonView(binding.feedCommentButton, listener)
 

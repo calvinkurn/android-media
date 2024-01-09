@@ -1,4 +1,4 @@
-package com.tokopedia.content.common.util
+package com.tokopedia.feedplus.presentation.util.animation
 
 import android.animation.Animator
 import android.animation.AnimatorSet
@@ -9,16 +9,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
-import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.presentation.util.animation.DefaultAnimatorListener
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.play_common.viewcomponent.ViewComponent
+import com.tokopedia.feedplus.R
+import com.tokopedia.kotlin.extensions.view.gone
 
 /**
  * Created by shruti on 22/02/23
  */
-class ContentTapLikeAnimationComponent(
+class FeedLikeAnimationComponent(
     container: ViewGroup,
 ) : ViewComponent(container, R.id.view_like) {
 
