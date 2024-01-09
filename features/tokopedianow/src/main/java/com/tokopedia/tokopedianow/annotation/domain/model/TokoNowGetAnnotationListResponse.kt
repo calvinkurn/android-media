@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.annotation.domain.model
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.data.model.response.Header
+import com.tokopedia.tokopedianow.common.util.StringUtil.isNotBlankAndNotZeroString
 
 data class TokoNowGetAnnotationListResponse(
     @SerializedName("TokonowGetAnnotationList")
@@ -29,6 +30,8 @@ data class TokoNowGetAnnotationListResponse(
         fun showWidget(): Boolean {
             return status == STATUS_SHOW_WIDGET
         }
+
+        fun isNeededToLoadMore() = pagination.hasNext && pagination.pageLastID.isNotBlankAndNotZeroString() && annotationList.isNotEmpty()
     }
 
     data class AnnotationHeaderResponse(
@@ -46,12 +49,12 @@ data class TokoNowGetAnnotationListResponse(
     data class AnnotationResponse(
         @SerializedName("annotationID")
         val annotationID: String = "",
+        @SerializedName("name")
+        val name: String = "",
         @SerializedName("imageURL")
         val imageURL: String = "",
         @SerializedName("appLink")
-        val appLink: String = "",
-        @SerializedName("webLink")
-        val webLink: String = ""
+        val appLink: String = ""
     )
 
     data class PaginationResponse(
