@@ -1665,6 +1665,8 @@ class MerchantPageFragment :
         onScrollChangedListenerList.forEach {
             view?.viewTreeObserver?.removeOnScrollChangedListener(it)
         }
+        productListAdapter?.removeListeners()
+        carouselAdapter?.removeListener()
     }
 
     private fun goToPromoPage() {

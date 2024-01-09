@@ -53,7 +53,8 @@ import javax.inject.Inject
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class OrderCustomizationFragment : BaseMultiFragment(),
+class OrderCustomizationFragment :
+    BaseMultiFragment(),
     ProductAddOnViewHolder.OnAddOnSelectListener,
     OrderNoteInputViewHolder.OnNoteTextChangeListener,
     PhoneNumberVerificationBottomSheet.OnButtonCtaClickListener {
@@ -160,6 +161,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+        customListAdapter?.removeListeners()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -196,9 +198,9 @@ class OrderCustomizationFragment : BaseMultiFragment(),
             } else {
                 customOrderDetails.firstOrNull { it.cartId == cartId }?.let { customOrderDetail ->
                     val subTotalPrice = viewModel.calculateSubtotalPrice(
-                            baseProductPrice = viewModel.baseProductPrice,
-                            quantity = customOrderDetail.qty,
-                            addOnUiModels = customOrderDetail.customListItems.map { it.addOnUiModel }
+                        baseProductPrice = viewModel.baseProductPrice,
+                        quantity = customOrderDetail.qty,
+                        addOnUiModels = customOrderDetail.customListItems.map { it.addOnUiModel }
                     )
                     binding?.subtotalProductPriceLabel?.text = viewModel.formatSubtotalPrice(subTotalPrice)
                 }
@@ -232,7 +234,6 @@ class OrderCustomizationFragment : BaseMultiFragment(),
             // setup atc button click listener
             binding?.atcButton?.setOnClickListener {
                 customListAdapter?.getCustomListItems()?.run {
-
                     val validationResult = viewModel.validateCustomOrderInput(this)
                     val isError = validationResult.first
                     if (isError) {
@@ -270,7 +271,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
                                 source = source
                             )
                         }
-                        //hit trackers
+                        // hit trackers
                         merchantPageAnalytics.clickOnOrderVariantPage(
                             variantWrapperUiModel?.productListItem,
                             variantWrapperUiModel?.merchantId.orEmpty(),
@@ -371,7 +372,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
     }
 
     private fun showErrorMessage() {
-        val message =  getString(com.tokopedia.tokofood.R.string.text_error_product_custom_selection)
+        val message = getString(com.tokopedia.tokofood.R.string.text_error_product_custom_selection)
         view?.let { view ->
             Toaster.build(
                 view = view,
@@ -414,9 +415,9 @@ class OrderCustomizationFragment : BaseMultiFragment(),
 
     private fun updateSubtotalPriceLabel(addOnUiModels: List<AddOnUiModel?>?, quantity: Int) {
         val subTotalPrice = viewModel.calculateSubtotalPrice(
-                baseProductPrice = viewModel.baseProductPrice,
-                quantity = quantity,
-                addOnUiModels = addOnUiModels ?: listOf()
+            baseProductPrice = viewModel.baseProductPrice,
+            quantity = quantity,
+            addOnUiModels = addOnUiModels ?: listOf()
         )
         binding?.subtotalProductPriceLabel?.text = viewModel.formatSubtotalPrice(subTotalPrice)
     }

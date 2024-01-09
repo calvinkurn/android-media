@@ -53,7 +53,6 @@ class CustomOrderDetailBottomSheet :
         }
     }
 
-
     private var binding: BottomsheetOrderInfoLayoutBinding? = null
 
     private var adapter: OrderDetailAdapter = OrderDetailAdapter(this)
@@ -92,6 +91,7 @@ class CustomOrderDetailBottomSheet :
 
     override fun onDestroyView() {
         binding = null
+        clickListener = null
         super.onDestroyView()
     }
 
@@ -100,7 +100,8 @@ class CustomOrderDetailBottomSheet :
             productUiModel?.let { productUiModel ->
                 dismiss()
                 clickListener?.onNavigateToOrderCustomizationPage(
-                    cartId = "", productUiModel = productUiModel,
+                    cartId = "",
+                    productUiModel = productUiModel,
                     Pair(productPosition.orZero(), adapterPosition.orZero())
                 )
             }
@@ -175,9 +176,9 @@ class CustomOrderDetailBottomSheet :
     override fun onUpdateQty(quantity: Int, customOrderDetail: CustomOrderDetail) {
         productUiModel?.let {
             clickListener?.onUpdateCustomOrderQtyButtonClicked(
-                    customOrderDetail = customOrderDetail,
-                    quantity = quantity,
-                    productId = it.id
+                customOrderDetail = customOrderDetail,
+                quantity = quantity,
+                productId = it.id
             )
         }
     }

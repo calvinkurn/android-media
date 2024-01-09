@@ -23,8 +23,8 @@ import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCa
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder.OnProductCardItemClickListener
 
 class ProductListAdapter(
-    private val clickListener: OnProductCardItemClickListener,
-    private val tokofoodScrollChangedListener: TokofoodScrollChangedListener
+    private var clickListener: OnProductCardItemClickListener?,
+    private var tokofoodScrollChangedListener: TokofoodScrollChangedListener?
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -190,5 +190,10 @@ class ProductListAdapter(
             customOrderDetails = mutableListOf()
         }
         notifyItemChanged(adapterPosition)
+    }
+
+    fun removeListeners() {
+        clickListener = null
+        tokofoodScrollChangedListener = null
     }
 }

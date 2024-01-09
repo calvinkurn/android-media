@@ -14,8 +14,8 @@ import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
 
 class ProductAddOnViewHolder(
-        private val binding: TokofoodItemAddOnLayoutBinding,
-        private val selectListener: OnAddOnSelectListener
+    private val binding: TokofoodItemAddOnLayoutBinding,
+    private var selectListener: OnAddOnSelectListener?
 ) : RecyclerView.ViewHolder(binding.root), ProductOptionViewHolder.Listener {
 
     interface OnAddOnSelectListener {
@@ -59,15 +59,15 @@ class ProductAddOnViewHolder(
             context?.run {
                 // single mandatory add on selection
                 var mandatoryAmountWording = this.getString(
-                        R.string.text_single_mandatory_add_on_amount,
-                        addOnUiModel.minQty
+                    R.string.text_single_mandatory_add_on_amount,
+                    addOnUiModel.minQty
                 )
                 // multiple mandatory add on selection
                 if (addOnUiModel.isMultipleMandatory) {
                     mandatoryAmountWording = this.getString(
-                            R.string.text_multiple_mandatory_add_on_amount,
-                            addOnUiModel.minQty,
-                            addOnUiModel.maxQty
+                        R.string.text_multiple_mandatory_add_on_amount,
+                        addOnUiModel.minQty,
+                        addOnUiModel.maxQty
                     )
                 }
                 binding.tpgMandatoryAmount.text = mandatoryAmountWording
@@ -76,8 +76,8 @@ class ProductAddOnViewHolder(
             // setup optional add on wording
             context?.run {
                 val optionalAddOnWording = this.getString(
-                        com.tokopedia.tokofood.R.string.text_optional_add_on_wording,
-                        addOnUiModel.maxQty
+                    com.tokopedia.tokofood.R.string.text_optional_add_on_wording,
+                    addOnUiModel.maxQty
                 )
                 binding.tpgOptionalWording.text = optionalAddOnWording
             }
@@ -87,12 +87,14 @@ class ProductAddOnViewHolder(
         optionItems = addOnUiModel.filteredOptions
         optionAdapter = ProductOptionAdapter(this@ProductAddOnViewHolder).apply {
             val totalSelected = optionItems.count { it.isSelected }
-            setData(optionItems.onEach {
-                it.dataSetPosition = dataSetPosition
-                it.maxSelected = addOnUiModel.maxQty
-                it.canBeSelected =
-                    it.selectionControlType == SelectionControlType.SINGLE_SELECTION || it.isSelected || totalSelected < addOnUiModel.maxQty
-            })
+            setData(
+                optionItems.onEach {
+                    it.dataSetPosition = dataSetPosition
+                    it.maxSelected = addOnUiModel.maxQty
+                    it.canBeSelected =
+                        it.selectionControlType == SelectionControlType.SINGLE_SELECTION || it.isSelected || totalSelected < addOnUiModel.maxQty
+                }
+            )
         }
         binding.rvAddOnList.run {
             layoutManager = linearLayoutManager
@@ -109,7 +111,7 @@ class ProductAddOnViewHolder(
         index: Int,
         dataSetPosition: Int
     ) {
-        selectListener.onAddOnSelected(isSelected, price, Pair(dataSetPosition, index))
+        selectListener?.onAddOnSelected(isSelected, price, Pair(dataSetPosition, index))
         optionItems.onEachIndexed { optionIndex, optionUiModel ->
             if (optionIndex == index) {
                 optionUiModel.isSelected = isSelected
@@ -130,11 +132,14 @@ class ProductAddOnViewHolder(
         dataSetPosition: Int
     ) {
         val previousSelectedIndex = optionItems.indexOfFirst { it.isSelected }
-        selectListener.onAddOnSelected(isSelected, price, Pair(dataSetPosition, index))
+        selectListener?.onAddOnSelected(isSelected, price, Pair(dataSetPosition, index))
         optionItems.onEachIndexed { optionIndex, optionUiModel ->
             optionUiModel.isSelected = optionIndex == index
         }
         optionAdapter?.updateData(previousSelectedIndex, optionItems)
     }
 
+    fun removeListener() {
+        selectListener = null
+    }
 }
