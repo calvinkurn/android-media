@@ -50,13 +50,15 @@ class CategoryInspirationActivity : BaseActivity() {
             unifyprinciplesR.color.Unify_Background
         )
 
-        supportFragmentManager.commit {
-            replace(
-                binding.root.id,
-                CategoryInspirationFragment::class.java,
-                CategoryInspirationFragment.createParams(sourceType),
-                CATEGORY_INSPIRATION_TAG
-            )
+        if (supportFragmentManager.findFragmentByTag(CATEGORY_INSPIRATION_TAG) == null) {
+            supportFragmentManager.commit {
+                replace(
+                    binding.root.id,
+                    CategoryInspirationFragment::class.java,
+                    CategoryInspirationFragment.createParams(sourceType),
+                    CATEGORY_INSPIRATION_TAG
+                )
+            }
         }
     }
 

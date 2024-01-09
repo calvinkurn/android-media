@@ -194,7 +194,9 @@ internal class CategoryInspirationFragment @Inject constructor(
         setupView()
         observe()
 
-        viewModel.onAction(CategoryInspirationAction.Init)
+        if (savedInstanceState == null) {
+            viewModel.onAction(CategoryInspirationAction.Init)
+        }
     }
 
     override fun onDestroyView() {
@@ -233,6 +235,7 @@ internal class CategoryInspirationFragment @Inject constructor(
 
                     impressionManager.onNewWidgets(state.items, state.selectedMenuId)
                     adapter.setList(state.state, state.items, state.selectedMenuId) {
+                        if (_binding == null) return@setList
                         binding.rvCategoryInspiration.invalidateItemDecorations()
                     }
                 }
