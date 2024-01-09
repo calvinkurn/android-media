@@ -35,18 +35,21 @@ class ShortsUploadNotificationManager @Inject constructor(
     )
 
     override fun generateSuccessPendingIntent(): PendingIntent? {
+        val shortsUploadData = uploadData
+        if (shortsUploadData !is CreationUploadData.Shorts) return null
+
         val intent = ContentCreationPostUploadActivity.getIntent(
             context,
-            channelId = uploadData?.creationId.orEmpty(),
-            authorId = uploadData?.authorId.orEmpty(),
-            authorType = uploadData?.authorType.orEmpty(),
-            uploadType = uploadData?.uploadType?.type.orEmpty(),
-            appLink = uploadData?.let { getPlayRoomAppLink(it) }.orEmpty()
+            channelId = shortsUploadData.creationId,
+            authorId = shortsUploadData.authorId,
+            authorType = shortsUploadData.authorType,
+            uploadType = shortsUploadData.uploadType.type,
+            appLink = getPlayRoomAppLink(shortsUploadData)
         ).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
 
-        return PendingIntent.getBroadcast(
+        return PendingIntent.getActivity(
             context,
             0,
             intent,
@@ -54,7 +57,7 @@ class ShortsUploadNotificationManager @Inject constructor(
         )
     }
 
-    private fun getPlayRoomAppLink(uploadData: CreationUploadData): String {
+    private fun getPlayRoomAppLink(uploadData: CreationUploadData.Shorts): String {
         return buildString {
             append(UriUtil.buildUri(ApplinkConst.PLAY_DETAIL, uploadData.creationId))
             append("?")

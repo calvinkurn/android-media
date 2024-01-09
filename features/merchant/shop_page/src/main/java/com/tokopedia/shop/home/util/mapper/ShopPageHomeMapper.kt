@@ -13,6 +13,7 @@ import com.tokopedia.shop.common.data.model.ShopPageHeaderDataUiModel
 import com.tokopedia.shop.common.data.model.ShopPageHeaderUiModel
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
@@ -91,6 +92,8 @@ object ShopPageHomeMapper {
                 it.isVariant = hasVariant
                 it.parentId = parentId
                 it.averageRating = stats.averageRating
+                it.isFulfillment = ShopUtil.isFulfillmentByGroupLabel(shopProduct.labelGroupList)
+                it.warehouseId = shopProduct.warehouseId
             }
         }
 
@@ -800,6 +803,8 @@ object ShopPageHomeMapper {
                 hideGimmick = it.hideGimmick
                 labelGroupList =
                     it.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
+                isFulfillment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups)
+                warehouseId = it.warehouseId
             }
         }
     }
@@ -824,6 +829,8 @@ object ShopPageHomeMapper {
                 hideGimmick = it.hideGimmick
                 labelGroupList =
                     it.labelGroups.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
+                isFulfillment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups)
+                warehouseId = it.warehouseId
             }
         }
     }
@@ -865,6 +872,8 @@ object ShopPageHomeMapper {
                 this.isVariant = it.listChildId.isNotEmpty()
                 this.listChildId = it.listChildId
                 this.parentId = it.parentId
+                isFulfillment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups)
+                warehouseId = it.warehouseId
             }
         }
     }
@@ -956,7 +965,9 @@ object ShopPageHomeMapper {
                             type = labelGroup.type
                         )
                     },
-                    rating = it.rating.toDoubleOrZero()
+                    rating = it.rating.toDoubleOrZero(),
+                    isFulfillment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups),
+                    warehouseId = it.warehouseId
                 )
             } ?: listOf(),
             imageBanner = widgetResponse.data.firstOrNull()?.listBanner?.firstOrNull()?.imageUrl.orEmpty(),
@@ -983,7 +994,9 @@ object ShopPageHomeMapper {
             data.appLink,
             data.webLink,
             data.videoUrl,
-            data.bannerId
+            data.bannerId,
+            isFulfillment = ShopUtil.isFulfillmentByGroupLabel(data.labelGroups),
+            warehouseId = data.warehouseID
         )
     }
 
@@ -1095,6 +1108,8 @@ object ShopPageHomeMapper {
                 this.isVariant = !it.parentId.toLongOrZero().isZero()
                 this.listChildId = it.listChildId
                 this.parentId = it.parentId
+                isFulfillment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups)
+                warehouseId = it.warehouseID
             }
         }
     }
@@ -1112,6 +1127,8 @@ object ShopPageHomeMapper {
                 name = it.showcaseName
                 viewType = widgetName
                 isShowEtalaseName = widgetHeader.isShowEtalaseName == IS_SHOW_ETALASE_NAME
+                isFulfilment = ShopUtil.isFulfillmentByGroupLabel(it.labelGroups)
+                warehouseId = it.warehouseID
             }
         }
         return if (widgetName == WidgetNameEnum.SHOWCASE_SLIDER_TWO_ROWS.value) {
@@ -1166,6 +1183,8 @@ object ShopPageHomeMapper {
             this.isVariant = response.listChildId.isNotEmpty()
             this.listChildId = response.listChildId
             this.parentId = response.parentId
+            isFulfillment = ShopUtil.isFulfillmentByGroupLabel(response.labelGroups)
+            warehouseId = response.warehouseID
         }
 
     fun mapToGetCampaignNotifyMeUiModel(model: GetCampaignNotifyMeModel): GetCampaignNotifyMeUiModel {

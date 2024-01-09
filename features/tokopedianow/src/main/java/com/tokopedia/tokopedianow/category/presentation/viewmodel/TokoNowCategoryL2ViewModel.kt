@@ -111,11 +111,6 @@ class TokoNowCategoryL2ViewModel @Inject constructor(
         updateVisitableListLiveData()
     }
 
-    fun getWarehouseIds(): String {
-        val localCacheModel = addressData.getAddressData()
-        return AddressMapper.mapToWarehouseIds(localCacheModel)
-    }
-
     fun onTabSelected(position: Int) {
         val categoryL2TabData = categoryTab.tabList[position]
         categoryIdL2 = categoryL2TabData.categoryIdL2

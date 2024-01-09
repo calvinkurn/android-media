@@ -126,6 +126,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                           y
                         }
                       }
+                      warehouseID
                     }
                     ... on EtalaseWidget {
                       imageUrl
@@ -161,6 +162,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         title
                         url
                       }
+                      warehouseID
                       minimumOrder
                       maximumOrder
                       stock
@@ -274,6 +276,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         parentID
                         showStockbar
                         rating
+                        warehouseID
                       }
                       backgroundGradientColor {
                         firstColor

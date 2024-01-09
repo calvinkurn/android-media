@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -57,6 +58,7 @@ import com.tokopedia.affiliate.ui.viewholder.AffiliateSharedProductCardsItemVH
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateNoPromoItemFoundModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedProductCardsModel
 import com.tokopedia.affiliate.viewmodel.AffiliateAdpViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.affiliate_toko.databinding.AffiliateAdpFragmentLayoutBinding
 import com.tokopedia.applink.ApplinkConst
@@ -114,6 +116,7 @@ class AffiliateAdpFragment :
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
     private var affiliateAdpViewModel: AffiliateAdpViewModel? = null
+    private var affiliateViewModel: AffiliateViewModel? = null
     private val adapter: AffiliateAdapter by lazy {
         AffiliateAdapter(
             AffiliateAdapterFactory(
@@ -180,6 +183,7 @@ class AffiliateAdpFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        affiliateViewModel = activity?.let { ViewModelProvider(it)[AffiliateViewModel::class.java] }
         setObservers()
     }
 
@@ -228,7 +232,7 @@ class AffiliateAdpFragment :
                 IconBuilder(builderFlags = IconBuilderFlag(pageSource = NavSource.AFFILIATE))
             if (isAffiliateNCEnabled()) {
                 iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
-                    affiliateAdpViewModel?.resetNotificationCount()
+                    affiliateViewModel?.resetNotificationCount()
                     sendNotificationClickEvent()
                     RouteManager.route(
                         context,
@@ -255,7 +259,7 @@ class AffiliateAdpFragment :
 
         setUserDetails()
         if (isAffiliateNCEnabled()) {
-            affiliateAdpViewModel?.fetchUnreadNotificationCount()
+            affiliateViewModel?.fetchUnreadNotificationCount()
         }
     }
 
@@ -291,7 +295,7 @@ class AffiliateAdpFragment :
         adapter.resetList()
         affiliateAdpViewModel?.getAffiliatePerformance(PAGE_ZERO, isFullLoad = true)
         if (isAffiliateNCEnabled()) {
-            affiliateAdpViewModel?.fetchUnreadNotificationCount()
+            affiliateViewModel?.fetchUnreadNotificationCount()
         }
     }
 
@@ -393,7 +397,7 @@ class AffiliateAdpFragment :
         affiliateAdpViewModel?.noMoreDataAvailable()?.observe(this) { noDataAvailable ->
             isNoMoreData = noDataAvailable
         }
-        affiliateAdpViewModel?.getUnreadNotificationCount()?.observe(this) { count ->
+        affiliateViewModel?.getUnreadNotificationCount()?.observe(this) { count ->
             binding?.homeNavToolbar?.apply {
                 setCentralizedBadgeCounter(IconList.ID_NOTIFICATION, count)
             }

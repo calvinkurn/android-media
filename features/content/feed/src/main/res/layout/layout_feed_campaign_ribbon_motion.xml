@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="40dp"
-    android:background="@drawable/feed_tag_product_background"
     android:paddingStart="12dp"
     android:paddingEnd="12dp"
     app:layoutDescription="@xml/layout_feed_campaign_ribbon_motion_scene"
