@@ -24,5 +24,6 @@ data class TrackingPageState(
     val trackingData: TrackingDataModel? = null,
     val retryBooking: RetryBookingResponse? = null,
     val retryAvailability: RetryAvailabilityResponse? = null,
+    val error: Throwable? = null,
     val tickerData: TickerModel? = null
 )

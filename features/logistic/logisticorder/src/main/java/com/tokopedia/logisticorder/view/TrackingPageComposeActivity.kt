@@ -27,7 +27,7 @@ import com.tokopedia.logisticorder.uimodel.TippingModel
 import com.tokopedia.logisticorder.uimodel.TrackingPageEvent
 import com.tokopedia.logisticorder.utils.TippingConstant
 import com.tokopedia.logisticorder.view.bottomsheet.DriverInfoBottomSheet
-import com.tokopedia.logisticorder.view.tipping.TrackingPageScreen
+import com.tokopedia.logisticorder.view.component.TrackingPageScreen
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
