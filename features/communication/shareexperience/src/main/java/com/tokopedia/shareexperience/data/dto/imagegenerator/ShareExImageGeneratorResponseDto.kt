@@ -3,8 +3,9 @@ package com.tokopedia.shareexperience.data.dto.imagegenerator
 import com.google.gson.annotations.SerializedName
 
 data class ShareExImageGeneratorResponseDto(
-    @SerializedName("args")
-    val args: List<ShareExImageGeneratorArgResponseDto> = listOf(),
-    @SerializedName("sourceId")
+    @SerializedName("image_url")
+    val imageUrl: String = "",
+
+    @SerializedName("source_id")
     val sourceId: String = ""
 )

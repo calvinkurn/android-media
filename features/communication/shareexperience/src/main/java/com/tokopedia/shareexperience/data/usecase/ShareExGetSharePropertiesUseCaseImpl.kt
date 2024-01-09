@@ -10,7 +10,7 @@ import com.tokopedia.shareexperience.data.dto.ShareExSharePropertiesResponseDto
 import com.tokopedia.shareexperience.data.dto.ShareExWrapperResponseDto
 import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateEligibilityResponseDto
 import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateRegistrationWidgetResponseDto
-import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExImageGeneratorResponseDto
+import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExPropertyImageGeneratorResponseDto
 import com.tokopedia.shareexperience.data.mapper.ShareExPropertyMapper
 import com.tokopedia.shareexperience.data.repository.ShareExGetSharePropertiesQuery
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
@@ -99,7 +99,7 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                     link = "tokopedia://topchat"
                 ),
                 affiliateEligibility = null,
-                imageGeneratorPayload = ShareExImageGeneratorResponseDto() // TODO: setup this
+                imageGeneratorPayload = ShareExPropertyImageGeneratorResponseDto() // TODO: setup this
             ),
             ShareExPropertyResponseDto(
                 chipTitle = "Semua Produk",
@@ -119,7 +119,7 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                     badge = "Komisi Extra",
                     expiredDate = "Hingga 31 Des 2024"
                 ),
-                imageGeneratorPayload = ShareExImageGeneratorResponseDto() // TODO: setup this
+                imageGeneratorPayload = ShareExPropertyImageGeneratorResponseDto() // TODO: setup this
             ),
             ShareExPropertyResponseDto(
                 chipTitle = "Etalase",
@@ -137,7 +137,7 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                 affiliateEligibility = ShareExAffiliateEligibilityResponseDto(
                     commission = "<b>Komisi Rp16.000</b> / barang dijual"
                 ),
-                imageGeneratorPayload = ShareExImageGeneratorResponseDto() // TODO: setup this
+                imageGeneratorPayload = ShareExPropertyImageGeneratorResponseDto() // TODO: setup this
             ),
             ShareExPropertyResponseDto(
                 chipTitle = "Feed",
@@ -147,7 +147,7 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                 ),
                 affiliateRegistrationWidget = ShareExAffiliateRegistrationWidgetResponseDto(),
                 affiliateEligibility = null,
-                imageGeneratorPayload = ShareExImageGeneratorResponseDto() // TODO: setup this
+                imageGeneratorPayload = ShareExPropertyImageGeneratorResponseDto() // TODO: setup this
             )
         )
     }

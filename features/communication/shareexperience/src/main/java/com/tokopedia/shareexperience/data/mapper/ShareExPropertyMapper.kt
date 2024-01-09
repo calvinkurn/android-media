@@ -1,7 +1,7 @@
 package com.tokopedia.shareexperience.data.mapper
 
 import com.tokopedia.shareexperience.data.dto.ShareExBottomSheetResponseDto
-import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExImageGeneratorArgResponseDto
+import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExPropertyImageGeneratorArgResponseDto
 import com.tokopedia.shareexperience.data.util.ShareExDefaultValue.DEFAULT_TITLE
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.ShareExImageGeneratorModel
@@ -56,7 +56,7 @@ class ShareExPropertyMapper @Inject constructor(
         )
     }
 
-    private fun List<ShareExImageGeneratorArgResponseDto>.mapToPayload(): Map<String, String> {
+    private fun List<ShareExPropertyImageGeneratorArgResponseDto>.mapToPayload(): Map<String, String> {
         val result = mutableMapOf<String, String>()
         this.forEach {
             result[it.key] = it.value

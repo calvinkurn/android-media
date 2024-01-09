@@ -16,11 +16,10 @@ import com.tokopedia.shareexperience.ui.model.chip.ShareExChipsUiModel
 import com.tokopedia.shareexperience.ui.model.image.ShareExImageCarouselUiModel
 import com.tokopedia.shareexperience.ui.model.image.ShareExImageUiModel
 
-fun ShareExBottomSheetModel.map(
+fun ShareExBottomSheetModel.getSelectedChipPosition(
     selectedIdChip: String
-): List<Visitable<in ShareExTypeFactory>> {
-    val position = this.body.listChip.findIndexIgnoreCase(selectedIdChip).coerceAtLeast(0)
-    return map(position = position)
+): Int {
+    return this.body.listChip.findIndexIgnoreCase(selectedIdChip).coerceAtLeast(0)
 }
 
 fun ShareExBottomSheetModel.map(
@@ -52,7 +51,7 @@ fun ShareExBottomSheetModel.map(
         val listImageUiModel = shareExPropertyModel.listImage.mapIndexed { index, imageUrl ->
             ShareExImageUiModel(imageUrl = imageUrl, isSelected = index == 0)
         }
-        if (listImageUiModel.isNotEmpty()) {
+        if (listImageUiModel.size > 1) {
             val imageCarouselUiModel = ShareExImageCarouselUiModel(listImageUiModel)
             result.add(imageCarouselUiModel)
         }
@@ -146,4 +145,8 @@ fun ShareExBottomSheetModel.mapError(
 
         result
     }
+}
+
+fun ShareExBottomSheetModel.getSelectedImageUrl(chipPosition: Int, imagePosition: Int): String {
+    return this.body.listShareProperty.getOrNull(chipPosition)?.listImage?.getOrNull(imagePosition) ?: ""
 }

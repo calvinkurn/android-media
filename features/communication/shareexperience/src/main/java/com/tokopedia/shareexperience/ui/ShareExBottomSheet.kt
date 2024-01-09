@@ -151,19 +151,15 @@ class ShareExBottomSheet :
     }
 
     override fun onImageChanged(imageUrl: String) {
-        if (imageUrl.isNotBlank()) {
-            viewModel.processAction(ShareExAction.UpdateShareImage(imageUrl))
-        }
+        viewModel.processAction(ShareExAction.UpdateShareImage(imageUrl))
     }
 
     override fun onAffiliateRegistrationCardClicked(appLink: String) {
-        if (appLink.isNotBlank()) {
-            viewModel.processAction(ShareExAction.NavigateToPage(appLink))
-        }
+        viewModel.processAction(ShareExAction.NavigateToPage(appLink))
     }
 
     override fun onChannelClicked(element: ShareExChannelItemModel) {
-        // TODO
+        viewModel.processAction(ShareExAction.GenerateLink(element.idEnum))
     }
 
     override fun onErrorActionClicked() {

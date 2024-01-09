@@ -3,7 +3,7 @@ package com.tokopedia.shareexperience.data.dto
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateEligibilityResponseDto
 import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateRegistrationWidgetResponseDto
-import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExImageGeneratorResponseDto
+import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExPropertyImageGeneratorResponseDto
 
 data class ShareExPropertyResponseDto(
     @SerializedName("chipTitle")
@@ -15,7 +15,7 @@ data class ShareExPropertyResponseDto(
     @SerializedName("affiliateEligibility")
     val affiliateEligibility: ShareExAffiliateEligibilityResponseDto? = null,
     @SerializedName("imageGeneratorPayload")
-    val imageGeneratorPayload: ShareExImageGeneratorResponseDto = ShareExImageGeneratorResponseDto(),
+    val imageGeneratorPayload: ShareExPropertyImageGeneratorResponseDto = ShareExPropertyImageGeneratorResponseDto(),
     @SerializedName("generateLinkProperties")
     val generateLinkProperties: ShareExGenerateLinkPropertiesResponseDto = ShareExGenerateLinkPropertiesResponseDto()
 )
