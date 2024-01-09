@@ -1177,11 +1177,21 @@ class ChatbotFragment2 :
     private fun handleReplyBox(toShowSmallReplyBox: Boolean) {
         if (toShowSmallReplyBox) {
             getBindingView().addCommentArea.show()
-            smallReplyBox?.show()
             bigReplyBox?.hide()
+            smallReplyBox?.apply {
+                if (bigReplyBox?.sendButton?.isSlowModeRunning == true) {
+                    sendButton?.startSlowDown(bigReplyBox?.sendButton?.currentSlowModeDurationInSecond ?: 0)
+                }
+                show()
+            }
         } else {
             smallReplyBox?.hide()
-            bigReplyBox?.show()
+            bigReplyBox?.apply {
+                if (smallReplyBox?.sendButton?.isSlowModeRunning == true) {
+                    sendButton?.startSlowDown(smallReplyBox?.sendButton?.currentSlowModeDurationInSecond ?: 0)
+                }
+                show()
+            }
         }
     }
 
@@ -1193,22 +1203,23 @@ class ChatbotFragment2 :
     }
 
     private fun setupSlowModeSendButton(isSlowMode: Boolean, slowModeDurationInSeconds: Int) {
-//        smallReplyBox?.sendButton?.apply {
-//            isSlowModeEnabled = isSlowMode
-//            slowModeDurationInSecond = slowModeDurationInSeconds
-//        }
-//        bigReplyBox?.sendButton?.apply {
-//            isSlowModeEnabled = isSlowMode
-//            slowModeDurationInSecond = slowModeDurationInSeconds
-//        }
         smallReplyBox?.sendButton?.apply {
-            isSlowModeEnabled = true
-            slowModeDurationInSecond = 5
+            isSlowModeEnabled = isSlowMode
+            initialSlowModeDurationInSecond = slowModeDurationInSeconds
         }
         bigReplyBox?.sendButton?.apply {
-            isSlowModeEnabled = true
-            slowModeDurationInSecond = 5
+            isSlowModeEnabled = isSlowMode
+            initialSlowModeDurationInSecond = slowModeDurationInSeconds
         }
+
+//        smallReplyBox?.sendButton?.apply {
+//            isSlowModeEnabled = true
+//            initialSlowModeDurationInSecond = 8
+//        }
+//        bigReplyBox?.sendButton?.apply {
+//            isSlowModeEnabled = true
+//            initialSlowModeDurationInSecond = 8
+//        }
     }
 
     override fun onCreateViewState(view: View): BaseChatViewState {

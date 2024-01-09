@@ -21,7 +21,8 @@ class SlowModeSendButton(context: Context, attributeSet: AttributeSet) :
     private var countDownTimer: CountDownTimer? = null
 
     var isSlowModeEnabled: Boolean = false
-    var slowModeDurationInSecond: Int = 0
+    var initialSlowModeDurationInSecond: Int = 0
+    var currentSlowModeDurationInSecond: Int = 0
     var isSlowModeRunning: Boolean = false
 
     init {
@@ -36,10 +37,11 @@ class SlowModeSendButton(context: Context, attributeSet: AttributeSet) :
     }
 
     private fun initCountDownTimer() {
-        countDownTimer = object : CountDownTimer((slowModeDurationInSecond * 1000).toLong(), 1000) {
+        countDownTimer = object : CountDownTimer((initialSlowModeDurationInSecond * 1000).toLong(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val text = (millisUntilFinished / 1000) + 1
                 textTimer?.text = text.toString()
+                currentSlowModeDurationInSecond = ((millisUntilFinished / 1000) + 1).toInt()
             }
 
             override fun onFinish() {
@@ -64,21 +66,21 @@ class SlowModeSendButton(context: Context, attributeSet: AttributeSet) :
         textTimer?.gone()
     }
 
-    fun startSlowDown() {
+    fun startSlowDown(durationInSecond: Int = initialSlowModeDurationInSecond) {
         if (isSlowModeRunning) return
         if (isSlowModeEnabled) {
             isSlowModeRunning = true
-            circleAnimation?.loading(slowModeDurationInSecond)
+            circleAnimation?.loading(durationInSecond)
             iconSend?.gone()
             textTimer?.show()
             initCountDownTimer()
         }
     }
 
-    fun forceStartSlowDown() {
+    fun forceStartSlowDown(durationInSecond: Int = initialSlowModeDurationInSecond) {
         if (isSlowModeEnabled) {
             isSlowModeRunning = true
-            circleAnimation?.loading(slowModeDurationInSecond)
+            circleAnimation?.loading(durationInSecond)
             iconSend?.gone()
             textTimer?.show()
             initCountDownTimer()
