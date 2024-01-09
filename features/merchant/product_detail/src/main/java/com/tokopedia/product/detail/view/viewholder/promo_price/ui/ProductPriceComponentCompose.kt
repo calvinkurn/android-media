@@ -238,7 +238,7 @@ fun PromoPriceCard(
     val data = uiModel ?: return
     ConstraintLayout(
         modifier = Modifier
-            .padding(8.dp)
+            .padding(start = 8.dp, top = 8.dp, end = 8.dp)
             .background(
                 data.cardBackgroundColor.color,
                 RoundedCornerShape(10.dp)
