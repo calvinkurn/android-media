@@ -7,24 +7,20 @@ import com.tokopedia.tokopedianow.common.base.activity.BaseTokoNowActivity
 class TokoNowAllAnnotationActivity: BaseTokoNowActivity() {
     companion object {
         const val KEY_CATEGORY_ID = "category_id"
-        const val KEY_WAREHOUSES = "warehouses"
         const val KEY_ANNOTATION_TYPE = "annotation_type"
     }
 
     override fun getFragment(): Fragment {
         var categoryId: String? = null
-        var warehouses: String? = null
         var annotationType: String? = null
 
         intent.data?.apply {
             categoryId = getQueryParameter(KEY_CATEGORY_ID)
-            warehouses = getQueryParameter(KEY_WAREHOUSES)
             annotationType = getQueryParameter(KEY_ANNOTATION_TYPE)
         }
 
         return TokoNowAllAnnotationFragment.newInstance(
             categoryId = categoryId,
-            warehouses = warehouses,
             annotationType = annotationType
         )
     }

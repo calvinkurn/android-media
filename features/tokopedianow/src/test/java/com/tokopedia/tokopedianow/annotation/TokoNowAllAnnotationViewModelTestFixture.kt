@@ -42,7 +42,6 @@ abstract class TokoNowAllAnnotationViewModelTestFixture {
         coEvery {
             getAllAnnotationPageUseCase.execute(
                 categoryId = categoryId,
-                warehouses = warehouses,
                 annotationType = AnnotationType.valueOf(annotationType),
                 pageLastId = pageLastId
             )
@@ -56,7 +55,6 @@ abstract class TokoNowAllAnnotationViewModelTestFixture {
         coEvery {
             getAllAnnotationPageUseCase.execute(
                 categoryId = categoryId,
-                warehouses = warehouses,
                 annotationType = AnnotationType.valueOf(annotationType),
                 pageLastId = pageLastId
             )
@@ -70,7 +68,6 @@ abstract class TokoNowAllAnnotationViewModelTestFixture {
         coVerify(inverse = inverse) {
             getAllAnnotationPageUseCase.execute(
                 categoryId = categoryId,
-                warehouses = warehouses,
                 annotationType = AnnotationType.valueOf(annotationType),
                 pageLastId = pageLastId
             )

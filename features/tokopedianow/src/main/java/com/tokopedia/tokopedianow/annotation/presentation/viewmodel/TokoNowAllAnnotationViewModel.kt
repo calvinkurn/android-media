@@ -42,13 +42,11 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
 
     fun getFirstPage(
         categoryId: String,
-        warehouses: String,
         annotationType: String
     ) {
         launchCatchError(block = {
             val response = getAllAnnotationPageUseCase.execute(
                 categoryId = categoryId,
-                warehouses = warehouses,
                 annotationType = AnnotationType.valueOf(annotationType),
                 pageLastId = String.EMPTY
             )
@@ -69,7 +67,6 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
 
     fun loadMore(
         categoryId: String,
-        warehouses: String,
         annotationType: String,
         isAtTheBottomOfThePage: Boolean
     ) {
@@ -79,7 +76,6 @@ class TokoNowAllAnnotationViewModel @Inject constructor(
                     launchCatchError(block = {
                         val response = getAllAnnotationPageUseCase.execute(
                             categoryId = categoryId,
-                            warehouses = warehouses,
                             annotationType = AnnotationType.valueOf(annotationType),
                             pageLastId = needToLoadMoreData.pageLastId
                         )
