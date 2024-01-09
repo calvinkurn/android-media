@@ -33,7 +33,6 @@ import com.tokopedia.appdownloadmanager_common.presentation.util.AppDownloadMana
 import com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.Companion.APK_URL
 import com.tokopedia.appdownloadmanager_common.presentation.viewmodel.DownloadManagerViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -57,6 +56,8 @@ class AppDownloadingBottomSheet :
     private var appBetaVersionInfoModel: AppVersionBetaInfoModel? = null
 
     private var startAppDownloading: (() -> Unit)? = null
+
+    private var showToasterError: ((errorMessage: String) -> Unit)? = null
 
     private var downloadManagerSuccessListener: DownloadManagerSuccessListener? = null
 
@@ -152,6 +153,7 @@ class AppDownloadingBottomSheet :
         downloadManagerUpdateModel = null
         startAppDownloading = null
         downloadManagerSuccessListener = null
+        showToasterError = null
         super.onDestroy()
     }
 
@@ -220,7 +222,8 @@ class AppDownloadingBottomSheet :
     }
 
     private fun onDownloadFailed(reason: String) {
-        showErrorToaster(reason)
+        dismiss()
+        showToasterError?.invoke(reason)
     }
 
     private fun onDownloadSuccess(fileNamePath: String) {
@@ -243,10 +246,12 @@ class AppDownloadingBottomSheet :
 
     fun setAppDownloadListener(
         startAppDownloading: () -> Unit,
-        downloadManagerSuccessListener: DownloadManagerSuccessListener
+        downloadManagerSuccessListener: DownloadManagerSuccessListener,
+        showToasterError: (errorMessage: String) -> Unit
     ) {
         this.startAppDownloading = startAppDownloading
         this.downloadManagerSuccessListener = downloadManagerSuccessListener
+        this.showToasterError = showToasterError
     }
 
     fun showBottomSheet(fragmentManager: FragmentManager) {
@@ -254,23 +259,6 @@ class AppDownloadingBottomSheet :
             if (!isVisible) {
                 show(it, TAG)
             }
-        }
-    }
-
-    private fun showErrorToaster(reason: String) {
-        val view = view?.rootView
-
-        view?.let {
-            Toaster.build(
-                it,
-                reason,
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_ERROR,
-                actionText = getString(appdownloadmanager_commonR.string.update_app_version_toaster_oke),
-                clickListener = {
-                    viewModel.updateDownloadingState()
-                }
-            ).show()
         }
     }
 

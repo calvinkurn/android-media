@@ -14,9 +14,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.File
 import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class AppDownloadManagerHelper(
     activityRef: WeakReference<Activity>
@@ -91,7 +93,18 @@ class AppDownloadManagerHelper(
         val view = activityRef.get()?.window?.decorView?.rootView
 
         view?.let {
-            Toaster.build(
+            val toaster = Toaster
+
+            try {
+                activityRef.get()?.let { activityRef ->
+                    toaster.toasterCustomBottomHeight =
+                        activityRef.resources.getDimensionPixelSize(unifycomponentsR.dimen.layout_lvl6)
+                }
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
+
+            toaster.build(
                 it,
                 reason,
                 Toaster.LENGTH_LONG,

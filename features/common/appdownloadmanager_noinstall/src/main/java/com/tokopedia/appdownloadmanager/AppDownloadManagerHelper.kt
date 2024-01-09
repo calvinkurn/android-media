@@ -16,13 +16,16 @@ import com.tokopedia.appdownloadmanager_common.presentation.bottomsheet.AppDownl
 import com.tokopedia.appdownloadmanager_common.presentation.dialog.AppFileManagerDialog
 import com.tokopedia.appdownloadmanager_common.presentation.listener.DownloadManagerSuccessListener
 import com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.File
 import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class AppDownloadManagerHelper(
     activityRef: WeakReference<Activity>
@@ -42,7 +45,10 @@ class AppDownloadManagerHelper(
                         startAppDownloading = {
                             setCacheExpire()
                         },
-                        this@AppDownloadManagerHelper
+                        this@AppDownloadManagerHelper,
+                        showToasterError = { errorMessage ->
+                            showErrorToaster(errorMessage)
+                        }
                     )
                     onBoardingBottomSheet.setOnDismissListener {
                         setCacheExpire()
@@ -79,6 +85,30 @@ class AppDownloadManagerHelper(
                     FirebaseCrashlytics.getInstance().recordException(e)
                 }
             }
+        }
+    }
+
+    private fun showErrorToaster(reason: String) {
+        val view = activityRef.get()?.window?.decorView?.rootView
+
+        view?.let {
+            val toaster = Toaster
+
+            try {
+                activityRef.get()?.let { activityRef ->
+                    toaster.toasterCustomBottomHeight =
+                        activityRef.resources.getDimensionPixelSize(unifycomponentsR.dimen.layout_lvl6)
+                }
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
+
+            toaster.build(
+                it,
+                reason,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).show()
         }
     }
 
