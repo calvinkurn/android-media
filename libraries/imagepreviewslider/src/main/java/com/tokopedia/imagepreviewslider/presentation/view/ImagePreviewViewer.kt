@@ -11,6 +11,8 @@ import com.tokopedia.imagepreviewslider.presentation.adapter.SpaceItemDecoration
 import com.tokopedia.imagepreviewslider.presentation.listener.ImageSliderListener
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.view_image_overlay.view.*
+import com.tokopedia.resources.common.R as resourcescommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by jessica on 2019-12-16
@@ -48,7 +50,7 @@ class ImagePreviewViewer {
     private fun setupOverlayView(title: String = "", imageList: List<String>? = null, context: Context?, index: Int) {
         overlayView = ImageOverlayView(context).apply {
             val overlayBackButton = btn_arrow_back
-            overlayBackButton.setBackgroundResource(com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24)
+            overlayBackButton.setBackgroundResource(resourcescommonR.drawable.ic_system_action_back_grayscale_24)
             overlayBackButton.setOnClickListener {
                 viewer.close()
             }
@@ -80,7 +82,7 @@ class ImagePreviewViewer {
     private fun startViewer(imageList: List<String>?, imageViewTransitionFrom: ImageView?, context: Context?, index: Int) {
         context?.let {
             viewer = StfalconImageViewer.Builder<String>(context, imageList, ::loadImages)
-                .withBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_96))
+                .withBackgroundColor(androidx.core.content.ContextCompat.getColor(it, unifyprinciplesR.color.Unify_Static_Black_96))
                 .withStartPosition(index)
                 .withTransitionFrom(imageViewTransitionFrom)
                 .withImageChangeListener {
