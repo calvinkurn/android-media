@@ -18,7 +18,6 @@ import com.tokopedia.deals.ui.search.model.response.Category
 import com.tokopedia.deals.ui.search.model.response.CuratedData
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -82,7 +81,6 @@ class DealCategoryViewModel @Inject constructor(
 
     fun getCategoryBrandData(category: String, coordinates: String, location: String, page: Int = 1, isFilter: Boolean) {
         launch {
-            Timber.d("start search $category")
             val rawQuery = DealsSearchGqlQueries.getEventSearchQuery()
             dealsSearchUseCase.getDealsSearchResult(
                 onSuccessSearch(page, isFilter, category), onErrorSearch(),
@@ -104,7 +102,6 @@ class DealCategoryViewModel @Inject constructor(
 
     private fun onSuccessSearch(page: Int, isFilter: Boolean, category: String): (SearchData) -> Unit {
         return {
-            Timber.d("success search from $category")
             if (page == 1) {
                 val categoryLayout = if (it.eventSearch.brands.isNotEmpty() ||
                     it.eventSearch.products.isNotEmpty()
@@ -122,7 +119,6 @@ class DealCategoryViewModel @Inject constructor(
 
     private fun onErrorSearch(): (Throwable) -> Unit {
         return {
-            Timber.e(it, "event_search error")
             privateErrorMessage.value = it
         }
     }
@@ -137,7 +133,6 @@ class DealCategoryViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        Timber.d("vm cleared")
         dealsSearchUseCase.cancelJobs()
     }
 
