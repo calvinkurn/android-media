@@ -3,8 +3,8 @@ package com.tokopedia.deals.ui.search.ui.adapter.viewholder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.deals.R
+import com.tokopedia.deals.data.entity.Category
 import com.tokopedia.deals.ui.search.listener.DealsSearchListener
-import com.tokopedia.deals.ui.search.model.response.Category
 import com.tokopedia.unifycomponents.ChipsUnify
 
 class CuratedViewHolder(itemView: View, private val dealsSearchListener: DealsSearchListener): RecyclerView.ViewHolder(itemView) {

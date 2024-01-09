@@ -1,4 +1,4 @@
-package com.tokopedia.deals.ui.category.ui.fragment
+package com.tokopedia.deals.ui.category
 
 import android.os.Bundle
 import android.view.LayoutInflater

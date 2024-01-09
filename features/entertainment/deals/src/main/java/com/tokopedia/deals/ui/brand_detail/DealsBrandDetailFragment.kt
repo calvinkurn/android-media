@@ -19,10 +19,10 @@ import com.tokopedia.deals.R
 import com.tokopedia.deals.analytics.DealsAnalytics
 import com.tokopedia.deals.common.bottomsheet.DealsBottomSheetNoInternetConnection
 import com.tokopedia.deals.databinding.FragmentDealsBrandDetailBinding
+import com.tokopedia.deals.di.DealsComponent
 import com.tokopedia.deals.ui.brand_detail.DealsBrandDetailActivity.Companion.EXTRA_SEO_URL
 import com.tokopedia.deals.ui.brand_detail.data.Brand
 import com.tokopedia.deals.ui.brand_detail.data.Product
-import com.tokopedia.deals.ui.brand_detail.di.DealsBrandDetailComponent
 import com.tokopedia.deals.ui.brand_detail.util.DealsBrandDetailShare
 import com.tokopedia.deals.ui.location_picker.model.response.Location
 import com.tokopedia.deals.utils.DealsLocationUtils
@@ -72,7 +72,7 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        getComponent(DealsBrandDetailComponent::class.java).inject(this)
+        getComponent(DealsComponent::class.java).inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

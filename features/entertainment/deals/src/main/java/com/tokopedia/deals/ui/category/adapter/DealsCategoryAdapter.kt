@@ -1,4 +1,4 @@
-package com.tokopedia.deals.ui.category.ui.adapter
+package com.tokopedia.deals.ui.category.adapter
 
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.deals.common.listener.DealsBrandActionListener

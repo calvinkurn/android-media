@@ -25,6 +25,7 @@ import com.tokopedia.deals.analytics.DealsAnalytics
 import com.tokopedia.deals.common.listener.CurrentLocationCallback
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
+import com.tokopedia.deals.data.entity.Category
 import com.tokopedia.deals.databinding.FragmentDealsSearchBinding
 import com.tokopedia.deals.databinding.LayoutDealsSearchBarBinding
 import com.tokopedia.deals.ui.brand.DealsBrandActivity
@@ -34,7 +35,6 @@ import com.tokopedia.deals.ui.search.di.component.DealsSearchComponent
 import com.tokopedia.deals.ui.search.domain.viewmodel.DealsSearchViewModel
 import com.tokopedia.deals.ui.search.listener.DealsSearchListener
 import com.tokopedia.deals.ui.search.mapper.DealsSearchMapper
-import com.tokopedia.deals.ui.search.model.response.Category
 import com.tokopedia.deals.ui.search.model.response.InitialLoadData
 import com.tokopedia.deals.ui.search.model.response.Item
 import com.tokopedia.deals.ui.search.model.visitor.MoreBrandModel

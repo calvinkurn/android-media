@@ -2,7 +2,7 @@ package com.tokopedia.deals.ui.search.model.visitor
 
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.deals.ui.search.model.response.Category
+import com.tokopedia.deals.data.entity.Category
 import com.tokopedia.deals.ui.search.ui.typefactory.DealsSearchTypeFactory
 import kotlinx.android.parcel.Parcelize
 

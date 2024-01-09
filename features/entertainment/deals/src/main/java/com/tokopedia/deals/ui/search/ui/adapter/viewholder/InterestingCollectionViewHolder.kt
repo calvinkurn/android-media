@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.deals.R
+import com.tokopedia.deals.data.entity.Category
 import com.tokopedia.deals.ui.search.listener.DealsSearchListener
 import com.tokopedia.deals.ui.search.mapper.DealsSearchMapper
-import com.tokopedia.deals.ui.search.model.response.Category
 import com.tokopedia.deals.ui.search.model.visitor.CuratedModel
 import com.tokopedia.deals.ui.search.ui.adapter.DealsCuratedAdapter
 

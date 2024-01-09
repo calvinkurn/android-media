@@ -7,10 +7,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.deals.DealsComponentInstance
 import com.tokopedia.deals.R
-import com.tokopedia.deals.ui.brand_detail.di.DaggerDealsBrandDetailComponent
-import com.tokopedia.deals.ui.brand_detail.di.DealsBrandDetailComponent
+import com.tokopedia.deals.di.DealsComponent
 
-class DealsBrandDetailActivity: BaseSimpleActivity(), HasComponent<DealsBrandDetailComponent> {
+class DealsBrandDetailActivity : BaseSimpleActivity(), HasComponent<DealsComponent> {
 
     private var seoUrl = ""
 
@@ -29,10 +28,8 @@ class DealsBrandDetailActivity: BaseSimpleActivity(), HasComponent<DealsBrandDet
         supportActionBar?.hide()
     }
 
-    override fun getComponent(): DealsBrandDetailComponent =
-            DaggerDealsBrandDetailComponent.builder()
-                    .dealsComponent(DealsComponentInstance.getDealsComponent(application, this))
-                    .build()
+    override fun getComponent(): DealsComponent =
+        DealsComponentInstance.getDealsComponent(application, this)
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menu?.clear()

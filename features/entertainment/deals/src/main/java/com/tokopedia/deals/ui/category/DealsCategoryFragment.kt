@@ -1,4 +1,4 @@
-package com.tokopedia.deals.ui.category.ui.fragment
+package com.tokopedia.deals.ui.category
 
 import android.content.Intent
 import android.graphics.Rect
@@ -30,17 +30,15 @@ import com.tokopedia.deals.common.ui.dataview.DealsChipsDataView
 import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
 import com.tokopedia.deals.common.ui.fragment.DealsBaseFragment
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
+import com.tokopedia.deals.data.entity.Category
 import com.tokopedia.deals.databinding.FragmentDealsCategoryBinding
 import com.tokopedia.deals.di.DealsComponent
 import com.tokopedia.deals.ui.brand.DealsBrandActivity
 import com.tokopedia.deals.ui.brand.model.DealsEmptyDataView
+import com.tokopedia.deals.ui.category.adapter.DealsCategoryAdapter
 import com.tokopedia.deals.ui.category.listener.DealsCategoryFilterBottomSheetListener
-import com.tokopedia.deals.ui.category.ui.activity.DealsCategoryActivity
-import com.tokopedia.deals.ui.category.ui.adapter.DealsCategoryAdapter
-import com.tokopedia.deals.ui.category.ui.viewmodel.DealCategoryViewModel
 import com.tokopedia.deals.ui.home.ui.fragment.DealsHomeFragment
 import com.tokopedia.deals.ui.location_picker.model.response.Location
-import com.tokopedia.deals.ui.search.model.response.Category
 import com.tokopedia.deals.ui.search.ui.activity.DealsSearchActivity
 import com.tokopedia.deals.utils.DealsLocationUtils
 import com.tokopedia.kotlin.extensions.view.hide

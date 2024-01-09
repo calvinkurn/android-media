@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.deals.ui.category.domain.GetChipsCategoryUseCase
-import com.tokopedia.deals.ui.search.model.response.CuratedData
+import com.tokopedia.deals.data.entity.CuratedData
+import com.tokopedia.deals.domain.GetChipsCategoryUseCase
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

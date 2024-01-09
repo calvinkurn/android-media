@@ -1,4 +1,4 @@
-package com.tokopedia.deals.ui.category.ui.viewmodel
+package com.tokopedia.deals.ui.category
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,13 +8,13 @@ import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.common.ui.dataview.ChipDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
+import com.tokopedia.deals.data.entity.Category
 import com.tokopedia.deals.domain.DealsSearchUseCase
-import com.tokopedia.deals.ui.category.domain.GetChipsCategoryUseCase
-import com.tokopedia.deals.ui.category.ui.dataview.ProductListDataView
-import com.tokopedia.deals.ui.category.utils.MapperCategoryLayout
+import com.tokopedia.deals.domain.GetChipsCategoryUseCase
+import com.tokopedia.deals.ui.category.dataview.ProductListDataView
+import com.tokopedia.deals.ui.category.mapper.MapperCategoryLayout
 import com.tokopedia.deals.ui.location_picker.model.response.Location
 import com.tokopedia.deals.ui.search.domain.DealsSearchGqlQueries
-import com.tokopedia.deals.ui.search.model.response.Category
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

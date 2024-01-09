@@ -1,4 +1,4 @@
-package com.tokopedia.deals.ui.category.ui.dataview
+package com.tokopedia.deals.ui.category.dataview
 
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
 import com.tokopedia.deals.common.ui.dataview.ProductCardDataView

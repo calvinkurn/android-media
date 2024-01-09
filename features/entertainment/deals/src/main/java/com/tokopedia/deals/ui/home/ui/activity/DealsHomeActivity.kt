@@ -9,7 +9,7 @@ import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
 import com.tokopedia.deals.di.DaggerDealsComponent
 import com.tokopedia.deals.di.DealsComponent
 import com.tokopedia.deals.di.DealsModule
-import com.tokopedia.deals.ui.category.ui.activity.DealsCategoryActivity
+import com.tokopedia.deals.ui.category.DealsCategoryActivity
 import com.tokopedia.deals.ui.home.ui.fragment.DealsHomeFragment
 import com.tokopedia.deals.ui.location_picker.model.response.Location
 

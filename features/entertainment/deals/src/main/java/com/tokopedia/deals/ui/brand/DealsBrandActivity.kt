@@ -12,7 +12,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.deals.common.ui.activity.DealsBaseBrandCategoryActivity
 import com.tokopedia.deals.ui.brand.listener.DealsBrandSearchTabListener
-import com.tokopedia.deals.ui.category.ui.activity.DealsCategoryActivity
+import com.tokopedia.deals.ui.category.DealsCategoryActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

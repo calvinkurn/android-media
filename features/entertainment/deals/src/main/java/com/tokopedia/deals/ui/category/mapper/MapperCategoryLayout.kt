@@ -1,4 +1,4 @@
-package com.tokopedia.deals.ui.category.utils
+package com.tokopedia.deals.ui.category.mapper
 
 import android.content.Context
 import androidx.annotation.StringRes
@@ -11,8 +11,8 @@ import com.tokopedia.deals.common.ui.dataview.ChipDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.common.ui.dataview.ProductCardDataView
+import com.tokopedia.deals.data.entity.Category
 import com.tokopedia.deals.ui.brand.model.DealsEmptyDataView
-import com.tokopedia.deals.ui.search.model.response.Category
 import com.tokopedia.deals.utils.DealsUtils
 import com.tokopedia.deals.utils.DealsUtils.getLabelColor
 import javax.inject.Inject

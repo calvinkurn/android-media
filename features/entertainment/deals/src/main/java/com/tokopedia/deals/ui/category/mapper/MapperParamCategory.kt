@@ -1,4 +1,4 @@
-package com.tokopedia.deals.ui.category.utils
+package com.tokopedia.deals.ui.category.mapper
 
 import com.tokopedia.deals.common.model.request.RequestParam
 import com.tokopedia.deals.ui.search.DealsSearchConstants.BRAND_PRODUCT_TREE

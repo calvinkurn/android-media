@@ -13,7 +13,7 @@ import com.tokopedia.deals.R
 import com.tokopedia.deals.common.ui.adapter.DealsFragmentPagerAdapter
 import com.tokopedia.deals.common.ui.viewmodel.DealsBrandCategoryActivityViewModel
 import com.tokopedia.deals.databinding.ActivityBaseBrandCategoryDealsBinding
-import com.tokopedia.deals.ui.category.ui.activity.DealsCategoryActivity
+import com.tokopedia.deals.ui.category.DealsCategoryActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster

@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.deals.R
+import com.tokopedia.deals.data.entity.Category
 import com.tokopedia.deals.ui.search.listener.DealsSearchListener
-import com.tokopedia.deals.ui.search.model.response.Category
 import com.tokopedia.deals.ui.search.ui.adapter.viewholder.CuratedViewHolder
 
 class DealsCuratedAdapter(private val dealsSearchListener: DealsSearchListener) : RecyclerView.Adapter<CuratedViewHolder>() {

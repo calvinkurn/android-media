@@ -2,7 +2,7 @@ package com.tokopedia.deals.ui.search.listener
 
 import android.view.View
 import com.tokopedia.deals.common.model.response.Brand
-import com.tokopedia.deals.ui.search.model.response.Category
+import com.tokopedia.deals.data.entity.Category
 import com.tokopedia.deals.ui.search.model.response.Item
 import com.tokopedia.deals.ui.search.model.visitor.MoreBrandModel
 import com.tokopedia.deals.ui.search.model.visitor.VoucherModel
