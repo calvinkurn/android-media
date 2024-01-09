@@ -12,10 +12,13 @@ import com.tokopedia.tokopedianow.annotation.domain.query.GetAllAnnotationPageQu
 import com.tokopedia.tokopedianow.annotation.domain.query.GetAllAnnotationPageQuery.PARAM_PAGE_LAST_ID
 import com.tokopedia.tokopedianow.annotation.domain.query.GetAllAnnotationPageQuery.PARAM_PAGE_SOURCE
 import com.tokopedia.tokopedianow.annotation.domain.query.GetAllAnnotationPageQuery.PARAM_WAREHOUSES
+import com.tokopedia.tokopedianow.common.domain.mapper.AddressMapper.mapToWarehouses
+import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class GetAllAnnotationPageUseCase @Inject constructor(
+    private val addressData: TokoNowLocalAddress,
     graphqlRepository: GraphqlRepository
 ) {
 
@@ -23,14 +26,13 @@ class GetAllAnnotationPageUseCase @Inject constructor(
 
     suspend fun execute(
         categoryId: String,
-        warehouses: String,
         annotationType: AnnotationType,
         pageLastId: String
     ): TokoNowGetAnnotationListResponse.GetAnnotationListResponse {
         graphql.apply {
             val requestParams = RequestParams().apply {
                 putString(PARAM_CATEGORY_ID, categoryId)
-                putString(PARAM_WAREHOUSES, warehouses)
+                putString(PARAM_WAREHOUSES, mapToWarehouses(addressData.getAddressData()))
                 putString(PARAM_ANNOTATION_TYPE, annotationType.name)
                 putString(PARAM_PAGE_LAST_ID, pageLastId)
                 putString(PARAM_PAGE_SOURCE, AnnotationPageSource.ALL_ANNOTATION.name)
