@@ -24,10 +24,10 @@ import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowAllAnnotationBinding
 import com.tokopedia.tokopedianow.annotation.presentation.adapter.AllAnnotationAdapter
 import com.tokopedia.tokopedianow.annotation.presentation.adapter.AllAnnotationAdapterTypeFactory
-import com.tokopedia.tokopedianow.annotation.presentation.decoration.AllAnnotationDecoration
 import com.tokopedia.tokopedianow.annotation.presentation.uimodel.AnnotationUiModel
 import com.tokopedia.tokopedianow.annotation.presentation.viewholder.AnnotationViewHolder
 import com.tokopedia.tokopedianow.annotation.presentation.viewmodel.TokoNowAllAnnotationViewModel
+import com.tokopedia.tokopedianow.common.decoration.SeeAllPageDecoration
 import com.tokopedia.tokopedianow.common.util.GlobalErrorUtil.setupLayout
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -116,7 +116,7 @@ class TokoNowAllAnnotationFragment : Fragment() {
     private fun FragmentTokopedianowAllAnnotationBinding.setupRecyclerView() {
         adapter = AllAnnotationAdapter(AllAnnotationAdapterTypeFactory(annotationCallback()))
         rvAllAnnotation.apply {
-            addItemDecoration(AllAnnotationDecoration(getDpFromDimen(context, unifyprinciplesR.dimen.unify_space_16).toIntSafely()))
+            addItemDecoration(SeeAllPageDecoration(getDpFromDimen(context, unifyprinciplesR.dimen.unify_space_16).toIntSafely()))
             addOnScrollListener(loadMoreListener)
             animation = null
             adapter = this@TokoNowAllAnnotationFragment.adapter

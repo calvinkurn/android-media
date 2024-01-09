@@ -1,8 +1,8 @@
 package com.tokopedia.tokopedianow.annotation.presentation.adapter.differ
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.tokopedianow.annotation.presentation.uimodel.AnnotationUiModel
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
-import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.RecipeUiModel
 
 class AllAnnotationDiffer : BaseTokopediaNowDiffer() {
     private var oldList: List<Visitable<*>> = emptyList()
@@ -12,7 +12,7 @@ class AllAnnotationDiffer : BaseTokopediaNowDiffer() {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
 
-        return if (oldItem is RecipeUiModel && newItem is RecipeUiModel) {
+        return if (oldItem is AnnotationUiModel && newItem is AnnotationUiModel) {
             oldItem.id == newItem.id
         } else {
             oldItem == newItem

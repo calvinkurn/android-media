@@ -1,18 +1,19 @@
-package com.tokopedia.tokopedianow.annotation.presentation.decoration
+package com.tokopedia.tokopedianow.common.decoration
 
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.seeallcategory.persentation.decoration.SeeAllCategoryDecoration
 
-class AllAnnotationDecoration(
+class SeeAllPageDecoration(
     private val spacing: Int,
 ): RecyclerView.ItemDecoration() {
 
     companion object {
         const val INVALID_ITEM_POSITION = -1
+        const val INVALID_VIEW_TYPE = -1
+        const val ADAPTER_START_INDEX = 0
         const val START_PRODUCT_POSITION = 0
         const val MIDDLE_PRODUCT_POSITION = 1
         const val END_PRODUCT_POSITION = 2
@@ -24,11 +25,13 @@ class AllAnnotationDecoration(
                                 view: View,
                                 parent: RecyclerView,
                                 state: RecyclerView.State) {
+
         val absolutePos = parent.getChildAdapterPosition(view)
         val halfSpace = spacing / DIVIDED_BY_TWO
-        val spanIndex = getSpanIndex(view)
 
-        if (isAnnotation(parent, absolutePos)) {
+        if (isAllCategoryItem(parent, absolutePos) || isAllAnnotationItem(parent, absolutePos)) {
+            val spanIndex = getSpanIndex(view)
+
             outRect.left = getLeftProductOffset(spanIndex, halfSpace)
             outRect.top = getTopOffset(halfSpace)
             outRect.right = getRightProductOffset(spanIndex, halfSpace)
@@ -49,17 +52,21 @@ class AllAnnotationDecoration(
         else -> DEFAULT_OFFSET
     }
 
-    private fun getRightProductOffset(relativePos: Int, halfSpace: Int): Int = when (relativePos) {
-        END_PRODUCT_POSITION -> spacing
-        MIDDLE_PRODUCT_POSITION -> halfSpace
-        else -> DEFAULT_OFFSET
+    private fun getRightProductOffset(relativePos: Int, halfSpace: Int): Int {
+        return when (relativePos) {
+            END_PRODUCT_POSITION -> spacing
+            MIDDLE_PRODUCT_POSITION -> halfSpace
+            else -> DEFAULT_OFFSET
+        }
     }
 
-    private fun isAnnotation(parent: RecyclerView, viewPosition: Int): Boolean = R.layout.item_tokopedianow_all_annotation == getRecyclerViewViewType(parent, viewPosition)
+    private fun isAllCategoryItem(parent: RecyclerView, viewPosition: Int): Boolean = R.layout.item_tokopedianow_see_all_category == getRecyclerViewViewType(parent, viewPosition)
+
+    private fun isAllAnnotationItem(parent: RecyclerView, viewPosition: Int): Boolean = R.layout.item_tokopedianow_all_annotation == getRecyclerViewViewType(parent, viewPosition)
 
     private fun getRecyclerViewViewType(parent: RecyclerView, viewPosition: Int): Int {
-        val adapter = parent.adapter ?: return SeeAllCategoryDecoration.INVALID_VIEW_TYPE
-        val isInvalidPosition = viewPosition !in SeeAllCategoryDecoration.ADAPTER_START_INDEX until adapter.itemCount
-        return if (isInvalidPosition) SeeAllCategoryDecoration.INVALID_VIEW_TYPE else adapter.getItemViewType(viewPosition)
+        val adapter = parent.adapter ?: return INVALID_VIEW_TYPE
+        val isInvalidPosition = viewPosition !in ADAPTER_START_INDEX until adapter.itemCount
+        return if (isInvalidPosition) INVALID_VIEW_TYPE else adapter.getItemViewType(viewPosition)
     }
 }

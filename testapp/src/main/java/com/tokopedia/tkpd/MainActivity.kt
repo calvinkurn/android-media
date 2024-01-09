@@ -150,7 +150,7 @@ class MainActivity : BaseActivity() {
         if (model.value.applink.isNotBlank()) {
             RouteManager.route(this, model.value.applink)
         } else {
-            Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
+            RouteManager.route(this, "tokopedia://now/all-annotation?category_id=123&warehouses=1234#2h,54321#fc&annotation_type=BRAND")
         }
     }
 
