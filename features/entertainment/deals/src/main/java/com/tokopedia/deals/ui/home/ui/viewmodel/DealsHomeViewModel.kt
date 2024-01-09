@@ -30,8 +30,7 @@ class DealsHomeViewModel @Inject constructor(
     private val getEventHomeLayoutUseCase: GetEventHomeLayoutUseCase,
     private val getEventHomeBrandPopularUseCase: GetEventHomeBrandPopularUseCase,
     private val getNearestLocationUseCase: GetNearestLocationUseCase
-) :
-    BaseViewModel(dispatcher.main) {
+) : BaseViewModel(dispatcher.main) {
 
     private val _observableEventHomeLayout = MutableLiveData<Result<List<DealsBaseItemDataView>>>()
     val observableEventHomeLayout: LiveData<Result<List<DealsBaseItemDataView>>>
@@ -51,7 +50,12 @@ class DealsHomeViewModel @Inject constructor(
                 val brands = getBrandPopular(location)
                 val location = getNearestLocation(location)
 
-                val homeLayout = dealsHomeMapper.mapLayoutToBaseItemViewModel(eventHomeLayouts, brands, location, mutableTickerData)
+                val homeLayout = dealsHomeMapper.mapLayoutToBaseItemViewModel(
+                    eventHomeLayouts,
+                    brands,
+                    location,
+                    mutableTickerData
+                )
                 _observableEventHomeLayout.postValue(Success(homeLayout))
             } catch (t: Throwable) {
                 _observableEventHomeLayout.postValue(Fail(t))
@@ -62,7 +66,12 @@ class DealsHomeViewModel @Inject constructor(
     private suspend fun getEventHomeLayout(location: Location): List<com.tokopedia.deals.ui.home.data.EventHomeLayout> {
         try {
             val data = getEventHomeLayoutUseCase.apply {
-                useParams(GetEventHomeLayoutUseCase.createParams(location.coordinates, location.locType.name))
+                useParams(
+                    GetEventHomeLayoutUseCase.createParams(
+                        location.coordinates,
+                        location.locType.name
+                    )
+                )
             }.executeOnBackground()
             setTickerData(data.response.ticker)
             return data.response.layout
@@ -74,7 +83,13 @@ class DealsHomeViewModel @Inject constructor(
     private suspend fun getBrandPopular(location: Location): List<Brand> {
         return try {
             val data = getEventHomeBrandPopularUseCase.apply {
-                useParams(GetEventHomeBrandPopularUseCase.createParams(location.coordinates, location.locType.name, POPULAR_BRAND_SIZE))
+                useParams(
+                    GetEventHomeBrandPopularUseCase.createParams(
+                        location.coordinates,
+                        location.locType.name,
+                        POPULAR_BRAND_SIZE
+                    )
+                )
             }.executeOnBackground()
             data.eventSearch.brands
         } catch (t: Throwable) {

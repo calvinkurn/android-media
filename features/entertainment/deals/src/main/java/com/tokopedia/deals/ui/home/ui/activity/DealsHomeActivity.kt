@@ -11,6 +11,7 @@ import com.tokopedia.deals.di.DealsComponent
 import com.tokopedia.deals.di.DealsModule
 import com.tokopedia.deals.ui.category.DealsCategoryActivity
 import com.tokopedia.deals.ui.home.ui.fragment.DealsHomeFragment
+import com.tokopedia.deals.ui.location_picker.DealsLocationConstants
 import com.tokopedia.deals.ui.location_picker.model.response.Location
 
 /**
@@ -36,7 +37,7 @@ class DealsHomeActivity : DealsBaseActivity(), HasComponent<DealsComponent> {
         if (location.name.isEmpty()) {
             baseViewModel.getCurrentLocation(location.coordinates)
         } else {
-            if (location.locType.name.equals(com.tokopedia.deals.ui.location_picker.DealsLocationConstants.LANDMARK, true)) {
+            if (location.locType.name.equals(DealsLocationConstants.LANDMARK, true)) {
                 dealsLocationUtils.updateLocation(location)
                 startActivityForResult(
                     DealsCategoryActivity.getCallingIntent(this, "", true),

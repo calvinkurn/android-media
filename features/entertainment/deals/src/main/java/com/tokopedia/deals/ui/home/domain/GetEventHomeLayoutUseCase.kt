@@ -1,6 +1,8 @@
 package com.tokopedia.deals.ui.home.domain
 
 import com.tokopedia.deals.data.DealsNearestLocationParam
+import com.tokopedia.deals.ui.home.data.DealsEventHome
+import com.tokopedia.deals.ui.home.data.DealsGetHomeLayoutParam
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -15,14 +17,14 @@ import javax.inject.Inject
 
 class GetEventHomeLayoutUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository
-) : UseCase<com.tokopedia.deals.ui.home.data.DealsEventHome.Response>() {
+) : UseCase<DealsEventHome.Response>() {
 
     var params: Map<String, Any> = mapOf()
 
-    override suspend fun executeOnBackground(): com.tokopedia.deals.ui.home.data.DealsEventHome.Response {
+    override suspend fun executeOnBackground(): DealsEventHome.Response {
         val gqlRequest = GraphqlRequest(
-            com.tokopedia.deals.ui.home.domain.DealsGqlHomeQuery.getEventHomeQuery(),
-            com.tokopedia.deals.ui.home.data.DealsEventHome.Response::class.java,
+            DealsGqlHomeQuery.getEventHomeQuery(),
+            DealsEventHome.Response::class.java,
             params
         )
         val gqlResponse = graphqlRepository.response(
@@ -30,11 +32,11 @@ class GetEventHomeLayoutUseCase @Inject constructor(
             GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build()
         )
-        val errors = gqlResponse.getError(com.tokopedia.deals.ui.home.data.DealsEventHome.Response::class.java)
+        val errors = gqlResponse.getError(DealsEventHome.Response::class.java)
         if (!errors.isNullOrEmpty()) {
             throw MessageErrorException(errors[0].message)
         } else {
-            return gqlResponse.getData(com.tokopedia.deals.ui.home.data.DealsEventHome.Response::class.java)
+            return gqlResponse.getData(DealsEventHome.Response::class.java)
         }
     }
 
@@ -51,11 +53,11 @@ class GetEventHomeLayoutUseCase @Inject constructor(
             mapOf(
                 PARAM_CATEGORY to PARAM_CATEGORY_DEALS,
                 PARAM_ADDITIONAL_PARAMS to arrayListOf(
-                    com.tokopedia.deals.ui.home.data.DealsGetHomeLayoutParam(
+                    DealsGetHomeLayoutParam(
                         DealsNearestLocationParam.PARAM_LOCATION_TYPE,
                         locationType
                     ),
-                    com.tokopedia.deals.ui.home.data.DealsGetHomeLayoutParam(
+                    DealsGetHomeLayoutParam(
                         DealsNearestLocationParam.PARAM_COORDINATES,
                         coordinates
                     )
