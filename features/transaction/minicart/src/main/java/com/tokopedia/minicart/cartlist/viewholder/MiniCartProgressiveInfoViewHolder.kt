@@ -25,7 +25,11 @@ class MiniCartProgressiveInfoViewHolder (
 
     override fun bind(element: MiniCartProgressiveInfoUiModel) {
         viewBinding.apply {
-            if (element.isRefreshLayout) showRefreshState() else showNormalState(element)
+            when(element.state) {
+                MiniCartProgressiveInfoUiModel.State.LOADED -> showNormalState(element)
+                MiniCartProgressiveInfoUiModel.State.LOADING -> showLoadingState()
+                MiniCartProgressiveInfoUiModel.State.ERROR -> showRefreshState(element.offerId)
+            }
         }
     }
 
@@ -38,7 +42,7 @@ class MiniCartProgressiveInfoViewHolder (
         tpProgressiveInfo.hide()
     }
 
-    private fun ItemMiniCartProgressiveInfoBinding.showRefreshState() {
+    private fun ItemMiniCartProgressiveInfoBinding.showRefreshState(offerId: Long) {
         root.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_bmgm_mini_cart_progressive_info_refresh)
         iuIcon.hide()
         shimmeringIcon.hide()
@@ -48,8 +52,7 @@ class MiniCartProgressiveInfoViewHolder (
         tpProgressiveInfo.setTextColor(ContextCompat.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950))
         icuChevron.setImage(IconUnify.RELOAD)
         icuChevron.setOnClickListener {
-            showLoadingState()
-            listener?.onRefreshClicked()
+            listener?.onRefreshClicked(offerId)
         }
     }
 

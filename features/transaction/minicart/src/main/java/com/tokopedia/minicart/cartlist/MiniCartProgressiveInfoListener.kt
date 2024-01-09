@@ -1,5 +1,5 @@
 package com.tokopedia.minicart.cartlist
 
 interface MiniCartProgressiveInfoListener {
-    fun onRefreshClicked()
+    fun onRefreshClicked(offerId: Long)
 }

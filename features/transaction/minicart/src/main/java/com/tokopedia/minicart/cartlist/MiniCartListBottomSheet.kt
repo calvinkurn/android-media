@@ -415,8 +415,8 @@ class MiniCartListBottomSheet @Inject constructor(
     }
 
     private fun progressiveInfoCallback() = object: MiniCartProgressiveInfoListener {
-        override fun onRefreshClicked() {
-            viewModel?.getGroupProductTicker()
+        override fun onRefreshClicked(offerId: Long) {
+            viewModel?.getGroupProductTicker(offerId)
         }
     }
 

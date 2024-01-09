@@ -84,7 +84,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
         productBundleList = mapToProductBundleListItemUiModel(widgetResponse.tokonowBundleWidget.data.widgetData)
     )
 
-    fun updateSuccessMiniCartProgressiveInfoUiModel(
+    fun updateMiniCartProgressiveInfoUiModel(
         response: BmGmGetGroupProductTickerResponse,
         uiModel: MiniCartProgressiveInfoUiModel
     ): MiniCartProgressiveInfoUiModel? {
@@ -93,19 +93,20 @@ class MiniCartListUiModelMapper @Inject constructor() {
                 message = bmgmData.offerMessage.firstOrNull().orEmpty(),
                 icon = bmgmData.offerIcon,
                 appLink = bmgmData.offerLandingPageLink,
-                isRefreshLayout = false
+                state = MiniCartProgressiveInfoUiModel.State.LOADED
             )
         }
     }
 
-    fun updateFailMiniCartProgressiveInfoUiModel(
-        uiModel: MiniCartProgressiveInfoUiModel
+    fun updateMiniCartProgressiveInfoUiModel(
+        uiModel: MiniCartProgressiveInfoUiModel,
+        state: MiniCartProgressiveInfoUiModel.State
     ): MiniCartProgressiveInfoUiModel {
         return uiModel.copy(
             message = String.EMPTY,
             icon = String.EMPTY,
             appLink = String.EMPTY,
-            isRefreshLayout = true
+            state = state
         )
     }
 
@@ -421,7 +422,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             message = bmgmData.offerMessage.firstOrNull().orEmpty(),
             icon = bmgmData.offerIcon,
             appLink = bmgmData.offerLandingPageLink,
-            isRefreshLayout = false
+            state = MiniCartProgressiveInfoUiModel.State.LOADED
         )
     }
 

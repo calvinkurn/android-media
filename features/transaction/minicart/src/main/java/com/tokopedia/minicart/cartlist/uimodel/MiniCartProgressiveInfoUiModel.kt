@@ -8,7 +8,13 @@ data class MiniCartProgressiveInfoUiModel(
     val message: String,
     val icon: String,
     val appLink: String,
-    val isRefreshLayout: Boolean
+    val state: State
 ) : Visitable<MiniCartListAdapterTypeFactory> {
     override fun type(typeFactory: MiniCartListAdapterTypeFactory): Int = typeFactory.type(this)
+
+    enum class State {
+        LOADING,
+        LOADED,
+        ERROR
+    }
 }

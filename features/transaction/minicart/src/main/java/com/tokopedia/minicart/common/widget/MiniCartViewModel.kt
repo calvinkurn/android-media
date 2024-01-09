@@ -64,6 +64,7 @@ import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiMode
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
@@ -88,6 +89,7 @@ class MiniCartViewModel @Inject constructor(
         const val TEMPORARY_PARENT_ID_PREFIX = "tmp_"
         const val DEFAULT_PERCENTAGE = 100.0
         const val DEFAULT_WEIGHT = 1000.0f
+        const val INVALID_ID = 1L
     }
 
     private var groupProductTickerJob: Job? = null
@@ -712,31 +714,34 @@ class MiniCartViewModel @Inject constructor(
     }
 
     var count = 1
-    fun getGroupProductTicker() {
+    fun getGroupProductTicker(offerId: Long = INVALID_ID) {
+        if (offerId != INVALID_ID) updateGwpDataInCartLoading(offerId)
+
         groupProductTickerJob?.cancel()
         groupProductTickerJob = launchCatchError(
             block = {
+                delay(3000L)
                 val param = BmGmGetGroupProductTickerParams()
                 val response = getGroupProductTickerUseCase.invoke(param)
                 if (count == 1) {
                     count++
                     throw MessageErrorException()
                 }
-                updateSuccessGwpDataInCart(response)
+                updateGwpDataInCartSuccessful(response)
             },
             onError = {
-                updateFailGwpDataInCart()
+                updateGwpDataInCartFailed()
             }
         )
     }
 
-    private fun updateSuccessGwpDataInCart(
+    private fun updateGwpDataInCartSuccessful(
         response: BmGmGetGroupProductTickerResponse
     ) {
         _miniCartListBottomSheetUiModel.value = _miniCartListBottomSheetUiModel.value?.copy(
             visitables = getVisitables().mapNotNull { uiModel ->
                 when (uiModel) {
-                    is MiniCartProgressiveInfoUiModel -> miniCartListUiModelMapper.updateSuccessMiniCartProgressiveInfoUiModel(
+                    is MiniCartProgressiveInfoUiModel -> miniCartListUiModelMapper.updateMiniCartProgressiveInfoUiModel(
                         response = response,
                         uiModel = uiModel
                     )
@@ -750,10 +755,20 @@ class MiniCartViewModel @Inject constructor(
         )
     }
 
-    private fun updateFailGwpDataInCart() {
+    private fun updateGwpDataInCartLoading(
+        offerId: Long
+    ) {
         _miniCartListBottomSheetUiModel.value = _miniCartListBottomSheetUiModel.value?.copy(
-            visitables = getVisitables().filter { visitable -> visitable !is MiniCartGwpGiftUiModel }.map { uiModel ->
-                if (uiModel is MiniCartProgressiveInfoUiModel) miniCartListUiModelMapper.updateFailMiniCartProgressiveInfoUiModel(uiModel) else uiModel
+            visitables = getVisitables().map { uiModel ->
+                if (uiModel is MiniCartProgressiveInfoUiModel && uiModel.offerId == offerId) miniCartListUiModelMapper.updateMiniCartProgressiveInfoUiModel(uiModel, MiniCartProgressiveInfoUiModel.State.LOADING) else uiModel
+            }.toMutableList()
+        )
+    }
+
+    private fun updateGwpDataInCartFailed() {
+        _miniCartListBottomSheetUiModel.value = _miniCartListBottomSheetUiModel.value?.copy(
+            visitables = getVisitables().map { uiModel ->
+                if (uiModel is MiniCartProgressiveInfoUiModel) miniCartListUiModelMapper.updateMiniCartProgressiveInfoUiModel(uiModel, MiniCartProgressiveInfoUiModel.State.ERROR) else uiModel
             }.toMutableList()
         )
     }
