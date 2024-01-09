@@ -145,7 +145,6 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
@@ -163,7 +162,6 @@ import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.ProductDetailCoachMarkHelper
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
-import com.tokopedia.product.detail.common.view.ProductDetailGalleryActivity
 import com.tokopedia.product.detail.common.view.ProductDetailRestrictionHelper
 import com.tokopedia.product.detail.component.shipment.ShipmentUiModel
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
@@ -2149,33 +2147,30 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onVideoFullScreenClicked() {
-        activity?.let { activity ->
-            productVideoCoordinator?.let {
-                val trackerData = viewModel.getDynamicProductInfoP1
-                it.pauseVideoAndSaveLastPosition()
-                sharedViewModel?.updateVideoDetailData(
-                    ProductVideoDetailDataModel(
-                        it.getVideoDataModel(),
-                        // Tracker Data
-                        trackerData?.shopTypeString
-                            ?: "",
-                        trackerData?.basic?.shopID.orEmpty(),
-                        viewModel.userId,
-                        trackerData?.basic?.productID.orEmpty()
-                    )
-                )
+        val dynamicProductInfoData = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
 
-                getProductDetailActivity()?.addNewFragment(ProductVideoDetailFragment())
-                DynamicProductDetailTracking.Click.eventClickFullScreenVideo(
-                    viewModel.getDynamicProductInfoP1,
+        productVideoCoordinator?.let {
+            it.pauseVideoAndSaveLastPosition()
+            sharedViewModel?.updateVideoDetailData(
+                ProductVideoDetailDataModel(
+                    it.getVideoDataModel(),
+                    // Tracker Data
+                    dynamicProductInfoData.shopTypeString,
+                    dynamicProductInfoData.basic.shopID,
                     viewModel.userId,
-                    DynamicProductDetailTracking.generateComponentTrackModel(
-                        pdpUiUpdater?.mediaMap,
-                        0
-                    )
+                    dynamicProductInfoData.basic.productID
                 )
-            }
+            )
+            DynamicProductDetailTracking.Click.eventClickFullScreenVideo(
+                viewModel.getDynamicProductInfoP1,
+                viewModel.userId,
+                DynamicProductDetailTracking.generateComponentTrackModel(
+                    pdpUiUpdater?.mediaMap,
+                    0
+                )
+            )
         }
+        openProductPreviewActivity(dynamicProductInfoData, 0)
     }
 
     override fun onVideoVolumeCLicked(isMute: Boolean) {
@@ -2315,27 +2310,18 @@ open class DynamicProductDetailFragment :
 
     override fun onImageClicked(position: Int) {
         val dynamicProductInfoData = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
+        openProductPreviewActivity(dynamicProductInfoData, position)
+    }
 
-//        activity?.let {
-//            val items = dynamicProductInfoData.data.getGalleryItems()
-//            if (items.isEmpty()) return
-//            val intent = ProductDetailGalleryActivity.createIntent(
-//                context = it,
-//                productDetailGallery = ProductDetailGallery(
-//                    productId = dynamicProductInfoData.basic.productID,
-//                    userId = viewModel.userId,
-//                    page = ProductDetailGallery.Page.ProductDetail,
-//                    items = items,
-//                    selectedId = position.toString()
-//                )
-//            )
-//            startActivity(intent)
-//        }
+    private fun openProductPreviewActivity(
+        data: DynamicProductInfoP1,
+        position: Int
+    ) {
         val intent = ProductPreviewActivity.createIntent(
             context = requireActivity(),
             productContentData = productDetailMapper.mapProductDetailToProductPreview(
-                data = dynamicProductInfoData,
-                position = position,
+                data = data,
+                position = position
             )
         )
         startActivity(intent)
