@@ -6,6 +6,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.joinDash
 import com.tokopedia.track.builder.Tracker
 
 class AnnotationWidgetAnalytic(
@@ -33,7 +34,7 @@ class AnnotationWidgetAnalytic(
         private const val TRACKER_ID_CLICK_CLICK_VIEW_ALL = "49085"
     }
 
-    private val defaultEventLabel = "$categoryIdL1 - $annotationType"
+    private val defaultEventLabel = joinDash(categoryIdL1, annotationType)
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4417
     // Tracker ID: 49079
@@ -53,7 +54,7 @@ class AnnotationWidgetAnalytic(
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4417
     // Tracker ID: 49081
     fun sendClickAnnotationCardEvent(annotationName: String) {
-        val eventLabel = "$categoryIdL1 - $annotationType - $annotationName"
+        val eventLabel = joinDash(categoryIdL1, annotationType, annotationName)
 
         Tracker.Builder()
             .setEvent(EVENT_CLICK_GROCERIES)
@@ -100,7 +101,7 @@ class AnnotationWidgetAnalytic(
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4417
     // Tracker ID: 49141
     fun sendImpressionAnnotationCardEvent(annotationName: String) {
-        val eventLabel = "$categoryIdL1 - $annotationType - $annotationName"
+        val eventLabel = joinDash(categoryIdL1, annotationType, annotationName)
 
         Tracker.Builder()
             .setEvent(EVENT_VIEW_GROCERIES)
