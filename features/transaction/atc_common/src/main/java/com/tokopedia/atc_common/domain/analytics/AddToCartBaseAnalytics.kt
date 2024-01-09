@@ -93,6 +93,7 @@ object AddToCartBaseAnalytics {
                 this.sku = productId
                 // contentId value is stringify array of productId
                 this.contentId = JSONArray().put(productId).toString()
+                this.shopName = shopName
             }
             LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ADD_TO_CART, data))
         } catch (t: Throwable) {
