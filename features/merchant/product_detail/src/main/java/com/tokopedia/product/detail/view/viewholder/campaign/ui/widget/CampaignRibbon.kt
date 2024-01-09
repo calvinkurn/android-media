@@ -243,8 +243,7 @@ class CampaignRibbon @JvmOverloads constructor(
             }
             // render campaign logo
             iuCampaignLogoS3.showIfWithBlock(thematic.campaignLogo.isNotBlank()) {
-                cornerRadius = 3
-                loadImageWithoutPlaceholder(thematic.icon)
+                loadImageWithoutPlaceholder(thematic.campaignLogo)
             }
             tpgCampaignNameS3.showIfWithBlock(thematic.campaignLogo.isBlank()) {
                 tpgCampaignNameS3.text = thematic.campaignName
