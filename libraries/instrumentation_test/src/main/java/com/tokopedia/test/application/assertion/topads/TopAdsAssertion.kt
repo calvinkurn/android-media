@@ -108,7 +108,12 @@ class TopAdsAssertion(
         val minimumTopAdsProductFromResponse = topAdsVerificatorInterface.minimumTopAdsProductFromResponse
         logTestMessage("Topads from response (minimum) : " + minimumTopAdsProductFromResponse)
         logTestMessage("Topads impression product recorded on database : " + impressedCount)
-        Assert.assertTrue(minimumTopAdsProductFromResponse <= impressedCount)
+
+        Assert.assertTrue(
+            "minimumTopAdsProductFromResponse=$minimumTopAdsProductFromResponse : impressedCount=$impressedCount",
+            minimumTopAdsProductFromResponse <= impressedCount
+        )
+
         logTestMessage("Topads impression product recorded on database is more than minimum! -> PASSED")
     }
 
