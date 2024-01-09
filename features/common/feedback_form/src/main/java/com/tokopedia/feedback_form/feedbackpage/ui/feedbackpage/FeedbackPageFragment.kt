@@ -516,6 +516,7 @@ class FeedbackPageFragment : BaseDaggerFragment(), FeedbackPageContract.View, Im
             val path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
             ScreenshotData(id, fileName, path)
         } catch(e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             null
         }
     }
