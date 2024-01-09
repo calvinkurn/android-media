@@ -4,56 +4,78 @@ import android.util.Base64
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.profilecompletion.data.SecretResponse
+import com.tokopedia.profilecompletion.data.SeamlessData
+import com.tokopedia.profilecompletion.data.SecretData
 import com.tokopedia.profilecompletion.di.ProfileManagementApi
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.time.TimeHelper
-import com.tokopedia.webview.ext.encode
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import javax.inject.Inject
 
-class GetUrlProfileManagementUseCase@Inject constructor(
+class GetGotoCookieUseCase @Inject constructor(
     private val profileManagementApi: ProfileManagementApi,
     private val userSessionInterface: UserSessionInterface,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<Unit, GetUrlProfileManagementResult>(dispatchers.io) {
+) : CoroutineUseCase<String, GetGotoCookieResult>(dispatchers.io) {
     override fun graphqlQuery(): String = ""
 
-    override suspend fun execute(params: Unit): GetUrlProfileManagementResult {
-        val response = profileManagementApi.getSecret(MODULE_NAME_SEAMLESS).body()
+    override suspend fun execute(params: String): GetGotoCookieResult {
+        val secretResponse = profileManagementApi.getSecret(MODULE_NAME_SEAMLESS).body()
 
-        val result = if (response?.success == true) {
-            val url = getUrl(response)
-            GetUrlProfileManagementResult.Success(url)
+        val result = if (secretResponse?.success == true) {
+            return getSeamless(url = params, secretData = secretResponse.data)
         } else {
-            val throwable = MessageErrorException(response.toString())
-            GetUrlProfileManagementResult.Failed(throwable)
+            val throwable = MessageErrorException(secretResponse.toString())
+            GetGotoCookieResult.Failed(throwable)
         }
 
         return result
     }
 
-    private fun getUrl(response: SecretResponse?): String {
-        val currentTimeStamp = TimeHelper.getNowTimeStamp()
-        val timeRfc3339 = TimeHelper.format(currentTimeStamp, FORMAT_RFC_3339)
+    private suspend fun getSeamless(url: String, secretData: SecretData): GetGotoCookieResult {
+        val timeRfc3339 = getRimeRfc3339()
+        val authorization = getHmacSignature(
+            timeRfc3339 = timeRfc3339,
+            token = secretData.token,
+            secretKeyId = secretData.secretKeyId,
+            secretKey = secretData.secretKey
+        )
 
+        val parameter = mapOf(
+            KEY_X_USER_ID to userSessionInterface.userId,
+            KEY_X_URL to url,
+            KEY_X_BACK_URL to VALUE_BACK_URL,
+            KEY_X_LANGUAGE to VALUE_LANGUAGE_IND,
+            KEY_X_CLIENT_ID to VALUE_CLIENT_ID,
+            KEY_X_TOKEN to secretData.token,
+            KEY_X_DATE to timeRfc3339,
+            KEY_X_AUTHORIZATION to authorization
+        )
+        val seamlessResponse = profileManagementApi.postSeamless(parameter).body()
+
+        return if (seamlessResponse?.success == true) {
+            GetGotoCookieResult.Success(seamlessResponse.data)
+        } else {
+            val throwable = MessageErrorException(seamlessResponse.toString())
+            GetGotoCookieResult.Failed(throwable)
+        }
+    }
+
+    private fun getRimeRfc3339(): String {
+        val currentTimeStamp = TimeHelper.getNowTimeStamp()
+        return TimeHelper.format(currentTimeStamp, FORMAT_RFC_3339)
+    }
+
+    private fun getHmacSignature(timeRfc3339: String, token: String, secretKeyId: String, secretKey: String): String {
         val content = createContent(
-            token = response?.data?.token.toString(),
+            token = token,
             userId = userSessionInterface.userId,
             date = timeRfc3339
         )
-
-        val hmacSignature = hmacDigest(content, response?.data?.secretKey.toString())
-
-        return createUrl(
-            token = response?.data?.token.toString(),
-            userId = userSessionInterface.userId,
-            date = timeRfc3339,
-            keyId = response?.data?.secretKeyId.toString(),
-            hmacSignature = replaceHmacSignature(hmacSignature)
-        )
+        val hmacSignature = hmacDigest(content, secretKey)
+        return "$secretKeyId:${replaceHmacSignature(hmacSignature)}"
     }
 
     private fun createContent(
@@ -74,31 +96,6 @@ class GetUrlProfileManagementUseCase@Inject constructor(
             "$KEY_X_DATE=$date"
     }
 
-    private fun createUrl(
-        token: String,
-        userId: String,
-        clientId: String = VALUE_CLIENT_ID,
-        url: String = TokopediaUrl.getInstance().GOTO_ACCOUNTS + VALUE_URL,
-        backUrl: String = VALUE_BACK_URL,
-        appLanguage: String = VALUE_LANGUAGE_IND,
-        date: String,
-        keyId: String,
-        hmacSignature: String
-    ): String {
-        val parameter = (
-                "$KEY_X_USER_ID=$userId" + "&" +
-                "$KEY_X_URL=$url" + "&" +
-                "$KEY_X_BACK_URL=$backUrl" + "&" +
-                "$KEY_X_LANGUAGE=$appLanguage" + "&" +
-                "$KEY_X_CLIENT_ID=$clientId" + "&" +
-                "$KEY_X_AUTHORIZATION=$keyId" + ":" + hmacSignature + "&" +
-                "$KEY_X_DATE=${date.encode()}" + "&" +
-                "$KEY_X_TOKEN=$token"
-            )
-
-        return TokopediaUrl.getInstance().GOTO_ACCOUNTS + "$URL_PATH_SEAMLESS?$parameter"
-    }
-
     private fun replaceHmacSignature(signature: String): String {
         return signature.replace("/", "_").replace("+", "-")
     }
@@ -113,7 +110,7 @@ class GetUrlProfileManagementUseCase@Inject constructor(
         mac.init(signingKey)
 
         val bytes = mac.doFinal(msg.toByteArray())
-        return Base64.encodeToString(bytes, Base64.DEFAULT)
+        return Base64.encodeToString(bytes, Base64.NO_WRAP)
     }
 
     companion object {
@@ -130,16 +127,15 @@ class GetUrlProfileManagementUseCase@Inject constructor(
         private const val KEY_X_TOKEN = "x-token"
         private const val VALUE_LANGUAGE_IND = "id"
         private const val VALUE_BACK_URL = "tokopedia://back"
-        private const val VALUE_CLIENT_ID = "tokopedia:consumer:app"
+        private const val VALUE_CLIENT_ID = "tokopedia:consumer:android"
         private const val VALUE_URL = "/profile/web/"
-        private const val URL_PATH_SEAMLESS = "/goto-auth/seamless"
     }
 
 }
 
 
-sealed class GetUrlProfileManagementResult {
-    object Loading: GetUrlProfileManagementResult()
-    class Success(val url: String): GetUrlProfileManagementResult()
-    class Failed(val throwable: Throwable): GetUrlProfileManagementResult()
+sealed class GetGotoCookieResult {
+    object Loading: GetGotoCookieResult()
+    class Success(val seamlessData: SeamlessData): GetGotoCookieResult()
+    class Failed(val throwable: Throwable): GetGotoCookieResult()
 }

@@ -6,6 +6,39 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/stl_item_ribbon_arch_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:scaleType="fitXY"
+        android:elevation="4dp"
+        app:srcCompat="@drawable/recom_ribbon_arch_top"
+        android:contentDescription="@string/product_card_content_desc_ribbon"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/stl_item_ribbon_content"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintTop_toTopOf="@id/stl_item_image"
+        app:layout_constraintHorizontal_bias="1"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/stl_item_ribbon_arch_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:elevation="4dp"
+        app:srcCompat="@drawable/recom_ribbon_arch_bottom"
+        android:contentDescription="@string/product_card_content_desc_ribbon"
+        app:layout_constraintLeft_toLeftOf="@id/stl_item_ribbon_arch_top"
+        app:layout_constraintRight_toRightOf="@id/stl_item_ribbon_arch_top"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintTop_toBottomOf="@id/stl_item_ribbon_arch_top"
+        app:layout_constraintHorizontal_bias="1"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/stl_item_image"
         android:layout_width="0dp"
@@ -16,7 +49,7 @@
         android:scaleType="centerCrop"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/stl_item_ribbon_arch"
+        app:layout_constraintLeft_toRightOf="@id/stl_item_ribbon_arch_top"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintHorizontal_bias="1"/>
 
@@ -32,51 +65,34 @@
         app:layout_constraintRight_toRightOf="@id/stl_item_image"/>
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/stl_item_ribbon_arch"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_marginTop="3dp"
-        android:scaleType="fitXY"
-        app:srcCompat="@drawable/recom_ribbon_arch_red"
-        app:layout_constraintHorizontal_bias="1"
-        android:contentDescription="@string/product_card_content_desc_ribbon"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/stl_item_ribbon_content"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintTop_toTopOf="@id/stl_item_ribbon_content"
-        app:layout_constraintBottom_toBottomOf="@id/stl_item_ribbon_content"
-        android:visibility="gone"
-        tools:visibility="visible" />
-
-    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/stl_item_ribbon_content"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="fitXY"
         android:visibility="gone"
         tools:visibility="visible"
-        app:srcCompat="@drawable/recom_ribbon_content_red"
+        app:srcCompat="@drawable/recom_ribbon_content"
         android:contentDescription="@string/product_card_content_desc_ribbon"
         app:layout_constraintLeft_toLeftOf="@id/stl_item_image"
         app:layout_constraintRight_toRightOf="@id/stl_item_ribbon_text"
-        app:layout_constraintTop_toTopOf="@id/stl_item_ribbon_text"
-        app:layout_constraintBottom_toBottomOf="@id/stl_item_ribbon_text" />
+        app:layout_constraintTop_toTopOf="@id/stl_item_ribbon_arch_top"
+        app:layout_constraintBottom_toBottomOf="@id/stl_item_ribbon_arch_top" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/stl_item_ribbon_text"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
-        android:paddingTop="4dp"
         android:paddingEnd="8dp"
-        android:paddingBottom="3dp"
         tools:text="90%"
         android:textColor="@color/Unify_Static_White"
         android:visibility="gone"
         tools:visibility="visible"
-        app:layout_constraintLeft_toLeftOf="@id/stl_item_image"
-        app:layout_constraintTop_toTopOf="@id/stl_item_image"
+        android:gravity="center_vertical"
+        app:layout_constraintLeft_toLeftOf="@id/stl_item_ribbon_content"
+        app:layout_constraintTop_toTopOf="@id/stl_item_ribbon_content"
+        app:layout_constraintBottom_toBottomOf="@id/stl_item_ribbon_content"
+        app:layout_constraintRight_toRightOf="@id/stl_item_ribbon_content"
         app:typographyType="display_3"
         app:typographyWeight="bold" />
 
