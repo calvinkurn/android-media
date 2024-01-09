@@ -47,7 +47,8 @@ object ProductCardMapper {
                     labelGroupList = mapLabelGroup(product),
                     usePreDraw = true,
                     needToChangeMaxLinesName = needToChangeMaxLinesName,
-                    hasBlockedAddToCart = hasBlockedAddToCart
+                    hasBlockedAddToCart = hasBlockedAddToCart,
+                    warehouseId = product.warehouseId.toString()
                 ),
                 pageName = product.pageName,
                 recommendationType = product.recommendationType

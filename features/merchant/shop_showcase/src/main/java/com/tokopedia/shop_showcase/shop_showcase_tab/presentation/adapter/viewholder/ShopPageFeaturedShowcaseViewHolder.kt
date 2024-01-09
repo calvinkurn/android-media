@@ -2,7 +2,9 @@ package com.tokopedia.shop_showcase.shop_showcase_tab.presentation.adapter.viewh
 
 import android.view.View
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
@@ -13,13 +15,15 @@ import com.tokopedia.shop_showcase.shop_showcase_tab.presentation.model.Featured
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Rafli Syam on 09/03/2021
  */
 class ShopPageFeaturedShowcaseViewHolder(
-        itemView: View,
-        private val listener: ShopPageFeaturedShowcaseListener
+    itemView: View,
+    private val listener: ShopPageFeaturedShowcaseListener,
+    private val shouldForceToLightMode: Boolean
 ) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -29,12 +33,10 @@ class ShopPageFeaturedShowcaseViewHolder(
     private val viewBinding : ItemShopFeaturedShowcaseBinding? by viewBinding()
     private var ivShowcaseImg: ImageUnify? = null
     private var tvShowcaseName: Typography? = null
-    private var tvShowcaseCount: Typography? = null
 
     init {
         ivShowcaseImg = viewBinding?.ivShowcaseImg
         tvShowcaseName = viewBinding?.tvShowcaseName
-        tvShowcaseCount = viewBinding?.tvShowcaseCount
     }
 
     fun bind(list: List<FeaturedShowcaseUiModel>) {
@@ -42,10 +44,6 @@ class ShopPageFeaturedShowcaseViewHolder(
         val element = list[adapterPosition]
 
         tvShowcaseName?.text = element.name
-        tvShowcaseCount?.text = itemView.context.getString(
-                R.string.shop_page_showcase_featured_product_count_text,
-                element.count.toString()
-        )
 
         // try catch to avoid crash ImageUnify on loading image with Glide
         try {
@@ -72,8 +70,27 @@ class ShopPageFeaturedShowcaseViewHolder(
                     }
                 }
         )
+        
+        handleColorSchema(shouldForceToLightMode)
     }
 
+    private fun handleColorSchema(shouldForceToLightMode: Boolean) {
+        if (shouldForceToLightMode) {
+            val cardBackgroundColor = ContextCompat.getColor(
+                viewBinding?.container?.context ?: return,
+                R.color.dms_clr_Unify_NN0_0_light
+            )
+            
+            viewBinding?.container?.setCardBackgroundColor(cardBackgroundColor)
+            
+            val showcaseTextColor = MethodChecker.getColor(
+                viewBinding?.container?.context ?: return,
+                unifyprinciplesR.color.Unify_Static_Black
+            )
+            viewBinding?.tvShowcaseName?.setTextColor(showcaseTextColor)
+        }
+    }
+    
     private fun setItemMargin(position: Int, list: List<FeaturedShowcaseUiModel>) {
         val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,

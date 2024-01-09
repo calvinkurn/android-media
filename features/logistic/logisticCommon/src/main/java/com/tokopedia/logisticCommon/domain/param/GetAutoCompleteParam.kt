@@ -11,5 +11,8 @@ data class GetAutoCompleteParam(
     val latLng: String = "",
 
     @SerializedName("is_manage_address_flow")
-    val isManageAddressFlow: Boolean = false
+    val isManageAddressFlow: Boolean = false,
+
+    @SerializedName("with_administrative")
+    val withAdministrative: Boolean = true
 ) : GqlParam
