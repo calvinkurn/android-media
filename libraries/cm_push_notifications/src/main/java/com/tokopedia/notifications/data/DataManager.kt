@@ -16,8 +16,8 @@ import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 class DataManager @Inject constructor(
-    private val attributionUseCase: AttributionUseCase,
-    private val atcProductUseCase: AddToCartUseCase
+        private val attributionUseCase: AttributionUseCase,
+        private val atcProductUseCase: AddToCartUseCase
 ) {
 
     /*
@@ -26,12 +26,12 @@ class DataManager @Inject constructor(
     * */
     fun attribution(notification: BaseNotificationModel?) {
         val params = attributionUseCase.params(
-            transactionId = notification?.transactionId,
-            userTransId = notification?.userTransactionId,
-            recipientId = notification?.userId,
-            shopId = notification?.shopId,
-            blastId = notification?.blastId,
-            data = notification?.webHookParamData()
+                transactionId = notification?.transactionId,
+                userTransId = notification?.userTransactionId,
+                recipientId = notification?.userId,
+                shopId = notification?.shopId,
+                blastId = notification?.blastId,
+                data = notification?.webHookParamData()
         )
         attributionUseCase.execute(params)
     }
@@ -41,39 +41,38 @@ class DataManager @Inject constructor(
     * To make a seamless experience for user in
     * push notification that contains product related
     * */
-    fun atcProduct(
-        campaignId: String,
-        userId: String,
-        addToCart: AddToCart?
+    fun atcProduct(campaignId: String,
+                   userId: String,
+                   addToCart: AddToCart?
     ) {
         addToCart?.let { atc ->
             val params = atcParams(
-                atc.productId.toString(),
-                atc.shopId,
-                atc.productName ?: "",
-                atc.productPrice?.toString() ?: "",
-                userId
+                    atc.productId.toString(),
+                    atc.shopId,
+                    atc.productName ?: "",
+                    atc.productPrice?.toString() ?: "",
+                    userId
             )
 
             fun tracker(data: AddToCartDataModel) {
                 NotificationAnalytics.addToCartClicked(
-                    campaignId = campaignId,
-                    userId = userId,
-                    cartId = data.data.cartId,
-                    addToCart = atc
+                        campaignId = campaignId,
+                        userId = userId,
+                        cartId = data.data.cartId,
+                        addToCart = atc
                 )
             }
 
             atcProductUseCase.createObservable(params)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(atcSubscriber(::tracker))
+                    .subscribeOn(Schedulers.io())
+                    .unsubscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(atcSubscriber(::tracker))
         }
     }
 
     companion object {
-
+        
         fun atcParams(productId: String, shopId: Int?, productName: String, price: String, userId: String): RequestParams {
             val addToCartRequestParams = AddToCartRequestParams()
             addToCartRequestParams.productId = productId
@@ -88,5 +87,7 @@ class DataManager @Inject constructor(
                 putObject(REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
             }
         }
+
     }
+
 }
