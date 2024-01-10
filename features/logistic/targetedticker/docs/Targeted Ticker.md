@@ -14,10 +14,6 @@ span
 
 ## Background
 
-To Handle
-
-product team
-
 Currently from Backend side have
 the [Ticker Unification](https://docs.google.com/presentation/d/1hWc2LN2zxWEOPUJb8vnfzgLmmQ-FJYt3eczuf69CNPU/edit#slide=id.p3)
 feature that can accommodate the whole ticker in Tokopedia service.
@@ -30,11 +26,10 @@ reducing the code required for implementing the UI and create one use case can b
 
 Targeted Ticker Widget is a widget component that used to centralize using Targeted Ticker provide from Backend side.
 
-## Flow of Component Usage
+This Targeted Ticker Widget will work as asual Ticker but build-in useCase.
 
-## Variants of C
+![Screenshot 2024-01-10 at 09.02.10.png](..%2F..%2F..%2F..%2F..%2F..%2F..%2FDesktop%2FScreenshot%202024-01-10%20at%2009.02.10.png)
 
-# General Component Usage
 
 # Setup
 
@@ -88,7 +83,7 @@ this case will require data from your backend provide the data and will be passi
 example of usage
 
 ```
- // get from your backend
+ // get from your backend map to Targeted Ticker Model
  val template = ....
  val target = ....
  val page = ....
