@@ -127,9 +127,9 @@ class BuyerReviewViewHolder(
             rating?.rating = carouselItem.rating
 
             carouselItem.variantName?.let {
-                variant?.visibility = View.VISIBLE
                 variant?.text = it
-                separatorRating?.visibility = View.VISIBLE
+                variant?.isVisible = it.isNotEmpty()
+                separatorRating?.isVisible = it.isNotEmpty()
             }
 
             carouselItem.datetime?.let {
@@ -186,14 +186,19 @@ class BuyerReviewViewHolder(
         bindingBuyerReviewCardSlider?.apply {
             buyerReviewCard.background = MethodChecker.getDrawable(
                 itemView.context,
-                if (element.darkMode) R.drawable.bg_rounded_border_dark
-                else R.drawable.bg_rounded_border_light
+                if (element.darkMode) {
+                    R.drawable.bg_rounded_border_dark
+                } else {
+                    R.drawable.bg_rounded_border_light
+                }
             )
-            val textColor = MethodChecker.getColor(itemView.context,
-                if (element.darkMode)
+            val textColor = MethodChecker.getColor(
+                itemView.context,
+                if (element.darkMode) {
                     R.color.dms_static_text_color_dark
-                else
+                } else {
                     R.color.dms_static_text_color_light
+                }
             )
             cardBrShopName.setTextColor(textColor)
             cardBrReviewerName.setTextColor(textColor)
