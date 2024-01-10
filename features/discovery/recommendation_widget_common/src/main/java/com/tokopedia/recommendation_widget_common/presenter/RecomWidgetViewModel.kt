@@ -67,6 +67,7 @@ open class RecomWidgetViewModel @Inject constructor(
     val errorGetRecommendation: LiveData<RecomErrorModel>
         get() = _errorGetRecommendation
 
+
     val miniCartData: LiveData<MutableMap<MiniCartItemKey, MiniCartItem>> get() = _miniCartData
     private val _miniCartData = MutableLiveData<MutableMap<MiniCartItemKey, MiniCartItem>>()
 
@@ -130,9 +131,8 @@ open class RecomWidgetViewModel @Inject constructor(
                         xSource = xSource,
                         xDevice = xDevice,
                         keywords = keywords,
-                        isTokonow = isTokonow
-                    )
-                )
+                        isTokonow = isTokonow,
+                    ))
                 if (result.isNotEmpty()) {
                     val recomWidget = result[0].copy(recommendationFilterChips = recomFilterList)
                     if (isTokonow) {
@@ -153,11 +153,9 @@ open class RecomWidgetViewModel @Inject constructor(
         }
     }
 
-    fun loadRecomBySelectedChips(
-        recomWidgetMetadata: RecommendationCarouselWidgetView.RecomWidgetMetadata,
-        oldFilterList: List<AnnotationChip>,
-        selectedChip: AnnotationChip
-    ) {
+    fun loadRecomBySelectedChips(recomWidgetMetadata: RecommendationCarouselWidgetView.RecomWidgetMetadata,
+                                 oldFilterList: List<AnnotationChip>,
+                                 selectedChip: AnnotationChip) {
         if (isJobAvailable(getRecommendationJob) && isActive) {
             val newQueryParam = getQueryParamBasedOnChips(recomWidgetMetadata.queryParam, selectedChip)
 
@@ -169,49 +167,39 @@ open class RecomWidgetViewModel @Inject constructor(
                         productIds = recomWidgetMetadata.productIds,
                         categoryIds = recomWidgetMetadata.categoryIds,
                         keywords = listOf(recomWidgetMetadata.keyword),
-                        isTokonow = recomWidgetMetadata.isTokonow
-                    )
-                )
+                        isTokonow = recomWidgetMetadata.isTokonow,
+                ))
                 if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
                     val newRecommendation = recomData.first()
-                    _recomFilterResultData.postValue(
-                        RecomFilterResult(
-                            pageName = recomWidgetMetadata.pageName,
-                            recomWidgetData = newRecommendation,
-                            filterList = selectOrDeselectAnnotationChip(
-                                oldFilterList,
-                                selectedChip.recommendationFilterChip.name,
-                                selectedChip.recommendationFilterChip.isActivated
-                            ),
-                            isSuccess = true
-                        )
-                    )
+                    _recomFilterResultData.postValue(RecomFilterResult(
+                        pageName = recomWidgetMetadata.pageName,
+                        recomWidgetData = newRecommendation,
+                        filterList = selectOrDeselectAnnotationChip(
+                            oldFilterList,
+                            selectedChip.recommendationFilterChip.name,
+                            selectedChip.recommendationFilterChip.isActivated),
+                        isSuccess = true
+                    ))
                 } else {
-                    _recomFilterResultData.postValue(
-                        RecomFilterResult(
-                            pageName = recomWidgetMetadata.pageName,
-                            filterList = selectOrDeselectAnnotationChip(
-                                oldFilterList,
-                                selectedChip.recommendationFilterChip.name,
-                                selectedChip.recommendationFilterChip.isActivated
-                            ),
-                            isSuccess = true
-                        )
-                    )
-                }
-            }) {
-                _recomFilterResultData.postValue(
-                    RecomFilterResult(
+                    _recomFilterResultData.postValue(RecomFilterResult(
                         pageName = recomWidgetMetadata.pageName,
                         filterList = selectOrDeselectAnnotationChip(
                             oldFilterList,
                             selectedChip.recommendationFilterChip.name,
-                            selectedChip.recommendationFilterChip.isActivated
-                        ),
-                        isSuccess = false,
-                        throwable = it
-                    )
-                )
+                            selectedChip.recommendationFilterChip.isActivated),
+                        isSuccess = true
+                    ))
+                }
+            }) {
+                _recomFilterResultData.postValue(RecomFilterResult(
+                    pageName = recomWidgetMetadata.pageName,
+                    filterList = selectOrDeselectAnnotationChip(
+                        oldFilterList,
+                        selectedChip.recommendationFilterChip.name,
+                        selectedChip.recommendationFilterChip.isActivated),
+                    isSuccess = false,
+                    throwable = it
+                ))
             }
         }
     }
@@ -237,9 +225,8 @@ open class RecomWidgetViewModel @Inject constructor(
         if (!userSession.isLoggedIn) {
             _atcRecomTokonowNonLogin.value = recomItem
         } else {
-            if (recomItem.quantity == quantity) {
-                return
-            } else {
+            if (recomItem.quantity == quantity) return
+            else {
                 when {
                     quantity == 0 -> {
                         deleteRecomItemFromCart(recomItem)
@@ -255,6 +242,8 @@ open class RecomWidgetViewModel @Inject constructor(
         }
     }
 
+
+
     private fun getQueryParamBasedOnChips(queryParams: String, annotationChip: AnnotationChip): String {
         var newQueryParams = queryParams
         if (annotationChip.recommendationFilterChip.isActivated) {
@@ -268,8 +257,8 @@ open class RecomWidgetViewModel @Inject constructor(
             it.copy(
                 recommendationFilterChip = it.recommendationFilterChip.copy(
                     isActivated =
-                    name == it.recommendationFilterChip.name &&
-                        isActivated
+                    name == it.recommendationFilterChip.name
+                            && isActivated
                 )
             )
         } ?: listOf()
@@ -313,8 +302,7 @@ open class RecomWidgetViewModel @Inject constructor(
                     MessageErrorException(
                         result.errorMessage.firstOrNull()
                             ?: result.status
-                    ),
-                    recomItem
+                    ), recomItem
                 )
             } else {
                 recomItem.cartId = result.data.cartId
@@ -348,19 +336,18 @@ open class RecomWidgetViewModel @Inject constructor(
                     onFailedATCRecomTokonow(
                         MessageErrorException(
                             result.error.first()
-                        ),
-                        recomItem
+                        ), recomItem
                     )
                 } else {
                     updateMiniCartAfterATCRecomTokonow(
-                        message = result.data.message,
-                        recomItem = recomItem
+                        message = result.data.message, recomItem = recomItem
                     )
                 }
             }
         }) {
             onFailedATCRecomTokonow(it, recomItem)
         }
+
     }
 
     private fun updateMiniCartAfterATCRecomTokonow(
@@ -400,4 +387,5 @@ open class RecomWidgetViewModel @Inject constructor(
     }
 
     private fun isJobAvailable(job: Job?): Boolean = job == null || !job.isActive
+
 }
