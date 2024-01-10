@@ -46,6 +46,7 @@ import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUi
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.math.min
 
 class MiniCartListUiModelMapper @Inject constructor() {
@@ -274,7 +275,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     val lastCartItem = cartIndex == cartItemsCount - 1
 
                     // Add progressive info if bmgm only
-                    if (cartDetail.isBmgm() && cartDetail.cartDetailInfo.bmgmData.offerMessage.isNotEmpty()) {
+                    if (cartDetail.isBmGm() && cartDetail.cartDetailInfo.bmgmData.offerMessage.isNotEmpty()) {
                         miniCartAvailableSectionUiModels.add(mapProgressiveInfo(cartDetail.cartDetailInfo.bmgmData))
                     }
 
@@ -293,7 +294,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                             placeholderNote = miniCartData.data.placeholderNote,
                             lastCartItem = lastCartItem,
                             lastGroupItem = lastGroupItem,
-                            isBmgm = cartDetail.isBmgm()
+                            isBmgm = cartDetail.isBmGm()
                         )
                         miniCartProductUiModels.add(miniCartProductUiModel)
                         if (miniCartProductUiModel.isBundlingItem) {
@@ -305,7 +306,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     miniCartAvailableSectionUiModels.addAll(miniCartProductUiModels)
 
                     // Add gwp gift if bmgm only
-                    if (cartDetail.isBmgm() && cartDetail.cartDetailInfo.bmgmData.tierProductList.isNotEmpty()) {
+                    if (cartDetail.isBmGm() && cartDetail.cartDetailInfo.bmgmData.tierProductList.isNotEmpty()) {
                         miniCartAvailableSectionUiModels.addAll(mapGwpGift(cartDetail.cartDetailInfo.bmgmData))
                     }
                 }

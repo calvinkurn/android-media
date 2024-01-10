@@ -14,9 +14,6 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.BundleInfo
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
-import com.tokopedia.cartcommon.data.response.bmgm.BmGmData
-import com.tokopedia.cartcommon.data.response.bmgm.BmGmProductBenefit
-import com.tokopedia.cartcommon.data.response.bmgm.BmGmTierProduct
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataResponse
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
@@ -30,6 +27,7 @@ import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.removeFirst
+import com.tokopedia.minicart.bmgm.domain.mapper.BmgmParamMapper
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet.Companion.STATE_PRODUCT_BUNDLE_RECOM_ATC
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
@@ -59,12 +57,10 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetProductBundleRecomUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
@@ -93,6 +89,7 @@ class MiniCartViewModel @Inject constructor(
     }
 
     private var groupProductTickerJob: Job? = null
+    private var bmGmGroupProductTickerParams: BmGmGetGroupProductTickerParams? = null
 
     // Global Data
     private val _currentShopIds = MutableLiveData<List<String>>()
@@ -442,6 +439,7 @@ class MiniCartViewModel @Inject constructor(
                 data = miniCartData
             )
         } else {
+            bmGmGroupProductTickerParams = BmgmParamMapper.mapBmGmGroupProductTickerParams(miniCartData.data.availableSection)
             val tmpMiniCartListUiModel = miniCartListUiModelMapper.mapUiModel(miniCartData)
             val tmpMiniCartChatListUiModel = miniCartChatListUiModelMapper.mapUiModel(miniCartData)
 
@@ -707,27 +705,24 @@ class MiniCartViewModel @Inject constructor(
         // No-op for booth onSuccess & onError
         updateCartUseCase.execute(
             onSuccess = {
-                getGroupProductTicker()
+                getBmGmGroupProductTicker()
             },
             onError = { /* do nothing */ }
         )
     }
 
-    var count = 1
-    fun getGroupProductTicker(offerId: Long = INVALID_ID) {
+    fun getBmGmGroupProductTicker(offerId: Long = INVALID_ID) {
         if (offerId != INVALID_ID) updateGwpDataInCartLoading(offerId)
 
         groupProductTickerJob?.cancel()
         groupProductTickerJob = launchCatchError(
             block = {
-                delay(3000L)
-                val param = BmGmGetGroupProductTickerParams()
-                val response = getGroupProductTickerUseCase.invoke(param)
-                if (count == 1) {
-                    count++
-                    throw MessageErrorException()
+                bmGmGroupProductTickerParams?.let { params ->
+                    if (params.carts.isNotEmpty()) {
+                        val response = getGroupProductTickerUseCase.invoke(params)
+                        updateGwpDataInCartSuccessful(response)
+                    }
                 }
-                updateGwpDataInCartSuccessful(response)
             },
             onError = {
                 updateGwpDataInCartFailed()

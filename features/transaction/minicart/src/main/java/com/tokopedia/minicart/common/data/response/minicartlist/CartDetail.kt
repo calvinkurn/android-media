@@ -12,5 +12,5 @@ data class CartDetail(
     @SerializedName("cart_detail_info")
     val cartDetailInfo: BmGmCartDetailInfo = BmGmCartDetailInfo()
 ) {
-    fun isBmgm() = cartDetailInfo.cartDetailType == "BMGM"
+    fun isBmGm() = cartDetailInfo.cartDetailType == "BMGM"
 }
