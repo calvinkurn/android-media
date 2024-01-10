@@ -2797,7 +2797,7 @@ class ShopPageHeaderFragment :
                             context = context,
                             asABuyer = data.authorType.asBuyer,
                             title = getString(creationcommonR.string.content_creation_post_as_label),
-                            sourcePage = ContentCreationConsts.VALUE_IS_OPEN_FROM_SHOP_PAGE,
+                            sourcePage = if (GlobalConfig.isSellerApp()) ContentCreationConsts.VALUE_IS_OPEN_FROM_SHOP_PAGE else "",
                         )
                         startActivity(intent)
                     }
