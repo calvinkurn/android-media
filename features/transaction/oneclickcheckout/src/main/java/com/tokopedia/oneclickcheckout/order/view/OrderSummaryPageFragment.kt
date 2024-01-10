@@ -122,10 +122,10 @@ import com.tokopedia.oneclickcheckout.payment.creditcard.installment.CreditCardI
 import com.tokopedia.oneclickcheckout.payment.installment.GoCicilInstallmentDetailBottomSheet
 import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
 import com.tokopedia.oneclickcheckout.payment.topup.view.PaymentTopUpWebViewActivity
+import com.tokopedia.promousage.analytics.PromoUsageEntryPointAnalytics
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
 import com.tokopedia.promousage.domain.entity.list.PromoItem
-import com.tokopedia.promousage.util.analytics.PromoUsageEntryPointAnalytics
 import com.tokopedia.promousage.view.bottomsheet.PromoUsageBottomSheet
 import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
 import com.tokopedia.purchase_platform.common.constant.ARGS_BBO_PROMO_CODES

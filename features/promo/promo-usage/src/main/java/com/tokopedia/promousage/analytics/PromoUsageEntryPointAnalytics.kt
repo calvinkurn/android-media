@@ -1,7 +1,8 @@
-package com.tokopedia.promousage.util.analytics
+package com.tokopedia.promousage.analytics
 
 import android.os.Bundle
 import androidx.core.os.bundleOf
+import com.tokopedia.promousage.analytics.PromoAnalytics
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel

@@ -157,10 +157,10 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
+import com.tokopedia.promousage.analytics.PromoUsageEntryPointAnalytics
 import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.promousage.domain.entity.PromoPageEntryPoint
 import com.tokopedia.promousage.domain.entity.list.PromoItem
-import com.tokopedia.promousage.util.analytics.PromoUsageEntryPointAnalytics
 import com.tokopedia.promousage.view.bottomsheet.PromoUsageBottomSheet
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
