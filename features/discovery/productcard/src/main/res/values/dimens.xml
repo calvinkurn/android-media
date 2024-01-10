@@ -198,9 +198,7 @@
     <dimen name="product_card_reimagine_stock_bar_background_height">32dp</dimen>
     <dimen name="product_card_reimagine_label_height">18dp</dimen>
     <dimen name="product_card_reimagine_nett_price_height">20dp</dimen>
-
     <dimen name="product_card_reimagine_safe_product_overlay_image_radius">8dp</dimen>
-
     <dimen name="product_card_reimagine_content_guideline_pading_in_background">8dp</dimen>
 
 </resources>
