@@ -178,7 +178,7 @@ object DeeplinkDFApp {
         DF_TRAVEL to getDfTravel(),
         DF_USER_LIVENESS to getDfUserLiveness(),
         DF_USER_SETTINGS to getDfUserSettings(),
-        DF_STORIES_CREATION to getDfStoriesCreationMainApp(),
+        DF_STORIES_CREATION to getDfStoriesCreationMainApp()
     )
 
     fun getDfSellerappMap() = mapOf(
@@ -191,7 +191,7 @@ object DeeplinkDFApp {
         DF_SELLER_TALK to getDfSellerTalk(),
         DF_SHOP_SETTINGS_SELLER_APP to getDfShopSettingsSellerapp(),
         DF_SELLER_PDP to getDfSellerPdp(),
-        DF_STORIES_CREATION to getDfStoriesCreationSellerApp(),
+        DF_STORIES_CREATION to getDfStoriesCreationSellerApp()
     )
 
     private fun Map<String, List<DFP>>?.filteredOnDF(context: Context): Map<String, List<DFP>> {
@@ -567,7 +567,8 @@ object DeeplinkDFApp {
             PathType.PATTERN,
             "/recipe/similar-product-bottomsheet"
         ),
-        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/buyer-communication")
+        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/buyer-communication"),
+        DFP(INTERNAL, HOST_TOKOPEDIA_NOW, PathType.PATTERN, "/all-annotation")
     )
 
     private fun getDfTravel() = mutableListOf(
@@ -718,7 +719,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-preview"),
         // mediaeditor
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-editor"),
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/universal-editor"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/universal-editor")
     )
 
     private fun getDfStoriesCreationSellerApp() = mutableListOf(
@@ -729,7 +730,7 @@ object DeeplinkDFApp {
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker"),
         DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/media-picker-preview"),
         // mediaeditor
-        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/universal-editor"),
+        DFP(INTERNAL, HOST_GLOBAL, PathType.PATH, "/universal-editor")
     )
 
     fun Map<String, List<DFP>>.mapDF(): MutableList<DFPSchemeToDF> {
