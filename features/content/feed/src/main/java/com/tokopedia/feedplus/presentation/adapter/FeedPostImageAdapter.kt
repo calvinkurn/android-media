@@ -16,7 +16,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import kotlinx.coroutines.withContext
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.media.loader.R as medialoaderR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * Created By : Muhammad Furqan on 02/03/23
@@ -81,7 +81,7 @@ class FeedPostImageAdapter(
                 binding.imgFeedPost.setImageBitmap(bitmap)
             }) {
                 binding.bgImgFeedPost.setBackgroundColor(MethodChecker.getColor(binding.root.context, unifyprinciplesR.color.Unify_Static_Black))
-                binding.imgFeedPost.setImageDrawable(medialoaderR.drawable.medialoader_image_state_error)
+                binding.imgFeedPost.setImageResource(unifycomponentsR.drawable.ic_broken_image)
             }
         }
 
