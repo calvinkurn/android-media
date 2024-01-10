@@ -164,7 +164,7 @@ fun TrackingHistoryItem(
 
 @Composable
 fun EmptyTracking(history: TrackOrderModel) {
-    ConstraintLayout(modifier = Modifier.padding(16.dp)) {
+    ConstraintLayout(modifier = Modifier.padding(horizontal = 16.dp)) {
         val (icon, description, invalidTrackingNotes) = createRefs()
         NestImage(
             modifier = Modifier.constrainAs(icon) {
