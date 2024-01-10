@@ -2,6 +2,9 @@ package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import com.tokopedia.tokopedianow.annotation.domain.param.AnnotationPageSource
 import com.tokopedia.tokopedianow.annotation.domain.param.AnnotationType
+import com.tokopedia.tokopedianow.annotation.presentation.uimodel.BrandWidgetUiModel
+import com.tokopedia.tokopedianow.annotation.presentation.uimodel.BrandWidgetUiModel.BrandWidgetState
+import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.util.AddressMapper
 import com.tokopedia.tokopedianow.common.util.BrandWidgetMapper
 import com.tokopedia.unit.test.ext.verifyValueEquals
@@ -58,7 +61,7 @@ class CategoryBrandWidgetTest : TokoNowCategoryViewModelTestFixture() {
     }
 
     @Test
-    fun `given get brand widget error when getFirstPage should remove brand widget from visitableList`() {
+    fun `given get brand widget error when getFirstPage should add brand widget with error state to visitableList`() {
         val error = NullPointerException()
         setupAddressAndUserData()
 
@@ -69,6 +72,14 @@ class CategoryBrandWidgetTest : TokoNowCategoryViewModelTestFixture() {
         viewModel.onViewCreated()
 
         val expectedVisitableList = createVisitableList()
+        expectedVisitableList.add(
+            BrandWidgetUiModel(
+                id = "brand_widget",
+                header = TokoNowDynamicHeaderUiModel(),
+                items = emptyList(),
+                state = BrandWidgetState.ERROR
+            )
+        )
 
         viewModel.visitableListLiveData
             .verifyValueEquals(expectedVisitableList)
