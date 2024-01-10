@@ -1,6 +1,5 @@
 package com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -16,15 +15,16 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.data.entity.notification.TrackHistory
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
+import com.tokopedia.notifcenter.view.adapter.NotifcenterTimelineHistoryAdapter
+import com.tokopedia.notifcenter.view.adapter.NotifcenterWidgetHistoryType
 import com.tokopedia.notifcenter.view.listener.NotificationItemListener
 import com.tokopedia.notifcenter.view.adapter.common.NotificationAdapterListener
 import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.time.TimeHelper
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class WidgetNotificationViewHolder constructor(
+class NotifcenterWidgetOrderHistoryNotificationViewHolder constructor(
     itemView: View?,
     private val listener: NotificationItemListener?,
     private val adapterListener: NotificationAdapterListener?
@@ -47,15 +47,16 @@ class WidgetNotificationViewHolder constructor(
     )
     private val historyTimeLine: RecyclerView? = itemView?.findViewById(R.id.rv_history)
     private val containerUnify: ContainerUnify? = itemView?.findViewById(R.id.unify_container)
-    private val historyAdapter: HistoryAdapter = HistoryAdapter()
+    private val historyAdapter: NotifcenterTimelineHistoryAdapter =
+        NotifcenterTimelineHistoryAdapter(NotifcenterWidgetHistoryType.ORDER)
 
     private val height_46 = itemView?.context?.resources?.getDimension(R.dimen.notif_dp_46)
     private val height_58 = itemView?.context?.resources?.getDimension(R.dimen.notif_dp_58)
     private val margin_4 = itemView?.context?.resources?.getDimension(
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_4
+        unifyprinciplesR.dimen.unify_space_4
     )
     private val margin_8 = itemView?.context?.resources?.getDimension(
-            com.tokopedia.unifyprinciples.R.dimen.unify_space_8
+        unifyprinciplesR.dimen.unify_space_8
     )
     private val padding_12 = itemView?.context?.resources?.getDimension(
             R.dimen.notif_dp_12
@@ -70,7 +71,7 @@ class WidgetNotificationViewHolder constructor(
             setHasFixedSize(true)
             itemAnimator = null
             isNestedScrollingEnabled = false
-            setRecycledViewPool(adapterListener?.getWidgetTimelineViewPool())
+            setRecycledViewPool(adapterListener?.getWidgetOrderTimelineViewPool())
             layoutManager = LinearLayoutManager(itemView.context)
             adapter = historyAdapter
         }
@@ -195,10 +196,10 @@ class WidgetNotificationViewHolder constructor(
         @ColorRes val lineColor: Int
         if (element.isLastJourney) {
             icon = R.drawable.ic_notifcenter_success_mark
-            lineColor = com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            lineColor = unifyprinciplesR.color.Unify_GN500
         } else {
             icon = R.drawable.ic_notifcenter_on_progress_mark
-            lineColor = com.tokopedia.unifyprinciples.R.color.Unify_NN200
+            lineColor = unifyprinciplesR.color.Unify_NN200
         }
         parentIndicatorMark?.setImageResource(icon)
         parentIndicatorLine?.setBackgroundResource(lineColor)
@@ -258,7 +259,7 @@ class WidgetNotificationViewHolder constructor(
     }
 
     private fun bindMessage(element: NotificationUiModel) {
-        val noWidgetWithTrackHistory = element.noWidgetWithTrackHistory() &&
+        val noWidgetWithTrackHistory = element.noWidgetOrderWithTrackHistory() &&
                 element.shortDescHtml.isNotEmpty()
         message?.shouldShowWithAction(
             element.hasWidgetMsg() || noWidgetWithTrackHistory
@@ -295,7 +296,7 @@ class WidgetNotificationViewHolder constructor(
 
     private fun bindMessageMargin(element: NotificationUiModel) {
         val messageLp = message?.layoutParams as? ViewGroup.MarginLayoutParams ?: return
-        val marginTop = if (element.noWidgetWithTrackHistory()) {
+        val marginTop = if (element.noWidgetOrderWithTrackHistory()) {
             margin_4
         } else {
             margin_8
@@ -305,95 +306,6 @@ class WidgetNotificationViewHolder constructor(
     }
 
     companion object {
-        val LAYOUT = R.layout.item_notification_widget_order_history
-    }
-}
-
-/**
- * Adapter for [WidgetNotificationViewHolder] only
- */
-class HistoryAdapter : RecyclerView.Adapter<TimeLineViewHolder>() {
-
-    private var histories: List<TrackHistory> = emptyList()
-    private var isLastJourney = false
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeLineViewHolder {
-        val layout = LayoutInflater.from(parent.context).inflate(
-                TimeLineViewHolder.LAYOUT, parent, false
-        )
-        return TimeLineViewHolder(layout)
-    }
-
-    override fun getItemCount(): Int {
-        return histories.size
-    }
-
-    override fun onBindViewHolder(holder: TimeLineViewHolder, position: Int) {
-        val isLastItem = isLastItem(position)
-        val isFirstItem = isFirstItem(position)
-        holder.bind(histories[position], isFirstItem, isLastItem, isLastJourney)
-    }
-
-    fun updateHistories(element: NotificationUiModel) {
-        histories = element.trackHistory
-        isLastJourney = element.isLastJourney
-        notifyDataSetChanged()
-    }
-
-    private fun isLastItem(position: Int): Boolean {
-        return histories.isNotEmpty() && position == histories.lastIndex
-    }
-
-    private fun isFirstItem(position: Int): Boolean {
-        return histories.isNotEmpty() && position == 0
-    }
-}
-
-/**
- * ViewHolder for [TimeLineViewHolder] only
- */
-class TimeLineViewHolder constructor(
-        itemView: View
-) : RecyclerView.ViewHolder(itemView) {
-
-    private val title: Typography? = itemView.findViewById(R.id.tp_timeline_title)
-    private val desc: Typography? = itemView.findViewById(R.id.tp_timeline_desc)
-    private val bottomLine: View? = itemView.findViewById(R.id.view_bottom_line)
-    private val topLine: View? = itemView.findViewById(R.id.view_top_line)
-
-    fun bind(
-            trackHistory: TrackHistory,
-            isFirstItem: Boolean,
-            isLastItem: Boolean,
-            isLastJourney: Boolean
-    ) {
-        bindTitle(trackHistory)
-        bindDesc(trackHistory)
-        bindTopLine(isFirstItem, isLastJourney)
-        bindBottomLine(isLastItem)
-    }
-
-    private fun bindTitle(trackHistory: TrackHistory) {
-        title?.text = trackHistory.title
-    }
-
-    private fun bindDesc(trackHistory: TrackHistory) {
-        desc?.text = TimeHelper.getRelativeTimeFromNow(trackHistory.createTimeUnixMillis)
-    }
-
-    private fun bindTopLine(isFirstItem: Boolean, lastJourney: Boolean) {
-        if (isFirstItem && !lastJourney) {
-            topLine?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_NN200)
-        } else {
-            topLine?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-        }
-    }
-
-    private fun bindBottomLine(isLastItem: Boolean) {
-        bottomLine?.showWithCondition(!isLastItem)
-    }
-
-    companion object {
-        val LAYOUT = R.layout.item_notification_timeline_order_history
+        val LAYOUT = R.layout.notifcenter_widget_order_history_item
     }
 }
