@@ -44,8 +44,8 @@ class CatalogDetailPageViewModel @Inject constructor(
     val comparisonUiModel: LiveData<ComparisonUiModel?>
         get() = _comparisonUiModel
 
-    private val _scrollEvents = MutableStateFlow(0)
-    val scrollEvents: Flow<Int> = _scrollEvents.asStateFlow()
+    private val _scrollEvents = MutableStateFlow("")
+    val scrollEvents: Flow<String> = _scrollEvents.asStateFlow()
 
     fun isUserLoggedIn(): Boolean {
         return getUserId().isNotBlank()
@@ -101,7 +101,7 @@ class CatalogDetailPageViewModel @Inject constructor(
         )
     }
 
-    fun emitScrollEvent(y: Int) {
+    fun emitScrollEvent(y: String) {
         _scrollEvents.value = y
     }
 }

@@ -75,6 +75,7 @@ class BuyerReviewViewHolder(
     }
 
     override fun bind(element: BuyerReviewUiModel) {
+
         val itemListener = { view: View, data: Any ->
             bindingBuyerReviewCardSlider = ItemBuyerReviewBinding.bind(view)
             val shopIcon: ImageUnify? = bindingBuyerReviewCardSlider?.cardBrShopIcon
@@ -195,6 +196,7 @@ class BuyerReviewViewHolder(
                 show()
             }
         }
+        listener?.onBuyerReviewImpression(element)
     }
 
     private fun dataWidgetToCarouselData(element: BuyerReviewUiModel): ArrayList<Any> {
@@ -248,5 +250,7 @@ class BuyerReviewViewHolder(
     interface BuyerReviewListener {
         fun onClickSeeMore(carouselItem: BuyerReviewUiModel.ItemBuyerReviewUiModel)
         fun onClickImage(carouselItem: BuyerReviewUiModel.ItemBuyerReviewUiModel, position: Int)
+
+        fun onBuyerReviewImpression(buyerReviewUiModel: BuyerReviewUiModel)
     }
 }

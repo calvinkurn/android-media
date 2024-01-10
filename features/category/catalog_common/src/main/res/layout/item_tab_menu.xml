@@ -14,5 +14,6 @@
         app:typographyType="display_3"
         app:typographyWeight="bold"
         android:gravity="center"
+        android:textColor="@color/tab_text_selector_color"
         tools:text="Tess"/>
 </LinearLayout>
