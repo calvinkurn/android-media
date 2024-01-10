@@ -3,8 +3,12 @@ package com.tokopedia.oldcatalog.usecase.detail
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.catalog.ui.mapper.CatalogDetailUiMapper
 import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
+import com.tokopedia.catalog.ui.model.WidgetTypes
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.constant.ErrorNetMessage.MESSAGE_ERROR_NULL_DATA_SHORT
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.oldcatalog.model.datamodel.CatalogDetailDataModel
@@ -77,6 +81,15 @@ class CatalogDetailUseCase @Inject constructor(
         )
         val data = gqlResponse?.getData<CatalogResponseData>(CatalogResponseData::class.java)
         if (data?.catalogGetDetailModular != null) {
+            val inactiveCatalog = data.catalogGetDetailModular.layouts?.firstOrNull{
+                it.type == WidgetTypes.CATALOG_COMPARISON.type
+            }?.data?.comparison?.count {
+                it.id.isEmpty() || it.id == Int.ZERO.toString()
+            }
+
+            if (inactiveCatalog.isMoreThanZero())
+                throw InvalidCatalogComparisonException(inactiveCatalog.orZero())
+
             return catalogDetailUiMapper.mapToCatalogDetailUiModel(data.catalogGetDetailModular).widgets.firstOrNull { it is ComparisonUiModel } as? ComparisonUiModel
         } else {
             throw MessageErrorException(DATA_STRUCT_ERROR_MESSAGE)

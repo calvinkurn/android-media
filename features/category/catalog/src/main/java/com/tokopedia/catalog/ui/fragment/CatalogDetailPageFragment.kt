@@ -127,6 +127,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.oldcatalog.usecase.detail.InvalidCatalogComparisonException
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -424,10 +425,16 @@ class CatalogDetailPageFragment :
             ).show()
         }
         viewModel.errorsToasterGetComparison.observe(viewLifecycleOwner) {
-            val errorMessage = if (it is UnknownHostException) {
-                getString(R.string.catalog_error_message_no_connection)
-            } else {
-                ErrorHandler.getErrorMessage(requireView().context, it)
+            val errorMessage = when (it) {
+                is UnknownHostException -> {
+                    getString(R.string.catalog_error_message_no_connection)
+                }
+                is InvalidCatalogComparisonException -> {
+                    getString(R.string.catalog_error_message_inactive, it.invalidCatalogCount)
+                }
+                else -> {
+                    ErrorHandler.getErrorMessage(requireView().context, it)
+                }
             }
 
             Toaster.build(
@@ -435,19 +442,14 @@ class CatalogDetailPageFragment :
                 errorMessage,
                 duration = Toaster.LENGTH_LONG,
                 type = Toaster.TYPE_ERROR,
-                actionText = getString(R.string.catalog_retry_action)
+                actionText = if (it is InvalidCatalogComparisonException) ""
+                    else getString(R.string.catalog_retry_action)
             ) {
                 changeComparison(retriedCompareCatalogIds)
             }.show()
         }
         viewModel.comparisonUiModel.observe(viewLifecycleOwner) {
-            // COMPARISON_CHANGED_POSITION is hardcoded position, will changed at next phase
-            if (it == null) {
-                Toaster.build(
-                    view,
-                    getString(R.string.catalog_error_message_inactive)
-                ).show()
-            } else {
+            if (it != null) {
                 compareCatalogId = it.content.joinToString(",") {
                     it.id
                 }

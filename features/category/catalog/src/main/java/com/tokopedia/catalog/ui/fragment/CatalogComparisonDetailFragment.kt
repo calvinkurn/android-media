@@ -21,7 +21,6 @@ import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant
 import com.tokopedia.catalog.databinding.FragmentCatalogComparisonDetailBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
-import com.tokopedia.catalog.ui.activity.CatalogComparisonDetailActivity
 import com.tokopedia.catalog.ui.activity.CatalogSwitchingComparisonActivity
 import com.tokopedia.catalog.ui.adapter.ComparisonHeaderAdapter
 import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment.Companion.CATALOG_CAMPARE_SWITCHING_REQUEST_CODE
@@ -31,13 +30,9 @@ import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.viewholder.ComparisonViewHolder
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.oldcatalog.usecase.detail.InvalidCatalogComparisonException
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.usecase.coroutines.Fail
@@ -47,7 +42,6 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.catalog.R as catalogR
 
 class CatalogComparisonDetailFragment :
     BaseDaggerFragment(),
@@ -129,10 +123,16 @@ class CatalogComparisonDetailFragment :
             binding?.loadingLayout?.root?.gone()
         }
         viewModel.errorsToasterGetComparison.observe(viewLifecycleOwner) {
-            val errorMessage = if (it is UnknownHostException) {
-                getString(R.string.catalog_error_message_no_connection)
-            } else {
-                ErrorHandler.getErrorMessage(requireView().context, it)
+            val errorMessage = when (it) {
+                is UnknownHostException -> {
+                    getString(R.string.catalog_error_message_no_connection)
+                }
+                is InvalidCatalogComparisonException -> {
+                    getString(R.string.catalog_error_message_inactive, it.invalidCatalogCount)
+                }
+                else -> {
+                    ErrorHandler.getErrorMessage(requireView().context, it)
+                }
             }
 
             Toaster.build(
@@ -140,7 +140,8 @@ class CatalogComparisonDetailFragment :
                 errorMessage,
                 duration = Toaster.LENGTH_LONG,
                 type = Toaster.TYPE_ERROR,
-                actionText = getString(R.string.catalog_retry_action)
+                actionText = if (it is InvalidCatalogComparisonException) ""
+                    else getString(R.string.catalog_retry_action)
             ) {
                 changeComparison(compareCatalogIds)
             }.show()

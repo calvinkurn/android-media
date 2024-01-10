@@ -51,7 +51,7 @@
     <string name="text_comparison_title">Detail Perbandingan</string>
     <string name="catalog_retry_action">Coba lagi</string>
     <string name="catalog_error_message_no_connection">Wah, internet putus. Cek paket data atau WiFi-mu, ya.</string>
-    <string name="catalog_error_message_inactive">1 katalog gagal ditampilkan. Perbandingan produk diubah ke semula, ya.</string>
+    <string name="catalog_error_message_inactive">%d katalog gagal ditampilkan. Perbandingan produk diubah ke semula, ya.</string>
     <string name="catalog_title_first_comparison">Main Katalog 1</string>
     <string name="catalog_title_comparison">Katalog %d</string>
     <string name="catalog_title_change_comparison">Ubah Perbandingan</string>
