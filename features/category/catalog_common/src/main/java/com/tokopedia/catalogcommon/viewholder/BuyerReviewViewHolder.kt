@@ -48,7 +48,6 @@ class BuyerReviewViewHolder(
     private var widgetTitle: Typography? = null
     private var carouselData: ArrayList<Any>? = null
     private var cardData: BuyerReviewUiModel? = null
-    private var carouselHeights = listOf<Int>()
 
     init {
         widgetTitle = binding?.tgpBuyerReviewTitle
@@ -56,21 +55,7 @@ class BuyerReviewViewHolder(
         carouselBuyerReview?.apply {
             indicatorPosition = CarouselUnify.INDICATOR_BC
             infinite = true
-            onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
-                override fun onActiveIndexChanged(prev: Int, current: Int) {
-                    refreshCardHeight(current)
-                }
-            }
             indicatorWrapper.setPadding(indicatorWrapper.paddingLeft, MARGIN_VERTICAL, indicatorWrapper.paddingRight, MARGIN_VERTICAL)
-        }
-    }
-
-    private fun refreshCardHeight(index: Int) {
-        carouselHeights.getOrNull(index)?.let { height ->
-            binding?.carouselBuyerReview?.getChildAt(Int.ZERO)?.apply {
-                setLayoutHeight(height)
-                requestLayout()
-            }
         }
     }
 
@@ -176,12 +161,6 @@ class BuyerReviewViewHolder(
                     addItems(R.layout.item_buyer_review, it, itemListener)
                     postDelayed({
                         activeIndex = 0
-                        carouselHeights = stage.children
-                            .toList()
-                            .subList(1, stage.childCount.dec())
-                            .map {
-                                it.measuredHeight
-                            }
                     }, 100)
                 }
             }
