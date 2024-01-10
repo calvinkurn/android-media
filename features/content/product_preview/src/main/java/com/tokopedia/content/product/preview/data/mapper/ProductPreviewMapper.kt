@@ -11,7 +11,6 @@ import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 /**
  * @author by astidhiyaa on 06/12/23

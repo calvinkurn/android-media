@@ -19,7 +19,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentReviewBinding
-import com.tokopedia.content.product.preview.utils.MenuReviewResultContract
+import com.tokopedia.content.product.preview.utils.LoginReviewContract
 import com.tokopedia.content.product.preview.utils.PAGE_SOURCE
 import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
@@ -72,9 +72,9 @@ class ReviewFragment @Inject constructor(
     }
 
     private val menuResult = registerForActivityResult(
-        MenuReviewResultContract()
-    ) {
-        viewModel.onAction(ProductPreviewAction.ClickMenu(it))
+        LoginReviewContract()
+    ) { loginStatus ->
+        if (loginStatus) viewModel.onAction(ProductPreviewAction.ClickMenu(true))
     }
 
     override fun getScreenName() = TAG
@@ -100,15 +100,12 @@ class ReviewFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.onAction(ProductPreviewAction.FetchReview)
+
         setupView()
         observeReview()
         observeEvent()
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        viewModel.onAction(ProductPreviewAction.FetchReview)
     }
 
     private fun setupView() {
@@ -138,8 +135,8 @@ class ReviewFragment @Inject constructor(
                         }.show(childFragmentManager)
                     }
                     is ProductPreviewEvent.LoginEvent<*> -> {
-                        when(val data = event.data) {
-                            is MenuStatus -> menuResult.launch(data)
+                        when(event.data) {
+                            is MenuStatus -> menuResult.launch(Unit)
                         }
                     }
                     else -> {}
@@ -162,7 +159,7 @@ class ReviewFragment @Inject constructor(
     }
 
     override fun onMenuClicked(menus: MenuStatus) {
-        viewModel.onAction(ProductPreviewAction.ClickMenu(menus))
+        viewModel.onAction(ProductPreviewAction.ClickMenu(false))
     }
 
     /**

@@ -10,6 +10,6 @@ sealed interface ProductPreviewAction {
     object AtcFromResult : ProductPreviewAction
     data class Navigate(val appLink: String) : ProductPreviewAction
     data class SubmitReport(val model: ReportUiModel) : ProductPreviewAction
-    data class ClickMenu(val status: MenuStatus) : ProductPreviewAction
+    data class ClickMenu(val isFromLogin: Boolean) : ProductPreviewAction
     data class UpdateReviewPosition(val index: Int) : ProductPreviewAction
 }
