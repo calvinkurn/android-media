@@ -106,7 +106,7 @@ android {
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
             minifyEnabled true
             zipAlignEnabled true
-//            shrinkResources true
+            shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             multiDexKeepProguard file('multidex-config.pro')

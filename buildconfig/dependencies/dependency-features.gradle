@@ -90,8 +90,6 @@ ext {
             event                           : ":features:entertainment:event",
             commonEntertainment             : ":features:entertainment:common_entertainment",
 
-            umrah                           : ":features:salam:umrah",
-
             discoveryCommon                 : ":features:discovery:discovery_common",
             home                            : ":features:discovery:home",
             homeComponent                   : ":features:discovery:home_component",

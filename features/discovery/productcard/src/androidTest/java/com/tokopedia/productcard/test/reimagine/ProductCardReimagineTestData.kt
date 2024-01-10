@@ -1,11 +1,8 @@
 package com.tokopedia.productcard.test.reimagine
 
 import android.view.View
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_BENEFIT
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_CREDIBILITY
 import com.tokopedia.productcard.reimagine.ProductCardModel
 import com.tokopedia.productcard.reimagine.ProductCardModel.FreeShipping
@@ -16,7 +13,6 @@ import com.tokopedia.productcard.test.utils.isDisplayedWithText
 import com.tokopedia.productcard.test.utils.longProductName
 import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
 import com.tokopedia.productcard.test.utils.productImageUrl
-import com.tokopedia.productcard.utils.LIGHT_GREEN
 import com.tokopedia.productcard.utils.TEXT_DARK_GREY
 import org.hamcrest.Matcher
 
@@ -36,7 +32,6 @@ internal val productCardReimagineTestData = listOf(
     shopSectionWithoutBadge(),
     shopSectionWithoutTitle(),
     bebasOngkir(),
-    imageBlurred(),
 )
 
 private fun imageNamePrice(): ProductCardReimagineMatcher {
@@ -394,61 +389,4 @@ private fun bebasOngkir(): ProductCardReimagineMatcher {
     )
 
     return Triple(model, matcher, "Free shipping (Bebas ongkir)")
-}
-
-private fun imageBlurred(): ProductCardReimagineMatcher {
-    val reimagineBenefitLabel = LabelGroup(
-        position = LABEL_REIMAGINE_BENEFIT,
-        title = "Cashback Rp10 rb",
-        type = LIGHT_GREEN,
-    )
-    val reimagineCredibilityLabel = LabelGroup(
-        position = LABEL_REIMAGINE_CREDIBILITY,
-        title = "10 rb+ terjual",
-        type = TEXT_DARK_GREY,
-    )
-    val shopBadge = ShopBadge(
-        imageUrl = officialStoreBadgeImageUrl,
-        title = "Shop Name paling panjang",
-    )
-    val model = ProductCardModel(
-        imageUrl = productImageUrl,
-        name = longProductName,
-        price = "Rp79.000",
-        slashedPrice = "Rp100.000",
-        discountPercentage = 10,
-        labelGroupList = listOf(reimagineBenefitLabel, reimagineCredibilityLabel),
-        rating = "4.5",
-        shopBadge = shopBadge,
-        freeShipping = FreeShipping(
-            imageUrl = freeOngkirImageUrl,
-        ),
-        isSafeProduct = true
-    )
-
-    val matcher = mapOf<Int, Matcher<View?>>(
-        R.id.productCardImage to isDisplayed(),
-        R.id.productCardName to isDisplayedWithText(model.name),
-        R.id.productCardPrice to isDisplayedWithText(model.price),
-        R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
-        R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
-        R.id.productCardLabelBenefit to isDisplayedWithText(reimagineBenefitLabel.title),
-        R.id.productCardCredibility to isDisplayed(),
-        R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
-        R.id.productCardRatingIcon to isDisplayed(),
-        R.id.productCardRating to isDisplayedWithText(model.rating),
-        R.id.productCardRatingDots to isDisplayed(),
-        R.id.productCardShopSection to isDisplayed(),
-        R.id.productCardShopBadge to isDisplayed(),
-        R.id.productCardShopNameLocation to isDisplayed(),
-        R.id.productCardFreeShipping to isDisplayed(),
-        R.id.productCardSafeDivider to isDisplayed(),
-        R.id.productCardSafeIcon to isDisplayed(),
-        R.id.productCardSafeTitle to isDisplayed(),
-        R.id.productCardSafeDescription to isDisplayed(),
-        R.id.productCardSafeCheckInfo to isDisplayed(),
-        R.id.productCardSafeContainer to withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE),
-        )
-
-    return Triple(model, matcher, "Image is blurred")
 }

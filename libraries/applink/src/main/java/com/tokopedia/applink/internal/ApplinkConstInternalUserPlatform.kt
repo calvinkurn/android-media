@@ -289,6 +289,9 @@ object ApplinkConstInternalUserPlatform {
     const val PARAM_FULL_NAME = "oldName"
     const val PARAM_CHANCE_CHANGE_NAME = "chances"
 
+    // Param to flag if its come from webview fragment (internal), this is for refresh token flow
+    const val PARAM_FROM_WEBVIEW = "from_web_view"
+
     /**
      * ProfileCompletionActivity
      * @Applink : tokopedia-android-internal://user/profile-completion

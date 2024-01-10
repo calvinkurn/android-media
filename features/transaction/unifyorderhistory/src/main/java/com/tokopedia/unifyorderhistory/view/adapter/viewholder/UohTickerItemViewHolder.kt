@@ -17,9 +17,6 @@ import com.tokopedia.unifyorderhistory.util.UohUtils
 import com.tokopedia.unifyorderhistory.view.adapter.UohItemAdapter
 import java.net.URLDecoder
 
-/**
- * Created by fwidjaja on 15/09/20.
- */
 class UohTickerItemViewHolder(private val binding: UohTickerItemBinding, private val actionListener: UohItemAdapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: UohTypeData) {
         if (item.dataObject is UohListOrder.UohOrders) {

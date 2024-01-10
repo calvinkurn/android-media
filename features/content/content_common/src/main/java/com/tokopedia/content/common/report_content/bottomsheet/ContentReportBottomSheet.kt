@@ -15,7 +15,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.content.common.R as commonR
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * @author by astidhiyaa on 31/05/23
@@ -30,13 +30,13 @@ class ContentReportBottomSheet : BottomSheetUnify() {
 
     private val tvHeader = PlayUserReportSection(
         type = PlayUserReportSectionType.Header,
-        title = commonR.string.play_user_report_header,
+        title = contentcommonR.string.play_user_report_header,
         isUrl = false
     )
 
     private val tvFooter = PlayUserReportSection(
         type = PlayUserReportSectionType.Footer,
-        title = commonR.string.content_user_report_footer,
+        title = contentcommonR.string.content_user_report_footer,
         isUrl = true,
         onClick = { mListener?.onFooterClicked() }
     )
@@ -79,7 +79,7 @@ class ContentReportBottomSheet : BottomSheetUnify() {
             addItemDecoration(ReasoningListItemDecoration(this.context))
         }
 
-        binding.headerContentReport.title = getString(commonR.string.content_user_report_header)
+        binding.headerContentReport.title = getString(contentcommonR.string.content_user_report_header)
 
         binding.headerContentReport.closeListener = View.OnClickListener {
             mListener?.onCloseButtonClicked()

@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.sellerhome.stub.common.CoroutineAndroidTestDispatchersProvider
+import com.tokopedia.sellerhomecommon.common.di.annotation.ActivityContext
 import dagger.Module
 import dagger.Provides
 
@@ -18,8 +19,15 @@ class AppModuleStub(private val context: Context) {
     @ApplicationScope
     @Provides
     @ApplicationContext
-    fun provideContext(): Context {
+    fun provideApplicationContext(): Context {
         return context.applicationContext
+    }
+
+    @ApplicationScope
+    @Provides
+    @ActivityContext
+    fun provideActivityContext(): Context {
+        return context
     }
 
     @ApplicationScope

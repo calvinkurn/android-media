@@ -33,7 +33,8 @@ class SearchPageViewModel @Inject constructor(
                     isManageAddressFlow = true
                 )
             )
-            _autoCompleteList.value = Success(autoCompleteMapper.mapAutoComplete(autoComplete))
+            val result = autoCompleteMapper.mapAutoComplete(autoComplete)
+            _autoCompleteList.value = Success(result)
         }
     }
 

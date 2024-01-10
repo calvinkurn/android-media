@@ -2,7 +2,7 @@ ext {
 
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
-            cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24.5",
+            cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24.12",
             globalconfig            : "com.tokopedia.config:global_config:1.0.25",
             url                     : "com.tokopedia.url:url:1.0.27",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
