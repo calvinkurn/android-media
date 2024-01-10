@@ -1,4 +1,10 @@
 <resources>
     <string name="tab_title_product">Produk</string>
     <string name="tab_title_review">Ulasan</string>
+    <string name="product_prev_menu_opt_watch">Mode nonton</string>
+    <string name="time_separator">/</string>
+    <string name="video_time_less_than_hour">%d:%02d</string>
+    <string name="video_time_hours">%d:%02d:%02d</string>
+    <string name="text_label_place_holder">%s/%s • %s</string>
+    <string name="circle_dot_divider"> • </string>
 </resources>

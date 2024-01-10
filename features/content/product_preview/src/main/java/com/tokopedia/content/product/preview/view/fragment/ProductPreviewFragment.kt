@@ -11,10 +11,16 @@ import com.tokopedia.content.product.preview.databinding.FragmentProductPreviewB
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter.Companion.TAB_PRODUCT_POS
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter.Companion.TAB_REVIEW_POS
+import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
+import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import javax.inject.Inject
 
-class ProductPreviewFragment @Inject constructor() : TkpdBaseV4Fragment() {
+class ProductPreviewFragment @Inject constructor(
+    private val viewModelFactory: ProductPreviewViewModelFactory.Creator
+) : TkpdBaseV4Fragment() {
+
+    val viewModelProvider get() = viewModelFactory.create(EntrySource("123"))
 
     private var _binding: FragmentProductPreviewBinding? = null
     private val binding: FragmentProductPreviewBinding
@@ -28,7 +34,7 @@ class ProductPreviewFragment @Inject constructor() : TkpdBaseV4Fragment() {
         ProductPreviewPagerAdapter(
             childFragmentManager,
             requireActivity(),
-            lifecycle,
+            lifecycle
         )
     }
 
@@ -77,15 +83,11 @@ class ProductPreviewFragment @Inject constructor() : TkpdBaseV4Fragment() {
     }
 
     private fun updateSelectedTabView(position: Int) = with(binding.layoutProductPreviewTab) {
-        fun updateIndicatorTab(position: Int) {
-            when (position) {
-                TAB_PRODUCT_POS -> root.transitionToStart()
-                TAB_REVIEW_POS -> root.transitionToEnd()
-                else -> return
-            }
+        when (position) {
+            TAB_PRODUCT_POS -> root.transitionToStart()
+            TAB_REVIEW_POS -> root.transitionToEnd()
+            else -> return
         }
-
-        updateIndicatorTab(position)
     }
 
     override fun onDestroyView() {
@@ -113,5 +115,4 @@ class ProductPreviewFragment @Inject constructor() : TkpdBaseV4Fragment() {
             } as ProductPreviewFragment
         }
     }
-
 }

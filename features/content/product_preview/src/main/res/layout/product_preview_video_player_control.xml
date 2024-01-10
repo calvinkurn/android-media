@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:viewBindingIgnore="true">
+
+    <com.tokopedia.content.product.preview.view.components.player.ProductPreviewTimeBar
+        android:id="@id/exo_progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:buffered_color="@color/product_preview_dms_seekbar_un_played_color"
+        app:played_color="@color/Unify_Static_White"
+        app:scrubber_disabled_size="0dp"
+        app:scrubber_dragged_size="0dp"
+        app:scrubber_enabled_size="0dp"
+        app:unplayed_color="@color/product_preview_dms_seekbar_un_played_color" />
+
+</FrameLayout>

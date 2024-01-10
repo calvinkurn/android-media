@@ -1,2 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <color name="product_preview_dms_seekbar_un_played_color">#66FFFFFF</color>
+    <color name="product_preview_dms_top_gradient_start">#26000000</color>
+    <color name="product_preview_dms_top_gradient_center">#1A000000</color>
+    <color name="product_preview_dms_top_gradient_end">#00000000</color>
+    <color name="product_preview_dms_unselected_color">#40000000</color>
+</resources>
