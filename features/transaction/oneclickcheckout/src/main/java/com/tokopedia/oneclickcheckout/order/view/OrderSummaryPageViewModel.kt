@@ -66,6 +66,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveA
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -159,13 +160,20 @@ class OrderSummaryPageViewModel @Inject constructor(
         source: String,
         uiMessage: OccUIMessage? = null,
         gatewayCode: String = "",
-        tenor: Int = 0
+        tenor: Int = 0,
+        listPromoExternalAutoApplyCode: ArrayList<PromoExternalAutoApply> = arrayListOf()
     ) {
         promoProcessor.isCartCheckoutRevamp = isCartCheckoutRevamp
         getCartJob?.cancel()
         getCartJob = launch(executorDispatchers.immediate) {
             globalEvent.value = OccGlobalEvent.Normal
-            val result = cartProcessor.getOccCart(source, gatewayCode, tenor, isCartCheckoutRevamp)
+            val result = cartProcessor.getOccCart(
+                source,
+                gatewayCode,
+                tenor,
+                isCartCheckoutRevamp,
+                listPromoExternalAutoApplyCode
+            )
             val isPromoRevamp =
                 PromoUsageRollenceManager().isRevamp(result.orderPromo.lastApply.userGroupMetadata)
             addressState.value = result.addressState

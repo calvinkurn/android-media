@@ -162,6 +162,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUp
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -239,6 +240,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
     private var tenor: Int = 0
     private var gatewayCode: String = ""
     private var shouldShowToaster: Boolean = false
+    private var listPromoExternalAutoApply: ArrayList<PromoExternalAutoApply> = arrayListOf()
 
     private var binding by autoCleared<FragmentOrderSummaryPageBinding> {
         try {
@@ -544,6 +546,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
 
         // first load
         if (viewModel.orderProducts.value.isEmpty()) {
+            checkPromoFromPdp()
             val productIds = arguments?.getString(QUERY_PRODUCT_ID)
             if (productIds.isNullOrBlank() || savedInstanceState?.getBoolean(SAVE_HAS_DONE_ATC) == true) {
                 setSourceFromPDP()
@@ -1272,7 +1275,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         binding.layoutNoAddress.root.animateGone()
         binding.globalError.animateGone()
         binding.loaderContent.animateShow()
-        viewModel.getOccCart(source, uiMessage, gatewayCode, tenor)
+        viewModel.getOccCart(source, uiMessage, gatewayCode, tenor, listPromoExternalAutoApply)
     }
 
     private fun setSourceFromPDP() {
@@ -2223,6 +2226,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         }
     }
 
+    private fun checkPromoFromPdp() {
+        val listPromoAutoApply = arguments?.getParcelableArrayList<PromoExternalAutoApply>(QUERY_LIST_PROMO_AUTO_APPLY)
+        if (listPromoAutoApply?.isNotEmpty() == true) {
+            listPromoExternalAutoApply = listPromoAutoApply
+        }
+    }
+
     companion object {
         const val REQUEST_CODE_COURIER_PINPOINT = 13
 
@@ -2254,6 +2264,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         const val QUERY_SOURCE = "source"
         const val QUERY_GATEWAY_CODE = "gateway_code"
         const val QUERY_TENURE_TYPE = "tenure_type"
+        const val QUERY_LIST_PROMO_AUTO_APPLY = "list_promo_auto_apply"
 
         private const val NO_ADDRESS_IMAGE = TokopediaImageUrl.NO_ADDRESS_IMAGE
 
@@ -2276,7 +2287,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
             productId: String?,
             gatewayCode: String?,
             tenureType: String?,
-            source: String?
+            source: String?,
+            listPromoAutoApply: ArrayList<PromoExternalAutoApply>
         ): OrderSummaryPageFragment {
             return OrderSummaryPageFragment().apply {
                 arguments = Bundle().apply {
@@ -2284,6 +2296,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                     putString(QUERY_GATEWAY_CODE, gatewayCode)
                     putString(QUERY_TENURE_TYPE, tenureType)
                     putString(QUERY_SOURCE, source)
+                    putParcelableArrayList(QUERY_LIST_PROMO_AUTO_APPLY, listPromoAutoApply)
                 }
             }
         }

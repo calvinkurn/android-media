@@ -29,7 +29,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
         // Given
         val response = helper.orderData
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
         coEvery {
             getPrescriptionIdsUseCase.setParams(any()).executeOnBackground()
         } returns GetPrescriptionIdsResponse(null)
@@ -56,7 +56,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
         // Given
         val response = helper.orderData.copy(imageUpload = helper.imageUploadDataModel)
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
         coEvery {
             getPrescriptionIdsUseCase.setParams(any(), any()).executeOnBackground()
         } returns GetPrescriptionIdsResponse(null)
@@ -82,7 +82,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
         // Given
         val response = helper.orderData.copy(imageUpload = helper.imageUploadDataModel)
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
         coEvery {
             getPrescriptionIdsUseCase.setParams(any(), any()).executeOnBackground()
         } returns helper.prescriptionIdsResponse
@@ -112,7 +112,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
         // Given
         val response = helper.orderData.copy(imageUpload = helper.imageUploadDataModel)
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
         coEvery {
             getPrescriptionIdsUseCase.setParams(any(), any()).executeOnBackground()
         } returns GetPrescriptionIdsResponse(null)
@@ -174,7 +174,7 @@ class OrderSummaryPageViewModelEpharmacyTest : BaseOrderSummaryPageViewModelTest
         // Given
         val response = helper.orderData.copy(imageUpload = helper.imageUploadDataModel)
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)
         orderSummaryPageViewModel.orderProfile.value = helper.preference
         orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
