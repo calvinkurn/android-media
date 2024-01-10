@@ -175,10 +175,12 @@ class ShareExChannelMapper @Inject constructor(
         return socialMediaChannelList
     }
 
+    @SuppressLint("PII Data Exposure")
     fun generateDefaultChannel(): ShareExChannelModel {
         val generalChannelList = arrayListOf<ShareExChannelItemModel>()
         generalChannelList.add(
             ShareExChannelItemModel(
+                idEnum = ShareExChannelEnum.COPY_LINK,
                 title = resourceProvider.getCopyLinkChannelTitle(),
                 icon = IconUnify.LINK,
                 mimeType = ShareExMimeTypeEnum.NOTHING
@@ -186,6 +188,7 @@ class ShareExChannelMapper @Inject constructor(
         )
         generalChannelList.add(
             ShareExChannelItemModel(
+                idEnum = ShareExChannelEnum.SMS,
                 title = resourceProvider.getSMSChannelTitle(),
                 icon = IconUnify.CHAT,
                 mimeType = ShareExMimeTypeEnum.TEXT
@@ -193,6 +196,7 @@ class ShareExChannelMapper @Inject constructor(
         )
         generalChannelList.add(
             ShareExChannelItemModel(
+                idEnum = ShareExChannelEnum.EMAIL,
                 title = resourceProvider.getEmailChannelTitle(),
                 icon = IconUnify.MESSAGE,
                 mimeType = ShareExMimeTypeEnum.IMAGE
@@ -200,6 +204,7 @@ class ShareExChannelMapper @Inject constructor(
         )
         generalChannelList.add(
             ShareExChannelItemModel(
+                idEnum = ShareExChannelEnum.OTHERS,
                 title = resourceProvider.getOthersChannelTitle(),
                 icon = IconUnify.MENU_KEBAB_HORIZONTAL,
                 mimeType = ShareExMimeTypeEnum.NOTHING

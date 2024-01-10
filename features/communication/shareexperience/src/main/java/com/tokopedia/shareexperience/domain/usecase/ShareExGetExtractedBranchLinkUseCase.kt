@@ -1,3 +1,0 @@
-package com.tokopedia.shareexperience.domain.usecase
-
-interface ShareExGetExtractedBranchLinkUseCase

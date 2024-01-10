@@ -1,4 +1,4 @@
-package com.tokopedia.shareexperience.data.repository
+package com.tokopedia.shareexperience.data.query
 
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 

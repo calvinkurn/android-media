@@ -3,6 +3,7 @@ package com.tokopedia.shareexperience.ui.util
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateRegistrationModel
+import com.tokopedia.shareexperience.domain.model.property.ShareExImageGeneratorPropertyModel
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.model.ShareExAffiliateRegistrationUiModel
 import com.tokopedia.shareexperience.ui.model.ShareExErrorUiModel
@@ -28,8 +29,10 @@ fun ShareExBottomSheetModel.map(
     val result = arrayListOf<Visitable<in ShareExTypeFactory>>()
 
     // Subtitle UI
-    val subtitleUiModel = ShareExSubtitleUiModel(this.subtitle)
-    result.add(subtitleUiModel)
+    if (this.subtitle.isNotBlank()) {
+        val subtitleUiModel = ShareExSubtitleUiModel(this.subtitle)
+        result.add(subtitleUiModel)
+    }
 
     // Chip UI
     val listChipUiModel = arrayListOf<ShareExChipUiModel>()
@@ -145,6 +148,18 @@ fun ShareExBottomSheetModel.mapError(
 
         result
     }
+}
+
+fun ShareExBottomSheetModel.getImageGeneratorProperty(imageUrl: String): ShareExImageGeneratorPropertyModel? {
+    return this.body.listShareProperty
+        .firstOrNull { it.listImage.findIndexIgnoreCase(imageUrl) >= 0 }
+        ?.imageGenerator
+}
+
+fun ShareExBottomSheetModel.getImageGeneratorProperty(
+    chipPosition: Int
+): ShareExImageGeneratorPropertyModel? {
+    return this.body.listShareProperty.getOrNull(chipPosition)?.imageGenerator
 }
 
 fun ShareExBottomSheetModel.getSelectedImageUrl(chipPosition: Int, imagePosition: Int): String {

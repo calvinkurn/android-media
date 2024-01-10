@@ -12,6 +12,7 @@ import dagger.Component
     modules = [
         ShareExViewModelModule::class,
         ShareExUseCaseModule::class,
+        ShareExRepositoryModule::class,
         ShareExModule::class
     ],
     dependencies = [BaseAppComponent::class]

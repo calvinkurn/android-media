@@ -4,10 +4,10 @@ import com.tokopedia.shareexperience.data.dto.ShareExBottomSheetResponseDto
 import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExPropertyImageGeneratorArgResponseDto
 import com.tokopedia.shareexperience.data.util.ShareExDefaultValue.DEFAULT_TITLE
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
-import com.tokopedia.shareexperience.domain.model.ShareExImageGeneratorModel
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateModel
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateRegistrationModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExBodyModel
+import com.tokopedia.shareexperience.domain.model.property.ShareExImageGeneratorPropertyModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExPropertyModel
 import javax.inject.Inject
 
@@ -30,9 +30,9 @@ class ShareExPropertyMapper @Inject constructor(
                 label = it.affiliateEligibility?.badge ?: "",
                 expiredDate = it.affiliateEligibility?.expiredDate ?: ""
             )
-            val imageGeneratorModel = ShareExImageGeneratorModel(
+            val imageGeneratorModel = ShareExImageGeneratorPropertyModel(
                 sourceId = it.imageGeneratorPayload.sourceId,
-                payload = it.imageGeneratorPayload.args.mapToPayload()
+                args = it.imageGeneratorPayload.args.toMap()
             )
             val property = ShareExPropertyModel(
                 title = it.shareBody.title,
@@ -56,7 +56,7 @@ class ShareExPropertyMapper @Inject constructor(
         )
     }
 
-    private fun List<ShareExPropertyImageGeneratorArgResponseDto>.mapToPayload(): Map<String, String> {
+    private fun List<ShareExPropertyImageGeneratorArgResponseDto>.toMap(): Map<String, String> {
         val result = mutableMapOf<String, String>()
         this.forEach {
             result[it.key] = it.value
