@@ -4,8 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
-import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
-import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
 import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
@@ -77,7 +75,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             is ProductPreviewAction.SubmitReport -> submitReport(action.model)
             is ProductPreviewAction.ClickMenu -> menuOnClicked(action.isFromLogin)
             is ProductPreviewAction.UpdateReviewPosition -> updateReviewIndex(action.index)
-            is ProductPreviewAction.Like -> like(action.state)
+            is ProductPreviewAction.Like -> like(action.isFromLogin)
             else -> {}
         }
     }
@@ -200,14 +198,15 @@ class ProductPreviewViewModel @AssistedInject constructor(
         _reviewPosition.value = position
     }
 
-    private fun like(state: LikeUiState) {
-        requiredLogin(state) {
+    private fun like(isFromLogin: Boolean) {
+        val status = currentReview.likeState
+        requiredLogin(status) {
             viewModelScope.launchCatchError(block = {
-                val state = repo.likeReview(state, currentReview.reviewId)
-                _review.update { reviews ->
-                    reviews.map { review ->
-                        if (review.reviewId == currentReview.reviewId) review.copy(likeState = state) //TODO: need better catch to know current review
-                        else review
+                val state = repo.likeReview(status, currentReview.reviewId)
+                _review.update { review ->
+                    review.map { model ->
+                        if (model.reviewId == currentReview.reviewId) model.copy(likeState = state)
+                        else model
                     }
                 }
             }) {

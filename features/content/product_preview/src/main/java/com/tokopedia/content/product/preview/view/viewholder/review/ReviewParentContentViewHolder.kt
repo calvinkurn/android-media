@@ -68,17 +68,19 @@ class ReviewParentContentViewHolder(
             listener.onMenuClicked(item.menus)
         }
 
-        val gesture = GestureDetector(
-            binding.root.context,
-            object : GestureDetector.SimpleOnGestureListener() {
-                override fun onDoubleTap(e: MotionEvent): Boolean = true
-            })
+        //TODO: add double tap
 
-        //TODO: adjust click animation, move [FeedLikeAnimationComponent, view_like] to content_common
-        binding.layoutLikeReview.root.setOnTouchListener { _, motionEvent ->
-            gesture.onTouchEvent(motionEvent)
-            true
-        }
+//        val gesture = GestureDetector(
+//            binding.root.context,
+//            object : GestureDetector.SimpleOnGestureListener() {
+//                override fun onDoubleTap(e: MotionEvent): Boolean = true
+//            })
+//
+//        //TODO: adjust click animation, move [FeedLikeAnimationComponent, view_like] to content_common
+//        binding.layoutLikeReview.root.setOnTouchListener { _, motionEvent ->
+//            gesture.onTouchEvent(motionEvent)
+//            true
+//        }
     }
 
     interface Listener {
