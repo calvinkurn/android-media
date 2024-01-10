@@ -71,7 +71,7 @@ open class AddToCartUseCase @Inject constructor(
                     it.quantity.toString(), it.category, it.categoryLevel1Id,
                     it.categoryLevel1Name, it.categoryLevel2Id, it.categoryLevel2Name,
                     it.categoryLevel3Id, it.categoryLevel3Name, it.userId,
-                    it.shopName
+                    response.addToCartResponse.data.shopName
                 )
             }
             return result

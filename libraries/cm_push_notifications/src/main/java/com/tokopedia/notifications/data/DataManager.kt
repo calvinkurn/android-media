@@ -84,7 +84,6 @@ class DataManager @Inject constructor(
             addToCartRequestParams.productName = productName
             addToCartRequestParams.price = price
             addToCartRequestParams.userId = userId
-            addToCartRequestParams.shopName = shopName
 
             return RequestParams.create().apply {
                 putObject(REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)

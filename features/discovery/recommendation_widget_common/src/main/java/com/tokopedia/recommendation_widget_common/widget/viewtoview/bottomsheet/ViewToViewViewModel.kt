@@ -96,8 +96,7 @@ class ViewToViewViewModel @Inject constructor(
             quantity = minOrder,
             productName = productName,
             price = price,
-            userId = getUserId(),
-            shopName = recommendationItem.shopName
+            userId = getUserId()
         )
     }
 

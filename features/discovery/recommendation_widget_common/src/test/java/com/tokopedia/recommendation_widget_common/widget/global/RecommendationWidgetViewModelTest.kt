@@ -248,8 +248,7 @@ class RecommendationWidgetViewModelTest {
         val trackingModel = RecommendationWidgetTrackingModel(androidPageName = "pageName")
         val model = RecommendationWidgetModel(metadata = metadata, trackingModel = trackingModel)
         val recommendationWidgetList = "carousel_hatc.json".jsonToRecommendationWidgetList()
-        val currentState =
-            RecommendationWidgetState().from(model, recommendationWidgetList, userSession.userId)
+        val currentState = RecommendationWidgetState().from(model, recommendationWidgetList, userSession.userId)
         val viewModel = ViewModel(currentState)
 
         viewModel.refresh()
@@ -357,8 +356,7 @@ class RecommendationWidgetViewModelTest {
         val expectedATCRequestParams = AddToCartRequestParams(
             recommendationItem.productId.toString(),
             recommendationItem.shopId.toString(),
-            addToCartQty,
-            shopName = recommendationItem.shopName
+            addToCartQty
         )
 
         verify {
@@ -455,11 +453,7 @@ class RecommendationWidgetViewModelTest {
                 .recommendationItemList
                 .find { it.productId.toString() == TEST_UPDATE_CART_PRODUCT_ID }!!
 
-        viewModel.onAddToCartNonVariant(
-            carouselModel,
-            recommendationItem,
-            TEST_UPDATE_CART_QUANTITY
-        )
+        viewModel.onAddToCartNonVariant(carouselModel, recommendationItem, TEST_UPDATE_CART_QUANTITY)
 
         val miniCartItemProduct =
             miniCartSimplifiedData.getMiniCartItemProduct(TEST_UPDATE_CART_PRODUCT_ID)!!
@@ -562,7 +556,6 @@ class RecommendationWidgetViewModelTest {
         private val responseErrorException = ResponseErrorException(
             "Jumlah barang melebihi stok di toko. Kurangi pembelianmu, ya!"
         )
-
         object AddToCartTestObject {
             val addToCartQty
                 get() = 10
@@ -587,21 +580,19 @@ class RecommendationWidgetViewModelTest {
             const val TEST_UPDATE_CART_PRODUCT_ID = "3132258458"
             const val TEST_UPDATE_CART_QUANTITY = 3
             val updateCartSuccessMessage get() = "Success nih"
-            val updateCartSuccessData
-                get() = UpdateCartV2Data(
-                    data = Data(status = true, message = updateCartSuccessMessage)
-                )
+            val updateCartSuccessData get() = UpdateCartV2Data(
+                data = Data(status = true, message = updateCartSuccessMessage)
+            )
         }
 
         object DeleteCartTestObject {
             const val TEST_DELETE_CART_PRODUCT_ID = "3132258458"
             val deleteCartMessage get() = "1 barang telah dihapus."
-            val deleteCartSuccessData
-                get() = RemoveFromCartData(
-                    status = "OK",
-                    errorMessage = listOf(deleteCartMessage),
-                    data = DeleteCartData(success = 1, message = listOf(deleteCartMessage))
-                )
+            val deleteCartSuccessData get() = RemoveFromCartData(
+                status = "OK",
+                errorMessage = listOf(deleteCartMessage),
+                data = DeleteCartData(success = 1, message = listOf(deleteCartMessage))
+            )
         }
 
         object MiniCartData {

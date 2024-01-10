@@ -111,7 +111,6 @@ object AtcCommonMapper {
                     category = categoryName
                     price = selectedChild?.finalPrice?.toString() ?: ""
                     this.userId = userId
-                    this.shopName = shopName
                 }
             }
         }

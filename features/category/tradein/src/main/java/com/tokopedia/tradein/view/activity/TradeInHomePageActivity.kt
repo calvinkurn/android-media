@@ -46,11 +46,12 @@ const val APP_SETTINGS = 9988
 const val LOGIN_REQUEST = 514
 const val MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 123
 
-const val LAKU6_TEST_END ="laku6-test-end"
-const val LAKU6_BACK_ACTION ="laku6-back-action"
-const val LAKU6_GTM ="laku6-gtm"
+const val LAKU6_TEST_END = "laku6-test-end"
+const val LAKU6_BACK_ACTION = "laku6-back-action"
+const val LAKU6_GTM = "laku6-gtm"
 
-class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
+class TradeInHomePageActivity :
+    BaseViewModelActivity<TradeInHomePageVM>(),
     TradeInEducationalPageFragment.OnDoTradeInClick {
 
     @Inject
@@ -85,17 +86,29 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
                 when (page) {
                     TradeInGTMConstants.CEK_FISIK -> {
                         when (action) {
-                            TradeInGTMConstants.CLICK_SALIN, TradeInGTMConstants.CLICK_SOCIAL_SHARE -> tradeInAnalytics.sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_TRADEIN,
-                                cekFisik, action, value)
+                            TradeInGTMConstants.CLICK_SALIN, TradeInGTMConstants.CLICK_SOCIAL_SHARE -> tradeInAnalytics.sendGeneralEvent(
+                                TradeInGTMConstants.ACTION_CLICK_TRADEIN,
+                                cekFisik,
+                                action,
+                                value
+                            )
                         }
                     }
                     TradeInGTMConstants.CEK_FUNGSI_TRADE_IN -> {
-                        tradeInAnalytics.sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_TRADEIN,
-                            cekFungsi, action, value)
+                        tradeInAnalytics.sendGeneralEvent(
+                            TradeInGTMConstants.ACTION_CLICK_TRADEIN,
+                            cekFungsi,
+                            action,
+                            value
+                        )
                     }
                     TradeInGTMConstants.CEK_FISIK_RESULT_TRADE_IN -> {
-                        tradeInAnalytics.sendGeneralEvent(TradeInGTMConstants.ACTION_VIEW_TRADEIN,
-                            cekFisikResult, action, value)
+                        tradeInAnalytics.sendGeneralEvent(
+                            TradeInGTMConstants.ACTION_VIEW_TRADEIN,
+                            cekFisikResult,
+                            action,
+                            value
+                        )
                     }
                 }
             }
@@ -110,53 +123,69 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
     }
 
     private fun setObservers() {
-        viewModel.askUserLogin.observe(this, Observer {
-            if (it != null && it == TradeinConstants.LOGIN_REQUIRED) {
-                startActivityForResult(
-                    RouteManager.getIntent(this, ApplinkConst.LOGIN),
-                    LOGIN_REQUEST
-                )
-            } else {
-                askPermissions()
+        viewModel.askUserLogin.observe(
+            this,
+            Observer {
+                if (it != null && it == TradeinConstants.LOGIN_REQUIRED) {
+                    startActivityForResult(
+                        RouteManager.getIntent(this, ApplinkConst.LOGIN),
+                        LOGIN_REQUEST
+                    )
+                } else {
+                    askPermissions()
+                }
             }
-        })
-        viewModel.tradeInHomeStateLiveData.observe(this, Observer {
-            when(it){
-                is GoToCheckout -> goToCheckout(it.price)
+        )
+        viewModel.tradeInHomeStateLiveData.observe(
+            this,
+            Observer {
+                when (it) {
+                    is GoToCheckout -> goToCheckout(it.price)
+                }
             }
-        })
-        viewModel.addToCartLiveData.observe(this, Observer {
+        )
+        viewModel.addToCartLiveData.observe(
+            this,
+            Observer {
                 if (it.errorReporter.eligible) {
                     showErrorToast(it.errorReporter.texts.submitTitle, getString(R.string.tradein_ok), {})
                 } else {
                     goToCheckoutActivity(
                         ShipmentFormRequest.BundleBuilder()
-                        .deviceId(viewModel.deviceId)
-                        .build()
-                        .bundle)
+                            .deviceId(viewModel.deviceId)
+                            .build()
+                            .bundle
+                    )
                 }
-        })
+            }
+        )
     }
 
     private fun askPermissions() {
         if (!viewModel.isPermissionGranted()) {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                ActivityCompat.requestPermissions(this, arrayOf(
-                    Manifest.permission.READ_PHONE_STATE,
-                    Manifest.permission.READ_MEDIA_VIDEO,
-                    Manifest.permission.READ_MEDIA_IMAGES,
-                    Manifest.permission.READ_MEDIA_AUDIO,
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.VIBRATE),
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(
+                        Manifest.permission.READ_PHONE_STATE,
+                        Manifest.permission.READ_MEDIA_VIDEO,
+                        Manifest.permission.READ_MEDIA_IMAGES,
+                        Manifest.permission.READ_MEDIA_AUDIO,
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.VIBRATE
+                    ),
                     MY_PERMISSIONS_REQUEST_READ_PHONE_STATE
                 )
-            }else{
-                ActivityCompat.requestPermissions(this, arrayOf(
-                    Manifest.permission.READ_PHONE_STATE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.VIBRATE),
+            } else {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(
+                        Manifest.permission.READ_PHONE_STATE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.VIBRATE
+                    ),
                     MY_PERMISSIONS_REQUEST_READ_PHONE_STATE
                 )
             }
@@ -170,10 +199,11 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
         if (requestCode == APP_SETTINGS) {
             askPermissions()
         } else if (requestCode == LOGIN_REQUEST) {
-            if (resultCode == RESULT_OK)
+            if (resultCode == RESULT_OK) {
                 viewModel.checkLogin()
-            else
+            } else {
                 finish()
+            }
         }
     }
 
@@ -183,10 +213,16 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
                 for (i in permissions.indices) {
                     val result = grantResults[i]
                     if (result == PackageManager.PERMISSION_DENIED) {
-                        if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[i]
-                                ?: "")) {
-                            showToast(getString(R.string.tradein_permission_setting),
-                                getString(R.string.tradein_ok)) {
+                        if (!ActivityCompat.shouldShowRequestPermissionRationale(
+                                this,
+                                permissions[i]
+                                    ?: ""
+                            )
+                        ) {
+                            showToast(
+                                getString(R.string.tradein_permission_setting),
+                                getString(R.string.tradein_ok)
+                            ) {
                                 val intent = Intent()
                                 intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
                                 intent.addCategory(Intent.CATEGORY_DEFAULT)
@@ -194,16 +230,20 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
                                 this.startActivityForResult(intent, APP_SETTINGS)
                             }
                         } else {
-                            showToast(getString(R.string.tradein_requires_permission_for_diagnostic),
-                                getString(R.string.tradein_ok)) { askPermissions() }
+                            showToast(
+                                getString(R.string.tradein_requires_permission_for_diagnostic),
+                                getString(R.string.tradein_ok)
+                            ) { askPermissions() }
                         }
                         return
                     }
                 }
                 setUpEducationalFragment()
             } else {
-                showToast(getString(R.string.tradein_requires_permission_for_diagnostic),
-                    getString(R.string.tradein_ok)) { askPermissions() }
+                showToast(
+                    getString(R.string.tradein_requires_permission_for_diagnostic),
+                    getString(R.string.tradein_ok)
+                ) { askPermissions() }
             }
         }
     }
@@ -238,7 +278,10 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
         Toaster.build(
             findViewById<FrameLayout>(com.tokopedia.abstraction.R.id.parent_view),
             message,
-            duration, Toaster.TYPE_ERROR, actionText, listener
+            duration,
+            Toaster.TYPE_ERROR,
+            actionText,
+            listener
         ).show()
     }
 
@@ -249,13 +292,17 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
                 .replace(parentViewResourceID, newFragment, newFragment.tag)
                 .commit()
         }
-
     }
 
     private fun showToast(message: String, actionText: String, listener: View.OnClickListener) {
-        Toaster.build(findViewById(android.R.id.content),
+        Toaster.build(
+            findViewById(android.R.id.content),
             message,
-            Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_NORMAL, actionText, listener).show()
+            Snackbar.LENGTH_INDEFINITE,
+            Toaster.TYPE_NORMAL,
+            actionText,
+            listener
+        ).show()
     }
 
     override fun initInject() {
@@ -281,7 +328,7 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
     }
 
     private fun goToCheckout(finalPrice: String) {
-        viewModel.data?.let { data->
+        viewModel.data?.let { data ->
             val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
                 productId = data.productId
                 shopId = data.shopID.toZeroStringIfNull()
@@ -297,6 +344,7 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
                 category = data.categoryName ?: ""
                 price = finalPrice
                 userId = viewModel.userId
+                shopName = data.shopName ?: ""
             }
             viewModel.getAddToCartOcsUseCase(addToCartOcsRequestParams)
         }

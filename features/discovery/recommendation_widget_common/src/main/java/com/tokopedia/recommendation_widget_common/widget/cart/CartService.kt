@@ -35,7 +35,6 @@ class CartService @Inject constructor(
     internal fun handleCart(
         productId: String,
         shopId: String,
-        shopName: String,
         currentQuantity: Int,
         updatedQuantity: Int,
         miniCartItem: MiniCartItem.MiniCartItemProduct?,
@@ -51,7 +50,6 @@ class CartService @Inject constructor(
             addToCart(
                 productId,
                 shopId,
-                shopName,
                 updatedQuantity,
                 miniCartSource,
                 onSuccessAddToCart,
@@ -80,13 +78,12 @@ class CartService @Inject constructor(
     private fun addToCart(
         productId: String,
         shopId: String,
-        shopName: String,
         updatedQuantity: Int,
         miniCartSource: MiniCartSource,
         onSuccessAddToCart: (AddToCartDataModel, MiniCartSimplifiedData) -> Unit,
         onError: (Throwable) -> Unit
     ) {
-        addToCartUseCase.setParams(AddToCartRequestParams(productId, shopId, updatedQuantity, shopName = shopName))
+        addToCartUseCase.setParams(AddToCartRequestParams(productId, shopId, updatedQuantity))
         addToCartUseCase.execute(
             onSuccess = { atcResponse ->
                 getMiniCart(shopId, miniCartSource) { miniCart ->

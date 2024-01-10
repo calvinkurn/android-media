@@ -1770,7 +1770,6 @@ class CartListPresenter @Inject constructor(
             this.category = productCategory
             this.price = productPrice
             this.userId = userSessionInterface.userId
-            this.shopName = shopName
         }
 
         launch {
