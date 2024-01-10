@@ -259,47 +259,50 @@ fun ExploreCategoryListGrid(
             val isSubCategoryVisible = selectedCategory != null
 
             LaunchedEffect(isSubCategoryVisible) {
-                when {
-                    isTopSideNotVisible && categoryIndex != -1 -> {
-                        delay(DELAY_SCROLL_ANIMATION)
-                        lazyListState.animateScrollToItem(categoryIndex)
-                    }
-
-                    isBottomSideNotVisible && isSubCategoryVisible -> {
-                        val remainSubItemsHeight =
-                            (categoryItemHeight + subCategoriesHeight) - verticalMargin
-
-                        delay(DELAY_SCROLL_ANIMATION)
-
-                        if (nestCardHeight == 0f) {
-                            lazyListState.animateScrollBy(remainSubItemsHeight)
+                if (isSubCategoryVisible) {
+                    when {
+                        isTopSideNotVisible && categoryIndex != -1 -> {
+                            delay(DELAY_SCROLL_ANIMATION)
+                            lazyListState.animateScrollToItem(categoryIndex)
                         }
-                    }
 
-                    else -> {
-                        delay(DELAY_SCROLL_ANIMATION)
-
-                        if (isNestCardNotMinimumVisible) {
-                            val singleCategoryHeight = (subCategoriesHeight / MINIMUM_3_SUB_CAT)
-
+                        isBottomSideNotVisible -> {
                             val remainSubItemsHeight =
-                                if (childCategorySize < MINIMUM_3_SUB_CAT) {
-                                    ((singleCategoryHeight * childCategorySize) - nestCardHeight)
-                                } else {
-                                    if (nestCardHeight < subCategoriesHeight) {
-                                        Math.abs(subCategoriesHeight - nestCardHeight)
-                                    } else {
-                                        nestCardHeight
-                                    }
-                                }
+                                (categoryItemHeight + subCategoriesHeight) - verticalMargin
 
-                            val remainNeedToScroll = if (nestCardHeight < singleCategoryHeight) {
-                                remainSubItemsHeight + verticalMargin
-                            } else {
-                                remainSubItemsHeight
+                            delay(DELAY_SCROLL_ANIMATION)
+
+                            if (nestCardHeight == 0f) {
+                                lazyListState.animateScrollBy(remainSubItemsHeight)
                             }
+                        }
 
-                            lazyListState.animateScrollBy(remainNeedToScroll)
+                        else -> {
+                            delay(DELAY_SCROLL_ANIMATION)
+
+                            if (isNestCardNotMinimumVisible) {
+                                val singleCategoryHeight = (subCategoriesHeight / MINIMUM_3_SUB_CAT)
+
+                                val remainSubItemsHeight =
+                                    if (childCategorySize < MINIMUM_3_SUB_CAT) {
+                                        ((singleCategoryHeight * childCategorySize) - nestCardHeight)
+                                    } else {
+                                        if (nestCardHeight < subCategoriesHeight) {
+                                            Math.abs(subCategoriesHeight - nestCardHeight)
+                                        } else {
+                                            nestCardHeight
+                                        }
+                                    }
+
+                                val remainNeedToScroll =
+                                    if (nestCardHeight < singleCategoryHeight) {
+                                        remainSubItemsHeight + verticalMargin
+                                    } else {
+                                        remainSubItemsHeight
+                                    }
+
+                                lazyListState.animateScrollBy(remainNeedToScroll)
+                            }
                         }
                     }
                 }

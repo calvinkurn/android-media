@@ -1,5 +1,6 @@
 package com.tokopedia.home_explore_category.presentation.compose
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,12 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberImagePainter
 import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryUiModel
-import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.card.NestCard
 import com.tokopedia.nest.components.card.NestCardType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.components.R as nestcomponentsR
 
 @Composable
 fun SubExploreCategoryItem(
@@ -31,8 +33,13 @@ fun SubExploreCategoryItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         // the reason using old approach, we need to avoid the intermittent crash causes coil-compose
-        NestImage(
-            imageUrl = subExploreCategoryUiModel.imageUrl,
+        val painter = rememberImagePainter(data = subExploreCategoryUiModel.imageUrl, builder = {
+            placeholder(nestcomponentsR.drawable.imagestate_placeholder)
+            error(nestcomponentsR.drawable.imagestate_error)
+        })
+        Image(
+            painter = painter,
+            contentDescription = null,
             modifier = Modifier
                 .size(42.dp)
                 .clip(RoundedCornerShape(8.dp))

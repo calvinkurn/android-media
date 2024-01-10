@@ -1,5 +1,6 @@
 package com.tokopedia.home_explore_category.presentation.compose
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,12 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberImagePainter
 import com.tokopedia.home_explore_category.presentation.uimodel.ExploreCategoryUiModel
-import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.card.NestCard
 import com.tokopedia.nest.components.card.NestCardType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.components.R as nestcomponentsR
 
 @Composable
 fun ExploreCategoryItem(
@@ -65,8 +67,13 @@ fun ExploreCategoryItem(
             }
 
             // the reason using old approach, we need to avoid the intermittent crash causes coil-compose
-            NestImage(
-                imageUrl = exploreCategoryUiModel.categoryImageUrl,
+            val painter = rememberImagePainter(data = exploreCategoryUiModel.categoryImageUrl, builder = {
+                placeholder(nestcomponentsR.drawable.imagestate_placeholder)
+                error(nestcomponentsR.drawable.imagestate_error)
+            })
+            Image(
+                painter = painter,
+                contentDescription = null,
                 modifier = Modifier
                     .height(84.dp)
                     .fillMaxWidth()
