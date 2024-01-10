@@ -57,7 +57,7 @@ class CustomListAdapter(
         }
     }
 
-    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         when (holder) {
             is ProductAddOnViewHolder -> {
                 holder.removeListener()
@@ -66,7 +66,7 @@ class CustomListAdapter(
                 holder.removeListeners()
             }
         }
-        super.onViewDetachedFromWindow(holder)
+        super.onViewRecycled(holder)
     }
 
     override fun getItemCount(): Int {

@@ -74,11 +74,11 @@ class ProductListAdapter(
         return productListItems.size
     }
 
-    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         if (holder is ProductCardViewHolder) {
             holder.removeListeners()
         }
-        super.onViewDetachedFromWindow(holder)
+        super.onViewRecycled(holder)
     }
 
     @SuppressLint("NotifyDataSetChanged")

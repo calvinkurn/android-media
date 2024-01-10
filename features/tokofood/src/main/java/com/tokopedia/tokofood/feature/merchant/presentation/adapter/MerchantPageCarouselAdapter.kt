@@ -28,9 +28,9 @@ class MerchantPageCarouselAdapter(
         return carouselData.size
     }
 
-    override fun onViewDetachedFromWindow(holder: MerchantCarouseItemViewHolder) {
+    override fun onViewRecycled(holder: MerchantCarouseItemViewHolder) {
         holder.removeListener()
-        super.onViewDetachedFromWindow(holder)
+        super.onViewRecycled(holder)
     }
 
     @SuppressLint("NotifyDataSetChanged")
