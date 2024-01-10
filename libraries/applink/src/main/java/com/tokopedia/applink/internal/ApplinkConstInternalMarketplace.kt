@@ -41,10 +41,6 @@ object ApplinkConstInternalMarketplace {
         "tenure_type={tenure_type}&" +
         "source={source}"
 
-    // todo: kalo jadi pake query param
-    const val ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PROMO = "$INTERNAL_MARKETPLACE/one-click-checkout?" +
-        "promo_code={promo_code}&" +
-        "promo_type={promo_type}"
     const val ADD_ON_GIFTING = "$INTERNAL_MARKETPLACE/add-on-gifting"
 
     // AddEditProductCategoryActivity

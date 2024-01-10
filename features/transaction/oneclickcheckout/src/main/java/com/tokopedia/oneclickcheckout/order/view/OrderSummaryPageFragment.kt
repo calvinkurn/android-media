@@ -2228,8 +2228,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
 
     private fun checkPromoFromPdp() {
         val listPromoAutoApply = arguments?.getParcelableArrayList<PromoExternalAutoApply>(QUERY_LIST_PROMO_AUTO_APPLY)
-        /*val promoCode = arguments?.getString(QUERY_PROMO_CODE, "") ?: ""
-        val promoType = arguments?.getString(QUERY_PROMO_TYPE, "") ?: ""*/
         if (listPromoAutoApply?.isNotEmpty() == true) {
             listPromoExternalAutoApply = listPromoAutoApply
         }
@@ -2267,8 +2265,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         const val QUERY_GATEWAY_CODE = "gateway_code"
         const val QUERY_TENURE_TYPE = "tenure_type"
         const val QUERY_LIST_PROMO_AUTO_APPLY = "list_promo_auto_apply"
-        /*const val QUERY_PROMO_CODE = "promo_code"
-        const val QUERY_PROMO_TYPE = "promo_type"*/
 
         private const val NO_ADDRESS_IMAGE = TokopediaImageUrl.NO_ADDRESS_IMAGE
 
@@ -2292,7 +2288,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
             gatewayCode: String?,
             tenureType: String?,
             source: String?,
-            listPromoAutoApply: List<PromoExternalAutoApply>
+            listPromoAutoApply: ArrayList<PromoExternalAutoApply>
         ): OrderSummaryPageFragment {
             return OrderSummaryPageFragment().apply {
                 arguments = Bundle().apply {
@@ -2300,7 +2296,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                     putString(QUERY_GATEWAY_CODE, gatewayCode)
                     putString(QUERY_TENURE_TYPE, tenureType)
                     putString(QUERY_SOURCE, source)
-                    putParcelableArrayList(QUERY_LIST_PROMO_AUTO_APPLY, ArrayList(listPromoAutoApply))
+                    putParcelableArrayList(QUERY_LIST_PROMO_AUTO_APPLY, listPromoAutoApply)
                 }
             }
         }

@@ -11,7 +11,6 @@ import com.tokopedia.product.detail.common.bottomsheet.OvoFlashDealsBottomSheet
 import com.tokopedia.purchase_platform.common.constant.ARGS_LIST_AUTO_APPLY_PROMO
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
-import java.io.Serializable
 
 /**
  * Created by Yehezkiel on 17/05/21
@@ -107,18 +106,10 @@ object ProductCartHelper {
         activity.startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
     }
 
-    fun goToOneClickCheckoutWithAutoApplyPromo(activity: Activity, listPromoAutoApply: Array<PromoExternalAutoApply>) {
+    fun goToOneClickCheckoutWithAutoApplyPromo(activity: Activity, listPromoAutoApply: ArrayList<PromoExternalAutoApply>) {
         val intent = RouteManager.getIntent(activity.applicationContext, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
-        intent.putExtra(ARGS_LIST_AUTO_APPLY_PROMO, listPromoAutoApply as Serializable)
+        intent.putParcelableArrayListExtra(ARGS_LIST_AUTO_APPLY_PROMO, listPromoAutoApply)
         activity.startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
-
-        /*val applinkBeliPakaiPromo = UriUtil.buildUri(
-            ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PROMO,
-            promoCode,
-            promoType
-        )
-        val intent = RouteManager.getIntent(activity.applicationContext, applinkBeliPakaiPromo)
-        activity.startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)*/
     }
 
     fun goToCartCheckout(activity: Activity, cartId: String) {
