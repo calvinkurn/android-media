@@ -87,4 +87,6 @@
     <dimen name="home_flash_sale_right_margin">12dp</dimen>
     <dimen name="home_flash_sale_top_margin">-4dp</dimen>
     <dimen name="home_flash_sale_bottom_margin">12dp</dimen>
+
+    <dimen name="home_lego_3_auto_product_radius">8dp</dimen>
 </resources>

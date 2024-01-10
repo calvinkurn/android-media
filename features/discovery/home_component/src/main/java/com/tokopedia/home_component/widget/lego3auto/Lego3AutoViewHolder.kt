@@ -1,16 +1,21 @@
 package com.tokopedia.home_component.widget.lego3auto
 
+import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.marginLeft
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.HomeComponentLegoBanner3AutoBinding
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
@@ -18,8 +23,11 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.loadImage
+import com.tokopedia.home_component.util.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.home_component.R as home_componentR
 
@@ -35,6 +43,7 @@ class Lego3AutoViewHolder(
         @LayoutRes
         val LAYOUT = home_componentR.layout.home_component_lego_banner_3_auto
         private const val SPAN = 3
+        private const val TYPE_PRODUCT = "product"
     }
 
     private val binding: HomeComponentLegoBanner3AutoBinding? by viewBinding()
@@ -105,7 +114,12 @@ class Lego3AutoViewHolder(
         private var model: Lego3AutoModel? = null
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Lego3AutoItemViewHolder {
-            val view = FrameLayout(parent.context)
+            val view = FrameLayout(parent.context).apply {
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                )
+            }
             return Lego3AutoItemViewHolder(view, listener)
         }
 
@@ -115,6 +129,7 @@ class Lego3AutoViewHolder(
                 val grid = channel.channelGrids.getOrNull(position) ?: return
                 holder.bind(channel, grid, position)
             } catch (e: Exception) {
+                Log.e("kvilvi", "onBindViewHolder: ", e)
                 e.printStackTrace()
             }
         }
@@ -139,18 +154,36 @@ class Lego3AutoViewHolder(
             position: Int
         ) {
             setClickListener(channelModel, channelGrid, position)
-            channelGrid.imageList.forEach {
+            channelGrid.imageList.forEachIndexed { index, it ->
                 val imageUrl = it.imageUrl
+                val containerWidth = DeviceScreenInfo.getScreenWidth(view.context)/3
+                val leftPadding = (containerWidth * (it.leftPadding/100)).toInt()
+                val rightPadding = (containerWidth * (it.rightPadding/100)).toInt()
                 val imageView = ImageView(view.context).apply {
-                    layoutParams = FrameLayout.LayoutParams(
-                        FrameLayout.LayoutParams.MATCH_PARENT,
-                        FrameLayout.LayoutParams.MATCH_PARENT,
-                    )
-                    loadImage(imageUrl)
-                    scaleType = ImageView.ScaleType.FIT_CENTER
-                    val leftPadding = (view.width * (it.leftPadding/100)).toInt()
-                    val rightPadding = (view.width * (it.rightPadding/100)).toInt()
-                    updatePadding(left = leftPadding, right = rightPadding)
+                    val lParams = if(it.type == TYPE_PRODUCT) {
+                        FrameLayout.LayoutParams(
+                            (containerWidth - leftPadding - rightPadding),
+                            FrameLayout.LayoutParams.WRAP_CONTENT,
+                        )
+                    } else {
+                        FrameLayout.LayoutParams(
+                            FrameLayout.LayoutParams.MATCH_PARENT,
+                            FrameLayout.LayoutParams.MATCH_PARENT,
+                        )
+                    }
+                    if(it.type == TYPE_PRODUCT) {
+                        loadImage(imageUrl) {
+                            setRoundedRadius(view.context.resources.getDimensionPixelSize(home_componentR.dimen.home_lego_3_auto_product_radius).toFloat())
+                            fitCenter()
+                        }
+                    } else {
+                        loadImage(imageUrl) {
+                            fitCenter()
+                        }
+                    }
+                    lParams.gravity = Gravity.CENTER_VERTICAL
+                    layoutParams = lParams
+                    setMargin(leftPadding, 0, rightPadding, 0)
                 }
                 view.addView(imageView)
             }
@@ -161,7 +194,9 @@ class Lego3AutoViewHolder(
             channelGrid: ChannelGrid,
             position: Int
         ) {
-            listener.onClickGridThreeImage(channelModel, channelGrid, position, channelModel.verticalPosition)
+            view.setOnClickListener {
+                listener.onClickGridThreeImage(channelModel, channelGrid, position, channelModel.verticalPosition)
+            }
         }
     }
 }
