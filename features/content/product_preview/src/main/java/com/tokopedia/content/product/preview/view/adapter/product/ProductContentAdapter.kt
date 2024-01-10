@@ -15,14 +15,6 @@ class ProductContentAdapter(
     private val listener: ProductPreviewListener
 ) : ListAdapter<ContentUiModel, ViewHolder>(ProductContentDiffUtil()) {
 
-    fun selectedPosition(): Int {
-        return try {
-            currentList.indexOf(currentList.find { it.selected })
-        } catch (_: Exception) {
-            0
-        }
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
             TYPE_IMAGE -> ProductContentImageViewHolder.create(parent, listener)

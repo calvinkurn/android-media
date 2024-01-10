@@ -28,7 +28,6 @@ import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import kotlinx.coroutines.flow.collectLatest
@@ -91,6 +90,7 @@ class ProductFragment @Inject constructor(
     }
 
     private var autoScrollFirstOpenContent = true
+    private var autoScrollFirstOpenIndicator = true
 
     override fun getScreenName() = TAG
 
@@ -147,9 +147,12 @@ class ProductFragment @Inject constructor(
     ) {
         if (prev == state) return
 
+        val selectedData = state.firstOrNull { it.selected }
+        val position = state.indexOf(selectedData)
+
         productContentAdapter.submitList(state)
         if (autoScrollFirstOpenContent) {
-            binding.rvContentProduct.scrollToPosition(productContentAdapter.selectedPosition())
+            binding.rvContentProduct.scrollToPosition(position)
             autoScrollFirstOpenContent = false
         }
     }
@@ -160,33 +163,35 @@ class ProductFragment @Inject constructor(
     ) {
         if (prev == state) return
 
-        try {
-            val selectedData = state.firstOrNull { it.selected }
-            val position = state.indexOf(selectedData)
-            if (state[position].variantName.isEmpty()) {
-                binding.tvIndicatorLabel.apply {
-                    visible()
-                    text = String.format(
-                        getString(contentproductpreviewR.string.text_label_place_holder_empty_variant),
-                        position.plus(1),
-                        state.size
-                    )
-                }
-            } else {
-                binding.tvIndicatorLabel.apply {
-                    visible()
-                    text = String.format(
-                        getString(contentproductpreviewR.string.text_label_place_holder),
-                        position.plus(1),
-                        state.size,
-                        state[position].variantName
-                    )
-                }
-            }
-        } catch (_: Exception) {
-            binding.tvIndicatorLabel.gone()
-        }
+        val selectedData = state.firstOrNull { it.selected }
+        val position = state.indexOf(selectedData)
+
         productIndicatorAdapter.submitList(state)
+        if (autoScrollFirstOpenIndicator) {
+            binding.rvIndicatorProduct.scrollToPosition(position)
+            autoScrollFirstOpenIndicator = false
+        }
+
+        if (state[position].variantName.isEmpty()) {
+            binding.tvIndicatorLabel.apply {
+                visible()
+                text = String.format(
+                    getString(contentproductpreviewR.string.text_label_place_holder_empty_variant),
+                    position.plus(1),
+                    state.size
+                )
+            }
+        } else {
+            binding.tvIndicatorLabel.apply {
+                visible()
+                text = String.format(
+                    getString(contentproductpreviewR.string.text_label_place_holder),
+                    position.plus(1),
+                    state.size,
+                    state[position].variantName
+                )
+            }
+        }
     }
 
     private fun getContentCurrentPosition(): Int {

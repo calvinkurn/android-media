@@ -10,14 +10,18 @@ import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.product.preview.databinding.FragmentProductPreviewBinding
+import com.tokopedia.content.product.preview.utils.TAB_PRODUCT_POS
+import com.tokopedia.content.product.preview.utils.TAB_REVIEW_POS
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter
-import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter.Companion.TAB_PRODUCT_POS
-import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter.Companion.TAB_REVIEW_POS
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.emptyProduct
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.withProduct
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.InitializeProductMainData
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import javax.inject.Inject
 
@@ -85,6 +89,18 @@ class ProductPreviewFragment @Inject constructor(
         vpProductPreview.apply {
             registerOnPageChangeCallback(pagerListener)
             adapter = pagerAdapter
+        }
+
+        if (productPreviewData == ProductContentUiModel()) {
+            layoutProductPreviewTab.tvProductTabTitle.gone()
+            layoutProductPreviewTab.tvReviewTabTitle.gone()
+            layoutProductPreviewTab.viewTabIndicator.gone()
+            pagerAdapter.insertFragment(emptyProduct)
+        } else {
+            layoutProductPreviewTab.tvProductTabTitle.visible()
+            layoutProductPreviewTab.tvReviewTabTitle.visible()
+            layoutProductPreviewTab.viewTabIndicator.visible()
+            pagerAdapter.insertFragment(withProduct)
         }
     }
 
