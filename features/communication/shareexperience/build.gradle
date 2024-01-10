@@ -49,6 +49,9 @@ android {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.linker)
+    implementation (rootProject.ext.analyticsDependencies.branch) {
+        exclude module: 'answers-shim'
+    }
     implementation projectOrAar(rootProject.ext.features.medialoader)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)

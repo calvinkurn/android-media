@@ -2,6 +2,7 @@ package com.tokopedia.shareexperience.data.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shareexperience.data.dto.ShareExBottomSheetResponseDto
 import com.tokopedia.shareexperience.data.dto.ShareExPropertyResponseDto
@@ -13,6 +14,8 @@ import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateRegistra
 import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExPropertyImageGeneratorResponseDto
 import com.tokopedia.shareexperience.data.mapper.ShareExPropertyMapper
 import com.tokopedia.shareexperience.data.repository.ShareExGetSharePropertiesQuery
+import com.tokopedia.shareexperience.domain.ShareExResult
+import com.tokopedia.shareexperience.domain.asFlowResult
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExBottomSheetWrapperRequest
@@ -36,35 +39,40 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
     override fun getDefaultData(
         defaultUrl: String,
         defaultImageUrl: String
-    ): Flow<ShareExBottomSheetModel> {
+    ): Flow<ShareExResult<ShareExBottomSheetModel>> {
         return flow {
             val result = mapper.mapDefault(defaultUrl, defaultImageUrl)
             emit(result)
-        }.flowOn(dispatchers.io)
+        }
+            .asFlowResult()
+            .flowOn(dispatchers.io)
     }
 
-    override suspend fun getData(params: ShareExProductBottomSheetRequest): Flow<ShareExBottomSheetModel> {
+    override suspend fun getData(params: ShareExProductBottomSheetRequest): Flow<ShareExResult<ShareExBottomSheetModel>> {
         return getShareBottomSheetResponse(params)
     }
 
-    override suspend fun getData(params: ShareExShopBottomSheetRequest): Flow<ShareExBottomSheetModel> {
+    override suspend fun getData(params: ShareExShopBottomSheetRequest): Flow<ShareExResult<ShareExBottomSheetModel>> {
         return getShareBottomSheetResponse(params)
     }
 
-    override suspend fun getData(params: ShareExDiscoveryBottomSheetRequest): Flow<ShareExBottomSheetModel> {
+    override suspend fun getData(params: ShareExDiscoveryBottomSheetRequest): Flow<ShareExResult<ShareExBottomSheetModel>> {
         return getShareBottomSheetResponse(params)
     }
 
-    private suspend fun getShareBottomSheetResponse(params: ShareExBottomSheetRequest): Flow<ShareExBottomSheetModel> {
+    private suspend fun getShareBottomSheetResponse(params: ShareExBottomSheetRequest): Flow<ShareExResult<ShareExBottomSheetModel>> {
         return flow {
             val request = getRequest(params)
-//            val dto = repository.request<ShareExBottomSheetWrapperRequest, ShareExWrapperResponseDto>(
-//                sharePropertiesQuery, request
-//            )
-            val dto = getDummyResponseDto()
+            val dto = repository.request<ShareExBottomSheetWrapperRequest, ShareExWrapperResponseDto>(
+                sharePropertiesQuery,
+                request
+            )
+//            val dto = getDummyResponseDto()
             val result = mapper.map(dto.response.bottomSheet)
             emit(result)
-        }.flowOn(dispatchers.io)
+        }
+            .asFlowResult()
+            .flowOn(dispatchers.io)
     }
 
     private fun getRequest(params: ShareExBottomSheetRequest): ShareExBottomSheetWrapperRequest {

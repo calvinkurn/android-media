@@ -1,9 +1,11 @@
 package com.tokopedia.shareexperience.ui
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shareexperience.data.util.ShareExPageTypeEnum
@@ -23,24 +25,29 @@ import com.tokopedia.shareexperience.ui.util.getSelectedChipPosition
 import com.tokopedia.shareexperience.ui.util.getSelectedImageUrl
 import com.tokopedia.shareexperience.ui.util.map
 import com.tokopedia.shareexperience.ui.util.mapError
+import io.branch.indexing.BranchUniversalObject
+import io.branch.referral.Branch
+import io.branch.referral.util.ContentMetadata
+import io.branch.referral.util.LinkProperties
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 class ShareExViewModel @Inject constructor(
     private val getSharePropertiesUseCase: ShareExGetSharePropertiesUseCase,
     private val getGeneratedImageUseCase: ShareExGetGeneratedImageUseCase,
-    private val dispatchers: CoroutineDispatchers
+    private val dispatchers: CoroutineDispatchers,
+    @ApplicationContext private val context: Context
 ) : BaseViewModel(dispatchers.main) {
 
     private val _actionFlow =
@@ -126,13 +133,20 @@ class ShareExViewModel @Inject constructor(
                         pageType = pageTypeEnum.value,
                         id = id.toLong()
                     )
-                ).catch {
-                    _fetchThrowable = it
-                    _fetchedDataState.emit(Unit)
-                }.collectLatest {
-                    _bottomSheetModel = it
-                    _fetchedDataState.emit(Unit)
-                }
+                )
+                    .collectLatest {
+                        when (it) {
+                            is ShareExResult.Success -> {
+                                _bottomSheetModel = it.data
+                                _fetchedDataState.emit(Unit)
+                            }
+                            is ShareExResult.Error -> {
+                                _fetchThrowable = it.throwable
+                                _fetchedDataState.emit(Unit)
+                            }
+                            ShareExResult.Loading -> Unit
+                        }
+                    }
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
                 _fetchThrowable = throwable
@@ -150,7 +164,7 @@ class ShareExViewModel @Inject constructor(
                         getDefaultBottomSheetModel()
                     }
                     (_bottomSheetModel != null) -> {
-                        updateBottomSheetUiState(_bottomSheetModel!!) // Safe !!
+                        handleBottomSheetModel(_bottomSheetModel!!) // Safe !!
                     }
                 }
             } catch (throwable: Throwable) {
@@ -159,28 +173,34 @@ class ShareExViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getDefaultBottomSheetModel() {
-        getSharePropertiesUseCase.getDefaultData(_defaultUrl, _defaultImageUrl)
-            .collectLatest {
-                val uiResult = it.mapError(_defaultUrl, _fetchThrowable ?: Throwable())
-                updateBottomSheetUiState(
-                    title = it.title,
-                    uiModelList = uiResult,
-                    bottomSheetModel = it,
-                    chipPosition = 0 // default
-                )
-            }
-    }
-
-    private fun updateBottomSheetUiState(bottomSheetModel: ShareExBottomSheetModel) {
+    private fun handleBottomSheetModel(bottomSheetModel: ShareExBottomSheetModel) {
         val chipPosition = bottomSheetModel.getSelectedChipPosition(_selectedIdChip).orZero()
         val uiResult = bottomSheetModel.map(chipPosition)
+        Log.d("TESTT", "${uiResult.joinToString()}")
         updateBottomSheetUiState(
             title = bottomSheetModel.title,
             uiModelList = uiResult,
             bottomSheetModel = bottomSheetModel,
             chipPosition = chipPosition
         )
+    }
+
+    private suspend fun getDefaultBottomSheetModel() {
+        getSharePropertiesUseCase.getDefaultData(_defaultUrl, _defaultImageUrl)
+            .collectLatest {
+                when (it) {
+                    is ShareExResult.Success -> {
+                        val uiResult = it.data.mapError(_defaultUrl, _fetchThrowable ?: Throwable())
+                        updateBottomSheetUiState(
+                            title = it.data.title,
+                            uiModelList = uiResult,
+                            bottomSheetModel = it.data,
+                            chipPosition = 0 // default
+                        )
+                    }
+                    is ShareExResult.Error, ShareExResult.Loading -> Unit
+                }
+            }
     }
 
     private fun updateShareBottomSheetBody(position: Int) {
@@ -274,6 +294,42 @@ class ShareExViewModel @Inject constructor(
                         }
                     }
                 }
+
+                val buo = BranchUniversalObject()
+                    .setCanonicalIdentifier("content/12345")
+                    .setTitle("My Content Title")
+                    .setContentDescription("My Content Description")
+                    .setContentImageUrl("https://lorempixel.com/400/400")
+                    .setContentIndexingMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC)
+                    .setLocalIndexMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC)
+                    .setContentMetadata(ContentMetadata().addCustomMetadata("key1", "value1"))
+
+                // validation all of the value in case error
+                val lp = LinkProperties()
+                    .setChannel("facebook")
+                    .setFeature("sharing")
+                    .setCampaign("content 123 launch")
+                    .addControlParameter("\$og_title", "Kitchin Sukēru P2P-001 - Rp600.001")
+                    .addControlParameter("\$og_description", "Kitchin Sukēru P2P-001 - Rp600.001")
+                    .addControlParameter("\$og_url", "https://images.tokopedia.net/img/generator/RKdhUE/c7d0a9e45c851fe4212b5b9845f3697e.jpg")
+                    .addControlParameter("\$og_image_url", "https://images.tokopedia.net/img/generator/RKdhUE/c7d0a9e45c851fe4212b5b9845f3697e.jpg")
+                    .addControlParameter("an_min_version", "")
+                    .addControlParameter("ios_min_version", "")
+                    .addControlParameter("\$android_url", "https://www.tokopedia.com/")
+                    .addControlParameter("\$ios_url", "https://www.tokopedia.com/")
+                    .addControlParameter("\$desktop_url", "https://www.tokopedia.com/")
+                    .addControlParameter("\$android_deeplink_path", "tokopedia://home")
+                    .addControlParameter("\$ios_deeplink_path", "tokopedia://home")
+                    .addControlParameter("source", "android")
+
+                buo.generateShortUrl(context, lp, Branch.BranchLinkCreateListener { url, error ->
+                    if (error == null) {
+                        Log.d("BRANCH SDK_TESTT", "got my Branch link to share: " + url)
+                    } else {
+                        Log.d("BRANCH SDK_TESTT", error.message)
+                    }
+                })
+
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
             }
