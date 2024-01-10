@@ -371,12 +371,12 @@ open class SomListOrderViewHolder(
             checkBoxSomListMultiSelect.setOnTouchListener { _, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
                     if (getIsMultiSelectEnabled(element)) {
-                        listener.onCheckBoxClickedWhenDisabled(element.bulkMessage)
-                        true
-                    } else {
                         element.isChecked = !checkBoxSomListMultiSelect.isChecked
                         listener.onCheckChanged()
                         false
+                    } else {
+                        listener.onCheckBoxClickedWhenDisabled(element.bulkMessage)
+                        true
                     }
                 } else {
                     false
@@ -431,13 +431,13 @@ open class SomListOrderViewHolder(
 
     protected fun touchCheckBox(element: SomListOrderUiModel) {
         if (getIsMultiSelectEnabled(element)) {
-            listener.onCheckBoxClickedWhenDisabled(element.bulkMessage)
-        } else {
             binding?.checkBoxSomListMultiSelect?.run {
                 isChecked = !isChecked
                 element.isChecked = isChecked
             }
             listener.onCheckChanged()
+        } else {
+            listener.onCheckBoxClickedWhenDisabled(element.bulkMessage)
         }
     }
 
@@ -490,7 +490,7 @@ open class SomListOrderViewHolder(
 
     private fun getIsMultiSelectEnabled(element: SomListOrderUiModel): Boolean {
         val isCancelRequest = element.cancelRequest != Int.ZERO && element.cancelRequestStatus != Int.ZERO
-        return isCancelRequest && element.isBulkSelectable
+        return !isCancelRequest && element.isBulkSelectable
     }
 
     private val SomListOrderUiModel.Button.isRequestOrConfirmPickup: Boolean

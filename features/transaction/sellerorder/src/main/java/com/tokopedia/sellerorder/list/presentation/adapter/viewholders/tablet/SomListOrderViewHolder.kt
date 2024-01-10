@@ -48,7 +48,7 @@ class SomListOrderViewHolder(
     override fun setupOrderCard(element: SomListOrderUiModel) {
         binding?.run {
             val isCancelRequest = element.cancelRequest != 0 && element.cancelRequestStatus != 0
-            val isBulkSelectable = element.isBulkSelectable || isCancelRequest
+            val isBulkSelectable = element.isBulkSelectable && !isCancelRequest
             if ((element.multiSelectEnabled && isBulkSelectable)) {
                 cardSomOrder.animateFadeOut()
             } else {
