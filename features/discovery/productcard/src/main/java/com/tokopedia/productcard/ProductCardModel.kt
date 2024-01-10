@@ -104,6 +104,9 @@ data class ProductCardModel (
 
     val hasVideo : Boolean = customVideoURL.isNotBlank()
 
+    val discountPercentageInt: Int
+        get() = discountPercentage.filter(Char::isDigit).toIntOrZero()
+
     @Deprecated("replace with LabelGroup")
     data class Label(
             val position: String = "",
@@ -117,8 +120,9 @@ data class ProductCardModel (
     )
 
     data class ShopBadge(
-            val isShown: Boolean = true,
-            val imageUrl: String = ""
+        val isShown: Boolean = true,
+        val imageUrl: String = "",
+        val title: String = "",
     )
 
     data class LabelGroup(
@@ -130,7 +134,7 @@ data class ProductCardModel (
     ) {
         fun isGimmick() = position == LABEL_GIMMICK
 
-        data class Style(val key: String, val value: String)
+        data class Style(val key: String = "", val value: String = "")
     }
 
     data class LabelGroupVariant(

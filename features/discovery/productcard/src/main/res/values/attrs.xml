@@ -3,5 +3,11 @@
     <declare-styleable name="ProductCardView">
         <attr name="fixedHeight" format="boolean" />
         <attr name="useViewStub" format="boolean" />
+
+        <attr name="reimagine" format="boolean" />
+        <attr name="reimagine_template">
+            <enum name="regular" value="1" />
+            <enum name="carousel" value="2" />
+        </attr>
     </declare-styleable>
 </resources>
