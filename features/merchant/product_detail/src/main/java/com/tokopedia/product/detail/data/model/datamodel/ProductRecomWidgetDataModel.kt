@@ -45,6 +45,8 @@ data class ProductRecomWidgetDataModel(
         return this.copy()
     }
 
+    override fun position(): TabletPosition = TabletPosition.BOTTOM
+
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         val bundle = Bundle()
         return if (newData is ProductRecomWidgetDataModel) {

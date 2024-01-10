@@ -13,6 +13,8 @@ data class ProductMostHelpfulReviewUiModel(
     val name: String = ""
 ) : DynamicPdpDataModel {
 
+    override fun position(): TabletPosition = TabletPosition.BOTTOM
+
     var review: Review? = null
         private set
 

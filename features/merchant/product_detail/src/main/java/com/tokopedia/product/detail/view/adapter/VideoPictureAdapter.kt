@@ -20,10 +20,10 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
 class VideoPictureAdapter(
     private val listener: DynamicProductDetailListener?,
     private val componentTrackDataModel: ComponentTrackDataModel?,
-    private val containerType: MediaContainerType
 ) : RecyclerView.Adapter<AbstractViewHolder<MediaDataModel>>() {
 
     val currentList: MutableList<MediaDataModel> = mutableListOf()
+    var containerType: MediaContainerType? = null
 
     var prefetchResource: Drawable? = null
 
@@ -62,7 +62,7 @@ class VideoPictureAdapter(
                     .inflate(ProductPictureViewHolder.LAYOUT, parent, false),
                 listener,
                 componentTrackDataModel,
-                containerType = containerType
+                containerType = containerType ?: MediaContainerType.Square
             )
         }
     }

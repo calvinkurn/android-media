@@ -318,7 +318,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     fun updateMediaScrollPosition(selectedOptionId: String?) {
-        if (selectedOptionId == null) return
+        if (selectedOptionId.isNullOrEmpty()) return
         updateData(ProductDetailConstant.MEDIA) {
             mediaMap?.apply {
                 if (this.variantOptionIdScrollAnchor != selectedOptionId) {

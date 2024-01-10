@@ -1,11 +1,11 @@
 package com.tokopedia.product.detail.data.util
 
 import android.content.Context
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
-class CenterLayoutManager(context: Context) : StaggeredGridLayoutManager(SPAN_COUNT, VERTICAL) {
+class CenterLayoutManagerTablet(context: Context) : GridLayoutManager(context, SPAN_COUNT) {
 
     companion object {
         const val SPAN_COUNT = 2

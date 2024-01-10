@@ -30,6 +30,7 @@ data class ProductMediaDataModel(
         const val VIDEO_TYPE = "video"
         const val IMAGE_TYPE = "image"
     }
+    override fun position(): TabletPosition = TabletPosition.LEFT
 
     fun isMediaContainsVideo(): Boolean = listOfMedia.any { it.type == VIDEO_TYPE }
 

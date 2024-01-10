@@ -1,9 +1,12 @@
 package com.tokopedia.product.detail.view.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -12,6 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
@@ -19,7 +23,9 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CacheState
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductLoadingDataModel
 import com.tokopedia.product.detail.data.util.CenterLayoutManager
+import com.tokopedia.product.detail.data.util.CenterLayoutManagerTablet
 import com.tokopedia.product.detail.databinding.DynamicProductDetailFragmentBinding
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
@@ -28,11 +34,13 @@ import com.tokopedia.product.detail.view.util.RecommendationItemDecoration
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by Yehezkiel on 05/01/21
  */
-abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactory> : BaseDaggerFragment() {
+abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactory> :
+    BaseDaggerFragment() {
 
     companion object {
         private const val INSTANT_SMOOTH_SCROLL_MILLISECONDS_PER_INCH = 0.1f
@@ -65,15 +73,25 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context?.let {
-            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            activity?.window?.decorView?.setBackgroundColor(
+                androidx.core.content.ContextCompat.getColor(
+                    it,
+                    unifyprinciplesR.color.Unify_Background
+                )
+            )
         }
         setHasOptionsMenu(true)
         productAdapter = createAdapterInstance()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = DynamicProductDetailFragmentBinding.inflate(inflater, container, false)
-        getProductDetailActivity()?.getBlocksPerformanceMonitoring()?.addViewPerformanceBlocks(binding?.pdpNavtoolbar)
+        getProductDetailActivity()?.getBlocksPerformanceMonitoring()
+            ?.addViewPerformanceBlocks(binding?.pdpNavtoolbar)
         return binding?.root
     }
 
@@ -184,7 +202,8 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
             getRecyclerView()?.post {
                 try {
                     getRecyclerView()?.smoothScrollToPosition(position)
-                } catch (_: Throwable) { }
+                } catch (_: Throwable) {
+                }
             }
         }
     }
@@ -212,7 +231,8 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
                         topOffset = offsetY,
                         millisecondsPerInch = INSTANT_SMOOTH_SCROLL_MILLISECONDS_PER_INCH
                     )
-                } catch (_: Throwable) { }
+                } catch (_: Throwable) {
+                }
             }
         }
     }
@@ -228,7 +248,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         }
     }
 
-    private fun hideSwipeLoading() {
+    fun hideSwipeLoading() {
         swipeToRefresh?.let {
             it.isEnabled = true
             it.isRefreshing = false
@@ -241,8 +261,10 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         rv.apply {
             isNestedScrollingEnabled = false
             itemAnimator = null
-            layoutManager = CenterLayoutManager(view.context).apply {
-                gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
+            layoutManager = if (DeviceScreenInfo.isTablet(context)) {
+                initGridLayoutManager(view.context)
+            } else {
+                initStaggeredLayoutManager(view.context)
             }
             adapter = productAdapter
             addItemDecoration(RecommendationItemDecoration())
@@ -250,10 +272,33 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         rvPdp = rv
     }
 
+    private fun initStaggeredLayoutManager(context: Context): StaggeredGridLayoutManager {
+        return CenterLayoutManager(context).apply {
+            gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
+        }
+    }
+
+    private fun initGridLayoutManager(context: Context): GridLayoutManager {
+        val manager = CenterLayoutManagerTablet(context)
+        manager.spanSizeLookup = object : SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                val isPageError = productAdapter?.currentList.orEmpty().any {
+                    it is PageErrorDataModel || it is ProductLoadingDataModel
+                }
+
+                return if (position > 1 || isPageError) {
+                    2
+                } else {
+                    1
+                }
+            }
+        }
+        return manager
+    }
+
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
-
             if (newState == RecyclerView.SCROLL_STATE_IDLE && productAdapter?.shouldRedrawLayout == true) {
                 rvPdp?.post {
                     (recyclerView.layoutManager as CenterLayoutManager).invalidateSpanAssignments()

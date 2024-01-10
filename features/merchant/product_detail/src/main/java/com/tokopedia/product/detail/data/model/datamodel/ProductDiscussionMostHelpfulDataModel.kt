@@ -13,6 +13,8 @@ data class ProductDiscussionMostHelpfulDataModel(
         var isShimmering: Boolean = true
 ) : DynamicPdpDataModel {
 
+    override fun position(): TabletPosition = TabletPosition.BOTTOM
+
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun name(): String = name

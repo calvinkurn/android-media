@@ -32,5 +32,7 @@ data class TopadsHeadlineUiModel(
         return this.copy()
     }
 
+    override fun position(): TabletPosition = TabletPosition.BOTTOM
+
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? = null
 }

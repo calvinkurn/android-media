@@ -11,6 +11,7 @@ data class ProductReportDataModel(
         val type: String = "",
         val name: String = ""
 ) : DynamicPdpDataModel {
+    override fun position(): TabletPosition = TabletPosition.BOTTOM
     override fun type(): String = type
     override fun name(): String = name
     override val impressHolder: ImpressHolder = ImpressHolder()

@@ -13,6 +13,7 @@ data class ProductTickerInfoDataModel(
         val name: String = "",
         var tickerDataResponse: List<TickerDataResponse> = listOf()
 ) : DynamicPdpDataModel {
+    override fun position(): TabletPosition = TabletPosition.LEFT
 
     override fun type(): String = type
     override fun name(): String = name

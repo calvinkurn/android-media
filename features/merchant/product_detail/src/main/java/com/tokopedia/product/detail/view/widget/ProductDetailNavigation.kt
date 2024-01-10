@@ -50,10 +50,10 @@ class ProductDetailNavigation : FrameLayout, NavigationListener {
             if (layoutManager !is CenterLayoutManager) return -1
 
             if (offsetY <= 0) {
-                return layoutManager.findFirstVisibleItemPositions(null).firstOrNull() ?: -1
+//                return layoutManager.findFirstVisibleItemPositions(null).firstOrNull() ?: -1
             }
 
-            val position = layoutManager.findFirstVisibleItemPositions(null).firstOrNull() ?: -1
+            val position = 1
             val someItem = layoutManager.findViewByPosition(position)
             val rectItem = Rect()
             someItem?.getGlobalVisibleRect(rectItem)

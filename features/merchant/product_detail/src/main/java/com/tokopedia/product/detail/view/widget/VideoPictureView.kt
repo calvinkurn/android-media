@@ -43,6 +43,8 @@ class VideoPictureView @JvmOverloads constructor(
     init {
         addView(binding.root)
         binding.pdpViewPager.offscreenPageLimit = VIDEO_PICTURE_PAGE_LIMIT
+        setupViewPagerCallback()
+        setupViewPager()
     }
 
     fun setup(
@@ -58,17 +60,19 @@ class VideoPictureView @JvmOverloads constructor(
         this.componentTrackDataModel = componentTrackDataModel
 
         if (videoPictureAdapter == null || previouslyPrefetch) {
-            setupViewPagerCallback()
-            setupViewPager(containerType = containerType)
-            // If first position is video and selected: process the video
+            binding.pdpViewPager.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                if (this != null) {
+                    dimensionRatio = containerType.ratio
+                }
+            }
         }
 
+        videoPictureAdapter?.containerType = containerType
         updateImages(listOfImage = media, previouslyPrefetch = previouslyPrefetch)
         updateMediaLabel(position = pagerSelectedLastPosition)
         setupRecommendationLabel(recommendation = recommendation)
         setupRecommendationLabelListener(position = pagerSelectedLastPosition)
         shouldShowRecommendationLabel(position = pagerSelectedLastPosition)
-        scrollToPosition(position = initialScrollPosition)
         renderVideoOnceAtPosition(position = initialScrollPosition)
 
         previouslyPrefetch = isPrefetch
@@ -91,14 +95,12 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     private fun setupViewPager(
-        containerType: MediaContainerType
     ) {
         val prefetchResource = if (previouslyPrefetch) getPreviousMediaResource() else null
 
         videoPictureAdapter = VideoPictureAdapter(
             listener = mListener,
-            componentTrackDataModel = componentTrackDataModel,
-            containerType = containerType
+            componentTrackDataModel = componentTrackDataModel
         ).apply {
             this.prefetchResource = prefetchResource
         }
@@ -107,12 +109,6 @@ class VideoPictureView @JvmOverloads constructor(
         viewPager.adapter = videoPictureAdapter
         viewPager.setPageTransformer { _, _ ->
             // NO OP DONT DELETE THIS, DISABLE ITEM ANIMATOR
-        }
-
-        viewPager.updateLayoutParams<ConstraintLayout.LayoutParams> {
-            if (this != null) {
-                dimensionRatio = containerType.ratio
-            }
         }
     }
 

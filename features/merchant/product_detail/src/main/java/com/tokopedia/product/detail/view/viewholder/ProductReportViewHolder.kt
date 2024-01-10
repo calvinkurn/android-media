@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.R
@@ -22,6 +23,7 @@ class ProductReportViewHolder(val view: View, val listener: DynamicProductDetail
     private val binding = ItemProductReportViewHolderBinding.bind(view)
 
     override fun bind(element: ProductReportDataModel) {
+        Log.e("comp","report binded")
         binding.productReportTxt.movementMethod = LinkMovementMethod.getInstance()
         binding.productReportTxt.text = view.context.getString(R.string.merchant_product_detail_report_text)
                 .boldOrLinkText(true, view.context, view.context.getString(R.string.merchant_product_detail_report_suffix) to {

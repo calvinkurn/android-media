@@ -46,6 +46,8 @@ data class ViewToViewWidgetDataModel(
         }
     }
 
+    override fun position(): TabletPosition = TabletPosition.BOTTOM
+
     override fun newInstance(): DynamicPdpDataModel {
         return this.copy()
     }

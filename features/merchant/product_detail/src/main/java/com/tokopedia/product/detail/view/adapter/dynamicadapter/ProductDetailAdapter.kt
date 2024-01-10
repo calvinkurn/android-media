@@ -66,6 +66,12 @@ class ProductDetailAdapter(
         return LayoutInflater.from(parent.context).inflate(viewType, parent, false)
     }
 
+    private fun determineFullSpan(holder: AbstractViewHolder<*>) {
+        val isFullSpan = holder !is ProductRecommendationVerticalViewHolder
+        (holder.itemView.layoutParams as? StaggeredGridLayoutManager.LayoutParams)
+            ?.isFullSpan = isFullSpan
+    }
+
     override fun getItemViewType(position: Int): Int {
         return if (position < 0 || position >= currentList.size) {
             HideViewHolder.LAYOUT
@@ -187,12 +193,6 @@ class ProductDetailAdapter(
         } else {
             false
         }
-    }
-
-    private fun determineFullSpan(holder: AbstractViewHolder<*>) {
-        val isFullSpan = holder !is ProductRecommendationVerticalViewHolder
-        (holder.itemView.layoutParams as? StaggeredGridLayoutManager.LayoutParams)
-            ?.isFullSpan = isFullSpan
     }
 
     override fun onCurrentListChanged(
