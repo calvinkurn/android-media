@@ -61,7 +61,7 @@ class ProductPreviewFragment @Inject constructor(
 
     private val productId: String get() = "4937529690" //TODO: get from args
 
-    private val viewModel by viewModels <ProductPreviewViewModel> {
+    private val viewModel by viewModels<ProductPreviewViewModel> {
         viewModelFactory.create(
             EntrySource(productId = productId) //TODO: Testing purpose, change from arguments
         )

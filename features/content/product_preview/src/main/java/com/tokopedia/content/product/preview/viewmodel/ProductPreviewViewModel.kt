@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 
 /**
@@ -60,11 +61,11 @@ class ProductPreviewViewModel @AssistedInject constructor(
         get() = _miniInfo
 
     private val _reviewPosition = MutableStateFlow(0)
-    private val currentReview : ReviewUiModel
-        get() {
-            return if (_review.value.isEmpty() || _reviewPosition.value < 0) ReviewUiModel.Empty
-            else _review.value[_reviewPosition.value]
-        }
+    private val reviewPosition get() = _reviewPosition.value
+
+    private val currentReview
+        get() = if (_review.value.isNotEmpty() && reviewPosition >= 0)
+            _review.value[reviewPosition] else ReviewUiModel.Empty
 
     fun onAction(action: ProductPreviewAction) {
         when (action) {
@@ -74,7 +75,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             ProductPreviewAction.AtcFromResult -> addToCart(_miniInfo.value)
             is ProductPreviewAction.Navigate -> navigate(action.appLink)
             is ProductPreviewAction.SubmitReport -> submitReport(action.model)
-            is ProductPreviewAction.ClickMenu -> menuOnClicked(action.status)
+            is ProductPreviewAction.ClickMenu -> menuOnClicked(action.isFromLogin)
             is ProductPreviewAction.UpdateReviewPosition -> updateReviewIndex(action.index)
             is ProductPreviewAction.Like -> like(action.state)
             else -> {}
@@ -175,12 +176,19 @@ class ProductPreviewViewModel @AssistedInject constructor(
             if (result) _uiEvent.emit(ProductPreviewEvent.ShowSuccessToaster(type = ProductPreviewEvent.ShowSuccessToaster.Type.Report)) else throw MessageErrorException()
         }) {
             _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it) {
-                //TODO: check if retry or no.
+                submitReport(model)
             })
         }
     }
 
-    private fun menuOnClicked(status: MenuStatus) {
+    private fun menuOnClicked(isFromLogin: Boolean) {
+        val status = _review.updateAndGet { review ->
+            if (isFromLogin.not()) review
+            else review.map { model ->
+                model.copy(menus = model.menus.copy(isReportable = userSessionInterface.isLoggedIn && model.author.id != userSessionInterface.userId))
+            }
+        }.getOrNull(reviewPosition)?.menus ?: return
+
         requiredLogin(status) {
             viewModelScope.launch {
                 _uiEvent.emit(ProductPreviewEvent.ShowMenuSheet(status))

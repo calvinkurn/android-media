@@ -19,10 +19,9 @@ import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentReviewBinding
-import com.tokopedia.content.product.preview.utils.MenuReviewResultContract
+import com.tokopedia.content.product.preview.utils.LoginReviewContract
 import com.tokopedia.content.product.preview.utils.PAGE_SOURCE
 import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
-import com.tokopedia.content.product.preview.utils.ReviewResultContract
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
@@ -75,15 +74,15 @@ class ReviewFragment @Inject constructor(
     }
 
     private val menuResult = registerForActivityResult(
-        MenuReviewResultContract()
-    ) {
-        viewModel.onAction(ProductPreviewAction.ClickMenu(it))
+        LoginReviewContract()
+    ) { loginStatus ->
+        if (loginStatus) viewModel.onAction(ProductPreviewAction.ClickMenu(true))
     }
 
     private val likeResult = registerForActivityResult(
-        ReviewResultContract()
-    ) { result ->
-        viewModel.onAction(ProductPreviewAction.Like(result))
+        LoginReviewContract()
+    ) { loginStatus ->
+        if (loginStatus) viewModel.onAction(ProductPreviewAction.Like(true))
     }
 
     override fun getScreenName() = TAG
@@ -109,15 +108,12 @@ class ReviewFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.onAction(ProductPreviewAction.FetchReview)
+
         setupView()
         observeReview()
         observeEvent()
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        viewModel.onAction(ProductPreviewAction.FetchReview)
     }
 
     private fun setupView() {
@@ -150,9 +146,9 @@ class ReviewFragment @Inject constructor(
                         }.show(childFragmentManager)
                     }
                     is ProductPreviewEvent.LoginEvent<*> -> {
-                        when(val data = event.data) {
-                            is MenuStatus -> menuResult.launch(data)
-                            is LikeUiState -> likeResult.launch(data)
+                        when(event.data) {
+                            is MenuStatus -> menuResult.launch(Unit)
+                            is LikeUiState -> likeResult.launch(Unit)
                         }
                     }
                     else -> {}
@@ -175,7 +171,7 @@ class ReviewFragment @Inject constructor(
     }
 
     override fun onMenuClicked(menus: MenuStatus) {
-        viewModel.onAction(ProductPreviewAction.ClickMenu(menus))
+        viewModel.onAction(ProductPreviewAction.ClickMenu(false))
     }
 
     /**
@@ -194,7 +190,7 @@ class ReviewFragment @Inject constructor(
     }
 
     override fun onLike(status: LikeUiState) {
-        viewModel.onAction(ProductPreviewAction.Like(status))
+        viewModel.onAction(ProductPreviewAction.Like(false))
     }
 
     /**
