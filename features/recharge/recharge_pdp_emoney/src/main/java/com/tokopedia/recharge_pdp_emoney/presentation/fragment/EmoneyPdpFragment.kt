@@ -729,7 +729,11 @@ open class EmoneyPdpFragment :
             setTickerAdapter(data.message +
                 getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_bca_gen_one_additional_link))
             showRecentNumberAndPromo()
-        } else {
+        } else if (convertRupiahToInt(detailPassData.additionalETollBalance) >= MAX_TAPCASH) {
+            showTickerNotSupported()
+            setTickerAdapter()
+            showProducts()
+        }else {
             hideTickerNotSupported()
             showProducts()
         }
@@ -766,7 +770,7 @@ open class EmoneyPdpFragment :
         } else if (convertRupiahToInt(detailPassData.additionalETollBalance) >= MAX_TAPCASH) {
             showTickerNotSupported()
             setTickerAdapter()
-            showRecentNumberAndPromo()
+            showProducts()
         } else {
             hideTickerNotSupported()
         }
