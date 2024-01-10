@@ -17,10 +17,12 @@ import com.tokopedia.appdownloadmanager_common.presentation.util.AppDownloadMana
 import com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.Companion.APK_URL
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.unifycomponents.Toaster
+import timber.log.Timber
 import java.lang.RuntimeException
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 import com.tokopedia.appdownloadmanager_common.R as appdownloadmanager_commonR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class AppUpdateVersionDialog(
     val activityRef: WeakReference<Activity>,
@@ -163,7 +165,18 @@ class AppUpdateVersionDialog(
         val message = activityRef.get()?.getString(appdownloadmanager_commonR.string.update_app_version_toaster_install).orEmpty()
 
         view?.let {
-            Toaster.build(
+            val toaster = Toaster
+
+            try {
+                activityRef.get()?.let { activityRef ->
+                    toaster.toasterCustomBottomHeight =
+                        activityRef.resources.getDimensionPixelSize(unifycomponentsR.dimen.layout_lvl6)
+                }
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
+
+            toaster.build(
                 it,
                 message,
                 Toaster.LENGTH_LONG,
