@@ -10,6 +10,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -70,7 +71,8 @@ fun TrackingPageScreen(
                 .padding(top = 16.dp)
                 .verticalScroll(rememberScrollState())
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TrackingDetailSection(state, copyShippingRefNumber, seeEtaChangesInfo)
             DriverWidget(state.trackingData, callDriver, openTippingInfo, onClickTippingButton)
@@ -87,7 +89,9 @@ fun TrackingPageScreen(
 @Composable
 private fun Loading(isLoading: Boolean) {
     if (isLoading) {
-        NestLoader(variant = NestLoaderType.Circular(size = NestLoaderSize.Small))
+        NestLoader(
+            variant = NestLoaderType.Circular(size = NestLoaderSize.Small)
+        )
     }
 }
 

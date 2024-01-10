@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -53,6 +54,7 @@ fun TrackingDetailSection(
                 title = stringResource(id = R.string.label_reference_number),
                 value = data.trackOrder.shippingRefNum.toHyphenIfEmptyOrNull(),
                 icon = IconUnify.COPY,
+                iconSize = 16.dp,
                 showIcon = true,
                 valueStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._950)
             ) { copyShippingRefNumber(data.trackOrder.shippingRefNum) }
@@ -111,6 +113,7 @@ fun TrackingDetailSection(
                 title = stringResource(R.string.tracking_label_eta),
                 value = data.trackOrder.detail.eta.userInfo,
                 icon = IconUnify.INFORMATION,
+                iconSize = 13.dp,
                 showIcon = data.trackOrder.detail.eta.isChanged,
                 onIconClicked = { seeEtaChangesInfo(data.trackOrder.detail.eta.userUpdatedInfo) }
             )
@@ -133,6 +136,7 @@ fun TrackingDetailsItemWithIcon(
     title: String,
     value: String,
     icon: Int,
+    iconSize: Dp,
     showIcon: Boolean,
     valueStyle: TextStyle = NestTheme.typography.heading6.copy(color = NestTheme.colors.NN._950),
     onIconClicked: () -> Unit
@@ -161,7 +165,7 @@ fun TrackingDetailsItemWithIcon(
         NestIcon(
             modifier = Modifier
                 .padding(start = 6.dp)
-                .size(13.dp, 13.dp)
+                .size(iconSize, iconSize)
                 .constrainAs(iconLayout) {
                     start.linkTo(valueLayout.end)
                     top.linkTo(valueLayout.top)
@@ -186,7 +190,7 @@ fun TrackingDetailsItem(
             text = title,
             textStyle = NestTheme.typography.body3.copy(color = NestTheme.colors.NN._950)
         )
-        value.forEach {
+        value.filter { it.isNotEmpty() }.forEach {
             NestTypography(
                 modifier = Modifier.fillMaxWidth(),
                 text = it,

@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -66,7 +67,7 @@ fun TrackingHistoryItem(
     seeProofOfDelivery: (proof: ProofModel) -> Unit
 ) {
     ConstraintLayout {
-        val (day, time, description, courier, circle, line, pod) = createRefs()
+        val (day, time, description, courier, circle, line, pod, endSpacing) = createRefs()
         val circleColor = if (isFirst) NestTheme.colors.GN._500 else NestTheme.colors.NN._50
         Box(
             Modifier
@@ -149,7 +150,7 @@ fun TrackingHistoryItem(
                 .constrainAs(pod) {
                     top.linkTo(courier.bottom, margin = 10.dp)
                     start.linkTo(description.start)
-                    bottom.linkTo(parent.bottom)
+                    bottom.linkTo(endSpacing.bottom)
                     visibility =
                         if (trackHistoryModel.proof.imageId.isNotEmpty()) Visibility.Visible else Visibility.Gone
                 }
@@ -158,6 +159,11 @@ fun TrackingHistoryItem(
                 trackHistoryModel.proof.imageUrl,
                 customHeaders = mapOf("Accounts-Authorization" to "Bearer ${trackHistoryModel.proof.accessToken}")
             )
+        )
+        Spacer(
+            Modifier
+                .constrainAs(endSpacing) { bottom.linkTo(parent.bottom) }
+                .size(4.dp)
         )
     }
 }
