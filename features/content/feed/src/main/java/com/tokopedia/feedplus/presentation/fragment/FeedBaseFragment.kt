@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
-import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.marginBottom
+import androidx.core.view.marginLeft
+import androidx.core.view.marginRight
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -64,6 +66,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
@@ -304,9 +307,9 @@ class FeedBaseFragment :
 
                 val intent = ContentCreationConsts.getPostIntent(
                     context = context,
-                    asABuyer =  data.authorType.asBuyer,
+                    asABuyer = data.authorType.asBuyer,
                     title = getString(creationcommonR.string.content_creation_post_as_label),
-                    sourcePage = "",
+                    sourcePage = ""
                 )
                 startActivity(intent)
                 TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
@@ -334,43 +337,43 @@ class FeedBaseFragment :
         binding.vpFeedTabItemsContainer.adapter = adapter
         binding.vpFeedTabItemsContainer.reduceDragSensitivity(3)
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-            OnPageChangeCallback() {
+                OnPageChangeCallback() {
 
-            var shouldSendSwipeTracker = false
+                var shouldSendSwipeTracker = false
 
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                handleTabTransition(position)
-                if (!userSession.isLoggedIn &&
-                    activeTabSource.tabName == null // not coming from appLink
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
                 ) {
-                    if (position == TAB_SECOND_INDEX) {
-                        swipeFollowingLoginResult.launch(
-                            RouteManager.getIntent(context, ApplinkConst.LOGIN)
-                        )
+                    handleTabTransition(position)
+                    if (!userSession.isLoggedIn &&
+                        activeTabSource.tabName == null // not coming from appLink
+                    ) {
+                        if (position == TAB_SECOND_INDEX) {
+                            swipeFollowingLoginResult.launch(
+                                RouteManager.getIntent(context, ApplinkConst.LOGIN)
+                            )
+                        }
+                    }
+
+                    if (shouldSendSwipeTracker) {
+                        if (THRESHOLD_OFFSET_HALF > positionOffset) {
+                            feedNavigationAnalytics.eventSwipeFollowingTab()
+                        } else {
+                            feedNavigationAnalytics.eventSwipeForYouTab()
+                        }
+                        shouldSendSwipeTracker = false
                     }
                 }
 
-                if (shouldSendSwipeTracker) {
-                    if (THRESHOLD_OFFSET_HALF > positionOffset) {
-                        feedNavigationAnalytics.eventSwipeFollowingTab()
-                    } else {
-                        feedNavigationAnalytics.eventSwipeForYouTab()
-                    }
-                    shouldSendSwipeTracker = false
+                override fun onPageSelected(position: Int) {
                 }
-            }
 
-            override fun onPageSelected(position: Int) {
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-                shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
-            }
-        })
+                override fun onPageScrollStateChanged(state: Int) {
+                    shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
+                }
+            })
 
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)
@@ -379,15 +382,15 @@ class FeedBaseFragment :
 
     private fun setupInsets() {
         binding.containerFeedTopNav.vMenuCenter.doOnApplyWindowInsets { _, insets, _, margin ->
-
             val topInsetsMargin =
                 (insets.systemWindowInsetTop + tabExtraTopOffset24).coerceAtLeast(margin.top)
 
-            getAllMotionScene().forEach {
-                it.setMargin(
-                    binding.containerFeedTopNav.vMenuCenter.id,
-                    ConstraintSet.TOP,
-                    topInsetsMargin
+            binding.containerFeedTopNav.vMenuCenter.apply {
+                setMargin(
+                    marginLeft,
+                    topInsetsMargin,
+                    marginRight,
+                    marginBottom
                 )
             }
         }
@@ -505,16 +508,19 @@ class FeedBaseFragment :
                             is CreationUploadResult.Empty -> {
                                 binding.uploadView.hide()
                             }
+
                             is CreationUploadResult.Upload -> {
                                 binding.uploadView.show()
                                 binding.uploadView.setUploadProgress(uploadResult.progress)
                                 binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
                             }
+
                             is CreationUploadResult.OtherProcess -> {
                                 binding.uploadView.show()
                                 binding.uploadView.setOtherProgress(uploadResult.progress)
                                 binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
                             }
+
                             is CreationUploadResult.Success -> {
                                 binding.uploadView.hide()
 
@@ -525,6 +531,7 @@ class FeedBaseFragment :
                                             duration = Toaster.LENGTH_LONG
                                         )
                                     }
+
                                     is CreationUploadData.Shorts -> {
                                         showNormalToaster(
                                             getString(R.string.feed_upload_content_success),
@@ -544,6 +551,7 @@ class FeedBaseFragment :
                                             }
                                         )
                                     }
+
                                     is CreationUploadData.Stories -> {
                                         showNormalToaster(
                                             getString(R.string.feed_upload_story_success),
@@ -557,9 +565,11 @@ class FeedBaseFragment :
                                             }
                                         )
                                     }
+
                                     else -> {}
                                 }
                             }
+
                             is CreationUploadResult.Failed -> {
                                 binding.uploadView.show()
                                 binding.uploadView.setFailed()
@@ -584,6 +594,7 @@ class FeedBaseFragment :
                                     }
                                 })
                             }
+
                             else -> {}
                         }
                     }
@@ -664,39 +675,39 @@ class FeedBaseFragment :
         }
 
         if (firstTabData != null) {
-            binding.containerFeedTopNav.tyFeedFirstTab.text = firstTabData.title
-            binding.containerFeedTopNav.tyFeedFirstTab.setOnClickListener {
+            binding.containerFeedTopNav.layoutFeedTopTab.tyFeedFirstTab.text = firstTabData.title
+            binding.containerFeedTopNav.layoutFeedTopTab.tyFeedFirstTab.setOnClickListener {
                 feedNavigationAnalytics.eventClickForYouTab()
                 selectActiveTab(TAB_FIRST_INDEX)
             }
 
             if (firstTabData.hasNewContent && userSession.isLoggedIn) {
-                binding.containerFeedTopNav.vFirstTabRedDot.show()
+                binding.containerFeedTopNav.layoutFeedTopTab.vFirstTabRedDot.show()
             } else {
-                binding.containerFeedTopNav.vFirstTabRedDot.hide()
+                binding.containerFeedTopNav.layoutFeedTopTab.vFirstTabRedDot.hide()
             }
 
-            binding.containerFeedTopNav.tyFeedFirstTab.show()
+            binding.containerFeedTopNav.layoutFeedTopTab.tyFeedFirstTab.show()
         } else {
-            binding.containerFeedTopNav.tyFeedFirstTab.hide()
+            binding.containerFeedTopNav.layoutFeedTopTab.tyFeedFirstTab.hide()
         }
 
         if (secondTabData != null) {
-            binding.containerFeedTopNav.tyFeedSecondTab.text = secondTabData.title
-            binding.containerFeedTopNav.tyFeedSecondTab.setOnClickListener {
+            binding.containerFeedTopNav.layoutFeedTopTab.tyFeedSecondTab.text = secondTabData.title
+            binding.containerFeedTopNav.layoutFeedTopTab.tyFeedSecondTab.setOnClickListener {
                 feedNavigationAnalytics.eventClickFollowingTab()
                 selectActiveTab(TAB_SECOND_INDEX)
             }
 
             if (secondTabData.hasNewContent && userSession.isLoggedIn) {
-                binding.containerFeedTopNav.vSecondTabRedDot.show()
+                binding.containerFeedTopNav.layoutFeedTopTab.vSecondTabRedDot.show()
             } else {
-                binding.containerFeedTopNav.vSecondTabRedDot.hide()
+                binding.containerFeedTopNav.layoutFeedTopTab.vSecondTabRedDot.hide()
             }
 
-            binding.containerFeedTopNav.tyFeedSecondTab.show()
+            binding.containerFeedTopNav.layoutFeedTopTab.tyFeedSecondTab.show()
         } else {
-            binding.containerFeedTopNav.tyFeedSecondTab.hide()
+            binding.containerFeedTopNav.layoutFeedTopTab.tyFeedSecondTab.hide()
         }
 
         if (isJustLoggedIn && userSession.isLoggedIn) {
@@ -848,9 +859,9 @@ class FeedBaseFragment :
 
     private fun handleTabTransition(position: Int) {
         if (position == TAB_FIRST_INDEX) {
-            binding.containerFeedTopNav.root.transitionToStart()
+            binding.containerFeedTopNav.layoutFeedTopTab.containerFeedTopTab.transitionToStart()
         } else {
-            binding.containerFeedTopNav.root.transitionToEnd()
+            binding.containerFeedTopNav.layoutFeedTopTab.containerFeedTopTab.transitionToEnd()
         }
     }
 
@@ -877,13 +888,6 @@ class FeedBaseFragment :
 
     private fun hideErrorView() {
         binding.feedError.hide()
-    }
-
-    private fun getAllMotionScene(): List<ConstraintSet> {
-        return listOf(
-            binding.containerFeedTopNav.root.getConstraintSet(R.id.start),
-            binding.containerFeedTopNav.root.getConstraintSet(R.id.end)
-        )
     }
 
     companion object {
