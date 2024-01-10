@@ -77,7 +77,7 @@ class MiniCartViewModel @Inject constructor(
     private val addToCartOccMultiUseCase: AddToCartOccMultiUseCase,
     private val miniCartListUiModelMapper: MiniCartListUiModelMapper,
     private val miniCartChatListUiModelMapper: MiniCartChatListUiModelMapper,
-    private val getGroupProductTickerUseCase: BmGmGetGroupProductTickerUseCase,
+    private val updateGwpUseCase: BmGmGetGroupProductTickerUseCase,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(executorDispatchers.main) {
 
@@ -88,8 +88,8 @@ class MiniCartViewModel @Inject constructor(
         const val INVALID_ID = 1L
     }
 
-    private var groupProductTickerJob: Job? = null
-    private var bmGmGroupProductTickerParams: BmGmGetGroupProductTickerParams? = null
+    private var updateGwpUseCaseJob: Job? = null
+    private var paramsToUpdateGwp: BmGmGetGroupProductTickerParams? = null
 
     // Global Data
     private val _currentShopIds = MutableLiveData<List<String>>()
@@ -439,7 +439,7 @@ class MiniCartViewModel @Inject constructor(
                 data = miniCartData
             )
         } else {
-            bmGmGroupProductTickerParams = BmgmParamMapper.mapBmGmGroupProductTickerParams(miniCartData.data.availableSection)
+            paramsToUpdateGwp = BmgmParamMapper.mapParamsToUpdateGwp(miniCartData.data.availableSection)
             val tmpMiniCartListUiModel = miniCartListUiModelMapper.mapUiModel(miniCartData)
             val tmpMiniCartChatListUiModel = miniCartChatListUiModelMapper.mapUiModel(miniCartData)
 
@@ -714,12 +714,12 @@ class MiniCartViewModel @Inject constructor(
     fun getBmGmGroupProductTicker(offerId: Long = INVALID_ID) {
         if (offerId != INVALID_ID) updateGwpDataInCartLoading(offerId)
 
-        groupProductTickerJob?.cancel()
-        groupProductTickerJob = launchCatchError(
+        updateGwpUseCaseJob?.cancel()
+        updateGwpUseCaseJob = launchCatchError(
             block = {
-                bmGmGroupProductTickerParams?.let { params ->
+                paramsToUpdateGwp?.let { params ->
                     if (params.carts.isNotEmpty()) {
-                        val response = getGroupProductTickerUseCase.invoke(params)
+                        val response = updateGwpUseCase.invoke(params)
                         updateGwpDataInCartSuccessful(response)
                     }
                 }

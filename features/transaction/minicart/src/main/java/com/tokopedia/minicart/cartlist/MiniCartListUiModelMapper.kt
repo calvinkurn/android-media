@@ -274,7 +274,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     val miniCartProductUiModels = mutableListOf<MiniCartProductUiModel>()
                     val lastCartItem = cartIndex == cartItemsCount - 1
 
-                    // Add progressive info if bmgm only
+                    // Add gwp progressive info if bmgm only
                     if (cartDetail.isBmGm() && cartDetail.cartDetailInfo.bmgmData.offerMessage.isNotEmpty()) {
                         miniCartAvailableSectionUiModels.add(mapProgressiveInfo(cartDetail.cartDetailInfo.bmgmData))
                     }

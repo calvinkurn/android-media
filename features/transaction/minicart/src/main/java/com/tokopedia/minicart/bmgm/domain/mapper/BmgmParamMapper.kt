@@ -82,7 +82,7 @@ object BmgmParamMapper {
         )
     } as ArrayList<BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails>
 
-    fun mapBmGmGroupProductTickerParams(
+    fun mapParamsToUpdateGwp(
         availableSection: AvailableSection
     ) = BmGmGetGroupProductTickerParams(
         carts = availableSection.availableGroup
