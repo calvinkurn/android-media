@@ -139,15 +139,6 @@ launch {
     }
 ```
 
-#### 5. References
-
-Currently we use Targeted Ticker widget on this page. You can use as references
-
-1. ManageAddressFragment
-2. TrackingPageFragment
-3. RequestPickupFragment
-4. ConfirmShippingFragment
-
 ## Useful Links
 
 - [Backend Doc - Ticker Unification - Auto Ticker](https://tokopedia.atlassian.net/wiki/spaces/EI/pages/2436301320/Ticker+Unification+-+AutoTicker)
