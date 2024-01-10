@@ -154,9 +154,9 @@ fun TrackingHistoryItem(
                         if (trackHistoryModel.proof.imageId.isNotEmpty()) Visibility.Visible else Visibility.Gone
                 }
                 .clickable { seeProofOfDelivery(trackHistoryModel.proof) },
-            // todo image network header
             source = ImageSource.Remote(
-                trackHistoryModel.proof.imageUrl
+                trackHistoryModel.proof.imageUrl,
+                customHeaders = mapOf("Accounts-Authorization" to "Bearer ${trackHistoryModel.proof.accessToken}")
             )
         )
     }

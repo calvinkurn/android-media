@@ -12,7 +12,8 @@ sealed interface TrackingPageEvent {
         val userId: String,
         val deviceId: String,
         val trackingUrl: String,
-        val pageCaller: String
+        val pageCaller: String,
+        val accessToken: String
     ) : TrackingPageEvent
 
     object FindNewDriver : TrackingPageEvent

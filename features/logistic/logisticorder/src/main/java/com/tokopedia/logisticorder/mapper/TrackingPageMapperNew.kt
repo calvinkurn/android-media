@@ -43,11 +43,12 @@ class TrackingPageMapperNew @Inject constructor() {
         userId: String,
         deviceId: String,
         orderId: String?,
-        trackingUrlFromOrder: String?
+        trackingUrlFromOrder: String?,
+        accessToken: String?
     ): TrackingDataModel {
         val data = response.response.data
         return TrackingDataModel().apply {
-            trackOrder = mapTrackOrder(data.trackOrder, userId, deviceId, orderId, trackingUrlFromOrder)
+            trackOrder = mapTrackOrder(data.trackOrder, userId, deviceId, orderId, trackingUrlFromOrder, accessToken)
             page = mapPage(data.page)
             tipping = mapTippingData(data.tipping, data.trackOrder.shippingRefNum)
             lastDriver = mapLastDriverData(data.lastDriver)
@@ -69,11 +70,12 @@ class TrackingPageMapperNew @Inject constructor() {
         userId: String? = null,
         deviceId: String? = null,
         orderId: String? = null,
-        trackingUrlFromOrder: String? = null
+        trackingUrlFromOrder: String? = null,
+        accessToken: String? = null
     ): TrackOrderModel {
         return TrackOrderModel().apply {
             detail = mapDetailOrder(response.detail, trackingUrlFromOrder)
-            trackHistory = mapTrackingHistory(response.trackHistory, userId, deviceId, orderId)
+            trackHistory = mapTrackingHistory(response.trackHistory, userId, deviceId, orderId, accessToken)
             change = response.change
             status = response.status
             orderStatus = response.orderStatus
@@ -103,7 +105,8 @@ class TrackingPageMapperNew @Inject constructor() {
         proof: Proof,
         userId: String?,
         deviceId: String?,
-        orderId: String?
+        orderId: String?,
+        accessToken: String?
     ): ProofModel {
         val imageUrl =
             if (proof.imageId.isNotEmpty() && !userId.isNullOrEmpty() && !deviceId.isNullOrEmpty() && !orderId.isNullOrEmpty()) {
@@ -121,7 +124,8 @@ class TrackingPageMapperNew @Inject constructor() {
         return ProofModel(
             imageId = proof.imageId,
             description = proof.description,
-            imageUrl = imageUrl
+            imageUrl = imageUrl,
+            accessToken = accessToken.orEmpty()
         )
     }
 
@@ -129,7 +133,8 @@ class TrackingPageMapperNew @Inject constructor() {
         trackHistory: List<TrackHistory>,
         userId: String?,
         deviceId: String?,
-        orderId: String?
+        orderId: String?,
+        accessToken: String?
     ): List<TrackHistoryModel> {
         return trackHistory.map {
             TrackHistoryModel(
@@ -139,7 +144,7 @@ class TrackingPageMapperNew @Inject constructor() {
                 it.city,
                 it.time,
                 it.partnerName,
-                mapProofOrder(it.proof, userId, deviceId, orderId)
+                mapProofOrder(it.proof, userId, deviceId, orderId, accessToken)
             )
         }
     }

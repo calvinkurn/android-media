@@ -65,7 +65,8 @@ class TrackingPageComposeViewModel @Inject constructor(
                     event.userId,
                     event.deviceId,
                     event.trackingUrl,
-                    event.pageCaller
+                    event.pageCaller,
+                    event.accessToken
                 )
             }
         }
@@ -78,7 +79,8 @@ class TrackingPageComposeViewModel @Inject constructor(
         userId: String,
         deviceId: String,
         trackingUrlFromOrder: String?,
-        pageCaller: String
+        pageCaller: String,
+        accessToken: String
     ) {
         this.orderId = orderId
         this.orderTxId = orderTxId
@@ -94,7 +96,8 @@ class TrackingPageComposeViewModel @Inject constructor(
                     userId,
                     deviceId,
                     orderId,
-                    trackingUrlFromOrder
+                    trackingUrlFromOrder,
+                    accessToken
                 )
                 _uiState.update {
                     it.copy(isLoading = false, trackingData = uiModel)

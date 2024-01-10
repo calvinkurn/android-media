@@ -75,7 +75,8 @@ class TrackingPageComposeActivity : AppCompatActivity() {
                 userSession.userId,
                 userSession.deviceId,
                 urlLiveTracking,
-                orderCaller
+                orderCaller,
+                userSession.accessToken
             )
         )
 
