@@ -7,12 +7,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.activity.ProductDetailDevActivity
 import com.tokopedia.developer_options.presentation.model.PdpDevUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.unifycomponents.UnifyButton
 
 class PdpDevViewHolder(
     itemView: View
-): AbstractViewHolder<PdpDevUiModel>(itemView)
-{
+) : AbstractViewHolder<PdpDevUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_dev_opt_pdp_dev
@@ -22,6 +23,7 @@ class PdpDevViewHolder(
         val btn = itemView.findViewById<UnifyButton>(R.id.pdp_dev_btn)
         btn.setOnClickListener {
             itemView.context.apply {
+                DevOpsTracker.trackEntryEvent(DevopsFeature.PRODUCT_DETAIL_DEV)
                 val intent = Intent(this, ProductDetailDevActivity::class.java)
                 startActivity(intent)
             }

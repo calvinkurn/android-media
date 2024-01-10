@@ -5,10 +5,12 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.databinding.ItemHotelSearchFilterBinding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
-import kotlinx.android.synthetic.main.item_hotel_search_filter.view.*
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.resources.common.R as resourcescommonR
 
 class HotelSearchResultFilterAdapter(private val mode: Int = MODE_SINGLE, val listener: ActionListener? = null)
     : RecyclerView.Adapter<HotelSearchResultFilterAdapter.HotelSearchResultFilterViewHolder>() {
@@ -50,21 +52,24 @@ class HotelSearchResultFilterAdapter(private val mode: Int = MODE_SINGLE, val li
 
     inner class HotelSearchResultFilterViewHolder(view: View)
         : RecyclerView.ViewHolder(view){
+
+        private val binding = ItemHotelSearchFilterBinding.bind(view)
+
         fun bindItem(item: HotelFilterItem, isSelected: Boolean) {
-            with(itemView){
+            with(binding){
                 if (item.isRateItem)
                     image.visible()
                 else
                     image.gone()
 
-                hotel_selection_chip_title.text = item.itemTitle
-                base_item_filter.isSelected = isSelected
+                hotelSelectionChipTitle.text = item.itemTitle
+                baseItemFilter.isSelected = isSelected
                 if (isSelected){
-                    image.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_hotel_rating_stars))
-                    hotel_selection_chip_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                    image.setImageDrawable(ContextCompat.getDrawable(root.context, R.drawable.ic_hotel_rating_stars))
+                    hotelSelectionChipTitle.setTextColor(ContextCompat.getColor(root.context, unifyprinciplesR.color.Unify_GN500))
                 } else {
-                    image.setImageDrawable(ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_star_grayscale_24))
-                    hotel_selection_chip_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68))
+                    image.setImageDrawable(ContextCompat.getDrawable(root.context, resourcescommonR.drawable.ic_system_action_star_grayscale_24))
+                    hotelSelectionChipTitle.setTextColor(ContextCompat.getColor(root.context, unifyprinciplesR.color.Unify_NN950_68))
                 }
             }
         }

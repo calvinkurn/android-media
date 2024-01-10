@@ -6,6 +6,7 @@ import com.tokopedia.digital_product_detail.presentation.fragment.DigitalPDPData
 import com.tokopedia.digital_product_detail.presentation.fragment.DigitalPDPPulsaFragment
 import com.tokopedia.digital_product_detail.presentation.fragment.DigitalPDPTagihanFragment
 import com.tokopedia.digital_product_detail.presentation.fragment.DigitalPDPTokenListrikFragment
+import com.tokopedia.digital_product_detail.presentation.monitoring.activity.DigitalPDPDataPlanTestSetupActivity
 import com.tokopedia.digital_product_detail.presentation.monitoring.activity.DigitalPDPPulsaTestSetupActivity
 import dagger.Component
 
@@ -25,4 +26,5 @@ interface DigitalPDPComponent {
 
     /** Macrobenchmark */
     fun inject(digitalPDPPulsaTestSetupActivity: DigitalPDPPulsaTestSetupActivity)
+    fun inject(digitalPDPDataPlanTestSetupActivity: DigitalPDPDataPlanTestSetupActivity)
 }

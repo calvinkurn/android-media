@@ -12,6 +12,7 @@ import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
 import com.tokopedia.common_digital.common.di.DigitalAddToCartQualifier
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.digital_product_detail.presentation.monitoring.DigitalPDPDataPlanPerformanceCallback
 import com.tokopedia.digital_product_detail.presentation.monitoring.DigitalPDPPulsaPerformanceCallback
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -146,5 +147,11 @@ class DigitalPDPModule {
     @DigitalPDPScope
     fun provideDigitalPDPPulsaPerformanceCallback(): DigitalPDPPulsaPerformanceCallback {
         return DigitalPDPPulsaPerformanceCallback()
+    }
+
+    @Provides
+    @DigitalPDPScope
+    fun provideDigitalPDPDataPlanPerformanceCallback(): DigitalPDPDataPlanPerformanceCallback {
+        return DigitalPDPDataPlanPerformanceCallback()
     }
 }
