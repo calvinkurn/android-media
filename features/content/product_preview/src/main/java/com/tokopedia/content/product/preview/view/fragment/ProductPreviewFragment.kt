@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -61,7 +61,7 @@ class ProductPreviewFragment @Inject constructor(
 
     private val productId: String get() = "4937529690" //TODO: get from args
 
-    private val viewModel by activityViewModels<ProductPreviewViewModel> {
+    private val viewModel by viewModels<ProductPreviewViewModel> {
         viewModelFactory.create(
             EntrySource(productId = productId) //TODO: Testing purpose, change from arguments
         )
