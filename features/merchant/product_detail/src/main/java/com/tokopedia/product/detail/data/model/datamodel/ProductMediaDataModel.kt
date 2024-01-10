@@ -3,8 +3,8 @@ package com.tokopedia.product.detail.data.model.datamodel
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
-import com.tokopedia.analytics.performance.perf.LoadableComponent
+import com.tokopedia.analytics.performance.perf.performanceTracing.components.BlocksLoadableComponent
+import com.tokopedia.analytics.performance.perf.performanceTracing.components.LoadableComponent
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
@@ -117,12 +117,6 @@ data class MediaDataModel(
     var prefetchResource: Drawable? = null
     fun isVideoType(): Boolean = type == ProductMediaDataModel.VIDEO_TYPE
 }
-
-data class ThumbnailDataModel(
-    val media: MediaDataModel = MediaDataModel(),
-    val isSelected: Boolean = false,
-    val impressHolder: ImpressHolder = ImpressHolder()
-)
 
 sealed class MediaContainerType(val type: String, val ratio: String) {
     object Square : MediaContainerType(type = "square", "H,1:1")

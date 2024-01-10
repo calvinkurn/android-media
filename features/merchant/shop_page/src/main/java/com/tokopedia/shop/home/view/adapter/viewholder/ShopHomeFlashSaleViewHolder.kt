@@ -24,6 +24,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.home.util.DateHelper
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.view.adapter.ShopCampaignFlashSaleProductCarouselAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
@@ -43,7 +44,8 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopHomeFlashSaleViewHolder(
     itemView: View,
-    private val listener: ShopHomeFlashSaleWidgetListener
+    private val listener: ShopHomeFlashSaleWidgetListener,
+    private val recyclerviewPoolListener: RecyclerviewPoolListener
 ) : AbstractViewHolder<ShopHomeFlashSaleUiModel>(itemView) {
 
     private var uiModel: ShopHomeFlashSaleUiModel? = null
@@ -310,6 +312,7 @@ class ShopHomeFlashSaleViewHolder(
             productCarouselView?.isNestedScrollingEnabled = false
             productCarouselView?.adapter = productCarouselAdapter
             productCarouselView?.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+            productCarouselView?.setRecycledViewPool(recyclerviewPoolListener.parentPool)
         }
     }
 

@@ -25,6 +25,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopAdvanceCarouselBannerViewholderLayoutBinding
 import com.tokopedia.shop.home.WidgetNameEnum
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.view.adapter.ShopWidgetAdvanceCarouselBannerAdapter
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.PageControl
@@ -36,7 +37,8 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
     view: View?,
-    private val listener: ShopHomeDisplayAdvanceCarouselBannerWidgetListener
+    private val listener: ShopHomeDisplayAdvanceCarouselBannerWidgetListener,
+    private val recyclerviewPoolListener: RecyclerviewPoolListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view) {
 
     companion object {
@@ -57,7 +59,7 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
     private var adapterShopWidgetAdvanceCarouselBanner: ShopWidgetAdvanceCarouselBannerAdapter? =
         null
     private var uiModel: ShopHomeDisplayWidgetUiModel = ShopHomeDisplayWidgetUiModel()
-    private var timer = Timer()
+    private var timer: Timer? = Timer()
     private var currentSelectedItemPositionWhenUserTouchItem = 0
     private var carouselLayoutManager: CarouselLayoutManager? = null
     private val itemSelectionListener: CarouselLayoutManager.OnCenterItemSelectionListener =
@@ -140,14 +142,10 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
         textViewTitle?.setTextColor(titleColor)
     }
 
-    private fun isWidgetNameWithAutoScroll(): Boolean {
-        return uiModel.name == WidgetNameEnum.SLIDER_BANNER.value
-    }
-
     private fun setAutoScrollOn() {
         setAutoScrollOff()
         timer = Timer()
-        timer.scheduleAtFixedRate(
+        timer?.scheduleAtFixedRate(
             object : TimerTask() {
                 override fun run() {
                     Handler(Looper.getMainLooper()).post {
@@ -165,7 +163,8 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
     }
 
     private fun setAutoScrollOff() {
-        timer.cancel()
+        timer?.cancel()
+        timer = null
     }
 
     private fun setBannerIndicatorSection() {
@@ -208,6 +207,7 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
             this.adapter = adapterShopWidgetAdvanceCarouselBanner
             this.removeOnItemTouchListener(itemTouchListener)
             this.addOnItemTouchListener(itemTouchListener)
+            this.setRecycledViewPool(recyclerviewPoolListener.parentPool)
             if (uiModel.data?.size.orZero() > Int.ONE) {
                 setPadding(
                     RV_HORIZONTAL_PADDING_FOR_MORE_THAT_ONE_DATA.toPx(),
@@ -282,15 +282,11 @@ class ShopHomeDisplayAdvanceCarouselBannerViewHolder(
     }
 
     fun pauseTimer() {
-        if (isWidgetNameWithAutoScroll()) {
-            setAutoScrollOff()
-        }
+        setAutoScrollOff()
     }
 
     fun resumeTimer() {
-        if (isWidgetNameWithAutoScroll()) {
-            currentItem = 0
-            setAutoScrollOn()
-        }
+        currentItem = 0
+        setAutoScrollOn()
     }
 }

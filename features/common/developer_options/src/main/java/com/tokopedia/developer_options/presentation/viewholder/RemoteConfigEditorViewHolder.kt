@@ -9,13 +9,14 @@ import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity
 import com.tokopedia.developer_options.presentation.model.RemoteConfigEditorUiModel
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
 class RemoteConfigEditorViewHolder(
     itemView: View
-): AbstractViewHolder<RemoteConfigEditorUiModel>(itemView)
-{
+) : AbstractViewHolder<RemoteConfigEditorUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_remote_config_editor
@@ -27,6 +28,7 @@ class RemoteConfigEditorViewHolder(
         btn.setOnClickListener {
             val prefix: Editable = tf.textFieldInput.editableText
             startRemoteConfigEditor(prefix.toString())
+            DevOpsTracker.trackEntryEvent(DevopsFeature.REMOTE_CONFIG_EDITOR)
         }
     }
 

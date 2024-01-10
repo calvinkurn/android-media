@@ -524,8 +524,8 @@ class PinpointViewModel @Inject constructor(
             cityId = cityId,
             provinceId = provinceId,
             postalCode = postalCode,
-            lat = lat,
-            long = long
+            lat = lat.toDoubleOrZero(),
+            long = long.toDoubleOrZero()
         )
     }
 }

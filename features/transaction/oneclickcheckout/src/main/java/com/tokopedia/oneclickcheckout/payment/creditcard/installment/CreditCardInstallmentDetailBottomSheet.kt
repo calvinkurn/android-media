@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.BottomSheetCreditCardInstallmentBinding
 import com.tokopedia.oneclickcheckout.databinding.ItemInstallmentDetailBinding
+import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
@@ -45,6 +46,7 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Order
         payment: OrderPayment,
         orderCart: OrderCart,
         orderCost: OrderCost,
+        paymentRequest: PaymentRequest,
         userId: String,
         listener: InstallmentDetailBottomSheetListener
     ) {
@@ -58,7 +60,7 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Order
                 showHeader = true
                 setTitle(fragment.getString(R.string.lbl_choose_installment_type))
                 binding = BottomSheetCreditCardInstallmentBinding.inflate(LayoutInflater.from(fragment.context))
-                setupChild(context, fragment, payment, orderCart, orderCost, userId)
+                setupChild(context, fragment, payment, orderCart, orderCost, paymentRequest, userId)
                 fragment.view?.height?.div(2)?.let { height ->
                     customPeekHeight = height
                 }
@@ -78,6 +80,7 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Order
         payment: OrderPayment,
         orderCart: OrderCart,
         orderCost: OrderCost,
+        paymentRequest: PaymentRequest,
         userId: String
     ) {
         val creditCard = payment.creditCard
@@ -87,7 +90,7 @@ class CreditCardInstallmentDetailBottomSheet(private var paymentProcessor: Order
             binding?.tvInstallmentMessage?.gone()
             binding?.loaderInstallment?.visible()
             launch {
-                val installmentTermList = paymentProcessor.getCreditCardAdminFee(payment, userId, orderCost, orderCart)
+                val installmentTermList = paymentProcessor.getCreditCardAdminFee(payment, userId, orderCost, orderCart, paymentRequest)
                 if (installmentTermList != null) {
                     setupInstallments(context, fragment, creditCard.copy(availableTerms = installmentTermList))
                 } else {

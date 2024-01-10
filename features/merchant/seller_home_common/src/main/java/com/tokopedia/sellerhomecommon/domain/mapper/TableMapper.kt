@@ -173,10 +173,7 @@ class TableMapper @Inject constructor(
             val regex = DarkModeUtil.HEX_COLOR_REGEX.toRegex()
             val result = regex.find(htmlString)
             val hexColor = result?.groupValues?.getOrNull(Int.ONE)
-            hexColor?.let {
-                return Color.parseColor(hexColor)
-            }
-            return null
+            return Color.parseColor(hexColor ?: return null)
         }
         return null
     }

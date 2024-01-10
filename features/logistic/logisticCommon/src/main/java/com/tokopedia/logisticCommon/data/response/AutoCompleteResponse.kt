@@ -47,9 +47,9 @@ data class Prediction(
     @SerializedName("postal_code")
     var postalCode: String = "",
     @SerializedName("latitude")
-    var latitude: Double = 0.0,
+    var latitude: String = "0.0",
     @SerializedName("longitude")
-    var longitude: Double = 0.0,
+    var longitude: String = "0.0",
     @SerializedName("title")
     var title: String = ""
 )

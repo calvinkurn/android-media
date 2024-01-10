@@ -11,10 +11,10 @@ data class SecretResponse(
 	val success: Boolean = false,
 
 	@SerializedName("errors")
-	val errors: List<ErrorsItem> = emptyList()
+	val errors: List<SecretErrorsItem> = emptyList()
 )
 
-data class ErrorsItem(
+data class SecretErrorsItem(
 
 	@SerializedName("code")
 	val code: String = "",

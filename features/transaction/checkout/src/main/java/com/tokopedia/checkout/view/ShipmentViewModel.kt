@@ -840,7 +840,8 @@ class ShipmentViewModel @Inject constructor(
                         deviceId,
                         checkoutLeasingId,
                         isPlusSelected,
-                        false
+                        false,
+                        "merge"
                     )
                 )
                 if (view != null) {

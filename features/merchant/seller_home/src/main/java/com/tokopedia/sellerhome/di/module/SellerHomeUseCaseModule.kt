@@ -36,6 +36,7 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetPieChartDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetPostDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetProgressDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetRecommendationDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetRewardDetailByIdUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTickerUseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -195,9 +196,10 @@ class SellerHomeUseCaseModule {
     fun provideGetMilestoneDataUseCase(
         gqlRepository: GraphqlRepository,
         mapper: MilestoneMapper,
+        getRewardDetailByIdUseCase: GetRewardDetailByIdUseCase,
         dispatchers: CoroutineDispatchers
     ): GetMilestoneDataUseCase {
-        return GetMilestoneDataUseCase(gqlRepository, mapper, dispatchers)
+        return GetMilestoneDataUseCase(gqlRepository, getRewardDetailByIdUseCase, mapper, dispatchers)
     }
 
     @SellerHomeScope
@@ -217,6 +219,12 @@ class SellerHomeUseCaseModule {
         mapper: TickerMapper,
         dispatchers: CoroutineDispatchers
     ): GetTickerUseCase = GetTickerUseCase(gqlRepository, mapper, dispatchers)
+
+    @SellerHomeScope
+    @Provides
+    fun provideGetRewardDetailByIdUseCase(
+        gqlRepository: GraphqlRepository
+    ): GetRewardDetailByIdUseCase = GetRewardDetailByIdUseCase(gqlRepository)
 
     @SellerHomeScope
     @Provides
