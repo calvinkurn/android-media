@@ -1753,7 +1753,7 @@ class CartListPresenter @Inject constructor(
             productPrice = productModel.productPrice
             quantity = productModel.productMinOrder
             externalSource = AtcFromExternalSource.ATC_FROM_RECOMMENDATION
-            shopName = "" // todo :
+            shopName = productModel.cpmData.cpm.cpmShop.name
 
             val clickUrl = productModel.adsClickUrl
             if (clickUrl.isNotEmpty()) view?.sendATCTrackingURL(productModel)
