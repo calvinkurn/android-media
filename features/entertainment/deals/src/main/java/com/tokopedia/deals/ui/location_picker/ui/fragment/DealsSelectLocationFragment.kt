@@ -21,11 +21,11 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.deals.DealsComponentInstance
 import com.tokopedia.deals.R
 import com.tokopedia.deals.common.listener.CurrentLocationCallback
 import com.tokopedia.deals.databinding.FragmentDealsSelectLocationBinding
 import com.tokopedia.deals.databinding.LayoutDealsSearchLocationBottomsheetBinding
+import com.tokopedia.deals.di.DealsComponentFactory
 import com.tokopedia.deals.ui.location_picker.domain.viewmodel.DealsLocationViewModel
 import com.tokopedia.deals.ui.location_picker.listener.DealsLocationListener
 import com.tokopedia.deals.ui.location_picker.mapper.DealsLocationMapper
@@ -401,7 +401,7 @@ class DealsSelectLocationFragment :
     override fun onItemClicked(p0: Visitable<*>?) {}
 
     override fun initInjector() {
-        val dealsLocationComponent = activity?.application?.let { DealsComponentInstance.getDealsLocationComponent(it, requireContext()) }
+        val dealsLocationComponent = activity?.application?.let { DealsComponentFactory.instance.getDealsLocationComponent(it, requireContext()) }
         dealsLocationComponent?.inject(this)
     }
 

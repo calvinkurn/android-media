@@ -6,9 +6,9 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.deals.DealsComponentInstance
 import com.tokopedia.deals.R
 import com.tokopedia.deals.databinding.ActivityBaseDealsDetailBinding
+import com.tokopedia.deals.di.DealsComponentFactory
 import com.tokopedia.deals.ui.pdp.di.DaggerDealsPDPComponent
 import com.tokopedia.deals.ui.pdp.di.DealsPDPComponent
 import com.tokopedia.deals.ui.pdp.ui.callback.DealsPDPCallbacks
@@ -48,7 +48,7 @@ class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, 
 
     override fun getComponent(): DealsPDPComponent {
         return DaggerDealsPDPComponent.builder()
-            .dealsComponent(DealsComponentInstance.getDealsComponent(application, this))
+            .dealsComponent(DealsComponentFactory.instance.getDealsComponent(application, this))
             .build()
     }
 
@@ -130,5 +130,4 @@ class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, 
     companion object {
         const val EXTRA_PRODUCT_ID = "EXTRA_PRODUCT_ID"
     }
-
 }

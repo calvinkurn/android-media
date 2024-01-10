@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.deals.DealsComponentInstance
+import com.tokopedia.deals.di.DealsComponentFactory
 import com.tokopedia.deals.ui.checkout.di.DaggerDealsCheckoutComponent
 import com.tokopedia.deals.ui.checkout.di.DealsCheckoutComponent
 import com.tokopedia.deals.ui.checkout.ui.DealsCheckoutCallbacks
@@ -14,7 +14,9 @@ import com.tokopedia.deals.ui.checkout.ui.fragment.DealsCheckoutLocationsFragmen
 import com.tokopedia.abstraction.R.id as idAbstraction
 import com.tokopedia.deals.R.anim as animDeals
 
-class DealsCheckoutActivity: BaseSimpleActivity(), HasComponent<DealsCheckoutComponent>,
+class DealsCheckoutActivity :
+    BaseSimpleActivity(),
+    HasComponent<DealsCheckoutComponent>,
     DealsCheckoutCallbacks {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +33,7 @@ class DealsCheckoutActivity: BaseSimpleActivity(), HasComponent<DealsCheckoutCom
 
     override fun getComponent(): DealsCheckoutComponent {
         return DaggerDealsCheckoutComponent.builder()
-            .dealsComponent(DealsComponentInstance.getDealsComponent(application, this))
+            .dealsComponent(DealsComponentFactory.instance.getDealsComponent(application, this))
             .build()
     }
 

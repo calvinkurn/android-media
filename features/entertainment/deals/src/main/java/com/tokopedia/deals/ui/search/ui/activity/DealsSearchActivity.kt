@@ -7,7 +7,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.deals.DealsComponentInstance
+import com.tokopedia.deals.di.DealsComponentFactory
 import com.tokopedia.deals.ui.search.di.component.DaggerDealsSearchComponent
 import com.tokopedia.deals.ui.search.di.component.DealsSearchComponent
 import com.tokopedia.deals.ui.search.ui.fragment.DealsSearchFragment
@@ -28,8 +28,8 @@ class DealsSearchActivity : BaseSimpleActivity(), HasComponent<DealsSearchCompon
 
     override fun getComponent(): DealsSearchComponent {
         return DaggerDealsSearchComponent.builder()
-                .dealsComponent(DealsComponentInstance.getDealsComponent(application, this))
-                .build()
+            .dealsComponent(DealsComponentFactory.instance.getDealsComponent(application, this))
+            .build()
     }
 
     override fun getTagFragment(): String {

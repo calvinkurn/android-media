@@ -5,9 +5,9 @@ import android.view.Menu
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.deals.DealsComponentInstance
 import com.tokopedia.deals.R
 import com.tokopedia.deals.di.DealsComponent
+import com.tokopedia.deals.di.DealsComponentFactory
 
 class DealsBrandDetailActivity : BaseSimpleActivity(), HasComponent<DealsComponent> {
 
@@ -29,7 +29,7 @@ class DealsBrandDetailActivity : BaseSimpleActivity(), HasComponent<DealsCompone
     }
 
     override fun getComponent(): DealsComponent =
-        DealsComponentInstance.getDealsComponent(application, this)
+        DealsComponentFactory.instance.getDealsComponent(application, this)
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menu?.clear()
