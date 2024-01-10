@@ -52,7 +52,6 @@ class DataManager @Inject constructor(
                 atc.shopId,
                 atc.productName ?: "",
                 atc.productPrice?.toString() ?: "",
-                atc.shopName ?: "",
                 userId
             )
 
@@ -75,7 +74,7 @@ class DataManager @Inject constructor(
 
     companion object {
 
-        fun atcParams(productId: String, shopId: Int?, productName: String, price: String, shopName: String, userId: String): RequestParams {
+        fun atcParams(productId: String, shopId: Int?, productName: String, price: String, userId: String): RequestParams {
             val addToCartRequestParams = AddToCartRequestParams()
             addToCartRequestParams.productId = productId
             addToCartRequestParams.shopId = shopId?.toString().toZeroStringIfNull()

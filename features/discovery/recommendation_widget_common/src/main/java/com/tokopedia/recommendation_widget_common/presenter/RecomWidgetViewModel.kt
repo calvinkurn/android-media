@@ -304,7 +304,8 @@ open class RecomWidgetViewModel @Inject constructor(
             val atcParam = AddToCartRequestParams(
                 productId = recomItem.productId.toString(),
                 shopId = recomItem.shopId.toString(),
-                quantity = quantity
+                quantity = quantity,
+                shopName = recomItem.shopName
             )
             addToCartUseCase.get().setParams(atcParam)
             val result = addToCartUseCase.get().executeOnBackground()

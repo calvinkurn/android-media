@@ -19,8 +19,8 @@ class RecommendationWidgetViewModel @Inject constructor(
     state: RecommendationWidgetState = RecommendationWidgetState(),
     private val getRecommendationWidgetUseCase: GetRecommendationUseCase,
     private val cartService: dagger.Lazy<CartService>,
-    private val userSession: UserSessionInterface
-) : androidx.lifecycle.ViewModel(),
+    private val userSession: UserSessionInterface,
+): androidx.lifecycle.ViewModel(),
     ViewModel<RecommendationWidgetState> {
 
     private val _stateFlow = MutableStateFlow(state)
@@ -60,7 +60,7 @@ class RecommendationWidgetViewModel @Inject constructor(
                 categoryIds = model.metadata.categoryIds,
                 keywords = model.metadata.keyword,
                 isTokonow = model.metadata.isTokonow,
-                criteriaThematicIDs = model.metadata.criteriaThematicIDs
+                criteriaThematicIDs = model.metadata.criteriaThematicIDs,
             )
         )
 
@@ -73,11 +73,10 @@ class RecommendationWidgetViewModel @Inject constructor(
         val shopId = stateValue.miniCartShopId
         val miniCartSource = stateValue.miniCartSource
 
-        if (shopId.isNotEmpty() && miniCartSource != null) {
+        if (shopId.isNotEmpty() && miniCartSource != null)
             cartService.get().getMiniCart(shopId, miniCartSource) { miniCartData ->
                 updateState { it.refreshMiniCart(miniCartData) }
             }
-        }
     }
 
     private fun onGetRecommendationWidgetError(model: RecommendationWidgetModel) {
@@ -91,7 +90,7 @@ class RecommendationWidgetViewModel @Inject constructor(
     internal fun onAddToCartNonVariant(
         model: RecommendationCarouselModel,
         item: RecommendationItem,
-        updatedQuantity: Int
+        updatedQuantity: Int,
     ) {
         val miniCartSource = stateValue.miniCartSource ?: return
         val productId = item.productId.toString()
@@ -99,7 +98,6 @@ class RecommendationWidgetViewModel @Inject constructor(
         cartService.get().handleCart(
             productId = productId,
             shopId = item.shopId.toString(),
-            shopName = item.shopName,
             currentQuantity = item.quantity,
             updatedQuantity = updatedQuantity,
             miniCartItem = stateValue.getMiniCartItemProduct(productId),
@@ -108,14 +106,14 @@ class RecommendationWidgetViewModel @Inject constructor(
                 val atcTrackingData = RecommendationCarouselWidgetTrackingATC(
                     item,
                     addToCartData.data.cartId,
-                    addToCartData.data.quantity
+                    addToCartData.data.quantity,
                 )
                 model.widgetTracking?.sendEventAddToCart(atcTrackingData)
 
                 updateState {
                     it.refreshMiniCart(
                         miniCartData = miniCartData,
-                        successMessage = addToCartData.errorMessage.joinToString(separator = ", ")
+                        successMessage = addToCartData.errorMessage.joinToString(separator = ", "),
                     )
                 }
             },
@@ -125,7 +123,7 @@ class RecommendationWidgetViewModel @Inject constructor(
                 updateState {
                     it.refreshMiniCart(
                         miniCartData = miniCartData,
-                        successMessage = updateCartData.error.joinToString(separator = ", ")
+                        successMessage = updateCartData.error.joinToString(separator = ", "),
                     )
                 }
             },
@@ -135,7 +133,7 @@ class RecommendationWidgetViewModel @Inject constructor(
                 updateState {
                     it.refreshMiniCart(
                         miniCartData = miniCartData,
-                        successMessage = deleteCartData.errorMessage.joinToString(separator = ", ")
+                        successMessage = deleteCartData.errorMessage.joinToString(separator = ", "),
                     )
                 }
             },
