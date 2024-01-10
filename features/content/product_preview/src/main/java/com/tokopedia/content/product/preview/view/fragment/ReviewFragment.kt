@@ -30,10 +30,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 class ReviewFragment @Inject constructor(
     private val viewModelFactory: ProductPreviewViewModelFactory.Creator,
-    private val router: Router,
+    private val router: Router
 ) : TkpdBaseV4Fragment(), ReviewParentContentViewHolder.Listener {
 
     private var _binding: FragmentReviewBinding? = null
@@ -42,7 +41,7 @@ class ReviewFragment @Inject constructor(
 
     private val viewModel by viewModels<ProductPreviewViewModel> {
         viewModelFactory.create(
-            EntrySource(productId = "4937529690") //TODO: Testing purpose, change from arguments
+            EntrySource(productId = "4937529690") // TODO: Testing purpose, change from arguments
         )
     }
 
@@ -50,7 +49,7 @@ class ReviewFragment @Inject constructor(
         ReviewParentAdapter(this)
     }
 
-    private val snapHelper = PagerSnapHelper() //TODO: adjust pager snap helper
+    private val snapHelper = PagerSnapHelper() // TODO: adjust pager snap helper
 
     override fun getScreenName() = TAG
 
@@ -92,7 +91,7 @@ class ReviewFragment @Inject constructor(
     }
 
     private fun renderList(prev: List<ReviewUiModel>?, data: List<ReviewUiModel>) {
-        if (prev == data) return //TODO: adjust condition
+        if (prev == data) return // TODO: adjust condition
         reviewAdapter.submitList(data)
     }
 
@@ -102,6 +101,11 @@ class ReviewFragment @Inject constructor(
     override fun onReviewCredibilityClicked(author: AuthorUiModel) {
         val appLink = UriUtil.buildUri(REVIEW_CREDIBILITY_APPLINK, author.id, PAGE_SOURCE)
         router.route(requireContext(), appLink)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

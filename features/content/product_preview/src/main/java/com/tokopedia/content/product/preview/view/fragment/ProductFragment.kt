@@ -168,7 +168,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
         } catch (_: Exception) {
             binding.tvIndicatorLabel.gone()
         }
-        productIndicatorAdapter.updateData(state)
+        productIndicatorAdapter.submitList(state)
     }
 
     private fun getContentCurrentPosition(): Int {
@@ -186,6 +186,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
         super.onDestroyView()
         binding.rvContentProduct.removeOnScrollListener(contentScrollListener)
         videoPlayerManager.releaseAll()
+        _binding = null
     }
 
     companion object {
