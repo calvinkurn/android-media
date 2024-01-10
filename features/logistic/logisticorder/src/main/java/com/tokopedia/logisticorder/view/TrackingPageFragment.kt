@@ -82,6 +82,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         private const val ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL"
         private const val ARGUMENTS_CALLER = "ARGUMENTS_CALLER"
         private const val ICON_OPEN_TIPPING_GOJEK = TokopediaImageUrl.ICON_OPEN_TIPPING_GOJEK
+        private const val COMPOSE_TRACKING_PAGE_KEY = "android_tracking_page_compose_enable"
 
         fun createFragment(
             orderId: String?,
@@ -159,19 +160,17 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
 
     fun checkRemoteConfig() {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
-        val key = "key"
-//        todo uncomment this
-//        if (remoteConfig.getBoolean(key)) {
-        val intent = Intent(requireContext(), TrackingPageComposeActivity::class.java).apply {
-            putExtra(ARGUMENTS_ORDER_ID, mOrderId)
-            putExtra(ARGUMENTS_CALLER, mCaller)
-            putExtra(ARGUMENTS_GROUP_TYPE, mGroupType)
-            putExtra(ARGUMENTS_TRACKING_URL, mTrackingUrl)
-            putExtra(ARGUMENTS_ORDER_TX_ID, mOrderTxId)
+        if (remoteConfig.getBoolean(COMPOSE_TRACKING_PAGE_KEY)) {
+            val intent = Intent(requireContext(), TrackingPageComposeActivity::class.java).apply {
+                putExtra(ARGUMENTS_ORDER_ID, mOrderId)
+                putExtra(ARGUMENTS_CALLER, mCaller)
+                putExtra(ARGUMENTS_GROUP_TYPE, mGroupType)
+                putExtra(ARGUMENTS_TRACKING_URL, mTrackingUrl)
+                putExtra(ARGUMENTS_ORDER_TX_ID, mOrderTxId)
+            }
+            startActivity(intent)
+            activity?.finish()
         }
-        startActivity(intent)
-        activity?.finish()
-//        }
     }
 
     override fun onDestroyView() {
