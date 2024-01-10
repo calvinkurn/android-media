@@ -39,9 +39,7 @@ class ProductCardGridView: ConstraintLayout {
 
     fun addOnImpressionListener(holder: ImpressHolder, onView: () -> Unit) {
         strategy.setImageProductViewHintListener(holder, object: ViewHintListener {
-            override fun onViewHint() {
-                onView()
-            }
+            override fun onViewHint() { onView() }
         })
     }
 

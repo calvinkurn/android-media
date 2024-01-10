@@ -48,8 +48,8 @@ internal interface ProductCardStrategy:
         viewHintListener: ViewHintListener
     )
     fun setOnClickListener(l: View.OnClickListener?)
-    fun setOnLongClickListener(l: View.OnLongClickListener?)
-    fun setThreeDotsOnClickListener(threeDotsClickListener: (View) -> Unit)
-    fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit)
-    fun getVideoPlayerController(): VideoPlayerController
+    fun setOnLongClickListener(l: View.OnLongClickListener?) { }
+    fun setThreeDotsOnClickListener(threeDotsClickListener: (View) -> Unit) { }
+    fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) { }
+    fun getVideoPlayerController(): VideoPlayerController = VideoPlayerController.empty()
 }

@@ -2,11 +2,9 @@ package com.tokopedia.productcard.experiments
 
 import android.content.res.TypedArray
 import android.util.AttributeSet
-import android.util.Log
 import android.view.ViewGroup
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.experiments.ProductCardStrategyFactory.ReimagineTemplate.CAROUSEL
-import com.tokopedia.productcard.experiments.ProductCardStrategyFactory.ReimagineTemplate.REGULAR
+import com.tokopedia.productcard.experiments.ProductCardStrategyFactory.ReimagineTemplate.GRID
 
 internal object ProductCardStrategyFactory {
 
@@ -38,18 +36,18 @@ internal object ProductCardStrategyFactory {
             && ProductCardExperiment.isReimagine()
 
     private fun reimagineTemplate(typedArray: TypedArray) =
-        typedArray.getInt(R.styleable.ProductCardView_reimagine_template, REGULAR.value)
+        typedArray.getInt(R.styleable.ProductCardView_reimagine_template, GRID.value)
 
     private enum class ReimagineTemplate(val value: Int) {
-        REGULAR(1) {
+        GRID(1) {
             override fun create(productCardView: ViewGroup): ProductCardStrategy {
                 return ReimagineGridViewStrategy(productCardView)
             }
         },
 
-        CAROUSEL(2) {
+        GRID_CAROUSEL(2) {
             override fun create(productCardView: ViewGroup): ProductCardStrategy {
-                return ReimagineGridViewStrategy(productCardView)
+                return ReimagineGridCarouselViewStrategy(productCardView)
             }
         };
 
@@ -57,7 +55,7 @@ internal object ProductCardStrategyFactory {
 
         companion object {
             fun of(value: Int): ReimagineTemplate =
-                ReimagineTemplate.values().find { it.value == value } ?: REGULAR
+                ReimagineTemplate.values().find { it.value == value } ?: GRID
         }
     }
 }

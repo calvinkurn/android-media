@@ -1,0 +1,148 @@
+package com.tokopedia.productcard.experiments
+
+import android.content.Context
+import android.util.AttributeSet
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import androidx.annotation.IdRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Guideline
+import androidx.core.content.ContextCompat
+import androidx.core.view.marginStart
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.R
+import com.tokopedia.productcard.reimagine.AddToCartButton
+import com.tokopedia.productcard.reimagine.ProductCardRenderer
+import com.tokopedia.productcard.reimagine.ProductCardStockInfo
+import com.tokopedia.productcard.reimagine.ProductCardType.GridCarousel
+import com.tokopedia.productcard.reimagine.lazyView
+import com.tokopedia.productcard.reimagine.showView
+import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+
+internal class ReimagineGridCarouselViewStrategy(
+    private val productCardView: ViewGroup,
+): ProductCardStrategy {
+
+    private val context: Context?
+        get() = productCardView.context
+
+    private fun <T: View?> lazyView(@IdRes id: Int) = productCardView.lazyView<T>(id)
+
+    private val renderer = ProductCardRenderer(productCardView, GridCarousel)
+    private val stockInfo = ProductCardStockInfo(productCardView)
+
+    private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
+    private val productCardOutlineCard by lazyView<View?>(R.id.productCardOutline)
+    private val cardConstraintLayout by lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
+    private val imageView by lazyView<ImageUnify?>(R.id.productCardImage)
+    private val productCardGuidelineStartContent by lazyView<Guideline?>(R.id.productCardGuidelineStartContent)
+    private val productCardGuidelineEndContent by lazyView<Guideline?>(R.id.productCardGuidelineEndContent)
+
+    val additionalMarginStart: Int
+        get() = cardContainer?.marginStart ?: 0
+
+    override fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int?) {
+        View.inflate(context, R.layout.product_card_reimagine_grid_carousel_layout, productCardView)
+
+        cardContainer?.run {
+            layoutParams = layoutParams?.apply { height = MATCH_PARENT }
+            elevation = 0f
+
+            setCardUnifyBackgroundColor(
+                ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN0)
+            )
+        }
+    }
+
+    override fun setProductModel(productCardModel: ProductCardModel) {
+        setProductModel(ProductCardModelReimagine.from(productCardModel))
+    }
+
+    fun setProductModel(productCardModel: ProductCardModelReimagine) {
+        renderer.setProductModel(productCardModel)
+
+        renderAddToCart(productCardModel)
+        stockInfo.render(productCardModel)
+
+        renderGuidelineContent(productCardModel)
+        setContainerProductHeightCard(productCardModel)
+        renderOutlineProductCard(productCardModel)
+    }
+
+    private fun renderAddToCart(productCardModel: ProductCardModelReimagine) {
+        val cardConstraintLayout = cardConstraintLayout ?: return
+
+        productCardView.showView(R.id.productCardAddToCart, productCardModel.hasAddToCart) {
+            AddToCartButton(cardConstraintLayout)
+        }
+    }
+
+    private fun renderGuidelineContent(productCardModel: ProductCardModelReimagine) {
+        if (productCardModel.isInBackground) {
+            setGuidelineItemInBackground()
+        } else {
+            setGuidelineItemNotInBackground()
+        }
+    }
+
+    private fun setGuidelineItemNotInBackground() {
+        productCardGuidelineStartContent?.setGuidelineBegin(0)
+        productCardGuidelineEndContent?.setGuidelineEnd(0)
+    }
+
+    private fun setGuidelineItemInBackground() {
+        val contextResource = context?.resources
+        val dimensGuideline =
+            contextResource?.getDimensionPixelSize(R.dimen.product_card_reimagine_content_guideline_pading_in_background)
+                ?: 0
+        productCardGuidelineStartContent?.setGuidelineBegin(dimensGuideline)
+        productCardGuidelineEndContent?.setGuidelineEnd(dimensGuideline)
+    }
+
+    private fun renderOutlineProductCard(productCardModel: ProductCardModelReimagine) {
+        productCardOutlineCard?.showWithCondition(productCardModel.isInBackground)
+    }
+
+    private fun setContainerProductHeightCard(productCardModel: ProductCardModelReimagine) {
+        val contextResource = context?.resources
+        val dimensMarginBottom =
+            contextResource?.getDimensionPixelSize(R.dimen.product_card_reimagine_carousel_padding_bottom) ?: 0
+        val isInBackground = productCardModel.isInBackground
+        val marginBottom = if (isInBackground) 0 else dimensMarginBottom
+
+        cardConstraintLayout?.run {
+            setPadding(0,0,0, marginBottom)
+            layoutParams = layoutParams?.apply {
+                height = if (isInBackground) MATCH_PARENT else WRAP_CONTENT
+            }
+        }
+    }
+
+    override fun recycle() { }
+
+    override fun setImageProductViewHintListener(
+        impressHolder: ImpressHolder,
+        viewHintListener: ViewHintListener
+    ) {
+        imageView?.addOnImpressionListener(impressHolder, viewHintListener)
+    }
+
+    override fun setOnClickListener(l: View.OnClickListener?) {
+        cardContainer?.setOnClickListener(l)
+    }
+
+    override fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) {
+        productCardView
+            .findViewById<View?>(R.id.productCardAddToCart)
+            ?.setOnClickListener(addToCartClickListener)
+    }
+}

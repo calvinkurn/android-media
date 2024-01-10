@@ -6,8 +6,8 @@
 
         <attr name="reimagine" format="boolean" />
         <attr name="reimagine_template">
-            <enum name="regular" value="1" />
-            <enum name="carousel" value="2" />
+            <enum name="grid" value="1" />
+            <enum name="gridCarousel" value="2" />
         </attr>
     </declare-styleable>
 </resources>

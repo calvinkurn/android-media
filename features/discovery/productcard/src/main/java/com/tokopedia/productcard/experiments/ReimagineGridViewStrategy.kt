@@ -13,7 +13,6 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
-import com.tokopedia.productcard.ATCNonVariantListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.reimagine.ProductCardRenderer
@@ -25,28 +24,27 @@ import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.video_widget.VideoPlayerController
 import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 internal class ReimagineGridViewStrategy(
-    private val productCardGridView: ViewGroup,
+    private val productCardView: ViewGroup,
 ): ProductCardStrategy {
 
     private val context: Context?
-        get() = productCardGridView.context
+        get() = productCardView.context
 
-    private fun <T: View?> lazyView(@IdRes id: Int) = productCardGridView.lazyView<T>(id)
+    private fun <T: View?> lazyView(@IdRes id: Int) = productCardView.lazyView<T>(id)
 
-    private val renderer = ProductCardRenderer(productCardGridView, Grid)
+    private val renderer = ProductCardRenderer(productCardView, Grid)
 
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val imageView by lazyView<ImageUnify?>(R.id.productCardImage)
     private val videoIdentifier by lazyView<ImageView?>(R.id.productCardVideoIdentifier)
     private val threeDots by lazyView<ImageView?>(R.id.productCardThreeDots)
     private val video: VideoPlayerController by lazyThreadSafetyNone {
-        VideoPlayerController(productCardGridView, R.id.productCardVideo, R.id.productCardImage)
+        VideoPlayerController(productCardView, R.id.productCardVideo, R.id.productCardImage)
     }
 
     val additionalMarginStart: Int
@@ -57,7 +55,7 @@ internal class ReimagineGridViewStrategy(
     }
 
     private fun init(attrs: AttributeSet? = null) {
-        View.inflate(context, R.layout.product_card_reimagine_grid_layout, productCardGridView)
+        View.inflate(context, R.layout.product_card_reimagine_grid_layout, productCardView)
 
         cardContainer?.run {
             elevation = 0f
@@ -86,7 +84,7 @@ internal class ReimagineGridViewStrategy(
 
     private fun renderThreeDots(productCardModel: ProductCardModelReimagine) {
         threeDots.shouldShowWithAction(productCardModel.hasThreeDots) {
-            productCardGridView.post {
+            productCardView.post {
                 threeDots?.expandTouchArea(
                     it.getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_8),
                     it.getDimensionPixelSize(unifyprinciplesR.dimen.unify_space_16),
@@ -120,8 +118,6 @@ internal class ReimagineGridViewStrategy(
     override fun setThreeDotsOnClickListener(threeDotsClickListener: (View) -> Unit) {
         threeDots?.setOnClickListener(threeDotsClickListener)
     }
-
-    override fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) { }
 
     override fun getVideoPlayerController(): VideoPlayerController = video
 }
