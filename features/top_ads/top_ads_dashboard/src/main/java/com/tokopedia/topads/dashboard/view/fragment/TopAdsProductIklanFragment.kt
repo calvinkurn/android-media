@@ -25,6 +25,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus.*
@@ -34,6 +35,7 @@ import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTIVATE_AUTO_PS_CONFIRMATION_IMG_URL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
@@ -65,6 +67,8 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
 import com.tokopedia.topads.dashboard.R as topadsdashboardR
+import com.tokopedia.topads.common.R as topadscommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by hadi.putra on 23/04/18.
@@ -217,7 +221,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         activity?.run {
             snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(this) { loadData() }
             snackbarRetry?.setColorActionRetry(ContextCompat.getColor(this,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                unifyprinciplesR.color.Unify_GN500))
         }
 
         appBarLayout2?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
@@ -372,7 +376,8 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         if (checkInProgress()) {
             showProgressLayout()
         } else {
-            setNoAdsView()
+//            setNoAdsView()
+            setAutoPsEmptyView()
         }
     }
 
@@ -409,6 +414,22 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendAutoAdsEvent(
                 CLICK_MULAI_BERIKLAN, "")
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
+        }
+    }
+
+    private fun setAutoPsEmptyView(){
+        viewPagerFrag?.gone()
+        autoadsLayout?.gone()
+        appBarLayout2?.gone()
+        view?.findViewById<CardUnify>(topadsdashboardR.id.empty_view_autops)?.let {
+            it.show()
+            it.findViewById<ImageUnify>(topadsdashboardR.id.image)?.urlSrc = TopAdsDashboardConstant.IKLAN_PRODUK_AUTO_PS_EMPTY_VIEW_IMG_URL
+            it.findViewById<UnifyButton>(topadsdashboardR.id.create_product_ads_cta)?.setOnClickListener {
+                RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE_MANUAL_ADS)
+            }
+            it.findViewById<UnifyButton>(topadsdashboardR.id.autops_activate_cta)?.setOnClickListener {
+                RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
+            }
         }
     }
 
@@ -449,7 +470,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         autoadsLayout?.gone()
         if (checkInProgress()) {
             context?.run {
-                imgBg.background = VectorDrawableCompat.create(resources, com.tokopedia.topads.common.R.drawable.topads_common_blue_bg, null)
+                imgBg.background = VectorDrawableCompat.create(resources, topadscommonR.drawable.topads_common_blue_bg, null)
             }
             autoadsDeactivationProgress?.visibility = View.VISIBLE
             showProgressLayout()
@@ -636,7 +657,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
             Toaster.build(it, errorMessage,
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
-                getString(com.tokopedia.topads.common.R.string.topads_common_text_ok)).show()
+                getString(topadscommonR.string.topads_common_text_ok)).show()
         }
     }
 

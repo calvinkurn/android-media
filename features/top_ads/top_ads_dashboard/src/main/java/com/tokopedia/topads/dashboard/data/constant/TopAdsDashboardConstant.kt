@@ -134,6 +134,8 @@ object TopAdsDashboardConstant {
     const val IKLAN_PRODUCT_AD_TYPE_IMG_URL = "https://images.tokopedia.net/img/android/topads/dashboard/iklan_produk.png"
     const val IKLAN_TOKO_AD_TYPE_IMG_URL = "https://images.tokopedia.net/img/android/topads/dashboard/iklan_toko.png"
     const val ACTIVATE_AUTO_PS_CONFIRMATION_IMG_URL = "https://images.tokopedia.net/img/android/topads/auto_ps/activate_auto_ps_confirmation.png"
+    const val IKLAN_TOKO_AUTO_PS_EMPTY_VIEW_IMG_URL = "https://images.tokopedia.net/img/android/topads/auto_ps/iklan_toko_empty_state.png"
+    const val IKLAN_PRODUK_AUTO_PS_EMPTY_VIEW_IMG_URL = "https://images.tokopedia.net/img/android/topads/auto_ps/iklan_produk_empty_state.png"
 
     object TopAdsCreditTopUpConstant {
         const val TOP_UP_FREQUENCY_FOUR = 4

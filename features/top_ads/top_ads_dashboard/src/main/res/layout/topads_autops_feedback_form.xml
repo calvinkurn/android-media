@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/heading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sebelum menonaktifkan, bantu tingkatkan layanan Iklan Otomatis, yuk!"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="heading_3"
+        app:typographyWeight="bold" />
+
+    <View
+        android:id="@+id/separator1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/Unify_NN50"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/heading" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/rating_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Gimana pengalamanmu pakai Iklan Otomatis?"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/separator1"
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/rating1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@id/rating_title"
+        app:layout_constraintTop_toBottomOf="@id/rating_title"
+        app:srcCompat="@drawable/topads_ic_rating_active" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/rating2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toEndOf="@id/rating1"
+        app:layout_constraintTop_toBottomOf="@id/rating_title"
+        app:srcCompat="@drawable/topads_ic_rating_active" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/rating3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toEndOf="@id/rating2"
+        app:layout_constraintTop_toBottomOf="@id/rating_title"
+        app:srcCompat="@drawable/topads_ic_rating_active" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/rating4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toEndOf="@id/rating3"
+        app:layout_constraintTop_toBottomOf="@id/rating_title"
+        app:srcCompat="@drawable/topads_ic_rating_active" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/rating5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toEndOf="@id/rating4"
+        app:layout_constraintTop_toBottomOf="@id/rating_title"
+        app:srcCompat="@drawable/topads_ic_rating_active" />
+
+    <View
+        android:id="@+id/separator2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/Unify_NN50"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rating1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/qna_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Apa yang membuatmu menonaktifkan Iklan Otomatis?"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/separator2"
+        app:typographyType="display_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/checkbox1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/qna_title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/item1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Saya tidak merasakan efek TopAds ke toko dan penjualan saya"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toEndOf="@id/checkbox1"
+        app:layout_constraintTop_toTopOf="@id/checkbox1"
+        app:typographyType="paragraph_3" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/checkbox2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/checkbox1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/item2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Biaya iklan yang terlalu berat untuk toko saya"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toEndOf="@id/checkbox2"
+        app:layout_constraintTop_toTopOf="@id/checkbox2"
+        app:typographyType="paragraph_3" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/checkbox3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/checkbox2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/item3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Penjualan toko sudah cukup tanpa menggunakan TopAds"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toEndOf="@id/checkbox3"
+        app:layout_constraintTop_toTopOf="@id/checkbox3"
+        app:typographyType="paragraph_3" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/checkbox4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/checkbox3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/item4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Saya ingin melihat efek tanpa TopAds ke toko saya"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toEndOf="@id/checkbox4"
+        app:layout_constraintTop_toTopOf="@id/checkbox4"
+        app:typographyType="paragraph_3" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/submit_cta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Simpan"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item4"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/cancel_cta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Nanti Saja"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/submit_cta"
+        app:unifyButtonSize="medium"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

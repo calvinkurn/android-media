@@ -539,6 +539,7 @@
     <string name="topads_ad_type_selection_shop_accordian_item2">Berpotensi meningkatkan kunjungan tokomu</string>
     <string name="topads_ad_type_selection_shop_accordian_item3">Biaya iklan diatur sesuai kebutuhan tokomu</string>
     <string name="topads_dashboard_create_shop_advertisement">Buat Iklan Toko</string>
+    <string name="topads_dashboard_create_produk_advertisement">Buat Iklan Produk</string>
 
     <!--    <string name="topads_group_card_insight_count_format">%s saran untukmu</string>-->
     <string name="topads_group_card_insight_count_format"><![CDATA["<b>%s</b> ]]> saran untukmu</string>
@@ -659,4 +660,16 @@
     <string name="topads_auto_ps_beranda_modal_title">Buat atau atur iklanmu, yuk!</string>
     <string name="topads_auto_ps_confirmation_title_to_activate_auto_ps">Waktunya beriklan lebih praktis dengan Iklan Otomatis!</string>
     <string name="topads_auto_ps_activation_confirmation_desc">Atur Iklan Produk dan Iklan Tokomu secara otomatis, yuk! Grup Iklan Produk &amp; Toko yang telah dibuat akan tersimpan dan tetap bisa digunakan kembali nanti.</string>
+    <string name="topads_auto_ps_iklan_toko_empty_view_title">🚀 Tingkatkan kunjungan lewat Iklan Toko!</string>
+    <string name="topads_auto_ps_iklan_toko_empty_view_desc">Iklan toko akan muncul di tempat strategis yang meningkatkan probabilitas toko dan produkmu dilihat pembeli. Baca Artikel</string>
+    <string name="topads_auto_ps_iklan_toko_empty_view_list_title">Iklan Toko juga akan membuat tokomu:</string>
+    <string name="topads_auto_ps_iklan_toko_empty_view_list_item1">Tampil dengan tampilan dan posisi yang lebih eksklusif</string>
+    <string name="topads_auto_ps_iklan_toko_empty_view_list_item2">Berpotensi meningkatkan kunjungan tokomu</string>
+    <string name="topads_auto_ps_iklan_toko_empty_view_list_item3">Biaya iklan diatur sesuai kebutuhan tokomu</string>
+    <string name="topads_auto_ps_iklan_produk_empty_view_title">🚀 Maksimalkan penjualan lewat Iklan Produk!</string>
+    <string name="topads_auto_ps_iklan_produk_empty_view_desc">Iklan Produk meningkatkan potensi produk diklik dan muncul paling atas di halaman pencarian &amp; rekomendasi. Baca Artikel</string>
+    <string name="topads_auto_ps_iklan_produk_empty_view_list_title">Dengan Iklan Produk, kamu bisa:</string>
+    <string name="topads_auto_ps_iklan_produk_empty_view_list_item1">Pilih produk yang ingin diiklankan secara spesifik</string>
+    <string name="topads_auto_ps_iklan_produk_empty_view_list_item2">Atur biaya iklan sesuai kebutuhan produk</string>
+    <string name="topads_auto_ps_iklan_produk_empty_view_list_item3">Performa Iklan tiap produk dapat dipantau dengan mudah</string>
 </resources>

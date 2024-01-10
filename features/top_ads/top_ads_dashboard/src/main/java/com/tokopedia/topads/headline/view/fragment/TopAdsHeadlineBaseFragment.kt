@@ -371,7 +371,8 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
                 val info = it.topadsGetShopInfoV2_1.data.ads.getOrNull(1)
                 if (info?.type == TopAdsDashboardConstant.HEADLINE) {
                     if (!info.isUsed) {
-                        showEmptyView()
+//                        showEmptyView()
+                        showAutoPsEmptyView()
                     } else {
                         renderHeadlineViewPager()
                     }
@@ -426,6 +427,21 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         view?.findViewById<Typography>(R.id.text_desc)?.text =
             getString(R.string.topads_headline_empty_state_desc)
         hariIni?.visibility = View.GONE
+    }
+
+    private fun showAutoPsEmptyView() {
+        appBarLayout?.gone()
+        hariIni?.gone()
+        view?.findViewById<CardUnify>(R.id.empty_view_autops)?.let {
+            it.show()
+            it.findViewById<ImageUnify>(R.id.empty_image)?.urlSrc = TopAdsDashboardConstant.IKLAN_TOKO_AUTO_PS_EMPTY_VIEW_IMG_URL
+            it.findViewById<UnifyButton>(R.id.create_shopads_cta)?.setOnClickListener {
+                RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION)
+            }
+            it.findViewById<UnifyButton>(R.id.autops_activate_cta)?.setOnClickListener {
+                RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
+            }
+        }
     }
 
     override fun setDeletedGroupCount(size: Int) {
