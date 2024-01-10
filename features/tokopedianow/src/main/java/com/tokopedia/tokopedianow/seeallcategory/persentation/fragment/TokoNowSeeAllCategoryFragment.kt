@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.TokoNowCategoryListViewModel
+import com.tokopedia.tokopedianow.common.decoration.SeeAllPageDecoration
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryListMapper.mapToSeeAllCategoryItemUiModel
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
@@ -25,7 +26,6 @@ import com.tokopedia.tokopedianow.seeallcategory.analytic.SeeAllCategoryAnalytic
 import com.tokopedia.tokopedianow.seeallcategory.di.component.DaggerSeeAllCategoryComponent
 import com.tokopedia.tokopedianow.seeallcategory.persentation.adapter.SeeAllCategoryAdapter
 import com.tokopedia.tokopedianow.seeallcategory.persentation.adapter.SeeAllCategoryAdapterTypeFactory
-import com.tokopedia.tokopedianow.common.decoration.SeeAllPageDecoration
 import com.tokopedia.tokopedianow.seeallcategory.persentation.uimodel.SeeAllCategoryItemUiModel
 import com.tokopedia.tokopedianow.seeallcategory.persentation.viewholder.SeeAllCategoryItemViewHolder
 import com.tokopedia.tokopedianow.seeallcategory.persentation.viewmodel.TokoNowSeeAllCategoryViewModel
@@ -35,6 +35,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TokoNowSeeAllCategoryFragment : Fragment(), SeeAllCategoryItemViewHolder.SeeAllCategoryListener {
 
@@ -106,7 +107,7 @@ class TokoNowSeeAllCategoryFragment : Fragment(), SeeAllCategoryItemViewHolder.S
     private fun FragmentTokopedianowSeeAllCategoryBinding.setupRecyclerView() {
         adapter = SeeAllCategoryAdapter(SeeAllCategoryAdapterTypeFactory(this@TokoNowSeeAllCategoryFragment))
         rvCategoryMenu.apply {
-            addItemDecoration(SeeAllPageDecoration(getDpFromDimen(context, com.tokopedia.unifyprinciples.R.dimen.unify_space_16).toIntSafely()))
+            addItemDecoration(SeeAllPageDecoration(getDpFromDimen(context, unifyprinciplesR.dimen.unify_space_16).toIntSafely()))
             adapter = this@TokoNowSeeAllCategoryFragment.adapter
             layoutManager = GridLayoutManager(context, SPAN_COUNT)
         }
