@@ -7,13 +7,13 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_REFRESH_FOR_RELEVANT_POST
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.creation.common.R
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import com.tokopedia.creation.common.upload.model.CreationUploadNotificationText
 import com.tokopedia.creation.common.upload.model.CreationUploadSuccessData
-import com.tokopedia.creation.common.upload.uploader.activity.ContentCreationPostUploadActivity
 import javax.inject.Inject
 
 /**
@@ -39,15 +39,15 @@ class PostUploadNotificationManager  @Inject constructor(
         val postUploadData = uploadData
         if (postUploadData !is CreationUploadData.Post || successData !is CreationUploadSuccessData.Post) return null
 
-        val intent = ContentCreationPostUploadActivity.getIntent(
-            context,
-            channelId = postUploadData.creationId,
-            authorId = postUploadData.authorId,
-            authorType = postUploadData.authorType,
-            uploadType = postUploadData.uploadType.type,
-            appLink = generateApplink(postUploadData, successData.activityId),
-        ).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        val intent = if (GlobalConfig.isSellerApp()) {
+            RouteManager.getIntent(context, ApplinkConst.SHOP_FEED, postUploadData.authorId).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+        } else {
+            RouteManager.getIntent(context, ApplinkConst.FEED_RELEVANT_POST, successData.activityId)
+                .apply {
+                    putExtra(UF_EXTRA_REFRESH_FOR_RELEVANT_POST, true)
+                }
         }
 
         return PendingIntent.getActivity(
@@ -56,16 +56,5 @@ class PostUploadNotificationManager  @Inject constructor(
             intent,
             PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-    }
-
-    private fun generateApplink(
-        postUploadData: CreationUploadData.Post,
-        activityId: String
-    ): String {
-        return if (GlobalConfig.isSellerApp()) {
-            UriUtil.buildUri(ApplinkConst.SHOP_FEED, postUploadData.authorId)
-        } else {
-            UriUtil.buildUri(ApplinkConst.FEED_RELEVANT_POST, activityId)
-        }
     }
 }

@@ -35,6 +35,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_SOURCE_NAME
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_WIDGET_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_REFRESH_FOR_RELEVANT_POST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.content.common.comment.ContentCommentFactory
 import com.tokopedia.content.common.comment.PageSource
@@ -78,6 +79,7 @@ import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.adapter.util.FeedPostLayoutManager
 import com.tokopedia.feedplus.presentation.callback.FeedUiActionListener
 import com.tokopedia.feedplus.presentation.callback.FeedUiListener
+import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment.Companion.TAB_TYPE_FOR_YOU
 import com.tokopedia.feedplus.presentation.model.ActiveTabSource
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
@@ -499,7 +501,7 @@ class FeedFragment :
                 when (event) {
                     Lifecycle.Event.ON_RESUME -> {
                         if (checkResume(isOnResume = true)) {
-                            resumeCurrentVideo()
+                            handleResume()
                             setDataEligibleForOnboarding()
                         }
                     }
@@ -538,23 +540,7 @@ class FeedFragment :
         showLoading()
 
         if (feedPostViewModel.shouldFetchInitialPost()) {
-            postSourceModel = arguments?.getString(UF_EXTRA_FEED_SOURCE_ID)?.let { sourceId ->
-                PostSourceModel(
-                    id = sourceId,
-                    source = if (isCdp) {
-                        FeedBaseFragment.TAB_TYPE_CDP
-                    } else {
-                        arguments?.getString(UF_EXTRA_FEED_SOURCE_NAME)
-                    },
-                    entryPoint = feedEntrySource.entryPoint
-                )
-            }
-
-            feedPostViewModel.fetchFeedPosts(
-                data?.type ?: "",
-                isNewData = true,
-                postSource = postSourceModel
-            )
+            fetchInitialPost()
         }
 
         initView()
@@ -1368,7 +1354,9 @@ class FeedFragment :
                     adapter.showErrorNetwork()
                 }
 
-                else -> {}
+                else -> {
+                    adapter.setList(emptyList())
+                }
             }
         }
     }
@@ -1448,7 +1436,7 @@ class FeedFragment :
             if (isResumed == null) return@observe
 
             if (isResumed && checkResume(isPageResumed = true)) {
-                resumeCurrentVideo()
+                handleResume()
             } else {
                 pauseCurrentVideo()
 
@@ -2207,6 +2195,55 @@ class FeedFragment :
 
     private fun initAnalytic() {
         feedAnalytics = feedFactory.create(userSession, feedEntrySource)
+    }
+
+    private fun handleResume() {
+        updateArgumentsFromParentFragment()
+
+        val isRefreshForRelevantPost = arguments?.getBoolean(UF_EXTRA_REFRESH_FOR_RELEVANT_POST) == true
+
+        if (isRefreshForRelevantPost) {
+            if (data?.type != TAB_TYPE_FOR_YOU) {
+                removeRefreshForRelevantPostArgument(isRemoveParent = false)
+                feedMainViewModel.setActiveTab(TAB_TYPE_FOR_YOU)
+            } else {
+                removeRefreshForRelevantPostArgument(isRemoveParent = true)
+                fetchInitialPost()
+            }
+        } else {
+            resumeCurrentVideo()
+        }
+    }
+
+    private fun updateArgumentsFromParentFragment() {
+        arguments?.putAll(parentFragment?.arguments)
+    }
+
+    private fun removeRefreshForRelevantPostArgument(isRemoveParent: Boolean) {
+        arguments?.remove(UF_EXTRA_REFRESH_FOR_RELEVANT_POST)
+
+        if (isRemoveParent)
+            parentFragment?.arguments?.remove(UF_EXTRA_REFRESH_FOR_RELEVANT_POST)
+    }
+
+    private fun fetchInitialPost() {
+        postSourceModel = arguments?.getString(UF_EXTRA_FEED_SOURCE_ID)?.let { sourceId ->
+            PostSourceModel(
+                id = sourceId,
+                source = if (isCdp) {
+                    FeedBaseFragment.TAB_TYPE_CDP
+                } else {
+                    arguments?.getString(UF_EXTRA_FEED_SOURCE_NAME)
+                },
+                entryPoint = feedEntrySource.entryPoint
+            )
+        }
+
+        feedPostViewModel.fetchFeedPosts(
+            data?.type ?: "",
+            isNewData = true,
+            postSource = postSourceModel
+        )
     }
 
     companion object {
