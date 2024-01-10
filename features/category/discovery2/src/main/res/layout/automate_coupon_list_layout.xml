@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/badgeGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="ivLeftRibbon, ivRightRibbon, tvBadge"
+            tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivLeftRibbon"
+            android:layout_width="0dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="4dp"
+            android:rotationY="180"
+            android:scaleType="fitXY"
+            android:translationZ="7dp"
+            app:layout_constraintBottom_toBottomOf="@+id/ivRightRibbon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/ivRightRibbon"
+            app:srcCompat="@drawable/benefit_ribbon_left_side" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivRightRibbon"
+            android:layout_width="0dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:rotationY="180"
+            android:scaleType="fitXY"
+            android:translationZ="7dp"
+            app:layout_constraintEnd_toEndOf="@+id/ivLeftRibbon"
+            app:layout_constraintStart_toStartOf="@id/tvBadge"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/benefit_ribbon_right_side" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvBadge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="8dp"
+            android:scaleType="fitXY"
+            android:textColor="@color/Unify_Static_White"
+            android:translationZ="7dp"
+            app:layout_constraintBottom_toBottomOf="@+id/ivRightRibbon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/ivRightRibbon"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            tools:text="Sisa 5" />
+
+        <com.tokopedia.discovery2.viewcontrollers.customview.automatecoupon.CouponCardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginHorizontal="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/imgCouponBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tvType"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="#04C0B0"
+                    android:visibility="visible"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="display_3"
+                    app:typographyWeight="bold"
+                    tools:text="Elektronik"
+                    tools:visibility="visible" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guidelineDetail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.6" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tvBenefit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="4dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/Unify_NN950_96"
+                    app:layout_constraintEnd_toStartOf="@id/guidelineDetail"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvType"
+                    app:typographyType="display_2"
+                    app:typographyWeight="bold"
+                    tools:text="Cashback 25% hingga Rp 48.000" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tvFreeText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="4dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/Unify_NN600"
+                    app:layout_constraintEnd_toStartOf="@id/guidelineDetail"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvBenefit"
+                    app:typographyType="small"
+                    tools:text="Min. belanja Rp. 200.000" />
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/imgIconType"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginVertical="12dp"
+                    android:adjustViewBounds="true"
+                    android:gravity="center"
+                    android:scaleType="fitXY"
+                    app:layout_constraintDimensionRatio="H,1:1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/iconunify_add_on"
+                    app:unify_image_type="circle" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guidelineExpiration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.7" />
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/timerGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:constraint_referenced_ids="tvTimerPrefix, timerCoupon"
+                    tools:visibility="visible" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tvTimerPrefix"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:textColor="@color/Unify_NN600"
+                    app:layout_constraintBottom_toBottomOf="@id/btnAction"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/btnAction"
+                    app:typographyType="small"
+                    tools:text="Berakhir dalam" />
+
+                <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+                    android:id="@+id/timerCoupon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintBottom_toBottomOf="@id/btnAction"
+                    app:layout_constraintEnd_toStartOf="@id/guidelineExpiration"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toEndOf="@id/tvTimerPrefix"
+                    app:layout_constraintTop_toTopOf="@id/btnAction"
+                    app:timer_unify_single_showClockIcon="true"
+                    app:timer_unify_single_textWidth="full_radius"
+                    app:timer_unify_single_variant="general" />
+
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/btnAction"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:contentDescription="@string/content_desc_claim_btn"
+                    android:text="@string/klaim"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/guidelineExpiration"
+                    app:unifyButtonSize="micro"
+                    app:unifyButtonVariant="ghost" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.tokopedia.discovery2.viewcontrollers.customview.automatecoupon.CouponCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</merge>
