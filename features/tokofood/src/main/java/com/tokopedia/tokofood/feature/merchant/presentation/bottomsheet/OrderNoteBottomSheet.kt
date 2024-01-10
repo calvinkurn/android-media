@@ -51,8 +51,10 @@ class OrderNoteBottomSheet : BottomSheetUnify() {
     }
 
     override fun onDestroyView() {
+        binding?.saveNotesButton?.setOnClickListener(null)
         super.onDestroyView()
         binding = null
+        clickListener = null
     }
 
     private fun setupView(binding: BottomsheetOrderNoteLayoutBinding?) {
