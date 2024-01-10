@@ -155,7 +155,7 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
 
     private fun setDefaultDailyBudget(){
         if(autoPsToggleOn){
-            binding?.dailyBudget?.editText?.setText(currentDailyBudget.toString())
+            binding?.dailyBudget?.editText?.setText(currentDailyBudget.toInt().toString())
         } else {
             binding?.dailyBudget?.editText?.setText(AUTO_PS_DAILY_BUDGET_DEFAULT_VALUE.toString())
         }
