@@ -1,8 +1,5 @@
 package com.tokopedia.content.product.preview.view.uimodel
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
 /**
  * @author by astidhiyaa on 06/12/23
  */
@@ -61,8 +58,7 @@ data class DescriptionUiModel(
     val description: String,
 )
 
-@Parcelize
 data class MenuStatus(
     val isReportable: Boolean,
-) : Parcelable
+)
 
