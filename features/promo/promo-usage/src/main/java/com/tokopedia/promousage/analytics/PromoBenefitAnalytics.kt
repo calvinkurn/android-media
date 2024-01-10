@@ -3,8 +3,10 @@ package com.tokopedia.promousage.analytics
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
-class PromoBenefitAnalytics {
+class PromoBenefitAnalytics @Inject constructor(private val userSession: UserSessionInterface) {
 
     private val gtm by lazy { TrackApp.getInstance().gtm }
 
