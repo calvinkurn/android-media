@@ -186,7 +186,7 @@ class ProductFragment @Inject constructor(
         } catch (_: Exception) {
             binding.tvIndicatorLabel.gone()
         }
-        productIndicatorAdapter.updateData(state)
+        productIndicatorAdapter.submitList(state)
     }
 
     private fun getContentCurrentPosition(): Int {
@@ -204,6 +204,7 @@ class ProductFragment @Inject constructor(
         super.onDestroyView()
         binding.rvContentProduct.removeOnScrollListener(contentScrollListener)
         videoPlayerManager.releaseAll()
+        _binding = null
     }
 
     companion object {

@@ -105,6 +105,11 @@ class ReviewFragment @Inject constructor(
         router.route(requireContext(), appLink)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     companion object {
         const val TAG = "ReviewFragment"
 
