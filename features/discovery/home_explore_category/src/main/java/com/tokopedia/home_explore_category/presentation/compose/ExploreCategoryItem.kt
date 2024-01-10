@@ -67,7 +67,9 @@ fun ExploreCategoryItem(
             // the reason using old approach, we need to avoid the intermittent crash causes coil-compose
             NestImage(
                 imageUrl = exploreCategoryUiModel.categoryImageUrl,
-                modifier = Modifier.height(84.dp)
+                modifier = Modifier
+                    .height(84.dp)
+                    .fillMaxWidth()
             )
         }
     }
