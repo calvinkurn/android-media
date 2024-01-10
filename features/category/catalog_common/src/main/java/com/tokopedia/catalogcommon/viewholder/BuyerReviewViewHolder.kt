@@ -8,6 +8,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.adapter.ItemProductImageReviewAdapter
@@ -78,6 +79,8 @@ class BuyerReviewViewHolder(
             val rvImagesReview: RecyclerView? = bindingBuyerReviewCardSlider?.rvImgReview
             val carouselItem = data as BuyerReviewUiModel.ItemBuyerReviewUiModel
             var isTotalCompleteReviewEmpty = true
+
+            setupReviewCardColor(element, bindingBuyerReviewCardSlider)
 
             shopIcon?.setImageUrl(carouselItem.shopIcon)
             shopName?.text = carouselItem.shopName
@@ -173,6 +176,28 @@ class BuyerReviewViewHolder(
                 text = element.title
                 show()
             }
+        }
+    }
+
+    private fun setupReviewCardColor(
+        element: BuyerReviewUiModel,
+        bindingBuyerReviewCardSlider: ItemBuyerReviewBinding?
+    ) {
+        bindingBuyerReviewCardSlider?.apply {
+            buyerReviewCard.background = MethodChecker.getDrawable(
+                itemView.context,
+                if (element.darkMode) R.drawable.bg_rounded_border_dark
+                else R.drawable.bg_rounded_border_light
+            )
+            val textColor = MethodChecker.getColor(itemView.context,
+                if (element.darkMode)
+                    R.color.dms_static_text_color_dark
+                else
+                    R.color.dms_static_text_color_light
+            )
+            cardBrShopName.setTextColor(textColor)
+            cardBrReviewerName.setTextColor(textColor)
+            cardBrProductReview.setTextColor(textColor)
         }
     }
 
