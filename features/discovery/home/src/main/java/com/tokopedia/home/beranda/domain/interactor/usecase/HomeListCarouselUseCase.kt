@@ -9,9 +9,9 @@ import com.tokopedia.home_component.model.ChannelModel
 import javax.inject.Inject
 
 class HomeListCarouselUseCase @Inject constructor(
-    private val homeCloseChannelRepository: HomeCloseChannelRepository,
-    private val getAtcUseCase: AddToCartOccMultiUseCase
-) {
+        private val homeCloseChannelRepository: HomeCloseChannelRepository,
+        private val getAtcUseCase: AddToCartOccMultiUseCase
+        ) {
 
     companion object {
         const val ATC = "atc"
@@ -32,33 +32,32 @@ class HomeListCarouselUseCase @Inject constructor(
     }
 
     suspend fun onOneClickCheckOut(channelModel: ChannelModel, grid: ChannelGrid, position: Int, userId: String): Map<String, Any> {
-        val quantity = if (grid.minOrder < 1) "1" else grid.minOrder.toString()
-        val addToCartResult = getAtcUseCase.setParams(
-            AddToCartOccMultiRequestParams(
+        val quantity = if(grid.minOrder < 1) "1" else grid.minOrder.toString()
+        val addToCartResult = getAtcUseCase.setParams(AddToCartOccMultiRequestParams(
                 carts = listOf(
-                    AddToCartOccMultiCartParam(
-                        productId = grid.id,
-                        quantity = quantity,
-                        shopId = grid.shopId,
-                        warehouseId = grid.warehouseId,
-                        productName = grid.name,
-                        price = grid.price,
-                        shopName = grid.shop.shopName
-                    )
+                        AddToCartOccMultiCartParam(
+                                productId = grid.id,
+                                quantity = quantity,
+                                shopId = grid.shopId,
+                                warehouseId = grid.warehouseId,
+                                productName = grid.name,
+                                price = grid.price,
+                                shopName = grid.shop.shopName
+                        )
                 ),
                 userId = userId
-            )
-        ).executeOnBackground().mapToAddToCartDataModel()
-        if (!addToCartResult.isStatusError()) {
+        )).executeOnBackground().mapToAddToCartDataModel()
+        if(!addToCartResult.isStatusError()) {
             return mapOf(
-                ATC to addToCartResult,
-                CHANNEL to channelModel,
-                GRID to grid,
-                QUANTITY to quantity,
-                POSITION to position
+                    ATC to addToCartResult,
+                    CHANNEL to channelModel,
+                    GRID to grid,
+                    QUANTITY to quantity,
+                    POSITION to position
 
             )
-        } else {
+        }
+        else {
             throw Throwable()
         }
     }
