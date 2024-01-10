@@ -19,8 +19,10 @@ ext {
             feedbackForm                    : ":features:common:feedback_form",
             internalReview                  : ":features:common:internal_review",
             darkModeConfig                  : ":features:common:dark_mode_config",
+			appDownloadManagerInstall		: ":features:common:appdownloadmanager_install",
+			appDownloadManagerNoInstall	    : ":features:common:appdownloadmanager_noinstall",
 
-            catalog                         : ":features:category:catalog",
+			catalog                         : ":features:category:catalog",
             catalogLibrary                  : ":features:category:catalog_library",
             catalogCommon                   : ":features:category:catalog_common",
             commonTradein                   : ":features:category:common_tradein",
