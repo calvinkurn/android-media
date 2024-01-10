@@ -34,7 +34,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.AddressState
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
-import com.tokopedia.oneclickcheckout.order.view.model.OccPromoExternalAutoApply
 import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
 import com.tokopedia.oneclickcheckout.order.view.model.OccUIMessage
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
@@ -67,6 +66,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveA
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -160,7 +160,7 @@ class OrderSummaryPageViewModel @Inject constructor(
         uiMessage: OccUIMessage? = null,
         gatewayCode: String = "",
         tenor: Int = 0,
-        promoExternalAutoApplyCode: OccPromoExternalAutoApply = OccPromoExternalAutoApply()
+        listPromoExternalAutoApplyCode: ArrayList<PromoExternalAutoApply> = arrayListOf()
     ) {
         promoProcessor.isCartCheckoutRevamp = isCartCheckoutRevamp
         getCartJob?.cancel()
@@ -171,7 +171,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 gatewayCode,
                 tenor,
                 isCartCheckoutRevamp,
-                promoExternalAutoApplyCode
+                listPromoExternalAutoApplyCode
             )
             val isPromoRevamp =
                 PromoUsageRollenceManager().isRevamp(result.orderPromo.lastApply.userGroupMetadata)

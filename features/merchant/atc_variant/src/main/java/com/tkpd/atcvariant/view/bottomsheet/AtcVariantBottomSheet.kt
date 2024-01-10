@@ -74,6 +74,7 @@ import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBu
 import com.tokopedia.product.detail.common.view.ProductDetailGalleryActivity
 import com.tokopedia.product.detail.common.view.ProductDetailRestrictionHelper
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -553,7 +554,12 @@ class AtcVariantBottomSheet :
             }
 
             ProductDetailCommonConstant.OCC_BUTTON -> {
-                ProductCartHelper.goToOneClickCheckout(getAtcActivity())
+                // ProductCartHelper.goToOneClickCheckout(getAtcActivity())
+                val listPromo = arrayOf(
+                    PromoExternalAutoApply(code = "DDN30WA2HCZ36A1M2PDR", type = "mv"),
+                    PromoExternalAutoApply(code = "DDN30WA2HCZ36A1M2PDR", type = "gl")
+                )
+                ProductCartHelper.goToOneClickCheckoutWithAutoApplyPromo(getAtcActivity(), listPromo)
             }
 
             ProductDetailCommonConstant.BUY_BUTTON -> {

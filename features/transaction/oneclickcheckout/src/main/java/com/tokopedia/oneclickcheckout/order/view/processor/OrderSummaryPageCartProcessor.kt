@@ -19,7 +19,6 @@ import com.tokopedia.oneclickcheckout.order.view.mapper.PrescriptionMapper
 import com.tokopedia.oneclickcheckout.order.view.mapper.SaveAddOnStateMapper.generateSaveAddOnStateRequestParams
 import com.tokopedia.oneclickcheckout.order.view.mapper.SaveAddOnStateMapper.generateSaveAllAddOnsStateRequestParams
 import com.tokopedia.oneclickcheckout.order.view.model.AddressState
-import com.tokopedia.oneclickcheckout.order.view.model.OccPromoExternalAutoApply
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccToasterAction
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
@@ -37,6 +36,7 @@ import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.A
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EpharmacyPrescriptionDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCaseCoroutine
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import dagger.Lazy
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -79,7 +79,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(
         gatewayCode: String,
         tenor: Int,
         isCartReimagine: Boolean,
-        promoExternalAutoApplyCode: OccPromoExternalAutoApply
+        promoExternalAutoApplyCode: ArrayList<PromoExternalAutoApply>
     ): ResultGetOccCart {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {

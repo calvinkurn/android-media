@@ -28,7 +28,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboardingCoachMark
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboardingCoachMarkDetail
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboardingTicker
-import com.tokopedia.oneclickcheckout.order.view.model.OccPromoExternalAutoApply
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccPromptButton
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
@@ -81,6 +80,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopU
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.ButtonData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
@@ -91,7 +91,7 @@ import kotlin.math.min
 
 class GetOccCartMapper @Inject constructor() {
 
-    fun mapGetOccCartDataToOrderData(data: GetOccCartData, promoExternalAutoApplyCode: OccPromoExternalAutoApply): OrderData {
+    fun mapGetOccCartDataToOrderData(data: GetOccCartData, listPromoExternalAutoApplyCode: ArrayList<PromoExternalAutoApply>): OrderData {
         val groupShop = data.groupShop.first()
         val orderCart = OrderCart().apply {
             cartData = data.cartData
@@ -111,9 +111,9 @@ class GetOccCartMapper @Inject constructor() {
             onboarding = mapOnboarding(data.occMainOnboarding),
             cart = orderCart,
             preference = mapProfile(data.profileResponse, groupShop),
-            promo = if (promoExternalAutoApplyCode.code.isNotEmpty()) {
+            promo = if (listPromoExternalAutoApplyCode.isNotEmpty()) {
                 LastApplyMapper.mapPromoExternalAutoApply(
-                    promoExternalAutoApplyCode,
+                    listPromoExternalAutoApplyCode,
                     data.promo,
                     groupShop.cartString
                 )

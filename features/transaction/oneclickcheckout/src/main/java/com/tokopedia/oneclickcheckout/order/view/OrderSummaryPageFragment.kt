@@ -99,7 +99,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE
-import com.tokopedia.oneclickcheckout.order.view.model.OccPromoExternalAutoApply
 import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt
 import com.tokopedia.oneclickcheckout.order.view.model.OccPromptButton
 import com.tokopedia.oneclickcheckout.order.view.model.OccUIMessage
@@ -163,6 +162,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUp
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -240,7 +240,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
     private var tenor: Int = 0
     private var gatewayCode: String = ""
     private var shouldShowToaster: Boolean = false
-    private var promoExternalAutoApply: OccPromoExternalAutoApply = OccPromoExternalAutoApply()
+    private var listPromoExternalAutoApply: ArrayList<PromoExternalAutoApply> = arrayListOf()
 
     private var binding by autoCleared<FragmentOrderSummaryPageBinding> {
         try {
@@ -1275,7 +1275,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         binding.layoutNoAddress.root.animateGone()
         binding.globalError.animateGone()
         binding.loaderContent.animateShow()
-        viewModel.getOccCart(source, uiMessage, gatewayCode, tenor, promoExternalAutoApply)
+        viewModel.getOccCart(source, uiMessage, gatewayCode, tenor, listPromoExternalAutoApply)
     }
 
     private fun setSourceFromPDP() {
@@ -2227,10 +2227,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
     }
 
     private fun checkPromoFromPdp() {
-        val promoCode = arguments?.getString(QUERY_PROMO_CODE, "") ?: ""
-        val promoType = arguments?.getString(QUERY_PROMO_TYPE, "") ?: ""
-        if (promoCode.isNotEmpty() && promoType.isNotEmpty()) {
-            promoExternalAutoApply = OccPromoExternalAutoApply(code = promoCode, type = promoType)
+        val listPromoAutoApply = arguments?.getParcelableArrayList<PromoExternalAutoApply>(QUERY_LIST_PROMO_AUTO_APPLY)
+        /*val promoCode = arguments?.getString(QUERY_PROMO_CODE, "") ?: ""
+        val promoType = arguments?.getString(QUERY_PROMO_TYPE, "") ?: ""*/
+        if (listPromoAutoApply?.isNotEmpty() == true) {
+            listPromoExternalAutoApply = listPromoAutoApply
         }
     }
 
@@ -2265,8 +2266,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
         const val QUERY_SOURCE = "source"
         const val QUERY_GATEWAY_CODE = "gateway_code"
         const val QUERY_TENURE_TYPE = "tenure_type"
-        const val QUERY_PROMO_CODE = "promo_code"
-        const val QUERY_PROMO_TYPE = "promo_type"
+        const val QUERY_LIST_PROMO_AUTO_APPLY = "list_promo_auto_apply"
+        /*const val QUERY_PROMO_CODE = "promo_code"
+        const val QUERY_PROMO_TYPE = "promo_type"*/
 
         private const val NO_ADDRESS_IMAGE = TokopediaImageUrl.NO_ADDRESS_IMAGE
 
@@ -2290,8 +2292,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
             gatewayCode: String?,
             tenureType: String?,
             source: String?,
-            promoCode: String?,
-            promoType: String?
+            listPromoAutoApply: List<PromoExternalAutoApply>
         ): OrderSummaryPageFragment {
             return OrderSummaryPageFragment().apply {
                 arguments = Bundle().apply {
@@ -2299,8 +2300,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), PromoUsageBottomSheet.Lis
                     putString(QUERY_GATEWAY_CODE, gatewayCode)
                     putString(QUERY_TENURE_TYPE, tenureType)
                     putString(QUERY_SOURCE, source)
-                    putString(QUERY_PROMO_CODE, promoCode)
-                    putString(QUERY_PROMO_TYPE, promoType)
+                    putParcelableArrayList(QUERY_LIST_PROMO_AUTO_APPLY, ArrayList(listPromoAutoApply))
                 }
             }
         }

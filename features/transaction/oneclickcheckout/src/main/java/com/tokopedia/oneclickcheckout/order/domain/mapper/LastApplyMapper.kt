@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.order.domain.mapper
 
-import com.tokopedia.oneclickcheckout.order.view.model.OccPromoExternalAutoApply
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.AdditionalInfo
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.LastApply
@@ -8,6 +7,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Message
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.VoucherOrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyBebasOngkirInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel
@@ -105,7 +105,7 @@ object LastApplyMapper {
     }
 
     fun mapPromoExternalAutoApply(
-        promoAutoApply: OccPromoExternalAutoApply,
+        promoAutoApply: ArrayList<PromoExternalAutoApply>,
         promoSaf: PromoSAFResponse,
         uniqueId: String
     ): OrderPromo {
@@ -116,24 +116,25 @@ object LastApplyMapper {
     }
 
     private fun mapExternalPromoAsLastApply(
-        promoAutoApply: OccPromoExternalAutoApply,
+        listPromoAutoApply: ArrayList<PromoExternalAutoApply>,
         promoSaf: PromoSAFResponse,
         uniqueId: String
     ): LastApplyUiModel {
-        return LastApplyUiModel(
-            codes = if (promoAutoApply.type != TYPE_PROMO_MV) listOf(promoAutoApply.code) else emptyList(),
-            userGroupMetadata = promoSaf.lastApply.data.userGroupMetadata,
-            voucherOrders = if (promoAutoApply.type == TYPE_PROMO_MV) {
-                listOf(
-                    LastApplyVoucherOrdersItemUiModel(
-                        code = promoAutoApply.code,
-                        uniqueId = uniqueId,
-                        type = TYPE_PROMO_MV
-                    )
+        val listGlobalVoucher = listPromoAutoApply.filter { it.type != TYPE_PROMO_MV }.map { it.code }
+        val listMerchantVoucher = listPromoAutoApply
+            .asSequence()
+            .filter { it.type == TYPE_PROMO_MV }.map {
+                LastApplyVoucherOrdersItemUiModel(
+                    code = it.code,
+                    uniqueId = uniqueId,
+                    type = TYPE_PROMO_MV
                 )
-            } else {
-                emptyList()
             }
+
+        return LastApplyUiModel(
+            codes = listGlobalVoucher,
+            userGroupMetadata = promoSaf.lastApply.data.userGroupMetadata,
+            voucherOrders = listMerchantVoucher.toList()
         )
     }
 }

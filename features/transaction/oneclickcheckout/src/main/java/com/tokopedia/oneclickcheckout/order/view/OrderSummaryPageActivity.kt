@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -9,6 +10,8 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.di.DaggerOrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageModule
+import com.tokopedia.purchase_platform.common.constant.ARGS_LIST_AUTO_APPLY_PROMO
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.telemetry.ITelemetryActivity
 import javax.inject.Inject
 
@@ -26,9 +29,14 @@ open class OrderSummaryPageActivity :
             intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_GATEWAY_CODE),
             intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_TENURE_TYPE),
             intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_SOURCE),
-            intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_PROMO_CODE),
-            intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_PROMO_TYPE)
+            intent?.getParcelableArrayListExtra<PromoExternalAutoApply>(ARGS_LIST_AUTO_APPLY_PROMO)?.toList() ?: emptyList()
+            /*intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_PROMO_CODE),
+            intent?.data?.getQueryParameter(OrderSummaryPageFragment.QUERY_PROMO_TYPE)*/
         )
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
