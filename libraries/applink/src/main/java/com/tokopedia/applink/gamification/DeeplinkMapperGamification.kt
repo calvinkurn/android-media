@@ -20,4 +20,8 @@ object DeeplinkMapperGamification {
     fun getGiftBoxTapTapDeeplink(deeplink: String): String {
         return deeplink.replace(ApplinkConst.Gamification.GIFT_TAP_TAP, ApplinkConstInternalGlobal.GAMIFICATION_TAP_TAP_GIFT)
     }
+
+    fun getKetupatFallBackLink(deeplink: String): String {
+        return "https://166-staging-feature.tokopedia.com/ketupat/updateApp"
+    }
 }

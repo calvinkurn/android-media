@@ -350,6 +350,9 @@ object DeeplinkMainApp {
             }
         ),
         "gamification" to mutableListOf(
+            DLP.matchPattern("ketupat_rewards_landing_page"){deeplink: String ->
+                DeeplinkMapperGamification.getKetupatFallBackLink(deeplink)
+            },
             DLP.goTo { deeplink: String ->
                 DeeplinkMapperGamification.getGamificationDeeplink(deeplink)
             }
