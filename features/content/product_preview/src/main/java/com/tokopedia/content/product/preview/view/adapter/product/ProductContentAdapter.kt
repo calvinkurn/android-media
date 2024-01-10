@@ -15,10 +15,6 @@ class ProductContentAdapter(
     private val listener: ProductPreviewListener
 ) : ListAdapter<ContentUiModel, ViewHolder>(ProductContentDiffUtil()) {
 
-    fun updateData(data: List<ContentUiModel>) {
-        submitList(data)
-    }
-
     fun selectedPosition(): Int {
         return try {
             currentList.indexOf(currentList.find { it.selected })

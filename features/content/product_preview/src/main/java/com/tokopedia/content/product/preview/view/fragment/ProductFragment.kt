@@ -147,7 +147,7 @@ class ProductFragment @Inject constructor(
     ) {
         if (prev == state) return
 
-        productContentAdapter.updateData(state)
+        productContentAdapter.submitList(state)
         if (autoScrollFirstOpenContent) {
             binding.rvContentProduct.scrollToPosition(productContentAdapter.selectedPosition())
             autoScrollFirstOpenContent = false
