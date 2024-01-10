@@ -30,6 +30,7 @@ import com.tokopedia.appdownloadmanager_common.presentation.screen.AppDownloadIn
 import com.tokopedia.appdownloadmanager_common.presentation.screen.AppDownloadingState
 import com.tokopedia.appdownloadmanager_common.presentation.screen.DownloadManagerOnboardingScreen
 import com.tokopedia.appdownloadmanager_common.presentation.util.AppDownloadManagerPermission
+import com.tokopedia.appdownloadmanager_common.presentation.util.AppDownloadManagerPermission.isAllPermissionNotGranted
 import com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper.Companion.APK_URL
 import com.tokopedia.appdownloadmanager_common.presentation.viewmodel.DownloadManagerViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -81,10 +82,7 @@ class AppDownloadingBottomSheet :
                             downloadManagerUpdateModel = downloadManagerUpdateModel,
                             onDownloadClick = {
                                 activity?.let { mActivity ->
-                                    if (AppDownloadManagerPermission.isAllPermissionNotGranted(
-                                            mActivity
-                                        )
-                                    ) {
+                                    if (isAllPermissionNotGranted(mActivity)) {
                                         requestPermissions(
                                             AppDownloadManagerPermission.requiredPermissions,
                                             AppDownloadManagerPermission.PERMISSIONS_REQUEST_EXTERNAL_STORAGE
