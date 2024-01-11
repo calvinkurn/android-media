@@ -162,9 +162,8 @@ class HomeRecommendationFeedViewHolder(
     private fun isMegaTabEnabled() = true
 
     companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.home_recommendation_feed_viewholder
-        private val TAG = HomeRecommendationFeedViewHolder::class.java.simpleName
+        @LayoutRes val LAYOUT = R.layout.home_recommendation_feed_viewholder
+
         private const val DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT = 10
         private const val HEIGHT_8 = 8f
     }
