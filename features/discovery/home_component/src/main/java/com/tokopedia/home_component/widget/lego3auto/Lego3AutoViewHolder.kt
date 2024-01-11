@@ -1,17 +1,12 @@
 package com.tokopedia.home_component.widget.lego3auto
 
-import android.util.Log
-import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.marginLeft
-import androidx.core.view.updatePadding
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -23,11 +18,9 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.loadImage
-import com.tokopedia.home_component.util.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.home_component.R as home_componentR
 
@@ -43,7 +36,6 @@ class Lego3AutoViewHolder(
         @LayoutRes
         val LAYOUT = home_componentR.layout.home_component_lego_banner_3_auto
         private const val SPAN = 3
-        private const val TYPE_PRODUCT = "product"
     }
 
     private val binding: HomeComponentLegoBanner3AutoBinding? by viewBinding()
@@ -99,6 +91,15 @@ class Lego3AutoViewHolder(
                 override fun onSeeAllClick(link: String) {
                     legoListener.onSeeAllThreemage(channelModel, channelModel.verticalPosition)
                 }
+
+                override fun onVisibilityChanged(isVisible: Boolean) {
+                    val margin = itemView.context.resources.getDimensionPixelSize(home_componentR.dimen.home_lego_3_auto_vertical_padding)
+                    if(isVisible) {
+                        binding?.rvLego3Auto?.setMargin(0, 0, 0, margin)
+                    } else {
+                        binding?.rvLego3Auto?.setMargin(0, margin, 0, margin)
+                    }
+                }
             }
         )
     }
@@ -114,10 +115,10 @@ class Lego3AutoViewHolder(
         private var model: Lego3AutoModel? = null
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Lego3AutoItemViewHolder {
-            val view = FrameLayout(parent.context).apply {
+            val view = ConstraintLayout(parent.context).apply {
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
                 )
             }
             return Lego3AutoItemViewHolder(view, listener)
@@ -128,10 +129,7 @@ class Lego3AutoViewHolder(
                 val channel = model?.channelModel ?: return
                 val grid = channel.channelGrids.getOrNull(position) ?: return
                 holder.bind(channel, grid, position)
-            } catch (e: Exception) {
-                Log.e("kvilvi", "onBindViewHolder: ", e)
-                e.printStackTrace()
-            }
+            } catch (_: Exception) { }
         }
 
         fun setData(model: Lego3AutoModel) {
@@ -144,9 +142,17 @@ class Lego3AutoViewHolder(
     }
 
     class Lego3AutoItemViewHolder(
-        private val view: FrameLayout,
+        private val parentView: ConstraintLayout,
         private val listener: DynamicLegoBannerListener,
-    ) : RecyclerView.ViewHolder(view) {
+    ) : RecyclerView.ViewHolder(parentView) {
+
+        companion object {
+            private const val TYPE_PRODUCT = "product"
+            private const val VERTICAL_BIAS_CENTER = 0.5f
+            private const val RADIUS_DEFAULT = 0f
+            private const val RADIUS_PRODUCT = 8f
+            private const val DIMENSION_RATIO = "1:1"
+        }
 
         fun bind(
             channelModel: ChannelModel,
@@ -154,39 +160,50 @@ class Lego3AutoViewHolder(
             position: Int
         ) {
             setClickListener(channelModel, channelGrid, position)
-            channelGrid.imageList.forEachIndexed { index, it ->
+            channelGrid.imageList.forEach {
                 val imageUrl = it.imageUrl
-                val containerWidth = DeviceScreenInfo.getScreenWidth(view.context)/3
+                val containerWidth = DeviceScreenInfo.getScreenWidth(parentView.context)/SPAN
                 val leftPadding = (containerWidth * (it.leftPadding/100)).toInt()
                 val rightPadding = (containerWidth * (it.rightPadding/100)).toInt()
-                val imageView = ImageView(view.context).apply {
-                    val lParams = if(it.type == TYPE_PRODUCT) {
-                        FrameLayout.LayoutParams(
-                            (containerWidth - leftPadding - rightPadding),
-                            FrameLayout.LayoutParams.WRAP_CONTENT,
-                        )
-                    } else {
-                        FrameLayout.LayoutParams(
-                            FrameLayout.LayoutParams.MATCH_PARENT,
-                            FrameLayout.LayoutParams.MATCH_PARENT,
-                        )
-                    }
+                val lParams: ConstraintLayout.LayoutParams
+                var cornerRadius = RADIUS_DEFAULT
+                val imageView = ImageView(parentView.context).apply {
+                    id = ViewCompat.generateViewId()
                     if(it.type == TYPE_PRODUCT) {
-                        loadImage(imageUrl) {
-                            setRoundedRadius(view.context.resources.getDimensionPixelSize(home_componentR.dimen.home_lego_3_auto_product_radius).toFloat())
-                            fitCenter()
-                        }
+                        lParams = ConstraintLayout.LayoutParams(
+                            ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                            ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                        )
+                        cornerRadius = RADIUS_PRODUCT.toPx()
                     } else {
-                        loadImage(imageUrl) {
-                            fitCenter()
-                        }
+                        lParams = ConstraintLayout.LayoutParams(
+                            ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                            ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                        )
                     }
-                    lParams.gravity = Gravity.CENTER_VERTICAL
+                    lParams.verticalBias = VERTICAL_BIAS_CENTER
+                    lParams.dimensionRatio = DIMENSION_RATIO
+                    lParams.marginStart = leftPadding
+                    lParams.marginEnd = rightPadding
                     layoutParams = lParams
-                    setMargin(leftPadding, 0, rightPadding, 0)
                 }
-                view.addView(imageView)
+                parentView.addView(imageView)
+                setConstraints(imageView.id)
+                imageView.loadImage(imageUrl) {
+                    setRoundedRadius(cornerRadius)
+                    fitCenter()
+                }
             }
+        }
+
+        private fun setConstraints(viewId: Int) {
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(parentView)
+            constraintSet.connect(viewId, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+            constraintSet.connect(viewId, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+            constraintSet.connect(viewId, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+            constraintSet.connect(viewId, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+            constraintSet.applyTo(parentView)
         }
 
         private fun setClickListener(
@@ -194,7 +211,7 @@ class Lego3AutoViewHolder(
             channelGrid: ChannelGrid,
             position: Int
         ) {
-            view.setOnClickListener {
+            parentView.setOnClickListener {
                 listener.onClickGridThreeImage(channelModel, channelGrid, position, channelModel.verticalPosition)
             }
         }
