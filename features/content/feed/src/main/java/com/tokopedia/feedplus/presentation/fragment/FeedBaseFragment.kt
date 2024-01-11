@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_REFRESH_FOR_RELEVANT_POST
 import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.reduceDragSensitivity
@@ -522,7 +523,19 @@ class FeedBaseFragment :
                                     is CreationUploadData.Post -> {
                                         showNormalToaster(
                                             getString(R.string.feed_upload_content_success),
-                                            duration = Toaster.LENGTH_LONG
+                                            duration = Toaster.LENGTH_LONG,
+                                            actionText = getString(R.string.feed_upload_shorts_see_video),
+                                            actionListener = {
+                                                val intent = RouteManager.getIntent(
+                                                    requireContext(),
+                                                    ApplinkConst.FEED_RELEVANT_POST,
+                                                    uploadData.activityId
+                                                ).apply {
+                                                    putExtra(UF_EXTRA_REFRESH_FOR_RELEVANT_POST, true)
+                                                }
+
+                                                router.route(requireActivity(), intent)
+                                            }
                                         )
                                     }
                                     is CreationUploadData.Shorts -> {

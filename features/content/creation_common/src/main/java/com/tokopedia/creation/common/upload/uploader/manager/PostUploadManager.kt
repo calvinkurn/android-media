@@ -74,7 +74,13 @@ class PostUploadManager @AssistedInject constructor(
                 activityId = submitPostData.feedContentSubmit.meta.content.activityID
             )
 
-            broadcastComplete(uploadData, successData)
+            val updatedUploadData = uploadData.copy(
+                activityId = successData.activityId
+            )
+
+            broadcastUpdateData(updatedUploadData)
+
+            broadcastComplete(updatedUploadData, successData)
 
             CreationUploadExecutionResult.Success
         } catch (throwable: Throwable) {

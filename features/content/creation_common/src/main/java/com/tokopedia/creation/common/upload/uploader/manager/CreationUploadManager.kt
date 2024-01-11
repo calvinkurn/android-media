@@ -68,6 +68,12 @@ abstract class CreationUploadManager(
         mListener?.setProgress(uploadData, progress, uploadStatus)
     }
 
+    protected fun broadcastUpdateData(
+        uploadData: CreationUploadData,
+    ) {
+        mListener?.updateData(uploadData)
+    }
+
     companion object {
         const val MAX_UPLOAD_PROGRESS = 100
     }
@@ -81,6 +87,10 @@ interface CreationUploadManagerListener {
         uploadData: CreationUploadData,
         progress: Int,
         uploadStatus: CreationUploadStatus,
+    )
+
+    fun updateData(
+        uploadData: CreationUploadData,
     )
 }
 
