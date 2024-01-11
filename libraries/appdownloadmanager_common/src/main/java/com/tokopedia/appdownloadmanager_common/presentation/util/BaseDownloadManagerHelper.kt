@@ -16,9 +16,7 @@ import com.tokopedia.graphql.interceptor.BannerEnvironmentInterceptor
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RollenceKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -42,9 +40,9 @@ abstract class BaseDownloadManagerHelper(
         initDownloadManagerUpdateConfig()
     }
 
-    abstract fun showAppDownloadManagerBottomSheet()
+    abstract fun showAppDownloadManagerBottomSheet(shouldSkipRollenceCheck: Boolean)
 
-    suspend fun isEnableShowBottomSheet(): Boolean {
+    open suspend fun isEnableShowBottomSheet(): Boolean {
         val canShowToday = isExpired()
 
         val shouldUpgradeVersion = coroutineScope {
@@ -53,9 +51,11 @@ abstract class BaseDownloadManagerHelper(
             }
         }.await()
 
-        return isAppDownloadingBottomSheetNotShow() && shouldUpgradeVersion &&
-            isBetaNetwork() && downloadManagerUpdateModel?.isEnabled == true && isWhitelistByRollence()
+        return isAppDownloadingBottomSheetNotShow()
+            && isBetaNetwork()
+            && shouldUpgradeVersion
             && canShowToday
+            && downloadManagerUpdateModel?.isEnabled == true
     }
 
     protected fun isExpired(): Boolean {
@@ -63,13 +63,6 @@ abstract class BaseDownloadManagerHelper(
         val time = sharePref?.getLong(DOWNLOAD_MANAGER_TIMESTAMP, 0) ?: 0L
         val currTime = System.currentTimeMillis() / 1000
         return currTime - time > interval
-    }
-
-    protected fun isWhitelistByRollence(): Boolean {
-        return RemoteConfigInstance.getInstance().abTestPlatform?.getString(
-            RollenceKey.ANDROID_INTERNAL_TEST,
-            ""
-        ) == RollenceKey.ANDROID_INTERNAL_TEST
     }
 
     protected fun setCacheExpire() {
@@ -141,6 +134,9 @@ abstract class BaseDownloadManagerHelper(
         const val DOWNLOAD_MANAGER_NAKAMA_PREF = "DownloadManagerNakamaVersionPref"
         const val DOWNLOAD_MANAGER_EXPIRED_TIME = "expired_time"
         const val DOWNLOAD_MANAGER_TIMESTAMP = "timestamp"
+
+        const val DOWNLOAD_MANAGER_APPLINK_PARAM = "show_internal_update_dialog"
+        const val DOWNLOAD_MANAGER_PARAM_TRUE = "true"
 
         const val APK_MIME_TYPE = "application/vnd.android.package-archive"
 

@@ -16,6 +16,8 @@ import com.tokopedia.appdownloadmanager_common.presentation.bottomsheet.AppDownl
 import com.tokopedia.appdownloadmanager_common.presentation.dialog.AppFileManagerDialog
 import com.tokopedia.appdownloadmanager_common.presentation.listener.DownloadManagerSuccessListener
 import com.tokopedia.appdownloadmanager_common.presentation.util.BaseDownloadManagerHelper
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,9 +32,9 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 class AppDownloadManagerHelper(
     activityRef: WeakReference<Activity>
 ) : BaseDownloadManagerHelper(activityRef), DownloadManagerSuccessListener, CoroutineScope {
-    override fun showAppDownloadManagerBottomSheet() {
+    override fun showAppDownloadManagerBottomSheet(shouldSkipRollenceCheck: Boolean) {
         launch {
-            if (isEnableShowBottomSheet()) {
+            if (isEnableShowBottomSheet() && isWhitelistByRollence(shouldSkipRollenceCheck)) {
                 (activityRef.get() as? FragmentActivity)?.let {
                     val onBoardingBottomSheet = AppDownloadingBottomSheet.newInstance()
                     downloadManagerUpdateModel?.let { downloadManagerUpdate ->
@@ -72,6 +74,14 @@ class AppDownloadManagerHelper(
     }
 
     fun startDownloadApk() {
+    }
+
+    private fun isWhitelistByRollence(shouldSkipRollenceCheck: Boolean): Boolean {
+        val isWhitelistedByRollence = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+            RollenceKey.ANDROID_INTERNAL_TEST,
+            ""
+        ) == RollenceKey.ANDROID_INTERNAL_TEST
+        return isWhitelistedByRollence || shouldSkipRollenceCheck
     }
 
     private fun openDownloadDir() {

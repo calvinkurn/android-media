@@ -26,7 +26,7 @@ class AppDownloadManagerHelper(
 
     private var updateAppVersionDialog: AppUpdateVersionDialog? = null
 
-    override fun showAppDownloadManagerBottomSheet() {
+    override fun showAppDownloadManagerBottomSheet(shouldSkipRollenceCheck: Boolean) {
         launch {
             if (isEnableShowBottomSheet()) {
                 if (updateAppVersionDialog == null) {
