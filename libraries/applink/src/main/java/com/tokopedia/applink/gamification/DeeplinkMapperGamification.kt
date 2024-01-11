@@ -22,6 +22,6 @@ object DeeplinkMapperGamification {
     }
 
     fun getKetupatFallBackLink(deeplink: String): String {
-        return "https://166-staging-feature.tokopedia.com/ketupat/updateApp"
+        return "tokopedia://webview?url=https://166-staging-feature.tokopedia.com/ketupat/updateApp"
     }
 }
