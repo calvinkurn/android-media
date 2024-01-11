@@ -1,33 +1,91 @@
-package com.tokopedia.home.beranda.presentation.view.customview
+package com.tokopedia.home_component.widget
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.abstraction.common.utils.view.MethodChecker.getColor as getCompatColor
-import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout.TabItemData
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.home.R as homeR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.home_component.R
+import com.tokopedia.unifyprinciples.Typography
 
-class MegaRecommendationTabLayout @JvmOverloads constructor(
+/**
+ * A shared mega-tab component.
+ *
+ * MegaTab is a categorical tab with multiple tab view support (text and image).
+ *
+ * We aim to ensure that each megatab contents clearly communicates the distinct benefits that buyers
+ * can expect when exploring each tab, such as 'paling diskon,' 'terdekat denganmu,' 'brand favorit,'
+ * and 'mirip yang kamu cek' with no repeated content across tabs.
+ *
+ * Please read this technical usage for more detail below.
+ *
+ * Sample Usage:
+ * <com.tokopedia.home_component.widget.RecommendationMegaTabLayout
+ *    android:id="@+id/tab_recommendation"
+ *    android:layout_width="match_parent"
+ *    android:layout_height="wrap_content"
+ *    android:paddingStart="16dp"
+ *    android:paddingEnd="16dp"
+ *    android:paddingTop="8dp"
+ *    android:clipToPadding="false"
+ *    app:tabIndicatorHeight="0dp"
+ *    app:tabMode="scrollable"
+ *    app:tabPaddingEnd="0dp"
+ *    app:tabPaddingStart="0dp"
+ *    app:tabPaddingBottom="0dp"
+ *    app:tabRippleColor="@null"/>
+ *
+ * Apply the tab data set by using [RecommendationMegaTabLayout.Item] data class.
+ *
+ * import com.tokopedia.home_component.widget.RecommendationMegaTabLayout.Item as MegaTabItem
+ * ...
+ *
+ * val tabs = listOf(
+ *     MegaTabItem(title = "For You"),
+ *     MegaTabItem(imageUrl = "http://images.tokopedia.net/sample.png"),
+ *     MegaTabItem(title = "Paling Diskon")
+ * )
+ *
+ * // setup view
+ * tabRecommendation?.set(tab)
+ *
+ * // or with view-page nature behavior
+ * tabRecommendation?.set(tab, viewPager)
+ *
+ * Notes:
+ * 1. Due we're trying to customize the TabLayout, you have to set a few wdiget attributes to disable
+ *    certain pre-defined behavior from TabLayout. As we mentioned above, you have to at least disable
+ *    these attributes:
+ *    - tabIndicatorHeight
+ *    - tabPadding***
+ *    - tabRippleColor
+ *
+ * 2. This component is ala carte which there's no pre-define inner-space (i.e. padding) implemented.
+ *    If you want to set the padding for particular area, you could do it with a common way by using
+ *    padding***. Also, don't forget to disable the clipToPadding as well.
+ *
+ * @author: Home
+ * @since: January, 2024
+ */
+class RecommendationMegaTabLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : TabLayout(context, attrs) {
 
-    private var tabItemList = mutableListOf<TabItemData>()
+    private var tabItemList = mutableListOf<Item>()
     private var lastTabSelectedPosition = -1
 
-    fun set(tabList: List<TabItemData>, pager: ViewPager?) {
+    fun set(tabList: List<Item>, pager: ViewPager? = null) {
         // initiate tab data sets
         tabItemList.clear()
         tabItemList.addAll(tabList)
@@ -44,10 +102,16 @@ class MegaRecommendationTabLayout @JvmOverloads constructor(
         // setup view
         for (i in 0 until tabCount) {
             val tab = getTabAt(i)?: continue
-            tab.customView = createTabView(tab, i)
+
+            if (tab.customView == null) {
+                val item = tabItemList[i]
+                if (item.hasContentEmpty()) continue
+
+                tab.customView = createTabView(tab, item)
+            }
         }
 
-        // listeners: TabLayout
+        // listener: TabLayout
         addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: Tab?) {
                 updateTabIndicatorState()
@@ -57,7 +121,7 @@ class MegaRecommendationTabLayout @JvmOverloads constructor(
             override fun onTabUnselected(tab: Tab?) = Unit
         })
 
-        // listeners: ViewPager
+        // listener: ViewPager
         pager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageSelected(position: Int) {
                 setActiveStateAt(position)
@@ -71,22 +135,22 @@ class MegaRecommendationTabLayout @JvmOverloads constructor(
         setActiveStateAt(Int.ZERO)
     }
 
-    private fun createTabView(tab: Tab, position: Int): View {
-        val rootView = LayoutInflater.from(context).inflate(homeR.layout.tab_mega_recommendation, null)
+    private fun createTabView(tab: Tab, item: Item): View {
+        val rootView = LayoutInflater.from(context).inflate(R.layout.tab_mega_recommendation, null)
 
-        val title = rootView.findViewById<Typography>(homeR.id.txt_title)
-        val shimmer = rootView.findViewById<LoaderUnify>(homeR.id.loader_shimmering)
-        val image = rootView.findViewById<ImageView>(homeR.id.img_icon)
+        val title = rootView.findViewById<Typography>(R.id.txt_title)
+        val shimmer = rootView.findViewById<LoaderUnify>(R.id.loader_shimmering)
+        val image = rootView.findViewById<ImageView>(R.id.img_icon)
 
-        if (tabItemList[position].title.isNotEmpty()) {
-            title.text = tabItemList[position].title
+        if (item.title.isNotEmpty()) {
+            title.text = item.title
             title.show()
 
             // inactive color state by default
-            title.setTextColor(getCompatColor(context, INACTIVE_STATE_COLOR))
+            title.setTextColor(ContextCompat.getColor(context, INACTIVE_STATE_COLOR))
         } else {
             shimmer.show(); image.show()
-            image.loadImageWithoutPlaceholder(tabItemList[position].imageUrl) {
+            image.loadImageWithoutPlaceholder(item.imageUrl) {
                 listener(onSuccess = { _, _ -> shimmer.hide() })
             }
         }
@@ -116,14 +180,14 @@ class MegaRecommendationTabLayout @JvmOverloads constructor(
 
     private fun setActiveStateAt(position: Int) {
         updateStateAt(position) { title, indicator ->
-            title.setTextColor(getCompatColor(context, ACTIVE_STATE_COLOR))
+            title.setTextColor(ContextCompat.getColor(context, ACTIVE_STATE_COLOR))
             indicator.show()
         }
     }
 
     private fun setInactiveStateAt(position: Int) {
         updateStateAt(position) { title, indicator ->
-            title.setTextColor(getCompatColor(context, INACTIVE_STATE_COLOR))
+            title.setTextColor(ContextCompat.getColor(context, INACTIVE_STATE_COLOR))
             indicator.invisible()
         }
     }
@@ -141,16 +205,21 @@ class MegaRecommendationTabLayout @JvmOverloads constructor(
 
     private fun getTextFromTab(tab: Tab): Typography? {
         if (tab.customView == null) return null
-        return tab.customView?.findViewById(homeR.id.txt_title)
+        return tab.customView?.findViewById(R.id.txt_title)
     }
 
     private fun getIndicatorFromTab(tab: Tab): View? {
         if (tab.customView == null) return null
-        return tab.customView?.findViewById(homeR.id.tab_indicator)
+        return tab.customView?.findViewById(R.id.tab_indicator)
     }
 
     private fun resetAllState() {
         lastTabSelectedPosition = -1
+    }
+
+    data class Item(val title: String = "", val imageUrl: String = "") {
+
+        fun hasContentEmpty() = title.isEmpty() && imageUrl.isEmpty()
     }
 
     companion object {

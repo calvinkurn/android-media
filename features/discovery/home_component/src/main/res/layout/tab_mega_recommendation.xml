@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:maxHeight="34dp"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_shimmering"
+        android:layout_width="72dp"
+        android:layout_height="24dp"
+        android:visibility="gone"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect"/>
+
+    <ImageView
+        android:id="@+id/img_icon"
+        android:layout_width="72dp"
+        android:layout_height="24dp"
+        android:maxWidth="72dp"
+        android:maxHeight="24dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:visibility="gone"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/content_desc_tab_image"
+        tools:visibility="visible"
+        tools:src="@tools:sample/avatars"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="4dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="4dp"
+        android:textColor="@color/Unify_GN500"
+        android:letterSpacing="0.10"
+        android:visibility="gone"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Loren Ipsum"
+        tools:visibility="visible"/>
+
+    <View
+        android:id="@+id/tab_indicator"
+        android:layout_width="40dp"
+        android:layout_height="2dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/Unify_GN500"
+        android:visibility="invisible"
+        tools:visibility="visible"/>
+
+</LinearLayout>
