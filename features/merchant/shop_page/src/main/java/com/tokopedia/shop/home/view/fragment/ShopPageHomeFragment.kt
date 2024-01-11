@@ -3521,8 +3521,10 @@ open class ShopPageHomeFragment :
             ShopUtil.getActualPositionFromIndex(adapterPosition),
             model.widgetMasterId,
             model.isFestivity,
+            // TODO: Make sure these lines below are correct based on Data team
             isFulfillment = model.productList.getOrNull(adapterPosition)?.isFulfillment,
             warehouseId = model.productList.getOrNull(adapterPosition)?.warehouseId
+            // ======== //
         )
     }
 
