@@ -91,23 +91,27 @@ class HomeRecommendationFeedViewHolder(
     }
 
     private fun initMegaTabLayout() {
-        binding.tabRecommendation.show()
+        with(binding) {
+            recommendationTabDataModelList
+                ?.map { it.toMegaTabItem() }
+                ?.let { tabRecommendation.set(it, viewPagerHomeFeeds) }
 
-        val data = recommendationTabDataModelList?.map { it.toMegaTabItem() }
-        binding.tabRecommendation.set(data, binding.viewPagerHomeFeeds)
-
-        binding.tabRecommendation.onTabSelected(::onTabLayoutSelected)
-        binding.tabRecommendation.onTabReselected(::onTabLayoutReselected)
+            tabRecommendation.onTabSelected(::onTabLayoutSelected)
+            tabRecommendation.onTabReselected(::onTabLayoutReselected)
+            tabRecommendation.show()
+        }
     }
 
     private fun initCarouselTabLayout() {
-        binding.tabLayoutHomeFeeds.show()
+        with(binding) {
+            recommendationTabDataModelList
+                ?.map { it.toCarouselTabItem() }
+                ?.let { tabLayoutHomeFeeds.setup(viewPagerHomeFeeds, it, cardInteraction) }
 
-        val data = recommendationTabDataModelList?.map { it.toCarouselTabItem() }
-        binding.tabLayoutHomeFeeds.setup(binding.viewPagerHomeFeeds, data!!, cardInteraction)
-
-        binding.tabLayoutHomeFeeds.onTabSelected(::onTabLayoutSelected)
-        binding.tabLayoutHomeFeeds.onTabReselected(::onTabLayoutReselected)
+            tabLayoutHomeFeeds.onTabSelected(::onTabLayoutSelected)
+            tabLayoutHomeFeeds.onTabReselected(::onTabLayoutReselected)
+            tabLayoutHomeFeeds.show()
+        }
     }
 
     private fun onTabLayoutSelected(tab: TabLayout.Tab) {
