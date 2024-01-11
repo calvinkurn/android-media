@@ -237,7 +237,7 @@ open class HomeAccountUserFragment :
     var memberCardView: CardUnify? = null
 
     private val startEditProfileForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _: ActivityResult ->
-        viewModel.getBuyerData(BiometricPromptHelper.isBiometricAvailableActivity(activity))
+        getData()
     }
 
     override fun getScreenName(): String = "homeAccountUserFragment"
