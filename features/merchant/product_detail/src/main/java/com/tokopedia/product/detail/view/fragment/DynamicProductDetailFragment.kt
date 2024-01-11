@@ -2726,6 +2726,11 @@ open class DynamicProductDetailFragment :
         }
         pdpUiUpdater?.updateDataP1(updatedDynamicProductInfo)
 
+        pdpUiUpdater?.updateColorPromoPriceFromUpcoming(
+            productId = selectedChild?.productId.toString(),
+            promoPriceStyle = viewModel.p2Data.value?.promoPriceStyle
+        )
+
         pdpUiUpdater?.updateNotifyMeAndContent(
             selectedChild?.productId.toString(),
             viewModel.p2Data.value?.upcomingCampaigns,

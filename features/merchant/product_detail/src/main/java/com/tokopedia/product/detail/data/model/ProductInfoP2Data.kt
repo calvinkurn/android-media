@@ -19,6 +19,7 @@ import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommend
 import com.tokopedia.product.detail.data.model.generalinfo.ObatKeras
 import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVoucherSummary
 import com.tokopedia.product.detail.data.model.navbar.NavBar
+import com.tokopedia.product.detail.data.model.promoprice.PromoPriceStyle
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.review.MostHelpfulReviewData
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
@@ -181,7 +182,11 @@ data class ProductInfoP2Data(
 
     @SerializedName("bmgm")
     @Expose
-    val bmgm: BMGMData = BMGMData()
+    val bmgm: BMGMData = BMGMData(),
+
+    @SerializedName("promoPriceStyle")
+    @Expose
+    val promoPriceStyle: List<PromoPriceStyle> = listOf()
 ) {
     data class Response(
         @SerializedName("pdpGetData")
@@ -225,5 +230,6 @@ fun ProductInfoP2Data.asUiModel() = ProductInfoP2UiData(
     shopReview = shopReview.asUiModel(),
     bottomSheetEdu = bottomSheetEdu.asUiModel(),
     dynamicOneLiner = dynamicOneLiner,
-    bmgm = bmgm
+    bmgm = bmgm,
+    promoPriceStyle = promoPriceStyle
 )

@@ -66,6 +66,8 @@ import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataMod
 import com.tokopedia.product.detail.data.model.datamodel.asMediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
+import com.tokopedia.product.detail.data.model.promoprice.PromoPriceStyle
+import com.tokopedia.product.detail.data.model.promoprice.getPromoStyleByProductId
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
@@ -602,6 +604,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateDynamicOneLiner(it)
 
             updateBMGMSneakPeak(productId = productId, bmgm = it.bmgm)
+
+            updateColorPromoPriceFromUpcoming(
+                productId = productId,
+                promoPriceStyle = it.promoPriceStyle
+            )
         }
     }
 
@@ -715,6 +722,27 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     ribbonCopy = selectedUpcoming?.campaignTypeName.orEmpty(),
                     startDate = selectedUpcoming?.startDate.orEmpty()
                 )
+            }
+        }
+    }
+
+    fun updateColorPromoPriceFromUpcoming(
+        productId: String,
+        promoPriceStyle: List<PromoPriceStyle>?
+    ) {
+        updateData(ProductDetailConstant.PRICE) {
+            promoPrice?.run {
+                if (promoPriceData != null) {
+                    val selectedPromoStyle =
+                        promoPriceStyle?.getPromoStyleByProductId(productId) ?: return@run
+                    promoPriceData = promoPriceData?.copy(
+                        mainIconUrl = selectedPromoStyle.iconUrl,
+                        mainTextColor = selectedPromoStyle.mainTextColor,
+                        cardBackgroundColor = selectedPromoStyle.backgroundColor,
+                        superGraphicIconUrl = selectedPromoStyle.superGraphicUrl,
+                        separatorColor = selectedPromoStyle.separatorColor
+                    )
+                }
             }
         }
     }
