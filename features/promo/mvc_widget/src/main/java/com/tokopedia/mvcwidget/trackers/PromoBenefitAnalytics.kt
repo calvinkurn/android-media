@@ -1,4 +1,4 @@
-package com.tokopedia.promousage.analytics
+package com.tokopedia.mvcwidget.trackers
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.track.TrackApp
