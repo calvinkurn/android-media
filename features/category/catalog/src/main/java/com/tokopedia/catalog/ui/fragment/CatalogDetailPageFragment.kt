@@ -98,9 +98,13 @@ import com.tokopedia.catalogcommon.bottomsheet.ColumnedInfoBottomSheet
 import com.tokopedia.catalogcommon.customview.CatalogToolbar
 import com.tokopedia.catalogcommon.listener.AccordionListener
 import com.tokopedia.catalogcommon.listener.BannerListener
+import com.tokopedia.catalogcommon.listener.CharacteristicListener
 import com.tokopedia.catalogcommon.listener.ColumnedInfoListener
 import com.tokopedia.catalogcommon.listener.DoubleBannerListener
 import com.tokopedia.catalogcommon.listener.HeroBannerListener
+import com.tokopedia.catalogcommon.listener.PanelImageListener
+import com.tokopedia.catalogcommon.listener.SliderImageTextListener
+import com.tokopedia.catalogcommon.listener.SupportFeatureListener
 import com.tokopedia.catalogcommon.listener.TextDescriptionListener
 import com.tokopedia.catalogcommon.listener.TopFeatureListener
 import com.tokopedia.catalogcommon.listener.TrustMakerListener
@@ -141,14 +145,6 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.catalogcommon.viewholder.BuyerReviewViewHolder
-import com.tokopedia.catalogcommon.uimodel.BuyerReviewUiModel
-import com.tokopedia.catalogcommon.bottomsheet.BuyerReviewDetailBottomSheet
-import com.tokopedia.catalog.ui.activity.CatalogImagePreviewActivity
-import com.tokopedia.catalogcommon.listener.CharacteristicListener
-import com.tokopedia.catalogcommon.listener.PanelImageListener
-import com.tokopedia.catalogcommon.listener.SliderImageTextListener
-import com.tokopedia.catalogcommon.listener.SupportFeatureListener
 
 class CatalogDetailPageFragment :
     BaseDaggerFragment(),
@@ -164,7 +160,10 @@ class CatalogDetailPageFragment :
     ComparisonViewHolder.ComparisonItemListener,
     BuyerReviewViewHolder.BuyerReviewListener,
     ColumnedInfoListener,
-    VideoListener, SupportFeatureListener, SliderImageTextListener, CharacteristicListener,
+    VideoListener,
+    SupportFeatureListener,
+    SliderImageTextListener,
+    CharacteristicListener,
     PanelImageListener {
 
     companion object {
@@ -236,7 +235,6 @@ class CatalogDetailPageFragment :
     private val insetsController: WindowInsetsControllerCompat? by lazy {
         activity?.window?.decorView?.let(ViewCompat::getWindowInsetsController)
     }
-
 
     private fun sendOnTimeImpression(uniqueId: String, trackerFunction: () -> Unit) {
         if (!seenTracker.any { it == uniqueId }) {
@@ -439,8 +437,11 @@ class CatalogDetailPageFragment :
                 errorMessage,
                 duration = Toaster.LENGTH_LONG,
                 type = Toaster.TYPE_ERROR,
-                actionText = if (it is InvalidCatalogComparisonException) ""
-                    else getString(R.string.catalog_retry_action)
+                actionText = if (it is InvalidCatalogComparisonException) {
+                    ""
+                } else {
+                    getString(R.string.catalog_retry_action)
+                }
             ) {
                 changeComparison(retriedCompareCatalogIds)
             }.show()
