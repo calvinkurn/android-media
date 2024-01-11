@@ -55,7 +55,7 @@ fun FindNewDriverSection(
             }
             if (model.retryAvailability.availabilityRetry.not() && model.retryAvailability.deadlineRetryUnixtime.toLong() > 0L) {
                 val deadline = model.retryAvailability.deadlineRetryUnixtime.toLong()
-                val now = System.currentTimeMillis() / 1000L
+                val now = System.currentTimeMillis() / MILLIS_TO_SECOND
                 val remainingSeconds = deadline - now
                 if (remainingSeconds > 0) {
                     OrderAnalyticsOrderTracking.eventViewLabelTungguRetry(
@@ -63,19 +63,19 @@ fun FindNewDriverSection(
                         model.retryAvailability.orderId
                     )
                     var timeInMillis by remember {
-                        mutableStateOf(remainingSeconds * 1000)
+                        mutableStateOf(remainingSeconds * MILLIS_TO_SECOND)
                     }
                     LaunchedEffect(key1 = timeInMillis) {
                         while (timeInMillis > 0) {
-                            delay(1000L)
-                            timeInMillis -= 1000L
+                            delay(MILLIS_TO_SECOND)
+                            timeInMillis -= MILLIS_TO_SECOND
                             if (timeInMillis < 0) timeInMillis = 0
                         }
                         if (timeInMillis == 0L) {
                             onEvent(TrackingPageEvent.Refresh)
                         }
                     }
-                    val formattedTime = DateUtils.formatElapsedTime(timeInMillis / 1000)
+                    val formattedTime = DateUtils.formatElapsedTime(timeInMillis / MILLIS_TO_SECOND)
                     NestTypography(
                         modifier = Modifier.fillMaxWidth(),
                         text = "Tunggu $formattedTime untuk mencari driver baru",
@@ -86,3 +86,5 @@ fun FindNewDriverSection(
         }
     }
 }
+
+private val MILLIS_TO_SECOND = 1000L
