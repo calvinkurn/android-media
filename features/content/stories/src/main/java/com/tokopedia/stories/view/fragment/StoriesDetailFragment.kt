@@ -646,6 +646,8 @@ class StoriesDetailFragment @Inject constructor(
         binding.vStoriesProductIcon.root.showWithCondition(state.isProductAvailable)
         binding.vStoriesProductIcon.tvPlayProductCount.text = state.productCount
 
+        if (state.isProductAvailable.not()) return
+
         with(binding.nudgeStoriesProduct) {
             setContent {
                 StoriesProductNudge(state.productCount) {
@@ -665,7 +667,7 @@ class StoriesDetailFragment @Inject constructor(
                 TransitionManager.beginDelayedTransition(
                     binding.root,
                     Fade(Fade.IN)
-                        .addTarget(binding.nudgeStoriesProduct)
+                        .addTarget(binding.flStoriesProduct)
                 )
                 binding.flStoriesProduct.show()
                 binding.nudgeStoriesProduct.show()
