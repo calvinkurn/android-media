@@ -20,4 +20,6 @@ interface ProductPreviewRepository {
     suspend fun likeReview() //TODO: return LikeStatus, param [reviewId, LikeStatus]
     suspend fun submitReport(): Boolean //TODO: param [reviewId, ReportUiModel]
 
+    suspend fun remindMe(productId: String) : BottomNavUiModel.RemindMeUiModel
+
 }

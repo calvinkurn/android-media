@@ -1,5 +1,6 @@
 package com.tokopedia.content.product.preview.data.mapper
 
+import com.tokopedia.content.product.preview.data.AddWishlistResponse
 import com.tokopedia.content.product.preview.data.GetMiniProductInfoResponse
 import com.tokopedia.content.product.preview.data.MediaReviewResponse
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
@@ -11,7 +12,6 @@ import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 /**
  * @author by astidhiyaa on 06/12/23
@@ -52,7 +52,10 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
             title = response.data.product.name,
             price = if (response.data.campaign.isActive) {
                 BottomNavUiModel.DiscountedPrice(
-                    discountedPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(price = response.data.campaign.discountedPrice, hasSpace = false),
+                    discountedPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                        price = response.data.campaign.discountedPrice,
+                        hasSpace = false
+                    ),
                     ogPriceFmt = response.data.product.priceFmt,
                     discountPercentage = "${response.data.campaign.discountPercentage}%",
                 )
@@ -66,5 +69,11 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
             buttonState = if (response.data.hasVariant) BottomNavUiModel.ButtonState.Active else BottomNavUiModel.ButtonState.getByValue(
                 response.data.buttonState
             ) //Variant product always active, to open GVBS.
+        )
+
+    fun mapRemindMe(response: AddWishlistResponse): BottomNavUiModel.RemindMeUiModel =
+        BottomNavUiModel.RemindMeUiModel(
+            isSuccess = response.data.wishlistAdd.success,
+            message = response.data.wishlistAdd.message
         )
 }

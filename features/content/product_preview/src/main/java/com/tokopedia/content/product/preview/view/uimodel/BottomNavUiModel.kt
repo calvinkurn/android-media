@@ -67,6 +67,11 @@ data class BottomNavUiModel(
                     Shop(id = "", name = "")
         }
     }
+
+    data class RemindMeUiModel(
+        val isSuccess: Boolean,
+        val message: String,
+    )
 }
 
 val BottomNavUiModel.Price.finalPrice: String
