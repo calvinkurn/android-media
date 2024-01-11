@@ -41,6 +41,8 @@ object CatalogTrackerConstant {
     const val EVENT_ACTION_IMPRESSION_EXPERT_REVIEW = "impress expert review"
     const val EVENT_ACTION_IMPRESSION_NAVIGATION = "impress navigation"
     const val EVENT_ACTION_CLICK_NAVIGATION = "click navigation"
+    const val EVENT_ACTION_CLICK_SEE_MORE_SPECIFICATION = "click lihat semua on specification"
+
     const val EVENT_ACTION_IMPRESSION_BANNER = "impress banner"
     const val EVENT_ACTION_IMPRESSION_TEXT_DESCRIPTION = "impress text description"
     const val EVENT_ACTION_CLICK_VIDEO_EXPERT_REVIEW = "click tonton review on expert review"
@@ -103,7 +105,11 @@ object CatalogTrackerConstant {
     const val TRACKER_ID_CLICK_ADD_TO_CART_CATALOG_PRODUCT_LIST = "46993"
     const val TRACKER_ID_IMPRESSION_PRODUCT = "46994"
     const val TRACKER_ID_IMPRESSION_VIDEO = "30119"
-    const val TRACKER_ID_IMPRESSION_COLUMN_INFO = "30120"
+    const val TRACKER_ID_CLICK_SEE_MORE_COLUMN_INFO = "46983"
+
+    // old
+//    const val TRACKER_ID_IMPRESSION_COLUMN_INFO = "46981"
+    const val TRACKER_ID_IMPRESSION_COLUMN_INFO = "46981"
 
     const val TRACKER_ID_CLICK_SEE_MORE_COMPARISON = "47977"
     const val TRACKER_ID_IMPRESSION_COMPARISON = "47715"

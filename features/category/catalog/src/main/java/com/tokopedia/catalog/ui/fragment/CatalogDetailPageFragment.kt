@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +27,7 @@ import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_FAQ
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_NAVIGATION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_SEE_MORE_SPECIFICATION
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_VIDEO_EXPERT_REVIEW
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_BANNER
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_DOUBLE_BANNER
@@ -60,6 +60,7 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CHANGE_
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_BUTTON_CHOOSE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_FAQ
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_NAVIGATION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_SEE_MORE_COLUMN_INFO
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_SEE_MORE_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_VIDEO_EXPERT
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_BANNER_ONE_BY_ONE
@@ -81,6 +82,7 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_OPEN_PA
 import com.tokopedia.catalog.databinding.FragmentCatalogReimagineDetailPageBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.ui.activity.CatalogComparisonDetailActivity
+import com.tokopedia.catalog.ui.activity.CatalogImagePreviewActivity
 import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.EXTRA_CATALOG_URL
 import com.tokopedia.catalog.ui.activity.CatalogSwitchingComparisonActivity
 import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Companion.ARG_PARAM_CATALOG_ID
@@ -93,6 +95,7 @@ import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalog.util.CatalogShareUtil
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
+import com.tokopedia.catalogcommon.bottomsheet.BuyerReviewDetailBottomSheet
 import com.tokopedia.catalogcommon.bottomsheet.ColumnedInfoBottomSheet
 import com.tokopedia.catalogcommon.customview.CatalogToolbar
 import com.tokopedia.catalogcommon.listener.AccordionListener
@@ -107,6 +110,7 @@ import com.tokopedia.catalogcommon.listener.VideoExpertListener
 import com.tokopedia.catalogcommon.listener.VideoListener
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
+import com.tokopedia.catalogcommon.uimodel.BuyerReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
@@ -114,6 +118,7 @@ import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.catalogcommon.uimodel.VideoUiModel
 import com.tokopedia.catalogcommon.util.DrawableExtension
+import com.tokopedia.catalogcommon.viewholder.BuyerReviewViewHolder
 import com.tokopedia.catalogcommon.viewholder.ComparisonViewHolder
 import com.tokopedia.catalogcommon.viewholder.StickyNavigationListener
 import com.tokopedia.globalerror.GlobalError
@@ -124,7 +129,6 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.oldcatalog.listener.CatalogDetailListener
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -138,10 +142,6 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.catalogcommon.viewholder.BuyerReviewViewHolder
-import com.tokopedia.catalogcommon.uimodel.BuyerReviewUiModel
-import com.tokopedia.catalogcommon.bottomsheet.BuyerReviewDetailBottomSheet
-import com.tokopedia.catalog.ui.activity.CatalogImagePreviewActivity
 
 class CatalogDetailPageFragment :
     BaseDaggerFragment(),
@@ -407,7 +407,6 @@ class CatalogDetailPageFragment :
                         it.id
                     }
                 }
-
             } else if (it is Fail) {
                 binding?.showPageError(it.throwable)
             }
@@ -932,6 +931,13 @@ class CatalogDetailPageFragment :
         sectionTitle: String,
         columnData: List<ColumnedInfoUiModel.ColumnData>
     ) {
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_CLICK_PG,
+            action = EVENT_ACTION_CLICK_SEE_MORE_SPECIFICATION,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = "$catalogId",
+            trackerId = TRACKER_ID_CLICK_SEE_MORE_COLUMN_INFO
+        )
         ColumnedInfoBottomSheet.show(childFragmentManager, sectionTitle, columnData)
     }
 
@@ -952,7 +958,7 @@ class CatalogDetailPageFragment :
             CatalogReimagineDetailAnalytics.sendEventImpressionListGeneral(
                 event = EVENT_VIEW_ITEM,
                 action = EVENT_IMPRESSION_COLUMN_INFO_WIDGET,
-                category = EVENT_CATEGORY_CATALOG_PAGE,
+                category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
                 labels = "$catalogTitle - $catalogId",
                 trackerId = TRACKER_ID_IMPRESSION_COLUMN_INFO,
                 userId = userSession.userId,
