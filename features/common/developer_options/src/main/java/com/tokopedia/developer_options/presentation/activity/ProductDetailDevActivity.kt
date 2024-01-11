@@ -113,14 +113,23 @@ class ProductDetailDevActivity : BaseActivity() {
 
         val componentSharedPref = getSharedPreferences(PDP_COMPONENT_FILTER_SHARED_PREF_KEY, MODE_PRIVATE)
         val savedComponentValue = componentSharedPref.getString(PDP_COMPONENT_FILTER_VALUE, "")
+        val savedComponentCondition = componentSharedPref.getString(PDP_COMPONENT_FILTER_CONDITION, "filter out")
         val savedComponentOption = componentSharedPref.getString(PDP_COMPONENT_FILTER_OPTION, "type")
 
         val componentValue = findViewById<TextFieldUnify>(R.id.pdp_component_name)
+        val componentConditionFilter = findViewById<RadioButton>(R.id.pdp_component_condition_filter)
+        val componentConditionOnly = findViewById<RadioButton>(R.id.pdp_component_condition_only)
         val componentOptionType = findViewById<RadioButton>(R.id.pdp_component_filter_type)
         val componentOptionName = findViewById<RadioButton>(R.id.pdp_component_filter_name)
 
         if (savedComponentValue?.isNotBlank() == true) {
             componentValue.textFieldInput.setText(savedComponentValue)
+        }
+
+        if (savedComponentCondition.equals("filter out", true)) {
+            componentConditionFilter.isChecked = true
+        } else if (savedComponentCondition.equals("show only", true)) {
+            componentConditionOnly.isChecked = true
         }
 
         if(savedComponentOption.equals("type", true)){

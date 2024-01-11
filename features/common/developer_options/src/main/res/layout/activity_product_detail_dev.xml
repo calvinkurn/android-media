@@ -245,6 +245,12 @@
                     android:checked="true"
                     android:layout_height="wrap_content"/>
 
+                <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+                    android:layout_width="wrap_content"
+                    android:id="@+id/pdp_component_condition_only"
+                    android:text="Show Only"
+                    android:layout_height="wrap_content"/>
+
             </RadioGroup>
 
             <RadioGroup

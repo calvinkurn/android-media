@@ -34,6 +34,7 @@ import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
+import com.tokopedia.product.detail.di.RawQueryKeyConstant.PDP_COMPONENT_FILTER_CONDITION
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyCustomTypefaceSpan
@@ -400,6 +401,10 @@ internal fun List<DynamicPdpDataModel>.componentDevFilter(
         RawQueryKeyConstant.PDP_COMPONENT_FILTER_VALUE,
         ""
     ) ?: return this
+    val componentFilterCondition = sharedPref.getString(
+        PDP_COMPONENT_FILTER_CONDITION,
+        ""
+    ) ?: return this
     val componentFilterOption = sharedPref.getString(
         RawQueryKeyConstant.PDP_COMPONENT_FILTER_OPTION,
         ""
@@ -410,10 +415,16 @@ internal fun List<DynamicPdpDataModel>.componentDevFilter(
     }
 
     return if (componentFilterOption.equals("type", true)) {
-        filter { it.type() !in multiComponent }
+        if (componentFilterCondition.equals("filter out", true)) {
+            filter { it.type() !in multiComponent }
+        } else if (componentFilterCondition.equals("show only", true)) {
+            filter { it.type() in multiComponent }
+        } else this
     } else if (componentFilterOption.equals("name", true)) {
-        filter { it.name() !in multiComponent }
-    } else {
-        this
-    }
+        if (componentFilterCondition.equals("filter out", true)) {
+            filter { it.name() !in multiComponent }
+        } else if (componentFilterCondition.equals("show only", true)) {
+            filter { it.name() in multiComponent }
+        } else this
+    } else this
 }
