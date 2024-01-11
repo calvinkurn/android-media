@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sv_feed_top_tab"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    tools:background="@color/Unify_Static_Black">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.motion.widget.MotionLayout
         android:id="@+id/container_feed_top_tab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layoutDescription="@xml/layout_feed_top_nav_scene"
+        tools:background="@color/Unify_Static_Black"
         android:paddingStart="12dp"
         android:paddingEnd="12dp">
 
@@ -74,7 +73,7 @@
             android:background="@color/Unify_Static_White"
             app:layout_constraintEnd_toEndOf="@id/ty_feed_first_tab"
             app:layout_constraintStart_toStartOf="@id/ty_feed_first_tab"
-            app:layout_constraintTop_toBottomOf="@id/ty_feed_first_tab" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.motion.widget.MotionLayout>
-</androidx.core.widget.NestedScrollView>
+</HorizontalScrollView>
