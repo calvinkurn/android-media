@@ -13,14 +13,15 @@ import com.tokopedia.kotlin.extensions.view.ONE
  * Created by @ilhamsuaib on 06/12/23.
  */
 
-class GiftWidgetAdapter : ListAdapter<ProductGiftUiModel, ProductGiftViewHolder>(
+class GiftWidgetAdapter(
+    private val productGiftListener: ProductGiftViewHolder.ProductGiftListener? = null
+) : ListAdapter<ProductGiftUiModel, ProductGiftViewHolder>(
     ProductGiftDiffUtilCallback.createDiffUtil()
 ) {
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductGiftViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemProductGiftBinding.inflate(inflater, parent, false)
-        return ProductGiftViewHolder(binding)
+        return ProductGiftViewHolder(binding, productGiftListener)
     }
 
     override fun onBindViewHolder(holder: ProductGiftViewHolder, position: Int) {

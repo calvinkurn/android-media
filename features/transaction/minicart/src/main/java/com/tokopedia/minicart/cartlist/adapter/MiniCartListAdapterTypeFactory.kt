@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.minicart.cartlist.MiniCartListActionListener
-import com.tokopedia.minicart.cartlist.MiniCartProgressiveInfoListener
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartGwpGiftUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductBundleRecomShimmeringUiModel
@@ -23,11 +22,13 @@ import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableHeaderUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableReasonUiModel
 import com.tokopedia.minicart.cartlist.viewholder.MiniCartAccordionViewHolder
 import com.tokopedia.minicart.cartlist.viewholder.MiniCartGwpGiftViewHolder
+import com.tokopedia.minicart.cartlist.viewholder.MiniCartGwpGiftViewHolder.MiniCartGwpGiftListener
 import com.tokopedia.minicart.cartlist.viewholder.MiniCartLoadingViewHolder
 import com.tokopedia.minicart.cartlist.viewholder.MiniCartProductBundleRecomShimmeringViewHolder
 import com.tokopedia.minicart.cartlist.viewholder.MiniCartProductBundleRecomViewHolder
 import com.tokopedia.minicart.cartlist.viewholder.MiniCartProductViewHolder
 import com.tokopedia.minicart.cartlist.viewholder.MiniCartProgressiveInfoViewHolder
+import com.tokopedia.minicart.cartlist.viewholder.MiniCartProgressiveInfoViewHolder.MiniCartProgressiveInfoListener
 import com.tokopedia.minicart.cartlist.viewholder.MiniCartSeparatorViewHolder
 import com.tokopedia.minicart.cartlist.viewholder.MiniCartShopViewHolder
 import com.tokopedia.minicart.cartlist.viewholder.MiniCartTickerErrorViewHolder
@@ -54,7 +55,8 @@ class MiniCartListAdapterTypeFactory(
     private val listener: MiniCartListActionListener,
     private val multipleProductBundleListener: MultipleProductBundleListener? = null,
     private val singleProductBundleListener: SingleProductBundleListener? = null,
-    private val progressiveInfoListener: MiniCartProgressiveInfoListener? = null
+    private val progressiveInfoListener: MiniCartProgressiveInfoListener? = null,
+    private val gwpGiftListener: MiniCartGwpGiftListener? = null
 ) : BaseAdapterTypeFactory(), MiniCartListTypeFactory {
 
     override fun type(uiModel: MiniCartAccordionUiModel): Int {
@@ -232,7 +234,7 @@ class MiniCartListAdapterTypeFactory(
                     view as ViewGroup,
                     false
                 )
-                MiniCartGwpGiftViewHolder(viewBinding)
+                MiniCartGwpGiftViewHolder(viewBinding, gwpGiftListener)
             }
 
             else -> super.createViewHolder(view, viewType)

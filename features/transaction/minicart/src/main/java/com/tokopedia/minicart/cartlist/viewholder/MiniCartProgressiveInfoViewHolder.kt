@@ -5,12 +5,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.R
-import com.tokopedia.minicart.cartlist.MiniCartProgressiveInfoListener
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProgressiveInfoUiModel
 import com.tokopedia.minicart.databinding.ItemMiniCartProgressiveInfoBinding
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -35,8 +35,10 @@ class MiniCartProgressiveInfoViewHolder (
 
     private fun ItemMiniCartProgressiveInfoBinding.showLoadingState() {
         root.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_bmgm_mini_cart_progressive_info_loading)
+
         shimmeringIcon.show()
         shimmeringProgressiveInfo.show()
+
         icuChevron.hide()
         iuIcon.hide()
         tpProgressiveInfo.hide()
@@ -44,15 +46,18 @@ class MiniCartProgressiveInfoViewHolder (
 
     private fun ItemMiniCartProgressiveInfoBinding.showRefreshState(offerId: Long) {
         root.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_bmgm_mini_cart_progressive_info_refresh)
+
         iuIcon.hide()
         shimmeringIcon.hide()
         shimmeringProgressiveInfo.hide()
+
         tpProgressiveInfo.show()
         tpProgressiveInfo.text = getString(R.string.mini_cart_progressive_info_failed_text)
         tpProgressiveInfo.setTextColor(ContextCompat.getColor(itemView.context, unifyprinciplesR.color.Unify_NN950))
+
         icuChevron.setImage(IconUnify.RELOAD)
         icuChevron.setOnClickListener {
-            listener?.onRefreshClicked(offerId)
+            listener?.onClickRefreshIcon(offerId)
         }
     }
 
@@ -60,18 +65,32 @@ class MiniCartProgressiveInfoViewHolder (
         element: MiniCartProgressiveInfoUiModel
     ) {
         root.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_bmgm_mini_cart_progressive_info)
+        root.addOnImpressionListener(element) {
+            listener?.onImpressProgressiveInfo(element.offerId)
+        }
+
         iuIcon.show()
+        iuIcon.loadImage(element.icon)
+
         shimmeringIcon.hide()
         shimmeringProgressiveInfo.hide()
-        iuIcon.loadImage(element.icon)
+
         tpProgressiveInfo.show()
         tpProgressiveInfo.text = MethodChecker.fromHtml(element.message)
         tpProgressiveInfo.setTextColor(ContextCompat.getColor(itemView.context, unifyprinciplesR.color.Unify_TN500))
+
         icuChevron.setImage(IconUnify.CHEVRON_RIGHT)
         icuChevron.showIfWithBlock(element.appLink.isNotBlank()) {
             setOnClickListener {
+                listener?.onClickChevronIcon(element.offerId)
                 RouteManager.route(icuChevron.context, element.appLink)
             }
         }
+    }
+
+    interface MiniCartProgressiveInfoListener {
+        fun onClickRefreshIcon(offerId: Long)
+        fun onClickChevronIcon(offerId: Long)
+        fun onImpressProgressiveInfo(offerId: Long)
     }
 }

@@ -5,6 +5,7 @@ import com.tokopedia.bmsm_widget.presentation.model.ProductGiftUiModel
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 
 data class MiniCartGwpGiftUiModel(
+    val offerId: Long,
     val tierId: Long,
     val ribbonText: String,
     val ctaText: String,

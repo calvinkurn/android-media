@@ -432,6 +432,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
     ): List<MiniCartGwpGiftUiModel> {
         return bmgmData.tierProductList.map { tierProduct ->
             MiniCartGwpGiftUiModel(
+                offerId = bmgmData.offerId,
                 tierId = tierProduct.tierId,
                 ribbonText = tierProduct.benefitWording,
                 ctaText = tierProduct.actionWording,

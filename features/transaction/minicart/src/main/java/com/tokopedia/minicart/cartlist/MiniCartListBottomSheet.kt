@@ -31,6 +31,8 @@ import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.SummaryTransactionBottomSheet
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.minicart.cartlist.viewholder.MiniCartGwpGiftViewHolder
+import com.tokopedia.minicart.cartlist.viewholder.MiniCartProgressiveInfoViewHolder.MiniCartProgressiveInfoListener
 import com.tokopedia.minicart.chatlist.MiniCartChatListBottomSheet
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.tracker.ProductBundleRecomTracker
@@ -218,7 +220,7 @@ class MiniCartListBottomSheet @Inject constructor(
     }
 
     private fun initializeRecyclerView(viewBinding: LayoutBottomsheetMiniCartListBinding) {
-        val adapterTypeFactory = MiniCartListAdapterTypeFactory(this, multiProductBundleCallback(), singleProductBundleCallback(), progressiveInfoCallback())
+        val adapterTypeFactory = MiniCartListAdapterTypeFactory(this, multiProductBundleCallback(), singleProductBundleCallback(), progressiveInfoCallback(), gwpGiftCallback())
         adapter = MiniCartListAdapter(adapterTypeFactory)
         viewBinding.rvMiniCartList.adapter = adapter
         viewBinding.rvMiniCartList.layoutManager = LinearLayoutManager(viewBinding.root.context, LinearLayoutManager.VERTICAL, false)
@@ -415,8 +417,26 @@ class MiniCartListBottomSheet @Inject constructor(
     }
 
     private fun progressiveInfoCallback() = object: MiniCartProgressiveInfoListener {
-        override fun onRefreshClicked(offerId: Long) {
+        override fun onClickRefreshIcon(offerId: Long) {
             viewModel?.getBmGmGroupProductTicker(offerId)
+        }
+
+        override fun onClickChevronIcon(offerId: Long) {
+            analytics.gwpAnalytics.sendClickCardOnGwpEvent(offerId)
+        }
+
+        override fun onImpressProgressiveInfo(offerId: Long) {
+            analytics.gwpAnalytics.sendImpressionGwpCardEvent(offerId)
+        }
+    }
+
+    private fun gwpGiftCallback() = object: MiniCartGwpGiftViewHolder.MiniCartGwpGiftListener {
+        override fun onImpressProductGift(offerId: Long) {
+            analytics.gwpAnalytics.sendImpressionGwpCardGiftListEvent(offerId)
+        }
+
+        override fun onClickCta(offerId: Long) {
+            analytics.gwpAnalytics.sendClickSeeOnGwpCardGiftListEvent(offerId)
         }
     }
 
