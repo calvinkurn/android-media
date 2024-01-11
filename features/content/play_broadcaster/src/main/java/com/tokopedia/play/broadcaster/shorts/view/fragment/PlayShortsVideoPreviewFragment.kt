@@ -61,6 +61,8 @@ class PlayShortsVideoPreviewFragment @Inject constructor(
                                 override fun onVideoClicked() {
                                     if (videoState == VideoState.Play) {
                                         videoPreviewManager.pause()
+                                    } else {
+                                        videoPreviewManager.play()
                                     }
                                 }
 
