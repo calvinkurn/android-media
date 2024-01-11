@@ -12,7 +12,7 @@
         android:orientation="vertical"
         android:visibility="visible"
         app:container_color="GREEN"
-        app:layout_constraintBottom_toBottomOf="@id/searchBroadMatchBarrier"
+        app:layout_constraintBottom_toBottomOf="@id/inspirationCarouselListPostAtcProductSeparator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -29,7 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/inspirationCarouselListPostAtcProductAtc"
@@ -105,25 +105,12 @@
         android:id="@+id/inspirationCarouselListPostAtcProduct"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:paddingBottom="12dp"
         android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inspirationCarouselListPostAtcHeaderSubtitle"
         tools:visibility="gone" />
-
-    <View
-        android:id="@+id/inspirationCarouselListPostAtcProductSeparator"
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="10dp"
-        android:background="@color/Unify_NN50"
-        android:visibility="gone"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inspirationCarouselListPostAtcProduct"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:visibility="gone"/>
 
     <com.tokopedia.carouselproductcard.reimagine.CarouselProductCardView
         android:id="@+id/inspirationCarouselListPostAtcProductReimagine"
@@ -131,18 +118,32 @@
         android:layout_height="wrap_content"
         android:paddingBottom="12dp"
         android:layout_marginTop="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inspirationCarouselListPostAtcHeaderSubtitle"
         tools:visibility="visible" />
 
+    <View
+        android:id="@+id/inspirationCarouselListPostAtcProductSeparator"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/Unify_NN50"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/searchBroadMatchBarrier"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
+        tools:visibility="visible" />
+
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/searchBroadMatchBarrier"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="inspirationCarouselListPostAtcProductSeparator,inspirationCarouselListPostAtcProductReimagine, inspirationCarouselListPostAtcSuccessMessageHide" />
+        app:constraint_referenced_ids="inspirationCarouselListPostAtcProductReimagine,
+        inspirationCarouselListPostAtcSuccessMessageHide,
+        inspirationCarouselListPostAtcProduct" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/inspirationCarouselListPostAtcHideGroup"
@@ -154,7 +155,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/inspirationCarouselListPostAtcSuccesHide"
