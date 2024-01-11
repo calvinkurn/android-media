@@ -1,6 +1,4 @@
 ---
-span
----
 <!--left header table-->
 
 | Status          | <!--start status:GREEN-->RELEASE<!--end status-->                                                                                                                                                                                                                                                          |
@@ -29,9 +27,9 @@ Targeted Ticker Widget is a component designed to centralize the utilization of 
 The Targeted Ticker Widget extends our standard ticker functionality, operating like a regular ticker but with a built-in use
 case.
 
-![targeted_ticker_example_in_lacak_page](https://docs-android.tokopedia.net/images/docs/images_in_zip/targeted_ticker_example_in_lacak_page.png)
+<img src="https://docs-android.tokopedia.net/images/docs/images_in_zip/targeted_ticker_example_in_lacak_page.png" height="400" />
 
-# Setup
+#### Setup
 
 #### 1. Add dependencies
 
@@ -106,6 +104,7 @@ Param / data you required to passing
 | `target`          | `List<Target>` | This will provide from your Backend, please ask your backend. its can be optional |
 
 Note :
+
 1. Target required from the backend Targeted ticker as logic when to show ticker
 2. Template required from the Backend Targeted Ticker as logic for replaceable key value
 
