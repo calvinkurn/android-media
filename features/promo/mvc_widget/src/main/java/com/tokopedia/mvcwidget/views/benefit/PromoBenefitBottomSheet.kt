@@ -1,4 +1,4 @@
-package com.tokopedia.promousage.view.benefit
+package com.tokopedia.mvcwidget.views.benefit
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
@@ -22,8 +22,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.promousage.databinding.PromoBenefitBottomsheetBinding
-import com.tokopedia.promousage.di.DaggerPromoUsageComponent
+import com.tokopedia.mvcwidget.databinding.PromoBenefitBottomsheetBinding
+import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -50,7 +50,7 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
 //            unifycomponentsR.style.UnifyBottomSheetOverlapStyle
 //        )
         val baseAppComponent = (activity?.application as BaseMainApplication).baseAppComponent
-        DaggerPromoUsageComponent.builder()
+        DaggerMvcComponent.builder()
             .baseAppComponent(baseAppComponent)
             .build()
             .inject(this)

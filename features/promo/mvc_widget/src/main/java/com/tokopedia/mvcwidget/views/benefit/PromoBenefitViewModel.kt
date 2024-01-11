@@ -1,4 +1,4 @@
-package com.tokopedia.promousage.view.benefit
+package com.tokopedia.mvcwidget.views.benefit
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

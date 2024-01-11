@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.promousage.view.benefit.PromoBenefitViewModel
 import com.tokopedia.promousage.view.viewmodel.PromoUsageViewModel
 import dagger.Binds
 import dagger.Module
@@ -24,9 +23,4 @@ abstract class PromoUsageViewModelModule {
     @ViewModelKey(PromoUsageViewModel::class)
     internal abstract fun bindPromoUsageViewModel(viewModel: PromoUsageViewModel): ViewModel
 
-    @Binds
-    @IntoMap
-    @ActivityScope
-    @ViewModelKey(PromoBenefitViewModel::class)
-    internal abstract fun bindPromoBenefitViewModel(viewModel: PromoBenefitViewModel): ViewModel
 }

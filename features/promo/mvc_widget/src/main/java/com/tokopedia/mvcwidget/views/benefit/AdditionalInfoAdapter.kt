@@ -1,10 +1,10 @@
-package com.tokopedia.promousage.view.benefit
+package com.tokopedia.mvcwidget.views.benefit
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.tokopedia.promousage.databinding.LayoutItemInfoBinding
+import com.tokopedia.mvcwidget.databinding.LayoutItemInfoBinding
 
 class AdditionalInfoAdapter : RecyclerView.Adapter<AdditionalInfoAdapter.InfoViewHolder>() {
 

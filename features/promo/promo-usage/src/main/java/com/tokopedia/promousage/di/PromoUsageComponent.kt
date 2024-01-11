@@ -2,7 +2,6 @@ package com.tokopedia.promousage.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.promousage.view.benefit.PromoBenefitBottomSheet
 import com.tokopedia.promousage.view.bottomsheet.PromoUsageBottomSheet
 import dagger.Component
 
@@ -13,5 +12,4 @@ import dagger.Component
 )
 interface PromoUsageComponent {
     fun inject(bottomSheet: PromoUsageBottomSheet)
-    fun inject(bottomSheet: PromoBenefitBottomSheet)
 }

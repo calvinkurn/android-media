@@ -1,4 +1,4 @@
-package com.tokopedia.promousage.view.benefit
+package com.tokopedia.mvcwidget.views.benefit
 
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity

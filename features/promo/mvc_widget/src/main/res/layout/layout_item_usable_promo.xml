@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/promo_usage_ic_rounded_checkmark" />
+        tools:srcCompat="@drawable/ic_action_check" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_name"

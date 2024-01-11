@@ -1,4 +1,4 @@
-package com.tokopedia.promousage.view.benefit
+package com.tokopedia.mvcwidget.views.benefit
 
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.tokopedia.promousage.databinding.LayoutItemUsablePromoBinding
+import com.tokopedia.mvcwidget.databinding.LayoutItemUsablePromoBinding
 import kotlinx.parcelize.Parcelize
 
 class UsablePromoAdapter :
