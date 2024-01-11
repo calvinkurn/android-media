@@ -12,11 +12,9 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.tokopedia.header.compose.HeaderActionButton
-import com.tokopedia.header.compose.HeaderIconSource.Painter
 import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.iconunify.IconUnify
@@ -30,6 +28,7 @@ import com.tokopedia.nest.components.loader.NestLoaderSize
 import com.tokopedia.nest.components.loader.NestLoaderType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.IconSource
 import com.tokopedia.logisticorder.R as logisticorderR
 
 @Composable
@@ -46,7 +45,6 @@ fun TrackingPageScreen(
     onEvent: (TrackingPageEvent) -> Unit
 ) {
     val unifyIconId = getIconUnifyResourceIdRef(iconId = IconUnify.CALL_CENTER)
-    val icon = painterResource(id = unifyIconId)
     Scaffold(topBar = {
         NestHeader(
             type = NestHeaderType.SingleLine(
@@ -55,7 +53,7 @@ fun TrackingPageScreen(
                 optionsButton = if (!state.trackingData?.page?.contactUsUrl.isNullOrEmpty()) {
                     listOf(
                         HeaderActionButton(
-                            icon = Painter(icon),
+                            icon = IconSource.Painter(unifyIconId),
                             onClicked = { state.trackingData?.page?.contactUsUrl?.run(openWebview) }
                         )
                     )
