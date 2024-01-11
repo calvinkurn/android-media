@@ -1,4 +1,4 @@
-package com.tokopedia.content.common.report_content
+package com.tokopedia.stories.bottomsheet
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth

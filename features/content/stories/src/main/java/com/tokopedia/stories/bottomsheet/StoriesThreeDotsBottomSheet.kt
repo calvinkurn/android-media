@@ -19,7 +19,6 @@ import com.tokopedia.stories.view.fragment.StoriesDetailFragment
 import com.tokopedia.stories.view.showDialog
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction
-import com.tokopedia.content.common.report_content.ThreeDotsPage
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
 import com.tokopedia.stories.view.viewmodel.state.StoriesUiState
@@ -77,8 +76,7 @@ class StoriesThreeDotsBottomSheet @Inject constructor() : BottomSheetUnify() {
                     selectedGroup.detail.detailItems.getOrNull(selectedGroup.detail.selectedDetailPosition)?.menus
                         ?: return@setContent
 
-
-               ThreeDotsPage(menuList = currentItem, onMenuClicked = ::onMenuClicked)
+                ThreeDotsPage(menuList = currentItem, onMenuClicked = ::onMenuClicked)
             }
         }
         setChild(composeView)
