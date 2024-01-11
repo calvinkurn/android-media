@@ -33,6 +33,7 @@ class ComparisonViewHolder(
         fun onComparisonSwitchButtonClicked(
             items: List<ComparisonUiModel.ComparisonContent>
         )
+
         fun onComparisonSeeMoreButtonClicked(items: List<ComparisonUiModel.ComparisonContent>)
         fun onComparisonProductClick(id: String)
 
@@ -90,7 +91,8 @@ class ComparisonViewHolder(
         comparedItem: ComparisonUiModel.ComparisonContent?,
         comparisonItems: List<ComparisonUiModel.ComparisonContent>
     ) {
-        val specs = if (isDisplayingTopSpec) comparedItem?.topComparisonSpecs else comparedItem?.comparisonSpecs
+        val specs =
+            if (isDisplayingTopSpec) comparedItem?.topComparisonSpecs else comparedItem?.comparisonSpecs
         layoutComparison.apply {
             tfProductName.text = comparedItem?.productTitle.orEmpty()
             tfProductPrice.text = comparedItem?.price.orEmpty()
@@ -98,7 +100,8 @@ class ComparisonViewHolder(
             root.addOneTimeGlobalLayoutListener {
                 val textAreaWidth: Double = tfProductPrice.measuredWidth.orZero().toDouble()
                 configureRowsHeight(textAreaWidth, comparedItem, comparisonItems)
-                rvSpecs.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
+                rvSpecs.layoutManager =
+                    LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
                 rvSpecs.adapter = ComparisonSpecItemAdapter(specs.orEmpty(), true)
                 setupComparisonListItem(comparisonItems)
             }
@@ -110,13 +113,15 @@ class ComparisonViewHolder(
         comparedItem: ComparisonUiModel.ComparisonContent?,
         comparisonItems: List<ComparisonUiModel.ComparisonContent>
     ) {
-        val specs = if (isDisplayingTopSpec) comparedItem?.topComparisonSpecs else comparedItem?.comparisonSpecs
+        val specs =
+            if (isDisplayingTopSpec) comparedItem?.topComparisonSpecs else comparedItem?.comparisonSpecs
         val rowsHeight = List(specs?.size.orZero()) { DEFAULT_LINE_COUNT }.toMutableList()
         var titleHeight = DEFAULT_LINE_COUNT
 
         // update list
         comparisonItems.forEach {
-            val tempTitleHeight = ceil((it.productTitle.length * DEFAULT_TITLE_CHAR_WIDTH) / textAreaWidth).toInt()
+            val tempTitleHeight =
+                ceil((it.productTitle.length * DEFAULT_TITLE_CHAR_WIDTH) / textAreaWidth).toInt()
             if (tempTitleHeight == MAX_PRODUCT_TITLE_LINES) titleHeight = tempTitleHeight
             if (isDisplayingTopSpec) {
                 it.topComparisonSpecs.updateRowsHeight(rowsHeight, textAreaWidth)
@@ -203,7 +208,11 @@ class ComparisonViewHolder(
     }
 
     override fun bind(element: ComparisonUiModel) {
-        comparisonItemListener?.onComparisonImpression(element.content.getOrNull(Int.ONE)?.id.orEmpty(), element.widgetName)
+        val comparedId = element.content.slice(Int.ONE until element.content.size).joinToString(",") { it.id }
+        comparisonItemListener?.onComparisonImpression(
+            comparedId,
+            element.widgetName
+        )
         if (element.content.isEmpty()) return
         this.comparisonContents = element.content
         val comparisonItems = element.content.subList(Int.ONE, element.content.size)
