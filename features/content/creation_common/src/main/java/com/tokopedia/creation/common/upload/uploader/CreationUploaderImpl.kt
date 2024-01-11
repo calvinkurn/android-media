@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.creation.common.upload.const.CreationUploadConst
 import com.tokopedia.creation.common.upload.domain.repository.CreationUploadQueueRepository
@@ -14,7 +15,8 @@ import com.tokopedia.creation.common.upload.uploader.worker.CreationUploaderWork
 import com.tokopedia.creation.common.upload.util.logger.CreationUploadLogger
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.mapNotNull
 import javax.inject.Inject
 
 /**
@@ -25,6 +27,7 @@ class CreationUploaderImpl @Inject constructor(
     private val workManager: WorkManager,
     private val creationUploadQueueRepository: CreationUploadQueueRepository,
     private val logger: CreationUploadLogger,
+    private val gson: Gson,
 ) : CreationUploader {
 
     private val uploadResultFlow = MutableSharedFlow<CreationUploadResult>()
@@ -37,23 +40,33 @@ class CreationUploaderImpl @Inject constructor(
     override fun observe(): Flow<CreationUploadResult> {
         return creationUploadQueueRepository
             .observeTopQueue()
-            .map { creationUploadData ->
-                when (creationUploadData.uploadStatus) {
-                    CreationUploadStatus.Upload -> {
-                        CreationUploadResult.Upload(creationUploadData, creationUploadData.uploadProgress)
+            .distinctUntilChanged()
+            .mapNotNull { data ->
+                try {
+                    if (data == null) return@mapNotNull CreationUploadResult.Empty
+
+                    val creationUploadData = CreationUploadData.parseFromEntity(data, gson)
+
+                    when (creationUploadData.uploadStatus) {
+                        CreationUploadStatus.Upload -> {
+                            CreationUploadResult.Upload(creationUploadData, creationUploadData.uploadProgress)
+                        }
+                        CreationUploadStatus.OtherProcess -> {
+                            CreationUploadResult.OtherProcess(creationUploadData, creationUploadData.uploadProgress)
+                        }
+                        CreationUploadStatus.Success -> {
+                            CreationUploadResult.Success(creationUploadData)
+                        }
+                        CreationUploadStatus.Failed -> {
+                            CreationUploadResult.Failed(creationUploadData)
+                        }
+                        else -> {
+                            CreationUploadResult.Unknown
+                        }
                     }
-                    CreationUploadStatus.OtherProcess -> {
-                        CreationUploadResult.OtherProcess(creationUploadData, creationUploadData.uploadProgress)
-                    }
-                    CreationUploadStatus.Success -> {
-                        CreationUploadResult.Success(creationUploadData)
-                    }
-                    CreationUploadStatus.Failed -> {
-                        CreationUploadResult.Failed(creationUploadData)
-                    }
-                    else -> {
-                        CreationUploadResult.Unknown
-                    }
+                } catch (throwable: Throwable) {
+                    logger.sendLog(data.toString(), throwable)
+                    null
                 }
             }
     }

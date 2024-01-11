@@ -18,4 +18,7 @@
     <files-path
         name="voucher_images"
         path="voucher_images/" />
+    <external-path
+        name="downloads"
+        path="." />
 </paths>

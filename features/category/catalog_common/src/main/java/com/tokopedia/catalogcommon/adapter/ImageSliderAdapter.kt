@@ -1,23 +1,15 @@
 package com.tokopedia.catalogcommon.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.PagerAdapter
 import com.tokopedia.catalogcommon.databinding.ItemSliderTextImageBinding
-import com.tokopedia.catalogcommon.databinding.ItemTrustmakerBinding
 import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
-import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
-import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 
 class ImageSliderAdapter(private val itemList: List<SliderImageTextUiModel.ItemSliderImageText>) :
     RecyclerView.Adapter<ImageSliderAdapter.ViewHolder>() {
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemSliderTextImageBinding.inflate(
@@ -53,12 +45,14 @@ class ImageSliderAdapter(private val itemList: List<SliderImageTextUiModel.ItemS
             itemView.root.layoutParams.width = desiredWidth
         }
         fun bindToView(itemUiModel: SliderImageTextUiModel.ItemSliderImageText) {
-
             ivImage.loadImage(itemUiModel.image)
-            tvTitle.text = itemUiModel.textDescription
+            tvTitle.text = itemUiModel.textTitle
             tvHighlight.text = itemUiModel.textHighlight
             tvDescription.text = itemUiModel.textDescription
+            tvHighlight.setTextColor(itemUiModel.textHighlightColor)
+            tvHighlight.showWithCondition(itemUiModel.textHighlight.isNotEmpty())
+            tvTitle.setTextColor(itemUiModel.textTitleColor)
+            tvDescription.setTextColor(itemUiModel.textDescriptionColor)
         }
-
     }
 }

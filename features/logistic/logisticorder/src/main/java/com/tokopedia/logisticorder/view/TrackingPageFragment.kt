@@ -265,7 +265,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         binding?.let {
             it.referenceNumber.text = model.shippingRefNum.toHyphenIfEmptyOrNull()
 
-            it.storeName.text = model.detail.shipperName.toHyphenIfEmptyOrNull()
+            it.storeName.text = HtmlLinkHelper(it.rootView.context, model.detail.shipperName.toHyphenIfEmptyOrNull()).spannedString
             it.storeAddress.text = model.detail.shipperCity
 
             it.serviceCode.text = model.detail.serviceCode.toHyphenIfEmptyOrNull()

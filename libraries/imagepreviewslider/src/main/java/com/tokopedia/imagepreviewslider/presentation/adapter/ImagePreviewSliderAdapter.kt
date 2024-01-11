@@ -36,8 +36,8 @@ class ImagePreviewSliderAdapter(val images: MutableList<String>,
                     .load(images[position])
                     .dontAnimate()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .placeholder(com.tokopedia.design.R.drawable.ic_loading_image)
-                    .error(com.tokopedia.design.R.drawable.ic_loading_image)
+                    .placeholder(R.drawable.ic_loading_image)
+                    .error(R.drawable.ic_loading_image)
                     .centerCrop()
                     .into(holder.bannerImage)
         } catch (e: Exception) {
