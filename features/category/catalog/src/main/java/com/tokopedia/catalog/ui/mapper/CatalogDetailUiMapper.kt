@@ -5,47 +5,21 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.catalog.ui.model.CatalogDetailUiModel
-import com.tokopedia.catalog.ui.model.NavigationProperties
-import com.tokopedia.catalog.ui.model.PriceCtaProperties
-import com.tokopedia.catalog.ui.model.ShareProperties
-import com.tokopedia.catalog.ui.model.WidgetTypes
-import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
-import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
-import com.tokopedia.catalogcommon.uimodel.BaseCatalogUiModel
-import com.tokopedia.catalogcommon.uimodel.BlankUiModel
-import com.tokopedia.catalogcommon.uimodel.BuyerReviewUiModel
-import com.tokopedia.catalogcommon.uimodel.CharacteristicUiModel
-import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel
+import com.tokopedia.catalog.ui.model.*
+import com.tokopedia.catalogcommon.uimodel.*
 import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel.Companion.CELL_TITLE_ON_3_COLUMN_TYPE
 import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel.Companion.COLUMN_TITLE_ON_3_COLUMN_TYPE
 import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel.Companion.VALUE_ON_2_COLUMN_TYPE
-import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
-import com.tokopedia.catalogcommon.uimodel.DoubleBannerCatalogUiModel
-import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
-import com.tokopedia.catalogcommon.uimodel.HeroBannerUiModel
-import com.tokopedia.catalogcommon.uimodel.SliderImageTextUiModel
-import com.tokopedia.catalogcommon.uimodel.StickyNavigationUiModel
-import com.tokopedia.catalogcommon.uimodel.SupportFeaturesUiModel
-import com.tokopedia.catalogcommon.uimodel.TextDescriptionUiModel
-import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
-import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
-import com.tokopedia.catalogcommon.uimodel.VideoUiModel
 import com.tokopedia.catalogcommon.util.colorMapping
 import com.tokopedia.catalogcommon.util.getColorDarkMode
 import com.tokopedia.catalogcommon.util.stringHexColorParseToInt
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.orTrue
-import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.isEven
-import com.tokopedia.kotlin.extensions.view.isLessThanZero
-import com.tokopedia.kotlin.extensions.view.isOdd
-import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.relativeDate
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.oldcatalog.model.raw.CatalogResponseData
 import com.tokopedia.oldcatalog.model.raw.LayoutData
 import com.tokopedia.utils.date.DateUtil
-import com.tokopedia.utils.time.TimeHelper
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -131,7 +105,7 @@ class CatalogDetailUiMapper @Inject constructor(
                     )
                 )
                 val reviewDate = simpleDateFormat.parse(buyerReview.reviewDate)
-                TimeHelper.getRelativeTimeFromNow(reviewDate.time)
+                reviewDate?.relativeDate.orEmpty()
             } catch (e: Exception) {
                 FirebaseCrashlytics.getInstance().recordException(e)
                 buyerReview.reviewDate
