@@ -66,7 +66,7 @@ class ShopHomeDisplayBannerProductHotspotItemViewHolder(
         index: Int
     ) {
         widgetUiModel?.let {
-            it.data.firstOrNull()?.let { bannerItemUiModel ->
+            it.data.getOrNull(bindingAdapterPosition)?.let { bannerItemUiModel ->
                 listener?.onClickProductBannerHotspot(
                     it,
                     bannerItemUiModel,

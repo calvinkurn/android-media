@@ -20,9 +20,11 @@ import com.tokopedia.creation.common.upload.model.exception.UnknownUploadTypeExc
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadExecutionResult
 import com.tokopedia.creation.common.upload.uploader.manager.CreationUploadManagerListener
 import com.tokopedia.creation.common.upload.util.logger.CreationUploadLogger
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.concurrent.Executors
 import javax.inject.Inject
 
 /**
@@ -61,12 +63,15 @@ class CreationUploaderWorker(
     }
 
     override suspend fun doWork(): Result {
+
         return withContext(dispatchers.io) {
             /**
              * 1. Read data from DB
              * 2. Get upload manager based on type
              * 3. Execute upload manager
              */
+
+            val coroutineDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
             val notificationId = (0..10000000).random()
 
@@ -87,21 +92,25 @@ class CreationUploaderWorker(
                                 progress: Int,
                                 uploadStatus: CreationUploadStatus,
                             ) {
-                                launch {
-                                    emitProgress(progress, uploadData, uploadStatus)
+                                launch(coroutineDispatcher) {
+                                    saveProgress(progress, uploadData, uploadStatus)
                                 }
                             }
                         }
                     )
 
-                    when (val result = uploadManager.execute(notificationId)) {
+                    val result = uploadManager.execute(notificationId)
+
+                    when (result) {
                         is CreationUploadExecutionResult.Success -> {
-                            queueRepository.delete(data.queueId)
+                            launch(coroutineDispatcher) {
+                                queueRepository.delete(data.queueId)
+                            }
                         }
                         is CreationUploadExecutionResult.Error -> {
                             logger.sendLog(result.uploadData, result.throwable)
 
-                            emitProgress(CreationUploadConst.PROGRESS_FAILED, data, CreationUploadStatus.Failed)
+                            saveProgress(CreationUploadConst.PROGRESS_FAILED, data, CreationUploadStatus.Failed)
                             break
                         }
                     }
@@ -126,25 +135,18 @@ class CreationUploaderWorker(
         }
     }
 
-    private suspend fun emitProgress(
+    private suspend fun saveProgress(
         progress: Int,
         data: CreationUploadData,
         uploadStatus: CreationUploadStatus,
     ) {
-        setProgress(
-            workDataOf(
-                CreationUploadConst.PROGRESS to progress,
-                CreationUploadConst.UPLOAD_DATA to data.mapToJson(gson),
-                CreationUploadConst.UPLOAD_STATUS to uploadStatus.value,
-            )
-        )
-
         queueRepository.updateProgress(data.queueId, progress, uploadStatus.value)
     }
 
     companion object {
 
         private const val DEFAULT_DELAY_AFTER_EMIT_RESULT = 1000L
+
         fun build(): OneTimeWorkRequest {
             return OneTimeWorkRequest.Builder(CreationUploaderWorker::class.java)
                 .build()

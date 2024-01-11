@@ -6,12 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.analyticsdebugger.cassava.ui.debugger.AnalyticsDebuggerActivity.Companion.newInstance
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.ViewAnalyticsLogUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.unifycomponents.UnifyButton
 
 class ViewAnalyticsLogViewHolder(
     itemView: View
-): AbstractViewHolder<ViewAnalyticsLogUiModel>(itemView)
-{
+) : AbstractViewHolder<ViewAnalyticsLogUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_view_analytics_log
@@ -20,6 +21,7 @@ class ViewAnalyticsLogViewHolder(
     override fun bind(element: ViewAnalyticsLogUiModel) {
         val btn = itemView.findViewById<UnifyButton>(R.id.view_analytics_log_btn)
         btn.setOnClickListener {
+            DevOpsTracker.trackEntryEvent(DevopsFeature.VIEW_ANALYTICS_LOG)
             itemView.context.apply { startActivity(newInstance(this)) }
         }
     }

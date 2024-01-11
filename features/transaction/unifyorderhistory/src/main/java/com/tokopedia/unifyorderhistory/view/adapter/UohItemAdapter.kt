@@ -11,6 +11,7 @@ import com.tokopedia.unifyorderhistory.data.model.PmsNotification
 import com.tokopedia.unifyorderhistory.data.model.UohEmptyState
 import com.tokopedia.unifyorderhistory.data.model.UohListOrder
 import com.tokopedia.unifyorderhistory.data.model.UohTypeData
+import com.tokopedia.unifyorderhistory.databinding.UohBuyAgainBinding
 import com.tokopedia.unifyorderhistory.databinding.UohEmptyStateBinding
 import com.tokopedia.unifyorderhistory.databinding.UohListItemBinding
 import com.tokopedia.unifyorderhistory.databinding.UohLoaderItemBinding
@@ -21,6 +22,7 @@ import com.tokopedia.unifyorderhistory.databinding.UohRecommendationTitleBinding
 import com.tokopedia.unifyorderhistory.databinding.UohTdnBannerLayoutBinding
 import com.tokopedia.unifyorderhistory.databinding.UohTickerItemBinding
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_BANNER
+import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_BUY_AGAIN
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_EMPTY
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_LOADER
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_LOADER_PMS_BUTTON
@@ -29,6 +31,7 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_PMS_BUTTON
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_RECOMMENDATION_ITEM
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_RECOMMENDATION_TITLE
 import com.tokopedia.unifyorderhistory.util.UohConsts.TYPE_TICKER
+import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohBuyAgainViewHolder
 import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohEmptyStateViewHolder
 import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohLoaderItemViewHolder
 import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohLoaderPmsButtonItemViewHolder
@@ -40,9 +43,6 @@ import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohTdnBannerViewH
 import com.tokopedia.unifyorderhistory.view.adapter.viewholder.UohTickerItemViewHolder
 import com.tokopedia.unifyorderhistory.view.fragment.UohListFragment
 
-/**
- * Created by fwidjaja on 22/07/20.
- */
 class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var listTypeData = mutableListOf<UohTypeData>()
     private var actionListener: ActionListener? = null
@@ -57,65 +57,81 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         const val LAYOUT_BANNER = 6
         const val LAYOUT_PMS_BUTTON = 7
         const val LAYOUT_LOADER_PMS_BUTTON = 8
+        const val LAYOUT_BUY_AGAIN = 9
     }
 
     interface ActionListener {
-        fun onKebabMenuClicked(order: UohListOrder.UohOrders.Order, orderIndex: Int)
-        fun onListItemClicked(order: UohListOrder.UohOrders.Order, index: Int)
-        fun onActionButtonClicked(order: UohListOrder.UohOrders.Order, index: Int, buttonIndex: Int)
+        fun onKebabMenuClicked(order: UohListOrder.UohOrders.Order)
+        fun onListItemClicked(order: UohListOrder.UohOrders.Order)
+        fun onActionButtonClicked(order: UohListOrder.UohOrders.Order, buttonIndex: Int)
         fun onTickerDetailInfoClicked(url: String)
         fun onEmptyResultResetBtnClicked()
-        fun trackViewOrderCard(order: UohListOrder.UohOrders.Order, index: Int)
+        fun trackViewOrderCard(order: UohListOrder.UohOrders.Order)
         fun onMulaiBelanjaBtnClicked()
         fun trackProductViewRecommendation(recommendationItem: RecommendationItem, index: Int)
         fun trackProductClickRecommendation(recommendationItem: RecommendationItem, index: Int)
         fun atcRecommendationItem(recommendationItem: RecommendationItem)
         fun onImpressionPmsButton()
         fun onPmsButtonClicked()
-        fun onReviewRatingClicked(index: Int, order: UohListOrder.UohOrders.Order, appLink: String)
+        fun onReviewRatingClicked(order: UohListOrder.UohOrders.Order, appLink: String)
         fun onReviewRatingImpressed(
             orderUUID: String,
             componentData: UohListOrder.UohOrders.Order.Metadata.ExtraComponent
         )
+        fun onChevronBuyAgainWidgetClicked(applink: String)
+
+        fun onSeeAllCardClicked(applink: String)
+
+        fun onProductCardClicked(recommendationItem: RecommendationItem, index: Int)
+
+        fun onBuyAgainWidgetButtonClicked(recommendationItem: RecommendationItem, index: Int)
+
+        fun onBuyAgainItemScrolled(recommendationItem: RecommendationItem, index: Int)
+
+        fun onImpressBuyAgainWidget()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             LAYOUT_LOADER -> {
-                val binding = UohLoaderItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                val binding = UohLoaderItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 UohLoaderItemViewHolder(binding)
             }
             LAYOUT_TICKER -> {
-                val binding = UohTickerItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                val binding = UohTickerItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 UohTickerItemViewHolder(binding, actionListener)
             }
             LAYOUT_ORDER_LIST -> {
-                val binding = UohListItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
-                UohOrderListViewHolder(binding, actionListener)
+                val binding = UohListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return UohOrderListViewHolder(binding, actionListener)
             }
             LAYOUT_EMPTY_STATE -> {
-                val binding = UohEmptyStateBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                val binding = UohEmptyStateBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 UohEmptyStateViewHolder(binding, actionListener)
             }
             LAYOUT_RECOMMENDATION_TITLE -> {
-                val binding = UohRecommendationTitleBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                val binding = UohRecommendationTitleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 UohRecommendationTitleViewHolder(binding)
             }
             LAYOUT_RECOMMENDATION_LIST -> {
-                val binding = UohRecommendationItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                val binding = UohRecommendationItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 UohRecommendationItemViewHolder(binding, actionListener)
             }
             LAYOUT_BANNER -> {
-                val binding = UohTdnBannerLayoutBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                val binding = UohTdnBannerLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 UohTdnBannerViewHolder(binding)
             }
             LAYOUT_PMS_BUTTON -> {
-                val binding = UohPmsButtonItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                val binding = UohPmsButtonItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 UohPmsButtonViewHolder(binding, actionListener)
             }
             LAYOUT_LOADER_PMS_BUTTON -> {
-                val binding = UohLoaderPmsButtonItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                val binding = UohLoaderPmsButtonItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 UohLoaderPmsButtonItemViewHolder(binding)
+            }
+            LAYOUT_BUY_AGAIN -> {
+                val binding = UohBuyAgainBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                UohBuyAgainViewHolder(binding, actionListener)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -136,6 +152,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             TDN_BANNER -> LAYOUT_BANNER
             TYPE_PMS_BUTTON -> LAYOUT_PMS_BUTTON
             TYPE_LOADER_PMS_BUTTON -> LAYOUT_LOADER_PMS_BUTTON
+            TYPE_BUY_AGAIN -> LAYOUT_BUY_AGAIN
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -147,7 +164,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.bind(element)
             }
             is UohOrderListViewHolder -> {
-                holder.bind(element, holder.adapterPosition)
+                holder.bind(element)
             }
             is UohTickerItemViewHolder -> {
                 holder.bind(element)
@@ -159,7 +176,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.bind(element)
             }
             is UohRecommendationItemViewHolder -> {
-                holder.bind(element, holder.adapterPosition)
+                holder.bind(element, holder.absoluteAdapterPosition)
             }
             is UohTdnBannerViewHolder -> {
                 holder.bind(element)
@@ -168,6 +185,9 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.bind(element)
             }
             is UohLoaderPmsButtonItemViewHolder -> {
+                holder.bind(element)
+            }
+            is UohBuyAgainViewHolder -> {
                 holder.bind(element)
             }
         }
@@ -220,6 +240,11 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun appendList(list: List<UohTypeData>) {
         listTypeData.addAll(list)
         notifyDataSetChanged()
+    }
+
+    fun addBuyAgainWidget(data: UohTypeData) {
+        listTypeData.add(0, data)
+        notifyItemInserted(0)
     }
 
     fun setActionListener(fragment: UohListFragment) {

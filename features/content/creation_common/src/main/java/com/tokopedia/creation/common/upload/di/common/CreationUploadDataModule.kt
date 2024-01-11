@@ -39,7 +39,7 @@ class CreationUploadDataModule {
             dispatchers = dispatchers,
             mutex = mutex,
             gson = gson,
-            creationUploadQueueDatabase = creationUploadQueueDatabase
+            creationUploadQueueDatabase = creationUploadQueueDatabase,
         )
     }
 }

@@ -7,6 +7,8 @@ import com.tokopedia.analyticsdebugger.websocket.ui.activity.WebSocketLoggingAct
 import com.tokopedia.analyticsdebugger.websocket.ui.uimodel.WebSocketLogPageSource
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.TopchatWebSocketLoggingUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.unifycomponents.UnifyButton
 
 class TopchatWebSocketLoggingViewHolder(
@@ -18,6 +20,7 @@ class TopchatWebSocketLoggingViewHolder(
     init {
         btnViewWebSocketLogging.setOnClickListener {
             itemView.context.apply {
+                DevOpsTracker.trackEntryEvent(DevopsFeature.VIEW_TOPCHAT_WEBSOCKET_LOG)
                 startActivity(WebSocketLoggingActivity.newInstance(this, WebSocketLogPageSource.TOPCHAT))
             }
         }
