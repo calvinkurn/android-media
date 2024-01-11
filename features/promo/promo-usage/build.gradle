@@ -61,6 +61,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.webview)
+    implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)
 
     implementation rootProject.ext.testDependencies.espressoIdlingResource
     testImplementation rootProject.ext.testDependencies.archCoreTesting
