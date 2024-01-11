@@ -21,4 +21,6 @@
     <string name="review_report_social">Konten mengandung SARA, diskriminasi, vulgar, ancaman, dan pelanggaran nilai/norma sosial</string>
     <string name="review_report_other">Lainnya</string>
     <string name="review_report_sheet_header">Laporkan ulasan</string>
+    <string name="review_report_success_toaster">Kamu berhasil melaporkan ulasan ini.</string>
+    <string name="review_report_failed_toaster">Gagal mengirim laporan, coba lagi, ya.</string>
 </resources>
