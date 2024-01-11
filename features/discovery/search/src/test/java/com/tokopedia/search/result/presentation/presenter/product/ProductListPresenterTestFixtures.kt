@@ -161,7 +161,7 @@ internal open class ProductListPresenterTestFixtures {
     private val pagination = PaginationImpl()
     private val chooseAddressPresenterDelegate = ChooseAddressPresenterDelegate(chooseAddressView)
     private val lastClickedProductIdProvider = LastClickedProductIdProviderImpl()
-    private val deduplication = Deduplication(deduplicationView)
+    val deduplication = Deduplication(deduplicationView)
     private val requestParamsGenerator = RequestParamsGenerator(
         userSession,
         pagination,
@@ -203,6 +203,7 @@ internal open class ProductListPresenterTestFixtures {
             requestParamsGenerator,
             userSession,
             inspirationListAtcView,
+            viewUpdater,
             searchParameterProvider,
         )
         val suggestionPresenter = SuggestionPresenter()
@@ -627,6 +628,10 @@ internal open class ProductListPresenterTestFixtures {
 
     protected fun `Given search reimagine rollence product card will return non control variant`() {
         every { reimagineRollence.search3ProductCard() } returns Search3ProductCard.VAR_1A
+    }
+
+    protected fun getListDeduplication() : String {
+        return deduplication.getProductIdList()
     }
 
     @After

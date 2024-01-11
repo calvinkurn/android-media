@@ -41,6 +41,7 @@ object InspirationCarouselQuery {
                             description
                             rating_average
                             component_id
+                            category_id
                             label_groups {
                                 title
                                 type

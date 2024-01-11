@@ -14,6 +14,10 @@ class Deduplication @Inject constructor(
 
     private val productIdList = mutableListOf<String>()
 
+    fun getProductIdList(): String {
+        return productIdList.joinToString(",")
+    }
+
     fun appendProductId(searchProductModel: SearchProductModel) {
         productIdList.addAll(cpmProductIdList(searchProductModel))
         productIdList.addAll(organicV4ProductIdList(searchProductModel))

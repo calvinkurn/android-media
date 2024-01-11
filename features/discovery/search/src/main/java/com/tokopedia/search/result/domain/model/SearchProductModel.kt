@@ -958,6 +958,10 @@ data class SearchProductModel(
             @Expose
             val ratingAverage: String = "",
 
+            @SerializedName("category_id")
+            @Expose
+            val categoryId: String = "",
+
             @SerializedName("label_groups")
             @Expose
             val labelGroupList: List<ProductLabelGroup> = listOf(),
