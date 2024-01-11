@@ -31,16 +31,6 @@ class AutomateCouponListView @JvmOverloads constructor(
     }
 
     //region private methods
-    private fun renderBadge(badgeText: String?) {
-        if (badgeText.isNullOrEmpty()) {
-            binding.badgeGroup.hide()
-            return
-        }
-
-        binding.badgeGroup.show()
-        binding.tvBadge.text = badgeText
-    }
-
     private fun renderDetails(model: AutomateCouponModel) {
         with(binding) {
             tvType.text = model.type
@@ -55,6 +45,10 @@ class AutomateCouponListView @JvmOverloads constructor(
 
     private fun renderIcon(iconUrl: String) {
         binding.imgIconType.loadImageWithoutPlaceholder(iconUrl)
+    }
+
+    private fun renderBadge(badgeText: String?) {
+        binding.remainingBadge.render(badgeText)
     }
 
     private fun renderExpiredDate(endDate: Date?) {
