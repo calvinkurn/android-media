@@ -5,7 +5,6 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.utils.extensions.addOnImpressionListener
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.databinding.ItemDynamicProductContentBinding
-import com.tokopedia.product.detail.databinding.ItemProductContentBinding
 import com.tokopedia.product.detail.view.fragment.partialview.PartialContentView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
@@ -22,7 +21,7 @@ class ProductContentViewHolder(
     }
 
     private val binding = ItemDynamicProductContentBinding.bind(view)
-    private val header = PartialContentView(view, listener)
+    private val header = PartialContentView(binding, listener)
 
     override fun bind(element: ProductContentDataModel) {
         initializeClickListener(element)
@@ -73,14 +72,13 @@ class ProductContentViewHolder(
     }
 
     private fun initializeClickListener(element: ProductContentDataModel?) = with(binding) {
-        val itemProductContent = ItemProductContentBinding.bind(binding.root)
         val content = element ?: return@with
 
-        itemProductContent.tradeinHeaderContainer.setOnClickListener {
+        tradeinHeaderContainer.setOnClickListener {
             listener.txtTradeinClicked(getComponentTrackData(content))
         }
 
-        itemProductContent.fabDetailPdp.apply {
+        fabDetailPdp.apply {
             setOnClickListener {
                 listener.onFabWishlistClicked(activeState, getComponentTrackData(content))
             }

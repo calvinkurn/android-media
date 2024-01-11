@@ -306,6 +306,11 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         superGraphicURL
                         priceAdditionalFmt
                         separatorColor
+                        promoCodes{
+                          promoID
+                          promoCode
+                          promoCodeType
+                        }
                       }
                       componentPriceType
                     }
@@ -383,6 +388,11 @@ open class GetPdpLayoutUseCase @Inject constructor(
                           superGraphicURL
                           priceAdditionalFmt
                           separatorColor
+                          promoCodes {
+                              promoID
+                              promoCode
+                              promoCodeType
+                          }
                         }
                         componentPriceType
                         picture {

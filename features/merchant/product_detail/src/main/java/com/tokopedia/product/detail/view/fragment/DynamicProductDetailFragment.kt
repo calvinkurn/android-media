@@ -145,6 +145,7 @@ import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
+import com.tokopedia.product.detail.common.data.model.pdplayout.mapIntoPromoExternalAutoApply
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
@@ -169,7 +170,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
@@ -350,6 +350,7 @@ import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import com.tokopedia.product.detail.common.R as productdetailcommonR
 
 /**
@@ -3334,9 +3335,13 @@ open class DynamicProductDetailFragment :
     }
 
     private fun goToOneClickCheckout() {
-        val intent =
-            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
-        startActivityForResult(intent, ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
+        val p1 = viewModel.getDynamicProductInfoP1 ?: return
+        val selectedPromoCodes = p1.data.promoPrice.promoCodes.mapIntoPromoExternalAutoApply()
+
+        ProductCartHelper.goToOneClickCheckoutWithAutoApplyPromo(
+            (context as ProductDetailActivity),
+            ArrayList(selectedPromoCodes)
+        )
     }
 
     private fun sendTrackingATC(cartId: String) {

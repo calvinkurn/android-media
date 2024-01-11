@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.promoprice.PromoPriceUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 
 // https://tokopedia.atlassian.net/wiki/spaces/PDP/pages/2421492033/PDP+Promo+Revamp#Campaign-Revamp
 data class PromoPriceResponse(
@@ -22,8 +23,26 @@ data class PromoPriceResponse(
     @SerializedName("separatorColor")
     val separatorColor: String = "",
     @SerializedName("priceAdditionalFmt")
-    val priceAdditionalFmt: String = ""
+    val priceAdditionalFmt: String = "",
+    @SerializedName("promoCodes")
+    val promoCodes: List<PromoCodesResponse> = listOf()
 )
+
+data class PromoCodesResponse(
+    @SerializedName("promoID")
+    val promoId: String = "",
+    @SerializedName("promoCode")
+    val promoCode: String = "",
+    @SerializedName("promoCodeType")
+    val promoCodeType: String = "",
+)
+
+fun List<PromoCodesResponse>.mapIntoPromoExternalAutoApply() = this.map {
+    PromoExternalAutoApply(
+        code = it.promoCode,
+        type = it.promoCodeType
+    )
+}
 
 fun PromoPriceResponse.mapIntoPromoPriceUiModel(
     slashPriceFmt: String

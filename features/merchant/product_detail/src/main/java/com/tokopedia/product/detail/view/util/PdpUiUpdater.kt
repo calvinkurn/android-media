@@ -303,7 +303,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         stockWording = data.stock.stockWording,
         isVariant = data.variant.isVariant,
         productName = data.name,
-        isProductActive = basic.isActive()
+        isProductActive = basic.isActive(),
+        isShowPrice = data.isShowPrice
     ).apply {
         price = price.updatePriceFmt()
         campaign.processMaskingPrice(price)

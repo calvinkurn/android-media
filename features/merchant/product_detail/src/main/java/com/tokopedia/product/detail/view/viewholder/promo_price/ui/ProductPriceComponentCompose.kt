@@ -134,12 +134,11 @@ fun PromoPriceHeader(
             source = Remote(mainIconUrl, customUIError = {
 
             }),
-            modifier = Modifier.size(20.dp).padding(end = 4.dp)
+            modifier = Modifier.size(24.dp).padding(end = 4.dp)
         )
 
         NestTypography(
             promoPriceFmt,
-            modifier = Modifier.alignByBaseline().align(Alignment.CenterVertically),
             textStyle = NestTheme.typography.display1.copy(
                 fontWeight = FontWeight.Bold,
                 color = mainTextColor.color
@@ -151,8 +150,7 @@ fun PromoPriceHeader(
                 color = mainTextColor.color
             ),
             modifier = Modifier
-                .alignByBaseline()
-                .padding(start = 4.dp, end = 4.dp)
+                .padding(start = 4.dp, end = 4.dp, top = 4.dp)
                 .weight(1F),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -202,7 +200,7 @@ fun PromoPriceFooter(
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
                     end.linkTo(parent.absoluteRight)
-                }.height(16.dp)
+                }.height(18.dp)
             )
         }
 

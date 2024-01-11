@@ -52,6 +52,7 @@ class AtcVariantHeaderViewHolder(
         renderPriceSection(element.headerData, element.cashBackPercentage)
         renderVariantName(element.listOfVariantTitle)
         renderTokoCabang(element.isTokoCabang, element.uspImageUrl)
+        renderStock(element.headerData)
     }
 
     override fun bind(element: VariantHeaderDataModel, payloads: MutableList<Any>) {
