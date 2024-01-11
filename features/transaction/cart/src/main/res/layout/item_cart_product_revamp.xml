@@ -348,6 +348,16 @@
                 app:constraint_referenced_ids="iu_ribbon_arch,iu_ribbon_content,label_slash_price_percentage"
                 tools:visibility="gone" />
 
+            <com.tokopedia.cartrevamp.view.customview.CartCampaignFestivityTickerWidget
+                android:id="@+id/cart_campaign_ticker"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                app:layout_constraintTop_toTopOf="@id/fl_image_product"
+                app:layout_constraintStart_toEndOf="@+id/fl_image_product"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
             <LinearLayout
                 android:id="@+id/container_product_properties"
                 android:layout_width="wrap_content"
@@ -357,7 +367,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/fl_image_product"
-                app:layout_constraintTop_toTopOf="@id/fl_image_product">
+                app:layout_constraintTop_toBottomOf="@id/cart_campaign_ticker">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_qty_left"

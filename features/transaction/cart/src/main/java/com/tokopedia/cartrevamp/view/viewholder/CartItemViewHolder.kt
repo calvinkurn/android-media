@@ -30,6 +30,7 @@ import com.tokopedia.cartrevamp.view.BmGmWidgetView
 import com.tokopedia.cartrevamp.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cartrevamp.view.customview.CartSwipeRevealLayout
 import com.tokopedia.cartrevamp.view.customview.CartViewBinderHelper
+import com.tokopedia.cartrevamp.view.uimodel.CartCampaignModel
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_FOOTER
 import com.tokopedia.cartrevamp.view.uimodel.CartItemHolderData.Companion.BUNDLING_ITEM_HEADER
@@ -145,6 +146,7 @@ class CartItemViewHolder(
         renderProductAction(data)
         renderBmGmOfferTicker(data)
         renderProductTagInfo(data)
+        renderCartCampaignFestivityTicker()
     }
 
     private fun initSwipeLayout(data: CartItemHolderData) {
@@ -1870,6 +1872,40 @@ class CartItemViewHolder(
             }
         } else {
             binding.textProductTagInfo.gone()
+        }
+    }
+
+    fun enableCampaignLogoImage(): Boolean {
+        return true
+    }
+
+    fun renderCartCampaignFestivityTicker() {
+        // TODO: Implement real data
+        val data = CartCampaignModel(
+            logoUrl = "test",
+            iconUrl = "https://images.tokopedia.net/img/official_store/badge_os128.png",
+            text = "Kejar Diskon Spesial",
+            backgroundGradientStartColor = "#1675AE",
+            backgroundGradientEndColor = "#47DB6D",
+            endTimestamp = 1705046177000
+        )
+        if (data.logoUrl.isNotBlank() && enableCampaignLogoImage()) {
+            binding.cartCampaignTicker.hideTextTicker()
+            binding.cartCampaignTicker.showLogoTicker(data.logoUrl)
+        } else {
+            binding.cartCampaignTicker.hideLogoTicker()
+            binding.cartCampaignTicker.showTextTicker(
+                iconUrl = data.iconUrl,
+                text = data.text,
+                backgroundGradientStartHexColor = data.backgroundGradientStartColor,
+                backgroundGradientEndHexColor = data.backgroundGradientEndColor
+            )
+        }
+        val remainingTimeMillis = data.endTimestamp - System.currentTimeMillis()
+        if (remainingTimeMillis > 0) {
+            binding.cartCampaignTicker.showCountdown(remainingTimeMillis)
+        } else {
+            binding.cartCampaignTicker.hideCountdown()
         }
     }
 
