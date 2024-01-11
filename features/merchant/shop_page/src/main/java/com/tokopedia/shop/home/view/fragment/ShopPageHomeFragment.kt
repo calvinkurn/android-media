@@ -213,7 +213,6 @@ import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmen
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageReimagineHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
-import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.util.StaggeredGridLayoutManagerWrapper
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
@@ -3522,8 +3521,8 @@ open class ShopPageHomeFragment :
             ShopUtil.getActualPositionFromIndex(adapterPosition),
             model.widgetMasterId,
             model.isFestivity,
-            model.productList[adapterPosition].isFulfillment,
-            model.productList[adapterPosition].warehouseId
+            isFulfillment = if (adapterPosition <= model.productList.size) model.productList[adapterPosition].isFulfillment else null,
+            warehouseId = if (adapterPosition <= model.productList.size) model.productList[adapterPosition].warehouseId else null
         )
     }
 
