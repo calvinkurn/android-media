@@ -53,9 +53,6 @@ class TrackingPageComposeViewModel @Inject constructor(
     val error: SharedFlow<Throwable> = _error.asSharedFlow()
 
     fun onEvent(event: TrackingPageEvent) {
-        _uiState.update {
-            it.copy(isLoading = true)
-        }
         when (event) {
             is TrackingPageEvent.CheckAvailabilityToFindNewDriver -> {
                 retryAvailability(orderId)
@@ -95,6 +92,9 @@ class TrackingPageComposeViewModel @Inject constructor(
         this.caller = pageCaller
         launchCatchError(
             block = {
+                _uiState.update {
+                    it.copy(isLoading = true)
+                }
                 val trackingParam = trackingUseCase.getParam(orderId, orderTxId, groupType, "")
                 val getTrackingData = trackingUseCase(trackingParam)
                 val uiModel = mapper.mapTrackingDataCompose(
