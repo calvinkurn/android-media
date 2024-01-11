@@ -87,4 +87,4 @@ fun FindNewDriverSection(
     }
 }
 
-private val MILLIS_TO_SECOND = 1000L
+private const val MILLIS_TO_SECOND = 1000L

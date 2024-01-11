@@ -46,7 +46,7 @@ class TrackingPageComposeViewModel @Inject constructor(
     private var orderTxId: String? = null
     private var groupType: Int? = null
     private var trackingUrl: String? = null
-    private var caller: String? = null
+    private var caller: String = ""
     private val _uiState = MutableStateFlow(TrackingPageState())
     val uiState: StateFlow<TrackingPageState> = _uiState.asStateFlow()
     private val _error = MutableSharedFlow<Throwable>(replay = 1)
@@ -73,7 +73,7 @@ class TrackingPageComposeViewModel @Inject constructor(
             }
 
             TrackingPageEvent.Refresh -> {
-                getTrackingData(orderId, orderTxId, groupType, trackingUrl, caller.orEmpty())
+                getTrackingData(orderId, orderTxId, groupType, trackingUrl, caller)
             }
         }
     }
@@ -118,6 +118,9 @@ class TrackingPageComposeViewModel @Inject constructor(
                 getTickerData(uiModel.page.tickerUnificationTargets)
             },
             onError = { e ->
+                _uiState.update {
+                    it.copy(isLoading = false)
+                }
                 _error.emit(e)
             }
         )
@@ -145,7 +148,7 @@ class TrackingPageComposeViewModel @Inject constructor(
             try {
                 setRetryBookingUseCase(orderId)
                 delay(DELAY_AFTER_RETRY_BOOKING_NEW_DRIVER)
-                getTrackingData(orderId, orderTxId, groupType, trackingUrl, caller.orEmpty())
+                getTrackingData(orderId, orderTxId, groupType, trackingUrl, caller)
             } catch (e: Throwable) {
                 _error.emit(e)
             }
