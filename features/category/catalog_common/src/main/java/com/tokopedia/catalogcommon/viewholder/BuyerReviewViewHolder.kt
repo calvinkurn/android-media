@@ -34,7 +34,8 @@ class BuyerReviewViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.widget_buyer_review
-        private const val MAX_CHARS = 135
+        private const val MAX_LINE = 3
+        private const val MAX_LINE_WITHOUT_IMAGES = 7
     }
 
     private val binding: WidgetBuyerReviewBinding? by viewBinding()
@@ -151,7 +152,7 @@ class BuyerReviewViewHolder(
             }
 
             review?.text = carouselItem.description
-            setupSelengkapnya(carouselItem)
+            setupSelengkapnya(carouselItem, review)
         }
 
         cardData = element
@@ -218,12 +219,21 @@ class BuyerReviewViewHolder(
         return mutableString
     }
 
-    private fun setupSelengkapnya(carouselItem: BuyerReviewUiModel.ItemBuyerReviewUiModel) {
-        val reviewDesc = carouselItem.description
-        bindingBuyerReviewCardSlider?.apply {
+    private fun setupSelengkapnya(
+        carouselItem: BuyerReviewUiModel.ItemBuyerReviewUiModel,
+        reviewTypography: Typography?
+    ) {
+        val maxLine = if (carouselItem.images.isNotEmpty()) MAX_LINE else MAX_LINE_WITHOUT_IMAGES
+        reviewTypography?.setLines(maxLine)
+        reviewTypography?.post {
+            val lineCount = reviewTypography.lineCount
+            val reviewDesc = carouselItem.description
             val formattedReviewText = SpannableStringBuilder()
-            if (reviewDesc.length > MAX_CHARS) {
-                val sanitizedText = reviewDesc.substring(0, MAX_CHARS)
+            val highlightedText = itemView.context.getString(R.string.text_selengkapnya)
+
+            if (lineCount > maxLine) {
+                val charCountPerLine = reviewDesc.count()/ lineCount
+                val sanitizedText = reviewDesc.take((charCountPerLine * maxLine) - highlightedText.count())
                 val trimmedText = if (sanitizedText.endsWith("")) {
                     sanitizedText.trimEnd()
                 } else {
@@ -236,22 +246,17 @@ class BuyerReviewViewHolder(
                     )
                 )
 
-                val highlightedText = cardBrProductReview.context.getString(R.string.text_selengkapnya)
                 formattedReviewText.setSpanOnText(
                     highlightedText,
                     getClickableSpan {
-                        listener?.let {
-                            it.onClickSeeMore(carouselItem)
-                        }
+                        listener?.onClickSeeMore(carouselItem)
                     },
                     getBoldSpan(),
                     getGreenColorSpan(itemView.context)
                 )
 
-                cardBrProductReview.text = formattedReviewText
-                cardBrProductReview.movementMethod = LinkMovementMethod.getInstance()
-            } else {
-                cardBrProductReview.text = reviewDesc
+                reviewTypography.text = formattedReviewText
+                reviewTypography.movementMethod = LinkMovementMethod.getInstance()
             }
         }
     }

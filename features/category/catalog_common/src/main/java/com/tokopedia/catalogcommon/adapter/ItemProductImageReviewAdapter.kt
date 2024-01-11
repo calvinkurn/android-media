@@ -15,8 +15,8 @@ class ItemProductImageReviewAdapter(
     private val onItemClick: (position: Int) -> Unit = {}
 ): RecyclerView.Adapter<ItemProductImageReviewAdapter.ViewHolder>(){
 
-    private val lastImageIndexToShow = 2
-    private val totalMaxImgShown = 3
+    private val lastImageIndexToShow = 3
+    private val totalMaxImgShown = 4
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemProductImageReviewAdapter.ViewHolder {
         val binding = ItemBuyerImageProductReviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -28,7 +28,7 @@ class ItemProductImageReviewAdapter(
     }
 
     override fun getItemCount(): Int {
-        return if (itemList.size <= 3) {
+        return if (itemList.size <= lastImageIndexToShow) {
             itemList.size
         } else {
             totalMaxImgShown
