@@ -660,14 +660,21 @@ class StatisticFragment :
     }
 
     override fun onHtmlMetaClick(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) {
+        StatisticTracker.sendTableMetaLabelClickEvent(
+            statisticPage?.pageSource.orEmpty(),
+            meta.title,
+            "" // TODO: Use productId
+        )
         HtmlMetaBottomSheet.createInstance(meta).apply {
             setOnMetaLinkClicked(::goToHtmlMetaLink)
+            setOnCloseButtonClicked(::onHtmlMetaBottomSheetCloseClicked)
         }.show(childFragmentManager)
     }
 
     override fun onUnificationHtmlMetaClick(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) {
         HtmlMetaBottomSheet.createInstance(meta).apply {
             setOnMetaLinkClicked(::goToHtmlMetaLink)
+            setOnCloseButtonClicked(::onHtmlMetaBottomSheetCloseClicked)
         }.show(childFragmentManager)
     }
 
@@ -1468,7 +1475,21 @@ class StatisticFragment :
         }
     }
 
-    private fun goToHtmlMetaLink(appLink: String) {
+    private fun goToHtmlMetaLink(
+        bottomSheetTitle: String,
+        appLink: String
+    ) {
+        StatisticTracker.sendTableMetaMoreBottomSheetClickEvent(
+            statisticPage?.pageSource.orEmpty(),
+            bottomSheetTitle
+        )
         RouteManager.route(context, appLink)
+    }
+
+    private fun onHtmlMetaBottomSheetCloseClicked(bottomSheetTitle: String) {
+        StatisticTracker.sendTableCloseBottomSheetClickEvent(
+            statisticPage?.pageSource.orEmpty(),
+            bottomSheetTitle
+        )
     }
 }

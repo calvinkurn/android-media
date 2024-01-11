@@ -17,7 +17,7 @@ import com.tokopedia.sellerhomecommon.databinding.ShcBottomSheetHtmlMetaBinding
 import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
-class HtmlMetaBottomSheet: BaseBottomSheet<ShcBottomSheetHtmlMetaBinding>() {
+class HtmlMetaBottomSheet : BaseBottomSheet<ShcBottomSheetHtmlMetaBinding>() {
 
     companion object {
         private const val META_KEY = "meta"
@@ -39,7 +39,8 @@ class HtmlMetaBottomSheet: BaseBottomSheet<ShcBottomSheetHtmlMetaBinding>() {
         arguments?.getParcelable(META_KEY) as? TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta
     }
 
-    private var onHtmlMetaLinkClicked: (String) -> Unit = {}
+    private var onHtmlMetaLinkClicked: (String, String) -> Unit = { _, _ -> }
+    private var onCloseButtonClicked: (String) -> Unit = {}
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,10 +57,15 @@ class HtmlMetaBottomSheet: BaseBottomSheet<ShcBottomSheetHtmlMetaBinding>() {
         setTitle(meta?.title.orEmpty())
         setMovementMethod()
         setDescription()
+        setCloseButtonListener()
     }
 
-    fun setOnMetaLinkClicked(onClick: (String) -> Unit) {
+    fun setOnMetaLinkClicked(onClick: (String, String) -> Unit) {
         onHtmlMetaLinkClicked = onClick
+    }
+
+    fun setOnCloseButtonClicked(onClick: (String) -> Unit) {
+        onCloseButtonClicked = onClick
     }
 
     fun show(fm: FragmentManager) {
@@ -69,6 +75,13 @@ class HtmlMetaBottomSheet: BaseBottomSheet<ShcBottomSheetHtmlMetaBinding>() {
 
     private fun setMovementMethod() {
         binding?.tvShcHtmlMeta?.movementMethod = LinkMovementMethod.getInstance()
+    }
+
+    private fun setCloseButtonListener() {
+        setCloseClickListener {
+            onCloseButtonClicked(meta?.title.orEmpty())
+            dismiss()
+        }
     }
 
     /**
@@ -109,7 +122,7 @@ class HtmlMetaBottomSheet: BaseBottomSheet<ShcBottomSheetHtmlMetaBinding>() {
                 ClickableSpanWithCustomStyle(
                     url,
                     context,
-                    onHtmlMetaLinkClicked
+                    ::clickHtmlMetaLink
                 )
             stringBuilder.setSpan(
                 urlSpan,
@@ -121,16 +134,26 @@ class HtmlMetaBottomSheet: BaseBottomSheet<ShcBottomSheetHtmlMetaBinding>() {
         }
     }
 
-    inner class ClickableSpanWithCustomStyle(private val applink: String,
-                                             private val context: Context?,
-                                             private val onUrlClicked: (String) -> Unit) : ClickableSpan() {
+    private fun clickHtmlMetaLink(applink: String) {
+        onHtmlMetaLinkClicked(
+            meta?.title.orEmpty(),
+            applink
+        )
+    }
+
+    inner class ClickableSpanWithCustomStyle(
+        private val applink: String,
+        private val context: Context?,
+        private val onUrlClicked: (String) -> Unit
+    ) : ClickableSpan() {
         override fun updateDrawState(ds: TextPaint) {
             super.updateDrawState(ds)
             try {
                 if (context != null) {
-                    with(ds){
+                    with(ds) {
                         val textColorInt = MethodChecker.getColor(
-                            context, unifyprinciplesR.color.Unify_GN500
+                            context,
+                            unifyprinciplesR.color.Unify_GN500
                         )
                         isUnderlineText = false
                         color = textColorInt
@@ -141,7 +164,7 @@ class HtmlMetaBottomSheet: BaseBottomSheet<ShcBottomSheetHtmlMetaBinding>() {
                     }
                 }
             } catch (ignored: Exception) {
-                //No-op
+                // No-op
             }
         }
 
@@ -149,5 +172,4 @@ class HtmlMetaBottomSheet: BaseBottomSheet<ShcBottomSheetHtmlMetaBinding>() {
             onUrlClicked(applink)
         }
     }
-
 }

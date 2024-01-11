@@ -182,7 +182,6 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 import com.tokopedia.globalerror.R as globalerrorR
 import com.tokopedia.sellerhomecommon.R as sellerhomecommonR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -1577,8 +1576,8 @@ class SellerHomeFragment :
     private fun showPersonaBottomSheet(personaStatus: Int) {
         activity?.let {
             val shouldShowBottomSheet = sharedPref.shouldShowPersonaHomePopup(
-                    userSession.userId
-                ) && isFromPersona
+                userSession.userId
+            ) && isFromPersona
 
             if (shouldShowBottomSheet) {
                 runCatching {
@@ -2968,7 +2967,10 @@ class SellerHomeFragment :
         }
     }
 
-    private fun goToHtmlMetaLink(appLink: String) {
+    private fun goToHtmlMetaLink(
+        bottomSheetTitle: String,
+        appLink: String
+    ) {
         RouteManager.route(context, appLink)
     }
 
