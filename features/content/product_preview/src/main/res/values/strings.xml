@@ -9,6 +9,7 @@
     <string name="circle_dot_divider">•</string>
     <string name="bottom_atc_success_toaster">Barang berhasil ditambahkan ke Keranjang.</string>
     <string name="bottom_atc_failed_toaster">Oops, barang gagal ditambahkan ke Keranjang. </string>
+    <string name="bottom_wishlist_toaster">Barang tersimpan di Wishlist, ya. Kamu akan dapat notifikasi saat stok kembali</string>
     <string name="bottom_atc_success_click_toaster">Lihat</string>
     <string name="bottom_atc_failed_click_toaster">Coba Lagi</string>
 </resources>
