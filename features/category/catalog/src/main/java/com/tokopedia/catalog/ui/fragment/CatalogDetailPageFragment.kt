@@ -80,6 +80,7 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_OPEN_PA
 import com.tokopedia.catalog.databinding.FragmentCatalogReimagineDetailPageBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.ui.activity.CatalogComparisonDetailActivity
+import com.tokopedia.catalog.ui.activity.CatalogImagePreviewActivity
 import com.tokopedia.catalog.ui.activity.CatalogProductListActivity.Companion.EXTRA_CATALOG_URL
 import com.tokopedia.catalog.ui.activity.CatalogSwitchingComparisonActivity
 import com.tokopedia.catalog.ui.fragment.CatalogComparisonDetailFragment.Companion.ARG_PARAM_CATALOG_ID
@@ -92,6 +93,7 @@ import com.tokopedia.catalog.ui.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.catalog.util.CatalogShareUtil
 import com.tokopedia.catalogcommon.adapter.CatalogAdapterFactoryImpl
 import com.tokopedia.catalogcommon.adapter.WidgetCatalogAdapter
+import com.tokopedia.catalogcommon.bottomsheet.BuyerReviewDetailBottomSheet
 import com.tokopedia.catalogcommon.bottomsheet.ColumnedInfoBottomSheet
 import com.tokopedia.catalogcommon.customview.CatalogToolbar
 import com.tokopedia.catalogcommon.listener.AccordionListener
@@ -106,6 +108,7 @@ import com.tokopedia.catalogcommon.listener.VideoExpertListener
 import com.tokopedia.catalogcommon.listener.VideoListener
 import com.tokopedia.catalogcommon.uimodel.AccordionInformationUiModel
 import com.tokopedia.catalogcommon.uimodel.BannerCatalogUiModel
+import com.tokopedia.catalogcommon.uimodel.BuyerReviewUiModel
 import com.tokopedia.catalogcommon.uimodel.ColumnedInfoUiModel
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
 import com.tokopedia.catalogcommon.uimodel.ExpertReviewUiModel
@@ -113,6 +116,7 @@ import com.tokopedia.catalogcommon.uimodel.TopFeaturesUiModel
 import com.tokopedia.catalogcommon.uimodel.TrustMakerUiModel
 import com.tokopedia.catalogcommon.uimodel.VideoUiModel
 import com.tokopedia.catalogcommon.util.DrawableExtension
+import com.tokopedia.catalogcommon.viewholder.BuyerReviewViewHolder
 import com.tokopedia.catalogcommon.viewholder.ComparisonViewHolder
 import com.tokopedia.catalogcommon.viewholder.StickyNavigationListener
 import com.tokopedia.globalerror.GlobalError
@@ -305,7 +309,9 @@ class CatalogDetailPageFragment :
         BuyerReviewDetailBottomSheet.show(
             manager = childFragmentManager,
             reviewData = carouselItem
-        )
+        ) { position ->
+            onClickImage(carouselItem, position)
+        }
     }
 
     override fun onClickImage(
@@ -398,7 +404,6 @@ class CatalogDetailPageFragment :
                         it.id
                     }
                 }
-
             } else if (it is Fail) {
                 binding?.showPageError(it.throwable)
             }
