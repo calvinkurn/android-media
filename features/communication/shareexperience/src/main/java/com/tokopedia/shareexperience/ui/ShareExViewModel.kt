@@ -1,5 +1,6 @@
 package com.tokopedia.shareexperience.ui
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -7,13 +8,20 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shareexperience.data.util.ShareExPageTypeEnum
+import com.tokopedia.shareexperience.domain.ShareExConstants
+import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.AN_MIN_VERSION
+import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.IOS_MIN_VERSION
 import com.tokopedia.shareexperience.domain.ShareExResult
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelEnum
+import com.tokopedia.shareexperience.domain.model.property.ShareExPropertyModel
+import com.tokopedia.shareexperience.domain.model.property.linkproperties.ShareExLinkProperties
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExProductBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorArgRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorWrapperRequest
+import com.tokopedia.shareexperience.domain.model.request.shortlink.branch.ShareExBranchLinkPropertiesRequest
+import com.tokopedia.shareexperience.domain.model.request.shortlink.branch.ShareExBranchUniversalObjectRequest
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetShortLinkUseCase
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
@@ -25,6 +33,7 @@ import com.tokopedia.shareexperience.ui.util.getSelectedChipPosition
 import com.tokopedia.shareexperience.ui.util.getSelectedImageUrl
 import com.tokopedia.shareexperience.ui.util.map
 import com.tokopedia.shareexperience.ui.util.mapError
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,16 +45,23 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 class ShareExViewModel @Inject constructor(
     private val getSharePropertiesUseCase: ShareExGetSharePropertiesUseCase,
     private val getShortLinkUseCase: ShareExGetShortLinkUseCase,
+    val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     private val _actionFlow =
         MutableSharedFlow<ShareExAction>(extraBufferCapacity = 16)
+
+    // Cache id & page type for short link
+    private var _id: String = ""
+    private var _pageType: ShareExPageTypeEnum = ShareExPageTypeEnum.PDP
 
     // Cache the model from activity and body switching when chip clicked
     private var _bottomSheetModel: ShareExBottomSheetModel? = null
@@ -119,6 +135,8 @@ class ShareExViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
+                _id = id
+                _pageType = pageTypeEnum
                 _defaultUrl = defaultUrl
                 _defaultImageUrl = defaultImageUrl
                 _selectedIdChip = selectedIdChip
@@ -269,12 +287,24 @@ class ShareExViewModel @Inject constructor(
                         ShareExImageGeneratorArgRequest(entry.key, entry.value)
                     }
                 )
+                // Expected to use !!, should throw error when empty
+                val bottomSheetModel = _bottomSheetModel!!
+                val chipPosition = bottomSheetModel.getSelectedChipPosition(_selectedIdChip).orZero()
+                val shareProperty = bottomSheetModel.body.listShareProperty[chipPosition]
+                val campaign = generateCampaign(shareProperty)
+                val linkPropertiesWithCampaign = shareProperty.linkProperties.copy(
+                    desktopUrl = generateUrlWithUTM(shareProperty, channelEnum, campaign),
+                    campaign = campaign
+                )
                 getShortLinkUseCase.getShortLink(
                     imageGeneratorParams = ShareExImageGeneratorWrapperRequest(
                         params = imageGeneratorParam,
                         originalImageUrl = _imageGeneratorUiState.value.selectedImageUrl
                     ),
-                    channelEnum = channelEnum
+                    linkPropertiesParams = generateBranchLinkPropertiesRequest(
+                        linkPropertiesWithCampaign,
+                        channelEnum
+                    )
                 ).collectLatest {
                     Log.d("TESTT", it.toString())
                 }
@@ -282,6 +312,76 @@ class ShareExViewModel @Inject constructor(
                 Timber.d(throwable)
             }
         }
+    }
+
+    private fun generateUrlWithUTM(
+        shareProperty: ShareExPropertyModel,
+        channelEnum: ShareExChannelEnum,
+        campaign: String
+    ): String {
+        val utmSource = ShareExConstants.BranchValue.SOURCE
+        val desktopUrl = shareProperty.linkProperties.desktopUrl
+
+        val uri = Uri.parse(desktopUrl)
+
+        val newUri = Uri.Builder()
+            .scheme(uri.scheme)
+            .authority(uri.authority)
+            .path(uri.path)
+
+        if (uri.query != null) {
+            newUri.appendQueryParameter("utm_source", utmSource)
+            newUri.appendQueryParameter("utm_medium", channelEnum.label)
+            newUri.appendQueryParameter("utm_campaign", campaign)
+        } else {
+            newUri.query("utm_source=$utmSource&utm_medium=${channelEnum.label}&utm_campaign=$campaign")
+        }
+
+        return newUri.build().toString()
+    }
+
+    private fun generateCampaign(shareProperty: ShareExPropertyModel): String {
+        var campaign = "${_pageType.name}-$_id"
+        campaign += if (userSession.isLoggedIn) {
+            "-${userSession.userId}"
+        } else {
+            "-0"
+        }
+        campaign += "-${getSimpleDate()}"
+        if (shareProperty.imageGenerator?.sourceId?.isNotBlank() == true) {
+            campaign += "-${shareProperty.imageGenerator.sourceId}"
+        }
+        return campaign
+    }
+
+    private fun getSimpleDate(): String {
+        return SimpleDateFormat("ddMMyy", Locale.getDefault()).format(Date())
+    }
+
+    private fun generateBranchLinkPropertiesRequest(
+        shareLinkProperties: ShareExLinkProperties,
+        channelEnum: ShareExChannelEnum
+    ): ShareExBranchLinkPropertiesRequest {
+        return ShareExBranchLinkPropertiesRequest(
+            branchUniversalObjectRequest = generateBranchUniversalObjectRequest(shareLinkProperties),
+            linkerPropertiesRequest = shareLinkProperties,
+            channelEnum = channelEnum
+        )
+    }
+
+    private fun generateBranchUniversalObjectRequest(
+        shareLinkProperties: ShareExLinkProperties
+    ): ShareExBranchUniversalObjectRequest {
+        return ShareExBranchUniversalObjectRequest(
+            canonicalId = _id,
+            title = shareLinkProperties.ogTitle,
+            description = shareLinkProperties.message,
+            contentImageUrl = _imageGeneratorUiState.value.selectedImageUrl,
+            contentMetadataMap = mapOf(
+                AN_MIN_VERSION to shareLinkProperties.androidMinVersion,
+                IOS_MIN_VERSION to shareLinkProperties.iosMinVersion
+            )
+        )
     }
 
     private fun navigateToPage(appLink: String) {

@@ -9,9 +9,9 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shareexperience.data.util.ShareExMimeTypeEnum
-import com.tokopedia.shareexperience.data.util.ShareExRemoteConfigKey
 import com.tokopedia.shareexperience.data.util.ShareExResourceProvider
 import com.tokopedia.shareexperience.data.util.toArray
+import com.tokopedia.shareexperience.domain.ShareExConstants
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelModel
@@ -77,7 +77,10 @@ class ShareExChannelMapper @Inject constructor(
     private fun getSocialMediaOrderingArray(): Array<String> {
         return try {
             val socialMediaOrdering =
-                remoteConfig.getString(ShareExRemoteConfigKey.SOCIAL_MEDIA_ORDERING, "")
+                remoteConfig.getString(
+                    ShareExConstants.RemoteConfigKey.SOCIAL_MEDIA_ORDERING,
+                    ""
+                )
             JSONArray(socialMediaOrdering).toArray()
         } catch (throwable: Throwable) {
             Timber.d(throwable)

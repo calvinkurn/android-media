@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shareexperience.data.dto.ShareExBottomSheetResponseDto
+import com.tokopedia.shareexperience.data.dto.ShareExGenerateLinkPropertiesResponseDto
 import com.tokopedia.shareexperience.data.dto.ShareExPropertyResponseDto
 import com.tokopedia.shareexperience.data.dto.ShareExShareBodyResponseDto
 import com.tokopedia.shareexperience.data.dto.ShareExSharePropertiesResponseDto
@@ -63,7 +64,7 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
     private suspend fun getShareBottomSheetResponse(params: ShareExBottomSheetRequest): Flow<ShareExResult<ShareExBottomSheetModel>> {
         return flow {
             val request = getRequest(params)
-//            val dto = repository.request<ShareExBottomSheetWrapperRequest, ShareExWrapperResponseDto>(
+//            dto = repository.request<ShareExBottomSheetWrapperRequest, ShareExWrapperResponseDto>(
 //                sharePropertiesQuery,
 //                request
 //            )
@@ -107,7 +108,8 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                     link = "tokopedia://topchat"
                 ),
                 affiliateEligibility = null,
-                imageGeneratorPayload = getShareExPropertyImageGeneratorResponse()
+                imageGeneratorPayload = getShareExPropertyImageGeneratorResponse(),
+                generateLinkProperties = getGenerateLinkProperties()
             ),
             ShareExPropertyResponseDto(
                 chipTitle = "Semua Produk",
@@ -127,7 +129,8 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                     badge = "Komisi Extra",
                     expiredDate = "Hingga 31 Des 2024"
                 ),
-                imageGeneratorPayload = getShareExPropertyImageGeneratorResponse()
+                imageGeneratorPayload = getShareExPropertyImageGeneratorResponse(),
+                generateLinkProperties = getGenerateLinkProperties()
             ),
             ShareExPropertyResponseDto(
                 chipTitle = "Etalase",
@@ -145,7 +148,8 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                 affiliateEligibility = ShareExAffiliateEligibilityResponseDto(
                     commission = "<b>Komisi Rp16.000</b> / barang dijual"
                 ),
-                imageGeneratorPayload = getShareExPropertyImageGeneratorResponse()
+                imageGeneratorPayload = getShareExPropertyImageGeneratorResponse(),
+                generateLinkProperties = getGenerateLinkProperties()
             ),
             ShareExPropertyResponseDto(
                 chipTitle = "Feed",
@@ -155,7 +159,8 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                 ),
                 affiliateRegistrationWidget = ShareExAffiliateRegistrationWidgetResponseDto(),
                 affiliateEligibility = null,
-                imageGeneratorPayload = getShareExPropertyImageGeneratorResponse()
+                imageGeneratorPayload = getShareExPropertyImageGeneratorResponse(),
+                generateLinkProperties = getGenerateLinkProperties()
             )
         )
     }
@@ -207,6 +212,25 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                 ShareExPropertyImageGeneratorArgResponseDto("campaign_name", ""),
                 ShareExPropertyImageGeneratorArgResponseDto("product_image_orientation", "")
             )
+        )
+    }
+
+    private fun getGenerateLinkProperties(): ShareExGenerateLinkPropertiesResponseDto {
+        return ShareExGenerateLinkPropertiesResponseDto(
+            message = "TEST MESSAGE",
+            ogTitle = "THIS IS OG TITLE",
+            ogDescription = "THIS IS OG DESCRIPTION",
+            ogType = "",
+            ogImageUrl = "https://images.tokopedia.net/img/cache/300/tPxBYm/2022/6/22/2511631a-0065-441a-9c34-6575b80b8bfc.jpg",
+            ogVideo = "",
+            desktopUrl = "https://www.tokopedia.com/msi-official/msi-cyborg-15-a12ucx-i5-12450h-16gb-512gb-rtx2050-15-6-fhd-144hz-w11-ddr5-16gb-367d6?extParam=whid%3D2506520",
+            androidUrl = "https://www.tokopedia.com/msi-official/msi-cyborg-15-a12ucx-i5-12450h-16gb-512gb-rtx2050-15-6-fhd-144hz-w11-ddr5-16gb-367d6?extParam=whid%3D2506520",
+            iosUrl = "https://www.tokopedia.com/msi-official/msi-cyborg-15-a12ucx-i5-12450h-16gb-512gb-rtx2050-15-6-fhd-144hz-w11-ddr5-16gb-367d6?extParam=whid%3D2506520",
+            androidDeeplinkPath = "product/9310162582",
+            iosDeeplinkPath = "product/9310162582",
+            androidMinVersion = "",
+            iosMinVersion = "",
+            canonicalUrl = ""
         )
     }
 }

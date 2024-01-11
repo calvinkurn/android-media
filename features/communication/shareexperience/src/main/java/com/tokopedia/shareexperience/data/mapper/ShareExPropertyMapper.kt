@@ -2,13 +2,15 @@ package com.tokopedia.shareexperience.data.mapper
 
 import com.tokopedia.shareexperience.data.dto.ShareExBottomSheetResponseDto
 import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExPropertyImageGeneratorArgResponseDto
-import com.tokopedia.shareexperience.data.util.ShareExDefaultValue.DEFAULT_TITLE
+import com.tokopedia.shareexperience.domain.ShareExConstants
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateModel
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateRegistrationModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExBodyModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExImageGeneratorPropertyModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExPropertyModel
+import com.tokopedia.shareexperience.domain.model.property.linkproperties.ShareExFeatureEnum
+import com.tokopedia.shareexperience.domain.model.property.linkproperties.ShareExLinkProperties
 import javax.inject.Inject
 
 class ShareExPropertyMapper @Inject constructor(
@@ -38,6 +40,24 @@ class ShareExPropertyMapper @Inject constructor(
                 title = it.shareBody.title,
                 listImage = it.shareBody.thumbnailUrls,
                 affiliate = affiliate,
+                linkProperties = ShareExLinkProperties(
+                    message = it.generateLinkProperties.message,
+                    ogTitle = it.generateLinkProperties.ogTitle,
+                    ogDescription = it.generateLinkProperties.ogDescription,
+                    ogType = it.generateLinkProperties.ogType,
+                    ogImageUrl = it.generateLinkProperties.ogImageUrl,
+                    ogVideo = it.generateLinkProperties.ogVideo,
+                    androidUrl = it.generateLinkProperties.androidUrl,
+                    iosUrl = it.generateLinkProperties.iosUrl,
+                    desktopUrl = it.generateLinkProperties.desktopUrl,
+                    androidDeeplinkPath = it.generateLinkProperties.androidDeeplinkPath,
+                    iosDeeplinkPath = it.generateLinkProperties.iosDeeplinkPath,
+                    canonicalUrl = it.generateLinkProperties.canonicalUrl,
+                    androidMinVersion = it.generateLinkProperties.androidMinVersion,
+                    iosMinVersion = it.generateLinkProperties.iosMinVersion,
+                    feature = ShareExFeatureEnum.SHARE,
+                    campaign = ""
+                ),
                 imageGenerator = imageGeneratorModel
             )
             listChip.add(it.chipTitle)
@@ -81,7 +101,7 @@ class ShareExPropertyMapper @Inject constructor(
         )
 
         return ShareExBottomSheetModel(
-            title = DEFAULT_TITLE,
+            title = ShareExConstants.DefaultValue.DEFAULT_TITLE,
             body = body
         )
     }
