@@ -36,7 +36,7 @@ class ComparisonViewHolder(
         fun onComparisonSeeMoreButtonClicked(items: List<ComparisonUiModel.ComparisonContent>)
         fun onComparisonProductClick(id: String)
 
-        fun onComparisonImpression(id: String)
+        fun onComparisonImpression(id: String, widgetName: String)
         fun onComparisonScrolled(dx: Int, dy: Int, scrollProgress: Int)
     }
 
@@ -203,7 +203,7 @@ class ComparisonViewHolder(
     }
 
     override fun bind(element: ComparisonUiModel) {
-        comparisonItemListener?.onComparisonImpression(element.content.getOrNull(Int.ONE)?.id.orEmpty())
+        comparisonItemListener?.onComparisonImpression(element.content.getOrNull(Int.ONE)?.id.orEmpty(), element.widgetName)
         if (element.content.isEmpty()) return
         this.comparisonContents = element.content
         val comparisonItems = element.content.subList(Int.ONE, element.content.size)

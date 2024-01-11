@@ -21,7 +21,6 @@ import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant
 import com.tokopedia.catalog.databinding.FragmentCatalogComparisonDetailBinding
 import com.tokopedia.catalog.di.DaggerCatalogComponent
-import com.tokopedia.catalog.ui.activity.CatalogComparisonDetailActivity
 import com.tokopedia.catalog.ui.activity.CatalogSwitchingComparisonActivity
 import com.tokopedia.catalog.ui.adapter.ComparisonHeaderAdapter
 import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment.Companion.CATALOG_CAMPARE_SWITCHING_REQUEST_CODE
@@ -47,7 +46,6 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.catalog.R as catalogR
 
 class CatalogComparisonDetailFragment :
     BaseDaggerFragment(),
@@ -316,7 +314,7 @@ class CatalogComparisonDetailFragment :
         }
     }
 
-    override fun onComparisonImpression(id: String) {
+    override fun onComparisonImpression(id: String, widgetName: String) {
         // no-op
     }
 

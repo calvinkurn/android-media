@@ -140,6 +140,14 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.catalogcommon.viewholder.BuyerReviewViewHolder
+import com.tokopedia.catalogcommon.uimodel.BuyerReviewUiModel
+import com.tokopedia.catalogcommon.bottomsheet.BuyerReviewDetailBottomSheet
+import com.tokopedia.catalog.ui.activity.CatalogImagePreviewActivity
+import com.tokopedia.catalogcommon.listener.CharacteristicListener
+import com.tokopedia.catalogcommon.listener.PanelImageListener
+import com.tokopedia.catalogcommon.listener.SliderImageTextListener
+import com.tokopedia.catalogcommon.listener.SupportFeatureListener
 
 class CatalogDetailPageFragment :
     BaseDaggerFragment(),
@@ -155,7 +163,8 @@ class CatalogDetailPageFragment :
     ComparisonViewHolder.ComparisonItemListener,
     BuyerReviewViewHolder.BuyerReviewListener,
     ColumnedInfoListener,
-    VideoListener {
+    VideoListener, SupportFeatureListener, SliderImageTextListener, CharacteristicListener,
+    PanelImageListener {
 
     companion object {
         private const val QUERY_CATALOG_ID = "catalog_id"
@@ -198,7 +207,11 @@ class CatalogDetailPageFragment :
                 comparisonItemListener = this,
                 columnedInfoListener = this,
                 videoListener = this,
-                buyerReviewListener = this
+                buyerReviewListener = this,
+                supportFeatureListener = this,
+                imageTextListener = this,
+                characteristicListener = this,
+                panelImageListener = this
             )
         )
     }
@@ -223,26 +236,6 @@ class CatalogDetailPageFragment :
         activity?.window?.decorView?.let(ViewCompat::getWindowInsetsController)
     }
 
-    private val recyclerViewScrollListener: RecyclerView.OnScrollListener by lazy {
-        object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
-                binding?.rvContent?.post {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        if (!recyclerView.canScrollVertically(RecyclerView.FOCUS_DOWN)) {
-                            val indexVisible = layoutManager?.findLastVisibleItemPosition().orZero()
-                            viewModel.emitScrollEvent(indexVisible)
-                        } else {
-                            val indexVisible =
-                                layoutManager?.findFirstVisibleItemPosition().orZero()
-                            viewModel.emitScrollEvent(indexVisible)
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     private fun sendOnTimeImpression(uniqueId: String, trackerFunction: () -> Unit) {
         if (!seenTracker.any { it == uniqueId }) {
@@ -330,6 +323,10 @@ class CatalogDetailPageFragment :
             CatalogImagePreviewActivity.createIntent(it, imageUrl, position)
         }
         startActivity(intent)
+    }
+
+    override fun onBuyerReviewImpression(buyerReviewUiModel: BuyerReviewUiModel) {
+        viewModel.emitScrollEvent(buyerReviewUiModel.widgetName)
     }
 
     override fun onNavigateWidget(anchorTo: String, tabPosition: Int, tabTitle: String?) {
@@ -470,7 +467,6 @@ class CatalogDetailPageFragment :
         val layoutManager = LinearLayoutManager(context)
         rvContent.layoutManager = layoutManager
         rvContent.adapter = widgetAdapter
-        rvContent.addOnScrollListener(recyclerViewScrollListener)
         rvContent.setBackgroundColor(navigationProperties.bgColor)
         rvContent.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -694,7 +690,11 @@ class CatalogDetailPageFragment :
         }
     }
 
-    override fun onTextDescriptionImpression() {
+    override fun onBannerImpression(element: BannerCatalogUiModel) {
+        viewModel.emitScrollEvent(element.widgetName)
+    }
+
+    override fun onTextDescriptionImpression(widgetName: String) {
         sendOnTimeImpression(TRACKER_ID_IMPRESSION_TEXT_DESCRIPTION) {
             CatalogReimagineDetailAnalytics.sendEvent(
                 event = EVENT_VIEW_PG_IRIS,
@@ -704,9 +704,14 @@ class CatalogDetailPageFragment :
                 trackerId = TRACKER_ID_IMPRESSION_TEXT_DESCRIPTION
             )
         }
+
+        viewModel.emitScrollEvent(widgetName)
     }
 
-    override fun onVideoImpression(itemHasSaw: List<VideoUiModel.ItemVideoUiModel>) {
+    override fun onVideoImpression(
+        itemHasSaw: List<VideoUiModel.ItemVideoUiModel>,
+        widgetName: String
+    ) {
         val catalogDetail = viewModel.catalogDetailDataModel.value as? Success<CatalogDetailUiModel>
         val catalogTitle = catalogDetail?.data?.navigationProperties?.title.orEmpty()
         val list = arrayListOf<HashMap<String, String>>()
@@ -741,8 +746,9 @@ class CatalogDetailPageFragment :
         )
     }
 
-    override fun onVideoExpertImpression(itemHasSaw: List<ExpertReviewUiModel.ItemExpertReviewUiModel>) {
+    override fun onVideoExpertImpression(model: ExpertReviewUiModel) {
         val list = arrayListOf<HashMap<String, String>>()
+        val itemHasSaw = model.content
         for (index in itemHasSaw.indices) {
             val promotions = hashMapOf<String, String>()
             promotions[CatalogTrackerConstant.KEY_CREATIVE_NAME] = itemHasSaw[index].title
@@ -763,9 +769,10 @@ class CatalogDetailPageFragment :
                 promotion = list
             )
         }
+        viewModel.emitScrollEvent(model.widgetName)
     }
 
-    override fun onImpressionAccordionInformation() {
+    override fun onImpressionAccordionInformation(widgetName: String) {
         sendOnTimeImpression(TRACKER_ID_IMPRESSION_FAQ) {
             CatalogReimagineDetailAnalytics.sendEvent(
                 event = EVENT_VIEW_PG_IRIS,
@@ -775,6 +782,7 @@ class CatalogDetailPageFragment :
                 trackerId = TRACKER_ID_IMPRESSION_FAQ
             )
         }
+        viewModel.emitScrollEvent(widgetName)
     }
 
     override fun onClickItemAccordionInformation(
@@ -791,7 +799,10 @@ class CatalogDetailPageFragment :
         )
     }
 
-    override fun onTrustMakerImpression(currentVisibleTrustMaker: List<TrustMakerUiModel.ItemTrustMakerUiModel>) {
+    override fun onTrustMakerImpression(
+        currentVisibleTrustMaker: List<TrustMakerUiModel.ItemTrustMakerUiModel>,
+        widgetName: String
+    ) {
         val list = arrayListOf<HashMap<String, String>>()
         for (index in currentVisibleTrustMaker.indices) {
             val promotions = hashMapOf<String, String>()
@@ -816,7 +827,7 @@ class CatalogDetailPageFragment :
         }
     }
 
-    override fun onTopFeatureImpression(items: List<TopFeaturesUiModel.ItemTopFeatureUiModel>) {
+    override fun onTopFeatureImpression(items: List<TopFeaturesUiModel.ItemTopFeatureUiModel>, widgetName: String) {
         val list = arrayListOf<HashMap<String, String>>()
         for (index in items.indices) {
             val promotions = hashMapOf<String, String>()
@@ -838,9 +849,10 @@ class CatalogDetailPageFragment :
                 promotion = list
             )
         }
+        viewModel.emitScrollEvent(widgetName)
     }
 
-    override fun onDoubleBannerImpression() {
+    override fun onDoubleBannerImpression(widgetName: String) {
         sendOnTimeImpression(TRACKER_ID_IMPRESSION_DOUBLE_BANNER) {
             CatalogReimagineDetailAnalytics.sendEvent(
                 event = EVENT_VIEW_PG_IRIS,
@@ -904,7 +916,7 @@ class CatalogDetailPageFragment :
         }
     }
 
-    override fun onComparisonImpression(id: String) {
+    override fun onComparisonImpression(id: String, widgetName: String) {
         val label = "$catalogId | compared catalog id: $id"
 
         sendOnTimeImpression(TRACKER_ID_IMPRESSION_COMPARISON) {
@@ -916,6 +928,7 @@ class CatalogDetailPageFragment :
                 trackerId = TRACKER_ID_IMPRESSION_COMPARISON
             )
         }
+        viewModel.emitScrollEvent(widgetName)
     }
 
     override fun onComparisonScrolled(dx: Int, dy: Int, scrollProgress: Int) {
@@ -935,6 +948,7 @@ class CatalogDetailPageFragment :
     }
 
     override fun onColumnedInfoImpression(columnedInfoUiModel: ColumnedInfoUiModel) {
+        viewModel.emitScrollEvent(columnedInfoUiModel.widgetName)
         val catalogDetail = viewModel.catalogDetailDataModel.value as? Success<CatalogDetailUiModel>
         val catalogTitle = catalogDetail?.data?.navigationProperties?.title.orEmpty()
         val list = arrayListOf<HashMap<String, String>>()
@@ -958,5 +972,21 @@ class CatalogDetailPageFragment :
                 promotion = list
             )
         }
+    }
+
+    override fun onSupportFeatureImpression(widgetName: String) {
+        viewModel.emitScrollEvent(widgetName)
+    }
+
+    override fun onSliderImageTextImpression(widgetName: String) {
+        viewModel.emitScrollEvent(widgetName)
+    }
+
+    override fun onCharacteristicImpression(widgetName: String) {
+        viewModel.emitScrollEvent(widgetName)
+    }
+
+    override fun onPanelImageImpression(widgetName: String) {
+        viewModel.emitScrollEvent(widgetName)
     }
 }
