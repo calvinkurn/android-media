@@ -12,3 +12,5 @@ internal const val TAB_REVIEW_POS = 1
 internal const val TYPE_IMAGE = 0
 internal const val TYPE_VIDEO = 1
 internal const val TYPE_UNKNOWN = 2
+internal const val PRODUCT_CONTENT_VIDEO_KEY_REF = "productContentVideo_"
+internal const val KEY_REF_SELECTED_PRODUCT_CONTENT = 12345
