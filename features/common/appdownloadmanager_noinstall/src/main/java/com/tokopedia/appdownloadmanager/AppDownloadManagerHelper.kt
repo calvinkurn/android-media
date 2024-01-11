@@ -56,6 +56,7 @@ class AppDownloadManagerHelper(
                         setCacheExpire()
                     }
                     onBoardingBottomSheet.showBottomSheet(it.supportFragmentManager)
+                    isTriggeredByAppLink = false
                 }
             }
         }

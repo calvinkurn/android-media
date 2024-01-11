@@ -36,6 +36,8 @@ abstract class BaseDownloadManagerHelper(
 
     protected var appVersionBetaInfoModel: AppVersionBetaInfoModel? = null
 
+    protected var isTriggeredByAppLink: Boolean = false
+
     init {
         initDownloadManagerUpdateConfig()
     }
@@ -43,7 +45,8 @@ abstract class BaseDownloadManagerHelper(
     abstract fun showAppDownloadManagerBottomSheet(shouldSkipRollenceCheck: Boolean)
 
     open suspend fun isEnableShowBottomSheet(isTriggeredViaApplink: Boolean): Boolean {
-        val canShowToday = isTriggeredViaApplink || isExpired()
+        this.isTriggeredByAppLink = isTriggeredViaApplink
+        val canShowToday = isTriggeredByAppLink || isExpired()
         val isBetaNetwork = isBetaNetwork()
 
         val shouldUpgradeVersion = if (canShowToday && isBetaNetwork) {
@@ -56,11 +59,11 @@ abstract class BaseDownloadManagerHelper(
             false
         }
 
-        return isAppDownloadingBottomSheetNotShow()
-            && isBetaNetwork
-            && canShowToday
-            && shouldUpgradeVersion
-            && downloadManagerUpdateModel?.isEnabled == true
+        return isAppDownloadingBottomSheetNotShow() &&
+            isBetaNetwork &&
+            canShowToday &&
+            shouldUpgradeVersion &&
+            downloadManagerUpdateModel?.isEnabled == true
     }
 
     protected fun isExpired(): Boolean {

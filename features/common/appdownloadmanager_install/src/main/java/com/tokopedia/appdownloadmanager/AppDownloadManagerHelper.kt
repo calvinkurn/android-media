@@ -41,6 +41,7 @@ class AppDownloadManagerHelper(
                     }
                 }
                 updateAppVersionDialog?.showDialog()
+                isTriggeredByAppLink = false
             }
         }
     }
