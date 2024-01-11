@@ -7,10 +7,12 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.databinding.AutomateCouponListLayoutBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
 class AutomateCouponListView @JvmOverloads constructor(
@@ -26,17 +28,28 @@ class AutomateCouponListView @JvmOverloads constructor(
         renderBackgroundImage(model.backgroundUrl)
         renderDetails(model)
         renderIcon(model.iconUrl)
-        renderExpiredDate(model.endDate)
+        renderExpiredDate(model.endDate, model.timeLimitPrefix)
         renderBadge(model.badgeText)
     }
 
     //region private methods
     private fun renderDetails(model: AutomateCouponModel) {
         with(binding) {
-            tvType.text = model.type
-            tvBenefit.text = model.benefit
-            tvFreeText.text = model.freeText
+            tvType.render(model.type)
+            tvBenefit.render(model.benefit)
+            tvFreeText.render(model.tnc)
+            renderShopName(model.shopName)
         }
+    }
+
+    private fun renderShopName(text: DynamicColorText?) {
+        if (text == null) {
+            binding.tvStoreName.hide()
+            return
+        }
+
+        val formattedText = text.copy(value = "&#8226 &#160 ${text.value}")
+        binding.tvStoreName.render(formattedText)
     }
 
     private fun renderBackgroundImage(backgroundUrl: String) {
@@ -51,12 +64,13 @@ class AutomateCouponListView @JvmOverloads constructor(
         binding.remainingBadge.render(badgeText)
     }
 
-    private fun renderExpiredDate(endDate: Date?) {
-        if (endDate == null) {
+    private fun renderExpiredDate(endDate: Date?, prefixText: DynamicColorText?) {
+        if (endDate == null || prefixText?.value?.isEmpty() == true) {
             binding.timerGroup.hide()
             return
         }
 
+        prefixText?.let { binding.tvTimeLimitPrefix.render(it) }
         endDate.showExpiredInfo()
     }
 
@@ -70,8 +84,12 @@ class AutomateCouponListView @JvmOverloads constructor(
             targetDate = parsedCalendar
         }
 
-        binding.tvTimerPrefix.text = "Berakhir dalam"
         binding.timerGroup.show()
+    }
+
+    private fun Typography.render(dynamicColorText: DynamicColorText) {
+        text = MethodChecker.fromHtml(dynamicColorText.value)
+        setTextColor(Color.parseColor(dynamicColorText.colorHex))
     }
     //endregion
 }
