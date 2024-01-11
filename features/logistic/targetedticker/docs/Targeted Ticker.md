@@ -14,19 +14,20 @@ span
 
 ## Background
 
-Currently from Backend side have
+Currently, the backend side has
 the [Ticker Unification](https://docs.google.com/presentation/d/1hWc2LN2zxWEOPUJb8vnfzgLmmQ-FJYt3eczuf69CNPU/edit#slide=id.p3)
-feature that can accommodate the whole ticker in Tokopedia service.
-To facilitate this, we've developed a Targeted Ticker Widget to facilitate Ticker Unification. with this widget, effectively
-reducing the code required for implementing the UI and create one use case can be use by the team.
+feature that can accommodate the whole ticker in the Tokopedia service. To enhance efficiency, we've developed a Targeted Ticker
+widget to facilitate ticker unification. With this widget, effectively reducing the code required for implementing the UI and
+creating one use case can be used by the team.
 
 ## **Overview**
 
 ### Targeted Ticker Widget
 
-Targeted Ticker Widget is a widget component that used to centralize usage of Targeted Ticker provide from Backend side.
+Targeted Ticker Widget is a component designed to centralize the utilization of targeted ticker data provided from the backend.
 
-This Targeted Ticker Widget is extending our ticker. so its will work as usual ticker but with build-in useCase.
+The Targeted Ticker Widget extends our standard ticker functionality, operating like a regular ticker but with a built-in use
+case.
 
 ![Screenshot 2024-01-10 at 09.02.10.png](..%2F..%2F..%2F..%2F..%2F..%2F..%2FDesktop%2FScreenshot%202024-01-10%20at%2009.02.10.png)
 
@@ -53,7 +54,7 @@ Add TargetedTicker Widget to your fragment’s layout
 
 to get targetedTicker data from backend side, you need to call function loadAndShow()
 
-this is example to call it
+Example :
 
 ```
 loadAndShow(param)
@@ -65,21 +66,19 @@ this is case to use
 
 this case when your page show simple targeted ticker without need any data from backend side.
 
-this is example call from manage address
+Example :
 
 ```
  loadAndShow(page = TargetedTickerPage.ADDRESS_LIST_NON_OCC)
 ```
 
-page => will act as key for the page.
-
 ---
 
 ##### Case 2 : Data Passing from Backend
 
-this case will require data from your backend provide the data and will be passing to Targeted Ticker Widget
+On the Android side, you will need to map data from the backend. 
 
-example of usage
+Example :
 
 ```
  // get from your backend map to Targeted Ticker Model
@@ -98,19 +97,21 @@ example of usage
  loadAndShow(param)
 ```
 
-for implement this, you will require 3 params for targeted ticker.
+Param / data you required to passing
 
-Please note, The data will be from backend, in your side need mapping to model Targeted Ticker Widget
+| **Variable Name** | **Type**       | **Description**                                                                   |
+|-------------------|----------------|-----------------------------------------------------------------------------------|
+| `page`            | `String`       | Page Name, it can be provide from backend or hardcode                             |
+| `template`        | `Template`     | This will provide from your Backend, please ask your backend                      |
+| `target`          | `List<Target>` | This will provide from your Backend, please ask your backend. its can be optional |
 
-| **Variable Name** | **Type**       | **Description**                   |
-|-------------------|----------------|-----------------------------------|
-| `page`            | `String`       | Page Name                         |
-| `template`        | `Template`     | To show template data             |
-| `target`          | `List<Target>` | To show dynamic data from backend |
+Note :
+1. Target required from the backend Targeted ticker as logic when to show ticker
+2. Template required from the Backend Targeted Ticker as logic for replaceable key value
 
 #### 3. Custom Targeted Ticker widget with Ticker from backend
 
-to custom targeted ticker widget ui, we can use funtion setResultListener and custom ticker inside of it
+To create a custom targeted ticker widget UI, we can use the function setResultListener and a custom ticker inside of it.
 
 ```
 setResultListener(
@@ -125,7 +126,9 @@ setResultListener(
 
 #### 4. UseCase only
 
-for more custom, you can use this usecase.
+For more customization, you can use GetTargetedTickerUseCase .
+
+Example :
 
 ```
 launch {
