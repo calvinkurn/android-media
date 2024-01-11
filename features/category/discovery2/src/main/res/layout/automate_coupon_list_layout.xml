@@ -9,56 +9,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/badgeGroup"
+        <com.tokopedia.discovery2.viewcontrollers.customview.automatecoupon.BadgeView
+            android:id="@+id/remainingBadge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:constraint_referenced_ids="ivLeftRibbon, ivRightRibbon, tvBadge"
-            tools:visibility="visible" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivLeftRibbon"
-            android:layout_width="0dp"
-            android:layout_height="28dp"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="4dp"
-            android:rotationY="180"
-            android:scaleType="fitXY"
-            android:translationZ="7dp"
-            app:layout_constraintBottom_toBottomOf="@+id/ivRightRibbon"
+            android:translationZ="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/ivRightRibbon"
-            app:srcCompat="@drawable/benefit_ribbon_left_side" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivRightRibbon"
-            android:layout_width="0dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="8dp"
-            android:rotationY="180"
-            android:scaleType="fitXY"
-            android:translationZ="7dp"
-            app:layout_constraintEnd_toEndOf="@+id/ivLeftRibbon"
-            app:layout_constraintStart_toStartOf="@id/tvBadge"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/benefit_ribbon_right_side" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tvBadge"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:paddingStart="10dp"
-            android:paddingEnd="8dp"
-            android:scaleType="fitXY"
-            android:textColor="@color/Unify_Static_White"
-            android:translationZ="7dp"
-            app:layout_constraintBottom_toBottomOf="@+id/ivRightRibbon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/ivRightRibbon"
-            app:typographyType="display_3"
-            app:typographyWeight="bold"
-            tools:text="Sisa 5" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.discovery2.viewcontrollers.customview.automatecoupon.CouponCardView
             android:id="@+id/cardView"
@@ -209,7 +166,5 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.tokopedia.discovery2.viewcontrollers.customview.automatecoupon.CouponCardView>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </merge>
