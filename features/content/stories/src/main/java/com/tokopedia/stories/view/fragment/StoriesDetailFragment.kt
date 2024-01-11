@@ -658,15 +658,19 @@ class StoriesDetailFragment @Inject constructor(
         showSwipeProductJob?.cancel()
         showSwipeProductJob = viewLifecycleOwner.lifecycleScope.launch {
             if (state.isProductAvailable) {
+                binding.flStoriesProduct.hide()
                 binding.nudgeStoriesProduct.hide()
+
                 delay(DELAY_SWIPE_PRODUCT_BADGE_SHOW)
                 TransitionManager.beginDelayedTransition(
                     binding.root,
                     Fade(Fade.IN)
                         .addTarget(binding.nudgeStoriesProduct)
                 )
+                binding.flStoriesProduct.show()
                 binding.nudgeStoriesProduct.show()
             } else {
+                binding.flStoriesProduct.hide()
                 binding.nudgeStoriesProduct.hide()
             }
         }
