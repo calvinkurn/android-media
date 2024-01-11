@@ -1,4 +1,6 @@
 <resources>
+    <string name="product_preview_report_menu">Laporkan Ulasan</string>
+    <string name="product_preview_watch_menu">Mode Nonton</string>
     <string name="tab_title_product">Produk</string>
     <string name="tab_title_review">Ulasan</string>
     <string name="product_prev_menu_opt_watch">Mode nonton</string>
@@ -12,4 +14,11 @@
     <string name="bottom_wishlist_toaster">Barang tersimpan di Wishlist, ya. Kamu akan dapat notifikasi saat stok kembali</string>
     <string name="bottom_atc_success_click_toaster">Lihat</string>
     <string name="bottom_atc_failed_click_toaster">Coba Lagi</string>
+    <string name="review_report_header">Bantu kami memahami apa yang terjadi. Mengapa Anda melaporkan ulasan ini?</string>
+    <string name="review_report_reason">Alasan</string>
+    <string name="review_report_send">Kirim</string>
+    <string name="review_report_spam">Ini adalah konten spam</string>
+    <string name="review_report_social">Konten mengandung SARA, diskriminasi, vulgar, ancaman, dan pelanggaran nilai/norma sosial</string>
+    <string name="review_report_other">Lainnya</string>
+    <string name="review_report_sheet_header">Laporkan ulasan</string>
 </resources>

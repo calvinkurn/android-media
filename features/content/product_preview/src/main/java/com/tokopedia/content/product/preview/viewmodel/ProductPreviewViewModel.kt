@@ -7,6 +7,7 @@ import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
+import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
@@ -28,6 +29,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 
 /**
@@ -56,6 +58,14 @@ class ProductPreviewViewModel @AssistedInject constructor(
     val miniInfo: Flow<BottomNavUiModel>
         get() = _miniInfo
 
+    private val _reviewIndex = MutableStateFlow(0)
+
+    private val reviewPosition get() = _reviewIndex.value
+
+    private val currentReview
+        get() = if (_review.value.isNotEmpty() && reviewPosition >= 0)
+            _review.value[reviewPosition] else ReviewUiModel.Empty
+
     fun onAction(action: ProductPreviewAction) {
         when (action) {
             ProductPreviewAction.FetchReview -> getReview()
@@ -63,6 +73,9 @@ class ProductPreviewViewModel @AssistedInject constructor(
             is ProductPreviewAction.ProductAction -> handleProductAction(action.model)
             ProductPreviewAction.ProductActionFromResult -> handleProductAction(_miniInfo.value)
             is ProductPreviewAction.Navigate -> navigate(action.appLink)
+            is ProductPreviewAction.SubmitReport -> submitReport(action.model)
+            is ProductPreviewAction.ClickMenu -> menuOnClicked(action.isFromLogin)
+            is ProductPreviewAction.UpdateReviewPosition -> updateReviewIndex(action.index)
             else -> {}
         }
     }
@@ -176,6 +189,36 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 productIndicatorUiModel.copy(selected = index == position)
             }
         }
+    }
+
+    private fun submitReport(model: ReportUiModel) {
+        viewModelScope.launchCatchError(block = {
+            val result = repo.submitReport(model, currentReview.reviewId)
+            if (result) _uiEvent.emit(ProductPreviewEvent.ShowSuccessToaster(type = ProductPreviewEvent.ShowSuccessToaster.Type.Report)) else throw MessageErrorException()
+        }) {
+            _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it) {
+                submitReport(model)
+            })
+        }
+    }
+
+    private fun menuOnClicked(isFromLogin: Boolean) {
+        val status = _review.updateAndGet { review ->
+            if (isFromLogin.not()) review
+            else review.map { model ->
+                model.copy(menus = model.menus.copy(isReportable = userSessionInterface.isLoggedIn && model.author.id != userSessionInterface.userId))
+            }
+        }.getOrNull(reviewPosition)?.menus ?: return
+
+        requiredLogin(status) {
+            viewModelScope.launch {
+                _uiEvent.emit(ProductPreviewEvent.ShowMenuSheet(status))
+            }
+        }
+    }
+
+    private fun updateReviewIndex(position: Int) {
+        _reviewIndex.value = position
     }
 }
 
