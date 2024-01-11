@@ -6,23 +6,9 @@ import com.tokopedia.minicart.common.data.response.minicartlist.AvailableGroup
 import com.tokopedia.minicart.common.data.response.minicartlist.AvailableSection
 import com.tokopedia.minicart.common.data.response.minicartlist.CartDetail
 import com.tokopedia.minicart.common.data.response.minicartlist.Shop
-import com.tokopedia.minicart.common.data.response.minicartlist.WholesalePrice
 import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 
 object BmgmParamMapper {
-    private fun mapFinalPrice(
-        productQuantity: Int,
-        wholesalePrice: List<WholesalePrice>,
-        priceBeforeBenefit: Double
-    ): Double {
-        wholesalePrice.forEach {
-            if (productQuantity >= it.qtyMin && productQuantity <= it.qtyMax) {
-                return it.prdPrc
-            }
-        }
-        return priceBeforeBenefit
-    }
-
     private fun mapBundleDetail(
         cartDetail: CartDetail
     ) = BmGmGetGroupProductTickerParams.BmGmCart.BmGmCartDetails.BundleDetail(
@@ -57,18 +43,9 @@ object BmgmParamMapper {
             productId = product.productId,
             warehouseId = product.warehouseId,
             qty = product.productQuantity,
-            finalPrice = mapFinalPrice(
-                productQuantity = product.productQuantity,
-                wholesalePrice = product.wholesalePrice.map { wholesalePrice ->
-                    WholesalePrice(
-                        qtyMin = wholesalePrice.qtyMin,
-                        qtyMax = wholesalePrice.qtyMax,
-                        prdPrc = wholesalePrice.prdPrc
-                    )
-                },
-                priceBeforeBenefit = product.productOriginalPrice
-            ).toBigDecimal().toPlainString().removeSingleDecimalSuffix(),
-            shopId = shop.shopId
+            finalPrice = product.productPrice.toBigDecimal().toPlainString().removeSingleDecimalSuffix(),
+            shopId = shop.shopId,
+            checkboxState = true
         )
     }
 
@@ -91,6 +68,7 @@ object BmgmParamMapper {
             }
             .map { availableGroup ->
                 BmGmGetGroupProductTickerParams.BmGmCart(
+                    cartStringOrder = availableGroup.cartString,
                     cartDetails = mapCartDetails(
                         availableGroup = availableGroup
                     )
