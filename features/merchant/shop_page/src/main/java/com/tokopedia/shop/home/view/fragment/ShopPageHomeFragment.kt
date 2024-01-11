@@ -5668,6 +5668,6 @@ open class ShopPageHomeFragment :
         }
     }
 
-    override val parentPool: RecyclerView.RecycledViewPool
-        get() = viewBinding?.recyclerView?.recycledViewPool ?: RecyclerView.RecycledViewPool()
+    override val parentPool: RecyclerView.RecycledViewPool?
+        get() = null
 }

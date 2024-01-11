@@ -150,8 +150,8 @@ class ShopPageCampaignFragment :
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var viewModelCampaign: ShopCampaignViewModel? = null
     private var isDarkTheme: Boolean = false
-    override val parentPool: RecyclerView.RecycledViewPool
-        get() = viewBindingCampaignTab?.recyclerView?.recycledViewPool ?: RecyclerView.RecycledViewPool()
+    override val parentPool: RecyclerView.RecycledViewPool?
+        get() = null
 
     val shopCampaignTabAdapter: ShopCampaignTabAdapter
         get() = adapter as ShopCampaignTabAdapter
