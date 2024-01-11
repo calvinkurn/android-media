@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.product.detail.di.RawQueryKeyConstant.NAME_COMPONENT_FILTER_SHARED_PREF_DAGGER
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.NAME_LAYOUT_ID_DAGGER
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.PDP_COMPONENT_FILTER_SHARED_PREF_KEY
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.PDP_LAYOUT_ID_KEY
@@ -32,7 +31,7 @@ class ProductDetailDevModule {
 
     @ProductDetailScope
     @Provides
-    @Named(NAME_COMPONENT_FILTER_SHARED_PREF_DAGGER)
+    @ComponentFilter
     fun provideSharedPreference(
         @ApplicationContext context: Context
     ): SharedPreferences {

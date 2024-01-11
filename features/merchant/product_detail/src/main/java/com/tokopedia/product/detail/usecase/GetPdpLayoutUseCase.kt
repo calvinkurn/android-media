@@ -22,7 +22,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.TobacoErrorException
-import com.tokopedia.product.detail.di.RawQueryKeyConstant.NAME_COMPONENT_FILTER_SHARED_PREF_DAGGER
+import com.tokopedia.product.detail.di.ComponentFilter
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.NAME_LAYOUT_ID_DAGGER
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.product.detail.view.util.componentDevFilter
@@ -43,7 +43,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
     @Named(NAME_LAYOUT_ID_DAGGER) private val layoutIdTest: String,
     private val remoteConfig: RemoteConfig,
     private val dispatcher: CoroutineDispatchers,
-    @Named(NAME_COMPONENT_FILTER_SHARED_PREF_DAGGER) private val componentFilterSharedPref: SharedPreferences
+    @ComponentFilter private val componentFilterSharedPref: SharedPreferences
 ) {
 
     companion object {

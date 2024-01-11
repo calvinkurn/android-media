@@ -13,7 +13,6 @@ object RawQueryKeyConstant {
      * Developer Option - Product Detail - Component Filter
      * Begin
      */
-    const val NAME_COMPONENT_FILTER_SHARED_PREF_DAGGER = "componentFilterSharedPrefDagger"
     const val PDP_COMPONENT_FILTER_SHARED_PREF_KEY = "componentFilterSharedPref"
     const val PDP_COMPONENT_FILTER_VALUE = "componentFilterValue"
     const val PDP_COMPONENT_FILTER_CONDITION = "componentFilterCondition"
