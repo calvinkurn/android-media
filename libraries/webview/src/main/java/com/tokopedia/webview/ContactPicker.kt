@@ -17,7 +17,7 @@ import timber.log.Timber
 interface ContactPickerListener {
     val permissionCheckerHelper: PermissionCheckerHelper
     fun openContactPicker(fragment: Fragment, action: IntentAction)
-    fun onContactSelected(requestCode: Int, resultCode: Int, data: Intent, contentResolver: ContentResolver, context: Context, webView: TkpdWebView)
+    fun onContactSelected(requestCode: Int, resultCode: Int, data: Intent?, contentResolver: ContentResolver, context: Context, webView: TkpdWebView)
 }
 
 interface IntentAction {
@@ -57,8 +57,8 @@ class ContactPicker: ContactPickerListener {
         }
     }
 
-    override fun onContactSelected(requestCode: Int, resultCode: Int, data: Intent, contentResolver: ContentResolver, context: Context, webView: TkpdWebView) {
-        if (requestCode == CONTACT_PICKER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+    override fun onContactSelected(requestCode: Int, resultCode: Int, data: Intent?, contentResolver: ContentResolver, context: Context, webView: TkpdWebView) {
+        if (requestCode == CONTACT_PICKER_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
             val contactUri: Uri? = data.data
             val projectionNumber: Array<String> = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER)
             val projectionName: Array<String> = arrayOf(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
@@ -92,7 +92,7 @@ class ContactPicker: ContactPickerListener {
 
     private fun sendSelectedContact(name: String, number: String, webView: WebView) {
         val script = String.format(
-            "var event = new CustomEvent('cameraTriggered'," +
+            "var event = new CustomEvent('contactSelected'," +
                 "{ detail: {name: '%s', number: '%s'}});" +
                 "window.dispatchEvent(event);",
             name,
