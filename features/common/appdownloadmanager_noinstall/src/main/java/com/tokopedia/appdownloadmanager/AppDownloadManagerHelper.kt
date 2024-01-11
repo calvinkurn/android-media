@@ -32,9 +32,9 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 class AppDownloadManagerHelper(
     activityRef: WeakReference<Activity>
 ) : BaseDownloadManagerHelper(activityRef), DownloadManagerSuccessListener, CoroutineScope {
-    override fun showAppDownloadManagerBottomSheet(shouldSkipRollenceCheck: Boolean) {
+    override fun showAppDownloadManagerBottomSheet(isTriggeredViaApplink: Boolean) {
         launch {
-            if (isEnableShowBottomSheet() && isWhitelistByRollence(shouldSkipRollenceCheck)) {
+            if (isEnableShowBottomSheet(isTriggeredViaApplink) && isWhitelistByRollence(isTriggeredViaApplink)) {
                 (activityRef.get() as? FragmentActivity)?.let {
                     val onBoardingBottomSheet = AppDownloadingBottomSheet.newInstance()
                     downloadManagerUpdateModel?.let { downloadManagerUpdate ->

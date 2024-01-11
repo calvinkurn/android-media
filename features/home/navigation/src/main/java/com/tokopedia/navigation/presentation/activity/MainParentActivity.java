@@ -841,8 +841,8 @@ public class MainParentActivity extends BaseActivity implements
 
     private void showDownloadManagerBottomSheet() {
         if (appDownloadManagerHelper != null) {
-            boolean shouldSkipRollenceCheck = checkApplinkShowDownloadManager();
-            appDownloadManagerHelper.showAppDownloadManagerBottomSheet(shouldSkipRollenceCheck);
+            boolean isTriggeredViaApplink = checkApplinkShowDownloadManager();
+            appDownloadManagerHelper.showAppDownloadManagerBottomSheet(isTriggeredViaApplink);
         }
     }
 

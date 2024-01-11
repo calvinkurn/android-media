@@ -42,8 +42,8 @@ abstract class BaseDownloadManagerHelper(
 
     abstract fun showAppDownloadManagerBottomSheet(shouldSkipRollenceCheck: Boolean)
 
-    open suspend fun isEnableShowBottomSheet(): Boolean {
-        val canShowToday = isExpired()
+    open suspend fun isEnableShowBottomSheet(isTriggeredViaApplink: Boolean): Boolean {
+        val canShowToday = isTriggeredViaApplink || isExpired()
         val isBetaNetwork = isBetaNetwork()
 
         val shouldUpgradeVersion = if (canShowToday && isBetaNetwork) {
