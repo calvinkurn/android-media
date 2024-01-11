@@ -11,5 +11,7 @@ data class ProductShopDecorationTrackerDataModel(
     val widgetName: String = "",
     val widgetOption: Int = 0,
     val widgetMasterId: String = "",
-    val isFestivity: Boolean = false
+    val isFestivity: Boolean = false,
+    val isFulfilment: Boolean? = null,
+    val warehouseId: String? = null
 )

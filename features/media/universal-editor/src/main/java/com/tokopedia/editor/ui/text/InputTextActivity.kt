@@ -3,6 +3,8 @@ package com.tokopedia.editor.ui.text
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.ActivityResult
 import androidx.activity.viewModels
 import androidx.fragment.app.FragmentFactory
@@ -51,6 +53,11 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
         initFragment()
         initView()
         initObserver()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        finishActivity()
     }
 
     override fun onCloseClicked() {
@@ -133,22 +140,32 @@ class InputTextActivity : BaseActivity(), NavToolbarComponent.Listener {
     }
 
     private fun finishActivity() {
-        val resultData = viewModel.getTextDetail()
+        hideSoftKeyboard()
+        Handler().postDelayed({
+            val resultData = viewModel.getTextDetail()
 
-        val intent = Intent()
+            val intent = Intent()
 
-        // check if text only contain whitespace
-        if (resultData.text.trim().isNotEmpty()) {
-            intent.putExtra(INPUT_TEXT_RESULT, resultData)
-        }
+            // check if text only contain whitespace
+            if (resultData.text.trim().isNotEmpty()) {
+                intent.putExtra(INPUT_TEXT_RESULT, resultData)
+            }
 
-        setResult(0, intent)
-        finish()
+            setResult(0, intent)
+            finish()
+        }, HIDE_KEYBOARD_DELAY)
+    }
+
+    private fun hideSoftKeyboard() {
+        (this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(
+            this.currentFocus?.windowToken, 0
+        )
     }
 
     companion object {
         private const val INPUT_TEXT_RESULT = "input_text_result"
         private const val EXTRA_INPUT_TEXT_MODEL = "extra_input_text_model"
+        private const val HIDE_KEYBOARD_DELAY = 300L
 
         fun create(context: Context, model: InputTextModel): Intent {
             return Intent(context, InputTextActivity::class.java).also {

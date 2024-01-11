@@ -49,7 +49,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.FragmentConst
 import com.tokopedia.applink.FragmentConst.FEED_SHOP_FRAGMENT
-import com.tokopedia.applink.FragmentConst.SHOP_REVIEW_FRAGMENT
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
@@ -65,7 +64,6 @@ import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboard
 import com.tokopedia.creation.common.consts.ContentCreationConsts
 import com.tokopedia.creation.common.presentation.bottomsheet.ContentCreationBottomSheet
 import com.tokopedia.creation.common.presentation.bottomsheet.ViewContentInfoBottomSheet
-import com.tokopedia.creation.common.presentation.model.ContentCreationConfigModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationItemModel
 import com.tokopedia.creation.common.presentation.model.ContentCreationTypeEnum
 import com.tokopedia.creation.common.presentation.utils.ContentCreationEntryPointSharedPref
@@ -492,16 +490,17 @@ class ShopPageHeaderFragment :
         setAnimationStrategy(com.tokopedia.stories.widget.OneTimeAnimationStrategy())
     }
 
-    private val contentCreationActivityResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { data ->
-        if (data.resultCode == RESULT_OK &&
-            GlobalConfig.isSellerApp() &&
-            !entryPointSharedPref.hasShownViewContentInfoInMa()
-        ) {
-            ViewContentInfoBottomSheet
-                .getOrCreateFragment(childFragmentManager, requireActivity().classLoader)
-                .show(childFragmentManager)
+    private val contentCreationActivityResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { data ->
+            if (data.resultCode == RESULT_OK &&
+                GlobalConfig.isSellerApp() &&
+                !entryPointSharedPref.hasShownViewContentInfoInMa()
+            ) {
+                ViewContentInfoBottomSheet
+                    .getOrCreateFragment(childFragmentManager, requireActivity().classLoader)
+                    .show(childFragmentManager)
+            }
         }
-    }
 
     override fun getComponent() = activity?.run {
         DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())
@@ -1146,7 +1145,8 @@ class ShopPageHeaderFragment :
             shopDomain.orEmpty(),
             page = START_PAGE,
             itemPerPage = ShopUtil.getProductPerPage(context),
-            shopProductFilterParameter = initialProductFilterParameter ?: ShopProductFilterParameter(),
+            shopProductFilterParameter = initialProductFilterParameter
+                ?: ShopProductFilterParameter(),
             keyword = "",
             etalaseId = "",
             widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
@@ -2793,31 +2793,12 @@ class ShopPageHeaderFragment :
                     }
 
                     ContentCreationTypeEnum.POST -> {
-                        val intent = RouteManager.getIntent(
-                            context,
-                            ApplinkConst.IMAGE_PICKER_V2
-                        ).apply {
-                            putExtra(
-                                ContentCreationConsts.IS_CREATE_POST_AS_BUYER,
-                                data.authorType.asBuyer
-                            )
-                            putExtra(
-                                ContentCreationConsts.APPLINK_AFTER_CAMERA_CAPTURE,
-                                ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
-                            )
-                            putExtra(
-                                ContentCreationConsts.MAX_MULTI_SELECT_ALLOWED,
-                                ContentCreationConsts.VALUE_MAX_MULTI_SELECT_ALLOWED
-                            )
-                            putExtra(
-                                ContentCreationConsts.TITLE,
-                                getString(creationcommonR.string.content_creation_post_as_label)
-                            )
-                            putExtra(
-                                ContentCreationConsts.APPLINK_FOR_GALLERY_PROCEED,
-                                ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
-                            )
-                        }
+                        val intent = ContentCreationConsts.getPostIntent(
+                            context = context,
+                            asABuyer = data.authorType.asBuyer,
+                            title = getString(creationcommonR.string.content_creation_post_as_label),
+                            sourcePage = if (GlobalConfig.isSellerApp()) ContentCreationConsts.VALUE_IS_OPEN_FROM_SHOP_PAGE else "",
+                        )
                         startActivity(intent)
                     }
 
@@ -3343,16 +3324,18 @@ class ShopPageHeaderFragment :
             val chips = ArrayList(
                 listShopPageTabModel.mapIndexed { index, shopPageHeaderTabModel ->
                     val isSelected = (index == tabLayout?.selectedTabPosition)
-                    val thumbnail = if (listShopPageTabModel[index].tabFragment is ShopPageCampaignFragment) {
-                        (listShopPageTabModel[index].tabFragment as ShopPageCampaignFragment)
-                            .shopCampaignTabAdapter.getCampaignBanner()?.data?.imageUrl.orEmpty()
-                    } else {
-                        String.EMPTY
-                    }
+                    val thumbnail =
+                        if (listShopPageTabModel[index].tabFragment is ShopPageCampaignFragment) {
+                            (listShopPageTabModel[index].tabFragment as ShopPageCampaignFragment)
+                                .shopCampaignTabAdapter.getCampaignBanner()?.data?.imageUrl.orEmpty()
+                        } else {
+                            String.EMPTY
+                        }
 
-                    val shopUrl = Uri.parse(UriUtil.buildUri(shopPageHeaderDataModel?.shopCoreUrl ?: ""))
-                        .buildUpon()
-                        .appendPath(listShopPageTabModel[index].tabPathUrl).toString()
+                    val shopUrl =
+                        Uri.parse(UriUtil.buildUri(shopPageHeaderDataModel?.shopCoreUrl ?: ""))
+                            .buildUpon()
+                            .appendPath(listShopPageTabModel[index].tabPathUrl).toString()
 
                     shopPageHeaderTabModel.map(
                         isSelected,
@@ -3365,13 +3348,18 @@ class ShopPageHeaderFragment :
                             id = shopPageHeaderDataModel?.shopId ?: "",
                             deeplink = Uri.parse(UriUtil.buildUri(ApplinkConst.SHOP, shopId))
                                 .buildUpon()
-                                .appendQueryParameter(QUERY_TAB, shopPageHeaderTabModel.tabName).toString()
+                                .appendQueryParameter(QUERY_TAB, shopPageHeaderTabModel.tabName)
+                                .toString()
                         ),
                         index
                     )
                 }
             )
-            shopPageTracking?.showChipsInUniversalSharingBottomSheet(chips.joinToString("-"), shopId, userId)
+            shopPageTracking?.showChipsInUniversalSharingBottomSheet(
+                chips.joinToString("-"),
+                shopId,
+                userId
+            )
 
             val targetIndex = Int.ZERO
             chips.swap(tabLayout?.selectedTabPosition.orZero(), targetIndex)
@@ -3428,8 +3416,12 @@ class ShopPageHeaderFragment :
                             } else {
                                 ShopPageParamModel.ShopInfoName.FREE_TEXT.infoNameValue
                             }
-                        shopInfoValue = textValueComponentUiModel.text.getOrNull(Int.ZERO)?.textHtml.orEmpty().clearHtmlTag()
-                        shopInfoLabel = textValueComponentUiModel.text.getOrNull(Int.ONE)?.textHtml.orEmpty().clearHtmlTag()
+                        shopInfoValue =
+                            textValueComponentUiModel.text.getOrNull(Int.ZERO)?.textHtml.orEmpty()
+                                .clearHtmlTag()
+                        shopInfoLabel =
+                            textValueComponentUiModel.text.getOrNull(Int.ONE)?.textHtml.orEmpty()
+                                .clearHtmlTag()
                     }
 
                     ShopPageParamModel.ShopInfoType.IMAGE_ONLY.typeName -> {

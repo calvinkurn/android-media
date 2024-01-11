@@ -72,14 +72,7 @@ class DealsWidgetItemViewHolder(v: View) : RecyclerView.ViewHolder(v) {
     }
 
     private fun String.renderRibbon() {
-        if (isNotEmpty()) {
-            binding?.ribbonContent?.visible()
-            binding?.ribbonAnchor?.visible()
-            binding?.ribbonText?.text = this
-        } else {
-            binding?.ribbonContent?.gone()
-            binding?.ribbonAnchor?.gone()
-        }
+        binding?.dealsRibbon?.render(this)
     }
 
     private fun constructBoldFont(type: String, value: String): SpannableStringBuilder {

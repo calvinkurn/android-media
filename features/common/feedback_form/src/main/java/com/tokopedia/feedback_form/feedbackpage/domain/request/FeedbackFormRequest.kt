@@ -6,29 +6,29 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class FeedbackFormRequest(
-        @SerializedName("platformID")
-        var platformID: Int?,
+        @SerializedName("platform_id")
+        var platformID: Long?,
         @SerializedName("email")
         var email: String?,
-        @SerializedName("appVersion")
+        @SerializedName("app_version")
         var appVersion: String?,
-        @SerializedName("bundleVersion")
+        @SerializedName("bundle_version")
         var bundleVersion: String?,
         @SerializedName("device")
         var device: String?,
         @SerializedName("os")
         var os: String?,
-        @SerializedName("tokopediaUserID")
+        @SerializedName("tokopedia_userid")
         var tokopediaUserID: String?,
-        @SerializedName("tokopediaEmail")
+        @SerializedName("tokopedia_email")
         var tokopediaEmail: String?,
-        @SerializedName("sessionToken")
+        @SerializedName("session_token")
         var sessionToken: String?,
-        @SerializedName("fcmToken")
+        @SerializedName("fcm_token")
         var fcmToken: String?,
-        @SerializedName("loginState")
+        @SerializedName("login_state")
         var loginState: String?,
-        @SerializedName("lastAccessedPage")
+        @SerializedName("last_accessed_page")
         var lastAccessedPage: String?,
         @SerializedName("category")
         var category: Int?,
@@ -37,7 +37,7 @@ data class FeedbackFormRequest(
         @SerializedName("expected")
         var expected: String?,
         @SerializedName("labelIDs")
-        var labelsId: ArrayList<Int>,
+        var labelsId: ArrayList<Long>,
         @SerializedName("type")
         var type: Int?,
         @SerializedName("detail")

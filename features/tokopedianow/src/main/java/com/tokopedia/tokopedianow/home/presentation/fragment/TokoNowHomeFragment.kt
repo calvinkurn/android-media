@@ -108,6 +108,7 @@ import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.ServerErrorListener
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowHomeBinding
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
@@ -217,6 +218,7 @@ class TokoNowHomeFragment :
         private const val PARAM_AFFILIATE_CHANNEL = "channel"
         private const val VERTICAL_SCROLL_FULL_BOTTOM_OFFSET = 0
         private const val MAX_VIEW_POOL = 99
+        private const val MEASURE_SPEC_DEFAULT = 0
 
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
@@ -268,7 +270,8 @@ class TokoNowHomeFragment :
                 bannerComponentListener = createSlideBannerCallback(),
                 homeProductRecomOocListener = createProductRecomOocCallback(),
                 homeProductRecomListener = createProductRecomCallback(),
-                tokoNowRepurchaseListener = createRepurchaseProductListener(),
+                tokoNowRepurchaseProductListener = createRepurchaseProductListener(),
+                tokoNowRepurchaseListener = createRepurchaseCallback(),
                 homeSharingEducationListener = this,
                 homeEducationalInformationListener = this,
                 serverErrorListener = this,
@@ -916,6 +919,7 @@ class TokoNowHomeFragment :
             }
             rvHome?.setItemViewCacheSize(ITEM_VIEW_CACHE_SIZE)
             addHomeComponentScrollListener()
+            registerAdapterDataObserver()
         }
     }
 
@@ -2077,6 +2081,12 @@ class TokoNowHomeFragment :
         )
     }
 
+    private fun createRepurchaseCallback() = object : TokoNowRepurchaseViewHolder.TokoNowRepurchaseListener {
+        override fun onChevronClicked() {
+            analytics.trackClickChevronButtonOnPastPurchaseWidget()
+        }
+    }
+
     private fun createQuestReloadWidgetCallback() = object : HomeQuestReloadWidgetViewHolder.HomeQuestReloadWidgetListener {
         override fun onReloadListener() {
             viewModelTokoNow.refreshQuestWidget()
@@ -2142,6 +2152,33 @@ class TokoNowHomeFragment :
         val affiliateUuid = uri?.getQueryParameter(PARAM_AFFILIATE_UUID).orEmpty()
         val affiliateChannel = uri?.getQueryParameter(PARAM_AFFILIATE_CHANNEL).orEmpty()
         viewModelTokoNow.initAffiliateCookie(affiliateUuid, affiliateChannel)
+    }
+
+    private fun registerAdapterDataObserver() {
+        /**
+         *  ViewHolder frequently is not directly calling bind function in android 9 after shimmering,
+         *  to solve that issue we enforce RecyclerView to always measure the layout every time adapter updated, so it will trigger the bind function.
+         **/
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            rvHome?.apply {
+                adapter?.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+                    override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+                            width.orZero(),
+                            View.MeasureSpec.EXACTLY
+                        )
+
+                        val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+                            height.orZero(),
+                            View.MeasureSpec.EXACTLY
+                        )
+
+                        measure(widthMeasureSpec, heightMeasureSpec)
+                        layout(MEASURE_SPEC_DEFAULT, MEASURE_SPEC_DEFAULT, widthMeasureSpec, heightMeasureSpec)
+                    }
+                })
+            }
+        }
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
