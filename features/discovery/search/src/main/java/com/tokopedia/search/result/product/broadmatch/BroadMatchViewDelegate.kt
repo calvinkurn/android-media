@@ -83,18 +83,19 @@ class BroadMatchViewDelegate @Inject constructor(
     }
 
     override fun openLink(broadMatchItemDataView: BroadMatchItemDataView) {
+        val finalLink = generateFinalLink(broadMatchItemDataView)
+        openApplink(context, finalLink)
+    }
+
+    private fun generateFinalLink(broadMatchItemDataView: BroadMatchItemDataView): String {
         val appLink = broadMatchItemDataView.applink
-        if (appLink.isNotEmpty()) {
+        return if (appLink.isNotEmpty()) {
             val isPrefetch = ProductDetailPrefetch.validateAppLink(appLink)
-            val finalAppLink = if (isPrefetch) {
+            val finalAppLink = if (isPrefetch)
                 generatePrefetchAppLink(broadMatchItemDataView)
-            } else {
-                appLink
-            }
-            openApplink(context, finalAppLink.decodeQueryParameter())
-        } else {
-            openApplink(context, broadMatchItemDataView.url)
-        }
+            else appLink
+            finalAppLink.decodeQueryParameter()
+        } else broadMatchItemDataView.url
     }
 
     private fun generatePrefetchAppLink(broadMatchItemDataView: BroadMatchItemDataView): String {
