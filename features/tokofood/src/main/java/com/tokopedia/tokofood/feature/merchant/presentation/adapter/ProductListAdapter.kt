@@ -74,13 +74,6 @@ class ProductListAdapter(
         return productListItems.size
     }
 
-    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
-        if (holder is ProductCardViewHolder) {
-            holder.removeListeners()
-        }
-        super.onViewRecycled(holder)
-    }
-
     @SuppressLint("NotifyDataSetChanged")
     fun setProductListItems(productListItems: List<ProductListItem>) {
         this.productListItems = productListItems.toMutableList()

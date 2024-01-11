@@ -163,7 +163,6 @@ class OrderCustomizationFragment :
         binding = null
         customListAdapter?.removeListeners()
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupBackgroundColor()

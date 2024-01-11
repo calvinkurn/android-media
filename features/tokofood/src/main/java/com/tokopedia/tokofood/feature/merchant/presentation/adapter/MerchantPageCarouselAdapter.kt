@@ -28,11 +28,6 @@ class MerchantPageCarouselAdapter(
         return carouselData.size
     }
 
-    override fun onViewRecycled(holder: MerchantCarouseItemViewHolder) {
-        holder.removeListener()
-        super.onViewRecycled(holder)
-    }
-
     @SuppressLint("NotifyDataSetChanged")
     fun setCarouselData(carouselData: List<CarouselData>) {
         this.carouselData = carouselData

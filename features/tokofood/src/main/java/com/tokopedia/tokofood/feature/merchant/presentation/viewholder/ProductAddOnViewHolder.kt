@@ -12,10 +12,12 @@ import com.tokopedia.tokofood.feature.merchant.presentation.decoration.ProductOp
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
 import com.tokopedia.tokofood.feature.merchant.presentation.model.AddOnUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
+import com.tokopedia.tokofood.R as tokofoodR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ProductAddOnViewHolder(
     private val binding: TokofoodItemAddOnLayoutBinding,
-    private var selectListener: OnAddOnSelectListener?
+    private val selectListener: OnAddOnSelectListener?
 ) : RecyclerView.ViewHolder(binding.root), ProductOptionViewHolder.Listener {
 
     interface OnAddOnSelectListener {
@@ -45,10 +47,10 @@ class ProductAddOnViewHolder(
 
         context?.run {
             if (addOnUiModel.isError) {
-                val redColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+                val redColor = ContextCompat.getColor(this, unifyprinciplesR.color.Unify_RN500)
                 binding.tpgMandatoryLabel.setTextColor(redColor)
             } else {
-                val greenColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                val greenColor = ContextCompat.getColor(this, unifyprinciplesR.color.Unify_GN500)
                 binding.tpgMandatoryLabel.setTextColor(greenColor)
             }
         }
@@ -76,7 +78,7 @@ class ProductAddOnViewHolder(
             // setup optional add on wording
             context?.run {
                 val optionalAddOnWording = this.getString(
-                    com.tokopedia.tokofood.R.string.text_optional_add_on_wording,
+                    tokofoodR.string.text_optional_add_on_wording,
                     addOnUiModel.maxQty
                 )
                 binding.tpgOptionalWording.text = optionalAddOnWording
@@ -137,9 +139,5 @@ class ProductAddOnViewHolder(
             optionUiModel.isSelected = optionIndex == index
         }
         optionAdapter?.updateData(previousSelectedIndex, optionItems)
-    }
-
-    fun removeListener() {
-        selectListener = null
     }
 }

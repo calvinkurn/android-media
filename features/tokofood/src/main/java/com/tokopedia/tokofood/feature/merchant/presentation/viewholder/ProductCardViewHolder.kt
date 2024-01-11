@@ -220,11 +220,6 @@ class ProductCardViewHolder(
         }
     }
 
-    fun removeListeners() {
-        clickListener = null
-        tokofoodScrollChangedListener = null
-    }
-
     private fun bindImpressionProductListener(
         productListItem: ProductListItem,
         dataSetPosition: Int

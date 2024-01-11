@@ -57,18 +57,6 @@ class CustomListAdapter(
         }
     }
 
-    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
-        when (holder) {
-            is ProductAddOnViewHolder -> {
-                holder.removeListener()
-            }
-            is OrderNoteInputViewHolder -> {
-                holder.removeListeners()
-            }
-        }
-        super.onViewRecycled(holder)
-    }
-
     override fun getItemCount(): Int {
         return customListItems.size
     }

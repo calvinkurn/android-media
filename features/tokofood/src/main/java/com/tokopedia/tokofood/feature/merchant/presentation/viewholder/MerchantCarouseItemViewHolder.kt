@@ -10,7 +10,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class MerchantCarouseItemViewHolder(
     private val binding: ItemMerchantInfoCarouselBinding,
-    private var clickListener: OnCarouselItemClickListener?
+    private val clickListener: OnCarouselItemClickListener?
 ) : RecyclerView.ViewHolder(binding.root) {
 
     interface OnCarouselItemClickListener {
@@ -42,9 +42,5 @@ class MerchantCarouseItemViewHolder(
             }
             binding.tpgMerchantInfoContent.setTextColor(textColor)
         }
-    }
-
-    fun removeListener() {
-        clickListener = null
     }
 }
