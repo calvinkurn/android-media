@@ -8,6 +8,8 @@ const val LABEL_REIMAGINE_RIBBON = "ri_ribbon"
 const val LABEL_REIMAGINE_PRODUCT_OFFER = "ri_product_offer"
 const val LABEL_OVERLAY_ = "overlay_"
 const val LABEL_NETT_PRICE = "nett_price"
+const val LABEL_PREVENTIVE_OVERLAY = "preventive_overlay"
+const val LABEL_PREVENTIVE_BLOCK = "preventive_block"
 
 /** Label Group Style **/
 object LabelGroupStyle {

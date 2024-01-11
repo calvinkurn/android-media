@@ -42,16 +42,20 @@ internal class ProductCardLabel(
     private fun GradientDrawable.renderColor(labelGroup: ProductCardModel.LabelGroup) {
         val colorList = labelGroup.backgroundColor()?.split(TYPE_DELIMITER) ?: listOf()
 
-        when {
-            colorList.size == SOLID_COLOR_LIST_SIZE ->
-                setColor(safeParseColor(colorList.first(), Color.BLACK))
+        val colorIntArray = when {
+            colorList.size == SOLID_COLOR_LIST_SIZE -> {
+                val color = safeParseColor(colorList.first(), Color.BLACK)
+                intArrayOf(color, color)
+            }
 
             colorList.size > SOLID_COLOR_LIST_SIZE ->
-                colors = colorList.map { safeParseColor(it, Color.BLACK) }.toIntArray()
+                colorList.map { safeParseColor(it, Color.BLACK) }.toIntArray()
 
-            colorList.isEmpty() ->
-                setColor(Color.BLACK)
+            else ->
+                intArrayOf(Color.BLACK, Color.BLACK)
         }
+
+        colors = colorIntArray
     }
 
     private fun GradientDrawable.renderOutline(labelGroup: ProductCardModel.LabelGroup) {

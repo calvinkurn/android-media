@@ -37,6 +37,8 @@ internal val productCardReimagineTestData = listOf(
     labelAssignedValue(),
     productOffers(),
     nettPrice(),
+    preventiveOverlay(),
+    preventiveBlock(),
 )
 
 private fun imageNamePrice(): ProductCardReimagineMatcher {
@@ -563,4 +565,96 @@ private fun nettPrice(): ProductCardReimagineMatcher {
     )
 
     return Triple(model, matcher, "Nett Price")
+}
+
+private fun preventiveOverlay(): ProductCardReimagineMatcher {
+    val reimaginePreventiveOverlayLabel = labelGroupPreventiveOverlay()
+    val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
+        position = LABEL_REIMAGINE_CREDIBILITY,
+        title = "10 rb+ terjual",
+        type = TEXT_DARK_GREY,
+    )
+    val shopBadge = ProductCardModel.ShopBadge(
+        imageUrl = officialStoreBadgeImageUrl,
+        title = "Shop Name paling panjang",
+    )
+    val model = ProductCardModel(
+        imageUrl = productImageUrl,
+        name = longProductName,
+        price = "Rp79.000",
+        slashedPrice = "Rp100.000",
+        discountPercentage = 10,
+        labelGroupList = listOf(reimagineCredibilityLabel, reimaginePreventiveOverlayLabel),
+        rating = "4.5",
+        shopBadge = shopBadge,
+        freeShipping = ProductCardModel.FreeShipping(
+            imageUrl = freeOngkirImageUrl,
+        ),
+    )
+
+    val matcher = mapOf<Int, Matcher<View?>>(
+        R.id.productCardImage to isDisplayed(),
+        R.id.productCardLabelPreventiveOverlay to isDisplayedWithText(reimaginePreventiveOverlayLabel.title),
+        R.id.productCardName to isDisplayedWithText(model.name),
+        R.id.productCardPrice to isDisplayedWithText(model.price),
+        R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
+        R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
+        R.id.productCardCredibility to isDisplayed(),
+        R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
+        R.id.productCardRatingIcon to isDisplayed(),
+        R.id.productCardRating to isDisplayedWithText(model.rating),
+        R.id.productCardRatingDots to isDisplayed(),
+        R.id.productCardShopSection to isDisplayed(),
+        R.id.productCardShopBadge to isDisplayed(),
+        R.id.productCardShopNameLocation to isDisplayed(),
+        R.id.productCardFreeShipping to isDisplayed(),
+    )
+
+    return Triple(model, matcher, "Preventive overlay")
+}
+
+private fun preventiveBlock(): ProductCardReimagineMatcher {
+    val reimaginePreventiveBlockLabel = labelGroupPreventiveBlock()
+    val reimagineCredibilityLabel = ProductCardModel.LabelGroup(
+        position = LABEL_REIMAGINE_CREDIBILITY,
+        title = "10 rb+ terjual",
+        type = TEXT_DARK_GREY,
+    )
+    val shopBadge = ProductCardModel.ShopBadge(
+        imageUrl = officialStoreBadgeImageUrl,
+        title = "Shop Name paling panjang",
+    )
+    val model = ProductCardModel(
+        imageUrl = productImageUrl,
+        name = longProductName,
+        price = "Rp79.000",
+        slashedPrice = "Rp100.000",
+        discountPercentage = 10,
+        labelGroupList = listOf(reimagineCredibilityLabel, reimaginePreventiveBlockLabel),
+        rating = "4.5",
+        shopBadge = shopBadge,
+        freeShipping = ProductCardModel.FreeShipping(
+            imageUrl = freeOngkirImageUrl,
+        ),
+    )
+
+    val matcher = mapOf<Int, Matcher<View?>>(
+        R.id.productCardImage to isDisplayed(),
+        R.id.productCardLabelPreventiveBlock to isDisplayedWithText(reimaginePreventiveBlockLabel.title),
+        R.id.productCardName to isDisplayedWithText(model.name),
+        R.id.productCardPrice to isDisplayedWithText(model.price),
+        R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
+        R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
+        R.id.productCardCredibility to isDisplayed(),
+        R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
+        R.id.productCardRatingIcon to isDisplayed(),
+        R.id.productCardRating to isDisplayedWithText(model.rating),
+        R.id.productCardRatingDots to isDisplayed(),
+        R.id.productCardShopSection to isDisplayed(),
+        R.id.productCardShopBadge to isDisplayed(),
+        R.id.productCardShopNameLocation to isDisplayed(),
+        R.id.productCardFreeShipping to isDisplayed(),
+    )
+
+    return Triple(model, matcher, "Preventive block")
 }

@@ -38,6 +38,15 @@ data class ProductCardModel(
     fun labelNettPrice(): LabelGroupReimagine? =
         labelGroup(LABEL_NETT_PRICE)?.takeIf(LabelGroupReimagine::hasTitle)
 
+    fun labelPreventiveOverlay(): LabelGroupReimagine? =
+        labelGroup(LABEL_PREVENTIVE_OVERLAY)?.takeIf {
+            it.hasTitle()
+                && labelPreventiveBlock() == null
+        }
+
+    fun labelPreventiveBlock(): LabelGroupReimagine? =
+        labelGroup(LABEL_PREVENTIVE_BLOCK)?.takeIf(LabelGroupReimagine::hasTitle)
+
     fun ribbon(): LabelGroupReimagine? =
         labelGroup(LABEL_REIMAGINE_RIBBON)?.takeIf(LabelGroupReimagine::hasTitle)
 

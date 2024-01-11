@@ -1,6 +1,7 @@
 package com.tokopedia.productcard.reimagine
 
 import android.graphics.PorterDuff
+import android.graphics.drawable.GradientDrawable
 import android.text.Spannable
 import android.text.SpannableString
 import android.view.View
@@ -45,6 +46,8 @@ internal class ProductCardRenderer(
     private val imageView by view.lazyView<ImageUnify?>(R.id.productCardImage)
     private val labelOverlay = LabelOverlay(view)
     private val adsText by view.lazyView<Typography?>(R.id.productCardAds)
+    private val labelPreventiveOverlay by view.lazyView<Typography?>(R.id.productCardLabelPreventiveOverlay)
+    private val labelPreventiveBlock by view.lazyView<Typography?>(R.id.productCardLabelPreventiveBlock)
     private val nameText by lazyThreadSafetyNone { initNameText() }
     private val priceText by view.lazyView<Typography?>(R.id.productCardPrice)
     private val nettPriceIcon by view.lazyView<ImageView?>(R.id.productCardNettPriceIcon)
@@ -70,6 +73,8 @@ internal class ProductCardRenderer(
         renderImage(productCardModel)
         renderOverlay(productCardModel)
         renderAds(productCardModel)
+        renderLabelPreventiveOverlay(productCardModel)
+        renderLabelPreventiveBlock(productCardModel)
         renderName(productCardModel)
         renderPrice(productCardModel)
         renderNettPrice(productCardModel)
@@ -129,6 +134,32 @@ internal class ProductCardRenderer(
     private fun renderAds(productCardModel: ProductCardModel) {
         val isSafeProduct = productCardModel.isSafeProduct
         adsText?.showWithCondition(productCardModel.isAds && !isSafeProduct)
+    }
+
+    private fun renderLabelPreventiveOverlay(productCardModel: ProductCardModel) {
+        val preventiveOverlayLabel = productCardModel.labelPreventiveOverlay()
+
+        labelPreventiveOverlay?.let {
+            if (preventiveOverlayLabel == null) {
+                it.hide()
+            } else {
+                it.show()
+                ProductCardLabel(it.background, it).render(preventiveOverlayLabel)
+            }
+        }
+    }
+
+    private fun renderLabelPreventiveBlock(productCardModel: ProductCardModel) {
+        val preventiveBlockLabel = productCardModel.labelPreventiveBlock()
+
+        labelPreventiveBlock?.let {
+            if (preventiveBlockLabel == null) {
+                it.hide()
+            } else {
+                it.show()
+                ProductCardLabel(it.background, it).render(preventiveBlockLabel)
+            }
+        }
     }
 
     private fun renderName(productCardModel: ProductCardModel) {

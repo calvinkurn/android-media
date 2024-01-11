@@ -2,6 +2,8 @@ package com.tokopedia.productcard.test.reimagine
 
 import com.tokopedia.productcard.reimagine.LABEL_NETT_PRICE
 import com.tokopedia.productcard.reimagine.LABEL_OVERLAY_
+import com.tokopedia.productcard.reimagine.LABEL_PREVENTIVE_BLOCK
+import com.tokopedia.productcard.reimagine.LABEL_PREVENTIVE_OVERLAY
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_ASSIGNED_VALUE
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_BENEFIT
 import com.tokopedia.productcard.reimagine.LABEL_REIMAGINE_PRODUCT_OFFER
@@ -76,5 +78,25 @@ internal fun labelGroupNettPrice() = LabelGroup(
         LabelGroup.Style(key = LabelGroupStyle.BACKGROUND_OPACITY, value = "1"),
         LabelGroup.Style(key = LabelGroupStyle.OUTLINE_COLOR, value = "#FFB2C2"),
         LabelGroup.Style(key = LabelGroupStyle.TEXT_COLOR, value = "#F94D63")
+    )
+)
+
+internal fun labelGroupPreventiveOverlay() = LabelGroup(
+    position = LABEL_PREVENTIVE_OVERLAY,
+    title = "PreOrder",
+    styles = listOf(
+        LabelGroup.Style(key = LabelGroupStyle.BACKGROUND_COLOR, value = "#000000"),
+        LabelGroup.Style(key = LabelGroupStyle.BACKGROUND_OPACITY, value = "0.7"),
+        LabelGroup.Style(key = LabelGroupStyle.TEXT_COLOR, value = "#FFFFFF")
+    )
+)
+
+internal fun labelGroupPreventiveBlock() = LabelGroup(
+    position = LABEL_PREVENTIVE_BLOCK,
+    title = "Diluar Jangkauan",
+    styles = listOf(
+        LabelGroup.Style(key = LabelGroupStyle.BACKGROUND_COLOR, value = "#000000"),
+        LabelGroup.Style(key = LabelGroupStyle.BACKGROUND_OPACITY, value = "0.5"),
+        LabelGroup.Style(key = LabelGroupStyle.TEXT_COLOR, value = "#FFFFFF")
     )
 )

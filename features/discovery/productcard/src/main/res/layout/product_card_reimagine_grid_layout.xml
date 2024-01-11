@@ -123,6 +123,37 @@
                 tools:visibility="visible"/>
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/productCardLabelPreventiveOverlay"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:gravity="center"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="2dp"
+                android:background="@drawable/product_card_reimagine_label_preventive_overlay_background"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:typographyType="small"
+                app:typographyWeight="bold"
+                tools:text="PreOrder"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/productCardLabelPreventiveBlock"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:background="@drawable/product_card_reimagine_label_preventive_block_background"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/productCardMediaAnchor"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
+                tools:text="PreOrder"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productCardName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
