@@ -2189,38 +2189,6 @@ open class DynamicProductDetailFragment :
         return productVideoCoordinator
     }
 
-    override fun onThumbnailImpress(
-        position: Int,
-        media: MediaDataModel,
-        componentTrackDataModel: ComponentTrackDataModel?
-    ) {
-        DynamicProductDetailTracking.Impression.eventMediaThumbnailImpression(
-            trackingQueue = trackingQueue,
-            position = position,
-            userId = viewModel.userId,
-            media = media,
-            productInfo = viewModel.getDynamicProductInfoP1,
-            lcaWarehouseId = getLcaWarehouseId(),
-            componentTrackDataModel = componentTrackDataModel
-        )
-    }
-
-    override fun trackThumbnailClicked(
-        position: Int,
-        media: MediaDataModel,
-        componentTrackDataModel: ComponentTrackDataModel?
-    ) {
-        DynamicProductDetailTracking.Impression.eventMediaThumbnailClick(
-            trackingQueue = trackingQueue,
-            position = position,
-            userId = viewModel.userId,
-            media = media,
-            productInfo = viewModel.getDynamicProductInfoP1,
-            lcaWarehouseId = getLcaWarehouseId(),
-            componentTrackDataModel = componentTrackDataModel
-        )
-    }
-
     /**
      * ProductSnapshotViewHolder
      */
@@ -2351,20 +2319,6 @@ open class DynamicProductDetailFragment :
                 dismiss()
             }
             show()
-        }
-    }
-
-    override fun showThumbnailImage(): Boolean {
-        return try {
-            val abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
-            val abTestThumbnailKey = abTestPlatform.getString(
-                RollenceKey.PDP_CAROUSEL_ANDROID,
-                RollenceKey.PDP_HIDE_THUMBNAIL
-            )
-
-            abTestThumbnailKey == RollenceKey.PDP_SHOW_THUMBNAIL
-        } catch (throwable: Throwable) {
-            false
         }
     }
 
@@ -6269,10 +6223,6 @@ open class DynamicProductDetailFragment :
         identifier: SocialProofUiModel.Identifier,
         trackData: ComponentTrackDataModel?
     ) {
-        openFtInstallmentBottomSheet(
-            viewModel.p2Data.value?.productFinancingCalculationData
-                ?: FtInstallmentCalculationDataResponse()
-        )
         when (identifier) {
             SocialProofUiModel.Identifier.Talk -> socialProofTalkTracking(trackData = trackData)
             SocialProofUiModel.Identifier.Media -> socialProofMediaTracking(trackData = trackData)

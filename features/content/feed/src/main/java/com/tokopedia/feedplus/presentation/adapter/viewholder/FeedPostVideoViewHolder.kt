@@ -29,7 +29,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_VIDEO_PRODUCT_ICON_ANIM_RESUME
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.customview.FeedPlayerControl
+import com.tokopedia.content.common.ui.custom.player.ContentPlayerControl
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
@@ -116,7 +116,7 @@ class FeedPostVideoViewHolder(
             }
         })
 
-        binding.playerControl.setListener(object : FeedPlayerControl.Listener {
+        binding.playerControl.setListener(object : ContentPlayerControl.Listener {
             override fun onScrubbing(
                 view: PlayerControlView,
                 currPosition: Long,

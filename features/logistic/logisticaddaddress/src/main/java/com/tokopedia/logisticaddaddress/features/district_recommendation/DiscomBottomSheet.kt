@@ -41,6 +41,8 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
+import com.tokopedia.locationmanager.DeviceLocation
+import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticCommon.uimodel.AddressUiState
 import com.tokopedia.logisticCommon.uimodel.isEdit
@@ -99,6 +101,7 @@ class DiscomBottomSheet :
         private const val LOCATION_REQUEST_INTERVAL = 10000L
         private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L
     }
+
     interface DiscomRevampListener {
         fun onGetDistrict(districtAddress: Address)
         fun onChooseZipcode(districtAddress: Address, zipCode: String, isPinpoint: Boolean)
@@ -149,6 +152,12 @@ class DiscomBottomSheet :
                     locationResult.lastLocation.latitude,
                     locationResult.lastLocation.longitude
                 )
+                context?.let { ctx ->
+                    LocationDetectorHelper(ctx).saveToCache(
+                        locationResult.lastLocation.latitude,
+                        locationResult.lastLocation.longitude
+                    )
+                }
             }
         }
     private val gpsResultResolutionContract = registerForActivityResult(
@@ -427,7 +436,7 @@ class DiscomBottomSheet :
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     if (viewBinding?.searchPageInput?.searchBarTextField?.text.toString()
-                        .isEmpty()
+                            .isEmpty()
                     ) {
                         viewBinding?.tvDescInputDistrict?.visibility = View.GONE
                         viewBinding?.emptyStateDistrict?.visibility = View.GONE
@@ -709,11 +718,11 @@ class DiscomBottomSheet :
     private fun allPermissionsGranted(): Boolean {
         for (permission in getPermissions()) {
             if (activity?.let {
-                ContextCompat.checkSelfPermission(
+                    ContextCompat.checkSelfPermission(
                         it,
                         permission
                     )
-            } != PackageManager.PERMISSION_GRANTED
+                } != PackageManager.PERMISSION_GRANTED
             ) {
                 return false
             }
@@ -728,6 +737,12 @@ class DiscomBottomSheet :
                 source?.takeIf { it is DiscomSource.LCA }
                     ?.run { ChooseAddressTracking.onClickAllowLocationKotaKecamatan(userSession.userId) }
                 viewModel.reverseGeoCode(data.latitude, data.longitude)
+                context?.let { ctx ->
+                    LocationDetectorHelper(ctx).saveToCache(
+                        data.latitude, data.longitude
+                    )
+                }
+
             } else {
                 fusedLocationClient?.requestLocationUpdates(
                     AddNewAddressUtils.getLocationRequest(),

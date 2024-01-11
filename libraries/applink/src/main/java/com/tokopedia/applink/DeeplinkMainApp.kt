@@ -62,7 +62,6 @@ import com.tokopedia.applink.promo.DeeplinkMapperPromo.invokeScpToasterUniversal
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperWishlist
 import com.tokopedia.applink.recommendation.DeeplinkMapperRecommendation
-import com.tokopedia.applink.salam.DeeplinkMapperSalam
 import com.tokopedia.applink.search.DeeplinkMapperSearch
 import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
 import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper
@@ -634,11 +633,6 @@ object DeeplinkMainApp {
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
             }
         ),
-        "order-details" to mutableListOf(
-            DLP.startsWith("umroh") { deeplink: String ->
-                DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahOrderDetail(deeplink)
-            }
-        ),
         "order_list" to mutableListOf(
             DLP.goTo { context: Context, deeplink: String ->
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
@@ -877,11 +871,6 @@ object DeeplinkMainApp {
         "rewards" to mutableListOf(
             DLP.goTo { deeplink: String ->
                 DeeplinkMapperPromo.getRegisteredNavigationTokopoints(deeplink)
-            }
-        ),
-        "s" to mutableListOf(
-            DLP.startsWith("umroh") { deeplink: String ->
-                DeeplinkMapperSalam.getRegisteredNavigationSalamUmrah(deeplink)
             }
         ),
         "saldo" to mutableListOf(

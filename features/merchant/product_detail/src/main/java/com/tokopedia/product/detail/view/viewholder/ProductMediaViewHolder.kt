@@ -16,7 +16,7 @@ import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 class ProductMediaViewHolder(
     private val view: View,
     private val listener: DynamicProductDetailListener
-) : AbstractViewHolder<ProductMediaDataModel>(view) {
+) : ProductDetailPageViewHolder<ProductMediaDataModel>(view) {
     companion object {
         val LAYOUT = R.layout.item_dynamic_product_media
     }
@@ -85,11 +85,4 @@ class ProductMediaViewHolder(
     fun detachView() {
         listener.getProductVideoCoordinator()?.onPause()
     }
-
-    private fun getComponentTrackData(element: ProductMediaDataModel?) = ComponentTrackDataModel(
-        element?.type
-            ?: "",
-        element?.name ?: "",
-        adapterPosition + 1
-    )
 }
