@@ -47,13 +47,30 @@
                     android:layout_marginEnd="8dp"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:textColor="#04C0B0"
+                    android:textColor="@color/unify_G500"
                     android:visibility="visible"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:typographyType="display_3"
                     app:typographyWeight="bold"
                     tools:text="Elektronik"
+                    tools:visibility="visible" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tvStoreName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/Unify_NN950"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="@+id/guidelineExpiration"
+                    app:layout_constraintStart_toEndOf="@+id/tvType"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:typographyType="display_3"
+                    tools:text="Samsung Official Store For Indonesia Again"
                     tools:visibility="visible" />
 
                 <androidx.constraintlayout.widget.Guideline
@@ -121,11 +138,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
-                    app:constraint_referenced_ids="tvTimerPrefix, timerCoupon"
-                    tools:visibility="visible" />
+                    app:constraint_referenced_ids="tvTimeLimitPrefix, timerCoupon"
+                    tools:visibility="gone" />
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tvTimerPrefix"
+                    android:id="@+id/tvTimeLimitPrefix"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -144,7 +161,7 @@
                     app:layout_constraintBottom_toBottomOf="@id/btnAction"
                     app:layout_constraintEnd_toStartOf="@id/guidelineExpiration"
                     app:layout_constraintHorizontal_bias="0"
-                    app:layout_constraintStart_toEndOf="@id/tvTimerPrefix"
+                    app:layout_constraintStart_toEndOf="@id/tvTimeLimitPrefix"
                     app:layout_constraintTop_toTopOf="@id/btnAction"
                     app:timer_unify_single_showClockIcon="true"
                     app:timer_unify_single_textWidth="full_radius"
