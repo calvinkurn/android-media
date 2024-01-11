@@ -44,17 +44,22 @@ abstract class BaseDownloadManagerHelper(
 
     open suspend fun isEnableShowBottomSheet(): Boolean {
         val canShowToday = isExpired()
+        val isBetaNetwork = isBetaNetwork()
 
-        val shouldUpgradeVersion = coroutineScope {
-            async(Dispatchers.IO) {
-                isNeedToUpgradeVersion()
-            }
-        }.await()
+        val shouldUpgradeVersion = if (canShowToday && isBetaNetwork) {
+            coroutineScope {
+                async(Dispatchers.IO) {
+                    isNeedToUpgradeVersion()
+                }
+            }.await()
+        } else {
+            false
+        }
 
         return isAppDownloadingBottomSheetNotShow()
-            && isBetaNetwork()
-            && shouldUpgradeVersion
+            && isBetaNetwork
             && canShowToday
+            && shouldUpgradeVersion
             && downloadManagerUpdateModel?.isEnabled == true
     }
 
