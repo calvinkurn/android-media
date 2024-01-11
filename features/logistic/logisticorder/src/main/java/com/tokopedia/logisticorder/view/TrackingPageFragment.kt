@@ -75,7 +75,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         private const val PER_SECOND = 1000
         private const val LIVE_TRACKING_VIEW_REQ = 1
         private const val NEW_DRIVER_COUNT_DOWN = 5L
-        const val INVALID_ORDER_STATUS = 501
+        private const val INVALID_ORDER_STATUS = 501
         private const val ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID"
         private const val ARGUMENTS_ORDER_TX_ID = "ARGUMENTS_ORDER_TX_ID"
         private const val ARGUMENTS_GROUP_TYPE = "ARGUMENTS_GROUP_TYPE"

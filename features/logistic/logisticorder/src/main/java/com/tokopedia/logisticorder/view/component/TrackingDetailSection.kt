@@ -205,7 +205,10 @@ private val DetailModel.deliveryDate: CharSequence
         var date: String = sendDate
         if (sendDate.isNotEmpty()) {
             date =
-                DateUtil.formatDate("yyyy-MM-dd", "dd MMMM yyyy", sendDate)
+                DateUtil.formatDate(DATE_FORMAT_FROM_BE, DATE_FORMAT_UI, sendDate)
         }
         return date.toHyphenIfEmptyOrNull()
     }
+
+private val DATE_FORMAT_FROM_BE = "yyyy-MM-dd"
+private val DATE_FORMAT_UI = "dd MMMM yyyy"

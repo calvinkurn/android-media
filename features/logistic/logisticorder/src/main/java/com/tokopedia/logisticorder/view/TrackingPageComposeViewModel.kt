@@ -37,6 +37,10 @@ class TrackingPageComposeViewModel @Inject constructor(
     private val mapper: TrackingPageMapperNew
 ) : BaseViewModel(dispatcher.main) {
 
+    companion object {
+        private const val DELAY_AFTER_RETRY_BOOKING_NEW_DRIVER = 5000L
+    }
+
     private var orderId: String = ""
     private var orderTxId: String? = null
     private var groupType: Int? = null
@@ -139,7 +143,7 @@ class TrackingPageComposeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 setRetryBookingUseCase(orderId)
-                delay(5000)
+                delay(DELAY_AFTER_RETRY_BOOKING_NEW_DRIVER)
                 getTrackingData(orderId, orderTxId, groupType, trackingUrl, caller.orEmpty())
             } catch (e: Throwable) {
                 _error.emit(e)

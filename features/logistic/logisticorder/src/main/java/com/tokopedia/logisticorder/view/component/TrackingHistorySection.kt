@@ -25,7 +25,6 @@ import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.uimodel.ProofModel
 import com.tokopedia.logisticorder.uimodel.TrackHistoryModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
-import com.tokopedia.logisticorder.view.TrackingPageFragment
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -34,6 +33,8 @@ import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.date.DateUtil
 
+private val INVALID_ORDER_STATUS = 501
+
 @Composable
 fun TrackingHistory(
     trackHistory: TrackOrderModel?,
@@ -41,7 +42,7 @@ fun TrackingHistory(
 ) {
     trackHistory?.let { model ->
         val list = model.trackHistory
-        if (list.isNotEmpty() && !model.invalid && model.orderStatus != TrackingPageFragment.INVALID_ORDER_STATUS && model.change != 0) {
+        if (list.isNotEmpty() && !model.invalid && model.orderStatus != INVALID_ORDER_STATUS && model.change != 0) {
             Column(modifier = Modifier.padding(horizontal = 20.dp)) {
                 repeat(list.size) { index ->
                     TrackingHistoryItem(
@@ -214,7 +215,7 @@ private val TrackOrderModel.emptyTrackingTitle: String
     @Composable get() {
         return if (invalid) {
             stringResource(id = R.string.warning_courier_invalid)
-        } else if (orderStatus == TrackingPageFragment.INVALID_ORDER_STATUS || change == 0 || trackHistory.isEmpty()) {
+        } else if (orderStatus == INVALID_ORDER_STATUS || change == 0 || trackHistory.isEmpty()) {
             stringResource(id = R.string.warning_no_courier_change)
         } else {
             ""

@@ -32,7 +32,7 @@ fun TargetedTicker(tickerData: TickerModel?, openWebview: (url: String) -> Unit)
             modifier = Modifier.padding(horizontal = 20.dp),
             ticker = model
         ) { spannedRange ->
-            if (spannedRange.tag == "url") openWebview(spannedRange.item)
+            if (spannedRange.tag == URL_TAG) openWebview(spannedRange.item)
         }
     }
 }
@@ -45,3 +45,5 @@ private val Int.toTickerType: TickerType
             else -> TickerType.ANNOUNCEMENT
         }
     }
+
+private val URL_TAG = "url"
