@@ -128,6 +128,7 @@
                             android:visibility="gone"
                             android:maxLines="1"
                             android:ellipsize="end"
+                            app:typographyType="display_3"
                             app:typographyWeight="reguler"
                             tools:text="Juara Ulasan Fashion Wanita" />
 
