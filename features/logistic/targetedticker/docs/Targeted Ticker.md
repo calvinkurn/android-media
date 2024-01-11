@@ -29,7 +29,7 @@ Targeted Ticker Widget is a component designed to centralize the utilization of 
 The Targeted Ticker Widget extends our standard ticker functionality, operating like a regular ticker but with a built-in use
 case.
 
-![Screenshot 2024-01-10 at 09.02.10.png](..%2F..%2F..%2F..%2F..%2F..%2F..%2FDesktop%2FScreenshot%202024-01-10%20at%2009.02.10.png)
+![targeted_ticker_example_in_lacak_page](https://docs-android.tokopedia.net/images/docs/images_in_zip/targeted_ticker_example_in_lacak_page.png)
 
 # Setup
 
@@ -76,7 +76,7 @@ Example :
 
 ##### Case 2 : Data Passing from Backend
 
-On the Android side, you will need to map data from the backend. 
+On the Android side, you will need to map data from the backend.
 
 Example :
 
