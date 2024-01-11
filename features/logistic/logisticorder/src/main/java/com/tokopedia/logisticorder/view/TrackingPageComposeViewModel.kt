@@ -39,6 +39,7 @@ class TrackingPageComposeViewModel @Inject constructor(
 
     companion object {
         private const val DELAY_AFTER_RETRY_BOOKING_NEW_DRIVER = 5000L
+        private const val SELLER_CALLER_KEY = "seller"
     }
 
     private var orderId: String = ""
@@ -108,7 +109,7 @@ class TrackingPageComposeViewModel @Inject constructor(
                     it.copy(isLoading = false, trackingData = uiModel)
                 }
                 if ((!trackingUrl.isNullOrEmpty()) && caller.equals(
-                        "seller",
+                        SELLER_CALLER_KEY,
                         ignoreCase = true
                     )
                 ) {
