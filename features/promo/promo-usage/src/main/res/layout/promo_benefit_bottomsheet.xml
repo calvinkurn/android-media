@@ -16,6 +16,14 @@
         android:paddingBottom="16dp"
         tools:background="@drawable/background_bottomsheet_promo">
 
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/benefit_background"
+            android:layout_width="176dp"
+            android:layout_height="68dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/temp_superbg" />
+
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_close"
             android:layout_width="24dp"
