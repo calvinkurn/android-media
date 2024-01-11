@@ -1,6 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
+import com.tokopedia.home_component.widget.RecommendationMegaTabLayout.Item as MegaTabItem
 
 class RecommendationTabDataModel(
     val id: String,
@@ -19,6 +21,14 @@ class RecommendationTabDataModel(
             DATA_CREATIVE, name,
             DATA_CREATIVE_URL, imageUrl
         )
+    }
+
+    fun toCarouselTabItem(): CollapsingTabLayout.TabItemData {
+        return CollapsingTabLayout.TabItemData(name, imageUrl)
+    }
+
+    fun toMegaTabItem(): MegaTabItem {
+        return MegaTabItem(name, imageUrl)
     }
 
     companion object {
