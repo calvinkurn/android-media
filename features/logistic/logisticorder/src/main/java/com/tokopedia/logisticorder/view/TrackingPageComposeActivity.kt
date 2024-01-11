@@ -31,7 +31,6 @@ import com.tokopedia.logisticorder.view.component.TrackingPageScreen
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.logisticorder.R as logisticorderR
@@ -48,9 +47,6 @@ class TrackingPageComposeActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
 
     private val viewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(this, viewModelFactory)[TrackingPageComposeViewModel::class.java]
@@ -72,11 +68,8 @@ class TrackingPageComposeActivity : AppCompatActivity() {
                 orderId,
                 orderTxId,
                 groupType,
-                userSession.userId,
-                userSession.deviceId,
                 urlLiveTracking,
-                orderCaller,
-                userSession.accessToken
+                orderCaller
             )
         )
 

@@ -9,15 +9,13 @@ sealed interface TrackingPageEvent {
         val orderId: String,
         val orderTxId: String?,
         val groupType: Int?,
-        val userId: String,
-        val deviceId: String,
         val trackingUrl: String,
-        val pageCaller: String,
-        val accessToken: String
+        val pageCaller: String
     ) : TrackingPageEvent
 
     object FindNewDriver : TrackingPageEvent
     object CheckAvailabilityToFindNewDriver : TrackingPageEvent
+    object Refresh : TrackingPageEvent
 }
 
 data class TrackingPageState(

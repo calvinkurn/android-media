@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.uimodel.TrackingPageEvent
 import com.tokopedia.logisticorder.usecase.entity.RetryAvailabilityResponse
+import com.tokopedia.logisticorder.view.OrderAnalyticsOrderTracking
 import com.tokopedia.nest.components.ButtonVariant
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
@@ -39,6 +40,7 @@ fun FindNewDriverSection(
             verticalArrangement = Arrangement.Center
         ) {
             if (model.retryAvailability.showRetryButton && model.retryAvailability.availabilityRetry) {
+                OrderAnalyticsOrderTracking.eventViewButtonCariDriver(retryAvailability.retryAvailability.orderId)
                 NestButton(
                     modifier = Modifier.fillMaxWidth(),
                     variant = ButtonVariant.GHOST_ALTERNATE,
@@ -46,6 +48,7 @@ fun FindNewDriverSection(
                     text = stringResource(id = R.string.find_new_driver),
                     onClick = {
                         clicked = true
+                        OrderAnalyticsOrderTracking.eventClickButtonCariDriver(retryAvailability.retryAvailability.orderId)
                         onEvent(TrackingPageEvent.FindNewDriver)
                     }
                 )
@@ -55,6 +58,10 @@ fun FindNewDriverSection(
                 val now = System.currentTimeMillis() / 1000L
                 val remainingSeconds = deadline - now
                 if (remainingSeconds > 0) {
+                    OrderAnalyticsOrderTracking.eventViewLabelTungguRetry(
+                        DateUtils.formatElapsedTime(now),
+                        model.retryAvailability.orderId
+                    )
                     var timeInMillis by remember {
                         mutableStateOf(remainingSeconds * 1000)
                     }
@@ -62,9 +69,10 @@ fun FindNewDriverSection(
                         while (timeInMillis > 0) {
                             delay(1000L)
                             timeInMillis -= 1000L
+                            if (timeInMillis < 0) timeInMillis = 0
                         }
                         if (timeInMillis == 0L) {
-                            onEvent(TrackingPageEvent.CheckAvailabilityToFindNewDriver)
+                            onEvent(TrackingPageEvent.Refresh)
                         }
                     }
                     val formattedTime = DateUtils.formatElapsedTime(timeInMillis / 1000)

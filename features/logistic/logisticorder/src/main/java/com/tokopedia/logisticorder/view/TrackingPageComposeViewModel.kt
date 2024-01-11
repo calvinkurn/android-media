@@ -15,6 +15,8 @@ import com.tokopedia.targetedticker.domain.GetTargetedTickerUseCase
 import com.tokopedia.targetedticker.domain.TargetedTickerMapper
 import com.tokopedia.targetedticker.domain.TargetedTickerPage
 import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
+import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -31,6 +33,7 @@ class TrackingPageComposeViewModel @Inject constructor(
     private val setRetryBookingUseCase: SetRetryBookingUseCase,
     private val setRetryAvailabilityUseCase: SetRetryAvailabilityUseCase,
     private val targetedTickerUseCase: GetTargetedTickerUseCase,
+    private val userSession: UserSessionInterface,
     private val mapper: TrackingPageMapperNew
 ) : BaseViewModel(dispatcher.main) {
 
@@ -62,12 +65,13 @@ class TrackingPageComposeViewModel @Inject constructor(
                     event.orderId,
                     event.orderTxId,
                     event.groupType,
-                    event.userId,
-                    event.deviceId,
                     event.trackingUrl,
-                    event.pageCaller,
-                    event.accessToken
+                    event.pageCaller
                 )
+            }
+
+            TrackingPageEvent.Refresh -> {
+                getTrackingData(orderId, orderTxId, groupType, trackingUrl, caller.orEmpty())
             }
         }
     }
@@ -76,11 +80,8 @@ class TrackingPageComposeViewModel @Inject constructor(
         orderId: String,
         orderTxId: String?,
         groupType: Int?,
-        userId: String,
-        deviceId: String,
         trackingUrlFromOrder: String?,
-        pageCaller: String,
-        accessToken: String
+        pageCaller: String
     ) {
         this.orderId = orderId
         this.orderTxId = orderTxId
@@ -93,11 +94,11 @@ class TrackingPageComposeViewModel @Inject constructor(
                 val getTrackingData = trackingUseCase(trackingParam)
                 val uiModel = mapper.mapTrackingDataCompose(
                     getTrackingData,
-                    userId,
-                    deviceId,
+                    userSession.userId,
+                    userSession.deviceId,
                     orderId,
                     trackingUrlFromOrder,
-                    accessToken
+                    userSession.accessToken
                 )
                 _uiState.update {
                     it.copy(isLoading = false, trackingData = uiModel)
@@ -137,10 +138,9 @@ class TrackingPageComposeViewModel @Inject constructor(
     private fun retryBooking(orderId: String) {
         viewModelScope.launch {
             try {
-                val retryBooking = setRetryBookingUseCase(orderId)
-                _uiState.update {
-                    it.copy(isLoading = false, retryBooking = retryBooking)
-                }
+                setRetryBookingUseCase(orderId)
+                delay(5000)
+                getTrackingData(orderId, orderTxId, groupType, trackingUrl, caller.orEmpty())
             } catch (e: Throwable) {
                 _error.emit(e)
             }
