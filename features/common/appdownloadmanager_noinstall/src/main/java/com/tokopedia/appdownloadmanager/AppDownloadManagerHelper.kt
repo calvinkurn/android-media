@@ -32,7 +32,7 @@ import com.tokopedia.unifycomponents.R as unifycomponentsR
 class AppDownloadManagerHelper(
     activityRef: WeakReference<Activity>
 ) : BaseDownloadManagerHelper(activityRef), DownloadManagerSuccessListener, CoroutineScope {
-    override fun showAppDownloadManagerBottomSheet(isTriggeredViaApplink: Boolean) {
+    override fun showAppDownloadManagerBottomSheet() {
         launch {
             if (isEnableShowBottomSheet(isTriggeredViaApplink) && isWhitelistByRollence(isTriggeredViaApplink)) {
                 (activityRef.get() as? FragmentActivity)?.let {
@@ -56,7 +56,7 @@ class AppDownloadManagerHelper(
                         setCacheExpire()
                     }
                     onBoardingBottomSheet.showBottomSheet(it.supportFragmentManager)
-                    isTriggeredByAppLink = false
+                    isTriggeredViaApplink = false
                 }
             }
         }

@@ -26,7 +26,7 @@ class AppDownloadManagerHelper(
 
     private var updateAppVersionDialog: AppUpdateVersionDialog? = null
 
-    override fun showAppDownloadManagerBottomSheet(isTriggeredViaApplink: Boolean) {
+    override fun showAppDownloadManagerBottomSheet() {
         launch {
             if (isEnableShowBottomSheet(isTriggeredViaApplink)) {
                 if (updateAppVersionDialog == null) {
@@ -41,7 +41,7 @@ class AppDownloadManagerHelper(
                     }
                 }
                 updateAppVersionDialog?.showDialog()
-                isTriggeredByAppLink = false
+                isTriggeredViaApplink = false
             }
         }
     }

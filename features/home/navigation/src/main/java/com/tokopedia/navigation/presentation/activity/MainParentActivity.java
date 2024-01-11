@@ -328,6 +328,7 @@ public class MainParentActivity extends BaseActivity implements
     private void initDownloadManagerDialog() {
         if (appDownloadManagerHelper == null) {
             appDownloadManagerHelper = new AppDownloadManagerHelper(new WeakReference(this));
+            setDownloadManagerParameter();
         }
     }
 
@@ -563,6 +564,7 @@ public class MainParentActivity extends BaseActivity implements
         checkAgeVerificationExtra(intent);
 
         setIntent(intent);
+        setDownloadManagerParameter();
         showSelectedPage();
         handleAppLinkBottomNavigation(false);
     }
@@ -841,10 +843,16 @@ public class MainParentActivity extends BaseActivity implements
 
     private void showDownloadManagerBottomSheet() {
         if (appDownloadManagerHelper != null) {
-            boolean isTriggeredViaApplink = checkApplinkShowDownloadManager();
-            appDownloadManagerHelper.showAppDownloadManagerBottomSheet(isTriggeredViaApplink);
+            appDownloadManagerHelper.showAppDownloadManagerBottomSheet();
         }
     }
+
+    private void setDownloadManagerParameter() {
+        if (appDownloadManagerHelper != null) {
+            appDownloadManagerHelper.setIsTriggeredViaApplink(checkApplinkShowDownloadManager());
+        }
+    }
+
 
     private boolean checkApplinkShowDownloadManager() {
         Uri uri = getIntent().getData();
