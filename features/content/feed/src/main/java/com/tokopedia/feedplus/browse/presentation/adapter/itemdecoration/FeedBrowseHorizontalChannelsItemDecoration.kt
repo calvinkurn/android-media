@@ -13,8 +13,8 @@ class FeedBrowseHorizontalChannelsItemDecoration(
     resources: Resources
 ) : RecyclerView.ItemDecoration() {
 
-    private val offset4 = resources.getDimensionPixelOffset(
-        unifyprinciplesR.dimen.spacing_lvl2
+    private val offset8 = resources.getDimensionPixelOffset(
+        unifyprinciplesR.dimen.spacing_lvl3
     )
 
     private val offset16 = resources.getDimensionPixelOffset(
@@ -32,7 +32,7 @@ class FeedBrowseHorizontalChannelsItemDecoration(
         if (position == 0) {
             outRect.left = offset16
         } else {
-            outRect.left = offset4
+            outRect.left = offset8
         }
 
         if (position == state.itemCount - 1) {

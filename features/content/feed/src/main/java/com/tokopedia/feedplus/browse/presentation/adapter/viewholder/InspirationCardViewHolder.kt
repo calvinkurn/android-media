@@ -42,7 +42,7 @@ internal class InspirationCardViewHolder private constructor() {
                 listener.onClicked(this, item)
             }
 
-            binding.llPartner.setOnClickListener {
+            binding.clPartner.setOnClickListener {
                 listener.onAuthorClicked(this, item)
             }
         }

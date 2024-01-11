@@ -95,7 +95,7 @@ internal abstract class FeedBrowseItemAdapter<Input : Any>(
             TYPE_TITLE -> {
                 FeedBrowseTitleViewHolder.create(parent)
             }
-            TYPE_HORIZONTAL_CREATORS -> {
+            TYPE_HORIZONTAL_AUTHORS -> {
                 FeedBrowseHorizontalAuthorsViewHolder.create(
                     parent,
                     poolManager.authorRecycledViewPool,
@@ -166,7 +166,7 @@ internal abstract class FeedBrowseItemAdapter<Input : Any>(
             is Banner.Item -> TYPE_BANNER
             Banner.Placeholder -> TYPE_BANNER_PLACEHOLDER
             is Title -> TYPE_TITLE
-            is HorizontalAuthors -> TYPE_HORIZONTAL_CREATORS
+            is HorizontalAuthors -> TYPE_HORIZONTAL_AUTHORS
             LoadingModel -> TYPE_LOADING
             is InspirationCard.Item -> TYPE_INSPIRATION_CARD
             is InspirationCard.Placeholder -> TYPE_INSPIRATION_CARD_PLACEHOLDER
@@ -205,7 +205,7 @@ internal abstract class FeedBrowseItemAdapter<Input : Any>(
         internal const val TYPE_BANNER = 2
         internal const val TYPE_BANNER_PLACEHOLDER = 3
         internal const val TYPE_TITLE = 4
-        internal const val TYPE_HORIZONTAL_CREATORS = 5
+        internal const val TYPE_HORIZONTAL_AUTHORS = 5
         internal const val TYPE_INSPIRATION_CARD = 6
         internal const val TYPE_INSPIRATION_CARD_PLACEHOLDER = 7
         internal const val TYPE_LOADING = 99

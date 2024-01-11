@@ -69,7 +69,7 @@ internal class FeedBrowseTrackerImpl @AssistedInject constructor(
                 item.recommendationType,
                 /** recommendationType **/
             ),
-            trackerId = "45751",
+            trackerId = "45741",
             enhanceEcommerce = Key.promotions to Bundle().apply {
                 putString(Key.creativeName, widgetPosition.toString())
                 putString(Key.creativeSlot, channelPosition.toString())

@@ -21,6 +21,9 @@ internal class CategoryInspirationItemDecoration(
     private val offset4 = resources.getDimensionPixelOffset(
         unifyprinciplesR.dimen.spacing_lvl2
     )
+    private val offset6 = resources.getDimensionPixelOffset(
+        R.dimen.feed_space_6
+    )
     private val offset8 = resources.getDimensionPixelOffset(
         unifyprinciplesR.dimen.spacing_lvl3
     )
@@ -82,8 +85,8 @@ internal class CategoryInspirationItemDecoration(
         val currPosition = parent.getChildLayoutPosition(child)
 
         if (spanCount <= 2) {
-            left = if (spanIndex == 0) offset16 else offset4
-            right = if (spanIndex == spanCount - 1) offset16 else offset4
+            left = if (spanIndex == 0) offset16 else offset6
+            right = if (spanIndex == spanCount - 1) offset16 else offset6
         } else {
             left = offset16 * (spanCount - spanIndex) / spanCount
             right = offset16 * (spanIndex + 1) / spanCount

@@ -46,7 +46,7 @@ class FeedBrowseItemDecoration(
             when (adapter.getItemViewType(layoutPosition)) {
                 FeedBrowseItemAdapter.TYPE_CHIPS -> outRect.itemOffsetsChips(parent, view, adapter)
                 FeedBrowseItemAdapter.TYPE_HORIZONTAL_CHANNELS,
-                FeedBrowseItemAdapter.TYPE_HORIZONTAL_CREATORS -> outRect.itemOffsetsHorizontalChannels()
+                FeedBrowseItemAdapter.TYPE_HORIZONTAL_AUTHORS -> outRect.itemOffsetsHorizontalChannels()
                 FeedBrowseItemAdapter.TYPE_BANNER,
                 FeedBrowseItemAdapter.TYPE_BANNER_PLACEHOLDER -> outRect.itemOffsetsBanner(parent, view, adapter, state)
                 FeedBrowseItemAdapter.TYPE_TITLE -> outRect.itemOffsetsTitle(parent, view)
