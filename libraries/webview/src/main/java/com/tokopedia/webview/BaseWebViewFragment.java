@@ -59,6 +59,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.phone.SmsRetriever;
+import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -86,6 +88,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 import com.tokopedia.webview.jsinterface.PartnerWebAppInterface;
 import com.tokopedia.webview.jsinterface.PrintWebPageInterface;
+import com.tokopedia.webview.verification.util.SmsBroadcastReceiver;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
@@ -169,6 +172,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private PageLoadLogger pageLoadLogger;
 
+    private SmsBroadcastReceiver smsBroadcastReceiver;
+
+    private SmsRetrieverClient smsRetriever;
+
     /**
      * return the url to load in the webview
      * You can use URLGenerator.java to use generate the seamless URL.
@@ -196,10 +203,38 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        if (getContext() != null) {
+            smsBroadcastReceiver.register(getContext(), otpCode -> {
+                String url = webView.getUrl();
+
+                if (url != null && url.contains("/paylater/acquisition/otp-verification")) {
+                    String newUrl = Uri.parse(url).buildUpon()
+                            .appendQueryParameter("otpCode", otpCode).build().toString();
+
+                    webView.loadUrl(newUrl);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (getActivity() != null) {
+            getActivity().unregisterReceiver(smsBroadcastReceiver);
+        }
+    }
+
+    @Override
     public void onCreate(@NonNull Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         userSession = new UserSession(getContext());
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+        smsBroadcastReceiver = new SmsBroadcastReceiver();
+        smsRetriever = SmsRetriever.getClient(getContext());
         Bundle args = getArguments();
         if (args == null || !args.containsKey(KEY_URL)) {
             return;
@@ -758,6 +793,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                         }
                     }
                 }
+            }
+
+            if (getContext() != null && url.contains("/paylater/acquisition/otp-verification") && !url.contains("otpCode")) {
+                smsRetriever.startSmsRetriever();
             }
         }
 
