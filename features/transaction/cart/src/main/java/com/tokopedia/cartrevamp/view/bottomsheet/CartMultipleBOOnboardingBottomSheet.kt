@@ -14,6 +14,7 @@ class CartMultipleBOOnboardingBottomSheet : BottomSheetUnify() {
     init {
         showCloseIcon = false
         showHeader = false
+        overlayClickDismiss = false
     }
 
     companion object {
@@ -30,7 +31,6 @@ class CartMultipleBOOnboardingBottomSheet : BottomSheetUnify() {
     }
 
     private var binding by autoClearedNullable<LayoutBottomsheetCartMultipleBoBinding>()
-    private var dismissListener: (() -> Unit)? = null
     private var data: CartMultipleBOBottomSheetData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,10 +55,6 @@ class CartMultipleBOOnboardingBottomSheet : BottomSheetUnify() {
                 dismiss()
             }
         }
-    }
-
-    fun setDismissListener(listener: () -> Unit) {
-        this.dismissListener = listener
     }
 
     fun show(fragmentManager: FragmentManager) {

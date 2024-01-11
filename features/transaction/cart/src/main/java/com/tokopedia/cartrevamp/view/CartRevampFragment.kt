@@ -136,6 +136,7 @@ import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
@@ -197,6 +198,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
+import com.tokopedia.purchase_platform.common.prefs.PlusCoachmarkPrefs
 import com.tokopedia.purchase_platform.common.revamp.PromoEntryPointImprovementRollenceManager
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
@@ -310,6 +312,10 @@ class CartRevampFragment :
     private var mainFlowCoachMark: CoachMark2? = null
     private var bulkActionCoachMark: CoachMark2? = null
 
+    private val plusCoachmarkPrefs: PlusCoachmarkPrefs by lazy {
+        PlusCoachmarkPrefs(requireContext())
+    }
+
     private var isFirstCheckEvent: Boolean = true
     private var hasShowBulkActionCoachMark: Boolean = false
     private var bulkActionCoachMarkLastActiveIndex: Int = 0
@@ -356,6 +362,8 @@ class CartRevampFragment :
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
         private var FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
         private var FLAG_IS_CART_EMPTY = false
+
+        private const val CART_MAIN_COACH_MARK = "cart_main_coach_mark"
 
         private const val SPAN_SIZE_ZERO = 0
         private const val SPAN_SIZE_ONE = 1
@@ -465,10 +473,6 @@ class CartRevampFragment :
 
     override fun onResume() {
         super.onResume()
-        plusCoachMark = CoachMark2(context ?: requireContext())
-        plusCoachMark?.let {
-            cartAdapter?.setCoachMark(it)
-        }
 
         // Check if currently not refreshing, not ATC external flow and not on error state
         if (refreshHandler?.isRefreshing == false && !isAtcExternalFlow() && binding?.layoutGlobalError?.visibility != View.VISIBLE) {
@@ -4168,9 +4172,9 @@ class CartRevampFragment :
 
         if (cartData.onboardingBottomSheet.isMultipleBOBottomSheet()) {
             showOnboardingBottomSheet(cartData)
-        }
-        else {
+        } else {
             setMainFlowCoachMark(cartData)
+            setPlusCoachMark()
         }
 
         sendAnalyticsScreenNameCartPage()
@@ -4875,10 +4879,86 @@ class CartRevampFragment :
 
     private fun showOnboardingBottomSheet(cartData: CartData) {
         val bottomSheet = CartMultipleBOOnboardingBottomSheet.newInstance(cartData.onboardingBottomSheet.getMultipleBoOnboardingBottomSheetData())
-        bottomSheet.setDismissListener {
-            setMainFlowCoachMark(cartData)
+        bottomSheet.setOnDismissListener {
+            showMainFlowCoachMark(cartData)
+            showPlusCoachMark()
         }
         bottomSheet.show(childFragmentManager)
+    }
+
+    private fun showPlusCoachMark() {
+        setPlusCoachMark()
+
+        val hasShownPlusCoachMark = plusCoachmarkPrefs.getPlusCoachMarkHasShown()
+
+        if (hasShownPlusCoachMark) return
+
+        val data = viewModel.cartDataList.value
+
+        val cartGroupViewHolderWithPlusPosition = data.indexOfFirst { it is CartGroupHolderData && it.coachmarkPlus.isShown }
+
+        onNeedToUpdateViewItem(cartGroupViewHolderWithPlusPosition)
+    }
+
+    private fun showMainFlowCoachMark(cartData: CartData) {
+        context?.let { ctx ->
+            val hasShownMainCoachMark = CoachMarkPreference.hasShown(
+                ctx,
+                CART_MAIN_COACH_MARK
+            )
+            if (hasShownMainCoachMark) return
+
+            if (cartData.onboardingData.size > MAIN_FLOW_ONBOARDING_SELECT_ALL_INDEX) {
+                val mainFlowCoachMarkItems = arrayListOf<CoachMark2Item>()
+                generateSelectAllCoachMark(mainFlowCoachMarkItems)
+
+                val mainCoachMarkModel = CartMainCoachMarkUiModel(
+                    null,
+                    mainFlowCoachMarkItems,
+                    cartData.onboardingData.getOrNull(MAIN_FLOW_ONBOARDING_NOTES_INDEX)
+                        ?: CartOnBoardingData(),
+                    cartData.onboardingData.getOrNull(MAIN_FLOW_ONBOARDING_WISHLIST_INDEX)
+                        ?: CartOnBoardingData()
+                )
+
+                val rvCart = binding?.rvCart ?: return
+
+                val data = viewModel.cartDataList.value
+
+                val layoutManager: GridLayoutManager = rvCart.layoutManager as GridLayoutManager
+                val position = layoutManager.findFirstCompletelyVisibleItemPosition()
+
+                val nearestItemHolderDataPosition =
+                    CartDataHelper.getNearestCartItemHolderDataPosition(position, data)
+
+                if (nearestItemHolderDataPosition != RecyclerView.NO_POSITION) {
+                    val nearestCartItemViewHolder =
+                        rvCart.findViewHolderForAdapterPosition(nearestItemHolderDataPosition)
+                    if (nearestCartItemViewHolder is CartItemViewHolder) {
+                        val wishlistCoachMark = CoachMark2Item(
+                            nearestCartItemViewHolder.getItemViewBinding().buttonToggleWishlist,
+                            String.EMPTY,
+                            mainCoachMarkModel.wishlistOnBoardingData.text,
+                            CoachMark2.POSITION_BOTTOM
+                        )
+                        val noteCoachMark = CoachMark2Item(
+                            nearestCartItemViewHolder.getItemViewBinding().buttonChangeNote,
+                            String.EMPTY,
+                            mainCoachMarkModel.noteOnBoardingData.text,
+                            CoachMark2.POSITION_BOTTOM
+                        )
+                        mainFlowCoachMarkItems.addAll(
+                            Int.ZERO,
+                            listOf(noteCoachMark, wishlistCoachMark)
+                        )
+                        mainFlowCoachMark?.showCoachMark(mainFlowCoachMarkItems)
+                        context?.let { ctx2 ->
+                            CoachMarkPreference.setShown(ctx2, CART_MAIN_COACH_MARK, true)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun setMainFlowCoachMark(cartData: CartData) {
@@ -4897,6 +4977,13 @@ class CartRevampFragment :
                     )
                 )
             }
+        }
+    }
+
+    private fun setPlusCoachMark() {
+        plusCoachMark = CoachMark2(context ?: requireContext())
+        plusCoachMark?.let {
+            cartAdapter?.setCoachMark(it)
         }
     }
 
