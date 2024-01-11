@@ -55,6 +55,8 @@
                     android:layout_marginLeft="5dp"
                     android:textColor="@color/Unify_NN950"
                     android:textSize="12sp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     app:typographyWeight="reguler"
                     tools:text="Lamer Indonesia" />
 
@@ -98,6 +100,8 @@
                             android:paddingEnd="2dp"
                             android:textColor="@color/Unify_NN950"
                             android:textSize="12sp"
+                            android:maxLines="1"
+                            android:ellipsize="end"
                             app:typographyWeight="bold"
                             tools:text="Karina" />
 
@@ -119,6 +123,8 @@
                             android:textColor="@color/dms_static_green_reviewer_status"
                             android:textSize="12sp"
                             android:visibility="gone"
+                            android:maxLines="1"
+                            android:ellipsize="end"
                             app:typographyWeight="reguler"
                             tools:text="Juara Ulasan Fashion Wanita" />
 
@@ -135,6 +141,8 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/Unify_NN600"
                             android:textSize="12sp"
+                            android:maxLines="1"
+                            android:ellipsize="end"
                             app:typographyWeight="reguler"
                             tools:text="6 ulasan lengkap" />
 
@@ -155,6 +163,8 @@
                             android:textColor="@color/Unify_NN600"
                             android:textSize="12sp"
                             android:visibility="gone"
+                            android:maxLines="1"
+                            android:ellipsize="end"
                             app:typographyWeight="reguler"
                             tools:text="6 terbantu" />
 
@@ -198,6 +208,8 @@
                     android:textColor="@color/Unify_NN600"
                     android:textSize="12sp"
                     android:visibility="gone"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     app:typographyWeight="reguler"
                     tools:text="Avocado Green" />
 
@@ -209,6 +221,8 @@
                     android:textColor="@color/Unify_NN600"
                     android:textSize="12sp"
                     android:visibility="gone"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     app:typographyWeight="reguler" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -218,6 +232,8 @@
                     android:textColor="@color/Unify_NN600"
                     android:textSize="12sp"
                     android:visibility="gone"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     app:typographyWeight="reguler"
                     tools:text="3 hari lalu" />
 
