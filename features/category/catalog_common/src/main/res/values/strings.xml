@@ -4,7 +4,7 @@
     <string name="catalog_common_text_comparison_title">Bandingkan produk</string>
     <string name="catalog_common_text_comparison_action_change">Ubah</string>
     <string name="text_selengkapnya">Selengkapnya</string>
-    <string name="text_selengkapnya_template">%s...Selengkapnya</string>
+    <string name="text_selengkapnya_template">%s…Selengkapnya</string>
     <string name="buyer_review_detail_bottomsheet_title">Ulasan Produk</string>
     <string name="catalog_common_for_title_catalog">Katalog</string>
 </resources>
