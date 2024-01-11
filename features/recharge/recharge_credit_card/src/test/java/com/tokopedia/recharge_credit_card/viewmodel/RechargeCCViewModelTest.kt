@@ -328,6 +328,39 @@ class RechargeCCViewModelTest {
     }
 
     @Test
+    fun getFavoriteNumber_InvalidFavoriteNumberType_LiveDataShouldBeEmpty() {
+        val favoriteNumberTypes = listOf(
+            FavoriteNumberType.CHIP,
+            FavoriteNumberType.LIST
+        )
+
+        val favoriteGroupModel = FavoriteGroupModel(
+            prefill = PrefillModel(),
+            autoCompletes = listOf(AutoCompleteModel()),
+            favoriteChips = listOf(FavoriteChipModel())
+        )
+
+        coEvery {
+            rechargeFavoriteNumberRepo.getFavoriteNumbers(any(), any())
+        } returns favoriteGroupModel
+
+        rechargeCCViewModel.getFavoriteNumbers(listOf(), favoriteNumberTypes)
+
+        Assert.assertNull(rechargeCCViewModel.prefillData.value)
+        Assert.assertNotNull(rechargeCCViewModel.autoCompleteData.value)
+        Assert.assertNotNull(rechargeCCViewModel.favoriteChipsData.value)
+
+        Assert.assertEquals(
+            listOf(AutoCompleteModel()),
+            (rechargeCCViewModel.autoCompleteData.value as RechargeNetworkResult.Success).data
+        )
+        Assert.assertEquals(
+            listOf(FavoriteChipModel()),
+            (rechargeCCViewModel.favoriteChipsData.value as RechargeNetworkResult.Success).data
+        )
+    }
+
+    @Test
     fun getFavoriteNumber_ErrorGetApi_ShouldReturnNothing() {
         val favoriteNumberTypes = listOf(
             FavoriteNumberType.PREFILL,
