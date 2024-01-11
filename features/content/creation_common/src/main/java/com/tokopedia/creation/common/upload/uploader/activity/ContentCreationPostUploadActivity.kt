@@ -80,13 +80,9 @@ class ContentCreationPostUploadActivity : BaseActivity() {
                 }
             }
         } else {
-            route(appLink)
+            RouteManager.route(this, appLink)
+            finish()
         }
-    }
-
-    private fun route(appLink: String) {
-        RouteManager.route(this, appLink)
-        finish()
     }
 
     companion object {
