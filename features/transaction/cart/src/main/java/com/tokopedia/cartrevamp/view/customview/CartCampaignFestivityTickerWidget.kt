@@ -34,6 +34,7 @@ class CartCampaignFestivityTickerWidget @JvmOverloads constructor(
     }
 
     fun showLogoTicker(logoUrl: String) {
+        // TODO: Implement real data
         binding.iuCampaignLogo.loadImage(ContextCompat.getDrawable(context, (R.drawable.test_campaign_logo)))
         //binding.iuCampaignLogo.loadImage(logoUrl)
         binding.iuCampaignLogo.visible()
