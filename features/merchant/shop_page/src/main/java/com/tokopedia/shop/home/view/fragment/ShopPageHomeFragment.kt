@@ -3521,8 +3521,8 @@ open class ShopPageHomeFragment :
             ShopUtil.getActualPositionFromIndex(adapterPosition),
             model.widgetMasterId,
             model.isFestivity,
-            isFulfillment = if (adapterPosition <= model.productList.size) model.productList[adapterPosition].isFulfillment else null,
-            warehouseId = if (adapterPosition <= model.productList.size) model.productList[adapterPosition].warehouseId else null
+            isFulfillment = if (adapterPosition < model.productList.size) model.productList[adapterPosition].isFulfillment else null,
+            warehouseId = if (adapterPosition < model.productList.size) model.productList[adapterPosition].warehouseId else null
         )
     }
 
