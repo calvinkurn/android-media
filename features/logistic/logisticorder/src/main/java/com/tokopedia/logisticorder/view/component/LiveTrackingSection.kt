@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.logisticorder.R
 import com.tokopedia.nest.components.NestButton
+import com.tokopedia.nest.principles.ui.NestTheme
 
 @Composable
 fun LiveTrackingSection(trackingUrl: String?, openWebview: (url: String) -> Unit) {
@@ -19,5 +21,13 @@ fun LiveTrackingSection(trackingUrl: String?, openWebview: (url: String) -> Unit
             text = stringResource(id = R.string.label_live_tracking),
             onClick = { openWebview(trackingUrl) }
         )
+    }
+}
+
+@Preview
+@Composable
+fun LiveTrackingSectionPreview() {
+    NestTheme {
+        LiveTrackingSection(trackingUrl = "https://track.gojek.com/?id=fd1015ee", openWebview = {})
     }
 }
