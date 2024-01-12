@@ -1600,32 +1600,44 @@ class ChatbotFragment2 :
                 .getBoolean(RemoteConfigKey.ANDROID_CHATBOT_SECURE_IMAGE, true)
 
             if (loadSecureImage) {
-                if (imageUrl.endsWith(GIF_EXTENSION, true)) {
-                    it.startActivity(
-                        ChatbotImageActivity.getCallingIntent(it, imageUrl)
-                    )
-                } else {
-                    val strings: ArrayList<String> = ArrayList()
-                    strings.add(imageUrl)
-                    it.startActivity(
-                        ImageSecurePreviewActivity.getCallingIntent(
-                            context = it,
-                            imageUris = strings,
-                            imageDesc = null,
-                            position = 0,
-                            isSecure = true
-                        )
-                    )
-                }
+                previewSecureImage(imageUrl)
+            } else {
+                previewImage(imageUrl)
+            }
+        }
+    }
+
+    private fun previewImage(imageUrl: String) {
+        activity?.let {
+            val strings: ArrayList<String> = ArrayList()
+            strings.add(imageUrl)
+            it.startActivity(
+                ImagePreviewActivity.getCallingIntent(
+                    it,
+                    strings,
+                    null,
+                    0
+                )
+            )
+        }
+    }
+
+    private fun previewSecureImage(imageUrl: String) {
+        activity?.let {
+            if (imageUrl.endsWith(GIF_EXTENSION, true)) {
+                it.startActivity(
+                    ChatbotImageActivity.getCallingIntent(it, imageUrl)
+                )
             } else {
                 val strings: ArrayList<String> = ArrayList()
                 strings.add(imageUrl)
                 it.startActivity(
-                    ImagePreviewActivity.getCallingIntent(
-                        it,
-                        strings,
-                        null,
-                        0
+                    ImageSecurePreviewActivity.getCallingIntent(
+                        context = it,
+                        imageUris = strings,
+                        imageDesc = null,
+                        position = 0,
+                        isSecure = true
                     )
                 )
             }
