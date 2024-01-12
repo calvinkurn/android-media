@@ -19,7 +19,6 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.Visibility
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
-import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.uimodel.DetailModel
 import com.tokopedia.logisticorder.uimodel.EtaModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
@@ -31,6 +30,7 @@ import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.logisticorder.R as logisticorderR
 
 @Composable
 fun TrackingDetailSection(
@@ -55,7 +55,7 @@ fun TrackingDetailSection(
                     end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 },
-                title = stringResource(id = R.string.label_reference_number),
+                title = stringResource(id = logisticorderR.string.label_reference_number),
                 value = data.trackOrder.shippingRefNum.toHyphenIfEmptyOrNull(),
                 icon = IconUnify.COPY,
                 iconSize = 16.dp,
@@ -69,7 +69,7 @@ fun TrackingDetailSection(
                     end.linkTo(secondColumnStartGuideline)
                     width = Dimension.fillToConstraints
                 },
-                stringResource(R.string.label_delivery_date),
+                stringResource(logisticorderR.string.label_delivery_date),
                 data.trackOrder.detail.deliveryDate
             )
             TrackingDetailsItem(
@@ -79,7 +79,7 @@ fun TrackingDetailSection(
                     end.linkTo(endGuideline)
                     width = Dimension.fillToConstraints
                 },
-                stringResource(R.string.label_service_code),
+                stringResource(logisticorderR.string.label_service_code),
                 data.trackOrder.detail.serviceCode.toHyphenIfEmptyOrNull()
             )
             TrackingDetailsItem(
@@ -89,7 +89,7 @@ fun TrackingDetailSection(
                     end.linkTo(secondColumnStartGuideline)
                     width = Dimension.fillToConstraints
                 },
-                stringResource(R.string.label_seller_courier_tracking),
+                stringResource(logisticorderR.string.label_seller_courier_tracking),
                 HtmlLinkHelper(
                     LocalContext.current,
                     data.trackOrder.detail.shipperName
@@ -103,7 +103,7 @@ fun TrackingDetailSection(
                     end.linkTo(endGuideline)
                     width = Dimension.fillToConstraints
                 },
-                stringResource(R.string.label_buyer),
+                stringResource(logisticorderR.string.label_buyer),
                 data.trackOrder.detail.receiverName,
                 data.trackOrder.detail.receiverCity
             )
@@ -114,7 +114,7 @@ fun TrackingDetailSection(
                     end.linkTo(endGuideline)
                     width = Dimension.fillToConstraints
                 },
-                title = stringResource(R.string.tracking_label_eta),
+                title = stringResource(logisticorderR.string.tracking_label_eta),
                 value = data.trackOrder.detail.eta.userInfo,
                 icon = IconUnify.INFORMATION,
                 iconSize = 13.dp,

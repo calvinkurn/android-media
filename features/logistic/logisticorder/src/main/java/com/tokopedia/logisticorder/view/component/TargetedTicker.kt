@@ -48,7 +48,7 @@ private val Int.toTickerType: TickerType
         }
     }
 
-private val URL_TAG = "url"
+private const val URL_TAG = "url"
 
 @Preview
 @Composable

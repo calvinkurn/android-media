@@ -16,7 +16,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.Visibility
 import com.tokopedia.imageassets.TokopediaImageUrl
-import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.uimodel.TippingModel
 import com.tokopedia.logisticorder.utils.TippingConstant
 import com.tokopedia.nest.components.ButtonVariant
@@ -26,6 +25,7 @@ import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
+import com.tokopedia.logisticorder.R as logisticorderR
 
 @Composable
 fun TippingDriverWidget(
@@ -36,7 +36,7 @@ fun TippingDriverWidget(
     if (tipping.eligibleForTipping) {
         Card(
             modifier = modifier,
-            backgroundColor = if (tipping.status == TippingConstant.OPEN) colorResource(id = R.color.dms_background_tipping_gojek_open) else NestTheme.colors.NN._0
+            backgroundColor = if (tipping.status == TippingConstant.OPEN) colorResource(id = logisticorderR.color.dms_background_tipping_gojek_open) else NestTheme.colors.NN._0
         ) {
             ConstraintLayout {
                 val (tippingLogo, tippingText, tippingDescription, tippingButton, tippingBg) = createRefs()
@@ -57,7 +57,7 @@ fun TippingDriverWidget(
                             if (tipping.status == TippingConstant.OPEN) Visibility.Visible else Visibility.Gone
                     },
                     contentScale = ContentScale.FillHeight,
-                    source = ImageSource.Painter(R.drawable.background_tipping_gojek)
+                    source = ImageSource.Painter(logisticorderR.drawable.background_tipping_gojek)
                 )
                 NestImage(
                     modifier = Modifier
@@ -115,10 +115,10 @@ private val TippingModel.buttonText: String
     @Composable
     get() {
         return when (status) {
-            TippingConstant.SUCCESS_PAYMENT, TippingConstant.SUCCESS_TIPPING -> stringResource(R.string.btn_tipping_success_text)
-            TippingConstant.WAITING_PAYMENT -> stringResource(R.string.btn_tipping_waiting_payment_text)
-            TippingConstant.REFUND_TIP -> stringResource(R.string.btn_tipping_refund_text)
-            else -> stringResource(R.string.btn_tipping_open_text)
+            TippingConstant.SUCCESS_PAYMENT, TippingConstant.SUCCESS_TIPPING -> stringResource(logisticorderR.string.btn_tipping_success_text)
+            TippingConstant.WAITING_PAYMENT -> stringResource(logisticorderR.string.btn_tipping_waiting_payment_text)
+            TippingConstant.REFUND_TIP -> stringResource(logisticorderR.string.btn_tipping_refund_text)
+            else -> stringResource(logisticorderR.string.btn_tipping_open_text)
         }
     }
 

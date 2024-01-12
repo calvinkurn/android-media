@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.uimodel.TrackingPageEvent
 import com.tokopedia.logisticorder.usecase.entity.RetryAvailabilityResponse
 import com.tokopedia.logisticorder.view.OrderAnalyticsOrderTracking
@@ -24,6 +23,7 @@ import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import kotlinx.coroutines.delay
+import com.tokopedia.logisticorder.R as logisticorderR
 
 @Composable
 fun FindNewDriverSection(
@@ -45,7 +45,7 @@ fun FindNewDriverSection(
                     modifier = Modifier.fillMaxWidth(),
                     variant = ButtonVariant.GHOST_ALTERNATE,
                     isEnabled = !clicked,
-                    text = stringResource(id = R.string.find_new_driver),
+                    text = stringResource(id = logisticorderR.string.find_new_driver),
                     onClick = {
                         clicked = true
                         OrderAnalyticsOrderTracking.eventClickButtonCariDriver(retryAvailability.retryAvailability.orderId)

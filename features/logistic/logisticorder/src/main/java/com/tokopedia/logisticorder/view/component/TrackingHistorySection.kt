@@ -26,7 +26,6 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.Visibility
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
-import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.uimodel.ProofModel
 import com.tokopedia.logisticorder.uimodel.TrackHistoryModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
@@ -37,8 +36,7 @@ import com.tokopedia.nest.principles.utils.ImageSource
 import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.utils.date.DateUtil
-
-private val INVALID_ORDER_STATUS = 501
+import com.tokopedia.logisticorder.R as logisticorderR
 
 @Composable
 fun TrackingHistory(
@@ -177,7 +175,7 @@ fun EmptyTracking(history: TrackOrderModel) {
                 top.linkTo(parent.top)
                 start.linkTo(parent.start)
             },
-            source = ImageSource.Painter(R.drawable.info)
+            source = ImageSource.Painter(logisticorderR.drawable.info)
         )
         NestTypography(
             modifier = Modifier.constrainAs(description) {
@@ -200,9 +198,9 @@ fun EmptyTracking(history: TrackOrderModel) {
 @Composable
 private fun InvalidTrackingNotes(modifier: Modifier) {
     Column(modifier) {
-        InvalidTrackingNotesItem(text = stringResource(id = R.string.empty_notes_1))
-        InvalidTrackingNotesItem(text = stringResource(id = R.string.empty_notes_2))
-        InvalidTrackingNotesItem(text = stringResource(id = R.string.empty_notes_3))
+        InvalidTrackingNotesItem(text = stringResource(id = logisticorderR.string.empty_notes_1))
+        InvalidTrackingNotesItem(text = stringResource(id = logisticorderR.string.empty_notes_2))
+        InvalidTrackingNotesItem(text = stringResource(id = logisticorderR.string.empty_notes_3))
     }
 }
 
@@ -223,13 +221,15 @@ private fun InvalidTrackingNotesItem(text: String) {
 private val TrackOrderModel.emptyTrackingTitle: String
     @Composable get() {
         return if (invalid) {
-            stringResource(id = R.string.warning_courier_invalid)
+            stringResource(id = logisticorderR.string.warning_courier_invalid)
         } else if (orderStatus == INVALID_ORDER_STATUS || change == 0 || trackHistory.isEmpty()) {
-            stringResource(id = R.string.warning_no_courier_change)
+            stringResource(id = logisticorderR.string.warning_no_courier_change)
         } else {
             ""
         }
     }
+
+private const val INVALID_ORDER_STATUS = 501
 
 @Preview
 @Composable

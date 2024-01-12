@@ -17,13 +17,13 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Visibility
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
-import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.uimodel.LastDriverModel
 import com.tokopedia.nest.components.NestImage
 import com.tokopedia.nest.components.NestImageType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
+import com.tokopedia.logisticorder.R as logisticorderR
 
 @Composable
 fun DriverInfoWidget(
@@ -46,7 +46,7 @@ fun DriverInfoWidget(
                 ImageSource.Remote(lastDriver.photo)
             } else {
                 ImageSource.Painter(
-                    R.drawable.ic_find_driver
+                    logisticorderR.drawable.ic_find_driver
                 )
             }
         ) {
@@ -55,7 +55,7 @@ fun DriverInfoWidget(
                     .padding(start = 12.dp)
                     .size(48.dp, 48.dp),
                 type = NestImageType.Circle,
-                source = ImageSource.Painter(R.drawable.ic_find_driver)
+                source = ImageSource.Painter(logisticorderR.drawable.ic_find_driver)
             )
         }
         NestTypography(
@@ -64,7 +64,7 @@ fun DriverInfoWidget(
                 start.linkTo(driverImage.end, margin = 8.dp)
             },
             textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._950),
-            text = lastDriver.name.ifEmpty { stringResource(id = R.string.driver_not_found_title) }
+            text = lastDriver.name.ifEmpty { stringResource(id = logisticorderR.string.driver_not_found_title) }
         )
         NestIcon(
             modifier = Modifier
@@ -86,7 +86,7 @@ fun DriverInfoWidget(
                 start.linkTo(driverName.start)
             },
             textStyle = NestTheme.typography.body3.copy(color = NestTheme.colors.NN._950),
-            text = if (lastDriver.name.isNotEmpty()) lastDriver.licenseNumber else stringResource(id = R.string.driver_not_found_subtitle)
+            text = if (lastDriver.name.isNotEmpty()) lastDriver.licenseNumber else stringResource(id = logisticorderR.string.driver_not_found_subtitle)
         )
         if (lastDriver.phone.isNotEmpty()) {
             Box(

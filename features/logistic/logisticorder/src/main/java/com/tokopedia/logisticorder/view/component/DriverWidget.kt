@@ -11,13 +11,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.uimodel.LastDriverModel
 import com.tokopedia.logisticorder.uimodel.TippingModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.utils.TippingConstant
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.logisticorder.R as logisticorderR
 
 @Composable
 fun DriverWidget(
@@ -34,7 +34,7 @@ fun DriverWidget(
         ) {
             NestTypography(
                 modifier = Modifier.padding(horizontal = 20.dp),
-                text = stringResource(id = R.string.driver_section_tracking_title),
+                text = stringResource(id = logisticorderR.string.driver_section_tracking_title),
                 textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold)
             )
             DriverInfoWidget(
