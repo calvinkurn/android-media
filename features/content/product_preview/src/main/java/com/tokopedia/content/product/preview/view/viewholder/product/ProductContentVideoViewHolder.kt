@@ -15,7 +15,6 @@ import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import timber.log.Timber
 
 class ProductContentVideoViewHolder(
     private val binding: ItemProductContentVideoBinding,
@@ -45,21 +44,10 @@ class ProductContentVideoViewHolder(
         }
     }
 
-    fun bindWithPayloads(payloads: MutableList<Any>) {
-        Timber.d(payloads.toString())
-        onSelected()
-    }
-
     private fun bindVideoPlayer(content: ContentUiModel) {
-        val videoPlayer = mVideoPlayer ?: listener.getVideoPlayer(PRODUCT_CONTENT_VIDEO_KEY_REF + content.url)
-        mVideoPlayer = videoPlayer
-        binding.playerProductContentVideo.player = videoPlayer.exoPlayer
-        binding.playerControl.player = videoPlayer.exoPlayer
-        videoPlayer.start(
-            videoUrl = content.url,
-            isMute = false,
-            playWhenReady = false
-        )
+        mVideoPlayer = listener.getVideoPlayer(PRODUCT_CONTENT_VIDEO_KEY_REF + content.url)
+        binding.playerProductContentVideo.player = mVideoPlayer?.exoPlayer
+        binding.playerControl.player = mVideoPlayer?.exoPlayer
 
         binding.playerControl.setListener(object : ProductPreviewPlayerControl.Listener {
             override fun onScrubbing(
@@ -80,7 +68,7 @@ class ProductContentVideoViewHolder(
                 binding.videoTimeView.hide()
             }
         })
-        videoPlayer.setVideoListener(object : ProductPreviewExoPlayer.VideoStateListener {
+        mVideoPlayer?.setVideoListener(object : ProductPreviewExoPlayer.VideoStateListener {
             override fun onBuffering() {
                 showLoading()
                 binding.iconPlay.hide()

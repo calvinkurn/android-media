@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentProductBinding
+import com.tokopedia.content.product.preview.utils.PRODUCT_CONTENT_VIDEO_KEY_REF
 import com.tokopedia.content.product.preview.view.adapter.product.ProductContentAdapter
 import com.tokopedia.content.product.preview.view.adapter.product.ProductIndicatorAdapter
 import com.tokopedia.content.product.preview.view.components.items.ProductIndicatorItemDecoration
@@ -23,6 +23,7 @@ import com.tokopedia.content.product.preview.view.components.player.ProductPrevi
 import com.tokopedia.content.product.preview.view.listener.ProductIndicatorListener
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
 import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction
@@ -48,13 +49,18 @@ class ProductFragment @Inject constructor(
         )
     }
 
-    private var snapHelperContent: PagerSnapHelper = PagerSnapHelper()
+    private var snapHelperContent = PagerSnapHelper()
+    private var mVideoPlayer: ProductPreviewExoPlayer? = null
 
     private val layoutManagerContent by lazyThreadSafetyNone {
         LinearLayoutManager(requireContext(), HORIZONTAL, false)
     }
     private val layoutManagerIndicator by lazyThreadSafetyNone {
         LinearLayoutManager(requireContext(), HORIZONTAL, false)
+    }
+
+    private val videoPlayerManager by lazyThreadSafetyNone {
+        ProductPreviewVideoPlayerManager(requireContext())
     }
 
     private val productContentAdapter by lazyThreadSafetyNone {
@@ -66,6 +72,7 @@ class ProductFragment @Inject constructor(
             }
         )
     }
+
     private val productIndicatorAdapter by lazyThreadSafetyNone {
         ProductIndicatorAdapter(
             listener = object :
@@ -77,11 +84,9 @@ class ProductFragment @Inject constructor(
             }
         )
     }
-
-    private val videoPlayerManager by lazy { ProductPreviewVideoPlayerManager(requireContext()) }
     private val contentScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == ViewPager2.SCROLL_STATE_IDLE) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 val position = getContentCurrentPosition()
                 scrollTo(position)
                 viewModel.submitAction(ProductPreviewUiAction.ProductSelected(position))
@@ -117,10 +122,10 @@ class ProductFragment @Inject constructor(
     private fun setupProductContentViews() = with(binding.rvContentProduct) {
         adapter = productContentAdapter
         layoutManager = layoutManagerContent
-        itemAnimator = null
+        snapHelperContent.attachToRecyclerView(this)
         removeOnScrollListener(contentScrollListener)
         addOnScrollListener(contentScrollListener)
-        snapHelperContent.attachToRecyclerView(this)
+        itemAnimator = null
     }
 
     private fun setupProductIndicatorViews() = with(binding.rvIndicatorProduct) {
@@ -147,11 +152,11 @@ class ProductFragment @Inject constructor(
     ) {
         if (prev == state) return
 
-        val selectedData = state.firstOrNull { it.selected }
-        val position = state.indexOf(selectedData)
+        prepareVideoPlayerIfNeeded(state)
 
         productContentAdapter.submitList(state)
         if (autoScrollFirstOpenContent) {
+            val position = getSelectedItemPosition(state)
             binding.rvContentProduct.scrollToPosition(position)
             autoScrollFirstOpenContent = false
         }
@@ -194,6 +199,26 @@ class ProductFragment @Inject constructor(
         }
     }
 
+    private fun prepareVideoPlayerIfNeeded(state: List<ContentUiModel>) {
+        if (mVideoPlayer != null) return
+        val videoData = state.firstOrNull { it.type == MediaType.Video } ?: return
+        val videoPosition = state.indexOf(videoData)
+        val videoUrl = state[videoPosition].url
+        val instance = videoPlayerManager.occupy(PRODUCT_CONTENT_VIDEO_KEY_REF + videoUrl)
+        val videoPlayer = mVideoPlayer ?: instance
+        mVideoPlayer = videoPlayer
+        mVideoPlayer?.start(
+            videoUrl = videoUrl,
+            isMute = false,
+            playWhenReady = false
+        )
+    }
+
+    private fun getSelectedItemPosition(state: List<ContentUiModel>): Int {
+        val selectedData = state.firstOrNull { it.selected } ?: return 0
+        return state.indexOf(selectedData)
+    }
+
     private fun getContentCurrentPosition(): Int {
         val snappedView =
             snapHelperContent.findSnapView(layoutManagerContent) ?: return RecyclerView.NO_POSITION
@@ -201,8 +226,8 @@ class ProductFragment @Inject constructor(
     }
 
     private fun scrollTo(position: Int) {
-        binding.rvContentProduct.scrollToPosition(position)
-        binding.rvIndicatorProduct.scrollToPosition(position)
+        binding.rvContentProduct.smoothScrollToPosition(position)
+        binding.rvIndicatorProduct.smoothScrollToPosition(position)
     }
 
     override fun onDestroyView() {

@@ -4,7 +4,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.tokopedia.content.product.preview.utils.KEY_REF_SELECTED_PRODUCT_CONTENT
 import com.tokopedia.content.product.preview.utils.TYPE_IMAGE
 import com.tokopedia.content.product.preview.utils.TYPE_UNKNOWN
 import com.tokopedia.content.product.preview.utils.TYPE_VIDEO
@@ -35,16 +34,6 @@ class ProductContentAdapter(
         }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
-        if (payloads.isEmpty()) {
-            onBindViewHolder(holder, position)
-        } else {
-            when (holder) {
-                is ProductContentVideoViewHolder -> holder.bindWithPayloads(payloads)
-            }
-        }
-    }
-
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position).type) {
             MediaType.Image -> TYPE_IMAGE
@@ -68,13 +57,6 @@ class ProductContentAdapter(
                 oldItem.type == MediaType.Video && newItem.type == MediaType.Video -> oldItem == newItem
                 else -> oldItem == newItem
             }
-        }
-
-        override fun getChangePayload(oldItem: ContentUiModel, newItem: ContentUiModel): Any {
-            val payloads = mutableListOf<Int>()
-            if (oldItem.selected != newItem.selected) payloads.add(KEY_REF_SELECTED_PRODUCT_CONTENT)
-            payloads.add(0)
-            return payloads
         }
     }
 }
