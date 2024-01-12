@@ -136,6 +136,7 @@ class OrderSummaryPageViewModel @Inject constructor(
 
     var isCartCheckoutRevamp: Boolean = false
     var usePromoEntryPointNewInterface: Boolean = false
+    var listPromoExternalAutoApplyCode: ArrayList<PromoExternalAutoApply> = arrayListOf()
 
     fun getShopId(): String {
         return orderCart.shop.shopId
@@ -160,8 +161,7 @@ class OrderSummaryPageViewModel @Inject constructor(
         source: String,
         uiMessage: OccUIMessage? = null,
         gatewayCode: String = "",
-        tenor: Int = 0,
-        listPromoExternalAutoApplyCode: ArrayList<PromoExternalAutoApply> = arrayListOf()
+        tenor: Int = 0
     ) {
         promoProcessor.isCartCheckoutRevamp = isCartCheckoutRevamp
         getCartJob?.cancel()
@@ -1167,6 +1167,9 @@ class OrderSummaryPageViewModel @Inject constructor(
                     updatePromoState(resultValidateUse.promoUiModel, orderPromo.value.lastApply)
                     if (newGlobalEvent != null) {
                         globalEvent.value = newGlobalEvent
+                    }
+                    if (listPromoExternalAutoApplyCode.isNotEmpty()) {
+                        listPromoExternalAutoApplyCode = arrayListOf()
                     }
                 }
 
