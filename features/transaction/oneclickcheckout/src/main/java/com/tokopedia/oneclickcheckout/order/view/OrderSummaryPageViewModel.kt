@@ -1160,6 +1160,13 @@ class OrderSummaryPageViewModel @Inject constructor(
                     clearAllPromoFromLastRequest()
                     calculateTotal()
                     globalEvent.value = newGlobalEvent
+                    if (listPromoExternalAutoApplyCode.isNotEmpty()) {
+                        orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(
+                            shopId = orderShop.value.shopId,
+                            userId = userSession.userId,
+                            isSuccess = false
+                        )
+                    }
                 }
 
                 resultValidateUse != null -> {
@@ -1169,6 +1176,11 @@ class OrderSummaryPageViewModel @Inject constructor(
                         globalEvent.value = newGlobalEvent
                     }
                     if (listPromoExternalAutoApplyCode.isNotEmpty()) {
+                        orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(
+                            shopId = orderShop.value.shopId,
+                            userId = userSession.userId,
+                            isSuccess = true
+                        )
                         listPromoExternalAutoApplyCode = arrayListOf()
                     }
                 }
@@ -1177,11 +1189,25 @@ class OrderSummaryPageViewModel @Inject constructor(
                     orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
                     orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                     globalEvent.value = newGlobalEvent
+                    if (listPromoExternalAutoApplyCode.isNotEmpty()) {
+                        orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(
+                            shopId = orderShop.value.shopId,
+                            userId = userSession.userId,
+                            isSuccess = false
+                        )
+                    }
                 }
 
                 else -> {
                     validateUsePromoRevampUiModel = null
                     updatePromoState(LastApplyUiModel())
+                    if (listPromoExternalAutoApplyCode.isNotEmpty()) {
+                        orderSummaryAnalytics.sendViewOccBeliPakaiPromoEvent(
+                            shopId = orderShop.value.shopId,
+                            userId = userSession.userId,
+                            isSuccess = false
+                        )
+                    }
                 }
             }
             updateCart()
