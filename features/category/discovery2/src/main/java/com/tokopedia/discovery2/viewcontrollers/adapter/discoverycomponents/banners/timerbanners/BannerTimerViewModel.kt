@@ -28,20 +28,19 @@ class BannerTimerViewModel(val application: Application, val components: Compone
     fun getBannerUrlWidth() = Utils.extractDimension(bannerTimeData.value?.data?.get(0)?.backgroundUrlMobile, "width")
     fun getRestartTimerAction(): LiveData<Boolean> = restartStoppedTimerEvent
 
-    fun startTimer(timer:TimerUnifyHighlight) {
+    fun startTimer(timer: TimerUnifyHighlight) {
         var parsingDate = ""
         val saleStartDate = components.data?.firstOrNull()?.startDate ?: ""
         val saleEndDate = components.data?.firstOrNull()?.endDate ?: ""
-        val timeDiff : Long = if(Utils.isFutureSaleOngoing(saleStartDate = saleStartDate, saleEndDate = saleEndDate, TIMER_DATE_FORMAT)){
+        val timeDiff: Long = if (Utils.isFutureSaleOngoing(saleStartDate = saleStartDate, saleEndDate = saleEndDate, TIMER_DATE_FORMAT)) {
             parsingDate = saleEndDate
             Utils.getElapsedTime(saleEndDate)
-
-        }else{
+        } else {
             parsingDate = saleStartDate
             Utils.getElapsedTime(saleStartDate)
         }
         if (timeDiff > 0) {
-            Utils.parseData(parsingDate,TIMER_DATE_FORMAT)?.let {date->
+            Utils.parseData(parsingDate, TIMER_DATE_FORMAT)?.let { date ->
                 val calendar = Calendar.getInstance()
                 calendar.time = date
                 timer.targetDate = calendar
@@ -56,7 +55,7 @@ class BannerTimerViewModel(val application: Application, val components: Compone
                     }
                 }
             }
-        }else{
+        } else {
             this@BannerTimerViewModel.syncData.value = true
         }
     }
@@ -90,9 +89,22 @@ class BannerTimerViewModel(val application: Application, val components: Compone
     }
 
     fun checkTimerEnd() {
-        val saleStartDate = components.data?.firstOrNull()?.startDate ?: ""
-        val saleEndDate = components.data?.firstOrNull()?.endDate ?: ""
-        if (Utils.isFutureSaleOngoing(saleStartDate = saleStartDate, saleEndDate = saleEndDate, TIMER_DATE_FORMAT)) {
+        requireAutoRefreshEnabled {
+            val saleStartDate = components.data?.firstOrNull()?.startDate.orEmpty()
+            val saleEndDate = components.data?.firstOrNull()?.endDate.orEmpty()
+
+            handleTimerEnd(saleStartDate, saleEndDate)
+        }
+    }
+
+    private fun handleTimerEnd(saleStartDate: String, saleEndDate: String) {
+        val isFutureSaleOngoing = Utils.isFutureSaleOngoing(
+            saleStartDate = saleStartDate,
+            saleEndDate = saleEndDate,
+            TIMER_DATE_FORMAT
+        )
+
+        if (isFutureSaleOngoing) {
             this@BannerTimerViewModel.syncData.value = true
         } else {
             if (Utils.getElapsedTime(saleEndDate) <= DEFAULT_TIME_DATA) {
@@ -101,20 +113,27 @@ class BannerTimerViewModel(val application: Application, val components: Compone
         }
     }
 
-    fun getTimerVariant():Int{
+    private fun requireAutoRefreshEnabled(action: () -> Unit) {
+        val shouldAutoRefresh = components.properties?.shouldAutoRefresh ?: false
+        if (!shouldAutoRefresh) return
+
+        action.invoke()
+    }
+
+    fun getTimerVariant(): Int {
         var variant = TimerUnifyHighlight.VARIANT_LIGHT_RED
         components.data?.firstOrNull()?.let {
-            if(!it.variant.isNullOrEmpty()){
-                when(it.variant){
-                    ALTERNATE->{
+            if (!it.variant.isNullOrEmpty()) {
+                when (it.variant) {
+                    ALTERNATE -> {
                         variant = TimerUnifyHighlight.VARIANT_ALTERNATE
                     }
-                    MAIN->{
-                        if(!it.color.isNullOrEmpty()){
-                            when(it.color){
+                    MAIN -> {
+                        if (!it.color.isNullOrEmpty()) {
+                            when (it.color) {
                                 RED_DARK ->
                                     variant = TimerUnifyHighlight.VARIANT_DARK_RED
-                                RED_LIGHT->
+                                RED_LIGHT ->
                                     variant = TimerUnifyHighlight.VARIANT_LIGHT_RED
                             }
                         }
@@ -125,10 +144,10 @@ class BannerTimerViewModel(val application: Application, val components: Compone
         return variant
     }
 
-    companion object{
+    companion object {
         const val ALTERNATE = "alternate"
         const val MAIN = "main"
-        const val RED_LIGHT= "redLight"
-        const val RED_DARK= "redDark"
+        const val RED_LIGHT = "redLight"
+        const val RED_DARK = "redDark"
     }
 }

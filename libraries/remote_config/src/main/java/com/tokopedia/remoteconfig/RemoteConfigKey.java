@@ -318,5 +318,12 @@ public class RemoteConfigKey {
 
     public static final String ANDROID_ENABLE_NEW_CART_QUANTITY_EDITOR = "android_enable_new_quantity_editor_cart";
 
+    public static final String ANDROID_INTERNAL_TEST_UPDATE_CONFIG = "android_internal_test_update_config";
+
+    public static final String ANDROID_INTERNAL_PUBLIC_VERSION_DIALOG_CONFIG = "android_internal_public_version_dialog_config";
+
+    public static final String ANDROID_INTERNAL_NAKAMA_VERSION_DIALOG_CONFIG = "android_internal_nakama_version_dialog_config";
+
     public static final String SELLER_MENU_COMPOSE = "android_seller_menu_compose";
+
 }
