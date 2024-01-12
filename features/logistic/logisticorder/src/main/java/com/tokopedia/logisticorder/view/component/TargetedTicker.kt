@@ -10,6 +10,7 @@ import com.tokopedia.nest.components.ticker.NestTicker
 import com.tokopedia.nest.components.ticker.NestTickerData
 import com.tokopedia.nest.components.ticker.TickerType
 import com.tokopedia.nest.components.ticker.TickerVariant
+import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.toAnnotatedString
 import com.tokopedia.targetedticker.domain.TargetedTickerHelper.toTickerData
 import com.tokopedia.targetedticker.domain.TickerModel
@@ -69,6 +70,7 @@ fun TargetedTickerPreview() {
     val data = TickerModel(
         item = tickerData
     )
-
-    TargetedTicker(tickerData = data, openWebview = {})
+    NestTheme {
+        TargetedTicker(tickerData = data, openWebview = {})
+    }
 }
