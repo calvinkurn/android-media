@@ -1,0 +1,38 @@
+{
+  "data": {
+    "info_request_partial_order_fulfillment": {
+      "order_id": 167756654,
+      "pof_status": 0,
+      "details_original": [
+        {
+          "order_id": 167756654,
+          "order_dtl_id": 20851861,
+          "product_id": 2150865417,
+          "quantity_request": 4,
+          "quantity_checkout": 4,
+          "total_price_request": 300000,
+          "total_price_checkout": 300000,
+          "product_name": "Power Bank Original - Blue",
+          "product_price": "Rp75.000",
+          "product_quantity": 0,
+          "product_picture": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/51418427-5ed7-4201-9633-6221e3e08118.jpg"
+        },
+        {
+          "order_id": 167756655,
+          "order_dtl_id": 20851862,
+          "product_id": 2150865418,
+          "quantity_request": 5,
+          "quantity_checkout": 5,
+          "total_price_request": 400000,
+          "total_price_checkout": 400000,
+          "product_name": "Power Bank Original - Green",
+          "product_price": "Rp80.000",
+          "product_quantity": 0,
+          "product_picture": "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2023/2/8/51418427-5ed7-4201-9633-6221e3e08118.jpg"
+        }
+      ],
+      "details_fulfilled": [],
+      "details_unfulfilled": []
+    }
+  }
+}

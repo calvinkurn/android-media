@@ -47,7 +47,7 @@ class FollowerFollowingViewModelTest {
     @Test
     fun `when user load follower list successfully, it should emit the data`() {
         val expectedValue = FollowerListModelBuilder().build("", 0)
-        coEvery { repo.getMyFollowers(any(), any(), any()) } returns expectedValue
+        coEvery { repo.getFollowers(any(), any(), any()) } returns expectedValue
 
         robot.start {
             this.getFollowers()
@@ -59,7 +59,7 @@ class FollowerFollowingViewModelTest {
 
     @Test
     fun `when user failed load follower list, it should emit the error data`() {
-        coEvery { repo.getMyFollowers(any(), any(), any()) } throws mockException
+        coEvery { repo.getFollowers(any(), any(), any()) } throws mockException
         robot.start {
             getFollowers()
 
@@ -73,8 +73,8 @@ class FollowerFollowingViewModelTest {
         val nextCursor = "nextCursor"
         val expectedValue = FollowerListModelBuilder().build("", 2)
 
-        coEvery { repo.getMyFollowers(any(), "", any()) } returns FollowerListModelBuilder().build(nextCursor, 0)
-        coEvery { repo.getMyFollowers(any(), nextCursor, any()) } returns expectedValue
+        coEvery { repo.getFollowers(any(), "", any()) } returns FollowerListModelBuilder().build(nextCursor, 0)
+        coEvery { repo.getFollowers(any(), nextCursor, any()) } returns expectedValue
         robot.start {
             getFollowers()
 
@@ -88,8 +88,8 @@ class FollowerFollowingViewModelTest {
         val nextCursor = "nextCursor"
         val expectedValue = FollowerListModelBuilder().build(nextCursor, 2)
 
-        coEvery { repo.getMyFollowers(any(), "", any()) } returns expectedValue
-        coEvery { repo.getMyFollowers(any(), nextCursor, any()) } returns FollowerListModelBuilder().build("", 2)
+        coEvery { repo.getFollowers(any(), "", any()) } returns expectedValue
+        coEvery { repo.getFollowers(any(), nextCursor, any()) } returns FollowerListModelBuilder().build("", 2)
 
         robot.start {
             getFollowers()
@@ -103,7 +103,7 @@ class FollowerFollowingViewModelTest {
     fun `when user load following list successfully, it should emit the data`() {
         val expectedValue = FollowingListModelBuilder().build("", 0)
 
-        coEvery { repo.getMyFollowing(any(), "", any()) } returns expectedValue
+        coEvery { repo.getFollowing(any(), "", any()) } returns expectedValue
         robot.start {
             getFollowings()
 
@@ -114,7 +114,7 @@ class FollowerFollowingViewModelTest {
 
     @Test
     fun `when user failed load following list, it should emit the error data`() {
-        coEvery { repo.getMyFollowing(any(), any(), any()) } throws mockException
+        coEvery { repo.getFollowing(any(), any(), any()) } throws mockException
 
         robot.start {
             getFollowings()
@@ -129,8 +129,8 @@ class FollowerFollowingViewModelTest {
         val nextCursor = "nextCursor"
         val expectedValue = FollowingListModelBuilder().build("", 2)
 
-        coEvery { repo.getMyFollowing(any(), "", any()) } returns FollowingListModelBuilder().build(nextCursor, 0)
-        coEvery { repo.getMyFollowing(any(), nextCursor, any()) } returns expectedValue
+        coEvery { repo.getFollowing(any(), "", any()) } returns FollowingListModelBuilder().build(nextCursor, 0)
+        coEvery { repo.getFollowing(any(), nextCursor, any()) } returns expectedValue
 
         robot.start {
             getFollowings()
@@ -145,8 +145,8 @@ class FollowerFollowingViewModelTest {
         val nextCursor = "nextCursor"
         val expectedValue = FollowingListModelBuilder().build(nextCursor, 2)
 
-        coEvery { repo.getMyFollowing(any(), "", any()) } returns expectedValue
-        coEvery { repo.getMyFollowing(any(), nextCursor, any()) } returns FollowingListModelBuilder().build("", 2)
+        coEvery { repo.getFollowing(any(), "", any()) } returns expectedValue
+        coEvery { repo.getFollowing(any(), nextCursor, any()) } returns FollowingListModelBuilder().build("", 2)
 
         robot.start {
             getFollowings()
@@ -375,7 +375,7 @@ class FollowerFollowingViewModelTest {
     @Test
     fun `whenever get followers triggered, and it success, then there will be a value for total follow`() {
         val expectedValue = FollowListUiModel.FollowCount("10", "10")
-        coEvery { repo.getMyFollowers(any(), any(), any()) } returns FollowerListModelBuilder().build(followCount = expectedValue)
+        coEvery { repo.getFollowers(any(), any(), any()) } returns FollowerListModelBuilder().build(followCount = expectedValue)
 
         robot.start {
             this.getFollowers()
@@ -388,7 +388,7 @@ class FollowerFollowingViewModelTest {
     @Test
     fun `whenever get following list triggered, and it success, then there will be a value for total follow`() {
         val expectedValue = FollowListUiModel.FollowCount("10", "10")
-        coEvery { repo.getMyFollowing(any(), any(), any()) } returns FollowingListModelBuilder().build(followCount = expectedValue)
+        coEvery { repo.getFollowing(any(), any(), any()) } returns FollowingListModelBuilder().build(followCount = expectedValue)
 
         robot.start {
             this.getFollowings()

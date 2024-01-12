@@ -15,6 +15,7 @@ import com.tokopedia.sellerorder.detail.presentation.model.AddOnUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.BaseProductUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.NonProductBundleUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
+import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofRequestInfoResponse.Data.InfoRequestPartialOrderFulfillment.Companion.STATUS_INITIAL
 
 object SomGetOrderDetailResponseMapper {
 
@@ -188,27 +189,28 @@ object SomGetOrderDetailResponseMapper {
 
     private fun SomDetailOrder.GetSomDetail.mapToHeaderUiModel(): SomDetailHeader {
         return SomDetailHeader(
-            statusCode,
-            statusText,
-            statusIndicatorColor,
-            buyerRequestCancel.isRequestCancel,
-            invoice,
-            invoiceUrl,
-            paymentDate,
-            customer.name,
-            deadline.text,
-            deadline.color,
-            deadline.style,
-            listLabelInfo,
-            orderId,
-            shipment.awbUploadUrl,
-            shipment.awbUploadProofText,
-            bookingInfo.onlineBooking.bookingCode,
-            bookingInfo.onlineBooking.state,
-            bookingInfo.onlineBooking.barcodeType,
-            warehouse.fullFillBy,
-            flagOrderMeta.isWareHouse,
-            tickerInfo
+            statusCode = statusCode,
+            statusText = statusText,
+            statusIndicatorColor = statusIndicatorColor,
+            isBuyerRequestCancel = buyerRequestCancel.isRequestCancel,
+            invoice = invoice,
+            invoiceUrl = invoiceUrl,
+            paymentDate = paymentDate,
+            custName = customer.name,
+            deadlineText = deadline.text,
+            deadlineColor = deadline.color,
+            deadlineStyle = deadline.style,
+            listLabelOrder = listLabelInfo,
+            orderId = orderId,
+            awbUploadUrl = shipment.awbUploadUrl,
+            awbUploadProofText = shipment.awbUploadProofText,
+            onlineBookingCode = bookingInfo.onlineBooking.bookingCode,
+            onlineBookingState = bookingInfo.onlineBooking.state,
+            onlineBookingType = bookingInfo.onlineBooking.barcodeType,
+            fullFillBy = warehouse.fullFillBy,
+            isWarehouse = flagOrderMeta.isWareHouse,
+            tickerInfo = tickerInfo,
+            pofStatus = pofData?.pofStatus ?: STATUS_INITIAL
         )
     }
 

@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.CourierButtonListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierDriverInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
@@ -41,7 +42,8 @@ class BuyerOrderDetailTypeFactoryStub(
     navigator: BuyerOrderDetailNavigator,
     buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
     orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener,
-    recyclerViewSharedPool: RecyclerView.RecycledViewPool
+    recyclerViewSharedPool: RecyclerView.RecycledViewPool,
+    courierButtonListener: CourierButtonListener
 ) : BuyerOrderDetailTypeFactory(
     productBundlingViewListener,
     tickerViewHolderListener,
@@ -58,11 +60,12 @@ class BuyerOrderDetailTypeFactoryStub(
     navigator,
     buyerOrderDetailBindRecomWidgetListener,
     orderResolutionListener,
-    recyclerViewSharedPool
+    recyclerViewSharedPool,
+    courierButtonListener
 ) {
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolderStub(parent, navigator)
+            CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolderStub(parent, navigator, courierButtonListener)
             ProductViewHolder.LAYOUT -> ProductViewHolderStub(parent, productViewListener, bottomSheetListener, navigator)
             PgRecommendationViewHolder.LAYOUT -> PgRecommendationViewHolderStub(parent, buyerOrderDetailBindRecomWidgetListener)
             else -> super.createViewHolder(parent, type)

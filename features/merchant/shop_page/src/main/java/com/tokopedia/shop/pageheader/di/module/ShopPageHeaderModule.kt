@@ -3,6 +3,7 @@ package com.tokopedia.shop.pageheader.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.creation.common.presentation.utils.ContentCreationEntryPointSharedPref
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -18,6 +19,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
+import com.tokopedia.feedcomponent.R as feedcomponentR
 
 @Module(includes = [ShopPageHeaderViewModelModule::class])
 class ShopPageHeaderModule {
@@ -40,7 +42,7 @@ class ShopPageHeaderModule {
     fun provideGqlQueryShopFeedWhitelist(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(
             context.resources,
-            com.tokopedia.feedcomponent.R.raw.query_whitelist
+            feedcomponentR.raw.query_whitelist
         )
     }
 
@@ -71,5 +73,14 @@ class ShopPageHeaderModule {
     @Provides
     fun provideAffiliateUseCase(graphqlRepository: GraphqlRepository): AffiliateEligibilityCheckUseCase {
         return AffiliateEligibilityCheckUseCase(graphqlRepository)
+    }
+
+    @ShopPageHeaderScope
+    @Provides
+    fun provideContentCreationEntryPointSharedPref(
+        @ApplicationContext context: Context,
+        userSession: UserSessionInterface
+    ): ContentCreationEntryPointSharedPref {
+        return ContentCreationEntryPointSharedPref(context, userSession)
     }
 }

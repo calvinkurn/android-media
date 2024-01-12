@@ -17,6 +17,8 @@ object FeedViewHolderPayloadActions {
     const val FEED_POST_DONE_SCROLL = 1112
     const val FEED_FOLLOW_RECOM_RESUME_VIDEO = 1113
     const val FEED_FOLLOW_RECOM_PAUSE_VIDEO = 1114
+    const val FEED_VIDEO_PRODUCT_ICON_ANIM_PAUSE = 1115
+    const val FEED_VIDEO_PRODUCT_ICON_ANIM_RESUME = 1116
 }
 
 data class FeedViewHolderPayloads(

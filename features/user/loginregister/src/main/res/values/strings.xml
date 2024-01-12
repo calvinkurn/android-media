@@ -84,7 +84,7 @@
     <string name="title_register_wo_u">Daftar</string>
     <string name="account_registered_title">Akun Anda Sudah Pernah Terdaftar</string>
     <string name="account_registered_body">Anda sudah pernah melakukan pendaftaran akun tokopedia dengan email %1$s.\nSilakan login menggunakan akun anda atau klik disini untuk mengganti kata sandi anda.</string>
-    <string name="text_term_and_privacy">Dengan mendaftar di sini, kamu menyetujui Syarat &amp; Ketentuan serta Kebijakan Privasi Tokopedia.</string>
+    <string name="text_term_and_privacy">Dengan mendaftar di sini, kamu menyetujui Syarat &amp; Ketentuan serta Pemberitahuan Privasi Tokopedia.</string>
     <string name="error_illegal_character">Hanya dapat menggunakan huruf</string>
     <string name="error_max_35_character">Maksimal 35 karakter</string>
     <string name="account_registered_body_part">klik disini untuk mengganti kata sandi anda.</string>
@@ -115,7 +115,7 @@
     <string name="deleted_shop_info_clickable">Pelajari Selengkapnya</string>
     <string name="phone_shop_tnc_policy">Dengan klik tombol di bawah, kamu menyetujui %s serta %s Pendaftaran Toko.</string>
     <string name="phone_shop_tnc_title">Syarat &amp; Ketentuan</string>
-    <string name="phone_shop_policy_title">Kebijakan Privasi</string>
+    <string name="phone_shop_policy_title">Pemberitahuan Privasi</string>
 
     <!-- ERROR LOGIN -->
     <string name="error_login_user_cancel_login_phone">Cancel login phone</string>
@@ -130,7 +130,7 @@
     <string name="seamless_footer_text">Akun toko ini adalah akun yang terhubung di aplikasi Tokopedia mu</string>
 
     <!-- TERM & CONDITION | PRIVACY-->
-    <string name="title_activity_term_and_privacy">Kebijakan Privasi</string>
+    <string name="title_activity_term_and_privacy">Pemberitahuan Privasi</string>
 
     <!-- GOTO SEAMLESS -->
     <string name="goto_seamless_title">Masuk ke Tokopedia</string>

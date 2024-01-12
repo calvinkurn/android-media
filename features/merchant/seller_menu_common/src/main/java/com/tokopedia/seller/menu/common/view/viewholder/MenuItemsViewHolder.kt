@@ -10,15 +10,19 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.menu.common.R
-import com.tokopedia.seller.menu.common.analytics.*
+import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
+import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
+import com.tokopedia.seller.menu.common.analytics.sendEventClickStatisticMenuItem
+import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
+import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
 import com.tokopedia.seller.menu.common.constant.MenuItemType
 import com.tokopedia.seller.menu.common.databinding.SettingMenuListBinding
 import com.tokopedia.seller.menu.common.databinding.SettingMenuListNoIconBinding
 import com.tokopedia.seller.menu.common.view.typefactory.CoachMarkListener
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
-import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
+import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -33,11 +37,12 @@ class MenuItemsViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.setting_menu_list
+
         @LayoutRes
         val LAYOUT_NO_ICON = R.layout.setting_menu_list_no_icon
 
         fun getLayoutRes(isNoIcon: Boolean) =
-                if (isNoIcon) LAYOUT_NO_ICON else LAYOUT
+            if (isNoIcon) LAYOUT_NO_ICON else LAYOUT
     }
 
     private var settingMenuIcon: IconUnify? = null
@@ -70,8 +75,8 @@ class MenuItemsViewHolder(
                 }
             }
             setupTag(element.tag)
-            doOnAttach {
-                coachMarkListener?.onViewReadyForCoachMark(element.title, settingMenuIcon)
+            settingMenuIcon?.doOnAttach {
+                coachMarkListener?.onViewReadyForCoachMark(element.title, it)
             }
         }
     }
@@ -100,7 +105,8 @@ class MenuItemsViewHolder(
             settingMenuCounterIcon?.setNotification(
                 notificationCount.toString(),
                 NotificationUnify.COUNTER_TYPE,
-                NotificationUnify.COLOR_PRIMARY)
+                NotificationUnify.COLOR_PRIMARY
+            )
             settingMenuCounterIcon?.show()
         } else {
             settingMenuCounterIcon?.gone()
@@ -108,7 +114,7 @@ class MenuItemsViewHolder(
     }
 
     private fun sendTracker(menuItem: MenuItemUiModel) {
-        when(menuItem) {
+        when (menuItem) {
             is SellerMenuItemUiModel -> sendClickSellerMenuEvent(menuItem)
             is StatisticMenuItemUiModel -> sendEventClickStatisticMenuItem(userSession?.userId.orEmpty())
             else -> menuItem.sendSettingShopInfoClickTracking()

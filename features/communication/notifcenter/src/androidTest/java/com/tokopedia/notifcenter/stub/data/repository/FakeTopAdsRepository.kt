@@ -1,6 +1,7 @@
 package com.tokopedia.notifcenter.stub.data.repository
 
 import com.google.gson.JsonObject
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.notifcenter.stub.common.AndroidFileUtil
@@ -8,6 +9,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsBannerResponse
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import javax.inject.Inject
 
+@ActivityScope
 class FakeTopAdsRepository @Inject constructor() : TopAdsRepository() {
 
     var isError = false

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/constraintLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgAvatar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_type="circle" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgReviewerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toEndOf="@+id/imgAvatar"
+        app:layout_constraintTop_toTopOf="@+id/imgAvatar"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="Karina" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgBullet"
+        tools:visibility="visible"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toEndOf="@+id/tpgReviewerName"
+        app:layout_constraintTop_toTopOf="@+id/imgAvatar"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        android:text="@string/shop_page_dot_character" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgReviewerLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_TN600"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tpgBullet"
+        app:layout_constraintTop_toTopOf="@+id/imgAvatar"
+        app:typographyType="display_3"
+        tools:text="Juara Ulasan Handphone" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgReviewLikeCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toStartOf="@+id/tpgReviewerName"
+        app:layout_constraintTop_toBottomOf="@+id/tpgReviewerName"
+        app:typographyType="display_3"
+        tools:text="123 terbantu" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/Unify_NN50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imgAvatar" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgReviewText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:typographyType="paragraph_3"
+        tools:text="Paket diterima dengan baik dan aman, handphone original, sellernya amanah dikirim sesuai waktu yang disepakati. Res..." />
+
+
+    <LinearLayout
+        android:id="@+id/layoutImagesContainer"
+        android:layout_width="0dp"
+        tools:visibility="visible"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tpgReviewText"
+        tools:layout_height="16dp" />
+
+    
+</androidx.constraintlayout.widget.ConstraintLayout>

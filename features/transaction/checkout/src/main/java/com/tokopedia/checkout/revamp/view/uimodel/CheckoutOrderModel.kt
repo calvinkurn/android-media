@@ -1,6 +1,8 @@
 package com.tokopedia.checkout.revamp.view.uimodel
 
 import android.os.Parcelable
+import com.tokopedia.checkout.revamp.view.widget.CheckoutDropshipWidget
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentAction
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
@@ -52,8 +54,16 @@ data class CheckoutOrderModel(
     var spId: Int = 0,
     var boCode: String = "",
     var boUniqueId: String = "",
-    var dropshiperName: String = "",
-    var dropshiperPhone: String = "",
+
+    // dropship
+    var useDropship: Boolean = false,
+    var isDropshipperDisabled: Boolean = false,
+    var stateDropship: CheckoutDropshipWidget.State = CheckoutDropshipWidget.State.GONE,
+    var dropshipName: String = "",
+    var dropshipPhone: String = "",
+    var isDropshipNameValid: Boolean = false,
+    var isDropshipPhoneValid: Boolean = false,
+
     val isInsurance: Boolean = false,
     val isSaveStateFlag: Boolean = false,
 
@@ -131,7 +141,13 @@ data class CheckoutOrderModel(
     var timeslotId: Long = 0L,
     var validationMetadata: String = "",
     val ratesValidationFlow: Boolean = false,
+    val shippingComponents: ShippingComponents = ShippingComponents.RATES,
     var hasSentScheduleDeliveryAnalytics: Boolean = false,
+    val startDate: String = "",
+    val isRecommendScheduleDelivery: Boolean = false,
+
+    // OFOC
+    val groupingState: Int = 0,
 
     // Multiple Order Plus Coachmark
     var coachmarkPlus: CoachmarkPlusData = CoachmarkPlusData(),
@@ -154,7 +170,13 @@ data class CheckoutOrderModel(
     val groupInfoDescriptionBadgeUrl: String = "",
 
     // add ons subtotal
-    var subtotalAddOnMap: HashMap<Int, String> = hashMapOf()
+    var subtotalAddOnMap: HashMap<Int, String> = hashMapOf(),
+
+    // O2O
+    val groupMetadata: String = "",
+
+    // ofoc
+    val shipmentAction: HashMap<Long, ShipmentAction> = HashMap()
 ) : CheckoutItem {
 
     val isCustomPinpointError: Boolean
@@ -166,6 +188,10 @@ data class CheckoutOrderModel(
 
     val hasValidEthicalDrugProduct: Boolean
         get() = finalCheckoutProducts.find { !it.isError && it.ethicalDrugDataModel.needPrescription } != null
+
+    val isEnableDropship: Boolean
+        get() = !isDropshipperDisabled && shipment.courierItemData?.isAllowDropshiper == true &&
+            shipment.courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()
 }
 
 @Parcelize
@@ -192,3 +218,13 @@ data class CheckoutOrderShipment(
 data class CheckoutOrderInsurance(
     var isCheckInsurance: Boolean = false
 )
+
+enum class ShippingComponents(val value: Int) {
+    SCHELLY_WITH_RATES(1),
+    SCHELLY(2),
+    RATES(3);
+
+    companion object {
+        fun fromInt(value: Int) = ShippingComponents.values().firstOrNull { it.value == value } ?: RATES
+    }
+}

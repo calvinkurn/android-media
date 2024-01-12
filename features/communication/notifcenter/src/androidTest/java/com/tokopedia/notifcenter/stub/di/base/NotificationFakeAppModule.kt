@@ -12,6 +12,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCaseInterface
 import com.tokopedia.notifcenter.stub.common.CoroutineAndroidTestDispatchersProvider
 import com.tokopedia.notifcenter.stub.data.repository.GraphqlRepositoryStub
+import com.tokopedia.notifcenter.stub.data.response.GqlResponseStub
 import com.tokopedia.test.application.datastore.TestUserSessionDataStore
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import dagger.Module
@@ -45,10 +46,19 @@ class NotificationFakeAppModule(private val context: Context) {
     }
 
     @ApplicationScope
+    @ApplicationContext
+    @Provides
+    fun provideGqlResponseStub(): GqlResponseStub {
+        return GqlResponseStub()
+    }
+
+    @ApplicationScope
     @Provides
     @ApplicationContext
-    fun provideGraphqlRepository(): GraphqlRepository {
-        return GraphqlRepositoryStub()
+    fun provideGraphqlRepository(
+        @ApplicationContext gqlResponseStub: GqlResponseStub
+    ): GraphqlRepository {
+        return GraphqlRepositoryStub(gqlResponseStub)
     }
 
     @Provides

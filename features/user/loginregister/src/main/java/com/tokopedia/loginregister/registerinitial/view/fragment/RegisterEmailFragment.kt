@@ -53,6 +53,8 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.sessioncommon.R as sessioncommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by nisie on 10/25/18.
@@ -71,6 +73,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     var progressBar: LoaderUnify? = null
     var source = ""
     var token = ""
+    private var isFromScp = false
 
     @Inject
     lateinit var analytics: LoginRegisterAnalytics
@@ -127,6 +130,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         arguments?.run {
             wrapperEmail?.textFieldInput?.setText(arguments?.getString(ApplinkConstInternalGlobal.PARAM_EMAIL, ""))
             wrapperEmail?.textFieldInput?.isEnabled = false
+            isFromScp = getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_SCP, false)
             token = getString(ApplinkConstInternalGlobal.PARAM_TOKEN, "")
             source = getString(ApplinkConstInternalGlobal.PARAM_SOURCE, "")
         }
@@ -172,7 +176,8 @@ class RegisterEmailFragment : BaseDaggerFragment() {
                 } else {
                     if (context != null) {
                         val forbiddenMessage = context?.getString(
-                            com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
+                            sessioncommonR.string.default_request_error_forbidden_auth
+                        )
                         if (errorMessage.removeErrorCode() == forbiddenMessage) {
                             onForbidden()
                         } else {
@@ -220,12 +225,17 @@ class RegisterEmailFragment : BaseDaggerFragment() {
 
     private fun getSpannable(sourceString: String, hyperlinkString: String): Spannable {
         val spannable: Spannable = SpannableString(sourceString)
-        spannable.setSpan(object : ClickableSpan() {
-            override fun onClick(view: View) {}
-            override fun updateDrawState(ds: TextPaint) {
-                context?.resources?.let { ds.color = it.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500) }
-            }
-        }, sourceString.indexOf(hyperlinkString), sourceString.length, 0)
+        spannable.setSpan(
+            object : ClickableSpan() {
+                override fun onClick(view: View) {}
+                override fun updateDrawState(ds: TextPaint) {
+                    context?.resources?.let { ds.color = it.getColor(unifyprinciplesR.color.Unify_GN500) }
+                }
+            },
+            sourceString.indexOf(hyperlinkString),
+            sourceString.length,
+            0
+        )
         return spannable
     }
 
@@ -244,7 +254,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
         wrapperEmail?.textFieldInput?.addTextChangedListener(emailWatcher(wrapperEmail))
         wrapperPassword?.textFieldInput?.addTextChangedListener(passwordWatcher(wrapperPassword))
         wrapperName?.textFieldInput?.addTextChangedListener(nameWatcher(wrapperName))
-        if(userSession.isLoggedIn) {
+        if (userSession.isLoggedIn) {
             activity?.setResult(Activity.RESULT_OK)
             activity?.finish()
         }
@@ -347,21 +357,23 @@ class RegisterEmailFragment : BaseDaggerFragment() {
 
     private fun registerEmail() {
         showLoadingProgress()
-        if(validatePasswordInput()) {
+        if (validatePasswordInput()) {
             registerAnalytics.trackClickSignUpButtonEmail()
             if (isUseEncryption()) {
                 registerInitialViewModel.registerRequestV2(
                     wrapperEmail?.textFieldInput?.text.toString(),
                     wrapperPassword?.textFieldInput?.text.toString(),
                     wrapperName?.textFieldInput?.text.toString(),
-                    token
+                    token,
+                    isFromScp
                 )
             } else {
                 registerInitialViewModel.registerRequest(
                     wrapperEmail?.textFieldInput?.text.toString(),
                     wrapperPassword?.textFieldInput?.text.toString(),
                     wrapperName?.textFieldInput?.text.toString(),
-                    token
+                    token,
+                    isFromScp
                 )
             }
         } else {
@@ -523,7 +535,7 @@ class RegisterEmailFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        //** see fragment_register_email
+        // ** see fragment_register_email
         private const val REGISTER_BUTTON_IME = 123321
         private const val REQUEST_AUTO_LOGIN = 101
         private const val REQUEST_ACTIVATE_ACCOUNT = 102

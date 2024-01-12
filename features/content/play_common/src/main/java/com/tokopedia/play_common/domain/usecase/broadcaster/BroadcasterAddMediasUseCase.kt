@@ -1,5 +1,6 @@
 package com.tokopedia.play_common.domain.usecase.broadcaster
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -10,7 +11,7 @@ import javax.inject.Inject
 
 @GqlQuery(BroadcasterAddMediasUseCase.QUERY_NAME, BroadcasterAddMediasUseCase.QUERY)
 class BroadcasterAddMediasUseCase @Inject constructor(
-    gqlRepository: GraphqlRepository,
+    @ApplicationContext gqlRepository: GraphqlRepository,
 ) : GraphqlUseCase<BroadcasterAddMediasResponse>(gqlRepository) {
 
     init {

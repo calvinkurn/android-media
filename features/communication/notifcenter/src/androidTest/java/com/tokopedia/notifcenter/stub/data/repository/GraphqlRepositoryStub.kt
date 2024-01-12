@@ -11,7 +11,9 @@ import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
 import javax.inject.Inject
 
-class GraphqlRepositoryStub @Inject constructor() : GraphqlRepository {
+class GraphqlRepositoryStub @Inject constructor(
+    private val gqlResponseStub: GqlResponseStub
+) : GraphqlRepository {
 
     override suspend fun response(
         requests: List<GraphqlRequest>,
@@ -30,56 +32,56 @@ class GraphqlRepositoryStub @Inject constructor() : GraphqlRepository {
         return when {
             (
                 GqlQueryParser.parse(query).first() ==
-                    GqlResponseStub.notificationDetailResponse.query
+                    gqlResponseStub.notificationDetailResponse.query
                 ) -> {
-                shouldThrow(GqlResponseStub.notificationDetailResponse)
+                shouldThrow(gqlResponseStub.notificationDetailResponse)
                 GqlMockUtil.createSuccessResponse(
-                    GqlResponseStub.notificationDetailResponse.responseObject
+                    gqlResponseStub.notificationDetailResponse.responseObject
                 )
             }
             (
                 GqlQueryParser.parse(query).first() ==
-                    GqlResponseStub.notificationFilterResponse.query
+                    gqlResponseStub.notificationFilterResponse.query
                 ) -> {
-                shouldThrow(GqlResponseStub.notificationFilterResponse)
+                shouldThrow(gqlResponseStub.notificationFilterResponse)
                 GqlMockUtil.createSuccessResponse(
-                    GqlResponseStub.notificationFilterResponse.responseObject
+                    gqlResponseStub.notificationFilterResponse.responseObject
                 )
             }
             (
                 GqlQueryParser.parse(query).first() ==
-                    GqlResponseStub.notificationOrderListResponse.query
+                    gqlResponseStub.notificationOrderListResponse.query
                 ) -> {
-                shouldThrow(GqlResponseStub.notificationOrderListResponse)
+                shouldThrow(gqlResponseStub.notificationOrderListResponse)
                 GqlMockUtil.createSuccessResponse(
-                    GqlResponseStub.notificationOrderListResponse.responseObject
+                    gqlResponseStub.notificationOrderListResponse.responseObject
                 )
             }
             (
                 GqlQueryParser.parse(query).first() ==
-                    GqlResponseStub.notificationCounterResponse.query
+                    gqlResponseStub.notificationCounterResponse.query
                 ) -> {
-                shouldThrow(GqlResponseStub.notificationCounterResponse)
+                shouldThrow(gqlResponseStub.notificationCounterResponse)
                 GqlMockUtil.createSuccessResponse(
-                    GqlResponseStub.notificationCounterResponse.responseObject
+                    gqlResponseStub.notificationCounterResponse.responseObject
                 )
             }
             (
                 GqlQueryParser.parse(query).first() ==
-                    GqlResponseStub.notificationRecommendation.query
+                    gqlResponseStub.notificationRecommendation.query
                 ) -> {
-                shouldThrow(GqlResponseStub.notificationRecommendation)
+                shouldThrow(gqlResponseStub.notificationRecommendation)
                 GqlMockUtil.createSuccessResponse(
-                    GqlResponseStub.notificationRecommendation.responseObject
+                    gqlResponseStub.notificationRecommendation.responseObject
                 )
             }
             (
                 GqlQueryParser.parse(query).first() ==
-                    GqlResponseStub.notificationMarkAsSeen.query
+                    gqlResponseStub.notificationMarkAsSeen.query
                 ) -> {
-                shouldThrow(GqlResponseStub.notificationMarkAsSeen)
+                shouldThrow(gqlResponseStub.notificationMarkAsSeen)
                 GqlMockUtil.createSuccessResponse(
-                    GqlResponseStub.notificationMarkAsSeen.responseObject
+                    gqlResponseStub.notificationMarkAsSeen.responseObject
                 )
             }
             else -> GqlMockUtil.createSuccessResponse(Unit)

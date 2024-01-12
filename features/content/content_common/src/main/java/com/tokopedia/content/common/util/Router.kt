@@ -27,8 +27,8 @@ class Router @Inject constructor() {
         }
     }
 
-    fun route(activityResultLauncher: ActivityResultLauncher<Intent>, intent: Intent) {
-        activityResultLauncher.launch(intent)
+    fun <T> route(activityResultLauncher: ActivityResultLauncher<T>, data: T) {
+        activityResultLauncher.launch(data)
     }
 
     fun route(

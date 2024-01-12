@@ -105,7 +105,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
+    implementation rootProject.ext.miscDependencies.exoPlayer
     implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.miscDependencies.lottie
 
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true

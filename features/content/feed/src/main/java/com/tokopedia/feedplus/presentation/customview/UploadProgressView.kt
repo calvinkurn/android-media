@@ -28,6 +28,10 @@ class UploadProgressView : ConstraintLayout {
         binding.imgThumbnail.setImageUrl(url)
     }
 
+    fun setText(text: String) {
+        binding.tvUploading.text = text
+    }
+
     fun setProgress(progress: Int, isSmooth: Boolean = true) {
         binding.pbUploading.setValue(progress, isSmooth)
     }

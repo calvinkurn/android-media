@@ -194,6 +194,15 @@ class CatalogComparisonDetailFragment :
         }
     }
 
+    // TODO: Implement this when IOS team is ready
+    private fun sendOpenPageTracker() {
+        CatalogReimagineDetailAnalytics.sendEventOpenScreen(
+            screenName = "${CatalogTrackerConstant.SCREEN_NAME_CATALOG_COMPARISON_PAGE} - $catalogId",
+            trackerId = CatalogTrackerConstant.TRACKER_ID_OPEN_PAGE_CATALOG_COMPARISON,
+            userId = viewModel.getUserId()
+        )
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

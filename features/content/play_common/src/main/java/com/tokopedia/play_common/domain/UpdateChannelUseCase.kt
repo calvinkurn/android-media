@@ -1,5 +1,6 @@
 package com.tokopedia.play_common.domain
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -13,12 +14,15 @@ import com.tokopedia.play_common.domain.query.QueryParamBuilder
 import com.tokopedia.play_common.domain.query.QueryParams
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.usecase.coroutines.UseCase
+import javax.inject.Inject
 
 
 /**
  * Created by mzennis on 26/06/20.
  */
-class UpdateChannelUseCase(private val graphqlRepository: GraphqlRepository) : UseCase<ChannelId>() {
+class UpdateChannelUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository
+) : UseCase<ChannelId>() {
 
     private var mQueryParams = QueryParams()
 

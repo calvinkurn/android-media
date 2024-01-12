@@ -8,9 +8,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.getFirstNameDriver
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.getSourceIcon
 import com.tokopedia.tokochat.common.util.TokoChatTimeUtil.getRelativeTime
-import com.tokopedia.tokochat.common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.TOKOFOOD_SERVICE_TYPE
 import com.tokopedia.tokochat.common.view.chatlist.listener.TokoChatListItemListener
 import com.tokopedia.tokochat.common.view.chatlist.uimodel.TokoChatListItemUiModel
 import com.tokopedia.tokochat_common.R
@@ -35,16 +35,12 @@ class TokoChatListItemViewHolder(
     }
 
     private fun bindDriver(element: TokoChatListItemUiModel) {
-        binding?.tokochatListTvDriverName?.text = element.driverName
+        binding?.tokochatListTvDriverName?.text = getFirstNameDriver(element.driverName)
         if (imageUrl != element.imageUrl) {
             binding?.tokochatListIvDriver?.loadImage(element.imageUrl)
             imageUrl = element.imageUrl
         }
-        val logoUrl = when (element.serviceType) {
-            TOKOFOOD_SERVICE_TYPE -> IC_TOKOFOOD_SOURCE
-            else -> ""
-        }
-        binding?.tokochatListIvLogo?.loadImage(logoUrl)
+        binding?.tokochatListIvLogo?.loadImage(getSourceIcon(element.serviceType))
     }
 
     private fun bindOrderType(element: TokoChatListItemUiModel) {
@@ -68,8 +64,8 @@ class TokoChatListItemViewHolder(
 
     private fun bindBusiness(element: TokoChatListItemUiModel) {
         binding?.tokochatListTvBusinessName?.apply {
-            if (element.business.isNotBlank()) {
-                text = element.business
+            if (element.getBusinessName().isNotBlank()) {
+                text = element.getBusinessName()
                 show()
             } else {
                 hide()

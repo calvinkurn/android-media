@@ -40,6 +40,8 @@
     <string name="tokochat_message_censored_terms_condition">Buat tahu lebih lanjut, cek Syarat &amp; Ketentuan</string>
     <string name="tokochat_message_censored_terms_condition_span">Syarat &amp; Ketentuan</string>
 
+    <string name="tokochat_long_text_bottomsheet_title">Pesan dari %s</string>
+
     <string name="tokochat_retry">Coba Lagi</string>
 
     <string name="tokochat_consent_subtitle">Mudah komunikasi dengan driver untuk pesananmu</string>

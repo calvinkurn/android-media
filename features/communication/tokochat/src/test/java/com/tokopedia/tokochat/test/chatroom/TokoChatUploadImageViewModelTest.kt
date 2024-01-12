@@ -12,7 +12,7 @@ import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.verify
 import junit.framework.TestCase.assertEquals
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
@@ -25,7 +25,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun should_not_error_when_assign_image_attachment_map() {
-        runBlocking {
+        runTest {
             // Given
             val imageAttachmentMapDummy = mutableMapOf(Pair("test", "test"))
 
@@ -39,7 +39,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun should_not_error_when_on_create() {
-        runBlocking {
+        runTest {
             // Given
             val dummyLifeCycleOwner = mockk<LifecycleOwner>(relaxed = true)
 
@@ -48,14 +48,14 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
 
             // Then
             verify(exactly = 1) {
-                getChannelUseCase.registerExtensionProvider(any())
+                tokoChatRoomUseCase.registerExtensionProvider(any())
             }
         }
     }
 
     @Test
     fun should_not_error_when_on_destroy() {
-        runBlocking {
+        runTest {
             // Given
             val dummyLifeCycleOwner = mockk<LifecycleOwner>(relaxed = true)
 
@@ -64,14 +64,14 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
 
             // Then
             verify(exactly = 1) {
-                getChannelUseCase.unRegisterExtensionProvider(any())
+                tokoChatRoomUseCase.unRegisterExtensionProvider(any())
             }
         }
     }
 
     @Test
     fun should_save_cache_when_image_attachment_map_is_not_empty() {
-        runBlocking {
+        runTest {
             // Given
             val dummyLifeCycleOwner = mockk<LifecycleOwner>(relaxed = true)
             viewModel.imageAttachmentMap["testKey"] = "testValue"
@@ -88,7 +88,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun should_not_save_cache_when_image_attachment_map_is_empty() {
-        runBlocking {
+        runTest {
             // Given
             val dummyLifeCycleOwner = mockk<LifecycleOwner>(relaxed = true)
             viewModel.imageAttachmentMap.clear()
@@ -105,7 +105,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun should_not_error_when_on_resume_and_empty_cache() {
-        runBlocking {
+        runTest {
             // Given
             val dummyLifeCycleOwner = mockk<LifecycleOwner>(relaxed = true)
 
@@ -121,7 +121,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun should_not_error_when_on_resume_and_not_empty_cache() {
-        runBlocking {
+        runTest {
             // Given
             val dummyLifeCycleOwner = mockk<LifecycleOwner>(relaxed = true)
             val dummyImageAttachmentMap = mutableMapOf<String, String>().apply {
@@ -143,7 +143,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun should_give_nothing_to_live_data_when_success_upload_image() {
-        runBlocking {
+        runTest {
             // Given
             val dummyImagePath = "testImagePath"
             val uriMock = mockk<Uri>()
@@ -162,7 +162,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun should_give_error_to_live_data_when_success_upload_image_but_data_is_null() {
-        runBlocking {
+        runTest {
             // Given
             val dummyImagePath = "testImagePath"
             val uriMock = mockk<Uri>()
@@ -184,7 +184,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun should_give_error_to_live_data_when_success_upload_image_but_image_id_is_null() {
-        runBlocking {
+        runTest {
             // Given
             val dummyImagePath = "testImagePath"
             val uriMock = mockk<Uri>()
@@ -206,7 +206,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun should_give_error_to_live_data_when_fail_preprocessing_compress() {
-        runBlocking {
+        runTest {
             // Given
             val dummyImagePath = "testImagePath"
             val uriMock = mockk<Uri>()
@@ -231,7 +231,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun should_give_error_to_live_data_when_fail_preprocessing_rename() {
-        runBlocking {
+        runTest {
             // Given
             val dummyImagePath = "testImagePath"
             val uriMock = mockk<Uri>()
@@ -256,7 +256,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun should_give_error_to_live_data_when_fail_upload_image() {
-        runBlocking {
+        runTest {
             // Given
             val dummyImagePath = "testImagePath"
             val uriMock = mockk<Uri>()
@@ -276,7 +276,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun should_give_nothing_to_live_data_when_success_upload_image_and_error_message_null() {
-        runBlocking {
+        runTest {
             // Given
             val dummyImagePath = "testImagePath"
             val uriMock = mockk<Uri>()
@@ -295,7 +295,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun should_give_nothing_to_live_data_when_success_resend_image() {
-        runBlocking {
+        runTest {
             // Given
             val dummyImagePath = "testImagePath"
             val dummyImageId = "testImageId"
@@ -316,7 +316,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun should_give_error_to_live_data_when_fail_resend_image_because_image_attachment_empty() {
-        runBlocking {
+        runTest {
             // Given
             val dummyImagePath = "testImagePath"
             val dummyImageId = "testImageId"
@@ -340,7 +340,7 @@ class TokoChatUploadImageViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun should_give_error_to_live_data_when_fail_resend_image_because_other_reason() {
-        runBlocking {
+        runTest {
             // Given
             val dummyImagePath = "testImagePath"
             val dummyImageId = "testImageId"

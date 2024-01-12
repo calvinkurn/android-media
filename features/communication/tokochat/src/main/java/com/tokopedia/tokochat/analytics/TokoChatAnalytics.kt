@@ -631,7 +631,8 @@ class TokoChatAnalytics(private val isFromBubble: Boolean = false) {
     }
 
     fun viewDriverChatList(
-        listChatPair: Map<String, Int>
+        listChatPair: Map<String, Int>,
+        role: String
     ) {
         var label = ""
         listChatPair.forEach {
@@ -645,7 +646,7 @@ class TokoChatAnalytics(private val isFromBubble: Boolean = false) {
             TrackAppUtils.EVENT to TokoChatAnalyticsConstants.VIEW_COMMUNICATION_IRIS,
             TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.IMPRESSION_ON_DRIVER_CHAT_LIST,
             TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_CHATLIST,
-            TrackAppUtils.EVENT_LABEL to label,
+            TrackAppUtils.EVENT_LABEL to "$label - $role",
             TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_45236,
             TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
             TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE

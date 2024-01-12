@@ -155,7 +155,7 @@ class BannerRevampViewHolder(
     private fun scrollTo(position: Int) {
         val resources = itemView.context.resources
         val width = resources.displayMetrics.widthPixels
-        val paddings = if(isBleeding) 0 else MULTIPLY_NO_BOUNCE_BANNER * resources.getDimensionPixelSize(home_componentR.dimen.home_component_margin_default)
+        val paddings = if(isBleeding) 0 else MULTIPLY_NO_BOUNCE_BANNER * resources.getDimensionPixelSize(home_componentR.dimen.home_component_padding_horizontal_default)
         if (position == Int.ZERO) {
             recyclerView.smoothScrollToPosition(position)
         } else {

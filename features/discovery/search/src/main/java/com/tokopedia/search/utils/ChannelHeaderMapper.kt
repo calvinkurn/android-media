@@ -14,7 +14,7 @@ internal fun BroadMatchDataView.convertToChannelHeader(context: Context) =
         applink = this.applink,
         url = this.url,
         iconSubtitleUrl = this.iconSubtitle,
-        headerType = ChannelHeader.HeaderType.REVAMP,
+        headerType = ChannelHeader.HeaderType.CHEVRON,
     )
 
 internal fun InspirationCarouselDataView.convertToChannelHeader(): ChannelHeader {
@@ -23,7 +23,7 @@ internal fun InspirationCarouselDataView.convertToChannelHeader(): ChannelHeader
         name = this.title,
         applink = if(isLayoutInspirationCarouselGrid(this)) options?.applink.orEmpty() else "" ,
         url = if(isLayoutInspirationCarouselGrid(this)) options?.url.orEmpty() else "",
-        headerType = ChannelHeader.HeaderType.REVAMP,
+        headerType = ChannelHeader.HeaderType.CHEVRON,
     )
 }
 

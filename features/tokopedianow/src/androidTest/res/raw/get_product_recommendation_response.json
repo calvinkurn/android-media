@@ -1,0 +1,1324 @@
+{
+  "productRecommendationWidget": {
+    "data": [
+      {
+        "tID": "vWNQ0MsTPPRRDJ5VuqE6B47_ffM\u003d",
+        "source": "custom",
+        "title": "Terlaris hari ini",
+        "subtitle": "",
+        "foreignTitle": "Recommendation for you",
+        "widgetUrl": "",
+        "pageName": "best_seller_tokonow",
+        "seeMoreAppLink": "tokopedia://rekomendasi/tokonow/0/?ref\u003dbest_seller_tokonow\u0026category_id\u003d4858",
+        "layoutType": "infinite-atc",
+        "pagination": {
+          "currentPage": 1,
+          "nextPage": 2,
+          "prevPage": -1,
+          "hasNext": true
+        },
+        "campaign": {
+          "appLandingPageLink": "",
+          "landingPageLink": "",
+          "thematicID": 0,
+          "assets": {
+            "banner": {
+              "apps": ""
+            }
+          },
+          "endDate": ""
+        },
+        "recommendation": [
+          {
+            "id": 1904942085,
+            "name": "Pepaya\u0026#39;s California 1 pcs",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Buah/Pepaya",
+            "url": "https://www.tokopedia.com/now/pepaya-california-1-pcs",
+            "appUrl": "tokopedia://product/1904942085",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4920\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d1904942085\u0026pos\u003d1\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/pepaya-california-1-pcs?catid4920\u003d%26ref\u003dbest_seller_tokonow_pa1_po1%26src\u003dr3top_selling_unique_user\u0026tid\u003dvWNQ0MsTPPRRDJ5VuqE6B47_ffM\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1699939253\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/11/1/3600ed7c-b471-403c-91c9-86ec2848f480.png",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/11/1/3600ed7c-b471-403c-91c9-86ec2848f480.png",
+            "price": "Rp18.000",
+            "priceInt": 18000,
+            "discountPercentage": 10,
+            "slashedPrice": "Rp20.000",
+            "slashedPriceInt": 20000,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 3,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4920,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "10rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 13978,
+            "ratingAverage": "4.8",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 3,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1904942546,
+            "name": "Semangka Merah 1 pcs",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Buah/Semangka",
+            "url": "https://www.tokopedia.com/now/semangka-merah-1-pcs",
+            "appUrl": "tokopedia://product/1904942546",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4924\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d1904942546\u0026pos\u003d2\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/semangka-merah-1-pcs?catid4924\u003d%26ref\u003dbest_seller_tokonow_pa1_po2%26src\u003dr3top_selling_unique_user\u0026tid\u003dvWNQ0MsTPPRRDJ5VuqE6B47_ffM\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1699939253\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/9/19/9a642e52-1154-4cd1-b211-e4a6d629c540.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/9/19/9a642e52-1154-4cd1-b211-e4a6d629c540.jpg",
+            "price": "Rp49.500",
+            "priceInt": 49500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 16,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4924,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "10rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 11844,
+            "ratingAverage": "4.8",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 16,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1904942637,
+            "name": "Jeruk Nipis 250 gram",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Buah/Jeruk Nipis",
+            "url": "https://www.tokopedia.com/now/jeruk-nipis-250-gram",
+            "appUrl": "tokopedia://product/1904942637",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4913\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d1904942637\u0026pos\u003d3\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/jeruk-nipis-250-gram?catid4913\u003d%26ref\u003dbest_seller_tokonow_pa1_po3%26src\u003dr3top_selling_unique_user\u0026tid\u003dvWNQ0MsTPPRRDJ5VuqE6B47_ffM\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1699939253\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/30/e1573ebf-c161-4497-8cdf-cc60e5e1b5c4.png",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/30/e1573ebf-c161-4497-8cdf-cc60e5e1b5c4.png",
+            "price": "Rp8.900",
+            "priceInt": 8900,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 22,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4913,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "10rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 11800,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 22,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1928748294,
+            "name": "Tempe Mendoan 3 pcs",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Tahu \u0026 Tempe/Tempe Mendoan",
+            "url": "https://www.tokopedia.com/now/tempe-mendoan-3-pcs",
+            "appUrl": "tokopedia://product/1928748294",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4938\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d1928748294\u0026pos\u003d4\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/tempe-mendoan-3-pcs?catid4938\u003d%26ref\u003dbest_seller_tokonow_pa1_po4%26src\u003dr3top_selling_unique_user\u0026tid\u003dvWNQ0MsTPPRRDJ5VuqE6B47_ffM\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1699939253\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/11/2/15e85783-bd48-467f-8e6a-fb01a4b598dc.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/11/2/15e85783-bd48-467f-8e6a-fb01a4b598dc.jpg",
+            "price": "Rp4.950",
+            "priceInt": 4950,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 12,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4938,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "50rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Diskon Bundling 2%",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 13540,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 12,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1928748387,
+            "name": "Tahu Cina 1 pack",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Tahu \u0026 Tempe/Tahu Cina",
+            "url": "https://www.tokopedia.com/now/tahu-cina-1-pack",
+            "appUrl": "tokopedia://product/1928748387",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4932\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d1928748387\u0026pos\u003d5\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/tahu-cina-1-pack?catid4932\u003d%26ref\u003dbest_seller_tokonow_pa1_po5%26src\u003dr3top_selling_unique_user\u0026tid\u003dvWNQ0MsTPPRRDJ5VuqE6B47_ffM\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1699939253\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/10/15/e4c22c4a-ef6f-4318-8f13-a5235cb4988b.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/10/15/e4c22c4a-ef6f-4318-8f13-a5235cb4988b.jpg",
+            "price": "Rp8.900",
+            "priceInt": 8900,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 70,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4932,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "50rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Beli 2 Diskon 4%",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 16842,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 70,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1928748680,
+            "name": "Tahu Yunyi Kims Kuning 500 gram",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Tahu \u0026 Tempe/Tahu Kuning",
+            "url": "https://www.tokopedia.com/now/tahu-yunyi-kims-kuning-500-gram",
+            "appUrl": "tokopedia://product/1928748680",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4933\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d1928748680\u0026pos\u003d6\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/tahu-yunyi-kims-kuning-500-gram?catid4933\u003d%26ref\u003dbest_seller_tokonow_pa1_po6%26src\u003dr3top_selling_unique_user\u0026tid\u003dvWNQ0MsTPPRRDJ5VuqE6B47_ffM\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1699939253\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/10/15/96cf78c5-84d1-4e75-a442-d4717e6758cc.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/10/15/96cf78c5-84d1-4e75-a442-d4717e6758cc.jpg",
+            "price": "Rp18.500",
+            "priceInt": 18500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 6,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4933,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "10rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 6983,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 6,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1928748720,
+            "name": "Tahu Yunyi Kims Putih 500 gram",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Tahu \u0026 Tempe/Tahu Putih",
+            "url": "https://www.tokopedia.com/now/tahu-yunyi-kims-putih-500-gram",
+            "appUrl": "tokopedia://product/1928748720",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4934\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d1928748720\u0026pos\u003d7\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/tahu-yunyi-kims-putih-500-gram?catid4934\u003d%26ref\u003dbest_seller_tokonow_pa1_po7%26src\u003dr3top_selling_unique_user\u0026tid\u003dvWNQ0MsTPPRRDJ5VuqE6B47_ffM\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1699939253\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/10/15/ce5196df-bb10-43c1-b806-baec07775249.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/10/15/ce5196df-bb10-43c1-b806-baec07775249.jpg",
+            "price": "Rp18.500",
+            "priceInt": 18500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 16,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4934,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "10rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 10106,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 16,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1928766690,
+            "name": "Daun Kemangi 100 gram",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Rempah/Daun Kemangi",
+            "url": "https://www.tokopedia.com/now/daun-kemangi-100-gram",
+            "appUrl": "tokopedia://product/1928766690",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4968\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d1928766690\u0026pos\u003d8\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/daun-kemangi-100-gram?catid4968\u003d%26ref\u003dbest_seller_tokonow_pa1_po8%26src\u003dr3top_selling_unique_user\u0026tid\u003dvWNQ0MsTPPRRDJ5VuqE6B47_ffM\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1699939253\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/10/15/1428e870-b812-4184-bff0-75915113a119.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/10/15/1428e870-b812-4184-bff0-75915113a119.jpg",
+            "price": "Rp3.500",
+            "priceInt": 3500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 4,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4968,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "10rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 3699,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 4,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1928766830,
+            "name": "Selada Keriting 250 gram Salad",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Sayur/Selada",
+            "url": "https://www.tokopedia.com/now/selada-keriting-250-gram-salad",
+            "appUrl": "tokopedia://product/1928766830",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4898\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d1928766830\u0026pos\u003d9\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/selada-keriting-250-gram-salad?catid4898\u003d%26ref\u003dbest_seller_tokonow_pa1_po9%26src\u003dr3top_selling_unique_user\u0026tid\u003dvWNQ0MsTPPRRDJ5VuqE6B47_ffM\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1699939253\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/15/2948f592-29b2-4383-a164-b77d4b971152.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/15/2948f592-29b2-4383-a164-b77d4b971152.jpg",
+            "price": "Rp8.000",
+            "priceInt": 8000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 8,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4898,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "50rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 11880,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 8,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1928766853,
+            "name": "Sereh 200 gram",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Rempah/Sereh",
+            "url": "https://www.tokopedia.com/now/sereh-200-gram",
+            "appUrl": "tokopedia://product/1928766853",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4981\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d1928766853\u0026pos\u003d10\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/sereh-200-gram?catid4981\u003d%26ref\u003dbest_seller_tokonow_pa1_po10%26src\u003dr3top_selling_unique_user\u0026tid\u003dvWNQ0MsTPPRRDJ5VuqE6B47_ffM\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1699939253\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/9/12/4cca03d4-7f10-4c0d-aa13-40efa6c90749.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/9/12/4cca03d4-7f10-4c0d-aa13-40efa6c90749.jpg",
+            "price": "Rp5.300",
+            "priceInt": 5300,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 26,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4981,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "10rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Diskon Bundling 11%",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 8160,
+            "ratingAverage": "5.0",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 26,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1928766859,
+            "name": "Bawang Bombay 500 gram",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Bawang /Bawang Bombay",
+            "url": "https://www.tokopedia.com/now/bawang-bombay-500-gram",
+            "appUrl": "tokopedia://product/1928766859",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4846\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d1928766859\u0026pos\u003d11\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/bawang-bombay-500-gram?catid4846\u003d%26ref\u003dbest_seller_tokonow_pa1_po11%26src\u003dr3top_selling_unique_user\u0026tid\u003dvWNQ0MsTPPRRDJ5VuqE6B47_ffM\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1699939253\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/30/e763e27d-5f85-47b1-af90-35e3fd2006ee.png",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/30/e763e27d-5f85-47b1-af90-35e3fd2006ee.png",
+            "price": "Rp22.300",
+            "priceInt": 22300,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 36,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4846,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "50rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 22382,
+            "ratingAverage": "5.0",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 36,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1928766980,
+            "name": "Kangkung 250 gram",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Sayur/Kangkung",
+            "url": "https://www.tokopedia.com/now/kangkung-250-gram",
+            "appUrl": "tokopedia://product/1928766980",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4887\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d1928766980\u0026pos\u003d12\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/kangkung-250-gram?catid4887\u003d%26ref\u003dbest_seller_tokonow_pa1_po12%26src\u003dr3top_selling_unique_user\u0026tid\u003dvWNQ0MsTPPRRDJ5VuqE6B47_ffM\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1699939253\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/9/19/2889bd97-e5b6-4afb-afd9-6497bb6d7868.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/9/19/2889bd97-e5b6-4afb-afd9-6497bb6d7868.jpg",
+            "price": "Rp5.500",
+            "priceInt": 5500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 40,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4887,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "100rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Beli 3 Diskon 7%",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 24746,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 40,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1928767021,
+            "name": "Sawi Hijau 250 gram",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Sayur/Sawi",
+            "url": "https://www.tokopedia.com/now/sawi-hijau-250-gram",
+            "appUrl": "tokopedia://product/1928767021",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4897\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d1928767021\u0026pos\u003d13\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/sawi-hijau-250-gram?catid4897\u003d%26ref\u003dbest_seller_tokonow_pa1_po13%26src\u003dr3top_selling_unique_user\u0026tid\u003dvWNQ0MsTPPRRDJ5VuqE6B47_ffM\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1699939253\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/9/18/af7cdbb9-1584-4ca6-89e2-697f087531aa.png",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/9/18/af7cdbb9-1584-4ca6-89e2-697f087531aa.png",
+            "price": "Rp5.000",
+            "priceInt": 5000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 19,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4897,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "100rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 23470,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 19,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1928767193,
+            "name": "Wortel Berastagi 500 gram",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Sayur/Wortel",
+            "url": "https://www.tokopedia.com/now/wortel-berastagi-500-gram",
+            "appUrl": "tokopedia://product/1928767193",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4870\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d1928767193\u0026pos\u003d14\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/wortel-berastagi-500-gram?catid4870\u003d%26ref\u003dbest_seller_tokonow_pa1_po14%26src\u003dr3top_selling_unique_user\u0026tid\u003dvWNQ0MsTPPRRDJ5VuqE6B47_ffM\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1699939253\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/9/19/b0fc5df1-94d4-4d13-aadd-0ef8e6440020.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/9/19/b0fc5df1-94d4-4d13-aadd-0ef8e6440020.jpg",
+            "price": "Rp13.000",
+            "priceInt": 13000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 33,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4870,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "100rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Diskon Bundling 8%",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 30706,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 33,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1928767246,
+            "name": "Wortel Berastagi Baby 500 gram",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Sayur/Wortel",
+            "url": "https://www.tokopedia.com/now/wortel-berastagi-baby-500-gram",
+            "appUrl": "tokopedia://product/1928767246",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4870\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d1928767246\u0026pos\u003d15\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/wortel-berastagi-baby-500-gram?catid4870\u003d%26ref\u003dbest_seller_tokonow_pa1_po15%26src\u003dr3top_selling_unique_user\u0026tid\u003dvWNQ0MsTPPRRDJ5VuqE6B47_ffM\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1699939253\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/15/6e8646ee-a782-4df1-a514-043cd5c359a1.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/15/6e8646ee-a782-4df1-a514-043cd5c359a1.jpg",
+            "price": "Rp14.500",
+            "priceInt": 14500,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 30,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4870,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "100rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 26012,
+            "ratingAverage": "5.0",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 30,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1928767313,
+            "name": "Cabai Hijau Keriting 150 gram",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Sayur/Cabe Hijau",
+            "url": "https://www.tokopedia.com/now/cabai-hijau-keriting-150-gram",
+            "appUrl": "tokopedia://product/1928767313",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4875\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d1928767313\u0026pos\u003d16\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/cabai-hijau-keriting-150-gram?catid4875\u003d%26ref\u003dbest_seller_tokonow_pa1_po16%26src\u003dr3top_selling_unique_user\u0026tid\u003dvWNQ0MsTPPRRDJ5VuqE6B47_ffM\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1699939253\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/30/6e2affc0-a60c-4db1-8172-e7f6327e5f64.png",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/30/6e2affc0-a60c-4db1-8172-e7f6327e5f64.png",
+            "price": "Rp7.900",
+            "priceInt": 7900,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 3,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4875,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "10rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 3369,
+            "ratingAverage": "5.0",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 3,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1928767354,
+            "name": "Kentang Baby 500 gram",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Sayur/Kentang",
+            "url": "https://www.tokopedia.com/now/kentang-baby-500-gram",
+            "appUrl": "tokopedia://product/1928767354",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4889\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d1928767354\u0026pos\u003d17\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/kentang-baby-500-gram?catid4889\u003d%26ref\u003dbest_seller_tokonow_pa1_po17%26src\u003dr3top_selling_unique_user\u0026tid\u003dvWNQ0MsTPPRRDJ5VuqE6B47_ffM\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1699939253\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/3/4/75edf692-f7af-4c1c-8ffb-2035e481ac29.png",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/3/4/75edf692-f7af-4c1c-8ffb-2035e481ac29.png",
+            "price": "Rp13.900",
+            "priceInt": 13900,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 3,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4889,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "10rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 4163,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 3,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1928767361,
+            "name": "Kentang Dieng 500 gram",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Sayur/Kentang",
+            "url": "https://www.tokopedia.com/now/kentang-dieng-500-gram",
+            "appUrl": "tokopedia://product/1928767361",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4889\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d1928767361\u0026pos\u003d18\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/kentang-dieng-500-gram?catid4889\u003d%26ref\u003dbest_seller_tokonow_pa1_po18%26src\u003dr3top_selling_unique_user\u0026tid\u003dvWNQ0MsTPPRRDJ5VuqE6B47_ffM\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1699939253\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/16/37f14edd-cd9c-4615-986c-0d6bbd75f38d.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/16/37f14edd-cd9c-4615-986c-0d6bbd75f38d.jpg",
+            "price": "Rp13.000",
+            "priceInt": 13000,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 19,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4889,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "100rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Diskon Bundling 5%",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Diskon Bundling 5%",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 25615,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 19,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1928767454,
+            "name": "Labu Acar 500 gram",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Sayur/Labu",
+            "url": "https://www.tokopedia.com/now/labu-acar-500-gram",
+            "appUrl": "tokopedia://product/1928767454",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4892\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d1928767454\u0026pos\u003d19\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/labu-acar-500-gram?catid4892\u003d%26ref\u003dbest_seller_tokonow_pa1_po19%26src\u003dr3top_selling_unique_user\u0026tid\u003dvWNQ0MsTPPRRDJ5VuqE6B47_ffM\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1699939253\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/16/5c5a2f5b-b478-4d7e-a5e7-9a1ab635e68a.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/16/5c5a2f5b-b478-4d7e-a5e7-9a1ab635e68a.jpg",
+            "price": "Rp13.200",
+            "priceInt": 13200,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 2,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4892,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "10rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 6324,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 2,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          },
+          {
+            "id": 1928767493,
+            "name": "Labu Siam 500 gram",
+            "categoryBreadcrumbs": "Sayur \u0026 Buah Segar/Sayur/Labu",
+            "url": "https://www.tokopedia.com/now/labu-siam-500-gram",
+            "appUrl": "tokopedia://product/1928767493",
+            "clickUrl": "https://ace.tokopedia.com/r3/v2/track?category\u003d4892\u0026event\u003dclick\u0026experimentVersion\u003dv1.4\u0026page\u003d1\u0026page_name\u003dbest_seller_tokonow\u0026pid\u003d1928767493\u0026pos\u003d20\u0026recommendation\u003dtop_selling_unique_user\u0026rectype\u003dtop_selling_unique_user\u0026redirect\u003dhttps://www.tokopedia.com/now/labu-siam-500-gram?catid4892\u003d%26ref\u003dbest_seller_tokonow_pa1_po20%26src\u003dr3top_selling_unique_user\u0026tid\u003dvWNQ0MsTPPRRDJ5VuqE6B47_ffM\u003d\u0026uid\u003d0\u0026unique_id\u003d\u0026utime\u003d1699939253\u0026widget\u003dr3_widget\u0026xdevice\u003dandroid-3.150",
+            "wishlistUrl": "",
+            "trackerImageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/16/498fd981-bd52-4ddd-9be1-4cc03437d6ec.jpg",
+            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2023/8/16/498fd981-bd52-4ddd-9be1-4cc03437d6ec.jpg",
+            "price": "Rp7.100",
+            "priceInt": 7100,
+            "discountPercentage": 0,
+            "slashedPrice": "",
+            "slashedPriceInt": 0,
+            "isWishlist": false,
+            "minOrder": 1,
+            "maxOrder": 9,
+            "shop": {
+              "id": 11530573,
+              "name": "Tokopedia NOW!",
+              "city": "Jakarta Barat",
+              "isGold": true,
+              "isOfficial": true
+            },
+            "warehouseID": 12210375,
+            "departmentId": 4892,
+            "labels": [],
+            "labelgroup": [
+              {
+                "position": "integrity",
+                "title": "50rb+ terjual",
+                "type": "textDarkGrey",
+                "url": ""
+              },
+              {
+                "position": "price",
+                "title": "Beli 2 Diskon 7%",
+                "type": "lightGreen",
+                "url": ""
+              },
+              {
+                "position": "best_seller",
+                "title": "Terlaris",
+                "type": "#E1AA1D",
+                "url": ""
+              }
+            ],
+            "badges": [
+              {
+                "title": "Tokopedia NOW!",
+                "imageUrl": "https://images.tokopedia.net/img/now/badge/now-badge.png"
+              }
+            ],
+            "wholesalePrice": [],
+            "freeOngkir": {
+              "isActive": false,
+              "imageUrl": ""
+            },
+            "rating": 5,
+            "countReview": 15942,
+            "ratingAverage": "4.9",
+            "recommendationType": "top_selling_unique_user",
+            "stock": 9,
+            "isTopads": false,
+            "specificationLabels": [],
+            "parentID": 0
+          }
+        ]
+      }
+    ]
+  }
+}

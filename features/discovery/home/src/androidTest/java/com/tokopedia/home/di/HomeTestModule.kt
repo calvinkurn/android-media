@@ -22,7 +22,6 @@ import com.tokopedia.home.beranda.presentation.view.helper.HomeRemoteConfigContr
 import com.tokopedia.home.beranda.presentation.view.helper.HomeThematicUtil
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -47,10 +46,6 @@ class HomeTestModule {
     @HomeScope
     @Provides
     fun provideTrackingQueue(@ApplicationContext context: Context) = TrackingQueue(context)
-
-    @HomeScope
-    @Provides
-    fun provideExecutors(): SmartExecutors = SmartExecutors()
 
     @HomeScope
     @Provides

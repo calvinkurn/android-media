@@ -48,7 +48,7 @@ class RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder(
         } else if(!element.isTripleEntryPointLoaded && element.section.items.isEmpty()) {
             binding.containerContent.gone()
             binding.containerShimmer.visible()
-            listener.loadRechargeSectionDataWithLoadedParam(element.visitableId(), isLoaded = true, element.section.template)
+            listener.loadRechargeSectionDataWithLoadedParam(element.visitableId(), isLoaded = true, element.section.name)
         }
     }
 

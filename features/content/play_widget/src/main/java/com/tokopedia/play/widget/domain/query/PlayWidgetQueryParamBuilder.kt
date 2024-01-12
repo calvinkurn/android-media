@@ -43,8 +43,14 @@ class PlayWidgetQueryParamBuilder {
                     appendLine(",")
                     appendLine("${'$'}$PARAM_CAMPAIGN_ID: String")
                 }
+                is PlayWidgetUseCase.WidgetType.DiscoveryPage, is PlayWidgetUseCase.WidgetType.DiscoveryPageV2 -> {
+                    appendLine(",")
+                    appendLine("${'$'}$PARAM_IS_DYNAMIC_VIDEO: Boolean,")
+                    appendLine("${'$'}$PARAM_PRODUCT_ID: String,")
+                    appendLine("${'$'}$PARAM_CATEGORY_ID: String")
+                }
                 else -> {
-                    //do nothing with other widget type
+                    // do nothing with other widget type
                 }
             }
         }
@@ -70,8 +76,14 @@ class PlayWidgetQueryParamBuilder {
                     appendLine(",")
                     appendLine("${PARAM_CAMPAIGN_ID}: ${'$'}${PARAM_CAMPAIGN_ID}")
                 }
+                is PlayWidgetUseCase.WidgetType.DiscoveryPage, is PlayWidgetUseCase.WidgetType.DiscoveryPageV2 -> {
+                    appendLine(",")
+                    appendLine("$PARAM_IS_DYNAMIC_VIDEO: ${'$'}$PARAM_IS_DYNAMIC_VIDEO,")
+                    appendLine("$PARAM_PRODUCT_ID: ${'$'}$PARAM_PRODUCT_ID,")
+                    appendLine("$PARAM_CATEGORY_ID: ${'$'}$PARAM_CATEGORY_ID")
+                }
                 else -> {
-                    //do nothing with other widget type
+                    // do nothing with other widget type
                 }
             }
 
@@ -83,11 +95,11 @@ class PlayWidgetQueryParamBuilder {
         return buildString {
             append(queryName)
             append("(")
-                append(paramField)
+            append(paramField)
             append(")")
             append("{")
-                append(paramRequest)
-                append(body)
+            append(paramRequest)
+            append(body)
             append("}")
         }
     }
@@ -101,5 +113,6 @@ class PlayWidgetQueryParamBuilder {
         const val PARAM_CATEGORY_ID = "categoryIDs"
         const val PARAM_CHANNEL_TAG = "channelTag"
         const val PARAM_CAMPAIGN_ID = "campaignID"
+        const val PARAM_IS_DYNAMIC_VIDEO = "isDynamicVideo"
     }
 }

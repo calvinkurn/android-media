@@ -29,10 +29,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="visible"
-            android:paddingBottom="5dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/channel_title">
+            app:layout_constraintStart_toStartOf="parent">
 
             <View
                 android:id="@+id/featured_shop_background"
@@ -59,7 +57,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:clipToPadding="false"
-                android:translationY="-5dp"
+                android:translationY="@dimen/home_component_card_compat_padding_translation_y"
+                android:paddingBottom="@dimen/home_component_padding_bottom_with_compat_padding_translated"
                 tools:listitem="@layout/content_featured_shop_big_content"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"

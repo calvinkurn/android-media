@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="56dp"
+    android:layout_height="56dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgReview"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        app:unify_image_corner_radius="12" />
+
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:background="@drawable/shape_shop_info_more_attachment" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgCtaViewAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="@color/clr_dms_icon_white"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="Lainnya +2" />
+
+</FrameLayout>

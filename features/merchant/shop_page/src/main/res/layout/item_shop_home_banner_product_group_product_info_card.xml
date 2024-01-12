@@ -89,8 +89,8 @@
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="centerCrop"
-            app:icon_color_light_enable="@color/Unify_YN300"
-            app:icon_color_night_enable="@color/Unify_YN300"
+            app:icon_color_light_enable="@color/dms_static_light_YN300"
+            app:icon_color_night_enable="@color/dms_static_light_YN300"
             app:icon_name="STAR_FILLED"
             tools:visibility="visible" />
 

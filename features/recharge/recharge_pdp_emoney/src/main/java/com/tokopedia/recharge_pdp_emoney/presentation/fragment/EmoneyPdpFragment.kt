@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.nfc.NfcAdapter
 import android.os.Bundle
+import android.provider.Settings
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
@@ -65,6 +67,7 @@ import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpFragmentP
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.viewholder.EmoneyPdpProductViewHolder
 import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyMenuBottomSheets
 import com.tokopedia.recharge_pdp_emoney.presentation.bottomsheet.EmoneyProductDetailBottomSheet
+import com.tokopedia.recharge_pdp_emoney.presentation.model.EmoneyBCAGenCheckModel
 import com.tokopedia.recharge_pdp_emoney.presentation.viewmodel.EmoneyPdpViewModel
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpBottomCheckoutWidget
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpHeaderViewWidget
@@ -89,6 +92,7 @@ import com.tokopedia.common_digital.R as common_digitalR
 import com.tokopedia.globalerror.R as globalerrorR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+import com.tokopedia.recharge_pdp_emoney.R as recharge_pdp_emoneyR
 
 /**
  * @author by jessica on 29/03/21
@@ -140,6 +144,9 @@ open class EmoneyPdpFragment :
         FirebaseRemoteConfigImpl(context)
     }
 
+    @Suppress("LateinitUsage")
+    private lateinit var nfcAdapter: NfcAdapter
+
     override fun getScreenName(): String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -172,6 +179,7 @@ open class EmoneyPdpFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initNFCAdapter()
 
         if (savedInstanceState != null) {
             emoneyCardNumber = savedInstanceState.getString(EXTRA_USER_INPUT_EMONEY_NUMBER) ?: ""
@@ -183,6 +191,7 @@ open class EmoneyPdpFragment :
         emoneyPdpViewModel.getDppoConsent()
         loadData()
         renderCardState(detailPassData)
+        renderTickerNFCNotSupported()
 
         binding.emoneyPdpHeaderView.actionListener = this
         binding.emoneyPdpInputCardWidget.initView(this)
@@ -241,6 +250,7 @@ open class EmoneyPdpFragment :
         emoneyPdpViewModel.inputViewError.observe(
             viewLifecycleOwner,
             Observer {
+                hideTickerNotSupported()
                 binding.emoneyPdpInputCardWidget.renderError(it)
                 if (it.isNotEmpty()) showRecentNumberAndPromo()
             }
@@ -281,6 +291,7 @@ open class EmoneyPdpFragment :
             Observer {
                 renderOperatorIcon(it)
                 loadProducts(it)
+                renderTickerNFCNotSupported()
             }
         )
 
@@ -311,6 +322,7 @@ open class EmoneyPdpFragment :
                                 ?: listOf()
                         )
                         showOnBoarding()
+                        renderTickerNFCNotSupported()
                     }
                     is Fail -> renderErrorMessage(it.throwable)
                 }
@@ -358,6 +370,17 @@ open class EmoneyPdpFragment :
                     activity?.invalidateOptionsMenu()
                 }
                 is Fail -> {}
+            }
+        }
+
+        emoneyPdpViewModel.bcaGenCheckerResult.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    renderTickerNFCNotSupportedByGeneration(it.data)
+                }
+                is Fail -> {
+                    renderTickerGenerationCheckError()
+                }
             }
         }
     }
@@ -524,11 +547,13 @@ open class EmoneyPdpFragment :
                         TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER
                     )
                     favNumber?.let {
+                        hideTickerNotSupported()
                         renderClientNumber(it)
 
                         // to handle don't keep activities case, so displayed client number wont be override with client number on detailPassData
                         detailPassData.clientNumber = it.clientNumber
                         detailPassData.additionalETollBalance = ""
+                        resetBCAGenOne()
                     }
                 }
 
@@ -561,6 +586,7 @@ open class EmoneyPdpFragment :
                         // renderProduct
                         detailPassData = this
                         renderCardState(this)
+                        renderTickerNFCNotSupported()
                     }
                 }
 
@@ -648,11 +674,17 @@ open class EmoneyPdpFragment :
         }
     }
 
+    private fun resetBCAGenOne() {
+        detailPassData.isBCAGenOne = false
+    }
+
     override fun onRemoveNumberIconClick() {
         EmoneyPdpAnalyticsUtils.clickClearCardNumber(userSession.userId, getIssuerName(issuerId))
         showCoachMark(false)
         emoneyCardNumber = ""
         showRecentNumberAndPromo()
+        resetBCAGenOne()
+        hideTickerNotSupported()
     }
 
     override fun onInputNumberChanged(inputNumber: String) {
@@ -700,6 +732,69 @@ open class EmoneyPdpFragment :
         } else {
             binding.emoneyPdpHeaderView.configureCheckBalanceView()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        renderTickerNFCNotSupported()
+    }
+
+    private fun renderTickerNFCNotSupportedByGeneration(data: EmoneyBCAGenCheckModel) {
+        if (data.isGenOne) {
+            showTickerNotSupported()
+            showRecentNumberAndPromo()
+            binding.tickerNotSupported.setHtmlDescription(data.message)
+        } else {
+            hideTickerNotSupported()
+            showProducts()
+        }
+    }
+
+    private fun renderTickerGenerationCheckError() {
+        showTickerNotSupported()
+        showRecentNumberAndPromo()
+        binding.tickerNotSupported.setHtmlDescription(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_nfc_check_gen))
+    }
+
+    private fun renderTickerNFCNotSupported() {
+        emoneyPdpViewModel.cancelBCACheckGenJob()
+        if (detailPassData.isBCAGenOne) {
+            showTickerNotSupported()
+            showRecentNumberAndPromo()
+        } else if (emoneyPdpViewModel.selectedOperatorIsBCA() && !binding.emoneyPdpInputCardWidget.isShownError
+            && binding.emoneyPdpInputCardWidget.getNumber().isNotEmpty()) {
+
+            if (this::nfcAdapter.isInitialized && !nfcAdapter.isEnabled) {
+                showTickerNotSupported()
+                showRecentNumberAndPromo()
+                binding.tickerNotSupported.setHtmlDescription(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_nfc_is_not_active))
+                binding.tickerNotSupported.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        navigateToNFCSettings()
+                    }
+
+                    override fun onDismiss() {}
+                })
+            } else if (this::nfcAdapter.isInitialized && nfcAdapter != null) {
+                detailPassData.clientNumber?.let {
+                    emoneyPdpViewModel.getBCAGenCheck(it)
+                }
+            } else {
+                showTickerNotSupported()
+                showRecentNumberAndPromo()
+                binding.tickerNotSupported.setHtmlDescription(getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_nfc_not_supported))
+            }
+        } else {
+            hideTickerNotSupported()
+        }
+    }
+
+    private fun hideTickerNotSupported() {
+        binding.tickerNotSupported.hide()
+    }
+
+    private fun showTickerNotSupported() {
+        binding.tickerNotSupported.show()
     }
 
     private fun loadProducts(prefix: RechargePrefix) {
@@ -985,6 +1080,21 @@ open class EmoneyPdpFragment :
                 )
             }
         }
+    }
+
+    private fun initNFCAdapter() {
+        activity?.let {
+            try {
+                nfcAdapter = NfcAdapter.getDefaultAdapter(it)
+            } catch (e : Exception){
+                e.printStackTrace()
+            }
+        }
+    }
+
+    protected fun navigateToNFCSettings() {
+        val intent = Intent(Settings.ACTION_NFC_SETTINGS)
+        startActivity(intent)
     }
 
     companion object {

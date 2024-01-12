@@ -18,6 +18,9 @@ buildscript {
 android {
     namespace 'com.tokopedia.withdraw'
     testNamespace 'com.tokopedia.withdraw.test'
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {

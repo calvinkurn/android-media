@@ -27,7 +27,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.design.component.BottomSheets.BottomSheetDismissListener
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
@@ -64,6 +63,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -90,6 +90,7 @@ open class AddToCartDoneBottomSheet :
         private const val oldVariantPDP = "PDP after ATC"
         private const val className: String = "com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet"
         private const val HEIGHT_SCALING = 0.9f
+        private val TOASTER_HEIGHT = 80.toPx()
     }
 
     @Inject
@@ -112,12 +113,8 @@ open class AddToCartDoneBottomSheet :
     private var addedProductDataModel: AddToCartDoneAddedProductDataModel? = null
 
     private var inflatedView: View? = null
-    private var dismissListener: BottomSheetDismissListener? = null
+    var onDismiss: () -> Unit = {}
     private var bottomSheetBehavior: BottomSheetBehavior<*>? = null
-
-    fun setDismissListener(dismissListener: BottomSheetDismissListener) {
-        this.dismissListener = dismissListener
-    }
 
     fun getRecyclerView(): RecyclerView? {
         if (::recyclerView.isInitialized) {
@@ -209,23 +206,17 @@ open class AddToCartDoneBottomSheet :
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        if (dismissListener != null) {
-            dismissListener!!.onDismiss()
-        }
+        onDismiss.invoke()
         super.onDismiss(dialog)
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        if (dismissListener != null) {
-            dismissListener!!.onDismiss()
-        }
+        onDismiss.invoke()
         super.onCancel(dialog)
     }
 
     override fun onDestroy() {
-        if (dismissListener != null) {
-            dismissListener!!.onDismiss()
-        }
+        onDismiss.invoke()
         super.onDestroy()
     }
 
@@ -235,9 +226,7 @@ open class AddToCartDoneBottomSheet :
     }
 
     override fun onDetach() {
-        if (dismissListener != null) {
-            dismissListener!!.onDismiss()
-        }
+        onDismiss.invoke()
         super.onDetach()
     }
 
@@ -272,7 +261,7 @@ open class AddToCartDoneBottomSheet :
                     addToCartButton.hide()
                 } else if (result is Fail) {
                     dialog?.run {
-                        Toaster.toasterCustomBottomHeight = context.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_80)
+                        Toaster.toasterCustomBottomHeight = TOASTER_HEIGHT
                         Toaster.make(
                             findViewById(android.R.id.content),
                             ProductDetailErrorHandler.getErrorMessage(context, result.throwable),

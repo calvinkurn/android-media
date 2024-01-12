@@ -3,12 +3,13 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.diffut
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapterTypeFactoryImpl
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
 
 class OrderTrackingDiffUtilCallback(
     private val oldItems: List<Visitable<OrderTrackingAdapterTypeFactoryImpl>>,
     private val newItems: List<Visitable<OrderTrackingAdapterTypeFactoryImpl>>,
     private val orderTrackingAdapterTypeFactory: OrderTrackingAdapterTypeFactoryImpl
-): DiffUtil.Callback() {
+) : DiffUtil.Callback() {
 
     override fun getOldListSize(): Int = oldItems.size
 
@@ -19,7 +20,18 @@ class OrderTrackingDiffUtilCallback(
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldItems.getOrNull(oldItemPosition) == newItems.getOrNull(newItemPosition)
+        return when {
+            (
+                oldItems[oldItemPosition] is DriverSectionUiModel &&
+                    newItems[newItemPosition] is DriverSectionUiModel
+                ) -> {
+                (oldItems[oldItemPosition] as DriverSectionUiModel).badgeCounter ==
+                    (newItems[newItemPosition] as DriverSectionUiModel).badgeCounter
+            }
+            else -> {
+                oldItems.getOrNull(oldItemPosition) == newItems.getOrNull(newItemPosition)
+            }
+        }
     }
 
     override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any {

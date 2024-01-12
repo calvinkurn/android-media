@@ -18,7 +18,9 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestTitleUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel
-
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestFinishedWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestReloadWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestShimmeringWidgetUiModel
 
 interface HomeTypeFactory {
     fun type(uiModel: HomeSharingWidgetUiModel): Int
@@ -39,4 +41,8 @@ interface HomeTypeFactory {
     fun type(uiModel: HomeClaimCouponWidgetItemShimmeringUiModel): Int
     fun type(uiModel: HomeProductCarouselChipsUiModel): Int
     fun type(uiModel: HomeHeaderUiModel): Int
+    fun type(uiModel: com.tokopedia.tokopedianow.home.presentation.uimodel.quest.HomeQuestWidgetUiModel): Int
+    fun type(uiModel: HomeQuestFinishedWidgetUiModel): Int
+    fun type(uiModel: HomeQuestShimmeringWidgetUiModel): Int
+    fun type(uiModel: HomeQuestReloadWidgetUiModel): Int
 }

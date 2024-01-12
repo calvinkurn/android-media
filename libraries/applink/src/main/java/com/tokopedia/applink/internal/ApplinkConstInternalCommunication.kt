@@ -20,19 +20,32 @@ object ApplinkConstInternalCommunication {
     // Sharing Experience
     const val PRODUCT_LIST_DATA = "product_list_data"
 
+    // TokoChat BottomSheet Type
+    const val GUIDE_CHAT = "guide-chat"
+
     /**
      * Internal applink communication list
      */
 
+    /**
+     * TokoChat
+     */
     // TokoChatActivity
     const val TOKO_CHAT = "$INTERNAL_COMMUNICATION/tokochat"
-
-    // TokoChat List
+    // TokoChatListActivity
     const val TOKOCHAT_LIST = "$INTERNAL_COMMUNICATION/tokochat/list"
+    // TokoChatBottomSheetActivity
+    const val TOKOCHAT_BOTTOMSHEET = "$INTERNAL_COMMUNICATION/tokochat/bottomsheet/{type}"
 
+    /**
+     * Inbox
+     */
     // UniversalInboxActivity
     const val UNIVERSAL_INBOX = "$INTERNAL_COMMUNICATION/universal-inbox"
 
+    /**
+     * Share
+     */
     // PostPurchaseSharingActivity
     const val POST_PURCHASE_SHARING = "$INTERNAL_COMMUNICATION/sharing/post-purchase"
 }

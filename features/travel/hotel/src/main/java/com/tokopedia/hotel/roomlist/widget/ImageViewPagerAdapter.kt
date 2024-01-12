@@ -7,6 +7,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * @author by jessica on 16/04/19
@@ -25,10 +26,10 @@ class ImageViewPagerAdapter(private val images: MutableList<String>, private val
         val imageUrl = images[position]
         if (imageUrl.isNotEmpty()) {
             holder.bannerImage.loadImage(imageUrl){
-                setPlaceHolder(com.tokopedia.unifycomponents.R.drawable.imagestate_placeholder)
+                setPlaceHolder(unifycomponentsR.drawable.imagestate_placeholder)
             }
             holder.bannerImage.setOnClickListener {
-                clickListener?.onImageClicked(position)
+                clickListener?.onImageClicked(holder.bannerImage, position)
             }
         }
     }

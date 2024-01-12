@@ -147,5 +147,7 @@ enum class ComponentNames(val componentName: String) {
     MerchantVoucherGridItem("merchant_voucher_grid_infinite_item"),
     
     ShopOfferHeroBrand("shop_offer_hero_brand"),
-    ShopOfferHeroBrandProductItem("shop_offer_hero_brand_product_item")
+    ShopOfferHeroBrandProductItem("shop_offer_hero_brand_product_item"),
+    ShopOfferSupportingBrand("shop_offer_supporting_brand"),
+    ShopOfferSupportingBrandItem("shop_offer_supporting_brand_item")
 }

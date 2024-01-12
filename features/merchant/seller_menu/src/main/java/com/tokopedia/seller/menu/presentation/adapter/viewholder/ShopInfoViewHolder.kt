@@ -22,6 +22,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.media.loader.loadImageWithoutPlaceholderAndError
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
@@ -183,7 +185,7 @@ class ShopInfoViewHolder(
     }
 
     private fun setShopBadge(shopBadgeUiModel: ShopBadgeUiModel) {
-        binding.successShopInfoLayout.shopBadges.loadImage(shopBadgeUiModel.shopBadgeUrl)
+        binding.successShopInfoLayout.shopBadges.loadImageWithoutPlaceholderAndError(shopBadgeUiModel.shopBadgeUrl)
     }
 
     private fun showShopScore(uiModel: ShopInfoUiModel) {

@@ -11,9 +11,11 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.Transformation
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.Group
+import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.applink.ApplinkConst
@@ -22,16 +24,23 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_SALDO_ENABLE_AUTO_WD_INIT_GQL
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.Action.Companion.SALDO_AUTO_WD_TICKER_CLICK
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.TRACKER_ID_47693
 import com.tokopedia.saldodetails.commom.design.SaldoInstructionsBottomSheet
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.utils.ErrorMessage
@@ -40,11 +49,13 @@ import com.tokopedia.saldodetails.commom.utils.Success
 import com.tokopedia.saldodetails.databinding.FragmentSaldoDepositBinding
 import com.tokopedia.saldodetails.merchantDetail.priority.MerchantSaldoPriorityFragment
 import com.tokopedia.saldodetails.saldoDetail.domain.data.GqlDetailsResponse
+import com.tokopedia.saldodetails.saldoDetail.domain.data.RichieAutoWDInit
 import com.tokopedia.saldodetails.saldoDetail.domain.data.Saldo
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.ui.SaldoTransactionHistoryFragment
 import com.tokopedia.saldodetails.saldoHoldInfo.SaldoHoldInfoActivity
 import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -52,6 +63,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class SaldoDepositFragment : BaseDaggerFragment() {
 
@@ -125,9 +137,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     private lateinit var saldoDetailViewModel: SaldoDetailViewModel
 
     private val saldoCoachMarkController: SaldoCoachMarkController by lazy {
-        SaldoCoachMarkController(requireContext()) {
-            binding?.spAppBarLayout?.setExpanded(true)
-        }
+        SaldoCoachMarkController(requireContext()) { }
     }
 
 
@@ -175,7 +185,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         binding?.depositHeaderLayout?.apply {
             saldoCoachMarkController.addBalanceAnchorsForCoachMark(
                 isBalanceShown,
-                listOf(saldoBuyerDepositText, saldoSellerDepositText)
+                listOf(saldoRefund, saldoIncome)
             )
             prepareSaldoCoachMark()
         }
@@ -189,12 +199,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     private fun prepareSaldoCoachMark() {
         if (activity is SaldoDepositActivity) {
             saldoCoachMarkController.startCoachMark()
-            binding?.spAppBarLayout?.addOnOffsetChangedListener(AppBarLayout
-                .OnOffsetChangedListener { _, _ ->
-                    saldoCoachMarkController.updateCoachMarkOnScroll(
-                        expandLayout
-                    )
-                })
         }
     }
 
@@ -206,13 +210,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         setViewModelObservers()
         expandLayout = true
         binding?.depositHeaderLayout?.apply {
-            if (expandLayout) {
-                saldoTypeLl.show()
-            } else {
-                saldoDepositLayoutExpand.animate().rotation(animationRotationValue).duration = animationDuration
-                saldoTypeLl.gone()
-            }
-
             if (expandMerchantDetailLayout) {
                 merchantDetailsLl.show()
             } else {
@@ -304,12 +301,56 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                 }
             }
         }
+
+        saldoDetailViewModel.gqlAutoWDInitLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    val autoWDInit = it.data.richieAutoWDInit
+                    setUpAutoWDTicker(autoWDInit)
+                }
+                else -> {
+                    binding?.depositHeaderLayout?.apply {
+                        saldoTickerGroup.hide()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setUpAutoWDTicker(autoWDInitData: RichieAutoWDInit) {
+        binding?.depositHeaderLayout?.apply {
+            saldoTickerGroup.shouldShowWithAction(
+                autoWDInitData.isSuccess() &&
+                autoWDInitData.data.scheduleWording.isNotEmpty()
+            ) {
+                saldoTicker.text = autoWDInitData.data.scheduleWording
+                saldoTicker.setOnClickListener {
+                    onAutoWDTickerClick(autoWDInitData)
+                }
+                saldoTickerIcon.setOnClickListener {
+                    onAutoWDTickerClick(autoWDInitData)
+                }
+                saldoTickerBackground.setOnClickListener {
+                    onAutoWDTickerClick(autoWDInitData)
+                }
+            }
+        }
+    }
+
+    private fun onAutoWDTickerClick(autoWDInitData: RichieAutoWDInit) {
+        saldoDetailsAnalytics.sendClickPaymentEvents(SALDO_AUTO_WD_TICKER_CLICK, String.EMPTY, TRACKER_ID_47693)
+        onSaldoTickerClick(autoWDInitData.data.redirectLink)
+    }
+
+    private fun onSaldoTickerClick(applink: String) {
+        val intent = RouteManager.getIntent(context, applink)
+        startActivity(intent)
     }
 
     private fun onUserSaldoBalanceLoaded(saldo: Saldo) {
         addBalanceAnchorsForCoachMark(true)
         binding?.depositHeaderLayout?.apply {
-            cardWithdrawBalance.visible()
+            newCardBalance.visible()
             localLoadSaldoBalance.gone()
         }
         setSellerSaldoBalance(
@@ -353,10 +394,10 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         saldoDetailsAnalytics.sendApiFailureEvents(SaldoDetailsConstants.EventLabel.SALDO_FETCH_BALANCE)
         addBalanceAnchorsForCoachMark(false)
         binding?.depositHeaderLayout?.apply {
-            cardWithdrawBalance.gone()
+            newCardBalance.gone()
             localLoadSaldoBalance.visible()
             localLoadSaldoBalance.refreshBtn?.setOnClickListener {
-                cardWithdrawBalance.visible()
+                newCardBalance.visible()
                 localLoadSaldoBalance.gone()
                 refresh()
             }
@@ -366,39 +407,28 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun shouldHitAutoWdInitGql(): Boolean {
+        return remoteConfig?.getBoolean(ANDROID_SALDO_ENABLE_AUTO_WD_INIT_GQL, false) == true
+    }
 
     private fun refresh() {
         if (::saldoDetailViewModel.isInitialized) {
             saldoDetailViewModel.getUserSaldoBalance()
+            saldoDetailViewModel.getAutoWDStatus(shouldHitAutoWdInitGql())
             saldoHistoryFragment?.onRefresh()
         }
     }
 
-    fun resetPageAfterWithdrawal() {
+    fun resetPage() {
         if (::saldoDetailViewModel.isInitialized) {
             saldoDetailViewModel.getUserSaldoBalance()
+            saldoDetailViewModel.getAutoWDStatus(shouldHitAutoWdInitGql())
             saldoHistoryFragment?.startInitialFetch()
         }
     }
 
     private fun initListeners() {
         binding?.depositHeaderLayout?.apply {
-            saldoDepositLayoutExpand.setOnClickListener {
-                if (expandLayout) {
-                    saldoDepositLayoutExpand.animate().rotation(animationRotationValue).duration =
-                        animationDuration
-                    expandLayout = false
-                    collapse(saldoTypeLl)
-                    saldoCoachMarkController.handleCoachMarkVisibility(false)
-                } else {
-                    saldoDepositLayoutExpand.animate().rotation(animationRotationZeroValue).duration =
-                        animationDuration
-                    expandLayout = true
-                    expand(saldoTypeLl)
-                    saldoCoachMarkController.handleCoachMarkVisibility(true)
-                }
-            }
-
             merchantDetailLayoutExpand.setOnClickListener {
                 if (expandMerchantDetailLayout) {
                     merchantDetailLayoutExpand.animate().rotation(animationRotationValue).duration =
@@ -429,6 +459,32 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                 }
             }
         }
+
+        binding?.parentScrollView?.setOnScrollChangeListener(object: NestedScrollView.OnScrollChangeListener {
+            override fun onScrollChange(
+                v: NestedScrollView,
+                scrollX: Int,
+                scrollY: Int,
+                oldScrollX: Int,
+                oldScrollY: Int
+            ) {
+                if (scrollY == 0) {
+                    (activity as SaldoDepositActivity).saldoToolbar?.apply {
+                        if (transparentMode) return
+                        transparentMode = true
+                        headerView?.setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900))
+                        navigationIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK, ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900))
+                    }
+                } else {
+                    (activity as SaldoDepositActivity).saldoToolbar?.apply {
+                        if (!transparentMode) return
+                        transparentMode = false
+                        headerView?.setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900))
+                        navigationIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK, ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900))
+                    }
+                }
+            }
+        })
     }
 
     private fun expand(v: View) {
@@ -568,19 +624,18 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         binding?.depositHeaderLayout?.apply {
             saldoDetailViewModel.isSeller = isSellerEnabled
             context?.resources?.let { res ->
-                saldoDepositText.text =
+                saldoTitle.text =
                     res.getString(R.string.total_saldo_text)
             }
-            saldoBuyerBalanceRl.show()
-            saldoBuyerBalanceRl.show()
+            saldoRefundGroup.show()
 
-            saldoBuyerDepositTextInfo.setOnClickListener {
+            saldoRefundIcon.setOnClickListener {
                 showBottomSheetInfoDialog(
                     false
                 )
             }
 
-            saldoSellerDepositTextInfo
+            saldoIncomeIcon
                 .setOnClickListener { showBottomSheetInfoDialog(true) }
 
             performanceInterface.stopPreparePagePerformanceMonitoring()
@@ -648,10 +703,11 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         saldoDetailViewModel.getUserSaldoBalance()
         saldoDetailViewModel.getTickerWithdrawalMessage()
         saldoDetailViewModel.getMerchantCreditLateCountValue()
+        saldoDetailViewModel.getAutoWDStatus(shouldHitAutoWdInitGql())
     }
 
     private fun setBalance(summaryUsebleDepositIdr: String) {
-        binding?.depositHeaderLayout?.totalBalance?.apply {
+        binding?.depositHeaderLayout?.saldoBalance?.apply {
             if (!TextUtils.isEmpty(summaryUsebleDepositIdr)) {
                 this.text = summaryUsebleDepositIdr
                 this.show()
@@ -677,28 +733,32 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun showHoldWarning(warningText: String) {
-        binding?.depositHeaderLayout?.holdBalanceLayout?.apply {
-            this.show()
-            this.setHtmlDescription(
-                String.format(
-                    getString(
-                        R.string.saldo_hold_balance_text,
-                        warningText
-                    )
-                )
-            )
+        binding?.depositHeaderLayout?.apply {
+            saldoHoldGroup.show()
 
-            this.setDescriptionClickEvent(
-                object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        saldoDetailsAnalytics.sendClickPaymentEvents(SaldoDetailsConstants.Action.SALDO_HOLD_STATUS_CLICK)
-                        val intent = Intent(context, SaldoHoldInfoActivity::class.java)
-                        startActivity(intent)
-                    }
+            saldoHold.text = context?.let {
+                HtmlLinkHelper(
+                    it, String.format(
+                        getString(
+                            R.string.saldo_hold_balance_text,
+                            warningText
+                        )
+                    )).spannedString
+            }
 
-                    override fun onDismiss() {}
-                })
+            saldoHold.setOnClickListener {
+                onSaldoHoldClick()
+            }
+            saldoHoldIcon.setOnClickListener {
+                onSaldoHoldClick()
+            }
         }
+    }
+
+    private fun onSaldoHoldClick() {
+        saldoDetailsAnalytics.sendClickPaymentEvents(SaldoDetailsConstants.Action.SALDO_HOLD_STATUS_CLICK)
+        val intent = Intent(context, SaldoHoldInfoActivity::class.java)
+        startActivity(intent)
     }
 
     private fun hideSaldoPrioritasFragment() {
@@ -711,7 +771,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun showTickerMessage(withdrawalTicker: String) {
-        binding?.tickerSaldoWithdrawalInfo?.apply {
+        binding?.depositHeaderLayout?.tickerSaldoWithdrawalInfo?.apply {
             this.show()
             this.setHtmlDescription(withdrawalTicker)
         }
@@ -753,7 +813,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun hideTickerMessage() {
-        binding?.tickerSaldoWithdrawalInfo?.hide()
+        binding?.depositHeaderLayout?.tickerSaldoWithdrawalInfo?.hide()
     }
 
     private fun setLateCount(count: Int) {
@@ -765,21 +825,21 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun showSellerSaldoRL() {
-        binding?.depositHeaderLayout?.saldoSellerBalanceRl?.show()
+        binding?.depositHeaderLayout?.saldoIncomGroup?.show()
     }
 
     private fun setBuyerSaldoBalance(balance: Long, text: String) {
         saldoBalanceBuyer = balance
-        binding?.depositHeaderLayout?.buyerBalance?.text = text
+        binding?.depositHeaderLayout?.saldoRefundAmount?.text = text
     }
 
     private fun setSellerSaldoBalance(amount: Long, formattedAmount: String) {
         saldoBalanceSeller = amount
-        binding?.depositHeaderLayout?.sellerBalance?.text = formattedAmount
+        binding?.depositHeaderLayout?.saldoIncomeAmount?.text = formattedAmount
     }
 
     private fun showBuyerSaldoRL() {
-        binding?.depositHeaderLayout?.saldoBuyerBalanceRl?.show()
+        binding?.depositHeaderLayout?.saldoRefundGroup?.show()
     }
 
     private fun showSaldoPrioritasFragment(gqlDetailsResponse: GqlDetailsResponse?) {
@@ -805,7 +865,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun hideWarning() {
-        binding?.depositHeaderLayout?.holdBalanceLayout?.hide()
+        binding?.depositHeaderLayout?.saldoHoldGroup?.hide()
     }
 
     override fun onDestroy() {

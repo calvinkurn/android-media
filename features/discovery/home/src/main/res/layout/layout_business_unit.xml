@@ -10,7 +10,7 @@
         android:orientation="horizontal"
         android:paddingHorizontal="16dp"
         android:paddingTop="12dp"
-        android:paddingBottom="11dp"
+        android:paddingBottom="@dimen/home_padding_bottom_bu_widget"
         android:clipToPadding="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
     <include

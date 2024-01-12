@@ -31,6 +31,10 @@ data class VariantChild(
     @Expose
     val discPercentage: String? = null, // ex: 10%
 
+    @SerializedName("isPriceMasked")
+    @Expose
+    val isPriceMasked: Boolean = false, // ex: 10%
+
     @SerializedName("sku")
     @Expose
     val sku: String? = null, // ex:gew2134

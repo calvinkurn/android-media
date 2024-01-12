@@ -24,7 +24,7 @@ class GetRegisterV2AndSaveSessionUseCase @Inject constructor(
 ) : CoroutineUseCase<RegisterV2Param, Result<Register>>(dispatchers.io) {
     override fun graphqlQuery(): String =
         """
-            mutation register(${'$'}reg_type: String!, ${'$'}fullname: String!, ${'$'}email: String!, ${'$'}phone: String!, ${'$'}password: String!, ${'$'}validate_token: String!, ${'$'}h: String!) {
+            mutation register(${'$'}reg_type: String!, ${'$'}fullname: String!, ${'$'}email: String!, ${'$'}phone: String!, ${'$'}password: String!, ${'$'}validate_token: String!, ${'$'}h: String!, ${'$'}goto_auth_code: String, ${'$'}goto_sso_acc_id: String) {
                 register_v2(input: {
                     reg_type        : ${'$'}reg_type
                     fullname        : ${'$'}fullname
@@ -33,6 +33,8 @@ class GetRegisterV2AndSaveSessionUseCase @Inject constructor(
                     password        : ${'$'}password
                     validate_token  : ${'$'}validate_token
                     h               : ${'$'}h
+                    goto_sso_acc_id : ${'$'}goto_sso_acc_id
+                    goto_auth_code  : ${'$'}goto_auth_code
                 }) {
                     user_id
                     is_active
@@ -51,6 +53,7 @@ class GetRegisterV2AndSaveSessionUseCase @Inject constructor(
                       body
                       action
                     }
+                    name
                 }
             }
         """.trimIndent()

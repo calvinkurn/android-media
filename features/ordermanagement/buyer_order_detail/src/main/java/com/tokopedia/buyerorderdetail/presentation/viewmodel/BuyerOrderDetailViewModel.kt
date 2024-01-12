@@ -29,13 +29,18 @@ import com.tokopedia.buyerorderdetail.presentation.mapper.OrderStatusUiStateMapp
 import com.tokopedia.buyerorderdetail.presentation.mapper.PGRecommendationWidgetUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.PaymentInfoUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ProductListUiStateMapper
+import com.tokopedia.buyerorderdetail.presentation.mapper.SavingsWidgetUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ScpRewardsMedalTouchPointWidgetMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.ShipmentInfoUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
+import com.tokopedia.buyerorderdetail.presentation.model.OrderOneTimeEvent
+import com.tokopedia.buyerorderdetail.presentation.model.OrderOneTimeEventUiState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailChatCounterUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailGroupBookingUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.EpharmacyInfoUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
@@ -44,6 +49,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.PGRecommendationWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.PaymentInfoUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.SavingsWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -51,6 +57,9 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.order_management_common.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.data.response.ScpRewardsMedalTouchPointResponse.ScpRewardsMedaliTouchpointOrder.MedaliTouchpointOrder
+import com.tokopedia.tokochat.config.domain.TokoChatCounterUseCase
+import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
+import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -59,10 +68,14 @@ import dagger.Lazy
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.emitAll
@@ -70,6 +83,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -80,6 +94,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private val getBuyerOrderDetailDataUseCase: Lazy<GetBuyerOrderDetailDataUseCase>,
     private val finishOrderUseCase: Lazy<FinishOrderUseCase>,
     private val atcUseCase: Lazy<AddToCartMultiUseCase>,
+    private val tokoChatGroupBookingUseCase: Lazy<TokoChatGroupBookingUseCase>,
+    private val tokoChatCounterUseCase: Lazy<TokoChatCounterUseCase>,
     private val resourceProvider: Lazy<ResourceProvider>
 ) : ViewModel() {
 
@@ -141,11 +157,13 @@ class BuyerOrderDetailViewModel @Inject constructor(
     ).toStateFlow(OrderInsuranceUiState.Loading)
     private val epharmacyInfoUiState = buyerOrderDetailDataRequestState.mapLatest(
         ::mapEpharmacyInfoUiState
-    ).catch { t ->
-        // There is a case that additional_info returning null from backend, so make this default yet
-        // it will be hide in the section
-        emit(EpharmacyInfoUiState.HasData.Showing(EpharmacyInfoUiModel()))
-    }.toStateFlow(EpharmacyInfoUiState.Loading)
+    ).toStateFlow(EpharmacyInfoUiState.Loading)
+    private val savingsWidgetUiState = buyerOrderDetailDataRequestState.mapLatest(
+        ::mapSavingsWidgetUiState
+    ).toStateFlow(SavingsWidgetUiState.Hide)
+
+    private val _oneTimeMethod = MutableStateFlow(OrderOneTimeEventUiState())
+    val oneTimeMethodState: StateFlow<OrderOneTimeEventUiState> = _oneTimeMethod
 
     val buyerOrderDetailUiState: StateFlow<BuyerOrderDetailUiState> = combine(
         actionButtonsUiState,
@@ -158,8 +176,17 @@ class BuyerOrderDetailViewModel @Inject constructor(
         orderInsuranceUiState,
         epharmacyInfoUiState,
         scpRewardsMedalTouchPointWidgetUiState,
+        savingsWidgetUiState,
         ::mapBuyerOrderDetailUiState
     ).toStateFlow(BuyerOrderDetailUiState.FullscreenLoading)
+
+    private val _chatCounterUiState = MutableStateFlow(BuyerOrderDetailChatCounterUiState())
+    val chatCounterUiState = _chatCounterUiState.asStateFlow()
+
+    private val _groupBookingUiState = MutableSharedFlow<BuyerOrderDetailGroupBookingUiState>()
+    val groupBookingUiState = _groupBookingUiState.asSharedFlow()
+
+    private var chatChannelId: String = ""
 
     fun getBuyerOrderDetailData(
         orderId: String,
@@ -385,6 +412,25 @@ class BuyerOrderDetailViewModel @Inject constructor(
         }
     }
 
+    // https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2158935800/How+to+create+one+time+event+in+PDP
+    fun changeOneTimeMethod(event: OrderOneTimeEvent) {
+        when (event) {
+            is OrderOneTimeEvent.ImpressSavingsWidget -> {
+                if (_oneTimeMethod.value.impressSavingsWidget) return
+                _oneTimeMethod.update {
+                    it.copy(
+                        event = event,
+                        impressSavingsWidget = true
+                    )
+                }
+            }
+
+            OrderOneTimeEvent.Empty -> {
+                //noop
+            }
+        }
+    }
+
     private fun <T> Flow<T>.toStateFlow(initialValue: T) = stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
@@ -422,10 +468,26 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private fun mapEpharmacyInfoUiState(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
     ): EpharmacyInfoUiState {
-        return EpharmacyInfoUiStateMapper.map(
-            getBuyerOrderDetailDataRequestState,
-            epharmacyInfoUiState.value
-        )
+        return try {
+            EpharmacyInfoUiStateMapper.map(
+                getBuyerOrderDetailDataRequestState,
+                epharmacyInfoUiState.value
+            )
+        } catch (e:Throwable) {
+            EpharmacyInfoUiState.HasData.Showing(EpharmacyInfoUiModel())
+        }
+    }
+
+    private fun mapSavingsWidgetUiState(
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
+    ): SavingsWidgetUiState {
+        return try {
+            SavingsWidgetUiStateMapper.map(
+                getBuyerOrderDetailDataRequestState
+            )
+        } catch (e: Throwable) {
+            SavingsWidgetUiState.Hide
+        }
     }
 
     private fun mapProductListUiState(
@@ -490,7 +552,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
         orderResolutionTicketStatusUiState: OrderResolutionTicketStatusUiState,
         orderInsuranceUiState: OrderInsuranceUiState,
         epharmacyInfoUiState: EpharmacyInfoUiState,
-        scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState
+        scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState,
+        savingsWidgetUiState: SavingsWidgetUiState
     ): BuyerOrderDetailUiState {
         return BuyerOrderDetailUiStateMapper.map(
             actionButtonsUiState,
@@ -502,7 +565,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
             orderResolutionTicketStatusUiState,
             orderInsuranceUiState,
             epharmacyInfoUiState,
-            scpRewardsMedalTouchPointWidgetUiState
+            scpRewardsMedalTouchPointWidgetUiState,
+            savingsWidgetUiState
         )
     }
 
@@ -519,6 +583,79 @@ class BuyerOrderDetailViewModel @Inject constructor(
         return when (result) {
             is Success -> MultiATCState.Success(result.data)
             is Fail -> MultiATCState.Fail(throwable = result.throwable)
+        }
+    }
+
+    fun initGroupBooking(
+        orderIdGojek: String,
+        source: String
+    ) {
+        viewModelScope.launch {
+            try {
+                if (chatChannelId.isBlank()) {
+                    tokoChatGroupBookingUseCase.get().initGroupBookingChat(
+                        orderId = orderIdGojek,
+                        serviceType = tokoChatGroupBookingUseCase.get().getServiceType(source)
+                    ).collectLatest { result ->
+                        when (result) {
+                            is TokoChatResult.Success -> {
+                                onSuccessGroupBooking(result.data)
+                            }
+                            is TokoChatResult.Error -> {
+                                onErrorGroupBooking(result.throwable)
+                            }
+                            TokoChatResult.Loading -> Unit // no-op
+                        }
+                    }
+                }
+            } catch (t: Throwable) {
+                Timber.d(t)
+            }
+        }
+    }
+
+    private suspend fun onSuccessGroupBooking(channelUrl: String) {
+        chatChannelId = channelUrl
+        _groupBookingUiState.emit(BuyerOrderDetailGroupBookingUiState(channelUrl = channelUrl))
+    }
+
+    private suspend fun onErrorGroupBooking(throwable: Throwable) {
+        chatChannelId = "" // reset
+        _groupBookingUiState.emit(BuyerOrderDetailGroupBookingUiState(error = throwable))
+    }
+
+    fun fetchUnReadChatCount() {
+        viewModelScope.launch {
+            try {
+                tokoChatCounterUseCase
+                    .get()
+                    .fetchUnreadCount(chatChannelId)
+                    .collectLatest { result ->
+                        when (result) {
+                            is TokoChatResult.Success -> {
+                                onSuccessGetCounter(result.data)
+                            }
+                            is TokoChatResult.Error -> {
+                                onErrorGetCounter(result.throwable)
+                            }
+                            is TokoChatResult.Loading -> Unit // no-op
+                        }
+                    }
+            } catch (throwable: Throwable) {
+                Timber.d(throwable)
+            }
+        }
+    }
+
+    private fun onSuccessGetCounter(counter: Int) {
+        _chatCounterUiState.update {
+            it.copy(counter = counter, error = null)
+        }
+    }
+
+    private fun onErrorGetCounter(throwable: Throwable) {
+        _chatCounterUiState.update {
+            it.copy(counter = 0, error = throwable)
         }
     }
 }

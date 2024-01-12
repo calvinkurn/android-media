@@ -33,25 +33,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toEndOf="@id/txt_anim_label" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/pdp_main_thumbnail_rv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:clipToPadding="false"
-        android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="8dp"
-        android:visibility="gone"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pdp_view_pager"
-        tools:listitem="@layout/item_img_thumbnail_view_holder"
-        tools:orientation="horizontal"
-        tools:visibility="visible" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

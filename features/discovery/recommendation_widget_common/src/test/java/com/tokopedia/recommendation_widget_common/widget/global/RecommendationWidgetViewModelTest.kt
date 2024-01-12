@@ -43,6 +43,7 @@ import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWi
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetViewModelTest.Companion.UpdateCartTestObject.TEST_UPDATE_CART_PRODUCT_ID
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetViewModelTest.Companion.UpdateCartTestObject.TEST_UPDATE_CART_QUANTITY
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetViewModelTest.Companion.UpdateCartTestObject.updateCartSuccessData
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -78,12 +79,14 @@ class RecommendationWidgetViewModelTest {
         updateCartUseCase,
         deleteCartUseCase,
     )
+    private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
     private fun ViewModel(state: State = State()): RecommendationWidgetViewModel {
         return RecommendationWidgetViewModel(
             state,
             getRecommendationWidgetUseCase,
             { cartService },
+            userSession
         )
     }
 
@@ -250,7 +253,7 @@ class RecommendationWidgetViewModelTest {
         val trackingModel = RecommendationWidgetTrackingModel(androidPageName = "pageName")
         val model = RecommendationWidgetModel(metadata = metadata, trackingModel = trackingModel)
         val recommendationWidgetList = "carousel_hatc.json".jsonToRecommendationWidgetList()
-        val currentState = RecommendationWidgetState().from(model, recommendationWidgetList)
+        val currentState = RecommendationWidgetState().from(model, recommendationWidgetList, userSession.userId)
         val viewModel = ViewModel(currentState)
 
         viewModel.refresh()
@@ -345,7 +348,7 @@ class RecommendationWidgetViewModelTest {
         )
         val recommendationWidgetList = "hatc.json".jsonToRecommendationWidgetList()
         val currentState = RecommendationWidgetState()
-            .from(model, recommendationWidgetList)
+            .from(model, recommendationWidgetList, userSession.userId)
         val viewModel = ViewModel(currentState)
 
         val carouselModel =
@@ -392,7 +395,7 @@ class RecommendationWidgetViewModelTest {
         )
         val recommendationWidgetList = "hatc.json".jsonToRecommendationWidgetList()
         val currentState = RecommendationWidgetState()
-            .from(model, recommendationWidgetList)
+            .from(model, recommendationWidgetList, userSession.userId)
             .refreshMiniCart(miniCartSimplifiedData)
         val viewModel = ViewModel(currentState)
 
@@ -442,7 +445,7 @@ class RecommendationWidgetViewModelTest {
         )
         val recommendationWidgetList = "hatc.json".jsonToRecommendationWidgetList()
         val currentState = RecommendationWidgetState()
-            .from(model, recommendationWidgetList)
+            .from(model, recommendationWidgetList, userSession.userId)
             .refreshMiniCart(miniCartSimplifiedData)
         val viewModel = ViewModel(currentState)
 
@@ -485,7 +488,7 @@ class RecommendationWidgetViewModelTest {
         val model = RecommendationWidgetModel(metadata = metadata, trackingModel = trackingModel)
         val recommendationWidgetList = "hatc.json".jsonToRecommendationWidgetList()
         val currentState = RecommendationWidgetState()
-            .from(model, recommendationWidgetList)
+            .from(model, recommendationWidgetList, userSession.userId)
             .refreshMiniCart(miniCartSimplifiedData)
         val viewModel = ViewModel(currentState)
 
@@ -521,7 +524,7 @@ class RecommendationWidgetViewModelTest {
         )
         val recommendationWidgetList = "hatc.json".jsonToRecommendationWidgetList()
         val currentState = RecommendationWidgetState()
-            .from(model, recommendationWidgetList)
+            .from(model, recommendationWidgetList, userSession.userId)
             .refreshMiniCart(miniCartSimplifiedData)
         val viewModel = ViewModel(currentState)
 

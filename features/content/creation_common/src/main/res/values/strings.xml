@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="content_creation_bottom_sheet_title">Buat Konten</string>
+    <string name="content_creation_bottom_sheet_performance_action">Lihat Performa</string>
+    <string name="content_creation_bottom_sheet_next_label">Lanjut</string>
+    <string name="content_creation_retry_label">Coba Lagi</string>
+
+    <string name="content_creation_short_description_text">Bikin review, tutorial, hingga unboxing produk yang menginspirasi pembeli.</string>
+    <string name="content_creation_short_description_click_label">Tips Bikin Video.</string>
+
+    <string name="content_creation_post_description_text">Ceritain tentang menariknya suatu produk lewat post gambar/foto.</string>
+    <string name="content_creation_post_description_click_label">Tips Posting Foto.</string>
+
+    <string name="content_creation_live_description_text">Berinteraksi dengan banyak penonton sambil promosi produkmu lewat Live.</string>
+    <string name="content_creation_live_description_click_label">Tips Bikin Live.</string>
+
+    <string name="content_creation_story_description_text">Pamerin tentang bagusnya suatu produk dengan update Story singkat &amp; memikat.</string>
+    <string name="content_creation_story_description_click_label">Tips Bikin Story.</string>
+
+    <string name="content_creation_post_as_label">Post sebagai</string>
+
+    <string name="content_creation_failed_network_title">Ada gangguan di rumah Toped!</string>
+    <string name="content_creation_failed_network_description">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
+    <string name="content_creation_failed_network_image_url">https://images.tokopedia.net/img/content/creation/content_creation_network-error.png</string>
+
+    <string name="content_creation_entry_point_button_label">Buat Konten</string>
+    <string name="content_creation_entry_point_desription"><![CDATA[Promosi di <b>Live, Video & Foto</b> bikin orang impulsif belanja!]]></string>
+
+    <string name="content_creation_upload_notification_shorts_progress_title">Tunggu ya, videomu lagi di-upload</string>
+    <string name="content_creation_upload_notification_shorts_progress_description">Selagi menunggu video di-upload, kamu bisa cek produk atau konten menarik lainnya di Tokopedia.</string>\
+    <string name="content_creation_upload_notification_shorts_success_title">Yay, videomu berhasil di-upload!</string>
+    <string name="content_creation_upload_notification_shorts_success_description">Lihat videomu di sini, yuk!</string>
+    <string name="content_creation_upload_notification_shorts_fail_title">Oops, gagal upload video</string>
+    <string name="content_creation_upload_notification_shorts_fail_description">Tenang, kamu masih bisa coba upload videonya lagi.</string>
+    <string name="content_creation_upload_notification_shorts_fail_retry">Coba lagi</string>
+
+    <string name="content_creation_upload_notification_stories_progress_title">Tunggu, ya. Story-mu lagi di-upload</string>
+    <string name="content_creation_upload_notification_stories_progress_description">Selagi menunggu Story di-upload, kamu bisa cek produk atau konten menarik lainnya di Tokopedia.</string>
+    <string name="content_creation_upload_notification_stories_success_title">Yay, Story-mu berhasil di-upload!</string>
+    <string name="content_creation_upload_notification_stories_success_description">Lihat Story-nya di sini, yuk!</string>
+    <string name="content_creation_upload_notification_stories_fail_title">Oops, gagal upload Story</string>
+    <string name="content_creation_upload_notification_stories_fail_description">Klik di sini buat ulangi progres upload Story-nya, ya!</string>
+    <string name="content_creation_upload_notification_stories_fail_retry">Coba lagi</string>
+
+    <string name="content_creation_watch_in_ma_title">Lihat konten jadi lebih nyaman di aplikasi Tokopedia</string>
+    <string name="content_creation_watch_in_ma_desc">Kamu juga bisa cek semua interaksi yang ada di kontenmu.</string>
+    <string name="content_creation_watch_in_ma_action_text">Download Tokopedia</string>
+    <string name="content_creation_watch_in_ma_cancel_text">Nanti Aja</string>
+
+    <string name="content_creation_check_content_in_tokopedia_feed_title">Cek kontenmu di Tokopedia Feed</string>
+    <string name="content_creation_check_content_in_tokopedia_feed_desc">Kontenmu akan selalu diupload dan dapat dilihat oleh penonton di Tokopedia Feed</string>
+    <string name="content_creation_check_content_in_tokopedia_feed_action_text">Lihat Konten</string>
+</resources>

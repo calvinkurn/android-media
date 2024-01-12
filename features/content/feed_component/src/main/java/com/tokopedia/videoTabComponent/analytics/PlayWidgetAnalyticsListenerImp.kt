@@ -164,9 +164,10 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
-        isRemindMe: Boolean
+        isRemindMe: Boolean,
+        config: PlayWidgetConfigUiModel,
     ) {
-        super.onClickToggleReminderChannel(view, item, channelPositionInList, isRemindMe)
+        super.onClickToggleReminderChannel(view, item, channelPositionInList, isRemindMe, config)
 
         if (item.channelType == PlayWidgetChannelType.Upcoming) {
             if (isRemindMe) {

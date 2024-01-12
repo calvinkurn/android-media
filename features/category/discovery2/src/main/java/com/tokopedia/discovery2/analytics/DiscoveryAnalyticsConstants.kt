@@ -294,4 +294,14 @@ const val ITEM_LIST = "item_list"
 const val ITEMS = "items"
 
 const val TRACKER_ID_BMGM_ATC = "48399"
-const val TRACKER_ID_BMGM_CLICK_SEE_MORE= "48397"
+const val TRACKER_ID_BMGM_CLICK_SEE_MORE = "48397"
+
+const val PLAY_BANNER_TYPE = "play_widget_banner"
+const val PLAY_CHANNEL_V2_TYPE = "play_widget_channel_v2"
+const val PLAY_CHANNEL_TYPE = "play_widget_channel"
+
+const val TRACKER_ID_SUPPORTING_BRAND_IMPRESSION = "48428"
+const val EVENT_ACTION_SUPPORTING_BRAND_IMPRESSION = "impression banner on buy more save more"
+const val COMPONENT_SUPPORTING_BRAND = "bmsm_supporting"
+const val TRACKER_ID_SUPPORTING_BRAND_CLICK = "48429"
+const val EVENT_ACTION_SUPPORTING_BRAND_CLICK = "click banner on buy more save more"

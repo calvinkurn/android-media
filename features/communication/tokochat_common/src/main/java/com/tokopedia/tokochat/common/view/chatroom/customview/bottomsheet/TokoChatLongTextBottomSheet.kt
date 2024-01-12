@@ -6,23 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.databinding.TokochatLongMessageBottomsheetBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.tokochat_common.R as tokochat_commonR
 
-class TokoChatLongTextBottomSheet(
-    private val longMessage: String,
-    private val senderName: String
-): BottomSheetUnify() {
+class TokoChatLongTextBottomSheet: BottomSheetUnify() {
 
     private var binding by autoClearedNullable<TokochatLongMessageBottomsheetBinding>()
-
-    init {
-        this.overlayClickDismiss = true
-        this.showCloseIcon = false
-        this.isDragable = true
-        this.isHideable = true
-    }
+    private var longMessage: String = ""
+    private var senderName: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,10 +24,19 @@ class TokoChatLongTextBottomSheet(
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            com.tokopedia.tokochat_common.R.layout.tokochat_long_message_bottomsheet, container, false)
+            tokochat_commonR.layout.tokochat_long_message_bottomsheet, container, false)
         binding = TokochatLongMessageBottomsheetBinding.bind(view)
+        setupBottomSheetConfig()
         setChild(view)
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun setupBottomSheetConfig() {
+        this.overlayClickDismiss = true
+        this.showCloseIcon = false
+        this.isDragable = true
+        this.isHideable = true
+        this.clearContentPadding = true
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,6 +51,14 @@ class TokoChatLongTextBottomSheet(
         bottomSheetBehaviorKnob(view, true)
     }
 
+    fun setMessage(
+        longMessage: String,
+        senderName: String
+    ) {
+        this.longMessage = longMessage
+        this.senderName = senderName
+    }
+
     private fun setPeakHeight() {
         try {
             customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / PEAK_DIVIDER
@@ -55,7 +66,9 @@ class TokoChatLongTextBottomSheet(
     }
 
     private fun setBottomSheetTitle() {
-        this.setTitle(senderName)
+        this.setTitle(
+            getString(R.string.tokochat_long_text_bottomsheet_title, senderName)
+        )
     }
 
     private fun setLongMessageText() {

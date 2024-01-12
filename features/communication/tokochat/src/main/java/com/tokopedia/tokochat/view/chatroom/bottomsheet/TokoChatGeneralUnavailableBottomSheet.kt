@@ -1,5 +1,6 @@
 package com.tokopedia.tokochat.view.chatroom.bottomsheet
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import com.tokopedia.tokochat.databinding.TokochatGeneralUnavailableBottomsheetB
 import com.tokopedia.tokochat.common.util.TokoChatUrlUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.tokochat.R as tokochatR
 
 class TokoChatGeneralUnavailableBottomSheet: BottomSheetUnify() {
 
@@ -21,7 +23,11 @@ class TokoChatGeneralUnavailableBottomSheet: BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(com.tokopedia.tokochat.R.layout.tokochat_general_unavailable_bottomsheet, container, false)
+        val view = inflater.inflate(
+            tokochatR.layout.tokochat_general_unavailable_bottomsheet,
+            container,
+            false
+        )
         binding = TokochatGeneralUnavailableBottomsheetBinding.bind(view)
         setChild(view)
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -63,6 +69,11 @@ class TokoChatGeneralUnavailableBottomSheet: BottomSheetUnify() {
 
     fun setListener(buttonAction: () -> Unit) {
         this.buttonAction = buttonAction
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        this.buttonAction = null
     }
 
     companion object {

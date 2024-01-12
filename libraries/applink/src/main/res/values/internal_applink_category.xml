@@ -7,6 +7,7 @@
     <string name="host_affiliate_toko" translatable="false">affiliate</string>
     <string name="host_epharmacy" translatable="false">epharmacy</string>
     <string name="catalog_library_host" translatable="false">catalog-library</string>
+    <string name="catalog_product_list_host" translatable="false">catalog-product-list</string>
     <string name="applink_epharmacy_chooser" translatable="false">/chooser/.*\</string>
     <string name="applink_epharmacy_edu" translatable="false">/edu/.*\</string>
     <string name="applink_epharmacy_attach_prescription" translatable="false">/attach-prescription/.*\</string>
@@ -23,7 +24,7 @@
     <string name="applink_title_catalog">Katalog</string>
     <string name="applink_title_catalog_product_list">Katalog Product List</string>
     <string name="applink_catalog_detail" translatable="false">/.*\</string>
-    <string name="applink_catalog_product_list" translatable="false">/product_list/.*\</string>
+    <string name="applink_catalog_product_list" translatable="false">/.*\</string>
     <string name="applink_catalog_kategori" translatable="false">/kategori</string>
     <string name="applink_catalog_kategori_category" translatable="false">/kategori/.*\</string>
     <string name="applink_catalog_brand_popular" translatable="false">/popular-brand</string>

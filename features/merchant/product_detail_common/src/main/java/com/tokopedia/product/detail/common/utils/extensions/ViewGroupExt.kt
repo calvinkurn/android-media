@@ -44,7 +44,7 @@ fun View.addOnImpressionListener(
     }
 }
 
-internal fun View.addOnPdpImpressionListener(
+fun View.addOnPdpImpressionListener(
     holders: MutableList<String>,
     name: String,
     onView: () -> Unit

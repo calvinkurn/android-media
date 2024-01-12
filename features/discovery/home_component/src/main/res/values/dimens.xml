@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Paddings-->
+    <dimen name="home_component_card_compat_padding_translation_y">-5dp</dimen>
+    <dimen name="home_component_padding_bottom_with_compat_padding">11dp</dimen>
+    <dimen name="home_component_padding_bottom_with_compat_padding_translated">6dp</dimen>
+    <dimen name="home_component_padding_12dp_with_compat_padding">7dp</dimen>
+    <dimen name="home_component_padding_top_default">16dp</dimen>
+    <dimen name="home_component_padding_bottom_default">16dp</dimen>
+    <dimen name="home_component_padding_horizontal_default">16dp</dimen>
+    <dimen name="home_component_padding_horizontal_with_compat_padding">12dp</dimen>
+    <!--Please refer to specific vertical or horizontal dimen-->
+    <dimen name="home_component_margin_default">16dp</dimen>
+
+    <!--Header-->
+    <dimen name="home_dynamic_header_cta_container">32dp</dimen>
+    <dimen name="home_dynamic_header_cta_icon">24dp</dimen>
+    <dimen name="home_dynamic_header_subtitle_top_padding">6dp</dimen>
+    <dimen name="home_dynamic_header_timer_top_padding">4dp</dimen>
+    <dimen name="home_dynamic_header_bottom_padding">12dp</dimen>
+    <dimen name="home_dynamic_header_bottom_padding_with_timer_old">8dp</dimen>
+
+    <!--Widgets-->
     <dimen name="home_reminder_card_min_height">110dp</dimen>
     <dimen name="home_reminder_background_margin">6dp</dimen>
     <dimen name="home_reminder_product_icon_card_padding">10dp</dimen>
@@ -10,9 +31,7 @@
     <dimen name="home_banner_default_margin_top">20dp</dimen>
     <dimen name="home_banner_default_margin_bottom">0dp</dimen>
     <dimen name="home_banner_default_margin_vertical_design">12dp</dimen>
-    <dimen name="home_component_margin_default">16dp</dimen>
-    <dimen name="home_margin_12_dp_product_card">7.9dp</dimen>
-    <dimen name="home_padding_vertical_use_compat_padding_product_card">-5.0dp</dimen>
+
     <dimen name="home_category_widget_v2_title_container_height">46dp</dimen>
 
     <dimen name="campaign_widget_card_height">243.5dp</dimen>
@@ -28,14 +47,13 @@
     <dimen name="special_release_tag_height">22dp</dimen>
     <dimen name="special_release_price_height">28dp</dimen>
     <dimen name="special_release_timer_height">16dp</dimen>
-    <dimen name="special_release_rv_padding">10dp</dimen>
-    <dimen name="special_release_rv_padding_style_bottom">8dp</dimen>
-    <dimen name="special_release_padding_card_compat_padding">-4.0dp</dimen>
 
     <dimen name="home_mission_widget_card_image_size">128dp</dimen>
     <dimen name="home_mission_widget_card_margin_horizontal_subtitle">8dp</dimen>
     <dimen name="home_mission_widget_clear_image_size">100dp</dimen>
     <dimen name="home_mission_widget_clear_image_corner_radius">8dp</dimen>
+    <dimen name="home_mission_widget_clear_horizontal_padding">12dp</dimen>
+    <dimen name="home_mission_widget_clear_bottom_padding">8dp</dimen>
 
     <dimen name="home_mix_left_image_width">148dp</dimen>
 
@@ -61,17 +79,8 @@
     <dimen name="home_todo_widget_image_size">44dp</dimen>
     <dimen name="home_todo_widget_cta_width">76dp</dimen>
     <dimen name="home_todo_widget_cta_height">32dp</dimen>
-
     <dimen name="home_todo_widget_label_discount_height">20dp</dimen>
 
-    <dimen name="home_dynamic_header_cta_container">32dp</dimen>
-    <dimen name="home_dynamic_header_cta_icon">24dp</dimen>
-    <dimen name="home_dynamic_header_subtitle_top_padding">6dp</dimen>
-    <dimen name="home_dynamic_header_timer_top_padding">4dp</dimen>
-    <dimen name="home_dynamic_header_bottom_padding">12dp</dimen>
-    <dimen name="home_dynamic_header_bottom_padding_with_timer_old">8dp</dimen>
-
-    <dimen name="home_product_highlight_content_top_padding">9dp</dimen>
     <dimen name="home_product_highlight_content_horizontal_padding">12dp</dimen>
 
     <dimen name="home_flash_sale_left_margin">11dp</dimen>

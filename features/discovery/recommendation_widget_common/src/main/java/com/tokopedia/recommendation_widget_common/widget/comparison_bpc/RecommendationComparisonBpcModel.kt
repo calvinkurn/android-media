@@ -26,9 +26,10 @@ data class RecommendationComparisonBpcModel(
             trackingModel: RecommendationWidgetTrackingModel,
             recommendationWidget: RecommendationWidget,
             listener: RecommendationWidgetListener?,
+            userId: String
         ): RecommendationComparisonBpcModel =
             RecommendationComparisonBpcModel(
-                RecommendationVisitable.create(metadata, trackingModel),
+                RecommendationVisitable.create(metadata, trackingModel, userId),
                 recommendationWidget,
                 listener
             )

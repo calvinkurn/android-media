@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.topads
 
 import android.Manifest
+import android.app.Instrumentation
 import android.content.Intent
 import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
@@ -40,7 +41,7 @@ class DiscoveryTopAdsVerificationTest {
 
     @get:Rule
     var grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
 
     @get:Rule
@@ -54,13 +55,23 @@ class DiscoveryTopAdsVerificationTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private var topAdsCount = 0
     private val topAdsAssertion = TopAdsAssertion(context) { topAdsCount }
-    private val discoveryTopadsTestDeeplink = "${INTERNAL_DISCOVERY}/topads-test-2"
+    private val discoveryTopadsTestDeeplink = "$INTERNAL_DISCOVERY/topads-test-2"
+
+    private val blockAllIntentsMonitor = Instrumentation.ActivityMonitor(
+        null as String?,
+        null,
+        true
+    )
 
     @Before
     fun setup() {
-        activityRule.launchActivity(Intent(context, DiscoveryActivity::class.java).apply {
-            data = Uri.parse(discoveryTopadsTestDeeplink)
-        })
+        activityRule.launchActivity(
+            Intent(context, DiscoveryActivity::class.java).apply {
+                data = Uri.parse(discoveryTopadsTestDeeplink)
+            }
+        )
+
+        InstrumentationRegistry.getInstrumentation().addMonitor(blockAllIntentsMonitor)
     }
 
     @After
@@ -73,7 +84,7 @@ class DiscoveryTopAdsVerificationTest {
         waitForData()
 
         val discoveryRecyclerView = activityRule.activity
-                .findViewById<RecyclerView>(R.id.recycler_view)
+            .findViewById<RecyclerView>(R.id.recycler_view)
         val itemCount = discoveryRecyclerView.adapter?.itemCount ?: 0
 
         val itemList = discoveryRecyclerView.getItemList()
@@ -85,7 +96,6 @@ class DiscoveryTopAdsVerificationTest {
         }
         topAdsAssertion.assert()
     }
-
 
     private fun calculateTopAdsCount(itemList: List<ComponentsItem>): Int {
         var count = 0
@@ -125,15 +135,22 @@ class DiscoveryTopAdsVerificationTest {
             is MasterProductCardItemViewHolder -> {
                 try {
                     Espresso.onView(withId(R.id.recycler_view))
-                            .perform(RecyclerViewActions.actionOnItemAtPosition<MasterProductCardItemViewHolder>(
-                                    i, ViewActions.click()))
+                        .perform(
+                            RecyclerViewActions.actionOnItemAtPosition<MasterProductCardItemViewHolder>(
+                                i,
+                                ViewActions.click()
+                            )
+                        )
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
             is ProductCardCarouselViewHolder -> {
-                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView,
-                        R.id.products_rv, 0)
+                CommonActions.clickOnEachItemRecyclerView(
+                    viewHolder.itemView,
+                    R.id.products_rv,
+                    0
+                )
             }
         }
     }

@@ -16,25 +16,26 @@ import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.TextAreaUnify
 import com.tokopedia.unifyprinciples.Typography
+import timber.log.Timber
 
-class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
+class VideoLinkTypeFactory : BaseAdapterTypeFactory() {
     private var listener: VideoLinkListener? = null
 
-    fun setVideoLinkListener(listener: VideoLinkListener){
+    fun setVideoLinkListener(listener: VideoLinkListener) {
         this.listener = listener
     }
 
     fun type(videoLinkModel: VideoLinkModel): Int = VideoLinkViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
-        return when(type){
+        return when (type) {
             VideoLinkViewHolder.LAYOUT -> VideoLinkViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }
 
-    class VideoLinkViewHolder(val view: View?, private val listener: VideoLinkListener?)
-        : AbstractViewHolder<VideoLinkModel>(view) {
+    class VideoLinkViewHolder(val view: View?, private val listener: VideoLinkListener?) :
+        AbstractViewHolder<VideoLinkModel>(view) {
 
         private var imgThumbnail: ImageUnify? = null
         private var textFieldUrl: TextAreaUnify? = null
@@ -91,8 +92,13 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
                 }
             }
 
-            loadLayout(element.inputUrl, element.inputImage, element.inputTitle,
-                    element.inputDescription, element.errorMessage)
+            loadLayout(
+                inputUrl = element.inputUrl,
+                imageUrl = element.inputImage,
+                inputTitle = element.inputTitle,
+                inputDescription = element.inputDescription,
+                errorMessage = element.errorMessage
+            )
 
             textFieldUrl?.textAreaIconClose?.setOnClickListener {
                 textFieldUrl?.clearFocus()
@@ -100,19 +106,24 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
             }
         }
 
-        private fun loadLayout(inputUrl: String,
-                               imageUrl: String,
-                               inputTitle: String,
-                               inputDescription: String,
-                               errorMessage: String) {
+        private fun loadLayout(
+            inputUrl: String,
+            imageUrl: String,
+            inputTitle: String,
+            inputDescription: String,
+            errorMessage: String
+        ) {
             itemView.apply {
                 cardThumbnail?.visibility = if (inputTitle.isEmpty()) View.GONE else View.VISIBLE
                 textFieldUrl?.textAreaIconClose?.visibility = if (inputUrl.isEmpty()) View.GONE else View.VISIBLE
 
                 try {
-                    if(imgThumbnail?.context?.isValidGlideContext() == true)
-                        imgThumbnail?.urlSrc = imageUrl
-                } catch (e: Throwable) { }
+                    if (imgThumbnail?.context?.isValidGlideContext() == true) {
+                        imgThumbnail?.setImageUrl(imageUrl)
+                    }
+                } catch (e: Throwable) {
+                    Timber.e(e)
+                }
 
                 tvVideoTitle?.text = inputTitle
                 tvVideoSubtitle?.text = inputDescription

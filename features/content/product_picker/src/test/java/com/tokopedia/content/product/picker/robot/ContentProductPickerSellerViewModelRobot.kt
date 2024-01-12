@@ -2,7 +2,8 @@ package com.tokopedia.content.product.picker.robot
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserEvent
 import com.tokopedia.content.product.picker.seller.model.uimodel.PlayBroProductSummaryUiState
 import com.tokopedia.content.product.picker.seller.model.uimodel.ProductChooserUiState
@@ -26,6 +27,7 @@ internal class ContentProductPickerSellerViewModelRobot(
     handle: SavedStateHandle = SavedStateHandle(),
     isEligibleForPin: Boolean = false,
     repo: ContentProductPickerSellerRepository = mockk(relaxed = true),
+    commonRepo: ProductPickerSellerCommonRepository = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     isNumerationShown: Boolean = true,
     fetchCommissionProduct: Boolean = false,
@@ -38,9 +40,10 @@ internal class ContentProductPickerSellerViewModelRobot(
         productSectionList,
         handle,
         isNumerationShown,
-        fetchCommissionProduct,
         isEligibleForPin,
+        fetchCommissionProduct,
         repo,
+        commonRepo,
         userSession,
         dispatchers,
     )

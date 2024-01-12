@@ -11,7 +11,7 @@ import io.mockk.coEvery
 import io.mockk.invoke
 import io.mockk.mockk
 import io.mockk.mockkObject
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import okhttp3.ResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
@@ -22,7 +22,7 @@ class TokoChatImageAttachmentViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when getImageWithId with new Image, should save image and call onImageReady`() {
-        runBlocking {
+        runTest {
             // Given
             val imageIdDummy = "test123"
             val imageViewDummy = mockk<ImageView>(relaxed = true)
@@ -67,7 +67,7 @@ class TokoChatImageAttachmentViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when getImageWithId with new Image, should save image and call onImageReady without image view`() {
-        runBlocking {
+        runTest {
             // Given
             val imageIdDummy = "test123"
             val fileDummy = mockk<File>(relaxed = true)
@@ -109,7 +109,7 @@ class TokoChatImageAttachmentViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when getImageWithId with new Image but data is empty, should do nothing`() {
-        runBlocking {
+        runTest {
             // Given
             val imageIdDummy = "test123"
             val fileDummy = mockk<File>(relaxed = true)
@@ -152,7 +152,7 @@ class TokoChatImageAttachmentViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when getImageWithId with new Image but url is empty, should do nothing`() {
-        runBlocking {
+        runTest {
             // Given
             val imageIdDummy = "test123"
             val fileDummy = mockk<File>(relaxed = true)
@@ -198,7 +198,7 @@ class TokoChatImageAttachmentViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when getImageWithId with cached image, should directly call onImageReady and not retry`() {
-        runBlocking {
+        runTest {
             // Given
             val imageIdDummy = "test123"
             val fileDummy = mockk<File>(relaxed = true)
@@ -232,7 +232,7 @@ class TokoChatImageAttachmentViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when getImageWithId with cached image but from retry, should re-download the image`() {
-        runBlocking {
+        runTest {
             // Given
             val imageIdDummy = "test123"
             val fileDummy = mockk<File>(relaxed = true)
@@ -285,7 +285,7 @@ class TokoChatImageAttachmentViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when getImageWithId but error, should give throwable on error livedata`() {
-        runBlocking {
+        runTest {
             // Given
             val imageIdDummy = "test123"
 
@@ -316,7 +316,7 @@ class TokoChatImageAttachmentViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when getImageWithId but error when get image result`() {
-        runBlocking {
+        runTest {
             // Given
             val imageIdDummy = "test123"
             val imageResultDummy = TokoChatImageResult(
@@ -356,7 +356,7 @@ class TokoChatImageAttachmentViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when getImageWithId but error when get image result but empty error list`() {
-        runBlocking {
+        runTest {
             // Given
             val imageIdDummy = "test123"
             val imageResultDummy = TokoChatImageResult(success = false, error = listOf())
@@ -391,7 +391,7 @@ class TokoChatImageAttachmentViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when getImageWithId but error when get image result but no error`() {
-        runBlocking {
+        runTest {
             // Given
             val imageIdDummy = "test123"
             val imageResultDummy = TokoChatImageResult(success = false, error = null)
@@ -426,7 +426,7 @@ class TokoChatImageAttachmentViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when getImageWithId but error when get image result and null error message`() {
-        runBlocking {
+        runTest {
             // Given
             val imageIdDummy = "test123"
             val imageResultDummy = TokoChatImageResult(

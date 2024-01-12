@@ -8,4 +8,5 @@ object HomePlayWidgetAnalyticModel : PlayWidgetAnalyticModel {
     override val category: String = "tokonow - homepage"
     override val promotionsItemName: String = "play-home-widget"
     override val promotionsCreativeName: String = "play widget in homepage"
+    override val productId: String = ""
 }

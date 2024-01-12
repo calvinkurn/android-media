@@ -38,13 +38,13 @@ class TopAdsDebuggerFragment : BaseSearchListFragment<Visitable<*>, TopAdsDebugg
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         buttonSearch!!.setOnClickListener { v ->
-            if (TextUtils.isEmpty(searchInputView.searchText)) {
+            if (TextUtils.isEmpty(searchText)) {
                 presenter.reloadData()
             } else {
-                presenter.search(searchInputView.searchText)
+                presenter.search(searchText)
             }
         }
-        searchInputView.setSearchHint("Cari")
+        searchInputView.searchBarPlaceholder = "Cari"
     }
 
     override fun onDestroyView() {
@@ -108,7 +108,7 @@ class TopAdsDebuggerFragment : BaseSearchListFragment<Visitable<*>, TopAdsDebugg
     }
 
     override fun onSwipeRefresh() {
-        searchInputView.searchTextView.setText("")
+        searchInputView.searchBarTextField.setText("")
         super.onSwipeRefresh()
     }
 

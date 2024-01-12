@@ -12,6 +12,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
+import com.tokopedia.atc_common.R as atc_commonR
 
 @Module
 class BuyerOrderDetailModule {
@@ -30,7 +31,7 @@ class BuyerOrderDetailModule {
     fun provideAtcMultiQuery(@ApplicationContext context: Context): String =
         GraphqlHelper.loadRawString(
             context.resources,
-            com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi
+            atc_commonR.raw.mutation_add_to_cart_multi
         )
 
     @BuyerOrderDetailScope

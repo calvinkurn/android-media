@@ -76,7 +76,9 @@ object CommonTopupbillsDummyData {
                                         id = "578",
                                         trackingData = TopupBillsPersoFavNumberTrackingData(
                                             operatorId = "123"
-                                        )
+                                        ),
+                                        label1 = "",
+                                        label2 = ""
                                 )
                         )
                 )

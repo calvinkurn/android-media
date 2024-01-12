@@ -236,6 +236,14 @@ class FeedContentAdapter(
         notifyItemChanged(position, FeedViewHolderPayloadActions.FEED_FOLLOW_RECOM_RESUME_VIDEO)
     }
 
+    fun pauseVideoProductIconAnimation(position: Int) {
+        notifyItemChanged(position, FeedViewHolderPayloadActions.FEED_VIDEO_PRODUCT_ICON_ANIM_PAUSE)
+    }
+
+    fun resumeVideoProductIconAnimation(position: Int) {
+        notifyItemChanged(position, FeedViewHolderPayloadActions.FEED_VIDEO_PRODUCT_ICON_ANIM_RESUME)
+    }
+
     fun addElement(element: Any) {
         val currentList = this.currentList
         submitList(currentList + Item(element, isSelected = false))

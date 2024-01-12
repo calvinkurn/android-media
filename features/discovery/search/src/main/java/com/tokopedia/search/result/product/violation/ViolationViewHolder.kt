@@ -41,7 +41,7 @@ class ViolationViewHolder(
                 buttonVariant = violationButton.variant
                 visible()
                 setOnClickListener {
-                    violationListener.onViolationButtonClick(violationButton.ctaUrl)
+                    violationListener.onViolationButtonClick(violationButton.ctaApplink)
                 }
             }
         } else {

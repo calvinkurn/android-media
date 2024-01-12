@@ -110,13 +110,21 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
         nfcDisabledView = view.findViewById(R.id.view_nfc_disabled)
 
         eTollUpdateBalanceResultView.setListener(object : ETollUpdateBalanceResultView.OnTopupETollClickListener {
-            override fun onClick(operatorId: String, issuerId: Int) {
+            override fun onClick(operatorId: String, issuerId: Int, isBcaGenOne: Boolean) {
                 emoneyAnalytics.clickTopupEmoney(userSession.userId, irisSessionId, getOperatorName(issuerId))
-                onProcessTopupNow(getPassData(operatorId, issuerId))
+                onProcessTopupNow(getPassData(operatorId, issuerId, isBcaGenOne))
             }
 
             override fun onClickTickerTapcash() {
                 emoneyAnalytics.onShowErrorTapcashClickContactCS(irisSessionId)
+            }
+
+            override fun onClickExtraPendingBalance() {
+                if (eTollUpdateBalanceResultView.visibility == View.VISIBLE) {
+                    eTollUpdateBalanceResultView.hide()
+                }
+                tapETollCardView.visibility = View.VISIBLE
+                showInitialState()
             }
         })
 
@@ -192,7 +200,7 @@ open abstract class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
     protected abstract fun detectNfc()
 
-    protected abstract fun getPassData(operatorId: String, issuerId: Int): DigitalCategoryDetailPassData
+    protected abstract fun getPassData(operatorId: String, issuerId: Int, isBCAGenOne: Boolean): DigitalCategoryDetailPassData
 
     protected fun showError(errorMessage: String, errorMessageLabel: String = "",
                             imageUrl: String = "",

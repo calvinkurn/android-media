@@ -16,6 +16,7 @@ object Key {
 
     const val userId = "userId"
     const val shopId = "shopId"
+    const val productId = "productId"
     const val isLoggedInStatus = "isLoggedInStatus"
 
     const val trackerId = "trackerId"

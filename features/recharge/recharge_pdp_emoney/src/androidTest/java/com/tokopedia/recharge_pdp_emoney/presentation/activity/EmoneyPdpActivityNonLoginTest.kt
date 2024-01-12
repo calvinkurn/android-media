@@ -41,6 +41,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import com.tokopedia.common.topupbills.R as commontopupbillsR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 /**
  * @author by jessica on 16/04/21
@@ -105,10 +107,10 @@ class EmoneyPdpActivityNonLoginTest {
 
         Espresso.onView(withId(R.id.emoneyHeaderViewCtaButton)).perform(click())
         Thread.sleep(1000)
-        Espresso.onView(withId(R.id.emoneyHeaderViewCardNumber)).check(matches(withText("8768567891012345")))
+        Espresso.onView(withId(R.id.emoneyHeaderViewCardNumber)).check(matches(withText("8768 5678 9101 2345")))
         Espresso.onView(withId(R.id.emoneyHeaderViewCardBalance)).check(matches(withText("Rp130.000")))
 
-        Espresso.onView(withText("8768 5678 9101 2345")).check(matches(isDisplayed()))
+        Espresso.onView(AllOf.allOf(withText("8768 5678 9101 2345"), withId(unifycomponentsR.id.text_field_input))).check(matches(isDisplayed()))
     }
 
     private fun clickPromoTabAndSalinPromo() {
@@ -120,12 +122,12 @@ class EmoneyPdpActivityNonLoginTest {
         )
 
         Espresso.onView(withId(R.id.emoneyPdpTab)).check(matches(not(isDisplayed())))
-        Espresso.onView(withId(com.tokopedia.common.topupbills.R.id.title_component)).check(matches(isDisplayed()))
+        Espresso.onView(withId(commontopupbillsR.id.title_component)).check(matches(isDisplayed()))
 
         Espresso.onView(withId(R.id.emoneyPdpPromoListWidget)).check(matches(isDisplayed()))
         Espresso.onView(
             AllOf.allOf(
-                withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component),
+                withId(commontopupbillsR.id.recycler_view_menu_component),
                 isDescendantOfA(withId(R.id.emoneyPdpPromoListWidget))
             )
         ).check(matches(isDisplayed())).perform(
@@ -138,13 +140,13 @@ class EmoneyPdpActivityNonLoginTest {
 
         Espresso.onView(
             AllOf.allOf(
-                withId(com.tokopedia.common.topupbills.R.id.recycler_view_menu_component),
+                withId(commontopupbillsR.id.recycler_view_menu_component),
                 isDescendantOfA(withId(R.id.emoneyPdpPromoListWidget))
             )
         ).check(matches(isDisplayed())).perform(
             RecyclerViewActions.actionOnItemAtPosition<TopupBillsPromoListAdapter.PromoItemViewHolder>(
                 0,
-                CommonActions.clickChildViewWithId(com.tokopedia.common.topupbills.R.id.btn_copy_promo)
+                CommonActions.clickChildViewWithId(commontopupbillsR.id.btn_copy_promo)
             )
         )
         Thread.sleep(2000)
@@ -153,19 +155,19 @@ class EmoneyPdpActivityNonLoginTest {
     private fun clickOnFavNumberOnInputView() {
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(createOrderNumberTypeManual())
-        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
+        Espresso.onView(withId(unifycomponentsR.id.text_field_input)).perform(click())
         Thread.sleep(2000)
 
-        Espresso.onView(withId(R.id.emoneyHeaderViewCardNumber)).check(matches(withText("8768567891012345")))
-        Espresso.onView(AllOf.allOf(withText("8768 5678 9101 2344"), withId(com.tokopedia.unifycomponents.R.id.text_field_input))).check(matches(isDisplayed()))
-        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_2)).check(matches(isDisplayed()))
-        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.text_field_icon_2)).perform(click())
+        Espresso.onView(withId(R.id.emoneyHeaderViewCardNumber)).check(matches(withText("8768 5678 9101 2345")))
+        Espresso.onView(AllOf.allOf(withText("8768 5678 9101 2344"), withId(unifycomponentsR.id.text_field_input))).check(matches(isDisplayed()))
+        Espresso.onView(withId(unifycomponentsR.id.text_field_icon_2)).check(matches(isDisplayed()))
+        Espresso.onView(withId(unifycomponentsR.id.text_field_icon_2)).perform(click())
         Thread.sleep(1000)
 
         Espresso.onView(withId(R.id.emoneyPdpPromoListWidget)).check(matches(isDisplayed()))
         Thread.sleep(1000)
 
-        Espresso.onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
+        Espresso.onView(withId(unifycomponentsR.id.text_field_input)).perform(click())
         Thread.sleep(1000)
     }
 

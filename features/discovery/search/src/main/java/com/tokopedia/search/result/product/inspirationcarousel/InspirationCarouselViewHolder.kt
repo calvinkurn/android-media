@@ -14,7 +14,7 @@ import com.tokopedia.carouselproductcard.reimagine.CarouselProductCardModel
 import com.tokopedia.carouselproductcard.reimagine.grid.CarouselProductCardGridModel
 import com.tokopedia.carouselproductcard.reimagine.viewallcard.CarouselProductCardViewAllCardModel
 import com.tokopedia.discovery.common.reimagine.Search2Component
-import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
+import com.tokopedia.home_component_header.view.HomeComponentHeaderListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -148,7 +148,7 @@ class InspirationCarouselViewHolder(
         val option = element.options.getOrNull(0) ?: return
         headerView.bind(
             channelHeader = element.convertToChannelHeader(),
-            listener = object : HomeChannelHeaderListener {
+            listener = object : HomeComponentHeaderListener {
                 override fun onSeeAllClick(link: String) {
                     inspirationCarouselListener.onInspirationCarouselSeeAllClicked(option)
                 }

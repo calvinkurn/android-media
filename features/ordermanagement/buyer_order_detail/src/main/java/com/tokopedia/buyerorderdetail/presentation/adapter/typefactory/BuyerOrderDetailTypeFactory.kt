@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.CourierButtonListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.AddonsViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.AwbInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CopyableKeyValueViewHolder
@@ -14,17 +15,19 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInf
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DriverTippingInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.EpharmacyInfoViewHolder
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderInsuranceViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderResolutionViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderStatusHeaderViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderStatusInfoViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PartialProductItemViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PaymentGrandTotalViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PaymentInfoItemViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PlainHeaderViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PlatformFeeInfoViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofHeaderLabelViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofRefundInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductListHeaderViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductListToggleViewHolder
@@ -39,14 +42,11 @@ import com.tokopedia.buyerorderdetail.presentation.model.EpharmacyInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OwocBomDetailSectionUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlatformFeeInfoUiModel
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofHeaderLabelViewHolder
-import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PofRefundInfoViewHolder
-import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.viewholder.ScpRewardsMedalTouchPointWidgetViewHolder
-import com.tokopedia.buyerorderdetail.presentation.model.OwocBomDetailSectionUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PofRefundInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
@@ -61,6 +61,7 @@ import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSec
 import com.tokopedia.order_management_common.presentation.viewholder.BmgmSectionViewHolder
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.typefactory.ScpRewardsMedalTouchPointWidgetTypeFactory
 import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.uimodel.ScpRewardsMedalTouchPointWidgetUiModel
+import com.tokopedia.scp_rewards_touchpoints.touchpoints.adapter.viewholder.ScpRewardsMedalTouchPointWidgetViewHolder
 
 @Suppress("UNUSED_PARAMETER")
 open class BuyerOrderDetailTypeFactory(
@@ -79,16 +80,21 @@ open class BuyerOrderDetailTypeFactory(
     protected val navigator: BuyerOrderDetailNavigator,
     protected val buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
     protected val orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener,
-    private val recyclerViewSharedPool: RecyclerView.RecycledViewPool
+    private val recyclerViewSharedPool: RecyclerView.RecycledViewPool,
+    protected val courierButtonListener: CourierButtonListener
 ) : BaseAdapterTypeFactory(),
-    ScpRewardsMedalTouchPointWidgetTypeFactory, BuyMoreGetMoreTypeFactory
-{
+    ScpRewardsMedalTouchPointWidgetTypeFactory,
+    BuyMoreGetMoreTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             AwbInfoViewHolder.LAYOUT -> AwbInfoViewHolder(parent)
             CopyableKeyValueViewHolder.LAYOUT -> CopyableKeyValueViewHolder(parent)
-            CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolder(parent, navigator)
+            CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolder(
+                parent,
+                navigator,
+                courierButtonListener
+            )
             CourierInfoViewHolder.LAYOUT -> CourierInfoViewHolder(
                 parent,
                 courierInfoViewHolderListener,

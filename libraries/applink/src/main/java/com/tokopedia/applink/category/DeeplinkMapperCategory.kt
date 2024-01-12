@@ -5,6 +5,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 
 object DeeplinkMapperCategory {
     fun getRegisteredCategoryNavigation(uri: Uri): String {
@@ -20,7 +23,16 @@ object DeeplinkMapperCategory {
         }
 
         return UriUtil.buildUri(ApplinkConstInternalCategory.INTERNAL_CATEGORY_DETAIL, identifier)
+    }
 
+    fun getNewExploreCategoryNavigation(deeplink: String): String {
+        val abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
+        val isNewExploreCategory = abTestPlatform.getString(RollenceKey.JELAJAH_REVAMP, RollenceKey.EXPLORE_CATEGORY_DEFAULT) == RollenceKey.EXPLORE_CATEGORY_EXP
+        return if (isNewExploreCategory) {
+            ApplinkConstInternalDiscovery.INTERNAL_HOME_EXPLORE_CATEGORY
+        } else {
+            deeplink.replace(ApplinkConst.Digital.DIGITAL_BROWSE, ApplinkConstInternalCategory.INTERNAL_EXPLORE_CATEGORY)
+        }
     }
 
     fun getRegisteredNavigationExploreCategory(deeplink: String): String {
@@ -29,7 +41,7 @@ object DeeplinkMapperCategory {
         val uri = Uri.parse(deeplink)
         return when (uri.getQueryParameter("type")?.toInt()) {
             TYPE_LAYANAN -> {
-                deeplink.replace(ApplinkConst.Digital.DIGITAL_BROWSE, ApplinkConstInternalCategory.INTERNAL_EXPLORE_CATEGORY)
+                getNewExploreCategoryNavigation(deeplink)
             }
             TYPE_BELANJA -> {
                 deeplink.replace(ApplinkConst.Digital.DIGITAL_BROWSE, ApplinkConstInternalCategory.INTERNAL_BELANJA_CATEGORY)
@@ -41,6 +53,10 @@ object DeeplinkMapperCategory {
     }
 
     fun getRegisteredNavigationCatalog(deeplink: String): String {
+        return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
+    }
+
+    fun getRegisteredNavigationCatalogProductList(deeplink: String): String {
         return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
     }
 
@@ -58,5 +74,4 @@ object DeeplinkMapperCategory {
     fun getRegisteredTradeinNavigation(deeplink: String): String {
         return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
     }
-
 }

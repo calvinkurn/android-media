@@ -1,5 +1,6 @@
 package com.tokopedia.saldodetails.commom.analytics
 
+import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants.TRACKER_ID
 import com.tokopedia.saldodetails.commom.di.scope.SaldoDetailsScope
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -26,7 +27,7 @@ class SaldoDetailsAnalytics @Inject constructor(
         sendGeneralEvent(map)
     }
 
-    fun sendClickPaymentEvents(action: String, label: String = "") {
+    fun sendClickPaymentEvents(action: String, label: String = "", trackerId: String = "") {
         if (action.isEmpty()) return
         val map = TrackAppUtils.gtmData(
             SaldoDetailsConstants.Event.EVENT_CLICK_PAYMENT,
@@ -34,6 +35,9 @@ class SaldoDetailsAnalytics @Inject constructor(
             action,
             label
         )
+        if (trackerId.isNotEmpty()) {
+            map[TRACKER_ID] = trackerId
+        }
         sendGeneralEvent(map)
     }
 

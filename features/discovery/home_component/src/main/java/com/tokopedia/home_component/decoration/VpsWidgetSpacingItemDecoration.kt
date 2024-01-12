@@ -22,11 +22,14 @@ class VpsWidgetSpacingItemDecoration : RecyclerView.ItemDecoration() {
         val position = parent.getChildAdapterPosition(view)
         val spanCount = VpsWidgetTabletConfiguration.getSpanCount(context)
 
-        outRect.top = SPACING_VERTICAL/2
         outRect.left = SPACING_HORIZONTAL/2
         outRect.right = SPACING_HORIZONTAL/2
         if(!DeviceScreenInfo.isTablet(context) && position < spanCount){
+            outRect.top = 0
             outRect.bottom = SPACING_VERTICAL/2
+        } else {
+            outRect.top = SPACING_VERTICAL/2
+            outRect.bottom = 0
         }
     }
 }

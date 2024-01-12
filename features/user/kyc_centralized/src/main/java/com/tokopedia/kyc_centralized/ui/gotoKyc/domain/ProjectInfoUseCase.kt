@@ -100,7 +100,7 @@ class ProjectInfoUseCase @Inject constructor(
         private const val PROJECT_ID = "projectID"
         private val LIST_COMMON_ERROR_CODE = listOf("30004", "30009", "1539", "30003", "900", "1546")
         private val LIST_REASON_BLOCK_MULTIPLE_ACCOUNT =
-            listOf("ALREADY_REGISTERED_OTHER_PROFILE", "NOT_ELIGIBLE_ACC_LINK")
+            listOf("ALREADY_REGISTERED_OTHER_PROFILE", "NOT_ELIGIBLE_ACC_LINK", "APPROVED_OR_PENDING_ONE_KYC")
     }
 }
 

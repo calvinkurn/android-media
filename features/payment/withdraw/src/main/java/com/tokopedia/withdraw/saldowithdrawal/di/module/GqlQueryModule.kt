@@ -10,6 +10,7 @@ import com.tokopedia.withdraw.saldowithdrawal.domain.helper.WithdrawalDomainCons
 import com.tokopedia.withdraw.saldowithdrawal.domain.helper.WithdrawalDomainConstant.GQL_QUERY_SUBMIT_WITHDRAWAL
 import com.tokopedia.withdraw.saldowithdrawal.domain.helper.WithdrawalDomainConstant.GQL_QUERY_VALIDATE_POP_UP_WITHDRAWAL
 import com.tokopedia.withdraw.saldowithdrawal.domain.helper.WithdrawalDomainConstant.GQL_QUERY_WITHDRAWAL_BANNER
+import com.tokopedia.withdraw.saldowithdrawal.domain.helper.WithdrawalDomainConstant.GQL_TOPADS_AUTO_TOPUP_WITHDRAW_RECOM
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -46,7 +47,6 @@ class GqlQueryModule {
     @Named(GQL_JOIN_REKE_PREM_TNC_QUERY)
     fun provideJoinRekeingPremiumTncQuery(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.swd_query_join_reke_prem_tnc)
-
 
 }
 

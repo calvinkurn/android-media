@@ -12,6 +12,7 @@ import com.tokopedia.createpost.common.di.ActivityContext
 import com.tokopedia.createpost.view.activity.CreatePostActivityNew
 import com.tokopedia.createpost.view.activity.ProductTagActivity
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
+import com.tokopedia.creation.common.upload.di.uploader.CreationUploaderComponent
 import dagger.BindsInstance
 import dagger.Component
 
@@ -27,7 +28,10 @@ import dagger.Component
         ContentCreationProductTagModule::class,
         ContentFragmentFactoryModule::class,
     ],
-    dependencies = [BaseAppComponent::class]
+    dependencies = [
+        BaseAppComponent::class,
+        CreationUploaderComponent::class,
+    ]
 )
 interface CreatePostComponent {
 
@@ -43,6 +47,7 @@ interface CreatePostComponent {
     interface Factory {
         fun create(
             baseAppComponent: BaseAppComponent,
+            creationUploaderComponent: CreationUploaderComponent,
             @BindsInstance @ActivityContext context: Context
         ): CreatePostComponent
     }

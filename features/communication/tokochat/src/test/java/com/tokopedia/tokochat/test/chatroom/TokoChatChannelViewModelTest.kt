@@ -1,86 +1,115 @@
 package com.tokopedia.tokochat.test.chatroom
 
 import androidx.lifecycle.MutableLiveData
+import app.cash.turbine.test
+import com.gojek.conversations.babble.network.data.OrderChatType
 import com.gojek.conversations.channel.ConversationsChannel
-import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.gojek.conversations.network.ConversationsNetworkError
 import com.tokopedia.tokochat.base.TokoChatViewModelTestFixture
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.SOURCE_TOKOFOOD
+import com.tokopedia.tokochat.config.util.TokoChatResult
 import com.tokopedia.tokochat.utils.observeAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
-import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.invoke
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
+import io.mockk.verify
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class TokoChatChannelViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
-    fun `when initialization group booking should be called exactly once`() {
-        runBlocking {
+    fun `initGroupBooking, get channel id`() {
+        runTest {
             // Given
-            val dummyListener = object : ConversationsGroupBookingListener {
-                override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {}
-                override fun onGroupBookingChannelCreationStarted() {}
-                override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {}
+            every {
+                tokoChatGroupBookingUseCase.initGroupBookingChat(any(), any(), any())
+            } returns flow {
+                emit(TokoChatResult.Loading)
+                emit(TokoChatResult.Success(CHANNEL_ID_DUMMY))
             }
 
-            coEvery {
-                getChannelUseCase.initGroupBookingChat(any(), any(), any(), any())
-            } returns Unit
+            viewModel.groupBookingUiState.test {
+                // When
+                viewModel.initGroupBooking()
 
-            // When
-            viewModel.initGroupBooking(
-                orderId = GOJEK_ORDER_ID_DUMMY,
-                groupBookingListener = dummyListener
-            )
+                // Then
+                val updatedValue = awaitItem()
+                assertEquals(CHANNEL_ID_DUMMY, updatedValue.channelUrl)
+                assertEquals(null, updatedValue.error)
 
-            // Then
-            coVerify(exactly = 1) {
-                getChannelUseCase.initGroupBookingChat(GOJEK_ORDER_ID_DUMMY, any(), dummyListener, any())
+                cancelAndConsumeRemainingEvents()
             }
         }
     }
 
     @Test
-    fun `when failed to initialization group booking should give throwable in error livedata`() {
-        runBlocking {
+    fun `initGroupBooking, get error result`() {
+        runTest {
             // Given
-            val dummyListener = object : ConversationsGroupBookingListener {
-                override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {}
-                override fun onGroupBookingChannelCreationStarted() {}
-                override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {}
+            every {
+                tokoChatGroupBookingUseCase.initGroupBookingChat(any(), any(), any())
+            } returns flow {
+                emit(TokoChatResult.Loading)
+                emit(TokoChatResult.Error(throwableDummy))
             }
 
-            coEvery {
-                getChannelUseCase.initGroupBookingChat(any(), any(), any(), any())
+            viewModel.groupBookingUiState.test {
+                // When
+                viewModel.initGroupBooking()
+
+                // Then
+                val updatedValue = awaitItem()
+                assertEquals("", updatedValue.channelUrl)
+                assertEquals(throwableDummy, updatedValue.error)
+
+                cancelAndConsumeRemainingEvents()
+            }
+        }
+    }
+
+    @Test
+    fun `initGroupBooking, get error throwable`() {
+        runTest {
+            // Given
+            every {
+                tokoChatGroupBookingUseCase.initGroupBookingChat(any(), any(), any())
             } throws throwableDummy
 
-            // When
-            viewModel.initGroupBooking(
-                orderId = GOJEK_ORDER_ID_DUMMY,
-                groupBookingListener = dummyListener
-            )
+            viewModel.groupBookingUiState.test {
+                // When
+                viewModel.gojekOrderId = GOJEK_ORDER_ID_DUMMY
+                viewModel.source = SOURCE_TOKOFOOD
+                viewModel.initGroupBooking()
 
-            // Then
-            Assert.assertEquals(
-                throwableDummy,
-                viewModel.error.observeAwaitValue()?.first
-            )
+                // Then
+                verify(exactly = 1) {
+                    tokoChatGroupBookingUseCase.initGroupBookingChat(
+                        GOJEK_ORDER_ID_DUMMY,
+                        tokoChatGroupBookingUseCase.getServiceType(SOURCE_TOKOFOOD),
+                        OrderChatType.Driver
+                    )
+                }
+
+                cancelAndConsumeRemainingEvents()
+            }
         }
     }
 
     @Test
     fun `when successfully getGroupBookingChannel should give GroupBookingChannelDetails`() {
-        runBlocking {
+        runTest {
             // Given
             val channelDummy = mockk<GroupBookingChannelDetails>(relaxed = true)
             coEvery {
-                getChannelUseCase.getRemoteGroupBookingChannel(any(), captureLambda(), any())
+                tokoChatRoomUseCase.getRemoteGroupBookingChannel(any(), captureLambda(), any())
             } answers {
                 val onSuccess = lambda<(channel: GroupBookingChannelDetails) -> Unit>()
                 onSuccess.invoke(channelDummy)
@@ -97,11 +126,11 @@ class TokoChatChannelViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when error while getGroupBookingChannel should give throwable in channelDetail livedata`() {
-        runBlocking {
+        runTest {
             // Given
             val conversationsNetworkErrorDummy = mockk<ConversationsNetworkError>(relaxed = true)
             coEvery {
-                getChannelUseCase.getRemoteGroupBookingChannel(any(), any(), captureLambda())
+                tokoChatRoomUseCase.getRemoteGroupBookingChannel(any(), any(), captureLambda())
             } answers {
                 val onError = lambda<(error: ConversationsNetworkError) -> Unit>()
                 onError.invoke(conversationsNetworkErrorDummy)
@@ -120,11 +149,11 @@ class TokoChatChannelViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when failed to getGroupBookingChannel should give throwable in error livedata`() {
-        runBlocking {
+        runTest {
             val channelDummy = mockk<GroupBookingChannelDetails>(relaxed = true)
             // Given
             coEvery {
-                getChannelUseCase.getRemoteGroupBookingChannel(any(), captureLambda(), any())
+                tokoChatRoomUseCase.getRemoteGroupBookingChannel(any(), captureLambda(), any())
             } throws throwableDummy
 
             // When
@@ -140,11 +169,11 @@ class TokoChatChannelViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when getLiveChannel should give ConversationsChannel`() {
-        runBlocking {
+        runTest {
             // Given
             val conversationChannelDummy = mockk<ConversationsChannel>(relaxed = true)
             coEvery {
-                getChannelUseCase.getLiveChannel(any())
+                tokoChatRoomUseCase.getLiveChannel(any())
             } returns MutableLiveData(conversationChannelDummy)
 
             // When
@@ -157,10 +186,10 @@ class TokoChatChannelViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when failed to getLiveChannel should give throwable on error livedata`() {
-        runBlocking {
+        runTest {
             // Given
             coEvery {
-                getChannelUseCase.getLiveChannel(any())
+                tokoChatRoomUseCase.getLiveChannel(any())
             } throws throwableDummy
 
             // When

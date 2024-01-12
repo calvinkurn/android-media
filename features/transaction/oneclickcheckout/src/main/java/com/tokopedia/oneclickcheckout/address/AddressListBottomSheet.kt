@@ -19,19 +19,20 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
-import com.tokopedia.logisticCommon.domain.mapper.TargetedTickerMapper.convertTargetedTickerToUiModel
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
-import com.tokopedia.logisticCommon.domain.model.TickerModel
-import com.tokopedia.logisticCommon.domain.param.GetTargetedTickerParam
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.logisticCommon.domain.usecase.GetTargetedTickerUseCase
-import com.tokopedia.logisticCommon.util.TargetedTickerHelper.renderTargetedTickerView
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.databinding.BottomSheetAddressListBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
+import com.tokopedia.targetedticker.domain.GetTargetedTickerUseCase
+import com.tokopedia.targetedticker.domain.TargetedTickerHelper.renderTargetedTickerView
+import com.tokopedia.targetedticker.domain.TargetedTickerMapper.convertTargetedTickerToUiModel
+import com.tokopedia.targetedticker.domain.TargetedTickerPage
+import com.tokopedia.targetedticker.domain.TargetedTickerParamModel
+import com.tokopedia.targetedticker.domain.TickerModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,6 +46,7 @@ import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import kotlin.coroutines.CoroutineContext
+import com.tokopedia.purchase_platform.common.R as purchase_platformcommonR
 
 class AddressListBottomSheet(
     private val useCase: GetAddressCornerUseCase,
@@ -142,7 +144,7 @@ class AddressListBottomSheet(
     private fun initAddressTicker(context: Context) {
         launch {
             try {
-                val response = getTargetedTickerUseCase(GetTargetedTickerParam.ADDRESS_LIST_OCC)
+                val response = getTargetedTickerUseCase(TargetedTickerParamModel(page = TargetedTickerPage.ADDRESS_LIST_OCC))
                 val model = convertTargetedTickerToUiModel(
                     targetedTickerData = response.getTargetedTickerData
                 )
@@ -193,7 +195,7 @@ class AddressListBottomSheet(
                 searchAddress("")
             }
             searchInputView.searchBarPlaceholder =
-                context.getString(com.tokopedia.purchase_platform.common.R.string.label_hint_search_address)
+                context.getString(purchase_platformcommonR.string.label_hint_search_address)
         }
 
         searchAddress("")

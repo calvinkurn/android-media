@@ -25,8 +25,8 @@
         android:id="@+id/container_mix_left_padding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:translationY="-5dp"
-        android:paddingBottom="5dp"
+        android:translationY="@dimen/home_component_card_compat_padding_translation_y"
+        android:paddingBottom="@dimen/home_component_padding_bottom_with_compat_padding_translated"
         app:layout_constraintTop_toBottomOf="@id/home_component_header_view">
 
         <androidx.recyclerview.widget.RecyclerView

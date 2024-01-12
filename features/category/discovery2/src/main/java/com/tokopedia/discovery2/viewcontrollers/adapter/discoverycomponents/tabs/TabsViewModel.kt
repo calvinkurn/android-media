@@ -41,7 +41,7 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
             it as ArrayList<ComponentsItem>
             if (components.name == ComponentNames.TabsIcon.componentName) {
                 setTabIcons.value = it
-            } else if (components.properties?.background == TAB_DEFAULT_BACKGROUND) {
+            } else if (isPlainTab()) {
                 setUnifyTabs.value = it
             } else {
                 setColorTabs.value = it
@@ -136,4 +136,6 @@ class TabsViewModel(val application: Application, val components: ComponentsItem
     fun isFromCategory(): Boolean {
         return components.isFromCategory
     }
+
+    fun isPlainTab() = components.properties?.background == TAB_DEFAULT_BACKGROUND
 }

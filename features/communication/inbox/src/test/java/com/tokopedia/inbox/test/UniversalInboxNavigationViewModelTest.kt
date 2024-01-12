@@ -4,6 +4,7 @@ import android.content.Intent
 import app.cash.turbine.test
 import com.tokopedia.inbox.base.UniversalInboxViewModelTestFixture
 import com.tokopedia.inbox.universalinbox.view.UniversalInboxAction
+import com.tokopedia.inbox.universalinbox.view.UniversalInboxRequestType
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -23,10 +24,19 @@ class UniversalInboxNavigationViewModelTest : UniversalInboxViewModelTestFixture
                 viewModel.setupViewModelObserver()
 
                 // When navigate with intent
-                viewModel.processAction(UniversalInboxAction.NavigateWithIntent(expectedIntent))
+                viewModel.processAction(
+                    UniversalInboxAction.NavigateWithIntent(
+                        expectedIntent,
+                        UniversalInboxRequestType.REQUEST_GENERAL
+                    )
+                )
                 // Then new state
-                Assert.assertEquals(expectedIntent, awaitItem().intent)
-
+                val updatedState = awaitItem()
+                Assert.assertEquals(expectedIntent, updatedState.intent)
+                Assert.assertEquals(
+                    UniversalInboxRequestType.REQUEST_GENERAL,
+                    updatedState.requestType
+                )
                 cancelAndConsumeRemainingEvents()
             }
         }
@@ -43,10 +53,19 @@ class UniversalInboxNavigationViewModelTest : UniversalInboxViewModelTestFixture
                 viewModel.setupViewModelObserver()
 
                 // When navigate with applink
-                viewModel.processAction(UniversalInboxAction.NavigateToPage(expectedApplink))
+                viewModel.processAction(
+                    UniversalInboxAction.NavigateToPage(
+                        expectedApplink,
+                        UniversalInboxRequestType.REQUEST_GENERAL
+                    )
+                )
                 // Then new state
-                Assert.assertEquals(expectedApplink, awaitItem().applink)
-
+                val updatedItem = awaitItem()
+                Assert.assertEquals(expectedApplink, updatedItem.applink)
+                Assert.assertEquals(
+                    UniversalInboxRequestType.REQUEST_GENERAL,
+                    updatedItem.requestType
+                )
                 cancelAndConsumeRemainingEvents()
             }
         }

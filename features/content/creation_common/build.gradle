@@ -1,0 +1,129 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+android {
+    namespace 'com.tokopedia.creation.common'
+    testNamespace 'com.tokopedia.creation.common.test'
+
+    defaultConfig {
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        consumerProguardFiles 'proguard-rules.pro'
+    }
+
+    buildTypes {
+        debug {
+            ext.enableHansel = project.hasProperty('hanselEnableDebug')
+            testCoverageEnabled (project.hasProperty('coverage'))
+        }
+        release {
+            ext.enableHansel = !project.hasProperty('hanselDisableRelease')
+            minifyEnabled false
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+    }
+
+    buildFeatures {
+        viewBinding true
+        buildConfig true
+        compose true
+    }
+
+    testOptions {
+        animationsDisabled = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
+    }
+}
+
+dependencies {
+    implementation projectOrAar(rootProject.ext.features.mediauploader)
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.features.playCommon)
+    implementation projectOrAar(rootProject.ext.features.createpostCommon)
+    implementation projectOrAar(rootProject.ext.features.contentAnalytic)
+
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
+    implementation projectOrAar(rootProject.ext.libraries.linker)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.imageuploader)
+    implementation projectOrAar(rootProject.ext.libraries.videoUploader)
+
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.nestPrinciples
+    implementation rootProject.ext.unifyDependencies.nestComponents
+    implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.dialog
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
+
+    implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+
+    implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.workManager
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.fragmentKtx
+
+    implementation rootProject.ext.composeDependencies.composeConstraint
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+
+    api rootProject.ext.dbDependencies.dbRoomRuntime
+    implementation rootProject.ext.dbDependencies.dbRoomKtx
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.assertJCore
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junitJupiterApi
+    testImplementation rootProject.ext.testDependencies.junitPlatformRunner
+    testImplementation projectOrAar(rootProject.ext.features.contentTest)
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    testRuntimeOnly rootProject.ext.testDependencies.junitJupiterEngine
+}
+
+project.ext {
+    artifactId = 'creation_common'
+    groupId = 'com.tokopedia.content'
+    versionName = "0.0.1"
+    artifactName ="creation_common-release"
+}
+
+apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

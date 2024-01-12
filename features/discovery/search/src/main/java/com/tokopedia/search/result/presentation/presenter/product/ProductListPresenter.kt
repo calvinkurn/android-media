@@ -50,6 +50,7 @@ import com.tokopedia.search.result.product.broadmatch.RelatedDataView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
+import com.tokopedia.search.result.product.deduplication.Deduplication
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
@@ -77,10 +78,10 @@ import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGe
 import com.tokopedia.search.result.product.responsecode.ResponseCodeImpl
 import com.tokopedia.search.result.product.responsecode.ResponseCodeProvider
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
+import com.tokopedia.search.result.product.safesearch.SafeSearchPresenterDelegate
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordPresenter
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlesskeywordoptions.InspirationKeywordPresenterDelegate
-import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductItemDataView
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductPresenter
 import com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct.InspirationProductPresenterDelegate
 import com.tokopedia.search.result.product.similarsearch.SimilarSearchOnBoardingPresenterDelegate
@@ -150,7 +151,7 @@ class ProductListPresenter @Inject constructor(
     private val broadMatchDelegate: BroadMatchPresenterDelegate,
     private val suggestionPresenter: SuggestionPresenter,
     private val tickerPresenter: TickerPresenter,
-    private val safeSearchPresenter: SafeSearchPresenter,
+    private val safeSearchPresenter: SafeSearchPresenterDelegate,
     wishlistPresenterDelegate: WishlistPresenterDelegate,
     dynamicFilterModelProvider: DynamicFilterModelProvider,
     bottomSheetFilterPresenter: BottomSheetFilterPresenter,
@@ -166,6 +167,7 @@ class ProductListPresenter @Inject constructor(
     private val inspirationProductItemPresenter: InspirationProductPresenterDelegate,
     private val reimagineRollence: ReimagineRollence,
     private val lastClickProductIdProvider: LastClickedProductIdProviderImpl,
+    private val deduplication: Deduplication,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -373,6 +375,8 @@ class ProductListPresenter @Inject constructor(
     private fun createProductDataView(
         searchProductModel: SearchProductModel,
     ): ProductDataView {
+        deduplication.appendProductId(searchProductModel)
+
         val lastProductItemPosition = view.lastProductItemPositionFromCache
         val keyword = view.queryKey
 
@@ -386,6 +390,7 @@ class ProductListPresenter @Inject constructor(
             isShowLocalSearchRecommendation(),
             externalReference,
             newCardType,
+            safeSearchPresenter.isShowAdultEnableAndProfileVerify()
         )
 
         saveLastProductItemPositionToCache(lastProductItemPosition, productDataView.productList)
@@ -433,6 +438,7 @@ class ProductListPresenter @Inject constructor(
                     externalReference,
                     constructGlobalSearchApplink(),
                     loadMoreProductList,
+                    view.queryKey,
                 )
             )
 
@@ -500,6 +506,7 @@ class ProductListPresenter @Inject constructor(
         dimension90 = Dimension90Utils.getDimension90(searchParameter)
         additionalParams = ""
         lastClickProductIdProvider.lastClickedProductId = ""
+        deduplication.clear()
 
         val requestParams = requestParamsGenerator.createInitializeSearchParam(
             searchParameter,
@@ -587,6 +594,7 @@ class ProductListPresenter @Inject constructor(
     ) {
         if (isViewNotAttached) return
 
+        safeSearchPresenter.setUserProfileDob(searchProductModel.userDOB)
         val productDataView = createFirstProductDataView(searchProductModel)
 
         if (isSearchRedirected(productDataView))
@@ -897,6 +905,7 @@ class ProductListPresenter @Inject constructor(
                 searchProductModel,
                 externalReference,
                 constructGlobalSearchApplink(),
+                view.queryKey,
             )
         )
 

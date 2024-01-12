@@ -179,6 +179,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         priceFmt
                         slashPriceFmt
                         discPercentage
+                        isPriceMasked
                       }
                       campaign {
                         campaignID
@@ -349,6 +350,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         priceFmt
                         slashPriceFmt
                         discPercentage
+                        isPriceMasked
                         sku
                         optionID
                         optionName
@@ -679,7 +681,10 @@ open class GetPdpLayoutUseCase @Inject constructor(
         cacheState: CacheState,
         isCampaign: Boolean
     ): ProductDetailDataModel {
-        val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(components)
+        val getDynamicProductInfoP1 = DynamicProductDetailMapper
+            .mapToDynamicProductDetailP1(this)
+            .copy(cacheState = cacheState, isCampaign = isCampaign)
+        val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(components, getDynamicProductInfoP1)
             .filterNot {
                 if (cacheState.isFromCache) {
                     getIgnoreComponentTypeInCache().contains(it.type())
@@ -687,9 +692,6 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     false
                 }
             }.toMutableList()
-        val getDynamicProductInfoP1 = DynamicProductDetailMapper
-            .mapToDynamicProductDetailP1(this)
-            .copy(cacheState = cacheState, isCampaign = isCampaign)
         val p1VariantData = DynamicProductDetailMapper
             .mapVariantIntoOldDataClass(this)
         return ProductDetailDataModel(

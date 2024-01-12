@@ -1,22 +1,27 @@
 package com.tokopedia.tokochat.test.chatroom
 
 import com.tokopedia.tokochat.base.TokoChatViewModelTestFixture
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.SOURCE_TOKOFOOD
 import com.tokopedia.tokochat.domain.response.ticker.TokochatRoomTickerResponse
 import com.tokopedia.tokochat.utils.observeAwaitValue
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 
 class TokoChatTickerViewModelTest : TokoChatViewModelTestFixture() {
 
+    override fun setup() {
+        super.setup()
+        viewModel.source = SOURCE_TOKOFOOD
+    }
+
     @Test
     fun `when loadChatRoomTicker, this method should return livedata success`() {
-        runBlocking {
+        runTest {
             val expectedTicker = TokochatRoomTickerResponse(
                 tokochatRoomTicker = TokochatRoomTickerResponse.TokochatRoomTicker(
                     enable = true,
@@ -27,7 +32,7 @@ class TokoChatTickerViewModelTest : TokoChatViewModelTestFixture() {
 
             // given
             coEvery {
-                getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
+                getTokoChatRoomTickerUseCase(SOURCE_TOKOFOOD)
             } returns expectedTicker
 
             // when
@@ -35,7 +40,7 @@ class TokoChatTickerViewModelTest : TokoChatViewModelTestFixture() {
 
             // then
             coVerify {
-                getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
+                getTokoChatRoomTickerUseCase(SOURCE_TOKOFOOD)
             }
 
             val actualResult = (viewModel.chatRoomTicker.observeAwaitValue() as Success).data
@@ -46,12 +51,12 @@ class TokoChatTickerViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when loadChatRoomTicker, this method should return livedata fail`() {
-        runBlocking {
+        runTest {
             val errorException = Throwable()
 
             // given
             coEvery {
-                getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
+                getTokoChatRoomTickerUseCase(SOURCE_TOKOFOOD)
             } throws errorException
 
             // when
@@ -59,7 +64,7 @@ class TokoChatTickerViewModelTest : TokoChatViewModelTestFixture() {
 
             // then
             coVerify {
-                getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
+                getTokoChatRoomTickerUseCase(SOURCE_TOKOFOOD)
             }
 
             val actualResult = (viewModel.chatRoomTicker.observeAwaitValue() as Fail).throwable::class.java

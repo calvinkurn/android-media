@@ -8,7 +8,8 @@ import com.tokopedia.content.common.producttag.util.preference.ProductTagPrefere
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
-import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
 import com.tokopedia.content.product.picker.seller.view.viewmodel.ContentProductPickerSellerViewModel
 import com.tokopedia.content.product.picker.seller.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -24,6 +25,7 @@ fun productSetupViewModel(
     handle: SavedStateHandle = SavedStateHandle(),
     isEligibleForPin: Boolean = false,
     repo: ContentProductPickerSellerRepository = mockk(relaxed = true),
+    commonRepo: ProductPickerSellerCommonRepository = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     dispatchers: CoroutineDispatchers = CoroutineDispatchersProvider,
     isNumerationShown: Boolean = true,
@@ -36,6 +38,7 @@ fun productSetupViewModel(
         savedStateHandle = handle,
         isEligibleForPin = isEligibleForPin,
         repo = repo,
+        commonRepo = commonRepo,
         userSession = userSession,
         dispatchers = dispatchers,
         isNumerationShown = isNumerationShown,

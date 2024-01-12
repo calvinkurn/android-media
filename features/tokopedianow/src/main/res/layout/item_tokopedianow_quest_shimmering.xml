@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_quest_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_background"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_corner_radius="16dp"
+        app:loader_type="rect" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/shapeable_image_view"
+        android:layout_width="0dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="41dp"
+        app:layout_constraintBottom_toBottomOf="@+id/shapeable_image_view2"
+        app:layout_constraintEnd_toStartOf="@+id/shapeable_image_view2"
+        app:layout_constraintStart_toStartOf="@+id/loader_background"
+        app:layout_constraintTop_toTopOf="@+id/shapeable_image_view2"
+        app:shapeAppearanceOverlay="@style/roundedImage"
+        app:srcCompat="@color/Unify_NN0" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/shapeable_image_view2"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/circleImageDisplay"
+        app:srcCompat="@color/Unify_NN0" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/shapeable_image_view3"
+        android:layout_width="0dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/loader_background"
+        app:layout_constraintTop_toBottomOf="@+id/shapeable_image_view"
+        app:shapeAppearanceOverlay="@style/roundedImage"
+        app:srcCompat="@color/Unify_NN0" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/shapeable_image_view4"
+        android:layout_width="0dp"
+        android:layout_height="68dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/loader_background"
+        app:layout_constraintTop_toBottomOf="@+id/shapeable_image_view3"
+        app:shapeAppearanceOverlay="@style/roundedImage"
+        app:srcCompat="@color/Unify_NN0" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="wrap_content"
+        android:layout_height="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shapeable_image_view4" />
+</androidx.constraintlayout.widget.ConstraintLayout>

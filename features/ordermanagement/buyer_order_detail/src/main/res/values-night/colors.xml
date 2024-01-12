@@ -3,4 +3,7 @@
     <color name="buyer_order_detail_dms_thin_divider">#40454C</color>
     <color name="buyer_order_detail_dms_secondary_action_button_color_filter">#FFFFFF</color>
     <color name="buyer_order_detail_dms_secondary_action_button_stroke_color">#DBDEE2</color>
+
+    <color name="buyer_order_detail_dms_saving_widget_start">#121212</color>
+    <color name="buyer_order_detail_dms_saving_widget_end">#00756C</color>
 </resources>

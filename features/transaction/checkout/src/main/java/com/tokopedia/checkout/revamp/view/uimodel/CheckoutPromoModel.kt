@@ -8,6 +8,7 @@ data class CheckoutPromoModel(
     val promo: LastApplyUiModel,
     val entryPointInfo: PromoEntryPointInfo = PromoEntryPointInfo(),
 
+    val enableNewInterface: Boolean = false,
     val isPromoRevamp: Boolean = false,
     val isEnable: Boolean = true,
     val isLoading: Boolean = false,

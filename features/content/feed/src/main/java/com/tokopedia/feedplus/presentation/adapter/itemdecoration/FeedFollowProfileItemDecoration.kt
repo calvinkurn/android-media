@@ -17,6 +17,8 @@ class FeedFollowProfileItemDecoration(
     context: Context,
 ) : FocusedCarouselItemDecoration(context) {
 
+    override val horizontalOffset: Int = context.resources.getDimensionPixelOffset(contentcommonR.dimen.content_common_space_6)
+
     override val maxShrink: Float = 0.85f
 
     override val roundedOffset: Int = context.resources.getDimensionPixelOffset(contentcommonR.dimen.content_common_space_6)
@@ -36,8 +38,8 @@ class FeedFollowProfileItemDecoration(
             0 -> outRect.left = calculateFirstAndLastItemOffset(view)
             last - 1 -> outRect.right = calculateFirstAndLastItemOffset(view)
             else -> {
-                outRect.left = offset6
-                outRect.right = offset6
+                outRect.left = horizontalOffset
+                outRect.right = horizontalOffset
             }
         }
     }

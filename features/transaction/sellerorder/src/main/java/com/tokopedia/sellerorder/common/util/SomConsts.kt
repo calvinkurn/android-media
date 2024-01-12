@@ -68,6 +68,7 @@ object SomConsts {
     const val KEY_RESCHEDULE_PICKUP = "reschedule_pickup"
     const val KEY_RETURN_TO_SHIPPER = "confirm_return"
     const val KEY_SEARCH_NEW_DRIVER = "search_new_driver"
+    const val KEY_POF = "request_partial_order_fulfillment"
 
     const val KEY_BATALKAN_PESANAN = "reject_shipping"
     const val KEY_UBAH_NO_RESI = "change_awb"

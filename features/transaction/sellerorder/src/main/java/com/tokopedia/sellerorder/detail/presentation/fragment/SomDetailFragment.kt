@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -52,6 +51,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
 import com.tokopedia.order_management_common.presentation.uimodel.ProductBmgmSectionUiModel
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
@@ -69,6 +69,7 @@ import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToReschedulePic
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomConfirmShippingBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderEditAwbBottomSheet
 import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCancelBottomSheet
+import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasOnGoingPofDialog
 import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasRequestCancellationDialog
 import com.tokopedia.sellerorder.common.presenter.model.SomPendingAction
 import com.tokopedia.sellerorder.common.util.SomConnectionMonitor
@@ -82,6 +83,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING_AUTO
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING_DROP_OFF
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ORDER_EXTENSION_REQUEST
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_POF
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_PRINT_AWB
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
@@ -136,6 +138,8 @@ import com.tokopedia.sellerorder.detail.presentation.model.SomDetailIncomeUiMode
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
+import com.tokopedia.tokochat.common.view.chatroom.customview.bottomsheet.MaskingPhoneNumberBottomSheet
+import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofRequestInfoResponse.Data.InfoRequestPartialOrderFulfillment.Companion.STATUS_INITIAL
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
@@ -150,9 +154,9 @@ import com.tokopedia.webview.KEY_URL
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import com.tokopedia.sellerorder.R as sellerorderR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.sellerorder.R as sellerorderR
 
 /**x
  * Created by fwidjaja on 2019-09-30.
@@ -191,6 +195,7 @@ open class SomDetailFragment :
     private var pendingAction: SomPendingAction? = null
 
     private var somOrderHasCancellationRequestDialog: SomOrderHasRequestCancellationDialog? = null
+    private var somOrderHasOnGoingPofDialog: SomOrderHasOnGoingPofDialog? = null
     private val chatIcon: IconUnify by lazy {
         createChatIcon(requireContext())
     }
@@ -694,13 +699,13 @@ open class SomDetailFragment :
                                 setActionConfirmShipping(buttonResp.displayName)
                             }
 
-buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
+                            buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
                                 KEY_CONFIRM_SHIPPING_DROP_OFF,
                                 true
                             ) -> {
                                 binding?.btnPrimary?.isLoading = true
                                 setActionConfirmShippingAuto(buttonResp)
-                            }                            buttonResp.key.equals(
+                            } buttonResp.key.equals(
                                 KEY_VIEW_COMPLAINT_SELLER,
                                 true
                             ) -> setActionSeeComplaint(buttonResp.url)
@@ -796,10 +801,15 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
         orderId: String,
         skipOrderValidation: Boolean
     ) {
-        if (detailResponse?.flagOrderMeta?.flagFreeShipping == true) {
-            showFreeShippingAcceptOrderDialog(orderId)
+        val hasOngoingPof = detailResponse?.pofData?.pofStatus.orZero() != STATUS_INITIAL
+        if (hasOngoingPof) {
+            showOngoingPofDialog(actionName, orderId, skipOrderValidation)
         } else {
-            acceptOrder(actionName, orderId, skipOrderValidation)
+            if (detailResponse?.flagOrderMeta?.flagFreeShipping == true) {
+                showFreeShippingAcceptOrderDialog(orderId)
+            } else {
+                acceptOrder(actionName, orderId, skipOrderValidation)
+            }
         }
     }
 
@@ -821,7 +831,8 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
     }
 
     private fun skipOrderValidation(): Boolean {
-        return detailResponse?.buyerRequestCancel?.isRequestCancel == true && detailResponse?.buyerRequestCancel?.status == 0
+        val hasOngoingBuyerRequestCancel = detailResponse?.buyerRequestCancel?.isRequestCancel == true && detailResponse?.buyerRequestCancel?.status == 0
+        return !hasOngoingBuyerRequestCancel
     }
 
     private fun rejectCancelOrder() {
@@ -882,6 +893,28 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
                 setAcceptOrderFreeShippingDialogDismissListener()
             }
             dialogUnify.show()
+        }
+    }
+
+    private fun showOngoingPofDialog(
+        actionName: String,
+        orderId: String,
+        skipOrderValidation: Boolean
+    ) {
+        context?.let { context ->
+            val somOrderHasOnGoingPofDialog = somOrderHasOnGoingPofDialog ?: SomOrderHasOnGoingPofDialog(context)
+            this.somOrderHasOnGoingPofDialog = somOrderHasOnGoingPofDialog
+            somOrderHasOnGoingPofDialog.apply {
+                setupOnProceedAcceptOrder {
+                    if (detailResponse?.flagOrderMeta?.flagFreeShipping == true) {
+                        showFreeShippingAcceptOrderDialog(orderId)
+                    } else {
+                        acceptOrder(actionName, orderId, skipOrderValidation)
+                    }
+                }
+                setupOnCancelAcceptOrder { binding?.btnPrimary?.isLoading = false }
+                show()
+            }
         }
     }
 
@@ -984,6 +1017,11 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
                             this,
                             orderId,
                             detailResponse?.invoice
+                        )
+                        key.equals(KEY_POF, true) -> SomNavigator.goToPofPage(
+                            this,
+                            detailResponse?.orderId.toZeroStringIfNull(),
+                            detailResponse?.pofData?.pofStatus ?: STATUS_INITIAL
                         )
                     }
                 }
@@ -1215,10 +1253,9 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
 
     override fun onDialPhone(strPhoneNo: String) {
         try {
-            val intent = Intent(Intent.ACTION_DIAL)
-            val phone = "tel:$strPhoneNo"
-            intent.data = Uri.parse(phone)
-            startActivity(intent)
+            val bottomSheetMaskingPhoneNumber =
+                MaskingPhoneNumberBottomSheet.newInstance(strPhoneNo)
+            bottomSheetMaskingPhoneNumber.show(childFragmentManager)
         } catch (t: Throwable) {
             t.showErrorToaster()
         }
@@ -1258,6 +1295,8 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
             handleReturnToShipperResult(resultCode, data)
         } else if (requestCode == SomNavigator.REQUEST_FIND_NEW_DRIVER) {
             handleFindNewDriverResult(resultCode, data)
+        } else if (requestCode == SomNavigator.REQUEST_POF) {
+            handlePof(resultCode, data)
         }
     }
 
@@ -1453,6 +1492,13 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
     protected open fun handleFindNewDriverResult(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             loadDetail()
+        }
+    }
+
+    protected open fun handlePof(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            loadDetail()
+            showCommonToaster(getString(R.string.som_pof_toaster_success_send_pof))
         }
     }
 
@@ -1666,7 +1712,7 @@ buttonResp.key.equals(KEY_CONFIRM_SHIPPING_AUTO, true) || buttonResp.key.equals(
         return SomDetailAdapterFactoryImpl(this, recyclerViewSharedPool)
     }
 
-    inner class TransparencyFeeCoachMarkHandler: RecyclerView.OnScrollListener() {
+    inner class TransparencyFeeCoachMarkHandler : RecyclerView.OnScrollListener() {
 
         private val transparencyFeeEntryPointCoachMark by lazy(LazyThreadSafetyMode.NONE) {
             context?.let { CoachMark2(it) }

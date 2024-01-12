@@ -26,8 +26,8 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getBitmap
 import com.tokopedia.kotlin.extensions.view.toPx
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.CENSOR_TEXT
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil.MAX_PERCENTAGE
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.CENSOR_TEXT
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil.MAX_PERCENTAGE
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.toPx
 import kotlin.math.roundToInt

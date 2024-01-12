@@ -526,12 +526,12 @@ class CentralizedPromoComposeViewModelTest {
             promoPlayAuthorConfigUseCase.execute(any())
         }
 
-        //size 3
+        // size 3
         val secondFlow = testResults[1]
         assertEquals(secondFlow.promoCreationData is Loading, true)
         assertEquals(secondFlow.onGoingData !is Loading, true)
 
-        //after filter and get data success
+        // after filter and get data success
 
         val thirdFlow = testResults[2]
         val promoCreationData =
@@ -539,18 +539,17 @@ class CentralizedPromoComposeViewModelTest {
         assertEquals(secondFlow.onGoingData !is Loading, true)
         assertEquals(promoCreationData.filterItems.size, 2)
 
-        //must change to the new one
+        // must change to the new one
         assertEquals(promoCreationData.filterItems[1].name, "After Filter")
         assertEquals(promoCreationData.items.size, 2)
         assertEquals(promoCreationData.items.first().pageId, "After Filter")
 
         val onGoingData =
             ((thirdFlow.onGoingData as Success).data as OnGoingPromoListUiModel)
-        //ensure its not change
+        // ensure its not change
         assertTrue(onGoingData.title == "Track your promotion")
         assertTrue(onGoingData.items.size == 1)
         assertTrue(onGoingData.errorMessage == "")
-
 
         assertEquals(thirdFlow.selectedTabFilterData.first, "Harga Tertinggi")
         assertEquals(thirdFlow.selectedTabFilterData.second, "1")
@@ -598,12 +597,12 @@ class CentralizedPromoComposeViewModelTest {
             promoPlayAuthorConfigUseCase.execute(any())
         }
 
-        //size 3
+        // size 3
         val secondFlow = testResults[1]
         assertEquals(secondFlow.promoCreationData is Loading, true)
         assertEquals(secondFlow.onGoingData !is Loading, true)
 
-        //after filter and get data success
+        // after filter and get data success
 
         val thirdFlow = testResults[2]
         assertEquals(secondFlow.onGoingData !is Loading, true)
@@ -611,7 +610,7 @@ class CentralizedPromoComposeViewModelTest {
 
         val onGoingData =
             ((thirdFlow.onGoingData as Success).data as OnGoingPromoListUiModel)
-        //ensure its not change
+        // ensure its not change
         assertTrue(onGoingData.title == "Track your promotion")
         assertTrue(onGoingData.items.size == 1)
         assertTrue(onGoingData.errorMessage == "")
@@ -646,13 +645,12 @@ class CentralizedPromoComposeViewModelTest {
         advanceUntilIdle()
 
         val lastData = testResults.last()
-        //ensure data only 3, so last call will not be called
+        // ensure data only 3, so last call will not be called
         assertEquals(testResults.size, 3)
         assertEquals(lastData.onGoingData is Success, true)
         assertEquals(lastData.promoCreationData is Success, true)
 
-
-        //ensure selected filter not change
+        // ensure selected filter not change
         assertEquals(lastData.selectedTabFilterData.first, "Harga Tertinggi")
         assertEquals(lastData.selectedTabFilterData.second, "1")
 
@@ -677,21 +675,21 @@ class CentralizedPromoComposeViewModelTest {
 
         viewModel.sendEvent(
             CentralizedPromoEvent.FilterUpdate(
-                "Harga Tertinggi last" to "4"
+                "Harga Tertinggi last" to "5"
             )
         )
 
         advanceUntilIdle()
 
         val lastData = testResults.last()
-        //ensure data is updating one more time
-        assertEquals(testResults.size, 4)
+        // ensure data is updating one more time
+        assertEquals(testResults.size, 5)
         assertEquals(lastData.onGoingData is Success, true)
         assertEquals(lastData.promoCreationData is Success, true)
 
-        //ensure selected filter change to the last one
+        // ensure selected filter change to the last one
         assertEquals(lastData.selectedTabFilterData.first, "Harga Tertinggi last")
-        assertEquals(lastData.selectedTabFilterData.second, "4")
+        assertEquals(lastData.selectedTabFilterData.second, "5")
 
         job.cancel()
     }
@@ -775,7 +773,7 @@ class CentralizedPromoComposeViewModelTest {
         job2.cancel()
     }
 
-    private fun `ensure toaster value emit`() = runTest{
+    private fun `ensure toaster value emit`() = runTest {
         var toasterInitialValue = false
 
         val job2 = launch(UnconfinedTestDispatcher()) {

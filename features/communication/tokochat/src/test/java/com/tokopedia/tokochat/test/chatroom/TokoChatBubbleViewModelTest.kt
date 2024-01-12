@@ -4,7 +4,7 @@ import com.tokopedia.tokochat.base.TokoChatViewModelTestFixture
 import com.tokopedia.tokochat.domain.cache.TokoChatBubblesCache
 import io.mockk.every
 import io.mockk.verify
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 
@@ -12,7 +12,7 @@ class TokoChatBubbleViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when cache result is null, should show bottom sheet bubble awareness`() {
-        runBlocking {
+        runTest {
             // given
             every {
                 cacheManager.loadCache(any(), TokoChatBubblesCache::class.java)
@@ -28,7 +28,7 @@ class TokoChatBubbleViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when cache result is not null, should show bottom sheet bubble awareness`() {
-        runBlocking {
+        runTest {
             // given
             every {
                 cacheManager.loadCache(any(), TokoChatBubblesCache::class.java)
@@ -44,7 +44,7 @@ class TokoChatBubbleViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when has shown ticker is false, should show ticker bubble awareness`() {
-        runBlocking {
+        runTest {
             // given
             viewModel.channelId = CHANNEL_ID_DUMMY
             val expectedResult = TokoChatBubblesCache(
@@ -66,7 +66,7 @@ class TokoChatBubbleViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when has shown ticker is true, should not show ticker bubble awareness`() {
-        runBlocking {
+        runTest {
             // given
             viewModel.channelId = CHANNEL_ID_DUMMY
             val expectedResult = TokoChatBubblesCache(
@@ -88,7 +88,7 @@ class TokoChatBubbleViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when has shown ticker is false and channel id is not same, should not show ticker bubble awareness`() {
-        runBlocking {
+        runTest {
             // given
             viewModel.channelId = CHANNEL_ID_DUMMY
             val expectedResult = TokoChatBubblesCache(
@@ -110,7 +110,7 @@ class TokoChatBubbleViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when has shown ticker is true and channel id is not same, should not show ticker bubble awareness`() {
-        runBlocking {
+        runTest {
             // given
             viewModel.channelId = CHANNEL_ID_DUMMY
             val expectedResult = TokoChatBubblesCache(
@@ -132,7 +132,7 @@ class TokoChatBubbleViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when cache is null, should not show ticker bubble awareness`() {
-        runBlocking {
+        runTest {
             // given
             viewModel.channelId = CHANNEL_ID_DUMMY
 
@@ -150,7 +150,7 @@ class TokoChatBubbleViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when user save cache, should call cacheManager saveCache`() {
-        runBlocking {
+        runTest {
             // given
             every {
                 cacheManager.saveCache(any(), any())
@@ -168,7 +168,7 @@ class TokoChatBubbleViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `should give correct value from isFromBubble`() {
-        runBlocking {
+        runTest {
             // when
             viewModel.isFromBubble = true
 

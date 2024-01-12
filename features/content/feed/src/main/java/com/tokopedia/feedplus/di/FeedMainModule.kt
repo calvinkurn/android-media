@@ -40,4 +40,5 @@ class FeedMainModule {
     @Provides
     fun provideTrackingQueue(@ApplicationContext context: Context) =
         TrackingQueue(context)
+
 }

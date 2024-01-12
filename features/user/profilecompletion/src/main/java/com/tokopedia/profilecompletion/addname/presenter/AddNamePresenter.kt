@@ -16,10 +16,11 @@ import javax.inject.Inject
 class AddNamePresenter @Inject constructor(val registerUseCase: RegisterUseCase) :
     BaseDaggerPresenter<AddNameListener.View>(), AddNameListener.Presenter {
 
-    override fun registerPhoneNumberAndName(name: String, phoneNumber: String) {
+    override fun registerPhoneNumberAndName(name: String, phoneNumber: String, token: String, isScpToken: Boolean) {
         view.showLoading()
         registerUseCase.execute(
-            RegisterUseCase.generateParamRegisterPhone(name, phoneNumber), object :
+            RegisterUseCase.generateParamRegisterPhone(name, phoneNumber, token, isScpToken),
+            object :
                 Subscriber<GraphqlResponse>() {
                 override fun onNext(graphqlResponse: GraphqlResponse?) {
                     graphqlResponse?.run {
@@ -33,7 +34,6 @@ class AddNamePresenter @Inject constructor(val registerUseCase: RegisterUseCase)
                             view.onErrorRegister(MessageErrorException(registerInfo.errors[0].message))
                         }
                     }
-
                 }
 
                 override fun onCompleted() {
@@ -48,5 +48,4 @@ class AddNamePresenter @Inject constructor(val registerUseCase: RegisterUseCase)
 
         )
     }
-
 }

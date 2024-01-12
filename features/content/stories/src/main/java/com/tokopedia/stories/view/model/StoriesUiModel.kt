@@ -33,12 +33,13 @@ data class StoriesDetail(
     val detailItems: List<StoriesDetailItem> = emptyList()
 ) {
     companion object {
-        val EmptyDetail get() = StoriesDetail(
-            selectedGroupId = "",
-            selectedDetailPosition = 0,
-            selectedDetailPositionCached = 0,
-            detailItems = listOf(StoriesDetailItem.Empty)
-        )
+        val EmptyDetail
+            get() = StoriesDetail(
+                selectedGroupId = "",
+                selectedDetailPosition = 0,
+                selectedDetailPositionCached = 0,
+                detailItems = listOf(StoriesDetailItem.Empty)
+            )
     }
 }
 
@@ -51,12 +52,29 @@ data class StoriesDetailItem(
     val meta: Meta = Meta(),
     val productCount: String = "",
     val author: StoryAuthor = StoryAuthor.Unknown,
+    val category: StoryCategory = StoryCategory.ASGC,
+    val publishedAt: String = "",
     val menus: List<ContentMenuItem> = emptyList(),
     val share: Sharing = Sharing.Empty,
     val status: StoryStatus = StoryStatus.Unknown,
 ) {
+
+    val storyType: String
+        get() = when (this.category) {
+            StoriesDetailItem.StoryCategory.Manual -> TYPE_ORGANIC
+            else -> TYPE_AUTOMATIC
+        }
+
     companion object {
-        val Empty get() = StoriesDetailItem(event = StoriesDetailItemUiEvent.RESUME, content = StoriesItemContent(duration = 3000), resetValue = 0)
+        private const val TYPE_ORGANIC = "organic"
+        private const val TYPE_AUTOMATIC = "asgc"
+
+        val Empty
+            get() = StoriesDetailItem(
+                event = StoriesDetailItemUiEvent.RESUME,
+                content = StoriesItemContent(duration = 3000),
+                resetValue = 0
+            )
     }
 
     data class Meta(
@@ -75,7 +93,7 @@ data class StoriesDetailItem(
     }
 
     enum class StoriesDetailItemUiEvent {
-        PAUSE, RESUME,
+        PAUSE, RESUME, BUFFERING
     }
 
     data class Sharing(
@@ -108,5 +126,19 @@ data class StoriesDetailItem(
         }
     }
 
-    val isProductAvailable: Boolean = productCount.isNotEmpty() && productCount != "0" && status == StoryStatus.Active
+    enum class StoryCategory(val value: String) {
+        Manual("update"), ASGC("default");
+
+        companion object {
+            fun getByValue(value: String): StoryCategory {
+                values().forEach {
+                    if (it.value.equals(value, true)) return it
+                }
+                return ASGC
+            }
+        }
+    }
+
+    val isProductAvailable: Boolean =
+        productCount.isNotEmpty() && productCount != "0" && status == StoryStatus.Active
 }

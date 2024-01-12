@@ -20,6 +20,7 @@ import com.tokopedia.review.R
 import com.tokopedia.review.databinding.WidgetReadReviewHeaderBinding
 import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryHeaderListener
 import com.tokopedia.review.feature.reading.data.AvailableFilters
+import com.tokopedia.review.feature.reading.data.Keyword
 import com.tokopedia.review.feature.reading.data.ProductRating
 import com.tokopedia.review.feature.reading.data.ProductTopic
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewFilterChipsListener
@@ -33,9 +34,12 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.toPx
 import timber.log.Timber
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class ReadReviewHeader @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     companion object {
@@ -53,11 +57,13 @@ class ReadReviewHeader @JvmOverloads constructor(
     private var isProductReview: Boolean = true
     private var topicFilterChipIndex: Int = 0
 
+    private var isTopicExtraction = false
+
     init {
         setupViews()
     }
 
-    fun setIsProductReview(isProductReview: Boolean){
+    fun setIsProductReview(isProductReview: Boolean) {
         this.isProductReview = isProductReview
     }
 
@@ -89,18 +95,19 @@ class ReadReviewHeader @JvmOverloads constructor(
 
     fun hideRatingContainer() {
         binding.containerReviewRating.gone()
-        binding.readReviewFilterDivider.gone()
+        binding.readReviewExtractedTopic.gone()
     }
 
     fun showRatingContainer() {
         binding.containerReviewRating.visible()
         binding.readReviewFilterDivider.visible()
+        binding.readReviewExtractedTopic.visible()
     }
 
     private fun showRatingContainerBorderLine() {
         try {
             binding.containerReviewRating.setBackgroundResource(R.drawable.bg_review_header_bordered)
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             Timber.e(e)
         }
     }
@@ -144,7 +151,7 @@ class ReadReviewHeader @JvmOverloads constructor(
             }
             filter.add(ratingFilter)
         }
-        if (availableFilters.topics) {
+        if (availableFilters.topics && !isTopicExtraction) {
             val topicFilter = getSortFilterItem(context.getString(R.string.review_reading_filter_all_topics))
             setListenerAndChevronListener(topicFilter) { listener.onFilterWithTopicClicked(topics, getIndexOfSortFilter(topicFilter), isChipsActive(topicFilter.type)) }
             filter.add(topicFilter)
@@ -197,7 +204,7 @@ class ReadReviewHeader @JvmOverloads constructor(
             context.getString(R.string.review_reading_filter_multiple_topic_selected, selectedFilter.size)
         } else {
             selectedFilter.firstOrNull()?.listTitleText
-                    ?: context.getString(R.string.review_reading_filter_all_topics)
+                ?: context.getString(R.string.review_reading_filter_all_topics)
         }
     }
 
@@ -210,8 +217,11 @@ class ReadReviewHeader @JvmOverloads constructor(
                 Pair(context.getString(R.string.review_reading_filter_all_ratings), null)
             }
             else -> {
-                Pair(selectedFilter.firstOrNull()?.listTitleText
-                        ?: context.getString(R.string.review_reading_filter_all_ratings), getIconUnifyDrawable(context, IconUnify.STAR_FILLED, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_YN300)))
+                Pair(
+                    selectedFilter.firstOrNull()?.listTitleText
+                        ?: context.getString(R.string.review_reading_filter_all_ratings),
+                    getIconUnifyDrawable(context, IconUnify.STAR_FILLED, ContextCompat.getColor(context, unifyprinciplesR.color.Unify_YN300))
+                )
             }
         }
     }
@@ -225,10 +235,11 @@ class ReadReviewHeader @JvmOverloads constructor(
     }
 
     private fun getDefaultSort(): String {
-        return if (isProductReview)
+        return if (isProductReview) {
             SortTypeConstants.MOST_HELPFUL_COPY
-        else
+        } else {
             SortTypeConstants.LATEST_COPY
+        }
     }
 
     private fun getDefaultSortTitle(): String {
@@ -267,6 +278,22 @@ class ReadReviewHeader @JvmOverloads constructor(
                 listener.onClearFiltersClicked()
             }
         }
+    }
+
+    fun setTopicExtraction(
+        keywords: List<Keyword>,
+        preselectKeyword: String?,
+        listener: ReadReviewFilterChipsListener
+    ) {
+        if (keywords.isEmpty()) return
+        binding.readReviewHighlightedTopicLeft.gone()
+        binding.readReviewHighlightedTopicRight.gone()
+
+        binding.readReviewExtractedTopic.listener = listener
+        binding.readReviewExtractedTopic.preselectKeyword = preselectKeyword
+        binding.readReviewExtractedTopic.keywords = keywords
+
+        isTopicExtraction = true
     }
 
     fun updateFilter(selectedFilter: Set<ListItemUnify>, sortFilterBottomSheetType: SortFilterBottomSheetType, index: Int) {
@@ -328,5 +355,9 @@ class ReadReviewHeader @JvmOverloads constructor(
 
     fun getReviewRatingContainer(): ConstraintLayout {
         return binding.containerReviewRating
+    }
+
+    fun loadingTopicExtraction() {
+        if (isTopicExtraction) binding.readReviewExtractedTopic.loading()
     }
 }

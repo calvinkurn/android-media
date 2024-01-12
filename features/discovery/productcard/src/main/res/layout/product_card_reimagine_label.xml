@@ -8,6 +8,8 @@
     android:paddingHorizontal="6dp"
     android:paddingVertical="2dp"
     android:background="@drawable/product_card_reimagine_label_background"
+    android:ellipsize="end"
+    android:maxLines="1"
     app:typographyType="small"
     app:typographyWeight="bold"
     tools:textColor="@color/Unify_GN500"

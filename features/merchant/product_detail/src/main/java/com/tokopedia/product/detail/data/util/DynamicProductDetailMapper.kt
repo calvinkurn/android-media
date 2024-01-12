@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.product.detail.common.ProductTrackingConstant
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirType
 import com.tokopedia.product.detail.common.data.model.pdplayout.Component
@@ -35,6 +36,7 @@ import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
 import com.tokopedia.product.detail.component.shipment.ShipmentUiModel
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicOneLinerDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
@@ -60,7 +62,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherS
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
@@ -89,6 +91,7 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.GLOBAL_BUNDL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRODUCT_BUNDLING
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_STEAL_THE_LOOK
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.RECOM_VERTICAL
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
 import com.tokopedia.product.detail.view.util.checkIfNumber
@@ -126,7 +129,7 @@ object DynamicProductDetailMapper {
      * except info type
      * If data already complete at P1 call, assign the value here.
      */
-    fun mapIntoVisitable(data: List<Component>): MutableList<DynamicPdpDataModel> {
+    fun mapIntoVisitable(data: List<Component>, dynamicProductInfoP1: DynamicProductInfoP1): MutableList<DynamicPdpDataModel> {
         val listOfComponent: MutableList<DynamicPdpDataModel> = mutableListOf()
         var firstAPlusMedia = true
         data.forEachIndexed { index, component ->
@@ -147,7 +150,7 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(ProductMiniSocialProofStockDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.REVIEW -> {
-                    listOfComponent.add(ProductMostHelpfulReviewDataModel(type = component.type, name = component.componentName))
+                    listOfComponent.add(ProductMostHelpfulReviewUiModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.INFO -> {
                     val contentData = component.componentData.firstOrNull()
@@ -163,6 +166,7 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.PRODUCT_LIST -> {
                     val productList = mapToProductList(
                         component = component,
+                        dynamicProductInfoP1 = dynamicProductInfoP1,
                         index = index
                     )
 
@@ -176,7 +180,7 @@ object DynamicProductDetailMapper {
                             name = component.componentName,
                             position = index,
                             queryParam = componentData?.queryParam.orEmpty(),
-                            thematicId = componentData?.thematicId.orEmpty()
+                            thematicId = componentData?.thematicId.orEmpty(),
                         )
                     )
                 }
@@ -387,7 +391,11 @@ object DynamicProductDetailMapper {
         return listOfComponent
     }
 
-    private fun mapToProductList(component: Component, index: Int): DynamicPdpDataModel {
+    private fun mapToProductList(
+        component: Component,
+        dynamicProductInfoP1: DynamicProductInfoP1,
+        index: Int
+    ): DynamicPdpDataModel {
         val data = component.componentData.firstOrNull() ?: ComponentData()
 
         return when (component.componentName) {
@@ -408,9 +416,10 @@ object DynamicProductDetailMapper {
             }
 
             else -> {
-                if (component.componentName.startsWith(RECOM_VERTICAL)) {
+                if (component.componentName.startsWith(RECOM_VERTICAL) ||
+                    component.componentName.contains(RECOM_STEAL_THE_LOOK)) {
                     PdpRecommendationWidgetDataModel(
-                        recommendationWidgetModel = mapPdpRecommendationWidgetModel(component)
+                        recommendationWidgetModel = mapPdpRecommendationWidgetModel(component, dynamicProductInfoP1, index)
                     )
                 } else {
                     ProductRecommendationDataModel(
@@ -802,7 +811,7 @@ object DynamicProductDetailMapper {
             MethodChecker.fromHtml(productInfo.getProductName).toString(),
             productInfo.data.price.currency,
             productInfo.basic.url,
-            isProductHasMaskingPrice(productInfo.data.price.priceFmt),
+            productInfo.data.price.isPriceMasked,
             shopUrl,
             productInfo.basic.shopName,
             productInfo.basic.productID,
@@ -810,10 +819,6 @@ object DynamicProductDetailMapper {
             campaignId = zeroIfEmpty(productInfo.data.campaign.campaignID),
             bundleId = zeroIfEmpty(bundleId)
         )
-    }
-
-    private fun isProductHasMaskingPrice(finalPrice: String): Boolean {
-        return finalPrice.contains("?")
     }
 
     fun generatePersonalizedData(product: DynamicProductInfoP1, productP2: ProductInfoP2UiData?): PersonalizedCampaignModel {
@@ -1046,19 +1051,39 @@ object DynamicProductDetailMapper {
         )
     }
 
-    private fun mapPdpRecommendationWidgetModel(component: Component): RecommendationWidgetModel {
+    private fun mapPdpRecommendationWidgetModel(
+        component: Component,
+        dynamicProductInfoP1: DynamicProductInfoP1,
+        index: Int
+    ): RecommendationWidgetModel {
         val data = component.componentData.firstOrNull()
         val thematicIds = if (data?.thematicId.isNullOrBlank()) {
             emptyList()
         } else {
             listOf(data?.thematicId.orEmpty())
         }
+        val source = RecommendationWidgetSource.PDP(
+            anchorProductId = dynamicProductInfoP1.basic.productID,
+            trackingMap = TrackingUtil.getComponentTracker(
+                productInfo = dynamicProductInfoP1,
+                componentTrackDataModel = ComponentTrackDataModel(
+                    component.type,
+                    component.componentName,
+                    index
+                ),
+                elementName = String.format(
+                    ProductTrackingConstant.Action.CLICK_SEE_MORE_WIDGET,
+                    component.componentName
+                )
+            )
+        )
         val metadata = RecommendationWidgetMetadata(
-            pageSource = RecommendationWidgetSource.PDP.xSourceValue,
+            pageSource = source.eventCategory,
             pageName = component.componentName,
             pageType = component.type,
             queryParam = data?.queryParam.orEmpty(),
-            criteriaThematicIDs = thematicIds
+            criteriaThematicIDs = thematicIds,
+            productIds = listOf(dynamicProductInfoP1.basic.productID),
         )
         val trackingModel = RecommendationWidgetTrackingModel(
             androidPageName = RecommendationCarouselTrackingConst.Category.PDP,
@@ -1066,7 +1091,11 @@ object DynamicProductDetailMapper {
             eventActionClick = RecommendationCarouselTrackingConst.Action.CLICK_ON_PRODUCT_RECOMMENDATION_PDP,
             listPageName = RecommendationCarouselTrackingConst.List.PDP
         )
-        return RecommendationWidgetModel(metadata = metadata, trackingModel = trackingModel)
+        return RecommendationWidgetModel(
+            metadata = metadata,
+            trackingModel = trackingModel,
+            source = source,
+        )
     }
 
     private fun mapToSocialProof(component: Component): ProductMiniSocialProofDataModel? {

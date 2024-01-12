@@ -34,6 +34,13 @@ android {
     testOptions {
         animationsDisabled = true
     }
+    sourceSets {
+        main {
+            res {
+                srcDirs 'src/main/res', 'src/main/res/layouts/widgethistory'
+            }
+        }
+    }
 }
 
 dependencies {
@@ -107,7 +114,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.kotlinTest
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     androidTestImplementation rootProject.ext.testDependencies.androidxTest

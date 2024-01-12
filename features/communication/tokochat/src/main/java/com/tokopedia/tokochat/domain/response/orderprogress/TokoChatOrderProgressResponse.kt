@@ -26,13 +26,26 @@ data class TokoChatOrderProgressResponse(
         @SerializedName("statusId")
         val statusId: Long = 0,
         @SerializedName("uri")
-        val uri: String = ""
+        val uri: String = "",
+        @SerializedName("additionalInfo")
+        var additionalInfo: String = "",
+        @SerializedName("ctaButton")
+        val button: Button = Button()
     ) {
         data class Label(
             @SerializedName("title")
             val title: String = "",
             @SerializedName("value")
             val value: String = ""
+        )
+
+        data class Button(
+            @SerializedName("title")
+            val title: String = "",
+            @SerializedName("uri")
+            val uri: String = "",
+            @SerializedName("enable")
+            val enable: Boolean = false
         )
     }
 }

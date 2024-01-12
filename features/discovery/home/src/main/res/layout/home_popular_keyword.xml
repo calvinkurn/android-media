@@ -17,7 +17,7 @@
         android:id="@+id/home_component_header_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:visibility="gone"
+        tools:visibility="visible"
         android:visibility="gone"
         app:cta_mode="reload"
         app:layout_constraintTop_toTopOf="parent"
@@ -28,104 +28,23 @@
         android:id="@+id/container_popular_keyword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/unify_space_12"
-        android:paddingTop="16dp">
-
-        <ViewStub
-            tools:visibility="visible"
-            android:id="@+id/channel_pk_title"
-            android:inflatedId="@+id/channel_pk_title"
-            android:layout="@layout/view_stub_pk_title"
-            android:layout_marginLeft="@dimen/home_component_margin_default"
-            android:layout_marginStart="@dimen/home_component_margin_default"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintEnd_toStartOf="@+id/iv_reload"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <ViewStub
-            android:id="@+id/channel_pk_subtitle"
-            android:inflatedId="@+id/channel_pk_subtitle"
-            android:layout="@layout/view_stub_dc_subtitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginStart="@dimen/home_component_margin_default"
-            android:layout_marginLeft="@dimen/home_component_margin_default"
-            android:visibility="gone"
-            tools:visibility="visible"
-            tools:background="@color/Unify_NN950"
-            tools:text="Berakhir dalam"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/channel_pk_title"/>
-
-        <ViewStub
-            android:id="@+id/iv_reload"
-            android:inflatedId="@+id/iv_reload"
-            android:layout="@layout/view_stub_iv_reload"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            tools:background="@color/Unify_NN950"
-            android:layout_marginRight="4dp"
-            app:layout_constraintRight_toLeftOf="@+id/tv_reload"
-            app:layout_constraintTop_toTopOf="@+id/loader_popular_keyword_title"
-            app:layout_constraintBottom_toBottomOf="@+id/loader_popular_keyword_title"/>
-
-        <ViewStub
-            android:id="@+id/tv_reload"
-            android:inflatedId="@+id/tv_reload"
-            android:layout="@layout/view_stub_tv_reload"
-            android:layout_marginRight="@dimen/home_component_margin_default"
-            android:layout_marginEnd="@dimen/home_component_margin_default"
-            tools:layout_width="20dp"
-            tools:layout_height="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/iv_reload"
-            app:layout_constraintBottom_toBottomOf="@id/iv_reload"
-            />
-
-        <com.tokopedia.unifycomponents.LoaderUnify
-            tools:visibility="visible"
-            android:visibility="visible"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
-            android:id="@+id/loader_popular_keyword_title"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_width="250dp"
-            android:layout_height="24dp"
-            app:loader_type="rect"
-            />
+        android:translationY="@dimen/home_component_card_compat_padding_translation_y"
+        android:paddingBottom="@dimen/home_component_padding_bottom_with_compat_padding_translated">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_popular_keyword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
             android:layout_marginRight="12dp"
             android:layout_marginLeft="12dp"
             tools:spanCount="2"
             tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             tools:itemCount="4"
             tools:listitem="@layout/layout_popular_keyword_item"
-            app:layout_constraintTop_toBottomOf="@+id/channel_pk_subtitle"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="@+id/channel_pk_title"
-            app:layout_constraintRight_toRightOf="@+id/tv_reload"/>
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/header_barrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:constraint_referenced_ids="channel_pk_subtitle, loader_popular_keyword_title"
-            app:barrierDirection="bottom"/>
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
 
         <ViewStub
             android:id="@+id/loading_popular"
@@ -133,13 +52,12 @@
             android:layout="@layout/stub_popular_keyword_loading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
             tools:layout_width="match_parent"
             tools:layout_height="match_parent"
             tools:visibility="visible"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="12dp"
-            app:layout_constraintTop_toBottomOf="@+id/header_barrier"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
@@ -152,7 +70,7 @@
             android:layout_marginStart="12dp"
             android:layout_marginEnd="12dp"
             app:unify_local_load_title="@string/popular_keyword_error_title"
-            app:layout_constraintTop_toBottomOf="@+id/channel_pk_title"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

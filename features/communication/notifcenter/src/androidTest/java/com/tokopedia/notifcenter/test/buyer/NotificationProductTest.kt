@@ -5,7 +5,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
-import com.tokopedia.notifcenter.stub.data.response.GqlResponseStub
 import com.tokopedia.notifcenter.test.base.BaseNotificationTest
 import com.tokopedia.notifcenter.test.robot.detailResult
 import com.tokopedia.notifcenter.test.robot.detailRobot
@@ -18,9 +17,9 @@ class NotificationProductTest : BaseNotificationTest() {
     @Test
     fun should_open_bottomsheet_when_click_beli_and_keranjang_in_attached_product_variants() {
         // Given
-        GqlResponseStub.notificationDetailResponse.filePath =
+        gqlResponseStub.notificationDetailResponse.filePath =
             "detail/notifcenter_detail_v3_product_only.json"
-        GqlResponseStub.notificationDetailResponse.editAndGetResponseObject { }
+        gqlResponseStub.notificationDetailResponse.editAndGetResponseObject { }
 
         // When
         launchActivity()
@@ -52,9 +51,9 @@ class NotificationProductTest : BaseNotificationTest() {
     @Test
     fun should_open_wishlist_when_user_click_cek_wishlist() {
         // Given
-        GqlResponseStub.notificationDetailResponse.filePath =
+        gqlResponseStub.notificationDetailResponse.filePath =
             "detail/notifcenter_detail_v3_product_only.json"
-        GqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
+        gqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
             it.notifcenterDetail.newList.first().productData.forEach { data ->
                 if (data.productId == "1988288674") {
                     data.typeButton = ProductData.BUTTON_TYPE_WISHLIST
@@ -66,6 +65,7 @@ class NotificationProductTest : BaseNotificationTest() {
         launchActivity()
         detailRobot {
             scrollToProductPosition(2)
+            scrollToProductPosition(2) // sometimes the scroll is not fully scrolled
             clickCheckWishlist(2)
         }
 
@@ -78,9 +78,9 @@ class NotificationProductTest : BaseNotificationTest() {
     @Test
     fun should_not_show_variant_labels_if_product_is_parent_variant() {
         // Given
-        GqlResponseStub.notificationDetailResponse.filePath =
+        gqlResponseStub.notificationDetailResponse.filePath =
             "detail/notifcenter_detail_v3_product_only.json"
-        GqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
+        gqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
             it.notifcenterDetail.newList[0].product?.variant = listOf()
         }
 
@@ -99,9 +99,9 @@ class NotificationProductTest : BaseNotificationTest() {
     @Test
     fun should_open_VBS_with_tokonow_if_product_is_parent_variant_when_click_ATC_and_buy() {
         // Given
-        GqlResponseStub.notificationDetailResponse.filePath =
+        gqlResponseStub.notificationDetailResponse.filePath =
             "detail/notifcenter_detail_v3_product_only.json"
-        GqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
+        gqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
             it.notifcenterDetail.newList[0].productData[1].variant = listOf()
         }
 
@@ -132,9 +132,9 @@ class NotificationProductTest : BaseNotificationTest() {
     @Test
     fun should_open_VBS_with_tokonow_if_product_is_variants_and_tokonow() {
         // Given
-        GqlResponseStub.notificationDetailResponse.filePath =
+        gqlResponseStub.notificationDetailResponse.filePath =
             "detail/notifcenter_detail_v3_product_only.json"
-        GqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
+        gqlResponseStub.notificationDetailResponse.editAndGetResponseObject {
             it.notifcenterDetail.newList[0].productData[1].shop.isTokonow = true
         }
 
@@ -162,9 +162,9 @@ class NotificationProductTest : BaseNotificationTest() {
     @Test
     fun should_open_product_detail_page_with_applink_when_users_clicks_on_product() {
         // Given
-        GqlResponseStub.notificationDetailResponse.filePath =
+        gqlResponseStub.notificationDetailResponse.filePath =
             "detail/notifcenter_detail_v3_product_only.json"
-        GqlResponseStub.notificationDetailResponse.editAndGetResponseObject { }
+        gqlResponseStub.notificationDetailResponse.editAndGetResponseObject { }
 
         // When
         launchActivity()
@@ -175,6 +175,22 @@ class NotificationProductTest : BaseNotificationTest() {
         // Then
         generalResult {
             assertIntentData(Uri.parse("tokopedia://product/2148833237?extParam=whid=341734&src=notifcenter"))
+        }
+    }
+
+    @Test
+    fun should_show_notification_label() {
+        // Given
+        gqlResponseStub.notificationDetailResponse.filePath =
+            "detail/notifcenter_detail_v3_product_label.json"
+        gqlResponseStub.notificationDetailResponse.editAndGetResponseObject { }
+
+        // When
+        launchActivity()
+
+        // Then
+        detailResult {
+            assertLabel(2, "Stock Habis")
         }
     }
 }

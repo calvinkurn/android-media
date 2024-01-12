@@ -10,6 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.marginTop
+import androidx.core.view.updateMargins
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
@@ -28,6 +32,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
+import com.tokopedia.content.common.util.doOnApplyWindowInsets
+import com.tokopedia.content.common.util.marginLp
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -75,7 +81,6 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderP1Header
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderTickerData
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
-import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.resources.isDarkMode
@@ -94,6 +99,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
         private const val FRAGMENT_SHOWCASE_KEY_SHOP_ID = "SHOP_ID"
         private const val FRAGMENT_SHOWCASE_KEY_SHOP_REF = "SHOP_REF"
         private const val FRAGMENT_SHOWCASE_KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
+        private const val FRAGMENT_SHOWCASE_KEY_FORCE_LIGHT_MODE = "force_light_mode"
         private const val FRAGMENT_SHOWCASE_KEY_IS_OS = "IS_OS"
         private const val FRAGMENT_SHOWCASE_KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
         private const val FRAGMENT_SHOWCASE_KEY_FOR_SHARE = "shop_header_for_sharing"
@@ -191,6 +197,19 @@ class ShopPageHeaderFragmentTabContentWrapper :
             chooseAddressWidgetListener
         )
         mainLayout?.requestFocus()
+
+        setupInsets()
+    }
+
+    private fun setupInsets() {
+        val initialNavToolbarPaddingTop = navToolbar?.paddingTop.orZero()
+        val initialHeaderTopAnchorMarginTop = viewBinding?.headerTopAnchor?.marginTop.orZero()
+
+        mainLayout?.doOnApplyWindowInsets { _, insets, _, _ ->
+            val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            navToolbar?.updatePadding(top = statusBarInsets.top)
+            viewBinding?.headerTopAnchor?.marginLp?.updateMargins(top = initialHeaderTopAnchorMarginTop + statusBarInsets.top - initialNavToolbarPaddingTop)
+        }
     }
 
     private fun getPlayHeaderListener(): ShopPageHeaderPlayWidgetViewHolder.Listener? {
@@ -661,6 +680,10 @@ class ShopPageHeaderFragmentTabContentWrapper :
                                 FRAGMENT_SHOWCASE_KEY_FOR_SHARE,
                                 shopPageHeaderDataModel?.mapperForShopShowCase()
                             )
+                            putBoolean(
+                                FRAGMENT_SHOWCASE_KEY_FORCE_LIGHT_MODE,
+                                shopHeaderLayoutData.isOverrideTheme
+                            )
                         }
                     )
                     shopShowcaseTabFragment
@@ -812,7 +835,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
     }
 
     fun setSgcPlayWidgetData() {
-        shopPageHeaderFragmentHeaderViewHolder?.setSgcPlaySection(shopPagePageHeaderWidgetList)
+        shopPageHeaderFragmentHeaderViewHolder?.setSgcPlaySection(shopPagePageHeaderWidgetList, getShopHeaderConfig())
     }
 
     fun updateNavToolbarNotification() {

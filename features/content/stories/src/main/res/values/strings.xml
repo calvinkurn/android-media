@@ -15,4 +15,10 @@
     <string name="stories_onboard_next">Lanjut</string>
     <string name="stories_onboard_see_product">Lihat Produk</string>
     <string name="stories_product_see_cart">Lihat</string>
+    <string name="dialog_report_story_title">Lanjutkan laporkan story</string>
+    <string name="dialog_report_story_cancel">Batal</string>
+    <string name="story_reported_successfully_message">Story berhasil dilaporkan</string>
+    <string name="story_creation_timestamp">• %s</string>
+    <string name="story_manual_duration_coachmark_title">Story yang kamu upload hanya akan tampil 24 jam, ya.</string>
+    <string name="story_manual_duration_coachmark_subtitle">Sedangkan Story yang otomatis di-posting tetap akan tampil hingga 7 hari.</string>
 </resources>

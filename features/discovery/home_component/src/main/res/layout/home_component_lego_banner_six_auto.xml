@@ -16,7 +16,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/channel_title"
         android:descendantFocusability="blocksDescendants"
         android:id="@+id/content_container"
         xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -54,7 +53,7 @@
                 android:id="@+id/recycleList"
                 app:layout_constraintHorizontal_weight="2"
                 android:paddingStart="4dp"
-                android:layout_marginEnd="@dimen/home_component_margin_default"
+                android:layout_marginEnd="@dimen/home_component_padding_horizontal_default"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="2dp"
                 android:layout_width="0dp"

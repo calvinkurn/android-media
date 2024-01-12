@@ -61,6 +61,7 @@ open class EmoneyPdpActivity : BaseSimpleActivity(), HasComponent<EmoneyPdpCompo
                             ?: DeeplinkMapperDigitalConst.MENU_ID_ELECTRONIC_MONEY)
                     .isFromWidget(isFromWidget)
                     .isCouponApplied(isCouponApplied)
+                    .isBCAGenOne(java.lang.Boolean.valueOf(uriData.getQueryParameter(DigitalCategoryDetailPassData.PARAM_IS_BCA_GEN_ONE)))
                     .build()
             this.passData = passData
         }

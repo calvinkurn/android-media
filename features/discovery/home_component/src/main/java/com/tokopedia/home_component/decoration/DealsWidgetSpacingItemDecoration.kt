@@ -22,14 +22,17 @@ class DealsWidgetSpacingItemDecoration : RecyclerView.ItemDecoration() {
         val position = parent.getChildAdapterPosition(view)
         val spanCount = VpsWidgetTabletConfiguration.getSpanCount(context)
 
-        outRect.top = SPACING_VERTICAL
         if (position % spanCount == 0) {
             outRect.right = SPACING_HORIZONTAL / 2
         } else {
             outRect.left = SPACING_HORIZONTAL / 2
         }
         if (!DeviceScreenInfo.isTablet(context) && position < spanCount) {
+            outRect.top = 0
             outRect.bottom = SPACING_VERTICAL
+        } else {
+            outRect.top = SPACING_VERTICAL
+            outRect.bottom = 0
         }
     }
 }

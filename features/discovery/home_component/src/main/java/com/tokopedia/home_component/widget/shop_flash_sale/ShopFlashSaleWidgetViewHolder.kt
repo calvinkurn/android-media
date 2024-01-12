@@ -19,11 +19,10 @@ import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleIte
 import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleItemTypeFactoryImpl
 import com.tokopedia.home_component.widget.shop_tab.ShopTabDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleErrorListener
-import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabMapper.mapShopTabModel
 import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabDataModel
 import com.tokopedia.home_component.widget.shop_tab.ShopTabListener
 import com.tokopedia.home_component_header.model.ChannelHeader
-import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
+import com.tokopedia.home_component_header.view.HomeComponentHeaderListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -97,7 +96,7 @@ class ShopFlashSaleWidgetViewHolder(
     ) {
         binding?.homeComponentShopFlashSaleHeaderView?.bind(
             channelHeader,
-            object: HomeChannelHeaderListener {
+            object: HomeComponentHeaderListener {
                 override fun onSeeAllClick(link: String) {
                     listener.onSeeAllClick(trackingAttributionModel, link)
                 }
@@ -106,7 +105,7 @@ class ShopFlashSaleWidgetViewHolder(
     }
 
     private fun setTabList(tabList: List<ShopFlashSaleTabDataModel>) {
-        binding?.homeComponentShopFlashSaleTab?.setShopTabs(tabList.map(::mapShopTabModel), this)
+        binding?.homeComponentShopFlashSaleTab?.setShopTabs(tabList.map { it.shopTabModel }, this)
     }
 
     private fun updateContent(model: ShopFlashSaleWidgetDataModel) {
@@ -148,6 +147,12 @@ class ShopFlashSaleWidgetViewHolder(
             it.getActivatedTab()?.let { tab ->
                 listener.onShopTabClicked(it, tab.trackingAttributionModel, tab.channelGrid)
             }
+        }
+    }
+
+    override fun onShopTabImpressed(element: ShopTabDataModel) {
+        shopFlashSaleWidgetDataModel?.getShopTab(element.id)?.let {
+            listener.onShopTabImpressed(it.trackingAttributionModel, it.channelGrid)
         }
     }
 
