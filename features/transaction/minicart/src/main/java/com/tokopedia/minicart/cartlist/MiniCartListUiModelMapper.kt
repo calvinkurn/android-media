@@ -276,7 +276,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
 
                     // Add gwp progressive info if bmgm only
                     if (cartDetail.isBmGm() && cartDetail.cartDetailInfo.bmgmData.offerMessage.isNotEmpty()) {
-                        miniCartAvailableSectionUiModels.add(mapProgressiveInfo(cartDetail.cartDetailInfo.bmgmData))
+                        miniCartAvailableSectionUiModels.add(mapProgressiveInfo(cartDetail.cartDetailInfo.bmgmData, cartIndex))
                     }
 
                     // Add product card
@@ -307,7 +307,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
 
                     // Add gwp gift if bmgm only
                     if (cartDetail.isBmGm() && cartDetail.cartDetailInfo.bmgmData.tierProductList.isNotEmpty()) {
-                        miniCartAvailableSectionUiModels.addAll(mapGwpGift(cartDetail.cartDetailInfo.bmgmData))
+                        miniCartAvailableSectionUiModels.addAll(mapGwpGift(cartDetail.cartDetailInfo.bmgmData, cartIndex))
                     }
                 }
             }
@@ -416,23 +416,29 @@ class MiniCartListUiModelMapper @Inject constructor() {
     }
 
     private fun mapProgressiveInfo(
-        bmgmData: BmGmData
+        bmgmData: BmGmData,
+        cartIndex: Int
     ): MiniCartProgressiveInfoUiModel {
         return MiniCartProgressiveInfoUiModel(
             offerId = bmgmData.offerId,
+            offerTypeId = bmgmData.offerTypeId,
             message = bmgmData.offerMessage.firstOrNull().orEmpty(),
             icon = bmgmData.offerIcon,
             appLink = bmgmData.offerLandingPageLink,
-            state = MiniCartProgressiveInfoUiModel.State.LOADED
+            state = MiniCartProgressiveInfoUiModel.State.LOADED,
+            progressiveInfoText = bmgmData.offerMessage.firstOrNull().orEmpty(),
+            position = cartIndex.inc()
         )
     }
 
     private fun mapGwpGift(
-        bmgmData: BmGmData
+        bmgmData: BmGmData,
+        cartIndex: Int
     ): List<MiniCartGwpGiftUiModel> {
         return bmgmData.tierProductList.map { tierProduct ->
             MiniCartGwpGiftUiModel(
                 offerId = bmgmData.offerId,
+                offerTypeId = bmgmData.offerTypeId,
                 tierId = tierProduct.tierId,
                 ribbonText = tierProduct.benefitWording,
                 ctaText = tierProduct.actionWording,
@@ -444,7 +450,9 @@ class MiniCartListUiModelMapper @Inject constructor() {
                         qty = productBenefit.quantity,
                         isUnlocked = true
                     )
-                }
+                },
+                progressiveInfoText = bmgmData.offerMessage.firstOrNull().orEmpty(),
+                position = cartIndex.inc()
             )
         }
     }

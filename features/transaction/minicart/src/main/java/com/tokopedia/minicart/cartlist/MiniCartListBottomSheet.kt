@@ -421,22 +421,64 @@ class MiniCartListBottomSheet @Inject constructor(
             viewModel?.getBmGmGroupProductTicker(offerId)
         }
 
-        override fun onClickChevronIcon(offerId: Long) {
-            analytics.gwpAnalytics.sendClickCardOnGwpEvent(offerId)
+        override fun onClickChevronIcon(
+            offerId: Long,
+            offerTypeId: Long,
+            progressiveInfoText: String,
+            position: Int
+        ) {
+            analytics.gwpAnalytics.sendClickCardOnGwpEvent(
+                offerId = offerId,
+                offerTypeId = offerTypeId,
+                progressiveInfoText = progressiveInfoText,
+                position = position
+            )
         }
 
-        override fun onImpressProgressiveInfo(offerId: Long) {
-            analytics.gwpAnalytics.sendImpressionGwpCardEvent(offerId)
+        override fun onImpressProgressiveInfo(
+            offerId: Long,
+            offerTypeId: Long,
+            progressiveInfoText: String,
+            position: Int
+        ) {
+            analytics.gwpAnalytics.sendImpressionGwpCardEvent(
+                offerId = offerId,
+                offerTypeId = offerTypeId,
+                progressiveInfoText = progressiveInfoText,
+                position = position
+            )
         }
     }
 
     private fun gwpGiftCallback() = object: MiniCartGwpGiftViewHolder.MiniCartGwpGiftListener {
-        override fun onImpressProductGift(offerId: Long) {
-            analytics.gwpAnalytics.sendImpressionGwpCardGiftListEvent(offerId)
+        override fun onImpressProductGiftWidget(
+            offerId: Long,
+            offerTypeId: Long,
+            productIds: List<String>,
+            progressiveInfoText: String,
+            position: Int
+        ) {
+            analytics.gwpAnalytics.sendImpressionGwpCardGiftListEvent(
+                offerId = offerId,
+                offerTypeId = offerTypeId,
+                productIds = productIds,
+                progressiveInfoText = progressiveInfoText,
+                position = position
+            )
         }
 
-        override fun onClickCta(offerId: Long) {
-            analytics.gwpAnalytics.sendClickSeeOnGwpCardGiftListEvent(offerId)
+        override fun onClickCta(
+            offerId: Long,
+            offerTypeId: Long,
+            progressiveInfoText: String,
+            position: Int
+        ) {
+            analytics.gwpAnalytics.sendClickSeeOnGwpCardGiftListEvent(
+                offerId = offerId,
+                offerTypeId = offerTypeId,
+                progressiveInfoText = progressiveInfoText,
+                position = position
+            )
         }
     }
 

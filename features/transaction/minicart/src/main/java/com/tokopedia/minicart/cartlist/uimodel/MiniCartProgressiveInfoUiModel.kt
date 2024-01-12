@@ -6,10 +6,13 @@ import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 
 data class MiniCartProgressiveInfoUiModel(
     val offerId: Long,
+    val offerTypeId: Long,
     val message: String,
     val icon: String,
     val appLink: String,
-    val state: State
+    val state: State,
+    val progressiveInfoText: String,
+    val position: Int
 ) : Visitable<MiniCartListAdapterTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: MiniCartListAdapterTypeFactory): Int = typeFactory.type(this)
 

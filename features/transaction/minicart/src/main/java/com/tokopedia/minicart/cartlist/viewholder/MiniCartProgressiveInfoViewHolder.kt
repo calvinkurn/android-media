@@ -66,7 +66,12 @@ class MiniCartProgressiveInfoViewHolder (
     ) {
         root.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_bmgm_mini_cart_progressive_info)
         root.addOnImpressionListener(element) {
-            listener?.onImpressProgressiveInfo(element.offerId)
+            listener?.onImpressProgressiveInfo(
+                offerId = element.offerId,
+                offerTypeId = element.offerTypeId,
+                progressiveInfoText = element.progressiveInfoText,
+                position = element.position
+            )
         }
 
         iuIcon.show()
@@ -82,7 +87,13 @@ class MiniCartProgressiveInfoViewHolder (
         icuChevron.setImage(IconUnify.CHEVRON_RIGHT)
         icuChevron.showIfWithBlock(element.appLink.isNotBlank()) {
             setOnClickListener {
-                listener?.onClickChevronIcon(element.offerId)
+                listener?.onClickChevronIcon(
+                    offerId = element.offerId,
+                    offerTypeId = element.offerTypeId,
+                    progressiveInfoText = element.progressiveInfoText,
+                    position = element.position
+                )
+
                 RouteManager.route(icuChevron.context, element.appLink)
             }
         }
@@ -90,7 +101,17 @@ class MiniCartProgressiveInfoViewHolder (
 
     interface MiniCartProgressiveInfoListener {
         fun onClickRefreshIcon(offerId: Long)
-        fun onClickChevronIcon(offerId: Long)
-        fun onImpressProgressiveInfo(offerId: Long)
+        fun onClickChevronIcon(
+            offerId: Long,
+            offerTypeId: Long,
+            progressiveInfoText: String,
+            position: Int
+        )
+        fun onImpressProgressiveInfo(
+            offerId: Long,
+            offerTypeId: Long,
+            progressiveInfoText: String,
+            position: Int
+        )
     }
 }
