@@ -13,16 +13,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.header.compose.HeaderActionButton
 import com.tokopedia.header.compose.NestHeader
 import com.tokopedia.header.compose.NestHeaderType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyResourceIdRef
+import com.tokopedia.logisticorder.uimodel.DetailModel
+import com.tokopedia.logisticorder.uimodel.EtaModel
+import com.tokopedia.logisticorder.uimodel.LastDriverModel
 import com.tokopedia.logisticorder.uimodel.ProofModel
 import com.tokopedia.logisticorder.uimodel.TippingModel
+import com.tokopedia.logisticorder.uimodel.TrackHistoryModel
+import com.tokopedia.logisticorder.uimodel.TrackOrderModel
+import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.uimodel.TrackingPageEvent
 import com.tokopedia.logisticorder.uimodel.TrackingPageState
+import com.tokopedia.logisticorder.utils.TippingConstant
 import com.tokopedia.nest.components.loader.NestLoader
 import com.tokopedia.nest.components.loader.NestLoaderSize
 import com.tokopedia.nest.components.loader.NestLoaderType
@@ -117,29 +125,59 @@ fun ShippingStatusSection(status: String?) {
     }
 }
 
-// @Preview
-// @Composable
-// fun TrackingPagePreview() {
-//    val state = TrackingPageState(
-//        isLoading = false,
-//        trackingData = TrackingDataModel(
-//            trackOrder = TrackOrderModel(
-//                shippingRefNum = "NORESI",
-//                detail = DetailModel(
-//                    serviceCode = "SER20",
-//                    shipperCity = "Bandung",
-//                    shipperName = "Penjual",
-//                    receiverName = "Pembeli",
-//                    receiverCity = "Jakarta",
-//                    sendDate = "10 - 11 November 2021",
-//                    eta = EtaModel(
-//                        userInfo = "17 - 23 Desember 2023"
-//                    )
-//                )
-//            )
-//        )
-//    )
-//    NestTheme {
-//        TrackingPageScreen(state)
-//    }
-// }
+@Preview
+@Composable
+fun TrackingPagePreview() {
+    val lastDriverModel = LastDriverModel(
+        name = "Budi",
+        phone = "+6256648394543",
+        licenseNumber = "B 1238 JED",
+        isChanged = true
+    )
+    val tipping = TippingModel(
+        status = TippingConstant.OPEN,
+        statusTitle = "Yuk, beri tip ke driver",
+        statusSubtitle = "Tip 100% diterima driver"
+    )
+    val state = TrackingPageState(
+        isLoading = false,
+        trackingData = TrackingDataModel(
+            trackOrder = TrackOrderModel(
+                shippingRefNum = "NORESI",
+                detail = DetailModel(
+                    serviceCode = "SER20",
+                    shipperCity = "Bandung",
+                    shipperName = "Penjual",
+                    receiverName = "Pembeli",
+                    receiverCity = "Jakarta",
+                    sendDate = "10 - 11 November 2021",
+                    eta = EtaModel(
+                        userInfo = "17 - 23 Desember 2023"
+                    ),
+                    trackingUrl = "http://google.com"
+                ),
+                trackHistory = listOf(
+                    TrackHistoryModel(
+                        dateTime = "2021-11-12 22:38:55",
+                        date = "2021-11-12",
+                        status = "Pesanan dalam perjalanan",
+                        city = "Bandung",
+                        time = "22:38:55"
+                    ),
+                    TrackHistoryModel(
+                        dateTime = "2021-11-10 22:38:55",
+                        date = "2021-11-10",
+                        status = "Pesanan telah di pickup",
+                        city = "Surabaya",
+                        time = "22:38:55"
+                    )
+                )
+            ),
+            lastDriver = lastDriverModel,
+            tipping = tipping
+        )
+    )
+    NestTheme {
+        TrackingPageScreen(state, {}, {}, {}, {}, {}, {}, {}, {}, {})
+    }
+}
