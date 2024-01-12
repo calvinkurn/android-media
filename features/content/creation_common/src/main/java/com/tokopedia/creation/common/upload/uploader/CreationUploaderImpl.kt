@@ -33,6 +33,10 @@ class CreationUploaderImpl @Inject constructor(
     private val uploadResultFlow = MutableSharedFlow<CreationUploadResult>()
 
     override suspend fun upload(data: CreationUploadData) {
+        if (isTopQueueFailed()) {
+            creationUploadQueueRepository.clearQueue()
+        }
+
         creationUploadQueueRepository.insert(data)
         startWorkManager()
     }
@@ -91,6 +95,11 @@ class CreationUploaderImpl @Inject constructor(
 
     override suspend fun deleteQueueAndChannel(data: CreationUploadData) {
         creationUploadQueueRepository.deleteQueueAndChannel(data)
+    }
+
+    private suspend fun isTopQueueFailed(): Boolean {
+        val topQueue = creationUploadQueueRepository.getTopQueue()
+        return topQueue != null && topQueue.uploadStatus == CreationUploadStatus.Failed
     }
 
     private fun startWorkManager() {

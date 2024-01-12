@@ -101,6 +101,12 @@ class CreationUploadQueueRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun clearQueue() {
+        lockAndSwitchContext(dispatchers) {
+            creationUploadQueueDatabase.creationUploadQueueDao().deleteAll()
+        }
+    }
+
     override suspend fun updateProgress(
         queueId: Int,
         progress: Int,
