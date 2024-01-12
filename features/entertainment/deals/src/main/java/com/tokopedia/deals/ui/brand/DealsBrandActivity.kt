@@ -40,7 +40,6 @@ class DealsBrandActivity :
             }
         }
 
-//        initInjector()
         super.onCreate(savedInstanceState)
         setKeywordFromPreviousPage()
         setupListener()
