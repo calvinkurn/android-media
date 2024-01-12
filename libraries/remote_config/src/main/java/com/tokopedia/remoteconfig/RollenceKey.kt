@@ -134,6 +134,7 @@ object RollenceKey {
     const val SEARCH_3_PRODUCT_CARD_VAR_1B = "var_1b"
     const val SEARCH_3_PRODUCT_CARD_VAR_2A = "var_2a"
     const val SEARCH_3_PRODUCT_CARD_VAR_2B = "var_2b"
-
     const val PRODUCT_CARD_SRE_2024 = "productcard_sre2024"
+
+    const val ANDROID_INTERNAL_TEST = "android_internal"
 }
