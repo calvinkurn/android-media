@@ -18,4 +18,6 @@ interface CreationUploader {
     suspend fun deleteTopQueue()
 
     suspend fun deleteFromQueue(queueId: Int)
+
+    suspend fun deleteQueueAndChannel(data: CreationUploadData)
 }

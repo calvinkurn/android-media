@@ -89,6 +89,10 @@ class CreationUploaderImpl @Inject constructor(
         creationUploadQueueRepository.delete(queueId)
     }
 
+    override suspend fun deleteQueueAndChannel(data: CreationUploadData) {
+        creationUploadQueueRepository.deleteQueueAndChannel(data)
+    }
+
     private fun startWorkManager() {
         try {
             workManager.enqueueUniqueWork(

@@ -573,7 +573,7 @@ class FeedBaseFragment :
 
                                     override fun onCloseWhenFailedClicked(view: UploadInfoView) {
                                         launch {
-                                            creationUploader.deleteTopQueue()
+                                            creationUploader.deleteQueueAndChannel(uploadResult.data)
                                             creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
                                             binding.uploadView.hide()
                                         }
