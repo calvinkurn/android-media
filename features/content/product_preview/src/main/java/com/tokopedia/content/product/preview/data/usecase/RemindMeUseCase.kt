@@ -51,7 +51,7 @@ class RemindMeUseCase @Inject constructor(
                 }
                 error_type
               }
-            }""${'"'}
+            }
         """
     }
 }

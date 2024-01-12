@@ -153,11 +153,11 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private fun observeEvent() {
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiEvent.flowWithLifecycle(
                 viewLifecycleOwner.lifecycle,
                 Lifecycle.State.RESUMED
-            ).collectLatest {
+            ).collect {
                 when (val event = it) {
                     is ProductPreviewEvent.LoginEvent<*> -> {
                         val intent = router.getIntent(requireContext(), ApplinkConst.LOGIN)
