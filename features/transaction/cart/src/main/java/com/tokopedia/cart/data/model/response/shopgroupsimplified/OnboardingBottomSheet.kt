@@ -1,7 +1,7 @@
 package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.cartrevamp.view.uimodel.CartMultipleBOBottomSheetData
+import com.tokopedia.cartrevamp.view.uimodel.CartOnBoardingBottomSheetData
 
 data class OnboardingBottomSheet(
     @SerializedName("type")
@@ -15,12 +15,12 @@ data class OnboardingBottomSheet(
     @SerializedName("image_url")
     val imageUrl: String = ""
 ) {
-    fun isMultipleBOBottomSheet(): Boolean {
-        return type == MULTIPLE_BO_BOTTOM_SHEET_TYPE
+    fun shouldShowOnBoardingBottomSheet(): Boolean {
+        return type.isNotBlank() && (title.isNotBlank() || description.isNotBlank())
     }
 
-    fun getMultipleBoOnboardingBottomSheetData(): CartMultipleBOBottomSheetData {
-        return CartMultipleBOBottomSheetData(
+    fun getBottomSheetOnBoardingData(): CartOnBoardingBottomSheetData {
+        return CartOnBoardingBottomSheetData(
             type = type,
             title = title,
             description = description,

@@ -3,13 +3,13 @@ package com.tokopedia.cartrevamp.view.bottomsheet
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.cart.databinding.LayoutBottomsheetCartMultipleBoBinding
-import com.tokopedia.cartrevamp.view.uimodel.CartMultipleBOBottomSheetData
+import com.tokopedia.cart.databinding.LayoutBottomsheetCartOnboardingBinding
+import com.tokopedia.cartrevamp.view.uimodel.CartOnBoardingBottomSheetData
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class CartMultipleBOOnboardingBottomSheet : BottomSheetUnify() {
+class CartOnBoardingBottomSheet : BottomSheetUnify() {
 
     init {
         showCloseIcon = false
@@ -18,11 +18,11 @@ class CartMultipleBOOnboardingBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        private const val TAG = "CartMultipleBOBottomSheet"
+        private const val TAG = "CartOnBoardingBottomSheet"
         private const val KEY_DATA = "key_data"
 
-        fun newInstance(data: CartMultipleBOBottomSheetData): CartMultipleBOOnboardingBottomSheet {
-            return CartMultipleBOOnboardingBottomSheet().apply {
+        fun newInstance(data: CartOnBoardingBottomSheetData): CartOnBoardingBottomSheet {
+            return CartOnBoardingBottomSheet().apply {
                 arguments = Bundle().apply {
                     putParcelable(KEY_DATA, data)
                 }
@@ -30,12 +30,12 @@ class CartMultipleBOOnboardingBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private var binding by autoClearedNullable<LayoutBottomsheetCartMultipleBoBinding>()
-    private var data: CartMultipleBOBottomSheetData? = null
+    private var binding by autoClearedNullable<LayoutBottomsheetCartOnboardingBinding>()
+    private var data: CartOnBoardingBottomSheetData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = LayoutBottomsheetCartMultipleBoBinding
+        binding = LayoutBottomsheetCartOnboardingBinding
             .inflate(LayoutInflater.from(context), null, false)
         setChild(binding?.root)
 
@@ -45,7 +45,7 @@ class CartMultipleBOOnboardingBottomSheet : BottomSheetUnify() {
         } ?: dismiss()
     }
 
-    private fun renderContent(data: CartMultipleBOBottomSheetData) {
+    private fun renderContent(data: CartOnBoardingBottomSheetData) {
         binding?.apply {
             iuBebasOngkirInfo.loadImage(data.imageUrl)
             tvTitle.text = data.title

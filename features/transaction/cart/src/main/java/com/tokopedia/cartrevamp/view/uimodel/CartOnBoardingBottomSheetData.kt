@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class CartMultipleBOBottomSheetData(
+data class CartOnBoardingBottomSheetData(
     val type: String = "",
     val title: String = "",
     val description: String = "",

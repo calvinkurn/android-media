@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cart.R
+import com.tokopedia.cart.databinding.ItemCartProductRevampBinding
 import com.tokopedia.cart.databinding.ItemGroupRevampBinding
 import com.tokopedia.cartrevamp.view.ActionListener
 import com.tokopedia.cartrevamp.view.adapter.collapsedproduct.CartCollapsedProductAdapter
@@ -369,7 +370,7 @@ class CartGroupViewHolder(
                     cartGroupHolderData.hasSeenFreeShippingBadge = true
                     actionListener.onViewFreeShippingPlusBadge()
                 }
-                if (cartGroupHolderData.coachmarkPlus.isShown && !plusCoachmarkPrefs.getPlusCoachMarkHasShown()) {
+                if (plusCoachmark != null && cartGroupHolderData.coachmarkPlus.isShown && !plusCoachmarkPrefs.getPlusCoachMarkHasShown()) {
                     val coachMarkItem = ArrayList<CoachMark2Item>()
                     coachMarkItem.add(
                         CoachMark2Item(
@@ -546,6 +547,10 @@ class CartGroupViewHolder(
             cartGroupHolderData.cartShopGroupTicker.state = CartShopGroupTickerState.FIRST_LOAD
             binding.itemCartBasketBuilding.layoutBasketBuildingTicker.gone()
         }
+    }
+
+    fun getItemViewBinding(): ItemGroupRevampBinding {
+        return binding
     }
 
     companion object {
