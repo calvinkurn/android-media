@@ -23,7 +23,7 @@
     <com.tokopedia.carousel.CarouselUnify
         android:id="@+id/carousel_buyer_review"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="257dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tgp_buyer_review_title" />
 

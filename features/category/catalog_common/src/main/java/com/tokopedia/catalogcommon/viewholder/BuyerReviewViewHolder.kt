@@ -151,7 +151,6 @@ class BuyerReviewViewHolder(
                 )
             }
 
-            review?.text = carouselItem.description
             setupSelengkapnya(carouselItem, review)
         }
 
@@ -225,6 +224,7 @@ class BuyerReviewViewHolder(
     ) {
         val maxLine = if (carouselItem.images.isNotEmpty()) MAX_LINE else MAX_LINE_WITHOUT_IMAGES
         reviewTypography?.setLines(maxLine)
+        reviewTypography?.text = carouselItem.description
         reviewTypography?.post {
             val lineCount = reviewTypography.lineCount
             val reviewDesc = carouselItem.description
