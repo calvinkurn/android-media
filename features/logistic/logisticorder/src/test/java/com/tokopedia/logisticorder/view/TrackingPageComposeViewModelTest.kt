@@ -188,4 +188,16 @@ class TrackingPageComposeViewModelTest {
         assertNotNull(result.tickerData)
         assert(tickerResult == result.tickerData)
     }
+
+    @Test
+    fun `When seller open lacak page for order with gojek or grab courier THEN hit retryAvailability to check availability to request new driver`() {
+        coEvery { setRetryBookingUseCase(any()) } returns RetryBookingResponse()
+        coEvery { getTrackingUseCase(any()) } returns GetLogisticTrackingResponse()
+        val initialEvent = TrackingPageEvent.LoadTrackingData("12234", "1", 2, "https://track.gojek.com/?id=fd1015ee", "seller")
+        trackingPageViewModel.onEvent(initialEvent)
+
+        coVerify {
+            setRetryAvailabilityUseCase(any())
+        }
+    }
 }
