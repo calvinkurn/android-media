@@ -29,6 +29,8 @@ import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import kotlinx.coroutines.flow.collectLatest
@@ -68,6 +70,24 @@ class ProductFragment @Inject constructor(
             listener = object : ProductPreviewListener {
                 override fun getVideoPlayer(id: String): ProductPreviewExoPlayer {
                     return videoPlayerManager.occupy(id)
+                }
+
+                override fun pauseVideo(id: String) {
+                    videoPlayerManager.pause(id)
+                }
+
+                override fun resumeVideo(id: String) {
+                    videoPlayerManager.resume(id)
+                }
+
+                override fun onScrubbing() {
+                    binding.tvIndicatorLabel.hide()
+                    binding.rvIndicatorProduct.hide()
+                }
+
+                override fun onStopScrubbing() {
+                    binding.tvIndicatorLabel.show()
+                    binding.rvIndicatorProduct.show()
                 }
             }
         )

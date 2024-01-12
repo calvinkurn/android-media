@@ -5,5 +5,8 @@ import com.tokopedia.content.product.preview.view.components.player.ProductPrevi
 interface ProductPreviewListener {
 
     fun getVideoPlayer(id: String): ProductPreviewExoPlayer
-
+    fun pauseVideo(id: String)
+    fun resumeVideo(id: String)
+    fun onScrubbing()
+    fun onStopScrubbing()
 }

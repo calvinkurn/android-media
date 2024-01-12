@@ -23,10 +23,13 @@ class ProductContentVideoViewHolder(
 
     private var mVideoPlayer: ProductPreviewExoPlayer? = null
     private var mIsSelected: Boolean = false
+    private var mVideoIds: String = ""
 
     init {
         binding.root.addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(p0: View) {}
+            override fun onViewAttachedToWindow(p0: View) {
+                if (mVideoIds.isNotEmpty()) onSelected()
+            }
 
             override fun onViewDetachedFromWindow(p0: View) {
                 onNotSelected()
@@ -45,7 +48,8 @@ class ProductContentVideoViewHolder(
     }
 
     private fun bindVideoPlayer(content: ContentUiModel) {
-        mVideoPlayer = listener.getVideoPlayer(PRODUCT_CONTENT_VIDEO_KEY_REF + content.url)
+        mVideoIds = PRODUCT_CONTENT_VIDEO_KEY_REF + content.url
+        mVideoPlayer = listener.getVideoPlayer(mVideoIds)
         binding.playerProductContentVideo.player = mVideoPlayer?.exoPlayer
         binding.playerControl.player = mVideoPlayer?.exoPlayer
 
@@ -55,6 +59,7 @@ class ProductContentVideoViewHolder(
                 currPosition: Long,
                 totalDuration: Long
             ) {
+                listener.onScrubbing()
                 binding.videoTimeView.setCurrentPosition(currPosition)
                 binding.videoTimeView.setTotalDuration(totalDuration)
                 binding.videoTimeView.show()
@@ -65,6 +70,7 @@ class ProductContentVideoViewHolder(
                 currPosition: Long,
                 totalDuration: Long
             ) {
+                listener.onStopScrubbing()
                 binding.videoTimeView.hide()
             }
         })
@@ -83,12 +89,12 @@ class ProductContentVideoViewHolder(
 
     private fun onSelected() {
         mIsSelected = true
-        mVideoPlayer?.resume()
+        listener.resumeVideo(mVideoIds)
     }
 
     private fun onNotSelected() {
         mIsSelected = false
-        mVideoPlayer?.pause()
+        listener.pauseVideo(mVideoIds)
     }
 
     private fun showLoading() {
