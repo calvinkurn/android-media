@@ -9,10 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.logisticorder.R
+import com.tokopedia.logisticorder.uimodel.LastDriverModel
 import com.tokopedia.logisticorder.uimodel.TippingModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
+import com.tokopedia.logisticorder.utils.TippingConstant
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 
@@ -35,14 +38,16 @@ fun DriverWidget(
                 textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold)
             )
             DriverInfoWidget(
-                Modifier.fillMaxWidth()
+                Modifier
+                    .fillMaxWidth()
                     .padding(horizontal = 20.dp),
                 it.lastDriver,
                 callDriver,
                 openTippingInfo
             )
             TippingDriverWidget(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(horizontal = 20.dp),
                 it.tipping,
                 onClickTippingButton
@@ -59,3 +64,61 @@ private val TrackingDataModel?.hasDriverInfo: Boolean
     get() {
         return this?.run { tipping.eligibleForTipping || lastDriver.name.isNotEmpty() } ?: false
     }
+
+@Preview
+@Composable
+fun DriverWidgetPreview() {
+    val lastDriverModel = LastDriverModel(
+        name = "Budi",
+        phone = "+6256648394543",
+        licenseNumber = "B 1238 JED",
+        isChanged = true
+    )
+    val tipping = TippingModel(
+        status = TippingConstant.OPEN,
+        statusTitle = "Yuk, beri tip ke driver",
+        statusSubtitle = "Tip 100% diterima driver"
+    )
+    val trackingDataModel = TrackingDataModel(
+        tipping = tipping,
+        lastDriver = lastDriverModel
+    )
+
+    NestTheme {
+        DriverWidget(
+            trackingDataModel = trackingDataModel,
+            callDriver = {},
+            openTippingInfo = { },
+            onClickTippingButton = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun DriverWidgetTokopediaNowOrderPreview() {
+    val lastDriverModel = LastDriverModel(
+        name = "Budi",
+        phone = "+6256648394543",
+        licenseNumber = "B 1238 JED",
+        isChanged = true
+    )
+    val tipping = TippingModel(
+        status = -1,
+        statusTitle = "",
+        statusSubtitle = ""
+    )
+    val trackingDataModel = TrackingDataModel(
+        tipping = tipping,
+        lastDriver = lastDriverModel
+    )
+
+    NestTheme {
+        DriverWidget(
+            trackingDataModel = trackingDataModel,
+            callDriver = {},
+            openTippingInfo = { },
+            onClickTippingButton = {}
+        )
+    }
+}
