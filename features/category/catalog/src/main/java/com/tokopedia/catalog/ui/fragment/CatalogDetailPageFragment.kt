@@ -432,19 +432,26 @@ class CatalogDetailPageFragment :
                 }
             }
 
-            Toaster.build(
-                view,
-                errorMessage,
-                duration = Toaster.LENGTH_LONG,
-                type = Toaster.TYPE_ERROR,
-                actionText = if (it is InvalidCatalogComparisonException) {
-                    ""
-                } else {
-                    getString(R.string.catalog_retry_action)
-                }
-            ) {
-                changeComparison(retriedCompareCatalogIds)
-            }.show()
+            if (it is InvalidCatalogComparisonException) {
+                Toaster.build(
+                    view,
+                    errorMessage,
+                    duration = Toaster.LENGTH_LONG,
+                    type = Toaster.TYPE_NORMAL,
+                    actionText = getString(R.string.catalog_label_oke)
+                ) {
+                }.show()
+            } else {
+                Toaster.build(
+                    view,
+                    errorMessage,
+                    duration = Toaster.LENGTH_LONG,
+                    type = Toaster.TYPE_ERROR,
+                    actionText = getString(R.string.catalog_retry_action)
+                ) {
+                    changeComparison(retriedCompareCatalogIds)
+                }.show()
+            }
         }
         viewModel.comparisonUiModel.observe(viewLifecycleOwner) {
             if (it != null) {
