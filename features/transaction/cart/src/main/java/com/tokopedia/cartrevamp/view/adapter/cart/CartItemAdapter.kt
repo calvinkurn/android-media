@@ -42,5 +42,6 @@ class CartItemAdapter {
         fun onCartItemCheckboxClickChanged(position: Int, cartItemHolderData: CartItemHolderData, isChecked: Boolean)
         fun onCartViewBmGmTicker(offerId: Long, widgetCaption: String, shopId: String)
         fun onSwipeToDeleteClosed(productId: String)
+        fun clearAllFocus()
     }
 }

@@ -56,6 +56,7 @@ import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPageLogis
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePaymentProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.ResultRates
+import com.tokopedia.promousage.data.response.ResultStatus
 import com.tokopedia.promousage.util.PromoUsageRollenceManager
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.addonsproduct.data.model.AddOnsProductDataModel
@@ -76,6 +77,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -1280,7 +1282,7 @@ class OrderSummaryPageViewModel @Inject constructor(
         onSuccessCheckout: (CheckoutOccResult) -> Unit,
         skipCheckIneligiblePromo: Boolean
     ) {
-        if (orderTotal.value.buttonState == OccButtonState.NORMAL && orderPromo.value.state == OccButtonState.NORMAL && !orderShipment.value.isLoading) {
+        if (isEligibleCheckout(orderTotal.value, orderPromo.value, orderShipment.value)) {
             if (uploadPrescriptionUiModel.value.showImageUpload && uploadPrescriptionUiModel.value.uploadedImageCount < 1 && uploadPrescriptionUiModel.value.frontEndValidation) {
                 uploadPrescriptionUiModel.value =
                     uploadPrescriptionUiModel.value.copy(isError = true)
@@ -1345,6 +1347,33 @@ class OrderSummaryPageViewModel @Inject constructor(
             }
             globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
         }
+    }
+
+    private fun isEligibleCheckout(
+        orderTotal: OrderTotal,
+        orderPromo: OrderPromo,
+        orderShipment: OrderShipment
+    ): Boolean {
+        // check valid total
+        val isValidTotal = orderTotal.buttonState == OccButtonState.NORMAL
+        // check valid promo
+        val isValidPromo = if (orderPromo.isCartCheckoutRevamp) {
+            val isValidPromoState = orderPromo.state != OccButtonState.LOADING
+            val validStatusCodes = listOf(
+                ResultStatus.STATUS_USER_BLACKLISTED,
+                ResultStatus.STATUS_PHONE_NOT_VERIFIED,
+                ResultStatus.STATUS_COUPON_LIST_EMPTY
+            )
+            val isValidPromoStatusCode = orderPromo.entryPointInfo.isSuccess ||
+                (!orderPromo.entryPointInfo.isSuccess && validStatusCodes.any { code -> code == orderPromo.entryPointInfo.statusCode })
+            isValidPromoState && isValidPromoStatusCode
+        } else {
+            orderPromo.state == OccButtonState.NORMAL
+        }
+        // check valid shipment
+        val isValidShipment = !orderShipment.isLoading
+
+        return isValidTotal && isValidPromo && isValidShipment
     }
 
     private fun finalValidateUse(
@@ -1634,13 +1663,21 @@ class OrderSummaryPageViewModel @Inject constructor(
     }
 
     fun getShippingBottomsheetParam(): RatesParam? {
-        return logisticProcessor.generateRatesParam(
-            orderCart,
-            orderProfile.value,
-            orderTotal.value.orderCost,
-            orderShop.value.shopShipment,
-            orderShipment.value
-        ).first
+        return runBlocking {
+            val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(
+                orderCart,
+                orderShipment.value,
+                validateUsePromoRevampUiModel,
+                orderPayment.value
+            )
+            logisticProcessor.generateRatesParam(
+                orderCart,
+                orderProfile.value,
+                orderCost,
+                orderShop.value.shopShipment,
+                orderShipment.value
+            ).first
+        }
     }
 
     fun updatePrescriptionIds(it: ArrayList<String>) {
