@@ -1,4 +1,4 @@
-package com.tokopedia.base.list.seller.view.old;
+package com.tokopedia.datepicker.range.view.base;
 
 import androidx.annotation.DrawableRes;
 import androidx.recyclerview.widget.RecyclerView;
@@ -7,9 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
-
+import com.tokopedia.baselist.R;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.base.list.seller.R;
 
 /**
  * Created by Nisie on 2/26/16.
@@ -30,7 +29,7 @@ public class NoResultDataBinder extends DataBinder<NoResultDataBinder.ViewHolder
     }
 
     @Override
-    public NoResultDataBinder.ViewHolder newViewHolder(ViewGroup parent) {
+    public ViewHolder newViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext()).inflate(com.tokopedia.baselist.R.layout.item_view_no_result, null);
         if (isFullScreen) {
             view.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));

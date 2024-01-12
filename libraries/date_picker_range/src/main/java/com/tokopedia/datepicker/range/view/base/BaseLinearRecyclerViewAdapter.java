@@ -1,4 +1,4 @@
-package com.tokopedia.base.list.seller.view.old;
+package com.tokopedia.datepicker.range.view.base;
 
 /**
  * Created by Nisie on 1/22/16.
