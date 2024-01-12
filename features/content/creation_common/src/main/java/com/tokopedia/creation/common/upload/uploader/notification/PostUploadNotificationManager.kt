@@ -45,9 +45,6 @@ class PostUploadNotificationManager  @Inject constructor(
             }
         } else {
             RouteManager.getIntent(context, ApplinkConst.FEED_RELEVANT_POST, successData.activityId)
-                .apply {
-                    putExtra(UF_EXTRA_REFRESH_FOR_RELEVANT_POST, true)
-                }
         }
 
         return PendingIntent.getActivity(

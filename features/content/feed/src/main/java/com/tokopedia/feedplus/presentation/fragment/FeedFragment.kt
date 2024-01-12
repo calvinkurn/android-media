@@ -2200,7 +2200,7 @@ class FeedFragment :
     private fun handleResume() {
         updateArgumentsFromParentFragment()
 
-        val isRefreshForRelevantPost = arguments?.getBoolean(UF_EXTRA_REFRESH_FOR_RELEVANT_POST) == true
+        val isRefreshForRelevantPost = arguments?.getString(UF_EXTRA_REFRESH_FOR_RELEVANT_POST).toBoolean()
 
         if (isRefreshForRelevantPost) {
             if (data?.type != TAB_TYPE_FOR_YOU) {

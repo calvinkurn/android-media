@@ -3264,7 +3264,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         assertEqualsDeepLinkMapper("tokopedia://content/$postId?source=$source", expectedDeepLink)
 
         val feedRelevantPostApplink = UriUtil.buildUri(ApplinkConst.FEED_RELEVANT_POST, postId)
-        assertEqualsDeepLinkMapper("$feedRelevantPostApplink?source=$source", expectedDeepLink)
+        assertEqualsDeepLinkMapper("$feedRelevantPostApplink&source=$source", expectedDeepLink)
     }
 
     @Test
