@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.components.ticker.NestTicker
 import com.tokopedia.nest.components.ticker.NestTickerData
@@ -47,3 +48,27 @@ private val Int.toTickerType: TickerType
     }
 
 private val URL_TAG = "url"
+
+@Preview
+@Composable
+fun TargetedTickerPreview() {
+    val tickerData = listOf(
+        TickerModel.TickerItem(
+            type = 3,
+            title = "Pengiriman mengalami kendala",
+            content = "Pengiriman terlambat karena cuaca buruk",
+            linkUrl = "https://tokopedia/help"
+        ),
+        TickerModel.TickerItem(
+            type = 2,
+            title = "Pengiriman menggunakan Kurir Rekomendasi",
+            content = "Informasi mengenai kurir rekomendasi",
+            linkUrl = "https://tokopedia/help"
+        )
+    )
+    val data = TickerModel(
+        item = tickerData
+    )
+
+    TargetedTicker(tickerData = data, openWebview = {})
+}
