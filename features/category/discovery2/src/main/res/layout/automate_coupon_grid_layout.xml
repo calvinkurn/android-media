@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.discovery2.viewcontrollers.customview.automatecoupon.BadgeView
+            android:id="@+id/remainingBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:translationZ="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.discovery2.viewcontrollers.customview.automatecoupon.CouponCardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
+            android:layout_marginHorizontal="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/imgCouponBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/shopProfileGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:constraint_referenced_ids="shopLogoBorder, imgShopLogo, tvShopName" />
+
+                <View
+                    android:id="@+id/shopLogoBorder"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="@drawable/shop_card_shop_border_image"
+                    app:layout_constraintBottom_toBottomOf="@id/imgShopLogo"
+                    app:layout_constraintEnd_toEndOf="@id/imgShopLogo"
+                    app:layout_constraintStart_toStartOf="@id/imgShopLogo"
+                    app:layout_constraintTop_toTopOf="@id/imgShopLogo" />
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/imgShopLogo"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/shop_card_shop_border_image"
+                    android:gravity="center"
+                    android:scaleType="fitXY"
+                    app:layout_constraintDimensionRatio="H,1:1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:unify_image_type="circle" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tvShopName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textColor="@color/Unify_NN950_96"
+                    app:layout_constraintBottom_toBottomOf="@id/shopLogoBorder"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/shopLogoBorder"
+                    app:layout_constraintTop_toTopOf="@id/shopLogoBorder"
+                    app:typographyType="body_2"
+                    tools:text="Samsung Official Store" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tvType"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/unify_G500"
+                    android:visibility="visible"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/shopLogoBorder"
+                    app:typographyType="display_3"
+                    app:typographyWeight="bold"
+                    tools:text="Elektronik"
+                    tools:visibility="visible" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tvBenefit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="4dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/Unify_NN950_96"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvType"
+                    app:typographyType="display_2"
+                    app:typographyWeight="bold"
+                    tools:text="Cashback 25% hingga Rp 48.000" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tvFreeText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="4dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/Unify_NN600"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvBenefit"
+                    app:typographyType="small"
+                    tools:text="Min. belanja Rp. 200.000" />
+
+                <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/btnAction"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:contentDescription="@string/content_desc_claim_btn"
+                    android:text="@string/klaim"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:unifyButtonSize="micro"
+                    app:unifyButtonVariant="ghost" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.tokopedia.discovery2.viewcontrollers.customview.automatecoupon.CouponCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</merge>

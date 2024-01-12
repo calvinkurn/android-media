@@ -7,7 +7,7 @@ data class AutomateCouponModel(
     val benefit: DynamicColorText,
     val tnc: DynamicColorText,
     val backgroundUrl: String,
-    val iconUrl: String,
+    val iconUrl: String?,
     val timeLimitPrefix: DynamicColorText?,
     val endDate: Date?,
     val shopName: DynamicColorText?,
