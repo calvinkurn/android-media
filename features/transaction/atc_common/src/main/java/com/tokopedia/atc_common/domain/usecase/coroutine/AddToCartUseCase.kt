@@ -60,14 +60,14 @@ open class AddToCartUseCase @Inject constructor(
         if (!result.isStatusError()) {
             addToCartRequestParams?.let {
                 AddToCartBaseAnalytics.sendAppsFlyerTracking(
-                    it.productId.toString(),
+                    it.productId,
                     it.productName,
                     it.price,
                     it.quantity.toString(),
                     it.category
                 )
                 AddToCartBaseAnalytics.sendBranchIoTracking(
-                    it.productId.toString(), it.productName, it.price,
+                    it.productId, it.productName, it.price,
                     it.quantity.toString(), it.category, it.categoryLevel1Id,
                     it.categoryLevel1Name, it.categoryLevel2Id, it.categoryLevel2Name,
                     it.categoryLevel3Id, it.categoryLevel3Name, it.userId,
