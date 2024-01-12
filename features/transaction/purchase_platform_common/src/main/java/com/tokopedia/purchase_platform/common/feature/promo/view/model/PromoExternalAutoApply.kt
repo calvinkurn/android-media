@@ -5,6 +5,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class PromoExternalAutoApply(
-    var code: String = "",
-    var type: String = ""
+    val code: String = "",
+    val type: String = ""
 ) : Parcelable

@@ -120,21 +120,18 @@ object LastApplyMapper {
         promoSaf: PromoSAFResponse,
         uniqueId: String
     ): LastApplyUiModel {
-        val listGlobalVoucher = listPromoAutoApply.filter { it.type != TYPE_PROMO_MV }.map { it.code }
-        val listMerchantVoucher = listPromoAutoApply
-            .asSequence()
-            .filter { it.type == TYPE_PROMO_MV }.map {
+        val (listGlobalVoucher, listMerchantVoucher) = listPromoAutoApply.partition { it.type != TYPE_PROMO_MV }
+
+        return LastApplyUiModel(
+            codes = listGlobalVoucher.map { it.code },
+            userGroupMetadata = promoSaf.lastApply.data.userGroupMetadata,
+            voucherOrders = listMerchantVoucher.map {
                 LastApplyVoucherOrdersItemUiModel(
                     code = it.code,
                     uniqueId = uniqueId,
                     type = TYPE_PROMO_MV
                 )
             }
-
-        return LastApplyUiModel(
-            codes = listGlobalVoucher,
-            userGroupMetadata = promoSaf.lastApply.data.userGroupMetadata,
-            voucherOrders = listMerchantVoucher.toList()
         )
     }
 }
