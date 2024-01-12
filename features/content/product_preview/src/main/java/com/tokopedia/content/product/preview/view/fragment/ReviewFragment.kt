@@ -82,7 +82,7 @@ class ReviewFragment @Inject constructor(
     private val likeResult = registerForActivityResult(
         LoginReviewContract()
     ) { loginStatus ->
-        if (loginStatus) viewModel.onAction(ProductPreviewAction.Like(true))
+        if (loginStatus) viewModel.onAction(ProductPreviewAction.LikeFromResult)
     }
 
     override fun getScreenName() = TAG
@@ -190,7 +190,7 @@ class ReviewFragment @Inject constructor(
     }
 
     override fun onLike(status: LikeUiState) {
-        viewModel.onAction(ProductPreviewAction.Like(false))
+        viewModel.onAction(ProductPreviewAction.Like(status))
     }
 
     /**

@@ -36,6 +36,7 @@ data class MediaUiModel(
 data class LikeUiState(
     val count: Int,
     val state: LikeStatus,
+    val withAnimation: Boolean = false, //from double tap
 ) {
     enum class LikeStatus(val value: Int) {
         Like(1),

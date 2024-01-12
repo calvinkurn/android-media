@@ -23,9 +23,10 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                 reviewId = it.feedbackId,
                 medias = emptyList(), //TODO: map and sew it later,
                 menus = MenuStatus(isReportable = it.isReportable && !isOwner(it.user)),
-                likeState = LikeUiState(
+                likeState = LikeUiState (
                     count = it.likeStats.totalLike,
                     state = LikeUiState.LikeStatus.getByValue(it.likeStats.likeStatus),
+                    withAnimation = false,
                 ),
                 author = AuthorUiModel(
                     name = it.user.fullName,
@@ -73,6 +74,6 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
 
     fun mapLike(response: LikeReviewResponse): LikeUiState = LikeUiState(
         count = response.data.totalLike,
-        state = LikeUiState.LikeStatus.getByValue(response.data.likeStatus)
+        state = LikeUiState.LikeStatus.getByValue(response.data.likeStatus),
     )
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
@@ -75,7 +76,8 @@ class ProductPreviewViewModel @AssistedInject constructor(
             is ProductPreviewAction.SubmitReport -> submitReport(action.model)
             is ProductPreviewAction.ClickMenu -> menuOnClicked(action.isFromLogin)
             is ProductPreviewAction.UpdateReviewPosition -> updateReviewIndex(action.index)
-            is ProductPreviewAction.Like -> like(action.isFromLogin)
+            is ProductPreviewAction.Like -> like(status = action.item)
+            ProductPreviewAction.LikeFromResult -> like()
             else -> {}
         }
     }
@@ -198,14 +200,15 @@ class ProductPreviewViewModel @AssistedInject constructor(
         _reviewPosition.value = position
     }
 
-    private fun like(isFromLogin: Boolean) {
-        val status = currentReview.likeState
+    private fun like(status: LikeUiState = currentReview.likeState) {
+        if (status.withAnimation && !userSessionInterface.isLoggedIn) return
+
         requiredLogin(status) {
             viewModelScope.launchCatchError(block = {
                 val state = repo.likeReview(status, currentReview.reviewId)
                 _review.update { review ->
                     review.map { model ->
-                        if (model.reviewId == currentReview.reviewId) model.copy(likeState = state)
+                        if (model.reviewId == currentReview.reviewId) model.copy(likeState = state.copy(withAnimation = status.withAnimation))
                         else model
                     }
                 }

@@ -5,6 +5,7 @@ import android.view.MotionEvent
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.databinding.ItemReviewParentContentBinding
+import com.tokopedia.content.product.preview.view.components.LikeDanceAnim
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.DescriptionUiModel
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
@@ -12,12 +13,18 @@ import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImageCircle
 
 class ReviewParentContentViewHolder(
     private val binding: ItemReviewParentContentBinding,
     private val listener: Listener,
 ) : ViewHolder(binding.root) {
+
+    private val danceAnim by lazyThreadSafetyNone {
+        LikeDanceAnim(binding.ivDanceLike)
+    }
+
     fun bind(item: ReviewUiModel) {
         bindAuthor(item.author)
         bindDescription(item.description)
@@ -59,8 +66,13 @@ class ReviewParentContentViewHolder(
         ivReviewLike.setImage(newIconId = icon)
         tvLikeCount.text = state.count.toString()
         root.setOnClickListener {
-            listener.onLike(state)
+            listener.onLike(state.copy(withAnimation = false))
         }
+
+        if (!state.withAnimation) return@with
+        danceAnim.setEnabled(isEnabled = true)
+        danceAnim.setIsLiked(state.state == LikeUiState.LikeStatus.Like)
+        danceAnim.playLikeAnimation()
     }
 
     private fun setupTap(item: ReviewUiModel) {
@@ -68,19 +80,18 @@ class ReviewParentContentViewHolder(
             listener.onMenuClicked(item.menus)
         }
 
-        //TODO: add double tap
-
-//        val gesture = GestureDetector(
-//            binding.root.context,
-//            object : GestureDetector.SimpleOnGestureListener() {
-//                override fun onDoubleTap(e: MotionEvent): Boolean = true
-//            })
-//
-//        //TODO: adjust click animation, move [FeedLikeAnimationComponent, view_like] to content_common
-//        binding.layoutLikeReview.root.setOnTouchListener { _, motionEvent ->
-//            gesture.onTouchEvent(motionEvent)
-//            true
-//        }
+        val gesture = GestureDetector(
+            binding.root.context,
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onDoubleTap(e: MotionEvent): Boolean {
+                    listener.onLike(item.likeState.copy(withAnimation = true))
+                    return true
+                }
+            })
+        binding.root.setOnTouchListener { _, motionEvent ->
+            gesture.onTouchEvent(motionEvent)
+            true
+        }
     }
 
     interface Listener {
