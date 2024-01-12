@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -20,6 +21,9 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.compose.NestIcon
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.uimodel.DetailModel
+import com.tokopedia.logisticorder.uimodel.EtaModel
+import com.tokopedia.logisticorder.uimodel.TrackOrderModel
+import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.uimodel.TrackingPageState
 import com.tokopedia.logisticorder.utils.toHyphenIfEmptyOrNull
 import com.tokopedia.nest.principles.NestTypography
@@ -210,5 +214,66 @@ private val DetailModel.deliveryDate: CharSequence
         return date.toHyphenIfEmptyOrNull()
     }
 
-private val DATE_FORMAT_FROM_BE = "yyyy-MM-dd"
-private val DATE_FORMAT_UI = "dd MMMM yyyy"
+private const val DATE_FORMAT_FROM_BE = "yyyy-MM-dd"
+private const val DATE_FORMAT_UI = "dd MMMM yyyy"
+
+@Preview
+@Composable
+fun TrackingDetailSectionNormalPreview() {
+    val etaModel = EtaModel(
+        userInfo = "23 Juli, maks. 00:00 WIB"
+    )
+    val trackingDataModel = TrackingDataModel(
+        trackOrder = TrackOrderModel(
+            shippingRefNum = "TKPD-91274021",
+            detail = DetailModel(
+                shipperCity = "Kota Administrasi Jakarta Timur",
+                shipperName = "Tokopedia NOW ",
+                receiverCity = "Kota Administrasi Jakarta Timur",
+                receiverName = "Fakhira Devina",
+                sendDateTime = "2022-07-22 19:07:52",
+                sendDate = "2022-07-22",
+                sendTime = "19:07:52",
+                serviceCode = "GTL",
+                eta = etaModel
+            )
+        )
+    )
+    val state = TrackingPageState(
+        isLoading = false,
+        trackingData = trackingDataModel
+    )
+
+    TrackingDetailSection(state = state, copyShippingRefNumber = {}, seeEtaChangesInfo = {})
+}
+
+@Preview
+@Composable
+fun TrackingDetailSectionWithEtaChangedPreview() {
+    val etaModel = EtaModel(
+        userInfo = "23 Juli, maks. 00:00 WIB",
+        isChanged = true
+    )
+    val trackingDataModel = TrackingDataModel(
+        trackOrder = TrackOrderModel(
+            shippingRefNum = "TKPD-91274021",
+            detail = DetailModel(
+                shipperCity = "Kota Administrasi Jakarta Timur",
+                shipperName = "Tokopedia NOW ",
+                receiverCity = "Kota Administrasi Jakarta Timur",
+                receiverName = "Fakhira Devina",
+                sendDateTime = "2022-07-22 19:07:52",
+                sendDate = "2022-07-22",
+                sendTime = "19:07:52",
+                serviceCode = "GTL",
+                eta = etaModel
+            )
+        )
+    )
+    val state = TrackingPageState(
+        isLoading = false,
+        trackingData = trackingDataModel
+    )
+
+    TrackingDetailSection(state = state, copyShippingRefNumber = {}, seeEtaChangesInfo = {})
+}
