@@ -4,16 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sv_feed_top_tab"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:scrollbars="none">
 
     <androidx.constraintlayout.motion.widget.MotionLayout
         android:id="@+id/container_feed_top_tab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layoutDescription="@xml/layout_feed_top_nav_scene"
-        tools:background="@color/Unify_Static_Black"
         android:paddingStart="12dp"
-        android:paddingEnd="12dp">
+        android:paddingEnd="12dp"
+        app:layoutDescription="@xml/layout_feed_top_nav_scene"
+        tools:background="@color/Unify_Static_Black">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/ty_feed_first_tab"
@@ -71,9 +72,9 @@
             android:layout_height="2dp"
             android:layout_marginTop="6dp"
             android:background="@color/Unify_Static_White"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/ty_feed_first_tab"
-            app:layout_constraintStart_toStartOf="@id/ty_feed_first_tab"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toStartOf="@id/ty_feed_first_tab" />
 
     </androidx.constraintlayout.motion.widget.MotionLayout>
 </HorizontalScrollView>
