@@ -88,8 +88,8 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/card_br_separator_status"
+                    android:textColor="@color/Unify_NN950"
                     android:visibility="gone"
-                    android:textColor="@color/Unify_N700"
                     android:textSize="12sp"
                     app:typographyWeight="reguler"
                     app:typographyType="display_3"
