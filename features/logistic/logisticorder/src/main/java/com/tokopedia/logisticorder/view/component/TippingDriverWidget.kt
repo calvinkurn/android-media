@@ -1,5 +1,6 @@
 package com.tokopedia.logisticorder.view.component
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
@@ -8,6 +9,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -61,9 +63,9 @@ fun TippingDriverWidget(
                     modifier = Modifier
                         .size(48.dp, 48.dp)
                         .constrainAs(tippingLogo) {
-                            top.linkTo(parent.top, margin = 12.dp)
+                            top.linkTo(parent.top)
                             start.linkTo(parent.start, margin = 12.dp)
-                            bottom.linkTo(parent.bottom, margin = 12.dp)
+                            bottom.linkTo(parent.bottom)
                             visibility =
                                 if (tipping.status == TippingConstant.OPEN) Visibility.Visible else Visibility.Gone
                         },
@@ -73,7 +75,7 @@ fun TippingDriverWidget(
                 NestTypography(
                     modifier = Modifier.constrainAs(tippingText) {
                         top.linkTo(tippingLogo.top)
-                        start.linkTo(tippingLogo.end, margin = 12.dp)
+                        start.linkTo(tippingLogo.end, margin = 12.dp, goneMargin = 12.dp)
                         end.linkTo(tippingButton.start)
                         width = Dimension.fillToConstraints
                     },
@@ -86,7 +88,7 @@ fun TippingDriverWidget(
                 NestTypography(
                     modifier = Modifier.constrainAs(tippingDescription) {
                         top.linkTo(tippingText.bottom)
-                        start.linkTo(tippingLogo.end, margin = 12.dp)
+                        start.linkTo(tippingText.start)
                         end.linkTo(tippingButton.start)
                         width = Dimension.fillToConstraints
                     },
@@ -96,9 +98,9 @@ fun TippingDriverWidget(
                 NestButton(
                     modifier = Modifier.constrainAs(tippingButton) {
                         end.linkTo(parent.end, margin = 12.dp)
-                        top.linkTo(parent.top)
+                        top.linkTo(tippingLogo.top, margin = 12.dp, goneMargin = 12.dp)
                         start.linkTo(tippingText.end)
-                        bottom.linkTo(parent.bottom)
+                        bottom.linkTo(tippingLogo.bottom, margin = 12.dp, goneMargin = 12.dp)
                     },
                     text = tipping.buttonText,
                     onClick = { onClickTippingButton(tipping) },
@@ -119,3 +121,73 @@ private val TippingModel.buttonText: String
             else -> stringResource(R.string.btn_tipping_open_text)
         }
     }
+
+@Preview
+@Composable
+fun TippingDriverWidgetOpenPreview() {
+    val tipping = TippingModel(
+        status = TippingConstant.OPEN,
+        statusTitle = "Yuk, beri tip ke driver",
+        statusSubtitle = "Tip 100% diterima driver"
+    )
+
+    NestTheme {
+        TippingDriverWidget(modifier = Modifier.fillMaxWidth(), tipping = tipping, onClickTippingButton = {})
+    }
+}
+
+@Preview
+@Composable
+fun TippingDriverWidgetWaitingPaymentPreview() {
+    val tipping = TippingModel(
+        status = TippingConstant.WAITING_PAYMENT,
+        statusTitle = "Lakukan pembayaran",
+        statusSubtitle = "Tip menunggu pembayaranmu"
+    )
+
+    NestTheme {
+        TippingDriverWidget(modifier = Modifier.fillMaxWidth(), tipping = tipping, onClickTippingButton = {})
+    }
+}
+
+@Preview
+@Composable
+fun TippingDriverWidgetSuccessPaymentPreview() {
+    val tipping = TippingModel(
+        status = TippingConstant.SUCCESS_PAYMENT,
+        statusTitle = "Tip akan diberikan!",
+        statusSubtitle = "BNI Virtual Account Rp100.000"
+    )
+
+    NestTheme {
+        TippingDriverWidget(modifier = Modifier.fillMaxWidth(), tipping = tipping, onClickTippingButton = {})
+    }
+}
+
+@Preview
+@Composable
+fun TippingDriverWidgetSuccessTippingPreview() {
+    val tipping = TippingModel(
+        status = TippingConstant.SUCCESS_TIPPING,
+        statusTitle = "Tip kamu sudah diberikan!",
+        statusSubtitle = "BNI Virtual Account Rp100.000"
+    )
+
+    NestTheme {
+        TippingDriverWidget(modifier = Modifier.fillMaxWidth(), tipping = tipping, onClickTippingButton = {})
+    }
+}
+
+@Preview
+@Composable
+fun TippingDriverWidgetRefundPreview() {
+    val tipping = TippingModel(
+        status = TippingConstant.REFUND_TIP,
+        statusTitle = "Tip dikembalikan",
+        statusSubtitle = "Karena pesanan dibatalkan"
+    )
+
+    NestTheme {
+        TippingDriverWidget(modifier = Modifier.fillMaxWidth(), tipping = tipping, onClickTippingButton = {})
+    }
+}
