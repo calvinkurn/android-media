@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
@@ -20,9 +21,12 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
 
     override suspend fun execute(params: GetBuyerOrderDetailParams) = flow {
         emit(GetBuyerOrderDetailRequestState.Requesting)
+        EmbraceMonitoring.logBreadcrumb("Fetching order detail data")
         emit(GetBuyerOrderDetailRequestState.Complete.Success(sendRequest(params).buyerOrderDetail))
+        EmbraceMonitoring.logBreadcrumb("Successfully fetch order detail data")
     }.catch {
         emit(GetBuyerOrderDetailRequestState.Complete.Error(it))
+        EmbraceMonitoring.logBreadcrumb("Error fetch order detail data")
     }
 
     private fun createRequestParam(params: GetBuyerOrderDetailParams): Map<String, Any> {

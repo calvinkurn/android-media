@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailParams
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailResponse
@@ -20,9 +21,12 @@ class GetInsuranceDetailUseCase @Inject constructor(
 
     override suspend fun execute(params: GetInsuranceDetailParams) = flow {
         emit(GetInsuranceDetailRequestState.Requesting)
+        EmbraceMonitoring.logBreadcrumb("Fetching order insurance data")
         emit(GetInsuranceDetailRequestState.Complete.Success(sendRequest(params).ppGetInsuranceDetail?.data))
+        EmbraceMonitoring.logBreadcrumb("Successfully fetch order insurance data")
     }.catch {
         emit(GetInsuranceDetailRequestState.Complete.Error(it))
+        EmbraceMonitoring.logBreadcrumb("Error fetch order insurance data")
     }
 
     private fun createRequestParam(params: GetInsuranceDetailParams): Map<String, Any> {

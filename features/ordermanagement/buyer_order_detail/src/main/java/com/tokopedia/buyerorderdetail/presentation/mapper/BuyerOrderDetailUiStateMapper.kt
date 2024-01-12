@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.mapper
 
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.EpharmacyInfoUiState
@@ -12,6 +13,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.SavingsWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
+import org.json.JSONObject
 
 object BuyerOrderDetailUiStateMapper {
     @Suppress("NAME_SHADOWING")
@@ -28,6 +30,19 @@ object BuyerOrderDetailUiStateMapper {
         scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState,
         savingsWidgetUiState: SavingsWidgetUiState
     ): BuyerOrderDetailUiState {
+        logBreadcrumb(
+            actionButtonsUiState,
+            orderStatusUiState,
+            paymentInfoUiState,
+            productListUiState,
+            shipmentInfoUiState,
+            pgRecommendationWidgetUiState,
+            orderResolutionTicketStatusUiState,
+            orderInsuranceUiState,
+            epharmacyInfoUiState,
+            scpRewardsMedalTouchPointWidgetUiState,
+            savingsWidgetUiState
+        )
         return if (
             actionButtonsUiState is ActionButtonsUiState.HasData &&
             orderStatusUiState is OrderStatusUiState.HasData &&
@@ -95,5 +110,33 @@ object BuyerOrderDetailUiStateMapper {
         } else {
             BuyerOrderDetailUiState.FullscreenLoading
         }
+    }
+
+    private fun logBreadcrumb(
+        actionButtonsUiState: ActionButtonsUiState,
+        orderStatusUiState: OrderStatusUiState,
+        paymentInfoUiState: PaymentInfoUiState,
+        productListUiState: ProductListUiState,
+        shipmentInfoUiState: ShipmentInfoUiState,
+        pgRecommendationWidgetUiState: PGRecommendationWidgetUiState,
+        orderResolutionTicketStatusUiState: OrderResolutionTicketStatusUiState,
+        orderInsuranceUiState: OrderInsuranceUiState,
+        epharmacyInfoUiState: EpharmacyInfoUiState,
+        scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState,
+        savingsWidgetUiState: SavingsWidgetUiState
+    ) {
+        val jsonData = JSONObject()
+        jsonData.put("actionButtonsUiState", actionButtonsUiState::class.java.name)
+        jsonData.put("orderStatusUiState", orderStatusUiState::class.java.name)
+        jsonData.put("paymentInfoUiState", paymentInfoUiState::class.java.name)
+        jsonData.put("productListUiState", productListUiState::class.java.name)
+        jsonData.put("shipmentInfoUiState", shipmentInfoUiState::class.java.name)
+        jsonData.put("pgRecommendationWidgetUiState", pgRecommendationWidgetUiState::class.java.name)
+        jsonData.put("orderResolutionTicketStatusUiState", orderResolutionTicketStatusUiState::class.java.name)
+        jsonData.put("orderInsuranceUiState", orderInsuranceUiState::class.java.name)
+        jsonData.put("epharmacyInfoUiState", epharmacyInfoUiState::class.java.name)
+        jsonData.put("scpRewardsMedalTouchPointWidgetUiState", scpRewardsMedalTouchPointWidgetUiState::class.java.name)
+        jsonData.put("savingsWidgetUiState", savingsWidgetUiState::class.java.name)
+        EmbraceMonitoring.logBreadcrumb("Mapping UI states into BOM Ui State: $jsonData")
     }
 }

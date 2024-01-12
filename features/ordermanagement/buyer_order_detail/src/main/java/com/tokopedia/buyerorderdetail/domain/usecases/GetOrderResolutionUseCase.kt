@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionParams
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionResponse
@@ -19,9 +20,12 @@ class GetOrderResolutionUseCase @Inject constructor(
 
     override suspend fun execute(params: GetOrderResolutionParams) = flow {
         emit(GetOrderResolutionRequestState.Requesting)
+        EmbraceMonitoring.logBreadcrumb("Fetching order resolution data")
         emit(GetOrderResolutionRequestState.Complete.Success(sendRequest(params).resolutionGetTicketStatus?.data))
+        EmbraceMonitoring.logBreadcrumb("Successfully fetch order resolution data")
     }.catch {
         emit(GetOrderResolutionRequestState.Complete.Error(it))
+        EmbraceMonitoring.logBreadcrumb("Error fetch order resolution data")
     }
 
     private fun createRequestParam(params: GetOrderResolutionParams): Map<String, Any> {
