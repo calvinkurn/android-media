@@ -127,7 +127,7 @@ fun ShippingStatusSection(status: String?) {
 
 @Preview
 @Composable
-fun TrackingPagePreview() {
+private fun TrackingPagePreview() {
     val lastDriverModel = LastDriverModel(
         name = "Budi",
         phone = "+6256648394543",

@@ -219,7 +219,7 @@ private const val DATE_FORMAT_UI = "dd MMMM yyyy"
 
 @Preview
 @Composable
-fun TrackingDetailSectionNormalPreview() {
+private fun TrackingDetailSectionNormalPreview() {
     val etaModel = EtaModel(
         userInfo = "23 Juli, maks. 00:00 WIB"
     )
@@ -249,7 +249,7 @@ fun TrackingDetailSectionNormalPreview() {
 
 @Preview
 @Composable
-fun TrackingDetailSectionWithEtaChangedPreview() {
+private fun TrackingDetailSectionWithEtaChangedPreview() {
     val etaModel = EtaModel(
         userInfo = "23 Juli, maks. 00:00 WIB",
         isChanged = true

@@ -108,7 +108,7 @@ fun DriverInfoWidget(
 
 @Preview
 @Composable
-fun DriveInfoWidgetPreview() {
+private fun DriveInfoWidgetPreview() {
     val data = LastDriverModel(
         name = "Budi",
         phone = "+6256648394543",

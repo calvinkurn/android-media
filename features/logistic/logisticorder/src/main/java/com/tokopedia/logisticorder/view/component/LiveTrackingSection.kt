@@ -26,7 +26,7 @@ fun LiveTrackingSection(trackingUrl: String?, openWebview: (url: String) -> Unit
 
 @Preview
 @Composable
-fun LiveTrackingSectionPreview() {
+private fun LiveTrackingSectionPreview() {
     NestTheme {
         LiveTrackingSection(trackingUrl = "https://track.gojek.com/?id=fd1015ee", openWebview = {})
     }

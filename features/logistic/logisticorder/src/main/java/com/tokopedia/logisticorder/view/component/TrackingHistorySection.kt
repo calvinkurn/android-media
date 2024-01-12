@@ -233,7 +233,7 @@ private val TrackOrderModel.emptyTrackingTitle: String
 
 @Preview
 @Composable
-fun TrackingHistoryNormalPreview() {
+private fun TrackingHistoryNormalPreview() {
     val data = TrackOrderModel(
         trackHistory = listOf(
             TrackHistoryModel(
@@ -260,7 +260,7 @@ fun TrackingHistoryNormalPreview() {
 
 @Preview
 @Composable
-fun TrackingHistoryEmptyPreview() {
+private fun TrackingHistoryEmptyPreview() {
     val data = TrackOrderModel(
         trackHistory = listOf()
     )
@@ -272,7 +272,7 @@ fun TrackingHistoryEmptyPreview() {
 
 @Preview
 @Composable
-fun TrackingHistoryInvalidPreview() {
+private fun TrackingHistoryInvalidPreview() {
     val data = TrackOrderModel(
         trackHistory = listOf(),
         invalid = true

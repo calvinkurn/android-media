@@ -67,7 +67,7 @@ private val TrackingDataModel?.hasDriverInfo: Boolean
 
 @Preview
 @Composable
-fun DriverWidgetPreview() {
+private fun DriverWidgetPreview() {
     val lastDriverModel = LastDriverModel(
         name = "Budi",
         phone = "+6256648394543",
@@ -96,7 +96,7 @@ fun DriverWidgetPreview() {
 
 @Preview
 @Composable
-fun DriverWidgetTokopediaNowOrderPreview() {
+private fun DriverWidgetTokopediaNowOrderPreview() {
     val lastDriverModel = LastDriverModel(
         name = "Budi",
         phone = "+6256648394543",

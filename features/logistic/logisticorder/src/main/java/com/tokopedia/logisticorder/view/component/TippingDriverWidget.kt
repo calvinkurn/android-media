@@ -124,7 +124,7 @@ private val TippingModel.buttonText: String
 
 @Preview
 @Composable
-fun TippingDriverWidgetOpenPreview() {
+private fun TippingDriverWidgetOpenPreview() {
     val tipping = TippingModel(
         status = TippingConstant.OPEN,
         statusTitle = "Yuk, beri tip ke driver",
@@ -138,7 +138,7 @@ fun TippingDriverWidgetOpenPreview() {
 
 @Preview
 @Composable
-fun TippingDriverWidgetWaitingPaymentPreview() {
+private fun TippingDriverWidgetWaitingPaymentPreview() {
     val tipping = TippingModel(
         status = TippingConstant.WAITING_PAYMENT,
         statusTitle = "Lakukan pembayaran",
@@ -152,7 +152,7 @@ fun TippingDriverWidgetWaitingPaymentPreview() {
 
 @Preview
 @Composable
-fun TippingDriverWidgetSuccessPaymentPreview() {
+private fun TippingDriverWidgetSuccessPaymentPreview() {
     val tipping = TippingModel(
         status = TippingConstant.SUCCESS_PAYMENT,
         statusTitle = "Tip akan diberikan!",
@@ -166,7 +166,7 @@ fun TippingDriverWidgetSuccessPaymentPreview() {
 
 @Preview
 @Composable
-fun TippingDriverWidgetSuccessTippingPreview() {
+private fun TippingDriverWidgetSuccessTippingPreview() {
     val tipping = TippingModel(
         status = TippingConstant.SUCCESS_TIPPING,
         statusTitle = "Tip kamu sudah diberikan!",
@@ -180,7 +180,7 @@ fun TippingDriverWidgetSuccessTippingPreview() {
 
 @Preview
 @Composable
-fun TippingDriverWidgetRefundPreview() {
+private fun TippingDriverWidgetRefundPreview() {
     val tipping = TippingModel(
         status = TippingConstant.REFUND_TIP,
         statusTitle = "Tip dikembalikan",

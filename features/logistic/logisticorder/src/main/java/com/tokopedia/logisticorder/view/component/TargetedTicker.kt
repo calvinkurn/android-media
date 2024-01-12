@@ -52,7 +52,7 @@ private val URL_TAG = "url"
 
 @Preview
 @Composable
-fun TargetedTickerPreview() {
+private fun TargetedTickerPreview() {
     val tickerData = listOf(
         TickerModel.TickerItem(
             type = 3,
