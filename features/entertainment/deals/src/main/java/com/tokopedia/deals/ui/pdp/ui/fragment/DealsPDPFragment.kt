@@ -69,7 +69,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.lang.ref.WeakReference
-import java.util.*
+import java.util.Calendar
 import java.util.regex.Pattern
 import javax.inject.Inject
 import com.tokopedia.abstraction.R.drawable as abstractionDrawables

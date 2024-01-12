@@ -8,7 +8,9 @@ import com.tokopedia.deals.common.ui.dataview.ProductCategoryDataView
 import com.tokopedia.kotlin.extensions.view.ONE
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 object DealsUtils {
 
@@ -63,7 +65,7 @@ object DealsUtils {
     }
 
     fun getLabelColor(context: Context, label: String): ProductCategoryDataView {
-        val color =  when(label){
+        val color = when (label) {
             getString(context, R.string.deals_homepage_popular_tag) -> com.tokopedia.unifyprinciples.R.color.Unify_YN400
             getString(context, R.string.deals_homepage_new_deals_tag) -> com.tokopedia.unifyprinciples.R.color.Unify_BN500
             getString(context, R.string.deals_homepage_new_halal_tag) -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
