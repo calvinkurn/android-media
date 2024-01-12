@@ -17,6 +17,8 @@ import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
@@ -74,24 +76,31 @@ class ReviewParentContentViewHolder(
             append(" $divider ")
             append(description.timestamp)
         }
-        //TODO: check if text can be scrollable
-        tvReviewDescription.text = description.description
-        tvReviewDescription.doOnLayout {
-            val text = tvReviewDescription.layout.text
-            if (text == description.description) return@doOnLayout
+        setupReview(description.description)
+    }
 
-            val length = text.filter { it.isLetterOrDigit() }.length
+    private fun setupReview(description: String) = with(binding) {
+        tvReviewDescription.invisible()
+        tvReviewDescription.text = description
+        tvReviewDescription.doOnLayout {
+            val text = tvReviewDescription.layout
+            if (text.lineCount <= MAX_LINES_THRESHOLD) return@doOnLayout
+
+            val start = text.getLineStart(0)
+            val end = text.getLineEnd(MAX_LINES_THRESHOLD - 1)
+
             tvReviewDescription.text = buildSpannedString {
-                append(text.take(length))
+                append(text.text.subSequence(start, end).dropLast(READ_MORE_COUNT))
                 append(root.context.getString(R.string.product_prev_review_ellipsize))
                 append(
                     root.context.getString(R.string.product_prev_review_expand),
-                    clickableSpan(description.description),
+                    clickableSpan(description),
                     Spanned.SPAN_EXCLUSIVE_INCLUSIVE
                 )
             }
             tvReviewDescription.movementMethod = LinkMovementMethod.getInstance()
         }
+        tvReviewDescription.show()
     }
 
     fun bindLike(state: LikeUiState) = with(binding.layoutLikeReview) {
@@ -116,6 +125,8 @@ class ReviewParentContentViewHolder(
         fun create(binding: ItemReviewParentContentBinding, listener: Listener) =
             ReviewParentContentViewHolder(binding, listener)
 
-        private const val MAX_LINES_VALUE = 100
+        private const val MAX_LINES_VALUE = 25
+        private const val MAX_LINES_THRESHOLD = 2
+        private const val READ_MORE_COUNT = 16
     }
 }
