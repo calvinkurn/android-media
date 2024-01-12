@@ -27,6 +27,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_REFRESH_FOR_RELEVANT_POST
+import com.tokopedia.content.common.navigation.feed.FeedRelevantPostActivityContract
 import com.tokopedia.content.common.producttag.view.uimodel.NetworkResult
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.reduceDragSensitivity
@@ -196,6 +197,9 @@ class FeedBaseFragment :
                 RouteManager.route(requireContext(), metaModel.browseApplink)
             }
         }
+
+    private val feedRelevantPostResult =
+        registerForActivityResult(FeedRelevantPostActivityContract()) {}
 
     override fun onAttach(context: Context) {
         inject()
@@ -526,15 +530,12 @@ class FeedBaseFragment :
                                             duration = Toaster.LENGTH_LONG,
                                             actionText = getString(R.string.feed_upload_shorts_see_video),
                                             actionListener = {
-                                                val intent = RouteManager.getIntent(
-                                                    requireContext(),
-                                                    ApplinkConst.FEED_RELEVANT_POST,
-                                                    uploadData.activityId
-                                                ).apply {
-                                                    putExtra(UF_EXTRA_REFRESH_FOR_RELEVANT_POST, true)
-                                                }
-
-                                                router.route(requireActivity(), intent)
+                                                router.route(
+                                                    feedRelevantPostResult,
+                                                    FeedRelevantPostActivityContract.Data(
+                                                        postId = uploadData.activityId
+                                                    )
+                                                )
                                             }
                                         )
                                     }
