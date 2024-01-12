@@ -72,6 +72,7 @@ import com.tokopedia.promousage.domain.entity.PromoEntryPointInfo
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoExternalAutoApply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -135,8 +136,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     fun `Get Occ Cart Success With No Address`() {
         // Given
         val response = OrderData(errorCode = AddressState.ERROR_CODE_OPEN_ANA)
+        val listPromoExternalAutoApply = arrayListOf<PromoExternalAutoApply>()
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), listPromoExternalAutoApply) } returns response
 
         // When
         orderSummaryPageViewModel.getOccCart("")
@@ -153,8 +155,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Get Occ Cart Success Twice Should Trigger Analytics Once`() {
         // Given
+        val listPromoExternalAutoApply = arrayListOf<PromoExternalAutoApply>()
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns helper.orderData
+        coEvery { getOccCartUseCase.executeSuspend(any(), listPromoExternalAutoApply) } returns helper.orderData
         every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
 
@@ -171,6 +174,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Get Occ Cart Success With PPP Twice Should Trigger PPP Analytics Once`() {
         // Given
+        val listPromoExternalAutoApply = arrayListOf<PromoExternalAutoApply>()
         val response = helper.orderData.copy(
             cart = helper.orderData.cart.copy(
                 products = mutableListOf(
@@ -181,7 +185,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             )
         )
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), listPromoExternalAutoApply) } returns response
 
         // When
         orderSummaryPageViewModel.getOccCart("")
@@ -197,9 +201,10 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Get Occ Cart Success Should Trigger Payment Tracker`() {
         // Given
+        val listPromoExternalAutoApply = arrayListOf<PromoExternalAutoApply>()
         val response = helper.orderData
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), listPromoExternalAutoApply) } returns response
 
         // When
         orderSummaryPageViewModel.getOccCart("")
@@ -223,8 +228,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 )
             )
         )
+        val listPromoExternalAutoApply = arrayListOf<PromoExternalAutoApply>()
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), listPromoExternalAutoApply) } returns response
 
         // When
         orderSummaryPageViewModel.getOccCart("")
@@ -240,8 +246,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     fun `Get Occ Cart Failed`() {
         // Given
         val response = Throwable()
+        val listPromoExternalAutoApply = arrayListOf<PromoExternalAutoApply>()
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } throws response
+        coEvery { getOccCartUseCase.executeSuspend(any(), listPromoExternalAutoApply) } throws response
 
         // When
         orderSummaryPageViewModel.getOccCart("")
@@ -262,8 +269,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val address = OrderProfileAddress(addressId = "0")
         val profile = OrderProfile(shipment = shipment, address = address)
         val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = "1"))), preference = profile, errorCode = "")
+        val listPromoExternalAutoApply = arrayListOf<PromoExternalAutoApply>()
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), listPromoExternalAutoApply) } returns response
 
         // When
         orderSummaryPageViewModel.getOccCart("")
@@ -285,8 +293,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val payment = OrderProfilePayment(gatewayCode = "payment")
         val profile = OrderProfile(shipment = shipment, address = address, payment = payment)
         val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = "1"))), preference = profile)
+        val listPromoExternalAutoApply = arrayListOf<PromoExternalAutoApply>()
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), listPromoExternalAutoApply) } returns response
 
         // When
         orderSummaryPageViewModel.getOccCart("")
@@ -307,8 +316,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val profile = OrderProfile(shipment = shipment, address = address, payment = payment)
         val prompt = OccPrompt(TYPE_DIALOG)
         val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = "1"))), preference = profile, prompt = prompt)
+        val listPromoExternalAutoApply = arrayListOf<PromoExternalAutoApply>()
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), listPromoExternalAutoApply) } returns response
 
         // When
         orderSummaryPageViewModel.getOccCart("")
@@ -328,8 +338,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val payment = OrderProfilePayment(gatewayCode = "payment")
         val profile = OrderProfile(shipment = shipment, address = address, payment = payment)
         val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = "1"))), preference = profile)
+        val listPromoExternalAutoApply = arrayListOf<PromoExternalAutoApply>()
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), listPromoExternalAutoApply) } returns response
 
         val uiMessage = OccToasterAction("message")
 
@@ -352,8 +363,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val profile = OrderProfile(shipment = shipment, address = address, payment = payment)
         val popUpMessage = "popUpMessage"
         val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = "1"))), preference = profile, popUpMessage = popUpMessage)
+        val listPromoExternalAutoApply = arrayListOf<PromoExternalAutoApply>()
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), listPromoExternalAutoApply) } returns response
 
         // When
         orderSummaryPageViewModel.getOccCart("")
@@ -375,8 +387,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val cart = OrderCart(products = mutableListOf(OrderProduct(productId = "1", orderQuantity = 1)))
         val promo = OrderPromo(LastApplyUiModel(listOf("promo")))
         val response = OrderData(cart = cart, preference = profile, promo = promo)
+        val listPromoExternalAutoApply = arrayListOf<PromoExternalAutoApply>()
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), listPromoExternalAutoApply) } returns response
 
         val shippingRecommendationData = ShippingRecommendationData().apply {
             shippingDurationUiModels = listOf(
@@ -438,8 +451,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val cart = OrderCart(products = mutableListOf(OrderProduct(productId = "1", orderQuantity = 1)))
         val promo = OrderPromo(LastApplyUiModel(listOf("promo")))
         val response = OrderData(cart = cart, preference = profile, promo = promo)
+        val listPromoExternalAutoApply = arrayListOf<PromoExternalAutoApply>()
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), listPromoExternalAutoApply) } returns response
 
         val shippingRecommendationData = ShippingRecommendationData().apply {
             shippingDurationUiModels = listOf(
@@ -1197,8 +1211,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val shipment = OrderProfileShipment(serviceId = "1")
         val profile = OrderProfile(shipment = shipment)
         val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = "1"))), preference = profile, onboarding = onboarding)
+        val listPromoExternalAutoApply = arrayListOf<PromoExternalAutoApply>()
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), listPromoExternalAutoApply) } returns response
 
         every { ratesUseCase.execute(any()) } throws Throwable()
 
@@ -1218,8 +1233,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         val payment = OrderProfilePayment(gatewayCode = "payment")
         val profile = OrderProfile(shipment = shipment, address = address, payment = payment)
         val response = OrderData(cart = OrderCart(products = mutableListOf(OrderProduct(productId = "1"))), preference = profile, onboarding = onboarding)
+        val listPromoExternalAutoApply = arrayListOf<PromoExternalAutoApply>()
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), listPromoExternalAutoApply) } returns response
 
         val shippingRecommendationData = ShippingRecommendationData().apply {
             shippingDurationUiModels = listOf(
@@ -1267,8 +1283,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             onboarding = onboarding,
             prompt = prompt
         )
+        val listPromoExternalAutoApply = arrayListOf<PromoExternalAutoApply>()
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), listPromoExternalAutoApply) } returns response
 
         val shippingRecommendationData = ShippingRecommendationData().apply {
             shippingDurationUiModels = listOf(
@@ -1306,8 +1323,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Given
         val shopId = "123"
         val response = helper.orderData.copy(cart = helper.orderData.cart.copy(shop = helper.orderData.cart.shop.copy(shopId = shopId)))
+        val listPromoExternalAutoApply = arrayListOf<PromoExternalAutoApply>()
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), listPromoExternalAutoApply) } returns response
 
         // When
         orderSummaryPageViewModel.getOccCart("")
@@ -1327,8 +1345,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 )
             )
         )
+        val listPromoExternalAutoApply = arrayListOf<PromoExternalAutoApply>()
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), listPromoExternalAutoApply) } returns response
 
         // When
         orderSummaryPageViewModel.getOccCart("")
@@ -2485,8 +2504,9 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
                 )
             )
         )
+        val listPromoExternalAutoApply = arrayListOf<PromoExternalAutoApply>()
         every { getOccCartUseCase.createRequestParams(any(), any(), any(), any()) } returns emptyMap()
-        coEvery { getOccCartUseCase.executeSuspend(any(), promoExternalAutoApplyCode) } returns response
+        coEvery { getOccCartUseCase.executeSuspend(any(), listPromoExternalAutoApply) } returns response
         coEvery { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
         val promoResponse = ValidateUsePromoRevampUiModel(
             status = "OK",
