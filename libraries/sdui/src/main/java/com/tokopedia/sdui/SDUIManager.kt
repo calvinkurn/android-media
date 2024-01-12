@@ -40,6 +40,7 @@ class SDUIManager : SDUIinterface {
             .actionHandler(ActionHandler(context))
             .extension(DivLottieExtensionHandler())
             .extension(HTMLHandler())
+            .enableViewPool(false)
             .typefaceProvider(TypeFaceProvider(context))
             .supportHyphenation(true)
             .visualErrorsEnabled(true)
