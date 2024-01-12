@@ -44,6 +44,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import java.util.*
 import java.util.concurrent.TimeUnit
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 object ProductDetailUtil {
 
@@ -107,7 +108,7 @@ fun String.boldOrLinkText(
                         override fun updateDrawState(ds: TextPaint) {
                             super.updateDrawState(ds)
                             ds.isUnderlineText = false
-                            val textColor = if (isLink) com.tokopedia.unifyprinciples.R.color.Unify_GN500 else com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+                            val textColor = if (isLink) unifyprinciplesR.color.Unify_GN500 else unifyprinciplesR.color.Unify_NN950_96
                             ds.color = MethodChecker.getColor(context, textColor)
                         }
                     },
@@ -122,7 +123,7 @@ fun String.boldOrLinkText(
 
 fun String.renderHtmlBold(
     context: Context,
-    boldColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_NN950_96
+    boldColor: Int = unifyprinciplesR.color.Unify_NN950_96
 ): CharSequence? {
     if (this.isEmpty()) return null
     val spannedHtmlString: Spanned = MethodChecker.fromHtml(this)
