@@ -146,7 +146,6 @@ object UohConsts {
     const val WAREHOUSE_ID = "warehouse_id"
     const val PRODUCT_PRICE = "product_price"
     const val PRODUCT_NAME = "product_name"
-    const val SHOP_NAME = "shop_name"
     const val CATEGORY = "category"
 
     const val ACTION_FINISH_ORDER = "event_dialog_deliver_finish"

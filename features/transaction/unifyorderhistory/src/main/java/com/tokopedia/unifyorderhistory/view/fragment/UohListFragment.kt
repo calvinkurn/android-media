@@ -172,7 +172,6 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.QUERY_PARAM_INVOICE
 import com.tokopedia.unifyorderhistory.util.UohConsts.QUERY_PARAM_INVOICE_URL
 import com.tokopedia.unifyorderhistory.util.UohConsts.REPLACE_ORDER_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.SHOP_ID
-import com.tokopedia.unifyorderhistory.util.UohConsts.SHOP_NAME
 import com.tokopedia.unifyorderhistory.util.UohConsts.START_DATE
 import com.tokopedia.unifyorderhistory.util.UohConsts.STATUS_DIKIRIM
 import com.tokopedia.unifyorderhistory.util.UohConsts.STATUS_DIPROSES
@@ -2709,8 +2708,7 @@ open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandl
                         notes = objParam.get(NOTES).asString,
                         shopId = objParam.get(SHOP_ID).asString,
                         custId = objParam.get(CUSTOMER_ID).asString,
-                        warehouseId = objParam.get(WAREHOUSE_ID).asString,
-                        shopName = objParam.get(SHOP_NAME).asString
+                        warehouseId = objParam.get(WAREHOUSE_ID).asString
                     )
                 )
             }
