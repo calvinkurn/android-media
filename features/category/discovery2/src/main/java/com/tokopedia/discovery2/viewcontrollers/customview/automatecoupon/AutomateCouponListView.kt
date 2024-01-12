@@ -56,7 +56,12 @@ class AutomateCouponListView @JvmOverloads constructor(
         binding.imgCouponBackground.loadImageWithoutPlaceholder(backgroundUrl)
     }
 
-    private fun renderIcon(iconUrl: String) {
+    private fun renderIcon(iconUrl: String?) {
+        if (iconUrl.isNullOrEmpty()) {
+            binding.imgIconType.hide()
+            return
+        }
+
         binding.imgIconType.loadImageWithoutPlaceholder(iconUrl)
     }
 
