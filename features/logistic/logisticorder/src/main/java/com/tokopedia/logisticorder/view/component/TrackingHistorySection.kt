@@ -1,7 +1,10 @@
 package com.tokopedia.logisticorder.view.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,10 +14,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -203,8 +208,12 @@ private fun InvalidTrackingNotes(modifier: Modifier) {
 
 @Composable
 private fun InvalidTrackingNotesItem(text: String) {
-    Row(Modifier.padding(top = 8.dp)) {
-        NestImage(source = ImageSource.Painter(source = R.drawable.circle_border_logistic))
+    Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.Top) {
+        Box(
+            modifier = Modifier
+                .size(8.dp, 8.dp)
+                .border(BorderStroke(width = 1.dp, color = NestTheme.colors.NN._300), CircleShape)
+        )
         NestTypography(
             text = text
         )
@@ -221,3 +230,55 @@ private val TrackOrderModel.emptyTrackingTitle: String
             ""
         }
     }
+
+@Preview
+@Composable
+fun TrackingHistoryNormalPreview() {
+    val data = TrackOrderModel(
+        trackHistory = listOf(
+            TrackHistoryModel(
+                dateTime = "2021-11-12 22:38:55",
+                date = "2021-11-12",
+                status = "Pesanan dalam perjalanan",
+                city = "Bandung",
+                time = "22:38:55"
+            ),
+            TrackHistoryModel(
+                dateTime = "2021-11-10 22:38:55",
+                date = "2021-11-10",
+                status = "Pesanan telah di pickup",
+                city = "Surabaya",
+                time = "22:38:55"
+            )
+        )
+    )
+
+    NestTheme {
+        TrackingHistory(trackHistory = data, seeProofOfDelivery = {})
+    }
+}
+
+@Preview
+@Composable
+fun TrackingHistoryEmptyPreview() {
+    val data = TrackOrderModel(
+        trackHistory = listOf()
+    )
+
+    NestTheme {
+        TrackingHistory(trackHistory = data, seeProofOfDelivery = {})
+    }
+}
+
+@Preview
+@Composable
+fun TrackingHistoryInvalidPreview() {
+    val data = TrackOrderModel(
+        trackHistory = listOf(),
+        invalid = true
+    )
+
+    NestTheme {
+        TrackingHistory(trackHistory = data, seeProofOfDelivery = {})
+    }
+}
