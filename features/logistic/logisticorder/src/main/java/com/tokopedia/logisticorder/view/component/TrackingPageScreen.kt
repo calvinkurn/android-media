@@ -23,6 +23,7 @@ import com.tokopedia.iconunify.getIconUnifyResourceIdRef
 import com.tokopedia.logisticorder.uimodel.DetailModel
 import com.tokopedia.logisticorder.uimodel.EtaModel
 import com.tokopedia.logisticorder.uimodel.LastDriverModel
+import com.tokopedia.logisticorder.uimodel.PageModel
 import com.tokopedia.logisticorder.uimodel.ProofModel
 import com.tokopedia.logisticorder.uimodel.TippingModel
 import com.tokopedia.logisticorder.uimodel.TrackHistoryModel
@@ -37,6 +38,7 @@ import com.tokopedia.nest.components.loader.NestLoaderType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.IconSource
+import com.tokopedia.targetedticker.domain.TickerModel
 import com.tokopedia.logisticorder.R as logisticorderR
 
 @Composable
@@ -139,11 +141,33 @@ private fun TrackingPagePreview() {
         statusTitle = "Yuk, beri tip ke driver",
         statusSubtitle = "Tip 100% diterima driver"
     )
+    val tickerData = listOf(
+        TickerModel.TickerItem(
+            type = 3,
+            title = "Pengiriman mengalami kendala",
+            content = "Pengiriman terlambat karena cuaca buruk",
+            linkUrl = "https://tokopedia/help"
+        ),
+        TickerModel.TickerItem(
+            type = 2,
+            title = "Pengiriman menggunakan Kurir Rekomendasi",
+            content = "Informasi mengenai kurir rekomendasi",
+            linkUrl = "https://tokopedia/help"
+        )
+    )
+    val tickerModel = TickerModel(
+        item = tickerData
+    )
     val state = TrackingPageState(
         isLoading = false,
+        tickerData = tickerModel,
         trackingData = TrackingDataModel(
+            page = PageModel(
+                contactUsUrl = "https://tokopedia.com/help"
+            ),
             trackOrder = TrackOrderModel(
                 shippingRefNum = "NORESI",
+                status = "Shipping",
                 detail = DetailModel(
                     serviceCode = "SER20",
                     shipperCity = "Bandung",
