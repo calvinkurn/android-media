@@ -13,9 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentReviewBinding
@@ -38,10 +38,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 class ReviewFragment @Inject constructor(
     private val viewModelFactory: ProductPreviewViewModelFactory.Creator,
-    private val router: Router,
+    private val router: Router
 ) : TkpdBaseV4Fragment(), ReviewParentContentViewHolder.Listener, MenuBottomSheet.Listener, ReviewReportBottomSheet.Listener {
 
     private var _binding: FragmentReviewBinding? = null
@@ -50,7 +49,7 @@ class ReviewFragment @Inject constructor(
 
     private val viewModel by viewModels<ProductPreviewViewModel> {
         viewModelFactory.create(
-            EntrySource(productId = "4937529690") //TODO: Testing purpose, change from arguments
+            EntrySource(productId = "4937529690") // TODO: Testing purpose, change from arguments
         )
     }
 
@@ -58,7 +57,7 @@ class ReviewFragment @Inject constructor(
         ReviewParentAdapter(this)
     }
 
-    private val snapHelper = PagerSnapHelper() //TODO: adjust pager snap helper
+    private val snapHelper = PagerSnapHelper() // TODO: adjust pager snap helper
 
     private val scrollListener by lazyThreadSafetyNone {
         object : RecyclerView.OnScrollListener() {
@@ -127,26 +126,28 @@ class ReviewFragment @Inject constructor(
 
     private fun observeEvent() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.uiEvent.collectLatest {
-                when(val event = it) {
-                    is ProductPreviewEvent.ShowMenuSheet -> {
-                        MenuBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).apply {
-                            setMenu(event.status)
-                        }.show(childFragmentManager)
-                    }
-                    is ProductPreviewEvent.LoginEvent<*> -> {
-                        when(event.data) {
-                            is MenuStatus -> menuResult.launch(Unit)
+            viewModel.uiEvent
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
+                .collect {
+                    when (val event = it) {
+                        is ProductPreviewEvent.ShowMenuSheet -> {
+                            MenuBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).apply {
+                                setMenu(event.status)
+                            }.show(childFragmentManager)
                         }
+                        is ProductPreviewEvent.LoginEvent<*> -> {
+                            when (event.data) {
+                                is MenuStatus -> menuResult.launch(Unit)
+                            }
+                        }
+                        else -> {}
                     }
-                    else -> {}
                 }
-            }
         }
     }
 
     private fun renderList(prev: List<ReviewUiModel>?, data: List<ReviewUiModel>) {
-        if (prev == data) return //TODO: adjust condition
+        if (prev == data) return // TODO: adjust condition
         reviewAdapter.submitList(data)
     }
 
@@ -166,7 +167,7 @@ class ReviewFragment @Inject constructor(
      * Menu Bottom Sheet Listener
      */
     override fun onOptionClicked(menu: ContentMenuItem) {
-        when(menu.type) {
+        when (menu.type) {
             ContentMenuIdentifier.Report ->
                 ReviewReportBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).show(childFragmentManager)
             else -> {}
@@ -180,7 +181,7 @@ class ReviewFragment @Inject constructor(
         viewModel.onAction(ProductPreviewAction.SubmitReport(report))
     }
 
-    private fun getCurrentPosition() : Int {
+    private fun getCurrentPosition(): Int {
         return (binding.rvReview.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition() ?: RecyclerView.NO_POSITION
     }
 
