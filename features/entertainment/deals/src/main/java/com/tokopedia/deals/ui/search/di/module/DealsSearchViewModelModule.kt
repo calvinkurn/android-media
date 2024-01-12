@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
+import com.tokopedia.deals.ui.search.di.DealsSearchScope
 import com.tokopedia.deals.ui.search.domain.viewmodel.DealsSearchViewModel
 import dagger.Binds
 import dagger.Module
@@ -23,6 +24,6 @@ abstract class DealsSearchViewModelModule {
     abstract fun dealsBaseViewModel(viewModel: DealsBaseViewModel): ViewModel
 
     @Binds
-    @com.tokopedia.deals.ui.search.di.DealsSearchScope
+    @DealsSearchScope
     abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 }
