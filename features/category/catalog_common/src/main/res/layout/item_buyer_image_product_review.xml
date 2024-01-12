@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginRight="8dp"
-    android:layout_width="78dp"
-    android:layout_height="78dp">
+    android:layout_width="70dp"
+    android:layout_height="70dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/card_br_img_product"
