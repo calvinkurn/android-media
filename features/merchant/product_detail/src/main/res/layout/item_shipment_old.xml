@@ -32,16 +32,4 @@
         android:layout_height="wrap_content"
         android:layout="@layout/view_shipment_error_old"
         tools:visibility="visible" />
-
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/pdp_divkit_view_container_separator"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/thick_divider_height_component"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <FrameLayout
-        android:id="@+id/divkit_view_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
 </LinearLayout>
