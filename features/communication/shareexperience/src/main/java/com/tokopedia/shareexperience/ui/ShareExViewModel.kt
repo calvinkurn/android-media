@@ -244,30 +244,32 @@ class ShareExViewModel @Inject constructor(
                 uiModelList = uiModelList
             )
         }
+        // Change image generator property, it wil be used later when channel clicked
         val imageGeneratorProperty = bottomSheetModel.getImageGeneratorProperty(chipPosition)
         updateImageGeneratorUiState(
             imageUrl = bottomSheetModel.getSelectedImageUrl(
                 chipPosition = chipPosition,
                 imagePosition = 0 // Default first image
             ),
-            sourceId = imageGeneratorProperty?.sourceId ?: "",
-            args = imageGeneratorProperty?.args ?: mapOf()
+            sourceId = imageGeneratorProperty?.sourceId,
+            args = imageGeneratorProperty?.args
         )
     }
 
     private fun handleUpdateShareImage(imageUrl: String) {
+        // Each chip might have different source id and args
         val imageGeneratorProperty = _bottomSheetModel?.getImageGeneratorProperty(imageUrl)
         updateImageGeneratorUiState(
             imageUrl = imageUrl,
-            sourceId = imageGeneratorProperty?.sourceId ?: "",
-            args = imageGeneratorProperty?.args ?: mapOf()
+            sourceId = imageGeneratorProperty?.sourceId,
+            args = imageGeneratorProperty?.args
         )
     }
 
     private fun updateImageGeneratorUiState(
         imageUrl: String,
-        sourceId: String,
-        args: Map<String, String>
+        sourceId: String?,
+        args: Map<String, String>?
     ) {
         _imageGeneratorUiState.update {
             it.copy(
@@ -278,19 +280,27 @@ class ShareExViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 1. Get generated or original Image
+     * 2. Check affiliate eligibility
+     * 3.A If success, get short link from affiliate
+     * 3.B If fail, use branch
+     * 3.C If branch fail, use
+     */
     private fun generateLink(channelEnum: ShareExChannelEnum) {
         viewModelScope.launch {
             try {
+                // Source Id and Args are nullable, that means do not use image generator
                 val imageGeneratorParam = ShareExImageGeneratorRequest(
                     sourceId = _imageGeneratorUiState.value.sourceId,
-                    args = _imageGeneratorUiState.value.args.entries.map { entry ->
+                    args = _imageGeneratorUiState.value.args?.entries?.map { entry ->
                         ShareExImageGeneratorArgRequest(entry.key, entry.value)
                     }
                 )
                 // Expected to use !!, should throw error when empty
                 val bottomSheetModel = _bottomSheetModel!!
                 val chipPosition = bottomSheetModel.getSelectedChipPosition(_selectedIdChip).orZero()
-                val shareProperty = bottomSheetModel.body.listShareProperty[chipPosition]
+                val shareProperty = bottomSheetModel.bottomSheetPage.listShareProperty[chipPosition]
                 val campaign = generateCampaign(shareProperty)
                 val linkPropertiesWithCampaign = shareProperty.linkProperties.copy(
                     desktopUrl = generateUrlWithUTM(shareProperty, channelEnum, campaign),

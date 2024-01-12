@@ -1,12 +1,14 @@
 package com.tokopedia.shareexperience.data.mapper
 
 import com.tokopedia.shareexperience.data.dto.ShareExBottomSheetResponseDto
+import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateRegistrationWidgetResponseDto
 import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExPropertyImageGeneratorArgResponseDto
+import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExPropertyImageGeneratorResponseDto
 import com.tokopedia.shareexperience.domain.ShareExConstants
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateModel
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateRegistrationModel
-import com.tokopedia.shareexperience.domain.model.property.ShareExBodyModel
+import com.tokopedia.shareexperience.domain.model.property.ShareExBottomSheetPageModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExImageGeneratorPropertyModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExPropertyModel
 import com.tokopedia.shareexperience.domain.model.property.linkproperties.ShareExFeatureEnum
@@ -21,20 +23,10 @@ class ShareExPropertyMapper @Inject constructor(
         val listChip = arrayListOf<String>()
         dto.properties.forEach {
             val affiliate = ShareExAffiliateModel(
-                registration = ShareExAffiliateRegistrationModel(
-                    icon = it.affiliateRegistrationWidget.icon,
-                    title = it.affiliateRegistrationWidget.title,
-                    label = it.affiliateRegistrationWidget.label,
-                    description = it.affiliateRegistrationWidget.description,
-                    appLink = it.affiliateRegistrationWidget.link
-                ),
-                commission = it.affiliateEligibility?.commission ?: "",
+                registration = it.affiliateRegistrationWidget.mapToDomainModel(),
+                commission = it.affiliateEligibility?.message ?: "",
                 label = it.affiliateEligibility?.badge ?: "",
                 expiredDate = it.affiliateEligibility?.expiredDate ?: ""
-            )
-            val imageGeneratorModel = ShareExImageGeneratorPropertyModel(
-                sourceId = it.imageGeneratorPayload.sourceId,
-                args = it.imageGeneratorPayload.args.toMap()
             )
             val property = ShareExPropertyModel(
                 title = it.shareBody.title,
@@ -56,14 +48,14 @@ class ShareExPropertyMapper @Inject constructor(
                     androidMinVersion = it.generateLinkProperties.androidMinVersion,
                     iosMinVersion = it.generateLinkProperties.iosMinVersion,
                     feature = ShareExFeatureEnum.SHARE,
-                    campaign = ""
+                    campaign = "" // will be changed later when user clicked channel
                 ),
-                imageGenerator = imageGeneratorModel
+                imageGenerator = it.imageGeneratorPayload.mapToDomainModel()
             )
             listChip.add(it.chipTitle)
             listShareProperty.add(property)
         }
-        val body = ShareExBodyModel(
+        val body = ShareExBottomSheetPageModel(
             listChip = listChip,
             listShareProperty = listShareProperty,
             socialChannel = channelMapper.generateSocialMediaChannel(),
@@ -72,7 +64,7 @@ class ShareExPropertyMapper @Inject constructor(
         return ShareExBottomSheetModel(
             title = dto.title,
             subtitle = dto.subtitle,
-            body = body
+            bottomSheetPage = body
         )
     }
 
@@ -94,7 +86,7 @@ class ShareExPropertyMapper @Inject constructor(
             listImage = listOf(defaultImageUrl)
         )
         listShareProperty.add(property)
-        val body = ShareExBodyModel(
+        val body = ShareExBottomSheetPageModel(
             listShareProperty = listShareProperty,
             socialChannel = channelMapper.generateSocialMediaChannel(),
             commonChannel = channelMapper.generateDefaultChannel()
@@ -102,7 +94,32 @@ class ShareExPropertyMapper @Inject constructor(
 
         return ShareExBottomSheetModel(
             title = ShareExConstants.DefaultValue.DEFAULT_TITLE,
-            body = body
+            bottomSheetPage = body
         )
+    }
+
+    private fun ShareExAffiliateRegistrationWidgetResponseDto?.mapToDomainModel(): ShareExAffiliateRegistrationModel? {
+        return if (this == null) {
+            null
+        } else {
+            ShareExAffiliateRegistrationModel(
+                icon = this.icon,
+                title = this.title,
+                label = this.label,
+                description = this.description,
+                appLink = this.link
+            )
+        }
+    }
+
+    private fun ShareExPropertyImageGeneratorResponseDto?.mapToDomainModel(): ShareExImageGeneratorPropertyModel? {
+        return if (this == null) {
+            null
+        } else {
+            ShareExImageGeneratorPropertyModel(
+                sourceId = this.sourceId,
+                args = this.args.toMap()
+            )
+        }
     }
 }

@@ -125,7 +125,7 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                     link = ""
                 ),
                 affiliateEligibility = ShareExAffiliateEligibilityResponseDto(
-                    commission = "<b>Komisi Rp16.000</b> / barang dijual",
+                    message = "<b>Komisi Rp16.000</b> / barang dijual",
                     badge = "Komisi Extra",
                     expiredDate = "Hingga 31 Des 2024"
                 ),
@@ -146,7 +146,7 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
                     link = "tokopedia://topchat"
                 ),
                 affiliateEligibility = ShareExAffiliateEligibilityResponseDto(
-                    commission = "<b>Komisi Rp16.000</b> / barang dijual"
+                    message = "<b>Komisi Rp16.000</b> / barang dijual"
                 ),
                 imageGeneratorPayload = getShareExPropertyImageGeneratorResponse(),
                 generateLinkProperties = getGenerateLinkProperties()

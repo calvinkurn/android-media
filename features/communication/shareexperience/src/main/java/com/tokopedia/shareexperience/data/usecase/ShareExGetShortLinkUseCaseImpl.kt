@@ -24,6 +24,15 @@ class ShareExGetShortLinkUseCaseImpl @Inject constructor(
     private val getGeneratedImageUseCase: ShareExGetGeneratedImageUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : ShareExGetShortLinkUseCase {
+
+    /**
+     * 1. Check if Image Generator params are not null
+     * 2.A Get Generated Image form Image Generator API with ShareExImageGeneratorRequest
+     * 3.A. If image generator success then use generated image for short link
+     * 3.B. If image generator fail then use original image for short link
+     *
+     * 2.B Directly get short link with original image
+     */
     @OptIn(FlowPreview::class)
     override suspend fun getShortLink(
         imageGeneratorParams: ShareExImageGeneratorWrapperRequest,
@@ -34,7 +43,10 @@ class ShareExGetShortLinkUseCaseImpl @Inject constructor(
                 var shortLinkFlow: Flow<ShareExResult<String>> = flowOf()
                 when (it) {
                     is ShareExResult.Success -> {
-                        shortLinkFlow = shortLinkRepository.generateShortLink(linkPropertiesParams)
+                        shortLinkFlow = generateShortLinkWithGeneratedImage(
+                            linkPropertiesParams,
+                            it.data.imageUrl
+                        )
                     }
                     is ShareExResult.Error -> {
                         // Using original image
@@ -49,11 +61,29 @@ class ShareExGetShortLinkUseCaseImpl @Inject constructor(
         return resultFlow
     }
 
+    private suspend fun generateShortLinkWithGeneratedImage(
+        linkPropertiesParams: ShareExBranchLinkPropertiesRequest,
+        generatedImageUrl: String
+    ): Flow<ShareExResult<String>> {
+        // Using generated image
+        val generatedImageLinkProperties = linkPropertiesParams.copy(
+            branchUniversalObjectRequest = linkPropertiesParams.branchUniversalObjectRequest.copy(
+                contentImageUrl = generatedImageUrl
+            ),
+            linkerPropertiesRequest = linkPropertiesParams.linkerPropertiesRequest.copy(
+                ogImageUrl = generatedImageUrl
+            )
+        )
+        return shortLinkRepository.generateShortLink(generatedImageLinkProperties)
+    }
+
     private suspend fun getImageGeneratorFlow(
         imageGeneratorParams: ShareExImageGeneratorWrapperRequest,
         channelEnum: ShareExChannelEnum
     ): Flow<ShareExResult<ShareExImageGeneratorModel>> {
-        return if (imageGeneratorParams.params != null) {
+        return if (imageGeneratorParams.params.sourceId != null &&
+            !imageGeneratorParams.params.args.isNullOrEmpty()
+        ) {
             val newParams = getCompletedImageGeneratorParams(
                 imageGeneratorParams.params,
                 imageGeneratorParams.originalImageUrl,
@@ -77,9 +107,9 @@ class ShareExGetShortLinkUseCaseImpl @Inject constructor(
         originalImageUrl: String,
         channelEnum: ShareExChannelEnum
     ): ShareExImageGeneratorRequest {
-        val updatedArgs = originalParam.args.toMutableList()
-        updatedArgs.add(ShareExImageGeneratorArgRequest(PLATFORM_KEY, channelEnum.label))
-        updatedArgs.add(ShareExImageGeneratorArgRequest(PRODUCT_IMAGE_URL_KEY, originalImageUrl))
+        val updatedArgs = originalParam.args?.toMutableList()
+        updatedArgs?.add(ShareExImageGeneratorArgRequest(PLATFORM_KEY, channelEnum.label))
+        updatedArgs?.add(ShareExImageGeneratorArgRequest(PRODUCT_IMAGE_URL_KEY, originalImageUrl))
         return originalParam.copy(
             args = updatedArgs
         )

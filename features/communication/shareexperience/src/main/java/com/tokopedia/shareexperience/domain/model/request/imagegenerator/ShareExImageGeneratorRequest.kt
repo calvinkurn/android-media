@@ -5,7 +5,7 @@ import com.tokopedia.graphql.data.GqlParam
 
 data class ShareExImageGeneratorRequest(
     @SerializedName("sourceID")
-    val sourceId: String,
+    val sourceId: String?,
     @SerializedName("args")
-    val args: List<ShareExImageGeneratorArgRequest>
+    val args: List<ShareExImageGeneratorArgRequest>?
 ) : GqlParam

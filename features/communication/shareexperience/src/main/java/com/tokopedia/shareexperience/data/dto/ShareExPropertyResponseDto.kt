@@ -11,11 +11,11 @@ data class ShareExPropertyResponseDto(
     @SerializedName("shareBody")
     val shareBody: ShareExShareBodyResponseDto = ShareExShareBodyResponseDto(),
     @SerializedName("affiliateRegistrationWidget")
-    val affiliateRegistrationWidget: ShareExAffiliateRegistrationWidgetResponseDto = ShareExAffiliateRegistrationWidgetResponseDto(),
+    val affiliateRegistrationWidget: ShareExAffiliateRegistrationWidgetResponseDto? = null,
     @SerializedName("affiliateEligibility")
     val affiliateEligibility: ShareExAffiliateEligibilityResponseDto? = null,
     @SerializedName("imageGeneratorPayload")
-    val imageGeneratorPayload: ShareExPropertyImageGeneratorResponseDto = ShareExPropertyImageGeneratorResponseDto(),
+    val imageGeneratorPayload: ShareExPropertyImageGeneratorResponseDto? = null,
     @SerializedName("generateLinkProperties")
     val generateLinkProperties: ShareExGenerateLinkPropertiesResponseDto = ShareExGenerateLinkPropertiesResponseDto()
 )

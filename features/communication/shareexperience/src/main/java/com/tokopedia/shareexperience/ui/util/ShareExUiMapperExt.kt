@@ -20,7 +20,7 @@ import com.tokopedia.shareexperience.ui.model.image.ShareExImageUiModel
 fun ShareExBottomSheetModel.getSelectedChipPosition(
     selectedIdChip: String
 ): Int {
-    return this.body.listChip.findIndexIgnoreCase(selectedIdChip).coerceAtLeast(0)
+    return this.bottomSheetPage.listChip.findIndexIgnoreCase(selectedIdChip).coerceAtLeast(0)
 }
 
 fun ShareExBottomSheetModel.map(
@@ -35,8 +35,9 @@ fun ShareExBottomSheetModel.map(
     }
 
     // Chip UI
+    // List chip and List Share Property always have same size
     val listChipUiModel = arrayListOf<ShareExChipUiModel>()
-    this.body.listChip.forEach {
+    this.bottomSheetPage.listChip.forEach {
         val chipUiModel = ShareExChipUiModel(it)
         listChipUiModel.add(chipUiModel)
     }
@@ -49,7 +50,7 @@ fun ShareExBottomSheetModel.map(
     }
 
     // Only add when property is not null
-    this.body.listShareProperty.getOrNull(position)?.let { shareExPropertyModel ->
+    this.bottomSheetPage.listShareProperty.getOrNull(position)?.let { shareExPropertyModel ->
         // Image Carousel UI
         val listImageUiModel = shareExPropertyModel.listImage.mapIndexed { index, imageUrl ->
             ShareExImageUiModel(imageUrl = imageUrl, isSelected = index == 0)
@@ -90,11 +91,11 @@ fun ShareExBottomSheetModel.map(
     }
 
     // Channel Ui
-    val socialChannelUiModel = ShareExSocialChannelUiModel(this.body.socialChannel)
+    val socialChannelUiModel = ShareExSocialChannelUiModel(this.bottomSheetPage.socialChannel)
     if (socialChannelUiModel.socialChannel.listChannel.isNotEmpty()) {
         result.add(socialChannelUiModel)
     }
-    val commonChannelUiModel = ShareExCommonChannelUiModel(this.body.commonChannel)
+    val commonChannelUiModel = ShareExCommonChannelUiModel(this.bottomSheetPage.commonChannel)
     if (commonChannelUiModel.commonChannel.listChannel.isNotEmpty()) {
         result.add(commonChannelUiModel)
     }
@@ -119,7 +120,7 @@ fun ShareExBottomSheetModel.mapError(
         val result = arrayListOf<Visitable<in ShareExTypeFactory>>()
 
         // Only add when property is not null
-        this.body.listShareProperty.firstOrNull()?.let { shareExPropertyModel ->
+        this.bottomSheetPage.listShareProperty.firstOrNull()?.let { shareExPropertyModel ->
             // Link Share Card UI
             val linkShareUiModel = ShareExLinkShareUiModel(
                 shareExPropertyModel.title,
@@ -137,11 +138,11 @@ fun ShareExBottomSheetModel.mapError(
         result.add(separator)
 
         // Channel Ui
-        val socialChannelUiModel = ShareExSocialChannelUiModel(this.body.socialChannel)
+        val socialChannelUiModel = ShareExSocialChannelUiModel(this.bottomSheetPage.socialChannel)
         if (socialChannelUiModel.socialChannel.listChannel.isNotEmpty()) {
             result.add(socialChannelUiModel)
         }
-        val commonChannelUiModel = ShareExCommonChannelUiModel(this.body.commonChannel)
+        val commonChannelUiModel = ShareExCommonChannelUiModel(this.bottomSheetPage.commonChannel)
         if (commonChannelUiModel.commonChannel.listChannel.isNotEmpty()) {
             result.add(commonChannelUiModel)
         }
@@ -151,7 +152,7 @@ fun ShareExBottomSheetModel.mapError(
 }
 
 fun ShareExBottomSheetModel.getImageGeneratorProperty(imageUrl: String): ShareExImageGeneratorPropertyModel? {
-    return this.body.listShareProperty
+    return this.bottomSheetPage.listShareProperty
         .firstOrNull { it.listImage.findIndexIgnoreCase(imageUrl) >= 0 }
         ?.imageGenerator
 }
@@ -159,9 +160,9 @@ fun ShareExBottomSheetModel.getImageGeneratorProperty(imageUrl: String): ShareEx
 fun ShareExBottomSheetModel.getImageGeneratorProperty(
     chipPosition: Int
 ): ShareExImageGeneratorPropertyModel? {
-    return this.body.listShareProperty.getOrNull(chipPosition)?.imageGenerator
+    return this.bottomSheetPage.listShareProperty.getOrNull(chipPosition)?.imageGenerator
 }
 
 fun ShareExBottomSheetModel.getSelectedImageUrl(chipPosition: Int, imagePosition: Int): String {
-    return this.body.listShareProperty.getOrNull(chipPosition)?.listImage?.getOrNull(imagePosition) ?: ""
+    return this.bottomSheetPage.listShareProperty.getOrNull(chipPosition)?.listImage?.getOrNull(imagePosition) ?: ""
 }
