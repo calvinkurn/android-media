@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.universalinbox.view
 
 import android.content.Intent
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.viewModelScope
@@ -27,6 +28,7 @@ import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxMenuUiState
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxNavigationUiState
 import com.tokopedia.inbox.universalinbox.view.uiState.UniversalInboxProductRecommendationUiState
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaErrorUiModel
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_DEVICE
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
@@ -316,8 +318,13 @@ class UniversalInboxViewModel @Inject constructor(
     ) {
         when (result) {
             is Result.Success -> {
-                val productRecommendation = result.data.recommendationItemList.map { item ->
-                    UniversalInboxRecommendationUiModel(item)
+                val productRecommendation = result.data.recommendationItemList.mapIndexed { index, item ->
+                    if (index %7 == 0) {
+                        Log.d("fverfgre", page++.toString())
+                        UniversalInboxTopAdsBannerUiModel()
+                    } else {
+                        UniversalInboxRecommendationUiModel(item)
+                    }
                 }
                 _productRecommendationState.update {
                     it.copy(
