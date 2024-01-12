@@ -14,6 +14,7 @@ import com.tokopedia.catalogcommon.uimodel.BuyerReviewUiModel
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.media.loader.JvmMediaLoader
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -105,7 +106,7 @@ class BuyerReviewDetailBottomSheet : BottomSheetUnify() {
 
         arguments?.apply {
             setTitle(getString(R.string.buyer_review_detail_bottomsheet_title))
-            imgShopIcon?.setImageUrl(getString(SHOP_ICON).orEmpty())
+            imgShopIcon?.loadImage(getString(SHOP_ICON).orEmpty())
             txtShopName?.text = getString(SHOP_NAME)
 
             imgAvatar?.let {
