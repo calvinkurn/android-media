@@ -22,6 +22,7 @@ import com.tokopedia.catalogcommon.util.setSpanOnText
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.JvmMediaLoader
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -84,7 +85,7 @@ class BuyerReviewViewHolder(
 
             setupReviewCardColor(element, bindingBuyerReviewCardSlider)
 
-            shopIcon?.setImageUrl(carouselItem.shopIcon)
+            shopIcon?.loadImage(carouselItem.shopIcon)
             shopName?.text = carouselItem.shopName
             reviewerName?.text = carouselItem.reviewerName
 
@@ -151,7 +152,6 @@ class BuyerReviewViewHolder(
                 )
             }
 
-            review?.text = carouselItem.description
             setupSelengkapnya(carouselItem, review)
         }
 
@@ -225,6 +225,7 @@ class BuyerReviewViewHolder(
     ) {
         val maxLine = if (carouselItem.images.isNotEmpty()) MAX_LINE else MAX_LINE_WITHOUT_IMAGES
         reviewTypography?.setLines(maxLine)
+        reviewTypography?.text = carouselItem.description
         reviewTypography?.post {
             val lineCount = reviewTypography.lineCount
             val reviewDesc = carouselItem.description

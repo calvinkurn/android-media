@@ -18,7 +18,7 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="381dp"
+            android:layout_height="257dp"
             android:orientation="vertical"
             android:paddingLeft="12dp"
             android:paddingTop="12dp"
@@ -32,7 +32,6 @@
                 <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingRight="5dp"
                     android:text="Beli di"
                     android:textColor="@color/Unify_NN600"
                     android:textSize="12sp"
@@ -45,8 +44,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
                     android:adjustViewBounds="true"
-                    android:maxWidth="13dp"
-                    android:maxHeight="13dp"
+                    android:layout_marginStart="5dp"
                     tools:src="@drawable/ic_official_store" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -262,6 +260,7 @@
                 android:id="@+id/rv_img_review"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                tools:listitem="@layout/item_buyer_image_product_review"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="12dp" />
 

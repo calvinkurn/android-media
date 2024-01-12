@@ -21,19 +21,15 @@
             app:typographyWeight="reguler"
             app:typographyType="display_3"
             android:text="Beli di"
-            android:paddingRight="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/card_br_shop_icon"
-            android:adjustViewBounds="true"
-            android:maxHeight="13dp"
-            android:maxWidth="13dp"
             tools:src="@drawable/ic_official_store"
-            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="5dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/card_br_shop_name"
@@ -180,7 +176,6 @@
             android:textSize="12sp"
             android:visibility="gone"
             app:typographyWeight="reguler"
-            app:typographyType="display_3"
             android:text=" • "
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -191,6 +186,8 @@
             android:textColor="@color/Unify_NN600"
             tools:text="Avocado Green"
             android:visibility="gone"
+            android:maxLines="1"
+            android:ellipsize="end"
             app:typographyWeight="reguler"
             app:typographyType="display_3"
             android:layout_width="wrap_content"
@@ -202,6 +199,8 @@
             android:textColor="@color/Unify_NN600"
             android:textSize="12sp"
             app:typographyWeight="reguler"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:text=" • "
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -212,6 +211,8 @@
             android:textSize="12sp"
             android:textColor="@color/Unify_NN600"
             tools:text="3 hari lalu"
+            android:maxLines="1"
+            android:ellipsize="end"
             app:typographyWeight="reguler"
             app:typographyType="display_3"
             android:layout_width="wrap_content"
