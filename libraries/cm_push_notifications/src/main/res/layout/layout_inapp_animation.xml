@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/innerContainer"
+    android:id="@+id/parentContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/dms_cm_inapp_main_bg"
@@ -11,8 +11,8 @@
 
     <LinearLayout
         android:id="@+id/lottie_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,8 +21,8 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottie_view_popup"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
@@ -33,50 +33,48 @@
         android:id="@+id/coupon_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/lottie_container">
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_coupon1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:src="@drawable/coupon"
-            android:visibility="visible"
-            />
+            android:visibility="visible" />
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_coupon2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:layout_gravity="center"
+            android:layout_marginTop="8dp"
             android:src="@drawable/coupon"
-            android:visibility="gone"
-            />
-        <ImageView
+            android:visibility="gone" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_coupon3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:layout_gravity="center"
+            android:layout_marginTop="8dp"
             android:src="@drawable/coupon"
-            android:visibility="gone"
-            />
-        <ImageView
+            android:visibility="gone" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_coupon4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:layout_gravity="center"
+            android:layout_marginTop="8dp"
             android:src="@drawable/coupon"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
     </LinearLayout>
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -84,23 +82,95 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        app:srcCompat="@drawable/buttonshare"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/coupon_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/coupon_container"
+        app:srcCompat="@drawable/buttonshare" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_close"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginEnd="44dp"
-        android:layout_marginBottom="136dp"
+        android:layout_marginBottom="144dp"
         android:background="@drawable/ellipse"
         android:padding="2dp"
         app:icon_name="CLOSE"
         app:layout_constraintBottom_toTopOf="@id/coupon_container"
         app:layout_constraintEnd_toEndOf="@+id/lottie_container" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderAnimation"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/animationErrorState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dp_64"
+        app:cardBackgroundColor="@color/Unify_GN500"
+        app:cardCornerRadius="@dimen/dp_20"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_36"
+                android:text="Oops, ada gangguan"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                app:typographyType="heading_3" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginHorizontal="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_24"
+                android:text="Tunggu sebentar, biar Toped beresin. Coba lagi atau kembali nanti, ya."
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                app:typographyType="paragraph_2" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginBottom="@dimen/dp_24"
+                android:text="Error Code: 1234"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                app:typographyType="small" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.cardview.widget.CardView>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnErrorState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="50dp"
+        android:visibility="gone"
+        android:text="Coba Lagi"
+        app:layout_constraintTop_toBottomOf="@+id/animationErrorState" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

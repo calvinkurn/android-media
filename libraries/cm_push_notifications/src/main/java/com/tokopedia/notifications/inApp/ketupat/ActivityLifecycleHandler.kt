@@ -4,19 +4,19 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
-import com.tokopedia.notifications.inApp.viewEngine.ViewEngine
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import java.lang.ref.WeakReference
 
 open class ActivityLifecycleHandler: Application.ActivityLifecycleCallbacks {
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         val activityName = activity::class.java.simpleName
+        val userSession = createUserSession(activity)
         if (activityName == HomePageActivity) {
             showLottiePopup(activity)
         }
@@ -26,22 +26,14 @@ open class ActivityLifecycleHandler: Application.ActivityLifecycleCallbacks {
         try {
             val currentActivity: WeakReference<Activity> =
                 WeakReference(activity)
-            val view = LayoutInflater.from(currentActivity.get())
-                .inflate(R.layout.layout_inapp_animation, null, false)
             val ketupatAnimationPopup = KetupatAnimationPopup(activity.applicationContext, null, activity)
-//            val mainContainer = view.findViewById<View>(R.id.mainContainer)
-            val activity = currentActivity.get() ?: return
-//            val viewEngine = ViewEngine(activity)
+            val weakActivity = currentActivity.get() ?: return
             ketupatAnimationPopup.loadLottieAnimation()
-//            val view = viewEngine.createView(cmInApp) ?: return
-            val inAppViewPrev = activity.findViewById<View>(R.id.mainContainer)
-            if (null != inAppViewPrev) return
-            val root = activity.window
+            val root = weakActivity.window
                 .decorView
                 .findViewById<View>(android.R.id.content)
                 .rootView as FrameLayout
             root.addView(ketupatAnimationPopup)
-//            cmDialogHandlerCallback.onShow(activity)
         } catch (e : Exception) {
             ServerLogger.log(
                 Priority.P2, "CM_VALIDATION",
@@ -49,9 +41,11 @@ open class ActivityLifecycleHandler: Application.ActivityLifecycleCallbacks {
                     "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
                     "data" to ""
                 ))
-//            cmDialogHandlerCallback.onException(e, cmInApp)
         }
     }
+
+    private fun createUserSession(activity: Activity): UserSessionInterface =
+        UserSession(activity)
 
     override fun onActivityStarted(activity: Activity) { }
 
