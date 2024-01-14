@@ -6,7 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.notifications.domain.data.AnimationCrackCouponResponse
 import com.tokopedia.notifications.domain.data.GamiScratchCardCrack
 import com.tokopedia.notifications.domain.query.GQL_QUERY_GAMI_ANIMATION_CRACK_COUPON
-import com.tokopedia.notifications.domain.query.GetAnimationPopupDataGQLQuery
+import com.tokopedia.notifications.domain.query.GetCrackCouponDataGQLQuery
 import javax.inject.Inject
 
 
@@ -20,7 +20,7 @@ class AnimationCrackCouponUseCase @Inject constructor(graphqlRepository: Graphql
     ) {
         try {
             this.setTypeClass(AnimationCrackCouponResponse::class.java)
-            this.setGraphqlQuery(GetAnimationPopupDataGQLQuery())
+            this.setGraphqlQuery(GetCrackCouponDataGQLQuery())
             this.setRequestParams(getRequestParams())
             this.execute(
                 { result ->
@@ -40,7 +40,7 @@ class AnimationCrackCouponUseCase @Inject constructor(graphqlRepository: Graphql
 
     private fun getRequestParams(): HashMap<String, Any> {
         val requestParams = HashMap<String, Any>()
-        requestParams[SLUG] = ""
+        requestParams[SLUG] = "some-slug-here"
         requestParams[SOURCE] = "tokopedia-home-page"
         return requestParams
     }

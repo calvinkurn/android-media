@@ -33,165 +33,16 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
        LayoutInappAnimationBinding.inflate(LayoutInflater.from(context), this, true)
     private var eventSlicingStart: MotionEvent? = null
     private var eventSlicingEnd: MotionEvent? = null
-    private var numberOfCoupons = 0
-    private var numberOfRetry = 0
+    private var crackCouponHandler = CrackCouponHandler(binding)
 
-     open fun loadLottieAnimation() {
+    open fun loadLottieAnimation() {
          handleLottieSlice()
          binding.lottieViewPopup.setRenderMode(RenderMode.HARDWARE)
          binding.lottieViewPopup.setMinFrame("Tutorial")
          binding.lottieViewPopup.setMaxFrame(119)
          onCloseClick(binding.root)
          onParentContainerClick(binding.root)
-         getCouponData()
-    }
-
-    private fun getCouponData() {
-        AnimationPopupGqlGetData().getAnimationCrackCouponData({
-            showPopupAnimation()
-            hideCouponErrorState()
-            handleCouponData(it)
-        },{
-            handleCouponError()
-            hidePopupAnimationAndCoupons()
-        })
-    }
-
-    private fun handleCouponData(gamiScratchCardCrack: GamiScratchCardCrack) {
-        gamiScratchCardCrack.benefits?.size?.let {
-            numberOfCoupons = it
-        }
-        loadCoupons(numberOfCoupons, gamiScratchCardCrack)
-    }
-
-    private fun handleCouponError() {
-        showCouponErrorState()
-        binding.btnErrorState.setOnClickListener {
-            handleRetry()
-            hideCouponErrorState()
-        }
-    }
-
-    private fun handleRetry() {
-        if (numberOfRetry < 1) {
-            numberOfRetry += 1
-            getCouponData()
-        } else {
-            binding.btnErrorState.gone()
-        }
-    }
-
-    private fun showCouponErrorState() {
-        with(binding) {
-            loaderAnimation.gone()
-            animationErrorState.visible()
-            btnErrorState.visible()
-        }
-    }
-
-    private fun hidePopupAnimationAndCoupons() {
-        binding.lottieViewPopup.invisible()
-        hideCoupons()
-    }
-
-    private fun showPopupAnimation() {
-        binding.lottieViewPopup.visible()
-    }
-
-    private fun hideCouponErrorState() {
-        with(binding) {
-            loaderAnimation.visible()
-            animationErrorState.gone()
-            btnErrorState.gone()
-
-        }
-    }
-
-    private fun loadCoupons(numberOfCoupons: Int, gamiScratchCardCrack: GamiScratchCardCrack) {
-        with(binding) {
-            gamiScratchCardCrack.cta?.let {
-                ivButtonShare.loadImage(it.imageURL)
-            }
-            gamiScratchCardCrack.benefits?.let {
-                when (numberOfCoupons) {
-                    1 -> {
-                        ivCoupon1.loadImage(getCouponURl(0, it))
-                    }
-
-                    2 -> {
-                        ivCoupon1.loadImage(getCouponURl(0, it))
-                        ivCoupon2.loadImage(getCouponURl(1, it))
-                    }
-
-                    3 -> {
-                        ivCoupon1.loadImage(getCouponURl(0, it))
-                        ivCoupon2.loadImage(getCouponURl(1, it))
-                        ivCoupon3.loadImage(getCouponURl(2, it))
-                    }
-
-                    4 -> {
-                        ivCoupon1.loadImage(getCouponURl(0, it))
-                        ivCoupon2.loadImage(getCouponURl(1, it))
-                        ivCoupon3.loadImage(getCouponURl(2, it))
-                        ivCoupon4.loadImage(getCouponURl(3, it))
-                    }
-
-                    else -> {
-
-                    }
-                }
-            }
-        }
-    }
-
-    private fun getCouponURl(couponNumber: Int, couponList: List<Benefits>): String {
-        couponList[couponNumber].assets?.get(1)?.value?.let { url ->
-            return url
-        }
-        return ""
-    }
-
-    private fun showCoupons(numberOfCoupons: Int?) {
-        with(binding) {
-            ivButtonShare.visible()
-            when (numberOfCoupons) {
-                1 -> {
-                    ivCoupon1.visible()
-                }
-
-                2 -> {
-                    ivCoupon1.visible()
-                    ivCoupon2.visible()
-                }
-
-                3 -> {
-                    ivCoupon1.visible()
-                    ivCoupon2.visible()
-                    ivCoupon3.visible()
-                }
-
-                4 -> {
-                    ivCoupon1.visible()
-                    ivCoupon2.visible()
-                    ivCoupon3.visible()
-                    ivCoupon4.visible()
-                }
-
-                else -> {
-
-                }
-            }
-        }
-    }
-
-    private fun hideCoupons() {
-        with(binding) {
-            ivButtonShare.gone()
-            ivCoupon1.invisible()
-            ivCoupon2.gone()
-            ivCoupon3.gone()
-            ivCoupon4.gone()
-        }
+         crackCouponHandler.getCouponData()
     }
 
     private fun handleLottieSlice() {
@@ -261,7 +112,7 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
                 binding.lottieViewPopup.setMinFrame(120)
             }
         }
-        showCoupons(numberOfCoupons)
+        crackCouponHandler.showCoupons()
         playPrizeSound(activity.applicationContext)
         binding.lottieViewPopup.loop(false)
         couponAnimation()

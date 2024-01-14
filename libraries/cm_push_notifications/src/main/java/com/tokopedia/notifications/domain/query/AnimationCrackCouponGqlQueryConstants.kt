@@ -1,7 +1,7 @@
 package com.tokopedia.notifications.domain.query
 
 const val GQL_QUERY_GAMI_ANIMATION_CRACK_COUPON = """
-   query(${"$"}slug: String, ${"$"}source: String) {
+   query(${"$"}slug: String!, ${"$"}source: String!) {
   gamiScratchCardCrack(input: {slug: ${"$"}slug, source: ${"$"}source}) {
   resultStatus {
       code
@@ -42,7 +42,6 @@ const val GQL_QUERY_GAMI_ANIMATION_CRACK_COUPON = """
       value
     }
   }
-}
 }"""
 
 
