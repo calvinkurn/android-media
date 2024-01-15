@@ -211,7 +211,6 @@ import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmen
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageReimagineHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
-import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.util.StaggeredGridLayoutManagerWrapper
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
@@ -376,8 +375,7 @@ open class ShopPageHomeFragment :
     private var shopProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
     private var isClickToScrollToTop = false
     private var latestCompletelyVisibleItemIndex = -1
-    private var onLoadWidgetFinish : () -> Unit = {}
-    
+
     val isLogin: Boolean
         get() = viewModel?.isLogin ?: false
     val isOwner: Boolean
@@ -4490,10 +4488,6 @@ open class ShopPageHomeFragment :
 
     fun setHomeTabLottieUrl(lottieUrl: String) {
         this.homeTabLottieUrl = lottieUrl
-    }
-    
-    fun setOnLoadWidgetFinish(onLoadWidgetFinish: () -> Unit) {
-        this.onLoadWidgetFinish = onLoadWidgetFinish
     }
 
     private fun setHomeTabBackgroundGradient() {
