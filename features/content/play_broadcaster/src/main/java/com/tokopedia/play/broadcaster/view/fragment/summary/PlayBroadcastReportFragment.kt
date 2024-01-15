@@ -41,6 +41,7 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * @author by jessica on 26/05/20
@@ -76,7 +77,7 @@ class PlayBroadcastReportFragment @Inject constructor(
 
     private fun generateInAppLink(appLink: String): String {
         return getString(
-            com.tokopedia.content.common.R.string.up_webview_template,
+            contentcommonR.string.up_webview_template,
             ApplinkConst.WEBVIEW,
             appLink,
         )
@@ -113,11 +114,6 @@ class PlayBroadcastReportFragment @Inject constructor(
             viewModel.submitAction(PlayBroadcastSummaryAction.ClickCloseReportPage)
         }
 
-        binding.btnPostVideo.setOnClickListener {
-            analytic.clickPostingVideoOnReportPage()
-            viewModel.submitAction(PlayBroadcastSummaryAction.ClickPostVideo)
-        }
-
         binding.btnDone.setOnClickListener {
             viewModel.submitAction(PlayBroadcastSummaryAction.ClickCloseReportPage)
         }
@@ -147,10 +143,6 @@ class PlayBroadcastReportFragment @Inject constructor(
                     prevState?.tickerBottomSheetConfig,
                     state.tickerBottomSheetConfig
                 )
-                renderPostVideoButton(
-                    prevState?.channel,
-                    state.channel
-                )
             }
         }
     }
@@ -159,12 +151,6 @@ class PlayBroadcastReportFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect {
                 when (it) {
-                    is PlayBroadcastSummaryEvent.VideoUnder60Seconds -> {
-                        toaster.showToaster(
-                            message = getString(R.string.play_bro_cant_post_video_message),
-                            actionLabel = getString(R.string.play_ok),
-                        )
-                    }
                     PlayBroadcastSummaryEvent.CloseReportPage -> requireActivity().onBackPressed()
                     PlayBroadcastSummaryEvent.OpenLeaderboardBottomSheet -> openInteractiveLeaderboardSheet()
                     PlayBroadcastSummaryEvent.OpenPostVideoPage -> mListener?.onClickPostButton()
@@ -186,8 +172,6 @@ class PlayBroadcastReportFragment @Inject constructor(
         if (prev == value || value.isEmpty()) return
 
         summaryInfoView.setChannelHeader(value)
-        binding.flButtonSticky.showWithCondition(true)
-        binding.btnPostVideo.isEnabled = value.isEligiblePostVideo
     }
 
     private fun renderReport(
@@ -236,12 +220,6 @@ class PlayBroadcastReportFragment @Inject constructor(
             TickerBottomSheetType.TICKER -> showTickerDisableLiveToVod(state)
             else -> return
         }
-    }
-
-    private fun renderPostVideoButton(prev: PlayChannelUiState?, state: PlayChannelUiState) {
-        if (prev == state) return
-
-        binding.btnPostVideo.showWithCondition(state.showPostVideoButton)
     }
 
     private fun showTickerDisableLiveToVod(state: TickerBottomSheetUiModel) {
