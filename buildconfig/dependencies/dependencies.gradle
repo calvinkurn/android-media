@@ -160,9 +160,15 @@ ext {
     unifyTotalAmountVersion = '1.0.7.2'
     unifyExplorePromoVersion = '1.0.3.2'
     unifyImageGalleryVersion = '1.0.8'
+<<<<<<< HEAD
     unifyViewAllCardVersion = '1.0.13'
     nestPrinciplesVersion = '1.0.6'
     nestComponentsVersion = '1.0.11'
+=======
+    unifyViewAllCardVersion = '1.0.12'
+    nestPrinciplesVersion = '1.0.7-hotfix-nestimage-beta'
+    nestComponentsVersion = '1.0.12-hotfix-nestimage-beta'
+>>>>>>> 3869f58a1d6c (feat: update nest principles version)
 
     gradlePlugin = [
             crashlytics                     : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
