@@ -14,7 +14,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import java.lang.ref.WeakReference
 
-open class ActivityLifecycleHandler: Application.ActivityLifecycleCallbacks {
+open class ActivityLifecycleHandler : Application.ActivityLifecycleCallbacks {
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         val activityName = activity::class.java.simpleName
         if (activityName == HomePageActivity) {
@@ -24,9 +24,11 @@ open class ActivityLifecycleHandler: Application.ActivityLifecycleCallbacks {
 
     open fun getScratchCardData(activity: Activity) {
         val userSession = createUserSession(activity)
-        AnimationPopupGqlGetData().getAnimationScratchPopupData({
+        if (userSession.isLoggedIn) {
+            AnimationPopupGqlGetData().getAnimationScratchPopupData({
                 showLottiePopup(activity, getSlugData(it))
-        },{})
+            }, {})
+        }
     }
 
     open fun showLottiePopup(activity: Activity, slug: String?) {
@@ -41,13 +43,16 @@ open class ActivityLifecycleHandler: Application.ActivityLifecycleCallbacks {
                 .findViewById<View>(android.R.id.content)
                 .rootView as FrameLayout
             root.addView(ketupatAnimationPopup)
-        } catch (e : Exception) {
+        } catch (e: Exception) {
             ServerLogger.log(
-                Priority.P2, "CM_VALIDATION",
-                mapOf("type" to "exception",
+                Priority.P2,
+                "CM_VALIDATION",
+                mapOf(
+                    "type" to "exception",
                     "err" to Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT),
                     "data" to ""
-                ))
+                )
+            )
         }
     }
 
