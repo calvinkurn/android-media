@@ -58,6 +58,10 @@ class InterspersingConfirmationBottomSheet @Inject constructor(
         isCancelable = false
         overlayClickDismiss = false
         bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_EXPANDED
+        setCloseClickListener {
+            listener?.clickClose()
+            dismiss()
+        }
 
         val composeView = ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -84,6 +88,7 @@ class InterspersingConfirmationBottomSheet @Inject constructor(
                             newCoverState = newCoverState,
                             oldCoverState = ShortsCoverState.Success(data.oldCoverUri),
                             onClickBack = {
+                                listener?.clickBack()
                                 dismiss()
                             },
                             onClickNext = {
@@ -121,6 +126,10 @@ class InterspersingConfirmationBottomSheet @Inject constructor(
     }
 
     interface Listener {
+        fun clickClose()
+
+        fun clickBack()
+
         fun clickPdpVideo()
 
         fun clickNext()

@@ -109,8 +109,9 @@ class PlayShortsSummaryFragment @Inject constructor(
 
                         viewModel.submitAction(PlayShortsAction.SelectTag(item))
                     },
-                    onInterspersingChanged = {
-                        viewModel.submitAction(PlayShortsAction.SwitchInterspersing(it))
+                    onInterspersingChanged = { isActive ->
+                        analytic.clickInterspersingToggle(viewModel.selectedAccount, viewModel.shortsId, isActive)
+                        viewModel.submitAction(PlayShortsAction.SwitchInterspersing(isActive))
                     }
                 )
             }
@@ -147,11 +148,21 @@ class PlayShortsSummaryFragment @Inject constructor(
 
                     childFragment.listener = object : InterspersingConfirmationBottomSheet.Listener {
                         override fun clickPdpVideo() {
+                            analytic.clickVideoPdpCard(viewModel.selectedAccount, viewModel.shortsId)
                             viewModel.submitAction(PlayShortsAction.ClickVideoPreview)
                         }
 
                         override fun clickNext() {
+                            analytic.clickNextInterspersingConfirmation(viewModel.selectedAccount, viewModel.shortsId)
                             viewModel.submitAction(PlayShortsAction.UploadVideo)
+                        }
+
+                        override fun clickClose() {
+                            analytic.clickCloseInterspersingConfirmation(viewModel.selectedAccount, viewModel.shortsId)
+                        }
+
+                        override fun clickBack() {
+                            analytic.clickBackInterspersingConfirmation(viewModel.selectedAccount, viewModel.shortsId)
                         }
                     }
                 }
@@ -187,6 +198,8 @@ class PlayShortsSummaryFragment @Inject constructor(
             viewModel.uiEvent.collect { event ->
                 when(event) {
                     is PlayShortsUiEvent.ErrorUploadMedia -> {
+                        analytic.impressSummaryErrorToaster(viewModel.selectedAccount, viewModel.shortsId)
+
                         toaster.showError(
                             event.throwable,
                             duration = Toaster.LENGTH_SHORT
