@@ -9,7 +9,9 @@ import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.DescriptionUiModel
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
+import com.tokopedia.content.product.preview.view.uimodel.PageState
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
+import com.tokopedia.content.product.preview.viewmodel.state.ReviewPageState
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
@@ -18,8 +20,8 @@ import javax.inject.Inject
  * @author by astidhiyaa on 06/12/23
  */
 class ProductPreviewMapper @Inject constructor(private val userSession: UserSessionInterface) {
-    fun mapReviews(response: MediaReviewResponse): List<ReviewUiModel> {
-        return response.data.review.map {
+    fun mapReviews(response: MediaReviewResponse, page: Int): ReviewPageState {
+        val mapped = response.data.review.map {
             ReviewUiModel(
                 reviewId = it.feedbackId,
                 medias = emptyList(), //TODO: map and sew it later,
@@ -43,6 +45,7 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                 )
             )
         }
+        return ReviewPageState(pageState = PageState.Success(page, response.data.hasNext), reviewList = mapped)
     }
 
     private fun isOwner(author: MediaReviewResponse.ReviewerUserInfo): Boolean =

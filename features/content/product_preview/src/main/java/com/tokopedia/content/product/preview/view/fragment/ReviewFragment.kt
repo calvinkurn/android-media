@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
@@ -30,10 +31,10 @@ import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
-import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
+import com.tokopedia.content.product.preview.viewmodel.state.ReviewPageState
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import kotlinx.coroutines.flow.collectLatest
@@ -64,8 +65,12 @@ class ReviewFragment @Inject constructor(
     private val snapHelper = PagerSnapHelper() //TODO: adjust pager snap helper
 
     private val scrollListener by lazyThreadSafetyNone {
-        object : RecyclerView.OnScrollListener() {
+        object : EndlessRecyclerViewScrollListener(binding.rvReview.layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = false))
+            }
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     val index = getCurrentPosition()
                     viewModel.onAction(ProductPreviewAction.UpdateReviewPosition(index))
@@ -116,8 +121,8 @@ class ReviewFragment @Inject constructor(
 
     override fun onResume() {
         super.onResume()
-
-        viewModel.onAction(ProductPreviewAction.FetchReview)
+        //TODO: need to check
+        viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = true))
     }
 
     private fun setupView() {
@@ -132,7 +137,7 @@ class ReviewFragment @Inject constructor(
                 viewLifecycleOwner.lifecycle,
                 Lifecycle.State.RESUMED
             ).withCache().collectLatest { (prev, curr) ->
-                renderList(prev, curr)
+               renderList(prev, curr)
             }
         }
     }
@@ -161,9 +166,9 @@ class ReviewFragment @Inject constructor(
         }
     }
 
-    private fun renderList(prev: List<ReviewUiModel>?, data: List<ReviewUiModel>) {
-        if (prev == data) return //TODO: adjust condition
-        reviewAdapter.submitList(data)
+    private fun renderList(prev: ReviewPageState?, data: ReviewPageState) {
+        if (prev?.reviewList == data.reviewList) return
+        reviewAdapter.submitList(data.reviewList)
     }
 
     /**

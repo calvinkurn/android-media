@@ -4,9 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepository
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
-import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.PageState
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
@@ -18,6 +19,7 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAc
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.InitializeProductMainData
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.ProductSelected
 import com.tokopedia.content.product.preview.viewmodel.state.ProductPreviewUiState
+import com.tokopedia.content.product.preview.viewmodel.state.ReviewPageState
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.network.exception.MessageErrorException
@@ -51,24 +53,24 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private val _uiEvent = MutableSharedFlow<ProductPreviewEvent>(20)
     val uiEvent get() = _uiEvent
 
-    private val _review = MutableStateFlow(emptyList<ReviewUiModel>())
-    val review: Flow<List<ReviewUiModel>>
-        get() = _review //TODO: add state
+    private val _review = MutableStateFlow(ReviewPageState.Empty)
+    val review: Flow<ReviewPageState>
+        get() = _review
 
     private val _miniInfo = MutableStateFlow(BottomNavUiModel.Empty)
     val miniInfo: Flow<BottomNavUiModel>
         get() = _miniInfo
 
     private val _reviewPosition = MutableStateFlow(0)
-    private val currentReview : ReviewUiModel
+    private val currentReview: ReviewUiModel
         get() {
-            return if (_review.value.isEmpty() || _reviewPosition.value < 0) ReviewUiModel.Empty
-            else _review.value[_reviewPosition.value]
+            return if (_review.value.reviewList.isEmpty() || _reviewPosition.value < 0) ReviewUiModel.Empty
+            else _review.value.reviewList[_reviewPosition.value]
         }
 
     fun onAction(action: ProductPreviewAction) {
         when (action) {
-            ProductPreviewAction.FetchReview -> getReview()
+            is ProductPreviewAction.FetchReview -> getReview(action.isRefresh)
             ProductPreviewAction.FetchMiniInfo -> getMiniInfo()
             is ProductPreviewAction.ProductAction -> addToCart(action.model)
             ProductPreviewAction.AtcFromResult -> addToCart(_miniInfo.value)
@@ -81,10 +83,24 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
-    private fun getReview() {
+    private fun getReview(isRefresh: Boolean) {
+        val state = _review.value.pageState
+        val page = when {
+            isRefresh -> 1
+            state is PageState.Success && state.hasNextPage -> state.page + 1
+            else -> 1
+        }
+        if (isRefresh) _review.update { review -> review.copy(pageState = PageState.Load) }
         viewModelScope.launchCatchError(block = {
-            _review.value = repo.getReview(param.productId, 1) //TODO: add pagination
-        }) {}
+            val response = repo.getReview(param.productId, page)
+            val newList = buildList {
+                if (_review.value.reviewList.isNotEmpty()) addAll(_review.value.reviewList + response.reviewList)
+                else addAll(response.reviewList)
+            }
+            _review.update { review -> review.copy(reviewList = newList, pageState = response.pageState)}
+        }) {
+            _review.update { review -> review.copy(pageState = PageState.Error(it)) }
+        }
     }
 
     private fun getMiniInfo() {
@@ -197,10 +213,11 @@ class ProductPreviewViewModel @AssistedInject constructor(
             viewModelScope.launchCatchError(block = {
                 val state = repo.likeReview(state, currentReview.reviewId)
                 _review.update { reviews ->
-                    reviews.map { review ->
+                    reviews.copy(reviewList =
+                    reviews.reviewList.map { review ->
                         if (review.reviewId == currentReview.reviewId) review.copy(likeState = state) //TODO: need better catch to know current review
                         else review
-                    }
+                    })
                 }
             }) {
                 _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it) {})
