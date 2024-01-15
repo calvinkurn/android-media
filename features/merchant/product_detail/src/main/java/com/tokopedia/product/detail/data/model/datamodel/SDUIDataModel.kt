@@ -22,7 +22,7 @@ data class SDUIDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is SDUIDataModel) {
-            return newData == data
+            return newData.data == data
         } else {
             false
         }
