@@ -420,7 +420,6 @@ class ShopPageReimagineHeaderFragment :
     private var queryParamTab: String = ""
     private var shopPageHeaderP1Data: ShopPageHeaderP1HeaderData? = null
     private var isAlreadyGetShopPageP2Data: Boolean = false
-    private var shopPrefetchTabContentWrapper: ShopPageHeaderFragmentTabContentWrapper? = null
 
     private val storiesManager by storiesManager(StoriesEntryPoint.ShopPageReimagined) {
         setAnimationStrategy(OneTimeAnimationStrategy())
@@ -679,12 +678,9 @@ class ShopPageReimagineHeaderFragment :
                     initMiniCart()
                     sendTrackerImpressionShopHeader()
                     sendTrackerImpressionShopBottomNav()
-
-                    shopPrefetchTabContentWrapper?.hidePrefetchDataLoader()
                 }
 
                 is Fail -> {
-                    shopPrefetchTabContentWrapper?.hidePrefetchDataLoader()
                     val throwable = result.throwable
                     val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
                     if (throwable is ShopAsyncErrorException) {
@@ -1287,13 +1283,13 @@ class ShopPageReimagineHeaderFragment :
     private fun renderPrefetchData(prefetchData: ShopPrefetchData?) {
         if (prefetchData == null) return
 
-        shopPrefetchTabContentWrapper = ShopPageHeaderFragmentTabContentWrapper.createInstance()
+        val shopPrefetchTabContentWrapper = ShopPageHeaderFragmentTabContentWrapper.createInstance()
 
         val tabData = ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData(name = ShopPageHeaderTabName.PRE_FETCH_DATA)
-        shopPrefetchTabContentWrapper?.setTabData(tabData)
+        shopPrefetchTabContentWrapper.setTabData(tabData)
 
         val prefetchHeaderData = shopPrefetchMapper.createHeaderData(context, prefetchData)
-        shopPrefetchTabContentWrapper?.setShopPageHeaderP1Data(
+        shopPrefetchTabContentWrapper.setShopPageHeaderP1Data(
             shopPageHeaderP1Data = prefetchHeaderData,
             isEnableDirectPurchase = getIsEnableDirectPurchase(prefetchHeaderData),
             isShouldShowFeed = isShowFeed
@@ -1303,15 +1299,13 @@ class ShopPageReimagineHeaderFragment :
         listShopPageTabModel.add(
             ShopPageHeaderTabModel(
                 tabName = tabData.name,
-                tabFragment = shopPrefetchTabContentWrapper ?: return
+                tabFragment = shopPrefetchTabContentWrapper
             )
         )
 
         viewPagerAdapterHeader?.setTabData(listShopPageTabModel)
         tabLayout?.removeAllTabs()
         viewPagerAdapterHeader?.notifyDataSetChanged()
-
-        shopPrefetchTabContentWrapper?.showPrefetchDataLoader()
     }
 
     private fun getPrefetchData(): ShopPrefetchData? {

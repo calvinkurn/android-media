@@ -376,7 +376,8 @@ open class ShopPageHomeFragment :
     private var shopProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
     private var isClickToScrollToTop = false
     private var latestCompletelyVisibleItemIndex = -1
-
+    private var onLoadWidgetFinish : () -> Unit = {}
+    
     val isLogin: Boolean
         get() = viewModel?.isLogin ?: false
     val isOwner: Boolean
@@ -802,8 +803,10 @@ open class ShopPageHomeFragment :
                         setHomeTabBackgroundGradient()
                         setFestivityRvDecoration()
                         setHomeTabBackgroundPattern()
+                        onLoadWidgetFinish()
                     }
                     is Fail -> {
+                        onLoadWidgetFinish()
                         val throwable = it.throwable
                         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
                         if (throwable is ShopAsyncErrorException) {
@@ -4487,6 +4490,10 @@ open class ShopPageHomeFragment :
 
     fun setHomeTabLottieUrl(lottieUrl: String) {
         this.homeTabLottieUrl = lottieUrl
+    }
+    
+    fun setOnLoadWidgetFinish(onLoadWidgetFinish: () -> Unit) {
+        this.onLoadWidgetFinish = onLoadWidgetFinish
     }
 
     private fun setHomeTabBackgroundGradient() {

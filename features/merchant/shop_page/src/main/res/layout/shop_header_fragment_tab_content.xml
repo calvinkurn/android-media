@@ -420,16 +420,6 @@
 
 
         </com.google.android.material.appbar.AppBarLayout>
-
-        <com.tokopedia.unifycomponents.LoaderUnify
-            android:id="@+id/loader"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_gravity="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
         
         <FrameLayout
             android:id="@+id/tab_fragment"

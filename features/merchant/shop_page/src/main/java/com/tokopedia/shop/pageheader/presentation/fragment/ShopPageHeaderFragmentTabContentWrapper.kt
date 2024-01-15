@@ -62,6 +62,7 @@ import com.tokopedia.shop.common.view.listener.InterfaceShopPageClickScrollToTop
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ShopHeaderFragmentTabContentBinding
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
+import com.tokopedia.shop.home.view.fragment.ShopPagePrefetchFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel.Companion.mapperForShopShowCase
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageHeaderComponent
@@ -613,6 +614,9 @@ class ShopPageHeaderFragmentTabContentWrapper :
     private fun createContentFragment(): Fragment? {
         return tabData?.let {
             when (it.name) {
+                ShopPageHeaderTabName.PRE_FETCH_DATA -> {
+                    ShopPagePrefetchFragment.newInstance()
+                }
                 ShopPageHeaderTabName.HOME -> {
                     ShopPageHomeFragment.createInstance(
                         shopId,
@@ -734,6 +738,7 @@ class ShopPageHeaderFragmentTabContentWrapper :
         }
     }
 
+    
     fun setShopPageHeaderP1Data(
         shopPageHeaderP1Data: ShopPageHeaderP1HeaderData,
         isEnableDirectPurchase: Boolean,
@@ -798,14 +803,6 @@ class ShopPageHeaderFragmentTabContentWrapper :
 
     fun setUserId(userId: String) {
         this.userId = userId
-    }
-    
-    fun showPrefetchDataLoader(){
-        viewBinding?.loader?.visible()
-    }
-    
-    fun hidePrefetchDataLoader() {
-        viewBinding?.loader?.gone()
     }
 
     fun showFollowButtonCoachMark(followStatus: FollowStatus?) {
