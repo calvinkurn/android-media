@@ -29,19 +29,6 @@ object BuyerOrderDetailUiStateMapper {
         scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState,
         savingsWidgetUiState: SavingsWidgetUiState
     ): BuyerOrderDetailUiState {
-        logBreadcrumb(
-            actionButtonsUiState,
-            orderStatusUiState,
-            paymentInfoUiState,
-            productListUiState,
-            shipmentInfoUiState,
-            pgRecommendationWidgetUiState,
-            orderResolutionTicketStatusUiState,
-            orderInsuranceUiState,
-            epharmacyInfoUiState,
-            scpRewardsMedalTouchPointWidgetUiState,
-            savingsWidgetUiState
-        )
         return if (
             actionButtonsUiState is ActionButtonsUiState.HasData &&
             orderStatusUiState is OrderStatusUiState.HasData &&
@@ -108,10 +95,22 @@ object BuyerOrderDetailUiStateMapper {
             BuyerOrderDetailUiState.Error(pgRecommendationWidgetUiState.throwable)
         } else {
             BuyerOrderDetailUiState.FullscreenLoading
-        }.logBreadcrumb()
+        }.logBreadcrumb(
+            actionButtonsUiState,
+            orderStatusUiState,
+            paymentInfoUiState,
+            productListUiState,
+            shipmentInfoUiState,
+            pgRecommendationWidgetUiState,
+            orderResolutionTicketStatusUiState,
+            orderInsuranceUiState,
+            epharmacyInfoUiState,
+            scpRewardsMedalTouchPointWidgetUiState,
+            savingsWidgetUiState
+        )
     }
 
-    private fun logBreadcrumb(
+    private fun BuyerOrderDetailUiState.logBreadcrumb(
         actionButtonsUiState: ActionButtonsUiState,
         orderStatusUiState: OrderStatusUiState,
         paymentInfoUiState: PaymentInfoUiState,
@@ -123,7 +122,7 @@ object BuyerOrderDetailUiStateMapper {
         epharmacyInfoUiState: EpharmacyInfoUiState,
         scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState,
         savingsWidgetUiState: SavingsWidgetUiState
-    ) {
+    ) = also {
         runCatching {
             val json = JSONObject()
             json.put("Button", actionButtonsUiState::class.java.simpleName)
@@ -137,11 +136,8 @@ object BuyerOrderDetailUiStateMapper {
             json.put("Epharm", epharmacyInfoUiState::class.java.simpleName)
             json.put("SCP", scpRewardsMedalTouchPointWidgetUiState::class.java.simpleName)
             json.put("Saving", savingsWidgetUiState::class.java.simpleName)
+            json.put("Result", this::class.java.simpleName)
             EmbraceMonitoring.logBreadcrumb(json.toString())
         }
-    }
-
-    private fun BuyerOrderDetailUiState.logBreadcrumb() = also {
-        runCatching { EmbraceMonitoring.logBreadcrumb("Finish mapping UI states into ${this::class.java.simpleName}") }
     }
 }

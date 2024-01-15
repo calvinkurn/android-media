@@ -11,6 +11,7 @@ import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 class GetOrderResolutionUseCase @Inject constructor(
@@ -20,15 +21,30 @@ class GetOrderResolutionUseCase @Inject constructor(
     override fun graphqlQuery() = QUERY
 
     override suspend fun execute(params: GetOrderResolutionParams) = flow {
-        EmbraceMonitoring.logBreadcrumb("Fetching order resolution data with params: $params")
         emit(GetOrderResolutionRequestState.Requesting)
-        EmbraceMonitoring.logBreadcrumb("Success fetching order resolution data")
         emit(GetOrderResolutionRequestState.Complete.Success(sendRequest(params).resolutionGetTicketStatus?.data))
     }.catch {
-        EmbraceMonitoring.logBreadcrumb("Error fetching order resolution data with error: ${it.stackTraceToString()}")
         emit(GetOrderResolutionRequestState.Complete.Error(it))
+    }.onStart {
+        logStartBreadcrumb(params)
     }.onCompletion {
-        EmbraceMonitoring.logBreadcrumb("Finish fetching order resolution data")
+        logCompletionBreadcrumb(it)
+    }
+
+    private fun logStartBreadcrumb(params: GetOrderResolutionParams) {
+        runCatching {
+            EmbraceMonitoring.logBreadcrumb("GetOrderResolutionUseCase - Fetching: $params")
+        }
+    }
+
+    private fun logCompletionBreadcrumb(throwable: Throwable?) {
+        runCatching {
+            if (throwable == null) {
+                EmbraceMonitoring.logBreadcrumb("GetOrderResolutionUseCase - Success")
+            } else {
+                EmbraceMonitoring.logBreadcrumb("GetOrderResolutionUseCase - Error: ${throwable.stackTraceToString()}")
+            }
+        }
     }
 
     private fun createRequestParam(params: GetOrderResolutionParams): Map<String, Any> {

@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 class GetP1DataUseCase @Inject constructor(
@@ -22,10 +23,8 @@ class GetP1DataUseCase @Inject constructor(
     private val getInsuranceDetailUseCase: GetInsuranceDetailUseCase
 ) {
 
-    operator fun invoke(params: GetP1DataParams): Flow<GetP1DataRequestState> {
-        logInvocationBreadcrumb(params)
-        return execute(params).flowOn(Dispatchers.IO)
-    }
+    operator fun invoke(params: GetP1DataParams) = execute(params).flowOn(Dispatchers.IO)
+
     private fun getOrderResolutionUseCaseRequestStates(params: GetP1DataParams) = flow {
         if (params.hasResoStatus) {
             emitAll(
@@ -60,7 +59,6 @@ class GetP1DataUseCase @Inject constructor(
         orderResolutionRequestState: GetOrderResolutionRequestState,
         insuranceDetailRequestState: GetInsuranceDetailRequestState
     ): GetP1DataRequestState {
-        logMapperBreadcrumb(orderResolutionRequestState, insuranceDetailRequestState)
         return if (
             orderResolutionRequestState is GetOrderResolutionRequestState.Requesting ||
             insuranceDetailRequestState is GetInsuranceDetailRequestState.Requesting
@@ -68,7 +66,7 @@ class GetP1DataUseCase @Inject constructor(
             GetP1DataRequestState.Requesting(orderResolutionRequestState, insuranceDetailRequestState)
         } else {
             GetP1DataRequestState.Complete(orderResolutionRequestState, insuranceDetailRequestState)
-        }.logBreadcrumb()
+        }
     }
 
     private fun execute(params: GetP1DataParams): Flow<GetP1DataRequestState> {
@@ -81,34 +79,30 @@ class GetP1DataUseCase @Inject constructor(
                 flows[1] as GetInsuranceDetailRequestState // please make sure that flow[1] is GetInsuranceDetailRequestState after editing the flow source
             )
         }.catch {
-            EmbraceMonitoring.logBreadcrumb("Error fetching P1 data with error: ${it.stackTraceToString()}")
             emit(
                 GetP1DataRequestState.Complete(
                     GetOrderResolutionRequestState.Complete.Error(it),
                     GetInsuranceDetailRequestState.Complete.Error(it)
                 )
             )
+        }.onStart {
+            logStartBreadcrumb(params)
         }.onCompletion {
-            EmbraceMonitoring.logBreadcrumb("Finish fetching P1 data")
+            logCompletionBreadcrumb(it)
         }
     }
 
-    private fun logInvocationBreadcrumb(params: GetP1DataParams) {
+    private fun logStartBreadcrumb(params: GetP1DataParams) {
+        runCatching { EmbraceMonitoring.logBreadcrumb("GetP1DataUseCase - Fetching: $params") }
+    }
+
+    private fun logCompletionBreadcrumb(throwable: Throwable?) {
         runCatching {
-            EmbraceMonitoring.logBreadcrumb("Fetching P1 data with params: $params")
+            if (throwable == null) {
+                EmbraceMonitoring.logBreadcrumb("GetP1DataUseCase - Success")
+            } else {
+                EmbraceMonitoring.logBreadcrumb("GetP1DataUseCase - Error: ${throwable.stackTraceToString()}")
+            }
         }
-    }
-
-    private fun logMapperBreadcrumb(
-        orderResolutionRequestState: GetOrderResolutionRequestState,
-        insuranceDetailRequestState: GetInsuranceDetailRequestState
-    ) {
-        runCatching {
-            EmbraceMonitoring.logBreadcrumb("Mapping P1 data: ${orderResolutionRequestState::class.java.simpleName}, ${insuranceDetailRequestState::class.java.simpleName}")
-        }
-    }
-
-    private fun GetP1DataRequestState.logBreadcrumb() = also {
-        EmbraceMonitoring.logBreadcrumb("Finish mapping P1 data into ${this::class.java.simpleName}")
     }
 }

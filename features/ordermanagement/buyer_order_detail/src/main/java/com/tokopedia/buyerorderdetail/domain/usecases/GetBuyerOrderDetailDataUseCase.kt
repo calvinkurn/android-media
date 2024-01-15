@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 class GetBuyerOrderDetailDataUseCase @Inject constructor(
@@ -29,15 +30,11 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
 
     suspend operator fun invoke(
         params: GetBuyerOrderDetailDataParams
-    ): Flow<GetBuyerOrderDetailDataRequestState> {
-        logInvocationBreadcrumb(params)
-        return execute(params).flowOn(Dispatchers.IO)
-    }
+    ) = execute(params).flowOn(Dispatchers.IO)
 
     private fun mapGetP0DataRequestStateToGetAllDataRequestState(
         p0DataRequestState: GetP0DataRequestState, shouldCheckCache: Boolean
     ): Flow<GetBuyerOrderDetailDataRequestState> = flow {
-        logMapperBreadcrumb(p0DataRequestState)
         when (p0DataRequestState) {
             is GetP0DataRequestState.Requesting -> {
                 emit(
@@ -105,7 +102,6 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
             p0DataRequestState, params.shouldCheckCache
         )
     }.catch {
-        EmbraceMonitoring.logBreadcrumb("Error fetching all order detail data with error: ${it.stackTraceToString()}")
         emit(
             GetBuyerOrderDetailDataRequestState.Complete(
                 GetP0DataRequestState.Complete(GetBuyerOrderDetailRequestState.Complete.Error(it)),
@@ -115,19 +111,25 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
                 )
             )
         )
+    }.onStart {
+        logStartBreadcrumb(params)
     }.onCompletion {
-        EmbraceMonitoring.logBreadcrumb("Finish fetching all order detail data")
+        logCompletionBreadcrumb(it)
     }
 
-    private fun logInvocationBreadcrumb(params: GetBuyerOrderDetailDataParams) {
+    private fun logStartBreadcrumb(params: GetBuyerOrderDetailDataParams) {
         runCatching {
-            EmbraceMonitoring.logBreadcrumb("Fetching all order detail data with params: $params")
+            EmbraceMonitoring.logBreadcrumb("GetBuyerOrderDetailDataUseCase - Fetching: $params")
         }
     }
 
-    private fun logMapperBreadcrumb(p0DataRequestState: GetP0DataRequestState) {
+    private fun logCompletionBreadcrumb(throwable: Throwable?) {
         runCatching {
-            EmbraceMonitoring.logBreadcrumb("Mapping all order detail data: ${p0DataRequestState::class.java.simpleName}")
+            if (throwable == null) {
+                EmbraceMonitoring.logBreadcrumb("GetBuyerOrderDetailDataUseCase - Success")
+            } else {
+                EmbraceMonitoring.logBreadcrumb("GetBuyerOrderDetailDataUseCase - Error: ${throwable.stackTraceToString()}")
+            }
         }
     }
 }

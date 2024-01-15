@@ -11,6 +11,7 @@ import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 class GetBuyerOrderDetailUseCase @Inject constructor(
@@ -21,15 +22,30 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
     override fun graphqlQuery() = QUERY
 
     override suspend fun execute(params: GetBuyerOrderDetailParams) = flow {
-        EmbraceMonitoring.logBreadcrumb("Fetching order detail data with params: $params")
         emit(GetBuyerOrderDetailRequestState.Requesting)
-        EmbraceMonitoring.logBreadcrumb("Success fetching order detail data")
         emit(GetBuyerOrderDetailRequestState.Complete.Success(sendRequest(params).buyerOrderDetail))
     }.catch {
-        EmbraceMonitoring.logBreadcrumb("Error fetching order detail data with error: ${it.stackTraceToString()}")
         emit(GetBuyerOrderDetailRequestState.Complete.Error(it))
+    }.onStart {
+        logStartBreadcrumb(params)
     }.onCompletion {
-        EmbraceMonitoring.logBreadcrumb("Finish fetching order detail data")
+        logCompletionBreadcrumb(it)
+    }
+
+    private fun logStartBreadcrumb(params: GetBuyerOrderDetailParams) {
+        runCatching {
+            EmbraceMonitoring.logBreadcrumb("GetBuyerOrderDetailUseCase - Fetching: $params")
+        }
+    }
+
+    private fun logCompletionBreadcrumb(throwable: Throwable?) {
+        runCatching {
+            if (throwable == null) {
+                EmbraceMonitoring.logBreadcrumb("GetBuyerOrderDetailUseCase - Success")
+            } else {
+                EmbraceMonitoring.logBreadcrumb("GetBuyerOrderDetailUseCase - Error: ${throwable.stackTraceToString()}")
+            }
+        }
     }
 
     private fun createRequestParam(params: GetBuyerOrderDetailParams): Map<String, Any> {

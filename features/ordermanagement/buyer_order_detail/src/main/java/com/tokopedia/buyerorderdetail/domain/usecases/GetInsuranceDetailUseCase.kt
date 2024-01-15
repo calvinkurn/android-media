@@ -11,6 +11,7 @@ import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 class GetInsuranceDetailUseCase @Inject constructor(
@@ -21,15 +22,30 @@ class GetInsuranceDetailUseCase @Inject constructor(
     }
 
     override suspend fun execute(params: GetInsuranceDetailParams) = flow {
-        EmbraceMonitoring.logBreadcrumb("Fetching order insurance data with params: $params")
         emit(GetInsuranceDetailRequestState.Requesting)
-        EmbraceMonitoring.logBreadcrumb("Success fetching order insurance data")
         emit(GetInsuranceDetailRequestState.Complete.Success(sendRequest(params).ppGetInsuranceDetail?.data))
     }.catch {
-        EmbraceMonitoring.logBreadcrumb("Error fetching order insurance data with error: ${it.stackTraceToString()}")
         emit(GetInsuranceDetailRequestState.Complete.Error(it))
+    }.onStart {
+        logStartBreadcrumb(params)
     }.onCompletion {
-        EmbraceMonitoring.logBreadcrumb("Finish fetching order insurance data")
+        logCompletionBreadcrumb(it)
+    }
+
+    private fun logStartBreadcrumb(params: GetInsuranceDetailParams) {
+        runCatching {
+            EmbraceMonitoring.logBreadcrumb("GetInsuranceDetailUseCase - Fetching: $params")
+        }
+    }
+
+    private fun logCompletionBreadcrumb(throwable: Throwable?) {
+        runCatching {
+            if (throwable == null) {
+                EmbraceMonitoring.logBreadcrumb("GetInsuranceDetailUseCase - Success")
+            } else {
+                EmbraceMonitoring.logBreadcrumb("GetInsuranceDetailUseCase - Error: ${throwable.stackTraceToString()}")
+            }
+        }
     }
 
     private fun createRequestParam(params: GetInsuranceDetailParams): Map<String, Any> {
