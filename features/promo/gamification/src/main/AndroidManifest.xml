@@ -50,5 +50,10 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"
             android:launchMode="singleTask"></activity>
+        <activity
+            android:name=".pdp.presentation.activities.KetupatLandingActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"></activity>
     </application>
 </manifest>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageClose"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/gami_ic_transaction_icon" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/ketupat_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:textColor="@color/Unify_NN950_68"
+            app:layout_constraintTop_toBottomOf="@id/imageClose"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="body_2"
+            tools:text="7 Hari " />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
