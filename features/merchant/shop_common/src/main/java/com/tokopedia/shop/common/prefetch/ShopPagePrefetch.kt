@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.common.domain.entity.ShopPrefetchData
 
 class ShopPagePrefetch {
@@ -31,7 +32,6 @@ class ShopPagePrefetch {
 
     private fun isPrefetchEnabledOnRemoteConfig(context: Context): Boolean {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
-        // return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SHOP_PAGE_PREFETCH, false)
-        return true
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SHOP_PAGE_PREFETCH, false)
     }
 }
