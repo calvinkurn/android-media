@@ -4,9 +4,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.tokopedia.content.product.preview.utils.TYPE_IMAGE
-import com.tokopedia.content.product.preview.utils.TYPE_UNKNOWN
-import com.tokopedia.content.product.preview.utils.TYPE_VIDEO
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
 import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
@@ -50,5 +47,11 @@ class ProductContentAdapter(
         override fun areContentsTheSame(oldItem: ContentUiModel, newItem: ContentUiModel): Boolean {
             return oldItem == newItem
         }
+    }
+
+    companion object {
+        private const val TYPE_IMAGE = 0
+        private const val TYPE_VIDEO = 1
+        private const val TYPE_UNKNOWN = 2
     }
 }

@@ -10,9 +10,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.product.preview.databinding.FragmentProductPreviewBinding
-import com.tokopedia.content.product.preview.utils.TAB_PRODUCT_POS
-import com.tokopedia.content.product.preview.utils.TAB_REVIEW_POS
+import com.tokopedia.content.product.preview.utils.PRODUCT_DATA
+import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_POS
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_POS
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.emptyProduct
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.withProduct
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
@@ -66,7 +68,7 @@ class ProductPreviewFragment @Inject constructor(
         )
     }
 
-    override fun getScreenName() = TAG
+    override fun getScreenName() = PRODUCT_PREVIEW_FRAGMENT_TAG
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -144,16 +146,12 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     companion object {
-        const val TAG = "ProductPreviewFragment"
-
-        const val PRODUCT_DATA = "product_data"
-
         fun getOrCreate(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             bundle: Bundle
         ): ProductPreviewFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ProductPreviewFragment
+            val oldInstance = fragmentManager.findFragmentByTag(PRODUCT_PREVIEW_FRAGMENT_TAG) as? ProductPreviewFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 ProductPreviewFragment::class.java.name

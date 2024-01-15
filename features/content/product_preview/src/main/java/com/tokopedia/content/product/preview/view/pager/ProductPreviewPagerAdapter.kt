@@ -6,11 +6,11 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.tokopedia.content.product.preview.utils.TAB_PRODUCT_KEY
-import com.tokopedia.content.product.preview.utils.TAB_REVIEW_KEY
 import com.tokopedia.content.product.preview.view.fragment.ProductFragment
 import com.tokopedia.content.product.preview.view.fragment.ReviewFragment
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_KEY
+import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_KEY
 
 class ProductPreviewPagerAdapter(
     private val fragmentManager: FragmentManager,
@@ -27,11 +27,11 @@ class ProductPreviewPagerAdapter(
         _fragments.addAll(listFragment)
     }
 
-    override fun getItemCount(): Int = 2
+    override fun getItemCount(): Int = fragments.size
 
     override fun createFragment(position: Int): Fragment {
         val tabs = fragments[position]
-        return when (tabs.key) {
+        return when (tabs.tabs.key) {
             TAB_PRODUCT_KEY -> {
                 ProductFragment.getOrCreate(
                     fragmentManager = fragmentManager,

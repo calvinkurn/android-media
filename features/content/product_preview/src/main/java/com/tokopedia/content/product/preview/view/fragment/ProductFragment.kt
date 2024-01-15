@@ -15,6 +15,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentProductBinding
+import com.tokopedia.content.product.preview.utils.PRODUCT_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.adapter.product.ProductContentAdapter
 import com.tokopedia.content.product.preview.view.adapter.product.ProductIndicatorAdapter
 import com.tokopedia.content.product.preview.view.components.items.ProductIndicatorItemDecoration
@@ -89,7 +90,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     private var autoScrollFirstOpenContent = true
     private var autoScrollFirstOpenIndicator = true
 
-    override fun getScreenName() = TAG
+    override fun getScreenName() = PRODUCT_FRAGMENT_TAG
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -212,14 +213,12 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     }
 
     companion object {
-        const val TAG = "ProductFragment"
-
         fun getOrCreate(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             bundle: Bundle
         ): ProductFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ProductFragment
+            val oldInstance = fragmentManager.findFragmentByTag(PRODUCT_FRAGMENT_TAG) as? ProductFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 ProductFragment::class.java.name
