@@ -7,6 +7,7 @@ import com.tokopedia.digital.home.domain.DigitalHomepageSearchByDynamicIconUseCa
 import com.tokopedia.digital.home.domain.DigitalPersoCloseWidgetUseCase
 import com.tokopedia.digital.home.domain.SearchAutoCompleteHomePageUseCase
 import com.tokopedia.digital.home.domain.SearchCategoryHomePageUseCase
+import com.tokopedia.digital.home.presentation.monitoring.callback.RechargeHomepagePerformanceCallback
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -62,5 +63,11 @@ class RechargeHomepageModule {
     @RechargeHomepageScope
     @Provides
     fun provideCoroutineJob(): Job = Job()
+
+    @RechargeHomepageScope
+    @Provides
+    fun provideRechargeHomepagePerformanceCallback(): RechargeHomepagePerformanceCallback {
+        return RechargeHomepagePerformanceCallback()
+    }
 
 }
