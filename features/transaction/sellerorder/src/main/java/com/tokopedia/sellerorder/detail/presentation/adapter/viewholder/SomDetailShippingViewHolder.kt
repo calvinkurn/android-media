@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.common.util.Utils.generateHapticFeedback
@@ -39,6 +40,13 @@ class SomDetailShippingViewHolder(
     override fun bind(item: SomDetailData) {
         if (item.dataObject is SomDetailShipping) {
             binding?.run {
+                item.dataObject.shippingTitle.let { title ->
+                    shippingTitle.text =
+                        title.ifBlank {
+                            itemView.context.getString(R.string.detail_pengiriman)
+                        }
+                }
+
                 val layoutParamsReceiverName =
                     tvReceiverName.layoutParams as? ConstraintLayout.LayoutParams
                 if (item.dataObject.isShippingPrinted) {

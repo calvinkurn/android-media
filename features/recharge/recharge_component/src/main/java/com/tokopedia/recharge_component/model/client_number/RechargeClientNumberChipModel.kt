@@ -4,5 +4,6 @@ data class RechargeClientNumberChipModel(
     val clientName: String = "",
     val clientNumber: String = "",
     val operatorId: String = "",
-    val token: String = "",
+    val operatorName: String = "",
+    val token: String = ""
 )
