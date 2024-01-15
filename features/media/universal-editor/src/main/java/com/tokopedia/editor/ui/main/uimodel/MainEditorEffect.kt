@@ -9,14 +9,13 @@ import com.tokopedia.editor.ui.model.InputTextModel
  */
 sealed class MainEditorEffect {
     // Intent action
-    data class OpenInputText(val model: InputTextModel) : MainEditorEffect()
+    data class OpenInputText(val model: InputTextModel, val textViewId: Int? = null) : MainEditorEffect()
     data class FinishEditorPage(val filePath: String) : MainEditorEffect()
     data class OpenPlacementPage(val sourcePath: String, val model: ImagePlacementModel?) : MainEditorEffect()
 
     // Visibility handler
     object ShowCloseDialogConfirmation : MainEditorEffect()
     data class ShowToastErrorMessage(val message: String) : MainEditorEffect()
-    data class ParentToolbarVisibility(val visible: Boolean) : MainEditorEffect()
     data class RemoveAudioState(val isRemoved: Boolean) : MainEditorEffect()
 
     // Global loader

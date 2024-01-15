@@ -5,15 +5,21 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.home_account.AccountConstants
+import com.tokopedia.home_account.account_settings.data.model.AccountSettingResponse
 import com.tokopedia.home_account.common.AndroidFileUtil
-import com.tokopedia.home_account.data.model.*
+import com.tokopedia.home_account.data.model.BalanceAndPointDataModel
+import com.tokopedia.home_account.data.model.CentralizedUserAssetDataModel
+import com.tokopedia.home_account.data.model.OfferInterruptResponse
+import com.tokopedia.home_account.data.model.SaldoBalanceDataModel
+import com.tokopedia.home_account.data.model.ShortcutResponse
+import com.tokopedia.home_account.data.model.TokopointsBalanceDataModel
+import com.tokopedia.home_account.data.model.UserAccountDataModel
 import com.tokopedia.home_account.explicitprofile.data.CategoriesDataModel
 import com.tokopedia.home_account.explicitprofile.data.ExplicitProfileSaveMultiAnswers
 import com.tokopedia.home_account.explicitprofile.data.ExplicitprofileGetQuestion
 import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
 import com.tokopedia.home_account.stub.data.mocks.GetCentralizedUserMocks
 import com.tokopedia.home_account.test.R
-import com.tokopedia.home_account.view.fragment.FundsAndInvestmentFragment
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
@@ -36,43 +42,45 @@ class GraphqlRepositoryStub : GraphqlRepository {
                     R.raw.explicit_profile_get_categories
                 )
             }
+
             "explicitprofileGetQuestion" -> {
                 GqlMockUtil.createSuccessResponse<ExplicitprofileGetQuestion>(
                     R.raw.explicit_profile_get_questions
                 )
             }
+
             "explicitprofileSaveMultiAnswers" -> {
                 GqlMockUtil.createSuccessResponse<ExplicitProfileSaveMultiAnswers>(
                     EXPLICIT_PROFILE_SAVE_RESPONSE
                 )
             }
+
             "GetCentralizedUserAssetConfig" -> {
-                if (requests.first().variables?.get("entryPoint") == FundsAndInvestmentFragment.ASSET_PAGE) {
-                    GqlMockUtil.createSuccessResponse<CentralizedUserAssetDataModel>(
-                        GetCentralizedUserMocks.assetPageResponse
-                    )
-                } else {
-                    GqlMockUtil.createSuccessResponse<CentralizedUserAssetDataModel>(
-                        GetCentralizedUserMocks.userPageResponse
-                    )
-                }
+                GqlMockUtil.createSuccessResponse<CentralizedUserAssetDataModel>(
+                    GetCentralizedUserMocks.userPageResponse
+                )
             }
+
             "midasGetSaldoWidgetBalance" -> {
                 GqlMockUtil.createSuccessResponse<SaldoBalanceDataModel>(
                     R.raw.success_get_saldo_balance_and_point
                 )
             }
+
             "tokopointsAccountPage" -> {
                 GqlMockUtil.createSuccessResponse<TokopointsBalanceDataModel>(
                     R.raw.success_get_tokopoint_balance_and_point
                 )
             }
+
             "productRecommendationWidgetV2" -> {
                 GqlMockUtil.createSuccessResponse<RecommendationEntity>(R.raw.product_recommendation)
             }
+
             "productRecommendationWidget" -> {
                 GqlMockUtil.createSuccessResponse<RecommendationEntity>(R.raw.product_recommendation)
             }
+
             else -> {
                 requests.firstOrNull()?.query?.let {
                     return when {
@@ -81,36 +89,53 @@ class GraphqlRepositoryStub : GraphqlRepository {
                             mapOf(),
                             false
                         )
+
                         it.contains("link_status") && mapParam[TestStateParam.LINK_STATUS] == TestStateValue.NOT_LINKED -> GraphqlResponse(
                             mapOf(LinkStatusResponse::class.java to provideNotLinkedStatus()),
                             mapOf(),
                             false
                         )
+
                         it.contains("link_status") && mapParam[TestStateParam.LINK_STATUS] == TestStateValue.LINKED -> GraphqlResponse(
                             mapOf(LinkStatusResponse::class.java to provideLinkStatus()),
                             mapOf(),
                             false
                         )
+
                         it.contains("walletappGetAccountBalance") && requests.firstOrNull()?.variables!!["partnerCode"] == "OVO" -> GraphqlResponse(
                             mapOf(BalanceAndPointDataModel::class.java to provideOvoBalanceAndPointDataModelSuccess()),
                             mapOf(),
                             false
                         )
+
                         it.contains("walletappGetAccountBalance") && requests.firstOrNull()?.variables!!["partnerCode"] == "PEMUDA" -> GraphqlResponse(
                             mapOf(BalanceAndPointDataModel::class.java to provideGopayBalanceAndPointDataModelSuccess()),
                             mapOf(),
                             false
                         )
+
                         it.contains("tokopoints") && it.contains("tier") -> GraphqlResponse(
                             mapOf(ShortcutResponse::class.java to provideStatusFilteredSuccess()),
                             mapOf(),
                             false
                         )
+
+                        it.contains("accountSettingConfig") -> GraphqlResponse(
+                            mapOf(
+                                AccountSettingResponse::class.java to AccountSettingResponse(
+                                    AccountSettingResponse.Config(dokumenDataDiri = true)
+                                )
+                            ),
+                            mapOf(),
+                            false
+                        )
+
                         it.contains("offer_interrupt") -> {
                             val response = when (mapParam[TestStateParam.ADD_VERIFY_PHONE]) {
                                 TestStateValue.ADD_PHONE -> {
                                     provideOfferInterruptResponse()
                                 }
+
                                 TestStateValue.VERIFY_PHONE -> {
                                     provideOfferInterruptResponse().apply {
                                         val phoneData = data.offers.find { offerList ->
@@ -119,6 +144,7 @@ class GraphqlRepositoryStub : GraphqlRepository {
                                         data.offers.remove(phoneData)
                                     }
                                 }
+
                                 else -> provideOfferInterruptResponse()
                             }
 
@@ -128,6 +154,7 @@ class GraphqlRepositoryStub : GraphqlRepository {
                                 false
                             )
                         }
+
                         else -> {
                             Timber.w("unhandled request: ${GqlQueryParser.parse(requests)}")
                             throw Exception("query is not exists")

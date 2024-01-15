@@ -9,6 +9,8 @@ import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.config.DevOptConfig
 import com.tokopedia.developer_options.notification.DevOptNotificationManager
 import com.tokopedia.developer_options.presentation.model.DeveloperOptionsOnNotificationUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 
 /**
@@ -16,8 +18,7 @@ import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
  */
 class DeveloperOptionsOnNotificationViewHolder(
     itemView: View
-): AbstractViewHolder<DeveloperOptionsOnNotificationUiModel>(itemView)
-{
+) : AbstractViewHolder<DeveloperOptionsOnNotificationUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_developer_options_on_notification
@@ -28,8 +29,11 @@ class DeveloperOptionsOnNotificationViewHolder(
     private val notificationManager by lazy(LazyThreadSafetyMode.NONE) {
         val application = context.applicationContext as? Application
 
-        if(application == null) null
-        else DevOptNotificationManager(application)
+        if (application == null) {
+            null
+        } else {
+            DevOptNotificationManager(application)
+        }
     }
 
     override fun bind(element: DeveloperOptionsOnNotificationUiModel) {
@@ -39,8 +43,12 @@ class DeveloperOptionsOnNotificationViewHolder(
         cb.setOnCheckedChangeListener { _: CompoundButton, state: Boolean ->
             DevOptConfig.setDevOptOnNotifEnabled(context, state)
 
-            if(state) notificationManager?.showNotificationIfEnabled()
-            else notificationManager?.dismissNotification()
+            if (state) {
+                notificationManager?.showNotificationIfEnabled()
+            } else {
+                notificationManager?.dismissNotification()
+            }
+            DevOpsTracker.trackEntryEvent(DevopsFeature.ENABLE_DEVOPS_ON_NOTIF)
         }
     }
 }

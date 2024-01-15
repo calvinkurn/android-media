@@ -2,54 +2,58 @@ package com.tokopedia.hotel.common.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.databinding.LayoutWidgetSwitcherBinding
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.layout_widget_switcher.view.*
+import org.jetbrains.annotations.NotNull
 
 /**
  * @author by furqan on 25/04/19
  */
-class SwitcherCustomView : BaseCustomView {
+class SwitcherCustomView @JvmOverloads constructor(
+    @NotNull context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : BaseCustomView(context, attrs, defStyleAttr) {
 
-    constructor(context: Context) : super(context) {
-        init()
-    }
+    private val binding = LayoutWidgetSwitcherBinding.inflate(
+        LayoutInflater.from(context),
+        this,
+        true
+    )
 
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init(attrs)
-    }
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init(attrs)
-    }
-
-    fun setLeftSubtitleText(value: String) {
-        tv_switcher_left_subtitle.text = value
-    }
-
-    fun setLeftTitleText(value: String) {
-        tv_switcher_left_title.text = value
-    }
-
-    fun setRightSubtitleText(value: String) {
-        tv_switcher_right_subtitle.text = value
-    }
-
-    fun setRightTitleText(value: String) {
-        tv_switcher_right_title.text = value
-    }
-
-    private fun init(attrs: AttributeSet? = null) {
-        inflate(context, R.layout.layout_widget_switcher, this)
-
+    init {
         if (attrs != null) {
             val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.SwitcherCustomView)
 
-            tv_switcher_left_subtitle.text = attributeArray.getString(R.styleable.SwitcherCustomView_leftSubtitleText)
-            tv_switcher_left_title.text = attributeArray.getString(R.styleable.SwitcherCustomView_leftTitleText)
-            tv_switcher_right_subtitle.text = attributeArray.getString(R.styleable.SwitcherCustomView_rightSubtitleText)
-            tv_switcher_right_title.text = attributeArray.getString(R.styleable.SwitcherCustomView_rightTitleText)
+            binding.run {
+                tvSwitcherLeftSubtitle.text = attributeArray.getString(R.styleable.SwitcherCustomView_leftSubtitleText)
+                tvSwitcherLeftTitle.text = attributeArray.getString(R.styleable.SwitcherCustomView_leftTitleText)
+                tvSwitcherRightSubtitle.text = attributeArray.getString(R.styleable.SwitcherCustomView_rightSubtitleText)
+                tvSwitcherRightTitle.text = attributeArray.getString(R.styleable.SwitcherCustomView_rightTitleText)
+            }
+
+            attributeArray.recycle()
         }
     }
 
+    fun setLeftSubtitleText(value: String) {
+        binding.tvSwitcherLeftSubtitle.text = value
+    }
+
+    fun setLeftTitleText(value: String) {
+        binding.tvSwitcherLeftTitle.text = value
+    }
+
+    fun setRightSubtitleText(value: String) {
+        binding.tvSwitcherRightSubtitle.text = value
+    }
+
+    fun setRightTitleText(value: String) {
+        binding.tvSwitcherRightTitle.text = value
+    }
+
+    private fun init(attrs: AttributeSet? = null) {
+    }
 }

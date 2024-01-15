@@ -12,6 +12,7 @@ object ShopFlashSaleTracking: BaseTrackerConst() {
     private const val LIST_FORMAT = "/ - p%s - dynamic channel flash sale toko home - product - %s - carousel - %s - %s - %s - %s"
     private const val EVENT_ACTION_PRODUCT_IMPRESSION = "impression on product dynamic channel flash sale toko home"
     private const val EVENT_ACTION_PRODUCT_CLICK = "click on product dynamic channel flash sale toko home"
+    private const val EVENT_ACTION_IMPRESSION_SHOP_TAB = "impression on shop chips dynamic channel flash sale toko home"
     private const val EVENT_ACTION_CLICK_SHOP_TAB = "click on shop chips dynamic channel flash sale toko home"
     private const val EVENT_ACTION_CLICK_VIEW_ALL = "click view all on dynamic channel flash sale toko home"
     private const val EVENT_ACTION_CLICK_VIEW_ALL_CARD = "click view all card on dynamic channel flash sale toko home"
@@ -23,6 +24,7 @@ object ShopFlashSaleTracking: BaseTrackerConst() {
 
     private const val TRACKER_ID_PRODUCT_IMPRESSION = "45515"
     private const val TRACKER_ID_PRODUCT_CLICK = "45516"
+    private const val TRACKER_ID_IMPRESSION_SHOP_TAB = "49009"
     private const val TRACKER_ID_CLICK_SHOP_TAB = "45517"
     private const val TRACKER_ID_CLICK_VIEW_ALL = "45518"
     private const val TRACKER_ID_CLICK_VIEW_ALL_CARD = "46117"
@@ -158,6 +160,38 @@ object ShopFlashSaleTracking: BaseTrackerConst() {
             .appendCampaignCode(grid.campaignCode)
             .build() as HashMap<String, Any>
         getTracker().sendEnhanceEcommerceEvent(trackerBuilder)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4099
+    // Tracker ID: 49009
+    fun getImpressionShopTab(trackingAttributionModel: TrackingAttributionModel, grid: ChannelGrid, userId: String): HashMap<String, Any> {
+        val gridPosition = (grid.position + 1).toString()
+        return BaseTrackerBuilder().constructBasicPromotionView(
+            event = Event.PROMO_VIEW,
+            eventCategory = Category.HOMEPAGE,
+            eventAction = EVENT_ACTION_IMPRESSION_SHOP_TAB,
+            eventLabel = Value.EMPTY,
+            promotions = arrayListOf(
+                Promotion(
+                    id = SHOP_ITEM_ID_FORMAT.format(
+                        trackingAttributionModel.channelId,
+                        trackingAttributionModel.bannerId,
+                        grid.shop.id,
+                        trackingAttributionModel.persoType,
+                        trackingAttributionModel.categoryId
+                    ),
+                    creative = grid.shop.shopName,
+                    name = SHOP_ITEM_NAME_FORMAT.format(trackingAttributionModel.parentPosition, trackingAttributionModel.headerName),
+                    position = gridPosition
+                )
+            )
+        )
+            .appendBusinessUnit(TrackingConst.DEFAULT_BUSINESS_UNIT)
+            .appendCurrentSite(TrackingConst.DEFAULT_CURRENT_SITE)
+            .appendChannelId(trackingAttributionModel.channelId)
+            .appendUserId(userId)
+            .appendCustomKeyValue(TrackerId.KEY, TRACKER_ID_IMPRESSION_SHOP_TAB)
+            .build() as HashMap<String, Any>
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4099

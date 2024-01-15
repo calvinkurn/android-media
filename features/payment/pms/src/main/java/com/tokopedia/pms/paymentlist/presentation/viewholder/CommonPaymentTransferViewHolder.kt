@@ -8,33 +8,36 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pms.R
+import com.tokopedia.pms.databinding.CommonTransferPaymentListItemBinding
 import com.tokopedia.pms.paymentlist.domain.data.*
 import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFragment.Companion.ACTION_CHEVRON_ACTIONS
 import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFragment.Companion.ACTION_HOW_TO_PAY_REDIRECTION
 import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFragment.Companion.ACTION_INVOICE_PAGE_REDIRECTION
 import com.tokopedia.pms.paymentlist.presentation.fragment.DeferredPaymentListFragment.Companion.ACTION_INVOICE_PAGE_REDIRECTION_COMBINED_VA
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import kotlinx.android.synthetic.main.common_transfer_payment_list_item.view.*
+import com.tokopedia.pms.R as pmsR
 
 class CommonPaymentTransferViewHolder(
-    val view: View,
+    view: View,
     val actionItemListener: (Int, BasePaymentModel) -> Unit
 ) : RecyclerView.ViewHolder(view) {
 
+    private val binding = CommonTransferPaymentListItemBinding.bind(view)
+
     private val defaultCardTitle =
-        view.context.getString(com.tokopedia.pms.R.string.pms_deferred_payment_card_title)
+        binding.root.context.getString(pmsR.string.pms_deferred_payment_card_title)
     private val combinedCardTitle =
-        view.context.getString(com.tokopedia.pms.R.string.pms_deferred_combined_payment_card_title)
+        binding.root.context.getString(pmsR.string.pms_deferred_combined_payment_card_title)
     private val defaultAmountHeading =
-        view.context.getString(com.tokopedia.pms.R.string.pms_hwp_total_pembayaran)
+        binding.root.context.getString(pmsR.string.pms_hwp_total_pembayaran)
 
     private fun bindVA(item: VirtualAccountPaymentModel) {
         val cardTitle = getCardTitle(item.transactionList)
-        bindTransactionHeaderData(cardTitle, item.expiryDate, item.expiryTime,item.productImage)
+        bindTransactionHeaderData(cardTitle, item.expiryDate, item.expiryTime, item.productImage)
         bindPaymentGatewayData(item)
         bindVATransactionAmountData(item)
         setCommonClickRedirections(item)
-        view.setOnClickListener {
+        binding.root.setOnClickListener {
             actionItemListener(ACTION_INVOICE_PAGE_REDIRECTION_COMBINED_VA, item)
         }
     }
@@ -42,43 +45,47 @@ class CommonPaymentTransferViewHolder(
     private fun bindVATransactionAmountData(item: VirtualAccountPaymentModel) {
         bindTransactionAmountData(item.totalAmount)
         val totalAmountHeader =
-            if (item.transactionList.size > 1) "Total dari ${item.transactionList.size} transaksi"
-            else defaultAmountHeading
+            if (item.transactionList.size > 1) {
+                "Total dari ${item.transactionList.size} transaksi"
+            } else {
+                defaultAmountHeading
+            }
         bindTotalAmountHeading(totalAmountHeader)
     }
 
     private fun bindTotalAmountHeading(totalAmountHeader: String = defaultAmountHeading) {
-        view.tvTotalAmountHeading.text = totalAmountHeader
+        binding.tvTotalAmountHeading.text = totalAmountHeader
     }
 
     private fun bindKlicBCA(item: KlicBCAPaymentModel) {
-        bindTransactionHeaderData(item.productName, item.expiryDate, item.expiryTime,item.productImage)
+        bindTransactionHeaderData(item.productName, item.expiryDate, item.expiryTime, item.productImage)
         bindPaymentGatewayData(item)
         bindTransactionAmountData(item.amount)
         bindTotalAmountHeading()
         setCommonClickRedirections(item)
-        view.setOnClickListener {
+        binding.root.setOnClickListener {
             actionItemListener(ACTION_INVOICE_PAGE_REDIRECTION, item)
         }
     }
 
     fun bindStore(item: StorePaymentModel) {
-        bindTransactionHeaderData(item.productName, item.expiryDate, item.expiryTime,item.productImage)
+        bindTransactionHeaderData(item.productName, item.expiryDate, item.expiryTime, item.productImage)
         bindPaymentGatewayData(item)
         bindTransactionAmountData(item.amount)
         bindTotalAmountHeading()
         setCommonClickRedirections(item)
-        view.setOnClickListener {
+        binding.root.setOnClickListener {
             actionItemListener(ACTION_INVOICE_PAGE_REDIRECTION, item)
         }
     }
 
     private fun bindPaymentGatewayData(item: BasePaymentModel) {
-        view.apply {
+        binding.run {
             ivGatewayImage.urlSrc = item.gatewayImage
             tvPaymentGatewayName.text = item.gatewayName
-            if (item.paymentCode.isNotEmpty())
+            if (item.paymentCode.isNotEmpty()) {
                 tvPaymentCode.text = item.paymentCode
+            }
             if (item.shouldShowHowToPay) goToHowToPay.visible() else goToHowToPay.gone()
         }
     }
@@ -89,9 +96,9 @@ class CommonPaymentTransferViewHolder(
         expiryTime: Long,
         productImage: String
     ) {
-        view.apply {
+        binding.run {
             cardTitle.text = cardHeading
-            cardIcon.urlSrc = if(productImage != "") productImage else CARD_ICON_URL
+            cardIcon.urlSrc = if (productImage != "") productImage else CARD_ICON_URL
             tvPaymentTransactionDate.text = expiryDate
             tvTransactionExpireTime.text =
                 DateFormatUtils.getFormattedDateSeconds(expiryTime, "dd MMM, HH:mm")
@@ -99,17 +106,19 @@ class CommonPaymentTransferViewHolder(
     }
 
     private fun bindTransactionAmountData(amount: Int) {
-        view.tvTotalPaymentAmount.text =
-            CurrencyFormatUtil.convertPriceValueToIdrFormat(amount, false)
-        view.tvTotalAmountHeading.text =
-            view.context.getString(com.tokopedia.pms.R.string.pms_hwp_total_pembayaran)
+        binding.run {
+            tvTotalPaymentAmount.text =
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(amount, false)
+            tvTotalAmountHeading.text =
+                binding.root.context.getString(pmsR.string.pms_hwp_total_pembayaran)
+        }
     }
 
     private fun setCommonClickRedirections(item: BasePaymentModel) {
-        view.goToHowToPay.setOnClickListener {
+        binding.goToHowToPay.setOnClickListener {
             actionItemListener(ACTION_HOW_TO_PAY_REDIRECTION, item)
         }
-        view.cardMenu.setOnClickListener {
+        binding.cardMenu.setOnClickListener {
             actionItemListener(ACTION_CHEVRON_ACTIONS, item)
         }
     }
@@ -124,11 +133,15 @@ class CommonPaymentTransferViewHolder(
     }
 
     private fun handleActionList(isActionListEmpty: Boolean) =
-        if (isActionListEmpty) view.cardMenu.gone() else view.cardMenu.visible()
+        if (isActionListEmpty) binding.cardMenu.gone() else binding.cardMenu.visible()
 
     private fun getCardTitle(transaction: ArrayList<VaTransactionItem>): String =
-        if (transaction.size > 1) combinedCardTitle else transaction.getOrNull(0)?.productName
-            ?: defaultCardTitle
+        if (transaction.size > 1) {
+            combinedCardTitle
+        } else {
+            transaction.getOrNull(0)?.productName
+                ?: defaultCardTitle
+        }
 
     companion object {
         private val LAYOUT_ID = R.layout.common_transfer_payment_list_item
@@ -141,7 +154,8 @@ class CommonPaymentTransferViewHolder(
             actionItemListener: (Int, BasePaymentModel) -> Unit
         ) =
             CommonPaymentTransferViewHolder(
-                inflater.inflate(LAYOUT_ID, parent, false), actionItemListener
+                inflater.inflate(LAYOUT_ID, parent, false),
+                actionItemListener
             )
     }
 }

@@ -236,6 +236,9 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_PERFORMANCE_TRACE = "android_enable_performance_trace";
 
+    public static final String ENABLE_PERFORMANCE_TRACE_V2 = "android_enable_performance_trace_v2";
+    
+    public static final String PERFORMANCE_TRACE_CONFIG = "android_universal_performance_config";
     public static final String DEV_OPTS_AUTHORIZATION = "android_dev_opts_password_hash";
 
     public static final String ENABLE_CHATBOT_MVVM = "android_chatbot_is_mvvm";
@@ -312,4 +315,6 @@ public class RemoteConfigKey {
     public static final String ANDROID_ENABLE_AUTO_TOPADS_WD_RECOMMENDATION = "android_enable_auto_topads_wd_recommendation";
 
     public static final String ANDROID_SALDO_ENABLE_AUTO_WD_INIT_GQL = "android_saldo_enable_auto_wd_init_gql";
+
+    public static final String ANDROID_ENABLE_NEW_CART_QUANTITY_EDITOR = "android_enable_new_quantity_editor_cart";
 }

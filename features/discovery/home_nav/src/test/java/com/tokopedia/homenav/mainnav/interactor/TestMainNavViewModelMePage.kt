@@ -18,6 +18,7 @@ import com.tokopedia.homenav.mainnav.view.datamodel.review.ShimmerReviewDataMode
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.searchbar.navigation_component.NavSource
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
@@ -257,6 +258,32 @@ class TestMainNavViewModelMePage {
         Assert.assertNull(viewModel.mainNavLiveData.value?.dataList?.find { it is ReviewListDataModel })
         Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
             it is HomeNavMenuDataModel && it.id == ID_REVIEW && !it.showCta
+        })
+    }
+
+    @Test
+    fun `given user get back when after giving review then refresh review cards`() {
+        val initialData = listOf(NavReviewModel("123"), NavReviewModel("234"))
+        coEvery { mockGetReviewProductUseCase.executeOnBackground() } returns initialData
+
+        viewModel = createViewModel(
+            userSession = getUserSession(true),
+            getReviewProductUseCase = mockGetReviewProductUseCase
+        )
+
+        viewModel.setInitialState()
+        viewModel.getMainNavData(true)
+
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
+            it is ReviewListDataModel && (it as? ReviewListDataModel)?.reviewList == initialData
+        })
+
+        val refreshedData = listOf(NavReviewModel("234"))
+        coEvery { mockGetReviewProductUseCase.executeOnBackground() } returns refreshedData
+        viewModel.refreshReviewData()
+
+        Assert.assertNotNull(viewModel.mainNavLiveData.value?.dataList?.find {
+            it is ReviewListDataModel && (it as? ReviewListDataModel)?.reviewList == refreshedData
         })
     }
 }

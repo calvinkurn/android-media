@@ -168,7 +168,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_LOGIN, REQUEST_REGISTER -> viewModel.reloadMainNavAfterLogin()
-                REQUEST_REVIEW_PRODUCT -> viewModel.refreshTransactionListData()
+                REQUEST_REVIEW_PRODUCT -> viewModel.refreshReviewData()
             }
         }
     }
