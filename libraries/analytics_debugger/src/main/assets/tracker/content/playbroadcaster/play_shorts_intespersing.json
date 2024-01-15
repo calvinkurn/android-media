@@ -1,0 +1,72 @@
+{
+  "readme": "Play Shorts - Interspersing Video",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickContent",
+      "eventAction": "click - show video on pdp",
+      "eventCategory": "play broadcast short",
+      "eventLabel": ".* - (seller|user) - .* - (on|off)",
+      "trackerId": "(49475|49464)",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - error toaster show video PDP",
+      "eventCategory": "play broadcast short",
+      "eventLabel": ".* - (seller|user) - .*",
+      "trackerId": "(49476|49465)",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - x icon video product option for pdp",
+      "eventCategory": "play broadcast short",
+      "eventLabel": ".* - (seller|user) - .* - (on|off)",
+      "trackerId": "(49477|49466)",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - video card option for pdp",
+      "eventCategory": "play broadcast short",
+      "eventLabel": ".* - (seller|user) - .* - (on|off)",
+      "trackerId": "(49478|49467)",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - lanjut show video on pdp",
+      "eventCategory": "play broadcast short",
+      "eventLabel": ".* - (seller|user) - .* - (on|off)",
+      "trackerId": "(49479|49468)",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - kembali show video on pdp",
+      "eventCategory": "play broadcast short",
+      "eventLabel": ".* - (seller|user) - .* - (on|off)",
+      "trackerId": "(49480|49474)",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    }
+  ]
+}
