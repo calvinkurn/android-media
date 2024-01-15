@@ -25,7 +25,7 @@ class PlayShortsInterspersingAnalyticImpl @Inject constructor(
         creationId: String,
         isActive: Boolean
     ) {
-        analyticSender.sendGeneralClickEvent(
+        analyticSender.sendGeneralClickEventContent(
             eventAction = "click - show video on pdp",
             eventLabel = getEventLabel(
                 accountUiModel,
@@ -43,7 +43,7 @@ class PlayShortsInterspersingAnalyticImpl @Inject constructor(
         accountUiModel: ContentAccountUiModel,
         creationId: String
     ) {
-        analyticSender.sendGeneralViewEvent(
+        analyticSender.sendGeneralViewEventContent(
             eventAction = "view - error toaster show video PDP",
             eventLabel = getEventLabel(
                 accountUiModel,
@@ -60,7 +60,7 @@ class PlayShortsInterspersingAnalyticImpl @Inject constructor(
         accountUiModel: ContentAccountUiModel,
         creationId: String
     ) {
-        analyticSender.sendGeneralClickEvent(
+        analyticSender.sendGeneralClickEventContent(
             eventAction = "click - x icon video product option for pdp",
             eventLabel = getEventLabel(
                 accountUiModel,
@@ -74,7 +74,7 @@ class PlayShortsInterspersingAnalyticImpl @Inject constructor(
     }
 
     override fun clickVideoPdpCard(accountUiModel: ContentAccountUiModel, creationId: String) {
-        analyticSender.sendGeneralClickEvent(
+        analyticSender.sendGeneralClickEventContent(
             eventAction = "click - video card option for pdp",
             eventLabel = getEventLabel(
                 accountUiModel,
@@ -91,7 +91,7 @@ class PlayShortsInterspersingAnalyticImpl @Inject constructor(
         accountUiModel: ContentAccountUiModel,
         creationId: String
     ) {
-        analyticSender.sendGeneralClickEvent(
+        analyticSender.sendGeneralClickEventContent(
             eventAction = "click - lanjut show video on pdp",
             eventLabel = getEventLabel(
                 accountUiModel,
@@ -108,7 +108,7 @@ class PlayShortsInterspersingAnalyticImpl @Inject constructor(
         accountUiModel: ContentAccountUiModel,
         creationId: String
     ) {
-        analyticSender.sendGeneralClickEvent(
+        analyticSender.sendGeneralClickEventContent(
             eventAction = "click - kembali show video on pdp",
             eventLabel = getEventLabel(
                 accountUiModel,
