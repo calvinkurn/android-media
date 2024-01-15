@@ -20,7 +20,8 @@ import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.SLASH_PRICE_LIS
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.SLASH_PRICE_SET_DISCOUNT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TOKOPEDIA_SELLER
-import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_SUBSIDY_INFORMATION
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_SUBSIDY_INFORMATION_BOTTOM_SHEET
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_SUBSIDY_INFORMATION_PRODUCT_LIST
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_IMPRESSION_COACH_MARK_BOTTOM_SHEET
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_IMPRESSION_COACH_MARK_PRODUCT_LIST
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.VIEW_PG_IRIS
@@ -114,7 +115,7 @@ class ShopDiscountTracker @Inject constructor(private val userSession: UserSessi
             .send()
     }
 
-    fun sendSlashPriceClickSubsidyInformationEvent(hasVariant: Boolean, id: String) {
+    fun sendSlashPriceClickSubsidyInformationListProductEvent(hasVariant: Boolean, id: String) {
         val eventLabel = if (hasVariant) {
             SLASH_PRICE_SUBSIDY_VARIANT_PRODUCT
         } else {
@@ -125,7 +126,30 @@ class ShopDiscountTracker @Inject constructor(private val userSession: UserSessi
             .setEventAction(CLICK_SUBSIDY_INFORMATION)
             .setEventCategory(SLASH_PRICE_SUBSIDY_LIST_OF_PRODUCTS)
             .setEventLabel(eventLabel)
-            .setCustomProperty(TRACKER_ID, TRACKER_ID_CLICK_SUBSIDY_INFORMATION)
+            .setCustomProperty(TRACKER_ID, TRACKER_ID_CLICK_SUBSIDY_INFORMATION_PRODUCT_LIST)
+            .setBusinessUnit(CAMPAIGN_BUSINESS_UNIT)
+            .setCurrentSite(TOKOPEDIA_MARKETPLACE)
+            .setShopId(userSession.shopId)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
+
+    fun sendSlashPriceClickSubsidyInformationBottomSheetEvent(
+        hasVariant: Boolean,
+        id: String
+    ) {
+        val eventLabel = if (hasVariant) {
+            SLASH_PRICE_SUBSIDY_VARIANT_PRODUCT
+        } else {
+            SLASH_PRICE_SUBSIDY_NON_VARIANT_PRODUCT
+        }.format(id)
+        Tracker.Builder()
+            .setEvent(CLICK_PG)
+            .setEventAction(CLICK_SUBSIDY_INFORMATION)
+            .setEventCategory(SLASH_PRICE_SUBSIDY_BOTTOM_SHEET)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(TRACKER_ID, TRACKER_ID_CLICK_SUBSIDY_INFORMATION_BOTTOM_SHEET)
             .setBusinessUnit(CAMPAIGN_BUSINESS_UNIT)
             .setCurrentSite(TOKOPEDIA_MARKETPLACE)
             .setShopId(userSession.shopId)

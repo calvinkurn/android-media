@@ -551,7 +551,15 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
     }
 
     override fun onClickSubsidyInfo(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData) {
+        sendSlashPriceClickSubsidyInformation(uiModel)
         showSubsidyProgramInformationBottomSheet(uiModel)
+    }
+
+    private fun sendSlashPriceClickSubsidyInformation(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData) {
+        tracker.sendSlashPriceClickSubsidyInformationBottomSheetEvent(
+            uiModel.parentId != Int.ZERO.toString(),
+            uiModel.productId,
+        )
     }
 
     private fun showCoachMarkSubsidyInfo(view: View, uiModel: ShopDiscountProductDetailUiModel.ProductDetailData) {

@@ -555,7 +555,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
     }
 
     private fun sendSlashPriceClickSubsidyInformation(product: Product) {
-        tracker.sendSlashPriceClickSubsidyInformationEvent(
+        tracker.sendSlashPriceClickSubsidyInformationListProductEvent(
             product.hasVariant,
             product.id
         )
