@@ -20,12 +20,6 @@ data class SDUIDataModel(
 
     override fun name(): String = name
 
-//    val isLoading: Boolean
-//        get() = state == RecommendationCarouselData.STATE_LOADING
-
-//    val isFailed: Boolean
-//        get() = state == RecommendationCarouselData.STATE_FAILED
-
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is SDUIDataModel) {
             return newData == data
