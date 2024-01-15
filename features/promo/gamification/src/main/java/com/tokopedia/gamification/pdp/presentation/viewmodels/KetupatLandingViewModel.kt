@@ -10,6 +10,7 @@ import com.tokopedia.gamification.pdp.domain.usecase.KetupatLandingUseCase
 import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingTypeFactory
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.C2VHModel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.C3VHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.C4VHModel
 import com.tokopedia.notifications.common.launchCatchError
 import javax.inject.Inject
 
@@ -85,6 +86,9 @@ class KetupatLandingViewModel @Inject constructor(
         }
         if(referral!=null) {
             tempList.add(C3VHModel(referral!!))
+        }
+        if(benefitCoupon!=null) {
+            tempList.add(C4VHModel(benefitCoupon!!))
         }
         return tempList
     }
