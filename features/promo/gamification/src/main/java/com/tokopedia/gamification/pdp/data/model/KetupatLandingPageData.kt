@@ -14,7 +14,7 @@ data class KetupatLandingPageData(
         @SerializedName("appBar")
         var appBar: AppBar?,
         @SerializedName("sections")
-        var sections: List<Sections?>
+        var sections: List<SectionItem?>
     ) {
         data class ResultStatus(
             @SerializedName("code")
@@ -64,7 +64,7 @@ data class KetupatLandingPageData(
             )
         }
 
-        data class Sections(
+        data class SectionItem(
             @SerializedName("id")
             val id: Long?,
             @SerializedName("title")

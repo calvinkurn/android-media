@@ -32,6 +32,13 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
     var viewModelProvider: ViewModelProvider.Factory? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setObservers()
+    }
+
+    private fun setObservers() {
+        ketupatLandingViewModel?.getAffiliateDataItems()?.observe(this) {
+            adapter.addMoreData(it)
+        }
     }
 
     override fun setViewModel(viewModel: BaseViewModel) {
@@ -61,8 +68,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
         ketupatRV?.layoutManager = layoutManager
         ketupatRV?.adapter = adapter
 
-        adapter.addElement(C1VHModel())
-        ketupatLandingViewModel?.getScratchCardsLandingInfo("")
+        ketupatLandingViewModel?.getScratchCardsLandingInfo("ketupat-thr-2024")
     }
 
     override fun getViewModelType(): Class<KetupatLandingViewModel> {

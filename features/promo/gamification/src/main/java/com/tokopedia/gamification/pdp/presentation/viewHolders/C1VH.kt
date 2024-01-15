@@ -4,12 +4,10 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.gamification.pdp.data.C1VHModel
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.gamification.R as gamificationR
 
 class C1VH(itemView: View) : AbstractViewHolder<C1VHModel>(itemView) {
-
-    private val tvDate = itemView.findViewById<Typography>(gamificationR.id.ketupat_text)
 
     companion object {
         @JvmField
@@ -18,11 +16,11 @@ class C1VH(itemView: View) : AbstractViewHolder<C1VHModel>(itemView) {
     }
 
     override fun bind(element: C1VHModel?) {
-        tvDate.text = buildString {
-            append("element?.data?.title")
-            append(" (")
-            append("element?.data?.message")
-            append(")")
+        element?.header?.let { header ->
+            itemView.findViewById<ImageUnify>(gamificationR.id.header_image)
+            .apply {
+                this.cornerRadius = 0
+            }?.setImageUrl(header.assets.find { it?.key == "BACKGROUND_IMAGE" }?.value.toString())
         }
     }
 
