@@ -107,14 +107,14 @@ class AddToCartUseCase @Inject constructor(
             val result = addToCartDataMapper.mapAddToCartResponse(addToCartGqlResponse)
             if (!result.isStatusError()) {
                 AddToCartBaseAnalytics.sendAppsFlyerTracking(
-                    addToCartRequest.productId.toString(),
+                    addToCartRequest.productId,
                     addToCartRequest.productName,
                     addToCartRequest.price,
                     addToCartRequest.quantity.toString(),
                     addToCartRequest.category
                 )
                 AddToCartBaseAnalytics.sendBranchIoTracking(
-                    addToCartRequest.productId.toString(), addToCartRequest.productName, addToCartRequest.price,
+                    addToCartRequest.productId, addToCartRequest.productName, addToCartRequest.price,
                     addToCartRequest.quantity.toString(), addToCartRequest.category, addToCartRequest.categoryLevel1Id,
                     addToCartRequest.categoryLevel1Name, addToCartRequest.categoryLevel2Id, addToCartRequest.categoryLevel2Name,
                     addToCartRequest.categoryLevel3Id, addToCartRequest.categoryLevel3Name, addToCartRequest.userId,
