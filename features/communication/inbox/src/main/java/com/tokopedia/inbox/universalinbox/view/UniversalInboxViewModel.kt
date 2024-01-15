@@ -318,8 +318,8 @@ class UniversalInboxViewModel @Inject constructor(
         when (result) {
             is Result.Success -> {
                 val productRecommendation = result.data.recommendationItemList.mapIndexed { index, item ->
-                    // Add top ads every 7th position but skip the first index or else double banner will occur
-                    if (index != 0 && index % 7 == 0) {
+                    // Add the first top ads at the 9th position (index 8), then every 9th position thereafter (change the hardcoded index for another position)
+                    if (index == 8 || (index > 8 && (index - 8) % 9 == 0)) {
                         UniversalInboxTopAdsBannerUiModel()
                     } else {
                         UniversalInboxRecommendationUiModel(item)
