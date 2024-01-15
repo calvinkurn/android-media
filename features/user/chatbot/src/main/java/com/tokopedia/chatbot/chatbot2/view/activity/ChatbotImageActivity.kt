@@ -18,8 +18,6 @@ class ChatbotImageActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.image_preview_activity)
-
         val imageUrl = intent.extras?.getString(IMAGE_URL) ?: ""
 
         viewBinding?.let {
