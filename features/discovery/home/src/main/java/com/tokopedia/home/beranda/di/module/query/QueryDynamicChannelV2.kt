@@ -61,6 +61,10 @@ internal object QueryDynamicChannelV2 {
         "          type\n" +
         "          title\n" +
         "          position\n" +
+        "          styles {\n" +
+        "           key\n" +
+        "           value\n" +
+        "          }\n" +
         "        }\n" +
         "        attribution\n" +
         "        warehouseID\n" +

@@ -30,7 +30,7 @@ object ChannelModelMapper {
             stockBarPercentage = channelGrid.soldPercentage,
             shopLocation = channelGrid.shop.shopLocation.takeIf { !excludeShop }.orEmpty(),
             shopBadgeList = channelGrid.badges.map {
-                ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
+                ProductCardModel.ShopBadge(title = it.title, imageUrl = it.imageUrl)
             }.takeIf { !excludeShop }.orEmpty(),
             labelGroupList = channelGrid.labelGroup.filterNot { label ->
                 excludeLabelGroup.any {
@@ -41,7 +41,13 @@ object ChannelModelMapper {
                     position = it.position,
                     title = it.title,
                     type = it.type,
-                    imageUrl = it.url
+                    imageUrl = it.url,
+                    styleList = it.styles.map {  style ->
+                        ProductCardModel.LabelGroup.Style(
+                            style.key,
+                            style.value
+                        )
+                    }
                 )
             },
             freeOngkir = ProductCardModel.FreeOngkir(
