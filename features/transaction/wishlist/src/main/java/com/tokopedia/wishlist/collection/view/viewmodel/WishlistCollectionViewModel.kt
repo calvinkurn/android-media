@@ -31,7 +31,6 @@ import com.tokopedia.wishlistcommon.data.params.UpdateWishlistCollectionParams
 import com.tokopedia.wishlistcommon.data.response.UpdateWishlistCollectionResponse
 import com.tokopedia.wishlistcommon.domain.UpdateWishlistCollectionUseCase
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OK
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -86,7 +85,6 @@ class WishlistCollectionViewModel @Inject constructor(
         WishlistIdlingResource.increment()
         launchCatchError(block = {
             _collectionData.value = WishlistCollectionState.InitialLoading
-            delay(1_000L)
             val result = getWishlistCollectionUseCase(Unit)
             if (result.getWishlistCollections.status == OK && result.getWishlistCollections.errorMessage.isEmpty()) {
                 recommSrc =
@@ -133,7 +131,6 @@ class WishlistCollectionViewModel @Inject constructor(
         productIds: List<String>,
         pageName: String
     ): WishlistRecommendationDataModel {
-        delay(2_000L)
         val recommendation = singleRecommendationUseCase.getData(
             GetRecommendationRequestParam(
                 pageNumber = page,
