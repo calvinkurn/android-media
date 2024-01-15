@@ -56,7 +56,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     fun onAction(action: ProductPreviewUiAction) {
         when (action) {
-            is InitializeProductMainData -> handleInitializeProductMainData()
+            InitializeProductMainData -> handleInitializeProductMainData()
             is InitializeReviewMainData -> handleInitializeReviewMainData(action.page)
             is ProductSelected -> handleProductSelected(action.position)
         }
