@@ -28,6 +28,7 @@ import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAda
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
+import com.tokopedia.content.product.preview.view.uimodel.PageState
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
@@ -36,6 +37,7 @@ import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.state.ReviewPageState
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -168,7 +170,24 @@ class ReviewFragment @Inject constructor(
 
     private fun renderList(prev: ReviewPageState?, data: ReviewPageState) {
         if (prev?.reviewList == data.reviewList) return
-        reviewAdapter.submitList(data.reviewList)
+
+        val state = data.pageState
+
+        showLoading(state is PageState.Load)
+
+        when (state) {
+            is PageState.Success -> reviewAdapter.submitList(data.reviewList)
+            is PageState.Error -> showError(state)
+            else -> {}
+        }
+    }
+
+    private fun showLoading(isShown: Boolean) {
+        binding.reviewLoader.showWithCondition(isShown)
+        binding.rvReview.showWithCondition(!isShown)
+    }
+
+    private fun showError(state: PageState.Error) {
     }
 
     /**
