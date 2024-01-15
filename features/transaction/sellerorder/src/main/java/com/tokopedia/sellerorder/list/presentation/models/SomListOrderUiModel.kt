@@ -33,6 +33,8 @@ data class SomListOrderUiModel(
     val buttons: List<Button> = emptyList(),
     val orderPlusData: OrderPlusData? = null,
     val multiSelectEnabled: Boolean = false,
+    val isBulkSelectable: Boolean = true,
+    val bulkMessage: String? = null,
     var isChecked: Boolean = false,
     var searchParam: String,
     var isOpen: Boolean = false

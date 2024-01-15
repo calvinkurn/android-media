@@ -15,7 +15,7 @@ class ComparisonSpecItemAdapter(
     }
 
     override fun onBindViewHolder(holder: ComparisonSpecItemViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(items[position], position < itemCount.dec())
     }
 
     override fun getItemCount() = items.size

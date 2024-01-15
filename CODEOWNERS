@@ -2,6 +2,7 @@
 /features/category/       				                @tokopedia/android-miniondarth-dev
 /features/discovery/topadssdk/                      	@tokopedia/android-minionsolo-dev
 /features/discovery/home/                           	@tokopedia/android-miniondave-dev
+/features/discovery/home_explore_category/              @tokopedia/android-miniondave-dev
 /features/discovery/home_component/                    	@tokopedia/android-miniondave-dev
 /features/discovery/home_component_header/              @tokopedia/android-miniondave-dev
 /features/discovery/home_nav/                           @tokopedia/android-miniondave-dev
@@ -44,6 +45,8 @@
 /features/common/feedback_form                          @tokopedia/android-core-dev
 /features/common/internal_review/                       @tokopedia/android-core-dev
 /features/common/dark_mode_config/                      @tokopedia/android-core-dev @tokopedia/android-minionstuart-dev
+/features/common/appdownloadmanager_install/            @tokopedia/android-core-dev
+/features/common/appdownloadmanager_noinstall/          @tokopedia/android-core-dev
 
 /features/merchant/gold_merchant/                       @tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant_common/                @tokopedia/android-minionstuart-dev
@@ -186,7 +189,6 @@
 /dynamic-features-customerapp_pro/travel                @tokopedia/android-minionoscar-dev
 /dynamic-features/travel                                @tokopedia/android-minionoscar-dev
 
-/features/salam/umrah                                   @tokopedia/android-minionoscar-dev
 /libraries/travel_calendar                              @tokopedia/android-minionoscar-dev
 
 /features/promo/promo_checkout/                 		@tokopedia/android-minionoscar-dev
@@ -329,6 +331,7 @@
 /libraries/analytics/							        @tokopedia/android-core-dev
 /libraries/analytics_debugger/							@tokopedia/android-core-dev
 /libraries/analytics_debugger_noop/					    @tokopedia/android-core-dev
+/libraries/appdownloadmanager_common/   			    @tokopedia/android-core-dev
 /libraries/applink/										@tokopedia/android-core-dev
 /libraries/banner_dynamic/								@tokopedia/android-core-dev
 /libraries/base_adapter/								@tokopedia/android-core-dev

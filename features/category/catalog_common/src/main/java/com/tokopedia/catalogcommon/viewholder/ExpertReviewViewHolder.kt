@@ -40,7 +40,7 @@ class ExpertReviewViewHolder(
         binding?.carousel?.apply {
             autoplay = false
             infinite = true
-            listener?.onVideoExpertImpression(element.content)
+            listener?.onVideoExpertImpression(element)
 
             // TODO: Re-Implement when iOS Ready
             /*onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
@@ -79,6 +79,7 @@ class ExpertReviewViewHolder(
             activeIndex = Int.ZERO
             onceCreateCarousel = true
         }
+
     }
 
     private fun playVideoYoutube(videoLink: String) {

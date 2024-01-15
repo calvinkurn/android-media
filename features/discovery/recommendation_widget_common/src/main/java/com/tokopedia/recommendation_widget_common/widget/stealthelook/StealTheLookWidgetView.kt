@@ -61,6 +61,10 @@ class StealTheLookWidgetView :
 
     private fun setupRecyclerView(model: StealTheLookWidgetModel) {
         with(binding.rvStealTheLook) {
+            val lParams = layoutParams
+            lParams.width = StealTheLookViewUtil.getContainerWidth(context)
+            layoutParams = lParams
+
             if(layoutManager != this@StealTheLookWidgetView.layoutManager) {
                 layoutManager = this@StealTheLookWidgetView.layoutManager
             }
