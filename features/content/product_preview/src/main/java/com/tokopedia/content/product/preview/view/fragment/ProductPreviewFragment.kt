@@ -34,10 +34,14 @@ class ProductPreviewFragment @Inject constructor(
     private val binding: FragmentProductPreviewBinding
         get() = _binding!!
 
-    private val viewModel by activityViewModels<ProductPreviewViewModel> {
+    val viewModelParentFactory: ProductPreviewViewModelFactory by lazyThreadSafetyNone {
         viewModelFactory.create(
-            EntrySource(productId = "4937529690") // TODO: Testing purpose, change from arguments
+            EntrySource(productId = productPreviewData.productId)
         )
+    }
+
+    private val viewModel by activityViewModels<ProductPreviewViewModel> {
+        viewModelParentFactory
     }
 
     private val productPreviewData: ProductContentUiModel by lazyThreadSafetyNone {
