@@ -194,7 +194,7 @@ internal abstract class FeedBrowseItemAdapter<Input : Any>(
     }
 
     fun setItems(input: Input, onCommit: () -> Unit = {}) {
-        submitList(input.mapToItems())
+        submitList(input.mapToItems(), onCommit)
     }
 
     abstract fun Input.mapToItems(): List<FeedBrowseItemListModel>
