@@ -29,7 +29,7 @@ class ProfileManagementInterceptor @Inject constructor(
         private const val KEY_LANGUAGE = "Accept-Language"
         private const val VALUE_LANGUAGE = "in"
         private const val VALUE_BEARER = "Bearer"
-        private const val VALUE_CLIENT_ID = "tokopedia:consumer:app"
+        private const val VALUE_CLIENT_ID = "tokopedia:consumer:android"
         private const val VALUE_APP_ID = "com.tokopedia.app"
     }
 }

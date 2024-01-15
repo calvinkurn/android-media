@@ -32,7 +32,6 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformanceChipR
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateUserPerformanceListModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateUserPerformanceModel
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
-import com.tokopedia.affiliate.usecase.AffiliateGetUnreadNotificationUseCase
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceDataUseCase
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceItemTypeUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSSEAuthTokenUseCase
@@ -40,15 +39,12 @@ import com.tokopedia.affiliate.usecase.AffiliateUserPerformanceUseCase
 import com.tokopedia.affiliate.utils.DateUtils
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 class AffiliateAdpViewModel @Inject constructor(
@@ -58,7 +54,6 @@ class AffiliateAdpViewModel @Inject constructor(
     private val affiliatePerformanceItemTypeUseCase: AffiliatePerformanceItemTypeUseCase,
     private val affiliatePerformanceDataUseCase: AffiliatePerformanceDataUseCase,
     private val affiliateSSEAuthTokenUseCase: AffiliateSSEAuthTokenUseCase,
-    private val affiliateUnreadNotificationUseCase: AffiliateGetUnreadNotificationUseCase,
     private val dispatchers: CoroutineDispatchers,
     private val affiliateSSE: AffiliateSSE
 ) : BaseViewModel() {
@@ -86,10 +81,6 @@ class AffiliateAdpViewModel @Inject constructor(
 
     private var itemTypes = emptyList<ItemTypesItem>()
     private var sseJob: Job? = null
-
-    private val _unreadNotificationCount = MutableLiveData(Int.ZERO)
-
-    fun getUnreadNotificationCount(): LiveData<Int> = _unreadNotificationCount
 
     companion object {
         private const val FILTER_LAST_THIRTY_DAYS = "LastThirtyDays"
@@ -340,18 +331,6 @@ class AffiliateAdpViewModel @Inject constructor(
             is AffiliateSSEAdpTotalClick -> affiliateSSEAdpTotalClick.value = result
             is AffiliateSSEAdpTotalClickItem -> affiliateSSEAdpTotalClickItem.value = result
         }
-    }
-
-    fun fetchUnreadNotificationCount() {
-        val coroutineExceptionHandler = CoroutineExceptionHandler { _, e -> Timber.e(e) }
-        viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
-            _unreadNotificationCount.value =
-                affiliateUnreadNotificationUseCase.getUnreadNotifications()
-        }
-    }
-
-    fun resetNotificationCount() {
-        _unreadNotificationCount.value = Int.ZERO
     }
 
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility

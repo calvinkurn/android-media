@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.google.android.play.core.splitinstall.*
 import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
@@ -36,6 +37,8 @@ import kotlinx.coroutines.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
+import com.tokopedia.globalerror.R as globalerrorR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Activity that handles for installing new dynamic feature module
@@ -77,6 +80,10 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
 
     private var allowRunningServiceFromActivity: Boolean = false
     private var cancelDownloadBeforeInstallInPage: Boolean = false
+    private var hasStartTarget: Boolean = false
+
+    // count for auto retry download without clicking button retry
+    private var autoRetryCount = 0
 
     private var job = Job()
     private var timerJob: Job = Job()
@@ -89,6 +96,9 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         private const val EXTRA_FALLBACK_WEB = "dffallbackurl"
         private const val CONFIRMATION_REQUEST_CODE = 1
         private const val SETTING_REQUEST_CODE = 2
+        private const val MAX_AUTO_RETRY_COUNT = 3
+        private var AUTO_RETRY_TIME_INTERVAL = TimeUnit.SECONDS.toMillis(3)
+        private var TIMER_CHECK_INTERVAL = TimeUnit.SECONDS.toMillis(8) // check per timeout
         const val DOWNLOAD_MODE_PAGE = "Page"
         const val TIMEOUT_ERROR_MESSAGE = "timeout"
     }
@@ -113,6 +123,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
 
         setContentView(R.layout.activity_dynamic_feature_installer)
         initializeViews()
+        cancelAllPendingRequest()
         if (DFInstaller.isInstalled(this, moduleName)) {
             onSuccessfulLoad(moduleName, launch = true)
         } else if (isAutoDownload) {
@@ -160,7 +171,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         progressBar.progressDrawable.setColorFilter(
             MethodChecker.getColor(
                 this,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                unifyprinciplesR.color.Unify_GN500
             ), android.graphics.PorterDuff.Mode.MULTIPLY
         )
     }
@@ -223,9 +234,19 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         }
         timerJob.cancel()
         timerJob = launch(Dispatchers.IO) {
-            delay(TimeUnit.SECONDS.toMillis(timeout))
+            var elapsedTime = 0L
+            val timeoutTotal = TimeUnit.SECONDS.toMillis(timeout)
+            while (elapsedTime < timeoutTotal) {
+                delay(TIMER_CHECK_INTERVAL)
+                SplitCompat.install(applicationContext)
+                if (DFInstaller.isInstalled(this@DFInstallerActivity, moduleName)) {
+                    onSuccessfulLoad(moduleName, launch = true)
+                    return@launch
+                }
+                elapsedTime += TIMER_CHECK_INTERVAL
+            }
             withContext(Dispatchers.Main) {
-                cancelPreviousDownload()
+                cancelAllPendingRequest()
                 // show timeoutError
                 onFailed(TIMEOUT_ERROR_MESSAGE + "after" + timeout)
             }
@@ -250,6 +271,11 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     }
 
     private fun launchAndForwardIntent(applink: String) {
+        // make sure the target is launched only once per Activity installer
+        if (hasStartTarget) {
+            return
+        }
+        hasStartTarget = true
         RouteManager.getIntentNoFallback(this, applink)?.let {
             it.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
             intent.extras?.let { passBundle ->
@@ -313,7 +339,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         when (errorCodeTemp) {
             SplitInstallErrorCode.PLAY_STORE_NOT_FOUND.toString() -> {
                 updateInformationView(
-                    com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
+                    globalerrorR.drawable.unify_globalerrors_500,
                     getString(R.string.download_error_play_store_title),
                     getString(R.string.download_error_play_store_subtitle),
                     getString(R.string.goto_playstore),
@@ -323,7 +349,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
             }
 
             ErrorConstant.ERROR_INVALID_INSUFFICIENT_STORAGE -> updateInformationView(
-                com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
+                globalerrorR.drawable.unify_globalerrors_500,
                 getString(R.string.download_error_os_and_play_store_title),
                 getString(R.string.download_error_os_and_play_store_subtitle),
                 getString(R.string.goto_seting),
@@ -351,7 +377,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
             )
 
             SplitInstallErrorCode.NETWORK_ERROR.toString() -> updateInformationView(
-                com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection,
+                globalerrorR.drawable.unify_globalerrors_connection,
                 getString(R.string.download_error_connection_title),
                 getString(R.string.download_error_connection_subtitle),
                 getString(R.string.df_installer_try_again),
@@ -370,9 +396,9 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
             )
 
             else -> {
-                toggleDfConfig()
+                cancelAllPendingRequest()
                 updateInformationView(
-                    com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
+                    globalerrorR.drawable.unify_globalerrors_500,
                     getString(R.string.download_error_general_title),
                     getString(R.string.download_error_general_subtitle),
                     getString(R.string.df_installer_try_again),
@@ -383,8 +409,19 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         }
     }
 
-    private fun toggleDfConfig() {
-        allowRunningServiceFromActivity = !allowRunningServiceFromActivity
+    private fun cancelAllPendingRequest() {
+        try {
+            val sessionStates = manager.sessionStates
+            if (!sessionStates.isComplete) {
+                return
+            }
+            val result = sessionStates.result
+            if (result.isNotEmpty()) {
+                result.forEach {
+                    manager.cancelInstall(it.sessionId())
+                }
+            }
+        } catch (ignored: Exception) { }
     }
 
     private fun updateInformationView(
@@ -436,6 +473,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     private fun downloadFeature() {
         if (cancelDownloadBeforeInstallInPage) {
             cancelPreviousDownload()
+            cancelAllPendingRequest()
         }
         updateInformationView(
             R.drawable.ic_ill_downloading,
@@ -449,14 +487,14 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
 
     private fun cancelPreviousDownload() {
         try {
-            if (allowRunningServiceFromActivity) {
-                DFInstaller.stopInstall(applicationContext)
-            } else {
-                sessionId?.let {
-                    manager.cancelInstall(it)
-                }
-                sessionId = null
+            // stop install in background
+            DFInstaller.stopInstall(applicationContext)
+
+            // stop install in foreground
+            sessionId?.let {
+                manager.cancelInstall(it)
             }
+            sessionId = null
         } catch (ignored: Exception) {
         }
     }
@@ -565,7 +603,26 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
     override fun onFailed(errorString: String) {
         timerJob.cancel()
         endDownloadTimeStamp = System.currentTimeMillis()
-        showFailedMessage(errorString)
+        if (autoRetryCount < MAX_AUTO_RETRY_COUNT &&
+            endDownloadTimeStamp - startDownloadTimeStamp < AUTO_RETRY_TIME_INTERVAL
+        ) {
+            // capability to auto-retry without user clicking retry button
+            autoRetryCount++
+            cancelAllPendingRequest()
+            launch(Dispatchers.Main) {
+                delay(500)
+                val errorCodeTemp =
+                    ErrorUtils.getValidatedErrorCode(
+                        this@DFInstallerActivity,
+                        errorString,
+                        freeInternalStorageBeforeDownload
+                    )
+                errorList.add(errorCodeTemp)
+                downloadFeature()
+            }
+        } else {
+            showFailedMessage(errorString)
+        }
     }
 
     override fun getModuleNameView(): String {

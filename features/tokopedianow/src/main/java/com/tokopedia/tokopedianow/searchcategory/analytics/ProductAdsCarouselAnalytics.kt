@@ -51,7 +51,8 @@ abstract class ProductAdsCarouselAnalytics(
                 itemId = product.getProductId(),
                 itemName = product.getProductName(),
                 price = product.getProductPrice(),
-                dimension40 = ""
+                dimension40 = "",
+                warehouseId = product.productCardModel.warehouseId
             )
         )
 
@@ -88,7 +89,8 @@ abstract class ProductAdsCarouselAnalytics(
                 itemId = product.getProductId(),
                 itemName = product.getProductName(),
                 price = product.getProductPrice(),
-                dimension40 = ""
+                dimension40 = "",
+                warehouseId = product.productCardModel.warehouseId
             )
         )
 
@@ -132,7 +134,8 @@ abstract class ProductAdsCarouselAnalytics(
                 quantity = quantity,
                 shopId = shopId,
                 shopName = shopName,
-                shopType = shopType
+                shopType = shopType,
+                warehouseId = product.warehouseId
             )
         )
 

@@ -1,14 +1,35 @@
 package com.tokopedia.oneclickcheckout.order.view.processor
 
+import android.annotation.SuppressLint
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.oneclickcheckout.common.PAYMENT_CC_TYPE_TENOR_FULL
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CartDetailsItem
 import com.tokopedia.oneclickcheckout.order.data.creditcard.CreditCardTenorListRequest
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOption
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
+import com.tokopedia.oneclickcheckout.order.data.payment.AdditionalInfoData
+import com.tokopedia.oneclickcheckout.order.data.payment.BenefitSummaryInfoData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartAddOnData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartAddressData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartDetail
+import com.tokopedia.oneclickcheckout.order.data.payment.CartDetailData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartGroupData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartProductCategoryData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartProductData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartShippingInfoData
+import com.tokopedia.oneclickcheckout.order.data.payment.CartShopOrderData
+import com.tokopedia.oneclickcheckout.order.data.payment.DetailsItemData
+import com.tokopedia.oneclickcheckout.order.data.payment.PaymentData
 import com.tokopedia.oneclickcheckout.order.data.payment.PaymentFeeRequest
+import com.tokopedia.oneclickcheckout.order.data.payment.PaymentRequest
+import com.tokopedia.oneclickcheckout.order.data.payment.PromoDetail
+import com.tokopedia.oneclickcheckout.order.data.payment.SummariesItemData
+import com.tokopedia.oneclickcheckout.order.data.payment.UsageSummariesData
+import com.tokopedia.oneclickcheckout.order.data.payment.VoucherOrderItemData
 import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
 import com.tokopedia.oneclickcheckout.order.domain.DynamicPaymentFeeUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GoCicilInstallmentOptionUseCase
@@ -18,10 +39,17 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
+import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.util.*
+import java.util.Collections.emptyList
 import javax.inject.Inject
 
 class OrderSummaryPagePaymentProcessor @Inject constructor(
@@ -35,7 +63,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
         orderPayment: OrderPayment,
         userId: String,
         orderCost: OrderCost,
-        orderCart: OrderCart
+        orderCart: OrderCart,
+        paymentRequest: PaymentRequest
     ): List<OrderPaymentInstallmentTerm>? {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
@@ -45,7 +74,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                         orderPayment,
                         userId,
                         orderCost,
-                        orderCart
+                        orderCart,
+                        paymentRequest
                     )
                 )
                 if (creditCardData.errorMsg.isNotEmpty()) {
@@ -66,7 +96,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
         orderPayment: OrderPayment,
         userId: String,
         orderCost: OrderCost,
-        orderCart: OrderCart
+        orderCart: OrderCart,
+        paymentRequest: PaymentRequest
     ): CreditCardTenorListRequest {
         val cartDetailsItemList = ArrayList<CartDetailsItem>()
         val cartDetailsItem = CartDetailsItem(
@@ -85,7 +116,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
             otherAmount = orderCost.totalAdditionalFee,
             discountAmount = orderCost.totalDiscounts.toDouble(),
             cartDetails = cartDetailsItemList,
-            additionalData = orderPayment.additionalData
+            additionalData = orderPayment.additionalData,
+            detailData = paymentRequest
         )
     }
 
@@ -108,7 +140,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
         orderCost: OrderCost,
         orderCart: OrderCart,
         orderProfile: OrderProfile,
-        promoCodes: List<String>
+        promoCodes: List<String>,
+        paymentRequest: PaymentRequest
     ): GoCicilInstallmentRequest {
         return GoCicilInstallmentRequest(
             gatewayCode = orderPayment.gatewayCode,
@@ -121,7 +154,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
             shop = orderCart.shop,
             products = orderCart.products,
             promoCodes = promoCodes,
-            additionalData = orderPayment.additionalData
+            additionalData = orderPayment.additionalData,
+            detailData = paymentRequest
         )
     }
 
@@ -209,7 +243,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
 
     suspend fun getPaymentFee(
         orderPayment: OrderPayment,
-        orderCost: OrderCost
+        orderCost: OrderCost,
+        paymentRequest: PaymentRequest
     ): List<OrderPaymentFee>? {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
@@ -219,7 +254,8 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
                         orderPayment.creditCard.additionalData.profileCode,
                         orderPayment.gatewayCode,
                         orderCost.totalPriceWithoutPaymentFees,
-                        orderPayment.additionalData
+                        orderPayment.additionalData,
+                        paymentRequest
                     )
                 )
             } catch (t: Throwable) {
@@ -229,6 +265,175 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(
         }
         OccIdlingResource.decrement()
         return result
+    }
+
+    @SuppressLint("PII Data Exposure")
+    fun generatePaymentRequest(
+        orderCart: OrderCart,
+        orderProducts: List<OrderProduct>,
+        orderShop: OrderShop,
+        orderProfile: OrderProfile,
+        orderShipment: OrderShipment,
+        orderPayment: OrderPayment,
+        orderCost: OrderCost,
+        orderPromo: OrderPromo
+    ): PaymentRequest {
+        return PaymentRequest(
+            payment = PaymentData(
+                gatewayCode = orderPayment.gatewayCode,
+                profileCode = orderPayment.creditCard.additionalData.profileCode,
+                paymentAmount = orderCost.totalPriceWithoutPaymentFees
+            ),
+            CartDetail(
+                cart = CartData(
+                    data = listOf(
+                        CartDetailData(
+                            address = CartAddressData(
+                                id = orderProfile.address.addressId,
+                                address = orderProfile.address.addressStreet,
+                                state = orderProfile.address.provinceName,
+                                city = orderProfile.address.cityName,
+                                country = orderProfile.address.country,
+                                postalCode = orderProfile.address.postalCode
+                            ),
+                            listOf(
+                                CartGroupData(
+                                    cartStringGroup = orderCart.cartString,
+                                    shippingInfo = CartShippingInfoData(
+                                        spId = orderShipment.getRealShipperProductId().toString(),
+                                        originalShippingPrice = orderShipment.getRealOriginalPrice().toDouble(),
+                                        serviceName = orderShipment.getRealServiceName(),
+                                        shipperName = orderShipment.getRealShipperName(),
+                                        eta = orderShipment.getRealServiceEta(),
+                                        insurancePrice = orderShipment.getRealInsurancePrice().toDouble()
+                                    ),
+                                    shopOrders = listOf(
+                                        CartShopOrderData(
+                                            shopId = orderCart.shop.shopId,
+                                            warehouseId = orderCart.shop.warehouseId.toLongOrZero(),
+                                            shopTier = orderCart.shop.shopTier.toLong(),
+                                            products = orderProducts.mapNotNull { orderProduct ->
+                                                if (!orderProduct.isError) {
+                                                    CartProductData(
+                                                        productId = orderProduct.productId,
+                                                        name = orderProduct.productName,
+                                                        price = orderProduct.finalPrice.toLong(),
+                                                        quantity = orderProduct.orderQuantity.toLong(),
+                                                        totalPrice = orderProduct.finalPrice.toLong() * orderProduct.orderQuantity,
+                                                        bundleGroupId = "",
+                                                        addonItems = generateAddonProductLevel(
+                                                            orderProduct
+                                                        ),
+                                                        category = CartProductCategoryData(
+                                                            id = orderProduct.categoryId,
+                                                            name = orderProduct.lastLevelCategory,
+                                                            identifier = orderProduct.categoryIdentifier
+                                                        )
+                                                    )
+                                                } else {
+                                                    null
+                                                }
+                                            },
+                                            bundle = emptyList(),
+                                            addonItems = generateAddonShopLevel(orderShop),
+                                            cartStringOrder = orderCart.cartString
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            ),
+            PromoDetail(
+                benefitSummaryInfo = BenefitSummaryInfoData(
+                    orderPromo.lastApply.benefitSummaryInfo.summaries.map { summary ->
+                        SummariesItemData(
+                            type = summary.type,
+                            details = summary.details.map { detail ->
+                                DetailsItemData(
+                                    amount = detail.amount.toDouble(),
+                                    type = detail.type
+                                )
+                            }
+                        )
+                    }
+                ),
+                voucherOrders = orderPromo.lastApply.voucherOrders.mapNotNull { voucher ->
+                    if (orderCart.cartString == voucher.uniqueId &&
+                        voucher.message.state != "red" &&
+                        voucher.code.isNotEmpty() &&
+                        voucher.type.isNotEmpty()
+                    ) {
+                        VoucherOrderItemData(
+                            code = voucher.code,
+                            uniqueId = voucher.uniqueId,
+                            shippingId = voucher.shippingId.toLong(),
+                            spId = voucher.spId.toLong(),
+                            type = voucher.type,
+                            success = voucher.success,
+                            cartStringGroup = voucher.cartStringGroup
+                        )
+                    } else {
+                        null
+                    }
+                },
+                additionalInfo = AdditionalInfoData(
+                    usageSummaries = orderPromo.lastApply.additionalInfo.usageSummaries.map { usage ->
+                        UsageSummariesData(
+                            type = usage.type,
+                            amountString = usage.amountStr,
+                            amount = usage.amount.toDouble()
+                        )
+                    }
+                )
+            )
+        )
+    }
+
+    private fun generateAddonShopLevel(orderShop: OrderShop): List<CartAddOnData> {
+        val addOnItemModel = orderShop.addOn.addOnsDataItemModelList.firstOrNull()
+        if (orderShop.addOn.status == 1 && addOnItemModel != null) {
+            return listOf(
+                CartAddOnData(
+                    name = orderShop.addOn.addOnsButtonModel.title,
+                    price = addOnItemModel.addOnPrice.toLong() / addOnItemModel.addOnQty,
+                    quantity = addOnItemModel.addOnQty,
+                    totalPrice = addOnItemModel.addOnPrice.toLong()
+                )
+            )
+        }
+        return emptyList()
+    }
+
+    private fun generateAddonProductLevel(orderProduct: OrderProduct): List<CartAddOnData> {
+        val addOnProductLevelItems = mutableListOf<CartAddOnData>()
+        val addOnItemModel = orderProduct.addOn.addOnsDataItemModelList.firstOrNull()
+        if (orderProduct.addOn.status == 1 && addOnItemModel != null) {
+            addOnProductLevelItems.add(
+                CartAddOnData(
+                    name = orderProduct.addOn.addOnsButtonModel.title,
+                    price = addOnItemModel.addOnPrice.toLong() / addOnItemModel.addOnQty,
+                    quantity = addOnItemModel.addOnQty,
+                    totalPrice = addOnItemModel.addOnPrice.toLong()
+                )
+            )
+        }
+
+        orderProduct.addOnsProductData.data.forEach { addOnsProduct ->
+            if (addOnsProduct.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_CHECK || addOnsProduct.status == AddOnConstant.ADD_ON_PRODUCT_STATUS_MANDATORY) {
+                val addOnQty: Long = if (addOnsProduct.fixedQuantity) 1 else orderProduct.orderQuantity.toLong()
+                addOnProductLevelItems.add(
+                    CartAddOnData(
+                        name = addOnsProduct.name,
+                        price = addOnsProduct.price,
+                        quantity = addOnQty,
+                        totalPrice = addOnsProduct.price * addOnQty
+                    )
+                )
+            }
+        }
+        return addOnProductLevelItems
     }
 }
 

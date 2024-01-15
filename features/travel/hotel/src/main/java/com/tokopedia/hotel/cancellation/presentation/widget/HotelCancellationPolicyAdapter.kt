@@ -7,9 +7,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
+import com.tokopedia.hotel.databinding.WidgetHotelCancellationPolicyItemBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.widget_hotel_cancellation_policy_item.view.*
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * @author by jessica on 04/05/20
@@ -36,20 +37,23 @@ class HotelCancellationPolicyAdapter: RecyclerView.Adapter<HotelCancellationPoli
     }
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
+
+        private val binding = WidgetHotelCancellationPolicyItemBinding.bind(view)
+
         fun bind(item: HotelCancellationModel.CancelPolicy.Policy, isLastItem: Boolean, isOnlyOneItem: Boolean) {
-            with(itemView) {
-                hotel_cancellation_policy_item_title.text = item.title
-                hotel_cancellation_policy_item_desc.text = item.desc
+            with(binding) {
+                hotelCancellationPolicyItemTitle.text = item.title
+                hotelCancellationPolicyItemDesc.text = item.desc
 
                 if (item.styling.equals(ACTIVE_STATE, true)){
-                    hotel_cancellation_policy_item_icon_deactivate.hide()
+                    hotelCancellationPolicyItemIconDeactivate.hide()
                 } else if (item.styling.equals(GREYOUT_STATE, true)) {
-                    hotel_cancellation_policy_item_icon_deactivate.show()
-                    hotel_cancellation_policy_item_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
-                    hotel_cancellation_policy_item_desc.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_44))
+                    hotelCancellationPolicyItemIconDeactivate.show()
+                    hotelCancellationPolicyItemTitle.setTextColor(ContextCompat.getColor(root.context, unifyprinciplesR.color.Unify_NN950_44))
+                    hotelCancellationPolicyItemDesc.setTextColor(ContextCompat.getColor(root.context, unifyprinciplesR.color.Unify_NN950_44))
                 }
 
-                if (isOnlyOneItem || isLastItem) hotel_cancellation_refund_connecting_line.hide()
+                if (isOnlyOneItem || isLastItem) hotelCancellationRefundConnectingLine.hide()
             }
         }
     }

@@ -119,6 +119,7 @@ object LeftCarouselMapper {
         hasBlockedAddToCart: Boolean
     ): ProductCardCompactUiModel = ProductCardCompactUiModel(
         productId = channelGrid.id,
+        warehouseId = channelGrid.warehouseId,
         imageUrl = channelGrid.imageUrl,
         minOrder = channelGrid.minOrder,
         maxOrder = channelGrid.maxOrder,

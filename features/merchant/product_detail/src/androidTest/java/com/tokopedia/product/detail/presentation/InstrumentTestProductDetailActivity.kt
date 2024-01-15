@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.test.R
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
@@ -40,9 +39,9 @@ class InstrumentTestProductDetailActivity : AppCompatActivity(), InstrumentTestT
         val bundleData = Bundle()
         bundleData.putParcelable(AddToCartDoneBottomSheet.KEY_ADDED_PRODUCT_DATA_MODEL, addedProductDataModel)
         addToCartDoneBottomSheet.arguments = bundleData
-        addToCartDoneBottomSheet.setDismissListener(BottomSheets.BottomSheetDismissListener {
+        addToCartDoneBottomSheet.onDismiss = {
             shouldShowCartAnimation = true
-        })
+        }
         supportFragmentManager.let {
             addToCartDoneBottomSheet.show(
                     it, "ADD_TO_CART"

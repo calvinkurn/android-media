@@ -2,13 +2,13 @@ package com.tokopedia.hotel.cancellation.presentation.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
+import com.tokopedia.hotel.databinding.WidgetHotelCancellationPolicyBinding
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.widget_hotel_cancellation_policy.view.*
 
 /**
  * @author by jessica on 04/05/20
@@ -19,18 +19,22 @@ class HotelCancellationPolicyWidget @JvmOverloads constructor(context: Context, 
 
     lateinit var adapter: HotelCancellationPolicyAdapter
 
-    init {
-        View.inflate(context, R.layout.widget_hotel_cancellation_policy, this)
-    }
+    private val binding: WidgetHotelCancellationPolicyBinding = WidgetHotelCancellationPolicyBinding.inflate(
+        LayoutInflater.from(context),
+        this,
+        true
+    )
 
     fun initView(title: String, policies: List<HotelCancellationModel.CancelPolicy.Policy>) {
-        hotel_cancellation_policy_title.text = title
+        with(binding) {
+            hotelCancellationPolicyTitle.text = title
 
-        hotel_cancellation_policy_rv.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        hotel_cancellation_policy_rv.setHasFixedSize(true)
-        hotel_cancellation_policy_rv.isNestedScrollingEnabled = false
-        adapter = HotelCancellationPolicyAdapter()
-        adapter.updatePolicy(policies)
-        hotel_cancellation_policy_rv.adapter = adapter
+            hotelCancellationPolicyRv.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            hotelCancellationPolicyRv.setHasFixedSize(true)
+            hotelCancellationPolicyRv.isNestedScrollingEnabled = false
+            adapter = HotelCancellationPolicyAdapter()
+            adapter.updatePolicy(policies)
+            hotelCancellationPolicyRv.adapter = adapter
+        }
     }
 }

@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import com.tokopedia.creation.common.upload.data.local.entity.CREATION_UPLOAD_QUEUE
 import com.tokopedia.creation.common.upload.data.local.entity.CreationUploadQueueEntity
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Created By : Jonathan Darwin on September 15, 2023
@@ -12,7 +13,10 @@ import com.tokopedia.creation.common.upload.data.local.entity.CreationUploadQueu
 @Dao
 interface CreationUploadQueueDao {
 
-    @Query("SELECT * FROM $CREATION_UPLOAD_QUEUE ORDER BY timestamp ASC LIMIT 1")
+    @Query(GET_TOP_QUEUE_QUERY)
+    fun observeTopQueue(): Flow<CreationUploadQueueEntity?>
+
+    @Query(GET_TOP_QUEUE_QUERY)
     suspend fun getTopQueue(): CreationUploadQueueEntity?
 
     @Insert
@@ -31,3 +35,5 @@ interface CreationUploadQueueDao {
         uploadStatus: String,
     )
 }
+
+private const val GET_TOP_QUEUE_QUERY = "SELECT * FROM $CREATION_UPLOAD_QUEUE ORDER BY timestamp ASC LIMIT 1"

@@ -93,7 +93,7 @@ class ShippingDurationConverter @Inject constructor() {
                 serviceData.products,
                 ratesId,
                 blackboxInfo,
-                convertShipmentDetailData(ratesDetailData),
+                convertShipmentDetailData(ratesDetailData)
             )
             shippingDurationUiModel.serviceData.isUiRatesHidden =
                 shippingDurationUiModel.serviceData.isUiRatesHidden || (shippingDurationUiModel.serviceData.selectedShipperProductId == 0 && shippingCourierUiModels.all { it.productData.isUiRatesHidden })
@@ -213,7 +213,8 @@ class ShippingDurationConverter @Inject constructor() {
             promo.freeShippingMetadata.shippingSubsidy,
             promo.boCampaignId,
             promo.quotaMessage,
-            promo.imageUrlChosen
+            promo.imageUrlChosen,
+            promo.texts.orderMessage
         )
     }
 
