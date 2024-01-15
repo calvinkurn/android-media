@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -24,7 +24,6 @@ import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParent
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.InitializeReviewMainData
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
-import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -39,10 +38,11 @@ class ReviewFragment @Inject constructor(
     private val binding: FragmentReviewBinding
         get() = _binding!!
 
-    private val viewModel by viewModels<ProductPreviewViewModel> {
-        viewModelFactory.create(
-            EntrySource(productId = "4937529690") // TODO: Testing purpose, change from arguments
-        )
+    private val parentPage: ProductPreviewFragment
+        get() = (requireParentFragment() as ProductPreviewFragment)
+
+    private val viewModel by activityViewModels<ProductPreviewViewModel> {
+        parentPage.viewModelParentFactory
     }
 
     private val reviewAdapter by lazyThreadSafetyNone {
@@ -73,7 +73,7 @@ class ReviewFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
 
-        viewModel.submitAction(InitializeReviewMainData(page))
+        viewModel.onAction(InitializeReviewMainData(page))
     }
 
     private fun setupView() {

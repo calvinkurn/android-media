@@ -33,10 +33,14 @@ class ProductPreviewFragment @Inject constructor(
     private val binding: FragmentProductPreviewBinding
         get() = _binding!!
 
-    private val viewModel by activityViewModels<ProductPreviewViewModel> {
+    val viewModelParentFactory: ProductPreviewViewModelFactory by lazyThreadSafetyNone {
         viewModelFactory.create(
-            EntrySource(productId = "4937529690") // TODO: Testing purpose, change from arguments
+            EntrySource(productPreviewData = productPreviewData)
         )
+    }
+
+    private val viewModel by activityViewModels<ProductPreviewViewModel> {
+        viewModelParentFactory
     }
 
     private val productPreviewData: ProductContentUiModel by lazyThreadSafetyNone {
@@ -82,7 +86,7 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     private fun initData() {
-        viewModel.submitAction(InitializeProductMainData(productPreviewData))
+        viewModel.onAction(InitializeProductMainData)
     }
 
     private fun initViews() = with(binding) {
@@ -142,7 +146,7 @@ class ProductPreviewFragment @Inject constructor(
     companion object {
         const val TAG = "ProductPreviewFragment"
 
-        const val PRODUCT_DATA = "product_DATA"
+        const val PRODUCT_DATA = "product_data"
 
         fun getOrCreate(
             fragmentManager: FragmentManager,

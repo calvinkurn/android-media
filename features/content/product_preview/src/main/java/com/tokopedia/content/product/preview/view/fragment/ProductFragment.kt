@@ -26,26 +26,23 @@ import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction
-import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
-import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.content.product.preview.R as contentproductpreviewR
 
-class ProductFragment @Inject constructor(
-    private val viewModelFactory: ProductPreviewViewModelFactory.Creator
-) : TkpdBaseV4Fragment() {
+class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentProductBinding? = null
     private val binding: FragmentProductBinding
         get() = _binding!!
 
+    private val parentPage: ProductPreviewFragment
+        get() = (requireParentFragment() as ProductPreviewFragment)
+
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
-        viewModelFactory.create(
-            EntrySource(productId = "4937529690") // TODO: Testing purpose, change from arguments
-        )
+        parentPage.viewModelParentFactory
     }
 
     private var snapHelperContent: PagerSnapHelper = PagerSnapHelper()
@@ -72,7 +69,7 @@ class ProductFragment @Inject constructor(
                 ProductIndicatorListener {
                 override fun onClickProductIndicator(position: Int) {
                     scrollTo(position)
-                    viewModel.submitAction(ProductPreviewUiAction.ProductSelected(position))
+                    viewModel.onAction(ProductPreviewUiAction.ProductSelected(position))
                 }
             }
         )
@@ -84,7 +81,7 @@ class ProductFragment @Inject constructor(
             if (newState == ViewPager2.SCROLL_STATE_IDLE) {
                 val position = getContentCurrentPosition()
                 scrollTo(position)
-                viewModel.submitAction(ProductPreviewUiAction.ProductSelected(position))
+                viewModel.onAction(ProductPreviewUiAction.ProductSelected(position))
             }
         }
     }
@@ -147,8 +144,9 @@ class ProductFragment @Inject constructor(
     ) {
         if (prev == state) return
 
-        val selectedData = state.firstOrNull { it.selected }
+        val selectedData = state.firstOrNull { it.selected } ?: return
         val position = state.indexOf(selectedData)
+        if (position < 0) return
 
         productContentAdapter.submitList(state)
         if (autoScrollFirstOpenContent) {
@@ -163,8 +161,9 @@ class ProductFragment @Inject constructor(
     ) {
         if (prev == state) return
 
-        val selectedData = state.firstOrNull { it.selected }
+        val selectedData = state.firstOrNull { it.selected } ?: return
         val position = state.indexOf(selectedData)
+        if (position < 0) return
 
         productIndicatorAdapter.submitList(state)
         if (autoScrollFirstOpenIndicator) {

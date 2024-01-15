@@ -1,10 +1,11 @@
 package com.tokopedia.content.product.preview.viewmodel.action
 
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
-
+/**
+ * @author by astidhiyaa on 12/12/23
+ */
 sealed interface ProductPreviewUiAction {
 
-    data class InitializeProductMainData(val data: ProductContentUiModel) : ProductPreviewUiAction
+    object InitializeProductMainData : ProductPreviewUiAction
     data class InitializeReviewMainData(val page: Int) : ProductPreviewUiAction
 
     data class ProductSelected(val position: Int) : ProductPreviewUiAction

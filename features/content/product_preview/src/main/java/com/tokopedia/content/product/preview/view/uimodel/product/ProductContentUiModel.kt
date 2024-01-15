@@ -9,4 +9,4 @@ data class ProductContentUiModel(
     val productId: String = "",
     val content: List<ContentUiModel> = emptyList(),
     val indicator: List<ProductIndicatorUiModel> = emptyList()
-): Parcelable
+) : Parcelable

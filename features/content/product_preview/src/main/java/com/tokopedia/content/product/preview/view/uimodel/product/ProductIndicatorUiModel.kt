@@ -10,5 +10,5 @@ data class ProductIndicatorUiModel(
     val selected: Boolean = false,
     val variantName: String = "",
     val type: MediaType = MediaType.Unknown,
-    val thumbnailUrl: String = "",
-): Parcelable
+    val thumbnailUrl: String = ""
+) : Parcelable
