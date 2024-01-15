@@ -4,17 +4,17 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shareexperience.domain.ShareExConstants
-import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.ANDROID_DEEPLINK_PATH
-import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.ANDROID_URL
-import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.AN_MIN_VERSION
-import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.CUSTOM_META_TAGS
-import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.DESKTOP_URL
-import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.IOS_DEEPLINK_PATH
-import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.IOS_URL
-import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.OG_DESCRIPTION
-import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.OG_IMAGE_URL
-import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.OG_TITLE
-import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.OG_URL
+import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.ANDROID_DEEPLINK_PATH
+import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.ANDROID_URL
+import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.AN_MIN_VERSION
+import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.CUSTOM_META_TAGS
+import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.DESKTOP_URL
+import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.IOS_DEEPLINK_PATH
+import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.IOS_URL
+import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.OG_DESCRIPTION
+import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.OG_IMAGE_URL
+import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.OG_TITLE
+import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.OG_URL
 import com.tokopedia.shareexperience.domain.ShareExResult
 import com.tokopedia.shareexperience.domain.model.request.shortlink.branch.ShareExBranchLinkPropertiesRequest
 import com.tokopedia.shareexperience.domain.model.request.shortlink.branch.ShareExBranchUniversalObjectRequest
@@ -96,7 +96,7 @@ class ShareExBranchLinkUseCaseImpl @Inject constructor(
             .addControlParameter(DESKTOP_URL, linkerRequest.desktopUrl)
             .addControlParameter(ANDROID_DEEPLINK_PATH, linkerRequest.androidDeeplinkPath)
             .addControlParameter(IOS_DEEPLINK_PATH, linkerRequest.iosDeeplinkPath)
-            .addControlParameter(ShareExConstants.BranchKey.SOURCE, ShareExConstants.BranchValue.SOURCE)
+            .addControlParameter(ShareExConstants.ShortLinkKey.SOURCE, ShareExConstants.ShortLinkValue.SOURCE)
 
         val androidMinVersion = params.branchUniversalObjectRequest.contentMetadataMap[AN_MIN_VERSION]
         if (androidMinVersion != null) {

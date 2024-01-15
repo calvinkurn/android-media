@@ -15,14 +15,16 @@ class ShareExChipViewHolder(
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val binding: ShareexperienceChipItemBinding? by viewBinding()
+    private var element: ShareExChipUiModel? = null
 
     init {
         binding?.shareexChip?.setOnClickListener {
-            chipsListener.onClickChip(bindingAdapterPosition)
+            chipsListener.onChipClicked(bindingAdapterPosition, element?.title?: "")
         }
     }
 
     fun bind(element: ShareExChipUiModel) {
+        this.element = element
         binding?.shareexChip?.chip_text?.text = element.title
         val chipType = if (element.isSelected) {
             TYPE_SELECTED

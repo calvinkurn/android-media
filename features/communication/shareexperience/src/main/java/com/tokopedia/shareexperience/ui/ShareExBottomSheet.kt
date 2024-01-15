@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shareexperience.data.di.ShareExComponent
 import com.tokopedia.shareexperience.databinding.ShareexperienceBottomSheetBinding
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
@@ -27,7 +28,9 @@ import com.tokopedia.shareexperience.ui.listener.ShareExChannelListener
 import com.tokopedia.shareexperience.ui.listener.ShareExChipsListener
 import com.tokopedia.shareexperience.ui.listener.ShareExErrorListener
 import com.tokopedia.shareexperience.ui.listener.ShareExImageGeneratorListener
+import com.tokopedia.shareexperience.ui.model.chip.ShareExChipUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -140,8 +143,56 @@ class ShareExBottomSheet :
     }
 
     private suspend fun observeShortLinkUiState() {
-        viewModel.shortLinkUiState.collectLatest {
-            Log.d("TESTTT", "$it")
+        viewModel.shortLinkUiState.collect {
+            Log.d("TESTT", "$it")
+            viewBinding?.shareexLayoutLoading?.showWithCondition(it.isLoading)
+            if (!it.isLoading) {
+                when {
+                    it.showToaster && !it.error?.message.isNullOrBlank() -> showToaster(
+                        it.error?.message.toString(),
+                        Toaster.TYPE_ERROR,
+                        Toaster.LENGTH_LONG,
+                        actionText = "Salin Link"
+                    ) {
+                        showToaster(
+                            "Link berhasil disalin!",
+                            Toaster.TYPE_NORMAL,
+                            Toaster.LENGTH_SHORT
+                        )
+                    }
+                    else -> {
+                        //TODO: do action for each app
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showToaster(
+        text: String,
+        type: Int,
+        duration: Int,
+        actionText: String = "",
+        clickListener: View.OnClickListener? = null
+    ) {
+        view?.let {
+            if (actionText.isNotBlank() && clickListener != null) {
+                Toaster.build(
+                    view = it.rootView,
+                    text = text,
+                    duration = duration,
+                    type = type,
+                    actionText = actionText,
+                    clickListener = clickListener
+                ).show()
+            } else {
+                Toaster.build(
+                    view = it.rootView,
+                    text = text,
+                    duration = duration,
+                    type = type
+                ).show()
+            }
         }
     }
 
@@ -156,8 +207,8 @@ class ShareExBottomSheet :
         }
     }
 
-    override fun onClickChip(position: Int) {
-        viewModel.processAction(ShareExAction.UpdateShareBody(position))
+    override fun onChipClicked(position: Int, text: String) {
+        viewModel.processAction(ShareExAction.UpdateShareBody(position, text))
     }
 
     override fun onImageChanged(imageUrl: String) {

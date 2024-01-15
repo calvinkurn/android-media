@@ -15,7 +15,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
 import com.tokopedia.shareexperience.data.di.ShareExComponent
-import com.tokopedia.shareexperience.data.util.ShareExPageTypeEnum
+import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.databinding.ShareexperienceLoadingActivityBinding
 import com.tokopedia.shareexperience.ui.util.getStringExtraFromIntentOrQuery
 import com.tokopedia.utils.view.binding.viewBinding

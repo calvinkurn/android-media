@@ -8,7 +8,7 @@ import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExImageGenerat
 import com.tokopedia.shareexperience.data.query.ShareExImageGeneratorQuery
 import com.tokopedia.shareexperience.domain.ShareExResult
 import com.tokopedia.shareexperience.domain.asFlowResult
-import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelEnum
+import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.imagegenerator.ShareExImageGeneratorModel
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorArgRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorRequest

@@ -7,7 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shareexperience.data.dto.affiliate.generatelink.ShareExGenerateAffiliateLinkWrapperResponseDto
 import com.tokopedia.shareexperience.data.query.ShareExGetAffiliateLinkQuery
 import com.tokopedia.shareexperience.domain.ShareExResult
-import com.tokopedia.shareexperience.domain.model.request.shortlink.affiliate.ShareExAffiliateLinkPropertiesRequest
+import com.tokopedia.shareexperience.domain.model.request.shortlink.affiliate.ShareExAffiliateLinkPropertiesWrapperRequest
 import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetAffiliateLinkUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -24,9 +24,11 @@ class ShareExGetAffiliateLinkUseCaseImpl @Inject constructor(
 
     private val query = ShareExGetAffiliateLinkQuery()
 
-    override suspend fun getLink(params: ShareExAffiliateLinkPropertiesRequest): Flow<ShareExResult<String>> {
+    override suspend fun getLink(
+        params: ShareExAffiliateLinkPropertiesWrapperRequest
+    ): Flow<ShareExResult<String>> {
         return flow {
-            val response = repository.request<ShareExAffiliateLinkPropertiesRequest, ShareExGenerateAffiliateLinkWrapperResponseDto>(
+            val response = repository.request<ShareExAffiliateLinkPropertiesWrapperRequest, ShareExGenerateAffiliateLinkWrapperResponseDto>(
                 query,
                 params
             )
@@ -37,7 +39,9 @@ class ShareExGetAffiliateLinkUseCaseImpl @Inject constructor(
                 ShareExResult.Success(it)
             }
             .onStart { emit(ShareExResult.Loading) }
-            .catch { emit(ShareExResult.Error(Throwable("Link gagal disalin. Tenang, kamu masih bisa salin link-nya dari Dashboard Affiliate."))) }
+            .catch {
+                emit(ShareExResult.Error(Throwable(ERROR_MESSAGE_AFFILIATE)))
+            }
             .flowOn(dispatchers.io)
     }
 
@@ -53,8 +57,14 @@ class ShareExGetAffiliateLinkUseCaseImpl @Inject constructor(
                 error.isNotBlank() -> throw Throwable(error)
                 shortUrl.isNotBlank() -> shortUrl
                 regularUrl.isNotBlank() -> regularUrl
-                else -> throw Throwable("Short & Regular URLs are empty")
+                else -> throw Throwable(ERROR_ALL_URLS_EMPTY)
             }
-        } ?: throw Throwable("Data is empty")
+        } ?: throw Throwable(ERROR_DATA_EMPTY)
+    }
+
+    companion object {
+        private const val ERROR_MESSAGE_AFFILIATE = "Link Affiliate gagal disalin, kamu bisa salin link biasa untuk bagikan produk."
+        private const val ERROR_ALL_URLS_EMPTY = "Short & Regular URLs are empty"
+        private const val ERROR_DATA_EMPTY = "Data is empty"
     }
 }

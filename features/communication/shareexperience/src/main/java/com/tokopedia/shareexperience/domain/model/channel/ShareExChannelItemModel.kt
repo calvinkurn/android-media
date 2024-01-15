@@ -1,7 +1,8 @@
 package com.tokopedia.shareexperience.domain.model.channel
 
 import android.content.Intent
-import com.tokopedia.shareexperience.data.util.ShareExMimeTypeEnum
+import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
+import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
 
 data class ShareExChannelItemModel(
     val idEnum: ShareExChannelEnum = ShareExChannelEnum.OTHERS,

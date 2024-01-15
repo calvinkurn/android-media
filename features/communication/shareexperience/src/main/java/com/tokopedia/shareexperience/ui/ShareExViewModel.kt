@@ -6,13 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.shareexperience.data.util.ShareExPageTypeEnum
+import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.ShareExConstants
 import com.tokopedia.shareexperience.domain.ShareExResult
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
-import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelEnum
+import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.property.ShareExPropertyModel
-import com.tokopedia.shareexperience.domain.model.property.linkproperties.ShareExLinkProperties
+import com.tokopedia.shareexperience.domain.model.property.ShareExLinkProperties
 import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExProductBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorArgRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorRequest
@@ -117,7 +117,7 @@ class ShareExViewModel @Inject constructor(
                     getShareBottomSheetData()
                 }
                 is ShareExAction.UpdateShareBody -> {
-                    updateShareBottomSheetBody(it.position)
+                    updateShareBottomSheetBody(it.position, it.text)
                 }
                 is ShareExAction.UpdateShareImage -> {
                     handleUpdateShareImage(it.imageUrl)
@@ -182,7 +182,7 @@ class ShareExViewModel @Inject constructor(
                         getDefaultBottomSheetModel()
                     }
                     (_bottomSheetModel != null) -> {
-                        handleBottomSheetModel(_bottomSheetModel!!) // Safe !!
+                        handleFirstLoadBottomSheetModel(_bottomSheetModel!!) // Safe !!
                     }
                 }
             } catch (throwable: Throwable) {
@@ -191,7 +191,7 @@ class ShareExViewModel @Inject constructor(
         }
     }
 
-    private fun handleBottomSheetModel(bottomSheetModel: ShareExBottomSheetModel) {
+    private fun handleFirstLoadBottomSheetModel(bottomSheetModel: ShareExBottomSheetModel) {
         val chipPosition = bottomSheetModel.getSelectedChipPosition(_selectedIdChip).orZero()
         val uiResult = bottomSheetModel.map(chipPosition)
         updateBottomSheetUiState(
@@ -220,21 +220,19 @@ class ShareExViewModel @Inject constructor(
             }
     }
 
-    private fun updateShareBottomSheetBody(position: Int) {
-        viewModelScope.launch {
-            try {
-                _bottomSheetModel?.let { bottomSheetModel ->
-                    val updatedUiResult = bottomSheetModel.map(position = position)
-                    updateBottomSheetUiState(
-                        title = bottomSheetModel.title,
-                        uiModelList = updatedUiResult,
-                        bottomSheetModel = bottomSheetModel,
-                        chipPosition = position
-                    )
-                }
-            } catch (throwable: Throwable) {
-                Timber.d(throwable)
-            }
+    private fun updateShareBottomSheetBody(
+        position: Int,
+        text: String
+    ) {
+        _selectedIdChip = text
+        _bottomSheetModel?.let { bottomSheetModel ->
+            val updatedUiResult = bottomSheetModel.map(position = position)
+            updateBottomSheetUiState(
+                title = bottomSheetModel.title,
+                uiModelList = updatedUiResult,
+                bottomSheetModel = bottomSheetModel,
+                chipPosition = position
+            )
         }
     }
 
@@ -290,7 +288,7 @@ class ShareExViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 if (_bottomSheetModel != null) {
-                    val bottomSheetModel = _bottomSheetModel!! // Safe !!
+                    val bottomSheetModel = _bottomSheetModel!! // Safe !!, don't want ? every time calling this variable
                     val chipPosition = bottomSheetModel.getSelectedChipPosition(_selectedIdChip).orZero()
                     val shareProperty = bottomSheetModel.bottomSheetPage.listShareProperty[chipPosition]
                     val campaign = generateCampaign(shareProperty)
@@ -306,64 +304,25 @@ class ShareExViewModel @Inject constructor(
                         val shortLinkRequest = generateShortLinkRequest(channelEnum, linkPropertiesWithCampaign, isAffiliate)
 
                         // Get short link
-                        generateShortLinkUseCase.getShortLink(shortLinkRequest).collectLatest {
-                            when (it) {
-                                is ShareExResult.Success -> {
-                                    _shortLinkUiState.update { uiState ->
-                                        uiState.copy(
-                                            shortLinkUrl = it.data,
-                                            isLoading = false,
-                                            error = null,
-                                            showToaster = false
-                                        )
-                                    }
-                                }
-                                is ShareExResult.Error -> {
-                                    val showToaster = it.throwable.message?.contains("") == true
-                                    _shortLinkUiState.update { uiState ->
-                                        uiState.copy(
-                                            shortLinkUrl = "",
-                                            isLoading = false,
-                                            error = it.throwable,
-                                            showToaster = showToaster
-                                        )
-                                    }
-                                }
-                                ShareExResult.Loading -> {
-                                    _shortLinkUiState.update { uiState ->
-                                        uiState.copy(
-                                            shortLinkUrl = "",
-                                            isLoading = true,
-                                            error = null,
-                                            showToaster = false
-                                        )
-                                    }
-                                }
-                            }
-                        }
+                        generateShortLink(shortLinkRequest)
                     }
                 } else {
-                    // Use default URL
-                    _shortLinkUiState.update {
-                        it.copy(
-                            shortLinkUrl = _defaultUrl,
-                            isLoading = false,
-                            error = null,
-                            showToaster = false
-                        )
-                    }
+                    updateShortLinkUiState(
+                        shortLinkUrl = _defaultUrl,
+                        isLoading = false,
+                        error = null,
+                        showToaster = false
+                    )
                 }
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
                 // Use default URL
-                _shortLinkUiState.update {
-                    it.copy(
-                        shortLinkUrl = _defaultUrl,
-                        isLoading = false,
-                        error = throwable,
-                        showToaster = false
-                    )
-                }
+                updateShortLinkUiState(
+                    shortLinkUrl = _defaultUrl,
+                    isLoading = false,
+                    error = throwable,
+                    showToaster = false
+                )
             }
         }
     }
@@ -373,18 +332,18 @@ class ShareExViewModel @Inject constructor(
         channelEnum: ShareExChannelEnum,
         campaign: String
     ): String {
-        val utmSource = ShareExConstants.BranchValue.SOURCE
+        val utmSource = ShareExConstants.ShortLinkValue.SOURCE
         val uri = Uri.parse(url)
         val newUri = Uri.Builder()
             .scheme(uri.scheme)
             .authority(uri.authority)
             .path(uri.path)
         if (uri.query != null) {
-            newUri.appendQueryParameter("utm_source", utmSource)
-            newUri.appendQueryParameter("utm_medium", channelEnum.label)
-            newUri.appendQueryParameter("utm_campaign", campaign)
+            newUri.appendQueryParameter(ShareExConstants.UTM.SOURCE_KEY, utmSource)
+            newUri.appendQueryParameter(ShareExConstants.UTM.MEDIUM_KEY, channelEnum.label)
+            newUri.appendQueryParameter(ShareExConstants.UTM.CAMPAIGN_KEY, campaign)
         } else {
-            newUri.query("utm_source=$utmSource&utm_medium=${channelEnum.label}&utm_campaign=$campaign")
+            newUri.query("${ShareExConstants.UTM.SOURCE_KEY}=$utmSource&${ShareExConstants.UTM.MEDIUM_KEY}=${channelEnum.label}&${ShareExConstants.UTM.CAMPAIGN_KEY}=$campaign")
         }
         return newUri.build().toString()
     }
@@ -417,8 +376,59 @@ class ShareExViewModel @Inject constructor(
             channelEnum = channelEnum,
             linkerPropertiesRequest = finalLinkProperties,
             fallbackPriorityEnumList = getFallbackPriorityEnumList(isAffiliate),
-            defaultUrl = _defaultUrl
+            defaultUrl = _defaultUrl,
+            pageTypeEnum = _pageType
         )
+    }
+
+    private suspend fun generateShortLink(
+        shortLinkRequest: ShareExShortLinkRequest
+    ) {
+        generateShortLinkUseCase.getShortLink(shortLinkRequest).collectLatest {
+            when (it) {
+                is ShareExResult.Success -> {
+                    updateShortLinkUiState(
+                        shortLinkUrl = it.data,
+                        isLoading = false,
+                        error = null,
+                        showToaster = false
+                    )
+                }
+                is ShareExResult.Error -> {
+                    val showToaster = it.throwable.message?.contains("affiliate", ignoreCase = true) == true
+                    updateShortLinkUiState(
+                        shortLinkUrl = "",
+                        isLoading = false,
+                        error = it.throwable,
+                        showToaster = showToaster
+                    )
+                }
+                ShareExResult.Loading -> {
+                    updateShortLinkUiState(
+                        shortLinkUrl = "",
+                        isLoading = true,
+                        error = null,
+                        showToaster = false
+                    )
+                }
+            }
+        }
+    }
+
+    private fun updateShortLinkUiState(
+        shortLinkUrl: String,
+        isLoading: Boolean,
+        error: Throwable?,
+        showToaster: Boolean
+    ) {
+        _shortLinkUiState.update {
+            it.copy(
+                shortLinkUrl = shortLinkUrl,
+                isLoading = isLoading,
+                error = error,
+                showToaster = showToaster
+            )
+        }
     }
 
     @OptIn(FlowPreview::class)
@@ -449,14 +459,12 @@ class ShareExViewModel @Inject constructor(
                         }
                     }
                     ShareExResult.Loading -> {
-                        _shortLinkUiState.update { uiState ->
-                            uiState.copy(
-                                shortLinkUrl = "",
-                                isLoading = true,
-                                error = null,
-                                showToaster = false
-                            )
-                        }
+                        updateShortLinkUiState(
+                            shortLinkUrl = "",
+                            isLoading = true,
+                            error = null,
+                            showToaster = false
+                        )
                     }
                 }
                 flowResult

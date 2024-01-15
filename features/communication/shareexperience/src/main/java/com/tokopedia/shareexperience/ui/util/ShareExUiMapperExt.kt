@@ -80,11 +80,7 @@ fun ShareExBottomSheetModel.map(
             shareExPropertyModel.affiliate.registration.hasEnoughData()
         ) {
             val affiliateRegistrationUiModel = ShareExAffiliateRegistrationUiModel(
-                shareExPropertyModel.affiliate.registration.icon,
-                shareExPropertyModel.affiliate.registration.title,
-                shareExPropertyModel.affiliate.registration.description,
-                shareExPropertyModel.affiliate.registration.label,
-                shareExPropertyModel.affiliate.registration.appLink
+                shareExPropertyModel.affiliate.registration
             )
             result.add(affiliateRegistrationUiModel)
         }

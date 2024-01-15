@@ -1,7 +1,7 @@
 package com.tokopedia.shareexperience.ui
 
-import com.tokopedia.shareexperience.data.util.ShareExPageTypeEnum
-import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelEnum
+import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
+import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 
 sealed interface ShareExAction {
     data class FetchShareData(
@@ -11,7 +11,7 @@ sealed interface ShareExAction {
         val selectedIdChip: String
     ) : ShareExAction
     object InitializePage : ShareExAction
-    data class UpdateShareBody(val position: Int) : ShareExAction
+    data class UpdateShareBody(val position: Int, val text: String) : ShareExAction
     data class UpdateShareImage(val imageUrl: String) : ShareExAction
     data class GenerateLink(val channelEnum: ShareExChannelEnum) : ShareExAction
     data class NavigateToPage(val appLink: String) : ShareExAction

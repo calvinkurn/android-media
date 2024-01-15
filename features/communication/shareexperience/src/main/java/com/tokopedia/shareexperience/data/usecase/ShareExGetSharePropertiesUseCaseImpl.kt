@@ -62,11 +62,11 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
     private suspend fun getShareBottomSheetResponse(params: ShareExBottomSheetRequest): Flow<ShareExResult<ShareExBottomSheetModel>> {
         return flow {
             val request = getRequest(params)
-            val dto = repository.request<ShareExBottomSheetWrapperRequest, ShareExWrapperResponseDto>(
-                sharePropertiesQuery,
-                request
-            )
-//            val dto = getDummyResponseDto()
+//            val dto = repository.request<ShareExBottomSheetWrapperRequest, ShareExWrapperResponseDto>(
+//                sharePropertiesQuery,
+//                request
+//            )
+            val dto = getDummyResponseDto()
             val result = mapper.map(dto.response.bottomSheet)
             emit(result)
         }

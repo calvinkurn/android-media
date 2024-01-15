@@ -1,4 +1,6 @@
-package com.tokopedia.shareexperience.domain.model.property.linkproperties
+package com.tokopedia.shareexperience.domain.model.property
+
+import com.tokopedia.shareexperience.domain.model.ShareExFeatureEnum
 
 data class ShareExLinkProperties(
     val message: String = "",

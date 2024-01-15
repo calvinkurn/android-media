@@ -1,13 +1,18 @@
 package com.tokopedia.shareexperience.data.usecase.shortlink
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.AN_MIN_VERSION
-import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.IOS_MIN_VERSION
+import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.AN_MIN_VERSION
+import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.IOS_MIN_VERSION
+import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.OG_DESCRIPTION_RAW
+import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.OG_IMAGE_URL_RAW
+import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkKey.OG_TITLE_RAW
+import com.tokopedia.shareexperience.domain.ShareExConstants.ShortLinkValue.SOURCE_SHARING
 import com.tokopedia.shareexperience.domain.ShareExResult
 import com.tokopedia.shareexperience.domain.model.request.shortlink.ShareExShortLinkFallbackPriorityEnum
 import com.tokopedia.shareexperience.domain.model.request.shortlink.ShareExShortLinkRequest
 import com.tokopedia.shareexperience.domain.model.request.shortlink.affiliate.ShareExAffiliateLinkAdditionalParamRequest
 import com.tokopedia.shareexperience.domain.model.request.shortlink.affiliate.ShareExAffiliateLinkPropertiesRequest
+import com.tokopedia.shareexperience.domain.model.request.shortlink.affiliate.ShareExAffiliateLinkPropertiesWrapperRequest
 import com.tokopedia.shareexperience.domain.model.request.shortlink.affiliate.ShareExAffiliateLinkRequest
 import com.tokopedia.shareexperience.domain.model.request.shortlink.branch.ShareExBranchLinkPropertiesRequest
 import com.tokopedia.shareexperience.domain.model.request.shortlink.branch.ShareExBranchUniversalObjectRequest
@@ -77,20 +82,22 @@ class ShareExGetShortLinkUseCaseImpl @Inject constructor(
 
     private fun getAffiliateLinkPropertiesRequest(
         params: ShareExShortLinkRequest
-    ): ShareExAffiliateLinkPropertiesRequest {
-        return ShareExAffiliateLinkPropertiesRequest(
-            source = "sharing",
-            channel = listOf(0),
-            link = listOf(
-                ShareExAffiliateLinkRequest(
-                    type = "pdp",
-                    url = params.linkerPropertiesRequest.originalUrl,
-                    identifier = params.identifierId,
-                    identifierType = 0,
-                    additionalParams = listOf(
-                        ShareExAffiliateLinkAdditionalParamRequest("og_title", params.linkerPropertiesRequest.ogTitle),
-                        ShareExAffiliateLinkAdditionalParamRequest("og_description", params.linkerPropertiesRequest.ogTitle),
-                        ShareExAffiliateLinkAdditionalParamRequest("og_image_url", params.linkerPropertiesRequest.ogImageUrl)
+    ): ShareExAffiliateLinkPropertiesWrapperRequest {
+        return ShareExAffiliateLinkPropertiesWrapperRequest(
+            ShareExAffiliateLinkPropertiesRequest(
+                source = SOURCE_SHARING,
+                channel = listOf(params.channelEnum.id),
+                link = listOf(
+                    ShareExAffiliateLinkRequest(
+                        type = params.pageTypeEnum.value,
+                        url = params.linkerPropertiesRequest.originalUrl,
+                        identifier = params.identifierId,
+                        identifierType = 0,
+                        additionalParams = listOf(
+                            ShareExAffiliateLinkAdditionalParamRequest(OG_TITLE_RAW, params.linkerPropertiesRequest.ogTitle),
+                            ShareExAffiliateLinkAdditionalParamRequest(OG_DESCRIPTION_RAW, params.linkerPropertiesRequest.ogTitle),
+                            ShareExAffiliateLinkAdditionalParamRequest(OG_IMAGE_URL_RAW, params.linkerPropertiesRequest.ogImageUrl)
+                        )
                     )
                 )
             )

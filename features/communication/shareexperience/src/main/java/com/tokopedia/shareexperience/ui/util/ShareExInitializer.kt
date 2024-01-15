@@ -10,7 +10,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
-import com.tokopedia.shareexperience.data.util.ShareExPageTypeEnum
+import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.ShareExResult
 import com.tokopedia.shareexperience.domain.model.request.affiliate.ShareExAffiliateEligibilityRequest
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetAffiliateEligibilityUseCase

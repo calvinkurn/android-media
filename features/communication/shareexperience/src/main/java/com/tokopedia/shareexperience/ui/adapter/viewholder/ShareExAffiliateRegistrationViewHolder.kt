@@ -21,17 +21,17 @@ class ShareExAffiliateRegistrationViewHolder(
     init {
         binding?.root?.setOnClickListener {
             affiliateRegistrationListener.onAffiliateRegistrationCardClicked(
-                element?.applink ?: ""
+                element?.affiliateRegistrationModel?.appLink ?: ""
             )
         }
     }
 
     override fun bind(element: ShareExAffiliateRegistrationUiModel) {
         this.element = element
-        binding?.shareexIvRegisterAffiliateIcon?.loadImage(element.icon)
-        binding?.shareexTvRegisterAffiliateTitle?.text = element.title
-        binding?.shareexTvRegisterAffiliateDesc?.text = element.description
-        binding?.shareexLabelRegisterAffiliate?.text = element.label
+        binding?.shareexIvRegisterAffiliateIcon?.loadImage(element.affiliateRegistrationModel.icon)
+        binding?.shareexTvRegisterAffiliateTitle?.text = element.affiliateRegistrationModel.title
+        binding?.shareexTvRegisterAffiliateDesc?.text = element.affiliateRegistrationModel.description
+        binding?.shareexLabelRegisterAffiliate?.text = element.affiliateRegistrationModel.label
     }
 
     companion object {

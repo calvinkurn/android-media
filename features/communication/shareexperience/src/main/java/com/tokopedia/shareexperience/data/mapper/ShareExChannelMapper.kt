@@ -8,11 +8,11 @@ import android.os.Build
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.shareexperience.data.util.ShareExMimeTypeEnum
+import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
 import com.tokopedia.shareexperience.data.util.ShareExResourceProvider
 import com.tokopedia.shareexperience.data.util.toArray
 import com.tokopedia.shareexperience.domain.ShareExConstants
-import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelEnum
+import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelModel
 import org.json.JSONArray
@@ -31,10 +31,10 @@ class ShareExChannelMapper @Inject constructor(
         socialMediaChannelList = socialMediaChannelList.sortedWith(
             compareBy(
                 // First Criterion to mark the non-existent greater than existed value (order asc)
-                { orderingArray.indexOf(it.idEnum.id) == -1 },
+                { orderingArray.indexOf(it.idEnum.appName) == -1 },
                 // Second Criterion give value of each item
-                { orderingArray.indexOf(it.idEnum.id) },
-                // Thrid Criterion sort by title in alphabetical order
+                { orderingArray.indexOf(it.idEnum.appName) },
+                // Third Criterion sort by title in alphabetical order
                 { it.title }
             )
         )

@@ -13,8 +13,8 @@ import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateRegi
 import com.tokopedia.shareexperience.domain.model.property.ShareExBottomSheetPageModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExImageGeneratorPropertyModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExPropertyModel
-import com.tokopedia.shareexperience.domain.model.property.linkproperties.ShareExFeatureEnum
-import com.tokopedia.shareexperience.domain.model.property.linkproperties.ShareExLinkProperties
+import com.tokopedia.shareexperience.domain.model.ShareExFeatureEnum
+import com.tokopedia.shareexperience.domain.model.property.ShareExLinkProperties
 import javax.inject.Inject
 
 class ShareExPropertyMapper @Inject constructor(
