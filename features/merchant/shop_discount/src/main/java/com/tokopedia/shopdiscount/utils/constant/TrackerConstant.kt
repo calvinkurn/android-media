@@ -19,20 +19,22 @@ object TrackerConstant {
     }
     object EventAction {
         const val IMPRESSION_COACH_MARK = "impression coachmark"
+        const val CLICK_SUBSIDY_INFORMATION = "click subsidy information"
     }
 
     object EventCategory{
-        const val SLASH_PRICE_SUBSIDY_COACH_MARK_LIST_OF_PRODUCTS = "slash price page - list of products"
-        const val SLASH_PRICE_SUBSIDY_COACH_MARK_BOTTOM_SHEET = "slash price page - bottomsheet"
+        const val SLASH_PRICE_SUBSIDY_LIST_OF_PRODUCTS = "slash price page - list of products"
+        const val SLASH_PRICE_SUBSIDY_BOTTOM_SHEET = "slash price page - bottomsheet"
     }
 
     object EventLabel {
-        const val SLASH_PRICE_SUBSIDY_COACH_MARK_NON_VARIANT_PRODUCT = "product parent - %1s"
-        const val SLASH_PRICE_SUBSIDY_COACH_MARK_VARIANT_PRODUCT = "product variant - %1s"
+        const val SLASH_PRICE_SUBSIDY_NON_VARIANT_PRODUCT = "product parent - %1s"
+        const val SLASH_PRICE_SUBSIDY_VARIANT_PRODUCT = "product variant - %1s"
     }
 
     object TrackerId{
         const val TRACKER_ID_IMPRESSION_COACH_MARK_PRODUCT_LIST = "49490"
         const val TRACKER_ID_IMPRESSION_COACH_MARK_BOTTOM_SHEET = "49491"
+        const val TRACKER_ID_CLICK_SUBSIDY_INFORMATION = "49494"
     }
 }

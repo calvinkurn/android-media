@@ -550,7 +550,15 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
     }
 
     private val onSubsidyInformationClicked: (Product) -> Unit = { product ->
+        sendSlashPriceClickSubsidyInformation(product)
         showSubsidyProgramInformationBottomSheet(product)
+    }
+
+    private fun sendSlashPriceClickSubsidyInformation(product: Product) {
+        tracker.sendSlashPriceClickSubsidyInformationEvent(
+            product.hasVariant,
+            product.id
+        )
     }
 
     private fun showCoachMarkSubsidyInfo(view: View, product: Product) {
