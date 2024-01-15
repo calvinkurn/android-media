@@ -19,8 +19,10 @@ ext {
             feedbackForm                    : ":features:common:feedback_form",
             internalReview                  : ":features:common:internal_review",
             darkModeConfig                  : ":features:common:dark_mode_config",
+			appDownloadManagerInstall		: ":features:common:appdownloadmanager_install",
+			appDownloadManagerNoInstall	    : ":features:common:appdownloadmanager_noinstall",
 
-            catalog                         : ":features:category:catalog",
+			catalog                         : ":features:category:catalog",
             catalogLibrary                  : ":features:category:catalog_library",
             catalogCommon                   : ":features:category:catalog_common",
             commonTradein                   : ":features:category:common_tradein",
@@ -90,10 +92,9 @@ ext {
             event                           : ":features:entertainment:event",
             commonEntertainment             : ":features:entertainment:common_entertainment",
 
-            umrah                           : ":features:salam:umrah",
-
             discoveryCommon                 : ":features:discovery:discovery_common",
             home                            : ":features:discovery:home",
+			homeExploreCategory				: ":features:discovery:home_explore_category",
             homeComponent                   : ":features:discovery:home_component",
             homeComponentHeader             : ":features:discovery:home_component_header",
             homeRecom                       : ":features:discovery:home_recom",
