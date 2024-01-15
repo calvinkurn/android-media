@@ -23,6 +23,9 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
 
     private var onDeleteMenuClicked: () -> Unit = {}
 
+    private var onOptOutSubsidyClicked: () -> Unit = {}
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -51,12 +54,21 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
         this.onDeleteMenuClicked = onDeleteMenuClicked
     }
 
+    fun setOnOptOutSubsidyMenuClicked(onOptOutSubsidyClicked: () -> Unit = {}) {
+        this.onOptOutSubsidyClicked = onOptOutSubsidyClicked
+    }
+
     private fun setupView() {
         binding?.run {
             tpgDelete.setOnClickListener {
                 onDeleteMenuClicked()
                 dismiss()
             }
+            textOptOutSubsidy.setOnClickListener {
+                onOptOutSubsidyClicked()
+                dismiss()
+            }
+
         }
     }
 

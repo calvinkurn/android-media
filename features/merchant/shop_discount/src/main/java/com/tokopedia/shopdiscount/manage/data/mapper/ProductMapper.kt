@@ -1,8 +1,10 @@
 package com.tokopedia.shopdiscount.manage.data.mapper
 
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shopdiscount.common.entity.ProductType
 import com.tokopedia.shopdiscount.manage.data.response.GetSlashPriceProductListResponse
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
+import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountSubsidyInfoUiModel
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
 import com.tokopedia.shopdiscount.utils.constant.DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE
 import com.tokopedia.shopdiscount.utils.extension.parseTo
@@ -47,7 +49,42 @@ class ProductMapper @Inject constructor() {
                     product.price.max
                 ),
                 sku = product.sku,
-                isExpand = product.isExpand
+                isExpand = product.isExpand,
+                //TODO need to uncomment below once data is ready from BE
+                maxOrder = product.maxOrder.toIntOrZero(),
+                isSubsidy = product.joinSubsidy,
+                subsidyStatusText = product.subsidyStatusText,
+                subsidyInfo = ShopDiscountSubsidyInfoUiModel(
+                    ctaProgramLink = product.subsidyInfo.ctaProgramLink,
+                    subsidyType = ShopDiscountSubsidyInfoUiModel.getSubsidyType(product.subsidyInfo.subsidyType),
+                    discountedPrice = product.subsidyInfo.discountedPrice,
+                    discountedPercentage = product.subsidyInfo.discountedPercentage,
+                    remainingQuota = product.subsidyInfo.remainingQuota,
+                    quotaSubsidy = product.subsidyInfo.quotaSubsidy,
+                    maxOrder = product.subsidyInfo.maxOrder,
+                    subsidyDateStart = product.subsidyInfo.subsidyDateStart,
+                    subsidyDateEnd = product.subsidyInfo.subsidyDateEnd,
+                    sellerDiscountPrice = product.subsidyInfo.sellerDiscountPrice,
+                    sellerDiscountPercentage = product.subsidyInfo.sellerDiscountPercentage
+                ),
+                listEventId = product.warehouses.map { warehouse -> warehouse.eventId },
+//                maxOrder = 10,
+//                isSubsidy = true,
+//                subsidyStatusText = "Disubsidi sebagian",
+//                subsidyInfo = ShopDiscountSubsidyInfoUiModel(
+//                    ctaProgramLink = "https://www.tokopedia.com/education/seller-education/",
+//                    subsidyType = ShopDiscountSubsidyInfoUiModel.SubsidyType.CHIP_IN,
+//                    discountedPrice = 20000.0,
+//                    discountedPercentage = 5,
+//                    remainingQuota = 10,
+//                    quotaSubsidy = 20,
+//                    maxOrder = 15,
+//                    subsidyDateStart = "2024-04-04 07:30:55 +0700 WIB".formatStartDate(),
+//                    subsidyDateEnd = "2024-06-04 07:30:55 +0700 WIB".formatEndDate(),
+//                    sellerDiscountPrice = 20000.0,
+//                    sellerDiscountPercentage = 11
+//                ),
+//                listEventId = listOf("123", "456")
             )
         }
 

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
+import com.tokopedia.shopdiscount.subsidy.model.response.SubsidyInfoResponse
 
 data class GetSlashPriceProductDetailResponse(
     @SerializedName("GetSlashPriceProductDetail")
@@ -69,7 +70,13 @@ data class GetSlashPriceProductDetailResponse(
             @Expose var isExpand: Boolean = false,
             @SerializedName("parent_id")
             @Expose
-            var parentId: String = ""
+            var parentId: String = "",
+            @SerializedName("subsidy_info")
+            val subsidyInfo: SubsidyInfoResponse = SubsidyInfoResponse(),
+            @SerializedName("join_subsidy")
+            val joinSubsidy: Boolean = false,
+            @SerializedName("subsidy_status_text")
+            val subsidyStatusText: String = ""
         ) {
             data class Price(
                 @SerializedName("min")

@@ -15,6 +15,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.campaign.entity.RemoteTicker
+import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
@@ -24,6 +26,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shopdiscount.R
+import com.tokopedia.shopdiscount.common.ShopDiscountTickerUtil
 import com.tokopedia.shopdiscount.databinding.FragmentDiscountedProductManageBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.info.presentation.bottomsheet.ShopDiscountSellerInfoBottomSheet
@@ -38,6 +41,9 @@ import com.tokopedia.shopdiscount.utils.preference.SharedPreferenceDataStore
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -134,7 +140,52 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
         setupViews()
         observeProductsMeta()
         observeSellerEligibility()
+        observeTargetedTickerData()
         checkSellerEligibility()
+    }
+
+    private fun observeTargetedTickerData() {
+        viewModel.targetedTickerData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    renderTicker(it.data)
+                }
+                is Fail -> {
+                    binding?.ticker?.gone()
+                }
+            }
+        }
+    }
+
+    private fun renderTicker(tickers: List<RemoteTicker>) {
+        binding?.run {
+            ticker.visible()
+            val remoteTickers = tickers.map { remoteTicker ->
+                TickerData(
+                    title = remoteTicker.title,
+                    description = remoteTicker.description,
+                    isFromHtml = true,
+                    type = ShopDiscountTickerUtil.getTickerType(remoteTicker.type)
+                )
+            }
+
+            val tickerAdapter = TickerPagerAdapter(activity ?: return, remoteTickers)
+            tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    routeToUrl(linkUrl.toString())
+                }
+            })
+
+            ticker.addPagerView(tickerAdapter, remoteTickers)
+            ticker.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    routeToUrl(linkUrl.toString())
+                }
+
+                override fun onDismiss() {
+                }
+            })
+        }
     }
 
     private fun setupViews() {
@@ -161,23 +212,8 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun displayTicker() {
-        val isPreviouslyDismissed = preferenceDataStore.isTickerDismissed()
-
-        binding?.run {
-            ticker.isVisible = !isPreviouslyDismissed
-            ticker.setHtmlDescription(getString(R.string.sd_ticker_announcement_wording))
-            ticker.setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    showSellerInfoBottomSheet()
-                }
-
-                override fun onDismiss() {
-                    preferenceDataStore.markTickerAsDismissed()
-                }
-
-            })
-        }
+    private fun getTargetedTickerData() {
+        viewModel.getTargetedTickerData()
     }
 
     private fun setupHeader() {
@@ -198,7 +234,7 @@ class DiscountedProductManageFragment : BaseDaggerFragment() {
         viewModel.productsMeta.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    displayTicker()
+                    getTargetedTickerData()
                     binding?.shimmer?.content?.gone()
                     binding?.groupContent?.visible()
                     binding?.globalError?.gone()

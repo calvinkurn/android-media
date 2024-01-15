@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
+import com.tokopedia.shopdiscount.subsidy.model.response.SubsidyInfoResponse
 
 data class GetSlashPriceProductListResponse(
     @SerializedName("GetSlashPriceProductList")
@@ -55,7 +56,13 @@ data class GetSlashPriceProductListResponse(
             @SerializedName("url")
             val url: String = "",
             @SerializedName("warehouses")
-            val warehouses: List<Warehouses> = listOf()
+            val warehouses: List<Warehouses> = listOf(),
+            @SerializedName("subsidy_info")
+            val subsidyInfo: SubsidyInfoResponse = SubsidyInfoResponse(),
+            @SerializedName("join_subsidy")
+            val joinSubsidy: Boolean = false,
+            @SerializedName("subsidy_status_text")
+            val subsidyStatusText: String = ""
         ) {
             data class DiscountPercentageData(
                 @SerializedName("max")

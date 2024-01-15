@@ -1,6 +1,7 @@
 package com.tokopedia.shopdiscount.product_detail
 
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shopdiscount.common.data.request.DoSlashPriceReservationRequest
 import com.tokopedia.shopdiscount.common.data.request.RequestHeader
 import com.tokopedia.shopdiscount.common.data.response.DoSlashPriceProductReservationResponse
@@ -10,25 +11,30 @@ import com.tokopedia.shopdiscount.product_detail.data.response.GetSlashPriceProd
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountDetailReserveProductUiModel
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailDeleteUiModel
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailUiModel
+import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountSubsidyInfoUiModel
+import com.tokopedia.shopdiscount.utils.constant.DateConstant
+import com.tokopedia.shopdiscount.utils.extension.parseTo
+import com.tokopedia.shopdiscount.utils.extension.toDate
 
 object ShopDiscountProductDetailMapper {
 
+    private const val END_DATE_FORMAT = "dd MMM yyyy HH:mm z"
     fun getGetSlashPriceProductDetailRequestData(
-        productId: String,
+        listProductId: List<String>,
         status: Int
     ): GetSlashPriceProductDetailRequest {
         return GetSlashPriceProductDetailRequest(
             requestHeader = getRequestHeader(),
-            slashPriceProductDetailFilter = getSlashPriceProductDetailFilter(productId, status)
+            slashPriceProductDetailFilter = getSlashPriceProductDetailFilter(listProductId, status)
         )
     }
 
     private fun getSlashPriceProductDetailFilter(
-        productId: String,
+        listProductId: List<String>,
         status: Int
     ): GetSlashPriceProductDetailRequest.SlashPriceProductDetailFilter {
         return GetSlashPriceProductDetailRequest.SlashPriceProductDetailFilter(
-            listProductId = listOf(productId),
+            listProductId = listProductId,
             status = status
         )
     }
@@ -86,7 +92,43 @@ object ShopDiscountProductDetailMapper {
                 totalLocation = it.warehouses.size,
                 startDate = it.startDate,
                 endDate = it.endDate,
-                isVariant = it.isVariant
+                isVariant = it.isVariant,
+                //TODO need to uncomment below once data is ready from BE
+                maxOrder = it.maxOrder.toIntOrZero(),
+                parentId = it.parentId,
+                isSubsidy = it.joinSubsidy,
+                subsidyStatusText = it.subsidyStatusText,
+                subsidyInfo = ShopDiscountSubsidyInfoUiModel(
+                    ctaProgramLink = it.subsidyInfo.ctaProgramLink,
+                    subsidyType = ShopDiscountSubsidyInfoUiModel.getSubsidyType(it.subsidyInfo.subsidyType),
+                    discountedPrice = it.subsidyInfo.discountedPrice,
+                    discountedPercentage = it.subsidyInfo.discountedPercentage,
+                    remainingQuota = it.subsidyInfo.remainingQuota,
+                    quotaSubsidy = it.subsidyInfo.quotaSubsidy,
+                    maxOrder = it.subsidyInfo.maxOrder,
+                    subsidyDateStart = it.subsidyInfo.subsidyDateStart,
+                    subsidyDateEnd = it.subsidyInfo.subsidyDateEnd,
+                    sellerDiscountPrice = it.subsidyInfo.sellerDiscountPrice,
+                    sellerDiscountPercentage = it.subsidyInfo.sellerDiscountPercentage
+                ),
+                eventId = it.warehouses.firstOrNull()?.eventId.orEmpty(),
+//                maxOrder = 10,
+//                isSubsidy = true,
+//                subsidyStatusText = "Disubsidi sebagian",
+//                subsidyInfo = ShopDiscountSubsidyInfoUiModel(
+//                    ctaProgramLink = "https://www.tokopedia.com/education/seller-education/",
+//                    subsidyType = ShopDiscountSubsidyInfoUiModel.SubsidyType.FULL,
+//                    discountedPrice = 20000.0,
+//                    discountedPercentage = 5,
+//                    remainingQuota = 10,
+//                    quotaSubsidy = 20,
+//                    maxOrder = 5,
+//                    subsidyDateStart = "2024-04-04 07:30:55 +0700 WIB".formatStartDate(),
+//                    subsidyDateEnd = "2024-06-04 07:30:55 +0700 WIB".formatEndDate(),
+//                    sellerDiscountPrice = 20000.0,
+//                    sellerDiscountPercentage = 11
+//                ),
+//                eventId = "123"
             )
         }
     }
@@ -143,6 +185,16 @@ object ShopDiscountProductDetailMapper {
             responseHeader = response.doSlashPriceStop.responseHeader,
             productId = productId
         )
+    }
+
+    private fun String.formatStartDate(): String {
+        return this.toDate(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE)
+            .parseTo(DateConstant.DATE_TIME_MINUTE_PRECISION)
+    }
+
+    private fun String.formatEndDate(): String {
+        return this.toDate(DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE)
+            .parseTo(END_DATE_FORMAT)
     }
 
 }

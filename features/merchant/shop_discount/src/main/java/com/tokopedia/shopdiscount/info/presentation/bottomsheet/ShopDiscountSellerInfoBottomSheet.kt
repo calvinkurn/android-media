@@ -8,13 +8,18 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.campaign.entity.RemoteTicker
+import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shopdiscount.R
+import com.tokopedia.shopdiscount.common.ShopDiscountTickerUtil
 import com.tokopedia.shopdiscount.databinding.LayoutBottomSheetShopDiscountSellerInfoBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiModel
@@ -24,6 +29,7 @@ import com.tokopedia.shopdiscount.utils.extension.parseTo
 import com.tokopedia.shopdiscount.utils.extension.unixToMs
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
@@ -67,36 +73,50 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
 
     private fun observeLiveData() {
         observeSellerInfoBenefitLiveData()
-        observeSlashPriceTickerData()
+        observeTargetedTickerData()
     }
 
-    private fun observeSlashPriceTickerData() {
-        viewModel.slashPriceTickerLiveData.observe(viewLifecycleOwner) {
+    private fun observeTargetedTickerData() {
+        viewModel.targetedTickerData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    val uiModel = it.data
-                    if (uiModel.responseHeader.success) {
-                        populateTickerData(uiModel.listTicker)
-                    }
+                    renderTicker(it.data)
                 }
                 is Fail -> {
+                    tickerInfo?.gone()
                 }
             }
         }
     }
 
-    private fun populateTickerData(listTicker: List<TickerData>) {
-        context?.let {
-            val tickerPagerAdapter = TickerPagerAdapter(it, listTicker)
-            tickerPagerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+    private fun renderTicker(tickers: List<RemoteTicker>) {
+        tickerInfo?.run {
+            tickerInfo?.visible()
+            val remoteTickers = tickers.map { remoteTicker ->
+                TickerData(
+                    title = remoteTicker.title,
+                    description = remoteTicker.description,
+                    isFromHtml = true,
+                    type = ShopDiscountTickerUtil.getTickerType(remoteTicker.type)
+                )
+            }
+
+            val tickerAdapter = TickerPagerAdapter(activity ?: return, remoteTickers)
+            tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
-                    redirectLink(linkUrl)
+                    routeToUrl(linkUrl.toString())
                 }
             })
-            tickerInfo?.apply {
-                show()
-                addPagerView(tickerPagerAdapter, listTicker)
-            }
+
+            tickerInfo?.addPagerView(tickerAdapter, remoteTickers)
+            tickerInfo?.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    routeToUrl(linkUrl.toString())
+                }
+
+                override fun onDismiss() {
+                }
+            })
         }
     }
 
@@ -259,7 +279,8 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
     }
 
     private fun getSellerInfoTickerData() {
-        viewModel.getTickerData()
+        viewModel.getTargetedTickerData()
+//        viewModel.getTickerData()
     }
 
     private fun init() {

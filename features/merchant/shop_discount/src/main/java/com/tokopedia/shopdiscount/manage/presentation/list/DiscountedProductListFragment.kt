@@ -11,8 +11,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -32,12 +35,20 @@ import com.tokopedia.shopdiscount.more_menu.MoreMenuBottomSheet
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
 import com.tokopedia.shopdiscount.search.presentation.SearchProductActivity
 import com.tokopedia.shopdiscount.select.presentation.SelectProductActivity
+import com.tokopedia.shopdiscount.subsidy.model.mapper.ShopDiscountProgramInformationDetailMapper
+import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountManageProductSubsidyUiModel
+import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountProgramInformationDetailUiModel
+import com.tokopedia.shopdiscount.subsidy.presentation.bottomsheet.ShopDiscountOptOutSingleProductSubsidyBottomSheet
+import com.tokopedia.shopdiscount.subsidy.presentation.bottomsheet.ShopDiscountOptOutMultipleProductSubsidyBottomSheet
+import com.tokopedia.shopdiscount.subsidy.presentation.bottomsheet.ShopDiscountSubsidyOptOutReasonBottomSheet
+import com.tokopedia.shopdiscount.subsidy.presentation.bottomsheet.ShopDiscountSubsidyProgramInformationBottomSheet
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.constant.ZERO
 import com.tokopedia.shopdiscount.utils.extension.*
 import com.tokopedia.shopdiscount.utils.layoutmanager.NonPredictiveLinearLayoutManager
 import com.tokopedia.shopdiscount.utils.paging.BaseSimpleListFragment
+import com.tokopedia.shopdiscount.utils.preference.SharedPreferenceDataStore
 import com.tokopedia.shopdiscount.utils.tracker.ShopDiscountTracker
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -82,6 +93,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         }
     }
 
+    private var optOutSuccessMessage: String = ""
     private val discountStatusName by lazy {
         arguments?.getString(BUNDLE_KEY_DISCOUNT_STATUS_NAME).orEmpty()
     }
@@ -105,6 +117,11 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
     @Inject
     lateinit var tracker: ShopDiscountTracker
 
+    @Inject
+    lateinit var preferenceDataStore: SharedPreferenceDataStore
+
+    private var coachMarkSubsidyInfo: CoachMark2? = null
+
     private val loaderDialog by lazy { LoaderDialog(requireActivity()) }
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(DiscountedProductListViewModel::class.java) }
@@ -119,13 +136,17 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
             onUpdateDiscountClicked,
             onOverflowMenuClicked,
             onVariantInfoClicked,
-            onProductSelectionChange
+            onProductSelectionChange,
+            onSubsidyInformationClicked,
+            onShowCoachMarkSubsidyInfo
         )
     }
     private var onScrollDown: () -> Unit = {}
     private var onScrollUp: () -> Unit = {}
 
-    override fun getScreenName(): String = DiscountedProductListFragment::class.java.canonicalName.orEmpty()
+    override fun getScreenName(): String =
+        DiscountedProductListFragment::class.java.canonicalName.orEmpty()
+
     override fun initInjector() {
         DaggerShopDiscountComponent.builder()
             .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
@@ -149,6 +170,42 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         observeProducts()
         observeDeleteDiscount()
         observeReserveProducts()
+        observeManageProductSubsidyUiModelLiveData()
+    }
+
+    private fun observeManageProductSubsidyUiModelLiveData() {
+        viewModel.manageProductSubsidyUiModelLiveData.observe(viewLifecycleOwner) {
+            it?.let {
+                dismissLoaderDialog()
+                when (it) {
+                    is Success -> {
+                        onSuccessGetListProductSubsidy(it.data)
+                    }
+                    is Fail -> {
+                        onErrorGetListProductSubsidy(it.throwable)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun onErrorGetListProductSubsidy(throwable: Throwable) {
+        binding?.root showError throwable
+    }
+
+    private fun onSuccessGetListProductSubsidy(data: ShopDiscountManageProductSubsidyUiModel) {
+        when(data.mode){
+            ShopDiscountManageDiscountMode.DELETE, ShopDiscountManageDiscountMode.UPDATE -> {
+                if(data.getTotalProductWithSubsidy() == Int.ONE){
+                    showOptOutSingleProductSubsidyBottomSheet(data)
+                } else {
+                    showOptOutMultipleProductSubsidyBottomSheet(data)
+                }
+            }
+            ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY -> {
+                showBottomSheetOptOutReason(data)
+            }
+        }
     }
 
     private fun setupView() {
@@ -157,11 +214,17 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         setupScrollListener()
         setupButton()
         setupTabChangeListener()
+        initCoachMark()
+    }
+
+    private fun initCoachMark() {
+        coachMarkSubsidyInfo = context?.let { CoachMark2(it) }
     }
 
     private fun setupSearchBar() {
         binding?.run {
-            searchBar.searchBarPlaceholder = String.format(getString(R.string.sd_search_at), discountStatusName)
+            searchBar.searchBarPlaceholder =
+                String.format(getString(R.string.sd_search_at), discountStatusName)
             searchBar.searchBarTextField.isFocusable = false
             searchBar.searchBarTextField.setOnClickListener { navigateToSearchProductPage() }
             searchBar.setOnClickListener { navigateToSearchProductPage() }
@@ -186,6 +249,12 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
                     }
                 )
             )
+            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    coachMarkSubsidyInfo?.dismissCoachMark()
+                    super.onScrolled(recyclerView, dx, dy)
+                }
+            })
             imgScrollUp.setOnClickListener { recyclerView.smoothSnapToPosition(0) }
         }
     }
@@ -197,10 +266,89 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
                 SelectProductActivity.start(requireActivity(), discountStatusId)
             }
             btnBulkManage.setOnClickListener {
-                val selectedProductIds = viewModel.getSelectedProductIds()
-                reserveProduct(viewModel.getRequestId(), selectedProductIds)
+                configBulkManageProduct()
             }
-            btnBulkDelete.setOnClickListener { displayBulkDeleteConfirmationDialog() }
+            btnBulkDelete.setOnClickListener {
+                configBulkDeleteProduct()
+            }
+            btnBulkOptOut.setOnClickListener {
+                configBulkOptOutProduct()
+            }
+        }
+    }
+
+    private fun configBulkOptOutProduct() {
+        getListProductSubsidy(
+            viewModel.getSelectedProductIds(),
+            discountStatusId,
+            ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY
+        )
+    }
+
+    private fun showBottomSheetOptOutReason(data: ShopDiscountManageProductSubsidyUiModel) {
+        val bottomSheet = ShopDiscountSubsidyOptOutReasonBottomSheet.newInstance(data)
+        bottomSheet.setOnDismissBottomSheetAfterFinishActionListener { mode, listProductId, optOutSuccessMessage ->
+            onOptOutProductSubsidyBottomSheetSuccess(mode, listProductId, optOutSuccessMessage, data)
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun configBulkDeleteProduct() {
+        val selectedProductIds = viewModel.getSelectedProductIds()
+        if (viewModel.anySubsidyOnSelectedProducts()) {
+//            if (viewModel.hasOneSelectedNonVariantProduct()) {
+//                val selectedProduct = viewModel.getSelectedProduct()
+//                showOptOutSingleProductSubsidyBottomSheet(
+//                    ShopDiscountManageDiscountMode.DELETE,
+//                    selectedProduct?.listEventId.orEmpty(),
+//                    selectedProduct?.subsidyInfo?.ctaProgramLink.orEmpty(),
+//                    selectedProduct?.id.orEmpty()
+//                )
+//            } else {
+            getListProductSubsidy(
+                selectedProductIds,
+                discountStatusId,
+                ShopDiscountManageDiscountMode.DELETE
+            )
+//            }
+        } else {
+            displayBulkDeleteConfirmationDialog()
+        }
+    }
+
+    private fun getListProductSubsidy(
+        selectedProductIds: List<String>,
+        discountStatusId: Int,
+        mode: String
+    ) {
+        showLoaderDialog()
+        viewModel.getListProductDetailForManageSubsidy(
+            selectedProductIds,
+            discountStatusId,
+            mode
+        )
+    }
+
+    private fun configBulkManageProduct() {
+        val selectedProductIds = viewModel.getSelectedProductIds()
+        if (viewModel.anySubsidyOnSelectedProducts()) {
+//            if (viewModel.hasOneSelectedNonVariantProduct()) {
+//                val selectedProduct = viewModel.getSelectedProduct()
+//                showOptOutSingleProductSubsidyBottomSheet(
+//                    ShopDiscountManageDiscountMode.UPDATE,
+//                    selectedProduct?.listEventId.orEmpty(),
+//                    selectedProduct?.subsidyInfo?.ctaProgramLink.orEmpty(),
+//                    selectedProduct?.id.orEmpty()
+//                )
+//            } else {
+            getListProductSubsidy(
+                selectedProductIds,
+                discountStatusId,
+                ShopDiscountManageDiscountMode.UPDATE
+            )
+//            }
+        } else {
+            reserveProduct(viewModel.getRequestId(), selectedProductIds)
         }
     }
 
@@ -222,11 +370,15 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
 
                     if (!viewModel.isOnMultiSelectMode()) {
                         binding?.tpgTotalProduct?.text =
-                            String.format(getString(R.string.sd_total_product), it.data.totalProduct)
+                            String.format(
+                                getString(R.string.sd_total_product),
+                                it.data.totalProduct
+                            )
                     }
 
                     binding?.swipeRefresh?.isRefreshing = false
                 }
+
                 is Fail -> {
                     binding?.swipeRefresh?.isRefreshing = false
                     binding?.root showError it.throwable
@@ -243,6 +395,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
                     dismissLoaderDialog()
                     handleDeleteDiscountResult(it.data)
                 }
+
                 is Fail -> {
                     dismissLoaderDialog()
                     binding?.root showError it.throwable
@@ -264,6 +417,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
                         binding?.root showError getString(R.string.sd_error_reserve_product)
                     }
                 }
+
                 is Fail -> {
                     dismissLoaderDialog()
                     binding?.btnBulkManage?.isLoading = false
@@ -363,8 +517,33 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
 
     private fun displayMoreMenuBottomSheet(product: Product) {
         val bottomSheet = MoreMenuBottomSheet()
-        bottomSheet.setOnDeleteMenuClicked { displayDeleteConfirmationDialog(product) }
+        bottomSheet.setOnDeleteMenuClicked {
+            onDeleteOptionClicked(product)
+        }
+        bottomSheet.setOnOptOutSubsidyMenuClicked{
+            onOptOutSubsidyOptionClicked(product)
+        }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun onOptOutSubsidyOptionClicked(product: Product) {
+        getListProductSubsidy(
+            listOf(product.id),
+            discountStatusId,
+            ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY
+        )
+    }
+
+    private fun onDeleteOptionClicked(product: Product) {
+        if (product.isSubsidy) {
+            getListProductSubsidy(
+                listOf(product.id),
+                discountStatusId,
+                ShopDiscountManageDiscountMode.DELETE
+            )
+        } else {
+            displayDeleteConfirmationDialog(product)
+        }
     }
 
     private fun displayDeleteConfirmationDialog(product: Product) {
@@ -489,47 +668,169 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         dialog.show(dialogTitle)
     }
 
-    private val onProductSelectionChange: (Product, Boolean) -> Unit = { selectedProduct, isSelected ->
-        if (isSelected) {
-            viewModel.addProductToSelection(selectedProduct)
-        } else {
-            viewModel.removeProductFromSelection(selectedProduct)
+    private val onProductSelectionChange: (Product, Boolean) -> Unit =
+        { selectedProduct, isSelected ->
+            if (isSelected) {
+                viewModel.addProductToSelection(selectedProduct)
+            } else {
+                viewModel.removeProductFromSelection(selectedProduct)
+            }
+
+            val updatedProduct = selectedProduct.copy(isCheckboxTicked = isSelected)
+            adapter?.update(selectedProduct, updatedProduct)
+
+            val items = adapter?.getItems() ?: emptyList()
+            val selectedProductCount = viewModel.getSelectedProductCount()
+
+            val shouldDisableSelection = selectedProductCount >= MAX_PRODUCT_SELECTION
+            viewModel.setDisableProductSelection(shouldDisableSelection)
+
+            binding?.cardViewMultiSelect?.isVisible = selectedProductCount > 0
+            binding?.cardViewCreateDiscount?.isVisible = selectedProductCount == 0
+
+            if (selectedProductCount == ZERO) {
+                binding?.cardViewCreateDiscount?.gone()
+                binding?.tpgTotalProduct?.text =
+                    String.format(getString(R.string.sd_total_product), viewModel.getTotalProduct())
+            } else {
+                binding?.tpgTotalProduct?.text =
+                    String.format(
+                        getString(R.string.sd_selected_product_counter),
+                        selectedProductCount
+                    )
+            }
+
+            if (shouldDisableSelection) {
+                disableProductSelection(items)
+            } else {
+                enableProductSelection(items)
+            }
         }
 
-        val updatedProduct = selectedProduct.copy(isCheckboxTicked = isSelected)
-        adapter?.update(selectedProduct, updatedProduct)
+    private val onSubsidyInformationClicked: (Product) -> Unit = { product ->
+        showSubsidyProgramInformationBottomSheet(product)
+    }
 
-        val items = adapter?.getItems() ?: emptyList()
-        val selectedProductCount = viewModel.getSelectedProductCount()
-
-        val shouldDisableSelection = selectedProductCount >= MAX_PRODUCT_SELECTION
-        viewModel.setDisableProductSelection(shouldDisableSelection)
-
-        binding?.cardViewMultiSelect?.isVisible = selectedProductCount > 0
-        binding?.cardViewCreateDiscount?.isVisible = selectedProductCount == 0
-
-        if (selectedProductCount == ZERO) {
-            binding?.cardViewCreateDiscount?.gone()
-            binding?.tpgTotalProduct?.text =
-                String.format(getString(R.string.sd_total_product), viewModel.getTotalProduct())
-        } else {
-            binding?.tpgTotalProduct?.text =
-                String.format(getString(R.string.sd_selected_product_counter), selectedProductCount)
-        }
-
-        if (shouldDisableSelection) {
-            disableProductSelection(items)
-        } else {
-            enableProductSelection(items)
+    private val onShowCoachMarkSubsidyInfo: (View, Product) -> Unit = { view, product ->
+        if (!preferenceDataStore.isCoachMarkSubsidyInfoOnParentAlreadyShown()) {
+            val coachMarks = ArrayList<CoachMark2Item>()
+            val coachMarkDesc = if (product.hasVariant) {
+                getString(R.string.sd_subsidy_coach_mark_variant_desc)
+            } else {
+                getString(R.string.sd_subsidy_coach_mark_non_variant_desc)
+            }
+            coachMarks.add(
+                CoachMark2Item(
+                    view,
+                    "",
+                    coachMarkDesc
+                )
+            )
+            coachMarkSubsidyInfo?.showCoachMark(coachMarks)
+            preferenceDataStore.setCoachMarkSubsidyInfoOnParentAlreadyShown()
         }
     }
 
+    private fun showSubsidyProgramInformationBottomSheet(product: Product) {
+        parentFragment?.childFragmentManager?.let {
+            val programDetailInfo = getProgramDetailInfoModel(product)
+            val bottomSheet = ShopDiscountSubsidyProgramInformationBottomSheet.newInstance(
+                programDetailInfo
+            )
+            bottomSheet.show(it, bottomSheet.tag)
+        }
+    }
+
+    private fun getProgramDetailInfoModel(product: Product): ShopDiscountProgramInformationDetailUiModel {
+        return ShopDiscountProgramInformationDetailMapper.map(
+            isVariant = product.hasVariant,
+            formattedOriginalPrice = product.formattedOriginalMaxPrice,
+            formattedFinalDiscountedPrice = product.formattedDiscountMaxPrice,
+            formattedFinalDiscountedPercentage = product.formattedDiscountMaxPercentage,
+            mainStock = product.totalStock,
+            maxOrder = product.maxOrder,
+            subsidyInfo = product.subsidyInfo
+        )
+    }
+
     private val onUpdateDiscountClicked: (Product) -> Unit = { product ->
-        showLoaderDialog()
-        viewModel.setSelectedProduct(product)
-        val requestId = generateRequestId()
-        viewModel.setRequestId(requestId)
-        reserveProduct(requestId, listOf(product.id))
+        if (product.isSubsidy) {
+            getListProductSubsidy(
+                listOf(product.id),
+                discountStatusId,
+                ShopDiscountManageDiscountMode.UPDATE
+            )
+        } else {
+            showLoaderDialog()
+            viewModel.setSelectedProduct(product)
+            val requestId = generateRequestId()
+            viewModel.setRequestId(requestId)
+            reserveProduct(requestId, listOf(product.id))
+        }
+    }
+
+    private fun showOptOutMultipleProductSubsidyBottomSheet(
+        data: ShopDiscountManageProductSubsidyUiModel,
+    ) {
+        val bottomSheet = ShopDiscountOptOutMultipleProductSubsidyBottomSheet.newInstance(data)
+        bottomSheet.setOnDismissBottomSheetAfterFinishActionListener { mode, listProductId, optOutSuccessMessage ->
+            onOptOutProductSubsidyBottomSheetSuccess(
+                mode,
+                listProductId,
+                optOutSuccessMessage,
+                data
+            )
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun onOptOutProductSubsidyBottomSheetSuccess(
+        mode: String,
+        listProductId: List<String>,
+        optOutSuccessMessage: String,
+        data: ShopDiscountManageProductSubsidyUiModel
+    ) {
+        this.optOutSuccessMessage = optOutSuccessMessage
+        when(mode){
+            ShopDiscountManageDiscountMode.DELETE -> {
+                showLoaderDialog()
+                viewModel.deleteDiscount(discountStatusId, listProductId)
+            }
+            ShopDiscountManageDiscountMode.UPDATE -> {
+                if(data.isAllSelectedProductFullSubsidy()){
+                    binding?.recyclerView showToaster "Produk berhasil dihapus dari Diskon Toko"
+                    loadInitialData()
+                }else {
+                    val requestId = generateRequestId()
+                    viewModel.setRequestId(requestId)
+                    reserveProduct(requestId, listProductId)
+                }
+            }
+            ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY -> {
+                binding?.recyclerView showToaster optOutSuccessMessage
+                binding?.cardViewMultiSelect?.gone()
+                viewModel.removeAllProductFromSelection()
+                viewModel.setInMultiSelectMode(false)
+                viewModel.setDisableProductSelection(false)
+                disableMultiSelect()
+                loadInitialData()
+            }
+        }
+    }
+
+    private fun showOptOutSingleProductSubsidyBottomSheet(
+        data: ShopDiscountManageProductSubsidyUiModel
+    ) {
+        val bottomSheet = ShopDiscountOptOutSingleProductSubsidyBottomSheet.newInstance(data)
+        bottomSheet.setOnDismissBottomSheetAfterFinishActionListener { mode, listProductId, optOutSuccessMessage ->
+            onOptOutProductSubsidyBottomSheetSuccess(
+                mode,
+                listProductId,
+                optOutSuccessMessage,
+                data
+            )
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     private val onProductImageClicked: (Product) -> Unit = { product ->
@@ -642,7 +943,8 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
             requireActivity(),
             viewModel.getRequestId(),
             discountStatusId,
-            ShopDiscountManageDiscountMode.UPDATE
+            ShopDiscountManageDiscountMode.UPDATE,
+            optOutSuccessMessage
         )
     }
 

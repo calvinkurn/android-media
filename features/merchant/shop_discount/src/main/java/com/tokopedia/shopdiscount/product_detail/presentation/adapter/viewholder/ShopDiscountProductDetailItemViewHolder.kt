@@ -6,6 +6,8 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shopdiscount.R
@@ -37,6 +39,12 @@ open class ShopDiscountProductDetailItemViewHolder(
         )
 
         fun onClickDeleteProduct(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData)
+
+        fun onClickSubsidyInfo(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData)
+
+        fun onShowCoachMarkSubsidyInfo(view: View)
+
+        fun onClickOptOutSubsidy(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData)
     }
 
     override fun bind(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData) {
@@ -58,6 +66,46 @@ open class ShopDiscountProductDetailItemViewHolder(
             imgDeleteProduct.setOnClickListener {
                 listener.onClickDeleteProduct(uiModel)
             }
+            icOptOutSubsidy.setOnClickListener {
+                listener.onClickOptOutSubsidy(uiModel)
+            }
+            setSubsidyInfoSectionData(this, uiModel)
+        }
+    }
+
+    private fun setSubsidyInfoSectionData(
+        binding: ShopDiscountProductDetailItemLayoutBinding,
+        uiModel: ShopDiscountProductDetailUiModel.ProductDetailData
+    ) {
+        binding.apply {
+            if(uiModel.isSubsidy){
+                textSubsidyStatus.apply {
+                    show()
+                    text = uiModel.subsidyStatusText
+                    setOnClickListener {
+                        listener.onClickSubsidyInfo(uiModel)
+                    }
+                }
+                iconSubsidyInfo.apply {
+                    show()
+                    setOnClickListener {
+                        listener.onClickSubsidyInfo(uiModel)
+                    }
+                }
+            }
+            configCoachMarkSubsidyInfo(binding)
+        }
+    }
+
+    private fun configCoachMarkSubsidyInfo(binding: ShopDiscountProductDetailItemLayoutBinding) {
+        if (bindingAdapterPosition == 0) {
+            binding.root.isVisibleOnTheScreen(
+                onViewVisible = {
+                    listener.onShowCoachMarkSubsidyInfo(binding.textSubsidyStatus)
+                },
+                onViewNotVisible = {
+                }
+            )
         }
     }
 

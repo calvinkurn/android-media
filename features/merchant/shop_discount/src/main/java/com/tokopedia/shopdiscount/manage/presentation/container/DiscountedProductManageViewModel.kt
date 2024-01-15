@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.campaign.entity.RemoteTicker
+import com.tokopedia.campaign.usecase.GetTargetedTickerUseCase
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -11,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.shopadmin.common.util.AccessId
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
+import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceSellerStatusUseCase
 import com.tokopedia.shopdiscount.manage.data.mapper.ProductListMetaMapper
 import com.tokopedia.shopdiscount.manage.domain.entity.DiscountStatusMeta
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
@@ -27,6 +30,8 @@ class DiscountedProductManageViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getSlashPriceProductListMetaUseCase: GetSlashPriceProductListMetaUseCase,
     private val getSlashPriceBenefitUseCase: GetSlashPriceBenefitUseCase,
+    private val getSlashPriceSellerStatusUseCase: GetSlashPriceSellerStatusUseCase,
+    private val getTargetedTickerUseCase: GetTargetedTickerUseCase,
     private val authorizeAccessUseCase: AuthorizeAccessUseCase,
     private val productListMetaMapper: ProductListMetaMapper,
     private val userSession: UserSessionInterface
@@ -39,6 +44,10 @@ class DiscountedProductManageViewModel @Inject constructor(
     private val _sellerEligibility = MutableLiveData<Result<SellerEligibilityData>>()
     val sellerEligibility: LiveData<Result<SellerEligibilityData>>
         get() = _sellerEligibility
+
+    private val _targetedTickerData = MutableLiveData<Result<List<RemoteTicker>>>()
+    val targetedTickerData: LiveData<Result<List<RemoteTicker>>>
+        get() = _targetedTickerData
 
     private var selectedTabPosition = 0
 
@@ -104,5 +113,30 @@ class DiscountedProductManageViewModel @Inject constructor(
 
     fun getSelectedTabPosition(): Int {
         return selectedTabPosition
+    }
+
+    fun getTargetedTickerData() {
+        launchCatchError(block = {
+            val targetedTickerKey = withContext(dispatchers.io) {
+                getSlashPriceSellerStatusUseCase.setParams()
+                getSlashPriceSellerStatusUseCase.executeOnBackground().getSlashPriceSellerStatus.listKey
+            }
+            val tickerData = withContext(dispatchers.io) {
+                getTargetedTickerUseCase.execute(
+                    GetTargetedTickerUseCase.Param(
+                        page = "seller.selpart-flash-sale",
+                        targets = listOf(
+                            GetTargetedTickerUseCase.Param.Target(
+                                type = "rollence_name",
+                                values = listOf()
+                            )
+                        )
+                    )
+                )
+            }
+            _targetedTickerData.postValue(Success(tickerData))
+        }, onError = {
+            _targetedTickerData.value = Fail(it)
+        })
     }
 }
