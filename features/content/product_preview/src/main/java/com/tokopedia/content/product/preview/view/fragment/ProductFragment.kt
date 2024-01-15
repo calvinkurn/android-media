@@ -24,9 +24,9 @@ import com.tokopedia.content.product.preview.view.components.player.ProductPrevi
 import com.tokopedia.content.product.preview.view.listener.ProductIndicatorListener
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
 import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.ProductSelected
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import kotlinx.coroutines.flow.collectLatest
@@ -43,7 +43,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
         get() = (requireParentFragment() as ProductPreviewFragment)
 
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
-        parentPage.viewModelParentFactory
+        parentPage.viewModelProvider
     }
 
     private var snapHelperContent: PagerSnapHelper = PagerSnapHelper()
@@ -70,7 +70,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
                 ProductIndicatorListener {
                 override fun onClickProductIndicator(position: Int) {
                     scrollTo(position)
-                    viewModel.onAction(ProductPreviewUiAction.ProductSelected(position))
+                    viewModel.onAction(ProductSelected(position))
                 }
             }
         )
@@ -82,7 +82,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
             if (newState == ViewPager2.SCROLL_STATE_IDLE) {
                 val position = getContentCurrentPosition()
                 scrollTo(position)
-                viewModel.onAction(ProductPreviewUiAction.ProductSelected(position))
+                viewModel.onAction(ProductSelected(position))
             }
         }
     }
@@ -218,7 +218,8 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
             classLoader: ClassLoader,
             bundle: Bundle
         ): ProductFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(PRODUCT_FRAGMENT_TAG) as? ProductFragment
+            val oldInstance =
+                fragmentManager.findFragmentByTag(PRODUCT_FRAGMENT_TAG) as? ProductFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 ProductFragment::class.java.name

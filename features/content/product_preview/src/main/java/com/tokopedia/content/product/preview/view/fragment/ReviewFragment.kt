@@ -20,18 +20,16 @@ import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
 import com.tokopedia.content.product.preview.utils.REVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.InitializeReviewMainData
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.InitializeReviewMainData
-import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ReviewFragment @Inject constructor(
-    private val viewModelFactory: ProductPreviewViewModelFactory.Creator,
     private val router: Router
 ) : TkpdBaseV4Fragment(), ReviewParentContentViewHolder.Listener {
 
@@ -43,7 +41,7 @@ class ReviewFragment @Inject constructor(
         get() = (requireParentFragment() as ProductPreviewFragment)
 
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
-        parentPage.viewModelParentFactory
+        parentPage.viewModelProvider
     }
 
     private val reviewAdapter by lazyThreadSafetyNone {
