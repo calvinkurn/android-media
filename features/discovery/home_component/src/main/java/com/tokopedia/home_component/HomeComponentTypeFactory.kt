@@ -19,6 +19,7 @@ import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixLeftPaddingDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
+import com.tokopedia.home_component.visitable.OrigamiSDUIDataModel
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
@@ -59,4 +60,5 @@ interface HomeComponentTypeFactory {
     fun type(bestSellerDataModel: BestSellerDataModel): Int = 0
     fun type(specialReleaseDataModel: SpecialReleaseRevampDataModel): Int = 0
     fun type(shopFlashSaleWidgetDataModel: ShopFlashSaleWidgetDataModel): Int = 0
+    fun type(origamiSDUIDataModel: OrigamiSDUIDataModel) : Int = 0
 }

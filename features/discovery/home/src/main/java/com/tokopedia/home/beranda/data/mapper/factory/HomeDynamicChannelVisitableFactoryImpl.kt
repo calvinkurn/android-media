@@ -91,9 +91,13 @@ class HomeDynamicChannelVisitableFactoryImpl(
         } else if (homeChannelData?.dynamicHomeChannel?.channels?.isNotEmpty() == true) {
             dynamicChannelList = homeChannelData?.dynamicHomeChannel?.channels as MutableList<DynamicHomeChannel.Channels>
         }
-        dynamicChannelList.forEachIndexed { index, channel ->
+        dynamicChannelList.forEachIndexed{ index, channel ->
             val position = index + startPosition
             setDynamicChannelPromoName(position, channel)
+            if(channel.origami.isNotEmpty()){
+                createOrigamiChannel(channel.origami, channel.id)
+                return@forEachIndexed
+            }
             when (channel.layout) {
                 DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createBusinessUnitWidget(channel = channel, position = position)
                 DynamicHomeChannel.Channels.LAYOUT_6_IMAGE,
@@ -227,6 +231,10 @@ class HomeDynamicChannelVisitableFactoryImpl(
         }
 
         return this
+    }
+
+    private fun createOrigamiChannel(origamiData: String, channelId: String) {
+        visitableList.add(OrigamiSDUIDataModel(origamiData, channelId))
     }
 
     private fun createFeaturedShopComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {

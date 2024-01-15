@@ -114,6 +114,7 @@ import com.tokopedia.home_component.viewholders.MissionWidgetViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftPaddingComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
+import com.tokopedia.home_component.viewholders.OrigamiSDUIViewHolder
 import com.tokopedia.home_component.viewholders.ProductHighlightComponentViewHolder
 import com.tokopedia.home_component.viewholders.RecommendationListCarouselViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
@@ -138,6 +139,7 @@ import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixLeftPaddingDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
+import com.tokopedia.home_component.visitable.OrigamiSDUIDataModel
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
@@ -450,6 +452,10 @@ class HomeAdapterFactory(
         return ShopFlashSaleWidgetViewHolder.LAYOUT
     }
 
+    override fun type(origamiSDUIDataModel: OrigamiSDUIDataModel): Int {
+        return OrigamiSDUIViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         val viewHolder: AbstractViewHolder<*>
         when (type) {
@@ -624,6 +630,7 @@ class HomeAdapterFactory(
                 )
             SpecialReleaseRevampViewHolder.LAYOUT -> viewHolder = SpecialReleaseRevampViewHolder(view, specialReleaseRevampListener)
             ShopFlashSaleWidgetViewHolder.LAYOUT -> viewHolder = ShopFlashSaleWidgetViewHolder(view, shopFlashSaleWidgetListener)
+            OrigamiSDUIViewHolder.LAYOUT -> viewHolder = OrigamiSDUIViewHolder(view)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 
