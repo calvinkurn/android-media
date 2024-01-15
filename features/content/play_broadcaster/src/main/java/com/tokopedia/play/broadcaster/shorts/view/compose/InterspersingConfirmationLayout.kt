@@ -37,6 +37,7 @@ import com.tokopedia.nest.components.loader.NestShimmerType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.nest.principles.utils.ImageSource
+import com.tokopedia.nest.principles.utils.noRippleClickable
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.shorts.ui.model.ShortsCoverState
 import com.tokopedia.nest.components.R as nestcomponentsR
@@ -155,6 +156,9 @@ private fun ContentPreviewSection(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
             .border(1.dp, NestTheme.colors.NN._50)
+            .noRippleClickable {
+                onClickCover?.invoke()
+            }
             .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
         Row(
@@ -164,10 +168,7 @@ private fun ContentPreviewSection(
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
                     .width(60.dp)
-                    .height(60.dp)
-                    .clickable {
-                        onClickCover?.invoke()
-                    },
+                    .height(60.dp),
             ) {
                 val coverModifier = Modifier.fillMaxSize()
                 when (coverState) {
