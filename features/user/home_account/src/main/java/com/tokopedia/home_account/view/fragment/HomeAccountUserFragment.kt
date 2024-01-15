@@ -237,7 +237,7 @@ open class HomeAccountUserFragment :
     var memberCardView: CardUnify? = null
 
     private val startEditProfileForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { _: ActivityResult ->
-        getData()
+        viewModel.refreshUserProfile(isUpdateLayout = true)
     }
 
     override fun getScreenName(): String = "homeAccountUserFragment"
@@ -827,6 +827,10 @@ open class HomeAccountUserFragment :
                 }
             }
         }
+
+        viewModel.refreshAndUpdateLayoutProfile.observe(viewLifecycleOwner) {
+            onSuccessGetBuyerAccount(it)
+        }
     }
 
     private fun onSuccessLoadTokpediaPlusWidget(data: TokopediaPlusDataModel) {
@@ -1001,10 +1005,6 @@ open class HomeAccountUserFragment :
         displayBalanceAndPointLocalLoad(false)
         adapter?.run {
             if (isFirstItemIsProfile()) {
-                val item = (getItem(POSITION_0) as ProfileDataView)
-                buyerAccount.isSuccessGetTokopediaPlusData = item.isSuccessGetTokopediaPlusData
-                buyerAccount.tokopediaPlusWidget = item.tokopediaPlusWidget
-
                 removeItemAt(POSITION_0)
             }
             addItem(POSITION_0, buyerAccount)
