@@ -9,6 +9,7 @@ extern "C" {
 #define TRUE							1
 #define FALSE							0
 
+#define LENGTH_LOG_MUTATION				1024
 
 #define LENGTH_ACCESS_TOKEN				45		// Access Token Data
 #define LENGTH_REQ_DATA					448		// Length of REQUEST Data		
@@ -236,6 +237,19 @@ unsigned char BCAlastBCATopUp(unsigned char *strLogRsp);
  * *********************************************************************************************
  */ 
 unsigned char BCAdataCardInfo(unsigned char *strTransactionID, unsigned char *ATD, unsigned char *strLogRsp);
+
+
+/*
+ * ******************************* MUTASI TRANSAKSI KARTU **************************************
+ * 	Output:
+ * 			strLogRsp		:	Log/Data Response
+ * 								Length: up to LENGTH_LOG_MUTATION *
+ * 			return function	:	TRUE as Successful
+ * 								FALSE as Failed
+ *
+ * *********************************************************************************************
+ */
+unsigned char BCACheckMutation(unsigned char *strLogRsp);
 
 
 
