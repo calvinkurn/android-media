@@ -10,9 +10,8 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.ChosenAddressDataResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
-import com.tokopedia.tokofood.common.domain.response.KeroEditAddress
-import com.tokopedia.tokofood.common.domain.response.KeroEditAddressData
-import com.tokopedia.tokofood.common.domain.response.KeroEditAddressResponse
+import com.tokopedia.logisticCommon.data.response.KeroAddrStateChosenAddressData
+import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.domain.response.TokoFoodMerchantList
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
@@ -115,23 +114,23 @@ fun createLoadMoreState(): TokoFoodListUiModel {
     )
 }
 
-fun createKeroEditAddressResponse(): KeroEditAddressResponse {
-    return KeroEditAddressResponse(
-        keroEditAddress = KeroEditAddress(
-            data = KeroEditAddressData(
-                addressId = "123",
-                isSuccess = 1
+fun createKeroEditAddressResponse(latitude: String, longitude: String, isSuccess: Int = 1): KeroEditAddressResponse.Data {
+    return KeroEditAddressResponse.Data(
+        keroEditAddress = KeroEditAddressResponse.Data.KeroEditAddress(
+            data = KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse(
+                isSuccess = isSuccess,
+                chosenAddressData = KeroAddrStateChosenAddressData(addressId = 123, latitude = latitude, longitude = longitude)
             )
         )
     )
 }
 
-fun createKeroEditAddressResponseFail(): KeroEditAddressResponse {
-    return KeroEditAddressResponse(
-        keroEditAddress = KeroEditAddress(
-            data = KeroEditAddressData(
-                addressId = "123",
-                isSuccess = 0
+fun createKeroEditAddressResponseFail(): KeroEditAddressResponse.Data {
+    return KeroEditAddressResponse.Data(
+        keroEditAddress = KeroEditAddressResponse.Data.KeroEditAddress(
+            data = KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse(
+                isSuccess = 0,
+                chosenAddressData = KeroAddrStateChosenAddressData(addressId = 123)
             )
         )
     )
@@ -277,7 +276,10 @@ fun createSliderBannerDataModel(
     return BannerDataModel(channelModel = channelModel)
 }
 
-fun createUSPModel(uspResponse: TokoFoodHomeUSPResponse? = null, state: Int): TokoFoodHomeUSPUiModel {
+fun createUSPModel(
+    uspResponse: TokoFoodHomeUSPResponse? = null,
+    state: Int
+): TokoFoodHomeUSPUiModel {
     return TokoFoodHomeUSPUiModel(
         id = "11111",
         uspModel = uspResponse,
@@ -286,7 +288,10 @@ fun createUSPModel(uspResponse: TokoFoodHomeUSPResponse? = null, state: Int): To
     )
 }
 
-fun createIconsModel(listDynamicIcon: List<DynamicIcon>? = null, state: Int): TokoFoodHomeIconsUiModel {
+fun createIconsModel(
+    listDynamicIcon: List<DynamicIcon>? = null,
+    state: Int
+): TokoFoodHomeIconsUiModel {
     return TokoFoodHomeIconsUiModel(
         id = "22222",
         widgetParam = "",

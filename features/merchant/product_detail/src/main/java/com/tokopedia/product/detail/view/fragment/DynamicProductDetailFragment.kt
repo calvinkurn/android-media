@@ -747,7 +747,6 @@ open class DynamicProductDetailFragment :
         observeToggleNotifyMe()
         observeRecommendationProduct()
         observeAddToCart()
-        observeSingleVariantData()
         observeOnThumbnailVariantSelected()
         observeATCRecomData()
         observeATCTokonowResetCard()
@@ -2190,38 +2189,6 @@ open class DynamicProductDetailFragment :
         return productVideoCoordinator
     }
 
-    override fun onThumbnailImpress(
-        position: Int,
-        media: MediaDataModel,
-        componentTrackDataModel: ComponentTrackDataModel?
-    ) {
-        DynamicProductDetailTracking.Impression.eventMediaThumbnailImpression(
-            trackingQueue = trackingQueue,
-            position = position,
-            userId = viewModel.userId,
-            media = media,
-            productInfo = viewModel.getDynamicProductInfoP1,
-            lcaWarehouseId = getLcaWarehouseId(),
-            componentTrackDataModel = componentTrackDataModel
-        )
-    }
-
-    override fun trackThumbnailClicked(
-        position: Int,
-        media: MediaDataModel,
-        componentTrackDataModel: ComponentTrackDataModel?
-    ) {
-        DynamicProductDetailTracking.Impression.eventMediaThumbnailClick(
-            trackingQueue = trackingQueue,
-            position = position,
-            userId = viewModel.userId,
-            media = media,
-            productInfo = viewModel.getDynamicProductInfoP1,
-            lcaWarehouseId = getLcaWarehouseId(),
-            componentTrackDataModel = componentTrackDataModel
-        )
-    }
-
     /**
      * ProductSnapshotViewHolder
      */
@@ -2352,20 +2319,6 @@ open class DynamicProductDetailFragment :
                 dismiss()
             }
             show()
-        }
-    }
-
-    override fun showThumbnailImage(): Boolean {
-        return try {
-            val abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
-            val abTestThumbnailKey = abTestPlatform.getString(
-                RollenceKey.PDP_CAROUSEL_ANDROID,
-                RollenceKey.PDP_HIDE_THUMBNAIL
-            )
-
-            abTestThumbnailKey == RollenceKey.PDP_SHOW_THUMBNAIL
-        } catch (throwable: Throwable) {
-            false
         }
     }
 
@@ -2878,25 +2831,6 @@ open class DynamicProductDetailFragment :
             )
         }
         showOrHideButton()
-    }
-
-    private fun observeSingleVariantData() {
-        viewLifecycleOwner.observe(viewModel.singleVariantData) { variantCategory ->
-            if (variantCategory == null) {
-                pdpUiUpdater?.removeComponent(ProductDetailConstant.MINI_VARIANT_OPTIONS)
-                updateUi()
-                return@observe
-            }
-            val listOfVariantLevelOne = listOf(variantCategory)
-            val landingSubText = viewModel.variantData?.landingSubText.ifNullOrBlank {
-                getVariantString()
-            }
-            pdpUiUpdater?.updateVariantData(
-                title = landingSubText,
-                processedVariant = listOfVariantLevelOne
-            )
-            updateUi()
-        }
     }
 
     private fun observeAddToCart() {
@@ -3852,7 +3786,21 @@ open class DynamicProductDetailFragment :
         } else {
             // ignore auto-select variant when first load pdp in thumbnail variant
             val selectedOptionIds = determineInitialOptionId(productId)
-            viewModel.processVariant(data, selectedOptionIds)
+            val variantOneLevel = ProductDetailVariantLogic.determineVariant(
+                mapOfSelectedOptionIds = selectedOptionIds,
+                productVariant = data
+            )
+            if (variantOneLevel == null) {
+                pdpUiUpdater?.removeComponent(ProductDetailConstant.MINI_VARIANT_OPTIONS)
+                return
+            }
+            val landingSubText = viewModel.variantData?.landingSubText.ifNullOrBlank {
+                getVariantString()
+            }
+            pdpUiUpdater?.updateVariantData(
+                title = landingSubText,
+                processedVariant = listOf(variantOneLevel)
+            )
         }
     }
 
@@ -6275,10 +6223,6 @@ open class DynamicProductDetailFragment :
         identifier: SocialProofUiModel.Identifier,
         trackData: ComponentTrackDataModel?
     ) {
-        openFtInstallmentBottomSheet(
-            viewModel.p2Data.value?.productFinancingCalculationData
-                ?: FtInstallmentCalculationDataResponse()
-        )
         when (identifier) {
             SocialProofUiModel.Identifier.Talk -> socialProofTalkTracking(trackData = trackData)
             SocialProofUiModel.Identifier.Media -> socialProofMediaTracking(trackData = trackData)

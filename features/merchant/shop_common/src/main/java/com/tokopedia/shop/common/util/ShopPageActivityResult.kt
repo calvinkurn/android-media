@@ -12,9 +12,10 @@ object ShopPageActivityResult {
 
     fun createResult(
         shopId: String,
-        isFollow: Boolean
+        isFollow: Boolean,
+        existingIntentBundle: Intent = Intent()
     ): Intent {
-        return Intent().apply {
+        return existingIntentBundle.apply {
             putExtra(EXTRA_IS_FOLLOW, isFollow)
             putExtra(EXTRA_SHOP_ID, shopId)
         }

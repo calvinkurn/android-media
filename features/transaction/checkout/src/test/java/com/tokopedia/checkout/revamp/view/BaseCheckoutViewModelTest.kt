@@ -26,7 +26,9 @@ import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.mapper.ScheduleDeliveryMapper
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleDeliveryCoroutineUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetScheduleDeliveryCoroutineUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiCoroutineUseCase
@@ -75,6 +77,11 @@ open class BaseCheckoutViewModelTest {
 
     @MockK
     lateinit var ratesWithScheduleUseCase: GetRatesWithScheduleDeliveryCoroutineUseCase
+
+    @MockK
+    lateinit var scheduleDeliveryUseCase: GetScheduleDeliveryCoroutineUseCase
+
+    private val scheduleDeliveryMapper: ScheduleDeliveryMapper = ScheduleDeliveryMapper()
 
     private val ratesResponseStateConverter: RatesResponseStateConverter =
         RatesResponseStateConverter()
@@ -140,6 +147,10 @@ open class BaseCheckoutViewModelTest {
 
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchers
 
+    lateinit var logisticProcessor: CheckoutLogisticProcessor
+
+    lateinit var promoProcessor: CheckoutPromoProcessor
+
     lateinit var viewModel: CheckoutViewModel
 
     var latestToaster: CheckoutPageToaster? = null
@@ -152,6 +163,28 @@ open class BaseCheckoutViewModelTest {
         } answers {
             latestToaster = it.invocation.args[0] as CheckoutPageToaster
         }
+        promoProcessor = CheckoutPromoProcessor(
+            clearCacheAutoApplyStackUseCase,
+            validateUsePromoRevampUseCase,
+            getPromoListRecommendationEntryPointUseCase,
+            getPromoListRecommendationMapper,
+            chosenAddressRequestHelper,
+            mTrackerShipment,
+            toasterProcessor,
+            helper,
+            dispatchers
+        )
+        logisticProcessor = CheckoutLogisticProcessor(
+            pinpointUseCase,
+            ratesUseCase,
+            ratesApiUseCase,
+            ratesWithScheduleUseCase,
+            ratesResponseStateConverter,
+            shippingCourierConverter,
+            scheduleDeliveryUseCase,
+            scheduleDeliveryMapper,
+            dispatchers
+        )
         viewModel = CheckoutViewModel(
             CheckoutCartProcessor(
                 getShipmentAddressFormV4UseCase,
@@ -161,26 +194,8 @@ open class BaseCheckoutViewModelTest {
                 helper,
                 dispatchers
             ),
-            CheckoutLogisticProcessor(
-                pinpointUseCase,
-                ratesUseCase,
-                ratesApiUseCase,
-                ratesWithScheduleUseCase,
-                ratesResponseStateConverter,
-                shippingCourierConverter,
-                dispatchers
-            ),
-            CheckoutPromoProcessor(
-                clearCacheAutoApplyStackUseCase,
-                validateUsePromoRevampUseCase,
-                getPromoListRecommendationEntryPointUseCase,
-                getPromoListRecommendationMapper,
-                chosenAddressRequestHelper,
-                mTrackerShipment,
-                toasterProcessor,
-                helper,
-                dispatchers
-            ),
+            logisticProcessor,
+            promoProcessor,
             CheckoutAddOnProcessor(
                 prescriptionIdsUseCase,
                 epharmacyUseCase,

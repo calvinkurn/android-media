@@ -67,6 +67,7 @@ import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.data.SellerHomeSharedPref
 import com.tokopedia.sellerhome.databinding.FragmentNewOtherMenuBinding
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.di.module.SellerHomeModule
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingPerformanceTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingTokoMemberTracker
@@ -273,6 +274,7 @@ class OtherMenuFragment :
     override fun initInjector() {
         DaggerSellerHomeComponent.builder()
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .sellerHomeModule(SellerHomeModule(requireContext()))
             .build()
             .inject(this)
     }

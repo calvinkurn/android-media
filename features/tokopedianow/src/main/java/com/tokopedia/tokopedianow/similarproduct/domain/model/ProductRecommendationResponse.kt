@@ -82,7 +82,7 @@ data class ProductRecommendationResponse(
                 val relatedProductAppLink: String? = null,
 
                 @field:SerializedName("departmentId")
-                val departmentId: Int? = null,
+                val departmentId: String? = null,
 
                 @field:SerializedName("rating")
                 val rating: Int? = null,
@@ -137,7 +137,7 @@ data class ProductRecommendationResponse(
                 val warehouseId: String? = null,
 
                 @field:SerializedName("id")
-                val id: Long? = null,
+                val id: String? = null,
 
                 @field:SerializedName("relatedProductUrlLink")
                 val relatedProductUrlLink: String? = null,
@@ -148,37 +148,14 @@ data class ProductRecommendationResponse(
                 @field:SerializedName("stock")
                 val stock: Int? = null,
 
-                @field:SerializedName("wholesalePrice")
-                val wholesalePrice: List<WholesalePriceItem?>? = null,
-
                 @field:SerializedName("priceInt")
-                val priceInt: Int? = null
+                val priceInt: Double? = null
             ){
 
                 data class BadgesItem(
 
                     @field:SerializedName("imageUrl")
                     val imageUrl: String? = null,
-
-                    @field:SerializedName("title")
-                    val title: String? = null
-                )
-
-                data class WholesalePriceItem(
-                    @SerializedName("price")
-                    val price: Int,
-                    @SerializedName("quantityMax")
-                    val quantityMax: Int,
-                    @SerializedName("quantityMin")
-                    val quantityMin: Int,
-                    @SerializedName("priceString")
-                    val priceString: String
-                )
-
-                data class LabelsItem(
-
-                    @field:SerializedName("color")
-                    val color: String? = null,
 
                     @field:SerializedName("title")
                     val title: String? = null
@@ -193,7 +170,7 @@ data class ProductRecommendationResponse(
                     val name: String? = null,
 
                     @field:SerializedName("id")
-                    val id: Int? = null
+                    val id: String? = null
                 )
 
             }

@@ -141,6 +141,8 @@ class CheckoutOrderViewHolder(
                         courierShipperPrice = courierItemData.shipperPrice,
 
                         currentAddress = RecipientAddressModel(),
+                        boOrderMessage = courierItemData.boOrderMessage,
+                        courierOrderMessage = courierItemData.courierOrderMessage,
 
                         scheduleDeliveryUiModel = courierItemData.scheduleDeliveryUiModel,
                         insuranceData = InsuranceWidgetUiModel(

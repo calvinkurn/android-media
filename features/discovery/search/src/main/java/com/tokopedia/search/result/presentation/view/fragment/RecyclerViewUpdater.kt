@@ -163,6 +163,10 @@ class RecyclerViewUpdater @Inject constructor(
         recyclerView?.scrollToPosition(position)
     }
 
+    override fun unBlurItem() {
+        productListAdapter?.unBlurItem()
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun destroy() {
         recyclerView = null

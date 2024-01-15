@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="steal_the_look_left_item_horizontal_weight">219</integer>
+    <integer name="steal_the_look_right_item_horizontal_weight">109</integer>
+    <integer name="steal_the_look_left_image_horizontal_weight">215</integer>
+    <integer name="steal_the_look_right_image_horizontal_weight">105</integer>
+    <integer name="steal_the_look_right_item_vertical_weight">105</integer>
+    <integer name="steal_the_look_inner_padding_weight">8</integer>
+    <integer name="steal_the_look_inner_padding_weight_half">4</integer>
+</resources>

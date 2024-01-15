@@ -76,6 +76,7 @@ import com.tokopedia.digital_product_detail.presentation.custom.activityresult.O
 import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegate
 import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegateImpl
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
+import com.tokopedia.digital_product_detail.presentation.monitoring.DigitalPDPDataPlanPerformanceCallback
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPWidgetMapper
@@ -172,6 +173,9 @@ class DigitalPDPDataPlanFragment :
     @Inject
     lateinit var commonMultiCheckoutAnalytics: CommonMultiCheckoutAnalytics
 
+    @Inject
+    lateinit var performanceMonitoring: DigitalPDPDataPlanPerformanceCallback
+
     private var binding by autoClearedNullable<FragmentDigitalPdpDataPlanBinding>()
 
     private var operator = TelcoOperator()
@@ -190,6 +194,8 @@ class DigitalPDPDataPlanFragment :
 
     private lateinit var localCacheHandler: LocalCacheHandler
     private lateinit var productDescBottomSheet: ProductDescBottomSheet
+
+    private var onRenderProductsGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener? = null
 
     private val indosatCheckBalanceLauncher = registerForActivityResult(OpenRechargeCheckBalance()) { result ->
         when (result) {
@@ -255,6 +261,11 @@ class DigitalPDPDataPlanFragment :
         } else if (childFragment is FilterPDPBottomsheet) {
             childFragment.setListener(this)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        stopPrepareMonitoring()
     }
 
     private fun setupKeyboardWatcher() {
@@ -442,6 +453,7 @@ class DigitalPDPDataPlanFragment :
         }
 
         viewModel.mccmProductsData.observe(viewLifecycleOwner) {
+            startProductsRenderMonitoring()
             when (it) {
                 is RechargeNetworkResult.Success -> {
                     if (it.data.listDenomData.isNotEmpty()) {
@@ -622,9 +634,9 @@ class DigitalPDPDataPlanFragment :
             binding?.rechargePdpPaketDataOmniWidget?.hide()
         } else {
             otherComponents.forEach {
-                    if (it.name == OTHER_COMPONENT_APPLINK_OMNI) {
-                        val collection = it.otherComponentDataCollection.firstOrNull { collection ->
-                            collection.key == APPLINK_OMNI_DATA_CODE
+                if (it.name == OTHER_COMPONENT_APPLINK_OMNI) {
+                    val collection = it.otherComponentDataCollection.firstOrNull { collection ->
+                        collection.key == APPLINK_OMNI_DATA_CODE
                     }
                     if (collection != null) {
                         renderOmniChannel(collection.value)
@@ -659,6 +671,7 @@ class DigitalPDPDataPlanFragment :
         isOperatorChanged: Boolean,
         clientNumber: String
     ) {
+        startNetworkMonitoring()
         viewModel.run {
             if (isOperatorChanged) resetFilter()
             isProductListEmpty = false
@@ -1548,6 +1561,52 @@ class DigitalPDPDataPlanFragment :
                         }
                     }
                 })
+    }
+
+    private fun stopPrepareMonitoring() {
+        performanceMonitoring.stopPreparePagePerformanceMonitoring()
+    }
+
+    private fun startNetworkMonitoring() {
+        stopPrepareMonitoring()
+        performanceMonitoring.startNetworkRequestPerformanceMonitoring()
+    }
+
+    private fun stopNetworkMonitoring() {
+        performanceMonitoring.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    private fun stopPageMonitoring() {
+        performanceMonitoring.stopMonitoring()
+    }
+
+    private fun startProductsRenderMonitoring() {
+        startRenderMonitoring()
+
+        if (onRenderProductsGlobalLayoutListener == null) {
+            onRenderProductsGlobalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    if (isAdded) {
+                        stopRenderMonitoring()
+                        binding?.rechargePdpPaketDataDenomFullWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    }
+                }
+            }
+            binding?.rechargePdpPaketDataDenomFullWidget?.viewTreeObserver?.addOnGlobalLayoutListener(onRenderProductsGlobalLayoutListener)
+        }
+    }
+
+    /**
+     * Monitor duration between receive response until the UI is rendered.
+     * */
+    private fun startRenderMonitoring() {
+        stopNetworkMonitoring()
+        performanceMonitoring.startRenderPerformanceMonitoring()
+    }
+
+    private fun stopRenderMonitoring() {
+        performanceMonitoring.stopRenderPerformanceMonitoring()
+        stopPageMonitoring()
     }
 
     //region RechargeProductDescListener

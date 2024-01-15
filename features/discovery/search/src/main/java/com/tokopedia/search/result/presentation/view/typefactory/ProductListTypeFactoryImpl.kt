@@ -143,7 +143,7 @@ class ProductListTypeFactoryImpl(
     private val inspirationProductListener: InspirationProductListener,
     private val reimagineSearch2Component: Search2Component = Search2Component.CONTROL,
     private val reimagineSearch3ProductCard: Search3ProductCard = Search3ProductCard.CONTROL,
-) : BaseAdapterTypeFactory(), ProductListTypeFactory {
+    ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
     override fun type(cpmDataView: CpmDataView): Int {
         return if (reimagineSearch2Component.isReimagineShopAds()) {

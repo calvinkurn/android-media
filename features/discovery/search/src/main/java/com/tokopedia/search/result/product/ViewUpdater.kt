@@ -17,4 +17,5 @@ interface ViewUpdater {
     fun requestRelayout()
     fun backToTop()
     fun scrollToPosition(position: Int)
+    fun unBlurItem()
 }

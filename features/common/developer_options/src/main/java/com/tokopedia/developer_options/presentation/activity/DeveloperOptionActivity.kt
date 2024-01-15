@@ -49,6 +49,7 @@ import com.tokopedia.developer_options.presentation.viewholder.UrlEnvironmentVie
 import com.tokopedia.developer_options.presentation.viewholder.UserIdViewHolder
 import com.tokopedia.developer_options.session.DevOptLoginSession
 import com.tokopedia.encryption.security.sha256
+import com.tokopedia.developer_options.tracker.DevOpsTracker
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -156,6 +157,7 @@ class DeveloperOptionActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        DevOpsTracker.init(this)
         checkDebuggingModeOrNot()
         inject()
         autoAuthorized()

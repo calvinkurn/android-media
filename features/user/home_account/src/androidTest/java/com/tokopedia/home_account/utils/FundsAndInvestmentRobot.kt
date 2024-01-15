@@ -1,19 +1,19 @@
 package com.tokopedia.home_account.utils
 
-import androidx.test.espresso.Espresso.onView
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.ComposeTestRule
+import androidx.compose.ui.test.onNodeWithText
 import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import com.tokopedia.home_account.main.HomeAccountUiTest
 
-class FundsAndInvestmentRobot {
+class FundsAndInvestmentRobot(private val rule: ComposeTestRule) {
 
     init {
         Thread.sleep(1000)
     }
 
     fun displayText(text: String) {
-        onView(withText(text)).check(matches(isDisplayed()))
+        rule.onNodeWithText(text).assertIsDisplayed()
     }
 
     fun back() {
@@ -21,4 +21,5 @@ class FundsAndInvestmentRobot {
     }
 }
 
-fun fundsAndInvestmentRobot(func: FundsAndInvestmentRobot.() -> Unit) = FundsAndInvestmentRobot().apply(func)
+fun HomeAccountUiTest.fundsAndInvestmentRobot(func: FundsAndInvestmentRobot.() -> Unit) =
+    FundsAndInvestmentRobot(composeTestRule).apply(func)

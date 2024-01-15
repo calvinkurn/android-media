@@ -36,6 +36,8 @@ import com.tokopedia.dropoff.ui.dropoff_picker.model.DropoffNearbyModel
 import com.tokopedia.dropoff.util.SimpleVerticalDivider
 import com.tokopedia.dropoff.util.getDescription
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.locationmanager.DeviceLocation
+import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticCommon.util.bitmapDescriptorFromVector
@@ -384,6 +386,9 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
                             ?.addOnSuccessListener {
                                 if (it != null) {
                                     moveCamera(getLatLng(it.latitude, it.longitude))
+                                    LocationDetectorHelper(this@DropoffPickerActivity).saveToCache(
+                                        it.latitude, it.longitude
+                                    )
                                 } else {
                                     // If it is null, either Google Play Service has just
                                     // been restarted or the location service is deactivated

@@ -63,7 +63,7 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerA
 import com.tokopedia.user.session.UserSessionInterface
 import rx.subscriptions.CompositeSubscription
 
-class CartAdapter constructor(
+class CartAdapter(
     private val actionListener: ActionListener,
     private val cartItemActionListener: CartItemAdapter.ActionListener,
     private val sellerCashbackListener: SellerCashbackListener,

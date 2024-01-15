@@ -1,50 +1,51 @@
 package com.tokopedia.pms.howtopay.ui.adapter.viewHolder
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.pms.databinding.PmsHwpItemMultiChannelBinding
 import com.tokopedia.pms.howtopay.data.model.HtpPaymentChannel
 import com.tokopedia.pms.howtopay.ui.adapter.InstructionAdapter
-import kotlinx.android.synthetic.main.pms_hwp_item_multi_channel.view.*
 
 class MultiChannelViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-    private val tvChannelName: TextView = itemView.tvChannelName
-    private val iconExpand: IconUnify = itemView.iconExpand
-    private val recyclerView: RecyclerView = itemView.rvInstructions
-    private val divider: View = itemView.divider
+    private val binding = PmsHwpItemMultiChannelBinding.bind(view)
 
+    @SuppressLint("NotifyDataSetChanged")
     fun bindView(
-        paymentChannel: HtpPaymentChannel, isLastItem: Boolean,
+        paymentChannel: HtpPaymentChannel,
+        isLastItem: Boolean,
         onExpand: (HtpPaymentChannel, Int) -> Unit
     ) {
-
-        tvChannelName.text = paymentChannel.channelTitle
-        if (paymentChannel.isExpanded) {
-            iconExpand.setImage(IconUnify.CHEVRON_UP)
-            recyclerView.visible()
-            recyclerView.layoutManager = NonScrollLinerLayoutManager(itemView.context)
-            recyclerView.adapter = InstructionAdapter(paymentChannel.channelSteps, null)
-            recyclerView.post {
-                recyclerView.adapter?.notifyDataSetChanged()
+        binding.run {
+            tvChannelName.text = paymentChannel.channelTitle
+            if (paymentChannel.isExpanded) {
+                iconExpand.setImage(IconUnify.CHEVRON_UP)
+                rvInstructions.visible()
+                rvInstructions.layoutManager = NonScrollLinerLayoutManager(itemView.context)
+                rvInstructions.adapter = InstructionAdapter(paymentChannel.channelSteps, null)
+                rvInstructions.post {
+                    rvInstructions.adapter?.notifyDataSetChanged()
+                }
+            } else {
+                iconExpand.setImage(IconUnify.CHEVRON_DOWN)
+                rvInstructions.gone()
             }
-        } else {
-            iconExpand.setImage(IconUnify.CHEVRON_DOWN)
-            recyclerView.gone()
-        }
 
-        itemView.setOnClickListener {
-            onExpand(paymentChannel, adapterPosition)
+            itemView.setOnClickListener {
+                onExpand(paymentChannel, adapterPosition)
+            }
+            if (isLastItem) {
+                divider.gone()
+            } else {
+                divider.visible()
+            }
         }
-        if (isLastItem)
-            divider.gone()
-        else
-            divider.visible()
     }
 }
 

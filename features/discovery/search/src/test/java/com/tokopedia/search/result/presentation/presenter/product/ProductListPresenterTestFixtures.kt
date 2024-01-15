@@ -33,6 +33,7 @@ import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterD
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
 import com.tokopedia.search.result.product.deduplication.Deduplication
 import com.tokopedia.search.result.product.deduplication.DeduplicationView
+import com.tokopedia.search.result.product.dialog.BottomSheetInappropriateView
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenterDelegate
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterView
 import com.tokopedia.search.result.product.filter.dynamicfilter.MutableDynamicFilterModelProviderDelegate
@@ -146,6 +147,7 @@ internal open class ProductListPresenterTestFixtures {
     }
     protected val applinkModifier = mockk<ApplinkModifier>(relaxed = true)
     protected val safeSearchPreference = mockk<MutableSafeSearchPreference>(relaxed = true)
+    protected val bottomSheetInappropriateView = mockk<BottomSheetInappropriateView>(relaxed = true)
     protected val safeSearchView = mockk<SafeSearchView>(relaxed = true)
     protected val inspirationCarouselView = mockk<InspirationCarouselView>(relaxed = true)
     protected val bottomSheetFilterView = mockk<BottomSheetFilterView>(relaxed = true)
@@ -195,6 +197,7 @@ internal open class ProductListPresenterTestFixtures {
         val safeSearchPresenter = SafeSearchPresenterDelegate(
             safeSearchPreference,
             safeSearchView,
+            bottomSheetInappropriateView
         )
 
         val inspirationListAtcPresenterDelegate = InspirationListAtcPresenterDelegate(
@@ -341,7 +344,8 @@ internal open class ProductListPresenterTestFixtures {
         visitableListSlot: CapturingSlot<List<Visitable<*>>>,
         searchProductModel: SearchProductModel,
         topAdsPositionStart: Int = 0,
-        organicPositionStart: Int = 0
+        organicPositionStart: Int = 0,
+        expectedBlurred: Boolean = true,
     ) {
         val expectedShowButtonATC = searchProductModel.searchProductV5.header.meta.showButtonAtc
 
@@ -351,7 +355,8 @@ internal open class ProductListPresenterTestFixtures {
             topAdsPositionStart,
             organicPositionStart,
             FIXED_GRID,
-            expectedShowButtonATC
+            expectedShowButtonATC,
+            expectedBlurred,
         )
     }
 
@@ -473,7 +478,8 @@ internal open class ProductListPresenterTestFixtures {
         topAdsPositionStart: Int,
         organicPositionStart: Int,
         expectedProductListType: String,
-        expectedShowButtonATC: Boolean
+        expectedShowButtonATC: Boolean,
+        expectedBlurred: Boolean = true,
     ) {
         val organicProductList = searchProductModel.searchProductV5.data.productList
         val topAdsProductList = searchProductModel.topAdsModel.data
@@ -505,6 +511,7 @@ internal open class ProductListPresenterTestFixtures {
                     expectedOrganicProductPosition,
                     "",
                     expectedProductListType,
+                    expectedBlurred,
                 )
                 expectedOrganicProductPosition++
                 organicProductListIndex++
@@ -517,6 +524,7 @@ internal open class ProductListPresenterTestFixtures {
         position: Int,
         expectedPageTitle: String = "",
         productListType: String = "",
+        expectedBlurred: Boolean = true,
     ) {
         val productItem = this as ProductItemDataView
 
@@ -591,6 +599,7 @@ internal open class ProductListPresenterTestFixtures {
         productItem.applink shouldBe organicProduct.applink
         productItem.customVideoURL shouldBe organicProduct.mediaURL.videoCustom
         productItem.isPortrait shouldBe organicProduct.meta.isPortrait
+        productItem.isImageBlurred shouldBe (organicProduct.meta.isImageBlurred && expectedBlurred)
 
         productItem.boosterList shouldBe ""
         productItem.sourceEngine shouldBe ""

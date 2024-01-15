@@ -155,6 +155,12 @@
     <string name="search_mps_banned_tobacco_state_title">Oops, barang ini nggak bisa dibeli di Android</string>
     <string name="search_mps_banned_tobacco_state_description">Silahkan cari barangnya di Tokopedia di HP atau komputer, ya.</string>
 
+    <string name="search_result_product_inappropriate_title">Kamu tidak bisa lihat konten ini</string>
+    <string name="search_result_product_inappropriate_description_twenty_one"><![CDATA["<font color='#F531353B'>Kamu sedang mengaktifkan <b>Safe Mode</b>.<br>Nonaktifkan sementara untuk melihat konten 21+ sampai aplikasi Tokopedia ditutup.</br></font> ]]></string>
+    <string name="search_result_product_inappropriate_description_under_twenty_one">Produk mengandung hal sensitif untuk dilihat.</string>
+    <string name="search_result_product_inappropriate_button_inactive">Nonaktifkan Sementara</string>
+    <string name="search_result_product_inappropriate_success_inactive">Safe Mode berhasil dinonaktifkan sementara.</string>
+
     <string name="search_inspiration_carousel_post_atc_success_messsage_hide">Berhasil sembunyikan rekomendasi</string>
     <string name="search_inspiration_carousel_post_atc_success_hide">Baik, rekomendasi disembunyikan!</string>
     <string name="search_inspiration_carousel_post_atc_cancel_hide">Batal</string>

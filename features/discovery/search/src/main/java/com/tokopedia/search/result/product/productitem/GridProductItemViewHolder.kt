@@ -38,12 +38,12 @@ class GridProductItemViewHolder(
                 true
             }
 
-            setOnClickListener {
-                productListener.onItemClicked(productItemData, bindingAdapterPosition)
-            }
-
             addOnImpressionListener(productItemData) {
                 productListener.onProductImpressed(productItemData, bindingAdapterPosition)
+            }
+
+            setOnClickListener {
+                productListener.onItemClicked(productItemData, bindingAdapterPosition)
             }
         }
     }
@@ -62,6 +62,7 @@ class GridProductItemViewHolder(
             freeShipping = freeShipping(element),
             videoUrl = element.customVideoURL,
             hasThreeDots = true,
+            isSafeProduct = element.isImageBlurred
         )
 
     private fun labelGroupList(element: ProductItemDataView) =
