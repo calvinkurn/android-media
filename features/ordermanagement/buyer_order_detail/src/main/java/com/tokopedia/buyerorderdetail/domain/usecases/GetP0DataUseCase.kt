@@ -50,6 +50,6 @@ class GetP0DataUseCase @Inject constructor(
 
     private fun logMapperBreadcrumb(buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState) {
         EmbraceMonitoring.logBreadcrumb("Mapping P0 data")
-        EmbraceMonitoring.logBreadcrumb(buyerOrderDetailRequestState::class.java.name)
+        EmbraceMonitoring.logBreadcrumb(buyerOrderDetailRequestState::class.java.simpleName)
     }
 }

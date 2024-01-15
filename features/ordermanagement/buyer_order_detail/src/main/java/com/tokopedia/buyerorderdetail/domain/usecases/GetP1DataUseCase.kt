@@ -106,12 +106,12 @@ class GetP1DataUseCase @Inject constructor(
     ) {
         runCatching {
             EmbraceMonitoring.logBreadcrumb("Mapping P1 data")
-            EmbraceMonitoring.logBreadcrumb(orderResolutionRequestState::class.java.name)
-            EmbraceMonitoring.logBreadcrumb(insuranceDetailRequestState::class.java.name)
+            EmbraceMonitoring.logBreadcrumb(orderResolutionRequestState::class.java.simpleName)
+            EmbraceMonitoring.logBreadcrumb(insuranceDetailRequestState::class.java.simpleName)
         }
     }
 
     private fun GetP1DataRequestState.logBreadcrumb() = also {
-        EmbraceMonitoring.logBreadcrumb("Finish mapping P1 data into ${this::class.java.name}")
+        EmbraceMonitoring.logBreadcrumb("Finish mapping P1 data into ${this::class.java.simpleName}")
     }
 }

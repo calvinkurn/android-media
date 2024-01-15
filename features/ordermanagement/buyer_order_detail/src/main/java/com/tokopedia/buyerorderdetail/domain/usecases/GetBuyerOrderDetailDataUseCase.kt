@@ -129,7 +129,7 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
     private fun logMapperBreadcrumb(p0DataRequestState: GetP0DataRequestState) {
         runCatching {
             EmbraceMonitoring.logBreadcrumb("Mapping all order detail data")
-            EmbraceMonitoring.logBreadcrumb(p0DataRequestState::class.java.name)
+            EmbraceMonitoring.logBreadcrumb(p0DataRequestState::class.java.simpleName)
         }
     }
 }

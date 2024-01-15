@@ -13,6 +13,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.SavingsWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
+import org.json.JSONObject
 
 object BuyerOrderDetailUiStateMapper {
     fun map(
@@ -124,22 +125,23 @@ object BuyerOrderDetailUiStateMapper {
         savingsWidgetUiState: SavingsWidgetUiState
     ) {
         runCatching {
-            EmbraceMonitoring.logBreadcrumb("Mapping UI states into BOM Ui State")
-            EmbraceMonitoring.logBreadcrumb(actionButtonsUiState::class.java.name)
-            EmbraceMonitoring.logBreadcrumb(orderStatusUiState::class.java.name)
-            EmbraceMonitoring.logBreadcrumb(paymentInfoUiState::class.java.name)
-            EmbraceMonitoring.logBreadcrumb(productListUiState::class.java.name)
-            EmbraceMonitoring.logBreadcrumb(shipmentInfoUiState::class.java.name)
-            EmbraceMonitoring.logBreadcrumb(pgRecommendationWidgetUiState::class.java.name)
-            EmbraceMonitoring.logBreadcrumb(orderResolutionTicketStatusUiState::class.java.name)
-            EmbraceMonitoring.logBreadcrumb(orderInsuranceUiState::class.java.name)
-            EmbraceMonitoring.logBreadcrumb(epharmacyInfoUiState::class.java.name)
-            EmbraceMonitoring.logBreadcrumb(scpRewardsMedalTouchPointWidgetUiState::class.java.name)
-            EmbraceMonitoring.logBreadcrumb(savingsWidgetUiState::class.java.name)
+            val json = JSONObject()
+            json.put("Button", actionButtonsUiState::class.java.simpleName)
+            json.put("Status", orderStatusUiState::class.java.simpleName)
+            json.put("Payment", paymentInfoUiState::class.java.simpleName)
+            json.put("Product", productListUiState::class.java.simpleName)
+            json.put("Shipment", shipmentInfoUiState::class.java.simpleName)
+            json.put("Recom", pgRecommendationWidgetUiState::class.java.simpleName)
+            json.put("Reso", orderResolutionTicketStatusUiState::class.java.simpleName)
+            json.put("Insurance", orderInsuranceUiState::class.java.simpleName)
+            json.put("Epharm", epharmacyInfoUiState::class.java.simpleName)
+            json.put("SCP", scpRewardsMedalTouchPointWidgetUiState::class.java.simpleName)
+            json.put("Saving", savingsWidgetUiState::class.java.simpleName)
+            EmbraceMonitoring.logBreadcrumb(json.toString())
         }
     }
 
     private fun BuyerOrderDetailUiState.logBreadcrumb() = also {
-        runCatching { EmbraceMonitoring.logBreadcrumb("Finish mapping UI states into ${this::class.java.name}") }
+        runCatching { EmbraceMonitoring.logBreadcrumb("Finish mapping UI states into ${this::class.java.simpleName}") }
     }
 }
