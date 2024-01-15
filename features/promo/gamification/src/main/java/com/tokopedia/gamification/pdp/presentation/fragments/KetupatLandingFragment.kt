@@ -12,7 +12,6 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.di.ActivityContextModule
-import com.tokopedia.gamification.pdp.data.C1VHModel
 import com.tokopedia.gamification.pdp.data.di.components.DaggerPdpComponent
 import com.tokopedia.gamification.pdp.data.di.components.PdpComponent
 import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingAdapter

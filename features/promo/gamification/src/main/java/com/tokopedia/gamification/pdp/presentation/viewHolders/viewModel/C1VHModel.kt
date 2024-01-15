@@ -1,4 +1,4 @@
-package com.tokopedia.gamification.pdp.data
+package com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.gamification.pdp.data.model.KetupatLandingPageData

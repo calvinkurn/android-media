@@ -3,7 +3,7 @@ package com.tokopedia.gamification.pdp.presentation.viewHolders
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.gamification.pdp.data.C1VHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.C1VHModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.gamification.R as gamificationR
 

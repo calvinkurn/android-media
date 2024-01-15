@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/crack_banner_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_2"
+            app:typographyWeight="bold" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_background"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="18dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/crack_banner_title">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/crack_bg_img"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@id/layout_background"
+                app:layout_constraintEnd_toEndOf="@id/layout_background"
+                app:layout_constraintStart_toStartOf="@id/layout_background"
+                app:layout_constraintTop_toTopOf="@id/layout_background" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/crack_icon_img"
+                android:layout_width="wrap_content"
+                android:layout_height="94dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="@id/layout_background"
+                app:layout_constraintStart_toStartOf="@id/layout_background"
+                app:layout_constraintTop_toTopOf="@id/layout_background" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/crack_img_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="20dp"
+                android:textAlignment="center"
+                android:textColor="@color/grey_background"
+                app:layout_constraintEnd_toEndOf="@id/layout_background"
+                app:layout_constraintStart_toStartOf="@id/layout_background"
+                app:layout_constraintTop_toBottomOf="@id/crack_icon_img"
+                app:typographyType="heading_2"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/open_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintEnd_toEndOf="@id/layout_background"
+                app:layout_constraintStart_toStartOf="@id/layout_background"
+                app:layout_constraintTop_toBottomOf="@+id/crack_img_text"
+                app:typographyType="heading_3"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/more_info_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintBottom_toBottomOf="@id/layout_background"
+                app:layout_constraintEnd_toEndOf="@id/layout_background"
+                app:layout_constraintStart_toStartOf="@id/layout_background"
+                app:layout_constraintTop_toBottomOf="@+id/open_btn"
+                app:typographyType="heading_3"
+                app:typographyWeight="reguler"
+                android:layout_marginBottom="28dp"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

@@ -4,10 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
-import com.tokopedia.gamification.pdp.data.C1VHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.C1VHModel
 import com.tokopedia.gamification.pdp.data.model.KetupatLandingPageData
 import com.tokopedia.gamification.pdp.domain.usecase.KetupatLandingUseCase
 import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingTypeFactory
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.C2VHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.C3VHModel
 import com.tokopedia.notifications.common.launchCatchError
 import javax.inject.Inject
 
@@ -77,6 +79,12 @@ class KetupatLandingViewModel @Inject constructor(
 
         if(header!=null) {
             tempList.add(C1VHModel(header!!))
+        }
+        if(crack!=null) {
+            tempList.add(C2VHModel(crack!!))
+        }
+        if(referral!=null) {
+            tempList.add(C3VHModel(referral!!))
         }
         return tempList
     }
