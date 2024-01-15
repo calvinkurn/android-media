@@ -10,16 +10,14 @@ import com.tokopedia.chatbot.databinding.ImagePreviewActivityBinding
 import com.tokopedia.image_gallery.ImageGalleryItem
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ChatbotImageActivity : BaseSimpleActivity() {
 
-    private var viewBinding: ImagePreviewActivityBinding? = null
+    private var viewBinding: ImagePreviewActivityBinding? by viewBinding()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewBinding = ImagePreviewActivityBinding.inflate(layoutInflater)
-        setContentView(viewBinding?.root)
-
         val imageUrl = intent.extras?.getString(IMAGE_URL) ?: ""
 
         viewBinding?.let {
@@ -52,11 +50,6 @@ class ChatbotImageActivity : BaseSimpleActivity() {
 
     override fun getLayoutRes(): Int {
         return R.layout.image_preview_activity
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewBinding = null
     }
 
     companion object {
