@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.universalinbox.view
 
 import android.content.Intent
-import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.viewModelScope
@@ -319,8 +318,8 @@ class UniversalInboxViewModel @Inject constructor(
         when (result) {
             is Result.Success -> {
                 val productRecommendation = result.data.recommendationItemList.mapIndexed { index, item ->
-                    if (index %7 == 0) {
-                        Log.d("fverfgre", page++.toString())
+                    // Add top ads every 7th position but skip the first index or else double banner will occur
+                    if (index != 0 && index % 7 == 0) {
                         UniversalInboxTopAdsBannerUiModel()
                     } else {
                         UniversalInboxRecommendationUiModel(item)
