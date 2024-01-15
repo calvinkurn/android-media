@@ -1,7 +1,6 @@
 package com.tokopedia.sdui.extention
 
 import android.content.Context
-import com.google.gson.Gson
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.sdui.utils.DivActionUtils
 import com.tokopedia.track.TrackApp
