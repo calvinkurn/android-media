@@ -88,6 +88,7 @@ internal data class AuthorWidgetModel(
     val coverUrl: String,
     val totalViewFmt: String,
     val appLink: String,
+    val contentId: String,
     val contentAppLink: String,
     val channelType: String
 )

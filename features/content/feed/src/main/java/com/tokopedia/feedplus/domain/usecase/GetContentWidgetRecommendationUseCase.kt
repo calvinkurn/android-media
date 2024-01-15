@@ -41,6 +41,10 @@ class GetContentWidgetRecommendationUseCase @Inject constructor(
                     data {
                         __typename
                         ... on ContentWidgetAuthor {
+                            contentID {
+                                id
+                                origin
+                            }
                             viewsFmt
                             appLink
                             author {

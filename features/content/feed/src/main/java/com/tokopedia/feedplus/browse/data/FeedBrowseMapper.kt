@@ -126,6 +126,7 @@ class FeedBrowseMapper @Inject constructor() {
                                 coverUrl = it.media.coverUrl,
                                 totalViewFmt = it.viewsFmt,
                                 appLink = it.author.appLink,
+                                contentId = it.contentID.id,
                                 contentAppLink = it.appLink,
                                 channelType = it.media.type
                             )

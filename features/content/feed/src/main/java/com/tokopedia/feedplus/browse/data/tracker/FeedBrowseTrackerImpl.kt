@@ -259,7 +259,7 @@ internal class FeedBrowseTrackerImpl @AssistedInject constructor(
                 /** videoType **/
                 item.id,
                 /** partnerID **/
-//                item.channelId,
+                item.contentId,
                 /** channelID **/
                 channelPosition,
                 /** position **/
@@ -276,7 +276,7 @@ internal class FeedBrowseTrackerImpl @AssistedInject constructor(
             enhanceEcommerce = Key.promotions to Bundle().apply {
                 putString(Key.creativeName, widgetPosition.toString())
                 putString(Key.creativeSlot, channelPosition.toString())
-//                putString(Key.itemId, "${item.channelId} - ${slotInfo.title}")
+                putString(Key.itemId, "${item.contentId} - ${slotInfo.title}")
                 putString(Key.itemName, "/ - $prefix - $widgetPosition - channel card - ${slotInfo.title}")
             }
         )
@@ -300,7 +300,7 @@ internal class FeedBrowseTrackerImpl @AssistedInject constructor(
                 /** videoType **/
                 item.id,
                 /** partnerID **/
-//                item.channelId,
+                item.contentId,
                 /** channelID **/
                 channelPosition,
                 /** position **/
@@ -317,7 +317,7 @@ internal class FeedBrowseTrackerImpl @AssistedInject constructor(
             enhanceEcommerce = Key.promotions to Bundle().apply {
                 putString(Key.creativeName, widgetPosition.toString())
                 putString(Key.creativeSlot, channelPosition.toString())
-//                putString(Key.itemId, "${item.channelId} - ${slotInfo.title}")
+                putString(Key.itemId, "${item.contentId} - ${slotInfo.title}")
                 putString(Key.itemName, "/ - $prefix - $widgetPosition - channel card - ${slotInfo.title}")
             }
         )
@@ -344,7 +344,7 @@ internal class FeedBrowseTrackerImpl @AssistedInject constructor(
             enhanceEcommerce = Key.promotions to Bundle().apply {
                 putString(Key.creativeName, widgetVerticalPosition.toString())
                 putString(Key.creativeSlot, widgetHorizontalPosition.toString())
-                putString(Key.itemId, "{channel_id} - ${slotInfo.title}")
+                putString(Key.itemId, "${item.contentId} - ${slotInfo.title}")
                 putString(Key.itemName, "/ - $prefix - $widgetVerticalPosition - creator name - ${slotInfo.title}")
             }
         )

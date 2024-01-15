@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class GetContentWidgetRecommendationResponse(
@@ -13,6 +14,10 @@ data class GetContentWidgetRecommendationResponse(
     )
 
     data class Data(
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("contentID")
+        val contentID: ContentIdentifier = ContentIdentifier(),
+
         @SerializedName("__typename")
         val typename: String = "",
 
@@ -30,6 +35,14 @@ data class GetContentWidgetRecommendationResponse(
 
         @SerializedName("media")
         val media: Media = Media()
+    )
+
+    data class ContentIdentifier(
+        @SerializedName("id")
+        val id: String = "",
+
+        @SerializedName("origin")
+        val origin: String = ""
     )
 
     data class Author(
