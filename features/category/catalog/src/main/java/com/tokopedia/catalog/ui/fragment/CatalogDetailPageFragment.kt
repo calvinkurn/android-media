@@ -147,10 +147,6 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.catalogcommon.viewholder.BuyerReviewViewHolder
-import com.tokopedia.catalogcommon.uimodel.BuyerReviewUiModel
-import com.tokopedia.catalogcommon.bottomsheet.BuyerReviewDetailBottomSheet
-import com.tokopedia.catalog.ui.activity.CatalogImagePreviewActivity
 
 class CatalogDetailPageFragment :
     BaseDaggerFragment(),
