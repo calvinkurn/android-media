@@ -26,6 +26,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     private var messageText: String = ""
     private var isSendButtonClicked: Boolean = false
     private var isError: Boolean = false
+    private var currentSlowModeDurationInSecond: Int = 0
 
     private var _viewBinding: BottomsheetChatbotBigReplyBoxBinding? = null
     private fun getBindingView() = _viewBinding!!
@@ -56,6 +57,11 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
             setWordLengthError()
         }
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        startSlowMode()
     }
 
     private fun setUpEditText() {
@@ -94,11 +100,14 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     private fun bindClickListeners() {
         getBindingView().sendButton.setOnClickListener {
             if (isSendButtonActivated) {
-                isSendButtonClicked = true
-                replyBoxClickListener?.getMessageContentFromBottomSheet(
-                    getBindingView().chatText.editText.text?.toString() ?: ""
-                )
-                dismissAllowingStateLoss()
+                getBindingView().chatText.isInputError = false
+                if (!getBindingView().sendButton.isSlowModeRunning) {
+                    isSendButtonClicked = true
+                    replyBoxClickListener?.getMessageContentFromBottomSheet(
+                        getBindingView().chatText.editText.text?.toString() ?: ""
+                    )
+                    dismissAllowingStateLoss()
+                }
             } else {
                 setWordLengthError()
             }
@@ -219,6 +228,23 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
 
     fun setErrorStatus(errorStatus: Boolean) {
         this.isError = errorStatus
+    }
+
+    fun initSlowModeButton(currentSlowModeDurationInSecond: Int) {
+        this.currentSlowModeDurationInSecond = currentSlowModeDurationInSecond
+    }
+
+    fun resetSlowModeButton() {
+        this.currentSlowModeDurationInSecond = 0
+    }
+
+    private fun startSlowMode() {
+        if (currentSlowModeDurationInSecond > 0) {
+            getBindingView().sendButton.let {
+                it.isSlowModeEnabled = true
+                it.startSlowDown(currentSlowModeDurationInSecond)
+            }
+        }
     }
 
     companion object {

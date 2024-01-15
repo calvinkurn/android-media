@@ -1211,15 +1211,6 @@ class ChatbotFragment2 :
             isSlowModeEnabled = isSlowMode
             initialSlowModeDurationInSecond = slowModeDurationInSeconds
         }
-
-//        smallReplyBox?.sendButton?.apply {
-//            isSlowModeEnabled = true
-//            initialSlowModeDurationInSecond = 8
-//        }
-//        bigReplyBox?.sendButton?.apply {
-//            isSlowModeEnabled = true
-//            initialSlowModeDurationInSecond = 8
-//        }
     }
 
     override fun onCreateViewState(view: View): BaseChatViewState {
@@ -2834,23 +2825,28 @@ class ChatbotFragment2 :
     }
 
     override fun goToBigReplyBoxBottomSheet(isError: Boolean) {
-        activity?.let {
-            if (bigReplyBox?.sendButton?.isSlowModeRunning == false) {
-                if (bigReplyBoxBottomSheet == null) {
-                    bigReplyBoxBottomSheet = BigReplyBoxBottomSheet
-                        .newInstance(
-                            replyBoxBottomSheetPlaceHolder,
-                            replyBoxBottomSheetTitle,
-                            showAddAttachmentMenu,
-                            ""
-                        )
-                }
-                bigReplyBoxBottomSheet?.setErrorStatus(isError)
-                BigReplyBoxBottomSheet.replyBoxClickListener = this
-                bigReplyBoxBottomSheet?.clearContentPadding = true
-                bigReplyBoxBottomSheet?.show(childFragmentManager, "")
+        if (bigReplyBoxBottomSheet == null) {
+            bigReplyBoxBottomSheet = BigReplyBoxBottomSheet.newInstance(
+                replyBoxBottomSheetPlaceHolder,
+                replyBoxBottomSheetTitle,
+                showAddAttachmentMenu,
+                ""
+            )
+        }
+        BigReplyBoxBottomSheet.replyBoxClickListener = this
+        bigReplyBoxBottomSheet?.apply {
+            this.setErrorStatus(isError)
+            this.clearContentPadding = true
+            if (bigReplyBox?.sendButton?.isSlowModeRunning == true) {
+                this.initSlowModeButton(
+                    bigReplyBox?.sendButton?.currentSlowModeDurationInSecond ?: 0
+                )
+            } else {
+                this.resetSlowModeButton()
             }
         }
+
+        bigReplyBoxBottomSheet?.show(childFragmentManager, "")
     }
 
     override fun getMessageContentFromBottomSheet(msg: String) {
@@ -2885,7 +2881,6 @@ class ChatbotFragment2 :
             bigReplyBox?.disableSendButton()
         }
         hideKeyboard()
-        bigReplyBox?.sendButton?.forceStartSlowDown()
     }
 
     override fun onDestroyView() {

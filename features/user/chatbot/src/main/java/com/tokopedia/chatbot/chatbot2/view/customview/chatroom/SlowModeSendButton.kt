@@ -36,8 +36,8 @@ class SlowModeSendButton(context: Context, attributeSet: AttributeSet) :
         iconSend = view.findViewById(R.id.icon_send)
     }
 
-    private fun initCountDownTimer() {
-        countDownTimer = object : CountDownTimer((initialSlowModeDurationInSecond * 1000).toLong(), 1000) {
+    private fun initCountDownTimer(durationInSecond: Int = initialSlowModeDurationInSecond) {
+        countDownTimer = object : CountDownTimer((durationInSecond * 1000).toLong(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val text = (millisUntilFinished / 1000) + 1
                 textTimer?.text = text.toString()
@@ -73,17 +73,7 @@ class SlowModeSendButton(context: Context, attributeSet: AttributeSet) :
             circleAnimation?.loading(durationInSecond)
             iconSend?.gone()
             textTimer?.show()
-            initCountDownTimer()
-        }
-    }
-
-    fun forceStartSlowDown(durationInSecond: Int = initialSlowModeDurationInSecond) {
-        if (isSlowModeEnabled) {
-            isSlowModeRunning = true
-            circleAnimation?.loading(durationInSecond)
-            iconSend?.gone()
-            textTimer?.show()
-            initCountDownTimer()
+            initCountDownTimer(durationInSecond)
         }
     }
 
