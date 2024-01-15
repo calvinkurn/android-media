@@ -30,6 +30,7 @@ import com.tokopedia.logisticcart.shipping.model.InsuranceWidgetUiModel
 import com.tokopedia.logisticcart.shipping.model.MerchantVoucherProductModel
 import com.tokopedia.logisticcart.shipping.model.OntimeDelivery
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
+import com.tokopedia.logisticcart.shipping.model.ShippingWidgetCourierError
 import com.tokopedia.logisticcart.shipping.model.ShippingWidgetUiModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -113,7 +114,66 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         mListener = shippingWidgetListener
     }
 
-    fun hideShippingStateLoading() {
+    fun render(shippingWidgetUiModel: ShippingWidgetUiModel) {
+        if (shippingWidgetUiModel.cartError) {
+            renderErrorCourierState(shippingWidgetUiModel)
+            // todo listener
+        } else if (shippingWidgetUiModel.loading) {
+            prepareLoadCourierState()
+            renderLoadingCourierState()
+        } else {
+            if (shippingWidgetUiModel.courierError != null) {
+                when (shippingWidgetUiModel.courierError) {
+                    ShippingWidgetCourierError.NEED_PINPOINT -> {
+                        renderErrorPinpointCourier()
+                    }
+
+                    ShippingWidgetCourierError.COURIER_UNAVAILABLE -> {
+                        showLayoutStateFailedShipping(shippingWidgetUiModel)
+                    }
+
+                    ShippingWidgetCourierError.COURIER_EMPTY -> {
+                        showLayoutNoSelectedShipping(
+                            shippingWidgetUiModel
+                        )
+                    }
+                }
+            } else if (shippingWidgetUiModel.scheduleDeliveryUiModel != null) {
+                prepareLoadCourierState()
+                hideShippingStateLoading()
+                showContainerShippingExperience()
+                renderScheduleDeliveryWidget(shippingWidgetUiModel)
+            } else if (shippingWidgetUiModel.isDisableChangeCourier) {
+                prepareLoadCourierState()
+                hideShippingStateLoading()
+                showContainerShippingExperience()
+                renderSingleShippingCourier(shippingWidgetUiModel)
+            } else if (shippingWidgetUiModel.voucherLogisticExists) {
+                prepareLoadCourierState()
+                hideShippingStateLoading()
+                showContainerShippingExperience()
+                showLayoutFreeShippingCourier(shippingWidgetUiModel)
+                renderFreeShippingCourier(shippingWidgetUiModel)
+            } else if (shippingWidgetUiModel.isWhitelabel) {
+                prepareLoadCourierState()
+                hideShippingStateLoading()
+                showContainerShippingExperience()
+                renderWhitelabelKurirRekomendasiService(shippingWidgetUiModel)
+            } else {
+                prepareLoadCourierState()
+                hideShippingStateLoading()
+                showContainerShippingExperience()
+                renderNormalShippingCourier(shippingWidgetUiModel)
+            }
+        }
+        renderShippingVibrationAnimation(shippingWidgetUiModel)
+    }
+
+    fun hideTradeInShippingInfo() {
+        binding?.itemShipmentTradeInPickup?.layoutTradeInShippingInfo?.gone()
+    }
+
+    private fun hideShippingStateLoading() {
         binding?.purchasePlatformPartialShimmeringList?.root?.gone()
     }
 
@@ -137,6 +197,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
                         }
 
                         override fun onAnimationEnd(animator: Animator) {
+                            // todo callback
                             shippingWidgetUiModel.isTriggerShippingVibrationAnimation = false
                         }
 
@@ -153,7 +214,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         }
     }
 
-    fun renderErrorCourierState(shippingWidgetUiModel: ShippingWidgetUiModel) {
+    private fun renderErrorCourierState(shippingWidgetUiModel: ShippingWidgetUiModel) {
         binding?.apply {
             purchasePlatformPartialShimmeringList.root.gone()
             layoutStateNoSelectedShipping.gone()
@@ -178,7 +239,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         }
     }
 
-    fun showLayoutFreeShippingCourier(
+    private fun showLayoutFreeShippingCourier(
         shippingWidgetUiModel: ShippingWidgetUiModel
     ) {
         binding?.apply {
@@ -199,7 +260,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         }
     }
 
-    fun renderFreeShippingCourier(shippingWidgetUiModel: ShippingWidgetUiModel) {
+    private fun renderFreeShippingCourier(shippingWidgetUiModel: ShippingWidgetUiModel) {
         hideShipperName(shippingWidgetUiModel.hideShipperName)
         renderFreeShippingTitle(shippingWidgetUiModel)
         renderFreeShippingCod(shippingWidgetUiModel)
@@ -208,7 +269,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         renderFreeShippingLogo(shippingWidgetUiModel.freeShippingLogo)
     }
 
-    fun setLabelSelectedShippingCourier(shippingWidgetUiModel: ShippingWidgetUiModel) {
+    private fun setLabelSelectedShippingCourier(shippingWidgetUiModel: ShippingWidgetUiModel) {
         binding?.apply {
             val courierName = "${shippingWidgetUiModel.courierName} (${
             convertPriceValueToIdrFormat(
@@ -239,7 +300,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         }
     }
 
-    fun showLayoutNoSelectedShipping(
+    private fun showLayoutNoSelectedShipping(
         shippingWidgetUiModel: ShippingWidgetUiModel
     ) {
         binding?.apply {
@@ -281,7 +342,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         showInsuranceInfo(shippingWidgetUiModel)
     }
 
-    fun showLayoutStateFailedShipping(
+    private fun showLayoutStateFailedShipping(
         shippingWidgetUiModel: ShippingWidgetUiModel
     ) {
         binding?.apply {
@@ -305,7 +366,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
     }
 
     @SuppressLint("SetTextI18n")
-    fun renderSingleShippingCourier(
+    private fun renderSingleShippingCourier(
         shippingWidgetUiModel: ShippingWidgetUiModel
     ) {
         showLayoutSingleShippingCourier()
@@ -323,7 +384,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         showInsuranceInfo(shippingWidgetUiModel)
     }
 
-    fun renderWhitelabelKurirRekomendasiService(
+    private fun renderWhitelabelKurirRekomendasiService(
         shippingWidgetUiModel: ShippingWidgetUiModel
     ) {
         binding?.apply {
@@ -347,7 +408,8 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
                     false
                 ).removeDecimalSuffix()
                 })"
-                val htmlLinkHelper = HtmlLinkHelper(labelSelectedWhitelabelShipping.context, titleText)
+                val htmlLinkHelper =
+                    HtmlLinkHelper(labelSelectedWhitelabelShipping.context, titleText)
                 labelSelectedWhitelabelShipping.text = htmlLinkHelper.spannedString
                 labelSelectedWhitelabelShipping.setWeight(Typography.BOLD)
             }
@@ -397,7 +459,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         showInsuranceInfo(shippingWidgetUiModel)
     }
 
-    fun renderNormalShippingCourier(
+    private fun renderNormalShippingCourier(
         shippingWidgetUiModel: ShippingWidgetUiModel
     ) {
         showNormalShippingCourier(shippingWidgetUiModel)
@@ -420,7 +482,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         }
     }
 
-    fun renderLoadingCourierState() {
+    private fun renderLoadingCourierState() {
         binding?.apply {
             purchasePlatformPartialShimmeringList.loaderUnify1.type = LoaderUnify.TYPE_RECT
             purchasePlatformPartialShimmeringList.loaderUnify2.type = LoaderUnify.TYPE_RECT
@@ -439,7 +501,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         }
     }
 
-    fun onLoadCourierStateData() {
+    private fun onLoadCourierStateData() {
         binding?.apply {
             purchasePlatformPartialShimmeringList.loaderUnify1.type = LoaderUnify.TYPE_RECT
             purchasePlatformPartialShimmeringList.loaderUnify2.type = LoaderUnify.TYPE_RECT
@@ -457,18 +519,14 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         }
     }
 
-    fun hideTradeInShippingInfo() {
-        binding?.itemShipmentTradeInPickup?.layoutTradeInShippingInfo?.gone()
-    }
-
-    fun hideTradeInTitleAndDetail() {
+    private fun hideTradeInTitleAndDetail() {
         binding?.apply {
             itemShipmentTradeInPickup.tvTradeInShippingPriceTitle.gone()
             itemShipmentTradeInPickup.tvTradeInShippingPriceDetail.gone()
         }
     }
 
-    fun renderErrorPinpointCourier() {
+    private fun renderErrorPinpointCourier() {
         binding?.apply {
             layoutStateNoSelectedShipping.gone()
             purchasePlatformPartialShimmeringList.root.gone()
@@ -489,7 +547,8 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             context?.apply {
                 val pinpointErrorMessage =
                     getString(logisticcartR.string.checkout_label_set_pinpoint_description) + " "
-                val pinpointErrorAction = getString(logisticcartR.string.checkout_label_set_pinpoint_action)
+                val pinpointErrorAction =
+                    getString(logisticcartR.string.checkout_label_set_pinpoint_action)
                 val spannableString = SpannableString(pinpointErrorMessage + pinpointErrorAction)
                 spannableString.setSpan(
                     ForegroundColorSpan(
@@ -513,7 +572,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         }
     }
 
-    fun renderScheduleDeliveryWidget(
+    private fun renderScheduleDeliveryWidget(
         shippingWidgetUiModel: ShippingWidgetUiModel
     ) {
         showScheduleDeliveryWidget()
@@ -547,7 +606,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         showInsuranceInfo(shippingWidgetUiModel)
     }
 
-    fun showContainerShippingExperience() {
+    private fun showContainerShippingExperience() {
         binding?.apply {
             layoutStateNoSelectedShipping.gone()
             purchasePlatformPartialShimmeringList.root.gone()

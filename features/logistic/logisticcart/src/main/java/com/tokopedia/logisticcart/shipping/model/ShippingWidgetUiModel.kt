@@ -3,8 +3,6 @@ package com.tokopedia.logisticcart.shipping.model
 data class ShippingWidgetUiModel(
     // renderErrorCourierState - shipmentCartItemModel.courierSelectionErrorTitle
     val courierErrorTitle: String = "",
-    // renderErrorCourierState - shipmentCartItemModel.courierSelectionErrorDescription
-    val courierErrorDescription: String = "",
 
     // renderShippingVibrationAnimation
     var isShippingBorderRed: Boolean = false,
@@ -47,8 +45,20 @@ data class ShippingWidgetUiModel(
     val whitelabelEtaText: String = "",
 
     val scheduleDeliveryUiModel: ScheduleDeliveryUiModel? = null,
-    val insuranceData: InsuranceWidgetUiModel? = null
+    val insuranceData: InsuranceWidgetUiModel? = null,
+
+    // SAF error
+    val cartError: Boolean = false,
+
+    val loading: Boolean = false,
+    val courierError: ShippingWidgetCourierError? = null,
+    val isDisableChangeCourier: Boolean = false,
+    val isWhitelabel: Boolean = false
 )
+
+enum class ShippingWidgetCourierError {
+    NEED_PINPOINT, COURIER_UNAVAILABLE, COURIER_EMPTY
+}
 
 data class InsuranceWidgetUiModel(
     var useInsurance: Boolean? = null,
