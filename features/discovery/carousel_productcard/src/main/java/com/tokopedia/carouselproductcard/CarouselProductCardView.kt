@@ -22,6 +22,7 @@ import com.tokopedia.carouselproductcard.CarouselProductCardListener.OnViewAllCa
 import com.tokopedia.carouselproductcard.helper.StartSnapHelper
 import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.reimagine.getMaxHeightForGridCarouselView
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.utils.getMaxHeightForListView
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -30,14 +31,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import com.tokopedia.productcard.R as productcardR
+import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
 
 class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductCardInternalListener {
 
     private var carouselLayoutManager: RecyclerView.LayoutManager? = null
-    private val defaultRecyclerViewDecorator = CarouselProductCardDefaultDecorator()
     private var carouselProductCardAdapter: CarouselProductCardAdapter? = null
     private val snapHelper = StartSnapHelper()
     private var isUseDefaultItemDecorator = true
+    private var isReimagine = false
     private val masterJob = SupervisorJob()
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
 
@@ -62,8 +65,6 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
         View.inflate(context, R.layout.carousel_product_card_layout, this)
 
         defineCustomAttributes(attrs)
-
-        addItemDecorator()
     }
 
     private fun defineCustomAttributes(attrs: AttributeSet?) {
@@ -80,6 +81,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
 
     private fun tryDefineCustomAttributes(styledAttributes: TypedArray) {
         isUseDefaultItemDecorator = styledAttributes.getBoolean(R.styleable.CarouselProductCardView_useDefaultItemDecorator, true)
+        isReimagine = styledAttributes.getBoolean(R.styleable.CarouselProductCardView_reimagine, false)
     }
 
     private fun addItemDecorator(customItemDecoration: ItemDecoration? = null) {
@@ -88,7 +90,9 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
         if(customItemDecoration != null) {
             carouselProductCardRecyclerView.addItemDecoration(customItemDecoration)
         } else if (isUseDefaultItemDecorator) {
-            carouselProductCardRecyclerView.addItemDecoration(defaultRecyclerViewDecorator)
+            val carouselProductCardDefaultDecorator =
+                CarouselProductCardDefaultDecorator(isReimagine)
+            carouselProductCardRecyclerView.addItemDecoration(carouselProductCardDefaultDecorator)
         }
     }
 
@@ -187,7 +191,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
     }
 
     private fun initGridAdapter() {
-        carouselProductCardAdapter = CarouselProductCardGridAdapter(this)
+        carouselProductCardAdapter = CarouselProductCardGridAdapter(this, isReimagine)
     }
 
     private fun initListAdapter() {
@@ -261,14 +265,30 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
         this.layoutParams = carouselLayoutParams
     }
 
-    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>, isGrid: Boolean): Int {
-        return if (isGrid) {
-            val productCardWidth = context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.carousel_product_card_grid_width)
-            productCardModelList.getMaxHeightForGridView(context, Dispatchers.Default, productCardWidth)
-        }
-        else {
+    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>, isGrid: Boolean): Int =
+        if (isGrid)
+            if (isReimagine) productCardGridReimagineMaxHeight(productCardModelList)
+            else productCardGridMaxHeight(productCardModelList)
+        else
             productCardModelList.getMaxHeightForListView(context, Dispatchers.Default)
-        }
+
+    private suspend fun productCardGridReimagineMaxHeight(productCardModelList: List<ProductCardModel>): Int =
+        productCardModelList
+            .map(ProductCardModelReimagine.Companion::from)
+            .getMaxHeightForGridCarouselView(context)
+
+    private suspend fun productCardGridMaxHeight(productCardModelList: List<ProductCardModel>): Int {
+        val productCardWidth =
+            context
+                ?.resources
+                ?.getDimensionPixelSize(productcardR.dimen.carousel_product_card_grid_width)
+                ?: 0
+
+        return productCardModelList.getMaxHeightForGridView(
+            context,
+            Dispatchers.Default,
+            productCardWidth
+        )
     }
 
     private fun submitList(

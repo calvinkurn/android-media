@@ -50,6 +50,8 @@ internal class ReimagineGridViewStrategy(
     val additionalMarginStart: Int
         get() = cardContainer?.marginStart ?: 0
 
+    override fun additionalMarginStart(): Int = additionalMarginStart
+
     override fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int?) {
         init(attrs)
     }

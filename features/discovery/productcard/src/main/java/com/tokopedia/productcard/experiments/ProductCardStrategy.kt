@@ -12,7 +12,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.video_widget.VideoPlayerController
 
 internal interface IReimagineGridViewStrategy {
-
+    fun additionalMarginStart(): Int = 0
 }
 
 internal interface IGridViewStrategy {

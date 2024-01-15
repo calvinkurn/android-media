@@ -16,6 +16,9 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
 
     private val productCardStrategy: ProductCardStrategy
 
+    override val additionalMarginStart: Int
+        get() = productCardStrategy.additionalMarginStart()
+
     constructor(context: Context) : super(context) {
         productCardStrategy = ProductCardStrategyFactory.create(this)
 

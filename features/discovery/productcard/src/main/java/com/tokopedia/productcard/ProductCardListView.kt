@@ -185,6 +185,9 @@ class ProductCardListView: ConstraintLayout, IProductCardView {
         findViewById(R.id.textViewFulfillment)
     }
 
+    override val additionalMarginStart: Int
+        get() = 0
+
     constructor(context: Context) : super(context) {
         init()
     }

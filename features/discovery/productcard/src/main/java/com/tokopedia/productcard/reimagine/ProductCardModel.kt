@@ -147,7 +147,7 @@ data class ProductCardModel(
     }
     
     companion object {
-        internal fun from(productCardModel: ProductCardModel): ProductCardModelReimagine =
+        fun from(productCardModel: ProductCardModel): ProductCardModelReimagine =
             ProductCardModelReimagine(
                 imageUrl = productCardModel.productImageUrl,
                 isAds = productCardModel.isTopAds,
