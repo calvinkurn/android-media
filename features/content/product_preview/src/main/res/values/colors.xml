@@ -5,4 +5,5 @@
     <color name="product_preview_dms_top_gradient_center">#1A000000</color>
     <color name="product_preview_dms_top_gradient_end">#00000000</color>
     <color name="product_preview_dms_unselected_color">#40000000</color>
+    <color name="product_preview_dms_bottom_title">#AEB2BF</color>
 </resources>

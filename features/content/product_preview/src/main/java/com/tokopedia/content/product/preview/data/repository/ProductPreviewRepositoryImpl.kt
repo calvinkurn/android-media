@@ -1,13 +1,17 @@
 package com.tokopedia.content.product.preview.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.product.preview.data.mapper.ProductPreviewMapper
 import com.tokopedia.content.product.preview.data.usecase.MediaReviewUseCase
 import com.tokopedia.content.product.preview.data.usecase.ProductMiniInfoUseCase
+import com.tokopedia.content.product.preview.data.usecase.RemindMeUseCase
 import com.tokopedia.content.product.preview.data.usecase.ReviewLikeUseCase
 import com.tokopedia.content.product.preview.data.usecase.SubmitReportUseCase
+import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -22,12 +26,15 @@ class ProductPreviewRepositoryImpl @Inject constructor(
     private val likeUseCase: ReviewLikeUseCase,
     private val submitReportUseCase: SubmitReportUseCase,
     private val addToCartUseCase: AddToCartUseCase,
+    private val remindMeUseCase: RemindMeUseCase,
     private val userSessionInterface: UserSessionInterface,
     private val mapper: ProductPreviewMapper,
 ) : ProductPreviewRepository {
-    override suspend fun getProductMiniInfo(productId: String) {
-        //TODO("Not yet implemented")
-    }
+    override suspend fun getProductMiniInfo(productId: String): BottomNavUiModel =
+        withContext(dispatchers.io) {
+            val response = miniInfoUseCase(ProductMiniInfoUseCase.Param(productId))
+            mapper.mapMiniInfo(response)
+        }
 
     override suspend fun getReview(productId: String, page: Int): List<ReviewUiModel> =
         withContext(dispatchers.io) {
@@ -40,8 +47,20 @@ class ProductPreviewRepositoryImpl @Inject constructor(
         productName: String,
         shopId: String,
         price: Double
-    ): Boolean {
-        TODO("Not yet implemented")
+    ): Boolean = withContext(dispatchers.io) {
+        val response = addToCartUseCase.apply {
+            setParams(
+                AddToCartUseCase.getMinimumParams(
+                    productId = productId,
+                    shopId = shopId,
+                    atcExternalSource = AtcFromExternalSource.ATC_FROM_PRODUCT_PREVIEW,
+                    productName = productName,
+                    price = price.toString(),
+                    userId = userSessionInterface.userId,
+                )
+            )
+        }.executeOnBackground()
+        !response.isStatusError()
     }
 
     override suspend fun likeReview() {
@@ -51,4 +70,15 @@ class ProductPreviewRepositoryImpl @Inject constructor(
     override suspend fun submitReport(): Boolean {
         TODO("Not yet implemented")
     }
+
+    override suspend fun remindMe(productId: String): BottomNavUiModel.RemindMeUiModel =
+        withContext(dispatchers.io) {
+            val response = remindMeUseCase(
+                RemindMeUseCase.Param(
+                    userId = userSessionInterface.userId.toLongOrZero(),
+                    productId = productId.toLongOrZero()
+                )
+            )
+            mapper.mapRemindMe(response)
+        }
 }

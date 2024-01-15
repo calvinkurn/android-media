@@ -26,6 +26,7 @@ android {
     buildFeatures {
         viewBinding true
         buildConfig true
+        compose true
     }
 
     composeOptions {
@@ -48,9 +49,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.contentCommon)
     implementation projectOrAar(rootProject.ext.features.atc_common)
     implementation projectOrAar(rootProject.ext.features.contentCommon)
-    implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.productDetailCommon)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
@@ -72,7 +73,12 @@ dependencies {
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.supportLibDependencies.kotlinMetaData
-    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+    ksp project(rootProject.ext.libraries.gqlKspProcessor)
+
+    //Media Review - Compose
+    implementation rootProject.ext.unifyDependencies.nestPrinciples
+    implementation rootProject.ext.composeDependencies.composeConstraint
+    implementation rootProject.ext.unifyDependencies.nestComponents
 }
 
 

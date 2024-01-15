@@ -5,4 +5,8 @@ package com.tokopedia.content.product.preview.view.uimodel
  */
 sealed interface ProductPreviewAction {
     object FetchReview : ProductPreviewAction
+    object FetchMiniInfo : ProductPreviewAction
+    data class ProductAction(val model: BottomNavUiModel) : ProductPreviewAction
+    object ProductActionFromResult : ProductPreviewAction
+    data class Navigate(val appLink: String) : ProductPreviewAction
 }

@@ -55,7 +55,7 @@ class ReviewParentAdapter(private val listener: ReviewParentContentViewHolder.Li
     }
 }
 
-internal class ReviewAdapterCallback() : DiffUtil.ItemCallback<ReviewUiModel>() {
+internal class ReviewAdapterCallback : DiffUtil.ItemCallback<ReviewUiModel>() {
     override fun areItemsTheSame(oldItem: ReviewUiModel, newItem: ReviewUiModel): Boolean {
         return oldItem.reviewId == newItem.reviewId
     }
