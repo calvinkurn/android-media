@@ -75,12 +75,6 @@ class ShipmentViewHolder(
         )
     }
 
-    private val sduiManager = lazy {
-        SDUIManager().apply {
-            initSDUI(context)
-        }
-    }
-
     private val viewMain: ViewShipmentBinding by viewMainDelegate
     private val viewError: ViewShipmentErrorOldBinding by viewErrorDelegate
     private val viewLoading: ItemPdpShimmerShipmentBinding by viewLoadingDelegate

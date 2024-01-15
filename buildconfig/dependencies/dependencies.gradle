@@ -120,6 +120,7 @@ ext {
     testCore = '1.4.0'
     fragmentTest = "1.4.1"
     androidxFragment = '1.5.7'
+    divKitVersion = '29.1.0'
     debugToolsEnabled = true
 
     // Sort and categorize alphabetically by folder name
@@ -370,6 +371,14 @@ ext {
             desugarJdk            : "com.android.tools:desugar_jdk_libs:$desugarJdkVersion",
             ffmpeg                : "com.arthenica:mobileffmpeg:4.4@aar",
             influxInteractor      : "com.tokopedia.skynet:db-interactor:1.0-alpha-05"
+    ]
+
+    sduiDependencies = [
+            divcore               : "com.yandex.div:div-core:$divKitVersion",
+            div                   : "com.yandex.div:div:$divKitVersion",
+            divjson               : "com.yandex.div:div-json:$divKitVersion",
+            divlottie             : "com.yandex.div:div-lottie:$divKitVersion",
+            divutils              : "com.yandex.div:utils:$divKitVersion",
     ]
 
     testDependencies = [
