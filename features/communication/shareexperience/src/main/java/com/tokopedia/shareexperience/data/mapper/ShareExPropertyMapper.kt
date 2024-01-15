@@ -1,11 +1,13 @@
 package com.tokopedia.shareexperience.data.mapper
 
 import com.tokopedia.shareexperience.data.dto.ShareExBottomSheetResponseDto
+import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateEligibilityResponseDto
 import com.tokopedia.shareexperience.data.dto.affiliate.ShareExAffiliateRegistrationWidgetResponseDto
 import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExPropertyImageGeneratorArgResponseDto
 import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExPropertyImageGeneratorResponseDto
 import com.tokopedia.shareexperience.domain.ShareExConstants
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
+import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateEligibilityModel
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateModel
 import com.tokopedia.shareexperience.domain.model.affiliate.ShareExAffiliateRegistrationModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExBottomSheetPageModel
@@ -24,9 +26,7 @@ class ShareExPropertyMapper @Inject constructor(
         dto.properties.forEach {
             val affiliate = ShareExAffiliateModel(
                 registration = it.affiliateRegistrationWidget.mapToDomainModel(),
-                commission = it.affiliateEligibility?.message ?: "",
-                label = it.affiliateEligibility?.badge ?: "",
-                expiredDate = it.affiliateEligibility?.expiredDate ?: ""
+                eligibility = it.affiliateEligibility.mapToDomainModel()
             )
             val property = ShareExPropertyModel(
                 title = it.shareBody.title,
@@ -39,6 +39,7 @@ class ShareExPropertyMapper @Inject constructor(
                     ogType = it.generateLinkProperties.ogType,
                     ogImageUrl = it.generateLinkProperties.ogImageUrl,
                     ogVideo = it.generateLinkProperties.ogVideo,
+                    originalUrl = it.generateLinkProperties.desktopUrl,
                     androidUrl = it.generateLinkProperties.androidUrl,
                     iosUrl = it.generateLinkProperties.iosUrl,
                     desktopUrl = it.generateLinkProperties.desktopUrl,
@@ -95,6 +96,15 @@ class ShareExPropertyMapper @Inject constructor(
         return ShareExBottomSheetModel(
             title = ShareExConstants.DefaultValue.DEFAULT_TITLE,
             bottomSheetPage = body
+        )
+    }
+
+    private fun ShareExAffiliateEligibilityResponseDto?.mapToDomainModel(): ShareExAffiliateEligibilityModel {
+        return ShareExAffiliateEligibilityModel(
+            isEligible = this != null,
+            message = this?.message ?: "",
+            label = this?.badge ?: "",
+            expiredDate = this?.expiredDate ?: ""
         )
     }
 

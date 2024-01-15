@@ -7,6 +7,7 @@ data class ShareExLinkProperties(
     val ogType: String = "",
     val ogImageUrl: String = "",
     val ogVideo: String = "",
+    val originalUrl: String = "",
     val androidUrl: String = "",
     val iosUrl: String = "",
     val desktopUrl: String = "",

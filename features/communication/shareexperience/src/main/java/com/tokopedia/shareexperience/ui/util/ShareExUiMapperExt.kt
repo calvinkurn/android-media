@@ -63,11 +63,11 @@ fun ShareExBottomSheetModel.map(
         // Link Share Card UI
         val linkShareUiModel = ShareExLinkShareUiModel(
             shareExPropertyModel.title,
-            shareExPropertyModel.affiliate.commission,
+            shareExPropertyModel.affiliate.eligibility.message,
             "tokopedia.link",
             listImageUiModel.firstOrNull()?.imageUrl.toString(),
-            shareExPropertyModel.affiliate.label,
-            shareExPropertyModel.affiliate.expiredDate
+            shareExPropertyModel.affiliate.eligibility.label,
+            shareExPropertyModel.affiliate.eligibility.expiredDate
         )
         result.add(linkShareUiModel)
 
@@ -124,11 +124,11 @@ fun ShareExBottomSheetModel.mapError(
             // Link Share Card UI
             val linkShareUiModel = ShareExLinkShareUiModel(
                 shareExPropertyModel.title,
-                shareExPropertyModel.affiliate.commission,
+                shareExPropertyModel.affiliate.eligibility.message,
                 "tokopedia.link",
                 shareExPropertyModel.listImage.firstOrNull() ?: "",
-                shareExPropertyModel.affiliate.label,
-                shareExPropertyModel.affiliate.expiredDate
+                shareExPropertyModel.affiliate.eligibility.label,
+                shareExPropertyModel.affiliate.eligibility.expiredDate
             )
             result.add(linkShareUiModel)
         }

@@ -9,8 +9,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shareexperience.data.util.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.ShareExConstants
-import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.AN_MIN_VERSION
-import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.IOS_MIN_VERSION
 import com.tokopedia.shareexperience.domain.ShareExResult
 import com.tokopedia.shareexperience.domain.model.ShareExBottomSheetModel
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelEnum
@@ -20,10 +18,11 @@ import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExPro
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorArgRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorWrapperRequest
-import com.tokopedia.shareexperience.domain.model.request.shortlink.branch.ShareExBranchLinkPropertiesRequest
-import com.tokopedia.shareexperience.domain.model.request.shortlink.branch.ShareExBranchUniversalObjectRequest
+import com.tokopedia.shareexperience.domain.model.request.shortlink.ShareExShortLinkFallbackPriorityEnum
+import com.tokopedia.shareexperience.domain.model.request.shortlink.ShareExShortLinkRequest
+import com.tokopedia.shareexperience.domain.usecase.ShareExGetGeneratedImageUseCase
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
-import com.tokopedia.shareexperience.domain.usecase.ShareExGetShortLinkUseCase
+import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGenerateShortLinkUseCase
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.uistate.ShareExBottomSheetUiState
 import com.tokopedia.shareexperience.ui.uistate.ShareExImageGeneratorUiState
@@ -34,12 +33,16 @@ import com.tokopedia.shareexperience.ui.util.getSelectedImageUrl
 import com.tokopedia.shareexperience.ui.util.map
 import com.tokopedia.shareexperience.ui.util.mapError
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -51,9 +54,10 @@ import javax.inject.Inject
 
 class ShareExViewModel @Inject constructor(
     private val getSharePropertiesUseCase: ShareExGetSharePropertiesUseCase,
-    private val getShortLinkUseCase: ShareExGetShortLinkUseCase,
-    val userSession: UserSessionInterface,
-    private val dispatchers: CoroutineDispatchers
+    private val getGeneratedImageUseCase: ShareExGetGeneratedImageUseCase,
+    private val generateShortLinkUseCase: ShareExGenerateShortLinkUseCase,
+    private val userSession: UserSessionInterface,
+    dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     private val _actionFlow =
@@ -162,7 +166,6 @@ class ShareExViewModel @Inject constructor(
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
                 _fetchThrowable = throwable
-                _fetchedDataState.emit(Unit)
                 _fetchedDataState.emit(Unit)
             }
         }
@@ -280,43 +283,27 @@ class ShareExViewModel @Inject constructor(
         }
     }
 
-    /**
-     * 1. Get generated or original Image
-     * 2. Check affiliate eligibility
-     * 3.A If success, get short link from affiliate
-     * 3.B If fail, use branch
-     * 3.C If branch fail, use
-     */
     private fun generateLink(channelEnum: ShareExChannelEnum) {
         viewModelScope.launch {
             try {
-                // Source Id and Args are nullable, that means do not use image generator
-                val imageGeneratorParam = ShareExImageGeneratorRequest(
-                    sourceId = _imageGeneratorUiState.value.sourceId,
-                    args = _imageGeneratorUiState.value.args?.entries?.map { entry ->
-                        ShareExImageGeneratorArgRequest(entry.key, entry.value)
-                    }
-                )
                 // Expected to use !!, should throw error when empty
                 val bottomSheetModel = _bottomSheetModel!!
                 val chipPosition = bottomSheetModel.getSelectedChipPosition(_selectedIdChip).orZero()
                 val shareProperty = bottomSheetModel.bottomSheetPage.listShareProperty[chipPosition]
                 val campaign = generateCampaign(shareProperty)
                 val linkPropertiesWithCampaign = shareProperty.linkProperties.copy(
-                    desktopUrl = generateUrlWithUTM(shareProperty, channelEnum, campaign),
+                    androidUrl = generateUrlWithUTM(shareProperty.linkProperties.androidUrl, channelEnum, campaign),
+                    iosUrl = generateUrlWithUTM(shareProperty.linkProperties.iosUrl, channelEnum, campaign),
+                    desktopUrl = generateUrlWithUTM(shareProperty.linkProperties.desktopUrl, channelEnum, campaign),
                     campaign = campaign
                 )
-                getShortLinkUseCase.getShortLink(
-                    imageGeneratorParams = ShareExImageGeneratorWrapperRequest(
-                        params = imageGeneratorParam,
-                        originalImageUrl = _imageGeneratorUiState.value.selectedImageUrl
-                    ),
-                    linkPropertiesParams = generateBranchLinkPropertiesRequest(
-                        linkPropertiesWithCampaign,
-                        channelEnum
-                    )
-                ).collectLatest {
-                    Log.d("TESTT", it.toString())
+                // Get generated image first
+                generateImageFlow(channelEnum).collectLatest {
+                    val isAffiliate = bottomSheetModel.bottomSheetPage.listShareProperty[chipPosition].affiliate.eligibility.isEligible
+                    val shortLinkRequest = generateShortLinkRequest(channelEnum, linkPropertiesWithCampaign, isAffiliate)
+                    generateShortLinkUseCase.getShortLink(shortLinkRequest).collectLatest {
+                        Log.d("TESTTT", "$it")
+                    }
                 }
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
@@ -325,20 +312,16 @@ class ShareExViewModel @Inject constructor(
     }
 
     private fun generateUrlWithUTM(
-        shareProperty: ShareExPropertyModel,
+        url: String,
         channelEnum: ShareExChannelEnum,
         campaign: String
     ): String {
         val utmSource = ShareExConstants.BranchValue.SOURCE
-        val desktopUrl = shareProperty.linkProperties.desktopUrl
-
-        val uri = Uri.parse(desktopUrl)
-
+        val uri = Uri.parse(url)
         val newUri = Uri.Builder()
             .scheme(uri.scheme)
             .authority(uri.authority)
             .path(uri.path)
-
         if (uri.query != null) {
             newUri.appendQueryParameter("utm_source", utmSource)
             newUri.appendQueryParameter("utm_medium", channelEnum.label)
@@ -346,7 +329,6 @@ class ShareExViewModel @Inject constructor(
         } else {
             newUri.query("utm_source=$utmSource&utm_medium=${channelEnum.label}&utm_campaign=$campaign")
         }
-
         return newUri.build().toString()
     }
 
@@ -368,30 +350,74 @@ class ShareExViewModel @Inject constructor(
         return SimpleDateFormat("ddMMyy", Locale.getDefault()).format(Date())
     }
 
-    private fun generateBranchLinkPropertiesRequest(
-        shareLinkProperties: ShareExLinkProperties,
-        channelEnum: ShareExChannelEnum
-    ): ShareExBranchLinkPropertiesRequest {
-        return ShareExBranchLinkPropertiesRequest(
-            branchUniversalObjectRequest = generateBranchUniversalObjectRequest(shareLinkProperties),
-            linkerPropertiesRequest = shareLinkProperties,
-            channelEnum = channelEnum
+    private fun generateShortLinkRequest(
+        channelEnum: ShareExChannelEnum,
+        finalLinkProperties: ShareExLinkProperties,
+        isAffiliate: Boolean
+    ): ShareExShortLinkRequest {
+        return ShareExShortLinkRequest(
+            identifierId = _id,
+            channelEnum = channelEnum,
+            linkerPropertiesRequest = finalLinkProperties,
+            fallbackPriorityEnumList = getFallbackPriorityEnumList(isAffiliate),
+            defaultUrl = _defaultUrl
         )
     }
 
-    private fun generateBranchUniversalObjectRequest(
-        shareLinkProperties: ShareExLinkProperties
-    ): ShareExBranchUniversalObjectRequest {
-        return ShareExBranchUniversalObjectRequest(
-            canonicalId = _id,
-            title = shareLinkProperties.ogTitle,
-            description = shareLinkProperties.message,
-            contentImageUrl = _imageGeneratorUiState.value.selectedImageUrl,
-            contentMetadataMap = mapOf(
-                AN_MIN_VERSION to shareLinkProperties.androidMinVersion,
-                IOS_MIN_VERSION to shareLinkProperties.iosMinVersion
+    @OptIn(FlowPreview::class)
+    private suspend fun generateImageFlow(channelEnum: ShareExChannelEnum): Flow<String> {
+        return try {
+            // Source Id and Args are nullable, that means do not use image generator
+            val imageGeneratorParam = ShareExImageGeneratorRequest(
+                sourceId = _imageGeneratorUiState.value.sourceId,
+                args = _imageGeneratorUiState.value.args?.entries?.map { entry ->
+                    ShareExImageGeneratorArgRequest(entry.key, entry.value)
+                }
             )
-        )
+            val param = ShareExImageGeneratorWrapperRequest(
+                params = imageGeneratorParam,
+                originalImageUrl = _imageGeneratorUiState.value.selectedImageUrl
+            )
+            getGeneratedImageUseCase.getData(param, channelEnum).flatMapConcat {
+                var flowResult: Flow<String> = flowOf()
+                when (it) {
+                    is ShareExResult.Success -> {
+                        flowResult = flow {
+                            emit(it.data.imageUrl)
+                        }
+                    }
+                    is ShareExResult.Error -> {
+                        flowResult = flow {
+                            emit(_imageGeneratorUiState.value.selectedImageUrl)
+                        }
+                    }
+                    ShareExResult.Loading -> Unit
+                }
+                flowResult
+            }
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+            flow {
+                emit(_imageGeneratorUiState.value.selectedImageUrl)
+            }
+        }
+    }
+
+    private fun getFallbackPriorityEnumList(
+        isAffiliate: Boolean
+    ): List<ShareExShortLinkFallbackPriorityEnum> {
+        return if (isAffiliate) {
+            listOf(
+                ShareExShortLinkFallbackPriorityEnum.AFFILIATE,
+                ShareExShortLinkFallbackPriorityEnum.BRANCH,
+                ShareExShortLinkFallbackPriorityEnum.DEFAULT
+            )
+        } else {
+            listOf(
+                ShareExShortLinkFallbackPriorityEnum.BRANCH,
+                ShareExShortLinkFallbackPriorityEnum.DEFAULT
+            )
+        }
     }
 
     private fun navigateToPage(appLink: String) {

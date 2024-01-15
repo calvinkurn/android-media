@@ -8,8 +8,11 @@ import com.tokopedia.shareexperience.data.dto.imagegenerator.ShareExImageGenerat
 import com.tokopedia.shareexperience.data.query.ShareExImageGeneratorQuery
 import com.tokopedia.shareexperience.domain.ShareExResult
 import com.tokopedia.shareexperience.domain.asFlowResult
+import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.imagegenerator.ShareExImageGeneratorModel
+import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorArgRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorRequest
+import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorWrapperRequest
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetGeneratedImageUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -23,14 +26,22 @@ class ShareExGetGeneratedImageUseCaseImpl @Inject constructor(
 
     private val query = ShareExImageGeneratorQuery()
     override suspend fun getData(
-        params: ShareExImageGeneratorRequest
+        params: ShareExImageGeneratorWrapperRequest,
+        channelEnum: ShareExChannelEnum
     ): Flow<ShareExResult<ShareExImageGeneratorModel>> {
         return flow {
-            val response = repository.request<ShareExImageGeneratorRequest, ShareExImageGeneratorWrapperResponseDto>(
-                query,
-                params
-            )
-            val result = mapToModel(response.imageGeneratorModel.imageUrl)
+            val result = if (params.params.sourceId != null &&
+                !params.params.args.isNullOrEmpty()
+            ) {
+                val request = getCompletedImageGeneratorParams(params, channelEnum)
+                val response = repository.request<ShareExImageGeneratorRequest, ShareExImageGeneratorWrapperResponseDto>(
+                    query,
+                    request
+                )
+                mapToModel(response.imageGeneratorModel.imageUrl)
+            } else {
+                ShareExImageGeneratorModel(params.originalImageUrl)
+            }
             emit(result)
         }
             .asFlowResult()
@@ -39,5 +50,23 @@ class ShareExGetGeneratedImageUseCaseImpl @Inject constructor(
 
     private fun mapToModel(generatedImageUrl: String): ShareExImageGeneratorModel {
         return ShareExImageGeneratorModel(generatedImageUrl)
+    }
+
+    private fun getCompletedImageGeneratorParams(
+        originalParam: ShareExImageGeneratorWrapperRequest,
+        channelEnum: ShareExChannelEnum
+    ): ShareExImageGeneratorRequest {
+        val originalImageUrl = originalParam.originalImageUrl
+        val updatedArgs = originalParam.params.args?.toMutableList()
+        updatedArgs?.add(ShareExImageGeneratorArgRequest(PLATFORM_KEY, channelEnum.label))
+        updatedArgs?.add(ShareExImageGeneratorArgRequest(PRODUCT_IMAGE_URL_KEY, originalImageUrl))
+        return originalParam.params.copy(
+            args = updatedArgs
+        )
+    }
+
+    companion object {
+        private const val PLATFORM_KEY = "platform"
+        private const val PRODUCT_IMAGE_URL_KEY = "product_image_url"
     }
 }

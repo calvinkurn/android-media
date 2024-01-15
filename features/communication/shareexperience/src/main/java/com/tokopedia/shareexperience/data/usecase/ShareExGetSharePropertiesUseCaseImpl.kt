@@ -2,6 +2,7 @@ package com.tokopedia.shareexperience.data.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shareexperience.data.dto.ShareExBottomSheetResponseDto
 import com.tokopedia.shareexperience.data.dto.ShareExGenerateLinkPropertiesResponseDto
@@ -64,11 +65,11 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
     private suspend fun getShareBottomSheetResponse(params: ShareExBottomSheetRequest): Flow<ShareExResult<ShareExBottomSheetModel>> {
         return flow {
             val request = getRequest(params)
-//            dto = repository.request<ShareExBottomSheetWrapperRequest, ShareExWrapperResponseDto>(
-//                sharePropertiesQuery,
-//                request
-//            )
-            val dto = getDummyResponseDto()
+            val dto = repository.request<ShareExBottomSheetWrapperRequest, ShareExWrapperResponseDto>(
+                sharePropertiesQuery,
+                request
+            )
+//            val dto = getDummyResponseDto()
             val result = mapper.map(dto.response.bottomSheet)
             emit(result)
         }

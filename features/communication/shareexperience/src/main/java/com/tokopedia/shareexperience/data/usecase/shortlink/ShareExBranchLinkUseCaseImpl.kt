@@ -1,7 +1,8 @@
-package com.tokopedia.shareexperience.data.repository
+package com.tokopedia.shareexperience.data.usecase.shortlink
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shareexperience.domain.ShareExConstants
 import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.ANDROID_DEEPLINK_PATH
 import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.ANDROID_URL
@@ -18,7 +19,7 @@ import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.OG_URL
 import com.tokopedia.shareexperience.domain.ShareExResult
 import com.tokopedia.shareexperience.domain.model.request.shortlink.branch.ShareExBranchLinkPropertiesRequest
 import com.tokopedia.shareexperience.domain.model.request.shortlink.branch.ShareExBranchUniversalObjectRequest
-import com.tokopedia.shareexperience.domain.repository.ShareExShortLinkRepository
+import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetBranchLinkUseCase
 import io.branch.indexing.BranchUniversalObject
 import io.branch.referral.Branch
 import io.branch.referral.util.ContentMetadata
@@ -27,14 +28,17 @@ import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import org.json.JSONObject
 import javax.inject.Inject
 
-class ShareExBranchLinkRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context
-) : ShareExShortLinkRepository {
+class ShareExBranchLinkUseCaseImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val dispatchers: CoroutineDispatchers
+) : ShareExGetBranchLinkUseCase {
 
-    override suspend fun generateShortLink(
+    override suspend fun getLink(
         params: ShareExBranchLinkPropertiesRequest
     ): Flow<ShareExResult<String>> {
         return callbackFlow {
@@ -47,6 +51,10 @@ class ShareExBranchLinkRepositoryImpl @Inject constructor(
             )
             awaitClose { channel.close() }
         }
+        .catch {
+            emit(ShareExResult.Error(it))
+        }
+        .flowOn(dispatchers.io)
     }
 
     private fun generateBranchUniversalObject(
@@ -111,6 +119,7 @@ class ShareExBranchLinkRepositoryImpl @Inject constructor(
             } else {
                 scope.trySend(ShareExResult.Error(Throwable(error.message)))
             }
+            scope.close()
         }
     }
 }
