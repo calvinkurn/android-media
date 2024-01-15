@@ -1,6 +1,8 @@
 package com.tokopedia.content.product.preview.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
 import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.content.common.util.Router
@@ -37,10 +40,14 @@ import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.state.ReviewPageState
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 
@@ -188,6 +195,23 @@ class ReviewFragment @Inject constructor(
     }
 
     private fun showError(state: PageState.Error) {
+        //TODO: why is it in dark mode.
+        binding.reviewGlobalError.show()
+        if (state.throwable is UnknownHostException) {
+            binding.reviewGlobalError.setType(GlobalError.NO_CONNECTION)
+            binding.reviewGlobalError.errorSecondaryAction.show()
+            binding.reviewGlobalError.errorSecondaryAction.text = getString(contentcommonR.string.content_global_error_secondary_text)
+            binding.reviewGlobalError.setSecondaryActionClickListener {
+                val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
+                router.route(requireActivity(), intent)
+            }
+        } else {
+            binding.reviewGlobalError.errorSecondaryAction.hide()
+            binding.reviewGlobalError.setType(GlobalError.SERVER_ERROR)
+        }
+        binding.reviewGlobalError.setActionClickListener {
+            viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = true))
+        }
     }
 
     /**
