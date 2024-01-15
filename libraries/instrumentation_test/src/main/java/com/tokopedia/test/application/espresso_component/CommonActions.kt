@@ -113,9 +113,7 @@ object CommonActions {
                                 ViewActions.click()
                             )
                         )
-                } catch (e: PerformException) {
-                    e.printStackTrace()
-                }
+                } catch (_: PerformException) {}
             }
         } finally {
             IdlingRegistry.getInstance().unregister(idlingResource)
