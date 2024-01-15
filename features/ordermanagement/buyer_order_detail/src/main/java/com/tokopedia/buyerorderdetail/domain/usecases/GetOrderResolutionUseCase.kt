@@ -10,6 +10,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 class GetOrderResolutionUseCase @Inject constructor(
@@ -19,13 +20,16 @@ class GetOrderResolutionUseCase @Inject constructor(
     override fun graphqlQuery() = QUERY
 
     override suspend fun execute(params: GetOrderResolutionParams) = flow {
-        emit(GetOrderResolutionRequestState.Requesting)
         EmbraceMonitoring.logBreadcrumb("Fetching order resolution data")
+        EmbraceMonitoring.logBreadcrumb(params.toString())
+        emit(GetOrderResolutionRequestState.Requesting)
+        EmbraceMonitoring.logBreadcrumb("Success fetching order resolution data")
         emit(GetOrderResolutionRequestState.Complete.Success(sendRequest(params).resolutionGetTicketStatus?.data))
-        EmbraceMonitoring.logBreadcrumb("Successfully fetch order resolution data")
     }.catch {
+        EmbraceMonitoring.logBreadcrumb("Error fetching order resolution data")
         emit(GetOrderResolutionRequestState.Complete.Error(it))
-        EmbraceMonitoring.logBreadcrumb("Error fetch order resolution data")
+    }.onCompletion {
+        EmbraceMonitoring.logBreadcrumb("Finish fetching order resolution data")
     }
 
     private fun createRequestParam(params: GetOrderResolutionParams): Map<String, Any> {

@@ -10,6 +10,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 class GetBuyerOrderDetailUseCase @Inject constructor(
@@ -20,13 +21,16 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
     override fun graphqlQuery() = QUERY
 
     override suspend fun execute(params: GetBuyerOrderDetailParams) = flow {
-        emit(GetBuyerOrderDetailRequestState.Requesting)
         EmbraceMonitoring.logBreadcrumb("Fetching order detail data")
+        EmbraceMonitoring.logBreadcrumb(params.toString())
+        emit(GetBuyerOrderDetailRequestState.Requesting)
+        EmbraceMonitoring.logBreadcrumb("Success fetching order detail data")
         emit(GetBuyerOrderDetailRequestState.Complete.Success(sendRequest(params).buyerOrderDetail))
-        EmbraceMonitoring.logBreadcrumb("Successfully fetch order detail data")
     }.catch {
         emit(GetBuyerOrderDetailRequestState.Complete.Error(it))
-        EmbraceMonitoring.logBreadcrumb("Error fetch order detail data")
+        EmbraceMonitoring.logBreadcrumb("Error fetching order detail data")
+    }.onCompletion {
+        EmbraceMonitoring.logBreadcrumb("Finish fetching order detail data")
     }
 
     private fun createRequestParam(params: GetBuyerOrderDetailParams): Map<String, Any> {

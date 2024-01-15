@@ -10,6 +10,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 class GetInsuranceDetailUseCase @Inject constructor(
@@ -20,13 +21,16 @@ class GetInsuranceDetailUseCase @Inject constructor(
     }
 
     override suspend fun execute(params: GetInsuranceDetailParams) = flow {
-        emit(GetInsuranceDetailRequestState.Requesting)
         EmbraceMonitoring.logBreadcrumb("Fetching order insurance data")
+        EmbraceMonitoring.logBreadcrumb(params.toString())
+        emit(GetInsuranceDetailRequestState.Requesting)
+        EmbraceMonitoring.logBreadcrumb("Success fetching order insurance data")
         emit(GetInsuranceDetailRequestState.Complete.Success(sendRequest(params).ppGetInsuranceDetail?.data))
-        EmbraceMonitoring.logBreadcrumb("Successfully fetch order insurance data")
     }.catch {
+        EmbraceMonitoring.logBreadcrumb("Error fetching order insurance data")
         emit(GetInsuranceDetailRequestState.Complete.Error(it))
-        EmbraceMonitoring.logBreadcrumb("Error fetch order insurance data")
+    }.onCompletion {
+        EmbraceMonitoring.logBreadcrumb("Finish fetching order insurance data")
     }
 
     private fun createRequestParam(params: GetInsuranceDetailParams): Map<String, Any> {

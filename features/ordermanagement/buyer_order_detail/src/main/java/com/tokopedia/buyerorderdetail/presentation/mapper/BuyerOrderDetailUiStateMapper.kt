@@ -13,10 +13,8 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.SavingsWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ScpRewardsMedalTouchPointWidgetUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
-import org.json.JSONObject
 
 object BuyerOrderDetailUiStateMapper {
-    @Suppress("NAME_SHADOWING")
     fun map(
         actionButtonsUiState: ActionButtonsUiState,
         orderStatusUiState: OrderStatusUiState,
@@ -102,14 +100,14 @@ object BuyerOrderDetailUiStateMapper {
         } else if (productListUiState is ProductListUiState.Error) {
             BuyerOrderDetailUiState.Error(productListUiState.throwable)
         } else if (shipmentInfoUiState is ShipmentInfoUiState.Error) {
-            BuyerOrderDetailUiState.Error(shipmentInfoUiState.throwable) }
-        else if (epharmacyInfoUiState is EpharmacyInfoUiState.Error) {
+            BuyerOrderDetailUiState.Error(shipmentInfoUiState.throwable)
+        } else if (epharmacyInfoUiState is EpharmacyInfoUiState.Error) {
             BuyerOrderDetailUiState.Error(epharmacyInfoUiState.throwable)
         } else if (pgRecommendationWidgetUiState is PGRecommendationWidgetUiState.Error) {
             BuyerOrderDetailUiState.Error(pgRecommendationWidgetUiState.throwable)
         } else {
             BuyerOrderDetailUiState.FullscreenLoading
-        }
+        }.logBreadcrumb()
     }
 
     private fun logBreadcrumb(
@@ -125,18 +123,23 @@ object BuyerOrderDetailUiStateMapper {
         scpRewardsMedalTouchPointWidgetUiState: ScpRewardsMedalTouchPointWidgetUiState,
         savingsWidgetUiState: SavingsWidgetUiState
     ) {
-        val jsonData = JSONObject()
-        jsonData.put("actionButtonsUiState", actionButtonsUiState::class.java.name)
-        jsonData.put("orderStatusUiState", orderStatusUiState::class.java.name)
-        jsonData.put("paymentInfoUiState", paymentInfoUiState::class.java.name)
-        jsonData.put("productListUiState", productListUiState::class.java.name)
-        jsonData.put("shipmentInfoUiState", shipmentInfoUiState::class.java.name)
-        jsonData.put("pgRecommendationWidgetUiState", pgRecommendationWidgetUiState::class.java.name)
-        jsonData.put("orderResolutionTicketStatusUiState", orderResolutionTicketStatusUiState::class.java.name)
-        jsonData.put("orderInsuranceUiState", orderInsuranceUiState::class.java.name)
-        jsonData.put("epharmacyInfoUiState", epharmacyInfoUiState::class.java.name)
-        jsonData.put("scpRewardsMedalTouchPointWidgetUiState", scpRewardsMedalTouchPointWidgetUiState::class.java.name)
-        jsonData.put("savingsWidgetUiState", savingsWidgetUiState::class.java.name)
-        EmbraceMonitoring.logBreadcrumb("Mapping UI states into BOM Ui State: $jsonData")
+        runCatching {
+            EmbraceMonitoring.logBreadcrumb("Mapping UI states into BOM Ui State")
+            EmbraceMonitoring.logBreadcrumb(actionButtonsUiState::class.java.name)
+            EmbraceMonitoring.logBreadcrumb(orderStatusUiState::class.java.name)
+            EmbraceMonitoring.logBreadcrumb(paymentInfoUiState::class.java.name)
+            EmbraceMonitoring.logBreadcrumb(productListUiState::class.java.name)
+            EmbraceMonitoring.logBreadcrumb(shipmentInfoUiState::class.java.name)
+            EmbraceMonitoring.logBreadcrumb(pgRecommendationWidgetUiState::class.java.name)
+            EmbraceMonitoring.logBreadcrumb(orderResolutionTicketStatusUiState::class.java.name)
+            EmbraceMonitoring.logBreadcrumb(orderInsuranceUiState::class.java.name)
+            EmbraceMonitoring.logBreadcrumb(epharmacyInfoUiState::class.java.name)
+            EmbraceMonitoring.logBreadcrumb(scpRewardsMedalTouchPointWidgetUiState::class.java.name)
+            EmbraceMonitoring.logBreadcrumb(savingsWidgetUiState::class.java.name)
+        }
+    }
+
+    private fun BuyerOrderDetailUiState.logBreadcrumb() = also {
+        runCatching { EmbraceMonitoring.logBreadcrumb("Finish mapping UI states into ${this::class.java.name}") }
     }
 }

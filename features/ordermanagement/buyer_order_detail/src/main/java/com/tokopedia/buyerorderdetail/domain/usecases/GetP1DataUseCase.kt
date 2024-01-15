@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
+import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailParams
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionParams
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onCompletion
 import javax.inject.Inject
 
 class GetP1DataUseCase @Inject constructor(
@@ -20,7 +22,10 @@ class GetP1DataUseCase @Inject constructor(
     private val getInsuranceDetailUseCase: GetInsuranceDetailUseCase
 ) {
 
-    operator fun invoke(params: GetP1DataParams) = execute(params).flowOn(Dispatchers.IO)
+    operator fun invoke(params: GetP1DataParams): Flow<GetP1DataRequestState> {
+        logInvocationBreadcrumb(params)
+        return execute(params).flowOn(Dispatchers.IO)
+    }
     private fun getOrderResolutionUseCaseRequestStates(params: GetP1DataParams) = flow {
         if (params.hasResoStatus) {
             emitAll(
@@ -55,6 +60,7 @@ class GetP1DataUseCase @Inject constructor(
         orderResolutionRequestState: GetOrderResolutionRequestState,
         insuranceDetailRequestState: GetInsuranceDetailRequestState
     ): GetP1DataRequestState {
+        logMapperBreadcrumb(orderResolutionRequestState, insuranceDetailRequestState)
         return if (
             orderResolutionRequestState is GetOrderResolutionRequestState.Requesting ||
             insuranceDetailRequestState is GetInsuranceDetailRequestState.Requesting
@@ -62,7 +68,7 @@ class GetP1DataUseCase @Inject constructor(
             GetP1DataRequestState.Requesting(orderResolutionRequestState, insuranceDetailRequestState)
         } else {
             GetP1DataRequestState.Complete(orderResolutionRequestState, insuranceDetailRequestState)
-        }
+        }.logBreadcrumb()
     }
 
     private fun execute(params: GetP1DataParams): Flow<GetP1DataRequestState> {
@@ -75,12 +81,37 @@ class GetP1DataUseCase @Inject constructor(
                 flows[1] as GetInsuranceDetailRequestState // please make sure that flow[1] is GetInsuranceDetailRequestState after editing the flow source
             )
         }.catch {
+            EmbraceMonitoring.logBreadcrumb("Error fetching P1 data")
             emit(
                 GetP1DataRequestState.Complete(
                     GetOrderResolutionRequestState.Complete.Error(it),
                     GetInsuranceDetailRequestState.Complete.Error(it)
                 )
             )
+        }.onCompletion {
+            EmbraceMonitoring.logBreadcrumb("Finish fetching P1 data")
         }
+    }
+
+    private fun logInvocationBreadcrumb(params: GetP1DataParams) {
+        runCatching {
+            EmbraceMonitoring.logBreadcrumb("Fetching P1 data")
+            EmbraceMonitoring.logBreadcrumb(params.toString())
+        }
+    }
+
+    private fun logMapperBreadcrumb(
+        orderResolutionRequestState: GetOrderResolutionRequestState,
+        insuranceDetailRequestState: GetInsuranceDetailRequestState
+    ) {
+        runCatching {
+            EmbraceMonitoring.logBreadcrumb("Mapping P1 data")
+            EmbraceMonitoring.logBreadcrumb(orderResolutionRequestState::class.java.name)
+            EmbraceMonitoring.logBreadcrumb(insuranceDetailRequestState::class.java.name)
+        }
+    }
+
+    private fun GetP1DataRequestState.logBreadcrumb() = also {
+        EmbraceMonitoring.logBreadcrumb("Finish mapping P1 data into ${this::class.java.name}")
     }
 }
