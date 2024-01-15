@@ -10,10 +10,6 @@ object RollenceKey {
     const val AB_TEST_SHOP_AFFILIATE_SHARE_ICON = "shareIconShopAff"
     const val AB_TEST_SHOP_RE_IMAGINED = "shop_page_reimagined"
 
-    const val AB_TEST_SHOP_PREFETCH = "an_shop_prefetch"
-    const val AB_TEST_SHOP_PREFETCH_ENABLED = "shop_prefetch_enable"
-    const val AB_TEST_SHOP_PREFETCH_DISABLED = "shop_prefetch_disable"
-
     const val AB_TEST_GRADUAL_ROLLOUT_KEY_SHOP_INFO_REIMAGINED = "an_shop_info_revamp"
 
     // home rollence section
