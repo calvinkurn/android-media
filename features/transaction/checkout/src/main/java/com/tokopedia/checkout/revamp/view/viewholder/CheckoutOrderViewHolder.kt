@@ -41,7 +41,6 @@ class CheckoutOrderViewHolder(
         this.order = order
         renderAddOnOrderLevel(order)
         renderShippingWidget(order, addressModel)
-        renderVibration(order)
         renderDropshipWidget(order)
     }
 
@@ -93,14 +92,63 @@ class CheckoutOrderViewHolder(
         binding.shippingWidget.render(uiModel)
     }
 
-    // todo pindahin ini juga
-    private fun renderVibration(order: CheckoutOrderModel) {
-        binding.shippingWidget.renderShippingVibrationAnimation(
-            ShippingWidgetUiModel(
-                isShippingBorderRed = order.isShippingBorderRed
-            )
+    private fun CheckoutOrderModel.toErrorState(): ShippingWidgetCourierError? {
+        if (shipment.courierItemData != null) {
+            return null
+        }
+        return if (isCustomPinpointError) {
+            ShippingWidgetCourierError.NEED_PINPOINT
+        } else if (isDisableChangeCourier && hasGeolocation) {
+            ShippingWidgetCourierError.COURIER_UNAVAILABLE
+        } else {
+            ShippingWidgetCourierError.COURIER_EMPTY
+        }
+    }
+
+    private fun CheckoutOrderModel.toShipmentWidgetModel(): ShippingWidgetUiModel {
+        val model = ShippingWidgetUiModel(
+            cartError = isError,
+            loading = shipment.isLoading,
+            courierError = toErrorState(),
+            isDisableChangeCourier = isDisableChangeCourier,
+            courierErrorTitle = courierSelectionErrorTitle,
+            isShippingBorderRed = isShippingBorderRed,
+            isTriggerShippingVibrationAnimation = isTriggerShippingVibrationAnimation
         )
-        order.isTriggerShippingVibrationAnimation = false
+        val courierItemData = shipment.courierItemData
+        if (courierItemData == null) {
+            return model
+        } else {
+            return model.copy(
+                etaErrorCode = courierItemData.etaErrorCode,
+                estimatedTimeArrival = courierItemData.etaText ?: "",
+                hideShipperName = courierItemData.isHideShipperName,
+                freeShippingTitle = courierItemData.freeShippingChosenCourierTitle,
+                freeShippingLogo = courierItemData.freeShippingChosenImage,
+                logPromoDesc = courierItemData.logPromoDesc ?: "",
+                voucherLogisticExists = !courierItemData.selectedShipper.logPromoCode.isNullOrEmpty(),
+                logisticPromoCode = courierItemData.selectedShipper.logPromoCode,
+                isHasShownCourierError = false,
+                boOrderMessage = courierItemData.boOrderMessage,
+                estimatedTimeDelivery = courierItemData.estimatedTimeDelivery ?: "",
+                courierName = courierItemData.name ?: "",
+                courierShipperPrice = courierItemData.shipperPrice,
+                courierOrderMessage = courierItemData.courierOrderMessage,
+                merchantVoucher = courierItemData.merchantVoucherProductModel,
+                ontimeDelivery = courierItemData.ontimeDelivery,
+                cashOnDelivery = courierItemData.codProductData,
+                whitelabelEtaText = courierItemData.durationCardDescription,
+                scheduleDeliveryUiModel = courierItemData.scheduleDeliveryUiModel,
+                insuranceData = InsuranceWidgetUiModel(
+                    useInsurance = shipment.insurance.isCheckInsurance,
+                    insuranceType = courierItemData.selectedShipper.insuranceType,
+                    insuranceUsedDefault = courierItemData.selectedShipper.insuranceUsedDefault,
+                    insuranceUsedInfo = courierItemData.selectedShipper.insuranceUsedInfo,
+                    insurancePrice = courierItemData.selectedShipper.insurancePrice.toDouble(),
+                    isInsurance = isInsurance
+                )
+            )
+        }
     }
 
     private fun showMultiplePlusOrderCoachmark(
@@ -222,6 +270,22 @@ class CheckoutOrderViewHolder(
         }
     }
 
+    override fun onViewCartErrorState(shippingWidgetUiModel: ShippingWidgetUiModel) {
+        order?.run {
+            if (shippingWidgetUiModel.logisticPromoCode?.isNotEmpty() == true) {
+                listener?.onCancelVoucherLogisticClicked(
+                    shippingWidgetUiModel.logisticPromoCode!!,
+                    bindingAdapterPosition,
+                    this
+                )
+            }
+        }
+    }
+
+    override fun onRenderVibrationAnimation(shippingWidgetUiModel: ShippingWidgetUiModel) {
+        this?.order?.isTriggerShippingVibrationAnimation = false
+    }
+
     override fun onClickDropshipLabel() {
         listener.showDropshipInfoBottomSheet()
     }
@@ -252,75 +316,5 @@ class CheckoutOrderViewHolder(
         order?.isDropshipPhoneValid = isPhoneValid
         order?.dropshipPhone = phone
         listener.setValidationDropshipPhone(phone, isPhoneValid, bindingAdapterPosition)
-    }
-}
-
-private fun CheckoutOrderModel.toErrorState(): ShippingWidgetCourierError? {
-    if (shipment.courierItemData != null) {
-        return null
-    }
-    return if (isCustomPinpointError) {
-        ShippingWidgetCourierError.NEED_PINPOINT
-    } else if (isDisableChangeCourier && hasGeolocation) {
-        ShippingWidgetCourierError.COURIER_UNAVAILABLE
-    } else {
-        ShippingWidgetCourierError.COURIER_EMPTY
-    }
-}
-
-private fun CheckoutOrderModel.toShipmentWidgetModel(): ShippingWidgetUiModel {
-    val model = ShippingWidgetUiModel(
-        cartError = isError,
-        loading = shipment.isLoading,
-        courierError = toErrorState(),
-        isDisableChangeCourier = isDisableChangeCourier,
-        courierErrorTitle = courierSelectionErrorTitle,
-        isShippingBorderRed = isShippingBorderRed,
-        isTriggerShippingVibrationAnimation = isTriggerShippingVibrationAnimation
-    )
-    val courierItemData = shipment.courierItemData
-    if (courierItemData == null) {
-        return model
-    } else {
-        return model.copy(
-            // CourierItemData.etaErrorCode
-            etaErrorCode = courierItemData.etaErrorCode,
-            // CourierItemData.etaText
-            estimatedTimeArrival = courierItemData.etaText ?: "",
-
-            // Bebas ongkir & NOW Shipment
-            hideShipperName = courierItemData.isHideShipperName,
-            freeShippingTitle = courierItemData.freeShippingChosenCourierTitle,
-            freeShippingLogo = courierItemData.freeShippingChosenImage,
-
-            // Now Shipment
-            // label
-            logPromoDesc = courierItemData.logPromoDesc ?: "",
-            voucherLogisticExists = !courierItemData.selectedShipper.logPromoCode.isNullOrEmpty(),
-            isHasShownCourierError = false, // todo: analytics
-
-            boOrderMessage = courierItemData.boOrderMessage,
-
-            // CourierItemData.estimatedTimeDelivery
-            estimatedTimeDelivery = courierItemData.estimatedTimeDelivery ?: "",
-
-            courierName = courierItemData.name ?: "",
-            courierShipperPrice = courierItemData.shipperPrice,
-            courierOrderMessage = courierItemData.courierOrderMessage,
-            merchantVoucher = courierItemData.merchantVoucherProductModel,
-            ontimeDelivery = courierItemData.ontimeDelivery,
-            cashOnDelivery = courierItemData.codProductData,
-            // CourierItemData.durationCardDescription
-            whitelabelEtaText = courierItemData.durationCardDescription,
-            scheduleDeliveryUiModel = courierItemData.scheduleDeliveryUiModel,
-            insuranceData = InsuranceWidgetUiModel(
-                useInsurance = shipment.insurance.isCheckInsurance,
-                insuranceType = courierItemData.selectedShipper.insuranceType,
-                insuranceUsedDefault = courierItemData.selectedShipper.insuranceUsedDefault,
-                insuranceUsedInfo = courierItemData.selectedShipper.insuranceUsedInfo,
-                insurancePrice = courierItemData.selectedShipper.insurancePrice.toDouble(),
-                isInsurance = isInsurance
-            )
-        )
     }
 }

@@ -103,6 +103,10 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         fun onInsuranceInfoTooltipClickedTrackingAnalytics()
 
         fun showInsuranceBottomSheet(description: String)
+
+        fun onViewCartErrorState(shippingWidgetUiModel: ShippingWidgetUiModel)
+
+        fun onRenderVibrationAnimation(shippingWidgetUiModel: ShippingWidgetUiModel)
     }
 
     override fun onDetachedFromWindow() {
@@ -117,7 +121,6 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
     fun render(shippingWidgetUiModel: ShippingWidgetUiModel) {
         if (shippingWidgetUiModel.cartError) {
             renderErrorCourierState(shippingWidgetUiModel)
-            // todo listener
         } else if (shippingWidgetUiModel.loading) {
             prepareLoadCourierState()
             renderLoadingCourierState()
@@ -177,7 +180,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         binding?.purchasePlatformPartialShimmeringList?.root?.gone()
     }
 
-    fun renderShippingVibrationAnimation(
+    private fun renderShippingVibrationAnimation(
         shippingWidgetUiModel: ShippingWidgetUiModel
     ) {
         binding?.apply {
@@ -197,8 +200,8 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
                         }
 
                         override fun onAnimationEnd(animator: Animator) {
-                            // todo callback
                             shippingWidgetUiModel.isTriggerShippingVibrationAnimation = false
+                            mListener?.onRenderVibrationAnimation(shippingWidgetUiModel)
                         }
 
                         override fun onAnimationCancel(animator: Animator) {
@@ -236,6 +239,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             purchasePlatformPartialShimmeringList.root.gone()
             containerShippingExperience.visible()
             containerShippingExperience.setBackgroundResource(purchase_platformcommonR.drawable.bg_pp_rounded_grey)
+            mListener?.onViewCartErrorState(shippingWidgetUiModel)
         }
     }
 
@@ -469,7 +473,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         showInsuranceInfo(shippingWidgetUiModel)
     }
 
-    fun prepareLoadCourierState() {
+    private fun prepareLoadCourierState() {
         binding?.apply {
             layoutStateHasSelectedFreeShipping.gone()
             layoutStateHasSelectedNormalShipping.gone()

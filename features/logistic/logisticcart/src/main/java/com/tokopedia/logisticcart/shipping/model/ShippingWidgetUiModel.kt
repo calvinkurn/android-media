@@ -53,7 +53,9 @@ data class ShippingWidgetUiModel(
     val loading: Boolean = false,
     val courierError: ShippingWidgetCourierError? = null,
     val isDisableChangeCourier: Boolean = false,
-    val isWhitelabel: Boolean = false
+    val isWhitelabel: Boolean = false,
+
+    val logisticPromoCode: String? = null
 )
 
 enum class ShippingWidgetCourierError {
