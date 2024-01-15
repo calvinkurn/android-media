@@ -626,11 +626,19 @@ open class SomListFragment :
         toggleBulkActionButtonVisibility()
     }
 
-    override fun onCheckBoxClickedWhenDisabled() {
+    override fun onCheckBoxClickedWhenDisabled(message: String?) {
+        val toasterMessage = message?.takeIf { it.isNotBlank() }
+            ?: context?.resources?.getString(R.string.som_list_order_cannot_be_selected).orEmpty()
+        val toasterType =
+            if (message == null) {
+                Toaster.TYPE_ERROR
+            } else {
+                Toaster.TYPE_NORMAL
+            }
         showCommonToaster(
             view,
-            context?.resources?.getString(R.string.som_list_order_cannot_be_selected).orEmpty(),
-            Toaster.TYPE_ERROR
+            toasterMessage,
+            toasterType
         )
     }
 
