@@ -51,6 +51,13 @@ class ProductPreviewViewModel @AssistedInject constructor(
             )
         }
 
+    private fun getReview() {
+        viewModelScope.launchCatchError(block = {
+            _review.value =
+                repo.getReview(param.productPreviewData.productId, 1) // TODO: add pagination
+        }) {}
+    }
+
     fun onAction(action: ProductPreviewUiAction) {
         when (action) {
             InitializeProductMainData -> handleInitializeProductMainData()
@@ -82,12 +89,5 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 productIndicatorUiModel.copy(selected = index == position)
             }
         }
-    }
-
-    private fun getReview() {
-        viewModelScope.launchCatchError(block = {
-            _review.value =
-                repo.getReview(param.productPreviewData.productId, 1) // TODO: add pagination
-        }) {}
     }
 }
