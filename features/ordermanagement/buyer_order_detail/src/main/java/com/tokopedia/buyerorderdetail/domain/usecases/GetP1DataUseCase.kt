@@ -81,7 +81,7 @@ class GetP1DataUseCase @Inject constructor(
                 flows[1] as GetInsuranceDetailRequestState // please make sure that flow[1] is GetInsuranceDetailRequestState after editing the flow source
             )
         }.catch {
-            EmbraceMonitoring.logBreadcrumb("Error fetching P1 data")
+            EmbraceMonitoring.logBreadcrumb("Error fetching P1 data with error: ${it.stackTraceToString()}")
             emit(
                 GetP1DataRequestState.Complete(
                     GetOrderResolutionRequestState.Complete.Error(it),
@@ -95,8 +95,7 @@ class GetP1DataUseCase @Inject constructor(
 
     private fun logInvocationBreadcrumb(params: GetP1DataParams) {
         runCatching {
-            EmbraceMonitoring.logBreadcrumb("Fetching P1 data")
-            EmbraceMonitoring.logBreadcrumb(params.toString())
+            EmbraceMonitoring.logBreadcrumb("Fetching P1 data with params: $params")
         }
     }
 
@@ -105,9 +104,7 @@ class GetP1DataUseCase @Inject constructor(
         insuranceDetailRequestState: GetInsuranceDetailRequestState
     ) {
         runCatching {
-            EmbraceMonitoring.logBreadcrumb("Mapping P1 data")
-            EmbraceMonitoring.logBreadcrumb(orderResolutionRequestState::class.java.simpleName)
-            EmbraceMonitoring.logBreadcrumb(insuranceDetailRequestState::class.java.simpleName)
+            EmbraceMonitoring.logBreadcrumb("Mapping P1 data: ${orderResolutionRequestState::class.java.simpleName}, ${insuranceDetailRequestState::class.java.simpleName}")
         }
     }
 

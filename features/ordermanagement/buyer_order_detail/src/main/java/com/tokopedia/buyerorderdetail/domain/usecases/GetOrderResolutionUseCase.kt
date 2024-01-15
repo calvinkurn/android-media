@@ -20,13 +20,12 @@ class GetOrderResolutionUseCase @Inject constructor(
     override fun graphqlQuery() = QUERY
 
     override suspend fun execute(params: GetOrderResolutionParams) = flow {
-        EmbraceMonitoring.logBreadcrumb("Fetching order resolution data")
-        EmbraceMonitoring.logBreadcrumb(params.toString())
+        EmbraceMonitoring.logBreadcrumb("Fetching order resolution data with params: $params")
         emit(GetOrderResolutionRequestState.Requesting)
         EmbraceMonitoring.logBreadcrumb("Success fetching order resolution data")
         emit(GetOrderResolutionRequestState.Complete.Success(sendRequest(params).resolutionGetTicketStatus?.data))
     }.catch {
-        EmbraceMonitoring.logBreadcrumb("Error fetching order resolution data")
+        EmbraceMonitoring.logBreadcrumb("Error fetching order resolution data with error: ${it.stackTraceToString()}")
         emit(GetOrderResolutionRequestState.Complete.Error(it))
     }.onCompletion {
         EmbraceMonitoring.logBreadcrumb("Finish fetching order resolution data")

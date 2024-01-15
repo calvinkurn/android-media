@@ -21,14 +21,13 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
     override fun graphqlQuery() = QUERY
 
     override suspend fun execute(params: GetBuyerOrderDetailParams) = flow {
-        EmbraceMonitoring.logBreadcrumb("Fetching order detail data")
-        EmbraceMonitoring.logBreadcrumb(params.toString())
+        EmbraceMonitoring.logBreadcrumb("Fetching order detail data with params: $params")
         emit(GetBuyerOrderDetailRequestState.Requesting)
         EmbraceMonitoring.logBreadcrumb("Success fetching order detail data")
         emit(GetBuyerOrderDetailRequestState.Complete.Success(sendRequest(params).buyerOrderDetail))
     }.catch {
+        EmbraceMonitoring.logBreadcrumb("Error fetching order detail data with error: ${it.stackTraceToString()}")
         emit(GetBuyerOrderDetailRequestState.Complete.Error(it))
-        EmbraceMonitoring.logBreadcrumb("Error fetching order detail data")
     }.onCompletion {
         EmbraceMonitoring.logBreadcrumb("Finish fetching order detail data")
     }

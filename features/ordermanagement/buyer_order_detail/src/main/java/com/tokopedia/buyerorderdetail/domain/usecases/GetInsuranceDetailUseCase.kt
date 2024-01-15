@@ -21,13 +21,12 @@ class GetInsuranceDetailUseCase @Inject constructor(
     }
 
     override suspend fun execute(params: GetInsuranceDetailParams) = flow {
-        EmbraceMonitoring.logBreadcrumb("Fetching order insurance data")
-        EmbraceMonitoring.logBreadcrumb(params.toString())
+        EmbraceMonitoring.logBreadcrumb("Fetching order insurance data with params: $params")
         emit(GetInsuranceDetailRequestState.Requesting)
         EmbraceMonitoring.logBreadcrumb("Success fetching order insurance data")
         emit(GetInsuranceDetailRequestState.Complete.Success(sendRequest(params).ppGetInsuranceDetail?.data))
     }.catch {
-        EmbraceMonitoring.logBreadcrumb("Error fetching order insurance data")
+        EmbraceMonitoring.logBreadcrumb("Error fetching order insurance data with error: ${it.stackTraceToString()}")
         emit(GetInsuranceDetailRequestState.Complete.Error(it))
     }.onCompletion {
         EmbraceMonitoring.logBreadcrumb("Finish fetching order insurance data")

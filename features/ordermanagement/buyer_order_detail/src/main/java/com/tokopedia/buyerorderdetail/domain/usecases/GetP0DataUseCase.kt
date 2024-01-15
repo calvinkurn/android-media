@@ -36,6 +36,7 @@ class GetP0DataUseCase @Inject constructor(
     private suspend fun execute(params: GetP0DataParams) = getBuyerOrderDetailUseCase(
         with(params) { GetBuyerOrderDetailParams(cart, orderId, paymentId, shouldCheckCache) }
     ).map(::mapToGetP0DataRequestState).catch {
+        EmbraceMonitoring.logBreadcrumb("Error fetching P0 data with error: ${it.stackTraceToString()}")
         emit(GetP0DataRequestState.Complete(GetBuyerOrderDetailRequestState.Complete.Error(it)))
     }.onCompletion {
         EmbraceMonitoring.logBreadcrumb("Finish fetching P0 data")
@@ -43,13 +44,11 @@ class GetP0DataUseCase @Inject constructor(
 
     private fun logInvocationBreadcrumb(params: GetP0DataParams) {
         runCatching {
-            EmbraceMonitoring.logBreadcrumb("Fetching P0 data")
-            EmbraceMonitoring.logBreadcrumb(params.toString())
+            EmbraceMonitoring.logBreadcrumb("Fetching P0 data with params: $params")
         }
     }
 
     private fun logMapperBreadcrumb(buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState) {
-        EmbraceMonitoring.logBreadcrumb("Mapping P0 data")
-        EmbraceMonitoring.logBreadcrumb(buyerOrderDetailRequestState::class.java.simpleName)
+        EmbraceMonitoring.logBreadcrumb("Mapping P0 data: ${buyerOrderDetailRequestState::class.java.simpleName}")
     }
 }

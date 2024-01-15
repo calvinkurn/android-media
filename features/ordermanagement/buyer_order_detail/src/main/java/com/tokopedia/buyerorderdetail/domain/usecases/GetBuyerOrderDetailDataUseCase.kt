@@ -105,7 +105,7 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
             p0DataRequestState, params.shouldCheckCache
         )
     }.catch {
-        EmbraceMonitoring.logBreadcrumb("Error fetching all order detail data")
+        EmbraceMonitoring.logBreadcrumb("Error fetching all order detail data with error: ${it.stackTraceToString()}")
         emit(
             GetBuyerOrderDetailDataRequestState.Complete(
                 GetP0DataRequestState.Complete(GetBuyerOrderDetailRequestState.Complete.Error(it)),
@@ -121,15 +121,13 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
 
     private fun logInvocationBreadcrumb(params: GetBuyerOrderDetailDataParams) {
         runCatching {
-            EmbraceMonitoring.logBreadcrumb("Fetching all order detail data")
-            EmbraceMonitoring.logBreadcrumb(params.toString())
+            EmbraceMonitoring.logBreadcrumb("Fetching all order detail data with params: $params")
         }
     }
 
     private fun logMapperBreadcrumb(p0DataRequestState: GetP0DataRequestState) {
         runCatching {
-            EmbraceMonitoring.logBreadcrumb("Mapping all order detail data")
-            EmbraceMonitoring.logBreadcrumb(p0DataRequestState::class.java.simpleName)
+            EmbraceMonitoring.logBreadcrumb("Mapping all order detail data: ${p0DataRequestState::class.java.simpleName}")
         }
     }
 }
