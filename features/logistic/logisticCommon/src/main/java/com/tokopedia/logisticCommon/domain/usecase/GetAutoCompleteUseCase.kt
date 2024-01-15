@@ -23,8 +23,8 @@ class GetAutoCompleteUseCase @Inject constructor(
 
     companion object {
         private const val QUERY =
-            """query KeroMapsAutoComplete(${'$'}param: String!, ${'$'}latlng: String, ${'$'}is_manage_address_flow: Boolean) {
-          kero_maps_autocomplete(input: ${'$'}param, latlng: ${'$'}latlng, is_manage_address_flow: ${'$'}is_manage_address_flow) {
+            """query KeroMapsAutoComplete(${'$'}param: String!, ${'$'}latlng: String, ${'$'}is_manage_address_flow: Boolean, ${'$'}with_administrative: Boolean) {
+          kero_maps_autocomplete(input: ${'$'}param, latlng: ${'$'}latlng, is_manage_address_flow: ${'$'}is_manage_address_flow, with_administrative: ${'$'}with_administrative) {
             error_code
             data {
               predictions {

@@ -2,8 +2,8 @@ ext {
 
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
-            cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24.5",
-            globalconfig            : "com.tokopedia.config:global_config:1.0.25",
+            cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24.12",
+            globalconfig            : "com.tokopedia.config:global_config:1.0.26",
             url                     : "com.tokopedia.url:url:1.0.27",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.6",
@@ -40,6 +40,7 @@ ext {
             analytics               : ":libraries:analytics",
             analyticsDebugger       : ":libraries:analytics_debugger",
             analyticsDebuggerNoop   : ":libraries:analytics_debugger_noop",
+            appDownloadManagerCommon: ":libraries:appdownloadmanager_common",
             applink                 : ":libraries:applink",
             baseAdapter             : ":libraries:base_adapter",
             baseList                : ":libraries:base_list",

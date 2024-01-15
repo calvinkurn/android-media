@@ -1,7 +1,6 @@
 package com.tokopedia.common.topupbills
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.topupbills.data.MultiCheckoutButtons
 import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryQuery
@@ -34,19 +33,19 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
-import io.mockk.MockKAnnotations
-import io.mockk.impl.annotations.RelaxedMockK
-import org.junit.Before
-import org.junit.Rule
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertNotNull
 import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import java.lang.reflect.Type
 
@@ -115,7 +114,6 @@ class CommonTopupBillsViewModelTest {
 
         val error = (actualData as Fail).throwable
         Assert.assertEquals(errorGql.message, error.message)
-
     }
 
     @Test
@@ -246,7 +244,6 @@ class CommonTopupBillsViewModelTest {
         assertThat(resultData[0].clientNumber == "081288888888")
     }
 
-
     @Test
     fun getFavoriteNumber_returnFailData() {
         // Given
@@ -314,23 +311,31 @@ class CommonTopupBillsViewModelTest {
     @Test
     fun createEnquiryParams_returnsCorrectListContent() {
         val params = topupBillsViewModel.createEnquiryParams(
-                operatorId = "578",
-                productId = "123",
-                inputData = mapOf("testing_id" to "1111")
+            operatorId = "578",
+            productId = "123",
+            inputData = mapOf("testing_id" to "1111")
         )
         assertThat(params[0]).isInstanceOf(TopupBillsEnquiryQuery::class.java)
-        assertTrue(params.any { obj ->
-            obj.key == ENQUIRY_PARAM_SOURCE_TYPE && obj.value == ENQUIRY_PARAM_SOURCE_TYPE_DEFAULT_VALUE
-        })
-        assertTrue(params.any { obj ->
-            obj.key == ENQUIRY_PARAM_DEVICE_ID && obj.value == ENQUIRY_PARAM_DEVICE_ID_DEFAULT_VALUE
-        })
-        assertTrue(params.any { obj ->
-            obj.key == ENQUIRY_PARAM_PRODUCT_ID && obj.value == "123"
-        })
-        assertTrue(params.any { obj ->
-            obj.key == "testing_id" && obj.value == "1111"
-        })
+        assertTrue(
+            params.any { obj ->
+                obj.key == ENQUIRY_PARAM_SOURCE_TYPE && obj.value == ENQUIRY_PARAM_SOURCE_TYPE_DEFAULT_VALUE
+            }
+        )
+        assertTrue(
+            params.any { obj ->
+                obj.key == ENQUIRY_PARAM_DEVICE_ID && obj.value == ENQUIRY_PARAM_DEVICE_ID_DEFAULT_VALUE
+            }
+        )
+        assertTrue(
+            params.any { obj ->
+                obj.key == ENQUIRY_PARAM_PRODUCT_ID && obj.value == "123"
+            }
+        )
+        assertTrue(
+            params.any { obj ->
+                obj.key == "testing_id" && obj.value == "1111"
+            }
+        )
     }
 
     @Test
@@ -348,19 +353,27 @@ class CommonTopupBillsViewModelTest {
         val filters = params[PARAM_FILTERS] as MutableList<Map<String, Any>>
         assertTrue(filters.any { obj -> obj.containsKey(PLUGIN_PARAM_KEY) })
 
-        assertTrue(filters.any { obj ->
-            obj.containsKey(PLUGIN_PARAM_KEY) && obj[PLUGIN_PARAM_KEY] == PLUGIN_PARAM_OPERATOR
-        })
-        assertTrue(filters.any { obj ->
-            obj.containsKey(PLUGIN_PARAM_KEY) && obj[PLUGIN_PARAM_KEY] == PLUGIN_PARAM_CATEGORY
-        })
+        assertTrue(
+            filters.any { obj ->
+                obj.containsKey(PLUGIN_PARAM_KEY) && obj[PLUGIN_PARAM_KEY] == PLUGIN_PARAM_OPERATOR
+            }
+        )
+        assertTrue(
+            filters.any { obj ->
+                obj.containsKey(PLUGIN_PARAM_KEY) && obj[PLUGIN_PARAM_KEY] == PLUGIN_PARAM_CATEGORY
+            }
+        )
 
-        assertTrue(filters.any { obj ->
-            obj.containsKey(PLUGIN_PARAM_ID) && obj[PLUGIN_PARAM_ID] == 578
-        })
-        assertTrue(filters.any { obj ->
-            obj.containsKey(PLUGIN_PARAM_ID) && obj[PLUGIN_PARAM_ID] == 34
-        })
+        assertTrue(
+            filters.any { obj ->
+                obj.containsKey(PLUGIN_PARAM_ID) && obj[PLUGIN_PARAM_ID] == 578
+            }
+        )
+        assertTrue(
+            filters.any { obj ->
+                obj.containsKey(PLUGIN_PARAM_ID) && obj[PLUGIN_PARAM_ID] == 34
+            }
+        )
     }
 
     @Test
@@ -369,24 +382,36 @@ class CommonTopupBillsViewModelTest {
         assertTrue(params.containsKey(PARAM_CART))
 
         val innerParams = params[PARAM_CART] as MutableMap<String, Any>
-        assertTrue(innerParams.any { obj ->
-            obj.key == PARAM_FIELDS && obj.value == mutableListOf<Map<String, String>>()
-        })
-        assertTrue(innerParams.any { obj ->
-            obj.key == EXPRESS_PARAM_INSTANT_CHECKOUT && obj.value == false
-        })
-        assertTrue(innerParams.any { obj ->
-            obj.key == EXPRESS_PARAM_VOUCHER_CODE && obj.value == ""
-        })
-        assertTrue(innerParams.any { obj ->
-            obj.key == EXPRESS_PARAM_DEVICE_ID && obj.value == EXPRESS_PARAM_DEVICE_ID_DEFAULT_VALUE
-        })
-        assertTrue(innerParams.any { obj ->
-            obj.key == TopupBillsViewModel.EXPRESS_PARAM_ADD_TO_BILLS && obj.value == false
-        })
-        assertTrue(innerParams.any { obj ->
-            obj.key == TopupBillsViewModel.EXPRESS_PARAM_CHECK_OTP && obj.value == false
-        })
+        assertTrue(
+            innerParams.any { obj ->
+                obj.key == PARAM_FIELDS && obj.value == mutableListOf<Map<String, String>>()
+            }
+        )
+        assertTrue(
+            innerParams.any { obj ->
+                obj.key == EXPRESS_PARAM_INSTANT_CHECKOUT && obj.value == false
+            }
+        )
+        assertTrue(
+            innerParams.any { obj ->
+                obj.key == EXPRESS_PARAM_VOUCHER_CODE && obj.value == ""
+            }
+        )
+        assertTrue(
+            innerParams.any { obj ->
+                obj.key == EXPRESS_PARAM_DEVICE_ID && obj.value == EXPRESS_PARAM_DEVICE_ID_DEFAULT_VALUE
+            }
+        )
+        assertTrue(
+            innerParams.any { obj ->
+                obj.key == TopupBillsViewModel.EXPRESS_PARAM_ADD_TO_BILLS && obj.value == false
+            }
+        )
+        assertTrue(
+            innerParams.any { obj ->
+                obj.key == TopupBillsViewModel.EXPRESS_PARAM_CHECK_OTP && obj.value == false
+            }
+        )
     }
 
     @Test
@@ -442,7 +467,6 @@ class CommonTopupBillsViewModelTest {
 
         val error = (actualData as Fail).throwable
         Assert.assertEquals(errorGql.message, error.message)
-
     }
 
     @Test
@@ -464,7 +488,6 @@ class CommonTopupBillsViewModelTest {
 
         val error = (actualData as Fail).throwable
         Assert.assertEquals("Testing Error", error.message)
-
     }
 
     @Test

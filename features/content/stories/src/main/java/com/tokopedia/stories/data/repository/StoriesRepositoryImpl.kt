@@ -25,6 +25,8 @@ import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.viewmodel.state.ProductBottomSheetUiState
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -44,7 +46,7 @@ class StoriesRepositoryImpl @Inject constructor(
     private val seenStorage: StoriesSeenStorage,
     private val storiesPrefUtil: StoriesPreferenceUtil,
     private val getReportUseCase: GetUserReportListUseCase,
-    private val postReportUseCase: PostUserReportUseCase,
+    private val postReportUseCase: PostUserReportUseCase
 ) : StoriesRepository {
 
     override suspend fun getStoriesInitialData(data: StoriesRequestModel): StoriesUiModel =
@@ -101,21 +103,21 @@ class StoriesRepositoryImpl @Inject constructor(
     override suspend fun getStoriesProducts(
         shopId: String,
         storyId: String,
-        catName: String,
+        catName: String
     ): ProductBottomSheetUiState {
         return withContext(dispatchers.io) {
             val response = storiesProductUseCase(
                 storiesProductUseCase.convertToMap(
                     StoriesProductUseCase.Param(
                         id = storyId,
-                        catName = catName,
+                        catName = catName
                     )
                 )
             )
             ProductBottomSheetUiState(
                 products = productMapper.mapProducts(response.data, shopId),
                 campaign = productMapper.mapCampaign(response.data.campaign),
-                resultState = ResultState.Success,
+                resultState = ResultState.Success
             )
         }
     }
@@ -135,7 +137,7 @@ class StoriesRepositoryImpl @Inject constructor(
                         atcExternalSource = AtcFromExternalSource.ATC_FROM_STORIES,
                         productName = productName,
                         price = price.toString(),
-                        userId = userSession.userId,
+                        userId = userSession.userId
                     )
                 )
             }.executeOnBackground()
@@ -163,6 +165,13 @@ class StoriesRepositoryImpl @Inject constructor(
         reportDesc: String
     ): Boolean =
         withContext(dispatchers.io) {
+            val source = when {
+                TokopediaUrl.getInstance().TYPE == Env.STAGING && storyDetail.content.type == StoriesDetailItem.StoriesItemContentType.Image -> PostUserReportUseCase.ReportSource.STORY_STAGING_IMAGE
+                storyDetail.content.type == StoriesDetailItem.StoriesItemContentType.Image -> PostUserReportUseCase.ReportSource.STORY_PROD_IMAGE
+                storyDetail.content.type == StoriesDetailItem.StoriesItemContentType.Video -> PostUserReportUseCase.ReportSource.STORY_VIDEO
+                else -> PostUserReportUseCase.ReportSource.UNKNOWN
+            }
+
             val request = postReportUseCase.createParam(
                 channelId = storyDetail.id.toLongOrZero(),
                 mediaUrl = storyDetail.content.data,
@@ -171,7 +180,8 @@ class StoriesRepositoryImpl @Inject constructor(
                 reportDesc = reportDesc,
                 partnerId = storyDetail.author.id.toLongOrZero(),
                 partnerType = PostUserReportUseCase.PartnerType.getTypeValue(storyDetail.author.type.value),
-                reporterId = userSession.userId.toLongOrZero()
+                reporterId = userSession.userId.toLongOrZero(),
+                source = source
             )
 
             postReportUseCase.setRequestParams(request.parameters)

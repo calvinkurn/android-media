@@ -7,7 +7,6 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.Typeface
-import android.location.Location
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.SystemClock
@@ -16,16 +15,17 @@ import android.telephony.TelephonyManager
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.devicefingerprint.submitdevice.model.Screen
 import com.tokopedia.devicefingerprint.submitdevice.payload.DeviceInfoPayload
 import com.tokopedia.encryption.security.sha256
+import com.tokopedia.locationmanager.DeviceLocation
+import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.suspendCancellableCoroutine
+import okhttp3.internal.toLongOrDefault
 import timber.log.Timber
 import java.io.File
 import java.lang.reflect.Field
@@ -33,19 +33,16 @@ import java.math.BigInteger
 import java.net.InetAddress
 import java.nio.ByteOrder
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 import kotlin.math.sqrt
 
 
 class DeviceInfoPayloadCreator @Inject constructor(
         val context: Context,
-        val userSession: UserSessionInterface,
-        val fusedLocationClient: FusedLocationProviderClient
+        val userSession: UserSessionInterface
 ) {
 
     private val TIMESTAMP_FORMAT = "dd/MM/yyyy HH:mm:ss"
@@ -57,9 +54,9 @@ class DeviceInfoPayloadCreator @Inject constructor(
     }
 
     suspend fun createDevicePayload(): DeviceInfoPayload {
-        val location = getLocation()
-        val latitude = location?.latitude ?: 0f
-        val longitude = location?.longitude ?: 0f
+        val location = getLocation(context)
+        val latitude = location.latitude
+        val longitude = location.longitude
 
         return DeviceInfoPayload(
                 deviceOs = "android",
@@ -75,7 +72,7 @@ class DeviceInfoPayloadCreator @Inject constructor(
                 appVersion = Build.VERSION.RELEASE,
                 isFromPlayStore = isFromPlayStore(),
                 uuid = DeviceInfo.getUUID(context),
-                userId = userSession.userId.toLong(),
+                userId = userSession.userId.toLongOrDefault(0L),
                 deviceModel = Build.MODEL,
                 deviceManufacturer = Build.MANUFACTURER,
                 timezone = TimeZone.getDefault().displayName,
@@ -110,35 +107,8 @@ class DeviceInfoPayloadCreator @Inject constructor(
         )
     }
 
-    private suspend fun getLocation(): Location? {
-        val isGrantedFineLocation = ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-        val isGrantedCoarseLocation = ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-        if (isGrantedFineLocation && isGrantedCoarseLocation) {
-            return suspendCancellableCoroutine { cont ->
-                // https://stackoverflow.com/questions/48227346/
-                var hasResumed = false
-                fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                    if (!hasResumed) {
-                        cont.resume(location)
-                        hasResumed = true
-                    }
-                }
-                fusedLocationClient.lastLocation.addOnFailureListener { exception ->
-                    if (!hasResumed) {
-                        cont.resumeWithException(exception)
-                        hasResumed = true
-                    }
-                }
-            }
-        } else {
-            return null
-        }
+    private suspend fun getLocation(context: Context): DeviceLocation {
+        return LocationDetectorHelper(context.applicationContext).getLocationSuspend()
     }
 
     private fun getEncodedInstalledApps(context: Context): List<String> {

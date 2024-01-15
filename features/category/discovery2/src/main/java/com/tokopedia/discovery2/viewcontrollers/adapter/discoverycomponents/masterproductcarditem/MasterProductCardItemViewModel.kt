@@ -30,6 +30,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 private const val REGISTER = "REGISTER"
 private const val UNREGISTER = "UNREGISTER"
@@ -80,7 +81,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
             dataItem.stockWording = getStockWord(dataItem)
         } else if (dataItem.stockWording?.color.isNullOrEmpty()) {
             dataItem.stockWording?.let {
-                it.color = getStockColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_20)
+                it.color = getStockColor(unifyprinciplesR.color.Unify_NN950_20)
             }
         }
     }
@@ -233,7 +234,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
 
     private fun getStockWord(dataItem: DataItem): StockWording {
         val stockWordData = StockWording(title = "")
-        var stockWordTitleColour = getStockColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950_20)
+        var stockWordTitleColour = getStockColor(unifyprinciplesR.color.Unify_NN950_20)
         var stockWordTitle = ""
         var stockAvailableCount: String? = ""
         dataItem.let {
@@ -252,7 +253,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
                         customStock <= threshold -> {
                             stockWordTitle = getStockText(R.string.tersisa)
                             stockAvailableCount = customStock.toString()
-                            stockWordTitleColour = getStockColor(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+                            stockWordTitleColour = getStockColor(unifyprinciplesR.color.Unify_RN500)
                         }
                         else -> {
                             stockWordTitle = getStockText(R.string.terjual)
@@ -319,7 +320,11 @@ class MasterProductCardItemViewModel(val application: Application, val component
             components.name == ComponentNames.ShopOfferHeroBrandProductItem.componentName
         ) {
             getComponent(components.parentComponentId, components.pageEndPoint)?.let {
-                it.position
+                if (!it.parentSectionId.isNullOrEmpty() && it.isBackgroundPresent) {
+                    it.parentComponentPosition
+                } else {
+                    it.position
+                }
             } ?: CAROUSEL_NOT_FOUND
         } else {
             CAROUSEL_NOT_FOUND

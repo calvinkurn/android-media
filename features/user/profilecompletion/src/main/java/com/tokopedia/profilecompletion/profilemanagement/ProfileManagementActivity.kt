@@ -2,6 +2,7 @@ package com.tokopedia.profilecompletion.profilemanagement
 
 import android.os.Bundle
 import android.view.Menu
+import android.webkit.CookieManager
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
@@ -16,10 +17,12 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.profilecompletion.R
+import com.tokopedia.profilecompletion.data.SeamlessData
 import com.tokopedia.profilecompletion.databinding.ActivityProfileManagementBinding
 import com.tokopedia.profilecompletion.di.ActivityComponentFactory
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
-import com.tokopedia.profilecompletion.domain.GetUrlProfileManagementResult
+import com.tokopedia.profilecompletion.domain.GetGotoCookieResult
+import com.tokopedia.utils.time.TimeHelper
 import com.tokopedia.utils.view.binding.internal.findRootView
 import com.tokopedia.webview.BaseSessionWebViewFragment
 import com.tokopedia.webview.BaseSimpleWebViewActivity
@@ -65,7 +68,28 @@ class ProfileManagementActivity: BaseSimpleWebViewActivity(), HasComponent<Profi
 
         initObserver()
         initListener()
-        viewModel.getProfileManagementData()
+
+        if (isCookieExpired()) {
+            viewModel.getProfileManagementData()
+        } else {
+            setSuccessLayout(GetGotoCookieResult.Success(SeamlessData()))
+        }
+    }
+
+    private fun isCookieExpired(): Boolean {
+        return try {
+            val cookiesSaved = CookieManager.getInstance().getCookie(viewModel.url)
+            val cookiesList1 = cookiesSaved.split(";")
+            val expired = cookiesList1.find { (it.contains(COOKIE_KEY_EXPIRED)) }
+
+            val currentTimeStamp = TimeHelper.getNowTimeStamp()
+            val expiredTimeList = expired?.split("=")
+            val expiredTime = expiredTimeList?.get(1)?.toLong()
+
+            currentTimeStamp >= expiredTime.orZero()
+        } catch (ignore: Exception) {
+            true
+        }
     }
 
     private fun supportGotoTheme() {
@@ -111,21 +135,36 @@ class ProfileManagementActivity: BaseSimpleWebViewActivity(), HasComponent<Profi
     private fun initObserver() {
         viewModel.getUrlProfileManagement.observe(this) {
             when(it) {
-                is GetUrlProfileManagementResult.Loading -> {
+                is GetGotoCookieResult.Loading -> {
                     setupLayout(it)
                 }
-                is GetUrlProfileManagementResult.Success -> {
-                    ProfileManagementTracker.sendSuccessLoadGotoProfilePageEvent()
-                    setupLayout(it)
-                    setupFragment(savedInstance = null)
+                is GetGotoCookieResult.Success -> {
+                    setCookie(
+                        url = viewModel.url,
+                        seamlessData = it.seamlessData
+                    )
+                    setSuccessLayout(it)
                 }
-                is GetUrlProfileManagementResult.Failed -> {
+                is GetGotoCookieResult.Failed -> {
                     ProfileManagementTracker.sendFailedLoadGotoProfilePageEvent()
                     setupErrorLayout(it.throwable)
                     setupLayout(it)
                 }
             }
         }
+    }
+
+    private fun setSuccessLayout(state: GetGotoCookieResult) {
+        ProfileManagementTracker.sendSuccessLoadGotoProfilePageEvent()
+        setupLayout(state)
+        setupFragment(savedInstance = null)
+    }
+
+    private fun setCookie(url: String, seamlessData: SeamlessData) {
+        val cookieManager = CookieManager.getInstance()
+        cookieManager.setCookie(url, "$COOKIE_KEY_GT_SID=${seamlessData.token}")
+        cookieManager.setCookie(url, "$COOKIE_KEY_EXPIRED=${seamlessData.expiredAt}")
+        cookieManager.setCookie(url, COOKIE_BACK_URL)
     }
 
     private fun initListener() {
@@ -139,12 +178,12 @@ class ProfileManagementActivity: BaseSimpleWebViewActivity(), HasComponent<Profi
         }
     }
 
-    private fun setupLayout(state: GetUrlProfileManagementResult) {
+    private fun setupLayout(state: GetGotoCookieResult) {
         binding?.apply {
-            globalError.showWithCondition(state is GetUrlProfileManagementResult.Failed)
-            loader.showWithCondition(state is GetUrlProfileManagementResult.Loading)
-            tvLoader.showWithCondition(state is GetUrlProfileManagementResult.Loading)
-            parentView.showWithCondition(state is GetUrlProfileManagementResult.Success)
+            globalError.showWithCondition(state is GetGotoCookieResult.Failed)
+            loader.showWithCondition(state is GetGotoCookieResult.Loading)
+            tvLoader.showWithCondition(state is GetGotoCookieResult.Loading)
+            parentView.showWithCondition(state is GetGotoCookieResult.Success)
         }
     }
 
@@ -197,6 +236,12 @@ class ProfileManagementActivity: BaseSimpleWebViewActivity(), HasComponent<Profi
         setContentView(binding?.root)
         toolbar = binding?.toolbar
         setUpActionBar(toolbar)
+    }
+
+    companion object {
+        private const val COOKIE_KEY_GT_SID = "GT_SID"
+        private const val COOKIE_KEY_EXPIRED = "EXPIRED"
+        private const val COOKIE_BACK_URL = "GT_SML_BACK_URL=tokopedia://back"
     }
 
 }

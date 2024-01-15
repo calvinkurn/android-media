@@ -170,7 +170,7 @@ class ShopHomeBannerProductGroupViewPagerViewHolder(
                     val screenWidth = getScreenWidth()
 
                     if (tabTotalWidth < screenWidth || tabs.size <= THREE_TAB) {
-                        tabsUnify.customTabMode = TabLayout.MODE_FIXED
+                        tabsUnify.customTabMode = TabLayout.MODE_AUTO
                         tabsUnify.customTabGravity = TabLayout.GRAVITY_FILL
                     } else {
                         tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE

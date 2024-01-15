@@ -77,6 +77,7 @@ object CartPageAnalyticsUtil {
             setDimension136(cartItemHolderData.cartStringOrder)
             setDimension137(cartItemHolderData.cartBmGmTickerData.bmGmCartInfoData.bmGmData.offerId.toString())
             setCampaignId(cartItemHolderData.campaignId)
+            setImpressionAlgorithm(if (!cartItemHolderData.isError) cartItemHolderData.productInformation.firstOrNull() else "")
             if (cartItemHolderData.shopCartShopGroupTickerData.tickerText.isNotBlank()) {
                 val fulfillText =
                     if (cartItemHolderData.shopCartShopGroupTickerData.state == CartShopGroupTickerState.SUCCESS_AFFORD) {
