@@ -801,10 +801,8 @@ open class ShopPageHomeFragment :
                         setHomeTabBackgroundGradient()
                         setFestivityRvDecoration()
                         setHomeTabBackgroundPattern()
-                        onLoadWidgetFinish()
                     }
                     is Fail -> {
-                        onLoadWidgetFinish()
                         val throwable = it.throwable
                         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
                         if (throwable is ShopAsyncErrorException) {
