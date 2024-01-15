@@ -1924,6 +1924,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check play shorts appLink then should return tokopedia internal play shorts in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://play-shorts"
+        assertEqualsDeepLinkMapper(ApplinkConst.PLAY_SHORTS, expectedDeepLink)
+    }
+
+    @Test
     fun `check add name profile appLink then should return tokopedia internal add name profile in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/manage-name"
         assertEqualsDeepLinkMapper(ApplinkConst.ADD_NAME_PROFILE, expectedDeepLink)
