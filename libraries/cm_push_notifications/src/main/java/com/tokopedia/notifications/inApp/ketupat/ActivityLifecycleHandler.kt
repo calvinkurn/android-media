@@ -9,6 +9,7 @@ import android.widget.FrameLayout
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.notifications.domain.data.GamiScratchCardPreEvaluate
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import java.lang.ref.WeakReference
@@ -16,19 +17,25 @@ import java.lang.ref.WeakReference
 open class ActivityLifecycleHandler: Application.ActivityLifecycleCallbacks {
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         val activityName = activity::class.java.simpleName
-        val userSession = createUserSession(activity)
         if (activityName == HomePageActivity) {
-            showLottiePopup(activity)
+            getScratchCardData(activity)
         }
     }
 
-    open fun showLottiePopup(activity: Activity) {
+    open fun getScratchCardData(activity: Activity) {
+        val userSession = createUserSession(activity)
+        AnimationPopupGqlGetData().getAnimationScratchPopupData({
+                showLottiePopup(activity, getSlugData(it))
+        },{})
+    }
+
+    open fun showLottiePopup(activity: Activity, slug: String?) {
         try {
             val currentActivity: WeakReference<Activity> =
                 WeakReference(activity)
             val ketupatAnimationPopup = KetupatAnimationPopup(activity.applicationContext, null, activity)
             val weakActivity = currentActivity.get() ?: return
-            ketupatAnimationPopup.loadLottieAnimation()
+            ketupatAnimationPopup.loadLottieAnimation(slug)
             val root = weakActivity.window
                 .decorView
                 .findViewById<View>(android.R.id.content)
@@ -44,6 +51,9 @@ open class ActivityLifecycleHandler: Application.ActivityLifecycleCallbacks {
         }
     }
 
+    private fun getSlugData(gamiScratchCardData: GamiScratchCardPreEvaluate?): String? {
+        return gamiScratchCardData?.scratchCard?.slug
+    }
     private fun createUserSession(activity: Activity): UserSessionInterface =
         UserSession(activity)
 

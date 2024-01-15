@@ -26,7 +26,7 @@
             android:layout_gravity="center"
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
-            app:lottie_rawRes="@raw/ketupat_interaction" />
+            app:lottie_rawRes="@raw/ketupat_interaction_latest" />
     </LinearLayout>
 
     <LinearLayout
@@ -36,45 +36,11 @@
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/lottie_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/lottie_container">
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iv_coupon1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/coupon"
-            android:visibility="visible" />
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iv_coupon2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:src="@drawable/coupon"
-            android:visibility="gone" />
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iv_coupon3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:src="@drawable/coupon"
-            android:visibility="gone" />
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iv_coupon4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:src="@drawable/coupon"
-            android:visibility="gone" />
     </LinearLayout>
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -93,12 +59,11 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginEnd="44dp"
-        android:layout_marginBottom="152dp"
         android:background="@drawable/ellipse"
         android:visibility="visible"
         android:padding="2dp"
         app:icon_name="CLOSE"
-        app:layout_constraintBottom_toTopOf="@id/coupon_container"
+        app:layout_constraintBottom_toTopOf="@id/lottie_container"
         app:layout_constraintEnd_toEndOf="@+id/lottie_container" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -115,7 +80,7 @@
         android:id="@+id/animationErrorState"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/dp_64"
+        android:layout_marginHorizontal="74dp"
         app:cardBackgroundColor="@color/Unify_GN500"
         app:cardCornerRadius="@dimen/dp_20"
         android:visibility="gone"
@@ -133,6 +98,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginHorizontal="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_36"
                 android:text="Oops, ada gangguan"
                 android:textAlignment="center"
@@ -154,6 +120,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginHorizontal="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_24"
                 android:layout_marginBottom="@dimen/dp_24"
                 android:text="Error Code: 1234"
@@ -168,7 +135,7 @@
         android:id="@+id/btnErrorState"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
+        android:layout_marginHorizontal="24dp"
         android:layout_marginTop="50dp"
         android:visibility="gone"
         android:text="Coba Lagi"

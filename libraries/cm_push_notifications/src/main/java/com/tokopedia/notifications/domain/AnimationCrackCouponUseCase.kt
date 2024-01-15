@@ -16,12 +16,13 @@ class AnimationCrackCouponUseCase @Inject constructor(graphqlRepository: Graphql
 
     fun getAnimationCrackCouponData(
         onSuccess: (GamiScratchCardCrack) -> Unit,
-        onError: (Throwable) -> Unit
+        onError: (Throwable) -> Unit,
+        slug: String?
     ) {
         try {
             this.setTypeClass(AnimationCrackCouponResponse::class.java)
             this.setGraphqlQuery(GetCrackCouponDataGQLQuery())
-            this.setRequestParams(getRequestParams())
+            this.setRequestParams(getRequestParams(slug))
             this.execute(
                 { result ->
                     if (result.gamiScratchCardCrack.resultStatus?.code == "200") {
@@ -38,9 +39,12 @@ class AnimationCrackCouponUseCase @Inject constructor(graphqlRepository: Graphql
         }
     }
 
-    private fun getRequestParams(): HashMap<String, Any> {
+    private fun getRequestParams(slug: String?): HashMap<String, Any> {
         val requestParams = HashMap<String, Any>()
-        requestParams[SLUG] = "some-slug-here"
+        requestParams[SLUG] = ""
+        slug?.let {
+            requestParams[SLUG] = it
+        }
         requestParams[SOURCE] = "tokopedia-home-page"
         return requestParams
     }

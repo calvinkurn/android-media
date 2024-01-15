@@ -1,6 +1,7 @@
 package com.tokopedia.notifications.inApp.ketupat
 
-import androidx.core.view.marginBottom
+import android.view.LayoutInflater
+import android.view.View
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -9,21 +10,24 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.notifications.databinding.LayoutInappAnimationBinding
 import com.tokopedia.notifications.domain.data.Benefits
 import com.tokopedia.notifications.domain.data.GamiScratchCardCrack
+import com.tokopedia.notifications.R
+import com.tokopedia.unifycomponents.ImageUnify
 
-class CrackCouponHandler(val binding: LayoutInappAnimationBinding) {
+
+class CrackCouponHandler(val binding: LayoutInappAnimationBinding, val layoutInflater: LayoutInflater) {
 
     private var numberOfCoupons = 0
     private var numberOfRetry = 0
 
-     fun getCouponData() {
+     fun getCouponData(slug: String?) {
         AnimationPopupGqlGetData().getAnimationCrackCouponData({
             showPopupAnimation()
             hideCouponErrorState()
             handleCouponData(it)
         },{
-            handleCouponError()
+            handleCouponError(slug)
             hidePopupAnimationAndCoupons()
-        })
+        }, slug)
     }
 
     private fun showPopupAnimation() {
@@ -34,16 +38,18 @@ class CrackCouponHandler(val binding: LayoutInappAnimationBinding) {
         gamiScratchCardCrack.benefits?.size?.let {
             numberOfCoupons = it
         }
-        loadCoupons(numberOfCoupons, gamiScratchCardCrack)
+        createCoupons(numberOfCoupons, gamiScratchCardCrack)
+//        loadCoupons(numberOfCoupons, gamiScratchCardCrack)
     }
 
-    private fun handleCouponError() {
+    private fun handleCouponError(slug: String?) {
         showCouponErrorState()
         binding.btnErrorState.setOnClickListener {
             if (numberOfRetry < 0) {
                 numberOfRetry += 1
-                getCouponData()
+                getCouponData(slug)
                 hideCouponErrorState()
+                binding.loaderAnimation.visible()
             } else {
                 binding.btnErrorState.gone()
             }
@@ -56,6 +62,7 @@ class CrackCouponHandler(val binding: LayoutInappAnimationBinding) {
             animationErrorState.visible()
             btnErrorState.visible()
         }
+        setCloseButtonMargin(362)
     }
 
     private fun hidePopupAnimationAndCoupons() {
@@ -65,46 +72,19 @@ class CrackCouponHandler(val binding: LayoutInappAnimationBinding) {
 
     private fun hideCouponErrorState() {
         with(binding) {
-            loaderAnimation.visible()
             animationErrorState.gone()
             btnErrorState.gone()
 
         }
     }
 
-    private fun loadCoupons(numberOfCoupons: Int, gamiScratchCardCrack: GamiScratchCardCrack) {
-        with(binding) {
-            gamiScratchCardCrack.cta?.let {
-                ivButtonShare.loadImage(it.imageURL)
-            }
-            gamiScratchCardCrack.benefits?.let {
-                when (numberOfCoupons) {
-                    1 -> {
-                        ivCoupon1.loadImage(getCouponURl(0, it))
-                    }
-
-                    2 -> {
-                        ivCoupon1.loadImage(getCouponURl(0, it))
-                        ivCoupon2.loadImage(getCouponURl(1, it))
-                    }
-
-                    3 -> {
-                        ivCoupon1.loadImage(getCouponURl(0, it))
-                        ivCoupon2.loadImage(getCouponURl(1, it))
-                        ivCoupon3.loadImage(getCouponURl(2, it))
-                    }
-
-                    4 -> {
-                        ivCoupon1.loadImage(getCouponURl(0, it))
-                        ivCoupon2.loadImage(getCouponURl(1, it))
-                        ivCoupon3.loadImage(getCouponURl(2, it))
-                        ivCoupon4.loadImage(getCouponURl(3, it))
-                    }
-
-                    else -> {
-
-                    }
-                }
+    private fun createCoupons(numberOfCoupons: Int, gamiScratchCardCrack: GamiScratchCardCrack) {
+        gamiScratchCardCrack.benefits?.let {
+            for (i in 0 until numberOfCoupons) {
+                val coupon = layoutInflater.inflate(R.layout.layout_coupon_animation, binding.couponContainer, false)
+                val couponImage = (coupon as View).findViewById<ImageUnify>(R.id.iv_coupon)
+                couponImage.loadImage(getCouponURl(i, it))
+                binding.couponContainer.addView(coupon)
             }
         }
     }
@@ -116,53 +96,13 @@ class CrackCouponHandler(val binding: LayoutInappAnimationBinding) {
         return ""
     }
 
-     fun showCoupons() {
-        with(binding) {
-            ivButtonShare.visible()
-            when (numberOfCoupons) {
-                1 -> {
-                    ivCoupon1.visible()
-                }
-
-                2 -> {
-                    ivCoupon1.visible()
-                    ivCoupon2.visible()
-                    setCloseButtonMargin(372)
-                }
-
-                3 -> {
-                    ivCoupon1.visible()
-                    ivCoupon2.visible()
-                    ivCoupon3.visible()
-                    setCloseButtonMargin(202)
-                }
-
-                4 -> {
-                    ivCoupon1.visible()
-                    ivCoupon2.visible()
-                    ivCoupon3.visible()
-                    ivCoupon4.visible()
-                    setCloseButtonMargin(102)
-                }
-
-                else -> {
-
-                }
-            }
-        }
-    }
-
     private fun hideCoupons() {
         with(binding) {
             ivButtonShare.gone()
-            ivCoupon1.invisible()
-            ivCoupon2.gone()
-            ivCoupon3.gone()
-            ivCoupon4.gone()
         }
     }
 
      private fun setCloseButtonMargin(bottomMargin: Int) {
-        binding.icClose.setMargin(0,0, 144, bottomMargin)
+        binding.icClose.setMargin(0,0, 154, bottomMargin)
     }
 }

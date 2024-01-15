@@ -38,8 +38,8 @@ open class MyGestureListener {
     private fun slicedInRange(x1: Float, y1: Float, x2: Float, y2: Float, direction: Direction): Boolean {
         if (Direction.inRange(x1, 0, 100)
             && Direction.inRange(x2, 0, 100)
-            && Direction.inRange(y1, 30, 75)
-            && Direction.inRange(y2, 30, 75)
+            && Direction.inRange(y1, 5, 45)
+            && Direction.inRange(y2, 5, 45)
             && direction != Direction.horizontol
             && direction != Direction.vertical) {
             return true
@@ -73,8 +73,8 @@ open class MyGestureListener {
 
     private fun isHorizontalCut(direction: Direction, percentageY1: Float, percentageY2: Float): Boolean {
         if (direction == Direction.horizontol
-            && Direction.inRange(percentageY1, 45, 67)
-            && Direction.inRange(percentageY2, 45, 67)) {
+            && Direction.inRange(percentageY1, 17, 35)
+            && Direction.inRange(percentageY2, 17, 35)) {
             return true
         }
         return false

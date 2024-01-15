@@ -15,34 +15,30 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.airbnb.lottie.RenderMode
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.databinding.LayoutInappAnimationBinding
-import com.tokopedia.notifications.domain.data.Benefits
-import com.tokopedia.notifications.domain.data.GamiScratchCardCrack
 import kotlinx.android.synthetic.main.layout_inapp_animation.view.*
 
 
 open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val activity: Activity):
     ConstraintLayout(context, attrs) {
 
+    private val layoutInflater = LayoutInflater.from(context)
     private val binding =
-       LayoutInappAnimationBinding.inflate(LayoutInflater.from(context), this, true)
+       LayoutInappAnimationBinding.inflate(layoutInflater, this, true)
     private var eventSlicingStart: MotionEvent? = null
     private var eventSlicingEnd: MotionEvent? = null
-    private var crackCouponHandler = CrackCouponHandler(binding)
+    private var crackCouponHandler = CrackCouponHandler(binding, layoutInflater)
 
-    open fun loadLottieAnimation() {
+    open fun loadLottieAnimation(slug: String?) {
          handleLottieSlice()
          binding.lottieViewPopup.setRenderMode(RenderMode.HARDWARE)
          binding.lottieViewPopup.setMinFrame("Tutorial")
          binding.lottieViewPopup.setMaxFrame(119)
          onCloseClick(binding.root)
          onParentContainerClick(binding.root)
-         crackCouponHandler.getCouponData()
+         crackCouponHandler.getCouponData(slug)
     }
 
     private fun handleLottieSlice() {
@@ -112,7 +108,6 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
                 binding.lottieViewPopup.setMinFrame(120)
             }
         }
-        crackCouponHandler.showCoupons()
         playPrizeSound(activity.applicationContext)
         binding.lottieViewPopup.loop(false)
         couponAnimation()
@@ -140,6 +135,7 @@ open class KetupatAnimationPopup(context: Context, attrs: AttributeSet?, val act
             (view.parent as ViewGroup).removeView(view)
         }
         binding.parentContainer.setOnClickListener(onClickListener)
+        binding.ivButtonShare.setOnClickListener(onClickListener)
     }
 
     private fun couponAnimation() {

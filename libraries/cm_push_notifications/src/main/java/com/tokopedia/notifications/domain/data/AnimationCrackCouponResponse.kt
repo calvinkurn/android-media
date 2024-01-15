@@ -27,7 +27,7 @@ data class GamiScratchCardCrack(
     val cta: Cta? = Cta(),
     @SerializedName("assets")
     @Expose
-    val assets: Assets? = Assets()
+    val assets: List<Assets>?  = emptyList()
 )
 
 data class Cta(
