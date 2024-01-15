@@ -10,6 +10,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.domain.data.GamiScratchCardPreEvaluate
+import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import java.lang.ref.WeakReference
@@ -18,7 +19,12 @@ open class ActivityLifecycleHandler: Application.ActivityLifecycleCallbacks {
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         val activityName = activity::class.java.simpleName
         if (activityName == HomePageActivity) {
-            getScratchCardData(activity)
+            //get active campaigns list for in app
+            //if list size > 0 show in app and return
+            //else show popup
+            if(!CMInAppManager.getInstance().existsActiveInAppCampaign(HomePageActivity, true)){
+                getScratchCardData(activity)
+            }
         }
     }
 

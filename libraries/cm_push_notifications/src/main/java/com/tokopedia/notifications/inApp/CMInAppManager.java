@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.tokopedia.notifications.common.InAppRemoteConfigKey.ENABLE_NEW_INAPP_LOCAL_FETCH;
 import static com.tokopedia.notifications.common.InAppRemoteConfigKey.ENABLE_NEW_INAPP_LOCAL_SAVE;
@@ -161,6 +162,17 @@ public class CMInAppManager implements CmInAppListener,
                         CMInAppManager.this.notificationsDataResult((List<CMInApp>) inAppList,
                                 entityHashCode, name)
                 );
+    }
+
+    public boolean existsActiveInAppCampaign(String name, boolean isActivity){
+        AtomicBoolean activityValidInAppCampaign = new AtomicBoolean(false);
+        InAppLocalDatabaseController.Companion.getInstance(application, RepositoryManager.getInstance())
+                .clearExpiredInApp();
+        InAppLocalDatabaseController.Companion.getInstance(application, RepositoryManager.getInstance())
+                .getInAppData(name, isActivity, inAppList ->
+                        activityValidInAppCampaign.set(canShowInApp((List<CMInApp>) inAppList))
+                );
+        return activityValidInAppCampaign.get();
     }
 
     private Boolean isFetchInAppNewFlowEnabled() {
