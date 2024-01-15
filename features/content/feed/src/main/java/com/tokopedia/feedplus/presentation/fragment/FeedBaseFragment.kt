@@ -302,28 +302,12 @@ class FeedBaseFragment :
             ContentCreationTypeEnum.POST -> {
                 feedNavigationAnalytics.eventClickCreatePost()
 
-                val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2).apply {
-                    putExtra(
-                        ContentCreationConsts.IS_CREATE_POST_AS_BUYER,
-                        data.authorType.asBuyer
-                    )
-                    putExtra(
-                        ContentCreationConsts.APPLINK_AFTER_CAMERA_CAPTURE,
-                        ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
-                    )
-                    putExtra(
-                        ContentCreationConsts.MAX_MULTI_SELECT_ALLOWED,
-                        ContentCreationConsts.VALUE_MAX_MULTI_SELECT_ALLOWED
-                    )
-                    putExtra(
-                        ContentCreationConsts.TITLE,
-                        getString(creationcommonR.string.content_creation_post_as_label)
-                    )
-                    putExtra(
-                        ContentCreationConsts.APPLINK_FOR_GALLERY_PROCEED,
-                        ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2
-                    )
-                }
+                val intent = ContentCreationConsts.getPostIntent(
+                    context = context,
+                    asABuyer =  data.authorType.asBuyer,
+                    title = getString(creationcommonR.string.content_creation_post_as_label),
+                    sourcePage = "",
+                )
                 startActivity(intent)
                 TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
             }
@@ -512,105 +496,98 @@ class FeedBaseFragment :
     }
 
     private fun observeUpload() {
-        // we don't use repeatOnLifecycle here as we want to listen to upload receivers even when the page is not fully resumed
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            creationUploader
-                .observe()
-                .collect { uploadResult ->
-                    when (uploadResult) {
-                        is CreationUploadResult.Empty -> {
-                            binding.uploadView.hide()
-                        }
-
-                        is CreationUploadResult.Upload -> {
-                            binding.uploadView.show()
-                            binding.uploadView.setUploadProgress(uploadResult.progress)
-                            binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
-                        }
-
-                        is CreationUploadResult.OtherProcess -> {
-                            binding.uploadView.show()
-                            binding.uploadView.setOtherProgress(uploadResult.progress)
-                            binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
-                        }
-
-                        is CreationUploadResult.Success -> {
-                            binding.uploadView.hide()
-
-                            when (val uploadData = uploadResult.data) {
-                                is CreationUploadData.Post -> {
-                                    showNormalToaster(
-                                        getString(R.string.feed_upload_content_success),
-                                        duration = Toaster.LENGTH_LONG
-                                    )
-                                }
-
-                                is CreationUploadData.Shorts -> {
-                                    showNormalToaster(
-                                        getString(R.string.feed_upload_content_success),
-                                        duration = Toaster.LENGTH_LONG,
-                                        actionText = getString(R.string.feed_upload_shorts_see_video),
-                                        actionListener = {
-                                            playShortsUploadAnalytic.clickRedirectToChannelRoom(
-                                                uploadResult.data.authorId,
-                                                uploadResult.data.authorType,
-                                                uploadResult.data.creationId
-                                            )
-                                            router.route(
-                                                requireContext(),
-                                                ApplinkConst.PLAY_DETAIL,
-                                                uploadResult.data.creationId
-                                            )
-                                        }
-                                    )
-                                }
-
-                                is CreationUploadData.Stories -> {
-                                    showNormalToaster(
-                                        getString(R.string.feed_upload_story_success),
-                                        duration = Toaster.LENGTH_LONG,
-                                        actionText = getString(R.string.feed_upload_shorts_see_video),
-                                        actionListener = {
-                                            router.route(
-                                                requireContext(),
-                                                uploadData.applink
-                                            )
-                                        }
-                                    )
-                                }
-
-                                else -> {}
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                creationUploader
+                    .observe()
+                    .collect { uploadResult ->
+                        when (uploadResult) {
+                            is CreationUploadResult.Empty -> {
+                                binding.uploadView.hide()
                             }
-                        }
+                            is CreationUploadResult.Upload -> {
+                                binding.uploadView.show()
+                                binding.uploadView.setUploadProgress(uploadResult.progress)
+                                binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
+                            }
+                            is CreationUploadResult.OtherProcess -> {
+                                binding.uploadView.show()
+                                binding.uploadView.setOtherProgress(uploadResult.progress)
+                                binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
+                            }
+                            is CreationUploadResult.Success -> {
+                                binding.uploadView.hide()
 
-                        is CreationUploadResult.Failed -> {
-                            binding.uploadView.show()
-                            binding.uploadView.setFailed()
-                            binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
-                            binding.uploadView.setListener(object : UploadInfoView.Listener {
-                                override fun onRetryClicked(view: UploadInfoView) {
-                                    launch {
-                                        creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
+                                when (val uploadData = uploadResult.data) {
+                                    is CreationUploadData.Post -> {
+                                        showNormalToaster(
+                                            getString(R.string.feed_upload_content_success),
+                                            duration = Toaster.LENGTH_LONG
+                                        )
                                     }
+                                    is CreationUploadData.Shorts -> {
+                                        showNormalToaster(
+                                            getString(R.string.feed_upload_content_success),
+                                            duration = Toaster.LENGTH_LONG,
+                                            actionText = getString(R.string.feed_upload_shorts_see_video),
+                                            actionListener = {
+                                                playShortsUploadAnalytic.clickRedirectToChannelRoom(
+                                                    uploadResult.data.authorId,
+                                                    uploadResult.data.authorType,
+                                                    uploadResult.data.creationId
+                                                )
+                                                router.route(
+                                                    requireContext(),
+                                                    ApplinkConst.PLAY_DETAIL,
+                                                    uploadResult.data.creationId
+                                                )
+                                            }
+                                        )
+                                    }
+                                    is CreationUploadData.Stories -> {
+                                        showNormalToaster(
+                                            getString(R.string.feed_upload_story_success),
+                                            duration = Toaster.LENGTH_LONG,
+                                            actionText = getString(R.string.feed_upload_shorts_see_video),
+                                            actionListener = {
+                                                router.route(
+                                                    requireContext(),
+                                                    uploadData.applink
+                                                )
+                                            }
+                                        )
+                                    }
+                                    else -> {}
                                 }
-
-                                override fun onCloseWhenFailedClicked(view: UploadInfoView) {
-                                    launch {
-                                        creationUploader.deleteTopQueue()
-                                        creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
-                                        binding.uploadView.hide()
+                            }
+                            is CreationUploadResult.Failed -> {
+                                binding.uploadView.show()
+                                binding.uploadView.setFailed()
+                                binding.uploadView.setThumbnail(uploadResult.data.notificationCover)
+                                binding.uploadView.setListener(object : UploadInfoView.Listener {
+                                    override fun onRetryClicked(view: UploadInfoView) {
+                                        launch {
+                                            creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
+                                        }
                                     }
 
-                                    if (uploadResult.data.uploadType == CreationUploadType.Post) {
-                                        feedMainViewModel.deletePostCache()
+                                    override fun onCloseWhenFailedClicked(view: UploadInfoView) {
+                                        launch {
+                                            creationUploader.deleteTopQueue()
+                                            creationUploader.retry(uploadResult.data.notificationIdAfterUpload)
+                                            binding.uploadView.hide()
+                                        }
+
+                                        if (uploadResult.data.uploadType == CreationUploadType.Post) {
+                                            feedMainViewModel.deletePostCache()
+                                        }
                                     }
-                                }
-                            })
+                                })
+                            }
+                            else -> {}
                         }
-
-                        else -> {}
                     }
-                }
+            }
         }
     }
 

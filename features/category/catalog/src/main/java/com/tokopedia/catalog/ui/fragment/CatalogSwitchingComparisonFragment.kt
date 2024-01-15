@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.base.BaseSimpleListFragment
@@ -171,6 +172,7 @@ class CatalogSwitchingComparisonFragment :
         binding?.globalError?.setActionClickListener {
             loadInitialData()
         }
+        hideKeyboardWhenTouchOutside()
     }
 
     override fun loadInitialData() {
@@ -448,12 +450,13 @@ class CatalogSwitchingComparisonFragment :
     }
 
     private fun resetCatalogSelection() {
-        catalogSelectionAdapter?.itemList = defaultComparisonlist
+        catalogSelectionAdapter?.itemList?.clear()
+        catalogSelectionAdapter?.itemList?.addAll(defaultComparisonlist)
         adapter?.currentCatalogSelection = defaultComparison
         compareCatalogId = defaultComparison
         catalogSelectionAdapter?.notifyDataSetChanged()
         adapter?.notifyItemRangeChanged(Int.ZERO, adapter?.currentList?.size.orZero())
-        binding?.btnSeeCompare?.isEnabled = true
+        checkingEnableOrDisableButtonSeeCompare()
     }
 
     private fun checkingEnableOrDisableButtonSeeCompare() {
@@ -543,5 +546,50 @@ class CatalogSwitchingComparisonFragment :
     override fun onFragmentBackPressed(): Boolean {
         showCancelSwitch()
         return true
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun hideKeyboardWhenTouchOutside() {
+        binding?.rvCatalogList?.setOnTouchListener { _, _ ->
+            activity?.apply {
+                KeyboardHandler.hideSoftKeyboard(this)
+            }
+            false
+        }
+
+        binding?.rvCatalogSelection?.setOnTouchListener { _, event ->
+            activity?.apply {
+                KeyboardHandler.hideSoftKeyboard(this)
+            }
+            false
+        }
+
+        binding?.divider?.setOnTouchListener { _, _ ->
+            activity?.apply {
+                KeyboardHandler.hideSoftKeyboard(this)
+            }
+            true
+        }
+
+        binding?.toolbar?.setOnTouchListener { _, _ ->
+            activity?.apply {
+                KeyboardHandler.hideSoftKeyboard(this)
+            }
+            true
+        }
+
+        binding?.clSearch?.setOnTouchListener { _, _ ->
+            activity?.apply {
+                KeyboardHandler.hideSoftKeyboard(this)
+            }
+            true
+        }
+
+        binding?.mainLayout?.setOnTouchListener { _, _ ->
+            activity?.apply {
+                KeyboardHandler.hideSoftKeyboard(this)
+            }
+            true
+        }
     }
 }

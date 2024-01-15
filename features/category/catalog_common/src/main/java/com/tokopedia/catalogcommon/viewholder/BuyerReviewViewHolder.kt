@@ -5,10 +5,10 @@ import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.RatingBar
 import androidx.annotation.LayoutRes
-import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.adapter.ItemProductImageReviewAdapter
@@ -19,13 +19,10 @@ import com.tokopedia.catalogcommon.util.getBoldSpan
 import com.tokopedia.catalogcommon.util.getClickableSpan
 import com.tokopedia.catalogcommon.util.getGreenColorSpan
 import com.tokopedia.catalogcommon.util.setSpanOnText
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.setLayoutHeight
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.JvmMediaLoader
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -38,8 +35,8 @@ class BuyerReviewViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.widget_buyer_review
-        private const val MAX_CHARS = 135
-        private const val MARGIN_VERTICAL = 16
+        private const val MAX_LINE = 3
+        private const val MAX_LINE_WITHOUT_IMAGES = 7
     }
 
     private val binding: WidgetBuyerReviewBinding? by viewBinding()
@@ -48,33 +45,23 @@ class BuyerReviewViewHolder(
     private var widgetTitle: Typography? = null
     private var carouselData: ArrayList<Any>? = null
     private var cardData: BuyerReviewUiModel? = null
-    private var carouselHeights = listOf<Int>()
 
     init {
         widgetTitle = binding?.tgpBuyerReviewTitle
         carouselBuyerReview = binding?.carouselBuyerReview
         carouselBuyerReview?.apply {
-            indicatorPosition = CarouselUnify.INDICATOR_BC
+            indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
             infinite = true
             onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
                 override fun onActiveIndexChanged(prev: Int, current: Int) {
-                    refreshCardHeight(current)
+                    binding?.pcIndicator?.setCurrentIndicator(current)
                 }
-            }
-            indicatorWrapper.setPadding(indicatorWrapper.paddingLeft, MARGIN_VERTICAL, indicatorWrapper.paddingRight, MARGIN_VERTICAL)
-        }
-    }
-
-    private fun refreshCardHeight(index: Int) {
-        carouselHeights.getOrNull(index)?.let { height ->
-            binding?.carouselBuyerReview?.getChildAt(Int.ZERO)?.apply {
-                setLayoutHeight(height)
-                requestLayout()
             }
         }
     }
 
     override fun bind(element: BuyerReviewUiModel) {
+
         val itemListener = { view: View, data: Any ->
             bindingBuyerReviewCardSlider = ItemBuyerReviewBinding.bind(view)
             val shopIcon: ImageUnify? = bindingBuyerReviewCardSlider?.cardBrShopIcon
@@ -96,7 +83,9 @@ class BuyerReviewViewHolder(
             val carouselItem = data as BuyerReviewUiModel.ItemBuyerReviewUiModel
             var isTotalCompleteReviewEmpty = true
 
-            shopIcon?.setImageUrl(carouselItem.shopIcon)
+            setupReviewCardColor(element, bindingBuyerReviewCardSlider)
+
+            shopIcon?.loadImage(carouselItem.shopIcon)
             shopName?.text = carouselItem.shopName
             reviewerName?.text = carouselItem.reviewerName
 
@@ -141,9 +130,9 @@ class BuyerReviewViewHolder(
             rating?.rating = carouselItem.rating
 
             carouselItem.variantName?.let {
-                variant?.visibility = View.VISIBLE
                 variant?.text = it
-                separatorRating?.visibility = View.VISIBLE
+                variant?.isVisible = it.isNotEmpty()
+                separatorRating?.isVisible = it.isNotEmpty()
             }
 
             carouselItem.datetime?.let {
@@ -163,25 +152,20 @@ class BuyerReviewViewHolder(
                 )
             }
 
-            review?.text = carouselItem.description
-            setupSelengkapnya(carouselItem)
+            setupSelengkapnya(carouselItem, review)
         }
 
         cardData = element
         carouselData = dataWidgetToCarouselData(element)
+        binding?.pcIndicator?.setIndicator(carouselData?.size.orZero())
+        binding?.pcIndicator?.isVisible = carouselData?.isNotEmpty().orFalse()
         carouselBuyerReview?.apply {
             stage.removeAllViews()
             carouselData?.let {
-                if (stage.childCount == 0) {
+                if (stage.childCount.isZero()) {
                     addItems(R.layout.item_buyer_review, it, itemListener)
                     postDelayed({
-                        activeIndex = 0
-                        carouselHeights = stage.children
-                            .toList()
-                            .subList(1, stage.childCount.dec())
-                            .map {
-                                it.measuredHeight
-                            }
+                        activeIndex = Int.ZERO
                     }, 100)
                 }
             }
@@ -195,6 +179,34 @@ class BuyerReviewViewHolder(
                 show()
             }
         }
+        listener?.onBuyerReviewImpression(element)
+    }
+
+    private fun setupReviewCardColor(
+        element: BuyerReviewUiModel,
+        bindingBuyerReviewCardSlider: ItemBuyerReviewBinding?
+    ) {
+        bindingBuyerReviewCardSlider?.apply {
+            buyerReviewCard.background = MethodChecker.getDrawable(
+                itemView.context,
+                if (element.darkMode) {
+                    R.drawable.bg_rounded_border_dark
+                } else {
+                    R.drawable.bg_rounded_border_light
+                }
+            )
+            val textColor = MethodChecker.getColor(
+                itemView.context,
+                if (element.darkMode) {
+                    R.color.dms_static_text_color_dark
+                } else {
+                    R.color.dms_static_text_color_light
+                }
+            )
+            cardBrShopName.setTextColor(textColor)
+            cardBrReviewerName.setTextColor(textColor)
+            cardBrProductReview.setTextColor(textColor)
+        }
     }
 
     private fun dataWidgetToCarouselData(element: BuyerReviewUiModel): ArrayList<Any> {
@@ -207,12 +219,22 @@ class BuyerReviewViewHolder(
         return mutableString
     }
 
-    private fun setupSelengkapnya(carouselItem: BuyerReviewUiModel.ItemBuyerReviewUiModel) {
-        val reviewDesc = carouselItem.description
-        bindingBuyerReviewCardSlider?.apply {
+    private fun setupSelengkapnya(
+        carouselItem: BuyerReviewUiModel.ItemBuyerReviewUiModel,
+        reviewTypography: Typography?
+    ) {
+        val maxLine = if (carouselItem.images.isNotEmpty()) MAX_LINE else MAX_LINE_WITHOUT_IMAGES
+        reviewTypography?.setLines(maxLine)
+        reviewTypography?.text = carouselItem.description
+        reviewTypography?.post {
+            val lineCount = reviewTypography.lineCount
+            val reviewDesc = carouselItem.description
             val formattedReviewText = SpannableStringBuilder()
-            if (reviewDesc.length > MAX_CHARS) {
-                val sanitizedText = reviewDesc.substring(0, MAX_CHARS)
+            val highlightedText = itemView.context.getString(R.string.text_selengkapnya)
+
+            if (lineCount > maxLine) {
+                val charCountPerLine = reviewDesc.count()/ lineCount
+                val sanitizedText = reviewDesc.take((charCountPerLine * maxLine) - highlightedText.count())
                 val trimmedText = if (sanitizedText.endsWith("")) {
                     sanitizedText.trimEnd()
                 } else {
@@ -225,22 +247,17 @@ class BuyerReviewViewHolder(
                     )
                 )
 
-                val highlightedText = cardBrProductReview.context.getString(R.string.text_selengkapnya)
                 formattedReviewText.setSpanOnText(
                     highlightedText,
                     getClickableSpan {
-                        listener?.let {
-                            it.onClickSeeMore(carouselItem)
-                        }
+                        listener?.onClickSeeMore(carouselItem)
                     },
                     getBoldSpan(),
                     getGreenColorSpan(itemView.context)
                 )
 
-                cardBrProductReview.text = formattedReviewText
-                cardBrProductReview.movementMethod = LinkMovementMethod.getInstance()
-            } else {
-                cardBrProductReview.text = reviewDesc
+                reviewTypography.text = formattedReviewText
+                reviewTypography.movementMethod = LinkMovementMethod.getInstance()
             }
         }
     }
@@ -248,5 +265,7 @@ class BuyerReviewViewHolder(
     interface BuyerReviewListener {
         fun onClickSeeMore(carouselItem: BuyerReviewUiModel.ItemBuyerReviewUiModel)
         fun onClickImage(carouselItem: BuyerReviewUiModel.ItemBuyerReviewUiModel, position: Int)
+
+        fun onBuyerReviewImpression(buyerReviewUiModel: BuyerReviewUiModel)
     }
 }

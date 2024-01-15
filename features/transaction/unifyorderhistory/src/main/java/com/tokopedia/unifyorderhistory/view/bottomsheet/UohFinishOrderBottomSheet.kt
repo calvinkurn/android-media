@@ -10,24 +10,21 @@ import com.tokopedia.unifyorderhistory.databinding.BottomsheetFinishOrderUohBind
 import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-/**
- * Created by fwidjaja on 01/10/21.
- */
 class UohFinishOrderBottomSheet : BottomSheetUnify() {
     private var listener: UohFinishOrderBottomSheetListener? = null
     private var binding by autoClearedNullable<BottomsheetFinishOrderUohBinding>()
 
     companion object {
         private const val TAG: String = "UohFinishOrderBottomSheet"
-        private const val INDEX = "index"
+        private const val UUID = "UUID"
         private const val STATUS = "status"
         private const val ORDER_ID = "order_id"
 
         @JvmStatic
-        fun newInstance(index: Int, status: String, orderId: String): UohFinishOrderBottomSheet {
+        fun newInstance(uuid: String, status: String, orderId: String): UohFinishOrderBottomSheet {
             return UohFinishOrderBottomSheet().apply {
                 val bundle = Bundle()
-                bundle.putInt(INDEX, index)
+                bundle.putString(UUID, uuid)
                 bundle.putString(STATUS, status)
                 bundle.putString(ORDER_ID, orderId)
                 arguments = bundle
@@ -37,7 +34,7 @@ class UohFinishOrderBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val index = arguments?.getInt(INDEX) ?: 0
+        val uuid = arguments?.getString(UUID) ?: ""
         val status = arguments?.getString(STATUS) ?: ""
         val orderId = arguments?.getString(ORDER_ID) ?: ""
         binding = BottomsheetFinishOrderUohBinding.inflate(LayoutInflater.from(context), null, false)
@@ -49,7 +46,7 @@ class UohFinishOrderBottomSheet : BottomSheetUnify() {
             }
 
             btnFinishOrder.setOnClickListener {
-                listener?.onClickFinishOrder(index, status, orderId)
+                listener?.onClickFinishOrder(uuid, status, orderId)
             }
             btnAjukanKomplain.setOnClickListener {
                 listener?.onClickAjukanKomplain(orderId)
@@ -63,7 +60,7 @@ class UohFinishOrderBottomSheet : BottomSheetUnify() {
     }
 
     interface UohFinishOrderBottomSheetListener {
-        fun onClickFinishOrder(index: Int, status: String, orderId: String)
+        fun onClickFinishOrder(uuid: String, status: String, orderId: String)
         fun onClickAjukanKomplain(orderId: String)
     }
 

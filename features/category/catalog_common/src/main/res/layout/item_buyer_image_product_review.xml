@@ -3,20 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginRight="8dp"
-    android:layout_width="96dp"
-    android:layout_height="96dp">
+    android:layout_width="70dp"
+    android:layout_height="70dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/card_br_img_product"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <View
         android:id="@+id/card_br_img_product_text_overlay"
-        android:visibility="gone"
         android:background="@drawable/layout_bg_img_buyer_review"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -24,15 +24,18 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tgp_product_review_counter"
-        android:visibility="gone"
-        android:textSize="12sp"
-        android:textColor="@color/Unify_NN0"
-        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:typographyWeight="reguler"
-        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center"
+        android:textColor="@color/Unify_Static_White"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        app:typographyType="small"
+        app:typographyWeight="bold"
         tools:text="+2 Lainnya" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

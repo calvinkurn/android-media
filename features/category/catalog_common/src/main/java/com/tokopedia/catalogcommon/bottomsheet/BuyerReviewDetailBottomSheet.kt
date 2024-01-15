@@ -14,6 +14,7 @@ import com.tokopedia.catalogcommon.uimodel.BuyerReviewUiModel
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.media.loader.JvmMediaLoader
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -41,7 +42,8 @@ class BuyerReviewDetailBottomSheet : BottomSheetUnify() {
 
         fun show(
             manager: FragmentManager?,
-            reviewData: BuyerReviewUiModel.ItemBuyerReviewUiModel
+            reviewData: BuyerReviewUiModel.ItemBuyerReviewUiModel,
+            listener: (position: Int) -> Unit = {}
         ) {
             val itemBundle = ArrayList<Bundle>()
             reviewData.images.forEachIndexed { index, imgReview ->
@@ -53,6 +55,7 @@ class BuyerReviewDetailBottomSheet : BottomSheetUnify() {
                 )
             }
             BuyerReviewDetailBottomSheet().apply {
+                setImageClickListener(listener)
                 arguments = Bundle().apply {
                     putString(SHOP_ICON, reviewData.shopIcon)
                     putString(SHOP_NAME, reviewData.shopName)
@@ -87,6 +90,7 @@ class BuyerReviewDetailBottomSheet : BottomSheetUnify() {
     private var txtTimestamp: Typography? = null
     private var txtReviewDescription: Typography? = null
     private var rvImageProducts: RecyclerView? = null
+    private var imageClickListener: (position: Int) -> Unit = {}
 
     init {
         setCloseClickListener { dismiss() }
@@ -102,7 +106,7 @@ class BuyerReviewDetailBottomSheet : BottomSheetUnify() {
 
         arguments?.apply {
             setTitle(getString(R.string.buyer_review_detail_bottomsheet_title))
-            imgShopIcon?.setImageUrl(getString(SHOP_ICON).orEmpty())
+            imgShopIcon?.loadImage(getString(SHOP_ICON).orEmpty())
             txtShopName?.text = getString(SHOP_NAME)
 
             imgAvatar?.let {
@@ -156,7 +160,7 @@ class BuyerReviewDetailBottomSheet : BottomSheetUnify() {
                 }
 
                 rvImageProducts?.apply {
-                    adapter = ItemProductImageReviewAdapter(imgList)
+                    adapter = ItemProductImageReviewAdapter(imgList, imageClickListener)
                     layoutManager = LinearLayoutManager(
                         context,
                         LinearLayoutManager.HORIZONTAL,
@@ -193,5 +197,9 @@ class BuyerReviewDetailBottomSheet : BottomSheetUnify() {
         }
 
         setChild(contentView)
+    }
+
+    fun setImageClickListener(listener: (position: Int) -> Unit) {
+        imageClickListener = listener
     }
 }

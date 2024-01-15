@@ -34,6 +34,7 @@ import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.EmptyNo
 import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.EmptyNotificationWithRecomViewHolder
 import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.NormalNotificationViewHolder
+import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.NotifcenterWidgetFeedHistoryNotificationViewHolder
 import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.NotificationErrorViewHolder
 import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.NotificationLoadMoreViewHolder
 import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.NotificationLoadingViewHolder
@@ -43,7 +44,7 @@ import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.Recomme
 import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.RecommendationViewHolder
 import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.SectionTitleViewHolder
 import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.SingleProductNotificationViewHolder
-import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.WidgetNotificationViewHolder
+import com.tokopedia.notifcenter.view.adapter.viewholder.notification.v3.NotifcenterWidgetOrderHistoryNotificationViewHolder
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
 class NotificationTypeFactoryImpl constructor(
@@ -125,7 +126,8 @@ class NotificationTypeFactoryImpl constructor(
         val item = visitables.getOrNull(position)
         if (item is NotificationUiModel) {
             return when {
-                item.isTrackHistory() -> WidgetNotificationViewHolder.LAYOUT
+                item.isTrackHistoryOrder() -> NotifcenterWidgetOrderHistoryNotificationViewHolder.LAYOUT
+                item.isTrackHistoryFeed() -> NotifcenterWidgetFeedHistoryNotificationViewHolder.LAYOUT
                 item.isTypeDefault() -> NormalNotificationViewHolder.LAYOUT
                 item.isTypeSingleProduct() -> SingleProductNotificationViewHolder.LAYOUT
                 item.isCarouselProduct() -> CarouselProductNotificationViewHolder.LAYOUT
@@ -157,7 +159,12 @@ class NotificationTypeFactoryImpl constructor(
                 view,
                 notifAdapterListener
             )
-            WidgetNotificationViewHolder.LAYOUT -> WidgetNotificationViewHolder(
+            NotifcenterWidgetOrderHistoryNotificationViewHolder.LAYOUT -> NotifcenterWidgetOrderHistoryNotificationViewHolder(
+                view,
+                notificationListener,
+                notifAdapterListener
+            )
+            NotifcenterWidgetFeedHistoryNotificationViewHolder.LAYOUT -> NotifcenterWidgetFeedHistoryNotificationViewHolder(
                 view,
                 notificationListener,
                 notifAdapterListener

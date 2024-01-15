@@ -112,6 +112,22 @@ class WidgetCatalogAdapter(
         }
     }
 
+    fun autoSelectNavigation(currentWidgetName: String) {
+        val indexNavigation = visitables.indexOfFirst {
+            it is StickyNavigationUiModel
+        }
+
+        val navigation = visitables.getOrNull(indexNavigation) as? StickyNavigationUiModel
+
+        navigation?.let { stickyNav ->
+            val indexPartOfNavigation = stickyNav.content.indexOfFirst {
+                it.anchorWidgets.contains(currentWidgetName)
+            }
+
+            changeNavigationTabActive(indexPartOfNavigation)
+        }
+    }
+
     fun changeNavigationTabActive(
         tabPosition: Int
     ) {

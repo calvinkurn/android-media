@@ -185,16 +185,16 @@ class CatalogDetailPageViewModelTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `When emitScrollEvent called, Then should emit scrollEvents`() = runTest {
-        var result: Int? = null
+        var result: String? = null
         val job = launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.scrollEvents.collectLatest {
                 result = it
             }
         }
 
-        viewModel.emitScrollEvent(10)
+        viewModel.emitScrollEvent("Highlight")
         job.cancel()
 
-        assert(result == 10)
+        assert(result == "Highlight")
     }
 }

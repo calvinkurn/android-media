@@ -19,26 +19,24 @@
             android:textSize="12sp"
             android:textColor="@color/Unify_NN600"
             app:typographyWeight="reguler"
+            app:typographyType="display_3"
             android:text="Beli di"
-            android:paddingRight="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/card_br_shop_icon"
-            android:adjustViewBounds="true"
-            android:maxHeight="13dp"
-            android:maxWidth="13dp"
             tools:src="@drawable/ic_official_store"
-            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="5dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/card_br_shop_name"
             android:textSize="12sp"
             android:textColor="@color/Unify_NN950"
             app:typographyWeight="reguler"
+            app:typographyType="display_3"
             tools:text="Lamer Indonesia"
             android:layout_marginLeft="5dp"
             android:layout_width="wrap_content"
@@ -83,16 +81,18 @@
                     android:textColor="@color/Unify_NN950"
                     android:paddingEnd="2dp"
                     app:typographyWeight="bold"
+                    app:typographyType="display_3"
                     tools:text="Karina"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/card_br_separator_status"
+                    android:textColor="@color/Unify_NN950"
                     android:visibility="gone"
-                    android:textColor="@color/Unify_N700"
                     android:textSize="12sp"
                     app:typographyWeight="reguler"
+                    app:typographyType="display_3"
                     android:text=" • "
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -104,6 +104,7 @@
                     android:textColor="@color/dms_static_green_reviewer_status"
                     android:paddingStart="2dp"
                     app:typographyWeight="reguler"
+                    app:typographyType="display_3"
                     tools:text="Juara Ulasan Fashion Wanita"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -120,6 +121,7 @@
                     android:textSize="12sp"
                     android:textColor="@color/Unify_NN600"
                     app:typographyWeight="reguler"
+                    app:typographyType="display_3"
                     tools:text="6 ulasan lengkap"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -130,6 +132,7 @@
                     android:textColor="@color/Unify_NN950"
                     android:textSize="12sp"
                     app:typographyWeight="reguler"
+                    app:typographyType="display_3"
                     android:text=" • "
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -140,6 +143,7 @@
                     android:textSize="12sp"
                     android:textColor="@color/Unify_NN600"
                     app:typographyWeight="reguler"
+                    app:typographyType="display_3"
                     tools:text="6 terbantu"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -147,8 +151,6 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
-
-
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -184,7 +186,10 @@
             android:textColor="@color/Unify_NN600"
             tools:text="Avocado Green"
             android:visibility="gone"
+            android:maxLines="1"
+            android:ellipsize="end"
             app:typographyWeight="reguler"
+            app:typographyType="display_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -194,6 +199,8 @@
             android:textColor="@color/Unify_NN600"
             android:textSize="12sp"
             app:typographyWeight="reguler"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:text=" • "
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -204,7 +211,10 @@
             android:textSize="12sp"
             android:textColor="@color/Unify_NN600"
             tools:text="3 hari lalu"
+            android:maxLines="1"
+            android:ellipsize="end"
             app:typographyWeight="reguler"
+            app:typographyType="display_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -215,6 +225,7 @@
         android:textSize="12sp"
         android:textColor="@color/Unify_NN950"
         tools:text="I'm 57 years old and I have dry skin! I absolutely love this product. Has nice consistency that slips in nicely after I wash my face. When I...Selengkapnya"
+        app:typographyType="paragraph_3"
         app:typographyWeight="reguler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
