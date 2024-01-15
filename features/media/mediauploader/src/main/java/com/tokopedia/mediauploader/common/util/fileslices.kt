@@ -15,7 +15,7 @@ fun File.slice(
         if (partNumber < 0) return null
         if (chunkSize < 0) return null
         if (tempByteArray.isEmpty()) {
-            tempByteArray = Array(slotSize) { null }
+            tempByteArray = Array(slotSize + 1) { null }
         }
 
         val inputStream = FileInputStream(this)

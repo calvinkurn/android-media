@@ -162,9 +162,12 @@ class LargeUploaderManager @Inject constructor(
         sourceId: String,
         policy: SourcePolicy
     ): Boolean {
+        val maxUploadChunk = policy.videoPolicy?.largeMaxConcurrent ?: 1
+        threadLimit = min(maxUploadChunk, chunkTotal)
+
         if (partUploaded[UPLOAD_FIRST_INDEX] == true) return true
 
-        file.slice(UPLOAD_FIRST_INDEX, sizePerChunk, reuseSlot = null, slotSize = 0)?.let { (_, byteArrayToSend) ->
+        file.slice(UPLOAD_FIRST_INDEX, sizePerChunk, reuseSlot = null, slotSize = threadLimit)?.let { (_, byteArrayToSend) ->
             return byteArrayToSend?.let {
                 return chunkUpload(
                     sourceId,
@@ -185,17 +188,10 @@ class LargeUploaderManager @Inject constructor(
         sourceId: String,
         policy: SourcePolicy
     ) = withContext(dispatchers.io) {
-        val maxUploadChunk = policy.videoPolicy?.largeMaxConcurrent ?: 1
-        threadLimit = min(maxUploadChunk, chunkTotal)
-
         val jobList = mutableListOf<Job>()
 
         for (part in UPLOAD_PART_INDEX..chunkTotal) {
-            if (partUploaded[part] == true) {
-                // update list of uploaded part so recursive will skip process the index
-                partUploadProgress = part
-                continue
-            }
+            if (partUploaded[part] == true) continue
             if (requestId.isNotEmpty()) error(UNKNOWN_ERROR)
 
             // stop job creation if job number is already on thread limit
