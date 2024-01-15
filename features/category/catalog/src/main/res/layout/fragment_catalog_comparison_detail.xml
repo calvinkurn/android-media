@@ -6,42 +6,80 @@
     android:background="@color/Unify_NN0"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.fragment.CatalogComparisonDetailFragment">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvHeader"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:background="@color/Unify_NN0"
+        android:elevation="5dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tfHeaderTitle"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfHeaderTitle"
+        android:layout_width="148dp"
+        android:layout_height="50dp"
+        android:background="@color/Unify_NN0"
+        android:elevation="5dp"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:typographyType="paragraph_3" />
+
     <com.tokopedia.catalogcommon.customview.CatalogToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/Unify_NN0"
+        android:elevation="5dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:elevation="5dp"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvContent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="16dp"
         app:layout_constraintTop_toBottomOf="@id/divider"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <include
         android:id="@+id/loadingLayout"
         layout="@layout/loading_catalog_comparison_detail"
-        android:layout_width="0dp"
+        tools:visibility="gone"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:layout_marginHorizontal="16dp"
         app:layout_constraintTop_toBottomOf="@id/divider"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:id="@+id/viewComparisonShadow"
+        android:layout_width="6dp"
+        android:layout_height="0dp"
+        android:elevation="6dp"
+        android:layout_marginStart="148dp"
+        android:background="@drawable/catalog_vertical_gradient_bg"
+        android:visibility="gone"
+        android:alpha="0.4"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/gePageError"

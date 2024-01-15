@@ -63,7 +63,9 @@ class OrderListMapper @Inject constructor() {
                     tickerInfo = it.tickerInfo,
                     buttons = mapButtons(it.buttons),
                     searchParam = keyword,
-                    orderPlusData = mapOrderPlusData(it.plusData)
+                    orderPlusData = mapOrderPlusData(it.plusData),
+                    isBulkSelectable = it.bulkAction.selectable,
+                    bulkMessage = it.bulkAction.message
                 )
             }
     }
