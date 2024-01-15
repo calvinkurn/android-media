@@ -14,7 +14,9 @@ class KetupatLandingUseCase @Inject constructor(
     private fun createRequestParams(slug: String): HashMap<String, Any> {
         val request = HashMap<String, Any>()
         request[SLUG] = slug
-        return request
+        val input = HashMap<String, Any>()
+        input[INPUT] = request
+        return input
     }
 
     suspend fun getScratchCardLandingPage(slug: String): KetupatLandingPageData {
@@ -25,61 +27,63 @@ class KetupatLandingUseCase @Inject constructor(
         )
     }
 
-
     companion object {
         private const val SLUG = "slug"
-        const val GET_GAMI_SCRATCH_CARD_LANDING_PAGE = "query gamiGetScratchCardLandingPage(input: {${'$'}slug: String!}) {\n" +
-            "  gamiGetScratchCardLandingPage(input: {slug: ${"$"}slug}) {" +
-            "    resultStatus {" +
-            "      code" +
-            "      reason" +
-            "      message" +
-            "    }" +
-            "    scratchCard {" +
-            "      id" +
-            "      name" +
-            "      description" +
-            "      slug" +
-            "      startTime" +
-            "      endTime" +
-            "    }" +
-            "    appBar {" +
-            "      title" +
-            "      isShownShareIcon" +
-            "      shared {" +
-            "        ogTitle" +
-            "        ogDescription" +
-            "        ogImageURL" +
-            "        message" +
-            "        page" +
-            "        identifier" +
-            "      }" +
-            "    }" +
-            "    sections {" +
-            "      id" +
-            "      title" +
-            "      type" +
-            "      assets {" +
-            "        key" +
-            "        value" +
-            "      }" +
-            "      text {" +
-            "        key" +
-            "        value" +
-            "      }" +
-            "      cta {" +
-            "        text" +
-            "        url" +
-            "        appLink" +
-            "        type" +
-            "        backgroundColor" +
-            "        color" +
-            "        iconURL" +
-            "        imageURL" +
-            "      }" +
-            "      jsonParameter" +
-            "    }" +
-            "  }" +
-            "}"
+        private const val INPUT = "input"
+        const val GET_GAMI_SCRATCH_CARD_LANDING_PAGE = """
+    query gamiGetScratchCardLandingPage(${'$'}input: GamiGetScratchCardLandingPageRequest!) {
+    gamiGetScratchCardLandingPage(input: ${"$"}input) {
+        resultStatus {
+          code
+          reason
+          message
+        }
+        scratchCard {
+          id
+          name
+          description
+          slug
+          startTime
+          endTime
+        }
+        appBar {
+          title
+          isShownShareIcon
+          shared {
+            ogTitle
+            ogDescription
+            ogImageURL
+            message
+            page
+            identifier
+          }
+        }
+        sections {
+          id
+          title
+          type
+          assets {
+            key
+            value
+          }
+          text {
+            key
+            value
+          }
+          cta {
+            text
+            url
+            appLink
+            type
+            backgroundColor
+            color
+            iconURL
+            imageURL
+          }
+          jsonParameter
+        }
+    }
+}
+"""
     }
 }

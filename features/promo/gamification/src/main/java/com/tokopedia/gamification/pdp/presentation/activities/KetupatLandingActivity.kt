@@ -5,22 +5,19 @@ import android.os.Bundle
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.pdp.data.di.components.DaggerPdpComponent
 import com.tokopedia.gamification.pdp.data.di.components.PdpComponent
 import com.tokopedia.gamification.pdp.presentation.fragments.KetupatLandingFragment
-import com.tokopedia.user.session.UserSession
 import timber.log.Timber
-import javax.inject.Inject
 import com.tokopedia.gamification.R as gamificationR
 
-open class KetupatLandingActivity :
-    BaseActivity(),
+class KetupatLandingActivity :
+    BaseSimpleActivity(),
     HasComponent<PdpComponent> {
 
-    @Inject
-    lateinit var userSession: UserSession
     private lateinit var fm: FrameLayout
 
     private val pdpComponent: PdpComponent by lazy(LazyThreadSafetyMode.NONE) { initInject() }
@@ -30,8 +27,8 @@ open class KetupatLandingActivity :
     open fun getDestinationFragment(): Fragment = KetupatLandingFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         pdpComponent.injectKetupatLandingActivity(this)
+        super.onCreate(savedInstanceState)
         try {
             setContentView(getLayout())
             fm = findViewById(gamificationR.id.fmLandingPage)
@@ -45,7 +42,6 @@ open class KetupatLandingActivity :
             .beginTransaction()
             .add(fm.id, getDestinationFragment())
             .commit()
-
     }
 
     override fun onStart() {
@@ -55,26 +51,18 @@ open class KetupatLandingActivity :
             Timber.e(ex)
             finish()
         }
-
     }
-
-//    fun checkLoggedIn() {
-
-//    fun afterLoginAttempt() {
-//        if (userSession.isLoggedIn) {
-//            showGiftBoxFragment()
-//        } else {
-//            finish()
-//        }
-//    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    override fun getNewFragment(): Fragment? {
+        return null
+    }
+
     private fun initInject() = DaggerPdpComponent.builder()
+        .activityContextModule(ActivityContextModule(this))
         .baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
 
     override fun getComponent(): PdpComponent = pdpComponent
-
 }

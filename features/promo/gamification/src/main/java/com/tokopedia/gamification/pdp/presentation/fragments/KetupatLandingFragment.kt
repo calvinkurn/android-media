@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.gamification.R
+import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.pdp.data.C1VHModel
 import com.tokopedia.gamification.pdp.data.di.components.DaggerPdpComponent
 import com.tokopedia.gamification.pdp.data.di.components.PdpComponent
@@ -38,7 +39,8 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_ketupat_landing, container, false)
@@ -50,7 +52,6 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
 //        Handler(Looper.getMainLooper()).postDelayed({
 //            view.findViewById<Group>(R.id.shimmer_group)?.hide()
 //        }, 1000)
-
 
         val ketupatRV = view.findViewById<RecyclerView>(R.id.ketupat_rv)
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -76,9 +77,10 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
         getComponent().injectKetupatLandingFragment(this)
     }
 
-    private fun getComponent(): PdpComponent  =
+    private fun getComponent(): PdpComponent =
         DaggerPdpComponent.builder()
             .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .activityContextModule(context?.let { ActivityContextModule(it) })
             .build()
 
     companion object {

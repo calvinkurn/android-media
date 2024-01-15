@@ -18,16 +18,14 @@ class KetupatLandingViewModel @Inject constructor(
     fun getScratchCardsLandingInfo(slug: String = "") {
         launchCatchError(
             block = {
-                data =  ketupatLandingUseCase.getScratchCardLandingPage(slug)
+                data = ketupatLandingUseCase.getScratchCardLandingPage(slug)
             },
             onError = {
                 it.printStackTrace()
                 errorMessage.value = it
             }
         )
-        val v = data?.gamiGetScratchCardLandingPage?.sections?.get(0)?.jsonParameter
     }
-
 
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
 }
