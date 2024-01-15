@@ -162,7 +162,18 @@ fun RecommendationItem.toProductCardModel(
             imageUrl = freeOngkirImageUrl
         ),
         labelGroupList = labelGroupList.map {
-            ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type, imageUrl = it.imageUrl)
+            ProductCardModel.LabelGroup(
+                position = it.position,
+                title = it.title,
+                type = it.type,
+                imageUrl = it.imageUrl,
+                styleList = it.styles.map { style ->
+                    ProductCardModel.LabelGroup.Style(
+                        key = style.key,
+                        value = style.value
+                    )
+                }
+            )
         },
         hasAddToCartButton = when (addToCartType) {
             RecommendationItem.AddToCartType.None -> hasAddToCartButton
