@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.product.inspirationlistatc
+package com.tokopedia.search.result.product.inspirationlistatc.postatccarousel
 
 import android.content.Context
 import com.tokopedia.search.di.qualifier.SearchContext
@@ -6,7 +6,7 @@ import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
-import com.tokopedia.search.result.product.inspirationlistatc.postatccarousel.InspirationListPostAtcDataView
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenter
 import com.tokopedia.search.utils.SearchIdlingResource
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
@@ -15,19 +15,19 @@ import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import javax.inject.Inject
 
 @SearchScope
-class InspirationListAtcListenerDelegate @Inject constructor(
+class InspirationListPostAtcListenerDelegate @Inject constructor(
     private val inspirationListAtcPresenter: InspirationListAtcPresenter,
-    private val inspirationListAtcView: InspirationListAtcView,
+    private val inspirationListPostAtcView: InspirationListPostAtcView,
     @SearchContext
     context: Context,
     searchParameterProvider: SearchParameterProvider
-): InspirationListAtcListener,
+): InspirationListPostAtcListener,
     ApplinkOpener by ApplinkOpenerDelegate,
     ContextProvider by WeakReferenceContextProvider(context),
     SearchParameterProvider by searchParameterProvider{
 
     override fun onListAtcSeeMoreClicked(data: InspirationCarouselDataView.Option) {
-        inspirationListAtcView.trackSeeMoreClick(data)
+        inspirationListPostAtcView.trackSeeMoreClick(data)
         openApplink(context, data.applink)
     }
 
@@ -36,14 +36,14 @@ class InspirationListAtcListenerDelegate @Inject constructor(
                 product,
                 getSearchParameter()
             )
-        inspirationListAtcView.trackItemClick(trackingData)
-        if (product.isOrganicAds) inspirationListAtcView.trackAdsClick(product)
+        inspirationListPostAtcView.trackItemClick(trackingData)
+        if (product.isOrganicAds) inspirationListPostAtcView.trackAdsClick(product)
         openApplink(context, product.applink)
     }
 
     override fun onListAtcItemImpressed(product: InspirationCarouselDataView.Option.Product) {
-        inspirationListAtcView.trackItemImpress(product)
-        if (product.isOrganicAds) inspirationListAtcView.trackAdsImpress(product)
+        inspirationListPostAtcView.trackItemImpress(product)
+        if (product.isOrganicAds) inspirationListPostAtcView.trackAdsImpress(product)
     }
 
     override fun onListAtcItemAddToCart(
@@ -53,5 +53,21 @@ class InspirationListAtcListenerDelegate @Inject constructor(
         SearchIdlingResource.increment()
 
         inspirationListAtcPresenter.onListAtcItemAddToCart(product, type)
+    }
+
+    override fun closeListPostAtcView(item: InspirationListPostAtcDataView) {
+        inspirationListAtcPresenter.setVisibilityInspirationCarouselPostAtcOnVisitableList(
+            false,
+            item,
+        )
+        inspirationListPostAtcView.closeListPostAtcView(item)
+    }
+
+    override fun cancelCloseListPostAtcView(item: InspirationListPostAtcDataView) {
+        inspirationListAtcPresenter.setVisibilityInspirationCarouselPostAtcOnVisitableList(
+            true,
+            item,
+        )
+        inspirationListPostAtcView.cancelCloseListPostAtcView(item)
     }
 }

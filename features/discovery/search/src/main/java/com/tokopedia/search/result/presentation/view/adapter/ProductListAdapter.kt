@@ -96,6 +96,11 @@ class ProductListAdapter(
         notifyItemChanged(index)
     }
 
+    fun refreshItemAtIndex(index: Int, refreshItem: Visitable<*>) {
+        list[index] = refreshItem
+        notifyItemChanged(index)
+    }
+
     fun removeLastFilterWidget() {
         val lastFilterWidgetIndex = list.indexOfFirst { it is LastFilterDataView }
         removeItem(lastFilterWidgetIndex)

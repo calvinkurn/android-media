@@ -95,6 +95,7 @@ import com.tokopedia.search.result.product.grid.ProductGridType
 import com.tokopedia.search.result.product.inspirationbundle.InspirationBundleListenerDelegate
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselListenerDelegate
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcListenerDelegate
+import com.tokopedia.search.result.product.inspirationlistatc.postatccarousel.InspirationListPostAtcListenerDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
 import com.tokopedia.search.result.product.lastfilter.LastFilterListenerDelegate
 import com.tokopedia.search.result.product.onboarding.OnBoardingListenerDelegate
@@ -212,6 +213,9 @@ class ProductListFragment: BaseDaggerFragment(),
 
     @Inject
     lateinit var inspirationListAtcListenerDelegate: InspirationListAtcListenerDelegate
+
+    @Inject
+    lateinit var inspirationListPostAtcListenerDelegate: InspirationListPostAtcListenerDelegate
 
     @Inject @Suppress("LateinitUsage")
     lateinit var applinkModifier: ApplinkModifier
@@ -510,6 +514,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 this,
             ),
             inspirationListAtcListener = inspirationListAtcListenerDelegate,
+            inspirationListPostAtcListener = inspirationListPostAtcListenerDelegate,
             networkMonitor = networkMonitor,
             isUsingViewStub = remoteConfig.getBoolean(ENABLE_PRODUCT_CARD_VIEWSTUB),
             sameSessionRecommendationListener = sameSessionRecommendationListener,

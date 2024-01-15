@@ -1,6 +1,14 @@
 package com.tokopedia.search.result.product.requestparamgenerator
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.CAROUSEL_TYPE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.MINUS_IDS
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.POST_ATC_CAROUSEL_TYPE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.POST_ATC_CATEGORY_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.POST_ATC_PRODUCT_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.POST_ATC_SHOP_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.POST_ATC_WAREHOUSE_ID
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_ID
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.search.di.scope.SearchScope
@@ -246,4 +254,27 @@ class RequestParamsGenerator @Inject constructor(
             requestParams.putString(TopAdsParams.KEY_DEPARTEMENT_ID, departmentId)
         }
     }
+
+    fun createPostATCCarouselParams(
+        shopId: String,
+        categoryId: String,
+        productId: String,
+        warehouseId: String,
+        query: String
+    ) : RequestParams {
+        val deduplicationProduct = deduplication.getProductIdList()
+        return RequestParams.create().apply {
+            putString(SearchApiConst.Q, query)
+            putString(MINUS_IDS, deduplicationProduct)
+            putString(POST_ATC_WAREHOUSE_ID, warehouseId)
+            putString(POST_ATC_PRODUCT_ID, productId)
+            putString(POST_ATC_CATEGORY_ID, categoryId)
+            putString(POST_ATC_SHOP_ID, shopId)
+            putString(CAROUSEL_TYPE, POST_ATC_CAROUSEL_TYPE)
+            putString(USER_ID, userId)
+            putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH)
+            putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)
+        }
+    }
+
 }

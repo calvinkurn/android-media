@@ -4,24 +4,23 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.POST_ATC_CATEGORY_ID
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.POST_ATC_SHOP_ID
-import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.GET_POST_ATC_CAROUSEL_USE_CASE
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
 import com.tokopedia.search.result.product.SearchParameterProvider
-import com.tokopedia.search.result.product.deduplication.Deduplication
+import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper
+import com.tokopedia.search.result.product.inspirationlistatc.postatccarousel.InspirationListPostAtcDataView
+import com.tokopedia.search.result.product.inspirationlistatc.postatccarousel.InspirationListPostAtcDataView.InspirationListPostAtcDataViewMapper
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -33,12 +32,14 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
     private val requestParamsGenerator: RequestParamsGenerator,
     private val userSession: UserSessionInterface,
     private val inspirationListAtcView: InspirationListAtcView,
-    searchParameterProvider: SearchParameterProvider,
+    private val viewUpdater: ViewUpdater,
+    private val searchParameterProvider: SearchParameterProvider,
 ): InspirationListAtcPresenter,
     SearchParameterProvider by searchParameterProvider {
 
     companion object {
         private const val DEFAULT_USER_ID = "0"
+        private const val POST_ATC_TYPE= "post_atc"
     }
 
     override fun onListAtcItemAddToCart(
@@ -54,26 +55,114 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
             executeAtcCommon(product)
         }
 
-        getPostATCCarouselUseCase.execute(
-            RequestParams.create().apply {
-                putString(POST_ATC_SHOP_ID, product.shopId)
-//                putString(POST_ATC_CATEGORY_ID, product.categoryID)
-            },
-            object: Subscriber<SearchInspirationCarousel>() {
-                override fun onCompleted() {
+        getPostAtcCarousel(product, type)
+    }
 
+    private fun isNotPostAtcCarousel(type: String) : Boolean {
+        return type != POST_ATC_TYPE
+    }
+
+    private fun getPostAtcCarousel(
+        product: InspirationCarouselDataView.Option.Product,
+        type: String,
+    ) {
+        if (isNotPostAtcCarousel(type)) {
+            val query = searchParameterProvider.getSearchParameter()?.getSearchQuery().orEmpty()
+            getPostATCCarouselUseCase.execute(
+                requestParamsGenerator.createPostATCCarouselParams(
+                    product.shopId,
+                    product.categoryID,
+                    product.id,
+                    product.warehouseID,
+                    query
+                ),
+                object : Subscriber<SearchInspirationCarousel>() {
+                    override fun onCompleted() {
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        Timber.e(e)
+                    }
+
+                    override fun onNext(searchInspiration: SearchInspirationCarousel) {
+                        val inspirationPostAtc = getInspirationListPostAtcData(searchInspiration)
+                        val inspirationListPostAtc =
+                            InspirationListPostAtcDataViewMapper.convertToInspirationListPostAtcDataView(
+                                product,
+                                inspirationPostAtc,
+                            )
+                        val indexOfListATCSelectedProduct =
+                            findSelectedProductAtcPositionOnVisitableList(product)
+                        val itemListATCSelectedProduct =
+                            getListAtcOnVisitableList(
+                                indexOfListATCSelectedProduct
+                            )
+                        showOrRefreshInspirationPostAtc(
+                            indexOfListATCSelectedProduct,
+                            itemListATCSelectedProduct ,
+                            inspirationListPostAtc,
+                        )
+                    }
                 }
+            )
+        }
+    }
 
-                override fun onError(e: Throwable?) {
+    private fun getInspirationListPostAtcData(
+        searchInspiration: SearchInspirationCarousel?
+    ): SearchProductModel.InspirationCarouselData? {
+        return searchInspiration?.data?.find { it.type == POST_ATC_TYPE }
+    }
 
-                }
+    private fun findSelectedProductAtcPositionOnVisitableList(
+        selectedProduct: InspirationCarouselDataView.Option.Product
+    ) : Int {
+        return  viewUpdater.itemList?.indexOfFirst {
+            it is InspirationListAtcDataView && it.option.product.contains(selectedProduct)
+        }.orZero()
+    }
 
-                override fun onNext(t: SearchInspirationCarousel?) {
+    private fun getListAtcOnVisitableList(index: Int): Visitable<*>? {
+        return if(index == 0 ) null else viewUpdater.getItemAtIndex(index)
+    }
 
-                }
-            }
+    private fun showOrRefreshInspirationPostAtc(
+        indexOfListATCSelectedProduct: Int,
+        listATCSelectedProduct: Visitable<*>?,
+        listPostAtcProduct: Visitable<*>?,
+    ) {
+        if(listATCSelectedProduct == null || listPostAtcProduct == null)
+            return
+        val indexOfPostAtc = getIndexOfInspirationListPostAtc()
+        if(indexOfPostAtc > 0) {
+            viewUpdater.refreshItemAtIndex(indexOfListATCSelectedProduct+1, listPostAtcProduct)
+        } else {
+            showListPostAtcProduct(
+                listATCSelectedProduct ,
+                listPostAtcProduct,
+            )
+        }
+    }
+
+    private fun getIndexOfInspirationListPostAtc() : Int {
+        return viewUpdater.itemList?.indexOfFirst{
+            it is InspirationListPostAtcDataView
+        }.orZero()
+    }
+
+    private fun showListPostAtcProduct(
+        listATCSelectedProduct: Visitable<*>?,
+        listPostAtcSelectedProduct: Visitable<*>?,
+    ) {
+        if(listATCSelectedProduct == null || listPostAtcSelectedProduct == null)
+            return
+
+        viewUpdater.insertItemAfter(
+            listPostAtcSelectedProduct,
+            listATCSelectedProduct
         )
     }
+
 
     private fun onAddToCartUseCaseSuccess(
         addToCartDataModel: AddToCartDataModel?,
@@ -134,6 +223,19 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
             InspirationListAtcDataView(
                 option = it,
                 type = data.type,
+            )
+        }
+    }
+
+    override fun setVisibilityInspirationCarouselPostAtcOnVisitableList(
+        visibility: Boolean,
+        item: InspirationListPostAtcDataView,
+    ) {
+        val indexOfPostAtc = getIndexOfInspirationListPostAtc()
+        if(indexOfPostAtc > 0) {
+            viewUpdater.refreshItemAtIndex(
+                indexOfPostAtc,
+                item.copy(isVisible = visibility),
             )
         }
     }

@@ -61,6 +61,9 @@ import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarous
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcListener
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcViewHolder
+import com.tokopedia.search.result.product.inspirationlistatc.postatccarousel.InspirationListPostAtcDataView
+import com.tokopedia.search.result.product.inspirationlistatc.postatccarousel.InspirationListPostAtcListener
+import com.tokopedia.search.result.product.inspirationlistatc.postatccarousel.InspirationListPostAtcViewHolder
 import com.tokopedia.search.result.product.inspirationwidget.card.BigGridInspirationCardViewHolder
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardListener
@@ -129,6 +132,7 @@ class ProductListTypeFactoryImpl(
     private val videoCarouselListener: InspirationVideoCarouselListener,
     private val inspirationBundleListener: InspirationBundleListener,
     private val inspirationListAtcListener: InspirationListAtcListener,
+    private val inspirationListPostAtcListener: InspirationListPostAtcListener,
     private val videoCarouselWidgetCoordinator: VideoCarouselWidgetCoordinator,
     private val networkMonitor: NetworkMonitor,
     private val isUsingViewStub: Boolean = false,
@@ -260,6 +264,9 @@ class ProductListTypeFactoryImpl(
     override fun type(inspirationListAtcDataView: InspirationListAtcDataView): Int =
         InspirationListAtcViewHolder.LAYOUT
 
+    override fun type(postAtcCarouselDataView: InspirationListPostAtcDataView): Int =
+        InspirationListPostAtcViewHolder.LAYOUT
+
     override fun type(adsLowOrganicTitleDataView: AdsLowOrganicTitleDataView): Int =
         AdsLowOrganicTitleViewHolder.LAYOUT
 
@@ -375,6 +382,15 @@ class ProductListTypeFactoryImpl(
                     inspirationListAtcListener,
                     recycledViewPool,
                     reimagineSearch2Component
+                )
+            InspirationListPostAtcViewHolder.LAYOUT ->
+                InspirationListPostAtcViewHolder(
+                    view,
+                    inspirationListPostAtcListener,
+                    recycledViewPool,
+                    reimagineSearch2Component,
+                    !reimagineSearch2Component.isReimagineCarousel()
+                        && !reimagineSearch3ProductCard.isReimagineProductCard(),
                 )
             AdsLowOrganicTitleViewHolder.LAYOUT ->
                 AdsLowOrganicTitleViewHolder(view)
