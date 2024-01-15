@@ -10,7 +10,7 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAc
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.InitializeProductMainData
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.InitializeReviewMainData
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.ProductSelected
-import com.tokopedia.content.product.preview.viewmodel.state.ProductPreviewUiState
+import com.tokopedia.content.product.preview.viewmodel.state.ProductUiState
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
@@ -35,22 +35,19 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private val _productContentState = MutableStateFlow(emptyList<ContentUiModel>())
     private val _productIndicatorState = MutableStateFlow(emptyList<ProductIndicatorUiModel>())
-    private val _reviewContentState = MutableStateFlow(emptyList<ReviewUiModel>())
 
     private val _review = MutableStateFlow(emptyList<ReviewUiModel>())
     val review: Flow<List<ReviewUiModel>>
         get() = _review // TODO: add state
 
-    val productReviewUiState: Flow<ProductPreviewUiState>
+    val productUiState: Flow<ProductUiState>
         get() = combine(
             _productContentState,
-            _productIndicatorState,
-            _reviewContentState
-        ) { productContent, productIndicator, reviewContentState ->
-            ProductPreviewUiState(
+            _productIndicatorState
+        ) { productContent, productIndicator ->
+            ProductUiState(
                 productContent = productContent,
-                productIndicator = productIndicator,
-                reviewContent = reviewContentState
+                productIndicator = productIndicator
             )
         }
 
@@ -69,7 +66,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private fun handleInitializeReviewMainData(page: Int) {
         viewModelScope.launchCatchError(block = {
-            _reviewContentState.value =
+            _review.value =
                 repo.getReview(param.productPreviewData.productId, page) // TODO: add pagination
         }) {}
     }

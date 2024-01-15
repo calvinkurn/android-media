@@ -131,7 +131,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
     private fun setupObservers() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.productReviewUiState.withCache().collectLatest { (prevState, currState) ->
+            viewModel.productUiState.withCache().collectLatest { (prevState, currState) ->
                 renderContent(prevState?.productContent, currState.productContent)
                 renderIndicator(prevState?.productIndicator, currState.productIndicator)
             }
