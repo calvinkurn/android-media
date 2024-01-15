@@ -475,6 +475,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
                 epharmacyInfoUiState.value
             )
         } catch (e: Throwable) {
+            Timber.d(e)
             EpharmacyInfoUiState.HasData.Showing(EpharmacyInfoUiModel())
         }
     }
