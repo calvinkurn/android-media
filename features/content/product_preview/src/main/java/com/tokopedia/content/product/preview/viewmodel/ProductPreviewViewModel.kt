@@ -11,6 +11,7 @@ import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAc
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.InitializeProductMainData
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.InitializeReviewMainData
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.ProductSelected
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.SetProductVideoLastDuration
 import com.tokopedia.content.product.preview.viewmodel.state.ProductPreviewUiState
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -38,6 +39,10 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private val _productIndicatorState = MutableStateFlow(emptyList<ProductIndicatorUiModel>())
     private val _reviewContentState = MutableStateFlow(emptyList<ReviewUiModel>())
 
+    private var _productVideoLastDuration: Long = 0L
+    val productVideoLastDuration: Long
+        get() = _productVideoLastDuration
+
     val productReviewUiState: Flow<ProductPreviewUiState>
         get() = combine(
             _productContentState,
@@ -55,6 +60,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
         when (action) {
             is InitializeProductMainData -> handleInitializeProductMainData(action.data)
             is InitializeReviewMainData -> handleInitializeReviewMainData(action.page)
+            is SetProductVideoLastDuration -> handleSetProductVideoLastDuration(action.duration)
             is ProductSelected -> handleProductSelected(action.position)
         }
     }
@@ -68,6 +74,10 @@ class ProductPreviewViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             _reviewContentState.value = repo.getReview(param.productId, page) // TODO: add pagination
         }) {}
+    }
+
+    private fun handleSetProductVideoLastDuration(duration: Long) {
+        _productVideoLastDuration = duration
     }
 
     private fun handleProductSelected(position: Int) {

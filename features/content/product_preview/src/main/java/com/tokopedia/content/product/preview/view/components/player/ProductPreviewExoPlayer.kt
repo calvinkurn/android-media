@@ -30,13 +30,13 @@ class ProductPreviewExoPlayer(private val context: Context) {
     private val loadControl = DefaultLoadControl.Builder()
         .setBackBuffer(
             TimeUnit.MINUTES.toMillis(1).toInt(),
-            true,
+            true
         )
         .setBufferDurationsMs(
             TimeUnit.SECONDS.toMillis(30).toInt(),
             DefaultLoadControl.DEFAULT_MAX_BUFFER_MS,
             TimeUnit.SECONDS.toMillis(1).toInt(),
-            TimeUnit.SECONDS.toMillis(1).toInt(),
+            TimeUnit.SECONDS.toMillis(1).toInt()
         ).createDefaultLoadControl()
 
     private val _exoPlayer = SimpleExoPlayer.Builder(context)
@@ -87,7 +87,7 @@ class ProductPreviewExoPlayer(private val context: Context) {
     fun start(
         videoUrl: String,
         isMute: Boolean,
-        playWhenReady: Boolean = true,
+        playWhenReady: Boolean = true
     ) {
         if (videoUrl.isBlank()) return
 
@@ -96,6 +96,10 @@ class ProductPreviewExoPlayer(private val context: Context) {
         exoPlayer.repeatMode = Player.REPEAT_MODE_ALL
         exoPlayer.playWhenReady = playWhenReady
         exoPlayer.prepare(mediaSource, true, false)
+    }
+
+    fun seekDurationTo(duration: Long) {
+        exoPlayer.seekTo(duration)
     }
 
     fun resume() {

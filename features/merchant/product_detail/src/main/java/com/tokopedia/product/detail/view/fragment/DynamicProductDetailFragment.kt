@@ -2170,7 +2170,11 @@ open class DynamicProductDetailFragment :
                 )
             )
         }
-        openProductPreviewActivity(dynamicProductInfoData, 0)
+        openProductPreviewActivity(
+            data = dynamicProductInfoData,
+            position = 0,
+            productVideoLastDuration = productVideoCoordinator?.getCurrentPosition() ?: 0L
+        )
     }
 
     override fun onVideoVolumeCLicked(isMute: Boolean) {
@@ -2315,14 +2319,16 @@ open class DynamicProductDetailFragment :
 
     private fun openProductPreviewActivity(
         data: DynamicProductInfoP1,
-        position: Int
+        position: Int,
+        productVideoLastDuration: Long = 0L
     ) {
         val intent = ProductPreviewActivity.createIntent(
             context = requireActivity(),
             productContentData = productDetailMapper.mapProductDetailToProductPreview(
                 data = data,
                 position = position
-            )
+            ),
+            productVideoLastDuration = productVideoLastDuration
         )
         startActivity(intent)
     }

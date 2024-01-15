@@ -20,11 +20,10 @@ class ProductPreviewActivity : BaseActivity() {
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
-    private var bundle: Bundle? = null
-
     private lateinit var binding: ActivityProductPreviewBinding
 
     private var productPreviewData: ProductContentUiModel? = null
+    private var productVideoLastDuration: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -54,6 +53,7 @@ class ProductPreviewActivity : BaseActivity() {
         } else {
             intent.extras?.getParcelable(PRODUCT_PREVIEW_DATA)
         }
+        productVideoLastDuration = intent.extras?.getLong(PRODUCT_VIDEO_LAST_DURATION, 0L)
     }
 
     private fun setupViews() {
@@ -82,8 +82,9 @@ class ProductPreviewActivity : BaseActivity() {
         return ProductPreviewFragment.getOrCreate(
             fragmentManager = supportFragmentManager,
             classLoader = classLoader,
-            bundle = bundle ?: Bundle().apply {
+            bundle = Bundle().apply {
                 putParcelable(ProductPreviewFragment.PRODUCT_DATA, productPreviewData)
+                putLong(ProductPreviewFragment.PRODUCT_LAST_VIDEO_DURATION, productVideoLastDuration ?: 0L)
             }
         )
     }
@@ -91,14 +92,17 @@ class ProductPreviewActivity : BaseActivity() {
     companion object {
 
         private const val PRODUCT_PREVIEW_DATA = "product_preview_data"
+        private const val PRODUCT_VIDEO_LAST_DURATION = "product_video_last_duration"
 
         fun createIntent(
             context: Context,
             productContentData: ProductContentUiModel,
+            productVideoLastDuration: Long
         ): Intent {
             val intent = Intent(context, ProductPreviewActivity::class.java)
             val bundle = Bundle()
             bundle.putParcelable(PRODUCT_PREVIEW_DATA, productContentData)
+            bundle.putLong(PRODUCT_VIDEO_LAST_DURATION, productVideoLastDuration)
             intent.putExtras(bundle)
             return intent
         }

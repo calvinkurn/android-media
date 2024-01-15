@@ -232,6 +232,9 @@ class ProductFragment @Inject constructor(
             isMute = false,
             playWhenReady = false
         )
+
+        if (viewModel.productVideoLastDuration == 0L) return
+        mVideoPlayer?.seekDurationTo(viewModel.productVideoLastDuration)
     }
 
     private fun getSelectedItemPosition(state: List<ContentUiModel>): Int {

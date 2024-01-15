@@ -17,6 +17,7 @@ import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTa
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.withProduct
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
+import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.InitializeProductMainData
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
@@ -48,6 +49,10 @@ class ProductPreviewFragment @Inject constructor(
         } else {
             arguments?.getParcelable(PRODUCT_DATA)
         } ?: ProductContentUiModel()
+    }
+
+    private val productVideoLastDuration: Long by lazyThreadSafetyNone {
+        arguments?.getLong(PRODUCT_LAST_VIDEO_DURATION, 0L) ?: 0L
     }
 
     private val pagerListener: ViewPager2.OnPageChangeCallback by lazyThreadSafetyNone {
@@ -83,6 +88,9 @@ class ProductPreviewFragment @Inject constructor(
 
     private fun initData() {
         viewModel.submitAction(InitializeProductMainData(productPreviewData))
+        viewModel.submitAction(
+            ProductPreviewUiAction.SetProductVideoLastDuration(productVideoLastDuration)
+        )
     }
 
     private fun initViews() = with(binding) {
@@ -142,7 +150,8 @@ class ProductPreviewFragment @Inject constructor(
     companion object {
         const val TAG = "ProductPreviewFragment"
 
-        const val PRODUCT_DATA = "product_DATA"
+        const val PRODUCT_DATA = "product_data"
+        const val PRODUCT_LAST_VIDEO_DURATION = "product_video_last_duration"
 
         fun getOrCreate(
             fragmentManager: FragmentManager,
