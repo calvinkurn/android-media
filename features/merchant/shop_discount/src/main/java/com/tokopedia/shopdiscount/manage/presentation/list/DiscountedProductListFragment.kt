@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
@@ -18,6 +19,7 @@ import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
@@ -137,8 +139,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
             onOverflowMenuClicked,
             onVariantInfoClicked,
             onProductSelectionChange,
-            onSubsidyInformationClicked,
-            onShowCoachMarkSubsidyInfo
+            onSubsidyInformationClicked
         )
     }
     private var onScrollDown: () -> Unit = {}
@@ -239,23 +240,45 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
                         onDelayFinished {
                             onScrollDown()
                             handleScrollDownEvent()
+                            checkShouldShowCoachMarkSubsidy()
                         }
                     },
                     onScrollUp = {
                         onDelayFinished {
                             onScrollUp()
                             handleScrollUpEvent()
+                            checkShouldShowCoachMarkSubsidy()
                         }
                     }
                 )
             )
-            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    coachMarkSubsidyInfo?.dismissCoachMark()
-                    super.onScrolled(recyclerView, dx, dy)
-                }
-            })
             imgScrollUp.setOnClickListener { recyclerView.smoothSnapToPosition(0) }
+        }
+    }
+
+    private fun checkShouldShowCoachMarkSubsidy() {
+        val layoutManager = recyclerView?.layoutManager as? LinearLayoutManager
+        val startIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
+        val endIndex = layoutManager?.findLastVisibleItemPosition().orZero()
+        for (i in startIndex..endIndex) {
+            val product = adapter?.getItems()?.getOrNull(i)
+            if (product?.isSubsidy == true) {
+                val viewHolder = recyclerView?.findViewHolderForAdapterPosition(i)
+                if (viewHolder is ProductViewHolder) {
+                    val anchoredView = viewHolder.itemView.findViewById<View>(R.id.text_subsidy_status)
+                    anchoredView.isVisibleOnTheScreen(
+                        onViewVisible = {
+                            showCoachMarkSubsidyInfo(anchoredView, product)
+                        },
+                        onViewNotVisible = {
+                            if(coachMarkSubsidyInfo?.isShowing == true) {
+                                coachMarkSubsidyInfo?.dismissCoachMark()
+                            }
+                        }
+                    )
+                }
+                break
+            }
         }
     }
 
@@ -296,21 +319,11 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
     private fun configBulkDeleteProduct() {
         val selectedProductIds = viewModel.getSelectedProductIds()
         if (viewModel.anySubsidyOnSelectedProducts()) {
-//            if (viewModel.hasOneSelectedNonVariantProduct()) {
-//                val selectedProduct = viewModel.getSelectedProduct()
-//                showOptOutSingleProductSubsidyBottomSheet(
-//                    ShopDiscountManageDiscountMode.DELETE,
-//                    selectedProduct?.listEventId.orEmpty(),
-//                    selectedProduct?.subsidyInfo?.ctaProgramLink.orEmpty(),
-//                    selectedProduct?.id.orEmpty()
-//                )
-//            } else {
             getListProductSubsidy(
                 selectedProductIds,
                 discountStatusId,
                 ShopDiscountManageDiscountMode.DELETE
             )
-//            }
         } else {
             displayBulkDeleteConfirmationDialog()
         }
@@ -332,21 +345,11 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
     private fun configBulkManageProduct() {
         val selectedProductIds = viewModel.getSelectedProductIds()
         if (viewModel.anySubsidyOnSelectedProducts()) {
-//            if (viewModel.hasOneSelectedNonVariantProduct()) {
-//                val selectedProduct = viewModel.getSelectedProduct()
-//                showOptOutSingleProductSubsidyBottomSheet(
-//                    ShopDiscountManageDiscountMode.UPDATE,
-//                    selectedProduct?.listEventId.orEmpty(),
-//                    selectedProduct?.subsidyInfo?.ctaProgramLink.orEmpty(),
-//                    selectedProduct?.id.orEmpty()
-//                )
-//            } else {
             getListProductSubsidy(
                 selectedProductIds,
                 discountStatusId,
                 ShopDiscountManageDiscountMode.UPDATE
             )
-//            }
         } else {
             reserveProduct(viewModel.getRequestId(), selectedProductIds)
         }
@@ -710,8 +713,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
     private val onSubsidyInformationClicked: (Product) -> Unit = { product ->
         showSubsidyProgramInformationBottomSheet(product)
     }
-
-    private val onShowCoachMarkSubsidyInfo: (View, Product) -> Unit = { view, product ->
+    private fun showCoachMarkSubsidyInfo(view: View, product: Product) {
         if (!preferenceDataStore.isCoachMarkSubsidyInfoOnParentAlreadyShown()) {
             val coachMarks = ArrayList<CoachMark2Item>()
             val coachMarkDesc = if (product.hasVariant) {
@@ -727,8 +729,16 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
                 )
             )
             coachMarkSubsidyInfo?.showCoachMark(coachMarks)
+            sendSlashPriceSubsidyImpressionCoachMark(product)
             preferenceDataStore.setCoachMarkSubsidyInfoOnParentAlreadyShown()
         }
+    }
+
+    private fun sendSlashPriceSubsidyImpressionCoachMark(product: Product) {
+        tracker.sendImpressionSlashPriceSubsidyCoachMarkListProductEvent(
+            product.hasVariant,
+            product.id
+        )
     }
 
     private fun showSubsidyProgramInformationBottomSheet(product: Product) {

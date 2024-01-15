@@ -1,12 +1,9 @@
 package com.tokopedia.shopdiscount.manage.presentation.list
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shopdiscount.R
@@ -37,7 +34,6 @@ class ProductViewHolder(
         onVariantInfoClicked: (Product, Int) -> Unit,
         onProductSelectionChange: (Product, Boolean) -> Unit,
         onSubsidyInformationClicked: (Product) -> Unit,
-        onShowCoachMarkSubsidyInfo: (View, Product) -> Unit,
         isLoading: Boolean
     ) {
         binding.imgProduct.loadImage(product.imageUrl)
@@ -56,15 +52,13 @@ class ProductViewHolder(
         handleCardSelectable(product.disableClick)
         setSubsidyStatusSectionData(
             product,
-            onSubsidyInformationClicked,
-            onShowCoachMarkSubsidyInfo
+            onSubsidyInformationClicked
         )
     }
 
     private fun setSubsidyStatusSectionData(
         product: Product,
-        onSubsidyInformationClicked: (Product) -> Unit,
-        onShowCoachMarkSubsidyInfo: (View, Product) -> Unit
+        onSubsidyInformationClicked: (Product) -> Unit
     ) {
         binding.textSubsidyStatus.hide()
         binding.iconSubsidyInfo.hide()
@@ -82,22 +76,6 @@ class ProductViewHolder(
                     onSubsidyInformationClicked.invoke(product)
                 }
             }
-            configCoachMarkSubsidyInfo(onShowCoachMarkSubsidyInfo, product)
-        }
-    }
-
-    private fun configCoachMarkSubsidyInfo(
-        onShowCoachMarkSubsidyInfo: (View, Product) -> Unit,
-        product: Product
-    ) {
-        if (bindingAdapterPosition == 0) {
-            binding.root.isVisibleOnTheScreen(
-                onViewVisible = {
-                    onShowCoachMarkSubsidyInfo.invoke(binding.textSubsidyStatus, product)
-                },
-                onViewNotVisible = {
-                }
-            )
         }
     }
 

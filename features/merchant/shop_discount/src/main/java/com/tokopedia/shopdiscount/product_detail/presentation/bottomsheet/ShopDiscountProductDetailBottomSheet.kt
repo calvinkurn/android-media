@@ -41,6 +41,7 @@ import com.tokopedia.shopdiscount.subsidy.presentation.bottomsheet.ShopDiscountS
 import com.tokopedia.shopdiscount.subsidy.presentation.bottomsheet.ShopDiscountSubsidyProgramInformationBottomSheet
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.preference.SharedPreferenceDataStore
+import com.tokopedia.shopdiscount.utils.tracker.ShopDiscountTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
@@ -58,6 +59,8 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+    @Inject
+    lateinit var tracker: ShopDiscountTracker
     @Inject
     lateinit var preferenceDataStore: SharedPreferenceDataStore
     private var coachMarkSubsidyInfo: CoachMark2? = null
@@ -412,10 +415,36 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
             setDecoration()
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    coachMarkSubsidyInfo?.dismissCoachMark()
+                    checkShouldShowCoachMarkSubsidy()
                     super.onScrolled(recyclerView, dx, dy)
                 }
             })
+        }
+    }
+
+    private fun checkShouldShowCoachMarkSubsidy() {
+        val layoutManager = rvProductList?.layoutManager as? LinearLayoutManager
+        val startIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
+        val endIndex = layoutManager?.findLastVisibleItemPosition().orZero()
+        for (i in startIndex..endIndex) {
+            val product = adapter.getProductListData().getOrNull(i)
+            if (product?.isSubsidy == true && product.parentId != Int.ZERO.toString()) {
+                val viewHolder = rvProductList?.findViewHolderForAdapterPosition(i)
+                if (viewHolder is ShopDiscountProductDetailItemViewHolder) {
+                    val anchoredView = viewHolder.itemView.findViewById<View>(R.id.text_subsidy_status)
+                    anchoredView.isVisibleOnTheScreen(
+                        onViewVisible = {
+                            showCoachMarkSubsidyInfo(anchoredView, product)
+                        },
+                        onViewNotVisible = {
+                            if(coachMarkSubsidyInfo?.isShowing == true) {
+                                coachMarkSubsidyInfo?.dismissCoachMark()
+                            }
+                        }
+                    )
+                }
+                break
+            }
         }
     }
 
@@ -525,7 +554,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
         showSubsidyProgramInformationBottomSheet(uiModel)
     }
 
-    override fun onShowCoachMarkSubsidyInfo(view: View) {
+    private fun showCoachMarkSubsidyInfo(view: View, uiModel: ShopDiscountProductDetailUiModel.ProductDetailData) {
         if(!preferenceDataStore.isCoachMarkSubsidyInfoOnVariantAlreadyShown()) {
             val coachMarks = ArrayList<CoachMark2Item>()
             val coachMarkDesc = getString(R.string.sd_subsidy_coach_mark_non_variant_desc)
@@ -537,8 +566,13 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
                 )
             )
             coachMarkSubsidyInfo?.showCoachMark(coachMarks)
+            sendSlashPriceSubsidyImpressionCoachMark(uiModel)
             preferenceDataStore.setCoachMarkSubsidyInfoOnVariantAlreadyShown()
         }
+    }
+
+    private fun sendSlashPriceSubsidyImpressionCoachMark(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData) {
+        tracker.sendImpressionSlashPriceSubsidyCoachMarkBottomSheetEvent(uiModel.productId)
     }
 
     private fun showSubsidyProgramInformationBottomSheet(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData) {

@@ -105,6 +105,8 @@
         android:layout_width="15dp"
         android:layout_height="15dp"
         android:layout_marginStart="2dp"
+        android:visibility="gone"
+        tools:visibility="visible"
         app:icon_color_light_disabled="@color/Unify_NN500"
         app:icon_color_light_enable="@color/Unify_NN500"
         app:icon_color_night_disabled="@color/Unify_NN500"

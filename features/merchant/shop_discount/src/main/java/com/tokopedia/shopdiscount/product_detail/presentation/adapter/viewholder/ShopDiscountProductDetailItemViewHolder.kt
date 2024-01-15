@@ -6,16 +6,15 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shopdiscount.R
-import com.tokopedia.shopdiscount.utils.formatter.RangeFormatterUtil
 import com.tokopedia.shopdiscount.databinding.ShopDiscountProductDetailItemLayoutBinding
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailUiModel
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
 import com.tokopedia.shopdiscount.utils.extension.parseTo
+import com.tokopedia.shopdiscount.utils.formatter.RangeFormatterUtil
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.date.toDate
@@ -41,8 +40,6 @@ open class ShopDiscountProductDetailItemViewHolder(
         fun onClickDeleteProduct(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData)
 
         fun onClickSubsidyInfo(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData)
-
-        fun onShowCoachMarkSubsidyInfo(view: View)
 
         fun onClickOptOutSubsidy(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData)
     }
@@ -93,19 +90,6 @@ open class ShopDiscountProductDetailItemViewHolder(
                     }
                 }
             }
-            configCoachMarkSubsidyInfo(binding)
-        }
-    }
-
-    private fun configCoachMarkSubsidyInfo(binding: ShopDiscountProductDetailItemLayoutBinding) {
-        if (bindingAdapterPosition == 0) {
-            binding.root.isVisibleOnTheScreen(
-                onViewVisible = {
-                    listener.onShowCoachMarkSubsidyInfo(binding.textSubsidyStatus)
-                },
-                onViewNotVisible = {
-                }
-            )
         }
     }
 

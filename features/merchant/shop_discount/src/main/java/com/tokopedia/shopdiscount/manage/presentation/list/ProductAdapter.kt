@@ -17,8 +17,7 @@ class ProductAdapter(
     private val onOverflowMenuClicked: (Product) -> Unit,
     private val onVariantInfoClicked : (Product, Int) -> Unit,
     private val onProductSelectionChange : (Product, Boolean) -> Unit,
-    private val onSubsidyInformationClicked : (Product) -> Unit,
-    private val onShowCoachMarkSubsidyInfo: (View, Product) -> Unit
+    private val onSubsidyInformationClicked : (Product) -> Unit
 ) : RecyclerView.Adapter<ProductViewHolder>() {
 
     private var products: MutableList<Product> = mutableListOf()
@@ -51,7 +50,6 @@ class ProductAdapter(
                 onVariantInfoClicked,
                 onProductSelectionChange,
                 onSubsidyInformationClicked,
-                onShowCoachMarkSubsidyInfo,
                 isLoading
             )
         }

@@ -2,19 +2,34 @@ package com.tokopedia.shopdiscount.utils.tracker
 
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.CAMPAIGN_BUSINESS_UNIT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.CLICK_ADD_PRODUCT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.CLICK_PG
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.CLICK_SAVE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.CREATE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EDIT
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.IMPRESSION_COACH_MARK
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventCategory.SLASH_PRICE_SUBSIDY_COACH_MARK_BOTTOM_SHEET
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventCategory.SLASH_PRICE_SUBSIDY_COACH_MARK_LIST_OF_PRODUCTS
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventLabel.SLASH_PRICE_SUBSIDY_COACH_MARK_NON_VARIANT_PRODUCT
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventLabel.SLASH_PRICE_SUBSIDY_COACH_MARK_VARIANT_PRODUCT
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.Key.TRACKER_ID
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.PHYSICAL_GOODS_BUSINESS_UNIT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.SLASH_PRICE_LIST_OF_PRODUCTS
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.SLASH_PRICE_SET_DISCOUNT
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TOKOPEDIA_SELLER
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_IMPRESSION_COACH_MARK_BOTTOM_SHEET
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_IMPRESSION_COACH_MARK_PRODUCT_LIST
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.VIEW_PG_IRIS
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
+/**
+ * Tracker reference for slash price subsidy feature https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/4451
+ */
 class ShopDiscountTracker @Inject constructor(private val userSession: UserSessionInterface) {
 
     fun sendClickAddProductEvent() {
@@ -52,9 +67,49 @@ class ShopDiscountTracker @Inject constructor(private val userSession: UserSessi
             ShopDiscountManageDiscountMode.CREATE -> {
                 CREATE
             }
+
             else -> {
                 EDIT
             }
         }
+    }
+
+    fun sendImpressionSlashPriceSubsidyCoachMarkListProductEvent(
+        hasProductVariant: Boolean,
+        productId: String
+    ) {
+        val eventLabel = if (hasProductVariant) {
+            SLASH_PRICE_SUBSIDY_COACH_MARK_VARIANT_PRODUCT
+        } else {
+            SLASH_PRICE_SUBSIDY_COACH_MARK_NON_VARIANT_PRODUCT
+        }.format(productId)
+        Tracker.Builder()
+            .setEvent(VIEW_PG_IRIS)
+            .setEventAction(IMPRESSION_COACH_MARK)
+            .setEventCategory(SLASH_PRICE_SUBSIDY_COACH_MARK_LIST_OF_PRODUCTS)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(TRACKER_ID, TRACKER_ID_IMPRESSION_COACH_MARK_PRODUCT_LIST)
+            .setBusinessUnit(CAMPAIGN_BUSINESS_UNIT)
+            .setCurrentSite(TOKOPEDIA_MARKETPLACE)
+            .setShopId(userSession.shopId)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
+
+    fun sendImpressionSlashPriceSubsidyCoachMarkBottomSheetEvent(productId: String) {
+        val eventLabel = SLASH_PRICE_SUBSIDY_COACH_MARK_VARIANT_PRODUCT.format(productId)
+        Tracker.Builder()
+            .setEvent(VIEW_PG_IRIS)
+            .setEventAction(IMPRESSION_COACH_MARK)
+            .setEventCategory(SLASH_PRICE_SUBSIDY_COACH_MARK_BOTTOM_SHEET)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(TRACKER_ID, TRACKER_ID_IMPRESSION_COACH_MARK_BOTTOM_SHEET)
+            .setBusinessUnit(CAMPAIGN_BUSINESS_UNIT)
+            .setCurrentSite(TOKOPEDIA_MARKETPLACE)
+            .setShopId(userSession.shopId)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
     }
 }
