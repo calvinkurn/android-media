@@ -83,11 +83,11 @@ class ReviewFragment @Inject constructor(
 
     private fun observeReview() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.productReviewUiState.flowWithLifecycle(
+            viewModel.review.flowWithLifecycle(
                 viewLifecycleOwner.lifecycle,
                 Lifecycle.State.RESUMED
             ).withCache().collectLatest { (prev, curr) ->
-                renderList(prev?.reviewContent, curr.reviewContent)
+                renderList(prev, curr)
             }
         }
     }
