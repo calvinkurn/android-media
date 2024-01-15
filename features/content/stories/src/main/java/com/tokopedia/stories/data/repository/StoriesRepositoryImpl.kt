@@ -10,13 +10,12 @@ import com.tokopedia.content.common.usecase.GetUserReportListUseCase
 import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.stories.data.mapper.StoriesMapperImpl
-import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
 import com.tokopedia.stories.domain.usecase.StoriesDetailsUseCase
-import com.tokopedia.stories.domain.usecase.StoriesGroupsUseCase
 import com.tokopedia.stories.domain.usecase.StoriesTrackActivityUseCase
 import com.tokopedia.stories.internal.StoriesPreferenceUtil
 import com.tokopedia.stories.internal.storage.StoriesSeenStorage
+import com.tokopedia.stories.internal.usecase.StoriesGroupsUseCase
 import com.tokopedia.stories.uimodel.StoryActionType
 import com.tokopedia.stories.usecase.ProductMapper
 import com.tokopedia.stories.usecase.StoriesProductUseCase
@@ -49,18 +48,58 @@ class StoriesRepositoryImpl @Inject constructor(
     private val postReportUseCase: PostUserReportUseCase
 ) : StoriesRepository {
 
-    override suspend fun getStoriesInitialData(data: StoriesRequestModel): StoriesUiModel =
+    override suspend fun getStoriesInitialData(
+        authorId: String,
+        authorType: String,
+        source: String,
+        sourceId: String,
+        entryPoint: String,
+    ): StoriesUiModel =
         withContext(dispatchers.io) {
-            val groupRequest = async { storiesGroupsUseCase(data) }
-            val detailRequest = async { storiesDetailsUseCase(data) }
+            val groupRequest = async {
+                storiesGroupsUseCase(
+                    StoriesGroupsUseCase.Request(
+                        authorID = authorId,
+                        authorType = authorType,
+                        source = source,
+                        sourceID = sourceId,
+                        entryPoint = entryPoint,
+                    )
+                )
+            }
+            val detailRequest = async {
+                storiesDetailsUseCase(
+                    StoriesDetailsUseCase.Request(
+                        authorID = authorId,
+                        authorType = authorType,
+                        source = source,
+                        sourceID = sourceId,
+                        entryPoint = entryPoint,
+                    )
+                )
+            }
             val groupResult = groupRequest.await()
             val detailResult = detailRequest.await()
             return@withContext mapper.mapStoriesInitialData(groupResult, detailResult)
         }
 
-    override suspend fun getStoriesDetailData(data: StoriesRequestModel): StoriesDetail =
+    override suspend fun getStoriesDetailData(
+        authorId: String,
+        authorType: String,
+        source: String,
+        sourceId: String,
+        entryPoint: String,
+    ): StoriesDetail =
         withContext(dispatchers.io) {
-            val detailRequest = storiesDetailsUseCase(data)
+            val detailRequest = storiesDetailsUseCase(
+                StoriesDetailsUseCase.Request(
+                    authorID = authorId,
+                    authorType = authorType,
+                    source = source,
+                    sourceID = sourceId,
+                    entryPoint = entryPoint,
+                )
+            )
             return@withContext mapper.mapStoriesDetailRequest("", detailRequest)
         }
 

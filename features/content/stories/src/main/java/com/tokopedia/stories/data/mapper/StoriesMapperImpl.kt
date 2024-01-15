@@ -7,8 +7,8 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.stories.domain.model.detail.StoriesDetailsResponseModel
 import com.tokopedia.stories.domain.model.detail.StoriesDetailsResponseModel.ContentStoriesDetails
-import com.tokopedia.stories.domain.model.group.StoriesGroupsResponseModel
-import com.tokopedia.stories.domain.model.group.StoriesGroupsResponseModel.ContentStoriesGroups
+import com.tokopedia.stories.internal.model.StoriesGroupsResponseModel.ContentStoriesGroups
+import com.tokopedia.stories.internal.model.StoriesGroupsResponseModel
 import com.tokopedia.stories.uimodel.AuthorType
 import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.model.StoriesDetail

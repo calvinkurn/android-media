@@ -123,6 +123,7 @@ internal class FeedBrowseViewModel @Inject constructor(
             is FeedBrowseSlotUiModel.ChannelsWithMenus -> model.getAndUpdateData()
             is FeedBrowseSlotUiModel.InspirationBanner -> model.getAndUpdateData()
             is FeedBrowseSlotUiModel.Authors -> model.getAndUpdateData()
+            is FeedBrowseSlotUiModel.StoryGroups -> model.getAndUpdateData()
         }
     }
 
@@ -217,6 +218,21 @@ internal class FeedBrowseViewModel @Inject constructor(
             updateWidget<FeedBrowseSlotUiModel.Authors>(slotId, ResultState.Fail(err)) {
                 it.copy(authorList = emptyList())
             }
+        }
+    }
+
+    private suspend fun FeedBrowseSlotUiModel.StoryGroups.getAndUpdateData() {
+        updateWidget<FeedBrowseSlotUiModel.StoryGroups>(slotId, ResultState.Loading)
+        try {
+            val mappedResult = repository.getStoryGroups(source, nextCursor)
+            updateWidget<FeedBrowseSlotUiModel.StoryGroups>(slotId, ResultState.Success) {
+                it.copy(
+                    storyList = mappedResult.storyList,
+                    nextCursor = mappedResult.nextCursor,
+                )
+            }
+        } catch (err: Throwable) {
+            updateWidget<FeedBrowseSlotUiModel.StoryGroups>(slotId, ResultState.Fail(err))
         }
     }
 

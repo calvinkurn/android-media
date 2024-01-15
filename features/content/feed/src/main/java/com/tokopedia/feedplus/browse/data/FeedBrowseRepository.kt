@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.browse.data
 
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
+import com.tokopedia.feedplus.browse.data.model.StoryGroupsModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRequestModel
 
@@ -19,4 +20,6 @@ internal interface FeedBrowseRepository {
     suspend fun getWidgetContentSlot(extraParam: WidgetRequestModel): ContentSlotModel
 
     suspend fun getWidgetRecommendation(identifier: String): WidgetRecommendationModel
+
+    suspend fun getStoryGroups(source: String, cursor: String): StoryGroupsModel
 }

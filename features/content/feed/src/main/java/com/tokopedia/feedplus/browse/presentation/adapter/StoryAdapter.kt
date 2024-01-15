@@ -5,20 +5,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
-import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.AuthorCardViewHolder
+import com.tokopedia.feedplus.browse.data.model.StoryNodeModel
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.StoryWidgetViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel.LoadingModel
 
-/**
- * Created by meyta.taliti on 16/11/23.
- */
-internal class AuthorAdapter(
-    private val creatorListener: AuthorCardViewHolder.Item.Listener
+internal class StoryAdapter(
+    private val storyListener: StoryWidgetViewHolder.Item.Listener,
 ) : ListAdapter<Any, RecyclerView.ViewHolder>(
     object : DiffUtil.ItemCallback<Any>() {
         override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
             return when {
-                oldItem is AuthorWidgetModel && newItem is AuthorWidgetModel -> {
+                oldItem is StoryNodeModel && newItem is StoryNodeModel -> {
                     oldItem.id == newItem.id
                 }
                 else -> oldItem == newItem
@@ -31,10 +28,11 @@ internal class AuthorAdapter(
         }
     }
 ) {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            TYPE_LOADING -> AuthorCardViewHolder.Placeholder.create(parent)
-            TYPE_AUTHOR -> AuthorCardViewHolder.Item.create(parent, creatorListener)
+            TYPE_LOADING -> StoryWidgetViewHolder.Placeholder.create(parent)
+            TYPE_STORY -> StoryWidgetViewHolder.Item.create(parent, storyListener)
             else -> error("No ViewHolder found for view type $viewType")
         }
     }
@@ -42,7 +40,7 @@ internal class AuthorAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position)
         when {
-            holder is AuthorCardViewHolder.Item && item is AuthorWidgetModel -> {
+            holder is StoryWidgetViewHolder.Item && item is StoryNodeModel -> {
                 holder.bind(item)
             }
         }
@@ -51,17 +49,17 @@ internal class AuthorAdapter(
     override fun getItemViewType(position: Int): Int {
         return when (val item = getItem(position)) {
             LoadingModel -> TYPE_LOADING
-            is AuthorWidgetModel -> TYPE_AUTHOR
+            is StoryNodeModel -> TYPE_STORY
             else -> error("Type of item $item is not supported")
         }
     }
 
     fun setLoading() {
-        submitList(List(4) { LoadingModel })
+        submitList(List(6) { LoadingModel })
     }
 
     companion object {
         private const val TYPE_LOADING = 0
-        private const val TYPE_AUTHOR = 1
+        private const val TYPE_STORY = 1
     }
 }

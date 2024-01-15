@@ -9,6 +9,8 @@ import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
 import com.tokopedia.feedplus.browse.data.model.BannerWidgetModel
 import com.tokopedia.feedplus.browse.data.model.ContentSlotModel
 import com.tokopedia.feedplus.browse.data.model.FeedBrowseSlotUiModel
+import com.tokopedia.feedplus.browse.data.model.StoryGroupsModel
+import com.tokopedia.feedplus.browse.data.model.StoryNodeModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.feedplus.browse.data.model.WidgetRecommendationModel
 import com.tokopedia.feedplus.data.FeedXCard
@@ -26,6 +28,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetTotalView
 import com.tokopedia.play.widget.ui.model.PlayWidgetVideoUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
+import com.tokopedia.stories.internal.model.StoriesGroupsResponseModel
 import com.tokopedia.videoTabComponent.domain.mapper.FEED_TYPE_CHANNEL_BLOCK
 import com.tokopedia.videoTabComponent.domain.mapper.FEED_TYPE_TAB_MENU
 import javax.inject.Inject
@@ -60,7 +63,7 @@ class FeedBrowseMapper @Inject constructor() {
                                 bannerList = emptyList()
                             )
                         }
-                        else -> {
+                        IDENTIFIER_UGC_WIDGET -> {
                             FeedBrowseSlotUiModel.Authors(
                                 slotId = item.id,
                                 title = item.title,
@@ -68,7 +71,17 @@ class FeedBrowseMapper @Inject constructor() {
                                 authorList = emptyList()
                             )
                         }
+                        else -> null
                     }
+                } else if (item.type.startsWith(PREFIX_STORY_GROUPS_WIDGET)) {
+                    FeedBrowseSlotUiModel.StoryGroups(
+                        slotId = item.id,
+                        title = item.title,
+                        storyList = emptyList(),
+                        nextCursor = "",
+                        source = item.type.removePrefix("$PREFIX_STORY_GROUPS_WIDGET:")
+                    )
+                    null
                 } else {
                     null
                 }
@@ -153,6 +166,22 @@ class FeedBrowseMapper @Inject constructor() {
         }
     }
 
+    internal fun mapWidgetResponse(response: StoriesGroupsResponseModel): StoryGroupsModel {
+        return StoryGroupsModel(
+            storyList = response.data.groups.mapNotNull {
+                if (!it.hasStory) return@mapNotNull null
+                StoryNodeModel(
+                    id = it.value,
+                    name = it.name,
+                    thumbnailUrl = it.image,
+                    hasUnseenStory = it.isUnseenStoryExist,
+                    appLink = it.appLink,
+                )
+            },
+            nextCursor = response.data.meta.nextCursor,
+        )
+    }
+
     private fun mapChannel(data: Content): List<PlayWidgetChannelUiModel> {
         return data.items.map { item ->
             mapChannel(item)
@@ -209,6 +238,7 @@ class FeedBrowseMapper @Inject constructor() {
     companion object {
         private const val PREFIX_SLOT_WIDGET = "browse_channel_slot"
         private const val PREFIX_RECOMMENDATION_WIDGET = "browse_widget_recommendation"
+        private const val PREFIX_STORY_GROUPS_WIDGET = "browse_story_groups"
 
         /**
          * Recommendation Identifier

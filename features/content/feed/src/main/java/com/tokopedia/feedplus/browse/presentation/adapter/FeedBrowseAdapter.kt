@@ -54,6 +54,7 @@ internal class FeedBrowseAdapter(
                 )
                 is FeedBrowseSlotUiModel.InspirationBanner -> item.model.mapToItems(item.result, index)
                 is FeedBrowseSlotUiModel.Authors -> item.model.mapToItems(item.result, index)
+                is FeedBrowseSlotUiModel.StoryGroups -> item.model.mapToItems(item.result, index)
             }
         }
     }
@@ -133,6 +134,20 @@ internal class FeedBrowseAdapter(
             add(FeedBrowseItemListModel.Title(slotInfo, title))
             add(
                 FeedBrowseItemListModel.HorizontalAuthors(slotInfo, authorList, isLoading = state.isLoading)
+            )
+        }
+    }
+
+    private fun FeedBrowseSlotUiModel.StoryGroups.mapToItems(
+        state: ResultState,
+        position: Int,
+    ): List<FeedBrowseItemListModel> {
+        if (state.isFail || (state.isSuccess && storyList.isEmpty())) return emptyList()
+
+        val slotInfo = getSlotInfo(position)
+        return buildList {
+            add(
+                FeedBrowseItemListModel.HorizontalStories(slotInfo, storyList, isLoading = state.isLoading)
             )
         }
     }

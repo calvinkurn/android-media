@@ -1,24 +1,25 @@
-package com.tokopedia.stories.domain.usecase
+package com.tokopedia.stories.internal.usecase
 
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.stories.domain.model.StoriesRequestModel
-import com.tokopedia.stories.domain.model.group.StoriesGroupsResponseModel
+import com.tokopedia.stories.internal.model.StoriesGroupsResponseModel
 import javax.inject.Inject
 
 class StoriesGroupsUseCase @Inject constructor(
-    private val graphqlRepository: GraphqlRepository,
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
     dispatchers: CoroutineDispatchers,
-) : CoroutineUseCase<StoriesRequestModel, StoriesGroupsResponseModel>(dispatchers.io) {
+) : CoroutineUseCase<StoriesGroupsUseCase.Request, StoriesGroupsResponseModel>(dispatchers.io) {
 
-    override suspend fun execute(params: StoriesRequestModel): StoriesGroupsResponseModel {
+    override suspend fun execute(params: Request): StoriesGroupsResponseModel {
         val request = createRequestParams(params)
         return graphqlRepository.request(graphqlQuery(), request)
     }
 
-    private fun createRequestParams(params: StoriesRequestModel): Map<String, Any> {
+    private fun createRequestParams(params: Request): Map<String, Any> {
         return mapOf(PARAM_REQUEST to params)
     }
 
@@ -45,4 +46,21 @@ class StoriesGroupsUseCase @Inject constructor(
             }
         """
     }
+
+    data class Request(
+        @SerializedName("authorID")
+        val authorID: String,
+        @SerializedName("authorType")
+        val authorType: String,
+        @SerializedName("source")
+        val source: String,
+        @SerializedName("sourceID")
+        val sourceID: String,
+        @SerializedName("entrypoint")
+        val entryPoint: String,
+        @SerializedName("limit")
+        val limit: Int = 20,
+        @SerializedName("cursor")
+        val cursor: String = "",
+    )
 }

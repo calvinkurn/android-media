@@ -12,7 +12,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.stories.R
 import com.tokopedia.stories.data.repository.StoriesRepository
-import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.model.StoriesSource
 import com.tokopedia.stories.domain.model.StoriesTrackActivityActionType
 import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
@@ -750,25 +749,23 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private suspend fun requestStoriesInitialData(): StoriesUiModel {
-        val request = StoriesRequestModel(
-            authorID = args.authorId,
+        return repository.getStoriesInitialData(
+            authorId = args.authorId,
             authorType = args.authorType,
             source = args.source,
-            sourceID = args.sourceId,
+            sourceId = args.sourceId,
             entryPoint = args.entryPoint
         )
-        return repository.getStoriesInitialData(request)
     }
 
     private suspend fun requestStoriesDetailData(sourceId: String): StoriesDetail {
-        val request = StoriesRequestModel(
-            authorID = args.authorId,
+        return repository.getStoriesDetailData(
+            authorId = args.authorId,
             authorType = args.authorType,
             source = StoriesSource.STORY_GROUP.value,
-            sourceID = sourceId,
+            sourceId = sourceId,
             entryPoint = args.entryPoint
         )
-        return repository.getStoriesDetailData(request)
     }
 
     private suspend fun requestSetStoriesTrackActivity(trackerId: String): Boolean {

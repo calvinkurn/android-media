@@ -43,6 +43,14 @@ internal sealed interface FeedBrowseSlotUiModel {
         val identifier: String,
         val authorList: List<AuthorWidgetModel>
     ) : FeedBrowseSlotUiModel
+
+    data class StoryGroups(
+        override val slotId: String,
+        override val title: String,
+        val storyList: List<StoryNodeModel>,
+        val nextCursor: String,
+        val source: String,
+    ) : FeedBrowseSlotUiModel
 }
 
 internal data class WidgetMenuModel(
@@ -91,4 +99,12 @@ internal data class AuthorWidgetModel(
     val contentId: String,
     val contentAppLink: String,
     val channelType: String
+)
+
+internal data class StoryNodeModel(
+    val id: String,
+    val name: String,
+    val thumbnailUrl: String,
+    val hasUnseenStory: Boolean,
+    val appLink: String,
 )

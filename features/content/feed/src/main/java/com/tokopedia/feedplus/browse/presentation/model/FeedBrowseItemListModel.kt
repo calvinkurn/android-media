@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.browse.presentation.model
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedplus.browse.data.model.AuthorWidgetModel
 import com.tokopedia.feedplus.browse.data.model.BannerWidgetModel
+import com.tokopedia.feedplus.browse.data.model.StoryNodeModel
 import com.tokopedia.feedplus.browse.data.model.WidgetMenuModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
@@ -93,6 +94,17 @@ internal sealed interface FeedBrowseItemListModel {
 
     object LoadingModel : FeedBrowseItemListModel {
         override val slotInfo: SlotInfo = SlotInfo.Empty
+    }
+
+    data class HorizontalStories(
+        override val slotInfo: SlotInfo,
+        val items: List<StoryNodeModel>,
+        val isLoading: Boolean = false,
+    ) : FeedBrowseItemListModel {
+        companion object {
+            val Loading: HorizontalStories
+                get() = HorizontalStories(SlotInfo.Empty, emptyList(), true)
+        }
     }
 }
 

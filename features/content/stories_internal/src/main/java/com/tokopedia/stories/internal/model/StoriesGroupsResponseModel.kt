@@ -1,4 +1,4 @@
-package com.tokopedia.stories.domain.model.group
+package com.tokopedia.stories.internal.model
 
 import com.google.gson.annotations.SerializedName
 
@@ -27,11 +27,17 @@ data class StoriesGroupsResponseModel(
         val value: String = "",
         @SerializedName("webLink")
         val webLink: String = "",
+        @SerializedName("hasStory")
+        val hasStory: Boolean = false,
+        @SerializedName("isUnseenStoryExist")
+        val isUnseenStoryExist: Boolean = false,
     )
 
     data class Meta(
         @SerializedName("selectedGroupIndex")
         val selectedGroupIndex: Int = 0,
+        @SerializedName("nextCursor")
+        val nextCursor: String = "",
     )
 }
 
