@@ -28,6 +28,4 @@ object ShareExConstants {
     object BranchValue {
         const val SOURCE = "android"
     }
-
-    const val ARG_UTM_MEDIUM = "Share"
 }

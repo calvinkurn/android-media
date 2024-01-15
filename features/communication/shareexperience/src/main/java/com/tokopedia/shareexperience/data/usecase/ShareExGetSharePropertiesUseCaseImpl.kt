@@ -38,12 +38,9 @@ class ShareExGetSharePropertiesUseCaseImpl @Inject constructor(
 
     private val sharePropertiesQuery = ShareExGetSharePropertiesQuery()
 
-    override fun getDefaultData(
-        defaultUrl: String,
-        defaultImageUrl: String
-    ): Flow<ShareExResult<ShareExBottomSheetModel>> {
+    override fun getDefaultData(): Flow<ShareExResult<ShareExBottomSheetModel>> {
         return flow {
-            val result = mapper.mapDefault(defaultUrl, defaultImageUrl)
+            val result = mapper.mapDefault()
             emit(result)
         }
             .asFlowResult()

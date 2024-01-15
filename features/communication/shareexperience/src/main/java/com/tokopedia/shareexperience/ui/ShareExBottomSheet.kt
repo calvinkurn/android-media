@@ -1,6 +1,7 @@
 package com.tokopedia.shareexperience.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -112,6 +113,9 @@ class ShareExBottomSheet :
                     observeBottomSheetUiState()
                 }
                 launch {
+                    observeShortLinkUiState()
+                }
+                launch {
                     observeNavigationUiState()
                 }
             }
@@ -133,6 +137,12 @@ class ShareExBottomSheet :
 
     private fun setBottomSheetData(newList: List<Visitable<in ShareExTypeFactory>>) {
         adapter.updateItems(newList)
+    }
+
+    private suspend fun observeShortLinkUiState() {
+        viewModel.shortLinkUiState.collectLatest {
+            Log.d("TESTTT", "$it")
+        }
     }
 
     private suspend fun observeNavigationUiState() {

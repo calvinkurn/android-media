@@ -7,12 +7,14 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.shareexperience.data.dto.affiliate.generatelink.ShareExGenerateAffiliateLinkWrapperResponseDto
 import com.tokopedia.shareexperience.data.query.ShareExGetAffiliateLinkQuery
 import com.tokopedia.shareexperience.domain.ShareExResult
-import com.tokopedia.shareexperience.domain.asFlowResult
 import com.tokopedia.shareexperience.domain.model.request.shortlink.affiliate.ShareExAffiliateLinkPropertiesRequest
 import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetAffiliateLinkUseCase
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 class ShareExGetAffiliateLinkUseCaseImpl @Inject constructor(
@@ -31,7 +33,11 @@ class ShareExGetAffiliateLinkUseCaseImpl @Inject constructor(
             val result = getGeneratedLink(response)
             emit(result)
         }
-            .asFlowResult()
+            .map<String, ShareExResult<String>> {
+                ShareExResult.Success(it)
+            }
+            .onStart { emit(ShareExResult.Loading) }
+            .catch { emit(ShareExResult.Error(Throwable("Link gagal disalin. Tenang, kamu masih bisa salin link-nya dari Dashboard Affiliate."))) }
             .flowOn(dispatchers.io)
     }
 

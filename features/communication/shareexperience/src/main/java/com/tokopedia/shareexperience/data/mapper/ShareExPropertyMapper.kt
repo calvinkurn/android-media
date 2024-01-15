@@ -77,22 +77,11 @@ class ShareExPropertyMapper @Inject constructor(
         return result
     }
 
-    fun mapDefault(
-        defaultUrl: String,
-        defaultImageUrl: String
-    ): ShareExBottomSheetModel {
-        val listShareProperty = arrayListOf<ShareExPropertyModel>()
-        val property = ShareExPropertyModel(
-            title = defaultUrl,
-            listImage = listOf(defaultImageUrl)
-        )
-        listShareProperty.add(property)
+    fun mapDefault(): ShareExBottomSheetModel {
         val body = ShareExBottomSheetPageModel(
-            listShareProperty = listShareProperty,
             socialChannel = channelMapper.generateSocialMediaChannel(),
             commonChannel = channelMapper.generateDefaultChannel()
         )
-
         return ShareExBottomSheetModel(
             title = ShareExConstants.DefaultValue.DEFAULT_TITLE,
             bottomSheetPage = body

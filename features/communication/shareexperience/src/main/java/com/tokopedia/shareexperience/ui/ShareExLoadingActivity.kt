@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalCommunication
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
 import com.tokopedia.shareexperience.data.di.ShareExComponent
@@ -64,17 +63,15 @@ class ShareExLoadingActivity : BaseActivity(), HasComponent<ShareExComponent> {
 
     private fun fetchData() {
         val id = this.getStringExtraFromIntentOrQuery(ApplinkConstInternalCommunication.ID) ?: ""
-        val source = this.getStringExtraFromIntentOrQuery(ApplinkConstInternalCommunication.SOURCE).toIntOrZero()
+        val source = this.getStringExtraFromIntentOrQuery(ApplinkConstInternalCommunication.SOURCE) ?: ""
         val sourceEnum = ShareExPageTypeEnum.fromValue(source)
         val defaultUrl = this.getStringExtraFromIntentOrQuery(ApplinkConstInternalCommunication.SHARE_DEFAULT_URL) ?: ""
-        val defaultImageUrl = this.getStringExtraFromIntentOrQuery(ApplinkConstInternalCommunication.SHARE_DEFAULT_IMAGE_URL) ?: ""
         val selectedIdChip = this.getStringExtraFromIntentOrQuery(ApplinkConstInternalCommunication.SELECTED_ID) ?: ""
         viewModel.processAction(
             ShareExAction.FetchShareData(
                 id,
                 sourceEnum,
                 defaultUrl,
-                defaultImageUrl,
                 selectedIdChip
             )
         )

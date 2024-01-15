@@ -11,7 +11,7 @@ import com.tokopedia.shareexperience.domain.model.request.shortlink.affiliate.Sh
 import com.tokopedia.shareexperience.domain.model.request.shortlink.affiliate.ShareExAffiliateLinkRequest
 import com.tokopedia.shareexperience.domain.model.request.shortlink.branch.ShareExBranchLinkPropertiesRequest
 import com.tokopedia.shareexperience.domain.model.request.shortlink.branch.ShareExBranchUniversalObjectRequest
-import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGenerateShortLinkUseCase
+import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetShortLinkUseCase
 import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetAffiliateLinkUseCase
 import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetBranchLinkUseCase
 import kotlinx.coroutines.flow.Flow
@@ -21,11 +21,11 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-class ShareExGenerateShortLinkUseCaseImpl @Inject constructor(
+class ShareExGetShortLinkUseCaseImpl @Inject constructor(
     private val generateAffiliateLinkUseCase: ShareExGetAffiliateLinkUseCase,
     private val generateBranchLinkUseCase: ShareExGetBranchLinkUseCase,
     private val dispatchers: CoroutineDispatchers
-) : ShareExGenerateShortLinkUseCase {
+) : ShareExGetShortLinkUseCase {
 
     override suspend fun getShortLink(params: ShareExShortLinkRequest): Flow<ShareExResult<String>> {
         return channelFlow {

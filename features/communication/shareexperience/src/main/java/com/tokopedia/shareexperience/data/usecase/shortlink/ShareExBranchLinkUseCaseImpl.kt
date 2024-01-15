@@ -10,7 +10,6 @@ import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.AN_MIN_VE
 import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.CUSTOM_META_TAGS
 import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.DESKTOP_URL
 import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.IOS_DEEPLINK_PATH
-import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.IOS_MIN_VERSION
 import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.IOS_URL
 import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.OG_DESCRIPTION
 import com.tokopedia.shareexperience.domain.ShareExConstants.BranchKey.OG_IMAGE_URL
@@ -51,10 +50,10 @@ class ShareExBranchLinkUseCaseImpl @Inject constructor(
             )
             awaitClose { channel.close() }
         }
-        .catch {
-            emit(ShareExResult.Error(it))
-        }
-        .flowOn(dispatchers.io)
+            .catch {
+                emit(ShareExResult.Error(it))
+            }
+            .flowOn(dispatchers.io)
     }
 
     private fun generateBranchUniversalObject(
@@ -102,10 +101,6 @@ class ShareExBranchLinkUseCaseImpl @Inject constructor(
         val androidMinVersion = params.branchUniversalObjectRequest.contentMetadataMap[AN_MIN_VERSION]
         if (androidMinVersion != null) {
             linkProperties.addControlParameter(AN_MIN_VERSION, androidMinVersion)
-        }
-        val iosMinVersion = params.branchUniversalObjectRequest.contentMetadataMap[IOS_MIN_VERSION]
-        if (iosMinVersion != null) {
-            linkProperties.addControlParameter(IOS_MIN_VERSION, iosMinVersion)
         }
         return linkProperties
     }

@@ -92,15 +92,13 @@ class ShareExInitializer(context: Context) {
         id: String,
         pageSource: ShareExPageTypeEnum,
         defaultUrl: String,
-        defaultImageUrl: String,
         tracker: String
     ) {
         contextRef.get()?.let {
             val intent = RouteManager.getIntent(it, ApplinkConstInternalCommunication.SHARE_EXPERIENCE)
             intent.putExtra(ApplinkConstInternalCommunication.ID, id)
             intent.putExtra(ApplinkConstInternalCommunication.SHARE_DEFAULT_URL, defaultUrl)
-            intent.putExtra(ApplinkConstInternalCommunication.SHARE_DEFAULT_IMAGE_URL, defaultImageUrl)
-            intent.putExtra(ApplinkConstInternalCommunication.SOURCE, pageSource.value.toString())
+            intent.putExtra(ApplinkConstInternalCommunication.SOURCE, pageSource.value)
             intent.putExtra(ApplinkConstInternalCommunication.SHARE_TRACKER, tracker)
             it.startActivity(intent)
         }

@@ -5,14 +5,14 @@ import com.tokopedia.shareexperience.data.usecase.ShareExGetAffiliateEligibility
 import com.tokopedia.shareexperience.data.usecase.ShareExGetGeneratedImageUseCaseImpl
 import com.tokopedia.shareexperience.data.usecase.ShareExGetSharePropertiesUseCaseImpl
 import com.tokopedia.shareexperience.data.usecase.shortlink.ShareExBranchLinkUseCaseImpl
-import com.tokopedia.shareexperience.data.usecase.shortlink.ShareExGenerateShortLinkUseCaseImpl
 import com.tokopedia.shareexperience.data.usecase.shortlink.ShareExGetAffiliateLinkUseCaseImpl
+import com.tokopedia.shareexperience.data.usecase.shortlink.ShareExGetShortLinkUseCaseImpl
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetAffiliateEligibilityUseCase
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetGeneratedImageUseCase
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
-import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGenerateShortLinkUseCase
 import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetAffiliateLinkUseCase
 import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetBranchLinkUseCase
+import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetShortLinkUseCase
 import dagger.Binds
 import dagger.Module
 
@@ -51,6 +51,6 @@ abstract class ShareExUseCaseModule {
     @Binds
     @ActivityScope
     abstract fun provideGetShortLinkUseCase(
-        useCase: ShareExGenerateShortLinkUseCaseImpl
-    ): ShareExGenerateShortLinkUseCase
+        useCase: ShareExGetShortLinkUseCaseImpl
+    ): ShareExGetShortLinkUseCase
 }

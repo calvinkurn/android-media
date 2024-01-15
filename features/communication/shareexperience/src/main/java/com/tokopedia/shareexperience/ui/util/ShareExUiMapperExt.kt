@@ -118,25 +118,6 @@ fun ShareExBottomSheetModel.mapError(
         listOf(ShareExErrorUiModel(throwable))
     } else {
         val result = arrayListOf<Visitable<in ShareExTypeFactory>>()
-
-        // Only add when property is not null
-        this.bottomSheetPage.listShareProperty.firstOrNull()?.let { shareExPropertyModel ->
-            // Link Share Card UI
-            val linkShareUiModel = ShareExLinkShareUiModel(
-                shareExPropertyModel.title,
-                shareExPropertyModel.affiliate.eligibility.message,
-                "tokopedia.link",
-                shareExPropertyModel.listImage.firstOrNull() ?: "",
-                shareExPropertyModel.affiliate.eligibility.label,
-                shareExPropertyModel.affiliate.eligibility.expiredDate
-            )
-            result.add(linkShareUiModel)
-        }
-
-        // Separator Ui
-        val separator = ShareExSeparatorUiModel()
-        result.add(separator)
-
         // Channel Ui
         val socialChannelUiModel = ShareExSocialChannelUiModel(this.bottomSheetPage.socialChannel)
         if (socialChannelUiModel.socialChannel.listChannel.isNotEmpty()) {
