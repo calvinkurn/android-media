@@ -11,6 +11,7 @@ import com.tokopedia.shopdiscount.common.domain.MutationDoSlashPriceProductReser
 import com.tokopedia.shopdiscount.manage.data.response.DeleteDiscountResponse
 import com.tokopedia.shopdiscount.manage.domain.usecase.DeleteDiscountUseCase
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
+import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageEntrySource
 import com.tokopedia.shopdiscount.product_detail.ShopDiscountProductDetailMapper
 import com.tokopedia.shopdiscount.product_detail.data.response.GetSlashPriceProductDetailResponse
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountDetailReserveProductUiModel
@@ -136,9 +137,11 @@ class ShopDiscountProductDetailBottomSheetViewModel @Inject constructor(
         listProductDetailData: List<ShopDiscountProductDetailUiModel.ProductDetailData>,
         mode: String
     ) {
+        val entrySource = getEntrySource(mode)
         val mappedUiModel = ShopDiscountManageProductSubsidyUiModelMapper.map(
             listProductDetailData = listProductDetailData,
             mode = mode,
+            entrySource = entrySource
         )
         if (mode == ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY) {
             listProductDetailData.filter { it.isSubsidy }.map {
@@ -148,4 +151,20 @@ class ShopDiscountProductDetailBottomSheetViewModel @Inject constructor(
         _manageProductSubsidyUiModelLiveData.postValue(Success(mappedUiModel))
     }
 
+    private fun getEntrySource(mode: String): ShopDiscountManageEntrySource {
+        return when (mode) {
+            ShopDiscountManageDiscountMode.UPDATE -> {
+                ShopDiscountManageEntrySource.EDIT
+            }
+            ShopDiscountManageDiscountMode.DELETE -> {
+                ShopDiscountManageEntrySource.DELETE
+            }
+            ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY -> {
+                ShopDiscountManageEntrySource.OPT_OUT
+            }
+            else -> {
+                ShopDiscountManageEntrySource.EDIT
+            }
+        }
+    }
 }

@@ -14,6 +14,7 @@ import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
 import com.tokopedia.shopdiscount.manage.domain.usecase.DeleteDiscountUseCase
 import com.tokopedia.shopdiscount.manage.domain.usecase.GetSlashPriceProductListUseCase
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
+import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageEntrySource
 import com.tokopedia.shopdiscount.product_detail.ShopDiscountProductDetailMapper
 import com.tokopedia.shopdiscount.product_detail.data.response.GetSlashPriceProductDetailResponse
 import com.tokopedia.shopdiscount.product_detail.domain.GetSlashPriceProductDetailUseCase
@@ -245,9 +246,11 @@ class DiscountedProductListViewModel @Inject constructor(
                 ShopDiscountProductDetailMapper.mapToShopDiscountProductDetailUiModel(
                     productDetailData
                 ).listProductDetailData
+            val entrySource = getEntrySource(mode)
             val mappedUiModel = ShopDiscountManageProductSubsidyUiModelMapper.map(
                 listProductDetailData = listProductDetailUiModel,
                 mode = mode,
+                entrySource = entrySource
             )
             if (mode == ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY) {
                 listProductDetailUiModel.filter { it.isSubsidy }.map {
@@ -257,6 +260,23 @@ class DiscountedProductListViewModel @Inject constructor(
             _manageProductSubsidyUiModelLiveData.postValue(Success(mappedUiModel))
         }) {
             _manageProductSubsidyUiModelLiveData.postValue(Fail(it))
+        }
+    }
+
+    private fun getEntrySource(mode: String): ShopDiscountManageEntrySource {
+        return when (mode) {
+            ShopDiscountManageDiscountMode.UPDATE -> {
+                ShopDiscountManageEntrySource.EDIT_DISCOUNT
+            }
+            ShopDiscountManageDiscountMode.DELETE -> {
+                ShopDiscountManageEntrySource.DELETE
+            }
+            ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY -> {
+                ShopDiscountManageEntrySource.OPT_OUT
+            }
+            else -> {
+                ShopDiscountManageEntrySource.EDIT_DISCOUNT
+            }
         }
     }
 

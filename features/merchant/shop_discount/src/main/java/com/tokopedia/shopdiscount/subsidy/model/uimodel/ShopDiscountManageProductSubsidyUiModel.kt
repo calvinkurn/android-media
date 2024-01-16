@@ -3,6 +3,7 @@ package com.tokopedia.shopdiscount.subsidy.model.uimodel
 import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
+import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageEntrySource
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailUiModel
 import kotlinx.parcelize.Parcelize
 
@@ -10,6 +11,7 @@ import kotlinx.parcelize.Parcelize
 data class ShopDiscountManageProductSubsidyUiModel(
     val listProductDetailData: List<ShopDiscountProductDetailUiModel.ProductDetailData> = listOf(),
     val mode: String = ShopDiscountManageDiscountMode.UPDATE,
+    val entrySource: ShopDiscountManageEntrySource = ShopDiscountManageEntrySource.EDIT,
     val selectedProductToOptOut: MutableList<ShopDiscountProductDetailUiModel.ProductDetailData> = mutableListOf(),
 ) : Parcelable {
 

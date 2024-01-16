@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shopdiscount.databinding.LayoutBottomSheetShopDiscountChooseProductSubsidyToOptOutBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
@@ -22,6 +23,7 @@ import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountManageProduc
 import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountProductSubsidyUiModel
 import com.tokopedia.shopdiscount.subsidy.presentation.adapter.ShopDiscountProductSubsidyAdapter
 import com.tokopedia.shopdiscount.subsidy.presentation.adapter.viewholder.ShopDiscountSubsidyProductItemViewHolder
+import com.tokopedia.shopdiscount.utils.tracker.ShopDiscountTracker
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -64,6 +66,8 @@ class ShopDiscountOptOutMultipleProductSubsidyBottomSheet :
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+    @Inject
+    lateinit var tracker: ShopDiscountTracker
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,6 +108,16 @@ class ShopDiscountOptOutMultipleProductSubsidyBottomSheet :
         setupTextMultipleSelectProduct()
         setProductSubsidyData()
         configButtonOptOut()
+        sendImpressionOptOutMultipleProductSubsidyTracker()
+    }
+
+    private fun sendImpressionOptOutMultipleProductSubsidyTracker() {
+        tracker.sendImpressionOptOutMultipleProductSubsidyEvent(
+            data.entrySource.value,
+            buttonOptOut?.isEnabled.orFalse(),
+            buttonOptOut?.text.toString(),
+            subsidyProductAdapter.itemCount
+        )
     }
 
     fun setOnDismissBottomSheetAfterFinishActionListener(listener: (String, List<String>, String) -> Unit) {

@@ -22,6 +22,7 @@ object TrackerConstant {
         const val CLICK_SUBSIDY_INFORMATION = "click subsidy information"
         const val IMPRESSION_SUBSIDY_DETAIL = "impression subsidy detail"
         const val CLICK_EDU_ARTICLE = "click edu article"
+        const val IMPRESSION_NON_EDITABLE_VARIANT = "impression non editable variant"
     }
 
     object EventCategory{
@@ -32,8 +33,9 @@ object TrackerConstant {
     object EventLabel {
         const val SLASH_PRICE_SUBSIDY_NON_VARIANT_PRODUCT = "product parent - %1s"
         const val SLASH_PRICE_SUBSIDY_VARIANT_PRODUCT = "product variant - %1s"
-        const val SLASH_PRICE_SUBSIDY_DETAIL_LIST_OF_PRODUCTS = "page source list page - %1s"
-        const val SLASH_PRICE_SUBSIDY_DETAIL_BOTTOM_SHEET = "page source bottomsheet - %1s"
+        const val SLASH_PRICE_SUBSIDY_PAGE_SOURCE_LIST_OF_PRODUCTS = "list page - %1s"
+        const val SLASH_PRICE_SUBSIDY_PAGE_SOURCE_BOTTOM_SHEET = "bottomsheet - %1s"
+        const val SLASH_PRICE_SUBSIDY_ENTRY_POINT_SOURCE = "%1s - %2s - %3s"
 
     }
 
@@ -44,5 +46,6 @@ object TrackerConstant {
         const val TRACKER_ID_CLICK_SUBSIDY_INFORMATION_BOTTOM_SHEET = "49614"
         const val TRACKER_ID_IMPRESSION_SUBSIDY_DETAIL = "49495"
         const val TRACKER_ID_CLICK_EDU_ARTICLE = "49496"
+        const val TRACKER_ID_IMPRESSION_NON_EDITABLE_VARIANT = "49497"
     }
 }
