@@ -1,7 +1,6 @@
 package com.tokopedia.recommendation_widget_common.domain.request
 
 import android.text.TextUtils
-import com.tokopedia.productcard.experiments.ProductCardExperiment.isReimagine
 
 data class GetRecommendationRequestParam(
     val pageNumber: Int = 1,
@@ -17,7 +16,7 @@ data class GetRecommendationRequestParam(
     var userId: Int = 0,
     val shopIds: List<String> = listOf(),
     val criteriaThematicIDs: List<String> = listOf(),
-    var productCardVersion: Int = if (isReimagine()) 5 else 0,
+    var productCardVersion: Int = 0,
 ) {
 
     fun toGqlRequest(): Map<String, Any?> {
