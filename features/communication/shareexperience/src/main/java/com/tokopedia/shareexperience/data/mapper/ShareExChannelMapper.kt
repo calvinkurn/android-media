@@ -5,14 +5,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.provider.Telephony.Sms.getDefaultSmsPackage
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
 import com.tokopedia.shareexperience.data.util.ShareExResourceProvider
 import com.tokopedia.shareexperience.data.util.toArray
 import com.tokopedia.shareexperience.domain.ShareExConstants
 import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
+import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelModel
 import org.json.JSONArray
@@ -193,7 +194,8 @@ class ShareExChannelMapper @Inject constructor(
                 channelEnum = ShareExChannelEnum.SMS,
                 title = resourceProvider.getSMSChannelTitle(),
                 icon = IconUnify.CHAT,
-                mimeType = ShareExMimeTypeEnum.TEXT
+                mimeType = ShareExMimeTypeEnum.ALL,
+                packageName = getDefaultSmsPackage(context)
             )
         )
         generalChannelList.add(
@@ -201,7 +203,8 @@ class ShareExChannelMapper @Inject constructor(
                 channelEnum = ShareExChannelEnum.EMAIL,
                 title = resourceProvider.getEmailChannelTitle(),
                 icon = IconUnify.MESSAGE,
-                mimeType = ShareExMimeTypeEnum.IMAGE
+                mimeType = ShareExMimeTypeEnum.ALL,
+                packageName = "com.google.android.gm"
             )
         )
         generalChannelList.add(

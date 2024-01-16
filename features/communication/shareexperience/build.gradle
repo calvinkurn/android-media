@@ -80,6 +80,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.dataStorePreferences
     implementation rootProject.ext.miscDependencies.fragmentKtx
+    implementation rootProject.ext.miscDependencies.workManager
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles

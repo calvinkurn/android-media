@@ -15,8 +15,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shareexperience.R
 import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
 import com.tokopedia.shareexperience.data.di.ShareExComponent
-import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.databinding.ShareexperienceLoadingActivityBinding
+import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
+import com.tokopedia.shareexperience.ui.util.ShareExMediaCleanupStorageWorker
 import com.tokopedia.shareexperience.ui.util.getStringExtraFromIntentOrQuery
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collectLatest
@@ -131,5 +132,10 @@ class ShareExLoadingActivity : BaseActivity(), HasComponent<ShareExComponent> {
     fun refreshPage() {
         closeBottomSheet()
         fetchData()
+    }
+
+    override fun onDestroy() {
+        ShareExMediaCleanupStorageWorker.scheduleWorker(this)
+        super.onDestroy()
     }
 }
