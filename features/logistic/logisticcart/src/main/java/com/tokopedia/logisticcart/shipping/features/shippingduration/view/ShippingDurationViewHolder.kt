@@ -4,7 +4,6 @@ import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
-import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
@@ -14,7 +13,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.Companion.ERROR_PINPOINT_NEEDED
 import com.tokopedia.logisticcart.databinding.ItemDurationBinding
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -22,6 +23,11 @@ import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil.setT
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.logisticcart.R as logisticcartR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
+
+private val ShippingDurationUiModel.disabled: Boolean
+    get() {
+        return serviceData.error.errorId.toIntOrZero() != 0 && errorMessage != ERROR_PINPOINT_NEEDED
+    }
 
 /**
  * Created by Irfan Khoirul on 06/08/18.
@@ -47,7 +53,16 @@ class ShippingDurationViewHolder(
                 tvShippingInformation.visibility = View.GONE
             }
 
-            if (!TextUtils.isEmpty(shippingDurationUiModel.errorMessage)) {
+            // error message
+            if (shippingDurationUiModel.errorMessage?.isNotEmpty() == true) {
+                tvError.text = shippingDurationUiModel.constructErrorUi()
+                tvError.visibility = View.VISIBLE
+            } else {
+                tvError.visibility = View.GONE
+            }
+
+            // set view enabled / disabled
+            if (shippingDurationUiModel.disabled) {
                 tvDurationOrPrice.setTextColor(
                     ContextCompat.getColor(
                         tvDurationOrPrice.context,
@@ -57,8 +72,6 @@ class ShippingDurationViewHolder(
                 tvPriceOrDuration.visibility = View.GONE
                 tvTextDesc.visibility = View.GONE
                 tvOrderPrioritas.visibility = View.GONE
-                tvError.text = shippingDurationUiModel.constructErrorUi()
-                tvError.visibility = View.VISIBLE
             } else {
                 tvDurationOrPrice.setTextColor(
                     ContextCompat.getColor(
@@ -66,7 +79,6 @@ class ShippingDurationViewHolder(
                         unifyprinciplesR.color.Unify_N700_96
                     )
                 )
-                tvError.visibility = View.GONE
                 tvPriceOrDuration.visibility = View.VISIBLE
                 if (shippingDurationUiModel.serviceData.texts.textServiceDesc.isNotEmpty()) {
                     tvTextDesc.text = shippingDurationUiModel.serviceData.texts.textServiceDesc
@@ -176,7 +188,7 @@ class ShippingDurationViewHolder(
                 if (shippingDurationUiModel.isSelected) View.VISIBLE else View.GONE
             if (shippingDurationUiModel.isShowShowCase) setShowCase()
             itemView.setOnClickListener {
-                if (shippingDurationUiModel.errorMessage.isNullOrEmpty()) {
+                if (!shippingDurationUiModel.disabled) {
                     shippingDurationUiModel.isSelected = !shippingDurationUiModel.isSelected
                     shippingDurationAdapterListener?.onShippingDurationChoosen(
                         shippingDurationUiModel.shippingCourierViewModelList,
@@ -233,7 +245,6 @@ class ShippingDurationViewHolder(
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
     }
-
 
     fun SpannableString.setActionErrorSpan(
         action: String,
