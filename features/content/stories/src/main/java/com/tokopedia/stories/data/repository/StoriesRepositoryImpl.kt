@@ -16,6 +16,7 @@ import com.tokopedia.stories.domain.usecase.StoriesTrackActivityUseCase
 import com.tokopedia.stories.internal.StoriesPreferenceUtil
 import com.tokopedia.stories.internal.storage.StoriesSeenStorage
 import com.tokopedia.stories.internal.usecase.StoriesGroupsUseCase
+import com.tokopedia.stories.uimodel.AuthorType
 import com.tokopedia.stories.uimodel.StoryActionType
 import com.tokopedia.stories.usecase.ProductMapper
 import com.tokopedia.stories.usecase.StoriesProductUseCase
@@ -53,7 +54,7 @@ class StoriesRepositoryImpl @Inject constructor(
         authorType: String,
         source: String,
         sourceId: String,
-        entryPoint: String,
+        entryPoint: String
     ): StoriesUiModel =
         withContext(dispatchers.io) {
             val groupRequest = async {
@@ -63,7 +64,7 @@ class StoriesRepositoryImpl @Inject constructor(
                         authorType = authorType,
                         source = source,
                         sourceID = sourceId,
-                        entryPoint = entryPoint,
+                        entryPoint = entryPoint
                     )
                 )
             }
@@ -74,7 +75,7 @@ class StoriesRepositoryImpl @Inject constructor(
                         authorType = authorType,
                         source = source,
                         sourceID = sourceId,
-                        entryPoint = entryPoint,
+                        entryPoint = entryPoint
                     )
                 )
             }
@@ -88,7 +89,7 @@ class StoriesRepositoryImpl @Inject constructor(
         authorType: String,
         source: String,
         sourceId: String,
-        entryPoint: String,
+        entryPoint: String
     ): StoriesDetail =
         withContext(dispatchers.io) {
             val detailRequest = storiesDetailsUseCase(
@@ -97,7 +98,7 @@ class StoriesRepositoryImpl @Inject constructor(
                     authorType = authorType,
                     source = source,
                     sourceID = sourceId,
-                    entryPoint = entryPoint,
+                    entryPoint = entryPoint
                 )
             )
             return@withContext mapper.mapStoriesDetailRequest("", detailRequest)
@@ -117,11 +118,11 @@ class StoriesRepositoryImpl @Inject constructor(
 
     override suspend fun setHasSeenAllStories(
         authorId: String,
-        authorType: String
+        authorType: AuthorType
     ) = withContext(dispatchers.main) {
         val author = when (authorType) {
-            "shop" -> StoriesSeenStorage.Author.Shop(authorId)
-            "user" -> StoriesSeenStorage.Author.User(authorId)
+            AuthorType.Seller -> StoriesSeenStorage.Author.Shop(authorId)
+            AuthorType.User -> StoriesSeenStorage.Author.User(authorId)
             else -> null
         } ?: return@withContext
 

@@ -7,8 +7,8 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.stories.domain.model.detail.StoriesDetailsResponseModel
 import com.tokopedia.stories.domain.model.detail.StoriesDetailsResponseModel.ContentStoriesDetails
-import com.tokopedia.stories.internal.model.StoriesGroupsResponseModel.ContentStoriesGroups
 import com.tokopedia.stories.internal.model.StoriesGroupsResponseModel
+import com.tokopedia.stories.internal.model.StoriesGroupsResponseModel.ContentStoriesGroups
 import com.tokopedia.stories.uimodel.AuthorType
 import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.model.StoriesDetail
@@ -21,6 +21,7 @@ import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Video
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesGroupItem
+import com.tokopedia.stories.view.model.StoriesType
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.user.session.UserSessionInterface
@@ -62,7 +63,8 @@ class StoriesMapperImpl @Inject constructor(private val userSession: UserSession
                         )
                     } else {
                         StoriesDetail()
-                    }
+                    },
+                    type = StoriesType.get(group.type)
                 )
             }
         )

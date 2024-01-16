@@ -25,6 +25,7 @@ import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEve
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.RESUME
 import com.tokopedia.stories.view.model.StoriesGroupHeader
 import com.tokopedia.stories.view.model.StoriesGroupItem
+import com.tokopedia.stories.view.model.StoriesType
 import com.tokopedia.stories.view.model.StoriesUiModel
 import com.tokopedia.stories.view.utils.getRandomNumber
 import com.tokopedia.stories.view.viewmodel.action.StoriesProductAction
@@ -360,9 +361,21 @@ class StoriesViewModel @AssistedInject constructor(
         updateDetailData(event = if (mIsPageSelected) RESUME else PAUSE, isSameContent = true)
         checkAndHitTrackActivity()
 
+        run {
+            if (mDetailPos == mDetailSize - 1) {
+                val type = mGroup.type
+                if (type != StoriesType.Shop) return@run
+                setHasSeenAllStories(mGroup.groupId, AuthorType.Seller)
+            }
+        }
+
         if (mGroupPos != mGroupSize - 1 || mDetailPos != mDetailSize - 1) return
+        setHasSeenAllStories(args.authorId, AuthorType.getByType(args.authorType))
+    }
+
+    private fun setHasSeenAllStories(authorId: String, authorType: AuthorType) {
         viewModelScope.launch {
-            repository.setHasSeenAllStories(args.authorId, args.authorType)
+            repository.setHasSeenAllStories(authorId, authorType)
         }
     }
 
