@@ -37,11 +37,11 @@ class SlowModeSendButton(context: Context, attributeSet: AttributeSet) :
     }
 
     private fun initCountDownTimer(durationInSecond: Int = initialSlowModeDurationInSecond) {
-        countDownTimer = object : CountDownTimer((durationInSecond * 1000).toLong(), 1000) {
+        countDownTimer = object : CountDownTimer((durationInSecond * MILLIS_DIVIDER).toLong(), COUNT_DOWN_INTERVAL_IN_MILLIS) {
             override fun onTick(millisUntilFinished: Long) {
-                val text = (millisUntilFinished / 1000) + 1
+                val text = (millisUntilFinished / MILLIS_DIVIDER) + 1
                 textTimer?.text = text.toString()
-                currentSlowModeDurationInSecond = ((millisUntilFinished / 1000) + 1).toInt()
+                currentSlowModeDurationInSecond = ((millisUntilFinished / MILLIS_DIVIDER) + 1).toInt()
             }
 
             override fun onFinish() {
@@ -84,6 +84,8 @@ class SlowModeSendButton(context: Context, attributeSet: AttributeSet) :
     }
 
     companion object {
+        const val MILLIS_DIVIDER = 1000
+        const val COUNT_DOWN_INTERVAL_IN_MILLIS = 1000L
         val LAYOUT = R.layout.customview_slow_mode_send_button
     }
 }
