@@ -382,9 +382,10 @@ object DynamicChannelComponentMapper {
         ratingFloat = ratingAverage,
         countReview = countReview,
         recommendationType = recommendationType,
-        badges = badgesUrl.map { badge ->
+        badges = badges.map { badge ->
             ChannelGridBadges(
-                imageUrl = badge
+                title = badge.title,
+                imageUrl = badge.imageUrl,
             )
         },
         categoryBreadcrumbs = categoryBreadcrumbs,
