@@ -49,6 +49,8 @@ import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.cassava.data.RemoteSpec;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.analyticsdebugger.debugger.ServerLogLogger;
+import com.tokopedia.analyticsdebugger.debugger.ServerLogLoggerInterface;
 import com.tokopedia.applink.AppUtil;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
@@ -80,6 +82,7 @@ import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
 import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.repository.InternalLoggerInterface;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.loader.internal.MediaLoaderActivityLifecycle;
 import com.tokopedia.common.network.cdn.MonitoringActivityLifecycle;
@@ -186,7 +189,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                         @NonNull
                         @Override
                         public String getToken() {
-                            return  getString(com.tokopedia.keys.R.string.thanos_token_key);
+                            return getString(com.tokopedia.keys.R.string.thanos_token_key);
                         }
                     })
                     .setLocalRootPath("tracker")
@@ -218,7 +221,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
         showDevOptNotification();
         initGotoSDK();
-        if(RemoteConfigInstance.getInstance().getABTestPlatform().getBoolean(ENABLE_PUSH_TOKEN_DELETION_WORKER)){
+        if (RemoteConfigInstance.getInstance().getABTestPlatform().getBoolean(ENABLE_PUSH_TOKEN_DELETION_WORKER)) {
             PushTokenRefreshUtil pushTokenRefreshUtil = new PushTokenRefreshUtil();
             pushTokenRefreshUtil.scheduleWorker(context.getApplicationContext(), remoteConfig.getLong(PUSH_DELETION_TIME_GAP));
         }
@@ -515,7 +518,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     /**
      * cannot reference BuildConfig of an app.
-     *
      */
     @NonNull
     public abstract String versionName();
@@ -576,6 +578,13 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     private void initLogManager() {
         LogManager.init(ConsumerMainApplication.this, new LoggerProxy() {
+            @NonNull
+            @Override
+            public InternalLoggerInterface getInternalLogger() {
+                ServerLogLoggerInterface logger = ServerLogLogger.getInstance(ConsumerMainApplication.this);
+                return logger::putServerLoggerEvent;
+            }
+
             final AESEncryptorECB encryptor = new AESEncryptorECB();
             final SecretKey secretKey = encryptor.generateKey(NewRelicConstants.ENCRYPTION_KEY);
 

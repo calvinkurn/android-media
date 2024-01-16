@@ -41,7 +41,7 @@
     <string name="product_add_more">Tambah</string>
     <string name="product_summary_done">Selesai</string>
     <string name="product_summary_empty_title">Oops, kamu belum punya produk terpilih</string>
-    <string name="product_summary_empty_description">Pilih produk untuk dijual selama live berlangsung.</string>
+    <string name="product_summary_empty_description">Ayo pilih produk menarik yang bikin pembeli belanja dari kontenmu.</string>
     <string name="product_summary_empty_action_text">Tambah Produk</string>
     <string name="product_summary_fail_to_delete_product">Produk gagal dihapus</string>
     <string name="product_summary_success_delete_product">%d produk telah dihapus.</string>

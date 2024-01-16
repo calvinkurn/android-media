@@ -157,20 +157,20 @@ open class MerchantVoucherGridViewModelFixture {
         val expectedResult = expected?.map { component ->
             component.copy(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             )
         }
         val actualResult = (value as? Success<ArrayList<ComponentsItem>>)?.data?.map { component ->
             component.copy(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             )
         }
         actualResult
             .verifyEquals(expectedResult)
     }
 
-    protected fun LiveData<Result<ArrayList<ComponentsItem>>>.verifyFailEquals(
+    protected fun <T : Any>LiveData<Result<T>>.verifyFailEquals(
         message: String
     ) {
         val actualResult = (value as? Fail)?.throwable?.message
@@ -178,4 +178,3 @@ open class MerchantVoucherGridViewModelFixture {
             .verifyEquals(message)
     }
 }
-

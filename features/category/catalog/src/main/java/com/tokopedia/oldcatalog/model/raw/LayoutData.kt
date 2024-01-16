@@ -57,7 +57,9 @@ data class LayoutData(
         @SerializedName("columnType")
         val columnType: String = "",
         @SerializedName("bannerRatio")
-        val bannerRatio: String = ""
+        val bannerRatio: String = "",
+        @SerializedName("maxDisplay")
+        val maxDisplay: Int = 0
     )
 
     data class Hero(
@@ -240,8 +242,21 @@ data class LayoutData(
         @SerializedName("shopName") var shopName: String = "",
         @SerializedName("shopURL") var shopURL: String = "",
         @SerializedName("shopBadge") var shopBadge: String = "",
-        @SerializedName("shopBadgeSVG") var shopBadgeSVG: String = ""
-    )
+        @SerializedName("shopBadgeSVG") var shopBadgeSVG: String = "",
+        @SerializedName("userStats") var userStats: List<BuyerReviewUserStats> = emptyList(),
+        @SerializedName("imageAttachments") var imageAttachments: List<BuyerReviewImageAttachment> = emptyList()
+    ) {
+        data class BuyerReviewUserStats(
+            @SerializedName("key") var key: String = "",
+            @SerializedName("count") var count: Int = 0
+        )
+
+        data class BuyerReviewImageAttachment(
+            @SerializedName("attachmentID") var attachmentId: String = "",
+            @SerializedName("thumbnailUrl") var thumbnailUrl: String = "",
+            @SerializedName("fullsizeUrl") var fullsizeUrl: String = ""
+        )
+    }
 
     data class BasicInfo(
         @SerializedName("name") var name: String = "",

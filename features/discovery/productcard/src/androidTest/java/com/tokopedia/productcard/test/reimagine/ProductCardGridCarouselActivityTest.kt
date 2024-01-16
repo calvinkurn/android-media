@@ -8,6 +8,7 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productcard.reimagine.ProductCardGridCarouselView
@@ -16,6 +17,7 @@ import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.productcard.R as productcardR
 import com.tokopedia.productcard.test.R as productcardtestR
+import com.tokopedia.unifycomponents.R as unifycomponentsR
 
 class ProductCardGridCarouselActivityTest: AppCompatActivity() {
 
@@ -73,6 +75,7 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
         }
 
         fun bind(productCardModel: ProductCardModel, description: String) {
+            setBackgroundContainer(productCardModel, itemView)
             testDescription?.text = description
 
             productCardView?.findViewById<CardUnify2?>(
@@ -96,6 +99,15 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
         }
 
         fun recycle() {
+        }
+
+        private fun setBackgroundContainer(productCardModel: ProductCardModel, view: View) {
+            val contextResource = view.context
+            if(productCardModel.isInBackground) {
+                view.setBackgroundColor(contextResource.getColor(unifycomponentsR.color.Unify_GN100))
+            } else {
+                view.setBackgroundColor(contextResource.getColor(unifycomponentsR.color.Unify_NN0))
+            }
         }
     }
 }
