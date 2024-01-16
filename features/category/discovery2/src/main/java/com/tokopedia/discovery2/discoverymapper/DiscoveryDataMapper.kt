@@ -15,6 +15,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.data.productcarditem.Badges
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TAB_DEFAULT_BACKGROUND
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
@@ -71,12 +72,7 @@ class DiscoveryDataMapper {
             component.data?.forEachIndexed { index, it ->
                 val id = "${TABS_ITEM}_$index"
                 if (!it.name.isNullOrEmpty()) {
-                    val supportedPinedTab = arrayOf(
-                        ComponentNames.Tabs.componentName,
-                        ComponentNames.TabsIcon.componentName
-                    )
-
-                    if (supportedPinedTab.contains(component.name)) {
+                    if (component.isSupportPinnedTab()) {
                         pinnedActiveTab(component.pinnedActiveTabId, it, index)
                     }
 
@@ -103,6 +99,14 @@ class DiscoveryDataMapper {
                 list.getOrNull(0)?.data?.getOrNull(0)?.isSelected = true
             }
             return list
+        }
+
+        private fun ComponentsItem.isSupportPinnedTab(): Boolean {
+            val isTabIcon = name == ComponentNames.TabsIcon.componentName
+            val isPlainTab = name == ComponentNames.Tabs.componentName &&
+                properties?.background == TAB_DEFAULT_BACKGROUND
+
+            return isTabIcon || isPlainTab
         }
 
         private fun pinnedActiveTab(tabId: String?, item: DataItem, currentIndex: Int) {
