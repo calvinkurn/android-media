@@ -48,10 +48,10 @@
 /features/common/appdownloadmanager_install/            @tokopedia/android-core-dev
 /features/common/appdownloadmanager_noinstall/          @tokopedia/android-core-dev
 
-/features/merchant/gold_merchant/                       @tokopedia/android-minionstuart-dev
-/features/merchant/gold_merchant_common/                @tokopedia/android-minionstuart-dev
-/features/merchant/gold_merchant_subscribe/             @tokopedia/android-minionstuart-dev
-/features/merchant/power_merchant_subscribe/            @tokopedia/android-minionstuart-dev
+/features/merchant/gold_merchant/                       @tokopedia/android-miniontim-dev
+/features/merchant/gold_merchant_common/                @tokopedia/android-miniontim-dev
+/features/merchant/gold_merchant_subscribe/             @tokopedia/android-miniontim-dev
+/features/merchant/power_merchant_subscribe/            @tokopedia/android-miniontim-dev
 /features/merchant/product_detail/                      @tokopedia/android-minionstuart-dev
 /features/merchant/product_detail_common/               @tokopedia/android-minionstuart-dev
 /features/merchant/product_detail_additional_info/       @tokopedia/android-minionstuart-dev
@@ -74,10 +74,10 @@
 /features/ordermanagement/orderhistory/                 @tokopedia/android-minionstuart-dev
 /features/transaction/sellerorder/                      @tokopedia/android-minionstuart-dev
 /features/ordermanagement/order_management_common/      @tokopedia/android-minionstuart-dev
-/features/merchant/shop_score/                          @tokopedia/android-minionstuart-dev
+/features/merchant/shop_score/                          @tokopedia/android-miniontim-dev
 /features/tokofood/                                     @tokopedia/android-minionstuart-dev
-/features/merchant/shop_admin/                          @tokopedia/android-minionstuart-dev
-/features/merchant/shop_admin_common/                   @tokopedia/android-minionstuart-dev
+/features/merchant/shop_admin/                          @tokopedia/android-miniontim-dev
+/features/merchant/shop_admin_common/                   @tokopedia/android-miniontim-dev
 /features/merchant/product_ar/                          @tokopedia/android-minionstuart-dev
 /libraries/bubbles/                                     @tokopedia/android-minionstuart-dev
 /libraries/sub_viewmodel/                               @tokopedia/android-minionstuart-dev
@@ -133,7 +133,7 @@
 /features/merchant/seller_home_drawer/                  @tokopedia/android-minionstuart-dev
 /features/merchant/seller_feedback/                     @tokopedia/android-minionstuart-dev
 /features/merchant/seller_persona/                      @tokopedia/android-minionstuart-dev
-/features/merchant/centralized_promo/                   @tokopedia/android-minionstuart-dev
+/features/merchant/centralized_promo/                   @tokopedia/android-miniontim-dev
 
 /features/content/affiliate_common/     				@tokopedia/android-minionlance-dev
 /features/content/analytic/                             @tokopedia/android-minionlance-dev
