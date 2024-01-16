@@ -27,6 +27,7 @@ import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_FAQ
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_NAVIGATION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_SEE_MORE_SPECIFICATION
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_CLICK_VIDEO_EXPERT_REVIEW
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_BANNER
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_IMPRESSION_DOUBLE_BANNER
@@ -59,6 +60,7 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CHANGE_
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_BUTTON_CHOOSE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_FAQ
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_NAVIGATION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_SEE_MORE_COLUMN_INFO
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_SEE_MORE_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_VIDEO_EXPERT
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_BANNER_ONE_BY_ONE
@@ -954,6 +956,13 @@ class CatalogDetailPageFragment :
         sectionTitle: String,
         columnData: List<ColumnedInfoUiModel.ColumnData>
     ) {
+        CatalogReimagineDetailAnalytics.sendEvent(
+            event = EVENT_VIEW_CLICK_PG,
+            action = EVENT_ACTION_CLICK_SEE_MORE_SPECIFICATION,
+            category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
+            labels = "$catalogId",
+            trackerId = TRACKER_ID_CLICK_SEE_MORE_COLUMN_INFO
+        )
         ColumnedInfoBottomSheet.show(childFragmentManager, sectionTitle, columnData)
     }
 
@@ -975,7 +984,7 @@ class CatalogDetailPageFragment :
             CatalogReimagineDetailAnalytics.sendEventImpressionListGeneral(
                 event = EVENT_VIEW_ITEM,
                 action = EVENT_IMPRESSION_COLUMN_INFO_WIDGET,
-                category = EVENT_CATEGORY_CATALOG_PAGE,
+                category = EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE,
                 labels = "$catalogTitle - $catalogId",
                 trackerId = TRACKER_ID_IMPRESSION_COLUMN_INFO,
                 userId = userSession.userId,
