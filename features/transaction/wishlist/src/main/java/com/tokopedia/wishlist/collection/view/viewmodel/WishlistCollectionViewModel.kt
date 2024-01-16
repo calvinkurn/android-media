@@ -139,7 +139,6 @@ class WishlistCollectionViewModel @Inject constructor(
                     pageName = pageName
                 )
             )
-            hasNextRecommendation = recommendation.hasNext
             if (recommendation.recommendationItemList.isEmpty()) {
                 return WishlistRecommendationDataModel()
             } else {
