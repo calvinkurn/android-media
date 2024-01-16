@@ -9,6 +9,8 @@ import com.tokopedia.feedplus.databinding.ItemFeedBrowseStoryLoadingBinding
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.stories.widget.StoriesStatus
+import com.tokopedia.stories.widget.StoriesWidgetLayout
+import com.tokopedia.stories.widget.domain.StoriesWidgetState
 
 /**
  * Created by meyta.taliti on 25/09/23.
@@ -37,9 +39,24 @@ internal class StoryWidgetViewHolder private constructor() {
                     appLink = item.appLink
                 )
             }
+            binding.storiesLayout.setListener(object : StoriesWidgetLayout.Listener {
+                override fun onClickedWhenHasStories(
+                    view: StoriesWidgetLayout,
+                    state: StoriesWidgetState
+                ) {
+                    listener.onWidgetClicked(this@Item, item)
+                }
+
+                override fun onImpressed(view: StoriesWidgetLayout, state: StoriesWidgetState) {
+                }
+            })
 
             binding.root.addImpressionListener {
                 listener.onWidgetImpressed(this, item)
+            }
+
+            binding.root.setOnClickListener {
+                listener.onWidgetClicked(this, item)
             }
         }
 

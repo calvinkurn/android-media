@@ -10,6 +10,7 @@ import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.ChipsViewHo
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseBannerViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalAuthorsViewHolder
 import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.FeedBrowseHorizontalChannelsViewHolder
+import com.tokopedia.feedplus.browse.presentation.adapter.viewholder.HorizontalStoriesViewHolder
 import com.tokopedia.feedplus.browse.presentation.model.ChipsModel
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseChannelListState
 import com.tokopedia.feedplus.browse.presentation.model.FeedBrowseItemListModel
@@ -27,13 +28,15 @@ internal class FeedBrowseAdapter(
     chipsListener: ChipsViewHolder.Listener,
     bannerListener: FeedBrowseBannerViewHolder.Item.Listener,
     channelListener: FeedBrowseHorizontalChannelsViewHolder.Listener,
-    creatorListener: FeedBrowseHorizontalAuthorsViewHolder.Listener
+    creatorListener: FeedBrowseHorizontalAuthorsViewHolder.Listener,
+    storyListener: HorizontalStoriesViewHolder.Listener
 ) : FeedBrowseItemAdapter<List<FeedBrowseStatefulModel>>(
     scope,
     chipsListener = chipsListener,
     bannerListener = bannerListener,
     channelListener = channelListener,
     creatorListener = creatorListener,
+    storyWidgetListener = storyListener,
     spanCount = when (sizeClass.widthSizeClass) {
         WindowWidthSizeClass.Compact -> 2
         WindowWidthSizeClass.Medium -> 3
@@ -140,7 +143,7 @@ internal class FeedBrowseAdapter(
 
     private fun FeedBrowseSlotUiModel.StoryGroups.mapToItems(
         state: ResultState,
-        position: Int,
+        position: Int
     ): List<FeedBrowseItemListModel> {
         if (state.isFail || (state.isSuccess && storyList.isEmpty())) return emptyList()
 

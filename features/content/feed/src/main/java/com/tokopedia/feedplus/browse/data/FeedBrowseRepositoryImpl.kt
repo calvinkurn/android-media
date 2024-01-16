@@ -129,7 +129,7 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
 
     override suspend fun getStoryGroups(
         source: String,
-        cursor: String,
+        cursor: String
     ): StoryGroupsModel = withContext(dispatchers.io) {
 //        val response = storiesGroupsUseCase(
 //            StoriesGroupsUseCase.Request(
@@ -148,14 +148,14 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
         StoryGroupsModel(
             List(20) {
                 StoryNodeModel(
-                    id = "Story $it",
+                    id = if (it == 0) "16511314" else "Story $it",
                     name = "Story $it",
                     thumbnailUrl = "https://images.tokopedia.net/img/cache/100-square/tPxBYm/2023/8/1/0fc7d4e1-c812-4bbf-8e73-45ccb3661c84.jpg",
                     hasUnseenStory = it.isEven(),
-                    appLink = "",
+                    appLink = "tokopedia://stories/shop/16511314"
                 )
             },
-            nextCursor = "",
+            nextCursor = ""
         )
     }
 
