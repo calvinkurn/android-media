@@ -107,6 +107,8 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
         fun onViewCartErrorState(shippingWidgetUiModel: ShippingWidgetUiModel)
 
         fun onRenderVibrationAnimation(shippingWidgetUiModel: ShippingWidgetUiModel)
+
+        fun onRenderNoSelectedShippingLayout()
     }
 
     override fun onDetachedFromWindow() {
@@ -322,6 +324,7 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             layoutStateNoSelectedShipping.setOnClickListener {
                 mListener?.onChangeDurationClickListener()
             }
+            mListener?.onRenderNoSelectedShippingLayout()
             containerShippingExperience.visible()
         }
     }

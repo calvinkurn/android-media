@@ -286,6 +286,15 @@ class CheckoutOrderViewHolder(
         this?.order?.isTriggerShippingVibrationAnimation = false
     }
 
+    override fun onRenderNoSelectedShippingLayout() {
+        order?.let {
+            showMultiplePlusOrderCoachmark(
+                it,
+                binding.shippingWidget.layoutStateNoSelectedShipping
+            )
+        }
+    }
+
     override fun onClickDropshipLabel() {
         listener.showDropshipInfoBottomSheet()
     }
