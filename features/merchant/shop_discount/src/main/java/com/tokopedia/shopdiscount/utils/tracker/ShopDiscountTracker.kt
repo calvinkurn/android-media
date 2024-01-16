@@ -8,6 +8,7 @@ import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.CLICK_PG
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.CLICK_SAVE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.CREATE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EDIT
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.CLICK_EDU_ARTICLE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.CLICK_SUBSIDY_INFORMATION
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.IMPRESSION_COACH_MARK
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.IMPRESSION_SUBSIDY_DETAIL
@@ -23,6 +24,7 @@ import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.SLASH_PRICE_LIS
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.SLASH_PRICE_SET_DISCOUNT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TOKOPEDIA_SELLER
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_EDU_ARTICLE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_SUBSIDY_INFORMATION_BOTTOM_SHEET
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_SUBSIDY_INFORMATION_PRODUCT_LIST
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_IMPRESSION_COACH_MARK_BOTTOM_SHEET
@@ -177,6 +179,26 @@ class ShopDiscountTracker @Inject constructor(private val userSession: UserSessi
             .setEventCategory(SLASH_PRICE_SUBSIDY_BOTTOM_SHEET)
             .setEventLabel(eventLabel)
             .setCustomProperty(TRACKER_ID, TRACKER_ID_IMPRESSION_SUBSIDY_DETAIL)
+            .setBusinessUnit(CAMPAIGN_BUSINESS_UNIT)
+            .setCurrentSite(TOKOPEDIA_MARKETPLACE)
+            .setShopId(userSession.shopId)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
+
+    fun sendClickEduArticleEvent(isBottomSheet: Boolean, productId: String) {
+        val eventLabel = if (isBottomSheet) {
+            SLASH_PRICE_SUBSIDY_DETAIL_BOTTOM_SHEET
+        } else {
+            SLASH_PRICE_SUBSIDY_DETAIL_LIST_OF_PRODUCTS
+        }.format(productId)
+        Tracker.Builder()
+            .setEvent(CLICK_PG)
+            .setEventAction(CLICK_EDU_ARTICLE)
+            .setEventCategory(SLASH_PRICE_SUBSIDY_BOTTOM_SHEET)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(TRACKER_ID, TRACKER_ID_CLICK_EDU_ARTICLE)
             .setBusinessUnit(CAMPAIGN_BUSINESS_UNIT)
             .setCurrentSite(TOKOPEDIA_MARKETPLACE)
             .setShopId(userSession.shopId)

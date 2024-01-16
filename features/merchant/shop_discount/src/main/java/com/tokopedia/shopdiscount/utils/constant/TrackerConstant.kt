@@ -21,6 +21,7 @@ object TrackerConstant {
         const val IMPRESSION_COACH_MARK = "impression coachmark"
         const val CLICK_SUBSIDY_INFORMATION = "click subsidy information"
         const val IMPRESSION_SUBSIDY_DETAIL = "impression subsidy detail"
+        const val CLICK_EDU_ARTICLE = "click edu article"
     }
 
     object EventCategory{
@@ -42,5 +43,6 @@ object TrackerConstant {
         const val TRACKER_ID_CLICK_SUBSIDY_INFORMATION_PRODUCT_LIST = "49494"
         const val TRACKER_ID_CLICK_SUBSIDY_INFORMATION_BOTTOM_SHEET = "49614"
         const val TRACKER_ID_IMPRESSION_SUBSIDY_DETAIL = "49495"
+        const val TRACKER_ID_CLICK_EDU_ARTICLE = "49496"
     }
 }

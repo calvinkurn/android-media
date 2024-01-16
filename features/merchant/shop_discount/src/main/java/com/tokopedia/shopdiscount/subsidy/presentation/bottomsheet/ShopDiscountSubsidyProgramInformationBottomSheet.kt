@@ -135,10 +135,10 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setContentData()
-        sendImpressionSubsidyProgramInformationBottomSheet()
+        sendImpressionSubsidyProgramInformationBottomSheetTracker()
     }
 
-    private fun sendImpressionSubsidyProgramInformationBottomSheet() {
+    private fun sendImpressionSubsidyProgramInformationBottomSheetTracker() {
         tracker.sendImpressionSubsidyProgramInformationBottomSheetEvent(
             programInformationDetailUiModel?.isBottomSheet.orFalse(),
             programInformationDetailUiModel?.productId.orEmpty()
@@ -347,9 +347,17 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
             movementMethod = LinkMovementMethod.getInstance()
             text = textSubsidyProgramInfoDescription?.spannedString
             textSubsidyProgramInfoDescription?.urlList?.firstOrNull()?.setOnClickListener {
+                sendClickEduArticleTracker()
                 redirectToWebView(textSubsidyProgramInfoDescription.urlList.firstOrNull()?.linkUrl.orEmpty())
             }
         }
+    }
+
+    private fun sendClickEduArticleTracker() {
+        tracker.sendClickEduArticleEvent(
+            programInformationDetailUiModel?.isBottomSheet.orFalse(),
+            programInformationDetailUiModel?.productId.orEmpty()
+        )
     }
 
     private fun getProgramInformationDescription(
