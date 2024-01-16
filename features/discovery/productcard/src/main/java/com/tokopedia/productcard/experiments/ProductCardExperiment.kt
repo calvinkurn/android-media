@@ -15,5 +15,5 @@ object ProductCardExperiment {
             ""
         }
 
-    fun isReimagine(): Boolean = true// getValue() == PRODUCT_CARD_SRE_2024
+    fun isReimagine(): Boolean = getValue() == PRODUCT_CARD_SRE_2024
 }

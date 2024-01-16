@@ -15,7 +15,7 @@ class ProductCardGridView: ConstraintLayout {
         get() = strategy.getVideoPlayerController()
 
     val additionalMarginStart: Int
-        get() = strategy.additionalMarginStart
+        get() = strategy.additionalMarginStart()
 
     constructor(context: Context) : super(context) {
         strategy.init(context)

@@ -537,8 +537,7 @@ private fun nettPrice(): ProductCardReimagineMatcher {
         name = longProductName,
         price = "Rp79.000",
         slashedPrice = "Rp100.000",
-        discountPercentage = 10,
-        labelGroupList = listOf(reimagineCredibilityLabel, nettPriceLabel),
+        labelGroupList = listOf(reimagineCredibilityLabel, nettPriceLabel,),
         rating = "4.5",
         shopBadge = shopBadge,
         freeShipping = ProductCardModel.FreeShipping(
@@ -552,7 +551,6 @@ private fun nettPrice(): ProductCardReimagineMatcher {
         R.id.productCardNettPrice to isDisplayedWithText(nettPriceLabel.title),
         R.id.productCardNettPriceIcon to isDisplayed(),
         R.id.productCardSlashedPrice to isDisplayedWithText(model.slashedPrice),
-        R.id.productCardDiscount to isDisplayedWithText("${model.discountPercentage}%"),
         R.id.productCardCredibility to isDisplayed(),
         R.id.productCardLabelCredibility to isDisplayedWithText(reimagineCredibilityLabel.title),
         R.id.productCardRatingIcon to isDisplayed(),
