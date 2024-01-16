@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingLeft="12dp"
+    android:paddingTop="16dp"
+    android:paddingEnd="12dp"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:textSize="12sp"
+            android:textColor="@color/Unify_NN600"
+            app:typographyWeight="reguler"
+            app:typographyType="display_3"
+            android:text="Beli di"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/card_br_shop_icon"
+            tools:src="@drawable/ic_official_store"
+            android:layout_marginStart="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/card_br_shop_name"
+            android:textSize="12sp"
+            android:textColor="@color/Unify_NN950"
+            app:typographyWeight="reguler"
+            app:typographyType="display_3"
+            tools:text="Lamer Indonesia"
+            android:layout_marginLeft="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/card_br_reviewer_avatar"
+            android:scaleType="fitCenter"
+            tools:srcCompat="@tools:sample/avatars"
+            android:layout_gravity="center"
+            app:unify_image_type="circle"
+            android:layout_marginEnd="8dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/card_br_reviewer_name"
+                    android:textSize="12sp"
+                    android:textColor="@color/Unify_NN950"
+                    android:paddingEnd="2dp"
+                    app:typographyWeight="bold"
+                    app:typographyType="display_3"
+                    tools:text="Karina"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/card_br_separator_status"
+                    android:textColor="@color/Unify_NN950"
+                    android:visibility="gone"
+                    android:textSize="12sp"
+                    app:typographyWeight="reguler"
+                    app:typographyType="display_3"
+                    android:text=" • "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/card_br_reviewer_status"
+                    android:visibility="gone"
+                    android:textSize="12sp"
+                    android:textColor="@color/dms_static_green_reviewer_status"
+                    android:paddingStart="2dp"
+                    app:typographyWeight="reguler"
+                    app:typographyType="display_3"
+                    tools:text="Juara Ulasan Fashion Wanita"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/card_br_total_review"
+                    android:textSize="12sp"
+                    android:textColor="@color/Unify_NN600"
+                    app:typographyWeight="reguler"
+                    app:typographyType="display_3"
+                    tools:text="6 ulasan lengkap"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/card_br_separator_total_help"
+                    android:visibility="gone"
+                    android:textColor="@color/Unify_NN950"
+                    android:textSize="12sp"
+                    app:typographyWeight="reguler"
+                    app:typographyType="display_3"
+                    android:text=" • "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/card_br_review_total_help"
+                    android:visibility="gone"
+                    android:textSize="12sp"
+                    android:textColor="@color/Unify_NN600"
+                    app:typographyWeight="reguler"
+                    app:typographyType="display_3"
+                    tools:text="6 terbantu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RatingBar
+            android:id="@+id/card_br_product_rating"
+            style="@style/RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:rating="4.5"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/card_br_separator_rating"
+            android:textColor="@color/Unify_NN600"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:typographyWeight="reguler"
+            android:text=" • "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/card_br_variant"
+            android:textSize="12sp"
+            android:textColor="@color/Unify_NN600"
+            tools:text="Avocado Green"
+            android:visibility="gone"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:typographyWeight="reguler"
+            app:typographyType="display_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/card_br_separator_timestamp"
+            android:visibility="gone"
+            android:textColor="@color/Unify_NN600"
+            android:textSize="12sp"
+            app:typographyWeight="reguler"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text=" • "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/card_br_datetime"
+            android:visibility="gone"
+            android:textSize="12sp"
+            android:textColor="@color/Unify_NN600"
+            tools:text="3 hari lalu"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:typographyWeight="reguler"
+            app:typographyType="display_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/card_br_product_review"
+        android:textSize="12sp"
+        android:textColor="@color/Unify_NN950"
+        tools:text="I'm 57 years old and I have dry skin! I absolutely love this product. Has nice consistency that slips in nicely after I wash my face. When I...Selengkapnya"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="reguler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_img_review"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>
