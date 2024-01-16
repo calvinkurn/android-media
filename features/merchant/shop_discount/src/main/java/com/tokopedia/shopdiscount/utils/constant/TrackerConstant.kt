@@ -23,6 +23,7 @@ object TrackerConstant {
         const val IMPRESSION_SUBSIDY_DETAIL = "impression subsidy detail"
         const val CLICK_EDU_ARTICLE = "click edu article"
         const val IMPRESSION_NON_EDITABLE_VARIANT = "impression non editable variant"
+        const val IMPRESSION_NON_EDITABLE_PARENT = "impression non editable parent"
     }
 
     object EventCategory{
@@ -47,5 +48,6 @@ object TrackerConstant {
         const val TRACKER_ID_IMPRESSION_SUBSIDY_DETAIL = "49495"
         const val TRACKER_ID_CLICK_EDU_ARTICLE = "49496"
         const val TRACKER_ID_IMPRESSION_NON_EDITABLE_VARIANT = "49497"
+        const val TRACKER_ID_IMPRESSION_NON_EDITABLE_PARENT = "49498"
     }
 }

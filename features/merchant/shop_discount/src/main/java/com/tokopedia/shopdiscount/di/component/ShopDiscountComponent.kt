@@ -21,6 +21,7 @@ import com.tokopedia.shopdiscount.select.presentation.SelectProductActivity
 import com.tokopedia.shopdiscount.select.presentation.SelectProductFragment
 import com.tokopedia.shopdiscount.set_period.presentation.bottomsheet.SetPeriodBottomSheet
 import com.tokopedia.shopdiscount.subsidy.presentation.bottomsheet.ShopDiscountOptOutMultipleProductSubsidyBottomSheet
+import com.tokopedia.shopdiscount.subsidy.presentation.bottomsheet.ShopDiscountOptOutSingleProductSubsidyBottomSheet
 import com.tokopedia.shopdiscount.subsidy.presentation.bottomsheet.ShopDiscountSubsidyOptOutReasonBottomSheet
 import dagger.Component
 
@@ -51,4 +52,5 @@ interface ShopDiscountComponent {
     fun inject(fragment: ShopDiscountSubsidyProgramInformationBottomSheet)
     fun inject(fragment: ShopDiscountOptOutMultipleProductSubsidyBottomSheet)
     fun inject(fragment: ShopDiscountSubsidyOptOutReasonBottomSheet)
+    fun inject(fragment: ShopDiscountOptOutSingleProductSubsidyBottomSheet)
 }

@@ -5,13 +5,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.LayoutBottomSheetShopDiscountDisableEditDeleteSubsidyProductBinding
+import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountManageProductSubsidyUiModel
+import com.tokopedia.shopdiscount.utils.tracker.ShopDiscountTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import javax.inject.Inject
 
 class ShopDiscountOptOutSingleProductSubsidyBottomSheet : BottomSheetUnify() {
 
@@ -34,20 +40,31 @@ class ShopDiscountOptOutSingleProductSubsidyBottomSheet : BottomSheetUnify() {
         null
     private val textDescription: Typography?
         get() = viewBinding?.textDescription
-    private val buttonOptOutSubsidy: View?
+    private val buttonOptOutSubsidy: UnifyButton?
         get() = viewBinding?.buttonOptOutSubsidy
 
     private var data: ShopDiscountManageProductSubsidyUiModel =
         ShopDiscountManageProductSubsidyUiModel()
 
+    @Inject
+    lateinit var tracker: ShopDiscountTracker
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupDependencyInjection()
         getArgumentsData()
     }
 
     @SuppressLint("DeprecatedMethod")
     private fun getArgumentsData() {
         data = arguments?.getParcelable(DATA) ?: ShopDiscountManageProductSubsidyUiModel()
+    }
+
+    private fun setupDependencyInjection() {
+        DaggerShopDiscountComponent.builder()
+            .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+            .build()
+            .inject(this)
     }
 
     override fun onCreateView(
@@ -63,6 +80,15 @@ class ShopDiscountOptOutSingleProductSubsidyBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setupTextDescription()
         setupButtonOptOutSubsidy()
+        sendImpressionOptOutSingleProductSubsidyTracker()
+    }
+
+    private fun sendImpressionOptOutSingleProductSubsidyTracker() {
+        tracker.sendImpressionOptOutSingleProductSubsidyEvent(
+            data.entrySource.value,
+            buttonOptOutSubsidy?.isEnabled.orFalse(),
+            buttonOptOutSubsidy?.text.toString()
+        )
     }
 
     fun setOnDismissBottomSheetAfterFinishActionListener(listener: (String, List<String>, String) -> Unit) {

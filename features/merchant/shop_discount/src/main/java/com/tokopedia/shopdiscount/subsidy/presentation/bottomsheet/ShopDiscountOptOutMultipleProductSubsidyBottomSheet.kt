@@ -101,7 +101,6 @@ class ShopDiscountOptOutMultipleProductSubsidyBottomSheet :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeLiveData()
         setupBottomSheetTitleView()
         setupRecyclerView()
         setupCheckboxSelectAllProduct()
@@ -230,9 +229,6 @@ class ShopDiscountOptOutMultipleProductSubsidyBottomSheet :
             dismiss()
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
-    }
-
-    private fun observeLiveData() {
     }
 
     private fun setupBottomSheetTitleView() {
