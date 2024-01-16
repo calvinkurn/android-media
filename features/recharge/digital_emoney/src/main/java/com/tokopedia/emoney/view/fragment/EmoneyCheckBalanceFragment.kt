@@ -365,9 +365,10 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             }
         })
 
-        bcaBalanceViewModel.errorCardMessage.observe(viewLifecycleOwner, Observer { errorMessage ->
+        bcaBalanceViewModel.errorCardMessage.observe(viewLifecycleOwner, Observer { pair ->
             context?.let { context ->
-                val errorMessage = ErrorHandler.getErrorMessagePair(context, errorMessage, errorHanlderBuilder)
+                sendLogDebugBCAFlazz(pair.second)
+                val errorMessage = ErrorHandler.getErrorMessagePair(context, pair.first, errorHanlderBuilder)
                 showError(errorMessage.first.orEmpty())
             }
         })
@@ -491,6 +492,15 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         } else if(resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_LOGIN){
             activity?.finish()
         }
+    }
+
+    private fun sendLogDebugBCAFlazz(param: RechargeEmoneyInquiryLogRequest) {
+        val map = HashMap<String, String>()
+        map.put(ISSUER_KEY, param.log.issueId.toString())
+        map.put(CARD_NUMBER_KEY, param.log.cardNumber)
+        map.put(RC_KEY, param.log.rc)
+        map.put(LOG_TYPE, BCA_FLAZZ_ERROR_LOGGER)
+        ServerLogger.log(Priority.P2, TAPCASH_TAG, map)
     }
 
     private fun sendLogDebugTapcash(param: RechargeEmoneyInquiryLogRequest) {
@@ -617,6 +627,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         private const val ISSUER_KEY = "issuer_id"
         private const val CARD_NUMBER_KEY = "card_number"
         private const val RC_KEY = "rc"
+        private const val BCA_FLAZZ_ERROR_LOGGER = "BCA_FLAZZ_ERROR_LOGGER"
         private const val TAPCASH_ERROR_LOGGER = "TAPCASH_ERROR_LOGGER"
         private const val TAPCASH_NETWORK_ERROR_LOGGER = "TAPCASH_NETWORK_ERROR_LOGGER"
 

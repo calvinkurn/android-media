@@ -5,8 +5,11 @@ import androidx.lifecycle.LiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
+import com.tokopedia.common_electronic_money.data.RechargeEmoneyInquiryLogRequest
 import com.tokopedia.common_electronic_money.util.ElectronicMoneyEncryption
 import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
+import com.tokopedia.emoney.domain.EmoneyParamMapper.mapParamLogErrorNetworkFlazz
+import com.tokopedia.emoney.domain.request.BCAFlazzAction
 import com.tokopedia.emoney.domain.request.BCAFlazzRequestMapper
 import com.tokopedia.emoney.domain.request.BCAFlazzStatus
 import com.tokopedia.emoney.domain.request.CommonBodyEnc
@@ -16,6 +19,7 @@ import com.tokopedia.emoney.domain.usecase.GetBCAFlazzUseCase
 import com.tokopedia.emoney.integration.BCALibraryIntegration
 import com.tokopedia.emoney.integration.data.JNIResult
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineDispatcher
@@ -34,8 +38,8 @@ class BCABalanceViewModel @Inject constructor(
     val bcaInquiry: LiveData<EmoneyInquiry>
         get() = bcaInquiryMutable
 
-    private var errorCardMessageMutable = SingleLiveEvent<Throwable>()
-    val errorCardMessage: LiveData<Throwable>
+    private var errorCardMessageMutable = SingleLiveEvent<Pair<Throwable, RechargeEmoneyInquiryLogRequest>>()
+    val errorCardMessage: LiveData<Pair<Throwable, RechargeEmoneyInquiryLogRequest>>
         get() = errorCardMessageMutable
 
     fun processBCATagBalance(
@@ -59,20 +63,65 @@ class BCABalanceViewModel @Inject constructor(
                             )
                         } else {
                             isoDep.close()
-                            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                            errorCardMessageMutable.postValue(Pair(
+                                MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                                mapParamLogErrorNetworkFlazz(
+                                        dataBalance.cardNo,
+                                        messageLogNR(
+                                            BCAFlazzAction.GET_PENDING_BALANCE.action,
+                                            separateResponseCodeFromCardData(
+                                                dataBalance.strLogRsp
+                                            )
+                                        ),
+                                        dataBalance.balance
+                                    )
+                                )
+                            )
                         }
                     } else {
                         isoDep.close()
-                        errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                        errorCardMessageMutable.postValue(Pair(
+                                MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                                mapParamLogErrorNetworkFlazz(
+                                    setConfigResult.cardNo,
+                                    messageLogNR(
+                                        BCAFlazzAction.GET_PENDING_BALANCE.action,
+                                        separateResponseCodeFromCardData(
+                                            setConfigResult.strLogRsp
+                                        )
+                                    ), 0
+                                )
+                            )
+                        )
                     }
                 } catch (e: Throwable) {
                     isoDep.close()
                     Timber.d(e)
-                    errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                    errorCardMessageMutable.postValue(Pair(
+                            MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                            mapParamLogErrorNetworkFlazz(
+                                "",
+                                messageLogNR(
+                                    BCAFlazzAction.GET_PENDING_BALANCE.action,
+                                    e.message ?: ""
+                                ), 0
+                            )
+                        )
+                    )
                 }
             }
         } else {
-            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+            errorCardMessageMutable.postValue(Pair(
+                MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                    mapParamLogErrorNetworkFlazz(
+                        setConfigResult.cardNo,
+                        messageLogNR(
+                            BCAFlazzAction.GET_PENDING_BALANCE.action,
+                            ERROR_MESSAGE_ISODEP
+                        ), 0
+                    )
+                )
+            )
         }
     }
 
@@ -92,11 +141,31 @@ class BCABalanceViewModel @Inject constructor(
                 } catch (e: Throwable) {
                     isoDep.close()
                     Timber.d(e)
-                    errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                    errorCardMessageMutable.postValue(Pair(
+                            MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                            mapParamLogErrorNetworkFlazz(
+                                "",
+                                messageLogNR(
+                                    BCAFlazzAction.GET_PENDING_BALANCE.action,
+                                    e.message ?: ""
+                                ), 0
+                            )
+                        )
+                    )
                 }
             }
         } else {
-            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+            errorCardMessageMutable.postValue(Pair(
+                    MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                    mapParamLogErrorNetworkFlazz(
+                        "",
+                        messageLogNR(
+                            BCAFlazzAction.GET_PENDING_BALANCE.action,
+                            ERROR_MESSAGE_ISODEP
+                        ), 0
+                    )
+                )
+            )
         }
     }
 
@@ -155,7 +224,17 @@ class BCABalanceViewModel @Inject constructor(
                 )
             }
         }) {
-            errorCardMessageMutable.postValue(it)
+            errorCardMessageMutable.postValue(Pair(
+                    it,
+                    mapParamLogErrorNetworkFlazz(
+                        cardNumber,
+                        messageLogNR(
+                            BCAFlazzAction.GET_PENDING_BALANCE.action,
+                            it.message ?: ""
+                        ), lastBalance
+                    )
+                )
+            )
         }
     }
 
@@ -199,7 +278,16 @@ class BCABalanceViewModel @Inject constructor(
                     result.attributes.transactionID
                 )
             } else if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.transactionID.isEmpty()) {
-                errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                errorCardMessageMutable.postValue(Pair(
+                    MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                    mapParamLogErrorNetworkFlazz(
+                        cardNumber,
+                        messageLogNR(
+                            BCAFlazzAction.GENERATE_TRX_ID.action,
+                            NfcCardErrorTypeDef.FAILED_READ_CARD
+                        ), lastBalance
+                    )
+                ))
             } else {
                 bcaInquiryMutable.postValue(
                     BCAFlazzResponseMapper.bcaMapper(
@@ -215,7 +303,17 @@ class BCABalanceViewModel @Inject constructor(
                 )
             }
         }) {
-            errorCardMessageMutable.postValue(it)
+            errorCardMessageMutable.postValue(Pair(
+                it,
+                mapParamLogErrorNetworkFlazz(
+                    cardNumber,
+                    messageLogNR(
+                        BCAFlazzAction.GENERATE_TRX_ID.action,
+                        it.message ?: ""
+                    ), lastBalance
+                )
+            )
+            )
         }
     }
 
@@ -245,16 +343,50 @@ class BCABalanceViewModel @Inject constructor(
                         )
                     } else {
                         // set error if BCAdataSession_1 process error
-                        errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                        errorCardMessageMutable.postValue(Pair(
+                                MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                                mapParamLogErrorNetworkFlazz(
+                                    cardNumber,
+                                    messageLogNR(
+                                        BCAFlazzAction.GENERATE_SESSION_KEY.action,
+                                        separateResponseCodeFromCardData(
+                                            bcaSession1.strLogRsp
+                                        )
+                                    ), lastBalance
+                                )
+                            )
+                        )
                     }
                 } catch (e: Throwable) {
                     isoDep.close()
                     Timber.d(e)
-                    errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                    errorCardMessageMutable.postValue(Pair(
+                            MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                            mapParamLogErrorNetworkFlazz(
+                                cardNumber,
+                                messageLogNR(
+                                    BCAFlazzAction.GENERATE_SESSION_KEY.action,
+                                    e.message ?: ""
+                                ),
+                                lastBalance
+                            )
+                        )
+                    )
                 }
             }
         } else {
-            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+            errorCardMessageMutable.postValue(Pair(
+                    MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                    mapParamLogErrorNetworkFlazz(
+                        cardNumber,
+                        messageLogNR(
+                            BCAFlazzAction.GENERATE_SESSION_KEY.action,
+                            ERROR_MESSAGE_ISODEP
+                        ),
+                        lastBalance
+                    )
+                )
+            )
         }
     }
 
@@ -293,7 +425,18 @@ class BCABalanceViewModel @Inject constructor(
                     rawPrivateKeyString, cardType, strCurrDateTime, ATD, strTransactionId, result
                 )
             } else if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.cardData.isEmpty()) {
-                errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                errorCardMessageMutable.postValue(Pair(
+                        MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                        mapParamLogErrorNetworkFlazz(
+                            cardNumber,
+                            messageLogNR(
+                                BCAFlazzAction.GENERATE_SESSION_KEY.action,
+                                NfcCardErrorTypeDef.FAILED_READ_CARD
+                            ),
+                            lastBalance
+                        )
+                    )
+                )
             } else {
                 bcaInquiryMutable.postValue(
                     BCAFlazzResponseMapper.bcaMapper(
@@ -309,7 +452,18 @@ class BCABalanceViewModel @Inject constructor(
                 )
             }
         }) {
-            errorCardMessageMutable.postValue(it)
+            errorCardMessageMutable.postValue(Pair(
+                    it,
+                    mapParamLogErrorNetworkFlazz(
+                        cardNumber,
+                        messageLogNR(
+                            BCAFlazzAction.GENERATE_SESSION_KEY.action,
+                            it.message ?: ""
+                        ),
+                        lastBalance
+                    )
+                )
+            )
         }
     }
 
@@ -339,16 +493,51 @@ class BCABalanceViewModel @Inject constructor(
                     } else {
                         isoDep.close()
                         // set error if BCAdataSession_2 process error
-                        errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                        errorCardMessageMutable.postValue(Pair(
+                                MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                                mapParamLogErrorNetworkFlazz(
+                                    cardNumber,
+                                    messageLogNR(
+                                        BCAFlazzAction.GENERATE_SESSION_KEY.action,
+                                        separateResponseCodeFromCardData(
+                                            bcaSession2.strLogRsp
+                                        )
+                                    ),
+                                    lastBalance
+                                )
+                            )
+                        )
                     }
                 } catch (e: Throwable) {
                     isoDep.close()
                     Timber.d(e)
-                    errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                    errorCardMessageMutable.postValue(Pair(
+                            MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                            mapParamLogErrorNetworkFlazz(
+                                cardNumber,
+                                messageLogNR(
+                                    BCAFlazzAction.GENERATE_SESSION_KEY.action,
+                                    e.message ?: ""
+                                ),
+                                lastBalance
+                            )
+                        )
+                    )
                 }
             }
         } else {
-            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+            errorCardMessageMutable.postValue(Pair(
+                    MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                    mapParamLogErrorNetworkFlazz(
+                     cardNumber,
+                        messageLogNR(
+                            BCAFlazzAction.GENERATE_SESSION_KEY.action,
+                            ERROR_MESSAGE_ISODEP
+                        ),
+                        lastBalance
+                    )
+                )
+            )
         }
     }
 
@@ -393,16 +582,50 @@ class BCABalanceViewModel @Inject constructor(
                         // Bila respon dari BCATopUp_1 bukan SUCCESS
                         // (prefix SUCCESS : 0000), maka tidak perlu melakukan Reversal karena rekening sumber dana tidak terdebet
                         // src:Top Up Flazz di mch online-sosialisasi merchant 1222
-                        errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                        errorCardMessageMutable.postValue(Pair(
+                            MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                            mapParamLogErrorNetworkFlazz(
+                                cardNumber,
+                                messageLogNR(
+                                    BCAFlazzAction.BETWEEN_TOP_UP.action,
+                                    separateResponseCodeFromCardData(
+                                        topUp1.strLogRsp
+                                    )
+                                ),
+                                lastBalance
+                            ))
+                        )
                     }
                 } catch (e: Throwable) {
                     isoDep.close()
                     Timber.d(e)
-                    errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                    errorCardMessageMutable.postValue(Pair(
+                            MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                            mapParamLogErrorNetworkFlazz(
+                                cardNumber,
+                                messageLogNR(
+                                 BCAFlazzAction.BETWEEN_TOP_UP.action,
+                                    e.message ?: ""
+                                ),
+                                lastBalance
+                            )
+                        )
+                    )
                 }
             }
         } else {
-            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+            errorCardMessageMutable.postValue(Pair(
+                    MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                    mapParamLogErrorNetworkFlazz(
+                        cardNumber,
+                        messageLogNR(
+                            BCAFlazzAction.GENERATE_SESSION_KEY.action,
+                            ERROR_MESSAGE_ISODEP
+                        ),
+                        lastBalance
+                    )
+                )
+            )
         }
     }
 
@@ -439,7 +662,7 @@ class BCABalanceViewModel @Inject constructor(
             if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.cardData.isNotEmpty()) {
                 processSDKBCATopUp2(
                     isoDep, cardNumber, rawPublicKeyString, rawPrivateKeyString,
-                    cardType, strTransactionId, result
+                    cardType, strTransactionId, result, lastBalance
                 )
             } else if (result.status == BCAFlazzStatus.WRITE.status && result.attributes.cardData.isEmpty()) {
                 // Panggil function library BCAdataReversal dan kirimkan output library ke BCA
@@ -470,6 +693,18 @@ class BCABalanceViewModel @Inject constructor(
                     bcaFlazzData
                 )
             } else {
+                errorCardMessageMutable.postValue(Pair(
+                        MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                        mapParamLogErrorNetworkFlazz(
+                            cardNumber,
+                            messageLogNR(
+                                BCAFlazzAction.BETWEEN_TOP_UP.action,
+                                ERROR_BETWEEN_TOP_UP
+                            ),
+                            lastBalance
+                        )
+                    )
+                )
                 bcaInquiryMutable.postValue(
                     BCAFlazzResponseMapper.bcaMapper(
                         cardNumber,
@@ -503,7 +738,8 @@ class BCABalanceViewModel @Inject constructor(
         rawPrivateKeyString: String,
         cardType: String,
         strTransactionId: String,
-        bcaFlazzData: BCAFlazzData
+        bcaFlazzData: BCAFlazzData,
+        lastBalance: Int
     ) {
         if (isoDep != null) {
             run {
@@ -550,7 +786,18 @@ class BCABalanceViewModel @Inject constructor(
                 } catch (e: Throwable) {
                     isoDep.close()
                     Timber.d(e)
-                    errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                    errorCardMessageMutable.postValue(Pair(
+                            MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                            mapParamLogErrorNetworkFlazz(
+                                cardNumber,
+                                messageLogNR(
+                                    BCAFlazzAction.BETWEEN_TOP_UP.action,
+                                e.message ?: ""
+                                ),
+                                lastBalance
+                            )
+                        )
+                    )
                 }
             }
         } else {
@@ -785,6 +1032,17 @@ class BCABalanceViewModel @Inject constructor(
         }
     }
 
+    private fun messageLogNR(step: Int, errorMessage: String) : String {
+        return "$step: $errorMessage"
+    }
+    private fun separateResponseCodeFromCardData(strLogResp: String): String {
+        return if (strLogResp.length > PREFIX_SIZE) {
+            strLogResp.substring(Int.ZERO, PREFIX_SIZE)
+        } else {
+            strLogResp
+        }
+    }
+
     companion object {
         private const val GEN_ONE = "1"
         private const val GEN_TWO = "2"
@@ -792,5 +1050,7 @@ class BCABalanceViewModel @Inject constructor(
         private const val SUCCESS_PREFIX = "0000"
         private const val PREFIX_SIZE = 4
         private const val RC_8303 = "8303"
+        private const val ERROR_MESSAGE_ISODEP = "ISODep Connection Issue"
+        private const val ERROR_BETWEEN_TOP_UP = "Done between top up not supposed to be happend"
     }
 }
