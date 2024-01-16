@@ -257,8 +257,6 @@ class FollowerFollowingListingFragment @Inject constructor(
     }
 
     companion object {
-        const val REQUEST_CODE_LOGIN_TO_FOLLOW = 100
-        const val REQUEST_CODE_USER_PROFILE = 99
         const val EXTRA_FOLLOWING = "following"
         const val EXTRA_FOLLOWERS = "followers"
 
