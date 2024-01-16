@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iuProduct"
+        android:layout_width="56dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="V,1:1"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <LinearLayout
+        android:id="@+id/content_catalog"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toStartOf="@id/cbCatalog"
+        app:layout_constraintStart_toEndOf="@id/iuProduct"
+        app:layout_constraintTop_toTopOf="@id/iuProduct"
+        app:layout_constraintBottom_toBottomOf="@id/iuProduct">
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="paragraph_3"
+            tools:text="Katalog Predfine 1"
+            android:textColor="@color/Unify_NN950"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="display_2"
+            app:layout_constraintStart_toEndOf="@id/iuProduct"
+            app:layout_constraintTop_toTopOf="@id/iuProduct"
+            tools:text="Rp5,6jt - Rp7jt"
+            app:typographyWeight="bold"
+            android:textColor="@color/Unify_NN950"
+            />
+    </LinearLayout>
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cbCatalog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/content_catalog"
+        app:layout_constraintBottom_toBottomOf="@id/content_catalog"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ivPinCurrentCatalog"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="10dp"
+        android:visibility="gone"
+        app:icon_color_light_enable="@color/Unify_NN500"
+        app:icon_color_night_enable="@color/Unify_NN500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/content_catalog"
+        app:layout_constraintBottom_toBottomOf="@id/content_catalog"
+        app:icon_name="PUSH_PIN_FILLED" />
+</androidx.constraintlayout.widget.ConstraintLayout>
