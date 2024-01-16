@@ -159,6 +159,10 @@ class ReviewFragment @Inject constructor(
         router.route(requireContext(), appLink)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
     override fun onMenuClicked(menus: MenuStatus) {
         viewModel.onAction(ProductPreviewAction.ClickMenu(false))
     }
