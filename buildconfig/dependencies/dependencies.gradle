@@ -115,6 +115,7 @@ ext {
     profileInstallerVersion = '1.3.0'
     desugarJdkVersion= '1.2.2'
     laku6SdkVersion = '2.5.20'
+    rechargePcidssVersion = '1.2.1'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.4.0'
@@ -149,7 +150,7 @@ ext {
     unifyDateFilterVersion = '1.1.1.2'
     unifyPinVersion = '1.0.5'
     unifyEmptyStateVersion = '1.0.16'
-    unifyGlobalErrorVersion = '1.0.21'
+    unifyGlobalErrorVersion = '1.0.22'
     unifyHeaderVersion = '1.2.4'
     unifySortFilterVersion = '1.3.6'
     unifyIconNotificationVersion = '1.0.2.2'
@@ -369,7 +370,8 @@ ext {
             profileInstaller      : "androidx.profileinstaller:profileinstaller:$profileInstallerVersion",
             desugarJdk            : "com.android.tools:desugar_jdk_libs:$desugarJdkVersion",
             ffmpeg                : "com.arthenica:mobileffmpeg:4.4@aar",
-            influxInteractor      : "com.tokopedia.skynet:db-interactor:1.0-alpha-05"
+            influxInteractor      : "com.tokopedia.skynet:db-interactor:1.0-alpha-05",
+            rechargePcidss        : "com.tokopedia.recharge_credit_card.widget:recharge-pcidss:${rechargePcidssVersion}@aar"
     ]
 
     testDependencies = [
@@ -490,6 +492,7 @@ ext {
             composeAndroidUiTest: "androidx.compose.ui:ui-test-manifest:$composeVersion",
             accompanistPager    : "com.google.accompanist:accompanist-pager:$accompanistPagerVersion",
             accompanistFlowLayout : "com.google.accompanist:accompanist-flowlayout:$accompanistFlowLayout",
+            composeAnimation    : "androidx.compose.animation:animation:$composeVersion"
     ]
 
     kotlinParcelizeRuntimeDependencies = [

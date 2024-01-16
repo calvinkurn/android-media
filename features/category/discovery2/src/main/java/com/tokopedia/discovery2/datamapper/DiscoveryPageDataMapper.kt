@@ -465,15 +465,6 @@ class DiscoveryPageDataMapper(
                 }
             }
 
-            val saleTabStatus = checkSaleTimer(componentsItem)
-
-            if (saleTabStatus) {
-                val componentList =
-                    handleProductState(componentsItem, ComponentNames.SaleEndState.componentName)
-                tabsChildComponentsItemList.addAll(componentList)
-                listComponents.addAll(componentList)
-            }
-
             componentsItem.setComponentsItem(tabsChildComponentsItemList, tabData.name)
         }
 
@@ -547,36 +538,6 @@ class DiscoveryPageDataMapper(
             tabChildComponentsItem = component1
         }
         return tabChildComponentsItem
-    }
-
-    private fun checkSaleTimer(tab: ComponentsItem): Boolean {
-        tab.apply {
-            if (!data.isNullOrEmpty()) {
-                data?.get(0)?.let { tabData ->
-                    val targetComponentIdList = tabData.targetComponentId
-                        ?.split(",")
-                        ?.map { it.trim() }
-
-                    if (!targetComponentIdList.isNullOrEmpty()) {
-                        targetComponentIdList.forEach { componentId ->
-                            getComponent(componentId, pageInfo.identifier!!)?.let { componentItem ->
-                                if (componentItem.name == ComponentNames.TimerSprintSale.componentName) {
-                                    if (!componentItem.data.isNullOrEmpty() && Utils.isSaleOver(
-                                            componentItem.data!![0].endDate
-                                                ?: ""
-                                        )
-                                    ) {
-                                        data!![0].targetComponentId = componentId
-                                        return true
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return false
     }
 
     private fun parseProductVerticalList(
