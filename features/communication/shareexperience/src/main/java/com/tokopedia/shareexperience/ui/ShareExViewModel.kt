@@ -28,6 +28,7 @@ import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUse
 import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetShortLinkUseCase
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.uistate.ShareExBottomSheetUiState
+import com.tokopedia.shareexperience.ui.uistate.ShareExChannelIntentUiState
 import com.tokopedia.shareexperience.ui.uistate.ShareExImageGeneratorUiState
 import com.tokopedia.shareexperience.ui.uistate.ShareExShortLinkUiState
 import com.tokopedia.shareexperience.ui.util.getImageGeneratorProperty
@@ -88,13 +89,27 @@ class ShareExViewModel @Inject constructor(
     private val _fetchedDataState = MutableSharedFlow<Unit>()
     val fetchedDataState = _fetchedDataState.asSharedFlow()
 
+    /**
+     * Ui state for bottom sheet views
+     */
     private val _bottomSheetUiState = MutableStateFlow(ShareExBottomSheetUiState())
     val bottomSheetUiState = _bottomSheetUiState.asStateFlow()
 
+    /**
+     * Ui state for image generator
+     */
     private val _imageGeneratorUiState = MutableStateFlow(ShareExImageGeneratorUiState())
 
+    /**
+     * Ui state for cache short link
+     */
     private val _shortLinkUiState = MutableStateFlow(ShareExShortLinkUiState())
-    val shortLinkUiState = _shortLinkUiState.asStateFlow()
+
+    /**
+     * Ui state for open channel (app) intent
+     */
+    private val _channelIntentUiState = MutableStateFlow(ShareExChannelIntentUiState())
+    val channelIntentUiState = _channelIntentUiState.asStateFlow()
 
     fun setupViewModelObserver() {
         _actionFlow.process()
@@ -310,9 +325,9 @@ class ShareExViewModel @Inject constructor(
                     updateShortLinkUiState(
                         intent = getAppIntent(channelItemModel, _defaultUrl, null),
                         message = _defaultUrl,
+                        channelEnum = channelItemModel.channelEnum,
                         isLoading = false,
-                        error = null,
-                        showToaster = false
+                        error = null
                     )
                 }
             } catch (throwable: Throwable) {
@@ -321,9 +336,9 @@ class ShareExViewModel @Inject constructor(
                 updateShortLinkUiState(
                     intent = getAppIntent(channelItemModel, _defaultUrl, null),
                     message = _defaultUrl,
+                    channelEnum = channelItemModel.channelEnum,
                     isLoading = false,
-                    error = throwable,
-                    showToaster = false
+                    error = throwable
                 )
             }
         }
@@ -393,22 +408,21 @@ class ShareExViewModel @Inject constructor(
                     downloadImageAndShare(shortLinkRequest, channelItemModel, it.data)
                 }
                 is ShareExResult.Error -> {
-                    val showToaster = it.throwable.message?.contains("affiliate", ignoreCase = true) == true
                     updateShortLinkUiState(
                         intent = null,
                         message = "",
+                        channelEnum = shortLinkRequest.channelEnum,
                         isLoading = false,
-                        error = it.throwable,
-                        showToaster = showToaster
+                        error = it.throwable
                     )
                 }
                 ShareExResult.Loading -> {
                     updateShortLinkUiState(
                         intent = null,
                         message = "",
+                        channelEnum = channelItemModel.channelEnum,
                         isLoading = true,
-                        error = null,
-                        showToaster = false
+                        error = null
                     )
                 }
             }
@@ -418,17 +432,17 @@ class ShareExViewModel @Inject constructor(
     private fun updateShortLinkUiState(
         intent: Intent?,
         message: String,
+        channelEnum: ShareExChannelEnum?,
         isLoading: Boolean,
-        error: Throwable?,
-        showToaster: Boolean
+        error: Throwable?
     ) {
-        _shortLinkUiState.update {
+        _channelIntentUiState.update {
             it.copy(
                 intent = intent,
                 message = message,
+                channelEnum = channelEnum,
                 isLoading = isLoading,
-                error = error,
-                showToaster = showToaster
+                error = error
             )
         }
     }
@@ -464,9 +478,9 @@ class ShareExViewModel @Inject constructor(
                         updateShortLinkUiState(
                             intent = null,
                             message = "",
+                            channelEnum = null,
                             isLoading = true,
-                            error = null,
-                            showToaster = false
+                            error = null
                         )
                     }
                 }
@@ -538,18 +552,18 @@ class ShareExViewModel @Inject constructor(
                     updateShortLinkUiState(
                         intent = getAppIntent(channelItemModel, messageWithUrl, it.data),
                         message = messageWithUrl,
+                        channelEnum = channelItemModel.channelEnum,
                         isLoading = false,
-                        error = null,
-                        showToaster = false
+                        error = null
                     )
                 }
                 is ShareExResult.Error -> {
                     updateShortLinkUiState(
                         intent = getAppIntent(channelItemModel, messageWithUrl, null),
                         message = messageWithUrl,
+                        channelEnum = channelItemModel.channelEnum,
                         isLoading = false,
-                        error = it.throwable,
-                        showToaster = false
+                        error = it.throwable
                     )
                 }
                 ShareExResult.Loading -> Unit

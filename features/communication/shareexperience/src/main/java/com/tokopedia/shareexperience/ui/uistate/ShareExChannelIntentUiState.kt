@@ -1,0 +1,12 @@
+package com.tokopedia.shareexperience.ui.uistate
+
+import android.content.Intent
+import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
+
+data class ShareExChannelIntentUiState(
+    val intent: Intent? = null,
+    val message: String = "",
+    val channelEnum: ShareExChannelEnum? = null,
+    val isLoading: Boolean = false,
+    val error: Throwable? = null
+)
