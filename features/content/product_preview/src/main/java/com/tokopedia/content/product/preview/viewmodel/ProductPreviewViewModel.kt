@@ -70,8 +70,8 @@ class ProductPreviewViewModel @AssistedInject constructor(
         when (action) {
             ProductPreviewAction.FetchReview -> getReview()
             ProductPreviewAction.FetchMiniInfo -> getMiniInfo()
-            is ProductPreviewAction.ProductAction -> addToCart(action.model)
-            ProductPreviewAction.AtcFromResult -> addToCart(_miniInfo.value)
+            is ProductPreviewAction.ProductAction -> handleProductAction(action.model)
+            ProductPreviewAction.ProductActionFromResult -> handleProductAction(_miniInfo.value)
             is ProductPreviewAction.Navigate -> navigate(action.appLink)
             is ProductPreviewAction.SubmitReport -> submitReport(action.model)
             is ProductPreviewAction.ClickMenu -> menuOnClicked(action.isFromLogin)
@@ -104,11 +104,34 @@ class ProductPreviewViewModel @AssistedInject constructor(
                     model.price.finalPrice.toDoubleOrZero()
                 )
 
-                if (result) _uiEvent.emit(ProductPreviewEvent.ShowSuccessToaster(type = ProductPreviewEvent.ShowSuccessToaster.Type.ATC)) else throw MessageErrorException()
+                if (result) _uiEvent.emit(ProductPreviewEvent.ShowSuccessToaster(type = ProductPreviewEvent.ShowSuccessToaster.Type.ATC, message = ProductPreviewEvent.ShowSuccessToaster.Type.ATC.textRes)) else throw MessageErrorException()
             }
             ) {
                 _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it) { addToCart(model) })
             }
+        }
+    }
+
+    private fun remindMe(model: BottomNavUiModel) {
+        requiredLogin(model) {
+            viewModelScope.launchCatchError(block = {
+                val result = repo.remindMe(
+                    param.productId,
+                )
+
+                if (result.isSuccess) _uiEvent.emit(ProductPreviewEvent.ShowSuccessToaster(type = ProductPreviewEvent.ShowSuccessToaster.Type.Remind, message = ProductPreviewEvent.ShowSuccessToaster.Type.Remind.textRes)) else throw MessageErrorException()
+            }
+            ) {
+                _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it) { remindMe(model) })
+            }
+        }
+    }
+
+    private fun handleProductAction(model: BottomNavUiModel) {
+        when (model.buttonState) {
+            BottomNavUiModel.ButtonState.OOS -> remindMe(model)
+            BottomNavUiModel.ButtonState.Active -> addToCart(model)
+            else -> {}
         }
     }
 

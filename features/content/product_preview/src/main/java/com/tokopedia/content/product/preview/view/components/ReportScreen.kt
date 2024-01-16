@@ -31,7 +31,7 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
  */
 @Composable
 fun ReportScreen(reports: List<ReportUiModel>, onSubmit: (ReportUiModel) -> Unit = {}) {
-    var text by remember { mutableStateOf("") }
+    var reason by remember { mutableStateOf("") }
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(ReportUiModel.Empty) }
     Column(
         modifier = Modifier
@@ -49,29 +49,30 @@ fun ReportScreen(reports: List<ReportUiModel>, onSubmit: (ReportUiModel) -> Unit
             items(reports) { item ->
                 NestRadioButton(
                     text = item.text,
-                    selected = item.text == selectedOption.text,
-                    onSelected = {
-                        onOptionSelected(item)
+                    selected = item.reasonCode == selectedOption.reasonCode,
+                    onSelected = { isChecked ->
+                        if (isChecked) onOptionSelected(item)
                     }
                 )
             }
         }
-        val isLastSelected = selectedOption == reports.last()
+        val isOtherReason = selectedOption.reasonCode == 3 //Reason code for other reason is 3.
 
         //enable when option 3 is clicked
         TextField(
-            value = text,
-            onValueChange = { text = it },
+            value = reason,
+            onValueChange = { reason = it },
             label = { Text(text = stringResource(R.string.review_report_reason)) },
-            enabled = isLastSelected,
+            enabled = isOtherReason,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp, bottom = 22.dp)
         )
-        // enable when report is not empty
         NestButton(
             text = stringResource(R.string.review_report_send),
-            onClick = { onSubmit(selectedOption) },
+            onClick = {
+                onSubmit(selectedOption.copy(text = if (isOtherReason) reason else selectedOption.text))
+            },
             isEnabled = selectedOption != ReportUiModel.Empty,
             modifier = Modifier.fillMaxWidth()
         )
@@ -85,4 +86,3 @@ fun MyApp() {
         reports = emptyList(),
     )
 }
-

@@ -29,6 +29,7 @@ import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
@@ -70,7 +71,7 @@ class ProductPreviewFragment @Inject constructor(
     private val productAtcResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
-        if (it.resultCode == Activity.RESULT_OK) viewModel.onAction(ProductPreviewAction.AtcFromResult)
+        if (it.resultCode == Activity.RESULT_OK) viewModel.onAction(ProductPreviewAction.ProductActionFromResult)
     }
 
     override fun getScreenName() = TAG
@@ -146,14 +147,17 @@ class ProductPreviewFragment @Inject constructor(
             viewModel.miniInfo
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
                 .withCache().collectLatest { (prev, curr) ->
-                renderBottomNav(prev, curr)
-            }
+                    renderBottomNav(prev, curr)
+                }
         }
     }
 
     private fun observeEvent() {
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.uiEvent.collectLatest {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.uiEvent.flowWithLifecycle(
+                viewLifecycleOwner.lifecycle,
+                Lifecycle.State.RESUMED
+            ).collect {
                 when (val event = it) {
                     is ProductPreviewEvent.LoginEvent<*> -> {
                         val intent = router.getIntent(requireContext(), ApplinkConst.LOGIN)
@@ -161,13 +165,19 @@ class ProductPreviewFragment @Inject constructor(
                             is BottomNavUiModel -> productAtcResult.launch(intent)
                         }
                     }
-                    is ProductPreviewEvent.NavigateEvent -> router.route(requireContext(), event.appLink)
+
+                    is ProductPreviewEvent.NavigateEvent -> router.route(
+                        requireContext(),
+                        event.appLink
+                    )
                     //TODO: need to check all toaster in PDP unified media
                     is ProductPreviewEvent.ShowSuccessToaster -> {
                         Toaster.build(
                             requireView().rootView,
-                            text = getString(R.string.bottom_atc_success_toaster),
-                            actionText = getString(R.string.bottom_atc_success_click_toaster),
+                            text = getString(event.message.orZero()),
+                            actionText = if (event.type == ProductPreviewEvent.ShowSuccessToaster.Type.ATC) getString(
+                                R.string.bottom_atc_success_click_toaster
+                            ) else "",
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
                                 viewModel.onAction(ProductPreviewAction.Navigate(ApplinkConst.CART))

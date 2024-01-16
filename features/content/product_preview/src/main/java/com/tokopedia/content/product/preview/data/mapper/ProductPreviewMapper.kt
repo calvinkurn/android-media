@@ -1,5 +1,6 @@
 package com.tokopedia.content.product.preview.data.mapper
 
+import com.tokopedia.content.product.preview.data.AddWishlistResponse
 import com.tokopedia.content.product.preview.data.GetMiniProductInfoResponse
 import com.tokopedia.content.product.preview.data.LikeReviewResponse
 import com.tokopedia.content.product.preview.data.MediaReviewResponse
@@ -71,7 +72,11 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                 response.data.buttonState
             ) //Variant product always active, to open GVBS.
         )
-
+    fun mapRemindMe(response: AddWishlistResponse): BottomNavUiModel.RemindMeUiModel =
+        BottomNavUiModel.RemindMeUiModel(
+            isSuccess = response.data.wishlistAdd.success,
+            message = response.data.wishlistAdd.message
+        )
     fun mapLike(response: LikeReviewResponse): LikeUiState = LikeUiState(
         count = response.data.totalLike,
         state = LikeUiState.LikeStatus.getByValue(response.data.likeStatus),

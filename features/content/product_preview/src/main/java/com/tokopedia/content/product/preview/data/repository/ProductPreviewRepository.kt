@@ -21,4 +21,5 @@ interface ProductPreviewRepository {
 
     suspend fun likeReview(state: LikeUiState, reviewId: String): LikeUiState
     suspend fun submitReport(report: ReportUiModel, reviewId: String): Boolean
+    suspend fun remindMe(productId: String) : BottomNavUiModel.RemindMeUiModel
 }

@@ -39,7 +39,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 class ReviewFragment @Inject constructor(
     private val viewModelFactory: ProductPreviewViewModelFactory.Creator,
     private val router: Router,
@@ -52,7 +51,7 @@ class ReviewFragment @Inject constructor(
 
     private val viewModel by viewModels<ProductPreviewViewModel> {
         viewModelFactory.create(
-            EntrySource(productId = "4937529690") //TODO: Testing purpose, change from arguments
+            EntrySource(productId = "4937529690") // TODO: Testing purpose, change from arguments
         )
     }
 
@@ -60,7 +59,7 @@ class ReviewFragment @Inject constructor(
         ReviewParentAdapter(this)
     }
 
-    private val snapHelper = PagerSnapHelper() //TODO: adjust pager snap helper
+    private val snapHelper = PagerSnapHelper() // TODO: adjust pager snap helper
 
     private val scrollListener by lazyThreadSafetyNone {
         object : RecyclerView.OnScrollListener() {
@@ -134,31 +133,35 @@ class ReviewFragment @Inject constructor(
     }
 
     private fun observeEvent() {
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.uiEvent.collectLatest {
-                when (val event = it) {
-                    is ProductPreviewEvent.ShowMenuSheet -> {
-                        MenuBottomSheet.getOrCreate(
-                            childFragmentManager,
-                            requireActivity().classLoader
-                        ).apply {
-                            setMenu(event.status)
-                        }.show(childFragmentManager)
-                    }
-                    is ProductPreviewEvent.LoginEvent<*> -> {
-                        when(event.data) {
-                            is MenuStatus -> menuResult.launch(Unit)
-                            is LikeUiState -> likeResult.launch(Unit)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.uiEvent
+                .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
+                .collect {
+                    when (val event = it) {
+                        is ProductPreviewEvent.ShowMenuSheet -> {
+                            MenuBottomSheet.getOrCreate(
+                                childFragmentManager,
+                                requireActivity().classLoader
+                            ).apply {
+                                setMenu(event.status)
+                            }.show(childFragmentManager)
                         }
+
+                        is ProductPreviewEvent.LoginEvent<*> -> {
+                            when (event.data) {
+                                is MenuStatus -> menuResult.launch(Unit)
+                                is LikeUiState -> likeResult.launch(Unit)
+                            }
+                        }
+
+                        else -> {}
                     }
-                    else -> {}
                 }
-            }
         }
     }
 
     private fun renderList(prev: List<ReviewUiModel>?, data: List<ReviewUiModel>) {
-        if (prev == data) return //TODO: adjust condition
+        if (prev == data) return // TODO: adjust condition
         reviewAdapter.submitList(data)
     }
 
@@ -170,6 +173,10 @@ class ReviewFragment @Inject constructor(
         router.route(requireContext(), appLink)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
     override fun onMenuClicked(menus: MenuStatus) {
         viewModel.onAction(ProductPreviewAction.ClickMenu(false))
     }
