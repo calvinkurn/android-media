@@ -45,9 +45,7 @@ sealed interface PlayShortsAction {
         val tag: PlayTagItem,
     ) : PlayShortsAction
 
-    data class SwitchInterspersing(
-        val isEnabled: Boolean,
-    ) : PlayShortsAction
+    object SwitchInterspersing : PlayShortsAction
 
     object ClickVideoPreview : PlayShortsAction
 

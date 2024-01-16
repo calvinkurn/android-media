@@ -111,7 +111,7 @@ class PlayShortsSummaryFragment @Inject constructor(
                     },
                     onInterspersingChanged = { isActive ->
                         analytic.clickInterspersingToggle(viewModel.selectedAccount, viewModel.shortsId, isActive)
-                        viewModel.submitAction(PlayShortsAction.SwitchInterspersing(isActive))
+                        viewModel.submitAction(PlayShortsAction.SwitchInterspersing)
                     }
                 )
             }

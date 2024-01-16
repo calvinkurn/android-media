@@ -243,7 +243,7 @@ class PlayShortsViewModel @Inject constructor(
             /** Summary */
             is PlayShortsAction.LoadTag -> handleLoadTag()
             is PlayShortsAction.SelectTag -> handleSelectTag(action.tag)
-            is PlayShortsAction.SwitchInterspersing -> handleSwitchInterspersing(action.isEnabled)
+            is PlayShortsAction.SwitchInterspersing -> handleSwitchInterspersing()
             is PlayShortsAction.ClickVideoPreview -> handleClickVideoPreview()
             is PlayShortsAction.UploadVideo -> handleUploadVideo(action.needCheckInterspersing)
 
@@ -497,10 +497,10 @@ class PlayShortsViewModel @Inject constructor(
         }
     }
 
-    private fun handleSwitchInterspersing(isEnabled: Boolean) {
+    private fun handleSwitchInterspersing() {
         _interspersingConfig.update {
             it.copy(
-                isInterspersing = isEnabled
+                isInterspersing = !it.isInterspersing
             )
         }
     }
