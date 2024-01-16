@@ -125,7 +125,7 @@ class ReviewFragment @Inject constructor(
     }
 
     private fun observeEvent() {
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiEvent
                 .flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.RESUMED)
                 .collect {

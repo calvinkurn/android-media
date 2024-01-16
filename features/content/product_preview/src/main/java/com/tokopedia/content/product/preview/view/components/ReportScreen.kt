@@ -56,14 +56,14 @@ fun ReportScreen(reports: List<ReportUiModel>, onSubmit: (ReportUiModel) -> Unit
                 )
             }
         }
-        val isLastSelected = selectedOption == reports.last()
+        val isOtherReason = selectedOption.reasonCode == 3 //Reason code for other reason is 3.
 
         //enable when option 3 is clicked
         TextField(
             value = reason,
             onValueChange = { reason = it },
             label = { Text(text = stringResource(R.string.review_report_reason)) },
-            enabled = isLastSelected,
+            enabled = isOtherReason,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp, bottom = 22.dp)
@@ -71,7 +71,7 @@ fun ReportScreen(reports: List<ReportUiModel>, onSubmit: (ReportUiModel) -> Unit
         NestButton(
             text = stringResource(R.string.review_report_send),
             onClick = {
-                onSubmit(selectedOption.copy(text = if (isLastSelected) reason else selectedOption.text))
+                onSubmit(selectedOption.copy(text = if (isOtherReason) reason else selectedOption.text))
             },
             isEnabled = selectedOption != ReportUiModel.Empty,
             modifier = Modifier.fillMaxWidth()
