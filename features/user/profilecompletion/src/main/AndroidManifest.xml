@@ -47,12 +47,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ProfileCompletionActivity"
-            android:label="@string/title_profile_completion"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
             android:name=".changegender.view.activity.ChangeGenderActivity"
             android:label="@string/title_change_gender"
             android:screenOrientation="portrait"
