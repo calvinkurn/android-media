@@ -245,7 +245,7 @@ class PlayShortsViewModel @Inject constructor(
             is PlayShortsAction.SelectTag -> handleSelectTag(action.tag)
             is PlayShortsAction.SwitchInterspersing -> handleSwitchInterspersing(action.isEnabled)
             is PlayShortsAction.ClickVideoPreview -> handleClickVideoPreview()
-            is PlayShortsAction.UploadVideo -> handleUploadVideo()
+            is PlayShortsAction.UploadVideo -> handleUploadVideo(action.needCheckInterspersing)
 
             /** Shorts x Affiliate */
             is PlayShortsAction.SubmitOnboardAffiliateTnc -> handleSubmitOnboardAffiliateTnc()
@@ -511,21 +511,28 @@ class PlayShortsViewModel @Inject constructor(
         }
     }
 
-    private fun handleUploadVideo() {
+    private fun handleUploadVideo(needCheckInterspersing: Boolean) {
         viewModelScope.launchCatchError(block = {
             if (_uploadState.value is PlayShortsUploadUiState.Loading) return@launchCatchError
 
             _uploadState.update { PlayShortsUploadUiState.Loading }
 
-            if (_interspersingConfig.value.isInterspersing) {
-                val productVideo = _productVideo.updateAndGet {
-                    repo.checkProductCustomVideo(_config.value.shortsId)
-                }
+            if (needCheckInterspersing && _interspersingConfig.value.isInterspersing) {
+                try {
+                    val productVideo = _productVideo.updateAndGet {
+                        repo.checkProductCustomVideo(_config.value.shortsId)
+                    }
 
-                if (productVideo.hasVideo) {
-                    _uploadState.update { PlayShortsUploadUiState.Unknown }
+                    if (productVideo.hasVideo) {
+                        _uploadState.update { PlayShortsUploadUiState.Unknown }
 
-                    _uiEvent.emit(PlayShortsUiEvent.ShowInterspersingConfirmation)
+                        _uiEvent.emit(PlayShortsUiEvent.ShowInterspersingConfirmation)
+
+                        return@launchCatchError
+                    }
+                } catch (throwable: Throwable) {
+                    _uploadState.update { PlayShortsUploadUiState.Error(throwable) }
+                    _uiEvent.emit(PlayShortsUiEvent.ErrorCheckInterspersing(throwable))
 
                     return@launchCatchError
                 }

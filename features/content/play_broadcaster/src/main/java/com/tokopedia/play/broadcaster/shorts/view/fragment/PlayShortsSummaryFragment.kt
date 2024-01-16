@@ -154,7 +154,7 @@ class PlayShortsSummaryFragment @Inject constructor(
 
                         override fun clickNext() {
                             analytic.clickNextInterspersingConfirmation(viewModel.selectedAccount, viewModel.shortsId)
-                            viewModel.submitAction(PlayShortsAction.UploadVideo)
+                            viewModel.submitAction(PlayShortsAction.UploadVideo(needCheckInterspersing = false))
                         }
 
                         override fun clickClose() {
@@ -180,7 +180,7 @@ class PlayShortsSummaryFragment @Inject constructor(
         binding.btnUploadVideo.setOnClickListener {
             analytic.clickUploadVideo(viewModel.shortsId, viewModel.selectedAccount)
 
-            viewModel.submitAction(PlayShortsAction.UploadVideo)
+            viewModel.submitAction(PlayShortsAction.UploadVideo(needCheckInterspersing = true))
         }
     }
 
@@ -198,12 +198,11 @@ class PlayShortsSummaryFragment @Inject constructor(
             viewModel.uiEvent.collect { event ->
                 when(event) {
                     is PlayShortsUiEvent.ErrorUploadMedia -> {
-                        analytic.impressSummaryErrorToaster(viewModel.selectedAccount, viewModel.shortsId)
-
-                        toaster.showError(
-                            event.throwable,
-                            duration = Toaster.LENGTH_SHORT
-                        )
+                        showErrorToaster(event.throwable)
+                    }
+                    is PlayShortsUiEvent.ErrorCheckInterspersing -> {
+                        analytic.impressInterspersingError(viewModel.selectedAccount, viewModel.shortsId)
+                        showErrorToaster(event.throwable)
                     }
                     is PlayShortsUiEvent.ShowInterspersingConfirmation -> {
                         showInterspersingConfirmation()
@@ -291,6 +290,13 @@ class PlayShortsSummaryFragment @Inject constructor(
                 binding.btnUploadVideo.isEnabled = isButtonEnabled
             }
         }
+    }
+
+    private fun showErrorToaster(throwable: Throwable) {
+        toaster.showError(
+            throwable,
+            duration = Toaster.LENGTH_LONG
+        )
     }
 
     private fun showInterspersingConfirmation() {

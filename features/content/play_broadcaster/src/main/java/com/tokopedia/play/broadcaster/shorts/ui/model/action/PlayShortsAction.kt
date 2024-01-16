@@ -51,7 +51,9 @@ sealed interface PlayShortsAction {
 
     object ClickVideoPreview : PlayShortsAction
 
-    object UploadVideo : PlayShortsAction
+    data class UploadVideo(
+        val needCheckInterspersing: Boolean
+    ) : PlayShortsAction
 
     /** Shorts x Affiliate */
     object SubmitOnboardAffiliateTnc : PlayShortsAction

@@ -39,7 +39,7 @@ class PlayShortsInterspersingAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun impressSummaryErrorToaster(
+    override fun impressInterspersingError(
         accountUiModel: ContentAccountUiModel,
         creationId: String
     ) {

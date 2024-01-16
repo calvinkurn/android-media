@@ -9,7 +9,7 @@ interface PlayShortsInterspersingAnalytic {
 
     fun clickInterspersingToggle(accountUiModel: ContentAccountUiModel, creationId: String, isActive: Boolean)
 
-    fun impressSummaryErrorToaster(accountUiModel: ContentAccountUiModel, creationId: String)
+    fun impressInterspersingError(accountUiModel: ContentAccountUiModel, creationId: String)
 
     fun clickCloseInterspersingConfirmation(accountUiModel: ContentAccountUiModel, creationId: String)
 
