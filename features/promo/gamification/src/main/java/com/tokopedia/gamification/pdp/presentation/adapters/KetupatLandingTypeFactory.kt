@@ -1,18 +1,24 @@
 package com.tokopedia.gamification.pdp.presentation.adapters
 
-import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.C1VHModel
-import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.C2VHModel
-import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.C3VHModel
-import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.C4VHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatTopBannerVHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatCrackBannerVHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatReferralBannerVHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatBenefitCouponVHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatBenefitCouponSlugVHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatRedirectionBannerVHModel
 
 
 interface KetupatLandingTypeFactory{
 
-    fun type(model: C1VHModel): Int
+    fun type(model: KetupatTopBannerVHModel): Int
 
-    fun type(model: C2VHModel): Int
+    fun type(model: KetupatCrackBannerVHModel): Int
 
-    fun type(model: C3VHModel): Int
+    fun type(model: KetupatReferralBannerVHModel): Int
 
-    fun type(model: C4VHModel): Int
+    fun type(model: KetupatBenefitCouponVHModel): Int
+
+    fun type(model: KetupatBenefitCouponSlugVHModel): Int
+
+    fun type(model: KetupatRedirectionBannerVHModel): Int
 }

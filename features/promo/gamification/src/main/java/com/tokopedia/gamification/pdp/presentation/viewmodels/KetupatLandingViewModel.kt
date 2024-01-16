@@ -4,13 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
-import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.C1VHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatTopBannerVHModel
 import com.tokopedia.gamification.pdp.data.model.KetupatLandingPageData
 import com.tokopedia.gamification.pdp.domain.usecase.KetupatLandingUseCase
 import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingTypeFactory
-import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.C2VHModel
-import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.C3VHModel
-import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.C4VHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatCrackBannerVHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatReferralBannerVHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatBenefitCouponVHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatBenefitCouponSlugVHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatRedirectionBannerVHModel
 import com.tokopedia.notifications.common.launchCatchError
 import javax.inject.Inject
 
@@ -79,16 +81,22 @@ class KetupatLandingViewModel @Inject constructor(
         }
 
         if(header!=null) {
-            tempList.add(C1VHModel(header!!))
+            tempList.add(KetupatTopBannerVHModel(header!!))
         }
         if(crack!=null) {
-            tempList.add(C2VHModel(crack!!))
+            tempList.add(KetupatCrackBannerVHModel(crack!!))
         }
         if(referral!=null) {
-            tempList.add(C3VHModel(referral!!))
+            tempList.add(KetupatReferralBannerVHModel(referral!!))
         }
         if(benefitCoupon!=null) {
-            tempList.add(C4VHModel(benefitCoupon!!))
+            tempList.add(KetupatBenefitCouponVHModel(benefitCoupon!!))
+        }
+        if(benefitCouponSlug!=null) {
+            tempList.add(KetupatBenefitCouponSlugVHModel(benefitCouponSlug!!))
+        }
+        if(banner!=null) {
+            tempList.add(KetupatRedirectionBannerVHModel(banner!!))
         }
         return tempList
     }

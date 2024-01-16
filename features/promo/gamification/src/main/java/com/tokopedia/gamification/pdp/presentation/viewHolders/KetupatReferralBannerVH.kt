@@ -4,20 +4,20 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.C3VHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatReferralBannerVHModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.gamification.R as gamificationR
 
-class C3VH(itemView: View) : AbstractViewHolder<C3VHModel>(itemView) {
+class KetupatReferralBannerVH(itemView: View) : AbstractViewHolder<KetupatReferralBannerVHModel>(itemView) {
 
     companion object {
         @JvmField
         @LayoutRes
-        var LAYOUT = gamificationR.layout.ketupat_refferal_banner
+        var LAYOUT = gamificationR.layout.ketupat_referral_banner
     }
 
-    override fun bind(element: C3VHModel?) {
+    override fun bind(element: KetupatReferralBannerVHModel?) {
         element?.referral.let { referralData ->
             itemView.findViewById<Typography>(gamificationR.id.referral_banner_title)?.text =
                 referralData?.title

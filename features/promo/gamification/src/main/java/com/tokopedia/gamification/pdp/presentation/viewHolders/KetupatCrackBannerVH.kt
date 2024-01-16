@@ -4,14 +4,14 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.C2VHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatCrackBannerVHModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.gamification.R as gamificationR
 
-class C2VH(itemView: View) : AbstractViewHolder<C2VHModel>(itemView) {
+class KetupatCrackBannerVH(itemView: View) : AbstractViewHolder<KetupatCrackBannerVHModel>(itemView) {
 
     companion object {
         @JvmField
@@ -19,7 +19,7 @@ class C2VH(itemView: View) : AbstractViewHolder<C2VHModel>(itemView) {
         var LAYOUT = gamificationR.layout.ketupat_crack_banner
     }
 
-    override fun bind(element: C2VHModel?) {
+    override fun bind(element: KetupatCrackBannerVHModel?) {
         element?.crack.let { crackData ->
             itemView.findViewById<Typography>(gamificationR.id.crack_banner_title)?.text =
                 crackData?.title

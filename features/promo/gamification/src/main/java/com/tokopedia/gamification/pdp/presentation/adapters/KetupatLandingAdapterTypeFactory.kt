@@ -4,40 +4,54 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.gamification.pdp.presentation.viewHolders.C1VH
-import com.tokopedia.gamification.pdp.presentation.viewHolders.C2VH
-import com.tokopedia.gamification.pdp.presentation.viewHolders.C3VH
-import com.tokopedia.gamification.pdp.presentation.viewHolders.C4VH
-import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.C1VHModel
-import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.C2VHModel
-import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.C3VHModel
-import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.C4VHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatTopBannerVH
+import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatCrackBannerVH
+import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatReferralBannerVH
+import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatBenefitCouponVH
+import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatBenefitCouponSlugVH
+import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatRedirectionBannerVH
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatTopBannerVHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatCrackBannerVHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatReferralBannerVHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatBenefitCouponVHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatBenefitCouponSlugVHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatRedirectionBannerVHModel
 
 class KetupatLandingAdapterTypeFactory(/*Listener if needed*/) : BaseAdapterTypeFactory(),
     KetupatLandingTypeFactory {
 
-    override fun type(model: C1VHModel): Int {
-        return C1VH.LAYOUT
+    override fun type(model: KetupatTopBannerVHModel): Int {
+        return KetupatTopBannerVH.LAYOUT
     }
 
-    override fun type(model: C2VHModel): Int {
-        return C2VH.LAYOUT
+    override fun type(model: KetupatCrackBannerVHModel): Int {
+        return KetupatCrackBannerVH.LAYOUT
     }
 
-    override fun type(model: C3VHModel): Int {
-        return C3VH.LAYOUT
+    override fun type(model: KetupatReferralBannerVHModel): Int {
+        return KetupatReferralBannerVH.LAYOUT
     }
 
-    override fun type(model: C4VHModel): Int {
-        return C4VH.LAYOUT
+    override fun type(model: KetupatBenefitCouponVHModel): Int {
+        return KetupatBenefitCouponVH.LAYOUT
+    }
+
+    override fun type(model: KetupatBenefitCouponSlugVHModel): Int {
+        return KetupatBenefitCouponSlugVH.LAYOUT
+    }
+
+    override fun type(model: KetupatRedirectionBannerVHModel): Int {
+        return KetupatRedirectionBannerVH.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            C1VH.LAYOUT -> C1VH(parent)
-            C2VH.LAYOUT -> C2VH(parent)
-            C3VH.LAYOUT -> C3VH(parent)
-            C4VH.LAYOUT -> C4VH(parent)
+            KetupatTopBannerVH.LAYOUT -> KetupatTopBannerVH(parent)
+            KetupatCrackBannerVH.LAYOUT -> KetupatCrackBannerVH(parent)
+            KetupatReferralBannerVH.LAYOUT -> KetupatReferralBannerVH(parent)
+            KetupatBenefitCouponVH.LAYOUT -> KetupatBenefitCouponVH(parent)
+            KetupatBenefitCouponSlugVH.LAYOUT -> KetupatBenefitCouponSlugVH(parent)
+            KetupatRedirectionBannerVH.LAYOUT -> KetupatRedirectionBannerVH(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
