@@ -7,6 +7,9 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.catalog.R
+import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant
+import com.tokopedia.catalogcommon.uimodel.BuyerReviewUiModel
 import com.tokopedia.image_gallery.ImageGallery
 import com.tokopedia.image_gallery.ImageGalleryItem
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -16,6 +19,9 @@ class CatalogImagePreviewActivity : BaseSimpleActivity() {
     companion object {
         const val ARG_PARAM_IMAGE_LIST = "image_list"
         const val ARG_PARAM_DEFAULT_INDEX = "default_index"
+        const val ARG_PARAM_TRACKER_MODEL = "tracker_model"
+        const val ARG_PARAM_CATALOG_ID = "catalog_id"
+
         @JvmStatic
         fun createIntent(
             context: Context,
@@ -26,6 +32,16 @@ class CatalogImagePreviewActivity : BaseSimpleActivity() {
             intent.putStringArrayListExtra(ARG_PARAM_IMAGE_LIST, ArrayList(imageList))
             intent.putExtra(ARG_PARAM_DEFAULT_INDEX, defaultIndex)
             return intent
+        }
+
+        @JvmStatic
+        fun setTrackerDataIntent(
+            intent: Intent?,
+            catalogId: String,
+            buyerReviewItem: BuyerReviewUiModel.ItemBuyerReviewUiModel
+        ) {
+            intent?.putExtra(ARG_PARAM_TRACKER_MODEL, buyerReviewItem)
+            intent?.putExtra(ARG_PARAM_CATALOG_ID, catalogId)
         }
     }
 
@@ -46,6 +62,18 @@ class CatalogImagePreviewActivity : BaseSimpleActivity() {
         }
         val defaultIndex = intent.getIntExtra(ARG_PARAM_DEFAULT_INDEX, Int.ZERO)
         setupViews(imageList, defaultIndex)
+    }
+
+    override fun onDestroy() {
+        val reviewUiModel = intent.getParcelableExtra<BuyerReviewUiModel.ItemBuyerReviewUiModel>(ARG_PARAM_TRACKER_MODEL)
+        val catalogId = intent.getStringExtra(ARG_PARAM_CATALOG_ID)
+        CatalogReimagineDetailAnalytics.sendEventPG(
+            action = "click close on image review",
+            category = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE,
+            labels = "${reviewUiModel?.catalogName} $catalogId - feedback_id:${reviewUiModel?.reviewId}",
+            trackerId = "26906"
+        )
+        super.onDestroy()
     }
 
     override fun getNewFragment(): Fragment? {

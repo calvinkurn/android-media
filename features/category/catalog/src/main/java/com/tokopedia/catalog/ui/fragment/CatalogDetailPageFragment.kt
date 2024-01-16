@@ -243,6 +243,25 @@ class CatalogDetailPageFragment :
         }
     }
 
+    private fun showPreviewImages(
+        carouselItem: BuyerReviewUiModel.ItemBuyerReviewUiModel,
+        position: Int,
+        isFromBottomsheet: Boolean
+    ) {
+        val imageUrl = carouselItem.images.map { it.fullsizeImgUrl }
+        val intent = context?.let {
+            CatalogImagePreviewActivity.createIntent(it, imageUrl, position)
+        }
+        CatalogImagePreviewActivity.setTrackerDataIntent(intent, catalogId, carouselItem)
+        startActivity(intent)
+        CatalogReimagineDetailAnalytics.sendEventPG(
+            action = if (isFromBottomsheet) "click image on list review" else "click image on review",
+            category = EVENT_CATEGORY_CATALOG_PAGE,
+            labels = "${carouselItem.catalogName} $catalogId - feedback_id:${carouselItem.reviewId}",
+            trackerId = if (isFromBottomsheet) "26899" else "26901"
+        )
+    }
+
     override fun getScreenName() = CatalogDetailPageFragment::class.java.canonicalName.orEmpty()
 
     override fun initInjector() {
@@ -309,23 +328,34 @@ class CatalogDetailPageFragment :
             manager = childFragmentManager,
             reviewData = carouselItem
         ) { position ->
-            onClickImage(carouselItem, position)
+            showPreviewImages(carouselItem, position, true)
         }
+        CatalogReimagineDetailAnalytics.sendEventPG(
+            action = "click selengkapnya on review",
+            category = EVENT_CATEGORY_CATALOG_PAGE,
+            labels = "${carouselItem.catalogName} $catalogId - feedback_id:${carouselItem.reviewId}",
+            trackerId = "26894"
+        )
     }
 
     override fun onClickImage(
         carouselItem: BuyerReviewUiModel.ItemBuyerReviewUiModel,
         position: Int
     ) {
-        val imageUrl = carouselItem.images.map { it.fullsizeImgUrl }
-        val intent = context?.let {
-            CatalogImagePreviewActivity.createIntent(it, imageUrl, position)
-        }
-        startActivity(intent)
+        showPreviewImages(carouselItem, position, false)
     }
 
     override fun onBuyerReviewImpression(buyerReviewUiModel: BuyerReviewUiModel) {
         viewModel.emitScrollEvent(buyerReviewUiModel.widgetName)
+        sendOnTimeImpression("30117") {
+            CatalogReimagineDetailAnalytics.sendEventPG(
+                event = EVENT_VIEW_PG_IRIS,
+                action = "impression review widget",
+                category = EVENT_CATEGORY_CATALOG_PAGE,
+                labels = "$catalogId - ${buyerReviewUiModel.items.firstOrNull()?.catalogName.orEmpty()}",
+                trackerId = "30117"
+            )
+        }
     }
 
     override fun onNavigateWidget(anchorTo: String, tabPosition: Int, tabTitle: String?) {
