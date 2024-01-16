@@ -23,6 +23,8 @@ internal interface IGridViewStrategy {
     fun setThreeDotsWishlistOnClickListener(threeDotsClickListener: (View) -> Unit) { }
     fun setAddToCartWishlistOnClickListener(addToCartWishlistClickListener: (View) -> Unit) { }
     fun setSeeSimilarProductWishlistOnClickListener(seeSimilarProductWishlistClickListener: (View) -> Unit) { }
+    fun setDeleteProductOnClickListener(deleteProductClickListener: (View) -> Unit) { }
+    fun setRemoveWishlistOnClickListener(removeWishlistClickListener: (View) -> Unit) { }
     fun setSeeOtherProductOnClickListener(seeOtherProductOnClickListener: (View) -> Unit) { }
     fun getCardMaxElevation(): Float = 0f
     fun getCardRadius(): Float = 0f
@@ -49,7 +51,7 @@ internal interface ProductCardStrategy:
     )
     fun setOnClickListener(l: View.OnClickListener?)
     fun setOnLongClickListener(l: View.OnLongClickListener?) { }
-    fun setThreeDotsOnClickListener(threeDotsClickListener: (View) -> Unit) { }
-    fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) { }
+    fun setThreeDotsOnClickListener(l: View.OnClickListener?) { }
+    fun setAddToCartOnClickListener(l: View.OnClickListener?) { }
     fun getVideoPlayerController(): VideoPlayerController = VideoPlayerController.empty()
 }

@@ -20,19 +20,19 @@ class ProductCardGridView : ConstraintLayout, IProductCardView {
         get() = productCardStrategy.additionalMarginStart()
 
     constructor(context: Context) : super(context) {
-        productCardStrategy = ProductCardStrategyFactory.create(this)
+        productCardStrategy = ProductCardStrategyFactory.gridStrategy(this)
 
         init(context)
     }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        productCardStrategy = ProductCardStrategyFactory.create(this, attrs)
+        productCardStrategy = ProductCardStrategyFactory.gridStrategy(this, attrs)
 
         init(context, attrs)
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        productCardStrategy = ProductCardStrategyFactory.create(this, attrs)
+        productCardStrategy = ProductCardStrategyFactory.gridStrategy(this, attrs)
 
         init(context, attrs, defStyleAttr)
     }

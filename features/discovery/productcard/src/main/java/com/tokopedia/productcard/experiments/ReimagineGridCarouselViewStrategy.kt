@@ -131,7 +131,7 @@ internal class ReimagineGridCarouselViewStrategy(
 
     override fun setImageProductViewHintListener(
         impressHolder: ImpressHolder,
-        viewHintListener: ViewHintListener
+        viewHintListener: ViewHintListener,
     ) {
         imageView?.addOnImpressionListener(impressHolder, viewHintListener)
     }
@@ -140,9 +140,9 @@ internal class ReimagineGridCarouselViewStrategy(
         cardContainer?.setOnClickListener(l)
     }
 
-    override fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) {
+    override fun setAddToCartOnClickListener(l: View.OnClickListener?) {
         productCardView
             .findViewById<View?>(R.id.productCardAddToCart)
-            ?.setOnClickListener(addToCartClickListener)
+            ?.setOnClickListener(l)
     }
 }
