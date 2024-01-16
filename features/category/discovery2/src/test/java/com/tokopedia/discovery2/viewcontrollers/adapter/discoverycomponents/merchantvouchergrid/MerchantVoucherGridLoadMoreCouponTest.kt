@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
-class MerchantVoucherGridLoadMoreCouponTest: MerchantVoucherGridViewModelFixture() {
+class MerchantVoucherGridLoadMoreCouponTest : MerchantVoucherGridViewModelFixture() {
     @Test
     fun `When load more but still in progress hitting another gql then should not execute more code`() {
         // stub necessary data
@@ -46,7 +46,6 @@ class MerchantVoucherGridLoadMoreCouponTest: MerchantVoucherGridViewModelFixture
         viewModel.couponList
             .verifySuccessEquals(null)
     }
-
 
     @Test
     fun `When use case is null then the result of loading more pages should be null`() {
@@ -175,7 +174,7 @@ class MerchantVoucherGridLoadMoreCouponTest: MerchantVoucherGridViewModelFixture
     }
 
     @Test
-    fun `When use case is true and voucher list has 3 items with additional info that is component doesn't have next page && component additional info is null, so the result should get only voucher list`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that is component doesn't have next page && component additional info is null, so the result should get only voucher list`() {
         // stub necessary data
         viewModel
             .mockPrivateField("isLoading", false)
@@ -183,15 +182,15 @@ class MerchantVoucherGridLoadMoreCouponTest: MerchantVoucherGridViewModelFixture
         val componentItems = listOf(
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             )
         )
 
@@ -224,7 +223,7 @@ class MerchantVoucherGridLoadMoreCouponTest: MerchantVoucherGridViewModelFixture
     }
 
     @Test
-    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && redirection is null, so the result should get only voucher list`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && redirection is null, so the result should get only voucher list`() {
         // stub necessary data
         viewModel
             .mockPrivateField("isLoading", false)
@@ -232,15 +231,15 @@ class MerchantVoucherGridLoadMoreCouponTest: MerchantVoucherGridViewModelFixture
         val componentItems = listOf(
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             )
         )
 
@@ -278,7 +277,7 @@ class MerchantVoucherGridLoadMoreCouponTest: MerchantVoucherGridViewModelFixture
     }
 
     @Test
-    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && cta text is empty, so the result should get only voucher list`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && cta text is empty, so the result should get only voucher list`() {
         // stub necessary data
         viewModel
             .mockPrivateField("isLoading", false)
@@ -289,15 +288,15 @@ class MerchantVoucherGridLoadMoreCouponTest: MerchantVoucherGridViewModelFixture
         val componentItems = listOf(
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             )
         )
 
@@ -335,7 +334,7 @@ class MerchantVoucherGridLoadMoreCouponTest: MerchantVoucherGridViewModelFixture
     }
 
     @Test
-    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && cta text is null, so the result should get only voucher list`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && cta text is null, so the result should get only voucher list`() {
         // stub necessary data
         viewModel
             .mockPrivateField("isLoading", false)
@@ -346,15 +345,15 @@ class MerchantVoucherGridLoadMoreCouponTest: MerchantVoucherGridViewModelFixture
         val componentItems = listOf(
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             )
         )
 
@@ -392,26 +391,27 @@ class MerchantVoucherGridLoadMoreCouponTest: MerchantVoucherGridViewModelFixture
     }
 
     @Test
-    fun `When use case is true and voucher list has 3 items with additional info that component has next page && cta text is not empty, so the result should get only voucher list`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component has next page && cta text is not empty, so the result should get only voucher list`() {
         // stub necessary data
         viewModel
             .mockPrivateField("isLoading", false)
 
         val redirection = Redirection(
-            ctaText = "Lihat Semua Kupon"
+            ctaText = "Lihat Semua Kupon",
+            applink = "tokopedia://discovery/mvc-next-page"
         )
         val componentItems = listOf(
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             )
         )
 
@@ -449,7 +449,7 @@ class MerchantVoucherGridLoadMoreCouponTest: MerchantVoucherGridViewModelFixture
     }
 
     @Test
-    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && cta text is not empty, so the result should get only voucher list`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component doesn't have next page && cta text is not empty, so the result should get only voucher list`() {
         // stub necessary data
         viewModel
             .mockPrivateField("isLoading", false)
@@ -460,15 +460,15 @@ class MerchantVoucherGridLoadMoreCouponTest: MerchantVoucherGridViewModelFixture
         val componentItems = listOf(
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             )
         )
 
@@ -506,7 +506,7 @@ class MerchantVoucherGridLoadMoreCouponTest: MerchantVoucherGridViewModelFixture
     }
 
     @Test
-    fun `When use case is true and voucher list has 3 items with additional info that component has next page && redirection is null, so the result should get voucher list and shimmer`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component has next page && redirection is null, so the result should get voucher list and shimmer`() {
         // stub necessary data
         viewModel
             .mockPrivateField("isLoading", false)
@@ -514,15 +514,15 @@ class MerchantVoucherGridLoadMoreCouponTest: MerchantVoucherGridViewModelFixture
         val componentItems = listOf(
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             )
         )
 
@@ -559,7 +559,7 @@ class MerchantVoucherGridLoadMoreCouponTest: MerchantVoucherGridViewModelFixture
     }
 
     @Test
-    fun `When use case is true and voucher list has 3 items with additional info that component has next page && cta text is null, so the result should get voucher list and shimmer`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component has next page && cta text is null, so the result should get voucher list and shimmer`() {
         // stub necessary data
         viewModel
             .mockPrivateField("isLoading", false)
@@ -570,15 +570,15 @@ class MerchantVoucherGridLoadMoreCouponTest: MerchantVoucherGridViewModelFixture
         val componentItems = listOf(
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             )
         )
 
@@ -615,7 +615,7 @@ class MerchantVoucherGridLoadMoreCouponTest: MerchantVoucherGridViewModelFixture
     }
 
     @Test
-    fun `When use case is true and voucher list has 3 items with additional info that component has next page && cta text is empty, so the result should get voucher list and shimmer`()  {
+    fun `When use case is true and voucher list has 3 items with additional info that component has next page && cta text is empty, so the result should get voucher list and shimmer`() {
         // stub necessary data
         viewModel
             .mockPrivateField("isLoading", false)
@@ -626,15 +626,15 @@ class MerchantVoucherGridLoadMoreCouponTest: MerchantVoucherGridViewModelFixture
         val componentItems = listOf(
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             ),
             ComponentsItem(
                 searchParameter = searchParameter,
-                filterController = filterController,
+                filterController = filterController
             )
         )
 

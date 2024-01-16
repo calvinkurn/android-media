@@ -395,3 +395,5 @@ public static com.tokopedia.stability.ChangeDelegate *;
 # BCA Flazz Library
 -keep class com.tokopedia.emoney.integration.BCALibrary {*;}
 -keep class com.tokopedia.emoney.integration.data.JNIResult {*;}
+
+-dontwarn sun.nio.ch.DirectBuffer

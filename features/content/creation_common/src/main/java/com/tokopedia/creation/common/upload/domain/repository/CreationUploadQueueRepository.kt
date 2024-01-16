@@ -1,5 +1,6 @@
 package com.tokopedia.creation.common.upload.domain.repository
 
+import com.tokopedia.creation.common.upload.data.local.entity.CreationUploadQueueEntity
 import com.tokopedia.creation.common.upload.model.CreationUploadData
 import kotlinx.coroutines.flow.Flow
 
@@ -8,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
  */
 interface CreationUploadQueueRepository {
 
-    fun observeTopQueue(): Flow<CreationUploadData>
+    fun observeTopQueue(): Flow<CreationUploadQueueEntity?>
 
     suspend fun insert(data: CreationUploadData)
 
