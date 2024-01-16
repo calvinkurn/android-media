@@ -4,11 +4,14 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productcard.IProductCardView
+import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.unifycomponents.toPx
 
 internal class CarouselProductCardDefaultDecorator(
-    private val isReimagine: Boolean,
+    isReimagine: Boolean,
 ) : RecyclerView.ItemDecoration() {
+
+    private val isReimagine = isReimagine && ProductCardExperiment.isReimagine()
 
     override fun getItemOffsets(outRect: Rect,
                                 view: View,
