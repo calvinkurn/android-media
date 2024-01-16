@@ -145,8 +145,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     ) {
         if (prev == state) return
 
-        val selectedData = state.firstOrNull { it.selected } ?: return
-        val position = state.indexOf(selectedData)
+        val position = state.indexOfFirst { it.selected }
         if (position < 0) return
 
         productContentAdapter.submitList(state)
@@ -162,8 +161,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     ) {
         if (prev == state) return
 
-        val selectedData = state.firstOrNull { it.selected } ?: return
-        val position = state.indexOf(selectedData)
+        val position = state.indexOfFirst { it.selected }
         if (position < 0) return
 
         productIndicatorAdapter.submitList(state)

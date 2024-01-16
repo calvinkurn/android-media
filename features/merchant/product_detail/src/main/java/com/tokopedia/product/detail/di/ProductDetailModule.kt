@@ -15,8 +15,6 @@ import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMapper
 import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.QUERY_DISCUSSION_MOST_HELPFUL
-import com.tokopedia.product.detail.mapper.ProductDetailMapper
-import com.tokopedia.product.detail.mapper.ProductDetailMapperImpl
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
 import com.tokopedia.recommendation_widget_common.di.RecommendationCoroutineModule
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -93,10 +91,4 @@ class ProductDetailModule {
     @ProductDetailScope
     @Provides
     fun provideAffiliateEligibilityUseCase(graphqlRepository: GraphqlRepository) = AffiliateEligibilityCheckUseCase(graphqlRepository)
-
-    @ProductDetailScope
-    @Provides
-    fun provideProductDetailMapper(productDetailMapper: ProductDetailMapperImpl): ProductDetailMapper {
-        return ProductDetailMapperImpl()
-    }
 }
