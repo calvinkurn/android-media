@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
-import com.tokopedia.base.list.seller.R;
+import com.tokopedia.baselist.R;
 import com.tokopedia.media.loader.JvmMediaLoader;
 
 /**
