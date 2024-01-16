@@ -131,18 +131,28 @@ class WishlistCollectionViewModel @Inject constructor(
         productIds: List<String>,
         pageName: String
     ): WishlistRecommendationDataModel {
-        val recommendation = singleRecommendationUseCase.getData(
-            GetRecommendationRequestParam(
-                pageNumber = page,
-                productIds = productIds,
-                pageName = pageName
+        try {
+            val recommendation = singleRecommendationUseCase.getData(
+                GetRecommendationRequestParam(
+                    pageNumber = page,
+                    productIds = productIds,
+                    pageName = pageName
+                )
             )
-        )
-        return WishlistRecommendationDataModel(
-            WishlistUtils.convertRecommendationIntoProductDataModel(recommendation.recommendationItemList),
-            recommendation.recommendationItemList,
-            recommendation.title
-        )
+            hasNextRecommendation = recommendation.hasNext
+            if (recommendation.recommendationItemList.isEmpty()) {
+                return WishlistRecommendationDataModel()
+            } else {
+                return WishlistRecommendationDataModel(
+                    WishlistUtils.convertRecommendationIntoProductDataModel(recommendation.recommendationItemList),
+                    recommendation.recommendationItemList,
+                    recommendation.title
+                )
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
+            return WishlistRecommendationDataModel()
+        }
     }
 
     fun loadRecommendation(page: Int) {
