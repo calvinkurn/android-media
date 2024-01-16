@@ -5,8 +5,6 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -21,13 +19,18 @@ import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.LayoutBottomSheetShopDiscountSubsidyProgramInformationBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.subsidy.model.uimodel.ShopDiscountProgramInformationDetailUiModel
+import com.tokopedia.shopdiscount.utils.tracker.ShopDiscountTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import javax.inject.Inject
 import kotlin.math.min
 
 class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
+
+    @Inject
+    lateinit var tracker: ShopDiscountTracker
 
     private var viewBinding by autoClearedNullable<LayoutBottomSheetShopDiscountSubsidyProgramInformationBinding>()
     private val textSubsidyInfo: Typography?
@@ -132,6 +135,14 @@ class ShopDiscountSubsidyProgramInformationBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setContentData()
+        sendImpressionSubsidyProgramInformationBottomSheet()
+    }
+
+    private fun sendImpressionSubsidyProgramInformationBottomSheet() {
+        tracker.sendImpressionSubsidyProgramInformationBottomSheetEvent(
+            programInformationDetailUiModel?.isBottomSheet.orFalse(),
+            programInformationDetailUiModel?.productId.orEmpty()
+        )
     }
 
     private fun setContentData() {

@@ -605,6 +605,8 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
             formattedFinalDiscountedPercentage = product.formattedDiscountMaxPercentage,
             mainStock = product.totalStock,
             maxOrder = product.maxOrder,
+            productId = product.id,
+            isBottomSheet = false,
             subsidyInfo = product.subsidyInfo
         )
     }

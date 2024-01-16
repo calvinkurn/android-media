@@ -602,6 +602,8 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
             ),
             mainStock = uiModel.stock,
             maxOrder = uiModel.maxOrder,
+            productId = uiModel.productId,
+            isBottomSheet = true,
             subsidyInfo = uiModel.subsidyInfo
         )
     }

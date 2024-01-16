@@ -10,8 +10,11 @@ import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.CREATE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EDIT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.CLICK_SUBSIDY_INFORMATION
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.IMPRESSION_COACH_MARK
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.IMPRESSION_SUBSIDY_DETAIL
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventCategory.SLASH_PRICE_SUBSIDY_BOTTOM_SHEET
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventCategory.SLASH_PRICE_SUBSIDY_LIST_OF_PRODUCTS
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventLabel.SLASH_PRICE_SUBSIDY_DETAIL_BOTTOM_SHEET
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventLabel.SLASH_PRICE_SUBSIDY_DETAIL_LIST_OF_PRODUCTS
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventLabel.SLASH_PRICE_SUBSIDY_NON_VARIANT_PRODUCT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventLabel.SLASH_PRICE_SUBSIDY_VARIANT_PRODUCT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.Key.TRACKER_ID
@@ -24,6 +27,7 @@ import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACK
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_SUBSIDY_INFORMATION_PRODUCT_LIST
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_IMPRESSION_COACH_MARK_BOTTOM_SHEET
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_IMPRESSION_COACH_MARK_PRODUCT_LIST
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_IMPRESSION_SUBSIDY_DETAIL
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.VIEW_PG_IRIS
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
@@ -150,6 +154,29 @@ class ShopDiscountTracker @Inject constructor(private val userSession: UserSessi
             .setEventCategory(SLASH_PRICE_SUBSIDY_BOTTOM_SHEET)
             .setEventLabel(eventLabel)
             .setCustomProperty(TRACKER_ID, TRACKER_ID_CLICK_SUBSIDY_INFORMATION_BOTTOM_SHEET)
+            .setBusinessUnit(CAMPAIGN_BUSINESS_UNIT)
+            .setCurrentSite(TOKOPEDIA_MARKETPLACE)
+            .setShopId(userSession.shopId)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
+
+    fun sendImpressionSubsidyProgramInformationBottomSheetEvent(
+        isBottomSheet: Boolean,
+        productId: String
+    ) {
+        val eventLabel = if (isBottomSheet) {
+            SLASH_PRICE_SUBSIDY_DETAIL_BOTTOM_SHEET
+        } else {
+            SLASH_PRICE_SUBSIDY_DETAIL_LIST_OF_PRODUCTS
+        }.format(productId)
+        Tracker.Builder()
+            .setEvent(VIEW_PG_IRIS)
+            .setEventAction(IMPRESSION_SUBSIDY_DETAIL)
+            .setEventCategory(SLASH_PRICE_SUBSIDY_BOTTOM_SHEET)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(TRACKER_ID, TRACKER_ID_IMPRESSION_SUBSIDY_DETAIL)
             .setBusinessUnit(CAMPAIGN_BUSINESS_UNIT)
             .setCurrentSite(TOKOPEDIA_MARKETPLACE)
             .setShopId(userSession.shopId)

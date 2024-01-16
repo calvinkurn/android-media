@@ -768,6 +768,8 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
             formattedFinalDiscountedPercentage = product.formattedDiscountMaxPercentage,
             mainStock = product.totalStock,
             maxOrder = product.maxOrder,
+            productId = product.id,
+            isBottomSheet = false,
             subsidyInfo = product.subsidyInfo
         )
     }

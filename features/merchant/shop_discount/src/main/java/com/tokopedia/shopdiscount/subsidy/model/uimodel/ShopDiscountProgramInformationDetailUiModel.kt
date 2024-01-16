@@ -11,5 +11,7 @@ data class ShopDiscountProgramInformationDetailUiModel(
     val formattedFinalDiscountedPercentage: String = "",
     val mainStock: String = "",
     val maxOrder: Int = 0,
+    val productId: String = "",
+    val isBottomSheet: Boolean = false,
     val subsidyInfo: ShopDiscountSubsidyInfoUiModel = ShopDiscountSubsidyInfoUiModel()
 ) : Parcelable

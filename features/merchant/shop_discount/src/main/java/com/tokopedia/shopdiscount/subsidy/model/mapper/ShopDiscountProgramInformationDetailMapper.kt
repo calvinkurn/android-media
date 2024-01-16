@@ -13,6 +13,8 @@ object ShopDiscountProgramInformationDetailMapper {
         formattedFinalDiscountedPrice: String,
         mainStock: String,
         maxOrder: Int,
+        productId: String,
+        isBottomSheet: Boolean,
         subsidyInfo: ShopDiscountSubsidyInfoUiModel
     ): ShopDiscountProgramInformationDetailUiModel {
         return ShopDiscountProgramInformationDetailUiModel(
@@ -22,6 +24,8 @@ object ShopDiscountProgramInformationDetailMapper {
             formattedFinalDiscountedPrice = formattedFinalDiscountedPrice,
             mainStock = mainStock,
             maxOrder = maxOrder,
+            productId = productId,
+            isBottomSheet = isBottomSheet,
             subsidyInfo = subsidyInfo
         )
     }
