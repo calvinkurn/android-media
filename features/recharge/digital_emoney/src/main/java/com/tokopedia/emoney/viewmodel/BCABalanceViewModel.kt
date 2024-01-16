@@ -68,7 +68,7 @@ class BCABalanceViewModel @Inject constructor(
                                 mapParamLogErrorNetworkFlazz(
                                         dataBalance.cardNo,
                                         messageLogNR(
-                                            BCAFlazzAction.GET_PENDING_BALANCE.action,
+                                            "PENDING_BALANCE_GEN_2",
                                             separateResponseCodeFromCardData(
                                                 dataBalance.strLogRsp
                                             )
@@ -85,7 +85,7 @@ class BCABalanceViewModel @Inject constructor(
                                 mapParamLogErrorNetworkFlazz(
                                     setConfigResult.cardNo,
                                     messageLogNR(
-                                        BCAFlazzAction.GET_PENDING_BALANCE.action,
+                                        "PENDING_BALANCE_GEN_2",
                                         separateResponseCodeFromCardData(
                                             setConfigResult.strLogRsp
                                         )
@@ -102,7 +102,7 @@ class BCABalanceViewModel @Inject constructor(
                             mapParamLogErrorNetworkFlazz(
                                 "",
                                 messageLogNR(
-                                    BCAFlazzAction.GET_PENDING_BALANCE.action,
+                                    "PENDING_BALANCE_GEN_2",
                                     e.message ?: ""
                                 ), 0
                             )
@@ -116,7 +116,7 @@ class BCABalanceViewModel @Inject constructor(
                     mapParamLogErrorNetworkFlazz(
                         setConfigResult.cardNo,
                         messageLogNR(
-                            BCAFlazzAction.GET_PENDING_BALANCE.action,
+                            "PENDING_BALANCE_GEN_2",
                             ERROR_MESSAGE_ISODEP
                         ), 0
                     )
@@ -146,7 +146,7 @@ class BCABalanceViewModel @Inject constructor(
                             mapParamLogErrorNetworkFlazz(
                                 "",
                                 messageLogNR(
-                                    BCAFlazzAction.GET_PENDING_BALANCE.action,
+                                    "PENDING_BALANCE_GEN_1",
                                     e.message ?: ""
                                 ), 0
                             )
@@ -160,7 +160,7 @@ class BCABalanceViewModel @Inject constructor(
                     mapParamLogErrorNetworkFlazz(
                         "",
                         messageLogNR(
-                            BCAFlazzAction.GET_PENDING_BALANCE.action,
+                            "PENDING_BALANCE_GEN_1",
                             ERROR_MESSAGE_ISODEP
                         ), 0
                     )
@@ -229,7 +229,7 @@ class BCABalanceViewModel @Inject constructor(
                     mapParamLogErrorNetworkFlazz(
                         cardNumber,
                         messageLogNR(
-                            BCAFlazzAction.GET_PENDING_BALANCE.action,
+                            "PENDING_BALANCE_PROCESS",
                             it.message ?: ""
                         ), lastBalance
                     )
@@ -283,8 +283,8 @@ class BCABalanceViewModel @Inject constructor(
                     mapParamLogErrorNetworkFlazz(
                         cardNumber,
                         messageLogNR(
-                            BCAFlazzAction.GENERATE_TRX_ID.action,
-                            NfcCardErrorTypeDef.FAILED_READ_CARD
+                            "TRANSACTION_ID_PROCESS",
+                            "TRANSACTION_ID_EMPTY"
                         ), lastBalance
                     )
                 ))
@@ -308,7 +308,7 @@ class BCABalanceViewModel @Inject constructor(
                 mapParamLogErrorNetworkFlazz(
                     cardNumber,
                     messageLogNR(
-                        BCAFlazzAction.GENERATE_TRX_ID.action,
+                        "TRANSACTION_ID_PROCESS",
                         it.message ?: ""
                     ), lastBalance
                 )
@@ -348,7 +348,7 @@ class BCABalanceViewModel @Inject constructor(
                                 mapParamLogErrorNetworkFlazz(
                                     cardNumber,
                                     messageLogNR(
-                                        BCAFlazzAction.GENERATE_SESSION_KEY.action,
+                                        "PROCESS_SDK_SESSION_1",
                                         separateResponseCodeFromCardData(
                                             bcaSession1.strLogRsp
                                         )
@@ -365,7 +365,7 @@ class BCABalanceViewModel @Inject constructor(
                             mapParamLogErrorNetworkFlazz(
                                 cardNumber,
                                 messageLogNR(
-                                    BCAFlazzAction.GENERATE_SESSION_KEY.action,
+                                    "PROCESS_SDK_SESSION_1",
                                     e.message ?: ""
                                 ),
                                 lastBalance
@@ -380,7 +380,7 @@ class BCABalanceViewModel @Inject constructor(
                     mapParamLogErrorNetworkFlazz(
                         cardNumber,
                         messageLogNR(
-                            BCAFlazzAction.GENERATE_SESSION_KEY.action,
+                            "PROCESS_SDK_SESSION_1",
                             ERROR_MESSAGE_ISODEP
                         ),
                         lastBalance
@@ -430,8 +430,8 @@ class BCABalanceViewModel @Inject constructor(
                         mapParamLogErrorNetworkFlazz(
                             cardNumber,
                             messageLogNR(
-                                BCAFlazzAction.GENERATE_SESSION_KEY.action,
-                                NfcCardErrorTypeDef.FAILED_READ_CARD
+                                "PROCESS_SESSION_KEY",
+                                "PROCESS_SESSION_CARD_DATA_EMPTY"
                             ),
                             lastBalance
                         )
@@ -457,7 +457,7 @@ class BCABalanceViewModel @Inject constructor(
                     mapParamLogErrorNetworkFlazz(
                         cardNumber,
                         messageLogNR(
-                            BCAFlazzAction.GENERATE_SESSION_KEY.action,
+                            "PROCESS_SESSION_KEY",
                             it.message ?: ""
                         ),
                         lastBalance
@@ -498,7 +498,7 @@ class BCABalanceViewModel @Inject constructor(
                                 mapParamLogErrorNetworkFlazz(
                                     cardNumber,
                                     messageLogNR(
-                                        BCAFlazzAction.GENERATE_SESSION_KEY.action,
+                                        "PROCESS_SDK_SESSION_2",
                                         separateResponseCodeFromCardData(
                                             bcaSession2.strLogRsp
                                         )
@@ -516,7 +516,7 @@ class BCABalanceViewModel @Inject constructor(
                             mapParamLogErrorNetworkFlazz(
                                 cardNumber,
                                 messageLogNR(
-                                    BCAFlazzAction.GENERATE_SESSION_KEY.action,
+                                    "PROCESS_SDK_SESSION_2",
                                     e.message ?: ""
                                 ),
                                 lastBalance
@@ -531,7 +531,7 @@ class BCABalanceViewModel @Inject constructor(
                     mapParamLogErrorNetworkFlazz(
                      cardNumber,
                         messageLogNR(
-                            BCAFlazzAction.GENERATE_SESSION_KEY.action,
+                            "PROCESS_SDK_SESSION_2",
                             ERROR_MESSAGE_ISODEP
                         ),
                         lastBalance
@@ -587,7 +587,7 @@ class BCABalanceViewModel @Inject constructor(
                             mapParamLogErrorNetworkFlazz(
                                 cardNumber,
                                 messageLogNR(
-                                    BCAFlazzAction.BETWEEN_TOP_UP.action,
+                                    "PROCESS_SDK_TOP_UP_1",
                                     separateResponseCodeFromCardData(
                                         topUp1.strLogRsp
                                     )
@@ -604,7 +604,7 @@ class BCABalanceViewModel @Inject constructor(
                             mapParamLogErrorNetworkFlazz(
                                 cardNumber,
                                 messageLogNR(
-                                 BCAFlazzAction.BETWEEN_TOP_UP.action,
+                                    "PROCESS_SDK_TOP_UP_1",
                                     e.message ?: ""
                                 ),
                                 lastBalance
@@ -619,7 +619,7 @@ class BCABalanceViewModel @Inject constructor(
                     mapParamLogErrorNetworkFlazz(
                         cardNumber,
                         messageLogNR(
-                            BCAFlazzAction.GENERATE_SESSION_KEY.action,
+                            "PROCESS_SDK_TOP_UP_1",
                             ERROR_MESSAGE_ISODEP
                         ),
                         lastBalance
@@ -698,7 +698,7 @@ class BCABalanceViewModel @Inject constructor(
                         mapParamLogErrorNetworkFlazz(
                             cardNumber,
                             messageLogNR(
-                                BCAFlazzAction.BETWEEN_TOP_UP.action,
+                                "PROCESS_BETWEEN_TOP_UP",
                                 ERROR_BETWEEN_TOP_UP
                             ),
                             lastBalance
@@ -779,7 +779,8 @@ class BCABalanceViewModel @Inject constructor(
                             cardNumber,
                             rawPublicKeyString,
                             rawPrivateKeyString,
-                            cardType
+                            cardType,
+                            if (updatedBalance.isSuccess == SUCCESS_JNI) updatedBalance.balance else bcaFlazzData.attributes.lastBalance
                         )
                     }
 
@@ -791,7 +792,7 @@ class BCABalanceViewModel @Inject constructor(
                             mapParamLogErrorNetworkFlazz(
                                 cardNumber,
                                 messageLogNR(
-                                    BCAFlazzAction.BETWEEN_TOP_UP.action,
+                                    "PROCESS_SDK_TOP_UP_2",
                                 e.message ?: ""
                                 ),
                                 lastBalance
@@ -801,7 +802,18 @@ class BCABalanceViewModel @Inject constructor(
                 }
             }
         } else {
-            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+            errorCardMessageMutable.postValue(Pair(
+                MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                mapParamLogErrorNetworkFlazz(
+                    cardNumber,
+                    messageLogNR(
+                        "PROCESS_SDK_TOP_UP_2",
+                        ERROR_MESSAGE_ISODEP
+                    ),
+                    lastBalance
+                )
+            )
+            )
         }
     }
 
@@ -843,7 +855,18 @@ class BCABalanceViewModel @Inject constructor(
                 )
             )
         }) {
-            errorCardMessageMutable.postValue(it)
+            errorCardMessageMutable.postValue(Pair(
+                it,
+                mapParamLogErrorNetworkFlazz(
+                    cardNumber,
+                    messageLogNR(
+                    "PROCESS_ACK",
+                        it.message ?: ""
+                    ),
+                    updatedBalance
+                )
+                )
+            )
         }
     }
 
@@ -880,19 +903,51 @@ class BCABalanceViewModel @Inject constructor(
                             cardNumber,
                             rawPublicKeyString,
                             rawPrivateKeyString,
-                            cardType
+                            cardType,
+                            lastBalance
                         )
                     } else {
-                        errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                        errorCardMessageMutable.postValue(Pair(
+                            MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                            mapParamLogErrorNetworkFlazz(
+                                cardNumber,
+                                messageLogNR(
+                                    "PROCESS_SDK_REVERSAL",
+                                        separateResponseCodeFromCardData(reversal.strLogRsp)
+                                ),
+                                lastBalance
+                            )
+                        ))
                     }
                 } catch (e: Throwable) {
                     isoDep.close()
                     Timber.d(e)
-                    errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                    errorCardMessageMutable.postValue(Pair(
+                        MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                        mapParamLogErrorNetworkFlazz(
+                            cardNumber,
+                            messageLogNR(
+                                "PROCESS_SDK_REVERSAL",
+                                e.message ?: ""
+                            ),
+                            lastBalance
+                        )
+                    ))
                 }
             }
         } else {
-            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+            errorCardMessageMutable.postValue(Pair(
+                    MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                    mapParamLogErrorNetworkFlazz(
+                        cardNumber,
+                        messageLogNR(
+                            "PROCESS_SDK_REVERSAL",
+                                ERROR_MESSAGE_ISODEP
+                        ),
+                        lastBalance
+                    )
+                )
+            )
         }
     }
 
@@ -952,7 +1007,16 @@ class BCABalanceViewModel @Inject constructor(
                 )
             }
         }) {
-            errorCardMessageMutable.postValue(it)
+            errorCardMessageMutable.postValue(Pair(
+                it,
+                mapParamLogErrorNetworkFlazz(
+                    cardNumber,
+                    messageLogNR(
+                        "PROCESS_REVERSAL",
+                        it.message ?: ""
+                    ), lastBalance
+                )
+            ))
         }
     }
 
@@ -963,6 +1027,7 @@ class BCABalanceViewModel @Inject constructor(
         rawPublicKeyString: String,
         rawPrivateKeyString: String,
         cardType: String,
+        lastBalance: Int
     ) {
         if (isoDep != null) {
             run {
@@ -983,11 +1048,30 @@ class BCABalanceViewModel @Inject constructor(
                 } catch (e: Throwable) {
                     isoDep.close()
                     Timber.d(e)
-                    errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                    errorCardMessageMutable.postValue(Pair(
+                        MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                        mapParamLogErrorNetworkFlazz(
+                            cardNumber,
+                            messageLogNR(
+                            "PROCESS_SDK_BCALASTBCATOPUP",
+                                e.message ?: ""
+                            ), lastBalance
+                        ),
+                    ))
                 }
             }
         } else {
-            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+            errorCardMessageMutable.postValue(Pair(
+                    MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD),
+                    mapParamLogErrorNetworkFlazz(
+                        cardNumber,
+                        messageLogNR(
+                            "PROCESS_SDK_BCALASTBCATOPUP",
+                                ERROR_MESSAGE_ISODEP
+                        ), lastBalance
+                    )
+                )
+            )
         }
     }
 
@@ -1032,7 +1116,7 @@ class BCABalanceViewModel @Inject constructor(
         }
     }
 
-    private fun messageLogNR(step: Int, errorMessage: String) : String {
+    private fun messageLogNR(step: String, errorMessage: String) : String {
         return "$step: $errorMessage"
     }
     private fun separateResponseCodeFromCardData(strLogResp: String): String {
