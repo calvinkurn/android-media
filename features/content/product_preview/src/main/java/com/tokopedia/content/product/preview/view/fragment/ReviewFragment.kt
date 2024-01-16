@@ -185,7 +185,6 @@ class ReviewFragment @Inject constructor(
 
     private fun getCurrentPosition() : Int {
         return (binding.rvReview.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition() ?: RecyclerView.NO_POSITION
->>>>>>> parent of 8bd9a645fe0f (Revert "Feature/asti/media report sheet")
     }
 
     companion object {
