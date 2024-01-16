@@ -7,9 +7,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.addemail.data.AddEmailResult
 import com.tokopedia.profilecompletion.data.AddEmailParam
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_EMAIL
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_OTP_CODE
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_VALIDATE_TOKEN
 import com.tokopedia.profilecompletion.domain.AddEmailUseCase
 import com.tokopedia.profilecompletion.domain.CheckEmailUseCase
 import com.tokopedia.sessioncommon.ErrorHandlerSession
