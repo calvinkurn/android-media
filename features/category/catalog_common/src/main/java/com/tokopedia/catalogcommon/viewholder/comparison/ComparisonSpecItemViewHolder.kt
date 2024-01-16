@@ -8,10 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetItemComparisonContentSpecBinding
 import com.tokopedia.catalogcommon.uimodel.ComparisonUiModel
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.unifyprinciples.Typography.Companion.BOLD
+import com.tokopedia.unifyprinciples.Typography.Companion.REGULAR
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ComparisonSpecItemViewHolder(
@@ -19,7 +18,6 @@ class ComparisonSpecItemViewHolder(
     isComparedItem: Boolean
 ) : RecyclerView.ViewHolder(itemView) {
     companion object {
-        private const val DIVIDER_MARGIN = 8
         private const val DIVIDER_DARK_ALPHA = 0.4F
         private const val DIVIDER_LIGHT_ALPHA = 0.2F
 
@@ -29,17 +27,7 @@ class ComparisonSpecItemViewHolder(
 
     private val binding: WidgetItemComparisonContentSpecBinding? by viewBinding()
 
-    init {
-        if (isComparedItem) {
-            binding?.apply {
-                val margin = DIVIDER_MARGIN.dpToPx(itemView.resources.displayMetrics)
-                divSpecCategory.setMargin(margin, Int.ZERO, Int.ZERO, Int.ZERO)
-                divSpecValue.setMargin(margin, Int.ZERO, Int.ZERO, Int.ZERO)
-            }
-        }
-    }
-
-    fun bind(item: ComparisonUiModel.ComparisonSpec) {
+    fun bind(item: ComparisonUiModel.ComparisonSpec, drawBorder: Boolean) {
         itemView.post {
             binding?.apply {
                 tfSpecValue.ellipsize = TextUtils.TruncateAt.END
@@ -59,6 +47,8 @@ class ComparisonSpecItemViewHolder(
                 divSpecCategory.alpha = if (item.isDarkMode) DIVIDER_DARK_ALPHA else DIVIDER_LIGHT_ALPHA
                 tfSpecTitle.setTextColor(item.specTextTitleColor ?: return@apply)
                 tfSpecValue.setTextColor(item.specTextColor ?: return@apply)
+                tfSpecTitle.setWeight(if (item.isSpecTextTitleBold) BOLD else REGULAR)
+                divSpecValue.isVisible = drawBorder
             }
         }
     }

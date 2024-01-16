@@ -213,7 +213,6 @@ import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmen
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageReimagineHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
-import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.util.StaggeredGridLayoutManagerWrapper
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
@@ -3522,8 +3521,10 @@ open class ShopPageHomeFragment :
             ShopUtil.getActualPositionFromIndex(adapterPosition),
             model.widgetMasterId,
             model.isFestivity,
-            model.productList[adapterPosition].isFulfillment,
-            model.productList[adapterPosition].warehouseId
+            // TODO: Make sure these lines below are correct based on Data team
+            isFulfillment = model.productList.getOrNull(adapterPosition)?.isFulfillment,
+            warehouseId = model.productList.getOrNull(adapterPosition)?.warehouseId
+            // ======== //
         )
     }
 
@@ -5668,6 +5669,6 @@ open class ShopPageHomeFragment :
         }
     }
 
-    override val parentPool: RecyclerView.RecycledViewPool
-        get() = viewBinding?.recyclerView?.recycledViewPool ?: RecyclerView.RecycledViewPool()
+    override val parentPool: RecyclerView.RecycledViewPool?
+        get() = null
 }
