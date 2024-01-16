@@ -42,10 +42,14 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_ACTION_SEE_O
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_CHANGE_COMPARISON
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_ON_IMAGE_REVIEW
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_ON_IMAGE_REVIEW_BS
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_ON_SELENGKAPNYA_REVIEW
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_SEE_MORE_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_COLUMN_INFO_BANNER_WIDGET
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_COLUMN_INFO_WIDGET
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_COMPARISON
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_REVIEW_WIDGET
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_VIDEO_BANNER_WIDGET
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_IMPRESSION_VIDEO_WIDGET
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_REVIEW_BANNER_IMPRESSION
@@ -59,6 +63,9 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CHANGE_
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_BUTTON_CHOOSE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_FAQ
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_NAVIGATION
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_ON_IMAGE_REVIEW
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_ON_IMAGE_REVIEW_BS
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_ON_SELENGKAPNYA_REVIEW
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_SEE_MORE_COMPARISON
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_VIDEO_EXPERT
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_BANNER_ONE_BY_ONE
@@ -72,6 +79,7 @@ import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESS
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_HERO_BANNER
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_NAVIGATION
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_PRICE
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_REVIEW_WIDGET
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_TEXT_DESCRIPTION
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_TOP_FEATURE
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_IMPRESSION_TRUSTMAKER
@@ -255,10 +263,10 @@ class CatalogDetailPageFragment :
         CatalogImagePreviewActivity.setTrackerDataIntent(intent, catalogId, carouselItem)
         startActivity(intent)
         CatalogReimagineDetailAnalytics.sendEventPG(
-            action = if (isFromBottomsheet) "click image on list review" else "click image on review",
+            action = if (isFromBottomsheet) EVENT_CLICK_ON_IMAGE_REVIEW_BS else EVENT_CLICK_ON_IMAGE_REVIEW,
             category = EVENT_CATEGORY_CATALOG_PAGE,
             labels = "${carouselItem.catalogName} $catalogId - feedback_id:${carouselItem.reviewId}",
-            trackerId = if (isFromBottomsheet) "26899" else "26901"
+            trackerId = if (isFromBottomsheet) TRACKER_ID_CLICK_ON_IMAGE_REVIEW_BS else TRACKER_ID_CLICK_ON_IMAGE_REVIEW
         )
     }
 
@@ -331,10 +339,10 @@ class CatalogDetailPageFragment :
             showPreviewImages(carouselItem, position, true)
         }
         CatalogReimagineDetailAnalytics.sendEventPG(
-            action = "click selengkapnya on review",
+            action = EVENT_CLICK_ON_SELENGKAPNYA_REVIEW,
             category = EVENT_CATEGORY_CATALOG_PAGE,
             labels = "${carouselItem.catalogName} $catalogId - feedback_id:${carouselItem.reviewId}",
-            trackerId = "26894"
+            trackerId = TRACKER_ID_CLICK_ON_SELENGKAPNYA_REVIEW
         )
     }
 
@@ -350,10 +358,10 @@ class CatalogDetailPageFragment :
         sendOnTimeImpression("30117") {
             CatalogReimagineDetailAnalytics.sendEventPG(
                 event = EVENT_VIEW_PG_IRIS,
-                action = "impression review widget",
+                action = EVENT_IMPRESSION_REVIEW_WIDGET,
                 category = EVENT_CATEGORY_CATALOG_PAGE,
                 labels = "$catalogId - ${buyerReviewUiModel.items.firstOrNull()?.catalogName.orEmpty()}",
-                trackerId = "30117"
+                trackerId = TRACKER_ID_IMPRESSION_REVIEW_WIDGET
             )
         }
     }

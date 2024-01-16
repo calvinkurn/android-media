@@ -9,6 +9,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.analytics.CatalogReimagineDetailAnalytics
 import com.tokopedia.catalog.analytics.CatalogTrackerConstant
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.EVENT_CLICK_CLOSE_ON_IMAGE_REVIEW
+import com.tokopedia.catalog.analytics.CatalogTrackerConstant.TRACKER_ID_CLICK_CLOSE_ON_IMAGE_REVIEW
 import com.tokopedia.catalogcommon.uimodel.BuyerReviewUiModel
 import com.tokopedia.image_gallery.ImageGallery
 import com.tokopedia.image_gallery.ImageGalleryItem
@@ -68,10 +70,10 @@ class CatalogImagePreviewActivity : BaseSimpleActivity() {
         val reviewUiModel = intent.getParcelableExtra<BuyerReviewUiModel.ItemBuyerReviewUiModel>(ARG_PARAM_TRACKER_MODEL)
         val catalogId = intent.getStringExtra(ARG_PARAM_CATALOG_ID)
         CatalogReimagineDetailAnalytics.sendEventPG(
-            action = "click close on image review",
+            action = EVENT_CLICK_CLOSE_ON_IMAGE_REVIEW,
             category = CatalogTrackerConstant.EVENT_CATEGORY_CATALOG_PAGE,
             labels = "${reviewUiModel?.catalogName} $catalogId - feedback_id:${reviewUiModel?.reviewId}",
-            trackerId = "26906"
+            trackerId = TRACKER_ID_CLICK_CLOSE_ON_IMAGE_REVIEW
         )
         super.onDestroy()
     }

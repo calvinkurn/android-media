@@ -70,6 +70,11 @@ object CatalogTrackerConstant {
     const val EVENT_IMPRESSION_VIDEO_BANNER_WIDGET = "video banner impression"
     const val EVENT_IMPRESSION_COLUMN_INFO_WIDGET = "impression specification"
     const val EVENT_IMPRESSION_COLUMN_INFO_BANNER_WIDGET = "specification banner impression"
+    const val EVENT_CLICK_CLOSE_ON_IMAGE_REVIEW = "click close on image review"
+    const val EVENT_CLICK_ON_IMAGE_REVIEW_BS = "click image on list review"
+    const val EVENT_CLICK_ON_IMAGE_REVIEW = "click image on review"
+    const val EVENT_CLICK_ON_SELENGKAPNYA_REVIEW = "click selengkapnya on review"
+    const val EVENT_IMPRESSION_REVIEW_WIDGET = "impression review widget"
 
     const val EVENT_CATEGORY_CATALOG_PAGE = "catalog page"
     const val EVENT_CATEGORY_CATALOG_PAGE_REIMAGINE = "catalog page reimagined - main page"
@@ -116,6 +121,12 @@ object CatalogTrackerConstant {
     const val TRACKER_ID_OPEN_PAGE_CATALOG_DETAIL = "48753"
     const val TRACKER_ID_OPEN_PAGE_CATALOG_PRODUCT_LIST = "48754"
     const val TRACKER_ID_OPEN_PAGE_CATALOG_COMPARISON = "48752"
+
+    const val TRACKER_ID_CLICK_CLOSE_ON_IMAGE_REVIEW = "26906"
+    const val TRACKER_ID_CLICK_ON_IMAGE_REVIEW_BS = "26899"
+    const val TRACKER_ID_CLICK_ON_IMAGE_REVIEW = "26901"
+    const val TRACKER_ID_CLICK_ON_SELENGKAPNYA_REVIEW = "26894"
+    const val TRACKER_ID_IMPRESSION_REVIEW_WIDGET = "30117"
 
     const val BUSINESS_UNITS = "Physical Goods"
     const val CURRENT_SITE = "tokopediamarketplace"
