@@ -1,12 +1,12 @@
 package com.tokopedia.play.broadcaster.shorts.testcase.summary
 
 import android.content.Intent
-import androidx.compose.ui.test.onRoot
-import androidx.compose.ui.test.printToLog
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
@@ -19,7 +19,11 @@ import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsTestComponent
 import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
-import com.tokopedia.play.broadcaster.shorts.helper.*
+import com.tokopedia.play.broadcaster.shorts.helper.PlayShortsInjector
+import com.tokopedia.play.broadcaster.shorts.helper.PlayShortsLauncher
+import com.tokopedia.play.broadcaster.shorts.helper.clickContinueOnPreparationPage
+import com.tokopedia.play.broadcaster.shorts.helper.completeMandatoryMenu
+import com.tokopedia.play.broadcaster.shorts.view.activity.PlayShortsActivity
 import com.tokopedia.test.application.compose.createAndroidIntentComposeRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -29,10 +33,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Created By : Jonathan Darwin on December 15, 2022
+ * Created By : Jonathan Darwin on January 16, 2024
  */
-@RunWith(AndroidJUnit4ClassRunner::class)
-class PlayShortsSummaryAnalyticTest {
+class PlayShortsInterspersingAnalyticTest {
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
@@ -45,6 +48,8 @@ class PlayShortsSummaryAnalyticTest {
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
     private val cassavaValidator = PlayBroadcastCassavaValidator.buildForShorts(cassavaTestRule)
+
+    private val launcher = PlayShortsLauncher(targetContext)
 
     private val mockShortsRepo: PlayShortsRepository = mockk(relaxed = true)
     private val mockBroRepo: PlayBroadcastRepository = mockk(relaxed = true)
@@ -60,10 +65,9 @@ class PlayShortsSummaryAnalyticTest {
     private val mockShortsConfig = uiModelBuilder.buildShortsConfig()
     private val mockAccountList = uiModelBuilder.buildAccountListModel(usernameBuyer = false, tncBuyer = false)
     private val mockAccountShop = mockAccountList[0]
-    private val mockProductTagSection = uiModelBuilder.buildProductTagSectionList()
+    private val mockProductTagSection = uiModelBuilder.buildProductTagSectionList(size = 1)
     private val mockEtalaseProducts = uiModelBuilder.buildEtalaseProducts()
     private val mockTags = uiModelBuilder.buildTags()
-    private val mockFirstTagText = mockTags.tags.first().tag
     private val mockException = Exception("Network Error")
 
     init {
@@ -105,65 +109,14 @@ class PlayShortsSummaryAnalyticTest {
         )
     }
 
-    private fun setupSummaryFlow(setupMock: () -> Unit) {
-        setupMock()
-
+    private fun setupSummaryFlow() {
         completeMandatoryMenu()
 
         clickContinueOnPreparationPage()
     }
 
     @Test
-    fun testAnalytic_clickBackOnSummaryPage() {
-        setupSummaryFlow {
-            coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
-        }
-
-        clickBackOnSummaryPage()
-
-        cassavaValidator.verify("click - back summary page")
-    }
-
-    @Test
-    fun testAnalytic_clickContentTag() {
-        setupSummaryFlow {
-            coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
-        }
-
-        composeActivityTestRule.clickContentTag(mockFirstTagText)
-
-        cassavaValidator.verify("click - content tag")
-    }
-
-    @Test
-    fun testAnalytic_clickUploadVideo() {
-        setupSummaryFlow {
-            coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
-        }
-
-        composeActivityTestRule.clickContentTag(mockFirstTagText)
-        clickUploadVideo()
-
-        cassavaValidator.verify("click - upload video")
-    }
-
-    @Test
-    fun testAnalytic_openScreenSummaryPage() {
-        setupSummaryFlow {
-            coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
-        }
-
-        cassavaValidator.verifyOpenScreen("/play broadcast short - summary page - ${mockAccountShop.id} - seller")
-    }
-
-    @Test
-    fun testAnalytic_clickRefreshContentTag() {
-        setupSummaryFlow {
-            coEvery { mockShortsRepo.getTagRecommendation(any()) } throws mockException
-        }
-
-        composeActivityTestRule.clickRefreshContentTag()
-
-        cassavaValidator.verify("click - refresh content tags")
+    fun testAnalytic_interspersingVideo() {
+        setupSummaryFlow()
     }
 }

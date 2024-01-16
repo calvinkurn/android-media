@@ -1,12 +1,19 @@
 package com.tokopedia.play.broadcaster.shorts.helper
 
+import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.content.test.util.click
 import com.tokopedia.content.test.util.clickItemRecyclerView
 import com.tokopedia.content.test.util.type
 import com.tokopedia.content.product.picker.R as contentproductpickerR
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.shorts.container.PlayShortsTestActivity
 import com.tokopedia.content.common.R as contentcommonR
 import com.tokopedia.dialog.R as dialogR
 import com.tokopedia.unifycomponents.R as unifycomponentsR
@@ -193,14 +200,14 @@ fun clickBackOnSummaryPage() {
     click(R.id.ic_back)
 }
 
-fun clickContentTag(idx: Int = 0) {
-    clickItemRecyclerView(R.id.rv_tags_recommendation, 0)
-}
-
 fun clickUploadVideo() {
     click(R.id.btn_upload_video)
 }
 
-fun clickRefreshContentTag() {
-    click(unifycomponentsR.id.refreshID)
+fun AndroidComposeTestRule<ActivityScenarioRule<PlayShortsTestActivity>, PlayShortsTestActivity>.clickContentTag(text: String) {
+    onNodeWithText(text).performClick()
+}
+
+fun AndroidComposeTestRule<ActivityScenarioRule<PlayShortsTestActivity>, PlayShortsTestActivity>.clickRefreshContentTag() {
+    onNode(hasContentDescription("bg local load")).performClick()
 }

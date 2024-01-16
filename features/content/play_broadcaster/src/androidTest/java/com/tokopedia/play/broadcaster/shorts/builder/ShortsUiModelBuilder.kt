@@ -29,7 +29,9 @@ class ShortsUiModelBuilder {
         tncList: List<TermsAndConditionUiModel> = listOf(),
         maxTaggedProduct: Int = 30,
         maxTitleCharacter: Int = 24,
-        shortsVideoSourceId: String = "asdf"
+        shortsVideoSourceId: String = "asdf",
+        eligibleForInterspersing: Boolean = false,
+        productCountForInterspersing: Int = 0,
     ) = PlayShortsConfigUiModel(
         shortsId = shortsId,
         shortsAllowed = shortsAllowed,
@@ -39,6 +41,8 @@ class ShortsUiModelBuilder {
         maxTitleCharacter = maxTitleCharacter,
         shortsVideoSourceId = shortsVideoSourceId,
         hasContent = hasContent,
+        eligibleForInterspersing = eligibleForInterspersing,
+        productCountForInterspersing = productCountForInterspersing,
     )
 
     fun buildAccountListModel(
