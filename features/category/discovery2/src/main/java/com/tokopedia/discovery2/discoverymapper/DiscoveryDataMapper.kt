@@ -10,6 +10,7 @@ import com.tokopedia.discovery2.Constant.ProductCardModel.PDP_VIEW_THRESHOLD
 import com.tokopedia.discovery2.Constant.ProductCardModel.SOLD_PERCENTAGE_LOWER_LIMIT
 import com.tokopedia.discovery2.Constant.ProductCardModel.SOLD_PERCENTAGE_UPPER_LIMIT
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.analytics.EMPTY_STRING
 import com.tokopedia.discovery2.data.ComponentAdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -19,7 +20,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
-import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
@@ -137,27 +137,6 @@ class DiscoveryDataMapper {
             bannerList.add(circularModel)
         }
         return bannerList
-    }
-
-    fun mapDynamicCategoryListToComponentList(
-        itemList: List<DataItem>,
-        subComponentName: String = "",
-        categoryHeaderName: String,
-        categoryHeaderPosition: Int
-    ): ArrayList<ComponentsItem> {
-        val list = ArrayList<ComponentsItem>()
-        itemList.forEachIndexed { index, it ->
-            val componentsItem = ComponentsItem()
-            componentsItem.position = index
-            componentsItem.name = subComponentName
-            val dataItem = mutableListOf<DataItem>()
-            it.title = categoryHeaderName
-            it.positionForParentItem = categoryHeaderPosition
-            dataItem.add(it)
-            componentsItem.data = dataItem
-            list.add(componentsItem)
-        }
-        return list
     }
 
     fun mapDataItemToMerchantVoucherComponent(
@@ -288,14 +267,20 @@ class DiscoveryDataMapper {
         return list
     }
 
-    fun mapFiltersToDynamicFilterModel(dataItem: DataItem?): DynamicFilterModel? {
+    fun mapFiltersToDynamicFilterModel(dataItem: DataItem?): DynamicFilterModel {
         val filter = dataItem?.filter
         filter?.forEach {
-            if (it.options.isNullOrEmpty()) {
+            if (it.options.isEmpty()) {
                 filter.remove(it)
             }
         }
-        return DynamicFilterModel(data = DataValue(filter = filter as List<Filter>, sort = dataItem.sort?.let { it as List<Sort> } ?: listOf()), defaultSortValue = "")
+        return DynamicFilterModel(
+            data = DataValue(
+                filter = filter as List<Filter>,
+                sort = dataItem.sort ?: emptyList()
+            ),
+            defaultSortValue = EMPTY_STRING
+        )
     }
 
     fun mapDataItemToProductCardModel(dataItem: DataItem, componentName: String?): ProductCardModel {
@@ -464,7 +449,7 @@ class DiscoveryDataMapper {
         if (discountedPrice.isNullOrEmpty()) {
             return price ?: ""
         }
-        return discountedPrice ?: ""
+        return discountedPrice
     }
 
     private fun getPDPViewCount(pdpView: String): String {
