@@ -403,9 +403,13 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
         val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.carousel_product_card_grid_width)
-        return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
+        return productCardModelList.getMaxHeightForGridView(
+            context = itemView.context,
+            coroutineDispatcher = Dispatchers.Default,
+            productImageWidth = productCardWidth,
+            isReimagine = true
+        )
     }
-
 
     private fun setHeaderComponent(carouselData: RecommendationCarouselData) {
         headerView?.bindData(data = carouselData.recommendationData, listener = object : RecommendationHeaderListener {
