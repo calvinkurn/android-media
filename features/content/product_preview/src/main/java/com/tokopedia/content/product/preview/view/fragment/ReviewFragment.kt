@@ -40,7 +40,7 @@ import javax.inject.Inject
 
 class ReviewFragment @Inject constructor(
     private val viewModelFactory: ProductPreviewViewModelFactory.Creator,
-    private val router: Router
+    private val router: Router,
 ) : TkpdBaseV4Fragment(), ReviewParentContentViewHolder.Listener, MenuBottomSheet.Listener, ReviewReportBottomSheet.Listener {
 
     private var _binding: FragmentReviewBinding? = null
@@ -167,7 +167,7 @@ class ReviewFragment @Inject constructor(
      * Menu Bottom Sheet Listener
      */
     override fun onOptionClicked(menu: ContentMenuItem) {
-        when (menu.type) {
+        when(menu.type) {
             ContentMenuIdentifier.Report ->
                 ReviewReportBottomSheet.getOrCreate(childFragmentManager, requireActivity().classLoader).show(childFragmentManager)
             else -> {}
@@ -181,7 +181,7 @@ class ReviewFragment @Inject constructor(
         viewModel.onAction(ProductPreviewAction.SubmitReport(report))
     }
 
-    private fun getCurrentPosition(): Int {
+    private fun getCurrentPosition() : Int {
         return (binding.rvReview.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition() ?: RecyclerView.NO_POSITION
     }
 
