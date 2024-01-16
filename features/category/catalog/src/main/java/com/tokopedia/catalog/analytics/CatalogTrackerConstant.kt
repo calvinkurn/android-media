@@ -107,8 +107,6 @@ object CatalogTrackerConstant {
     const val TRACKER_ID_IMPRESSION_VIDEO = "30119"
     const val TRACKER_ID_CLICK_SEE_MORE_COLUMN_INFO = "46983"
 
-    // old
-//    const val TRACKER_ID_IMPRESSION_COLUMN_INFO = "46981"
     const val TRACKER_ID_IMPRESSION_COLUMN_INFO = "46981"
 
     const val TRACKER_ID_CLICK_SEE_MORE_COMPARISON = "47977"
