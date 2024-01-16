@@ -802,8 +802,8 @@ open class EmoneyPdpFragment :
                     (operatorName == ISSUER_NAME_TAPCASH && balance >= MAX_TAPCASH)) {
                     tickers.add(
                         TickerData(
-                            getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_max_limit_title),
-                            getString(recharge_pdp_emoneyR.string.recharge_pdp_emoney_max_limit_desc),
+                            getString(common_digitalR.string.recharge_pdp_emoney_max_limit_title),
+                            getString(common_digitalR.string.recharge_pdp_emoney_max_limit_desc),
                             Ticker.TYPE_WARNING,
                             true
                         ))

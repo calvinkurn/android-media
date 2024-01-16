@@ -45,6 +45,4 @@
     <string name="recharge_pdp_emoney_bca_text_gen_one">Gen 1</string>
     <string name="recharge_pdp_emoney_bca_text_gen_two">Gen 2</string>
     <string name="recharge_pdp_emoney_bca_gen_one_additional_link"><![CDATA[Info lebih lanjut  <a href="https://www.tokopedia.com/help"> klik disini. </a>]]></string>
-    <string name="recharge_pdp_emoney_max_limit_title">Saldo hampir mencapai limit maksimum</string>
-    <string name="recharge_pdp_emoney_max_limit_desc">Kartu bisa menyimpan saldo hingga maks. Rp2 juta.</string>
 </resources>
