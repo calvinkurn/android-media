@@ -21,5 +21,5 @@ internal interface FeedBrowseRepository {
 
     suspend fun getWidgetRecommendation(identifier: String): WidgetRecommendationModel
 
-    suspend fun getStoryGroups(source: String, cursor: String): StoryGroupsModel
+    suspend fun getStoryGroups(source: String, cursor: String = ""): StoryGroupsModel
 }
