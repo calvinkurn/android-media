@@ -48,9 +48,7 @@
 /features/common/appdownloadmanager_install/            @tokopedia/android-core-dev
 /features/common/appdownloadmanager_noinstall/          @tokopedia/android-core-dev
 
-/features/merchant/gold_merchant/                       @tokopedia/android-miniontim-dev
 /features/merchant/gold_merchant_common/                @tokopedia/android-miniontim-dev
-/features/merchant/gold_merchant_subscribe/             @tokopedia/android-miniontim-dev
 /features/merchant/power_merchant_subscribe/            @tokopedia/android-miniontim-dev
 /features/merchant/product_detail/                      @tokopedia/android-minionstuart-dev
 /features/merchant/product_detail_common/               @tokopedia/android-minionstuart-dev
