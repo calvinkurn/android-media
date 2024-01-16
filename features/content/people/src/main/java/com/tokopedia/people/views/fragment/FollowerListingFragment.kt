@@ -1,7 +1,7 @@
 package com.tokopedia.people.views.fragment
 
 import android.annotation.SuppressLint
-import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.content.common.navigation.people.UserProfileActivityResult.EXTRA_IS_FOLLOW
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -31,6 +32,8 @@ import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.people.views.adapter.ProfileFollowersAdapter
 import com.tokopedia.people.views.adapter.listener.UserFollowListener
+import com.tokopedia.people.views.fragment.FollowerFollowingListingFragment.Companion.REQUEST_CODE_LOGIN_TO_FOLLOW
+import com.tokopedia.people.views.fragment.FollowerFollowingListingFragment.Companion.REQUEST_CODE_USER_PROFILE
 import com.tokopedia.people.views.uimodel.FollowResultUiModel
 import com.tokopedia.people.views.uimodel.PeopleUiModel
 import com.tokopedia.unifycomponents.LocalLoad
@@ -51,6 +54,7 @@ class FollowerListingFragment @Inject constructor(
     private var globalError: LocalLoad? = null
     private var isLoggedIn: Boolean = false
     private var isSwipeRefresh: Boolean? = null
+    private var userProfileClickedPosition = -1
 
     private val viewModel: FollowerFollowingViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[FollowerFollowingViewModel::class.java]
@@ -232,22 +236,14 @@ class FollowerListingFragment @Inject constructor(
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_CODE_LOGIN_TO_FOLLOW && resultCode == RESULT_OK) {
             isLoggedIn = userSession.isLoggedIn
             refreshMainUi()
-        } else if (requestCode == UserProfileFragment.REQUEST_CODE_USER_PROFILE) {
-            val position = data?.getIntExtra(UserProfileFragment.EXTRA_POSITION_OF_PROFILE, -1)
-            data?.getStringExtra(UserProfileFragment.EXTRA_FOLLOW_UNFOLLOW_STATUS)?.let {
-                if (position != null && position != -1) {
-                    if (position != -1) {
-                        if (it == UserProfileFragment.EXTRA_VALUE_IS_FOLLOWED) {
-                            mAdapter.updateFollowUnfollow(position, true)
-                        } else {
-                            mAdapter.updateFollowUnfollow(position, false)
-                        }
-                    }
-                }
-            }
+        } else if (requestCode == REQUEST_CODE_USER_PROFILE) {
+            if (data == null || userProfileClickedPosition == -1) return
+            val isFollow = data.getBooleanExtra(EXTRA_IS_FOLLOW, false)
+            mAdapter.updateFollowUnfollow(userProfileClickedPosition, isFollow)
+            userProfileClickedPosition = -1
         }
     }
 
@@ -289,16 +285,15 @@ class FollowerListingFragment @Inject constructor(
     }
 
     override fun onItemUserClicked(model: PeopleUiModel.UserUiModel, position: Int) {
+        userProfileClickedPosition = position
         userProfileTracker.clickUserFollowers(model.id, model.isMySelf)
         val intent = router.getIntent(
             requireContext(),
             model.appLink
-        ).apply {
-            putExtra(UserProfileFragment.EXTRA_POSITION_OF_PROFILE, position)
-        }
+        )
         startActivityForResult(
             intent,
-            UserProfileFragment.REQUEST_CODE_USER_PROFILE
+            REQUEST_CODE_USER_PROFILE
         )
     }
 
@@ -333,7 +328,7 @@ class FollowerListingFragment @Inject constructor(
         if (!isInternetAvailable(isFollowed)) return
 
         if (!userSession.isLoggedIn) {
-            val requestCode = FollowerFollowingListingFragment.REQUEST_CODE_LOGIN_TO_FOLLOW
+            val requestCode = REQUEST_CODE_LOGIN_TO_FOLLOW
             startActivityForResult(
                 router.getIntent(context, ApplinkConst.LOGIN),
                 requestCode

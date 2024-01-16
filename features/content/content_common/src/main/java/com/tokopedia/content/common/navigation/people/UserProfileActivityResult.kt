@@ -7,7 +7,7 @@ import android.content.Intent
  */
 object UserProfileActivityResult {
 
-    private const val EXTRA_IS_FOLLOW = "EXTRA_IS_FOLLOW"
+    const val EXTRA_IS_FOLLOW = "EXTRA_IS_FOLLOW"
     private const val EXTRA_USER_ID = "EXTRA_USER_ID"
 
     fun createResult(
