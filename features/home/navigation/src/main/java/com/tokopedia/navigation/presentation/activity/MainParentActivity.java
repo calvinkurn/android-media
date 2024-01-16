@@ -162,8 +162,6 @@ public class MainParentActivity extends BaseActivity implements
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
     public static final String FEED_IS_VISIBLE = "FEED_IS_VISIBLE";
     public static final String BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY";
-    public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
-    public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
     public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
     private static final String OFFICIAL_STORE = "Official Store";
     private static final int EXIT_DELAY_MILLIS = 2000;
@@ -940,13 +938,6 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void renderNotification(Notification notification) {
         this.notification = notification;
-        if (bottomNavigation != null) {
-            if (notification.getHaveNewFeed()) {
-                Intent intent = new Intent(BROADCAST_FEED);
-                intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
-                LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
-            }
-        }
         if (currentFragment != null)
             setBadgeNotifCounter(currentFragment);
     }
