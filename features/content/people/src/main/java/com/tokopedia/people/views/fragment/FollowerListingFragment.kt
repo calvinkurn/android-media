@@ -66,7 +66,7 @@ class FollowerListingFragment @Inject constructor(
         )
     }
 
-    private val onItemShopClickedResult = registerForActivityResult(StartActivityForResult()) { result ->
+    private val onDoFollowActionResult = registerForActivityResult(StartActivityForResult()) { result ->
         if (result.resultCode != RESULT_OK) return@registerForActivityResult
         isLoggedIn = userSession.isLoggedIn
         refreshMainUi()
@@ -324,7 +324,7 @@ class FollowerListingFragment @Inject constructor(
 
         if (!userSession.isLoggedIn) {
             val intent = router.getIntent(requireContext(), ApplinkConst.LOGIN)
-            router.route(onItemShopClickedResult, intent)
+            router.route(onDoFollowActionResult, intent)
         } else {
             callNetworkRequest.invoke()
         }
