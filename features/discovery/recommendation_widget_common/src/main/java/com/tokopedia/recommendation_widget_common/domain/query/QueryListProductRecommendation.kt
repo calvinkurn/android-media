@@ -76,6 +76,10 @@ object QueryListProductRecommendation {
         "                            title\n" +
         "                            type\n" +
         "                            url\n" +
+        "                            styles{\n" +
+        "                               key\n" +
+        "                               value\n" +
+        "                            }\n" +
         "                        }\n" +
         "                        badges {\n" +
         "                          title\n" +
