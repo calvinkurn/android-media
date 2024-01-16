@@ -107,10 +107,10 @@ class WishlistCollectionViewModel @Inject constructor(
             }
             WishlistIdlingResource.decrement()
         }, onError = {
-                _collections.value = Fail(it)
-                _collectionData.value = WishlistCollectionState.Error(Throwable())
-                WishlistIdlingResource.decrement()
-            })
+            _collections.value = Fail(it)
+            _collectionData.value = WishlistCollectionState.Error(Throwable())
+            WishlistIdlingResource.decrement()
+        })
     }
 
     fun deleteWishlistCollection(collectionId: String) {
@@ -122,8 +122,8 @@ class WishlistCollectionViewModel @Inject constructor(
                 _deleteCollectionResult.value = Fail(Throwable())
             }
         }, onError = {
-                _deleteCollectionResult.value = Fail(it)
-            })
+            _deleteCollectionResult.value = Fail(it)
+        })
     }
 
     suspend fun getRecommendationWishlistV2(
@@ -191,8 +191,8 @@ class WishlistCollectionViewModel @Inject constructor(
                 _deleteWishlistProgressResult.value = Fail(Throwable())
             }
         }, onError = {
-                _deleteWishlistProgressResult.value = Fail(it)
-            })
+            _deleteWishlistProgressResult.value = Fail(it)
+        })
     }
 
     fun getWishlistCollectionSharingData(collectionId: Long) {
@@ -205,8 +205,8 @@ class WishlistCollectionViewModel @Inject constructor(
                 _getWishlistCollectionSharingDataResult.value = Fail(Throwable())
             }
         }, onError = {
-                _getWishlistCollectionSharingDataResult.value = Fail(it)
-            })
+            _getWishlistCollectionSharingDataResult.value = Fail(it)
+        })
     }
 
     fun updateAccessWishlistCollection(updateWishlistCollectionParams: UpdateWishlistCollectionParams) {
@@ -218,8 +218,8 @@ class WishlistCollectionViewModel @Inject constructor(
                 _updateWishlistCollectionResult.value = Fail(Throwable())
             }
         }, onError = {
-                _updateWishlistCollectionResult.value = Fail(it)
-            })
+            _updateWishlistCollectionResult.value = Fail(it)
+        })
     }
 
     fun getAffiliateUserDetail() {
