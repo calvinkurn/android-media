@@ -1,6 +1,7 @@
 package com.tokopedia.content.product.preview.data.repository
 
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
+import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 
 /**
@@ -18,7 +19,7 @@ interface ProductPreviewRepository {
     ): Boolean
 
     suspend fun likeReview() //TODO: return LikeStatus, param [reviewId, LikeStatus]
-    suspend fun submitReport(): Boolean //TODO: param [reviewId, ReportUiModel]
+    suspend fun submitReport(report: ReportUiModel, reviewId: String): Boolean
 
     suspend fun remindMe(productId: String) : BottomNavUiModel.RemindMeUiModel
 

@@ -161,8 +161,8 @@ class ProductPreviewFragment @Inject constructor(
                 when (val event = it) {
                     is ProductPreviewEvent.LoginEvent<*> -> {
                         val intent = router.getIntent(requireContext(), ApplinkConst.LOGIN)
-                        if (event.data is BottomNavUiModel) {
-                            productAtcResult.launch(intent)
+                        when (event.data) {
+                            is BottomNavUiModel -> productAtcResult.launch(intent)
                         }
                     }
 

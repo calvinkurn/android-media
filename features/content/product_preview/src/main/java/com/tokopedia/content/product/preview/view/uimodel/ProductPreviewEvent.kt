@@ -24,6 +24,10 @@ sealed interface ProductPreviewEvent {
     data class NavigateEvent(
         val appLink: String
     ) : ProductPreviewEvent
+
+    data class ShowMenuSheet(
+        val status: MenuStatus,
+    ) : ProductPreviewEvent
 }
 
 
