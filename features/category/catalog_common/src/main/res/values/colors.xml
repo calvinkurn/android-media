@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="dms_static_text_color_light">#212121</color>
+    <color name="dms_static_text_color_small_light">#6D7588</color>
     <color name="dms_static_text_color_dark">#F5F6FF</color>
     <color name="dms_static_color_divider">#33AAB4C8</color>
     <color name="dms_static_dark_mode_nav">#00A958</color>

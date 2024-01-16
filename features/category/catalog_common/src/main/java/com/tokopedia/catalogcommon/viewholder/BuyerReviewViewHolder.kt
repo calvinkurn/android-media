@@ -5,6 +5,7 @@ import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.RatingBar
 import androidx.annotation.LayoutRes
+import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -203,9 +204,30 @@ class BuyerReviewViewHolder(
                     R.color.dms_static_text_color_light
                 }
             )
+            val textColorSmall = MethodChecker.getColor(
+                itemView.context,
+                if (element.darkMode) {
+                    R.color.dms_static_text_color_dark
+                } else {
+                    R.color.dms_static_text_color_small_light
+                }
+            )
             cardBrShopName.setTextColor(textColor)
             cardBrReviewerName.setTextColor(textColor)
             cardBrProductReview.setTextColor(textColor)
+            llAdditionalInfo.children.forEach {
+                (it as? Typography)?.setTextColor(textColorSmall)
+            }
+            llUserReputation.children.forEach {
+                (it as? Typography)?.setTextColor(textColorSmall)
+            }
+            cardBrSeparatorStatus.setTextColor(MethodChecker.getColor(
+                itemView.context, R.color.dms_static_divider))
+            cardBrSeparatorTotalHelp.setTextColor(MethodChecker.getColor(
+                itemView.context, R.color.dms_static_divider))
+            divShopInfo.setBackgroundColor(MethodChecker.getColor(
+                itemView.context, R.color.dms_static_color_divider))
+            cardBrShopInfoPrefix.setTextColor(textColorSmall)
         }
     }
 

@@ -30,6 +30,7 @@
                 android:orientation="horizontal">
 
                 <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/card_br_shop_info_prefix"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Beli di"
@@ -63,6 +64,7 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <com.tokopedia.unifycomponents.DividerUnify
+                android:id="@+id/divShopInfo"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="8dp"
@@ -111,6 +113,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text=" • "
+                            app:typographyType="display_3"
                             android:textColor="@color/Unify_NN950"
                             android:textSize="12sp"
                             android:visibility="gone"
@@ -133,6 +136,7 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/llUserReputation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -154,6 +158,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text=" • "
+                            app:typographyType="display_3"
                             android:textColor="@color/Unify_NN950"
                             android:textSize="12sp"
                             android:visibility="gone"
@@ -180,6 +185,7 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/llAdditionalInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -200,6 +206,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=" • "
+                    app:typographyType="display_3"
                     android:textColor="@color/Unify_NN600"
                     android:textSize="12sp"
                     android:visibility="gone"
@@ -223,6 +230,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=" • "
+                    app:typographyType="display_3"
                     android:textColor="@color/Unify_NN600"
                     android:textSize="12sp"
                     android:visibility="gone"
