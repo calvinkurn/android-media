@@ -2,12 +2,14 @@ package com.tokopedia.shareexperience.data.di
 
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.shareexperience.data.usecase.ShareExGetAffiliateEligibilityUseCaseImpl
+import com.tokopedia.shareexperience.data.usecase.ShareExGetDownloadedImageUseCaseImpl
 import com.tokopedia.shareexperience.data.usecase.ShareExGetGeneratedImageUseCaseImpl
 import com.tokopedia.shareexperience.data.usecase.ShareExGetSharePropertiesUseCaseImpl
 import com.tokopedia.shareexperience.data.usecase.shortlink.ShareExBranchLinkUseCaseImpl
 import com.tokopedia.shareexperience.data.usecase.shortlink.ShareExGetAffiliateLinkUseCaseImpl
 import com.tokopedia.shareexperience.data.usecase.shortlink.ShareExGetShortLinkUseCaseImpl
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetAffiliateEligibilityUseCase
+import com.tokopedia.shareexperience.domain.usecase.ShareExGetDownloadedImageUseCase
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetGeneratedImageUseCase
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
 import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetAffiliateLinkUseCase
@@ -53,4 +55,10 @@ abstract class ShareExUseCaseModule {
     abstract fun provideGetShortLinkUseCase(
         useCase: ShareExGetShortLinkUseCaseImpl
     ): ShareExGetShortLinkUseCase
+
+    @Binds
+    @ActivityScope
+    abstract fun provideGetDownloadedImageUseCase(
+        useCase: ShareExGetDownloadedImageUseCaseImpl
+    ): ShareExGetDownloadedImageUseCase
 }

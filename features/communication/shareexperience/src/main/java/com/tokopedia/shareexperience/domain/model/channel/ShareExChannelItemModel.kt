@@ -5,7 +5,7 @@ import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
 
 data class ShareExChannelItemModel(
-    val idEnum: ShareExChannelEnum = ShareExChannelEnum.OTHERS,
+    val channelEnum: ShareExChannelEnum = ShareExChannelEnum.OTHERS,
     val title: String = "",
     val icon: Int = 0,
     val mimeType: ShareExMimeTypeEnum,

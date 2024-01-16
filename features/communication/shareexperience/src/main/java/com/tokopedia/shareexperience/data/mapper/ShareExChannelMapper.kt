@@ -31,9 +31,9 @@ class ShareExChannelMapper @Inject constructor(
         socialMediaChannelList = socialMediaChannelList.sortedWith(
             compareBy(
                 // First Criterion to mark the non-existent greater than existed value (order asc)
-                { orderingArray.indexOf(it.idEnum.appName) == -1 },
+                { orderingArray.indexOf(it.channelEnum.appName) == -1 },
                 // Second Criterion give value of each item
-                { orderingArray.indexOf(it.idEnum.appName) },
+                { orderingArray.indexOf(it.channelEnum.appName) },
                 // Third Criterion sort by title in alphabetical order
                 { it.title }
             )
@@ -92,25 +92,25 @@ class ShareExChannelMapper @Inject constructor(
         val socialMediaChannelList = arrayListOf<ShareExChannelItemModel>()
         socialMediaChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.WHATSAPP,
+                channelEnum = ShareExChannelEnum.WHATSAPP,
                 title = resourceProvider.getWhatsappChannelTitle(),
                 icon = IconUnify.WHATSAPP,
-                mimeType = ShareExMimeTypeEnum.IMAGE,
+                mimeType = ShareExMimeTypeEnum.TEXT,
                 packageName = "com.whatsapp"
             )
         )
         socialMediaChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.FB_FEED,
+                channelEnum = ShareExChannelEnum.FB_FEED,
                 title = resourceProvider.getFacebookFeedChannelTitle(),
                 icon = IconUnify.FACEBOOK,
-                mimeType = ShareExMimeTypeEnum.TEXT,
+                mimeType = ShareExMimeTypeEnum.ALL,
                 packageName = "com.facebook.katana"
             )
         )
         socialMediaChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.FB_STORY,
+                channelEnum = ShareExChannelEnum.FB_STORY,
                 title = resourceProvider.getFacebookStoryChannelTitle(),
                 icon = IconUnify.FACEBOOK_STORY,
                 mimeType = ShareExMimeTypeEnum.IMAGE,
@@ -120,7 +120,7 @@ class ShareExChannelMapper @Inject constructor(
         )
         socialMediaChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.IG_FEED,
+                channelEnum = ShareExChannelEnum.IG_FEED,
                 title = resourceProvider.getInstagramFeedChannelTitle(),
                 icon = IconUnify.INSTAGRAM,
                 mimeType = ShareExMimeTypeEnum.IMAGE,
@@ -130,7 +130,7 @@ class ShareExChannelMapper @Inject constructor(
         )
         socialMediaChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.IG_STORY,
+                channelEnum = ShareExChannelEnum.IG_STORY,
                 title = resourceProvider.getInstagramStoryChannelTitle(),
                 icon = IconUnify.INSTAGRAM_STORY,
                 mimeType = ShareExMimeTypeEnum.IMAGE,
@@ -140,17 +140,16 @@ class ShareExChannelMapper @Inject constructor(
         )
         socialMediaChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.IG_DM,
+                channelEnum = ShareExChannelEnum.IG_DM,
                 title = resourceProvider.getInstagramDirectMessageChannelTitle(),
                 icon = IconUnify.INSTAGRAM_DM,
                 mimeType = ShareExMimeTypeEnum.TEXT,
-                packageName = "com.instagram.android",
-                actionIntent = "com.instagram.share.ADD_TO_FEED"
+                packageName = "com.instagram.android"
             )
         )
         socialMediaChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.LINE,
+                channelEnum = ShareExChannelEnum.LINE,
                 title = resourceProvider.getLineChannelTitle(),
                 icon = IconUnify.LINE,
                 mimeType = ShareExMimeTypeEnum.TEXT,
@@ -159,7 +158,7 @@ class ShareExChannelMapper @Inject constructor(
         )
         socialMediaChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.X_TWITTER,
+                channelEnum = ShareExChannelEnum.X_TWITTER,
                 title = resourceProvider.getXTwitterChannelTitle(),
                 icon = IconUnify.TWITTER,
                 mimeType = ShareExMimeTypeEnum.IMAGE,
@@ -168,7 +167,7 @@ class ShareExChannelMapper @Inject constructor(
         )
         socialMediaChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.TELEGRAM,
+                channelEnum = ShareExChannelEnum.TELEGRAM,
                 title = resourceProvider.getTelegramChannelTitle(),
                 icon = IconUnify.TELEGRAM,
                 mimeType = ShareExMimeTypeEnum.IMAGE,
@@ -183,7 +182,7 @@ class ShareExChannelMapper @Inject constructor(
         val generalChannelList = arrayListOf<ShareExChannelItemModel>()
         generalChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.COPY_LINK,
+                channelEnum = ShareExChannelEnum.COPY_LINK,
                 title = resourceProvider.getCopyLinkChannelTitle(),
                 icon = IconUnify.LINK,
                 mimeType = ShareExMimeTypeEnum.NOTHING
@@ -191,7 +190,7 @@ class ShareExChannelMapper @Inject constructor(
         )
         generalChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.SMS,
+                channelEnum = ShareExChannelEnum.SMS,
                 title = resourceProvider.getSMSChannelTitle(),
                 icon = IconUnify.CHAT,
                 mimeType = ShareExMimeTypeEnum.TEXT
@@ -199,7 +198,7 @@ class ShareExChannelMapper @Inject constructor(
         )
         generalChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.EMAIL,
+                channelEnum = ShareExChannelEnum.EMAIL,
                 title = resourceProvider.getEmailChannelTitle(),
                 icon = IconUnify.MESSAGE,
                 mimeType = ShareExMimeTypeEnum.IMAGE
@@ -207,7 +206,7 @@ class ShareExChannelMapper @Inject constructor(
         )
         generalChannelList.add(
             ShareExChannelItemModel(
-                idEnum = ShareExChannelEnum.OTHERS,
+                channelEnum = ShareExChannelEnum.OTHERS,
                 title = resourceProvider.getOthersChannelTitle(),
                 icon = IconUnify.MENU_KEBAB_HORIZONTAL,
                 mimeType = ShareExMimeTypeEnum.NOTHING
@@ -226,7 +225,7 @@ class ShareExChannelMapper @Inject constructor(
         actionIntent: String
     ): Intent {
         return Intent(actionIntent).apply {
-            setType(type.nameType)
+            setType(type.textType)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             setPackage(packageName)
         }

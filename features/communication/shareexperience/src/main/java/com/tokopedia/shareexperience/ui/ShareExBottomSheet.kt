@@ -1,7 +1,10 @@
 package com.tokopedia.shareexperience.ui
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shareexperience.data.di.ShareExComponent
 import com.tokopedia.shareexperience.databinding.ShareexperienceBottomSheetBinding
+import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.ui.adapter.ShareExBottomSheetAdapter
 import com.tokopedia.shareexperience.ui.adapter.decoration.ShareExBottomSheetSpacingItemDecoration
@@ -28,12 +32,12 @@ import com.tokopedia.shareexperience.ui.listener.ShareExChannelListener
 import com.tokopedia.shareexperience.ui.listener.ShareExChipsListener
 import com.tokopedia.shareexperience.ui.listener.ShareExErrorListener
 import com.tokopedia.shareexperience.ui.listener.ShareExImageGeneratorListener
-import com.tokopedia.shareexperience.ui.model.chip.ShareExChipUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class ShareExBottomSheet :
@@ -110,16 +114,13 @@ class ShareExBottomSheet :
     }
 
     private fun initObservers() {
+        lifecycleScope.launchWhenStarted {
+            observeShortLinkUiState()
+        }
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     observeBottomSheetUiState()
-                }
-                launch {
-                    observeShortLinkUiState()
-                }
-                launch {
-                    observeNavigationUiState()
                 }
             }
         }
@@ -144,24 +145,28 @@ class ShareExBottomSheet :
 
     private suspend fun observeShortLinkUiState() {
         viewModel.shortLinkUiState.collect {
-            Log.d("TESTT", "$it")
             viewBinding?.shareexLayoutLoading?.showWithCondition(it.isLoading)
             if (!it.isLoading) {
                 when {
-                    it.showToaster && !it.error?.message.isNullOrBlank() -> showToaster(
-                        it.error?.message.toString(),
-                        Toaster.TYPE_ERROR,
-                        Toaster.LENGTH_LONG,
-                        actionText = "Salin Link"
-                    ) {
+                    (it.showToaster && !it.error?.message.isNullOrBlank()) -> {
                         showToaster(
-                            "Link berhasil disalin!",
-                            Toaster.TYPE_NORMAL,
-                            Toaster.LENGTH_SHORT
-                        )
+                            it.error?.message.toString(),
+                            Toaster.TYPE_ERROR,
+                            Toaster.LENGTH_LONG,
+                            actionText = "Salin Link"
+                        ) {
+                            showToaster(
+                                "Link berhasil disalin!",
+                                Toaster.TYPE_NORMAL,
+                                Toaster.LENGTH_SHORT
+                            )
+                        }
                     }
-                    else -> {
-                        //TODO: do action for each app
+                    (it.intent != null) -> {
+                        if (it.intent.type == ShareExMimeTypeEnum.IMAGE.textType) {
+                            copyTextToClipboard(it.message)
+                        }
+                        navigateWithIntent(it.intent)
                     }
                 }
             }
@@ -196,17 +201,6 @@ class ShareExBottomSheet :
         }
     }
 
-    private suspend fun observeNavigationUiState() {
-        viewModel.navigationUiState.collectLatest {
-            if (it.appLink.isNotBlank()) {
-                context?.let { ctx ->
-                    val intent = RouteManager.getIntent(ctx, it.appLink)
-                    startActivity(intent)
-                }
-            }
-        }
-    }
-
     override fun onChipClicked(position: Int, text: String) {
         viewModel.processAction(ShareExAction.UpdateShareBody(position, text))
     }
@@ -216,16 +210,41 @@ class ShareExBottomSheet :
     }
 
     override fun onAffiliateRegistrationCardClicked(appLink: String) {
-        viewModel.processAction(ShareExAction.NavigateToPage(appLink))
+        navigateToPage(appLink)
     }
 
     override fun onChannelClicked(element: ShareExChannelItemModel) {
-        viewModel.processAction(ShareExAction.GenerateLink(element.idEnum))
+        viewModel.processAction(ShareExAction.GenerateLink(element))
     }
 
     override fun onErrorActionClicked() {
         if (activity is ShareExLoadingActivity) {
             (activity as? ShareExLoadingActivity)?.refreshPage()
+        }
+    }
+
+    private fun navigateToPage(appLink: String) {
+        context?.let { ctx ->
+            val intent = RouteManager.getIntent(ctx, appLink)
+            startActivity(intent)
+        }
+    }
+
+    private fun navigateWithIntent(intent: Intent) {
+        try {
+            startActivity(intent)
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+        }
+    }
+
+    fun copyTextToClipboard(text: String) {
+        try {
+            val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
+            val clip = ClipData.newPlainText("Share Link", text)
+            clipboard?.setPrimaryClip(clip)
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
         }
     }
 }
