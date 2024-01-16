@@ -12,7 +12,8 @@ data class StoriesUiState(
     val storiesMainData: StoriesUiModel,
     val productSheet: ProductBottomSheetUiState,
     val timerStatus: TimerStatusInfo,
-    val reportState: StoryReportStatusInfo
+    val reportState: StoryReportStatusInfo,
+    val canShowGroup: Boolean
 ) {
     companion object {
         val Empty
@@ -20,7 +21,8 @@ data class StoriesUiState(
                 storiesMainData = StoriesUiModel(),
                 productSheet = ProductBottomSheetUiState.Empty,
                 timerStatus = TimerStatusInfo.Empty,
-                reportState = StoryReportStatusInfo.Empty
+                reportState = StoryReportStatusInfo.Empty,
+                canShowGroup = true
             )
     }
 }
@@ -32,14 +34,14 @@ enum class BottomSheetType {
 data class ProductBottomSheetUiState(
     val products: List<ContentTaggedProductUiModel>,
     val campaign: StoriesCampaignUiModel,
-    val resultState: ResultState,
+    val resultState: ResultState
 ) {
     companion object {
         val Empty
             get() = ProductBottomSheetUiState(
                 products = emptyList(),
                 campaign = StoriesCampaignUiModel.Unknown,
-                resultState = ResultState.Loading,
+                resultState = ResultState.Loading
             )
     }
 }
@@ -53,7 +55,7 @@ val BottomSheetStatusDefault: Map<BottomSheetType, Boolean>
         BottomSheetType.Kebab to false,
         BottomSheetType.GVBS to false,
         BottomSheetType.Report to false,
-        BottomSheetType.SubmitReport to false,
+        BottomSheetType.SubmitReport to false
     )
 
 data class TimerStatusInfo(

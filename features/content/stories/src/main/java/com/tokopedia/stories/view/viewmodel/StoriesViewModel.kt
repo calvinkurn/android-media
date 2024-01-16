@@ -156,7 +156,8 @@ class StoriesViewModel @AssistedInject constructor(
                 storiesMainData = storiesMainData,
                 productSheet = product,
                 timerStatus = timerState,
-                reportState = reportState
+                reportState = reportState,
+                canShowGroup = args.source != StoriesSource.BROWSE_WIDGET.value
             )
         }
 
