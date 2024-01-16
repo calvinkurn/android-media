@@ -39,6 +39,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created by nathan on 2/15/18.
@@ -71,7 +72,7 @@ class ShopProductListResultActivity :
         window?.decorView?.setBackgroundColor(
             MethodChecker.getColor(
                 this,
-                com.tokopedia.unifyprinciples.R.color.Unify_Background
+                unifyprinciplesR.color.Unify_Background
             )
         )
         shopSharingInShowCaseUiModel = intent.getParcelableExtra(EXTRA_FOR_SHOP_SHARING)
@@ -227,6 +228,9 @@ class ShopProductListResultActivity :
                 iconBuilder.addIcon(IconList.ID_NAV_GLOBAL) {}
             }
             setIcon(iconBuilder)
+            setupSearchbar(
+                hints = listOf(HintData(placeholder = keyword.orEmpty()))
+            )
             newNavigationToolbar = this
         }
     }
@@ -254,13 +258,9 @@ class ShopProductListResultActivity :
     }
 
     override fun updateUIByShopName(shopName: String) {
-        val searchBarText = getString(
-            R.string.shop_product_search_hint_2,
-            MethodChecker.fromHtml(shopName)
-        )
         newNavigationToolbar?.apply {
             setupSearchbar(
-                hints = listOf(HintData(placeholder = searchBarText)),
+                hints = listOf(HintData(placeholder = keyword.orEmpty())),
                 searchbarClickCallback = {
                     if (null != shopPageTracking) shopPageTracking?.clickSearchBox(SCREEN_SHOP_PAGE)
                     if (null != shopInfo) {
@@ -272,14 +272,9 @@ class ShopProductListResultActivity :
     }
 
     override fun updateUIByEtalaseName(etalaseName: String?) {
-        val searchBarText = getString(
-            R.string.shop_product_search_hint_3,
-            MethodChecker.fromHtml(etalaseName)
-        )
-
         newNavigationToolbar?.apply {
             setupSearchbar(
-                hints = listOf(HintData(placeholder = searchBarText)),
+                hints = listOf(HintData(placeholder = keyword.orEmpty())),
                 searchbarClickCallback = {
                     if (null != shopPageTracking) shopPageTracking?.clickSearchBox(SCREEN_SHOP_PAGE)
                     if (null != shopInfo) {

@@ -44,6 +44,13 @@ class ProductSingleVariantViewHolder(
 
     init {
         containerAdapter = AtcVariantOptionAdapter(this)
+        binding.rvSingleVariant.adapter = containerAdapter
+        binding.rvSingleVariant.itemAnimator = null
+        binding.rvSingleVariant.layoutManager = layoutManager
+        itemView.setOnClickListener {
+            // pass dummy object since we need to redirect to variant bottomsheet
+            variantListener.onVariantClicked(emptyVariantData)
+        }
     }
 
     fun scrollToPosition(position: Int) {
@@ -58,15 +65,7 @@ class ProductSingleVariantViewHolder(
         } else {
             element.variantLevelOne?.let {
                 binding.txtVariantIdentifierTitle.text = element.title
-                binding.rvSingleVariant.adapter = containerAdapter
-                binding.rvSingleVariant.itemAnimator = null
-                binding.rvSingleVariant.layoutManager = layoutManager
                 containerAdapter?.setData(it.variantOptions)
-
-                itemView.setOnClickListener {
-                    // pass dummy object since we need to redirect to variant bottomsheet
-                    variantListener.onVariantClicked(emptyVariantData)
-                }
                 hideError()
             }
         }

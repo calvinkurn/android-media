@@ -120,7 +120,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
             position = lastVisibleItemPositionSpan1
         }
         var visitablesForPerf = visitables
-        if (!intialList) {
+        if (!intialList && position >= 0) {
             visitablesForPerf = visitablesForPerf.take(
                 position
             )

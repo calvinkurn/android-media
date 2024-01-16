@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -19,7 +20,9 @@ data class Price(
     @SerializedName("slashPriceFmt")
     val slashPriceFmt: String = "",
     @SerializedName("discPercentage")
-    val discPercentage: String = ""
+    val discPercentage: String = "",
+    @SerializedName("isPriceMasked")
+    val isPriceMasked: Boolean = false
 ) {
 
     fun updatePrice(variantChild: VariantChild?) = copy(
@@ -32,7 +35,8 @@ data class Price(
         },
         discPercentage = variantChild?.discPercentage.ifNullOrBlank {
             variantChild?.campaign?.discountedPercentage?.percentFormatted().orEmpty()
-        }
+        },
+        isPriceMasked = variantChild?.isPriceMasked.orFalse()
     )
 
     fun updatePriceFmt() = copy(

@@ -32,7 +32,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.fcm_common)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
-    implementation projectOrAar(rootProject.ext.libraries.tkpddesign)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
@@ -66,6 +65,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.miscDependencies.influxInteractor
 
     implementation rootProject.ext.firebase.messaging
     

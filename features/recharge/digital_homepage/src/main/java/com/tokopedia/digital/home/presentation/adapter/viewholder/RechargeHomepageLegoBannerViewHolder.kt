@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeLegoBannerBinding
-import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.decoration.GridSpacingItemDecoration
 import com.tokopedia.home_component.decoration.clearDecorations

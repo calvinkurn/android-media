@@ -76,6 +76,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.telemetry)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.webview)
@@ -92,6 +93,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.promoUsage)
     implementation projectOrAar(rootProject.ext.features.productServiceWidget)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
+    implementation projectOrAar(rootProject.ext.features.targetedticker)
 
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.miscDependencies.coroutineTest

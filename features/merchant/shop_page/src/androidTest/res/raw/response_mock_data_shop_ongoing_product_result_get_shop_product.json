@@ -56,7 +56,8 @@
           "position": "",
           "type": "#31353b",
           "title": "Tersedia"
-        }]
+        }],
+        "warehouse_id" : "99999"
       }, {
         "product_id": "1261037615",
         "name": "c4rT R4m y44 n0n var 5",
@@ -110,7 +111,8 @@
           "position": "",
           "type": "#31353b",
           "title": "Tersedia"
-        }]
+        }],
+        "warehouse_id" : "99999"
       }],
       "totalData": 2
     }

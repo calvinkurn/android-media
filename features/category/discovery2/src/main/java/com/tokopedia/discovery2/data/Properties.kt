@@ -127,7 +127,10 @@ data class Properties(
     val header: Header? = null,
 
     @SerializedName("warehouse_tco")
-    val warehouseTco: String? = null
+    val warehouseTco: String? = null,
+
+    @SerializedName("auto_refresh")
+    val shouldAutoRefresh: Boolean = false
 ) {
     data class Header(
         @SerializedName("applink")

@@ -41,6 +41,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
@@ -92,7 +93,6 @@ import com.tokopedia.sellerhome.view.bottomsheet.SellerPersonaBottomSheet
 import com.tokopedia.sellerhome.view.customview.NotificationDotBadge
 import com.tokopedia.sellerhome.view.dialog.NewSellerDialog
 import com.tokopedia.sellerhome.view.helper.NewSellerJourneyHelper
-import com.tokopedia.sellerhome.view.model.SellerHomeDataUiModel
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhome.view.model.ShopStateInfoUiModel
 import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
@@ -125,6 +125,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.FeedbackLoopOptionUiMod
 import com.tokopedia.sellerhomecommon.presentation.model.LastUpdatedDataInterface
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneFinishMissionUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneItemRewardUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneMissionUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
@@ -136,6 +137,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RewardDetailUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RichListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ShopStateUiModel
@@ -151,6 +153,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.WidgetDismissalResultUi
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.CalendarWidgetDateFilterBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.FeedbackLoopOptionsBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.PostMoreOptionBottomSheet
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.RewardDetailBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.UnificationTabBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
@@ -170,7 +173,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageProcessingUtil
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -180,9 +182,9 @@ import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
-import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import com.tokopedia.globalerror.R as globalerrorR
 import com.tokopedia.sellerhomecommon.R as sellerhomecommonR
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By @ilhamsuaib on 2020-01-14
@@ -192,23 +194,15 @@ import com.tokopedia.sellerhomecommon.R as sellerhomecommonR
 class SellerHomeFragment :
     BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(),
     WidgetListener,
-    CoroutineScope,
     SellerHomeFragmentListener {
 
     companion object {
         @JvmStatic
-        fun newInstance(data: SellerHomeDataUiModel? = null) = SellerHomeFragment().apply {
-            data?.let {
-                arguments = Bundle().apply {
-                    putParcelable(KEY_SELLER_HOME_DATA, it)
-                }
-            }
-        }
+        fun newInstance() = SellerHomeFragment()
 
         private val SEARCH_MENU_ID = R.id.sah_search_action_menu
         private val NOTIFICATION_MENU_ID = R.id.sah_notification_action_menu
 
-        private const val KEY_SELLER_HOME_DATA = "seller_home_data"
         private const val REQ_CODE_MILESTONE_WIDGET = 8043
         private const val NOTIFICATION_BADGE_DELAY = 2000L
         private const val TAG_TOOLTIP = "seller_home_tooltip"
@@ -298,6 +292,7 @@ class SellerHomeFragment :
     private var shopImageFilePath: String = ""
     private var binding: FragmentSahBinding? = null
     private var isNewSellerState: Boolean = false
+    private var isFromPersona = false
 
     private val recyclerView: RecyclerView?
         get() = try {
@@ -305,9 +300,6 @@ class SellerHomeFragment :
         } catch (ex: Exception) {
             null
         }
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main
 
     override fun getScreenName(): String = TrackingConstant.SCREEN_NAME_SELLER_HOME
 
@@ -362,9 +354,8 @@ class SellerHomeFragment :
         observeShopShareTracker()
         observeWidgetDismissalStatus()
         observeShopStateInfo()
-        showSellerHomeToaster()
 
-        context?.let { UpdateShopActiveWorker.execute(it) }
+        context?.let { UpdateShopActiveWorker.execute(it.applicationContext) }
     }
 
     override fun onPause() {
@@ -617,7 +608,6 @@ class SellerHomeFragment :
     }
 
     override fun onMilestoneMissionActionClickedListener(
-        element: MilestoneWidgetUiModel,
         mission: BaseMilestoneMissionUiModel,
         missionPosition: Int
     ) {
@@ -648,6 +638,30 @@ class SellerHomeFragment :
         }
 
         SellerHomeTracking.sendMilestoneMissionCtaClickEvent(mission, missionPosition)
+    }
+
+    override fun sendMilestoneRewardImpressionEvent(
+        reward: MilestoneItemRewardUiModel,
+        position: Int
+    ) {
+        SellerHomeTracking.sendMilestoneRewardImpressionEvent(reward, position)
+    }
+
+    override fun sendMilestoneRewardActionClickedListener(
+        reward: MilestoneItemRewardUiModel,
+        position: Int
+    ) {
+        activity?.let {
+            if (reward.buttonApplink.isBlank()) {
+                reward.rewardDetailUiModel?.let { uiModel ->
+                    showRewardDetailBottomSheet(uiModel)
+                }
+            } else {
+                val intent = RouteManager.getIntent(it, reward.buttonApplink)
+                it.startActivityForResult(intent, REQ_CODE_MILESTONE_WIDGET)
+            }
+        }
+        SellerHomeTracking.sendMilestoneRewardClickEvent(reward, position)
     }
 
     override fun sendPostListImpressionEvent(element: PostListWidgetUiModel) {
@@ -989,6 +1003,11 @@ class SellerHomeFragment :
                 }
             }
         }, NOTIFICATION_BADGE_DELAY)
+    }
+
+    fun refreshPersona() {
+        isFromPersona = true
+        reloadPage(TRIGGER_ERROR_RELOAD)
     }
 
     private fun setContentBackground() {
@@ -1532,15 +1551,13 @@ class SellerHomeFragment :
 
     private fun showPersonaBottomSheet(personaStatus: Int) {
         activity?.let {
-            val data = getSellerHomeDataFromArguments()
-            val btmSheet = SellerPersonaBottomSheet.getInstance(childFragmentManager)
-            val shouldShowBottomSheet =
-                !it.isFinishing && !btmSheet.isVisible && sharedPref.shouldShowPersonaHomePopup(
+            val shouldShowBottomSheet = sharedPref.shouldShowPersonaHomePopup(
                     userSession.userId
-                ) && data?.shouldShowPersonaBtmSheet.orFalse()
+                ) && isFromPersona
 
             if (shouldShowBottomSheet) {
                 runCatching {
+                    val btmSheet = SellerPersonaBottomSheet.getInstance()
                     btmSheet.setOnDismissListener {
                         sharedPref.markPersonaHomePopupShown(userSession.userId)
                         if (personaStatus == STATUS_PERSONA_INACTIVE) {
@@ -1550,22 +1567,24 @@ class SellerHomeFragment :
                     btmSheet.show(childFragmentManager)
                 }
             }
+
+            isFromPersona = false
         }
     }
 
     private fun showPersonaToaster() {
-        view?.run {
-            post {
-                val message = context.getString(R.string.sah_activate_persona_entry_point_info)
-                val cta = context.getString(R.string.saldo_btn_oke)
-                Toaster.build(
-                    rootView,
-                    message,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    cta
-                ).show()
-            }
+        val view = activity?.window?.decorView ?: return
+        view.post {
+            val message = view.context.getString(R.string.sah_activate_persona_entry_point_info)
+            val cta = view.context.getString(R.string.saldo_btn_oke)
+            Toaster.toasterCustomBottomHeight = view.context.dpToPx(88).toInt()
+            Toaster.build(
+                view,
+                message,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                cta
+            ).show()
         }
     }
 
@@ -2033,7 +2052,8 @@ class SellerHomeFragment :
                         subTitleTextColor = unifyprinciplesR.color.Unify_NN950_68
                     }
                     return@map it.copy(
-                        titleTextColorId = titleTextColor, subTitleTextColorId = subTitleTextColor
+                        titleTextColorId = titleTextColor,
+                        subTitleTextColorId = subTitleTextColor
                     )
                 }
                 return@map it
@@ -2247,7 +2267,7 @@ class SellerHomeFragment :
 
     private fun <D : BaseDataUiModel> handleShopShareMilestoneWidget(widget: BaseWidgetUiModel<D>) {
         if (widget is MilestoneWidgetUiModel) {
-            val shareMission = widget.data?.milestoneMissions?.firstOrNull {
+            val shareMission = widget.data?.milestoneMissions?.filterIsInstance<BaseMilestoneMissionUiModel>()?.firstOrNull {
                 return@firstOrNull it.missionButton.urlType == BaseMilestoneMissionUiModel.UrlType.SHARE
             }
             val isShareMissionAvailable = !shareMission?.missionCompletionStatus.orFalse()
@@ -2923,33 +2943,9 @@ class SellerHomeFragment :
         }
     }
 
-    @SuppressLint("DeprecatedMethod")
-    private fun showSellerHomeToaster() {
-        binding?.run {
-            recyclerView.post {
-                val data = getSellerHomeDataFromArguments()
-                val message = data?.toasterMessage
-                if (!message.isNullOrBlank()) {
-                    Toaster.build(
-                        this.root,
-                        message,
-                        Toaster.LENGTH_LONG,
-                        Toaster.TYPE_NORMAL,
-                        data.toasterCta
-                    ).show()
-                }
-            }
-        }
-    }
-
-    private fun getSellerHomeDataFromArguments(): SellerHomeDataUiModel? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getParcelable(
-                KEY_SELLER_HOME_DATA,
-                SellerHomeDataUiModel::class.java
-            )
-        } else {
-            arguments?.getParcelable(KEY_SELLER_HOME_DATA)
+    private fun showRewardDetailBottomSheet(uiModel: RewardDetailUiModel) {
+        context?.let {
+            RewardDetailBottomSheet.createInstance(it, uiModel).show(childFragmentManager)
         }
     }
 

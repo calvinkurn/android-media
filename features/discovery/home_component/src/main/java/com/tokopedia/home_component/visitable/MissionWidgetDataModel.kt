@@ -20,6 +20,7 @@ data class MissionWidgetDataModel(
     val isTopads: Boolean = false,
     val isCarousel: Boolean = false,
     val shopId: String = "",
+    val campaignCode: String = "",
     val animateOnPress: Int = CardUnify2.ANIMATE_OVERLAY,
     val isCache: Boolean,
 )

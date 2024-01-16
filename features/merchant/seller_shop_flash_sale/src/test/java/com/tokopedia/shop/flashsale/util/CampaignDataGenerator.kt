@@ -1,5 +1,7 @@
 package com.tokopedia.shop.flashsale.util
 
+import com.tokopedia.campaign.data.response.RollenceGradualRollout
+import com.tokopedia.campaign.usecase.RolloutFeatureVariantsUseCase
 import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction.Submit
 import com.tokopedia.shop.flashsale.domain.entity.CampaignAction.Update
@@ -103,6 +105,18 @@ object CampaignDataGenerator {
         isOosImprovement = campaignData.isOosImprovement
     )
 
+    fun generateRollenceGradualRolloutParam(
+        rev: Int,
+        client_id: Int,
+        shopId: String,
+        iris_session_id: String
+    ): RolloutFeatureVariantsUseCase.Param = RolloutFeatureVariantsUseCase.Param(
+        rev = rev,
+        client_id = client_id,
+        id = shopId,
+        iris_session_id = iris_session_id
+    )
+
     fun generateCampaignCreationResult(
         campaignId: Long = generateCampaignUiModel().campaignId,
         isSuccess: Boolean = true,
@@ -118,6 +132,8 @@ object CampaignDataGenerator {
         errorTitle = errorTitle,
         errorMessage = errorMessage
     )
+
+    fun generateRollenceGradualRolloutResult(): RollenceGradualRollout = RollenceGradualRollout()
 
     fun generateCampaignDetailMetaData(
         status: CampaignStatus = CampaignStatus.READY,

@@ -83,7 +83,7 @@
     <string name="share_address_confirmation_description"><![CDATA[Kamu akan membagikan alamat ke %s. <b>Untuk keamanan datamu, Pastikan nama akun Tokopedia teman kamu sudah benar</b>, ya.]]></string>
     <string name="desc_your_friend">temanmu</string>
     <string name="share_address_confirmation_tnc_content">Dengan klik Bagikan Sekarang, saya setuju untuk membagikan alamat sesuai dengan </string>
-    <string name="share_address_confirmation_tnc_link">Kebijakan Privasi</string>
+    <string name="share_address_confirmation_tnc_link">Pemberitahuan Privasi</string>
     <string name="select_all">Pilih Semua</string>
     <string name="btn_save">Simpan</string>
     <string name="btn_save_with_total">Simpan (%1$s)</string>

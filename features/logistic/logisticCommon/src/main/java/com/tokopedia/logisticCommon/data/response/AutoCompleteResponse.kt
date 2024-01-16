@@ -31,7 +31,27 @@ data class Prediction(
     @SerializedName("terms")
     var terms: List<Term> = listOf(),
     @SerializedName("types")
-    var types: List<String> = listOf()
+    var types: List<String> = listOf(),
+    @SerializedName("district_id")
+    var districtId: Long = 0L,
+    @SerializedName("city_id")
+    var cityId: Long = 0L,
+    @SerializedName("province_id")
+    var provinceId: Long = 0L,
+    @SerializedName("district_name")
+    var districtName: String = "",
+    @SerializedName("city_name")
+    var cityName: String = "",
+    @SerializedName("province_name")
+    var provinceName: String = "",
+    @SerializedName("postal_code")
+    var postalCode: String = "",
+    @SerializedName("latitude")
+    var latitude: String = "0.0",
+    @SerializedName("longitude")
+    var longitude: String = "0.0",
+    @SerializedName("title")
+    var title: String = ""
 )
 
 data class MatchedSubstring(

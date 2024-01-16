@@ -13,6 +13,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.content.common.report_content.model.ContentMenuIdentifier
+import com.tokopedia.content.common.report_content.model.ContentMenuItem
 import com.tokopedia.stories.view.fragment.StoriesDetailFragment
 import com.tokopedia.stories.view.showDialog
 import com.tokopedia.stories.view.viewmodel.StoriesViewModel
@@ -31,7 +33,7 @@ import com.tokopedia.stories.R as storiesR
  */
 class StoriesThreeDotsBottomSheet @Inject constructor() : BottomSheetUnify() {
 
-    private var mListener : Listener? = null
+    private var mListener: Listener? = null
 
     private val viewModel by activityViewModels<StoriesViewModel> { (requireParentFragment() as StoriesDetailFragment).viewModelProvider }
     override fun onCreateView(
@@ -43,6 +45,7 @@ class StoriesThreeDotsBottomSheet @Inject constructor() : BottomSheetUnify() {
             setContent {
                 val state by viewModel.storiesState.collectAsState(initial = StoriesUiState.Empty)
                 val ctx = LocalContext.current
+
                 LaunchedEffect(Unit) {
                     lifecycleScope.launchWhenStarted {
                         viewModel.storiesEvent.collectLatest { event ->
@@ -65,21 +68,19 @@ class StoriesThreeDotsBottomSheet @Inject constructor() : BottomSheetUnify() {
                         }
                     }
                 }
-                val selectedGroup = state.storiesMainData.groupItems.getOrNull(state.storiesMainData.selectedGroupPosition) ?: return@setContent
-                val currentItem = selectedGroup.detail.detailItems.getOrNull(selectedGroup.detail.selectedDetailPosition)?.menus ?: return@setContent
-                ThreeDotsPage(menuList = currentItem, onDeleteStoryClicked = { _ ->
-                    mListener?.onRemoveStory(this@StoriesThreeDotsBottomSheet)
-                    viewModel.submitAction(StoriesUiAction.ShowDeleteDialog)
-                })
+
+                val selectedGroup =
+                    state.storiesMainData.groupItems.getOrNull(state.storiesMainData.selectedGroupPosition)
+                        ?: return@setContent
+                val currentItem =
+                    selectedGroup.detail.detailItems.getOrNull(selectedGroup.detail.selectedDetailPosition)?.menus
+                        ?: return@setContent
+
+                ThreeDotsPage(menuList = currentItem, onMenuClicked = ::onMenuClicked)
             }
         }
         setChild(composeView)
         return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    fun show(fg: FragmentManager) {
-        if (isAdded) return
-        super.show(fg, TAG)
     }
 
     override fun dismiss() {
@@ -102,7 +103,28 @@ class StoriesThreeDotsBottomSheet @Inject constructor() : BottomSheetUnify() {
         mListener = null
     }
 
+    fun show(fg: FragmentManager) {
+        if (isAdded) return
+        super.show(fg, TAG)
+    }
+
+    private fun onMenuClicked(item: ContentMenuItem) {
+        when (item.type) {
+            ContentMenuIdentifier.Delete -> {
+                mListener?.onRemoveStory(this@StoriesThreeDotsBottomSheet)
+                viewModel.submitAction(StoriesUiAction.ShowDeleteDialog)
+            }
+
+            ContentMenuIdentifier.Report -> {
+                mListener?.onReportStoryClicked(this)
+            }
+
+            else -> {}
+        }
+    }
+
     interface Listener {
+        fun onReportStoryClicked(view: StoriesThreeDotsBottomSheet)
         fun onRemoveStory(view: StoriesThreeDotsBottomSheet)
     }
 

@@ -1,0 +1,62 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+android {
+    namespace 'com.tokopedia.darkmodeconfig'
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeVersion
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+        }
+    }
+}
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    implementation rootProject.ext.composeDependencies.composeActivity
+    implementation rootProject.ext.composeDependencies.composeConstraint
+    implementation rootProject.ext.composeDependencies.composePreview
+    implementation rootProject.ext.composeDependencies.composeRuntime
+    implementation rootProject.ext.composeDependencies.composeUi
+
+    implementation rootProject.ext.supportLibDependencies.preferenceV7
+
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.header
+    implementation rootProject.ext.unifyDependencies.nestComponents
+
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.imageAssets)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+}
+
+project.ext {
+    artifactId = 'dark_mode_config'
+    groupId = 'com.tokopedia.darkmodeconfig'
+    versionName = "0.0.1"
+    artifactName ="dark_mode_config"
+}
+
+apply from: '../../../sonar_config.gradle'

@@ -6,6 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/headerUnify"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_title="@string/shop_info_shop_profile" />
+    
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="0dp"
@@ -13,7 +23,7 @@
         app:layout_constraintBottom_toTopOf="@+id/container_report"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/headerUnify">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -145,6 +155,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/headerUnify" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

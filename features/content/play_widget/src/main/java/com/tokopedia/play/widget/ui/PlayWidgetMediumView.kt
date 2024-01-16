@@ -136,7 +136,7 @@ class PlayWidgetMediumView : FrameLayout, IPlayWidgetView {
         }
 
         override fun onToggleReminderChannelClicked(item: PlayWidgetChannelUiModel, reminderType: PlayWidgetReminderType, position: Int) {
-            mAnalyticListener?.onClickToggleReminderChannel(this@PlayWidgetMediumView, item, position, reminderType.reminded)
+            mAnalyticListener?.onClickToggleReminderChannel(this@PlayWidgetMediumView, item, position, reminderType.reminded, mModel.config)
             mWidgetListener?.onToggleReminderClicked(this@PlayWidgetMediumView, item.channelId, reminderType, position)
         }
 

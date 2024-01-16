@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.databinding.ItemRecomVerticalProductcardBinding
-import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTracking
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -68,11 +67,9 @@ class RecommendationVerticalProductCardViewHolder(
             )
         }
 
-        RecommendationCarouselTracking.sendEventItemImpression(
+        element.widgetTracking?.sendEventItemImpression(
             trackingQueue = trackingQueue,
-            widget = element.recomWidget,
             item = element.recomItem,
-            trackingModel = element.trackingModel
         )
     }
 
@@ -92,10 +89,8 @@ class RecommendationVerticalProductCardViewHolder(
             )
         }
 
-        RecommendationCarouselTracking.sendEventItemClick(
-            widget = element.recomWidget,
+        element.widgetTracking?.sendEventItemClick(
             item = element.recomItem,
-            trackingModel = element.trackingModel
         )
 
         RouteManager.route(binding.productCardView.context, productRecommendation.appUrl)

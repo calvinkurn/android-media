@@ -83,6 +83,9 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.coach_mark
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation projectOrAar(rootProject.ext.libraries.network)

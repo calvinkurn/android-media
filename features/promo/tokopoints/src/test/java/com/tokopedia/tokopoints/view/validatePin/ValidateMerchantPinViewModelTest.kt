@@ -3,11 +3,12 @@ package com.tokopedia.tokopoints.view.validatePin
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate
+import com.tokopedia.tokopoints.view.model.CouponSwipeUpdateOuter
 import com.tokopedia.tokopoints.view.model.ResultStatusEntity
-import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.ErrorMessage
 import com.tokopedia.tokopoints.view.util.Resources
 import com.tokopedia.tokopoints.view.util.Success
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -17,7 +18,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
-import org.junit.Assert.*
 import org.junit.Rule
 import kotlin.reflect.KClass
 
@@ -41,23 +41,20 @@ class ValidateMerchantPinViewModelTest {
 
     @Test
     fun `swipeMyCoupon success case`() {
-        val observer = mockk<Observer<Resources<CouponSwipeUpdate>>>()
-        val data = mockk<CouponSwipeUpdate>{
-            every {  resultStatus } returns mockk{
-                every {  code } returns CommonConstant.CouponRedemptionCode.SUCCESS
-             }
-        }
-        coEvery{ useCase.execute("","")} returns mockk{
-            every { swipeCoupon } returns data
-        }
-        viewModel.swipeCouponLiveData.observeForever(observer)
-        viewModel.swipeMyCoupon("","")
+        val code = "bcdd62ef"
+        val pin = "185991"
+        val response = CouponSwipeUpdateOuter(
+            swipeCoupon = CouponSwipeUpdate(
+                resultStatus = ResultStatusEntity(code = 200)
+            )
+        )
 
-        verify(ordering = Ordering.ORDERED) {
-            observer.onChanged(ofType(Success::class as KClass<Success<CouponSwipeUpdate>>))
-        }
-        val result = viewModel.swipeCouponLiveData.value as Success
-        assert(result.data == data)
+        coEvery { useCase.execute(code, pin) } returns response
+
+        viewModel.swipeMyCoupon(code, pin)
+
+        viewModel.swipeCouponLiveData
+            .verifyValueEquals(Success(response.swipeCoupon))
     }
 
     @Test
@@ -80,5 +77,37 @@ class ValidateMerchantPinViewModelTest {
         verify(ordering = Ordering.ORDERED) {
             observer.onChanged(ofType(ErrorMessage::class as KClass<ErrorMessage<CouponSwipeUpdate>>))
         }
+    }
+
+    @Test
+    fun `given status code NOT 200 and error message list empty when swipeMyCoupon should NOT update swipeCouponLiveData`(){
+        val statusCode = 404
+        val messageList = emptyList<String>()
+        val statusResponse = ResultStatusEntity(code = statusCode, messages = messageList)
+
+        coEvery{ useCase.execute("","")} returns CouponSwipeUpdateOuter(
+            swipeCoupon = CouponSwipeUpdate(resultStatus = statusResponse)
+        )
+
+        viewModel.swipeMyCoupon("","")
+
+        viewModel.swipeCouponLiveData
+            .verifyValueEquals(null)
+    }
+
+    @Test
+    fun `given status code NOT 200 and error message null when swipeMyCoupon should NOT update swipeCouponLiveData`(){
+        val statusCode = 404
+        val messageList = null
+        val statusResponse = ResultStatusEntity(code = statusCode, messages = messageList)
+
+        coEvery{ useCase.execute("","")} returns CouponSwipeUpdateOuter(
+            swipeCoupon = CouponSwipeUpdate(resultStatus = statusResponse)
+        )
+
+        viewModel.swipeMyCoupon("","")
+
+        viewModel.swipeCouponLiveData
+            .verifyValueEquals(null)
     }
 }

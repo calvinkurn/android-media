@@ -14,6 +14,7 @@ object DetailRobot {
         onView(withId(R.id.rv_carousel_product)).perform(
             smoothScrollTo(position)
         )
+        Thread.sleep(1000)
     }
 
     fun clickLoadMoreAt(position: Int) {
@@ -57,6 +58,13 @@ object DetailRobot {
                 position,
                 R.id.notification_container
             )
+        ).perform(click())
+    }
+
+    fun clickToggleHistory(position: Int) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.notifcenter_tv_toggle_history)
         ).perform(click())
     }
 }

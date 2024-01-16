@@ -61,7 +61,8 @@
         "item_variant": ".*",
         "item_category": ".*"
       }],
-      "eventLabel": ".*"
+      "eventLabel": ".*",
+      "hits_time": ".*"
     },
     {
       "eventCategory": "recommendation page with product id",

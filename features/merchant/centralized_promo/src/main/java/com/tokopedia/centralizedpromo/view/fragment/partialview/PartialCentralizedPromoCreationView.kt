@@ -2,8 +2,13 @@ package com.tokopedia.centralizedpromo.view.fragment.partialview
 
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.centralizedpromo.R
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.ID_FILTER_INCREASE_AVERAGE_ORDER_VALUE
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
+import com.tokopedia.centralizedpromo.databinding.CentralizedPromoPartialPromoCreationBinding
+import com.tokopedia.centralizedpromo.databinding.FragmentCentralizedPromoBinding
 import com.tokopedia.centralizedpromo.view.LoadingType
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFactory
 import com.tokopedia.centralizedpromo.view.fragment.CoachMarkListener
@@ -12,14 +17,13 @@ import com.tokopedia.centralizedpromo.view.model.PromoCreationListUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.centralizedpromo.R
-import com.tokopedia.centralizedpromo.databinding.CentralizedPromoPartialPromoCreationBinding
-import com.tokopedia.centralizedpromo.databinding.FragmentCentralizedPromoBinding
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class PartialCentralizedPromoCreationView(
     private val refreshButtonClickListener: RefreshPromotionClickListener,
@@ -27,7 +31,8 @@ class PartialCentralizedPromoCreationView(
     adapterTypeFactory: CentralizedPromoAdapterTypeFactory,
     coachMarkListener: CoachMarkListener,
     showCoachMark: Boolean,
-    val onSelectedFilter: ((FilterPromoUiModel) -> Unit)? = null
+    val onSelectedFilter: ((FilterPromoUiModel) -> Unit)? = null,
+    private val onAovFilterImpressed: (Boolean) -> Unit
 ) : BasePartialListView<PromoCreationListUiModel, CentralizedPromoAdapterTypeFactory, PromoCreationUiModel>(
     binding,
     adapterTypeFactory,
@@ -97,7 +102,6 @@ class PartialCentralizedPromoCreationView(
                 centralizedFilterPromoCreationShimmering.layoutCentralizedPromoCreationShimmering.show()
             }
         }
-
     }
 
     override fun onRecyclerViewResultDispatched() = with(promoCreationBinding) {
@@ -115,7 +119,7 @@ class PartialCentralizedPromoCreationView(
 
     override fun getCoachMarkItem() = with(promoCreationBinding) {
         promoCreationBinding.tvCentralizedPromoCreationTitle.setBackgroundColor(
-            ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+            ContextCompat.getColor(root.context, unifyprinciplesR.color.Unify_NN0)
         )
         CoachMarkItem(
             promoCreationBinding.tvCentralizedPromoCreationTitle,
@@ -130,16 +134,16 @@ class PartialCentralizedPromoCreationView(
         centralizedPromoCreationShimmering.layoutCentralizedPromoCreationShimmering.hide()
     }
 
-    override fun bindSuccessData(data: PromoCreationListUiModel)  = with(promoCreationBinding){
-        if (data.filterItems.isNotEmpty()){
+    override fun bindSuccessData(data: PromoCreationListUiModel) = with(promoCreationBinding) {
+        if (data.filterItems.isNotEmpty()) {
             centralizedFilterPromoCreationShimmering.layoutCentralizedPromoCreationShimmering.hide()
             filter.show()
             centralizedPromoCreationError.layoutCentralizedPromoCreationError.hide()
-            setupFilter(data.filterItems)
+            setupFilter(data)
         }
     }
 
-    private fun showError(cause:Throwable){
+    private fun showError(cause: Throwable) {
         with(promoCreationBinding) {
             val errorMessage =
                 if (cause is MessageErrorException && !cause.message.isNullOrBlank()) {
@@ -162,7 +166,6 @@ class PartialCentralizedPromoCreationView(
     }
 
     private fun setupPromoRecommendation() = with(promoCreationBinding) {
-
         rvCentralizedPromoCreation.apply {
             layoutManager = GridLayoutManager(context, SPAN_COUNT)
             adapter =
@@ -171,9 +174,9 @@ class PartialCentralizedPromoCreationView(
         }
     }
 
-    private fun setupFilter(dataFilter: List<FilterPromoUiModel>) = with(promoCreationBinding) {
-
-        if (dataFilter.isNotEmpty()){
+    private fun setupFilter(data: PromoCreationListUiModel) = with(promoCreationBinding) {
+        val dataFilter = data.filterItems
+        if (dataFilter.isNotEmpty()) {
             val filterItems = dataFilter.map {
                 SortFilterItem(it.name) {
                     selectedTab = it
@@ -181,15 +184,36 @@ class PartialCentralizedPromoCreationView(
                     adapter.clearAllElements()
                 }
             }
+            val selectedTabIndex: Int
             if (selectedTab == null) {
                 filterItems[Int.ZERO].type = ChipsUnify.TYPE_SELECTED
                 selectedTab = dataFilter[Int.ZERO]
+                selectedTabIndex = Int.ZERO
                 CentralizedPromoTracking.sendClickFilter(selectedTab?.id.toIntOrZero().toString())
             } else {
-                filterItems[dataFilter.indexOf(selectedTab)].type = ChipsUnify.TYPE_SELECTED
+                selectedTabIndex = dataFilter.indexOf(selectedTab)
+                filterItems[selectedTabIndex].type = ChipsUnify.TYPE_SELECTED
             }
 
             filter.addItem(ArrayList(filterItems))
+
+            setupAovTracker(data, selectedTabIndex)
+        }
+    }
+
+    private fun setupAovTracker(data: PromoCreationListUiModel, selectedTabIndex: Int) {
+        try {
+            val aovIndex = data.filterItems.indexOfFirst { it.id == ID_FILTER_INCREASE_AVERAGE_ORDER_VALUE }
+            if (aovIndex != RecyclerView.NO_POSITION) {
+                promoCreationBinding.filter.sortFilterItems.getChildAt(aovIndex)?.addOnImpressionListener(
+                    data.aovFilterImpressHolder
+                ) {
+                    val isSelected = aovIndex == selectedTabIndex
+                    onAovFilterImpressed.invoke(isSelected)
+                }
+            }
+        } catch (ignored: Exception) {
+            // no-op
         }
     }
 

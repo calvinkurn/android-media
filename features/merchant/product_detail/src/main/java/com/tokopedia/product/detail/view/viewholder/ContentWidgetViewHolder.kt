@@ -18,7 +18,11 @@ class ContentWidgetViewHolder(
         val LAYOUT = R.layout.item_pdp_play_widget
     }
     init {
-        playWidgetViewHolder.coordinator.setAnalyticModel(PlayWidgetPDPAnalyticModel())
+        playWidgetViewHolder.coordinator.setAnalyticModel(
+            PlayWidgetPDPAnalyticModel(
+                listener.getProductInfo()?.parentProductId.orEmpty()
+            )
+        )
     }
 
     override fun bind(element: ContentWidgetDataModel) {

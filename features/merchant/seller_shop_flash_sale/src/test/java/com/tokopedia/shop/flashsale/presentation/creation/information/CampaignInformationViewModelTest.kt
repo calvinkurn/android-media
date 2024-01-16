@@ -1281,6 +1281,13 @@ class CampaignInformationViewModelTest {
     }
 
     @Test
+    fun `When get OOS(Out Of Stock) State, should return correct values`() {
+        val oosState = true
+        viewModel.setOosState(oosState = oosState)
+        assertEquals(oosState, viewModel.getOosState())
+    }
+
+    @Test
     fun `When get selected color, should return correct values`() {
         val color = Gradient("#FFFFFF", "#E0E0E0", isSelected = true)
         viewModel.setSelectedColor(color)

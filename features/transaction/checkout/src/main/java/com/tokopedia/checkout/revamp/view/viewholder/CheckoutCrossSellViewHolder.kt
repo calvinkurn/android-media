@@ -54,6 +54,13 @@ class CheckoutCrossSellViewHolder(
         binding.rvCheckoutCrossSell.isVisible = false
         binding.itemCheckoutCrossSellItem.dividerCheckoutCrossSellItem.isVisible = false
         binding.itemCheckoutCrossSellItem.root.isVisible = true
+        if (!crossSellItem.hasSentImpressionAnalytics) {
+            listener.onPaymentLevelAddOnsImpressed(
+                crossSellItem.getCategoryName(),
+                crossSellItem.getCrossSellProductId()
+            )
+            crossSellItem.hasSentImpressionAnalytics = true
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")

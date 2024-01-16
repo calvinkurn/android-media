@@ -3,6 +3,7 @@ package com.tokopedia.cachemanager.db.dao
 import androidx.room.Dao
 import androidx.room.Query
 import com.tokopedia.cachemanager.db.model.PersistentCacheDbModel
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PersistentCacheDatabaseDao : CacheDatabaseDao<PersistentCacheDbModel> {
@@ -12,6 +13,9 @@ interface PersistentCacheDatabaseDao : CacheDatabaseDao<PersistentCacheDbModel> 
 
     @Query("SELECT * FROM ${PersistentCacheDbModel.PERSISTENT_CACHE_TABLE_NAME} WHERE key LIKE :key LIMIT 1")
     override fun getCacheModel(key: String): PersistentCacheDbModel?
+
+    @Query("SELECT * FROM ${PersistentCacheDbModel.PERSISTENT_CACHE_TABLE_NAME} WHERE key LIKE :key LIMIT 1")
+    override fun getCacheModelFlow(key: String): Flow<PersistentCacheDbModel?>
 
     @Query("DELETE FROM ${PersistentCacheDbModel.PERSISTENT_CACHE_TABLE_NAME} WHERE key = :key")
     override fun deleteByKey(key: String)

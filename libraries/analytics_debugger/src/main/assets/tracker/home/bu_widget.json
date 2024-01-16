@@ -14,7 +14,8 @@
       "event": "view_item",
       "eventAction": "impression on bu widget",
       "sessionIris": ".*",
-      "eventLabel": ".*"
+      "eventLabel": ".*",
+      "hits_time": ".*"
     },
     {
       "promotions": [{

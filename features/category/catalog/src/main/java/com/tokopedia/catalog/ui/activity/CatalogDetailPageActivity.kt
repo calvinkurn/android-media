@@ -13,10 +13,10 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.ui.fragment.CatalogDetailPageFragment
 import com.tokopedia.catalog.ui.fragment.CatalogLandingPageFragment
-import com.tokopedia.core.analytics.AppScreen
 import com.tokopedia.oldcatalog.ui.activity.CatalogDetailPageActivity as OldCatalogDetailPageActivity
 
-class CatalogDetailPageActivity :  BaseSimpleActivity(),
+class CatalogDetailPageActivity :
+    BaseSimpleActivity(),
     CatalogLandingPageFragment.CatalogLandingPageFragmentListener {
 
     private var catalogId: String = ""
@@ -24,6 +24,7 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
     companion object {
         private const val CATALOG_DETAIL_TAG = "CATALOG_DETAIL_TAG"
         private const val EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID"
+
         @JvmStatic
         fun createIntent(context: Context, catalogId: String?): Intent {
             val intent = Intent(context, CatalogDetailPageActivity::class.java)
@@ -40,17 +41,15 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
         return CATALOG_DETAIL_TAG
     }
 
-    override fun getScreenName(): String? {
-        return "${AppScreen.SCREEN_CATALOG} - $catalogId"
-    }
+    override fun getScreenName() = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_catalog_detail_page)
         setStatusBarToTransparent(this)
-        catalogId = if (intent.hasExtra(EXTRA_CATALOG_ID))
+        catalogId = if (intent.hasExtra(EXTRA_CATALOG_ID)) {
             intent.getStringExtra(EXTRA_CATALOG_ID) ?: ""
-        else {
+        } else {
             val pathSegments = Uri.parse(intent.data?.path ?: "").pathSegments
             pathSegments.firstOrNull()?.split("-")?.lastOrNull()?.trim() ?: ""
         }
@@ -70,14 +69,15 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
     }
 
     private fun handleVersionRoute(savedInstanceState: Bundle?) {
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             prepareLoader()
         }
     }
 
     private fun loadV4Layout() {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.catalog_detail_parent_view,
+            .replace(
+                R.id.catalog_detail_parent_view,
                 CatalogDetailPageFragment.newInstance(catalogId),
                 CatalogDetailPageFragment.CATALOG_DETAIL_PAGE_FRAGMENT_TAG
             )
@@ -88,7 +88,8 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
         val fragment = CatalogLandingPageFragment.newInstance(catalogId)
         fragment.setListener(this)
         supportFragmentManager.beginTransaction()
-            .replace(R.id.catalog_detail_parent_view,
+            .replace(
+                R.id.catalog_detail_parent_view,
                 fragment,
                 CatalogLandingPageFragment.CATALOG_LOADER_PAGE_FRAGMENT_TAG
             )
@@ -99,7 +100,7 @@ class CatalogDetailPageActivity :  BaseSimpleActivity(),
         val window = activity.window
         window.decorView.systemUiVisibility =
             (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN) or
-                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.statusBarColor = Color.TRANSPARENT
     }

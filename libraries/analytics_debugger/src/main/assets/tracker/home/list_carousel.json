@@ -31,7 +31,8 @@
         "item_variant": ".*"
       }],
       "eventLabel": ".*",
-      "channelId": ".*"
+      "channelId": ".*",
+      "hits_time": ".*"
     },
     {
       "businessUnit": "home & browse",

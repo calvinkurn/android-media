@@ -5,6 +5,7 @@ package com.tokopedia.editor.ui.widget
 import android.content.Context
 import android.graphics.Color
 import android.text.Editable
+import android.text.InputType
 import android.text.SpannableString
 import android.text.TextWatcher
 import android.text.style.LineBackgroundSpan
@@ -36,6 +37,7 @@ class EditorEditTextView @JvmOverloads constructor(
     private var isSpanImplemented = false
 
     init {
+        inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
         setPadding(padding)
         setShadowLayer(padding.toFloat(), 0f, 0f, 0)
         setLineSpacing(LINE_HEIGHT_EXTRA, LINE_HEIGHT_MULTIPLIER)

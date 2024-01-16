@@ -17,8 +17,10 @@ import com.tokopedia.tokochat.common.util.CommonUtil
 import com.tokopedia.tokochat.common.view.chatroom.uimodel.TokoChatOrderProgressUiModel
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.databinding.TokochatItemOrderStatusShimmerBinding
-import com.tokopedia.tokochat_common.databinding.TokochatPartialOrderStatusWidgetBinding
+import com.tokopedia.tokochat_common.databinding.TokochatPartialLogisticOrderStatusWidgetBinding
+import com.tokopedia.tokochat_common.databinding.TokochatPartialTokofoodOrderStatusWidgetBinding
 import com.tokopedia.tokochat_common.databinding.TokochatTransactionWidgetBinding
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 class TokoChatTransactionOrderWidget : LinearLayout {
 
@@ -29,8 +31,8 @@ class TokoChatTransactionOrderWidget : LinearLayout {
 
     private var binding: TokochatTransactionWidgetBinding? = null
 
-    private var partialOrderStatusWidgetBinding: TokochatPartialOrderStatusWidgetBinding? = null
-
+    private var partialTokoFoodOrderStatusWidgetBinding: TokochatPartialTokofoodOrderStatusWidgetBinding? = null
+    private var partialLogisticOrderStatusWidgetBinding: TokochatPartialLogisticOrderStatusWidgetBinding? = null
     private var shimmerOrderStatusWidgetBinding: TokochatItemOrderStatusShimmerBinding? = null
 
     constructor(context: Context) : super(context)
@@ -43,7 +45,8 @@ class TokoChatTransactionOrderWidget : LinearLayout {
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        partialOrderStatusWidgetBinding = null
+        partialTokoFoodOrderStatusWidgetBinding = null
+        partialLogisticOrderStatusWidgetBinding = null
         shimmerOrderStatusWidgetBinding = null
         binding = null
         listener = null
@@ -59,18 +62,15 @@ class TokoChatTransactionOrderWidget : LinearLayout {
 
     fun updateTransactionWidget(orderProgressUiModel: TokoChatOrderProgressUiModel) {
         if (tokoChatOrderProgressUiModel != orderProgressUiModel) {
-            updateOrderStatus(orderProgressUiModel.status)
-            updateOrderName(orderProgressUiModel.name)
-            updateEstimateLabel(orderProgressUiModel.labelTitle)
-            updateEstimateValue(orderProgressUiModel.labelValue)
-            updateOrderThumbnail(orderProgressUiModel.imageUrl)
             tokoChatOrderProgressUiModel = orderProgressUiModel
+            renderUpdate()
         }
     }
 
     fun showShimmeringWidget() {
         binding?.tokochatLocalloadErrorTransactionWidget?.hide()
-        partialOrderStatusWidgetBinding?.root?.hide()
+        partialTokoFoodOrderStatusWidgetBinding?.root?.hide()
+        partialLogisticOrderStatusWidgetBinding?.root?.hide()
         setupShimmeringOrderStatusBinding()
     }
 
@@ -80,13 +80,22 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         this.tokoChatOrderProgressUiModel = orderProgressUiModel
         binding?.tokochatLocalloadErrorTransactionWidget?.hide()
         shimmerOrderStatusWidgetBinding?.root?.hide()
-        partialOrderStatusWidgetBinding?.root?.show()
-        setupPartialOrderStatusBinding()
+        orderProgressUiModel?.handleOrderProgress(
+            onTokoFood = {
+                partialTokoFoodOrderStatusWidgetBinding?.root?.show()
+                setupPartialTokoFoodOrderStatusBinding()
+            },
+            onLogistic = {
+                partialLogisticOrderStatusWidgetBinding?.root?.show()
+                setupPartialLogisticOrderStatusBinding()
+            }
+        )
         render()
     }
 
     fun showLocalLoadTransaction() {
-        partialOrderStatusWidgetBinding?.root?.hide()
+        partialTokoFoodOrderStatusWidgetBinding?.root?.hide()
+        partialLogisticOrderStatusWidgetBinding?.root?.hide()
         shimmerOrderStatusWidgetBinding?.root?.hide()
         binding?.tokochatLocalloadErrorTransactionWidget?.show()
         setupLocalLoadTransaction()
@@ -98,42 +107,7 @@ class TokoChatTransactionOrderWidget : LinearLayout {
 
     private fun setBringToFrontAndBgColor() {
         bringToFront()
-        setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
-    }
-
-    private fun updateOrderStatus(newOrderStatus: String) {
-        if (newOrderStatus != tokoChatOrderProgressUiModel?.status) {
-            partialOrderStatusWidgetBinding?.tokochatTpOrderStatus?.text = newOrderStatus
-        }
-    }
-
-    private fun updateOrderName(newOrderName: String) {
-        if (newOrderName != tokoChatOrderProgressUiModel?.name) {
-            partialOrderStatusWidgetBinding?.tokochatTpOrderStatus?.text =
-                MethodChecker.fromHtml(newOrderName)
-        }
-    }
-
-    private fun updateEstimateLabel(estimateLabelTitle: String) {
-        if (estimateLabelTitle != tokoChatOrderProgressUiModel?.labelTitle) {
-            partialOrderStatusWidgetBinding?.tokochatTpEstimateLabel?.text =
-                estimateLabelTitle
-        }
-    }
-
-    private fun updateEstimateValue(estimateLabelValue: String) {
-        if (estimateLabelValue != tokoChatOrderProgressUiModel?.labelValue) {
-            partialOrderStatusWidgetBinding?.tokochatTpEstimateValue?.text =
-                estimateLabelValue
-        }
-    }
-
-    private fun updateOrderThumbnail(orderImageUrl: String) {
-        if (orderImageUrl != tokoChatOrderProgressUiModel?.imageUrl) {
-            partialOrderStatusWidgetBinding?.tokochatIvOrderThumbnail?.loadImage(
-                tokoChatOrderProgressUiModel?.orderId
-            )
-        }
+        setBackgroundColor(MethodChecker.getColor(context, unifyprinciplesR.color.Unify_Background))
     }
 
     private fun setupLocalLoadTransaction() {
@@ -159,6 +133,15 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         saveCurrentState()
     }
 
+    private fun renderUpdate() {
+        renderOrderStatus()
+        renderProductName()
+        renderImageThumbnail()
+        renderEstimation()
+        renderAdditionalInfo()
+        renderButton()
+    }
+
     fun assignListener(listener: Listener?) {
         this.listener = listener
     }
@@ -167,15 +150,28 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         binding = TokochatTransactionWidgetBinding.inflate(LayoutInflater.from(context), this)
     }
 
-    private fun setupPartialOrderStatusBinding() {
+    private fun setupPartialTokoFoodOrderStatusBinding() {
         binding?.run {
-            val partialOrderStatusVs =
-                root.findViewById<View>(R.id.tokochat_partial_order_status_viewstub)
-            if (partialOrderStatusVs is ViewStub) {
-                partialOrderStatusVs.inflate()
-                bindPartialOrderStatusWidget(root)
+            val partialTokoFoodOrderStatusVs =
+                root.findViewById<View>(R.id.tokochat_partial_tokofood_order_status_viewstub)
+            if (partialTokoFoodOrderStatusVs is ViewStub) {
+                partialTokoFoodOrderStatusVs.inflate()
+                bindPartialTokoFoodOrderStatusWidget(root)
             } else {
-                partialOrderStatusVs.show()
+                partialTokoFoodOrderStatusVs.show()
+            }
+        }
+    }
+
+    private fun setupPartialLogisticOrderStatusBinding() {
+        binding?.run {
+            val partialLogisticOrderStatusVs =
+                root.findViewById<View>(R.id.tokochat_partial_logistic_order_status_viewstub)
+            if (partialLogisticOrderStatusVs is ViewStub) {
+                partialLogisticOrderStatusVs.inflate()
+                bindPartialLogisticOrderStatusWidget(root)
+            } else {
+                partialLogisticOrderStatusVs.show()
             }
         }
     }
@@ -193,17 +189,27 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         }
     }
 
-    private fun bindPartialOrderStatusWidget(root: View) {
-        if (partialOrderStatusWidgetBinding == null) {
-            partialOrderStatusWidgetBinding =
-                TokochatPartialOrderStatusWidgetBinding.bind(root.findViewById(R.id.tokochat_partial_order_status_viewstub))
+    private fun bindPartialTokoFoodOrderStatusWidget(root: View) {
+        if (partialTokoFoodOrderStatusWidgetBinding == null) {
+            partialTokoFoodOrderStatusWidgetBinding =
+                TokochatPartialTokofoodOrderStatusWidgetBinding
+                    .bind(root.findViewById(R.id.tokochat_partial_tokofood_order_status))
+        }
+    }
+
+    private fun bindPartialLogisticOrderStatusWidget(root: View) {
+        if (partialLogisticOrderStatusWidgetBinding == null) {
+            partialLogisticOrderStatusWidgetBinding =
+                TokochatPartialLogisticOrderStatusWidgetBinding
+                    .bind(root.findViewById(R.id.tokochat_partial_logistic_order_status))
         }
     }
 
     private fun bindShimmerOrderStatusWidget(root: View) {
         if (shimmerOrderStatusWidgetBinding == null) {
             shimmerOrderStatusWidgetBinding =
-                TokochatItemOrderStatusShimmerBinding.bind(root.findViewById(R.id.tokochat_shimmer_order_status_viewstub))
+                TokochatItemOrderStatusShimmerBinding
+                    .bind(root.findViewById(R.id.tokochat_shimmer_order_status_viewstub))
         }
     }
 
@@ -215,11 +221,33 @@ class TokoChatTransactionOrderWidget : LinearLayout {
     }
 
     private fun showContainerDescription() {
-        partialOrderStatusWidgetBinding?.tokochatClOrderNameContainer?.show()
+        tokoChatOrderProgressUiModel?.handleOrderProgress(
+            onTokoFood = {
+                partialTokoFoodOrderStatusWidgetBinding
+                    ?.tokochatClOrderNameContainer
+                    ?.show()
+            },
+            onLogistic = {
+                partialLogisticOrderStatusWidgetBinding
+                    ?.tokochatLogisticClOrderNameContainer
+                    ?.show()
+            }
+        )
     }
 
     private fun hideContainerDescription() {
-        partialOrderStatusWidgetBinding?.tokochatClOrderNameContainer?.hide()
+        tokoChatOrderProgressUiModel?.handleOrderProgress(
+            onTokoFood = {
+                partialTokoFoodOrderStatusWidgetBinding
+                    ?.tokochatClOrderNameContainer
+                    ?.hide()
+            },
+            onLogistic = {
+                partialLogisticOrderStatusWidgetBinding
+                    ?.tokochatLogisticClOrderNameContainer
+                    ?.hide()
+            }
+        )
     }
 
     private fun loadPreviousState() {
@@ -252,14 +280,24 @@ class TokoChatTransactionOrderWidget : LinearLayout {
             renderImageThumbnail()
             renderProductName()
             renderEstimation()
+            renderAdditionalInfo()
+            renderButton()
         } else {
             hideOrderNameContainer()
         }
     }
 
     private fun renderOrderStatus() {
-        partialOrderStatusWidgetBinding?.tokochatTpOrderStatus?.text =
-            tokoChatOrderProgressUiModel?.status
+        tokoChatOrderProgressUiModel?.handleOrderProgress(
+            onTokoFood = {
+                partialTokoFoodOrderStatusWidgetBinding?.tokochatTpOrderStatus?.text =
+                    tokoChatOrderProgressUiModel?.status
+            },
+            onLogistic = {
+                partialLogisticOrderStatusWidgetBinding?.tokochatLogisticTpOrderStatus?.text =
+                    tokoChatOrderProgressUiModel?.status
+            }
+        )
     }
 
     private fun renderLayoutVisibility() {
@@ -273,7 +311,14 @@ class TokoChatTransactionOrderWidget : LinearLayout {
             State.COLOR_SEEN
         }
         val color = MethodChecker.getColor(context, colorRes)
-        partialOrderStatusWidgetBinding?.root?.setBackgroundColor(color)
+        tokoChatOrderProgressUiModel?.handleOrderProgress(
+            onTokoFood = {
+                partialTokoFoodOrderStatusWidgetBinding?.root?.setBackgroundColor(color)
+            },
+            onLogistic = {
+                partialLogisticOrderStatusWidgetBinding?.root?.setBackgroundColor(color)
+            }
+        )
     }
 
     private fun renderHasBeenSeen() {
@@ -297,42 +342,147 @@ class TokoChatTransactionOrderWidget : LinearLayout {
                 isClose = { changeState(State.OPEN) }
             )
         }
-        partialOrderStatusWidgetBinding?.tokochatTpOrderVisibility?.setOnClickListener(clickListener)
-        partialOrderStatusWidgetBinding?.tokochatTpOrderStatus?.setOnClickListener(clickListener)
-        partialOrderStatusWidgetBinding?.tokochatIcOrderVisibility?.setOnClickListener(clickListener)
+        tokoChatOrderProgressUiModel?.handleOrderProgress(
+            onTokoFood = {
+                partialTokoFoodOrderStatusWidgetBinding
+                    ?.tokochatTpOrderVisibility
+                    ?.setOnClickListener(clickListener)
+                partialTokoFoodOrderStatusWidgetBinding
+                    ?.tokochatTpOrderStatus
+                    ?.setOnClickListener(clickListener)
+                partialTokoFoodOrderStatusWidgetBinding
+                    ?.tokochatIcOrderVisibility
+                    ?.setOnClickListener(clickListener)
+            },
+            onLogistic = {
+                partialLogisticOrderStatusWidgetBinding
+                    ?.tokochatLogisticTpOrderVisibility
+                    ?.setOnClickListener(clickListener)
+                partialLogisticOrderStatusWidgetBinding
+                    ?.tokochatLogisticTpOrderStatus
+                    ?.setOnClickListener(clickListener)
+                partialLogisticOrderStatusWidgetBinding
+                    ?.tokochatLogisticIcOrderVisibility
+                    ?.setOnClickListener(clickListener)
+            }
+        )
     }
 
     private fun bindClickCardContainer() {
-        partialOrderStatusWidgetBinding?.tokochatClOrderNameContainer?.setOnClickListener {
-            tokoChatOrderProgressUiModel?.appLink?.let {
-                listener?.onTransactionWidgetClicked(it)
+        tokoChatOrderProgressUiModel?.handleOrderProgress(
+            onTokoFood = {
+                partialTokoFoodOrderStatusWidgetBinding
+                    ?.tokochatClOrderNameContainer
+                    ?.setOnClickListener {
+                        tokoChatOrderProgressUiModel?.appLink?.let {
+                            listener?.onTransactionWidgetClicked(it)
+                        }
+                    }
+            },
+            onLogistic = {
+                partialLogisticOrderStatusWidgetBinding
+                    ?.tokochatLogisticClOrderNameContainer
+                    ?.setOnClickListener {
+                        tokoChatOrderProgressUiModel?.appLink?.let {
+                            listener?.onTransactionWidgetClicked(it)
+                        }
+                    }
             }
-        }
+        )
     }
 
     private fun renderImageThumbnail() {
-        partialOrderStatusWidgetBinding?.tokochatIvOrderThumbnail?.loadImage(
-            tokoChatOrderProgressUiModel?.imageUrl
+        tokoChatOrderProgressUiModel?.handleOrderProgress(
+            onTokoFood = {
+                partialTokoFoodOrderStatusWidgetBinding?.tokochatIvOrderThumbnail?.loadImage(
+                    tokoChatOrderProgressUiModel?.imageUrl
+                )
+            },
+            onLogistic = {
+                partialLogisticOrderStatusWidgetBinding
+                    ?.tokochatLogisticIvOrderThumbnail
+                    ?.loadImage(tokoChatOrderProgressUiModel?.imageUrl)
+            }
         )
     }
 
     private fun renderProductName() {
-        partialOrderStatusWidgetBinding?.tokochatTpOrderName?.text =
-            MethodChecker.fromHtml(tokoChatOrderProgressUiModel?.name)
+        val productName = MethodChecker.fromHtml(tokoChatOrderProgressUiModel?.name)
+        tokoChatOrderProgressUiModel?.handleOrderProgress(
+            onTokoFood = {
+                partialTokoFoodOrderStatusWidgetBinding?.tokochatTpOrderName?.text =
+                    productName
+            },
+            onLogistic = {
+                partialLogisticOrderStatusWidgetBinding?.tokochatLogisticTpOrderName?.text =
+                    productName
+            }
+        )
     }
 
     private fun renderEstimation() {
-        if (tokoChatOrderProgressUiModel?.labelTitle?.isNotBlank() == true &&
-            tokoChatOrderProgressUiModel?.labelValue?.isNotBlank() == true
-        ) {
-            partialOrderStatusWidgetBinding?.tokochatTpEstimateLabel?.text =
-                tokoChatOrderProgressUiModel?.labelTitle.orEmpty()
-            partialOrderStatusWidgetBinding?.tokochatTpEstimateValue?.text =
-                tokoChatOrderProgressUiModel?.labelValue.orEmpty()
-        } else {
-            partialOrderStatusWidgetBinding?.tokochatTpEstimateLabel?.hide()
-            partialOrderStatusWidgetBinding?.tokochatTpEstimateValue?.hide()
-        }
+        tokoChatOrderProgressUiModel?.handleOrderProgress(
+            onTokoFood = {
+                partialTokoFoodOrderStatusWidgetBinding?.tokochatTpEstimateLabel?.text =
+                    tokoChatOrderProgressUiModel?.labelTitle.orEmpty()
+                partialTokoFoodOrderStatusWidgetBinding?.tokochatTpEstimateValue?.text =
+                    tokoChatOrderProgressUiModel?.labelValue.orEmpty()
+                partialTokoFoodOrderStatusWidgetBinding?.tokochatTpEstimateLabel?.showWithCondition(
+                    tokoChatOrderProgressUiModel?.labelTitle?.isNotBlank() == true
+                )
+                partialTokoFoodOrderStatusWidgetBinding?.tokochatTpEstimateValue?.showWithCondition(
+                    tokoChatOrderProgressUiModel?.labelValue?.isNotBlank() == true
+                )
+            },
+            onLogistic = {
+                partialLogisticOrderStatusWidgetBinding?.tokochatLogisticTpEstimateLabel?.text =
+                    tokoChatOrderProgressUiModel?.labelTitle.orEmpty()
+                partialLogisticOrderStatusWidgetBinding?.tokochatLogisticTpEstimateValue?.text =
+                    tokoChatOrderProgressUiModel?.labelValue.orEmpty()
+                partialLogisticOrderStatusWidgetBinding
+                    ?.tokochatLogisticTpEstimateLabel
+                    ?.showWithCondition(
+                    tokoChatOrderProgressUiModel?.labelValue?.isNotBlank() == true
+                    )
+                partialLogisticOrderStatusWidgetBinding
+                    ?.tokochatLogisticTpEstimateValue
+                    ?.showWithCondition(
+                        tokoChatOrderProgressUiModel?.labelValue?.isNotBlank() == true
+                    )
+            }
+        )
+    }
+
+    private fun renderAdditionalInfo() {
+        tokoChatOrderProgressUiModel?.handleOrderProgress(
+            onLogistic = {
+                partialLogisticOrderStatusWidgetBinding?.tokochatLogisticTpAdditionalInfo?.text =
+                    tokoChatOrderProgressUiModel?.additionalInfo
+                partialLogisticOrderStatusWidgetBinding
+                    ?.tokochatLogisticTpAdditionalInfo
+                    ?.showWithCondition(
+                        tokoChatOrderProgressUiModel?.additionalInfo?.isNotBlank() == true
+                    )
+            }
+        )
+    }
+
+    private fun renderButton() {
+        tokoChatOrderProgressUiModel?.handleOrderProgress(
+            onLogistic = {
+                partialLogisticOrderStatusWidgetBinding?.tokochatLogisticBtnOrderProgress?.text =
+                    tokoChatOrderProgressUiModel?.buttonText
+                partialLogisticOrderStatusWidgetBinding
+                    ?.tokochatLogisticBtnOrderProgress
+                    ?.isEnabled = tokoChatOrderProgressUiModel?.buttonEnable?: false
+                partialLogisticOrderStatusWidgetBinding
+                    ?.tokochatLogisticBtnOrderProgress
+                    ?.setOnClickListener {
+                        listener?.onButtonClicked(
+                            tokoChatOrderProgressUiModel?.buttonApplink?: "")
+                    }
+            }
+        )
     }
 
     private fun renderFirstTimeSeen() {
@@ -350,15 +500,35 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         } else {
             IconUnify.CHEVRON_UP
         }
-        partialOrderStatusWidgetBinding?.tokochatIcOrderVisibility?.setImage(toggleIcon)
+        tokoChatOrderProgressUiModel?.handleOrderProgress(
+            onTokoFood = {
+                partialTokoFoodOrderStatusWidgetBinding
+                    ?.tokochatIcOrderVisibility
+                    ?.setImage(toggleIcon)
+            },
+            onLogistic = {
+                partialLogisticOrderStatusWidgetBinding
+                    ?.tokochatLogisticIcOrderVisibility
+                    ?.setImage(toggleIcon)
+            }
+        )
     }
 
     private fun renderOpenCloseText() {
-        partialOrderStatusWidgetBinding?.tokochatTpOrderVisibility?.text = State.OPEN
+        tokoChatOrderProgressUiModel?.handleOrderProgress(
+            onTokoFood = {
+                partialTokoFoodOrderStatusWidgetBinding?.tokochatTpOrderVisibility?.text =
+                    State.OPEN
+            },
+            onLogistic = {
+                partialLogisticOrderStatusWidgetBinding?.tokochatLogisticTpOrderVisibility?.text =
+                    State.OPEN
+            }
+        )
     }
 
     private fun renderChangerButtonText(desiredState: String?) {
-        partialOrderStatusWidgetBinding?.tokochatTpOrderVisibility?.text =
+        partialTokoFoodOrderStatusWidgetBinding?.tokochatTpOrderVisibility?.text =
             if (desiredState == State.CLOSE) {
                 State.CLOSE
             } else {
@@ -392,11 +562,37 @@ class TokoChatTransactionOrderWidget : LinearLayout {
     }
 
     private fun showOrderNameContainer() {
-        partialOrderStatusWidgetBinding?.tokochatClOrderNameContainer?.show()
+        tokoChatOrderProgressUiModel?.handleOrderProgress(
+            onTokoFood = {
+                partialTokoFoodOrderStatusWidgetBinding?.tokochatClOrderNameContainer?.show()
+            },
+            onLogistic = {
+                partialLogisticOrderStatusWidgetBinding?.tokochatLogisticClOrderNameContainer?.show()
+            }
+        )
     }
 
     private fun hideOrderNameContainer() {
-        partialOrderStatusWidgetBinding?.tokochatClOrderNameContainer?.hide()
+        tokoChatOrderProgressUiModel?.handleOrderProgress(
+            onTokoFood = {
+                partialTokoFoodOrderStatusWidgetBinding?.tokochatClOrderNameContainer?.hide()
+            },
+            onLogistic = {
+                partialLogisticOrderStatusWidgetBinding?.tokochatLogisticClOrderNameContainer?.hide()
+            }
+        )
+    }
+
+    private fun TokoChatOrderProgressUiModel?.handleOrderProgress(
+        onTokoFood: () -> Unit = {},
+        onLogistic: () -> Unit = {},
+        onNull: () -> Unit = {}
+    ) {
+        when (this?.orderProgressType) {
+            TokoChatOrderProgressUiModel.Type.TOKOFOOD -> onTokoFood()
+            TokoChatOrderProgressUiModel.Type.LOGISTIC -> onLogistic()
+            else -> onNull()
+        }
     }
 
     data class State(
@@ -408,8 +604,8 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         }
 
         companion object {
-            val COLOR_NOT_SEEN = com.tokopedia.unifyprinciples.R.color.Unify_GN50
-            var COLOR_SEEN = com.tokopedia.unifyprinciples.R.color.Unify_Background
+            val COLOR_NOT_SEEN = unifyprinciplesR.color.Unify_GN50
+            var COLOR_SEEN = unifyprinciplesR.color.Unify_Background
 
             const val OPEN = "Tutup"
             const val CLOSE = "Lihat"
@@ -424,6 +620,7 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         fun onLocalLoadRetryClicked()
         fun onTransactionWidgetClicked(appLink: String)
         fun onTransactionWidgetClosed()
+        fun onButtonClicked(appLink: String)
     }
 
     companion object {

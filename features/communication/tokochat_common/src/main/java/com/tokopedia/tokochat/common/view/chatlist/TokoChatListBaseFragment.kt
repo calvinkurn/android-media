@@ -42,8 +42,8 @@ abstract class TokoChatListBaseFragment<viewBinding : ViewBinding> : BaseDaggerF
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews(view, savedInstanceState)
         initObservers()
+        initViews(view, savedInstanceState)
     }
 
     protected open fun initViews(view: View, savedInstanceState: Bundle?) {
@@ -81,6 +81,10 @@ abstract class TokoChatListBaseFragment<viewBinding : ViewBinding> : BaseDaggerF
 
     protected fun isRecyclerViewLoadingMore(): Boolean {
         return endlessRecyclerViewScrollListener?.getLoadingStatus() == true
+    }
+
+    protected fun changeLoadMoreStatus(status: Boolean) {
+        endlessRecyclerViewScrollListener?.changeLoadingStatus(status)
     }
 
     protected fun showGlobalErrorLayout(onActionClick: () -> Unit) {

@@ -9,6 +9,7 @@ interface PlayWidgetAnalyticModel {
     val category: String
     val promotionsItemName: String
     val promotionsCreativeName: String
+    val productId: String
 
     fun eventActionChannel(action: String): String {
         return action

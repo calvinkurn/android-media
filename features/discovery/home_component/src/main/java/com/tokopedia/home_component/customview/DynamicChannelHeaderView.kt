@@ -3,34 +3,28 @@ package com.tokopedia.home_component.customview
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Color
-import android.text.TextUtils
 import android.util.AttributeSet
-import android.view.Gravity
 import android.view.View
-import android.view.ViewStub
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
-import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.header.HeaderLayoutStrategy
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.convertDpToPixel
-import com.tokopedia.home_component.util.getLink
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 import com.tokopedia.home_component_header.R as home_component_headerR
 
-@Deprecated("Please use com.tokopedia.home_component_header.view.HomeChannelHeaderView")
+@Deprecated("Please use com.tokopedia.home_component_header.view.HomeComponentHeaderView")
 class DynamicChannelHeaderView : FrameLayout {
-    private var channelHeaderContainer: ConstraintLayout? = null
-
-    private var channelTitle: Typography? = null
-    private var channelSubtitle: Typography? = null
-    private var countDownView: TimerUnifySingle? = null
+    private var headerContainer: ConstraintLayout? = null
+    private var txtTitle: Typography? = null
+    private var txtSubtitle: Typography? = null
+    private var timerUnify: TimerUnifySingle? = null
 
     private var headerColorMode: Int = COLOR_MODE_NORMAL
     private var headerCtaMode: Int = CTA_MODE_SEE_ALL
@@ -45,16 +39,16 @@ class DynamicChannelHeaderView : FrameLayout {
     }
 
     private fun initHeaderWithAttrs(attrs: AttributeSet?) {
-            val attributes: TypedArray = context.obtainStyledAttributes(attrs, home_component_headerR.styleable.HomeChannelHeaderView)
+            val attributes: TypedArray = context.obtainStyledAttributes(attrs, home_component_headerR.styleable.HomeComponentHeaderView)
         try {
-            headerColorMode = attributes.getInt(home_component_headerR.styleable.HomeChannelHeaderView_color_mode, COLOR_MODE_NORMAL)
-            headerCtaMode = attributes.getInt(home_component_headerR.styleable.HomeChannelHeaderView_cta_mode, CTA_MODE_SEE_ALL)
+            headerColorMode = attributes.getInt(home_component_headerR.styleable.HomeComponentHeaderView_color_mode, COLOR_MODE_NORMAL)
+            headerCtaMode = attributes.getInt(home_component_headerR.styleable.HomeComponentHeaderView_cta_mode, CTA_MODE_SEE_ALL)
         } finally {
             attributes.recycle()
         }
     }
 
-    @Deprecated("Please use com.tokopedia.home_component_header.view.HomeChannelHeaderView.bind()")
+    @Deprecated("Please use com.tokopedia.home_component_header.view.HomeComponentHeaderView.bind()")
     fun setChannel(
         channelModel: ChannelModel,
         listener: HeaderListener,
@@ -73,127 +67,82 @@ class DynamicChannelHeaderView : FrameLayout {
     }
 
     private fun init(layoutStrategy: HeaderLayoutStrategy) {
-        if(channelHeaderContainer == null) {
+        if(headerContainer == null) {
             inflate(context, layoutStrategy.getLayout(), this).also {
-                channelHeaderContainer = findViewById(home_component_headerR.id.channel_title_container)
+                headerContainer = findViewById(home_component_headerR.id.header_container)
+                txtTitle = findViewById(home_component_headerR.id.header_title)
+                txtSubtitle = findViewById(home_component_headerR.id.header_subtitle)
+                timerUnify = findViewById(home_component_headerR.id.header_timer)
             }
         }
     }
 
     private fun handleHeaderComponent(channel: ChannelModel) {
-        val stubChannelTitle: View? = findViewById(home_component_headerR.id.channel_title)
-        val stubCountDownView: View? = findViewById(home_component_headerR.id.count_down)
-        val stubSeeAllButton: View? = findViewById(home_component_headerR.id.see_all_button)
-        val stubSeeAllButtonUnify: View? = findViewById(home_component_headerR.id.see_all_button_unify)
-        val stubChannelSubtitle: View? = findViewById(home_component_headerR.id.channel_subtitle)
-        val stubCtaButton: View? = findViewById(home_component_headerR.id.cta_button)
-        channelHeaderContainer?.let { channelHeaderContainer ->
-            handleTitle(channel.channelHeader.name, channelHeaderContainer, stubChannelTitle, channel)
-            handleSubtitle(channel.channelHeader.subtitle, stubChannelSubtitle, channel)
-            channel.channelHeader.layoutStrategy.renderCta(
-                this,
-                channelHeaderContainer,
-                stubCtaButton,
-                stubSeeAllButton,
-                stubSeeAllButtonUnify,
-                channel,
-                isHasSeeMoreApplink(channel),
-                hasExpiredTime(channel),
-                listener,
-                headerCtaMode,
-                headerColorMode
-            )
-            handleHeaderExpiredTime(channel, stubCountDownView, channelHeaderContainer)
-            handleBackgroundColor(channel, channelHeaderContainer, stubCtaButton, stubSeeAllButtonUnify)
-        }
+        handleTitle(channel.channelHeader.name, channel)
+        channel.channelHeader.layoutStrategy.renderIconSubtitle(this, channel.channelHeader)
+        handleSubtitle(channel.channelHeader.subtitle, channel)
+        channel.channelHeader.layoutStrategy.renderCta(
+            this,
+            channel,
+            listener,
+            headerCtaMode,
+            headerColorMode
+        )
+        handleHeaderExpiredTime(channel)
+        handleBackgroundColor(channel)
+        channel.channelHeader.layoutStrategy.setConstraints(headerContainer, channel.channelHeader)
     }
 
-    private fun handleTitle(channelHeaderName: String?, channelHeaderContainer: ConstraintLayout, stubChannelTitle: View?, channel: ChannelModel) {
+    private fun handleTitle(title: String?, channel: ChannelModel) {
         /**
          * Requirement:
          * Only show channel header name when it is exist
          */
-        if (channelHeaderName?.isNotEmpty() == true) {
-            channelHeaderContainer.visibility = View.VISIBLE
-            channelTitle = if (stubChannelTitle is ViewStub &&
-                !isViewStubHasBeenInflated(stubChannelTitle)
-            ) {
-                val stubChannelView = stubChannelTitle.inflate()
-                stubChannelView?.findViewById(R.id.channel_title)
-            } else {
-                findViewById(R.id.channel_title)
-            }
-            channelTitle?.text = channelHeaderName
-            channelTitle?.gravity = Gravity.CENTER_VERTICAL
-            channelTitle?.visibility = View.VISIBLE
+        if (title?.isNotEmpty() == true) {
+            txtTitle?.text = title
+            headerContainer?.show()
+            txtTitle?.show()
             channel.channelHeader.layoutStrategy.renderTitle(
                 context,
                 channel.channelHeader,
-                channelTitle,
+                txtTitle,
                 headerColorMode
             )
-
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(channelHeaderContainer)
-            constraintSet.connect(R.id.channel_title, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP, 0)
-            if(channel.channelHeader.subtitle.isEmpty() && !hasExpiredTime(channel)) {
-                constraintSet.connect(R.id.channel_title, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0)
-            } else {
-                constraintSet.clear(R.id.channel_title, ConstraintSet.BOTTOM)
-            }
-            constraintSet.applyTo(channelHeaderContainer)
         } else {
-            channelHeaderContainer.visibility = View.GONE
+            headerContainer?.hide()
         }
     }
 
-    private fun handleSubtitle(channelSubtitleName: String?, stubChannelSubtitle: View?, channel: ChannelModel) {
+    private fun handleSubtitle(subtitle: String?, channel: ChannelModel) {
         /**
          * Requirement:
          * Only show channel subtitle when it is exist
          */
-        if (channelSubtitleName?.isNotEmpty() == true) {
-            channelSubtitle = if (stubChannelSubtitle is ViewStub &&
-                !isViewStubHasBeenInflated(stubChannelSubtitle)
-            ) {
-                val stubChannelView = stubChannelSubtitle.inflate()
-                stubChannelView?.findViewById(R.id.channel_subtitle)
-            } else {
-                findViewById(R.id.channel_subtitle)
-            }
-            channelSubtitle?.text = channelSubtitleName
-            channelSubtitle?.visibility = View.VISIBLE
+        if (subtitle?.isNotEmpty() == true) {
+            txtSubtitle?.text = subtitle
+            txtSubtitle?.show()
             channel.channelHeader.layoutStrategy.renderSubtitle(
                 context,
                 channel.channelHeader,
-                channelSubtitle,
+                txtSubtitle,
                 headerColorMode
             )
         } else {
-            channelSubtitle?.visibility = View.GONE
+            txtSubtitle?.hide()
         }
     }
 
-    private fun handleHeaderExpiredTime(channel: ChannelModel, stubCountDownView: View?, channelHeaderContainer: ConstraintLayout) {
+    private fun handleHeaderExpiredTime(channel: ChannelModel) {
         /**
          * Requirement:
          * Only show countDownView when expired time exist
          * Don't start countDownView when it is expired from backend (possibly caused infinite refresh)
          *  since onCountDownFinished would getting called and refresh home
          */
-        if (hasExpiredTime(channel)) {
-            countDownView = if (stubCountDownView is ViewStub &&
-                !isViewStubHasBeenInflated(stubCountDownView)
-            ) {
-                val inflatedStubCountDownView = stubCountDownView.inflate()
-                inflatedStubCountDownView.findViewById(R.id.count_down)
-            } else {
-                findViewById(R.id.count_down)
-            }
-
+        if (channel.channelHeader.expiredTime.isNotEmpty()) {
             val expiredTime = DateHelper.getExpiredTime(channel.channelHeader.expiredTime)
             if (!DateHelper.isExpired(channel.channelConfig.serverTimeOffset, expiredTime)) {
-                countDownView?.run {
+                timerUnify?.run {
                     timerVariant = if (channel.channelHeader.backColor.isNotEmpty() || headerColorMode == COLOR_MODE_INVERTED) {
                         TimerUnifySingle.VARIANT_ALTERNATE
                     } else {
@@ -216,39 +165,25 @@ class DynamicChannelHeaderView : FrameLayout {
                 }
             }
         } else {
-            countDownView?.let {
+            timerUnify?.let {
                 it.visibility = View.GONE
             }
         }
-        channel.channelHeader.layoutStrategy.setSubtitleConstraints(hasExpiredTime(channel), channelHeaderContainer, context.resources)
-        channel.channelHeader.layoutStrategy.setContainerPadding(channelHeaderContainer, hasExpiredTime(channel), context.resources)
     }
 
-    private fun handleBackgroundColor(channel: ChannelModel, titleContainer: ConstraintLayout, stubSeeAllButton: View?, stubSeeAllButtonUnify: View?) {
+    private fun handleBackgroundColor(channel: ChannelModel) {
         if (channel.channelHeader.backColor.isNotEmpty()) {
-            stubSeeAllButton?.gone()
-            stubSeeAllButtonUnify?.gone()
-            titleContainer.setBackgroundColor(Color.parseColor(channel.channelHeader.backColor))
+            headerContainer?.let {
+                it.setBackgroundColor(Color.parseColor(channel.channelHeader.backColor))
 
-            titleContainer.setPadding(
-                titleContainer.paddingLeft,
-                convertDpToPixel(TITLE_TOP_PADDING, titleContainer.context),
-                titleContainer.paddingRight,
-                titleContainer.paddingBottom
-            )
+                it.setPadding(
+                    it.paddingLeft,
+                    convertDpToPixel(TITLE_TOP_PADDING, it.context),
+                    it.paddingRight,
+                    it.paddingBottom
+                )
+            }
         }
-    }
-
-    private fun isHasSeeMoreApplink(channel: ChannelModel): Boolean {
-        return channel.channelHeader.getLink().isNotEmpty()
-    }
-
-    private fun hasExpiredTime(channel: ChannelModel): Boolean {
-        return !TextUtils.isEmpty(channel.channelHeader.expiredTime)
-    }
-
-    private fun isViewStubHasBeenInflated(viewStub: ViewStub?): Boolean {
-        return viewStub?.parent == null
     }
 
     companion object {

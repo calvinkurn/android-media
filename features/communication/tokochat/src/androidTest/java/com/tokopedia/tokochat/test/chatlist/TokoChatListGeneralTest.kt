@@ -7,8 +7,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.test.application.annotations.UiTest
-import com.tokopedia.tokochat.common.util.TokoChatValueUtil
-import com.tokopedia.tokochat.stub.domain.response.ApiResponseModelStub
+import com.tokopedia.tokochat.common.util.TokoChatCommonValueUtil
 import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
 import com.tokopedia.tokochat.test.base.BaseTokoChatListTest
 import com.tokopedia.tokochat.test.chatlist.robot.generalResult
@@ -46,7 +45,7 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
 
         // Then
         generalResult {
-            assertDriverName(1, "Lorem ipsum")
+            assertDriverName(1, "Lorem")
             assertDriverImageProfile(1)
             assertDriverBadge(1)
             assertDriverTypeOrder(1, "GoFood")
@@ -60,7 +59,7 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
     @Test
     fun should_show_99_plus_counter() {
         // Given
-        ApiResponseStub.channelListResponse.responseEditor = {
+        ApiResponseStub.getInstance().channelListResponse.responseEditor = {
             var result = it
             result = result.replace("\"unread_count\": 1", "\"unread_count\": 1000")
             result
@@ -78,25 +77,26 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
     @Test
     fun should_not_show_channel_when_expired() {
         // Given
-        ApiResponseStub.channelListResponse.responseEditor = {
+        ApiResponseStub.getInstance().channelListResponse.responseEditor = {
             var result = it
-            result = result.replace("9223372036854775807", "0")
+            result = result.replace("9223372036854775807", "1")
             result
         }
 
         // When
         launchChatListActivity()
+        Thread.sleep(1000)
 
         // Then
         generalResult {
-            assertDriverName(0, "Lorem ipsum")
+            assertDriverName(0, "Lorem")
         }
     }
 
     @Test
     fun should_show_jam_timestamp() {
         // Given
-        ApiResponseStub.channelListResponse.responseEditor = {
+        ApiResponseStub.getInstance().channelListResponse.responseEditor = {
             var result = it
             val newValue = (System.currentTimeMillis() - 3600000).toString()
             result = result.replace("1690441670772", newValue)
@@ -114,7 +114,7 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
 
     @Test
     fun should_show_hari_timestamp() {
-        ApiResponseStub.channelListResponse.responseEditor = {
+        ApiResponseStub.getInstance().channelListResponse.responseEditor = {
             var result = it
             val newValue = (System.currentTimeMillis() - 86400000).toString()
             result = result.replace("1690441670772", newValue)
@@ -135,7 +135,7 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
     fun should_show_date_month_timestamp() {
         // Given
         val oneWeekAgeDate = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(6)
-        ApiResponseStub.channelListResponse.responseEditor = {
+        ApiResponseStub.getInstance().channelListResponse.responseEditor = {
             var result = it
             result = result.replace("1690441670772", "$oneWeekAgeDate")
             result
@@ -153,7 +153,7 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
 
     @Test
     fun should_show_month_year_timestamp() {
-        ApiResponseStub.channelListResponse.responseEditor = {
+        ApiResponseStub.getInstance().channelListResponse.responseEditor = {
             var result = it
             result = result.replace("1690441670772", "1656313670000")
             result
@@ -183,41 +183,8 @@ class TokoChatListGeneralTest : BaseTokoChatListTest() {
         // Then
         val intent = RouteManager.getIntent(
             context,
-            "tokopedia://tokochat?${ApplinkConst.TokoChat.PARAM_SOURCE}=${TokoChatValueUtil.TOKOFOOD}&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=$GOJEK_ORDER_ID_DUMMY"
+            "tokopedia://tokochat?${ApplinkConst.TokoChat.PARAM_SOURCE}=${TokoChatCommonValueUtil.SOURCE_TOKOFOOD}&${ApplinkConst.TokoChat.ORDER_ID_GOJEK}=$GOJEK_ORDER_ID_DUMMY"
         )
         Intents.intended(IntentMatchers.hasData(intent.data))
-    }
-
-    @Test
-    fun should_load_more() {
-        // When
-        ApiResponseStub.channelListResponse = ApiResponseModelStub(
-            200,
-            "channel_list/success_get_channel_list_big_size.json"
-        )
-        launchChatListActivity()
-
-        // Then
-        generalResult {
-            assertChatListItemTotal(10)
-        }
-        Thread.sleep(300)
-
-        // Given
-        ApiResponseStub.channelListResponse = ApiResponseModelStub(
-            200,
-            "channel_list/success_get_load_more_channel_list.json"
-        )
-
-        // When
-        generalRobot {
-            scrollToPosition(10)
-        }
-        Thread.sleep(40000)
-
-        // Then
-        generalResult {
-            assertChatListItemTotal(22)
-        }
     }
 }

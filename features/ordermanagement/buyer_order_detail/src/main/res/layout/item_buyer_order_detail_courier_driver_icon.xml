@@ -4,14 +4,15 @@
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    
-    <com.tokopedia.iconunify.IconUnify
+
+    <com.tokopedia.iconnotification.IconNotification
         android:id="@+id/btn_icon_action_driver"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:animateLayoutChanges="true"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:iconNotificationGravity="top|end" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

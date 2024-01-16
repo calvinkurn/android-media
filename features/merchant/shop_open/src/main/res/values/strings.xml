@@ -23,7 +23,7 @@
     <string name="open_shop_revamp_error_domain_unavailable">Domain Toko Tidak Tersedia</string>
     <string name="open_shop_revamp_tnc_open_shop">Dengan klik tombol di bawah, kamu menyetujui %s serta %s Pendaftaran Toko.</string>
     <string name="open_shop_revamp_tnc_webview_title">Syarat &amp; Ketentuan </string>
-    <string name="open_shop_revamp_tnc_privacy_policy_webview_title">Kebijakan Privasi</string>
+    <string name="open_shop_revamp_tnc_privacy_policy_webview_title">Pemberitahuan Privasi</string>
     <string name="open_shop_revamp_error_retry">Terjadi kendala, silahkan coba lagi</string>
     <string name="open_shop_revamp_retry">coba lagi</string>
     <string name="open_shop_revamp_text_horay_name">Hore <![CDATA[%1$s]]>!</string>
@@ -44,6 +44,6 @@
 
     <string name="button_label_continue">Lanjut</string>
     <string name="button_label_skip">Lewati</string>
-    <string name="tnc_input_shop">Syarat dan Ketentuan dan Kebijakan Privasi.</string>
+    <string name="tnc_input_shop">Syarat dan Ketentuan dan Pemberitahuan Privasi.</string>
     <string name="content_desc_announce_shop_open">announce the shop opening</string>
 </resources>

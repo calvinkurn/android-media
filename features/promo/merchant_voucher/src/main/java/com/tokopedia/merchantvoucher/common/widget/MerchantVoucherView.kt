@@ -143,14 +143,14 @@ open class MerchantVoucherView : CustomVoucherView {
                     voucherImageUrl = DELIVERY_VOUCHER_IMAGE_URL
                 }
             }
-            ivVoucherType?.loadImageWithPlaceholder(voucherImageUrl, com.tokopedia.design.R.drawable.ic_loading_image)
+            ivVoucherType?.loadImageWithPlaceholder(voucherImageUrl, R.drawable.ic_loading_image)
             val voucherTitle = context.getString(R.string.voucher_title_x_x,
                     merchantVoucherViewModel.getTypeString(context),
                     merchantVoucherViewModel.getAmountShortString())
             val spannedVoucherTitle = SpanText(
                     voucherTitle,
                     merchantVoucherViewModel.getAmountShortString()
-            ).addBoldSpanWithFontFamily("sans-serif").changeTextSize(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.sp_20)).getCharSequence()
+            ).addBoldSpanWithFontFamily("sans-serif").changeTextSize(resources.getDimensionPixelSize(R.dimen.sp_20)).getCharSequence()
             tvVoucherTitle?.text = spannedVoucherTitle
             val voucherDesc = merchantVoucherViewModel
                 .getMinSpendLongString(context)

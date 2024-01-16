@@ -26,10 +26,8 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationTutoria
 import com.tokopedia.affiliate.usecase.AffiliateEducationArticleCardsUseCase
 import com.tokopedia.affiliate.usecase.AffiliateEducationBannerUseCase
 import com.tokopedia.affiliate.usecase.AffiliateEducationCategoryTreeUseCase
-import com.tokopedia.affiliate.usecase.AffiliateGetUnreadNotificationUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
@@ -42,11 +40,9 @@ import javax.inject.Inject
 class AffiliateEducationLandingViewModel @Inject constructor(
     private val educationBannerUseCase: AffiliateEducationBannerUseCase,
     private val educationCategoryUseCase: AffiliateEducationCategoryTreeUseCase,
-    private val educationArticleCardsUseCase: AffiliateEducationArticleCardsUseCase,
-    private val affiliateUnreadNotificationUseCase: AffiliateGetUnreadNotificationUseCase
+    private val educationArticleCardsUseCase: AffiliateEducationArticleCardsUseCase
 ) : BaseViewModel() {
-    private val _unreadNotificationCount = MutableLiveData(Int.ZERO)
-    fun getUnreadNotificationCount(): LiveData<Int> = _unreadNotificationCount
+
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, e ->
         Timber.e(e)
     }
@@ -142,17 +138,6 @@ class AffiliateEducationLandingViewModel @Inject constructor(
             tempList.add(AffiliateEducationLearnUiModel())
             educationPageData.value = tempList
         }
-    }
-
-    fun fetchUnreadNotificationCount() {
-        viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
-            _unreadNotificationCount.value =
-                affiliateUnreadNotificationUseCase.getUnreadNotifications()
-        }
-    }
-
-    fun resetNotificationCount() {
-        _unreadNotificationCount.value = Int.ZERO
     }
 
     fun getEducationPageData(): LiveData<List<Visitable<AffiliateAdapterTypeFactory>>> =

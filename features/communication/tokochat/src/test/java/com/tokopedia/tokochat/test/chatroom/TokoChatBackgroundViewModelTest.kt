@@ -1,21 +1,21 @@
 package com.tokopedia.tokochat.test.chatroom
 
 import com.tokopedia.tokochat.base.TokoChatViewModelTestFixture
-import com.tokopedia.tokochat.utils.observeAwaitValue
 import com.tokopedia.tokochat.common.util.TokoChatUrlUtil
+import com.tokopedia.tokochat.utils.observeAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 
 class TokoChatBackgroundViewModelTest : TokoChatViewModelTestFixture() {
     @Test
     fun `when getTokoChatBackground, this method should return livedata success`() {
-        runBlocking {
+        runTest {
             val expectedImageUrl = TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
 
             // given
@@ -39,7 +39,7 @@ class TokoChatBackgroundViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when getTokoChatBackground, this method should return livedata fail`() {
-        runBlocking {
+        runTest {
             val errorException = Throwable()
 
             // given

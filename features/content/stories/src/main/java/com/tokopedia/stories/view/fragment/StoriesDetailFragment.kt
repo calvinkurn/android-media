@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -13,19 +14,32 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
+import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.Player.EventListener
+import com.google.android.exoplayer2.video.VideoListener
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.content.common.report_content.bottomsheet.ContentReportBottomSheet
+import com.tokopedia.content.common.report_content.bottomsheet.ContentSubmitReportBottomSheet
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.util.ContentDateConverter
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play_common.view.ImageLoaderStateListener
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
@@ -39,10 +53,13 @@ import com.tokopedia.stories.uimodel.StoryAuthor
 import com.tokopedia.stories.view.adapter.StoriesGroupAdapter
 import com.tokopedia.stories.view.animation.StoriesProductNudge
 import com.tokopedia.stories.view.components.indicator.StoriesDetailTimer
+import com.tokopedia.stories.view.components.player.StoriesExoPlayer
 import com.tokopedia.stories.view.custom.StoriesErrorView
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.BUFFERING
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.PAUSE
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.RESUME
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContent
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesItemContentType.Image
@@ -68,19 +85,29 @@ import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.PreviousDetai
 import com.tokopedia.stories.view.viewmodel.action.StoriesUiAction.ResumeStories
 import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
+import com.tokopedia.stories.view.viewmodel.state.StoryReportStatusInfo
 import com.tokopedia.stories.view.viewmodel.state.TimerStatusInfo
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentcommonR
+import com.tokopedia.stories.R as storiesR
 
 class StoriesDetailFragment @Inject constructor(
     private val analyticFactory: StoriesAnalytics.Factory,
     private val router: Router
-) : TkpdBaseV4Fragment(), StoriesThreeDotsBottomSheet.Listener, StoriesProductBottomSheet.Listener {
+) : TkpdBaseV4Fragment(),
+    StoriesThreeDotsBottomSheet.Listener,
+    StoriesProductBottomSheet.Listener,
+    ContentReportBottomSheet.Listener,
+    ContentSubmitReportBottomSheet.Listener,
+    VideoListener {
 
     private val mParentPage: StoriesGroupFragment
         get() = (requireParentFragment() as StoriesGroupFragment)
@@ -90,7 +117,6 @@ class StoriesDetailFragment @Inject constructor(
         get() = _binding!!
 
     val viewModelProvider by lazyThreadSafetyNone { mParentPage.viewModelProvider }
-
     private val viewModel by activityViewModels<StoriesViewModel> { viewModelProvider }
 
     private val mAdapter: StoriesGroupAdapter by lazyThreadSafetyNone {
@@ -128,12 +154,30 @@ class StoriesDetailFragment @Inject constructor(
         ActivityResultContracts.StartActivityForResult()
     ) {}
 
+    private val reportStoryLoginResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (viewModel.userSession.isLoggedIn) {
+                openReportBottomSheet()
+            }
+        }
+
     private val isEligiblePage: Boolean
         get() = groupId == viewModel.mGroup.groupId
 
     private val sharingComponent by lazyThreadSafetyNone {
         StoriesSharingComponent(rootView = requireView())
     }
+
+    private var _videoPlayer: StoriesExoPlayer? = null
+    private val videoPlayer: StoriesExoPlayer
+        get() = _videoPlayer!!
+
+    private var _dialog: DialogUnify? = null
+    private val dialog: DialogUnify
+        get() = _dialog!!
+
+    private var currentPlayingVideoUrl: String = ""
+    private var mCoachMark: CoachMark2? = null
 
     override fun getScreenName(): String {
         return TAG_FRAGMENT_STORIES_DETAIL
@@ -143,7 +187,12 @@ class StoriesDetailFragment @Inject constructor(
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
             when (fragment) {
                 is StoriesThreeDotsBottomSheet -> fragment.setListener(this)
+
                 is StoriesProductBottomSheet -> fragment.setListener(this)
+
+                is ContentReportBottomSheet -> fragment.setListener(this)
+
+                is ContentSubmitReportBottomSheet -> fragment.setListener(this)
             }
         }
         super.onCreate(savedInstanceState)
@@ -170,6 +219,67 @@ class StoriesDetailFragment @Inject constructor(
         resumeStories()
     }
 
+    override fun onPause() {
+        super.onPause()
+        pauseStories()
+    }
+
+    override fun onRenderedFirstFrame() {
+        super.onRenderedFirstFrame()
+        contentIsLoaded()
+    }
+
+    override fun onCloseButtonClicked() {
+        ContentReportBottomSheet.get(childFragmentManager)?.dismiss()
+        viewModel.submitAction(StoriesUiAction.DismissSheet(BottomSheetType.Report))
+    }
+
+    override fun onItemReportClick(item: PlayUserReportReasoningUiModel.Reasoning) {
+        ContentReportBottomSheet.get(childFragmentManager)?.dismiss()
+        viewModel.submitAction(StoriesUiAction.DismissSheet(BottomSheetType.Report))
+
+        analytic?.sendClickReportReason(
+            storiesId = viewModel.mDetail.id,
+            contentType = viewModel.mDetail.content.type,
+            storyType = viewModel.mDetail.storyType,
+            reportReason = item.title
+        )
+
+        ContentSubmitReportBottomSheet.getOrCreate(
+            childFragmentManager,
+            requireActivity().classLoader
+        ).apply {
+            setData(item)
+        }.show(childFragmentManager, ContentSubmitReportBottomSheet.TAG)
+
+        viewModel.submitAction(StoriesUiAction.SelectReportReason(item))
+    }
+
+    override fun onFooterClicked() {
+        router.route(
+            context,
+            getString(contentcommonR.string.content_user_report_footer_weblink)
+        )
+    }
+
+    override fun onBackButtonListener() {
+        (childFragmentManager.findFragmentByTag(ContentSubmitReportBottomSheet.TAG) as? ContentSubmitReportBottomSheet?)?.dismiss()
+        viewModel.submitAction(StoriesUiAction.DismissSheet(BottomSheetType.SubmitReport))
+    }
+
+    override fun onSubmitReport(desc: String) {
+        showDialog(
+            title = getString(storiesR.string.dialog_report_story_title),
+            description = getString(contentcommonR.string.play_user_report_verification_dialog_desc),
+            primaryCTAText = getString(contentcommonR.string.play_user_report_verification_dialog_btn_ok),
+            secondaryCTAText = getString(storiesR.string.dialog_report_story_cancel),
+            primaryAction = {
+                viewModel.submitReport(desc, _videoPlayer?.exoPlayer?.currentPosition.orZero())
+                (childFragmentManager.findFragmentByTag(ContentSubmitReportBottomSheet.TAG) as? ContentSubmitReportBottomSheet?)?.dismiss()
+            }
+        )
+    }
+
     private fun setupObserver() {
         setupUiStateObserver()
         setupUiEventObserver()
@@ -179,6 +289,7 @@ class StoriesDetailFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.storiesState.withCache().collectLatest { (prevState, currState) ->
                 renderStoriesGroupHeader(prevState?.storiesMainData, currState.storiesMainData)
+                handleReportState(prevState?.reportState, currState.reportState)
 
                 if (prevState?.storiesMainData != null && prevState.storiesMainData != StoriesUiModel()) {
                     val prev = prevState.storiesMainData.groupItems
@@ -187,6 +298,12 @@ class StoriesDetailFragment @Inject constructor(
                         .getOrNull(currState.storiesMainData.selectedGroupPosition)?.detail
                     renderStoriesDetail(prev, curr)
                     renderTimer(prevState.timerStatus, currState.timerStatus)
+
+                    curr?.let {
+                        it.detailItems.getOrNull(it.selectedDetailPosition)?.let { item ->
+                            handleVideoPlayState(item, currState.timerStatus)
+                        }
+                    }
                 }
             }
         }
@@ -202,7 +319,7 @@ class StoriesDetailFragment @Inject constructor(
                     }
 
                     is StoriesUiEvent.ErrorDetailPage -> {
-                        setErrorType(if (event.throwable.isNetworkError) StoriesErrorView.Type.NoInternet else StoriesErrorView.Type.FailedLoad) { event.onClick()}
+                        setErrorType(if (event.throwable.isNetworkError) StoriesErrorView.Type.NoInternet else StoriesErrorView.Type.FailedLoad) { event.onClick() }
                     }
 
                     StoriesUiEvent.OpenKebab -> {
@@ -212,22 +329,30 @@ class StoriesDetailFragment @Inject constructor(
                                 requireActivity().classLoader
                             ).show(childFragmentManager)
                     }
+
                     StoriesUiEvent.OpenProduct -> openProductBottomSheet()
                     is StoriesUiEvent.Login -> {
                         val intent = router.getIntent(requireContext(), ApplinkConst.LOGIN)
                         router.route(activityResult, intent)
                     }
+
                     is StoriesUiEvent.NavigateEvent -> goTo(event.appLink)
                     is StoriesUiEvent.ShowVariantSheet -> openVariantBottomSheet(event.product)
                     is StoriesUiEvent.TapSharing -> {
                         sharingComponent.setListener(object : StoriesSharingComponent.Listener {
-                            override fun onDismissEvent(isFromClick: Boolean, view: StoriesSharingComponent) {
+                            override fun onDismissEvent(
+                                isFromClick: Boolean,
+                                view: StoriesSharingComponent
+                            ) {
                                 viewModelAction(StoriesUiAction.DismissSheet(BottomSheetType.Sharing))
                                 if (isFromClick) analytic?.onCloseShareSheet(viewModel.storyId)
                             }
 
                             override fun onShareChannel(shareModel: ShareModel) {
-                                analytic?.onClickShareOptions(viewModel.storyId, shareModel.channel.orEmpty())
+                                analytic?.onClickShareOptions(
+                                    viewModel.storyId,
+                                    shareModel.channel.orEmpty()
+                                )
                             }
 
                             override fun onShowSharing(view: StoriesSharingComponent) {
@@ -235,8 +360,14 @@ class StoriesDetailFragment @Inject constructor(
                             }
                         })
                         analytic?.onClickShareIcon(viewModel.storyId)
-                        sharingComponent.show(childFragmentManager, event.metadata, viewModel.userId, viewModel.storyId)
+                        sharingComponent.show(
+                            childFragmentManager,
+                            event.metadata,
+                            viewModel.userId,
+                            viewModel.storyId
+                        )
                     }
+
                     is StoriesUiEvent.ShowErrorEvent -> {
                         if (viewModel.isAnyBottomSheetShown) return@collect
                         requireView().showToaster(
@@ -244,15 +375,39 @@ class StoriesDetailFragment @Inject constructor(
                             type = Toaster.TYPE_ERROR
                         )
                     }
+
                     is StoriesUiEvent.ShowInfoEvent -> {
                         if (viewModel.isAnyBottomSheetShown) return@collect
                         val message = getString(event.message)
                         requireView().showToaster(message = message)
                     }
+
+                    is StoriesUiEvent.ShowStoriesTimeCoachmark -> {
+                        showStoriesDurationCoachmark()
+                    }
+
                     else -> return@collect
                 }
             }
         }
+    }
+
+    private fun handleReportState(prevState: StoryReportStatusInfo?, state: StoryReportStatusInfo) {
+        if (prevState?.state == state.state) return
+        if (state.state != StoryReportStatusInfo.ReportState.Submitted) return
+        if (state.report.submitStatus == null) return
+
+        when (state.report.submitStatus) {
+            is Success -> requireView().showToaster(message = getString(storiesR.string.story_reported_successfully_message))
+            is Fail -> requireView().showToaster(
+                message = ErrorHandler.getErrorMessage(
+                    context,
+                    state.report.submitStatus.throwable
+                ),
+                type = Toaster.TYPE_ERROR,
+            )
+        }
+        viewModel.submitAction(StoriesUiAction.ResetReportState)
     }
 
     private fun renderStoriesGroupHeader(
@@ -274,7 +429,7 @@ class StoriesDetailFragment @Inject constructor(
 
     private fun renderStoriesDetail(
         prevState: StoriesDetail?,
-        state: StoriesDetail?,
+        state: StoriesDetail?
     ) {
         if (prevState == state ||
             state == StoriesDetail() ||
@@ -298,36 +453,39 @@ class StoriesDetailFragment @Inject constructor(
         binding.vStoriesShareIcon.showWithCondition(currentItem.share.isShareable)
     }
 
-    private fun renderMedia(content: StoriesItemContent, status: StoryStatus) {
+    private fun renderMedia(
+        content: StoriesItemContent,
+        status: StoryStatus,
+    ) {
         when (content.type) {
             Image -> {
-                when (status) {
-                    StoryStatus.Active -> {
-                        binding.layoutStoriesContent.ivStoriesDetailContent.loadImage(
-                            content.data,
-                            object : ImageLoaderStateListener {
-                                override fun successLoad() {
-                                    contentIsLoaded()
-                                    analytic?.sendImpressionStoriesContent(viewModel.storyId)
-                                    hideError()
-                                }
-                                override fun failedLoad() {
-                                    setErrorType(StoriesErrorView.Type.NoContent)
-                                    contentIsLoaded()
-                                }
+                renderStoryBasedOnStatus(status) {
+                    binding.layoutStoriesContent.ivStoriesDetailContent.loadImage(
+                        content.data,
+                        object : ImageLoaderStateListener {
+                            override fun successLoad() {
+                                contentIsLoaded()
+                                analytic?.sendImpressionStoriesContent(viewModel.storyId)
+                                hideError()
                             }
-                        )
-                    }
 
-                    StoryStatus.Unknown -> {
-                        setErrorType(StoriesErrorView.Type.EmptyCategory)
-                        contentIsLoaded()
-                    }
+                            override fun failedLoad() {
+                                setErrorType(StoriesErrorView.Type.NoContent)
+                                contentIsLoaded()
+                            }
+                        }
+                    )
+                    showImageContent()
                 }
             }
 
             Video -> {
-                hideError()
+                renderStoryBasedOnStatus(status) {
+                    showVideoContent()
+                    showVideoLoading()
+                    renderVideoMedia(content)
+                    hideError()
+                }
             }
 
             Unknown -> {
@@ -348,19 +506,51 @@ class StoriesDetailFragment @Inject constructor(
                 setContent {
                     StoriesDetailTimer(
                         timerInfo = timerState,
-                    ) { if (isEligiblePage) viewModelAction(NextDetail) }
+                    ) {
+                        if (isEligiblePage) {
+                            mCoachMark?.dismissCoachMark()
+                            viewModelAction(NextDetail)
+                        }
+                    }
                 }
             }
         }
     }
 
-    private fun buildEventLabel(): String = "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
+    private fun buildEventLabel(): String =
+        "${mParentPage.args.entryPoint} - ${viewModel.storyId} - ${mParentPage.args.authorId} - ${viewModel.mDetail.storyType} - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker}"
 
     private fun renderAuthor(state: StoriesDetailItem) {
         with(binding.vStoriesPartner) {
             tvPartnerName.text = state.author.name
             ivIcon.setImageUrl(state.author.thumbnailUrl)
             btnFollow.gone()
+
+            when (state.category) {
+                StoriesDetailItem.StoryCategory.Manual -> {
+                    val creationTimestamp =
+                        ContentDateConverter.getDiffTime(state.publishedAt) { dateTime ->
+                            when {
+                                dateTime.day > THIRTY -> dateTime.yearMonth
+                                dateTime.day in ONE..THIRTY -> "${dateTime.day} ${ContentDateConverter.DAY}"
+                                dateTime.hour in ONE..TWENTY_THREE -> "${dateTime.hour} ${ContentDateConverter.HOUR}"
+                                dateTime.minute in ONE..FIFTY_NINE -> "${dateTime.minute} ${ContentDateConverter.MINUTE_CONCISE}"
+                                else -> ContentDateConverter.BELOW_1_MINUTE_CONCISE
+                            }
+                        }
+
+                    tvStoriesTimestamp.text = getString(
+                        storiesR.string.story_creation_timestamp,
+                        creationTimestamp
+                    )
+                    tvStoriesTimestamp.show()
+                }
+
+                StoriesDetailItem.StoryCategory.ASGC -> {
+                    tvStoriesTimestamp.hide()
+                }
+            }
+
             if (state.author is StoryAuthor.Shop) {
                 ivBadge.setImageUrl(state.author.badgeUrl)
             }
@@ -394,14 +584,18 @@ class StoriesDetailFragment @Inject constructor(
                     showStoriesComponent(false)
                     pauseStories()
                 }
+
                 TouchEventStories.RESUME -> {
                     showStoriesComponent(true)
                     resumeStories()
                 }
+
                 TouchEventStories.NEXT_PREV -> {
                     trackTapPreviousDetail()
+                    mCoachMark?.dismissCoachMark()
                     viewModelAction(PreviousDetail)
                 }
+
                 else -> {}
             }
         }
@@ -411,14 +605,18 @@ class StoriesDetailFragment @Inject constructor(
                     showStoriesComponent(false)
                     pauseStories()
                 }
+
                 TouchEventStories.RESUME -> {
                     showStoriesComponent(true)
                     resumeStories()
                 }
+
                 TouchEventStories.NEXT_PREV -> {
                     trackTapNextDetail()
+                    mCoachMark?.dismissCoachMark()
                     viewModelAction(NextDetail)
                 }
+
                 else -> {}
             }
         }
@@ -438,6 +636,7 @@ class StoriesDetailFragment @Inject constructor(
                     if (!isEligiblePage || !viewModel.isProductAvailable) return@onTouchEventStories
                     viewModelAction(StoriesUiAction.OpenProduct)
                 }
+
                 else -> {}
             }
         }
@@ -449,7 +648,7 @@ class StoriesDetailFragment @Inject constructor(
 
         with(binding.nudgeStoriesProduct) {
             setContent {
-                StoriesProductNudge(state.productCount) {
+                StoriesProductNudge(state.productCount, state.isProductAvailable) {
                     viewModelAction(StoriesUiAction.OpenProduct)
                 }
             }
@@ -459,15 +658,19 @@ class StoriesDetailFragment @Inject constructor(
         showSwipeProductJob?.cancel()
         showSwipeProductJob = viewLifecycleOwner.lifecycleScope.launch {
             if (state.isProductAvailable) {
+                binding.flStoriesProduct.hide()
                 binding.nudgeStoriesProduct.hide()
+
                 delay(DELAY_SWIPE_PRODUCT_BADGE_SHOW)
                 TransitionManager.beginDelayedTransition(
                     binding.root,
                     Fade(Fade.IN)
-                        .addTarget(binding.nudgeStoriesProduct)
+                        .addTarget(binding.flStoriesProduct)
                 )
+                binding.flStoriesProduct.show()
                 binding.nudgeStoriesProduct.show()
             } else {
+                binding.flStoriesProduct.hide()
                 binding.nudgeStoriesProduct.hide()
             }
         }
@@ -580,23 +783,43 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
-    private fun setErrorType(errorType: StoriesErrorView.Type, onClick: () -> Unit = {}) = with(binding.vStoriesError) {
-        show()
-        type = errorType
-        setAction { onClick() }
-        setCloseAction { activity?.finish() }
-        translationZ = if (errorType == StoriesErrorView.Type.NoContent || errorType == StoriesErrorView.Type.EmptyCategory) 0f else 1f
-    }
+    private fun setErrorType(errorType: StoriesErrorView.Type, onClick: () -> Unit = {}) =
+        with(binding.vStoriesError) {
+            show()
+            type = errorType
+            setAction { onClick() }
+            setCloseAction { activity?.finish() }
+            translationZ =
+                if (errorType == StoriesErrorView.Type.NoContent || errorType == StoriesErrorView.Type.EmptyCategory) 0f else 1f
+        }
 
     private fun hideError() = binding.vStoriesError.gone()
 
     override fun onDestroyView() {
-        super.onDestroyView()
+        _videoPlayer?.destroy()
+        _videoPlayer = null
+
+        _dialog?.dismiss()
+        _dialog = null
+
+        mCoachMark = null
+
         _binding = null
+        super.onDestroyView()
     }
 
     override fun onRemoveStory(view: StoriesThreeDotsBottomSheet) {
         analytic?.sendClickRemoveStoryEvent(buildEventLabel())
+    }
+
+    override fun onReportStoryClicked(view: StoriesThreeDotsBottomSheet) {
+        view.dismiss()
+
+        if (!viewModel.userSession.isLoggedIn) {
+            reportStoryLoginResult.launch(router.getIntent(context, ApplinkConst.LOGIN))
+        } else {
+            openReportBottomSheet()
+        }
     }
 
     override fun onProductActionClicked(
@@ -605,8 +828,19 @@ class StoriesDetailFragment @Inject constructor(
         position: Int,
         view: StoriesProductBottomSheet
     ) {
-        val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
-        if (action == StoriesProductAction.Atc) analytic?.sendClickAtcButtonEvent(eventLabel, listOf(product), position, viewModel.mDetail.author.name) else analytic?.sendClickBuyButtonEvent(eventLabel, listOf(product), position, viewModel.mDetail.author.name)
+        val eventLabel =
+            "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
+        if (action == StoriesProductAction.Atc) analytic?.sendClickAtcButtonEvent(
+            eventLabel,
+            listOf(product),
+            position,
+            viewModel.mDetail.author.name
+        ) else analytic?.sendClickBuyButtonEvent(
+            eventLabel,
+            listOf(product),
+            position,
+            viewModel.mDetail.author.name
+        )
     }
 
     override fun onClickedProduct(
@@ -614,15 +848,22 @@ class StoriesDetailFragment @Inject constructor(
         position: Int,
         view: StoriesProductBottomSheet
     ) {
-        val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
-        analytic?.sendClickProductCardEvent(eventLabel, "/stories-room - ${viewModel.storyId} - product card", listOf(product), position)
+        val eventLabel =
+            "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.id}"
+        analytic?.sendClickProductCardEvent(
+            eventLabel,
+            "/stories-room - ${viewModel.storyId} - product card",
+            listOf(product),
+            position
+        )
     }
 
     override fun onImpressedProduct(
         product: Map<ContentTaggedProductUiModel, Int>,
         view: StoriesProductBottomSheet
     ) {
-        val eventLabel = "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.keys.firstOrNull()?.id.orEmpty()}"
+        val eventLabel =
+            "${viewModel.storyId} - ${mParentPage.args.authorId} - asgc - ${viewModel.mDetail.content.type.value} - ${viewModel.mGroup.groupName} - ${viewModel.mDetail.meta.templateTracker} - ${product.keys.firstOrNull()?.id.orEmpty()}"
         analytic?.sendViewProductCardEvent(eventLabel, product)
     }
 
@@ -632,8 +873,186 @@ class StoriesDetailFragment @Inject constructor(
         }
     }
 
+    private fun showImageContent() {
+        binding.layoutStoriesContent.ivStoriesDetailContent.show()
+        binding.layoutStoriesContent.containerVideoStoriesContent.hide()
+    }
+
+    private fun showVideoContent() {
+        binding.layoutStoriesContent.ivStoriesDetailContent.hide()
+        binding.layoutStoriesContent.containerVideoStoriesContent.show()
+    }
+
+    private fun renderVideoMedia(content: StoriesItemContent) {
+        context?.let {
+            if (_videoPlayer == null) {
+                _videoPlayer = StoriesExoPlayer(it)
+            }
+
+            videoPlayer.pause()
+            videoPlayer.setVideoListener(this)
+            videoPlayer.setEventListener(object : EventListener {
+                override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                    val isPlaying = playWhenReady && playbackState == Player.STATE_READY
+                    val isBuffering = playbackState == Player.STATE_BUFFERING
+
+                    when {
+                        isPlaying -> {
+                            val videoDuration = videoPlayer.exoPlayer.duration.toInt()
+                            if (content.duration != videoDuration) {
+                                viewModel.submitAction(
+                                    StoriesUiAction.UpdateStoryDuration(
+                                        videoDuration
+                                    )
+                                )
+                            }
+                            hideVideoLoading()
+                            contentIsLoaded()
+                        }
+
+                        isBuffering -> {
+                            viewModel.submitAction(StoriesUiAction.VideoBuffering)
+                        }
+                    }
+                }
+
+                override fun onPlayerError(error: ExoPlaybackException) {
+                    super.onPlayerError(error)
+                    setErrorType(StoriesErrorView.Type.NoContent)
+                }
+            })
+
+            binding.layoutStoriesContent.playerStoriesDetailContent.player = videoPlayer.exoPlayer
+
+            if (currentPlayingVideoUrl != content.data) {
+                videoPlayer.start(content.data)
+                currentPlayingVideoUrl = content.data
+            } else if (!videoPlayer.exoPlayer.isPlaying) {
+                videoPlayer.resume(shouldReset = true)
+            }
+        }
+    }
+
+    private fun showVideoLoading() {
+        binding.layoutStoriesContent.loaderStoriesDetailContent.show()
+        binding.layoutStoriesContent.playerStoriesDetailContent.hide()
+    }
+
+    private fun hideVideoLoading() {
+        binding.layoutStoriesContent.loaderStoriesDetailContent.hide()
+        binding.layoutStoriesContent.playerStoriesDetailContent.show()
+
+    }
+
+    private fun renderStoryBasedOnStatus(
+        status: StoryStatus,
+        onActive: () -> Unit
+    ) {
+        when (status) {
+            StoryStatus.Active -> {
+                onActive()
+            }
+
+            StoryStatus.Unknown -> {
+                setErrorType(StoriesErrorView.Type.NoContent)
+                contentIsLoaded()
+            }
+        }
+    }
+
+    private fun handleVideoPlayState(state: StoriesDetailItem, timerState: TimerStatusInfo) {
+        if (_videoPlayer == null) return
+
+        when {
+            (state.event == RESUME || state.event == BUFFERING) && state.content.type == Video && timerState.event != PAUSE -> videoPlayer.resume()
+            state.event == PAUSE || timerState.event == PAUSE -> videoPlayer.pause()
+        }
+    }
+
+    private fun openReportBottomSheet() {
+        ContentReportBottomSheet.getOrCreate(
+            childFragmentManager,
+            requireActivity().classLoader
+        ).apply {
+            updateList(viewModel.userReportReasonList)
+        }.show(childFragmentManager, ContentReportBottomSheet.TAG)
+
+        analytic?.sendViewReportReasonList(
+            storiesId = viewModel.mDetail.id,
+            contentType = viewModel.mDetail.content.type,
+            storyType = viewModel.mDetail.storyType
+        )
+
+        viewModel.submitAction(StoriesUiAction.OpenReport)
+    }
+
+    private fun showDialog(
+        title: String,
+        description: String,
+        primaryCTAText: String,
+        secondaryCTAText: String,
+        primaryAction: () -> Unit,
+        secondaryAction: () -> Unit = {}
+    ) {
+        activity?.let {
+            if (_dialog == null) {
+                _dialog =
+                    DialogUnify(context = it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            }
+            if (dialog.isShowing) return
+
+            dialog.apply {
+                setTitle(title)
+                setDescription(description)
+                setPrimaryCTAText(primaryCTAText)
+                setPrimaryCTAClickListener {
+                    primaryAction()
+                    dismiss()
+                }
+                setSecondaryCTAText(secondaryCTAText)
+                setSecondaryCTAClickListener {
+                    secondaryAction()
+                    dismiss()
+                }
+            }.show()
+        }
+    }
+
+    private fun showStoriesDurationCoachmark() {
+        context?.let {
+            if (mCoachMark == null) {
+                mCoachMark = CoachMark2(it).apply {
+                    onDismissListener = {
+                        viewModel.submitAction(StoriesUiAction.HasSeenDurationCoachMark)
+                    }
+                }
+            }
+
+            if (mCoachMark?.isShowing != true) {
+                binding.vStoriesPartner.tvStoriesTimestamp.doOnLayout { storiesTimestamp ->
+                    mCoachMark?.showCoachMark(
+                        arrayListOf(
+                            CoachMark2Item(
+                                storiesTimestamp,
+                                getString(storiesR.string.story_manual_duration_coachmark_title),
+                                getString(storiesR.string.story_manual_duration_coachmark_subtitle),
+                                CoachMark2.POSITION_TOP
+                            )
+                        )
+                    )
+                }
+            }
+        }
+    }
+
     companion object {
         private const val DELAY_SWIPE_PRODUCT_BADGE_SHOW = 2000L
+
+        private const val THIRTY = 30
+        private const val TWENTY_THREE = 23
+        private const val FIFTY_NINE = 59
+        private const val ONE = 1
+
 
         private const val VARIANT_BOTTOM_SHEET_TAG = "atc variant bottom sheet"
 

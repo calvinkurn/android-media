@@ -47,7 +47,7 @@
         "headerText": "Oops, yang kamu cari itu obat keras",
         "descriptionText": "Kamu bisa cari obat lain yang dijual bebas & berizin BPOM, ya.",
         "imageURL": "https://images.tokopedia.net/img/jbZAUJ/2022/1/14/401ff07b-464e-4898-b46e-7ee5a1552b8d.png",
-        "ctaURL": "https://seller.tokopedia.com/edu/produk-yang-dilarang/",
+        "ctaApplink": "https://seller.tokopedia.com/edu/produk-yang-dilarang/",
         "buttonText": "Pelajari Selengkapnya",
         "buttonType": "ghostMain"
       }

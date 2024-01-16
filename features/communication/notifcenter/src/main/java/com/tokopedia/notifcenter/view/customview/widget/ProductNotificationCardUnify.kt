@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImageWithError
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
@@ -21,8 +22,8 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 
 class ProductNotificationCardUnify(
-        context: Context,
-        attrs: AttributeSet?
+    context: Context,
+    attrs: AttributeSet?
 ) : CardUnify(context, attrs) {
 
     private var thumbnail: ImageView? = null
@@ -44,14 +45,6 @@ class ProductNotificationCardUnify(
     private var listener: NotificationItemListener? = null
     private var notification: NotificationUiModel? = null
     private var adapterPosition: Int? = null
-
-    /**
-     * Same color if dark mode
-     */
-    private var color: Int = MethodChecker.getColor(
-            context, com.tokopedia.unifyprinciples.R.color.Unify_NN950_68
-    )
-    private var colorString = "#" + Integer.toHexString(color)
 
     init {
         initView()
@@ -112,13 +105,15 @@ class ProductNotificationCardUnify(
     }
 
     private fun bindImpressionTrack(
-            notification: NotificationUiModel?,
-            product: ProductData
+        notification: NotificationUiModel?,
+        product: ProductData
     ) {
         if (notification == null) return
         productContainer?.addOnImpressionListener(product.impressHolder) {
             listener?.trackProductImpression(
-                    notification, product, adapterPosition ?: 0
+                notification,
+                product,
+                adapterPosition ?: 0
             )
         }
     }
@@ -148,14 +143,13 @@ class ProductNotificationCardUnify(
     }
 
     private fun bindThumbnailLabel(product: ProductData) {
-        if (product.hasEmptyStock() ||
-            product.isEmptyButton() ||
-            product.isReminderButton() ||
-            product.isWishlistButton()
+        if (product.label.title.isNotBlank() &&
+            product.label.color.isNotBlank()
         ) {
             thumbnailLabel?.show()
             thumbnailLabel?.unlockFeature = true
-            thumbnailLabel?.setLabelType(colorString)
+            thumbnailLabel?.setLabelType(product.label.color.toIntOrZero())
+            thumbnailLabel?.setLabel(product.label.title)
         } else {
             thumbnailLabel?.hide()
         }
@@ -173,7 +167,8 @@ class ProductNotificationCardUnify(
         val notification = notification
         val adapterPosition = adapterPosition
         if (product.isReminderButton() && !product.hasReminder &&
-            notification != null && adapterPosition != null) {
+            notification != null && adapterPosition != null
+        ) {
             btnReminder?.show()
             bindBumpReminderState(product)
             btnReminder?.setOnClickListener {
@@ -193,7 +188,8 @@ class ProductNotificationCardUnify(
         val notification = notification
         val adapterPosition = adapterPosition
         if (product.isReminderButton() && product.hasReminder &&
-            notification != null && adapterPosition != null) {
+            notification != null && adapterPosition != null
+        ) {
             btnDeleteReminder?.show()
             bindDeleteReminderState(product)
             btnDeleteReminder?.setOnClickListener {
@@ -218,7 +214,7 @@ class ProductNotificationCardUnify(
             btnAddToWishlist?.hide()
         }
         btnAddToWishlist?.setOnClickListener {
-            if(notification != null && adapterPosition != null) {
+            if (notification != null && adapterPosition != null) {
                 listener?.addToWishlist(notification, product, adapterPosition)
                 product.isWishlist = true
                 btnAddToWishlist?.hide()
@@ -257,7 +253,7 @@ class ProductNotificationCardUnify(
     }
 
     private fun bindProductVariant(product: ProductData) {
-        val showVariant = productVariant?.setupVariant(product.variant)?: false
+        val showVariant = productVariant?.setupVariant(product.variant) ?: false
         if (showVariant) {
             productVariant?.show()
         } else {
@@ -284,7 +280,7 @@ class ProductNotificationCardUnify(
 
     private fun bindProductClick(product: ProductData) {
         setOnClickListener {
-            notification?.let{
+            notification?.let {
                 listener?.onProductClicked(it, product, adapterPosition ?: 0)
             }
         }

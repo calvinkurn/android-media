@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTrackingConstants.SCREEN_NAME_SHOP_REVIEW
+import com.tokopedia.review.feature.reading.data.Keyword
 import com.tokopedia.reviewcommon.constant.AnalyticConstant
 import com.tokopedia.reviewcommon.extension.appendBusinessUnit
 import com.tokopedia.reviewcommon.extension.appendCurrentSite
@@ -692,5 +693,90 @@ object ReadReviewTracking {
             .appendTrackerIdIfNotBlank(ReadReviewTrackingConstants.TRACKER_ID_CLICK_REVIEWER_NAME)
             .sendGeneralEvent()
     }
-}
 
+    fun trackOnClickChipTopicExtraction(
+        productId: String,
+        position: Int,
+        keyword: Keyword,
+        isActive: Boolean,
+        userId: String,
+        trackingQueue: TrackingQueue
+    ) {
+        val mapEvent = hashMapOf<String, Any>(
+            "event" to "promoClick",
+            "eventAction" to "click - chip on review chips filter",
+            "eventCategory" to "product detail page - review",
+            "eventLabel" to "",
+            "trackerId" to "48627",
+            "businessUnit" to "product detail page",
+            "currentSite" to "tokopediamarketplace",
+            "productId" to productId,
+            "ecommerce" to hashMapOf(
+                "promoClick" to hashMapOf(
+                    "promotions" to arrayListOf(
+                        hashMapOf(
+                            "creative_name" to "is_active:$isActive",
+                            "creative_slot" to "position:$position",
+                            "item_id" to "keyword_text:${keyword.text}",
+                            "item_name" to "keyword_count:${keyword.count};"
+                        )
+                    )
+                )
+            ),
+            "userId" to userId
+        )
+        trackingQueue.putEETracking(mapEvent)
+    }
+
+    fun trackOnImpressChipTopicExtraction(
+        productId: String,
+        position: Int,
+        keyword: Keyword,
+        userId: String,
+        trackingQueue: TrackingQueue
+    ) {
+        val mapEvent = hashMapOf<String, Any>(
+            "event" to "promoView",
+            "eventAction" to "impression - review chips filter",
+            "eventCategory" to "product detail page - review",
+            "eventLabel" to "",
+            "trackerId" to "48633",
+            "businessUnit" to "product detail page",
+            "currentSite" to "tokopediamarketplace",
+            "productId" to productId,
+            "ecommerce" to hashMapOf(
+                "promoView" to hashMapOf(
+                    "promotions" to arrayListOf(
+                        hashMapOf(
+                            "creative_name" to "null",
+                            "creative_slot" to "position:$position",
+                            "item_id" to "keyword_text:${keyword.text}",
+                            "item_name" to "keyword_count:${keyword.count}"
+                        )
+                    )
+                )
+            ),
+            "userId" to userId
+        )
+        trackingQueue.putEETracking(mapEvent)
+    }
+
+    fun onClickLihatSemuaTopicExtraction(
+        productId: String,
+        userId: String
+    ) {
+        val mapEvent = hashMapOf<String, Any>(
+            "event" to "clickPG",
+            "eventAction" to "click - lihat semua on review chips filter",
+            "eventCategory" to "product detail page - review",
+            "eventLabel" to "",
+            "trackerId" to "48620",
+            "businessUnit" to "product detail page",
+            "currentSite" to "tokopediamarketplace",
+            "productId" to productId,
+            "userId" to userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
+}

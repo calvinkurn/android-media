@@ -1,0 +1,28 @@
+{
+  "readme": "Content Creation Entry Point from Feed Page Trackers",
+  "mode": "subset",
+  "query": [
+    {
+      "businessUnit": "content",
+      "eventCategory": "unified feed",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickContent",
+      "userId": ".*",
+      "eventAction": "click - lanjut content creation",
+      "sessionIris": ".*",
+      "eventLabel": ".* - .* - .*",
+      "trackerId": "47965"
+    },
+    {
+      "businessUnit": "content",
+      "eventCategory": "unified feed",
+      "currentSite": "tokopediamarketplace",
+      "event": "viewContentIris",
+      "userId": ".*",
+      "eventAction": "view - content creation selection page",
+      "sessionIris": ".*",
+      "eventLabel": ".* - .*",
+      "trackerId": "47966"
+    }
+  ]
+}

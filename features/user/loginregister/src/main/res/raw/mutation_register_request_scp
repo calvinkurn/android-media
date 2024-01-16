@@ -1,0 +1,22 @@
+mutation register($reg_type: String!, $fullname: String, $email: String, $password: String, $os_type: String, $goto_verification_token: String!) {
+    register(input: {
+        reg_type: $reg_type
+        fullname: $fullname
+        email: $email
+        password: $password
+        os_type: $os_type
+        goto_verification_token:$goto_verification_token
+    }) {
+        user_id
+        sid
+        access_token
+        refresh_token
+        token_type
+        is_active
+        action
+        errors {
+            name
+            message
+        }
+    }
+}

@@ -126,7 +126,6 @@ class MixLeftComponentViewHolder (itemView: View,
             channelModel = element.channelModel,
             dividerTop = binding?.homeComponentDividerHeader,
             dividerBottom = binding?.homeComponentDividerFooter,
-            useBottomPadding = element.channelModel.channelConfig.borderStyle == ChannelStyleUtil.BORDER_STYLE_BLEEDING
         )
     }
 

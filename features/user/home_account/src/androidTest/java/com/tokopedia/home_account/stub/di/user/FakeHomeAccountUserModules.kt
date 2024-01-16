@@ -6,10 +6,12 @@ import android.preference.PreferenceManager
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.applink.user.DeeplinkMapperUser.ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE
 import com.tokopedia.applink.user.DeeplinkMapperUser.ROLLENCE_PRIVACY_CENTER
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.home_account.AccountConstants.RollenceKey.BIOMETRIC_ENTRY_POINT
 import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.stub.data.GraphqlRepositoryStub
 import com.tokopedia.home_account.stub.domain.FakeUserSession
@@ -17,7 +19,7 @@ import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
 import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE
+import com.tokopedia.remoteconfig.RemoteConfigKey.FORCE_LIGHT_MODE
 import com.tokopedia.remoteconfig.RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
@@ -63,7 +65,7 @@ class FakeHomeAccountUserModules(val context: Context) {
     fun provideRemoteConfig(@ApplicationContext context: Context?): RemoteConfig {
         return mockk(relaxed = true) {
             every { getBoolean(HomeAccountUserFragment.REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT, any()) } returns true
-            every { getBoolean(SETTING_SHOW_DARK_MODE_TOGGLE, any()) } returns true
+            every { getBoolean(FORCE_LIGHT_MODE, any()) } returns false
             every { getBoolean(SETTING_SHOW_SCREEN_RECORDER, any()) } returns true
         }
     }
@@ -104,6 +106,8 @@ class FakeHomeAccountUserModules(val context: Context) {
         return mockk() {
             every { getString(ROLLENCE_PRIVACY_CENTER) } returns ""
             every { getString(OCL_ROLLENCE, any()) } returns ""
+            every { getString(BIOMETRIC_ENTRY_POINT, any()) } returns "true"
+            every { getString(ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE) } returns "true"
         }
     }
 

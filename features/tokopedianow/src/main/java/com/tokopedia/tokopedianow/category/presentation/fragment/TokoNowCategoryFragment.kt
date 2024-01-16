@@ -331,7 +331,7 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
 
             analytic.categoryTitleAnalytics.sendClickMoreCategoriesEvent(
                 categoryIdL1 = categoryIdL1,
-                warehouseId = viewModel.getWarehouseId()
+                warehouseIds = viewModel.getWarehouseIds()
             )
         }
     }
@@ -344,7 +344,7 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
             analytic.categoryNavigationAnalytic.sendClickCategoryNavigationEvent(
                 categoryIdL1 = categoryIdL1,
                 categoryIdL2 = data.id,
-                warehouseId = viewModel.getWarehouseId()
+                warehouseIds = viewModel.getWarehouseIds()
             )
         }
 
@@ -355,7 +355,7 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
             analytic.categoryNavigationAnalytic.sendImpressionCategoryNavigationEvent(
                 categoryIdL1 = categoryIdL1,
                 categoryIdL2 = data.id,
-                warehouseId = viewModel.getWarehouseId()
+                warehouseIds = viewModel.getWarehouseIds()
             )
         }
 
@@ -410,7 +410,7 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
                 headerName = product.headerName,
                 index = position.getTrackerPosition(),
                 productId = product.productCardModel.productId,
-                productWarehouseId = viewModel.getWarehouseId(),
+                productWarehouseId = product.productCardModel.warehouseId,
                 isOos = product.productCardModel.isOos(),
                 name = product.productCardModel.name,
                 price = product.productCardModel.price.getDigits()?.toLong().orZero()
@@ -425,7 +425,7 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
             headerName = product.headerName,
             index = position.getTrackerPosition(),
             productId = product.productCardModel.productId,
-            productWarehouseId = viewModel.getWarehouseId(),
+            productWarehouseId = product.productCardModel.warehouseId,
             isOos = product.productCardModel.isOos(),
             name = product.productCardModel.name,
             price = product.productCardModel.price.getDigits()?.toLong().orZero()
@@ -448,7 +448,7 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
                 categoryIdL1 = categoryIdL1,
                 categoryIdL2 = widgetId,
                 headerName = headerName,
-                warehouseId = viewModel.getWarehouseId()
+                warehouseIds = viewModel.getWarehouseIds()
             )
         }
 
@@ -467,7 +467,7 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
             categoryIdL1 = categoryIdL1,
             categoryRecomIdL1 = data.id,
             headerName = data.headerName,
-            warehouseId = viewModel.getWarehouseId()
+            warehouseIds = viewModel.getWarehouseIds()
         )
 
         override fun onCategoryMenuItemImpressed(
@@ -477,7 +477,7 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
             categoryIdL1 = categoryIdL1,
             categoryRecomIdL1 = data.id,
             headerName = data.headerName,
-            warehouseId = viewModel.getWarehouseId()
+            warehouseIds = viewModel.getWarehouseIds()
         )
 
         override fun onCategoryMenuWidgetImpression(data: TokoNowCategoryMenuUiModel) { /* nothing to do */ }
@@ -490,7 +490,7 @@ class TokoNowCategoryFragment : BaseCategoryFragment() {
 
         override fun onClickChooseAddressWidgetTracker() = analytic.sendClickWidgetChooseAddressEvent(
             categoryIdL1 = categoryIdL1,
-            warehouseId = viewModel.getWarehouseId()
+            warehouseIds = viewModel.getWarehouseIds()
         )
     }
 

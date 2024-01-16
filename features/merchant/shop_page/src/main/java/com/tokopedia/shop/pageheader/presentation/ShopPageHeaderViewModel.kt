@@ -12,7 +12,6 @@ import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
-import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
@@ -50,7 +49,6 @@ import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase.Companion.SOURCE_SHOP_PAGE
 import com.tokopedia.shop.common.domain.interactor.ShopQuestGeneralTrackerUseCase
 import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
-import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
@@ -60,7 +58,6 @@ import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.NewShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
-import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterAuthorConfig
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageHeaderLayoutUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageP1DataUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.ShopModerateRequestStatusUseCase
@@ -91,7 +88,6 @@ class ShopPageHeaderViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     @GqlGetShopInfoForHeaderUseCaseQualifier
     private val gqlGetShopInfoForHeaderUseCase: Lazy<GQLGetShopInfoUseCase>,
-    private val getBroadcasterAuthorConfig: Lazy<GetBroadcasterAuthorConfig>,
     @GqlGetShopInfoUseCaseCoreAndAssetsQualifier
     private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
     private val shopQuestGeneralTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
@@ -106,7 +102,6 @@ class ShopPageHeaderViewModel @Inject constructor(
     private val affiliateEligibilityCheckUseCase: Lazy<AffiliateEligibilityCheckUseCase>,
     private val sharedPreferences: SharedPreferences,
     private val dispatcherProvider: CoroutineDispatchers,
-    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig
 ) :
     BaseViewModel(dispatcherProvider.main) {
 
@@ -134,7 +129,8 @@ class ShopPageHeaderViewModel @Inject constructor(
     var homeWidgetLayoutData: HomeLayoutData = HomeLayoutData()
     val shopImagePath = MutableLiveData<String>()
 
-    private val _shopUnmoderateData = MutableLiveData<Result<ShopRequestUnmoderateSuccessResponse>>()
+    private val _shopUnmoderateData =
+        MutableLiveData<Result<ShopRequestUnmoderateSuccessResponse>>()
     val shopUnmoderateData: LiveData<Result<ShopRequestUnmoderateSuccessResponse>>
         get() = _shopUnmoderateData
 
@@ -149,10 +145,6 @@ class ShopPageHeaderViewModel @Inject constructor(
     private val _followShopData = MutableLiveData<Result<FollowShopResponse>>()
     val followShopData: LiveData<Result<FollowShopResponse>>
         get() = _followShopData
-
-    private val _shopSellerPLayWidgetData = MutableLiveData<Result<Broadcaster.Config>>()
-    val shopSellerPLayWidgetData: LiveData<Result<Broadcaster.Config>>
-        get() = _shopSellerPLayWidgetData
 
     private val _shopPageTickerData = MutableLiveData<Result<ShopPageHeaderTickerData>>()
     val shopPageHeaderTickerData: LiveData<Result<ShopPageHeaderTickerData>>
@@ -179,6 +171,7 @@ class ShopPageHeaderViewModel @Inject constructor(
         widgetUserAddressLocalData: LocalCacheModel,
         extParam: String,
         tabName: String,
+        connectionType: String,
         shopPageColorSchemaDefaultConfigColor: Map<ShopPageColorSchema.ColorSchemaName, String> = mapOf(),
         isEnableShopReimagined: Boolean
     ) {
@@ -192,7 +185,8 @@ class ShopPageHeaderViewModel @Inject constructor(
                         isRefresh = isRefresh,
                         extParam = extParam,
                         widgetUserAddressLocalData = widgetUserAddressLocalData,
-                        tabName = tabName
+                        tabName = tabName,
+                        connectionType = connectionType
                     )
                 },
                 onError = {
@@ -307,7 +301,8 @@ class ShopPageHeaderViewModel @Inject constructor(
         isRefresh: Boolean,
         extParam: String,
         widgetUserAddressLocalData: LocalCacheModel,
-        tabName: String
+        tabName: String,
+        connectionType: String
     ): NewShopPageHeaderP1 {
         val useCase = getShopPageP1DataUseCase.get()
         useCase.isFromCacheFirst = !isRefresh
@@ -316,7 +311,8 @@ class ShopPageHeaderViewModel @Inject constructor(
             shopDomain = shopDomain,
             extParam = extParam,
             widgetUserAddressLocalData = widgetUserAddressLocalData,
-            tabName = tabName
+            tabName = tabName,
+            connectionType = connectionType
         )
         return useCase.executeOnBackground()
     }
@@ -324,7 +320,8 @@ class ShopPageHeaderViewModel @Inject constructor(
     fun checkShopRequestModerateStatus() {
         launchCatchError(dispatcherProvider.io, {
             val shopModerateRequestStatusUseCase = shopModerateRequestStatusUseCase.get()
-            val shopModerateRequestStatusResponse = shopModerateRequestStatusUseCase.executeOnBackground()
+            val shopModerateRequestStatusResponse =
+                shopModerateRequestStatusUseCase.executeOnBackground()
             _shopModerateRequestStatus.postValue(Success(shopModerateRequestStatusResponse))
         }) {
             _shopModerateRequestStatus.postValue(Fail(it))
@@ -367,8 +364,8 @@ class ShopPageHeaderViewModel @Inject constructor(
                 )
             }
         }, onError = {
-                it.printStackTrace()
-            })
+            it.printStackTrace()
+        })
     }
 
     fun sendShopShareTracker(shopId: String, channel: String) {
@@ -387,11 +384,6 @@ class ShopPageHeaderViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getShopBroadcasterConfig(shopId: String): Broadcaster.Config {
-        getBroadcasterAuthorConfig.get().params = GetBroadcasterAuthorConfig.createParams(shopId)
-        return getBroadcasterAuthorConfig.get().executeOnBackground()
-    }
-
     fun getFollowStatusData(shopId: String, followButtonVariantType: String) {
         launchCatchError(dispatcherProvider.io, block = {
             val pageSource = when (followButtonVariantType) {
@@ -399,13 +391,15 @@ class ShopPageHeaderViewModel @Inject constructor(
                     // set empty page source to get voucher icon white color
                     ""
                 }
+
                 else -> SOURCE_SHOP_PAGE
             }
-            getFollowStatusUseCase.get().params = GetFollowStatusUseCase.createParams(shopId, pageSource)
+            getFollowStatusUseCase.get().params =
+                GetFollowStatusUseCase.createParams(shopId, pageSource)
             _followStatusData.postValue(Success(getFollowStatusUseCase.get().executeOnBackground()))
         }, onError = {
-                _followStatusData.postValue(Fail(it))
-            })
+            _followStatusData.postValue(Fail(it))
+        })
     }
 
     fun updateFollowStatus(shopId: String, action: String) {
@@ -415,11 +409,16 @@ class ShopPageHeaderViewModel @Inject constructor(
         }
 
         launchCatchError(dispatcherProvider.io, block = {
-            updateFollowStatusUseCase.get().params = UpdateFollowStatusUseCase.createParams(shopId, action)
-            _followShopData.postValue(Success(updateFollowStatusUseCase.get().executeOnBackground()))
+            updateFollowStatusUseCase.get().params =
+                UpdateFollowStatusUseCase.createParams(shopId, action)
+            _followShopData.postValue(
+                Success(
+                    updateFollowStatusUseCase.get().executeOnBackground()
+                )
+            )
         }, onError = {
-                _followShopData.postValue(Fail(it))
-            })
+            _followShopData.postValue(Fail(it))
+        })
     }
 
     fun getShopShareAndOperationalHourStatusData(
@@ -479,29 +478,24 @@ class ShopPageHeaderViewModel @Inject constructor(
                 }
                 _shopPageShopShareData.postValue(Success(shopInfo))
                 shopOperationalHourStatusData.await()?.let { shopOperationalHourStatus ->
-                    _shopPageTickerData.postValue(Success(ShopPageHeaderTickerData(shopInfo, shopOperationalHourStatus)))
+                    _shopPageTickerData.postValue(
+                        Success(
+                            ShopPageHeaderTickerData(
+                                shopInfo,
+                                shopOperationalHourStatus
+                            )
+                        )
+                    )
                 }
             }
         }) {}
     }
 
-    fun getSellerPlayWidgetData(shopId: String) {
-        launchCatchError(dispatcherProvider.io, block = {
-            var broadcasterConfig: Broadcaster.Config = Broadcaster.Config()
-            if (isMyShop(shopId = shopId)) {
-                broadcasterConfig = getShopBroadcasterConfig(shopId)
-                broadcasterConfig = broadcasterConfig.copy(
-                    shortVideoAllowed = broadcasterConfig.shortVideoAllowed && playShortsEntryPointRemoteConfig.isShowEntryPoint()
-                )
-            }
-            _shopSellerPLayWidgetData.postValue(Success(broadcasterConfig))
-        }) {
-            val broadcasterConfig = Broadcaster.Config()
-            _shopSellerPLayWidgetData.postValue(Success(broadcasterConfig))
-        }
-    }
-
-    private suspend fun getShopInfoHeader(shopId: Int, shopDomain: String, refresh: Boolean): ShopInfo {
+    private suspend fun getShopInfoHeader(
+        shopId: Int,
+        shopDomain: String,
+        refresh: Boolean
+    ): ShopInfo {
         gqlGetShopInfoForHeaderUseCase.get().isFromCacheFirst = !refresh
         gqlGetShopInfoForHeaderUseCase.get().params = GQLGetShopInfoUseCase.createParams(
             if (shopId == 0) listOf() else listOf(shopId),

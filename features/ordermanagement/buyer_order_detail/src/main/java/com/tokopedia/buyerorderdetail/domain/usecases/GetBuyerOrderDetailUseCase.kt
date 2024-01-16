@@ -87,6 +87,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   badge_url
                 }
                 shipment {
+                  title
                   shipping_name
                   shipping_product_name
                   shipping_display_name
@@ -508,6 +509,26 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     title
                     description
                   }
+                  plus_savings {
+                    ticker {
+                      left
+                      right
+                      image_url
+                    }
+                    components {
+                      details {
+                        label
+                        value
+                        image_url
+                      }
+                      footer {
+                        total {
+                          label
+                          value
+                        }
+                      }
+                    }
+                  }
                   epharmacy_data {
                     consultation_name
                     consultation_date
@@ -517,6 +538,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     consultation_patient_name
                   }
                 }
+                is_plus
                 is_pof
                 has_ppp
               }

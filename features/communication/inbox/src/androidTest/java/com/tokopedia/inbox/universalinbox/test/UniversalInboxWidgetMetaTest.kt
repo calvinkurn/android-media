@@ -175,8 +175,8 @@ class UniversalInboxWidgetMetaTest : BaseUniversalInboxTest() {
         // Given
         ApiResponseStub.channelListResponse.responseEditor = {
             var result = it
-            result = result.replace("9223372036854775807", "0")
-            result = result.replace("9223372036854775806", "0")
+            result = result.replace("9223372036854775807", "1")
+            result = result.replace("9223372036854775806", "1")
             result
         }
 

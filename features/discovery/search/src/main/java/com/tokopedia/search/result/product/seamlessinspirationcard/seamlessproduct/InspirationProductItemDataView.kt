@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.product.seamlessinspirationcard.seamlessproduct
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -11,6 +10,8 @@ import com.tokopedia.search.result.presentation.model.StockBarDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option.Product
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS_PRODUCT
 import com.tokopedia.search.result.product.productitem.ProductItemVisitable
 import com.tokopedia.search.result.product.wishlist.Wishlistable
 import com.tokopedia.search.utils.getFormattedPositionName
@@ -44,8 +45,16 @@ data class InspirationProductItemDataView(
     val discountPercentage: Int = 0,
     val externalReference: String = "",
     val stockBarDataView: StockBarDataView = StockBarDataView(),
-    val warehouseID: String = ""
+    val warehouseID: String = "",
+    val layout: String = "",
 ) : ImpressHolder(), ProductItemVisitable, Wishlistable {
+
+    val isShowAdsLabel: Boolean =
+        isOrganicAds && layout != LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS_PRODUCT
+
+    override fun isCountedAsProductItem(): Boolean {
+        return layout == LAYOUT_INSPIRATION_CAROUSEL_SEAMLESS
+    }
 
     override fun setWishlist(productID: String, isWishlisted: Boolean) {
         if (this.id == productID) {
@@ -106,7 +115,8 @@ data class InspirationProductItemDataView(
             discountPercentage = product.discountPercentage,
             externalReference = externalReference,
             stockBarDataView = product.stockBarDataView,
-            warehouseID = product.warehouseID
+            warehouseID = product.warehouseID,
+            layout = product.layout,
         )
     }
 

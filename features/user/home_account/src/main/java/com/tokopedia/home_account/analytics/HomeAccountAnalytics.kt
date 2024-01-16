@@ -26,7 +26,6 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_TOKOPEDIA_PAY
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_CLICK_TOKOPOINTS
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_IMPRESSION_PRODUCT_RECOMMENDATION
-import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_SIMPAN_THEME_SELECTION
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_VIEW_ON_ACCOUNT_SAYA_PAGE
 import com.tokopedia.home_account.AccountConstants.Analytics.Action.ACTION_VIEW_OVO_HOMEPAGE
 import com.tokopedia.home_account.AccountConstants.Analytics.BusinessUnit.HOME_AND_BROWSE
@@ -78,7 +77,6 @@ import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_BANK_AC
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_CLEAN_CACHE
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_CLICK
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_CONNECT
-import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_CONNECTED_ACC
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_DISABLE
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_EMPTY
 import com.tokopedia.home_account.AccountConstants.Analytics.Label.LABEL_ENABLE
@@ -123,7 +121,7 @@ import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 
 /**
@@ -732,19 +730,6 @@ class HomeAccountAnalytics @Inject constructor(val userSession: UserSessionInter
         map[EVENT_CURRENT_SITE] = TOKOPEDIA_MARKETPLACE_SITE
         map[EVENT_USER_ID] = userSession.userId
         analytics.sendGeneralEvent(map)
-    }
-
-    fun eventClickThemeSetting(isDarkMode: Boolean) {
-        val label: String = if (isDarkMode) "dark" else "light"
-        val analytics: Analytics = TrackApp.getInstance().gtm
-        analytics.sendGeneralEvent(
-            TrackAppUtils.gtmData(
-                EVENT_CLICK_SETTING,
-                CATEGORY_SETTING_PAGE,
-                ACTION_SIMPAN_THEME_SELECTION,
-                label
-            )
-        )
     }
 
     fun trackClickBackLinkAccount() {

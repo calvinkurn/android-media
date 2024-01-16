@@ -12,6 +12,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingConstant
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.DividerUiModel
@@ -29,12 +31,13 @@ import com.tokopedia.sellerhome.settings.analytics.SocialMediaLinksTracker
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.MenuSettingAccess
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
+import java.util.Date
+import com.tokopedia.seller.menu.common.R as sellermenucommonR
 
 class MenuSettingAdapter(
     private val context: Context?,
+    private val remoteConfig: RemoteConfig,
     private val listener: Listener,
-    private val isShowScreenRecorder: Boolean,
     typeFactory: OtherMenuAdapterTypeFactory
 ) : BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>(typeFactory) {
 
@@ -59,7 +62,7 @@ class MenuSettingAdapter(
             menuList.add(SettingLoadingUiModel)
         }
         menuList.addAll(getOtherSettingList())
-        if (isShowScreenRecorder)
+        if (isShowScreenRecorder())
             menuList.add(
                 menuList.size - SCREEN_RECORDER_INDEX_FROM_LAST, MenuItemUiModel(
                     context?.getString(R.string.setting_screen_recorder).orEmpty(),
@@ -106,15 +109,15 @@ class MenuSettingAdapter(
     private fun getSettingList() =
         listOf(
             SettingTitleMenuUiModel(
-                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_setting)
+                context?.getString(sellermenucommonR.string.setting_menu_shop_setting)
                     .orEmpty(), IconUnify.SHOP_SETTING
             ),
             IndentedSettingTitleUiModel(
-                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_profile)
+                context?.getString(sellermenucommonR.string.setting_menu_shop_profile)
                     .orEmpty()
             ),
             MenuItemUiModel(
-                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_basic_info)
+                context?.getString(sellermenucommonR.string.setting_menu_basic_info)
                     .orEmpty(),
                 settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                 clickAction = {
@@ -124,7 +127,7 @@ class MenuSettingAdapter(
                     )
                 }),
             MenuItemUiModel(
-                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_notes)
+                context?.getString(sellermenucommonR.string.setting_menu_shop_notes)
                     .orEmpty(),
                 settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                 clickAction = {
@@ -134,7 +137,7 @@ class MenuSettingAdapter(
                     )
                 }),
             MenuItemUiModel(
-                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_shop_working_hours)
+                context?.getString(sellermenucommonR.string.setting_menu_shop_working_hours)
                     .orEmpty(),
                 settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                 clickAction = {
@@ -145,11 +148,11 @@ class MenuSettingAdapter(
                 }),
             DividerUiModel(DividerType.THIN_INDENTED),
             IndentedSettingTitleUiModel(
-                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_location_and_shipment)
+                context?.getString(sellermenucommonR.string.setting_menu_location_and_shipment)
                     .orEmpty()
             ),
             MenuItemUiModel(
-                context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_set_shipment_method)
+                context?.getString(sellermenucommonR.string.setting_menu_set_shipment_method)
                     .orEmpty(),
                 settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                 trackingAlias = SHIPPING_SERVICE_ALIAS,
@@ -205,21 +208,21 @@ class MenuSettingAdapter(
 
     private fun getExpectedMultiLocMenuIndex(): Int? {
         return visitables.indexOfFirst {
-            it is IndentedSettingTitleUiModel && it.settingTitle == context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_location_and_shipment)
+            it is IndentedSettingTitleUiModel && it.settingTitle == context?.getString(sellermenucommonR.string.setting_menu_location_and_shipment)
                 .orEmpty()
         }.takeIf { it != RecyclerView.NO_POSITION }?.plus(Int.ONE)
     }
 
     private fun getCurrentMultiLocMenuIndex(): Int? {
         return visitables.indexOfFirst {
-            it is MenuItemUiModel && it.title == context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_add_and_shop_location)
+            it is MenuItemUiModel && it.title == context?.getString(sellermenucommonR.string.setting_menu_add_and_shop_location)
                 .orEmpty()
         }.takeIf { it != RecyclerView.NO_POSITION }?.plus(Int.ONE)
     }
 
     private fun getMultiLocationUiModel(): MenuItemUiModel {
         return MenuItemUiModel(
-            context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_add_and_shop_location)
+            context?.getString(sellermenucommonR.string.setting_menu_add_and_shop_location)
                 .orEmpty(),
             settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
             clickAction = {
@@ -297,7 +300,20 @@ class MenuSettingAdapter(
                 MenuItemUiModel(
                     title = context?.getString(R.string.setting_menu_give_feedback).orEmpty(),
                     settingTypeInfix = SettingTrackingConstant.APP_SETTING
-                ) { listener.onGiveFeedback() },
+                ) { listener.onGiveFeedback() }
+            )
+        )
+        if (shouldShowDarkModeEntryPoint()) {
+            menuList.add(
+                MenuItemUiModel(
+                    title = context?.getString(R.string.setting_set_theme).orEmpty(),
+                    tag = context?.getString(R.string.setting_beta_tag).orEmpty(),
+                    clickApplink = ApplinkConstInternalGlobal.DARK_MODE_CONFIG
+                )
+            )
+        }
+        menuList.addAll(
+            listOf(
                 DividerUiModel(DividerType.THIN_INDENTED),
                 MenuItemUiModel(
                     title = context?.getString(R.string.sah_social_menu_title).orEmpty(),
@@ -314,6 +330,17 @@ class MenuSettingAdapter(
             )
         )
         return menuList
+    }
+
+    private fun shouldShowDarkModeEntryPoint(): Boolean {
+        return !remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE_SELLER_APP, true)
+    }
+
+    private fun isShowScreenRecorder(): Boolean {
+        return remoteConfig.getBoolean(
+            RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER,
+            false
+        )
     }
 
     interface Listener {

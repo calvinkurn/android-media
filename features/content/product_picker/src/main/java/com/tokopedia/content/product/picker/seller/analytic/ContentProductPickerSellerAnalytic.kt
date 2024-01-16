@@ -27,6 +27,8 @@ interface ContentProductPickerSellerAnalytic {
 
     fun clickProductSorting()
 
+    fun clickSortingTypeItem(sortName: String)
+
     fun clickProductSortingType(sortName: String)
 
     fun clickEtalaseCard(etalaseName: String)

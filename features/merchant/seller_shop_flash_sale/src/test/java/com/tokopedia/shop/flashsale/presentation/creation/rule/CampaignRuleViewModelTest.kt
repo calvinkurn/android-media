@@ -14,9 +14,7 @@ import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
 import io.mockk.coEvery
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Test
@@ -25,7 +23,7 @@ import java.util.*
 import java.util.Calendar.DATE
 import java.util.concurrent.TimeUnit
 
-class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
+class CampaignRuleViewModelTest : CampaignRuleViewModelTestFixture() {
 
     @Test
     fun `When fetchCampaignDetail success with no related campaigns, observer will receive the data for non-unique buyer and campaign rule submitted`() {
@@ -198,14 +196,14 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
                 val campaignId: Long = 1001
                 val campaign = CampaignDataGenerator.generateCampaignUiModel(
                     isUniqueBuyer = false,
-                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2),
+                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2)
                 )
                 val param = CampaignDataGenerator.generateCampaignCreationParam(
                     paymentType = null,
                     isTNCConfirmed = true,
                     isUniqueBuyer = false,
                     isCampaignRelation = true,
-                    campaignData = campaign,
+                    campaignData = campaign
                 )
                 val result = CampaignDataGenerator.generateCampaignCreationResult()
                 val response = Success(result)
@@ -238,14 +236,14 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
                 val campaignId: Long = 1001
                 val campaign = CampaignDataGenerator.generateCampaignUiModel(
                     isUniqueBuyer = false,
-                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2),
+                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2)
                 )
                 val param = CampaignDataGenerator.generateCampaignCreationParam(
                     paymentType = null,
                     isTNCConfirmed = true,
                     isUniqueBuyer = false,
                     isCampaignRelation = true,
-                    campaignData = campaign,
+                    campaignData = campaign
                 )
                 val result = CampaignDataGenerator.generateCampaignCreationResult(isSuccess = false)
                 val response = Success(result)
@@ -283,14 +281,14 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
                 val campaignId: Long = 1001
                 val campaign = CampaignDataGenerator.generateCampaignUiModel(
                     isUniqueBuyer = false,
-                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2),
+                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2)
                 )
                 val param = CampaignDataGenerator.generateCampaignCreationParam(
                     paymentType = null,
                     isTNCConfirmed = true,
                     isUniqueBuyer = false,
                     isCampaignRelation = true,
-                    campaignData = campaign,
+                    campaignData = campaign
                 )
                 val dummyThrowable = MessageErrorException("Error Occurred")
                 val expected =
@@ -345,7 +343,7 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
                 val campaignId: Long = 1001
                 val campaign = CampaignDataGenerator.generateCampaignUiModel(
                     isCampaignRuleSubmit = false,
-                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2),
+                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2)
                 )
                 val validationResult = CampaignRuleValidationResult.InvalidPaymentMethod
                 val expected = CampaignRuleActionResult.ValidationFail(validationResult)
@@ -372,14 +370,14 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
                 val campaignId: Long = 1001
                 val campaign = CampaignDataGenerator.generateCampaignUiModel(
                     isUniqueBuyer = false,
-                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2),
+                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2)
                 )
                 val param = CampaignDataGenerator.generateCampaignCreationParam(
                     paymentType = null,
                     isTNCConfirmed = true,
                     isUniqueBuyer = false,
                     isCampaignRelation = true,
-                    campaignData = campaign,
+                    campaignData = campaign
                 )
                 val creation = CampaignDataGenerator.generateCampaignCreationResult()
                 val expected = CampaignRuleActionResult.Success
@@ -413,14 +411,14 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
                 val campaignId: Long = 1001
                 val campaign = CampaignDataGenerator.generateCampaignUiModel(
                     isUniqueBuyer = false,
-                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2),
+                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2)
                 )
                 val param = CampaignDataGenerator.generateCampaignCreationParam(
                     paymentType = null,
                     isTNCConfirmed = true,
                     isUniqueBuyer = false,
                     isCampaignRelation = true,
-                    campaignData = campaign,
+                    campaignData = campaign
                 )
                 val creation =
                     CampaignDataGenerator.generateCampaignCreationResult(isSuccess = false)
@@ -461,7 +459,7 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
                 val campaign = CampaignDataGenerator.generateCampaignUiModel(
                     status = CampaignStatus.DRAFT,
                     isUniqueBuyer = false,
-                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2),
+                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2)
                 )
                 val result = CampaignDataGenerator.generateCampaignCreationEligibility()
                 val response = Success(result)
@@ -497,7 +495,7 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
                 val campaign = CampaignDataGenerator.generateCampaignUiModel(
                     status = CampaignStatus.DRAFT,
                     isUniqueBuyer = false,
-                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2),
+                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2)
                 )
                 val result =
                     CampaignDataGenerator.generateCampaignCreationEligibility(isEligible = false)
@@ -535,7 +533,7 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
                 val campaign = CampaignDataGenerator.generateCampaignUiModel(
                     status = CampaignStatus.DRAFT,
                     isUniqueBuyer = false,
-                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2),
+                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2)
                 )
                 val dummyThrowable = MessageErrorException("Error Occurred")
                 val expected =
@@ -569,7 +567,7 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
                 val campaignId: Long = 1001
                 val campaign = CampaignDataGenerator.generateCampaignUiModel(
                     isUniqueBuyer = false,
-                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2),
+                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2)
                 )
                 val param = CampaignDataGenerator.generateCampaignCreationParam(
                     paymentType = null,
@@ -577,7 +575,7 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
                     isUniqueBuyer = false,
                     isCampaignRelation = true,
                     campaignData = campaign,
-                    isUpdate = false,
+                    isUpdate = false
                 )
                 val creation = CampaignDataGenerator.generateCampaignCreationResult()
                 val expected = CampaignRuleActionResult.Success
@@ -610,7 +608,7 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
                 val campaignId: Long = 1001
                 val campaign = CampaignDataGenerator.generateCampaignUiModel(
                     isUniqueBuyer = false,
-                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2),
+                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2)
                 )
                 val param = CampaignDataGenerator.generateCampaignCreationParam(
                     paymentType = null,
@@ -618,7 +616,7 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
                     isUniqueBuyer = false,
                     isCampaignRelation = true,
                     campaignData = campaign,
-                    isUpdate = false,
+                    isUpdate = false
                 )
                 val creation =
                     CampaignDataGenerator.generateCampaignCreationResult(isSuccess = false)
@@ -682,8 +680,9 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
             with(viewModel) {
                 val campaignId: Long = 1001
                 val campaign = CampaignDataGenerator.generateCampaignUiModel(
-                    isUniqueBuyer = false, isCampaignRelation = false,
-                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2),
+                    isUniqueBuyer = false,
+                    isCampaignRelation = false,
+                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2)
                 )
                 val validationResult = CampaignRuleValidationResult.InvalidBuyerOptions
                 val expected = CampaignRuleActionResult.ValidationFail(validationResult)
@@ -712,7 +711,7 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
                 val campaignId: Long = 1001
                 val campaign = CampaignDataGenerator.generateCampaignUiModel(
                     isCampaignRuleSubmit = false,
-                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2),
+                    upcomingDate = DateUtil.getCurrentDate().addTimeToSpesificDate(DATE, 2)
                 )
                 val validationResult = CampaignRuleValidationResult.InvalidPaymentMethod
                 val expected = CampaignRuleActionResult.ValidationFail(validationResult)
@@ -1195,14 +1194,13 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
     @Test
     fun `check isRelatedCampaignValid output is false when relatedCampaignsValue is empty`() {
         runBlocking {
-
             val selectedPaymentType =
                 viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<PaymentType?>>("_selectedPaymentType")
             selectedPaymentType?.value = null
             val isUniqueBuyer =
                 viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isUniqueBuyer")
             isUniqueBuyer?.value = false
-            val isCampaignRelation=
+            val isCampaignRelation =
                 viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isCampaignRelation")
             isCampaignRelation?.value = false
             val relatedCampaigns =
@@ -1222,14 +1220,13 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
     @Test
     fun `check isRelatedCampaignValid output is false when relatedCampaignsValue is null`() {
         runBlocking {
-
-            val selectedPaymentType=
+            val selectedPaymentType =
                 viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<PaymentType?>>("_selectedPaymentType")
             selectedPaymentType?.value = null
-            val isUniqueBuyer=
+            val isUniqueBuyer =
                 viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isUniqueBuyer")
             isUniqueBuyer?.value = false
-            val isCampaignRelation=
+            val isCampaignRelation =
                 viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isCampaignRelation")
             isCampaignRelation?.value = false
             val relatedCampaigns =
@@ -1246,18 +1243,16 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
         }
     }
 
-
     @Test
     fun `check isRelatedCampaignValid output is false when relatedCampaignsValue is has one value`() {
         runBlocking {
-
-            val selectedPaymentType=
+            val selectedPaymentType =
                 viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<PaymentType?>>("_selectedPaymentType")
             selectedPaymentType?.value = null
             val isUniqueBuyer =
                 viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isUniqueBuyer")
             isUniqueBuyer?.value = false
-            val isCampaignRelation=
+            val isCampaignRelation =
                 viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isCampaignRelation")
             isCampaignRelation?.value = false
             val relatedCampaigns =
@@ -1277,13 +1272,13 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
     @Test
     fun `check validateCampaignRuleInput output is BothSectionsInvalid`() {
         runBlocking {
-            val selectedPaymentType=
+            val selectedPaymentType =
                 viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<PaymentType?>>("_selectedPaymentType")
             selectedPaymentType?.value = null
-            val isUniqueBuyer=
+            val isUniqueBuyer =
                 viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isUniqueBuyer")
             isUniqueBuyer?.value = false
-            val isCampaignRelation=
+            val isCampaignRelation =
                 viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isCampaignRelation")
             isCampaignRelation?.value = false
             val relatedCampaigns =
@@ -1309,13 +1304,13 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
     @Test
     fun `check validateCampaignRuleInput output is InvalidPaymentMethod`() {
         runBlocking {
-            val selectedPaymentType=
+            val selectedPaymentType =
                 viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<PaymentType?>>("_selectedPaymentType")
             selectedPaymentType?.value = null
-            val isUniqueBuyer=
+            val isUniqueBuyer =
                 viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isUniqueBuyer")
             isUniqueBuyer?.value = true
-            val isCampaignRelation=
+            val isCampaignRelation =
                 viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isCampaignRelation")
             isCampaignRelation?.value = false
             val relatedCampaigns =
@@ -1341,16 +1336,16 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
     @Test
     fun `check validateCampaignRuleInput output is TNCNotAccepted`() {
         runBlocking {
-            val selectedPaymentType=
+            val selectedPaymentType =
                 viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<PaymentType?>>("_selectedPaymentType")
             selectedPaymentType?.value = PaymentType.INSTANT
-            val isUniqueBuyer=
+            val isUniqueBuyer =
                 viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isUniqueBuyer")
             isUniqueBuyer?.value = true
-            val isCampaignRelation=
+            val isCampaignRelation =
                 viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isCampaignRelation")
             isCampaignRelation?.value = false
-            val relatedCampaigns=
+            val relatedCampaigns =
                 viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<List<RelatedCampaign>?>>(
                     "_relatedCampaigns"
                 )
@@ -1375,16 +1370,16 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
 
     @Test
     fun `check validateCampaignRuleInput output is InvalidCampaignTime`() {
-        val selectedPaymentType=
+        val selectedPaymentType =
             viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<PaymentType?>>("_selectedPaymentType")
         selectedPaymentType?.value = PaymentType.INSTANT
-        val isUniqueBuyer=
+        val isUniqueBuyer =
             viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isUniqueBuyer")
         isUniqueBuyer?.value = true
-        val isCampaignRelation=
+        val isCampaignRelation =
             viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<Boolean?>>("_isCampaignRelation")
         isCampaignRelation?.value = false
-        val relatedCampaigns=
+        val relatedCampaigns =
             viewModel.getPrivateProperty<CampaignRuleViewModel, MutableLiveData<List<RelatedCampaign>?>>(
                 "_relatedCampaigns"
             )
@@ -1421,7 +1416,11 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
             )
         method.isAccessible = true
         val result = method.invoke(
-            viewModel, null, null, null, null
+            viewModel,
+            null,
+            null,
+            null,
+            null
         ) as Boolean
         assertFalse(result)
     }
@@ -1438,7 +1437,11 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
             )
         method.isAccessible = true
         val result = method.invoke(
-            viewModel, PaymentType.INSTANT, true, true, CampaignDataGenerator.generateRelatedCampaigns()
+            viewModel,
+            PaymentType.INSTANT,
+            true,
+            true,
+            CampaignDataGenerator.generateRelatedCampaigns()
         ) as Boolean
         assertTrue(result)
     }
@@ -1455,7 +1458,11 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
             )
         method.isAccessible = true
         val result = method.invoke(
-            viewModel, PaymentType.INSTANT, false, false, arrayListOf<RelatedCampaign>()
+            viewModel,
+            PaymentType.INSTANT,
+            false,
+            false,
+            arrayListOf<RelatedCampaign>()
         ) as Boolean
         assertFalse(result)
     }
@@ -1472,7 +1479,11 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
             )
         method.isAccessible = true
         val result = method.invoke(
-            viewModel, PaymentType.INSTANT, false, false, null
+            viewModel,
+            PaymentType.INSTANT,
+            false,
+            false,
+            null
         ) as Boolean
         assertFalse(result)
     }
@@ -1489,7 +1500,11 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
             )
         method.isAccessible = true
         val result = method.invoke(
-            viewModel, PaymentType.INSTANT, null, null, null
+            viewModel,
+            PaymentType.INSTANT,
+            null,
+            null,
+            null
         ) as Boolean
         assertFalse(result)
     }
@@ -1506,7 +1521,11 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
             )
         method.isAccessible = true
         val result = method.invoke(
-            viewModel, PaymentType.INSTANT, null, null, emptyList<RelatedCampaign>()
+            viewModel,
+            PaymentType.INSTANT,
+            null,
+            null,
+            emptyList<RelatedCampaign>()
         ) as Boolean
         assertFalse(result)
     }
@@ -1523,7 +1542,11 @@ class CampaignRuleViewModelTest: CampaignRuleViewModelTestFixture() {
             )
         method.isAccessible = true
         val result = method.invoke(
-            viewModel, PaymentType.INSTANT, null, null, CampaignDataGenerator.generateRelatedCampaigns()
+            viewModel,
+            PaymentType.INSTANT,
+            null,
+            null,
+            CampaignDataGenerator.generateRelatedCampaigns()
         ) as Boolean
         assertFalse(result)
     }

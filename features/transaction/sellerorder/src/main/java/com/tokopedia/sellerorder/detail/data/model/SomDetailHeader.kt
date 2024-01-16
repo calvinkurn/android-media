@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.detail.data.model
 
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
+import com.tokopedia.sellerorder.partial_order_fulfillment.domain.model.GetPofRequestInfoResponse.Data.InfoRequestPartialOrderFulfillment.Companion.STATUS_INITIAL
 
 /**
  * Created by fwidjaja on 2019-10-03.
@@ -27,5 +28,6 @@ data class SomDetailHeader(
     val onlineBookingType: String = "",
     val fullFillBy: Int = 0,
     val isWarehouse: Boolean = false,
-    val tickerInfo: TickerInfo = TickerInfo()
+    val tickerInfo: TickerInfo = TickerInfo(),
+    val pofStatus: Int = STATUS_INITIAL
 )

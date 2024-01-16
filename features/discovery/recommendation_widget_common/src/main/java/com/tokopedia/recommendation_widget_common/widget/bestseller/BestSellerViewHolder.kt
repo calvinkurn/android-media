@@ -5,7 +5,7 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_component_header.view.HomeChannelHeaderListener
+import com.tokopedia.home_component_header.view.HomeComponentHeaderListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -98,7 +98,7 @@ class BestSellerViewHolder (private val view: View,
     private fun initHeader(element: BestSellerDataModel){
         binding?.homeComponentHeaderView?.bind(
             channelHeader = element.channelHeader,
-            listener = object: HomeChannelHeaderListener {
+            listener = object: HomeComponentHeaderListener {
                 override fun onSeeAllClick(link: String) {
                     listener.onBestSellerSeeMoreTextClick(element, element.seeMoreAppLink, absoluteAdapterPosition)
                 }

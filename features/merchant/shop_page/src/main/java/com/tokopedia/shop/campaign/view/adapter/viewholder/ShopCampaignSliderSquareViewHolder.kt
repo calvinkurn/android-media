@@ -13,6 +13,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.campaign.view.customview.ShopCampaignTabWidgetHeaderView
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
 import com.tokopedia.shop.databinding.WidgetShopPageCampaignSliderSquareBinding
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeSliderSquareAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
@@ -22,7 +23,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ShopCampaignSliderSquareViewHolder(
     itemView: View,
     private val listener: ShopHomeDisplayWidgetListener,
-    private val shopCampaignInterface: ShopCampaignInterface
+    private val shopCampaignInterface: ShopCampaignInterface,
+    private val recyclerviewPoolListener: RecyclerviewPoolListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(itemView) {
 
     companion object {
@@ -45,6 +47,7 @@ class ShopCampaignSliderSquareViewHolder(
                 addItemDecoration(PaddingItemDecorationShopPage(element.name))
             }
             adapter = shopHomeSliderSquareAdapter
+            setRecycledViewPool(recyclerviewPoolListener.parentPool)
         }
         shopHomeSliderSquareAdapter?.displayWidgetUiModel = element
         shopHomeSliderSquareAdapter?.heightRatio = getHeightRatio(element)

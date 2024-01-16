@@ -13,8 +13,9 @@ import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailModule
 import com.tokopedia.buyerorderdetail.di.DaggerBuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.presentation.fragment.BuyerOrderExtensionFragment
+import com.tokopedia.tokochat.config.util.TokoChatConnection
 
-class BuyerOrderExtensionActivity: BaseSimpleActivity(), HasComponent<BuyerOrderDetailComponent> {
+class BuyerOrderExtensionActivity : BaseSimpleActivity(), HasComponent<BuyerOrderDetailComponent> {
 
     override fun getNewFragment(): Fragment {
         val intentExtras = intent.extras?.apply {
@@ -27,6 +28,7 @@ class BuyerOrderExtensionActivity: BaseSimpleActivity(), HasComponent<BuyerOrder
     override fun getComponent(): BuyerOrderDetailComponent {
         return DaggerBuyerOrderDetailComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .tokoChatConfigComponent(TokoChatConnection.getComponent(this))
             .buyerOrderDetailModule(BuyerOrderDetailModule())
             .build()
     }
@@ -55,7 +57,8 @@ class BuyerOrderExtensionActivity: BaseSimpleActivity(), HasComponent<BuyerOrder
                 isOrderExtended
             )
             putExtra(
-                ApplinkConstInternalOrder.OrderExtensionKey.TOASTER_TYPE, toasterType
+                ApplinkConstInternalOrder.OrderExtensionKey.TOASTER_TYPE,
+                toasterType
             )
         }
 

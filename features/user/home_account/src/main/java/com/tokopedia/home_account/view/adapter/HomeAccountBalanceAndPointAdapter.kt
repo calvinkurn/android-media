@@ -1,14 +1,10 @@
 package com.tokopedia.home_account.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
-import com.tokopedia.home_account.data.model.BalanceAndPointDataModel
-import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
 import com.tokopedia.home_account.view.adapter.delegate.HomeAccountBalanceAndPointDelegate
 import com.tokopedia.home_account.view.adapter.delegate.HomeAccountBalanceAndPointShimmerDelegate
 import com.tokopedia.home_account.view.adapter.uimodel.BalanceAndPointShimmerUiModel
 import com.tokopedia.home_account.view.adapter.uimodel.BalanceAndPointUiModel
-import com.tokopedia.home_account.view.adapter.uimodel.WalletShimmeringUiModel
-import com.tokopedia.home_account.view.adapter.uimodel.WalletUiModel
 import com.tokopedia.home_account.view.listener.BalanceAndPointListener
 import com.tokopedia.home_account.view.mapper.UiModelMapper
 

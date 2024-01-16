@@ -17,7 +17,7 @@
         android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="12dp">
+        android:paddingBottom="@dimen/home_component_padding_bottom_with_compat_padding_translated">
 
         <View
             android:id="@+id/deals_background"
@@ -38,9 +38,9 @@
             android:id="@+id/master_product_card_deals"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginTop="9dp"
+            android:translationY="@dimen/home_component_card_compat_padding_translation_y"
+            android:layout_marginStart="@dimen/home_component_padding_bottom_with_compat_padding"
+            android:layout_marginEnd="@dimen/home_component_padding_bottom_with_compat_padding"
             app:layout_constraintTop_toBottomOf="@+id/home_component_header_view" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

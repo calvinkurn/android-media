@@ -10,26 +10,24 @@ import io.mockk.mockk
 import org.junit.Assert.*
 import org.junit.Test
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.media.editor.data.repository.AddLogoFilterRepository
 import com.tokopedia.media.editor.data.repository.BitmapCreationRepository
-import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
+import com.tokopedia.media.editor.data.repository.EditorImageCompressionRepository
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getTokopediaCacheDir
 import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
-import com.tokopedia.picker.common.types.EditorToolType
+import com.tokopedia.picker.common.utils.isImageFormat
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.file.FileUtil
 import io.mockk.coEvery
 import org.junit.Rule
 import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowBitmapFactory
@@ -46,12 +44,14 @@ class EditorViewModelTest {
     private val saveImageRepo = mockk<SaveImageRepository>()
     private val userSession = mockk<UserSessionInterface>()
     private val bitmapCreationRepository = mockk<BitmapCreationRepository>()
+    private val imageCompressionRepository = mockk<EditorImageCompressionRepository>()
 
     private val viewModel = EditorViewModel(
         saveImageRepo,
         userSession,
         bitmapCreationRepository,
-        coroutineScopeRule.dispatchers
+        coroutineScopeRule.dispatchers,
+        imageCompressionRepository
     )
 
     @Test
@@ -373,6 +373,51 @@ class EditorViewModelTest {
 
         // Then
         assertNotNull(resultSource)
+    }
+
+
+    @Test
+    fun `should compress image above 3000 x 3000`() {
+        // Given
+        val editorParam = EditorParam()
+        val expectedCompressedPath = "compressedPath"
+
+        // When
+        mockkStatic(::isImageFormat)
+        every { isImageFormat(any()) } returns true
+        coEvery {
+            imageCompressionRepository.compress(
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns expectedCompressedPath
+        viewModel.initStateList(pathSampleList)
+        viewModel.compressImage(editorParam) {}
+
+        // Then
+        assertEquals(
+            viewModel.editStateList[expectedCompressedPath]?.getOriginalUrl(),
+            expectedCompressedPath
+        )
+        assertEquals(viewModel.editStateList.size, 1)
+    }
+
+    @Test
+    fun `should skip compress image`() {
+        // Given
+        val editorParam = EditorParam()
+
+        // When
+        mockkStatic(::isImageFormat)
+        every { isImageFormat(any()) } returns false
+        viewModel.initStateList(pathSampleList)
+        viewModel.compressImage(editorParam) {}
+
+        // Then
+        assertEquals(viewModel.editStateList.size, pathSampleList.size)
     }
 
     private fun createUiModelState(excludeIndex: Int, cameraIndex: Int): List<EditorUiModel> {

@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.discovery2.LABEL_PRICE
 import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
 import com.tokopedia.discovery2.StockWording
+import com.tokopedia.discovery2.data.Properties.Header.OfferTier
 import com.tokopedia.discovery2.data.contentCard.LandingPage
 import com.tokopedia.discovery2.data.contentCard.Product
 import com.tokopedia.discovery2.data.contentCard.TotalItem
@@ -154,7 +155,7 @@ data class DataItem(
     @SerializedName("box_color", alternate = ["background_color", "header_color"])
     val boxColor: String? = "",
 
-    @SerializedName("font_color", alternate = ["text_color", "benefit_text_color"])
+    @SerializedName("font_color", alternate = ["text_color", "benefit_text_color", "text_color_mode"])
     val fontColor: String? = "",
 
     @SerializedName("variant")
@@ -163,7 +164,7 @@ data class DataItem(
     @SerializedName("color")
     val color: String? = "",
 
-    @SerializedName("button_text", alternate = ["cta_redirection_text"])
+    @SerializedName("button_text", alternate = ["cta_redirection_text", "cta_copywritying"])
     var buttonText: String? = "",
 
     @SerializedName("creative_name")
@@ -401,7 +402,7 @@ data class DataItem(
     val image: String = "",
 
     @SerializedName("lottie_image")
-    val lottieImage: String = "",
+    val lottieImage: String? = null,
 
     @SerializedName("tracking_fields")
     val trackingFields: TrackingFields? = null,
@@ -423,6 +424,21 @@ data class DataItem(
 
     @SerializedName("play_id")
     var playWidgetPlayID: String? = null,
+
+    @SerializedName("widget_type")
+    var playWidgetType: String? = null,
+
+    @SerializedName("product_ids")
+    var productIds: String? = null,
+
+    @SerializedName("category_ids")
+    var categoryIds: String? = null,
+
+    @SerializedName("mobile_banner")
+    var mobileBanner: String? = null,
+
+    @SerializedName("is_dynamic_video")
+    var playWidgetTypeIsDynamicVideo: Boolean = false,
 
     @SerializedName("campaign_code")
     var campaignCode: String? = null,
@@ -560,6 +576,18 @@ data class DataItem(
 
     @SerializedName("cta_color")
     val ctaColor: String? = "",
+
+    @SerializedName("offer_id")
+    val offerId: String? = null,
+
+    @SerializedName("offer_tiers")
+    val offerTiers: List<OfferTier>? = null,
+
+    @SerializedName("tab_index")
+    val tabIndex: List<Int>? = null,
+
+    @SerializedName("title_type")
+    val titleType: String? = null,
 
     var shopAdsClickURL: String? = "",
 

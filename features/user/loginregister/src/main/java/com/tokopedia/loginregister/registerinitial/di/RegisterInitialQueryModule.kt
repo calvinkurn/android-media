@@ -15,17 +15,23 @@ import dagger.multibindings.StringKey
  */
 
 @Module
-class RegisterInitialQueryModule{
+class RegisterInitialQueryModule {
 
     @Provides
     @IntoMap
     @StringKey(RegisterInitialQueryConstant.MUTATION_REGISTER_REQUEST)
     fun provideRawMutationRegisterRequest(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_register_request)
+        GraphqlHelper.loadRawString(context.resources, R.raw.mutation_register_request)
+
+    @Provides
+    @IntoMap
+    @StringKey(RegisterInitialQueryConstant.MUTATION_REGISTER_REQUEST_SCP)
+    fun provideRawMutationRegisterRequestScp(@ApplicationContext context: Context): String =
+        GraphqlHelper.loadRawString(context.resources, R.raw.mutation_register_request_scp)
 
     @Provides
     @IntoMap
     @StringKey(RegisterInitialQueryConstant.MUTATION_ACTIVATE_USER)
     fun provideRawMutationActivateUser(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_activate_user)
+        GraphqlHelper.loadRawString(context.resources, R.raw.mutation_activate_user)
 }

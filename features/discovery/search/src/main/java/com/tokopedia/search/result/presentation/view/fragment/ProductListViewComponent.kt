@@ -26,6 +26,8 @@ import com.tokopedia.search.result.product.banned.BannedProductsViewModule
 import com.tokopedia.search.result.product.broadmatch.BroadMatchModule
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressViewModule
 import com.tokopedia.search.result.product.cpm.TopAdsHeadlineModule
+import com.tokopedia.search.result.product.deduplication.DeduplicationModule
+import com.tokopedia.search.result.product.dialog.BottomSheetInappropriateModule
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterModule
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselModule
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcModule
@@ -93,6 +95,8 @@ import dagger.Component
     InspirationProductModule::class,
     ReimagineRollenceModule::class,
     LastClickProductProviderModule::class,
+    DeduplicationModule::class,
+    BottomSheetInappropriateModule::class,
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {
 

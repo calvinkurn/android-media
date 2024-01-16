@@ -4,7 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatListUseCase
+import com.tokopedia.tokochat.util.toggle.TokoChatAbPlatform
 import com.tokopedia.tokochat.view.chatlist.TokoChatListUiMapper
 import com.tokopedia.tokochat.view.chatlist.TokoChatListViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -27,14 +28,16 @@ abstract class TokoChatListViewModelTestFixture {
     val coroutineTestRule = UnconfinedTestRule()
 
     @RelaxedMockK
-    protected lateinit var chatChannelUseCase: TokoChatChannelUseCase
+    protected lateinit var chatListUseCase: TokoChatListUseCase
 
     @RelaxedMockK
-    protected lateinit var mapper: TokoChatListUiMapper
+    protected lateinit var abTestPlatform: TokoChatAbPlatform
 
     private lateinit var mockLifecycleOwner: LifecycleOwner
-    protected lateinit var lifecycle: LifecycleRegistry
+    private lateinit var lifecycle: LifecycleRegistry
     protected lateinit var viewModel: TokoChatListViewModel
+    protected lateinit var mapper: TokoChatListUiMapper
+
     protected val throwableDummy = Throwable("Oops!")
 
     @Before
@@ -43,9 +46,10 @@ abstract class TokoChatListViewModelTestFixture {
         mockLifecycleOwner = mock(LifecycleOwner::class.java)
         lifecycle = LifecycleRegistry(mockLifecycleOwner)
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        mapper = spyk(TokoChatListUiMapper(abTestPlatform))
         viewModel = spyk(
             TokoChatListViewModel(
-                chatChannelUseCase,
+                chatListUseCase,
                 mapper,
                 CoroutineTestDispatchersProvider
             )

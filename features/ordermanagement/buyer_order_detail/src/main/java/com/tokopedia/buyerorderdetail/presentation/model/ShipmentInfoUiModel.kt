@@ -88,7 +88,8 @@ data class ShipmentInfoUiModel(
             val key: String,
             val icon: String,
             val actionValue: String,
-            val value: String
+            val value: String,
+            val counter: Int
         )
     }
 

@@ -11,6 +11,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.search.result.domain.model.UserProfileDobModel
 import com.tokopedia.search.result.domain.model.GlobalSearchNavigationModel
 import com.tokopedia.search.result.domain.model.LastFilterModel
 import com.tokopedia.search.result.domain.model.QuickFilterModel
@@ -75,6 +76,7 @@ class SearchProductFirstPageGqlUseCase(
             addInspirationCarouselRequest(requestParams, params)
             addInspirationWidgetRequest(requestParams, params)
             addGetLastFilterRequest(requestParams, params)
+            addUserProfileDobRequest(reimagineRollence)
         }
 
         graphqlUseCase.clearRequest()
@@ -226,6 +228,21 @@ class SearchProductFirstPageGqlUseCase(
 
         return searchProductModel
     }
+
+    @GqlQuery("UserProfileDob", USER_PROFILE_DOB_QUERY)
+    private fun createUserProfileDobRequest(): GraphqlRequest =
+        GraphqlRequest(
+            UserProfileDob(),
+            UserProfileDobModel::class.java,
+        )
+
+    private fun MutableList<GraphqlRequest>.addUserProfileDobRequest(
+        reimagineRollence: ReimagineRollence,
+    ) {
+        if (reimagineRollence.search3ProductCard().isUseAceSearchProductV5())
+            add(createUserProfileDobRequest())
+    }
+
 
     override fun unsubscribe() {
         super.unsubscribe()
@@ -458,5 +475,19 @@ class SearchProductFirstPageGqlUseCase(
                 }
               }
             }"""
+
+        const val USER_PROFILE_DOB_QUERY = """
+        query userProfileDob(){
+            userProfileDob{
+                userID
+                age
+                bday
+                isDobExist
+                isDobVerified
+                isAdult
+                error
+            }
+        }
+    """
     }
 }

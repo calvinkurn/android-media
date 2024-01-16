@@ -18,8 +18,10 @@
           "creative_url": ""
         }
       ],
+      "channelId": ".*",
       "userId": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "hits_time": ".*"
     },
     {
       "event": "select_content",

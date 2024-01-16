@@ -97,6 +97,7 @@ public class BranchHelper {
                                         .setProductName(product.get(LinkerConstants.NAME))
                                         .setQuantity(LinkerUtils.convertStringToDouble(product.get(LinkerConstants.QTY)))
                                         .setSku(product.get(LinkerConstants.ID))
+                                        .setProductBrand(product.get(LinkerConstants.PRODUCT_BRAND))
                                         .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT)
                                         .addCustomMetadata(LinkerConstants.ProductCategory, String.valueOf(product.get(LinkerConstants.CATEGORY))));
 
@@ -182,6 +183,7 @@ public class BranchHelper {
                                 .setProductName(linkerData.getProductName())
                                 .setQuantity(LinkerUtils.convertToDouble(linkerData.getQuantity(), "Product quantity-ITEM_VIEW"))
                                 .setSku(linkerData.getSku())
+                                .setProductBrand(linkerData.getShopName())
                                 .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT)
                                 .addCustomMetadata(LinkerConstants.ProductCategory, String.valueOf(linkerData.getLevel3Name())));
         BranchEvent branchEvent = new BranchEvent(BRANCH_STANDARD_EVENT.VIEW_ITEM)

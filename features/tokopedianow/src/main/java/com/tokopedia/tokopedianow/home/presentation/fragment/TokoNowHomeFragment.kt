@@ -17,7 +17,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
-import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -86,7 +86,6 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MA
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
-import com.tokopedia.tokopedianow.common.listener.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.listener.TokoNowRepurchaseProductListener
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
@@ -109,6 +108,7 @@ import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.ServerErrorListener
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowHomeBinding
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
@@ -117,12 +117,13 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOK
 import com.tokopedia.tokopedianow.home.analytic.HomePageLoadTimeMonitoring
 import com.tokopedia.tokopedianow.home.analytic.HomePlayWidgetAnalyticModel
 import com.tokopedia.tokopedianow.home.analytic.HomeProductCarouselChipsAnalytics
+import com.tokopedia.tokopedianow.home.analytic.HomeQuestWidgetAnalytics
 import com.tokopedia.tokopedianow.home.analytic.HomeRealTimeRecomAnalytics
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
-import com.tokopedia.tokopedianow.home.di.component.DaggerHomeComponent
+import com.tokopedia.tokopedianow.home.di.component.HomeComponent
 import com.tokopedia.tokopedianow.home.domain.model.Data
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
@@ -163,6 +164,9 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomV
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
+import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestFinishedWidgetViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestReloadWidgetViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.quest.HomeQuestWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
@@ -214,6 +218,7 @@ class TokoNowHomeFragment :
         private const val PARAM_AFFILIATE_CHANNEL = "channel"
         private const val VERTICAL_SCROLL_FULL_BOTTOM_OFFSET = 0
         private const val MAX_VIEW_POOL = 99
+        private const val MEASURE_SPEC_DEFAULT = 0
 
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
@@ -245,6 +250,9 @@ class TokoNowHomeFragment :
     lateinit var analytics: HomeAnalytics
 
     @Inject
+    lateinit var analyticsQuestWidget: HomeQuestWidgetAnalytics
+
+    @Inject
     lateinit var homeSharedPref: TokoNowSharedPreference
 
     @Inject
@@ -262,12 +270,13 @@ class TokoNowHomeFragment :
                 bannerComponentListener = createSlideBannerCallback(),
                 homeProductRecomOocListener = createProductRecomOocCallback(),
                 homeProductRecomListener = createProductRecomCallback(),
-                tokoNowRepurchaseListener = createRepurchaseProductListener(),
+                tokoNowRepurchaseProductListener = createRepurchaseProductListener(),
+                tokoNowRepurchaseListener = createRepurchaseCallback(),
                 homeSharingEducationListener = this,
                 homeEducationalInformationListener = this,
                 serverErrorListener = this,
                 tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
-                homeQuestSequenceWidgetListener = createQuestWidgetCallback(),
+                homeQuestSequenceWidgetListener = createQuestCallback(),
                 dynamicLegoBannerCallback = createLegoBannerCallback(),
                 homeSwitcherListener = createHomeSwitcherListener(),
                 homeLeftCarouselAtcListener = createLeftCarouselAtcCallback(),
@@ -283,6 +292,9 @@ class TokoNowHomeFragment :
                 productBundleWidgetListener = bundleWidgetCallback,
                 tokoNowBundleWidgetListener = bundleWidgetCallback,
                 homeHeaderListener = createHomeHeaderListener(),
+                questReloadWidgetListener = createQuestReloadWidgetCallback(),
+                questWidgetListener = createQuestWidgetCallback(),
+                questFinishedListener = createQuestFinishedWidgetCallback(),
                 recycledViewPool = mRecycledViewPool
             ),
             differ = HomeListDiffer()
@@ -568,10 +580,7 @@ class TokoNowHomeFragment :
     }
 
     private fun initInjector() {
-        DaggerHomeComponent.builder()
-            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
-            .inject(this)
+        ((activity as HasComponent<*>).component as HomeComponent).inject(this)
     }
 
     private fun initScreenShotDetector() {
@@ -910,6 +919,7 @@ class TokoNowHomeFragment :
             }
             rvHome?.setItemViewCacheSize(ITEM_VIEW_CACHE_SIZE)
             addHomeComponentScrollListener()
+            registerAdapterDataObserver()
         }
     }
 
@@ -1944,7 +1954,7 @@ class TokoNowHomeFragment :
         }
     }
 
-    private fun createQuestWidgetCallback(): HomeQuestSequenceWidgetListener {
+    private fun createQuestCallback(): HomeQuestSequenceWidgetListener {
         return QuestWidgetCallback(this, viewModelTokoNow, analytics)
     }
 
@@ -2071,14 +2081,48 @@ class TokoNowHomeFragment :
         )
     }
 
-    private fun createProductCardListener(): TokoNowProductCardListener {
-        return TokoNowProductCardListener(
-            context = context,
-            userSession = userSession,
-            viewModel = viewModelTokoNow,
-            analytics = analytics,
-            startActivityForResult = this::startActivityForResult
-        )
+    private fun createRepurchaseCallback() = object : TokoNowRepurchaseViewHolder.TokoNowRepurchaseListener {
+        override fun onChevronClicked() {
+            analytics.trackClickChevronButtonOnPastPurchaseWidget()
+        }
+    }
+
+    private fun createQuestReloadWidgetCallback() = object : HomeQuestReloadWidgetViewHolder.HomeQuestReloadWidgetListener {
+        override fun onReloadListener() {
+            viewModelTokoNow.refreshQuestWidget()
+        }
+    }
+
+    private fun createQuestWidgetCallback() = object : HomeQuestWidgetViewHolder.HomeQuestWidgetListener {
+        override fun onImpressQuestWidget() {
+            analyticsQuestWidget.trackImpressionQuestWidget()
+        }
+
+        override fun onClickSeeDetailsQuestWidget() {
+            analyticsQuestWidget.trackClickSeeDetailsQuestWidget()
+        }
+
+        override fun onClickQuestCard() {
+            analyticsQuestWidget.trackClickCardQuestWidget()
+        }
+
+        override fun onClickProgressiveBar() {
+            analyticsQuestWidget.trackClickProgressiveBarQuestWidget()
+        }
+
+        override fun onImpressQuestCardSwiped() {
+            analyticsQuestWidget.trackImpressionSwipeQuestCardQuestWidget()
+        }
+    }
+
+    private fun createQuestFinishedWidgetCallback() = object : HomeQuestFinishedWidgetViewHolder.HomeQuestFinishedWidgetListener {
+        override fun onClickSeeDetailsQuestWidget() {
+            analyticsQuestWidget.trackClickSeeDetailsQuestWidget()
+        }
+
+        override fun onImpressFinishCard() {
+            analyticsQuestWidget.trackImpressionFinishedQuestWidget()
+        }
     }
 
     private fun showDialogReceiverReferral(data: HomeReceiverReferralDialogUiModel) {
@@ -2108,6 +2152,33 @@ class TokoNowHomeFragment :
         val affiliateUuid = uri?.getQueryParameter(PARAM_AFFILIATE_UUID).orEmpty()
         val affiliateChannel = uri?.getQueryParameter(PARAM_AFFILIATE_CHANNEL).orEmpty()
         viewModelTokoNow.initAffiliateCookie(affiliateUuid, affiliateChannel)
+    }
+
+    private fun registerAdapterDataObserver() {
+        /**
+         *  ViewHolder frequently is not directly calling bind function in android 9 after shimmering,
+         *  to solve that issue we enforce RecyclerView to always measure the layout every time adapter updated, so it will trigger the bind function.
+         **/
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            rvHome?.apply {
+                adapter?.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+                    override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                        val widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+                            width.orZero(),
+                            View.MeasureSpec.EXACTLY
+                        )
+
+                        val heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(
+                            height.orZero(),
+                            View.MeasureSpec.EXACTLY
+                        )
+
+                        measure(widthMeasureSpec, heightMeasureSpec)
+                        layout(MEASURE_SPEC_DEFAULT, MEASURE_SPEC_DEFAULT, widthMeasureSpec, heightMeasureSpec)
+                    }
+                })
+            }
+        }
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {

@@ -1,5 +1,8 @@
 package com.tokopedia.feedplus.presentation.uiview
 
+import android.animation.Animator
+import android.animation.Animator.AnimatorListener
+import android.os.CountDownTimer
 import com.tokopedia.content.common.databinding.ViewProductSeeMoreBinding
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
@@ -7,10 +10,15 @@ import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.feedplus.presentation.model.FeedTopAdsTrackerDataModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
+import com.tokopedia.feedplus.presentation.model.type.FeedContentType
+import com.tokopedia.feedplus.presentation.model.type.isPlayContent
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView.Companion.PRODUCT_COUNT_NINETY_NINE
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView.Companion.PRODUCT_COUNT_ZERO
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.content.common.R as contentcommonR
 
 /**
  * Created By : Muhammad Furqan on 14/03/23
@@ -19,9 +27,31 @@ class FeedProductButtonView(
     private val binding: ViewProductSeeMoreBinding,
     private val listener: FeedListener
 ) {
-
+    private val context = binding.root.context
     private var products: List<FeedCardProductModel> = emptyList()
     private var totalProducts: Int = 0
+
+    private var animationOn = false
+    private val animationAssets = context.getString(contentcommonR.string.feed_anim_product_icon)
+    private val animationTimerDelay by lazyThreadSafetyNone {
+        object : CountDownTimer(PRODUCT_ICON_ANIM_REPEAT_DELAY, PRODUCT_ICON_COUNT_DOWN_INTERVAL) {
+            override fun onTick(millisUntilFinished: Long) {}
+            override fun onFinish() {
+                binding.lottieProductSeeMore.playAnimation()
+            }
+        }
+    }
+    private val animatorListener by lazyThreadSafetyNone {
+        object : AnimatorListener {
+            override fun onAnimationStart(p0: Animator) {}
+            override fun onAnimationEnd(p0: Animator) {
+                animationTimerDelay.start()
+            }
+
+            override fun onAnimationCancel(p0: Animator) {}
+            override fun onAnimationRepeat(p0: Animator) {}
+        }
+    }
 
     fun bindData(
         postId: String,
@@ -34,39 +64,27 @@ class FeedProductButtonView(
         totalProducts: Int,
         trackerData: FeedTrackerDataModel?,
         topAdsTrackerData: FeedTopAdsTrackerDataModel?,
-        positionInFeed: Int
-    ) {
-        with(binding) {
-            bind(products, totalProducts)
+        positionInFeed: Int,
+        contentType: FeedContentType
+    ) = with(binding) {
+        val hasDiscount = isContainsDiscountProduct(products)
 
-            icPlayProductSeeMore.setOnClickListener {
-                onClick(
-                    postId,
-                    author,
-                    postType,
-                    isFollowing,
-                    campaign,
-                    hasVoucher,
-                    products,
-                    trackerData,
-                    topAdsTrackerData,
-                    positionInFeed
-                )
-            }
-            tvPlayProductCount.setOnClickListener {
-                onClick(
-                    postId,
-                    author,
-                    postType,
-                    isFollowing,
-                    campaign,
-                    hasVoucher,
-                    products,
-                    trackerData,
-                    topAdsTrackerData,
-                    positionInFeed
-                )
-            }
+        bind(products, totalProducts)
+        bindProductIcon(contentType, hasVoucher, hasDiscount)
+
+        binding.root.setOnClickListener {
+            onClick(
+                postId,
+                author,
+                postType,
+                isFollowing,
+                campaign,
+                hasVoucher,
+                products,
+                trackerData,
+                topAdsTrackerData,
+                positionInFeed
+            )
         }
     }
 
@@ -120,6 +138,30 @@ class FeedProductButtonView(
         }
     }
 
+    private fun bindProductIcon(
+        contentType: FeedContentType,
+        hasVoucher: Boolean,
+        hasDiscount: Boolean
+    ) = with(binding) {
+        animationOn = contentType.isPlayContent() && (hasVoucher || hasDiscount)
+        if (animationOn) {
+            binding.lottieProductSeeMore.apply {
+                setAnimationFromUrl(animationAssets)
+                repeatCount = PRODUCT_ICON_ANIM_REPEAT_COUNT
+            }
+            showIconProductAnimation()
+            lottieProductSeeMore.setFailureListener {
+                showIconProduct()
+            }
+        } else {
+            showIconProduct()
+        }
+    }
+
+    private fun isContainsDiscountProduct(products: List<FeedCardProductModel>): Boolean {
+        return products.any { it.isDiscount }
+    }
+
     fun showClearView() {
         binding.root.hide()
     }
@@ -128,7 +170,35 @@ class FeedProductButtonView(
         bind(this.products, totalProducts)
     }
 
+    fun playProductIconAnimation() {
+        if (!animationOn) return
+        binding.root.addOneTimeGlobalLayoutListener {
+            binding.lottieProductSeeMore.removeAnimatorListener(animatorListener)
+            binding.lottieProductSeeMore.addAnimatorListener(animatorListener)
+            binding.lottieProductSeeMore.playAnimation()
+        }
+    }
+
+    fun pauseProductIconAnimation() {
+        if (!animationOn) return
+        animationTimerDelay.cancel()
+        binding.lottieProductSeeMore.cancelAnimation()
+    }
+
+    private fun showIconProductAnimation() = with(binding) {
+        icPlayProductSeeMore.hide()
+        lottieProductSeeMore.show()
+    }
+
+    private fun showIconProduct() = with(binding) {
+        icPlayProductSeeMore.show()
+        lottieProductSeeMore.hide()
+    }
+
     companion object {
         private const val NINETY_NINE_PLUS = "99+"
+        private const val PRODUCT_ICON_ANIM_REPEAT_COUNT = 2
+        private const val PRODUCT_ICON_ANIM_REPEAT_DELAY = 10000L
+        private const val PRODUCT_ICON_COUNT_DOWN_INTERVAL = 1000L
     }
 }

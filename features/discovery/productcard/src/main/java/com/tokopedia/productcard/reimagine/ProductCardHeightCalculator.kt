@@ -1,7 +1,6 @@
 package com.tokopedia.productcard.reimagine
 
 import android.content.Context
-import android.util.Log
 import androidx.annotation.DimenRes
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -116,7 +115,7 @@ private fun gridCarouselDiscountBelowPriceHeight(
 private fun gridCarouselLabelBenefitHeight(context: Context?, productCardModel: ProductCardModel): Int =
     if (productCardModel.labelBenefit() != null)
         context.getPixel(productcardR.dimen.product_card_reimagine_label_benefit_margin_top)
-            .plus(context.getPixel(productcardR.dimen.product_card_reimagine_label_height))
+            .plus(context.getPixel(productcardR.dimen.product_card_reimagine_label_benefit_height))
     else 0
 
 private fun gridCarouselCredibilitySectionHeight(

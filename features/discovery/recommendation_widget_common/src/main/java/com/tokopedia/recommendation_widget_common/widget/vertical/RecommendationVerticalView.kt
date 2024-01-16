@@ -14,6 +14,7 @@ import com.tokopedia.recommendation_widget_common.widget.global.IRecommendationW
 import com.tokopedia.recommendation_widget_common.widget.header.RecommendationHeaderListener
 import com.tokopedia.recommendation_widget_common.widget.vertical.RecommendationVerticalMapper.mapVisitableList
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.recommendation_widget_common.R as recommendation_widget_commonR
 
 class RecommendationVerticalView :
     ConstraintLayout,
@@ -73,6 +74,6 @@ class RecommendationVerticalView :
     override fun onChannelExpired(widget: RecommendationWidget) {}
 
     companion object {
-        val LAYOUT = com.tokopedia.recommendation_widget_common.R.layout.recommendation_widget_vertical_layout
+        val LAYOUT = recommendation_widget_commonR.layout.recommendation_widget_vertical_layout
     }
 }

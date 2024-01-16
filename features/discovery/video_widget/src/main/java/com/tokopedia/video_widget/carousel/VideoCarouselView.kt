@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.home_component_header.model.ChannelHeader
-import com.tokopedia.home_component_header.view.HomeChannelHeaderView
+import com.tokopedia.home_component_header.view.HomeComponentHeaderView
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
@@ -31,7 +31,7 @@ class VideoCarouselView : BaseCustomView, VideoPlayer {
         findViewById(R.id.carousel_title_textview)
     }
 
-    private val headerTitle: HomeChannelHeaderView by lazy {
+    private val headerTitle: HomeComponentHeaderView by lazy {
         findViewById(R.id.videoCarouselViewHeader)
     }
 

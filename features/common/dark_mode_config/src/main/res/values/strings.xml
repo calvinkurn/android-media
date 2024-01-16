@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dmc_set_theme">Tampilan</string>
+    <string name="dmc_light_mode_name">Light Mode</string>
+    <string name="dmc_light_mode_description">Tampilan dengan warna cerah, cocok untuk digunakan di siang hari atau tempat terang.</string>
+    <string name="dmc_dark_mode_name">Dark Mode</string>
+    <string name="dmc_dark_mode_description">Tampilan dengan warna gelap, cocok untuk digunakan di malam hari atau tempat gelap.</string>
+    <string name="dmc_follow_system_name">Gunakan Pengaturan HP-mu</string>
+    <string name="dmc_follow_system_description">Sesuaikan tampilan dengan mengikuti pengaturan di HP kamu.</string>
+    <string name="dmc_intro_title">Cobain tampilan Dark Mode yuk!</string>
+    <string name="dmc_intro_description">Ubah tampilan Tokopedia ke Dark Mode dengan gunakan pengaturan HP kamu, atau kamu bisa ubah sendiri di pengaturan aplikasi.</string>
+    <string name="dmc_intro_primary_button">Gunakan Pengaturan HP</string>
+    <string name="dmc_intro_secondary_button">Nanti Aja</string>
+    <string name="dmc_apply_dark_mode_toaster_message">Tampilan aplikasi berhasil diubah.</string>
+    <string name="dmc_apply_dark_mode_toaster_cta">Oke</string>
+</resources>

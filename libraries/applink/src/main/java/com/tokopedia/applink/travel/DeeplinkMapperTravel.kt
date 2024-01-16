@@ -15,21 +15,35 @@ object DeeplinkMapperTravel {
             deeplink.startsWith(ApplinkConst.HOTEL_SRP, true) -> {
                 ApplinkConstInternalTravel.HOTEL_SRP
             }
+
             deeplink.equals(ApplinkConst.HOTEL_ORDER, true) -> {
                 DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
             }
+
             deeplink.startsWith(ApplinkConst.HOTEL_DASHBOARD, true) -> {
                 ApplinkConstInternalTravel.DASHBOARD_HOTEL
             }
+
             deeplink.startsWith(ApplinkConst.HOTEL_DETAIL, true) -> {
                 val uri = Uri.parse(deeplink)
-                if(uri.lastPathSegment.equals(HOTEL_LAST_PATH_DETAIL)){
+                if (uri.lastPathSegment.equals(HOTEL_LAST_PATH_DETAIL)) {
                     ApplinkConstInternalTravel.HOTEL_DETAIL
-                }else{
+                } else {
                     ApplinkConstInternalTravel.HOTEL_DETAIL + "/" + uri.lastPathSegment
                 }
             }
-            else -> deeplink
+
+            else -> {
+                checkDefaultHotelApplink(deeplink)
+            }
+        }
+    }
+
+    private fun checkDefaultHotelApplink(deeplink: String): String {
+        return if (deeplink == ApplinkConst.HOTEL) {
+            ApplinkConstInternalTravel.DASHBOARD_HOTEL
+        } else {
+            deeplink
         }
     }
 }

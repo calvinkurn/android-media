@@ -6,7 +6,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home_component.R
+import com.tokopedia.home_component.R as home_componentR
 import com.tokopedia.home_component.databinding.GlobalComponentMissionWidgetBinding
 import com.tokopedia.home_component.decoration.MissionWidgetCardItemDecoration
 import com.tokopedia.home_component.decoration.MissionWidgetClearItemDecoration
@@ -19,10 +19,8 @@ import com.tokopedia.home_component.widget.common.carousel.CarouselListAdapter
 import com.tokopedia.home_component.widget.common.carousel.CommonCarouselDiffUtilCallback
 import com.tokopedia.home_component.widget.mission.MissionWidgetTypeFactory
 import com.tokopedia.home_component.widget.mission.MissionWidgetTypeFactoryImpl
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -35,9 +33,7 @@ class MissionWidgetViewHolder(
 ) : AbstractViewHolder<MissionWidgetListDataModel>(itemView) {
 
     companion object {
-        val LAYOUT = R.layout.global_component_mission_widget
-        private const val PADDING_BOTTOM_CARD = 13
-        private const val PADDING_BOTTOM_CLEAR = 4
+        val LAYOUT = home_componentR.layout.global_component_mission_widget
     }
 
     private var binding: GlobalComponentMissionWidgetBinding? by viewBinding()
@@ -74,24 +70,15 @@ class MissionWidgetViewHolder(
         binding?.homeComponentMissionWidgetRcv?.adapter = adapter
     }
 
-    private fun setupPadding(element: MissionWidgetListDataModel) {
-        val paddingBottom = if(element.type == MissionWidgetListDataModel.Type.CLEAR)
-            PADDING_BOTTOM_CLEAR
-        else PADDING_BOTTOM_CARD
-        binding?.containerMissionWidgetItem?.setPadding(
-            Int.ZERO,
-            Int.ZERO,
-            Int.ZERO,
-            paddingBottom.toPx()
-        )
-    }
-
     private fun valuateRecyclerViewDecoration(type: MissionWidgetListDataModel.Type) {
         if (binding?.homeComponentMissionWidgetRcv?.itemDecorationCount == 0) {
             val itemDecoration = if(type == MissionWidgetListDataModel.Type.CLEAR)
                 MissionWidgetClearItemDecoration()
             else MissionWidgetCardItemDecoration()
+            val translationY = if(type == MissionWidgetListDataModel.Type.CLEAR) 0f
+            else itemView.context.resources.getDimension(home_componentR.dimen.home_component_card_compat_padding_translation_y)
             binding?.homeComponentMissionWidgetRcv?.addItemDecoration(itemDecoration)
+            binding?.homeComponentMissionWidgetRcv?.translationY = translationY
         }
     }
 
@@ -134,7 +121,6 @@ class MissionWidgetViewHolder(
             }
             setHeaderComponent(element = element)
             setChannelDivider(element)
-            setupPadding(element)
             when (element.status) {
                 MissionWidgetListDataModel.STATUS_LOADING -> {
                     binding?.homeComponentHeaderView?.gone()

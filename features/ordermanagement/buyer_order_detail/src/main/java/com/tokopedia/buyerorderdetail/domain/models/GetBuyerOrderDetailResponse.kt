@@ -91,7 +91,10 @@ data class GetBuyerOrderDetailResponse(
             val additionalData: BomAdditionalData = BomAdditionalData(),
             @SerializedName("is_pof")
             @Expose
-            val isPof: Boolean? = false
+            val isPof: Boolean? = false,
+            @SerializedName("is_plus")
+            @Expose
+            val isPlus: Boolean? = false
         ) {
             fun getDriverTippingInfo(): LogisticSectionInfo? {
                 return logisticSections.find { it.id == BuyerOrderDetailLogisticSectionInfoID.DRIVER_TIPPING_INFO }
@@ -105,10 +108,12 @@ data class GetBuyerOrderDetailResponse(
                 @SerializedName("epharmacy_data")
                 @Expose
                 val epharmacyData: EpharmacyData = EpharmacyData(),
+                @SerializedName("plus_savings")
+                @Expose
+                val plusSavings: PlusSavings = PlusSavings(),
                 @SerializedName("group_order_data")
                 val groupOrderData: GroupOrderData? = GroupOrderData()
             ) {
-
                 data class GroupOrderData(
                     @SerializedName("tx_id")
                     val txId: String = "0",
@@ -339,6 +344,9 @@ data class GetBuyerOrderDetailResponse(
             }
 
             data class Shipment(
+                @Expose
+                @SerializedName("title")
+                val title: String = String.EMPTY,
                 @Expose
                 @SerializedName("driver")
                 val driver: Driver = Driver(),

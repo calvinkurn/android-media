@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.usecase
 
+import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -21,8 +22,10 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.TobacoErrorException
+import com.tokopedia.product.detail.di.ComponentFilter
 import com.tokopedia.product.detail.di.RawQueryKeyConstant.NAME_LAYOUT_ID_DAGGER
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
+import com.tokopedia.product.detail.view.util.componentDevFilter
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.RequestParams
@@ -39,7 +42,8 @@ open class GetPdpLayoutUseCase @Inject constructor(
     private val gqlUseCase: MultiRequestGraphqlUseCase,
     @Named(NAME_LAYOUT_ID_DAGGER) private val layoutIdTest: String,
     private val remoteConfig: RemoteConfig,
-    private val dispatcher: CoroutineDispatchers
+    private val dispatcher: CoroutineDispatchers,
+    @ComponentFilter private val componentFilterSharedPref: SharedPreferences
 ) {
 
     companion object {
@@ -179,6 +183,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         priceFmt
                         slashPriceFmt
                         discPercentage
+                        isPriceMasked
                       }
                       campaign {
                         campaignID
@@ -349,6 +354,7 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         priceFmt
                         slashPriceFmt
                         discPercentage
+                        isPriceMasked
                         sku
                         optionID
                         optionName
@@ -676,17 +682,17 @@ open class GetPdpLayoutUseCase @Inject constructor(
         cacheState: CacheState,
         isCampaign: Boolean
     ): ProductDetailDataModel {
-        val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(components)
+        val getDynamicProductInfoP1 = DynamicProductDetailMapper
+            .mapToDynamicProductDetailP1(this)
+            .copy(cacheState = cacheState, isCampaign = isCampaign)
+        val initialLayoutData = DynamicProductDetailMapper.mapIntoVisitable(components, getDynamicProductInfoP1)
             .filterNot {
                 if (cacheState.isFromCache) {
                     getIgnoreComponentTypeInCache().contains(it.type())
                 } else {
                     false
                 }
-            }.toMutableList()
-        val getDynamicProductInfoP1 = DynamicProductDetailMapper
-            .mapToDynamicProductDetailP1(this)
-            .copy(cacheState = cacheState, isCampaign = isCampaign)
+            }.componentDevFilter(componentFilterSharedPref).toMutableList()
         val p1VariantData = DynamicProductDetailMapper
             .mapVariantIntoOldDataClass(this)
         return ProductDetailDataModel(

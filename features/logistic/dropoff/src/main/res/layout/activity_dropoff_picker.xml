@@ -20,14 +20,16 @@
             app:titleTextAppearance="?titleTextAppearance"
             tools:layout_height="wrap_content" />
 
-        <com.tokopedia.design.text.SearchInputView
+        <com.tokopedia.unifycomponents.SearchBarUnify
             android:id="@+id/search_input_dropoff"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="10dp"
+            app:search_bar_show_icon="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar_search"
-            app:siv_search_hint="@string/searchbar_dropoff_hint" />
+            app:search_bar_placeholder="@string/searchbar_dropoff_hint" />
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/ticker_map_unavailable"

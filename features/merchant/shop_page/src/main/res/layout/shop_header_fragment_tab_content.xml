@@ -74,7 +74,7 @@
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <Space
+                    <android.widget.Space
                         android:id="@+id/header_top_anchor"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -389,14 +389,13 @@
                                 app:unifyButtonVariant="filled" />
                         </LinearLayout>
 
-                        <include
+                        <com.tokopedia.creation.common.presentation.customviews.ContentCreationEntryPointWidget
+                            android:id="@+id/widget_play_entry_point"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/section_button"
-                            android:id="@+id/widget_play_entry_point"
-                            layout="@layout/layout_shop_play_broadcast_sgc"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            app:layout_constraintTop_toBottomOf="@id/section_button" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 

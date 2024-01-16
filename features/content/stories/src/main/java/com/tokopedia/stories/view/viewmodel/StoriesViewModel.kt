@@ -1,11 +1,14 @@
 package com.tokopedia.stories.view.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.types.ResultState
 import com.tokopedia.content.common.view.ContentTaggedProductUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.stories.R
 import com.tokopedia.stories.data.repository.StoriesRepository
@@ -13,10 +16,12 @@ import com.tokopedia.stories.domain.model.StoriesRequestModel
 import com.tokopedia.stories.domain.model.StoriesSource
 import com.tokopedia.stories.domain.model.StoriesTrackActivityActionType
 import com.tokopedia.stories.domain.model.StoriesTrackActivityRequestModel
+import com.tokopedia.stories.uimodel.AuthorType
 import com.tokopedia.stories.view.model.StoriesArgsModel
 import com.tokopedia.stories.view.model.StoriesDetail
 import com.tokopedia.stories.view.model.StoriesDetailItem
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent
+import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.BUFFERING
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.PAUSE
 import com.tokopedia.stories.view.model.StoriesDetailItem.StoriesDetailItemUiEvent.RESUME
 import com.tokopedia.stories.view.model.StoriesGroupHeader
@@ -29,9 +34,13 @@ import com.tokopedia.stories.view.viewmodel.event.StoriesUiEvent
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetStatusDefault
 import com.tokopedia.stories.view.viewmodel.state.BottomSheetType
 import com.tokopedia.stories.view.viewmodel.state.ProductBottomSheetUiState
-import com.tokopedia.stories.view.viewmodel.state.TimerStatusInfo
 import com.tokopedia.stories.view.viewmodel.state.StoriesUiState
+import com.tokopedia.stories.view.viewmodel.state.StoryReportStatusInfo
+import com.tokopedia.stories.view.viewmodel.state.TimerStatusInfo
 import com.tokopedia.stories.view.viewmodel.state.isAnyShown
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -47,7 +56,7 @@ import kotlinx.coroutines.launch
 class StoriesViewModel @AssistedInject constructor(
     @Assisted private val args: StoriesArgsModel,
     private val repository: StoriesRepository,
-    private val userSession: UserSessionInterface
+    val userSession: UserSessionInterface
 ) : ViewModel() {
 
     @AssistedFactory
@@ -58,6 +67,7 @@ class StoriesViewModel @AssistedInject constructor(
     private val _storiesMainDataState = MutableStateFlow(StoriesUiModel())
     private val _bottomSheetStatusState = MutableStateFlow(BottomSheetStatusDefault)
     private val _productsState = MutableStateFlow(ProductBottomSheetUiState.Empty)
+    private val _reportState = MutableStateFlow(StoryReportStatusInfo.Empty)
 
     private val _storiesEvent = MutableSharedFlow<StoriesUiEvent>(extraBufferCapacity = 100)
     val storiesEvent: Flow<StoriesUiEvent>
@@ -72,7 +82,9 @@ class StoriesViewModel @AssistedInject constructor(
             val groupPosition = _groupPos.value
             return try {
                 _storiesMainDataState.value.groupItems[groupPosition]
-            } catch (_: Exception) { StoriesGroupItem() }
+            } catch (_: Exception) {
+                StoriesGroupItem()
+            }
         }
 
     val mDetail: StoriesDetailItem
@@ -83,7 +95,9 @@ class StoriesViewModel @AssistedInject constructor(
                 _storiesMainDataState.value
                     .groupItems[groupPosition]
                     .detail.detailItems[detailPosition]
-            } catch (_: Exception) { StoriesDetailItem() }
+            } catch (_: Exception) {
+                StoriesDetailItem()
+            }
         }
 
     private val _impressedGroupHeader = mutableListOf<StoriesGroupHeader>()
@@ -108,7 +122,9 @@ class StoriesViewModel @AssistedInject constructor(
             return try {
                 _storiesMainDataState.value.groupItems[groupPosition]
                     .detail.detailItems.size
-            } catch (_: Exception) { 0 }
+            } catch (_: Exception) {
+                0
+            }
         }
 
     val storyId: String
@@ -134,39 +150,63 @@ class StoriesViewModel @AssistedInject constructor(
         get() = combine(
             _storiesMainDataState,
             _productsState,
-            timerState,
-        ) { storiesMainData, product, timerState ->
+            _timerState,
+            _reportState
+        ) { storiesMainData, product, timerState, reportState ->
             StoriesUiState(
                 storiesMainData = storiesMainData,
                 productSheet = product,
                 timerStatus = timerState,
+                reportState = reportState
             )
         }
 
-    private val timerState: Flow<TimerStatusInfo>
+    private val _timerState: Flow<TimerStatusInfo>
         get() = combine(
             _bottomSheetStatusState,
             _storiesMainDataState,
             _groupPos,
             _detailPos
         ) { bottomSheet, mainData, groupPosition, detailPosition ->
-            val listOfDetail = mainData.groupItems.getOrNull(groupPosition)?.detail?.detailItems ?: emptyList()
+            val listOfDetail =
+                mainData.groupItems.getOrNull(groupPosition)?.detail?.detailItems ?: emptyList()
             val detail = listOfDetail.getOrNull(detailPosition) ?: StoriesDetailItem()
-            TimerStatusInfo(event = if (bottomSheet.isAnyShown) PAUSE else detail.event, story = TimerStatusInfo.Companion.StoryTimer(id = detail.id, itemCount = listOfDetail.size, resetValue = detail.resetValue, duration = detail.content.duration, position = detailPosition))
+            TimerStatusInfo(
+                event = if (bottomSheet.isAnyShown) PAUSE else detail.event,
+                story = TimerStatusInfo.Companion.StoryTimer(
+                    id = detail.id,
+                    itemCount = listOfDetail.size,
+                    resetValue = detail.resetValue,
+                    duration = detail.content.duration,
+                    position = detailPosition
+                )
+            )
         }
 
     val userId: String
         get() = userSession.userId.ifEmpty { "0" }
 
+    private val _userReportReasonList =
+        MutableLiveData<Result<List<PlayUserReportReasoningUiModel>>>()
+    val userReportReasonList: Result<List<PlayUserReportReasoningUiModel>>
+        get() = _userReportReasonList.value ?: Success(emptyList())
+
     fun submitAction(action: StoriesUiAction) {
         when (action) {
             is StoriesUiAction.SetMainData -> handleMainData(action.selectedGroup)
-            is StoriesUiAction.SelectGroup -> handleSelectGroup(action.selectedGroup, action.showAnimation)
+            is StoriesUiAction.SelectGroup -> handleSelectGroup(
+                action.selectedGroup,
+                action.showAnimation
+            )
+
             is StoriesUiAction.CollectImpressedGroup -> handleCollectImpressedGroup(action.data)
             is StoriesUiAction.Navigate -> handleNav(action.appLink)
             is StoriesUiAction.DismissSheet -> handleDismissSheet(action.type)
             is StoriesUiAction.ProductAction -> handleProductAction(action.action, action.product)
             is StoriesUiAction.ShowVariantSheet -> handleVariantSheet(action.product)
+            is StoriesUiAction.UpdateStoryDuration -> handleUpdateDuration(action.duration)
+            is StoriesUiAction.OpenBottomSheet -> handleOpenBottomSheet(action.type)
+            is StoriesUiAction.SelectReportReason -> handleSelectReportReason(action.reason)
             StoriesUiAction.SetInitialData -> handleSetInitialData()
             StoriesUiAction.NextDetail -> handleNext()
             StoriesUiAction.PreviousDetail -> handlePrevious()
@@ -180,7 +220,56 @@ class StoriesViewModel @AssistedInject constructor(
             StoriesUiAction.DeleteStory -> handleDeleteStory()
             StoriesUiAction.ContentIsLoaded -> handleContentIsLoaded()
             StoriesUiAction.PageIsSelected -> handlePageIsSelected()
-            else -> {}
+            StoriesUiAction.VideoBuffering -> handleVideoBuffering()
+            StoriesUiAction.OpenReport -> handleOpenReport()
+            StoriesUiAction.ResetReportState -> handleReportState(StoryReportStatusInfo.ReportState.None) {}
+            StoriesUiAction.HasSeenDurationCoachMark -> handleHasSeenDurationCoachMark()
+        }
+    }
+
+    private fun getReportReasonList() {
+        viewModelScope.launchCatchError(block = {
+            if (userReportReasonList is Success && (userReportReasonList as Success).data.isNotEmpty()) return@launchCatchError
+
+            val reasonList = repository.getReportReasonList()
+            _userReportReasonList.value = Success(reasonList)
+        }) {
+            _userReportReasonList.value = Fail(it)
+        }
+    }
+
+    fun submitReport(description: String, timestamp: Long) {
+        viewModelScope.launchCatchError(block = {
+            val submitReportResult = repository.submitReport(
+                storyDetail = mDetail,
+                reasonId = _reportState.value.report.selectedReason?.reasoningId.orZero(),
+                timestamp = timestamp,
+                reportDesc = description
+            )
+
+            _reportState.update { statusInfo ->
+                statusInfo.copy(
+                    state = StoryReportStatusInfo.ReportState.Submitted,
+                    report = statusInfo.report.copy(
+                        submitStatus = if (submitReportResult) {
+                            Success(Unit)
+                        } else {
+                            Fail(
+                                MessageErrorException()
+                            )
+                        }
+                    )
+                )
+            }
+        }) {
+            _reportState.update { statusInfo ->
+                statusInfo.copy(
+                    state = StoryReportStatusInfo.ReportState.Submitted,
+                    report = statusInfo.report.copy(
+                        submitStatus = Fail(it)
+                    )
+                )
+            }
         }
     }
 
@@ -256,7 +345,10 @@ class StoriesViewModel @AssistedInject constructor(
     }
 
     private fun handleOnResumeStories() {
-        updateDetailData(event = if (mDetail.isContentLoaded && mIsPageSelected) RESUME else PAUSE, isSameContent = true)
+        updateDetailData(
+            event = if (mDetail.isContentLoaded && mIsPageSelected) RESUME else PAUSE,
+            isSameContent = true
+        )
     }
 
     private fun handlePageIsSelected() {
@@ -274,6 +366,37 @@ class StoriesViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleOpenReport() {
+        handleReportState(StoryReportStatusInfo.ReportState.OnSelectReason) {
+            handleOpenBottomSheet(BottomSheetType.Report)
+        }
+    }
+
+    private fun handleReportState(
+        newState: StoryReportStatusInfo.ReportState,
+        nextAction: () -> Unit
+    ) {
+        _reportState.update { statusInfo ->
+            statusInfo.copy(
+                state = newState
+            )
+        }
+        nextAction()
+    }
+
+    private fun handleSelectReportReason(item: PlayUserReportReasoningUiModel.Reasoning) {
+        _reportState.update { statusInfo ->
+            statusInfo.copy(
+                state = StoryReportStatusInfo.ReportState.OnSubmit,
+                report = statusInfo.report.copy(
+                    selectedReason = item
+                )
+            )
+        }
+
+        handleOpenBottomSheet(BottomSheetType.SubmitReport)
+    }
+
     private suspend fun setInitialData() {
         val isCached = mGroup.detail.detailItems.isNotEmpty()
         val currentDetail = if (isCached) {
@@ -288,7 +411,25 @@ class StoriesViewModel @AssistedInject constructor(
         val maxPos = mDetailSize.minus(1)
         val position = if (cachedPos > maxPos) maxPos else cachedPos
         updateDetailData(position = position, isReset = true)
-        if (currentDetail == StoriesDetail()) _storiesEvent.emit(StoriesUiEvent.EmptyDetailPage)
+
+        if (currentDetail == StoriesDetail()) {
+            _storiesEvent.emit(StoriesUiEvent.EmptyDetailPage)
+            return
+        }
+
+        val currentDetailItems = currentDetail.detailItems.getOrNull(position) ?: return
+        val authorIdToCheck = when (currentDetailItems.author.type) {
+            AuthorType.Seller -> userSession.shopId
+            else -> userSession.userId
+        }
+
+        if (
+            currentDetailItems.category == StoriesDetailItem.StoryCategory.Manual &&
+            !repository.hasSeenManualStoriesDurationCoachmark() &&
+            currentDetailItems.author.id == authorIdToCheck
+        ) {
+            _storiesEvent.emit(StoriesUiEvent.ShowStoriesTimeCoachmark)
+        }
     }
 
     private fun setCachingData() {
@@ -367,8 +508,11 @@ class StoriesViewModel @AssistedInject constructor(
     private fun handleDismissSheet(bottomSheetType: BottomSheetType) {
         _bottomSheetStatusState.update { bottomSheet ->
             bottomSheet.mapValues {
-                if (it.key == bottomSheetType) false
-                else it.value
+                if (it.key == bottomSheetType) {
+                    false
+                } else {
+                    it.value
+                }
             }
         }
     }
@@ -378,6 +522,16 @@ class StoriesViewModel @AssistedInject constructor(
             _storiesEvent.emit(StoriesUiEvent.OpenKebab)
             _bottomSheetStatusState.update { bottomSheet ->
                 bottomSheet.mapValues { it.key == BottomSheetType.Kebab }
+            }
+
+            getReportReasonList()
+        }
+    }
+
+    private fun handleOpenBottomSheet(type: BottomSheetType) {
+        viewModelScope.launch {
+            _bottomSheetStatusState.update { bottomSheet ->
+                bottomSheet.mapValues { it.key == type }
             }
         }
     }
@@ -414,14 +568,18 @@ class StoriesViewModel @AssistedInject constructor(
     private fun handleGetProducts() {
         viewModelScope.launchCatchError(block = {
             _productsState.update { product -> product.copy(resultState = ResultState.Loading) }
-            val productList = repository.getStoriesProducts(args.authorId, storyId, mGroup.groupName)
+            val productList =
+                repository.getStoriesProducts(args.authorId, storyId, mGroup.groupName)
             _productsState.value = productList
         }) { exception ->
             _productsState.update { product -> product.copy(resultState = ResultState.Fail(exception)) }
         }
     }
 
-    private fun handleProductAction(action: StoriesProductAction, product: ContentTaggedProductUiModel) {
+    private fun handleProductAction(
+        action: StoriesProductAction,
+        product: ContentTaggedProductUiModel
+    ) {
         requiredLogin {
             addToCart(product, action)
         }
@@ -439,10 +597,14 @@ class StoriesViewModel @AssistedInject constructor(
                 if (!response) throw MessageErrorException()
 
                 _storiesEvent.emit(
-                    if (action == StoriesProductAction.Atc) StoriesUiEvent.ProductSuccessEvent(
-                        action,
-                        R.string.stories_product_atc_success,
-                    ) else StoriesUiEvent.NavigateEvent(appLink = ApplinkConst.CART)
+                    if (action == StoriesProductAction.Atc) {
+                        StoriesUiEvent.ProductSuccessEvent(
+                            action,
+                            R.string.stories_product_atc_success
+                        )
+                    } else {
+                        StoriesUiEvent.NavigateEvent(appLink = ApplinkConst.CART)
+                    }
                 )
             }) { _storiesEvent.emit(StoriesUiEvent.ShowErrorEvent(it)) }
         }
@@ -497,6 +659,42 @@ class StoriesViewModel @AssistedInject constructor(
         viewModelScope.launch {
             _storiesEvent.emit(StoriesUiEvent.NavigateEvent(appLink))
         }
+    }
+
+    private fun handleUpdateDuration(duration: Int) {
+        updateMainData(
+            detail = mGroup.detail.copy(
+                detailItems = mGroup.detail.detailItems.mapIndexed { index, storiesDetailItem ->
+                    if (index == mDetailPos) {
+                        storiesDetailItem.copy(
+                            content = storiesDetailItem.content.copy(
+                                duration = duration
+                            )
+                        )
+                    } else {
+                        storiesDetailItem
+                    }
+                }
+            ),
+            groupPosition = mGroupPos
+        )
+    }
+
+    private fun handleVideoBuffering() {
+        updateMainData(
+            detail = mGroup.detail.copy(
+                detailItems = mGroup.detail.detailItems.mapIndexed { index, storiesDetailItem ->
+                    if (index == mDetailPos) {
+                        storiesDetailItem.copy(
+                            event = BUFFERING
+                        )
+                    } else {
+                        storiesDetailItem
+                    }
+                }
+            ),
+            groupPosition = mGroupPos
+        )
     }
 
     private fun moveToOtherStories() {
@@ -581,4 +779,9 @@ class StoriesViewModel @AssistedInject constructor(
         return repository.setStoriesTrackActivity(request)
     }
 
+    private fun handleHasSeenDurationCoachMark() {
+        viewModelScope.launch {
+            repository.setHasSeenManualStoriesDurationCoachmark()
+        }
+    }
 }

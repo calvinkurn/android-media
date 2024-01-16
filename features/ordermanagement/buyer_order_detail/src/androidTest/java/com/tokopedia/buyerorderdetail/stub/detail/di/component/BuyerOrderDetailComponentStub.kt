@@ -6,6 +6,9 @@ import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailViewModelModule
 import com.tokopedia.buyerorderdetail.stub.common.di.component.BaseAppComponentStub
 import com.tokopedia.buyerorderdetail.stub.detail.di.module.BuyerOrderDetailModuleStub
 import com.tokopedia.buyerorderdetail.stub.detail.di.module.BuyerOrderDetailUseCaseModuleStub
+import com.tokopedia.tokochat.config.di.component.TokoChatConfigComponent
+import com.tokopedia.tokochat.config.domain.TokoChatCounterUseCase
+import com.tokopedia.tokochat.config.domain.TokoChatGroupBookingUseCase
 import dagger.Component
 
 @BuyerOrderDetailScope
@@ -15,6 +18,9 @@ import dagger.Component
         BuyerOrderDetailViewModelModule::class,
         BuyerOrderDetailUseCaseModuleStub::class
     ],
-    dependencies = [BaseAppComponentStub::class]
+    dependencies = [BaseAppComponentStub::class, TokoChatConfigComponent::class]
 )
-interface BuyerOrderDetailComponentStub : BuyerOrderDetailComponent
+interface BuyerOrderDetailComponentStub : BuyerOrderDetailComponent {
+    fun getTokoChatCounterUseCaseStub(): TokoChatCounterUseCase
+    fun getTokoChatGroupBookingUseCaseStub(): TokoChatGroupBookingUseCase
+}

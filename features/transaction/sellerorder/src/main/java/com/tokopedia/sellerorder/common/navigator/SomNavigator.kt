@@ -8,7 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_ORDER_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_POF_STATUS
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.presenter.activities.SomPrintAwbActivity
@@ -29,6 +32,7 @@ object SomNavigator {
     const val REQUEST_RESCHEDULE_PICKUP = 994
     const val REQUEST_RETURN_TO_SHIPPER = 993
     const val REQUEST_FIND_NEW_DRIVER = 992
+    const val REQUEST_POF = 991
 
     fun goToSomOrderDetail(fragment: SomListFragment, orderId: String) {
         fragment.run {
@@ -153,5 +157,18 @@ object SomNavigator {
     fun openWebView(context: Context?, url: String) {
         val intent: Intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
         context?.startActivity(intent)
+    }
+
+    fun goToPofPage(fragment: Fragment, orderId: String, pofStatus: Int) {
+        fragment.run {
+            val appLink = UriUtil.buildUriAppendParam(
+                ApplinkConst.SELLER_PARTIAL_ORDER_FULFILLMENT,
+                mapOf(
+                    PARAM_ORDER_ID to orderId,
+                    PARAM_POF_STATUS to pofStatus.toString()
+                )
+            )
+            startActivityForResult(RouteManager.getIntent(context, appLink), REQUEST_POF)
+        }
     }
 }

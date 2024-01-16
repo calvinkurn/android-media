@@ -24,7 +24,6 @@ import com.tokopedia.home_component.widget.shop_flash_sale.ShopFlashSaleWidgetDa
 import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleErrorDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.item.ShopFlashSaleProductGridShimmerDataModel
 import com.tokopedia.home_component.widget.shop_flash_sale.tab.ShopFlashSaleTabDataModel
-import com.tokopedia.home_component_header.util.getHomeComponentHeaderType
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -354,7 +353,6 @@ fun DynamicHomeChannel.Header.mapToHomeComponentHeader() = com.tokopedia.home_co
     backColor,
     backImage,
     textColor,
-    headerType = getHomeComponentHeaderType(),
 )
 
 fun DynamicHomeChannel.Grid.mapToChannelGrid(index: Int) = ChannelGrid(

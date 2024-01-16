@@ -20,7 +20,8 @@ class DigitalCategoryDetailPassData(
         var categoryName: String?,
         var additionalETollBalance: String?,
         var additionalETollLastUpdatedDate: String?,
-        var additionalETollOperatorName: String?
+        var additionalETollOperatorName: String?,
+        var isBCAGenOne: Boolean
 ) : Parcelable {
 
     class Builder {
@@ -37,6 +38,7 @@ class DigitalCategoryDetailPassData(
         var additionalETollLastBalance: String? = null
         var additionalETollLastUpdatedDate: String? = null
         var additionalETollOperatorName: String? = null
+        var isBCAGenOne: Boolean = false
 
         fun menuId(`val`: String?): Builder {
             menuId = `val`
@@ -103,6 +105,11 @@ class DigitalCategoryDetailPassData(
             return this
         }
 
+        fun isBCAGenOne(`val`: Boolean): Builder {
+            isBCAGenOne = `val`
+            return this
+        }
+
         fun build(): DigitalCategoryDetailPassData {
             return DigitalCategoryDetailPassData(
                     categoryId = this.categoryId,
@@ -117,7 +124,9 @@ class DigitalCategoryDetailPassData(
                     categoryName = this.categoryName,
                     additionalETollBalance = this.additionalETollLastBalance,
                     additionalETollLastUpdatedDate = this.additionalETollLastUpdatedDate,
-                    additionalETollOperatorName = this.additionalETollOperatorName)
+                    additionalETollOperatorName = this.additionalETollOperatorName,
+                    isBCAGenOne = isBCAGenOne
+            )
         }
     }
 
@@ -128,5 +137,6 @@ class DigitalCategoryDetailPassData(
         const val PARAM_PRODUCT_ID = "product_id"
         const val PARAM_CLIENT_NUMBER = "client_number"
         const val PARAM_IS_FROM_WIDGET = "is_from_widget"
+        const val PARAM_IS_BCA_GEN_ONE = "is_bca_gen_one"
     }
 }

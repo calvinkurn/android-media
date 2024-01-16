@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.View
-import android.view.Window
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.cardview.widget.CardView
@@ -13,14 +12,17 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImageFitCenter
-import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.GLOBAL_NAV_SPAN_COUNT
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.NAV_TEMPLATE_PILL
+import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.NAV_TEMPLATE_SHOP
 import com.tokopedia.globalnavwidget.catalog.GlobalNavWidgetCatalogAdapter
 import com.tokopedia.globalnavwidget.catalog.GlobalNavWidgetCatalogItemDecoration
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.getBitmapImageUrl
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -71,6 +73,10 @@ class GlobalNavWidget: BaseCustomView {
         findViewById(R.id.singleGlobalNavInfo)
     }
 
+    private val globalNavShopContainer: CardUnify2? by lazy(NONE) {
+        findViewById(R.id.globalNavShopWidgetContainer)
+    }
+
     private val backgroundGradientColorList = intArrayOf(-0x51a, -0x1a0a01, -0x140011, -0x1511)
 
     constructor(context: Context): super(context) {
@@ -89,14 +95,31 @@ class GlobalNavWidget: BaseCustomView {
         View.inflate(context, R.layout.global_nav_widget_layout, this)
     }
 
-    fun setData(globalNavWidgetModel: GlobalNavWidgetModel, globalNavWidgetListener: GlobalNavWidgetListener) {
-        if (globalNavWidgetModel.itemList.size == 1) {
-            hideGlobalNavListContainer()
-            handleSingleGlobalNav(globalNavWidgetModel, globalNavWidgetListener)
-        }
-        else {
-            hideSingleGlobalNavCard()
-            handleGlobalNav(globalNavWidgetModel, globalNavWidgetListener)
+    fun setData(
+        globalNavWidgetModel: GlobalNavWidgetModel,
+        globalNavWidgetListener: GlobalNavWidgetListener,
+    ) {
+        val isOnlyOneItem = globalNavWidgetModel.itemList.size == 1
+        when {
+            isOnlyOneItem && globalNavWidgetModel.navTemplate == NAV_TEMPLATE_SHOP -> {
+                hideGlobalNavListContainer()
+                hideSingleGlobalNavCard()
+                showGlobalNavigationShopWidget()
+                val globalNavShopWidgetRender = GlobalNavShopWidgetRender(this)
+                globalNavShopWidgetRender.setItemGlobalNavigation(
+                    globalNavWidgetModel,
+                    globalNavWidgetListener,
+                )
+            }
+            isOnlyOneItem -> {
+                hideGlobalNavListContainer()
+                handleSingleGlobalNav(globalNavWidgetModel, globalNavWidgetListener)
+            }
+            else -> {
+                hideSingleGlobalNavCard()
+                hideGlobalNavigationShopWidget()
+                handleGlobalNav(globalNavWidgetModel, globalNavWidgetListener)
+            }
         }
     }
 
@@ -420,5 +443,13 @@ class GlobalNavWidget: BaseCustomView {
         catalogAdapter.setItemList(globalNavWidgetModel.itemList)
 
         return catalogAdapter
+    }
+
+    private fun showGlobalNavigationShopWidget() {
+        globalNavShopContainer?.show()
+    }
+
+    private fun hideGlobalNavigationShopWidget() {
+        globalNavShopContainer?.hide()
     }
 }

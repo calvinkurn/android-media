@@ -114,7 +114,7 @@
     <string name="up_input_username_info">Username hanya bisa diubah 1 kali</string>
 
     <!--UGC-->
-    <string name="ugc_onboarding_accept_tnc_privacy_policy">Kebijakan Privasi</string>
+    <string name="ugc_onboarding_accept_tnc_privacy_policy">Pemberitahuan Privasi</string>
     <string name="ugc_onboarding_accept_tnc_terms">Syarat &amp; Ketentuan</string>
     <string name="ugc_onboarding_privacy_policy_link">https://www.tokopedia.com/privacy</string>
     <string name="ugc_onboarding_tnc_link">https://www.tokopedia.com/help/article/syarat-dan-ketentuan-feed-user-profil</string>
@@ -127,7 +127,7 @@
     <string name="ugc_complete_onboarding_tnc_title">Pastikan postinganmu nanti sesuai ketentuan berikut:</string>
     <string name="ugc_onboarding_tnc_1">Hanya posting pengalaman belanja di Tokopedia</string>
     <string name="ugc_onboarding_tnc_2">Tidak memposting foto/video yang ada unsur SARA &amp; dewasa (alkohol, rokok, kondom, dll)</string>
-    <string name="ugc_onboarding_accept_tnc">Saya telah membaca Kebijakan Privasi dan setuju dengan Syarat &amp; Ketentuan</string>
+    <string name="ugc_onboarding_accept_tnc">Saya telah membaca Pemberitahuan Privasi dan setuju dengan Syarat &amp; Ketentuan</string>
     <string name="ugc_onboarding_continue">Lanjut</string>
     <string name="ugc_account_non_active" tools:ignore="UnusedResources">Akun dinonaktifkan</string>
     <string name="ugc_warning_both_account_banned_title">Semua akun kamu melanggar\nketentuan Tokopedia</string>
@@ -162,11 +162,11 @@
     <string name="content_comment_error_connection">Wah, internet putus. Cek Wi-Fi atau paket datamu, ya.</string>
     <string name="content_common_report_comment">Laporkan</string>
     <string name="content_user_report_footer"><![CDATA[<strong><span style="color:#03AC0E">Pelajari Selengkapnya</span></strong> tipe-tipe pelanggaran di Tokopedia.]]></string>
-    <string name="content_user_report_header">Laporkan</string>
+    <string name="content_user_report_header">Laporkan konten</string>
     <string name="content_user_report_submission_button">Laporkan</string>
     <string name="content_user_report_footer_weblink">https://www.tokopedia.com/help/article/tokopedia-play-live-streaming</string>
     <string name="content_user_report_text_area_min">%1$s Min. %2$d karakter</string>
-    <string name="play_user_report_header">Pilih kategori pelanggaran yang terjadi pada video ini</string>
+    <string name="play_user_report_header">Pilih kategori pelanggaran yang terjadi pada konten ini</string>
     <string name="play_user_report_verification_dialog_title">Lanjutkan laporkan Produk</string>
     <string name="play_user_report_verification_dialog_desc">Dengan klik \"Lapor\", saya menyatakan bahwa segala informasi yang dilaporkan memang benar dan bertanggung jawab atas informasi tersebut.</string>
     <string name="play_user_report_verification_dialog_btn_ok">Lapor</string>
@@ -368,8 +368,8 @@
     <string name="feeds_asgc_disc_x_products">Cek Sekarang! %d Barang Diskon s.d %s</string>
     <string name="feeds_asgc_disc_one_products">Cek Sekarang! Diskon s.d %s</string>
     <string name="feeds_ads_text">Ad</string>
-    <string name="feeds_asgc_new_product_text">Barang Terbaru</string>
-    <string name="feeds_asgc_restock_text">Barang Restock</string>
+    <string name="feeds_asgc_new_product_text">Produk Terbaru</string>
+    <string name="feeds_asgc_restock_text">Produk Restock</string>
 
     //video Tab in feed
     <string name="feed_video_tab_success_add_reminder">Kami akan kirim pengingat, ya!</string>
@@ -377,7 +377,7 @@
     <string name="feed_video_tab_error_reminder">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
     <string name="feed_video_tab_failed_to_set_reminder_text">Gagal pasang pengingat. Coba lagi, ya.</string>
     <string name="feed_video_tab_failed_to_unset_reminder_text">Gagal batalkan pengingat. Coba lagi, ya.</string>
-    <string name="feed_asgc_diskon_toko">Barang Diskon</string>
+    <string name="feed_asgc_diskon_toko">Produk Diskon</string>
     <string name="feed_asgc_flash_sale_toko">Flash Sale</string>
     <string name="feed_asgc_rilisan_special">Rilisan Spesial</string>
     <string name="feed_asgc_reminder_activate_fst_message" tools:ignore="UnusedResources">Yay, kamu akan diingatkan sebelum Flash Sale dimulai.</string>
@@ -438,4 +438,8 @@ produk eksklusif ini.</string>
 
     <string name="content_follow">Follow</string>
     <string name="content_section_timer_title">Berakhir dalam</string>
+
+    <string name="content_video_duration_separator">/</string>
+    <string name="content_video_time_less_than_hour">%d:%02d</string>
+    <string name="content_video_time_hours">%d:%02d:%02d</string>
 </resources>

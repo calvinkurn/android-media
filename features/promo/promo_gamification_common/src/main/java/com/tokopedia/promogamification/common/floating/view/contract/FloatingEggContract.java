@@ -29,6 +29,6 @@ public interface FloatingEggContract {
 
         boolean isUserLogin();
 
-        void clickCloseButton(int floatingId);
+        void clickCloseButton(int floatingId, boolean isClose);
     }
 }

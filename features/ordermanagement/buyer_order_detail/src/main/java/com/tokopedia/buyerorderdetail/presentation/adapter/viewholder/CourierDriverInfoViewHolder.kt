@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.adapter.CourierActionButtonAdapter
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.CourierButtonListener
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -16,7 +17,8 @@ import com.tokopedia.unifyprinciples.Typography
 
 open class CourierDriverInfoViewHolder(
     private val itemView: View,
-    private val navigator: BuyerOrderDetailNavigator
+    private val navigator: BuyerOrderDetailNavigator,
+    private val courierButtonListener: CourierButtonListener
 ) : AbstractViewHolder<ShipmentInfoUiModel.CourierDriverInfoUiModel>(itemView) {
 
     companion object {
@@ -64,7 +66,7 @@ open class CourierDriverInfoViewHolder(
     }
 
     private fun setupActionButtons(element: ShipmentInfoUiModel.CourierDriverInfoUiModel) {
-        CourierActionButtonAdapter(navigator).apply {
+        CourierActionButtonAdapter(navigator, courierButtonListener).apply {
             this.driverActionButtonList = element.buttonList
             rvBuyerOrderDetailCourierDriverButton?.adapter = this
             rvBuyerOrderDetailCourierDriverButton.layoutManager = LinearLayoutManager(

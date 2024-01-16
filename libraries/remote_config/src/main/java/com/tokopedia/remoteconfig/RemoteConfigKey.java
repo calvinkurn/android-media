@@ -175,6 +175,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_PEDULI_LINDUNGI_SCANQR = "android_customer_enable_peduli_lindungi_scanqr";
 
     public static final String FORCE_LIGHT_MODE = "android_force_light_mode";
+    public static final String FORCE_LIGHT_MODE_SELLER_APP = "android_force_light_mode_seller_app";
+    public static final String ENABLE_DARK_MODE_INTRO = "android_enable_dark_mode_intro_bottom_sheet";
 
     public static final String SHOW_SHOPADS_FEED_NEW_DESIGN = "app_android_feed_shopads_new_design_flag";
     public static final String ENABLE_QUEST_WIDGET = "android_enable_quest_widget";
@@ -234,6 +236,9 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_PERFORMANCE_TRACE = "android_enable_performance_trace";
 
+    public static final String ENABLE_PERFORMANCE_TRACE_V2 = "android_enable_performance_trace_v2";
+
+    public static final String PERFORMANCE_TRACE_CONFIG = "android_universal_performance_config";
     public static final String DEV_OPTS_AUTHORIZATION = "android_dev_opts_password_hash";
 
     public static final String ENABLE_CHATBOT_MVVM = "android_chatbot_is_mvvm";
@@ -278,8 +283,8 @@ public class RemoteConfigKey {
     public static final String HOME_HPB_CACHE_EXPIRY = "android_home_hpb_cache_expiry";
 
     public static final String MAINAPP_DISABLED_STORIES_ENTRY_POINTS = "android_main_app_disabled_stories_entry_points";
-
     public static final String SELLERAPP_DISABLED_STORIES_ENTRY_POINTS = "android_seller_app_disabled_stories_entry_points";
+    public static final String APP_CONTENT_CREATION_STORIES_CONFIG = "android_app_content_creation_stories_config";
 
     public static final String ANDROID_SET_VISIBLE_PRODUCT_COUNTER_OLP = "android_set_visible_product_counter_olp";
 
@@ -301,7 +306,24 @@ public class RemoteConfigKey {
 
     public static final String LOAD_PRODUCT_IMAGE_ARCHIVAL_KEY = "android_load_product_image_archival_enabled";
 
+    public static final String ENABLE_IMPROVMENT_CATALOG_PRODUCT_LIST = "android_set_catalog_product_list_improvement";
+
     public static final String ENABLE_WEBVIEW_BACK_PRESSED = "android_webview_enable_override_back_pressed";
 
     public static final String ANDROID_MAIN_APP_ENABLE_DISCO_SHOP_OFFER_HERO_BRAND = "android_main_app_enable_disco_shop_offer_hero_brand";
+
+    public static final String ANDROID_ENABLE_AUTO_TOPADS_WD_RECOMMENDATION = "android_enable_auto_topads_wd_recommendation";
+
+    public static final String ANDROID_SALDO_ENABLE_AUTO_WD_INIT_GQL = "android_saldo_enable_auto_wd_init_gql";
+
+    public static final String ANDROID_ENABLE_NEW_CART_QUANTITY_EDITOR = "android_enable_new_quantity_editor_cart";
+
+    public static final String ANDROID_INTERNAL_TEST_UPDATE_CONFIG = "android_internal_test_update_config";
+
+    public static final String ANDROID_INTERNAL_PUBLIC_VERSION_DIALOG_CONFIG = "android_internal_public_version_dialog_config";
+
+    public static final String ANDROID_INTERNAL_NAKAMA_VERSION_DIALOG_CONFIG = "android_internal_nakama_version_dialog_config";
+  
+    public static final String ANDROID_CHATBOT_SECURE_IMAGE = "android_chatbot_secure_image";
+
 }

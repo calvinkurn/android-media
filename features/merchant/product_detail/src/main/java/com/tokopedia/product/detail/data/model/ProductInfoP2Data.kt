@@ -22,6 +22,7 @@ import com.tokopedia.product.detail.data.model.navbar.NavBar
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.review.MostHelpfulReviewData
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
+import com.tokopedia.product.detail.data.model.review.ProductRatingCount.Companion.asUiModel
 import com.tokopedia.product.detail.data.model.review.ProductReviewImageListQuery
 import com.tokopedia.product.detail.data.model.shop.ProductShopBadge
 import com.tokopedia.product.detail.data.model.shopFinishRate.ShopFinishRate
@@ -213,7 +214,7 @@ fun ProductInfoP2Data.asUiModel() = ProductInfoP2UiData(
     helpfulReviews = mostHelpFulReviewData.list,
     imageReview = DynamicProductDetailMapper.generateImageReview(reviewImage),
     alternateCopy = cartRedirection.alternateCopy,
-    rating = rating,
+    rating = rating.asUiModel(),
     ticker = ticker,
     navBar = navBar,
     shopFinishRate = shopFinishRate.finishRate,

@@ -6,11 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.catalogcommon.R
 import com.tokopedia.catalogcommon.databinding.WidgetCatalogPanelImageBinding
+import com.tokopedia.catalogcommon.listener.PanelImageListener
 import com.tokopedia.catalogcommon.uimodel.PanelImageUiModel
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
-class PanelImageViewHolder(itemView: View) : AbstractViewHolder<PanelImageUiModel>(itemView) {
+class PanelImageViewHolder(itemView: View, val panelImageListener: PanelImageListener? = null) :
+    AbstractViewHolder<PanelImageUiModel>(itemView) {
 
     companion object {
 
@@ -36,6 +38,7 @@ class PanelImageViewHolder(itemView: View) : AbstractViewHolder<PanelImageUiMode
                 it.catalogPanelWidgetTxtDescription2.text = element.content[1].description
             }
         }
+        panelImageListener?.onPanelImageImpression(element.widgetName)
     }
 
     private fun overrideWidgetTheme(fontColor: Int) {

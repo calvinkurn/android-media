@@ -36,6 +36,10 @@ data class ShopInfo(
     @Expose
     val shipments: List<ShopShipment> = listOf(),
 
+    @SerializedName("shippingLoc")
+    @Expose
+    val shippingLoc: ShippingLoc = ShippingLoc(),
+
     @SerializedName("shopAssets")
     @Expose
     val shopAssets: ShopAssets = ShopAssets(),
@@ -172,6 +176,10 @@ data class ShopInfo(
         val data: List<ShopInfo> = listOf()
     )
 
+    data class ShippingLoc(
+        @SerializedName("cityName")
+        val cityName: String = ""
+    )
     data class EPharmacyInfo(
         @SerializedName("siaNumber")
         @Expose

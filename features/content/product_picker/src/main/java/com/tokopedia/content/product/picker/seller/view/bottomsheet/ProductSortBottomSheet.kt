@@ -98,8 +98,12 @@ class ProductSortBottomSheet @Inject constructor(
             eventBus.subscribe().collect {
                 when (it) {
                     is SortListViewComponent.Event.OnSelected -> {
-                        mSelectedSort = it.sort.sort
-                        refreshSortList()
+                        if (mSelectedSort != it.sort.sort) {
+                            analytic.clickSortingTypeItem(it.sort.sort.text)
+
+                            mSelectedSort = it.sort.sort
+                            refreshSortList()
+                        }
                     }
                 }
             }

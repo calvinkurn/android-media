@@ -1,6 +1,7 @@
 package com.tokopedia.productcard.utils
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.Rect
@@ -26,6 +27,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -34,6 +37,7 @@ import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageTopRightCrop
+import com.tokopedia.media.loader.wrapper.MediaDataSource
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.RoundedCornersTransformation.CornerType
@@ -199,6 +203,33 @@ internal fun ImageView.loadImageRounded(
         .into(this)
 }
 
+internal fun ImageView.loadImageRoundedBlurred(
+    url: String,
+    roundingRadius: Int,
+    cornerType: CornerType= CornerType.TOP,
+    listenerOnSuccessLoad: (Bitmap?, MediaDataSource?) -> Unit = { _, _ -> },
+){
+    val transformation = MultiTransformation(
+        RoundedCornersTransformation(roundingRadius, cornerType)
+    )
+
+    val transcodingCoverTarget: CustomTarget<Bitmap> = object : CustomTarget<Bitmap>() {
+        override fun onLoadCleared(placeholder: Drawable?) {
+
+        }
+
+        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+            listenerOnSuccessLoad(resource, null)
+        }
+    }
+
+    Glide.with(context)
+        .asBitmap()
+        .load(url)
+        .transform(CenterCrop(), transformation)
+        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+        .into(transcodingCoverTarget)
+}
 internal fun Label.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
     if (labelGroup == null) {
         hide()

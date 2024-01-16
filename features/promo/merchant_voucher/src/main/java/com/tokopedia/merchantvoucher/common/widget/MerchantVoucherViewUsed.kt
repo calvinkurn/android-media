@@ -13,6 +13,7 @@ import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDe
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef
 import com.tokopedia.merchantvoucher.common.model.*
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /*
     Based on CustomVoucherView with predefined parameter and fixed layout.
@@ -106,14 +107,14 @@ class MerchantVoucherViewUsed : CustomVoucherView {
                     voucherImageUrl = MerchantVoucherConst.DELIVERY_VOUCHER_IMAGE_URL
                 }
             }
-            ivVoucherType?.loadImageWithPlaceholder(voucherImageUrl, com.tokopedia.design.R.drawable.ic_loading_image)
+            ivVoucherType?.loadImageWithPlaceholder(voucherImageUrl, R.drawable.ic_loading_image)
             val voucherTitle = context.getString(R.string.voucher_title_x_x,
                     merchantVoucherViewModel.getTypeString(context),
                     merchantVoucherViewModel.getAmountShortString())
             val spannedVoucherTitle = SpanText(
                     voucherTitle,
                     merchantVoucherViewModel.getAmountShortString()
-            ).addBoldSpanWithFontFamily("sans-serif").changeTextSize(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.sp_20)).getCharSequence()
+            ).addBoldSpanWithFontFamily("sans-serif").changeTextSize(resources.getDimensionPixelSize(R.dimen.sp_20)).getCharSequence()
             tvVoucherTitle?.text = spannedVoucherTitle
             val voucherDesc = merchantVoucherViewModel.getMinSpendLongString(context)
             tvVoucherDesc?.text = SpanText(
@@ -146,10 +147,10 @@ class MerchantVoucherViewUsed : CustomVoucherView {
                 (merchantVoucherViewModel.status == MerchantVoucherStatusTypeDef.TYPE_IN_USE) -> {
                     MethodChecker.setBackground(
                             btnUseVoucher,
-                            MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable.bg_used_voucher)
+                            MethodChecker.getDrawable(context, R.drawable.bg_used_voucher)
                     )
                     btnUseVoucher?.setTextColor(
-                            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+                            MethodChecker.getColor(context, unifyprinciplesR.color.Unify_NN0)
                     )
                     btnUseVoucher?.visibility = View.VISIBLE
                     btnUseVoucher?.isEnabled = false

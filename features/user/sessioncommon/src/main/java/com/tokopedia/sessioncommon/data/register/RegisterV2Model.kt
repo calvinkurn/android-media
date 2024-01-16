@@ -62,6 +62,8 @@ data class Register(
     val popupError: PopupError = PopupError(),
 
     @SerializedName("sid")
-    val sid: String = ""
+    val sid: String = "",
 
+    @SerializedName("name")
+    val name: String = ""
 )

@@ -59,7 +59,7 @@
         app:layout_constraintStart_toStartOf="@id/caption_one"
         app:layout_constraintTop_toBottomOf="@id/caption_one"
         app:typographyType="small"
-        tools:text="serta Kebijakan Privasi Tokopedia." />
+        tools:text="serta Pemberitahuan Privasi Tokopedia." />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/create_loading"

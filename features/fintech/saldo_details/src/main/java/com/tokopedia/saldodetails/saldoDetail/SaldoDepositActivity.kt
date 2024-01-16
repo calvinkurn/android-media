@@ -2,22 +2,34 @@ package com.tokopedia.saldodetails.saldoDetail
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
+import android.widget.RelativeLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.saldoDetail.SaldoDepositFragment.Companion.REQUEST_WITHDRAW_CODE
 import com.tokopedia.saldodetails.saldoDetail.coachmark.SaldoCoachMarkListener
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 import javax.inject.Inject
+import com.tokopedia.saldodetails.R as saldodetailsR
 
 /**
  * For navigating to this class
@@ -27,12 +39,13 @@ import javax.inject.Inject
 
 class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComponent>, SaldoCoachMarkListener {
 
-    private lateinit var saldoToolbar: HeaderUnify
+    var saldoToolbar: HeaderUnify? = null
 
     @Inject
     lateinit var userSession: UserSession
     private var isSeller: Boolean = false
     private val saldoComponent by lazy(LazyThreadSafetyMode.NONE) { SaldoDetailsComponentInstance.getComponent(this) }
+    private var defaultStatusBarColor: Int = 0
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -42,7 +55,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
             if (supportFragmentManager.findFragmentByTag(TAG) == null) {
                 finish()
             } else {
-                (supportFragmentManager.findFragmentByTag(TAG) as SaldoDepositFragment).resetPageAfterWithdrawal()
+                (supportFragmentManager.findFragmentByTag(TAG) as SaldoDepositFragment).resetPage()
             }
         }
         if (requestCode == REQUEST_CODE_LOGIN) {
@@ -51,6 +64,14 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
             } else {
                 finish()
             }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        intent?.let {
+            executeParamAction(it)
         }
     }
 
@@ -75,8 +96,6 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         }
     }
 
-    override fun getToolbarResourceID() = com.tokopedia.saldodetails.R.id.saldo_deposit_toolbar
-
     override fun getParentViewResourceID() = com.tokopedia.saldodetails.R.id.saldo_deposit_parent_view
 
     override fun setupLayout(savedInstanceState: Bundle?) {
@@ -84,37 +103,52 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         initInjector()
         setUpToolbar()
         initializeView()
+        defaultStatusBarColor = window.statusBarColor
+        hideStatusBar()
+    }
+
+    private fun executeParamAction(intent: Intent) {
+        val queryParam = UriUtil.uriQueryParamsToMap(intent.data.toString())
+        val toasterText = queryParam[TOASTER]
+        val shouldReload = queryParam.containsKey(RELOAD)
+        if (toasterText?.isNotEmpty() == true) {
+            val rootView = findViewById<RelativeLayout>(saldodetailsR.id.il_main_content)
+            val type = if (queryParam[TOASTER_ERROR] == "true") Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
+            Toaster.build(rootView, toasterText, Snackbar.LENGTH_SHORT, type).show()
+        }
+
+        if (shouldReload) {
+            (supportFragmentManager.findFragmentByTag(TAG) as SaldoDepositFragment).resetPage()
+        }
     }
 
     private fun setUpToolbar() {
         saldoToolbar = findViewById(com.tokopedia.saldodetails.R.id.saldo_deposit_toolbar)
-        saldoToolbar.apply {
-            rightContentView.removeAllViews()
-            addRightIcon(com.tokopedia.saldodetails.R.drawable.saldo_ic_info)
-            rightIcons?.let {
-                it.getOrNull(0)?.setOnClickListener { RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_INTRO) }
+        saldoToolbar?.apply {
+            headerView?.setTextColor(ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900))
+            navigationIcon = getIconUnifyDrawable(context, IconUnify.ARROW_BACK, ContextCompat.getColor(context, unifyprinciplesR.color.Unify_NN900))
+            setNavigationOnClickListener {
+                onBackPressed()
             }
+        }
+    }
+
+    private fun hideStatusBar() {
+        this.window?.let { window ->
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.statusBarColor = Color.TRANSPARENT
+        }
+    }
+
+    fun showStatusBar() {
+        this.window?.let { window ->
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.statusBarColor = defaultStatusBarColor
         }
     }
 
     private fun initializeView() {
         isSeller = userSession.hasShop() || userSession.isAffiliate
-        addAutoWithdrawalSettingIcon(isSeller)
-    }
-
-    private fun addAutoWithdrawalSettingIcon(isSeller : Boolean){
-        if (isSeller) {
-            val isAutoWithdrawalPageEnable = FirebaseRemoteConfigImpl(this)
-                    .getBoolean(FLAG_APP_SALDO_AUTO_WITHDRAWAL, false)
-            if (isAutoWithdrawalPageEnable ) {
-                saldoToolbar.apply {
-                    addRightIcon(com.tokopedia.saldodetails.R.drawable.saldo_ic_setting)
-                    rightIcons?.let {
-                        it.getOrNull(1)?.setOnClickListener { RouteManager.route(context, ApplinkConstInternalGlobal.AUTO_WITHDRAW_SETTING) }
-                    }
-                }
-            }
-        }
     }
 
     override fun getTagFragment() = TAG
@@ -124,7 +158,9 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         private const val FLAG_APP_SALDO_AUTO_WITHDRAWAL = "app_flag_saldo_auto_withdrawal_v2"
         private val REQUEST_CODE_LOGIN = 1001
         private val TAG = "DEPOSIT_FRAGMENT"
-
+        private const val TOASTER = "toaster"
+        private const val TOASTER_ERROR = "toaster_error"
+        private const val RELOAD = "reload"
     }
 
     override fun startCoachMarkFlow(anchorView: View?) {

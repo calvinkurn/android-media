@@ -61,6 +61,7 @@ class NotifcenterDetailUseCase @Inject constructor(
             			subsection_key
             			template_key
             			title
+                        title_html
             			button_text
             			short_description
             			short_description_html
@@ -97,8 +98,11 @@ class NotifcenterDetailUseCase @Inject constructor(
                         }
                         track_history {
                             title
+                            title_html
+                            description_html
                             create_time_unix
                         }
+                        thumbnail_urls
             			image {
             				url
             				width
@@ -139,7 +143,7 @@ class NotifcenterDetailUseCase @Inject constructor(
             				rating
             				count_review
                             warehouse_id
-            				labels {
+            				label {
             					title
             					color
             				}
@@ -198,6 +202,7 @@ class NotifcenterDetailUseCase @Inject constructor(
             			subsection_key
             			template_key
             			title
+                        title_html
             			button_text
             			short_description
             			short_description_html
@@ -234,8 +239,11 @@ class NotifcenterDetailUseCase @Inject constructor(
                         }
                         track_history {
                             title
+                            title_html
+                            description_html
                             create_time_unix
                         }
+                        thumbnail_urls
             			image {
             				url
             				width
@@ -276,7 +284,7 @@ class NotifcenterDetailUseCase @Inject constructor(
             				rating
             				count_review
                             warehouse_id
-            				labels {
+            				label {
             					title
             					color
             				}

@@ -44,7 +44,7 @@ class InspirationProductItemReimagineViewHolder(
     private fun productCardModel(element: InspirationProductItemDataView) =
         ProductCardModel(
             imageUrl = element.imageUrl,
-            isAds = element.isOrganicAds,
+            isAds = element.isShowAdsLabel,
             name = element.name,
             price = element.priceString,
             slashedPrice = element.originalPrice,

@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
-import com.tokopedia.content.product.picker.seller.domain.ContentProductPickerSellerRepository
+import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.helper.PlayBroadcastCassavaValidator
 import com.tokopedia.play.broadcaster.shorts.builder.ShortsUiModelBuilder
@@ -76,6 +76,7 @@ class PlayShortsUgcOnboardingAnalyticTest {
                         mockContentProductPickerSGCRepo = mockContentProductPickerSGCRepo,
                         mockAccountManager = mockAccountManager,
                         mockUserSession = mockUserSession,
+                        mockContentProductPickerSGCCommonRepo = mockk(relaxed = true),
                         mockRouter = mockk(relaxed = true),
                         mockIdleManager = mockk(relaxed = true),
                         mockDataStore = mockk(relaxed = true),
