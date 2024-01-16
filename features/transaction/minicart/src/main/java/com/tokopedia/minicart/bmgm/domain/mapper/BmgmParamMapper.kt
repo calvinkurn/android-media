@@ -75,4 +75,9 @@ object BmgmParamMapper {
                 )
              } as ArrayList<BmGmGetGroupProductTickerParams.BmGmCart>
     )
+
+    fun mapParamsFilteredToUpdateGwp(
+        params: BmGmGetGroupProductTickerParams?,
+        offerId: Long
+    ) = BmGmGetGroupProductTickerParams(carts = params?.carts?.filter { cart -> cart.cartDetails.any { it.offer.offerId == offerId } } as ArrayList<BmGmGetGroupProductTickerParams.BmGmCart>)
 }

@@ -294,7 +294,8 @@ class MiniCartListUiModelMapper @Inject constructor() {
                             placeholderNote = miniCartData.data.placeholderNote,
                             lastCartItem = lastCartItem,
                             lastGroupItem = lastGroupItem,
-                            isBmgm = cartDetail.isBmGm()
+                            isBmgm = cartDetail.isBmGm(),
+                            offerId = cartDetail.cartDetailInfo.bmgmData.offerId
                         )
                         miniCartProductUiModels.add(miniCartProductUiModel)
                         if (miniCartProductUiModel.isBundlingItem) {
@@ -472,7 +473,8 @@ class MiniCartListUiModelMapper @Inject constructor() {
         lastCartItem: Boolean = false,
         lastGroupItem: Boolean = false,
         cartStringId: String = "",
-        isBmgm: Boolean = false
+        isBmgm: Boolean = false,
+        offerId: Long = 0,
     ): MiniCartProductUiModel {
         return MiniCartProductUiModel().apply {
             val products = cartDetail.products
@@ -562,6 +564,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             isLastProductItem = lastProductItem
             editBundleApplink = cartDetail.bundleDetail.editBundleApplink
             this.isBmgm = isBmgm
+            this.offerId = offerId
             isProductBenefitNotEmpty = cartDetail.cartDetailInfo.bmgmData.tierProductList.any { it.productsBenefit.isNotEmpty() }
             if (bundlingItem) {
                 bundleMultiplier = productQuantity / bundleQuantity

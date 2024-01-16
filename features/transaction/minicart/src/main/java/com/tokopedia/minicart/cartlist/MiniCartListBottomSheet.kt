@@ -418,7 +418,7 @@ class MiniCartListBottomSheet @Inject constructor(
 
     private fun progressiveInfoCallback() = object: MiniCartProgressiveInfoListener {
         override fun onClickRefreshIcon(offerId: Long) {
-            viewModel?.getBmGmGroupProductTicker(offerId)
+            viewModel?.refreshGwpWidget(offerId)
         }
 
         override fun onClickChevronIcon(
@@ -922,11 +922,11 @@ class MiniCartListBottomSheet @Inject constructor(
         bottomSheetListener?.hideProgressLoading()
     }
 
-    private fun updateCart() {
+    private fun updateCart(offerId: Long) {
         updateCartDebounceJob?.cancel()
         updateCartDebounceJob = GlobalScope.launch(Dispatchers.Main) {
             delay(LONG_DELAY)
-            viewModel?.updateCart()
+            viewModel?.updateCart(offerId)
         }
     }
 
@@ -980,12 +980,19 @@ class MiniCartListBottomSheet @Inject constructor(
     override fun onQuantityChanged(element: MiniCartProductUiModel, newQty: Int) {
         viewModel?.updateProductQty(element, newQty)
         calculateProduct()
-        updateCart()
+        updateCart(element.offerId)
     }
 
-    override fun onNotesChanged(productId: String, isBundlingItem: Boolean, bundleId: String, bundleGroupId: String, newNotes: String) {
+    override fun onNotesChanged(
+        productId: String,
+        isBundlingItem: Boolean,
+        bundleId: String,
+        bundleGroupId: String,
+        offerId: Long,
+        newNotes: String
+    ) {
         viewModel?.updateProductNotes(productId, isBundlingItem, bundleId, bundleGroupId, newNotes)
-        updateCart()
+        updateCart(offerId)
     }
 
     override fun onShowSimilarProductClicked(appLink: String, element: MiniCartProductUiModel) {

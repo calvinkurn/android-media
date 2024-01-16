@@ -56,6 +56,7 @@ data class MiniCartProductUiModel(
     var isLastProductItem: Boolean = false,
     var editBundleApplink: String = "",
     var isBmgm: Boolean = false,
+    var offerId: Long = 0,
     var isProductBenefitNotEmpty: Boolean = false,
 
     // Fields below are for analytics purpose only

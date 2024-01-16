@@ -349,7 +349,7 @@ class MiniCartProductViewHolder(
                         delay(NOTES_CHANGE_DELAY)
                         val notes = s.toString()
                         element.productNotes = notes
-                        listener.onNotesChanged(element.productId, element.isBundlingItem, element.bundleId, element.bundleGroupId, notes)
+                        listener.onNotesChanged(element.productId, element.isBundlingItem, element.bundleId, element.bundleGroupId, element.offerId, notes)
                     }
                 }
 
