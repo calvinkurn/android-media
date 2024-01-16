@@ -3,9 +3,6 @@ package com.tokopedia.home.beranda.data.mapper.factory
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.model.*
-import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
-import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
-import com.tokopedia.home_component.util.ChannelStyleUtil.parseImageStyle
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.home_component_header.model.ChannelHeader as HomeComponentHeader
 
@@ -109,10 +106,7 @@ object DynamicChannelComponentMapper {
                 createdTimeMillis = channel.timestamp,
                 isAutoRefreshAfterExpired = channel.isAutoRefreshAfterExpired,
                 dividerType = channel.dividerType,
-                styleParam = channel.styleParam,
-                dividerSize = channel.styleParam.parseDividerSize(),
-                borderStyle = channel.styleParam.parseBorderStyle(),
-                imageStyle = channel.styleParam.parseImageStyle()
+                styleParam = channel.styleParamMap,
             ),
             trackingAttributionModel = TrackingAttributionModel(
                 galaxyAttribution = channel.galaxyAttribution,
@@ -172,7 +166,7 @@ object DynamicChannelComponentMapper {
                             imageUrl = badge.imageUrl
                         )
                     },
-                    position = index
+                    position = index,
                 )
             }
         )
@@ -293,10 +287,7 @@ object DynamicChannelComponentMapper {
         createdTimeMillis = timestamp,
         isAutoRefreshAfterExpired = isAutoRefreshAfterExpired,
         dividerType = dividerType,
-        styleParam = styleParam,
-        dividerSize = styleParam.parseDividerSize(),
-        borderStyle = styleParam.parseBorderStyle(),
-        imageStyle = styleParam.parseImageStyle()
+        styleParam = styleParamMap,
     )
 
     fun DynamicHomeChannel.Channels.mapToTrackingAttributionModel(verticalPosition: Int) = TrackingAttributionModel(

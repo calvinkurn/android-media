@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home_component.model.AtfContent
+import com.tokopedia.home_component.util.ChannelStyleUtil.parseStyleParamAsMap
 import com.tokopedia.kotlin.model.ImpressHolder
 import kotlin.collections.ArrayList
 
@@ -103,13 +104,15 @@ data class DynamicHomeChannel(
         var isCache: Boolean = true,
         @SerializedName("styleParam")
         @Expose
-        var styleParam: String = "",
+        private val styleParam: String = "",
         @SerializedName("isShimmer")
         @Expose
         var isShimmer: Boolean = true,
     ) : ImpressHolder() {
 
         private var position: Int = 0
+
+        val styleParamMap = styleParam.parseStyleParamAsMap()
 
         fun convertPromoEnhanceLegoBannerDataLayerForCombination(): List<Any> {
             val list: MutableList<Any> = ArrayList()

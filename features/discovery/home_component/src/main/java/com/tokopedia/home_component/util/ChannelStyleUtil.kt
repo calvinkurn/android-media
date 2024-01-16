@@ -1,5 +1,7 @@
 package com.tokopedia.home_component.util
 
+import com.tokopedia.kotlin.extensions.view.ifNullOrBlank
+
 object ChannelStyleUtil {
     private const val KEY_DIVIDER_SIZE = "dividerSize"
     const val DEFAULT_DIVIDER_SIZE = 1
@@ -16,65 +18,53 @@ object ChannelStyleUtil {
 
     private const val KEY_HIDE_TIMER = "hideTimer"
 
-    private fun String.parseStyleParamAsMap(): Map<String, String> {
+    private const val KEY_PRODUCT_CARD_VERSION = "productCardVersion"
+    private const val KEY_PRODUCT_CARD_VERSION_5 = "5.0"
+
+    fun String.parseStyleParamAsMap(): Map<String, String> {
         return split("&").associate {
             val (key, value) = it.split("=")
             key to value
         }
     }
 
-    fun String.parseDividerSize(): Int {
+    fun Map<String, String>.parseDividerSize(): Int {
         try {
-            val map = this.parseStyleParamAsMap()
-            val value = map[KEY_DIVIDER_SIZE]?.toIntOrNull()
+            val value = get(KEY_DIVIDER_SIZE)?.toIntOrNull()
             value?.let {
                 return if (it > 0) it else DEFAULT_DIVIDER_SIZE
             }
-        } catch (_: Exception) {
-            return DEFAULT_DIVIDER_SIZE
-        }
+        } catch (_: Exception) { }
         return DEFAULT_DIVIDER_SIZE
     }
 
-    fun String.parseBorderStyle(): String {
-        try {
-            val map = this.parseStyleParamAsMap()
-            val value = map[KEY_BORDER_STYLE]
-            value?.let {
-                return it.ifBlank { BORDER_STYLE_BLEEDING }
-            }
-        } catch (_: Exception) {
-            return BORDER_STYLE_BLEEDING
-        }
-        return BORDER_STYLE_BLEEDING
+    fun Map<String, String>.parseBorderStyle(): String {
+        return get(KEY_BORDER_STYLE).ifNullOrBlank { BORDER_STYLE_BLEEDING }
     }
 
-    fun String.parseImageStyle(): String {
-        try {
-            val map = this.parseStyleParamAsMap()
-            val value = map[KEY_IMAGE_STYLE]
-            value?.let {
-                return it.ifBlank { IMAGE_STYLE_DEFAULT }
-            }
-        } catch (_: Exception) {
-            return IMAGE_STYLE_DEFAULT
-        }
-        return IMAGE_STYLE_DEFAULT
+    fun Map<String, String>.parseImageStyle(): String {
+        return get(KEY_IMAGE_STYLE,).ifNullOrBlank { IMAGE_STYLE_DEFAULT }
     }
 
-    fun String.parseWithSubtitle(): Boolean {
+    fun Map<String, String>.parseWithSubtitle(): Boolean {
         return try {
-            val map = this.parseStyleParamAsMap()
-            map[KEY_WITH_SUBTITLE].toBoolean()
+            get(KEY_WITH_SUBTITLE).toBoolean()
         } catch (_: Exception) {
             false
         }
     }
 
-    fun String.isHideTimer(): Boolean {
+    fun Map<String, String>.isHideTimer(): Boolean {
         return try {
-            val map = this.parseStyleParamAsMap()
-            map[KEY_HIDE_TIMER].toBoolean()
+            get(KEY_HIDE_TIMER).toBoolean()
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    fun Map<String, String>.isProductCardReimagine(): Boolean {
+        return try {
+            get(KEY_PRODUCT_CARD_VERSION) == KEY_PRODUCT_CARD_VERSION_5
         } catch (_: Exception) {
             false
         }

@@ -52,4 +52,5 @@ data class ChannelGrid(
         val param: String = "",
         val expiredTime: String = "",
         val position: Int = -1,
+        val productCardReimagine: Boolean = false,
 ): ImpressHolder()

@@ -1,8 +1,9 @@
 package com.tokopedia.home_component.model
 
-import com.tokopedia.home_component.util.ChannelStyleUtil.BORDER_STYLE_BLEEDING
-import com.tokopedia.home_component.util.ChannelStyleUtil.DEFAULT_DIVIDER_SIZE
-import com.tokopedia.home_component.util.ChannelStyleUtil.IMAGE_STYLE_DEFAULT
+import com.tokopedia.home_component.util.ChannelStyleUtil.isProductCardReimagine
+import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
+import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
+import com.tokopedia.home_component.util.ChannelStyleUtil.parseImageStyle
 
 data class ChannelConfig(
     val layout: String = "",
@@ -13,10 +14,7 @@ data class ChannelConfig(
     val isAutoRefreshAfterExpired: Boolean = false,
     val enableTimeDiffMoreThan24h: Boolean = false,
     val dividerType: Int = DIVIDER_NO_DIVIDER,
-    val styleParam: String = "",
-    val dividerSize: Int = DEFAULT_DIVIDER_SIZE,
-    val borderStyle: String = BORDER_STYLE_BLEEDING,
-    val imageStyle: String = IMAGE_STYLE_DEFAULT
+    val styleParam: Map<String, String> = mapOf()
 ) {
     companion object {
         const val DIVIDER_NO_DIVIDER = 0
@@ -24,4 +22,9 @@ data class ChannelConfig(
         const val DIVIDER_BOTTOM = 2
         const val DIVIDER_TOP_AND_BOTTOM = 3
     }
+
+    val dividerSize: Int = styleParam.parseDividerSize()
+    val borderStyle: String = styleParam.parseBorderStyle()
+    val imageStyle: String = styleParam.parseImageStyle()
+    val isProductCardReimagine: Boolean = styleParam.isProductCardReimagine()
 }
