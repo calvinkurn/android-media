@@ -1,24 +1,28 @@
 package com.tokopedia.recommendation_widget_common.domain.request
 
 import android.text.TextUtils
+import com.tokopedia.productcard.experiments.ProductCardExperiment.isReimagine
 
 data class GetRecommendationRequestParam(
-        val pageNumber: Int = 1,
-        val productIds: List<String> = listOf(),
-        val queryParam: String = "",
-        val pageName: String = "",
-        val categoryIds: List<String> = listOf(),
-        val xSource: String = "",
-        val xDevice: String = "",
-        val location: String = "",
-        val keywords: List<String> = listOf(),
-        val isTokonow: Boolean = false,
-        var userId: Int = 0,
-        val shopIds: List<String> = listOf(),
-        val criteriaThematicIDs: List<String> = listOf(),
+    val pageNumber: Int = 1,
+    val productIds: List<String> = listOf(),
+    val queryParam: String = "",
+    val pageName: String = "",
+    val categoryIds: List<String> = listOf(),
+    val xSource: String = "",
+    val xDevice: String = "",
+    val location: String = "",
+    val keywords: List<String> = listOf(),
+    val isTokonow: Boolean = false,
+    var userId: Int = 0,
+    val shopIds: List<String> = listOf(),
+    val criteriaThematicIDs: List<String> = listOf(),
+    var productCardVersion: Int = if (isReimagine()) 5 else 0,
 ) {
+
     fun toGqlRequest(): Map<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
+        requestMap[PRODUCT_CARD_VERSION] = productCardVersion
         requestMap[PAGE_NUMBER] = pageNumber
         requestMap[QUERY_PARAM] = queryParam
         requestMap[PARAM_TOKONOW] = isTokonow
@@ -31,19 +35,19 @@ data class GetRecommendationRequestParam(
             requestMap[CATEGORY_IDS] = TextUtils.join(",", categoryIds)
         requestMap[KEYWORDS] = keywords
         requestMap[PAGE_NAME] = pageName
-        if(xSource.isNotEmpty())
-            requestMap[X_SOURCE] = xSource
-        if(xDevice.isNotEmpty())
-            requestMap[X_DEVICE] = xDevice
-        if (shopIds.isNotEmpty())
-            requestMap[SHOP_IDS] = TextUtils.join(",", shopIds)
-        if(criteriaThematicIDs.isNotEmpty())
+        if (xSource.isNotEmpty()) requestMap[X_SOURCE] = xSource
+        if (xDevice.isNotEmpty()) requestMap[X_DEVICE] = xDevice
+        if (shopIds.isNotEmpty()) requestMap[SHOP_IDS] = TextUtils.join(",", shopIds)
+
+        if (criteriaThematicIDs.isNotEmpty()) {
             requestMap[CRITERIA_THEMATIC_IDS] = criteriaThematicIDs.joinToString(",")
+        }
         return requestMap
     }
 
     fun toViewToViewGqlRequest(): Map<String, Any?> {
         val requestMap = mutableMapOf<String, Any?>()
+        requestMap[PRODUCT_CARD_VERSION] = productCardVersion
         requestMap[PAGE_NUMBER] = pageNumber
         requestMap[QUERY_PARAM] = queryParam
         if (userId != 0) {
@@ -53,12 +57,11 @@ data class GetRecommendationRequestParam(
             requestMap[PRODUCT_IDS] = TextUtils.join(",", productIds)
         if (categoryIds.isNotEmpty())
             requestMap[CATEGORY_IDS] = TextUtils.join(",", categoryIds)
-        if(xSource.isNotEmpty())
-            requestMap[X_SOURCE] = xSource
-        if(xDevice.isNotEmpty())
-            requestMap[X_DEVICE] = xDevice
-        if(criteriaThematicIDs.isNotEmpty())
+        if (xSource.isNotEmpty()) requestMap[X_SOURCE] = xSource
+        if (xDevice.isNotEmpty()) requestMap[X_DEVICE] = xDevice
+        if (criteriaThematicIDs.isNotEmpty()) {
             requestMap[CRITERIA_THEMATIC_IDS] = criteriaThematicIDs.joinToString(",")
+        }
         return requestMap
     }
 
@@ -74,6 +77,7 @@ data class GetRecommendationRequestParam(
         private const val PARAM_TOKONOW = "tokoNow"
         private const val USER_ID = "userID"
         private const val SHOP_IDS = "shopIDs"
+        private const val PRODUCT_CARD_VERSION = "productCardVersion"
         private const val CRITERIA_THEMATIC_IDS = "criteriaThematicIDs"
     }
 }
