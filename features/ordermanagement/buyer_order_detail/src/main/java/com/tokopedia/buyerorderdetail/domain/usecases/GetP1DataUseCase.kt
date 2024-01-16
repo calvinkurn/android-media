@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 class GetP1DataUseCase @Inject constructor(
@@ -27,11 +26,7 @@ class GetP1DataUseCase @Inject constructor(
 
     private fun getOrderResolutionUseCaseRequestStates(params: GetP1DataParams) = flow {
         if (params.hasResoStatus) {
-            emitAll(
-                executeOrderResolutionUseCase(
-                    GetOrderResolutionParams(params.orderId, params.shouldCheckCache)
-                )
-            )
+            emitAll(executeOrderResolutionUseCase(GetOrderResolutionParams(params.orderId, params.shouldCheckCache)))
         } else {
             emit(GetOrderResolutionRequestState.Complete.Success(null))
         }
@@ -43,11 +38,7 @@ class GetP1DataUseCase @Inject constructor(
 
     private fun getInsuranceDetailUseCaseRequestStates(params: GetP1DataParams) = flow {
         if (params.hasInsurance) {
-            emitAll(
-                executeInsuranceDetailUseCase(
-                    GetInsuranceDetailParams(params.invoice, params.shouldCheckCache)
-                )
-            )
+            emitAll(executeInsuranceDetailUseCase(GetInsuranceDetailParams(params.invoice, params.shouldCheckCache)))
         } else {
             emit(GetInsuranceDetailRequestState.Complete.Success(null))
         }
@@ -85,21 +76,15 @@ class GetP1DataUseCase @Inject constructor(
                     GetInsuranceDetailRequestState.Complete.Error(it)
                 )
             )
-        }.onStart {
-            logStartBreadcrumb(params)
         }.onCompletion {
-            logCompletionBreadcrumb(it)
+            logCompletionBreadcrumb(params, it)
         }
     }
 
-    private fun logStartBreadcrumb(params: GetP1DataParams) {
-        runCatching { EmbraceMonitoring.logBreadcrumb("GetP1DataUseCase - Fetching: $params") }
-    }
-
-    private fun logCompletionBreadcrumb(throwable: Throwable?) {
+    private fun logCompletionBreadcrumb(params: GetP1DataParams, throwable: Throwable?) {
         runCatching {
             if (throwable == null) {
-                EmbraceMonitoring.logBreadcrumb("GetP1DataUseCase - Success")
+                EmbraceMonitoring.logBreadcrumb("GetP1DataUseCase - Success: $params")
             } else {
                 EmbraceMonitoring.logBreadcrumb("GetP1DataUseCase - Error: ${throwable.stackTraceToString()}")
             }

@@ -11,7 +11,6 @@ import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 class GetInsuranceDetailUseCase @Inject constructor(
@@ -26,22 +25,14 @@ class GetInsuranceDetailUseCase @Inject constructor(
         emit(GetInsuranceDetailRequestState.Complete.Success(sendRequest(params).ppGetInsuranceDetail?.data))
     }.catch {
         emit(GetInsuranceDetailRequestState.Complete.Error(it))
-    }.onStart {
-        logStartBreadcrumb(params)
     }.onCompletion {
-        logCompletionBreadcrumb(it)
+        logCompletionBreadcrumb(params, it)
     }
 
-    private fun logStartBreadcrumb(params: GetInsuranceDetailParams) {
-        runCatching {
-            EmbraceMonitoring.logBreadcrumb("GetInsuranceDetailUseCase - Fetching: $params")
-        }
-    }
-
-    private fun logCompletionBreadcrumb(throwable: Throwable?) {
+    private fun logCompletionBreadcrumb(params: GetInsuranceDetailParams, throwable: Throwable?) {
         runCatching {
             if (throwable == null) {
-                EmbraceMonitoring.logBreadcrumb("GetInsuranceDetailUseCase - Success")
+                EmbraceMonitoring.logBreadcrumb("GetInsuranceDetailUseCase - Success: $params")
             } else {
                 EmbraceMonitoring.logBreadcrumb("GetInsuranceDetailUseCase - Error: ${throwable.stackTraceToString()}")
             }

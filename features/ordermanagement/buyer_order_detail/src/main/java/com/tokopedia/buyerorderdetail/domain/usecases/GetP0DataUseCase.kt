@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 class GetP0DataUseCase @Inject constructor(
@@ -38,20 +37,14 @@ class GetP0DataUseCase @Inject constructor(
         mapToGetP0DataRequestState(it)
     }.catch {
         emit(GetP0DataRequestState.Complete(GetBuyerOrderDetailRequestState.Complete.Error(it)))
-    }.onStart {
-        logStartBreadcrumb(params)
     }.onCompletion {
-        logCompletionBreadcrumb(it)
+        logCompletionBreadcrumb(params, it)
     }
 
-    private fun logStartBreadcrumb(params: GetP0DataParams) {
-        runCatching { EmbraceMonitoring.logBreadcrumb("GetP0DataUseCase - Fetching: $params") }
-    }
-
-    private fun logCompletionBreadcrumb(throwable: Throwable?) {
+    private fun logCompletionBreadcrumb(params: GetP0DataParams, throwable: Throwable?) {
         runCatching {
             if (throwable == null) {
-                EmbraceMonitoring.logBreadcrumb("GetP0DataUseCase - Success")
+                EmbraceMonitoring.logBreadcrumb("GetP0DataUseCase - Success: $params")
             } else {
                 EmbraceMonitoring.logBreadcrumb("GetP0DataUseCase - Error: ${throwable.stackTraceToString()}")
             }

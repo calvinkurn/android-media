@@ -26,22 +26,14 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
         emit(GetBuyerOrderDetailRequestState.Complete.Success(sendRequest(params).buyerOrderDetail))
     }.catch {
         emit(GetBuyerOrderDetailRequestState.Complete.Error(it))
-    }.onStart {
-        logStartBreadcrumb(params)
     }.onCompletion {
-        logCompletionBreadcrumb(it)
+        logCompletionBreadcrumb(params, it)
     }
 
-    private fun logStartBreadcrumb(params: GetBuyerOrderDetailParams) {
-        runCatching {
-            EmbraceMonitoring.logBreadcrumb("GetBuyerOrderDetailUseCase - Fetching: $params")
-        }
-    }
-
-    private fun logCompletionBreadcrumb(throwable: Throwable?) {
+    private fun logCompletionBreadcrumb(params: GetBuyerOrderDetailParams, throwable: Throwable?) {
         runCatching {
             if (throwable == null) {
-                EmbraceMonitoring.logBreadcrumb("GetBuyerOrderDetailUseCase - Success")
+                EmbraceMonitoring.logBreadcrumb("GetBuyerOrderDetailUseCase - Success: $params")
             } else {
                 EmbraceMonitoring.logBreadcrumb("GetBuyerOrderDetailUseCase - Error: ${throwable.stackTraceToString()}")
             }
