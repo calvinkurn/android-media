@@ -2835,14 +2835,14 @@ class ChatbotFragment2 :
         }
         BigReplyBoxBottomSheet.replyBoxClickListener = this
         bigReplyBoxBottomSheet?.apply {
-            this.setErrorStatus(isError)
-            this.clearContentPadding = true
+            setErrorStatus(isError)
+            clearContentPadding = true
             if (bigReplyBox?.sendButton?.isSlowModeRunning == true) {
-                this.initSlowModeButton(
+                initSlowModeButton(
                     bigReplyBox?.sendButton?.currentSlowModeDurationInSecond ?: 0
                 )
             } else {
-                this.resetSlowModeButton()
+                resetSlowModeButton()
             }
         }
 
@@ -2890,6 +2890,7 @@ class ChatbotFragment2 :
         replyBubbleOnBoarding.flush()
         coachmarkHandler.removeCallbacksAndMessages(null)
         smallReplyBox?.sendButton?.cancelSlowDown()
+        bigReplyBox?.sendButton?.cancelSlowDown()
     }
 
     override fun onClickMessageReply(messageUiModel: MessageUiModel) {
