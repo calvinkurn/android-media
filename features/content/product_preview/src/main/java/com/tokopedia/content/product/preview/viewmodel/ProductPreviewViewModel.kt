@@ -6,20 +6,16 @@ import com.tokopedia.content.product.preview.data.repository.ProductPreviewRepos
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
-import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
 import com.tokopedia.content.product.preview.view.uimodel.PageState
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.*
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
-import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.InitializeProductMainData
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.ProductSelected
-import com.tokopedia.content.product.preview.viewmodel.state.ProductPreviewUiState
 import com.tokopedia.content.product.preview.viewmodel.state.ReviewPageState
+import com.tokopedia.content.product.preview.viewmodel.state.ProductUiState
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.network.exception.MessageErrorException
@@ -33,15 +29,13 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 
-/**
- * @author by astidhiyaa on 06/12/23
- */
 class ProductPreviewViewModel @AssistedInject constructor(
     @Assisted private val param: EntrySource,
     private val repo: ProductPreviewRepository,
-    private val userSessionInterface: UserSessionInterface,
+    private val userSessionInterface: UserSessionInterface
 ) : ViewModel() {
 
     @AssistedFactory
@@ -49,7 +43,10 @@ class ProductPreviewViewModel @AssistedInject constructor(
         fun create(param: EntrySource): ProductPreviewViewModel
     }
 
-    //TODO: check number
+    private val _productContentState = MutableStateFlow(emptyList<ContentUiModel>())
+    private val _productIndicatorState = MutableStateFlow(emptyList<ProductIndicatorUiModel>())
+
+    // TODO: check number
     private val _uiEvent = MutableSharedFlow<ProductPreviewEvent>(20)
     val uiEvent get() = _uiEvent
 
@@ -57,28 +54,43 @@ class ProductPreviewViewModel @AssistedInject constructor(
     val review: Flow<ReviewPageState>
         get() = _review
 
+    val productUiState: Flow<ProductUiState>
+        get() = combine(
+            _productContentState,
+            _productIndicatorState
+        ) { productContent, productIndicator ->
+            ProductUiState(
+                productContent = productContent,
+                productIndicator = productIndicator
+            )
+        }
+
     private val _miniInfo = MutableStateFlow(BottomNavUiModel.Empty)
     val miniInfo: Flow<BottomNavUiModel>
         get() = _miniInfo
 
     private val _reviewPosition = MutableStateFlow(0)
+    private val reviewPosition get() = _reviewPosition.value
+
     private val currentReview: ReviewUiModel
         get() {
-            return if (_review.value.reviewList.isEmpty() || _reviewPosition.value < 0) ReviewUiModel.Empty
+            return if (_review.value.reviewList.isEmpty() || reviewPosition in 0 until _review.value.reviewList.size) ReviewUiModel.Empty
             else _review.value.reviewList[_reviewPosition.value]
         }
 
     fun onAction(action: ProductPreviewAction) {
         when (action) {
-            is ProductPreviewAction.FetchReview -> getReview(action.isRefresh)
-            ProductPreviewAction.FetchMiniInfo -> getMiniInfo()
-            is ProductPreviewAction.ProductAction -> addToCart(action.model)
-            ProductPreviewAction.AtcFromResult -> addToCart(_miniInfo.value)
-            is ProductPreviewAction.Navigate -> navigate(action.appLink)
-            is ProductPreviewAction.SubmitReport -> submitReport(action.model)
-            is ProductPreviewAction.ClickMenu -> menuOnClicked(action.status)
-            is ProductPreviewAction.UpdateReviewPosition -> updateReviewIndex(action.index)
-            is ProductPreviewAction.Like -> like(action.state)
+            is ProductSelected -> handleProductSelected(action.position)
+            is FetchReview -> getReview(action.isRefresh)
+            FetchMiniInfo -> getMiniInfo()
+            is ProductAction -> addToCart(action.model)
+            is Navigate -> navigate(action.appLink)
+            is Navigate -> navigate(action.appLink)
+            is SubmitReport -> submitReport(action.model)
+            is ClickMenu -> menuOnClicked(action.isFromLogin)
+            is UpdateReviewPosition -> updateReviewIndex(action.index)
+            is Like -> like(action.item)
+            LikeFromResult -> like()
             else -> {}
         }
     }
@@ -92,7 +104,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
         if (isRefresh) _review.update { review -> review.copy(pageState = PageState.Load) }
         viewModelScope.launchCatchError(block = {
-            val response = repo.getReview(param.productId, page)
+            val response = repo.getReview(param.productPreviewData.productId, page)
             val newList = buildList {
                 if (_review.value.reviewList.isNotEmpty()) addAll(_review.value.reviewList + response.reviewList)
                 else addAll(response.reviewList)
@@ -105,25 +117,66 @@ class ProductPreviewViewModel @AssistedInject constructor(
 
     private fun getMiniInfo() {
         viewModelScope.launchCatchError(block = {
-            _miniInfo.value = repo.getProductMiniInfo(param.productId)
+            _miniInfo.value = repo.getProductMiniInfo(param.productPreviewData.productId)
         }) {}
     }
 
     private fun addToCart(model: BottomNavUiModel) {
         requiredLogin(model) {
-            viewModelScope.launchCatchError(block = {
-                val result = repo.addToCart(
-                    param.productId,
-                    model.title,
-                    model.shop.id,
-                    model.price.finalPrice.toDoubleOrZero()
-                )
+            viewModelScope.launchCatchError(
+                block = {
+                    val result = repo.addToCart(
+                        param.productPreviewData.productId,
+                        model.title,
+                        model.shop.id,
+                        model.price.finalPrice.toDoubleOrZero()
+                    )
 
-                if (result) _uiEvent.emit(ProductPreviewEvent.ShowSuccessToaster(type = ProductPreviewEvent.ShowSuccessToaster.Type.ATC)) else throw MessageErrorException()
-            }
+                    if (result) {
+                        _uiEvent.emit(
+                            ProductPreviewEvent.ShowSuccessToaster(
+                                type = ProductPreviewEvent.ShowSuccessToaster.Type.ATC,
+                                message = ProductPreviewEvent.ShowSuccessToaster.Type.ATC.textRes
+                            )
+                        )
+                    } else {
+                        throw MessageErrorException()
+                    }
+                }
             ) {
-                _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it) { addToCart(model) })
+                _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it, ProductPreviewEvent.ShowErrorToaster.Type.ATC) { addToCart(model) })
             }
+        }
+    }
+
+    private fun remindMe(model: BottomNavUiModel) {
+        requiredLogin(model) {
+            viewModelScope.launchCatchError(
+                block = {
+                    val result = repo.remindMe(param.productPreviewData.productId)
+
+                    if (result.isSuccess) {
+                        _uiEvent.emit(
+                            ProductPreviewEvent.ShowSuccessToaster(
+                                type = ProductPreviewEvent.ShowSuccessToaster.Type.Remind,
+                                message = ProductPreviewEvent.ShowSuccessToaster.Type.Remind.textRes
+                            )
+                        )
+                    } else {
+                        throw MessageErrorException()
+                    }
+                }
+            ) {
+                _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it) { remindMe(model) })
+            }
+        }
+    }
+
+    private fun handleProductAction(model: BottomNavUiModel) {
+        when (model.buttonState) {
+            BottomNavUiModel.ButtonState.OOS -> remindMe(model)
+            BottomNavUiModel.ButtonState.Active -> addToCart(model)
+            else -> {}
         }
     }
 
@@ -133,43 +186,26 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 
-    private fun <T> requiredLogin(data: T, fn: () -> Unit) { //T for parsing data.
+    private fun <T> requiredLogin(data: T, fn: () -> Unit) { // T for parsing data.
         if (userSessionInterface.isLoggedIn) {
             fn()
         } else {
             viewModelScope.launch {
-                _uiEvent.emit(
-                    ProductPreviewEvent.LoginEvent(data)
-                )
-
+                _uiEvent.emit(ProductPreviewEvent.LoginEvent(data))
             }
         }
     }
 
-    private val _productContentState = MutableStateFlow(emptyList<ContentUiModel>())
-    private val _productIndicatorState = MutableStateFlow(emptyList<ProductIndicatorUiModel>())
-
-    val productUiState: Flow<ProductPreviewUiState>
-        get() = combine(
-            _productContentState,
-            _productIndicatorState
-        ) { productContent, productIndicator ->
-            ProductPreviewUiState(
-                productContent = productContent,
-                productIndicator = productIndicator
-            )
-        }
-
-    fun submitAction(action: ProductPreviewUiAction) {
-        when (action) {
-            InitializeProductMainData -> handleInitializeProductMainData()
-            is ProductSelected -> handleProductSelected(action.position)
-        }
+    private fun handleInitializeProductMainData() {
+        _productContentState.value = param.productPreviewData.content
+        _productIndicatorState.value = param.productPreviewData.indicator
     }
 
-    private fun handleInitializeProductMainData() {
-        _productContentState.value = mockData().content
-        _productIndicatorState.value = mockData().indicator
+    private fun handleInitializeReviewMainData(page: Int) {
+        viewModelScope.launchCatchError(block = {
+            _review.value =
+                repo.getReview(param.productPreviewData.productId, page) // TODO: add pagination
+        }) {}
     }
 
     private fun handleProductSelected(position: Int) {
@@ -190,13 +226,22 @@ class ProductPreviewViewModel @AssistedInject constructor(
             val result = repo.submitReport(model, currentReview.reviewId)
             if (result) _uiEvent.emit(ProductPreviewEvent.ShowSuccessToaster(type = ProductPreviewEvent.ShowSuccessToaster.Type.Report)) else throw MessageErrorException()
         }) {
-            _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it) {
-                //TODO: check if retry or no.
+            _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it, ProductPreviewEvent.ShowErrorToaster.Type.Report) {
+                submitReport(model)
             })
         }
     }
 
-    private fun menuOnClicked(status: MenuStatus) {
+    private fun menuOnClicked(isFromLogin: Boolean) {
+        val status = _review.updateAndGet { review ->
+            review.copy(reviewList =
+                if (isFromLogin.not()) review.reviewList
+                else review.reviewList.map { model ->
+                    model.copy(menus = model.menus.copy(isReportable = userSessionInterface.isLoggedIn && model.author.id != userSessionInterface.userId))
+                }
+            )
+        }.reviewList.getOrNull(reviewPosition)?.menus ?: return
+
         requiredLogin(status) {
             viewModelScope.launch {
                 _uiEvent.emit(ProductPreviewEvent.ShowMenuSheet(status))
@@ -208,14 +253,16 @@ class ProductPreviewViewModel @AssistedInject constructor(
         _reviewPosition.value = position
     }
 
-    private fun like(state: LikeUiState) {
-        requiredLogin(state) {
+    private fun like(status: LikeUiState = currentReview.likeState) {
+        if (status.withAnimation && !userSessionInterface.isLoggedIn) return
+
+        requiredLogin(status) {
             viewModelScope.launchCatchError(block = {
-                val state = repo.likeReview(state, currentReview.reviewId)
+                val state = repo.likeReview(status, currentReview.reviewId)
                 _review.update { reviews ->
                     reviews.copy(reviewList =
                     reviews.reviewList.map { review ->
-                        if (review.reviewId == currentReview.reviewId) review.copy(likeState = state) //TODO: need better catch to know current review
+                        if (review.reviewId == currentReview.reviewId) review.copy(likeState = state.copy(withAnimation = status.withAnimation))
                         else review
                     })
                 }
@@ -225,144 +272,3 @@ class ProductPreviewViewModel @AssistedInject constructor(
         }
     }
 }
-
-/**
- * TODO: implement real data
- */
-fun mockData() = ProductContentUiModel(
-    productId = "productID_123",
-    content = listOf(
-        ContentUiModel(
-            type = ContentUiModel.MediaType.Video,
-            url = "https://vod-stream.tokopedia.net/view/adaptive.m3u8?id=f01396ff94ae71eeae0987c7371d0102"
-        ),
-        ContentUiModel(
-            type = ContentUiModel.MediaType.Image,
-            url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/12/12/ca158fc4-699a-495e-aaac-229b4f8ed1aa.png"
-        ),
-        ContentUiModel(
-            type = ContentUiModel.MediaType.Unknown,
-            url = "https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/2/4/6a3db555-a5e9-4bc1-9c17-1753ad105b92.jpg"
-        ),
-        ContentUiModel(
-            type = ContentUiModel.MediaType.Image,
-            url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/9/14/9d770fbf-2bbd-4206-8511-56df29a6f4be.png"
-        ),
-        ContentUiModel(
-            type = ContentUiModel.MediaType.Image,
-            url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/8/25/1f559a48-03f3-4656-b77f-3caf0fcc94d2.png"
-        ),
-        ContentUiModel(
-            type = ContentUiModel.MediaType.Unknown,
-            url = "https://vod-stream.tokopedia.net/view/adaptive.m3u8?id=f01396ff94ae71eeae0987c7371d0102"
-        ),
-        ContentUiModel(
-            type = ContentUiModel.MediaType.Image,
-            url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/12/12/ca158fc4-699a-495e-aaac-229b4f8ed1aa.png"
-        ),
-        ContentUiModel(
-            type = ContentUiModel.MediaType.Image,
-            url = "https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/2/4/6a3db555-a5e9-4bc1-9c17-1753ad105b92.jpg"
-        ),
-        ContentUiModel(
-            type = ContentUiModel.MediaType.Unknown,
-            url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/9/14/9d770fbf-2bbd-4206-8511-56df29a6f4be.png"
-        ),
-        ContentUiModel(
-            type = ContentUiModel.MediaType.Image,
-            url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/8/25/1f559a48-03f3-4656-b77f-3caf0fcc94d2.png"
-        )
-    ),
-    indicator = listOf(
-        ProductIndicatorUiModel(
-            indicatorId = "1",
-            selected = true,
-            variantName = "Variant 1",
-            content = ContentUiModel(
-                type = ContentUiModel.MediaType.Video,
-                url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/12/12/ca158fc4-699a-495e-aaac-229b4f8ed1aa.png"
-            )
-        ),
-        ProductIndicatorUiModel(
-            indicatorId = "2",
-            selected = false,
-            variantName = "Variant 2",
-            content = ContentUiModel(
-                type = ContentUiModel.MediaType.Image,
-                url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/12/12/ca158fc4-699a-495e-aaac-229b4f8ed1aa.png"
-            )
-        ),
-        ProductIndicatorUiModel(
-            indicatorId = "3",
-            selected = false,
-            variantName = "Variant 3",
-            content = ContentUiModel(
-                type = ContentUiModel.MediaType.Image,
-                url = "https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/2/4/6a3db555-a5e9-4bc1-9c17-1753ad105b92.jpg"
-            )
-        ),
-        ProductIndicatorUiModel(
-            indicatorId = "4",
-            selected = false,
-            variantName = "Variant 4",
-            content = ContentUiModel(
-                type = ContentUiModel.MediaType.Image,
-                url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/9/14/9d770fbf-2bbd-4206-8511-56df29a6f4be.png"
-            )
-        ),
-        ProductIndicatorUiModel(
-            indicatorId = "5",
-            selected = false,
-            variantName = "Variant 5",
-            content = ContentUiModel(
-                type = ContentUiModel.MediaType.Image,
-                url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/8/25/1f559a48-03f3-4656-b77f-3caf0fcc94d2.png"
-            )
-        ),
-        ProductIndicatorUiModel(
-            indicatorId = "6",
-            selected = false,
-            variantName = "Variant 6",
-            content = ContentUiModel(
-                type = ContentUiModel.MediaType.Image,
-                url = "https://images.tokopedia.net/img/cache/700/hDjmkQ/2023/2/4/6a3db555-a5e9-4bc1-9c17-1753ad105b92.jpg"
-            )
-        ),
-        ProductIndicatorUiModel(
-            indicatorId = "7",
-            selected = false,
-            variantName = "Variant 7",
-            content = ContentUiModel(
-                type = ContentUiModel.MediaType.Image,
-                url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/9/14/9d770fbf-2bbd-4206-8511-56df29a6f4be.png"
-            )
-        ),
-        ProductIndicatorUiModel(
-            indicatorId = "8",
-            selected = false,
-            variantName = "Variant 8",
-            content = ContentUiModel(
-                type = ContentUiModel.MediaType.Image,
-                url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/8/25/1f559a48-03f3-4656-b77f-3caf0fcc94d2.png"
-            )
-        ),
-        ProductIndicatorUiModel(
-            indicatorId = "9",
-            selected = false,
-            variantName = "Variant 9",
-            content = ContentUiModel(
-                type = ContentUiModel.MediaType.Video,
-                url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/12/12/ca158fc4-699a-495e-aaac-229b4f8ed1aa.png"
-            )
-        ),
-        ProductIndicatorUiModel(
-            indicatorId = "10",
-            selected = false,
-            variantName = "Variant 10",
-            content = ContentUiModel(
-                type = ContentUiModel.MediaType.Image,
-                url = "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/12/12/ca158fc4-699a-495e-aaac-229b4f8ed1aa.png"
-            )
-        )
-    )
-)

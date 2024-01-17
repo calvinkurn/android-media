@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.content.product.preview.R
@@ -24,9 +23,6 @@ class ReviewReportBottomSheet : BottomSheetUnify() {
     ): View? {
         val composeView = ComposeView(requireContext()).apply {
             setContent {
-                LaunchedEffect(Unit) {
-                    //event ->
-                }
                 ReportScreen(reports = listOfReport, onSubmit = {
                     mListener?.onReasonClicked(it)
                 })
@@ -51,8 +47,8 @@ class ReviewReportBottomSheet : BottomSheetUnify() {
         mListener = listener
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDetach() {
+        super.onDetach()
         mListener = null
     }
 

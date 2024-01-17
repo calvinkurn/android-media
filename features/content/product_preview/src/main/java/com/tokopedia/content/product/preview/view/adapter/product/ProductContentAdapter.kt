@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
 import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
-import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel.MediaType
+import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.viewholder.product.ProductContentImageViewHolder
 import com.tokopedia.content.product.preview.view.viewholder.product.ProductContentLoadingViewHolder
 import com.tokopedia.content.product.preview.view.viewholder.product.ProductContentVideoViewHolder
@@ -14,10 +14,6 @@ import com.tokopedia.content.product.preview.view.viewholder.product.ProductCont
 class ProductContentAdapter(
     private val listener: ProductPreviewListener
 ) : ListAdapter<ContentUiModel, ViewHolder>(ProductContentDiffUtil()) {
-
-    fun updateData(data: List<ContentUiModel>) {
-        submitList(data)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {

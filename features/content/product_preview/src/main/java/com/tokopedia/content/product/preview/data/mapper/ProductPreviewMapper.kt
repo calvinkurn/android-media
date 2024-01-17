@@ -1,5 +1,6 @@
 package com.tokopedia.content.product.preview.data.mapper
 
+import com.tokopedia.content.product.preview.data.AddWishlistResponse
 import android.net.Uri
 import com.tokopedia.content.product.preview.data.GetMiniProductInfoResponse
 import com.tokopedia.content.product.preview.data.LikeReviewResponse
@@ -26,9 +27,10 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                 reviewId = it.feedbackId,
                 medias = emptyList(), //TODO: map and sew it later,
                 menus = MenuStatus(isReportable = it.isReportable && !isOwner(it.user)),
-                likeState = LikeUiState(
+                likeState = LikeUiState (
                     count = it.likeStats.totalLike,
                     state = LikeUiState.LikeStatus.getByValue(it.likeStats.likeStatus),
+                    withAnimation = false,
                 ),
                 author = AuthorUiModel(
                     name = it.user.fullName,
@@ -74,9 +76,13 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                 response.data.buttonState
             ) //Variant product always active, to open GVBS.
         )
-
+    fun mapRemindMe(response: AddWishlistResponse): BottomNavUiModel.RemindMeUiModel =
+        BottomNavUiModel.RemindMeUiModel(
+            isSuccess = response.wishlistAdd.success,
+            message = response.wishlistAdd.message
+        )
     fun mapLike(response: LikeReviewResponse): LikeUiState = LikeUiState(
         count = response.data.totalLike,
-        state = LikeUiState.LikeStatus.getByValue(response.data.likeStatus)
+        state = LikeUiState.LikeStatus.getByValue(response.data.likeStatus),
     )
 }

@@ -5,9 +5,9 @@ import com.tokopedia.content.product.preview.view.uimodel.PageState
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
 
-data class ProductPreviewUiState(
+data class ProductUiState(
     val productContent: List<ContentUiModel> = emptyList(),
-    val productIndicator: List<ProductIndicatorUiModel> = emptyList()
+    val productIndicator: List<ProductIndicatorUiModel> = emptyList(),
 )
 
 data class ReviewPageState(

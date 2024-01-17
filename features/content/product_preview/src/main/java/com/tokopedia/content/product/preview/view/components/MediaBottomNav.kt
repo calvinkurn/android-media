@@ -32,13 +32,12 @@ fun MediaBottomNav(
     product: BottomNavUiModel,
     onAtcClicked: () -> Unit = {}
 ) {
-    //TODO(): need to check if status bar is dark or no
     NestTheme(darkTheme = true) {
         ConstraintLayout(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .background(colorResource(id = unifyprinciplesR.color.Unify_Static_Black))
+                .background(NestTheme.colors.NN._0)
                 .padding(
                     vertical = 8.dp,
                     horizontal = 16.dp,
@@ -81,7 +80,7 @@ fun MediaBottomNav(
                 onClick = onAtcClicked,
                 variant = ButtonVariant.GHOST_INVERTED,
                 size = ButtonSize.SMALL,
-                isClickable = product.buttonState != BottomNavUiModel.ButtonState.OOS,
+                isClickable = product.buttonState != BottomNavUiModel.ButtonState.Inactive,
                 modifier = Modifier
                     .constrainAs(atcBtn) {
                         end.linkTo(parent.end)

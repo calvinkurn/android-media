@@ -45,11 +45,15 @@ class ReviewParentAdapter(private val listener: ReviewParentContentViewHolder.Li
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
-        when (val latestPayload = payloads.lastOrNull()) {
-            is LikeUiState -> {
-                if (holder is ReviewParentContentViewHolder) holder.bindLike(latestPayload)
+        if (payloads.isEmpty()) {
+            onBindViewHolder(holder, position)
+        }
+        else {
+            payloads.forEach {
+                when (val payload = it) {
+                    is Payload.Like -> if (holder is ReviewParentContentViewHolder) holder.bindLike(payload.state)
+                }
             }
-            else -> onBindViewHolder(holder, position)
         }
     }
 

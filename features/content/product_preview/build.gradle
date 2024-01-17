@@ -42,16 +42,13 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.utils)
-    implementation projectOrAar(rootProject.ext.libraries.applink)
-    implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
 
     implementation projectOrAar(rootProject.ext.features.contentCommon)
     implementation projectOrAar(rootProject.ext.features.atc_common)
-    implementation projectOrAar(rootProject.ext.features.contentCommon)
-    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -78,9 +75,9 @@ dependencies {
     ksp project(rootProject.ext.libraries.gqlKspProcessor)
 
     //Media Review - Compose
-    implementation rootProject.ext.unifyDependencies.nestPrinciples
     implementation rootProject.ext.composeDependencies.composeConstraint
     implementation rootProject.ext.unifyDependencies.nestComponents
+    implementation rootProject.ext.unifyDependencies.nestPrinciples
 }
 
 

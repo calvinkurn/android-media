@@ -6,6 +6,7 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.product.preview.data.mapper.ProductPreviewMapper
 import com.tokopedia.content.product.preview.data.usecase.MediaReviewUseCase
 import com.tokopedia.content.product.preview.data.usecase.ProductMiniInfoUseCase
+import com.tokopedia.content.product.preview.data.usecase.RemindMeUseCase
 import com.tokopedia.content.product.preview.data.usecase.ReviewLikeUseCase
 import com.tokopedia.content.product.preview.data.usecase.SubmitReportUseCase
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
@@ -13,6 +14,7 @@ import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.switch
 import com.tokopedia.content.product.preview.viewmodel.state.ReviewPageState
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
@@ -28,6 +30,7 @@ class ProductPreviewRepositoryImpl @Inject constructor(
     private val likeUseCase: ReviewLikeUseCase,
     private val submitReportUseCase: SubmitReportUseCase,
     private val addToCartUseCase: AddToCartUseCase,
+    private val remindMeUseCase: RemindMeUseCase,
     private val userSessionInterface: UserSessionInterface,
     private val mapper: ProductPreviewMapper,
 ) : ProductPreviewRepository {
@@ -80,5 +83,16 @@ class ProductPreviewRepositoryImpl @Inject constructor(
                 )
             )
             response.data.success
+        }
+
+    override suspend fun remindMe(productId: String): BottomNavUiModel.RemindMeUiModel =
+        withContext(dispatchers.io) {
+            val response = remindMeUseCase(
+                RemindMeUseCase.Param(
+                    userId = userSessionInterface.userId.toLongOrZero(),
+                    productId = productId.toLongOrZero()
+                )
+            )
+            mapper.mapRemindMe(response)
         }
 }

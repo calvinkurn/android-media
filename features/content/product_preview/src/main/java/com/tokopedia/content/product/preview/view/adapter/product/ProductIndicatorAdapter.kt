@@ -12,10 +12,6 @@ class ProductIndicatorAdapter(
     private val listener: ProductIndicatorListener
 ) : ListAdapter<ProductIndicatorUiModel, ViewHolder>(ProductIndicatorDiffUtil()) {
 
-    fun updateData(data: List<ProductIndicatorUiModel>) {
-        submitList(data)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ProductIndicatorViewHolder.create(parent, listener)
     }

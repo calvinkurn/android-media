@@ -1,8 +1,5 @@
 package com.tokopedia.content.product.preview.view.uimodel
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
 /**
  * @author by astidhiyaa on 06/12/23
  */
@@ -19,7 +16,7 @@ data class ReviewUiModel(
             get() = ReviewUiModel(
                 reviewId = "",
                 medias = emptyList(),
-                menus = MenuStatus(false),
+                menus = MenuStatus(isReportable = false),
                 likeState = LikeUiState(0, LikeUiState.LikeStatus.Reset),
                 author = AuthorUiModel("", "", "", "", ""),
                 description = DescriptionUiModel(0, "", "", "")
@@ -29,18 +26,14 @@ data class ReviewUiModel(
 
 data class MediaUiModel(
     val type: String,
-    val url: String,
-) {
-    enum class MediaType(val value: String) {
-        Image(""), Video("") //check response
-    }
-}
+    val url: String
+)
 
-@Parcelize
 data class LikeUiState(
     val count: Int,
     val state: LikeStatus,
-) : Parcelable {
+    val withAnimation: Boolean = false, //from double tap
+) {
     enum class LikeStatus(val value: Int) {
         Like(1),
         Dislike(2), //Not yet
@@ -64,20 +57,19 @@ data class AuthorUiModel(
     val type: String,
     val id: String,
     val avatarUrl: String,
-    val appLink: String,
+    val appLink: String
 )
 
 data class DescriptionUiModel(
     val stars: Int,
     val productType: String,
     val timestamp: String,
-    val description: String,
+    val description: String
 )
 
-@Parcelize
 data class MenuStatus(
-    val isReportable: Boolean,
-) : Parcelable
+    val isReportable: Boolean
+)
 
 val LikeUiState.LikeStatus.switch: LikeUiState.LikeStatus
     get() = if (this == LikeUiState.LikeStatus.Like) LikeUiState.LikeStatus.Reset else LikeUiState.LikeStatus.Like

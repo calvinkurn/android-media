@@ -31,50 +31,53 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
  */
 @Composable
 fun ReportScreen(reports: List<ReportUiModel>, onSubmit: (ReportUiModel) -> Unit = {}) {
-    var text by remember { mutableStateOf("") }
+    var reason by remember { mutableStateOf("") }
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(ReportUiModel.Empty) }
-    Column(
-        modifier = Modifier
-            .wrapContentHeight()
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        NestTypography(
-            text = stringResource(R.string.review_report_header),
-            textStyle = NestTheme.typography.paragraph2.copy(
-                color = colorResource(id = unifyprinciplesR.color.Unify_NN950),
-            )
-        )
-        LazyColumn(modifier = Modifier.padding(vertical = 12.dp)) {
-            items(reports) { item ->
-                NestRadioButton(
-                    text = item.text,
-                    selected = item.text == selectedOption.text,
-                    onSelected = {
-                        onOptionSelected(item)
-                    }
-                )
-            }
-        }
-        val isLastSelected = selectedOption == reports.last()
-
-        //enable when option 3 is clicked
-        TextField(
-            value = text,
-            onValueChange = { text = it },
-            label = { Text(text = stringResource(R.string.review_report_reason)) },
-            enabled = isLastSelected,
+    NestTheme {
+        Column(
             modifier = Modifier
+                .wrapContentHeight()
                 .fillMaxWidth()
-                .padding(top = 8.dp, bottom = 22.dp)
-        )
-        // enable when report is not empty
-        NestButton(
-            text = stringResource(R.string.review_report_send),
-            onClick = { onSubmit(selectedOption) },
-            isEnabled = selectedOption != ReportUiModel.Empty,
-            modifier = Modifier.fillMaxWidth()
-        )
+                .padding(16.dp)
+        ) {
+            NestTypography(
+                text = stringResource(R.string.review_report_header),
+                textStyle = NestTheme.typography.paragraph2.copy(
+                    color = NestTheme.colors.NN._950,
+                )
+            )
+            LazyColumn(modifier = Modifier.padding(vertical = 12.dp)) {
+                items(reports) { item ->
+                    NestRadioButton(
+                        text = item.text,
+                        selected = item.reasonCode == selectedOption.reasonCode,
+                        onSelected = { isChecked ->
+                            if (isChecked) onOptionSelected(item)
+                        }
+                    )
+                }
+            }
+            val isOtherReason = selectedOption.reasonCode == 3 //Reason code for other reason is 3.
+
+            //enable when option 3 is clicked
+            TextField(
+                value = reason,
+                onValueChange = { reason = it },
+                label = { Text(text = stringResource(R.string.review_report_reason)) },
+                enabled = isOtherReason,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, bottom = 22.dp)
+            )
+            NestButton(
+                text = stringResource(R.string.review_report_send),
+                onClick = {
+                    onSubmit(selectedOption.copy(text = if (isOtherReason) reason else selectedOption.text))
+                },
+                isEnabled = selectedOption != ReportUiModel.Empty,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
     }
 }
 
@@ -85,4 +88,3 @@ fun MyApp() {
         reports = emptyList(),
     )
 }
-

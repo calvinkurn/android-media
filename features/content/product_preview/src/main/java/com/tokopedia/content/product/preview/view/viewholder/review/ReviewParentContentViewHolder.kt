@@ -1,5 +1,7 @@
 package com.tokopedia.content.product.preview.view.viewholder.review
 
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
@@ -17,6 +19,7 @@ import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -47,10 +50,7 @@ class ReviewParentContentViewHolder(
         bindAuthor(item.author)
         bindDescription(item.description)
         bindLike(item.likeState)
-
-        binding.ivReviewMenu.setOnClickListener {
-            listener.onMenuClicked(item.menus)
-        }
+        setupTap(item)
     }
 
     private fun bindAuthor(author: AuthorUiModel) = with(binding.layoutAuthorReview) {
@@ -111,13 +111,39 @@ class ReviewParentContentViewHolder(
         ivReviewLike.setImage(newIconId = icon)
         tvLikeCount.text = state.count.toString()
         root.setOnClickListener {
-            listener.onLike(state)
+            listener.onLike(state.copy(withAnimation = false))
+        }
+
+        if (!state.withAnimation) return@with
+        binding.ivDanceLike.onAnimStartAction = { binding.ivDanceLike.show() }
+        binding.ivDanceLike.onAnimEndAction = { binding.ivDanceLike.gone() }
+        binding.ivDanceLike.setIconEnabled(isEnabled = true)
+        binding.ivDanceLike.setIsLiked(state.state == LikeUiState.LikeStatus.Like)
+        binding.ivDanceLike.playLikeAnimation()
+    }
+
+    private fun setupTap(item: ReviewUiModel) {
+        binding.ivReviewMenu.setOnClickListener {
+            listener.onMenuClicked(item.menus)
+        }
+
+        val gesture = GestureDetector(
+            binding.root.context,
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onDoubleTap(e: MotionEvent): Boolean {
+                    listener.onLike(item.likeState.copy(withAnimation = true))
+                    return true
+                }
+            })
+        binding.root.setOnTouchListener { _, motionEvent ->
+            gesture.onTouchEvent(motionEvent)
+            true
         }
     }
 
     interface Listener {
         fun onReviewCredibilityClicked(author: AuthorUiModel)
-        fun onMenuClicked(menus: MenuStatus)
+        fun onMenuClicked(menu: MenuStatus)
         fun onLike(status: LikeUiState)
     }
 
