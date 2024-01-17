@@ -238,7 +238,7 @@ class CheckoutViewModel @Inject constructor(
                         cartDataForRates = saf.cartShipmentAddressFormData.cartData
                         codData = saf.cartShipmentAddressFormData.cod
                         campaignTimer = saf.cartShipmentAddressFormData.campaignTimerUi
-                        logisticProcessor.isBoUnstackEnabled =
+                        logisticCartProcessor.isBoUnstackEnabled =
                             saf.cartShipmentAddressFormData.lastApplyData.additionalInfo.bebasOngkirInfo.isBoUnstackEnabled
                         summariesAddOnUiModel =
                             ShipmentAddOnProductServiceMapper.getShoppingSummaryAddOns(saf.cartShipmentAddressFormData.listSummaryAddons)

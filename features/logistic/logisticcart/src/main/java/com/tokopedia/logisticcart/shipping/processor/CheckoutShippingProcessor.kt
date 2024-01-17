@@ -7,7 +7,6 @@ import com.tokopedia.logisticCommon.data.request.EditPinpointParam
 import com.tokopedia.logisticCommon.data.request.UpdatePinpointParam
 import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.entity.request.ScheduleDeliveryParam
-import com.tokopedia.logisticcart.scheduledelivery.domain.mapper.ScheduleDeliveryMapper
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleDeliveryCoroutineUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetScheduleDeliveryCoroutineUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
@@ -34,7 +33,6 @@ class CheckoutShippingProcessor @Inject constructor(
     private val ratesResponseStateConverter: RatesResponseStateConverter,
     private val shippingCourierConverter: ShippingCourierConverter,
     private val scheduleDeliveryUseCase: GetScheduleDeliveryCoroutineUseCase,
-    private val schellyMapper: ScheduleDeliveryMapper,
     private val dispatchers: CoroutineDispatchers
 ) {
 

@@ -53,6 +53,7 @@ class CheckoutLogisticProcessor @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) {
 
+    // todo this can be deleted
     var isBoUnstackEnabled = false
 
     suspend fun editAddressPinpoint(
