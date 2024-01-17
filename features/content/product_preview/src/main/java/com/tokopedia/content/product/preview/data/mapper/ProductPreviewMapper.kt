@@ -1,6 +1,7 @@
 package com.tokopedia.content.product.preview.data.mapper
 
 import com.tokopedia.content.product.preview.data.AddWishlistResponse
+import android.net.Uri
 import com.tokopedia.content.product.preview.data.GetMiniProductInfoResponse
 import com.tokopedia.content.product.preview.data.LikeReviewResponse
 import com.tokopedia.content.product.preview.data.MediaReviewResponse
@@ -38,9 +39,9 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
                 ),
                 description = DescriptionUiModel(
                     stars = it.rating,
-                    productType = it.variantName,
+                    productType = Uri.decode(it.variantName),
                     timestamp = it.createTimestamp,
-                    description = it.review,
+                    description = Uri.decode(it.review),
                 )
             )
         }
