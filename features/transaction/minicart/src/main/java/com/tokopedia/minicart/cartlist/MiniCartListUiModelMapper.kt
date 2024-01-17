@@ -5,6 +5,7 @@ import com.tokopedia.atc_common.data.model.request.ProductDetail
 import com.tokopedia.atc_common.domain.model.response.ProductDataModel
 import com.tokopedia.bmsm_widget.presentation.model.ProductGiftUiModel
 import com.tokopedia.cartcommon.data.response.bmgm.BmGmData
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
@@ -400,7 +401,8 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     )
                 },
                 progressiveInfoText = bmgmData.offerMessage.firstOrNull().orEmpty(),
-                position = cartIndex.inc()
+                position = cartIndex.inc(),
+                warehouseId = tierProduct.listProduct.firstOrNull()?.warehouseId.orZero()
             )
         }
     }

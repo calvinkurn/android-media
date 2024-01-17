@@ -13,7 +13,8 @@ data class MiniCartGwpGiftUiModel(
     val ctaText: String,
     val giftList: List<ProductGiftUiModel>,
     val progressiveInfoText: String,
-    val position: Int
+    val position: Int,
+    val warehouseId: Long
 ) : Visitable<MiniCartListAdapterTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: MiniCartListAdapterTypeFactory): Int = typeFactory.type(this)
 }

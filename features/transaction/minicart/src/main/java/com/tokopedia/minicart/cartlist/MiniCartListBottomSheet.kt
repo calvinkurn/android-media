@@ -17,6 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.bmsm_widget.presentation.bottomsheet.GiftListBottomSheet
 import com.tokopedia.cartcommon.domain.data.RemoveFromCartDomainModel
 import com.tokopedia.cartcommon.domain.data.UndoDeleteCartDomainModel
 import com.tokopedia.dialog.DialogUnify
@@ -81,9 +82,12 @@ class MiniCartListBottomSheet @Inject constructor(
         private const val KEY_IS_CHANGE_VARIANT = "is_variant_changed"
 
         private const val BSP_PAGE_SOURCE = "minicart"
+
+        private const val MINI_CART_GIFT_LIST_BOTTOM_SHEET_TAG = "Mini Cart Gift List"
     }
 
     private var viewBinding: LayoutBottomsheetMiniCartListBinding? = null
+    private var fragmentManager: FragmentManager? = null
     private var viewModel: MiniCartViewModel? = null
     private var bottomSheet: BottomSheetUnify? = null
     private var adapter: MiniCartListAdapter? = null
@@ -118,6 +122,7 @@ class MiniCartListBottomSheet @Inject constructor(
             if (!isShow) {
                 this.bottomSheetListener = bottomSheetListener
                 val viewBinding = LayoutBottomsheetMiniCartListBinding.inflate(LayoutInflater.from(context))
+                this.fragmentManager = fragmentManager
                 this.viewBinding = viewBinding
                 initializeView(it, viewBinding, fragmentManager)
                 initializeViewModel(viewBinding, fragmentManager, viewModel, lifecycleOwner)
@@ -471,7 +476,8 @@ class MiniCartListBottomSheet @Inject constructor(
             offerId: Long,
             offerTypeId: Long,
             progressiveInfoText: String,
-            position: Int
+            position: Int,
+            bottomSheet: GiftListBottomSheet
         ) {
             analytics.gwpAnalytics.sendClickSeeOnGwpCardGiftListEvent(
                 offerId = offerId,
@@ -479,6 +485,7 @@ class MiniCartListBottomSheet @Inject constructor(
                 progressiveInfoText = progressiveInfoText,
                 position = position
             )
+            fragmentManager?.let { bottomSheet.show(it, MINI_CART_GIFT_LIST_BOTTOM_SHEET_TAG) }
         }
     }
 

@@ -1,8 +1,11 @@
 package com.tokopedia.minicart.cartlist.viewholder
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.bmsm_widget.domain.entity.PageSource
+import com.tokopedia.bmsm_widget.domain.entity.TierGifts
+import com.tokopedia.bmsm_widget.presentation.bottomsheet.GiftListBottomSheet
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartGwpGiftUiModel
 import com.tokopedia.minicart.databinding.ItemMiniCartGwpGiftBinding
@@ -30,14 +33,31 @@ class MiniCartGwpGiftViewHolder (
                 )
             }
 
+            val bottomSheet = GiftListBottomSheet.newInstance(
+                offerId = element.offerId,
+                warehouseId = element.warehouseId,
+                tierGifts = listOf(
+                    TierGifts(
+                        tierId = element.tierId,
+                        gifts = element.giftList.map {
+                            TierGifts.GiftProduct(
+                                productId = it.id.toLongOrZero(),
+                                quantity = it.qty
+                            )
+                        }
+                    )
+                ),
+                pageSource = PageSource.MINICART_NOW
+            )
+
             setupCtaClickListener(element.ctaText) {
                 listener?.onClickCta(
                     offerId = element.offerId,
                     offerTypeId = element.offerTypeId,
                     progressiveInfoText = element.progressiveInfoText,
-                    position = element.position
+                    position = element.position,
+                    bottomSheet = bottomSheet
                 )
-                RouteManager.route(context, "tokopedia://now")
             }
         }
     }
@@ -54,7 +74,8 @@ class MiniCartGwpGiftViewHolder (
             offerId: Long,
             offerTypeId: Long,
             progressiveInfoText: String,
-            position: Int
+            position: Int,
+            bottomSheet: GiftListBottomSheet
         )
     }
 }

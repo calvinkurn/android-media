@@ -6,7 +6,6 @@ import com.tokopedia.minicart.common.data.response.minicartlist.AvailableGroup
 import com.tokopedia.minicart.common.data.response.minicartlist.AvailableSection
 import com.tokopedia.minicart.common.data.response.minicartlist.CartDetail
 import com.tokopedia.minicart.common.data.response.minicartlist.Shop
-import com.tokopedia.purchase_platform.common.utils.removeSingleDecimalSuffix
 
 object BmgmParamMapper {
     private fun mapBundleDetail(
@@ -43,7 +42,7 @@ object BmgmParamMapper {
             productId = product.productId,
             warehouseId = product.warehouseId,
             qty = product.productQuantity,
-            finalPrice = product.productPrice.toBigDecimal().toPlainString().removeSingleDecimalSuffix(),
+            finalPrice = product.productPrice.toLong(),
             shopId = shop.shopId,
             checkboxState = true
         )
