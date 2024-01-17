@@ -68,6 +68,8 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
         ketupatRV?.adapter = adapter
 
         ketupatLandingViewModel?.getScratchCardsLandingInfo("ketupat-thr-2024")
+        ketupatLandingViewModel?.getTokopointsCouponList()
+        ketupatLandingViewModel?.getProductRecommendation()
     }
 
     override fun getViewModelType(): Class<KetupatLandingViewModel> {

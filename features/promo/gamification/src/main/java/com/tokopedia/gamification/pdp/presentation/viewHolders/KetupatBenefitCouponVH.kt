@@ -2,8 +2,15 @@ package com.tokopedia.gamification.pdp.presentation.viewHolders
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.gamification.pdp.data.model.KetupatBenefitCouponData
+import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingAdapter
+import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingAdapterTypeFactory
+import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingTypeFactory
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatBenefitCouponItemVHModel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatBenefitCouponVHModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.gamification.R as gamificationR
@@ -31,5 +38,18 @@ class KetupatBenefitCouponVH(itemView: View) : AbstractViewHolder<KetupatBenefit
                 )
             }
         }
+        element?.value.let {
+            val tempList: ArrayList<Visitable<KetupatLandingTypeFactory>> = ArrayList()
+            it?.tokopointsCouponList?.tokopointsCouponData?.forEach{
+                it?.let { it1 -> KetupatBenefitCouponItemVHModel(it1) }
+                    ?.let { it2 -> tempList.add(it2) }
+            }
+            val adapter = KetupatLandingAdapter(
+                KetupatLandingAdapterTypeFactory())
+            adapter.addMoreData(tempList)
+            itemView.findViewById<RecyclerView>(gamificationR.id.rv_benefit_coupon).adapter = adapter
+        }
+
+
     }
 }

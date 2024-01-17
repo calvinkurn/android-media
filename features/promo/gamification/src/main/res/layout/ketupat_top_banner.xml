@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -15,7 +14,43 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/top_banner_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="8dp"
+            android:text="Event berakhir"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/header_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:typographyType="body_1" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_clock"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="8dp"
+            app:icon_color_light_enable="@color/white"
+            app:icon_name="CLOCK"
+            app:layout_constraintBottom_toBottomOf="@id/header_image"
+            app:layout_constraintEnd_toStartOf="@id/top_banner_counter" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/top_banner_counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="8dp"
+            android:text="15 days"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@id/header_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:typographyType="body_1"
+            app:typographyWeight="bold" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
