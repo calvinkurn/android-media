@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.Companion.ERROR_PINPOINT_NEEDED
@@ -23,11 +24,6 @@ import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil.setT
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.logisticcart.R as logisticcartR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-
-private val ShippingDurationUiModel.disabled: Boolean
-    get() {
-        return serviceData.error.errorId.toIntOrZero() != 0 && errorMessage != ERROR_PINPOINT_NEEDED
-    }
 
 /**
  * Created by Irfan Khoirul on 06/08/18.
@@ -171,7 +167,11 @@ class ShippingDurationViewHolder(
                     shippingDurationUiModel.serviceData.serviceName,
                     tvDurationOrPrice.context.getString(logisticcartR.string.content_desc_tv_duration)
                 )
-                tvPriceOrDuration.text = shippingDurationUiModel.serviceData.texts.textRangePrice
+                if (shippingDurationUiModel.serviceData.error.errorId != ERROR_PINPOINT_NEEDED) {
+                    tvPriceOrDuration.text = shippingDurationUiModel.serviceData.texts.textRangePrice
+                } else {
+                    tvPriceOrDuration.gone()
+                }
                 lblCodAvailableEta.text = shippingDurationUiModel.codText
                 lblCodAvailableEta.visibility =
                     if (shippingDurationUiModel.isCodAvailable) View.VISIBLE else View.GONE
@@ -279,6 +279,11 @@ class ShippingDurationViewHolder(
     val ShippingDurationUiModel.errorPinpoint: Boolean
         get() {
             return serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
+        }
+
+    private val ShippingDurationUiModel.disabled: Boolean
+        get() {
+            return serviceData.error.errorId.toIntOrZero() != 0 && serviceData.error.errorId != ERROR_PINPOINT_NEEDED
         }
 
     companion object {
