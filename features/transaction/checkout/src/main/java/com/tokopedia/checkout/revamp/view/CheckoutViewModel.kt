@@ -1129,31 +1129,37 @@ class CheckoutViewModel @Inject constructor(
         )
         listData.value = checkoutItems
 
-        val result = logisticProcessor.getRatesWithScheduleDelivery(
-            logisticProcessor.getRatesParam(
-                order,
-                helper.getOrderProducts(checkoutItems, order.cartStringGroup),
-                listData.value.address()!!.recipientAddressModel,
-                isTradeIn,
-                isTradeInByDropOff,
-                codData,
-                cartDataForRates,
-                "",
-                false,
-                listData.value.promo()!!
-            ),
+        val ratesParam = logisticProcessor.getRatesParam(
+            order,
+            helper.getOrderProducts(checkoutItems, order.cartStringGroup),
+            listData.value.address()!!.recipientAddressModel,
+            isTradeIn,
+            isTradeInByDropOff,
+            codData,
+            cartDataForRates,
+            "",
+            false,
+            listData.value.promo()!!
+        )
+        val schellyParam = logisticProcessor.getSchellyParam(ratesParam, order.fulfillmentId.toString(), order.isRecommendScheduleDelivery, order.startDate)
+
+        val result = logisticCartProcessor.getRatesWithScheduleDelivery(
+            ratesParam,
+            schellyParam,
             order.shopShipmentList,
             order.shippingId,
             order.spId,
-            order.fulfillmentId.toString(),
-            order,
-            isOneClickShipment, isTradeIn, isTradeInByDropOff
+            order.boCode,
+            order.validationMetadata,
+            order.isDisableChangeCourier,
+            order.isAutoCourierSelection
         )
         val list = listData.value.toMutableList()
         val orderModel = list[cartPosition] as? CheckoutOrderModel
         if (orderModel != null) {
-            if (result?.courier != null) {
-                val courierItemData = result.courier
+            val courierItemData = result?.courier
+            if (courierItemData != null) {
+                logisticProcessor.handleSyncShipmentCartItemModel(courierItemData, order)
                 orderModel.validationMetadata = order.validationMetadata
                 val shouldValidatePromo =
                     courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
@@ -1202,15 +1208,37 @@ class CheckoutViewModel @Inject constructor(
                     return
                 }
             }
-            if (result != null && result.akamaiError.isNotEmpty()) {
-                pageState.value = CheckoutPageState.AkamaiRatesError(result.akamaiError)
+            // handle error
+            val ratesError = result?.ratesError
+            val boPromoCode = logisticProcessor.getBoPromoCode(order)
+            if (ratesError != null) {
+                if (ratesError is MessageErrorException) {
+                    CheckoutLogger.logOnErrorLoadCourierNew(
+                        ratesError,
+                        order,
+                        isOneClickShipment,
+                        isTradeIn,
+                        isTradeInByDropOff,
+                        boPromoCode
+                    )
+                } else if (ratesError is AkamaiErrorException) {
+                    ratesError.message?.let { pageState.value = CheckoutPageState.AkamaiRatesError(it) }
+                } else if (ratesError.message == "racing condition against epharmacy validation") {
+                    order.shouldResetCourier = false
+                }
             }
+
             val newOrderModel = orderModel.copy(
                 shipment = orderModel.shipment.copy(
                     isLoading = false,
                     courierItemData = result?.courier,
                     shippingCourierUiModels = result?.couriers ?: emptyList(),
-                    insurance = result?.insurance ?: CheckoutOrderInsurance()
+                    insurance = result?.courier?.run {
+                        generateCheckoutOrderInsuranceFromCourier(
+                            this,
+                            order
+                        )
+                    } ?: CheckoutOrderInsurance()
                 )
             )
             list[cartPosition] = newOrderModel

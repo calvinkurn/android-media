@@ -15,6 +15,7 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.request.EditPinpointParam
 import com.tokopedia.logisticCommon.data.request.UpdatePinpointParam
 import com.tokopedia.logisticCommon.domain.usecase.UpdatePinpointUseCase
+import com.tokopedia.logisticcart.scheduledelivery.domain.entity.request.ScheduleDeliveryParam
 import com.tokopedia.logisticcart.scheduledelivery.domain.mapper.ScheduleDeliveryMapper
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleDeliveryCoroutineUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetScheduleDeliveryCoroutineUseCase
@@ -297,6 +298,22 @@ class CheckoutLogisticProcessor @Inject constructor(
             ratesParamBuilder.mvc(generateRatesMvcParam(orderModel.cartStringGroup, promo))
         }
         return ratesParamBuilder.build()
+    }
+
+    fun getSchellyParam(
+        ratesParam: RatesParam,
+        fullfilmentId: String,
+        // todo orderModel.isRecommendScheduleDelivery
+        recommend: Boolean,
+        // todo orderModel.startDate
+        startDate: String
+    ): ScheduleDeliveryParam {
+        return schellyMapper.map(
+            ratesParam,
+            fullfilmentId,
+            startDate,
+            recommend
+        )
     }
 
     suspend fun getRates(
@@ -938,7 +955,7 @@ class CheckoutLogisticProcessor @Inject constructor(
         return courierItemData
     }
 
-    private fun handleSyncShipmentCartItemModel(
+    fun handleSyncShipmentCartItemModel(
         courierItemData: CourierItemData,
         orderModel: CheckoutOrderModel
     ) {
