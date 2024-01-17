@@ -8,6 +8,7 @@ import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.CLICK_PG
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.CLICK_SAVE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.CREATE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EDIT
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.CLICK_CLOSE_BOTTOM_SHEET
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.CLICK_CTA_OPT_OUT_VARIANT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.CLICK_EDU_ARTICLE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.CLICK_SUBSIDY_INFORMATION
@@ -17,6 +18,7 @@ import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.IMP
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.IMPRESSION_SUBSIDY_DETAIL
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventCategory.SLASH_PRICE_SUBSIDY_BOTTOM_SHEET
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventCategory.SLASH_PRICE_SUBSIDY_LIST_OF_PRODUCTS
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventCategory.SLASH_PRICE_SUBSIDY_OPT_OUT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventLabel.SLASH_PRICE_SUBSIDY_PAGE_SOURCE_BOTTOM_SHEET
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventLabel.SLASH_PRICE_SUBSIDY_PAGE_SOURCE_LIST_OF_PRODUCTS
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventLabel.SLASH_PRICE_SUBSIDY_NON_VARIANT_PRODUCT
@@ -27,6 +29,7 @@ import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.SLASH_PRICE_LIS
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.SLASH_PRICE_SET_DISCOUNT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TOKOPEDIA_SELLER
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_CLOSE_BOTTOM_SHEET_OPT_OUT_REASON
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_EDU_ARTICLE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_OPT_OUT_VARIANT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_SUBSIDY_INFORMATION_BOTTOM_SHEET
@@ -293,4 +296,32 @@ class ShopDiscountTracker @Inject constructor(private val userSession: UserSessi
             .build()
             .send()
     }
+
+    fun sendDismissOptOutReasonBottomSheetEvent(
+        entrySource: String,
+        dismissSource: String,
+        listSelectedProductId: List<String>
+    ) {
+        val eventLabel = listOf(
+            entrySource,
+            dismissSource,
+        ).toMutableList().apply {
+            if(listSelectedProductId.isNotEmpty()){
+                add(listSelectedProductId.joinToString(","))
+            }
+        }.joinToString(" - ")
+        Tracker.Builder()
+            .setEvent(CLICK_PG)
+            .setEventAction(CLICK_CLOSE_BOTTOM_SHEET)
+            .setEventCategory(SLASH_PRICE_SUBSIDY_OPT_OUT)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(TRACKER_ID, TRACKER_ID_CLICK_CLOSE_BOTTOM_SHEET_OPT_OUT_REASON)
+            .setBusinessUnit(CAMPAIGN_BUSINESS_UNIT)
+            .setCurrentSite(TOKOPEDIA_MARKETPLACE)
+            .setShopId(userSession.shopId)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.shopdiscount.subsidy.presentation.bottomsheet
 
 import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -25,6 +26,7 @@ import com.tokopedia.shopdiscount.subsidy.presentation.adapter.ShopDiscountOptOu
 import com.tokopedia.shopdiscount.subsidy.presentation.adapter.viewholder.ShopDiscountOptOutOptionItemViewHolder
 import com.tokopedia.shopdiscount.subsidy.presentation.viewmodel.ShopDiscountOptOutReasonBottomSheetViewModel
 import com.tokopedia.shopdiscount.utils.extension.showError
+import com.tokopedia.shopdiscount.utils.tracker.ShopDiscountTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
@@ -60,6 +62,9 @@ class ShopDiscountSubsidyOptOutReasonBottomSheet : BottomSheetUnify(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var tracker: ShopDiscountTracker
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy {
         viewModelProvider[ShopDiscountOptOutReasonBottomSheetViewModel::class.java]
@@ -69,6 +74,9 @@ class ShopDiscountSubsidyOptOutReasonBottomSheet : BottomSheetUnify(),
 
     companion object {
         private const val DATA = "data"
+        private const val DISMISS_FROM_CANCEL_BUTTON = "batal"
+        private const val DISMISS_FROM_BOTTOM_SHEET_CLOSE_BUTTON = "x"
+        private const val DISMISS_FROM_OVERLAY = "empty"
 
         fun newInstance(
             data: ShopDiscountManageProductSubsidyUiModel
@@ -160,6 +168,7 @@ class ShopDiscountSubsidyOptOutReasonBottomSheet : BottomSheetUnify(),
 
     private fun setButtonCancel() {
         buttonCancel?.setOnClickListener {
+            sendDismissOptOutReasonBottomSheetTracker(DISMISS_FROM_CANCEL_BUTTON)
             dismiss()
         }
     }
@@ -332,12 +341,26 @@ class ShopDiscountSubsidyOptOutReasonBottomSheet : BottomSheetUnify(),
         ).apply {
             val bottomSheetTitle = getBottomSheetTitle()
             setTitle(bottomSheetTitle)
-            val asd = this.root
-            setChild(asd)
+            val rootView = this.root
+            setChild(rootView)
             setCloseClickListener {
+                sendDismissOptOutReasonBottomSheetTracker(DISMISS_FROM_BOTTOM_SHEET_CLOSE_BUTTON)
                 dismiss()
             }
         }
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        sendDismissOptOutReasonBottomSheetTracker(DISMISS_FROM_OVERLAY)
+        super.onCancel(dialog)
+    }
+
+    private fun sendDismissOptOutReasonBottomSheetTracker(dismissSource: String) {
+        tracker.sendDismissOptOutReasonBottomSheetEvent(
+            data.entrySource.value,
+            dismissSource,
+            data.selectedProductToOptOut.map { it.productId }
+        )
     }
 
     private fun getBottomSheetTitle(): String {
