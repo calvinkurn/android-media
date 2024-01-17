@@ -796,6 +796,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
 
             if (getContext() != null && url.contains("/paylater/acquisition/otp-verification") && !url.contains("otpCode")) {
+                Toast.makeText(getContext(), "Start listening SMS", Toast.LENGTH_SHORT).show();
                 smsRetriever.startSmsRetriever();
             }
         }

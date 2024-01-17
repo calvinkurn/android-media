@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.widget.Toast
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.Status
@@ -36,9 +37,11 @@ class SmsBroadcastReceiver @Inject constructor(): BroadcastReceiver() {
             when (status?.statusCode) {
                 CommonStatusCodes.SUCCESS -> {
                     val message = (extras.get(SmsRetriever.EXTRA_SMS_MESSAGE) as? String).orEmpty()
-                    val subMessage = message.substringAfter("masuk:")
-                    val otpDigit = Regex(REGEX_NUMERIC_PATTERN).find(subMessage)?.value?.length.orZero()
-                    val otp = subMessage.substring(0, otpDigit)
+//                    val subMessage = message.substringAfter("masuk:")
+//                    val otpDigit = Regex(REGEX_NUMERIC_PATTERN).find(subMessage)?.value?.length.orZero()
+//                    val otp = subMessage.substring(0, otpDigit)
+                    Toast.makeText(context, "SMS received: $message", Toast.LENGTH_SHORT).show()
+                    val otp = message.takeLast(6)
 
                     if(::listener.isInitialized && otp.toIntOrNull() != null) {
                         listener.onReceiveOTP(otp)
