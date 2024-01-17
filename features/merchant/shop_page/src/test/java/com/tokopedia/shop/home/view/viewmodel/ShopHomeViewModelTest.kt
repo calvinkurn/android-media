@@ -1604,10 +1604,10 @@ class ShopHomeViewModelTest {
                     responseWidgetData = any(),
                     myShop = any(),
                     isLoggedIn = any(),
-                    isEnableDirectPurchase = false,
+                    isEnableDirectPurchase = mockIsDirectPurchaseFalse,
                     shopId = any(),
                     listWidgetLayout = any(),
-                    isOverrideTheme = any(),
+                    isOverrideTheme = false,
                     colorSchema = any()
                 )
             } returns listOf(
