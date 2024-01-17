@@ -5,6 +5,7 @@
     <string name="time_separator">/</string>
     <string name="video_time_less_than_hour">%d:%02d</string>
     <string name="video_time_hours">%d:%02d:%02d</string>
+    <string name="text_label_place_holder_empty_variant">%s/%s</string>
     <string name="text_label_place_holder">%s/%s • %s</string>
     <string name="circle_dot_divider">•</string>
     <string name="bottom_atc_success_toaster">Barang berhasil ditambahkan ke Keranjang.</string>

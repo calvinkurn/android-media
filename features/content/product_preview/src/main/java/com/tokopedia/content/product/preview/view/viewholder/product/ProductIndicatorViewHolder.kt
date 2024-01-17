@@ -16,7 +16,7 @@ internal class ProductIndicatorViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(data: ProductIndicatorUiModel) {
-        binding.ivReviewContentImage.loadImage(data.content.url)
+        binding.ivReviewContentImage.loadImage(data.thumbnailUrl)
         if (data.selected) {
             binding.viewSelected.background = ContextCompat.getDrawable(
                 binding.root.context,
