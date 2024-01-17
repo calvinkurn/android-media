@@ -35,14 +35,16 @@ class MediaReviewUseCase @Inject constructor(
         val page: Int,
         @SerializedName("limit")
         val limit: Int = LIMIT_VALUE,
+        @SerializedName("filterBy")
+        val filterBy: String = "media=image,video",
     ) : GqlParam
 
     companion object {
         private const val LIMIT_VALUE = 10
         const val QUERY_NAME = "MediaReviewUseCaseQuery"
         const val QUERY = """
-            query getMediaReview(${'$'}productID: String!, ${'$'}page: Int!, ${'$'}limit: Int!) {
-              productrevGetProductReviewList(productID: ${'$'}productID, page: ${'$'}page, limit: ${'$'}limit){
+            query getMediaReview(${'$'}productID: String!, ${'$'}page: Int!, ${'$'}limit: Int!, ${'$'}filterBy: String) {
+              productrevGetProductReviewList(productID: ${'$'}productID, page: ${'$'}page, limit: ${'$'}limit, filterBy: ${'$'}filterBy){
                 list {
                   feedbackID
                   variantName

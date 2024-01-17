@@ -124,8 +124,6 @@ class ReviewFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.onAction(ProductPreviewAction.FetchReview)
-
         setupView()
         observeReview()
         observeEvent()
