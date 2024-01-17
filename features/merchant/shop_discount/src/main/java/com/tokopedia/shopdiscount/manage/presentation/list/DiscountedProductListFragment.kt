@@ -724,11 +724,11 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         }
 
     private val onSubsidyInformationClicked: (Product) -> Unit = { product ->
-        sendSlashPriceClickSubsidyInformation(product)
+        sendSlashPriceClickSubsidyInformationTracker(product)
         showSubsidyProgramInformationBottomSheet(product)
     }
 
-    private fun sendSlashPriceClickSubsidyInformation(product: Product) {
+    private fun sendSlashPriceClickSubsidyInformationTracker(product: Product) {
         tracker.sendSlashPriceClickSubsidyInformationListProductEvent(
             product.hasVariant,
             product.id
@@ -751,12 +751,12 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
                 )
             )
             coachMarkSubsidyInfo?.showCoachMark(coachMarks)
-            sendSlashPriceSubsidyImpressionCoachMark(product)
+            sendSlashPriceSubsidyImpressionCoachMarkTracker(product)
             preferenceDataStore.setCoachMarkSubsidyInfoOnParentAlreadyShown()
         }
     }
 
-    private fun sendSlashPriceSubsidyImpressionCoachMark(product: Product) {
+    private fun sendSlashPriceSubsidyImpressionCoachMarkTracker(product: Product) {
         tracker.sendImpressionSlashPriceSubsidyCoachMarkListProductEvent(
             product.hasVariant,
             product.id

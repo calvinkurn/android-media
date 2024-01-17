@@ -336,10 +336,23 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
                 }
             }
             ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY -> {
+                sendClickOptOutSubsidyTracker(data)
                 showBottomSheetOptOutReason(data)
             }
         }
 
+    }
+
+    private fun sendClickOptOutSubsidyTracker(data: ShopDiscountManageProductSubsidyUiModel) {
+        val totalSelectedProduct = viewModel.getSelectedProductCount()
+        val listProductIdSubsidy = data.listProductDetailData.filter { it.isSubsidy }.map {
+            it.productId
+        }
+        if (viewModel.isOnMultiSelectMode()) {
+            tracker.sendClickOptOutSubsidyBulkEvent(totalSelectedProduct, listProductIdSubsidy)
+        } else {
+            tracker.sendClickOptOutSubsidyNonBulkEvent(listProductIdSubsidy)
+        }
     }
 
     private fun showBottomSheetOptOutReason(data: ShopDiscountManageProductSubsidyUiModel) {
@@ -550,11 +563,11 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
     }
 
     private val onSubsidyInformationClicked: (Product) -> Unit = { product ->
-        sendSlashPriceClickSubsidyInformation(product)
+        sendSlashPriceClickSubsidyInformationTracker(product)
         showSubsidyProgramInformationBottomSheet(product)
     }
 
-    private fun sendSlashPriceClickSubsidyInformation(product: Product) {
+    private fun sendSlashPriceClickSubsidyInformationTracker(product: Product) {
         tracker.sendSlashPriceClickSubsidyInformationListProductEvent(
             product.hasVariant,
             product.id
@@ -577,12 +590,12 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
                 )
             )
             coachMarkSubsidyInfo?.showCoachMark(coachMarks)
-            sendSlashPriceSubsidyImpressionCoachMark(product)
+            sendSlashPriceSubsidyImpressionCoachMarkTracker(product)
             preferenceDataStore.setCoachMarkSubsidyInfoOnParentAlreadyShown()
         }
     }
 
-    private fun sendSlashPriceSubsidyImpressionCoachMark(product: Product) {
+    private fun sendSlashPriceSubsidyImpressionCoachMarkTracker(product: Product) {
         tracker.sendImpressionSlashPriceSubsidyCoachMarkListProductEvent(
             product.hasVariant,
             product.id
