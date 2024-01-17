@@ -1,6 +1,5 @@
 package com.tokopedia.discovery2.viewcontrollers.customview.automatecoupon
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -29,7 +28,7 @@ class AutomateCouponListView @JvmOverloads constructor(
             renderBackgroundImage(model.backgroundUrl)
             renderDetails(model)
             renderIcon(model.iconUrl)
-            renderExpiredDate(model.endDate, model.timeLimitPrefix)
+            renderExpiredDate(model.timeLimit)
             renderBadge(model.badgeText)
         }
     }
@@ -71,27 +70,50 @@ class AutomateCouponListView @JvmOverloads constructor(
         binding.remainingBadge.render(badgeText)
     }
 
-    private fun renderExpiredDate(endDate: Date?, prefixText: DynamicColorText?) {
-        if (endDate == null || prefixText?.value?.isEmpty() == true) {
-            binding.timerGroup.hide()
+    private fun renderExpiredDate(limit: TimeLimit) {
+        if (!limit.isAvailable()) {
+            binding.tvTimeLimitPrefix.hide()
+            binding.tvTimeLimit.hide()
+            binding.timerCoupon.hide()
             return
         }
 
-        prefixText?.let { binding.tvTimeLimitPrefix.render(it) }
-        endDate.showExpiredInfo()
+        limit.prefix?.let { binding.tvTimeLimitPrefix.render(it) }
+        limit.showExpiredInfo()
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun Date.showExpiredInfo() {
-        val parsedCalendar: Calendar = Calendar.getInstance()
-        parsedCalendar.time = this
+    private fun TimeLimit.showExpiredInfo() {
+        when (availableFormat) {
+            TimeLimit.AvailableFormat.TIMER -> {
+                endDate?.showTimer()
+            }
 
-        binding.timerCoupon.apply {
-            backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
-            targetDate = parsedCalendar
+            TimeLimit.AvailableFormat.TEXT -> {
+                showTimeLimit(endText)
+            }
         }
+    }
 
-        binding.timerGroup.show()
+    private fun Date?.showTimer() {
+        this?.let {
+            val parsedCalendar: Calendar = Calendar.getInstance()
+            parsedCalendar.time = it
+
+            binding.timerCoupon.apply {
+                backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
+                targetDate = parsedCalendar
+            }
+
+            binding.timerCoupon.show()
+            binding.tvTimeLimit.hide()
+        }
+    }
+
+    private fun showTimeLimit(text: String?) {
+        binding.tvTimeLimit.text = text
+        binding.tvTimeLimit.show()
+
+        binding.timerCoupon.hide()
     }
 
     private fun Typography.render(dynamicColorText: DynamicColorText) {

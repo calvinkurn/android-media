@@ -133,14 +133,6 @@
                     android:orientation="vertical"
                     app:layout_constraintGuide_percent="0.7" />
 
-                <androidx.constraintlayout.widget.Group
-                    android:id="@+id/timerGroup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    app:constraint_referenced_ids="tvTimeLimitPrefix, timerCoupon"
-                    tools:visibility="gone" />
-
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tvTimeLimitPrefix"
                     android:layout_width="wrap_content"
@@ -166,6 +158,19 @@
                     app:timer_unify_single_showClockIcon="true"
                     app:timer_unify_single_textWidth="full_radius"
                     app:timer_unify_single_variant="general" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tvTimeLimit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:textColor="@color/Unify_NN600"
+                    app:layout_constraintBottom_toBottomOf="@id/btnAction"
+                    app:layout_constraintStart_toEndOf="@id/tvTimeLimitPrefix"
+                    app:layout_constraintTop_toTopOf="@id/btnAction"
+                    app:typographyType="small"
+                    app:typographyWeight="bold"
+                    tools:text="2 hari" />
 
                 <com.tokopedia.unifycomponents.UnifyButton
                     android:id="@+id/btnAction"
