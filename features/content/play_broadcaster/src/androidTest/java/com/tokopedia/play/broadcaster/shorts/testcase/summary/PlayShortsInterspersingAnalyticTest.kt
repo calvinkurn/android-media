@@ -1,12 +1,9 @@
 package com.tokopedia.play.broadcaster.shorts.testcase.summary
 
 import android.content.Intent
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
@@ -31,14 +28,12 @@ import com.tokopedia.play.broadcaster.shorts.helper.clickNextInterspersingConfir
 import com.tokopedia.play.broadcaster.shorts.helper.clickUploadVideo
 import com.tokopedia.play.broadcaster.shorts.helper.clickVideoPdpOnInterspersingConfirmation
 import com.tokopedia.play.broadcaster.shorts.helper.completeMandatoryMenu
-import com.tokopedia.play.broadcaster.shorts.view.activity.PlayShortsActivity
 import com.tokopedia.test.application.compose.createAndroidIntentComposeRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
 /**
  * Created By : Jonathan Darwin on January 16, 2024
@@ -56,8 +51,6 @@ class PlayShortsInterspersingAnalyticTest {
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
     private val cassavaValidator = PlayBroadcastCassavaValidator.buildForInterspersingVideo(cassavaTestRule)
-
-    private val launcher = PlayShortsLauncher(targetContext)
 
     private val mockShortsRepo: PlayShortsRepository = mockk(relaxed = true)
     private val mockBroRepo: PlayBroadcastRepository = mockk(relaxed = true)

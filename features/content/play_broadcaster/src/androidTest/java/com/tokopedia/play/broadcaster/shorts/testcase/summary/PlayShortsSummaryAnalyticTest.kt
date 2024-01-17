@@ -1,8 +1,6 @@
 package com.tokopedia.play.broadcaster.shorts.testcase.summary
 
 import android.content.Intent
-import androidx.compose.ui.test.onRoot
-import androidx.compose.ui.test.printToLog
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
