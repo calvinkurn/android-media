@@ -637,7 +637,7 @@ internal open class ProductListPresenterTestFixtures {
     }
 
     protected fun `Given search reimagine rollence product card will return non control variant`() {
-        every { reimagineRollence.search3ProductCard() } returns Search3ProductCard.VAR_1A
+        every { reimagineRollence.search3ProductCard() } returns Search3ProductCard.PRODUCT_CARD_SRE_2024
     }
 
     @After

@@ -1197,7 +1197,7 @@ class ProductListFragment: BaseDaggerFragment(),
         if (isReimagineQuickFilter()) searchSortFilterReimagine
         else searchSortFilter
 
-    private fun isReimagineQuickFilter() = reimagineRollence.search2Component() == Search2Component.QF_VAR
+    private fun isReimagineQuickFilter() = reimagineRollence.search2Component().isReimagineQuickFilter()
 
     private fun hideSearchSortFilter() {
         searchSortFilterReimagine?.gone()
