@@ -792,12 +792,36 @@
             {
               "position": "credibility",
               "type": "lightBlue",
-              "title": "Terbaru"
+              "title": "Terbaru",
+              "styles": [
+                {
+                  "key": "background-color",
+                  "value": "#F0F3F7"
+                },
+                {
+                  "key": "background-opacity",
+                  "value": "1"
+                },
+                {
+                  "key": "text-color",
+                  "value": "#212121"
+                }
+              ]
             },
             {
               "position": "gimmick",
               "type": "textDarkOrange",
-              "title": "Produk Terbaru"
+              "title": "Produk Terbaru",
+              "styles": [
+                {
+                  "key": "background-opacity",
+                  "value": "1"
+                },
+                {
+                  "key": "text-color",
+                  "value": "#212121"
+                }
+              ]
             }
           ]
         },
@@ -879,7 +903,17 @@
             {
               "position": "gimmick",
               "type": "textDarkOrange",
-              "title": "Produk Terbaru"
+              "title": "Produk Terbaru",
+              "styles": [
+                {
+                  "key": "background-color",
+                  "value": "#F0F3F7"
+                },
+                {
+                  "key": "background-opacity",
+                  "value": "1"
+                },
+              ]
             }
           ]
         },
