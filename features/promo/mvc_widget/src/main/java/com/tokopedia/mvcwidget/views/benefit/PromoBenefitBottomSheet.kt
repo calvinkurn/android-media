@@ -22,6 +22,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvcwidget.databinding.PromoBenefitBottomsheetBinding
 import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -85,16 +86,17 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
                     viewModel.state.collect { model ->
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                             drawable?.colorFilter = BlendModeColorFilter(
-                                Color.parseColor(model.headerColor),
+                                Color.parseColor(model.bgColor),
                                 BlendMode.SRC_ATOP
                             )
                         } else {
                             drawable?.setColorFilter(
-                                Color.parseColor(model.headerColor),
+                                Color.parseColor(model.bgColor),
                                 PorterDuff.Mode.SRC_ATOP
                             )
                         }
                         topSection.background = drawable
+                        benefitBackground.loadImage(model.bgImgUrl)
                         layoutBenefit.tvEstimate.text = model.estimatePrice
                         layoutBenefit.tvBasePrice.text = model.basePrice
 
@@ -138,7 +140,8 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
 
 @Parcelize
 data class UiModel(
-    val headerColor: String = "#FFF5F6",
+    val bgImgUrl: String = "",
+    val bgColor: String = "#FFF5F6",
     val estimatePrice: String = "Rp0",
     val basePrice: String = "Rp0",
     val usablePromo: List<UsablePromoModel> = listOf(),
