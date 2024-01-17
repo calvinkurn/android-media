@@ -189,10 +189,10 @@ class TableMapper @Inject constructor(
     }
 
     private fun getHtmlMeta(meta: String): TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta? {
-        return try {
-            GsonSingleton.instance.fromJson(meta, TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta::class.java)
-        } catch (ex: Exception) {
-            null
-        }
+        return runCatching {
+            GsonSingleton.instance.fromJson(
+                meta, TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta::class.java
+            )
+        }.getOrNull()
     }
 }

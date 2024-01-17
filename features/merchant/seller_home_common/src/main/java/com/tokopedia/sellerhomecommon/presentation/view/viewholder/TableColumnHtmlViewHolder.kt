@@ -24,6 +24,7 @@ import com.tokopedia.sellerhomecommon.databinding.ShcItemTableColumnHtmlBinding
 import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
 import com.tokopedia.sellerhomecommon.utils.SpannableTouchListener
 import timber.log.Timber
+import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
 /**
  * Created By @ilhamsuaib on 01/07/20
@@ -70,7 +71,7 @@ class TableColumnHtmlViewHolder(
         with(binding) {
             val textColorInt = element.colorInt ?: MethodChecker.getColor(
                 root.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                unifyprinciplesR.color.Unify_NN900
             )
             element.colorInt = textColorInt
             tvTableColumnHtml.run {
