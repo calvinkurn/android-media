@@ -4,6 +4,78 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.map
 
+/**
+ * Combines multiple flows with debounce so that the [transform] lambda is only called once in case
+ * multiple flows is updated in almost the same time.
+ *
+ * Example case:
+ *
+ * ```
+ * val someMutableStateFlow = MutableStateFlow<SomeData>(SomeData())
+ * val flow = someMutableStateFlow.mapLatest { transform(it) }
+ * val flow2 = someMutableStateFlow.mapLatest { transform(it) }
+ * val flow3 = someMutableStateFlow.mapLatest { transform(it) }
+ * val flow4 = someMutableStateFlow.mapLatest { transform(it) }
+ * val flow5 = someMutableStateFlow.mapLatest { transform(it) }
+ * val flow6 = someMutableStateFlow.mapLatest { transform(it) }
+ * val flow7 = someMutableStateFlow.mapLatest { transform(it) }
+ * val flow8 = someMutableStateFlow.mapLatest { transform(it) }
+ * val flow9 = someMutableStateFlow.mapLatest { transform(it) }
+ * val flow10 = someMutableStateFlow.mapLatest { transform(it) }
+ * val flow11 = someMutableStateFlow.mapLatest { transform(it) }
+ * combine(
+ *     flow,
+ *     flow2,
+ *     flow3,
+ *     flow4,
+ *     flow5,
+ *     flow6,
+ *     flow7,
+ *     flow8,
+ *     flow9,
+ *     flow10,
+ *     flow11,
+ *     ::transform
+ * )
+ * ```
+ * In the example above, the change on someMutableStateFlow will trigger changes on all the flows
+ * used in the [kotlinx.coroutines.flow.combine] function which will cause the [kotlinx.coroutines.flow.combine] [transform]
+ * lambda to be called multiple times each time the flows emit the newly transformed someMutableStateFlow value
+ * ```
+ * val someMutableStateFlow = MutableStateFlow<SomeData>(SomeData())
+ * val flow = someMutableStateFlow.mapLatest { transform(it) }
+ * val flow2 = someMutableStateFlow.mapLatest { transform(it) }
+ * val flow3 = someMutableStateFlow.mapLatest { transform(it) }
+ * val flow4 = someMutableStateFlow.mapLatest { transform(it) }
+ * val flow5 = someMutableStateFlow.mapLatest { transform(it) }
+ * val flow6 = someMutableStateFlow.mapLatest { transform(it) }
+ * val flow7 = someMutableStateFlow.mapLatest { transform(it) }
+ * val flow8 = someMutableStateFlow.mapLatest { transform(it) }
+ * val flow9 = someMutableStateFlow.mapLatest { transform(it) }
+ * val flow10 = someMutableStateFlow.mapLatest { transform(it) }
+ * val flow11 = someMutableStateFlow.mapLatest { transform(it) }
+ * combineThrottling(
+ *     flow,
+ *     flow2,
+ *     flow3,
+ *     flow4,
+ *     flow5,
+ *     flow6,
+ *     flow7,
+ *     flow8,
+ *     flow9,
+ *     flow10,
+ *     flow11,
+ *     ::transform
+ * )
+ * ```
+ *
+ * In the example above, the change on someMutableStateFlow will trigger changes on all the flows
+ * used in the [combineThrottling] function which will cause the [combineThrottling] [transform]
+ * lambda to be called only once as long as the time gap between each map process doesn't took more
+ * than 100ms.
+ *
+ */
 @Suppress("UNCHECKED_CAST", "MagicNumber")
 fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R> combineThrottling(
     flow: Flow<T1>,
