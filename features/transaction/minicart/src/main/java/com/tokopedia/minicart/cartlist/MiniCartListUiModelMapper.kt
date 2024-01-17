@@ -5,8 +5,6 @@ import com.tokopedia.atc_common.data.model.request.ProductDetail
 import com.tokopedia.atc_common.domain.model.response.ProductDataModel
 import com.tokopedia.bmsm_widget.presentation.model.ProductGiftUiModel
 import com.tokopedia.cartcommon.data.response.bmgm.BmGmData
-import com.tokopedia.cartcommon.domain.model.bmgm.response.BmGmGetGroupProductTickerResponse
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
@@ -84,57 +82,6 @@ class MiniCartListUiModelMapper @Inject constructor() {
         title = widgetResponse.tokonowBundleWidget.data.widgetName,
         productBundleList = mapToProductBundleListItemUiModel(widgetResponse.tokonowBundleWidget.data.widgetData)
     )
-
-    fun updateMiniCartProgressiveInfoUiModel(
-        response: BmGmGetGroupProductTickerResponse,
-        uiModel: MiniCartProgressiveInfoUiModel
-    ): MiniCartProgressiveInfoUiModel? {
-        return response.getGroupProductTicker.data.multipleData.find { data -> data.bmgmData.offerId == uiModel.offerId }?.run {
-            uiModel.copy(
-                message = bmgmData.offerMessage.firstOrNull().orEmpty(),
-                icon = bmgmData.offerIcon,
-                appLink = bmgmData.offerLandingPageLink,
-                state = MiniCartProgressiveInfoUiModel.State.LOADED
-            )
-        }
-    }
-
-    fun updateMiniCartProgressiveInfoUiModel(
-        uiModel: MiniCartProgressiveInfoUiModel,
-        state: MiniCartProgressiveInfoUiModel.State
-    ): MiniCartProgressiveInfoUiModel {
-        return uiModel.copy(
-            message = String.EMPTY,
-            icon = String.EMPTY,
-            appLink = String.EMPTY,
-            state = state
-        )
-    }
-
-    fun updateMiniCartGwpGiftUiModel(
-        response: BmGmGetGroupProductTickerResponse,
-        uiModel: MiniCartGwpGiftUiModel
-    ): MiniCartGwpGiftUiModel? {
-        response.getGroupProductTicker.data.multipleData.find { data ->
-            return data.bmgmData.tierProductList.find { it.tierId == uiModel.tierId }?.run {
-                uiModel.copy(
-                    tierId = tierId,
-                    ribbonText = benefitWording,
-                    ctaText = actionWording,
-                    giftList = productsBenefit.map { productBenefit ->
-                        ProductGiftUiModel(
-                            id = productBenefit.productId,
-                            name = productBenefit.productName,
-                            imageUrl = productBenefit.productImage,
-                            qty = productBenefit.quantity,
-                            isUnlocked = true
-                        )
-                    }
-                )
-            }
-        }
-        return null
-    }
 
     private fun mapToProductBundleListItemUiModel(
         widgetData: List<ProductBundleRecomResponse.TokonowBundleWidget.Data.WidgetData>

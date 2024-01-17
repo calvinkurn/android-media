@@ -29,9 +29,9 @@ import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.minicart.bmgm.domain.mapper.BmgmParamMapper
 import com.tokopedia.minicart.bmgm.domain.mapper.BmgmParamMapper.mapParamsFilteredToUpdateGwp
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet.Companion.STATE_PRODUCT_BUNDLE_RECOM_ATC
-import com.tokopedia.minicart.cartlist.MiniCartListUiModelExtension.updateGwpErrorState
-import com.tokopedia.minicart.cartlist.MiniCartListUiModelExtension.updateGwpLoadingState
-import com.tokopedia.minicart.cartlist.MiniCartListUiModelExtension.updateGwpSuccessState
+import com.tokopedia.minicart.cartlist.MiniCartListGwpUiModelMapper.getGwpErrorState
+import com.tokopedia.minicart.cartlist.MiniCartListGwpUiModelMapper.getGwpLoadingState
+import com.tokopedia.minicart.cartlist.MiniCartListGwpUiModelMapper.getGwpSuccessState
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
@@ -671,7 +671,7 @@ class MiniCartViewModel @Inject constructor(
         )
     }
 
-    fun updateCart(offerId: Long) {
+    fun updateCart(offerId: Long = DEFAULT_OFFER_ID) {
         val source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
         val miniCartProductUiModels = mutableListOf<UpdateCartRequest>()
         val visitables = getVisitables()
@@ -721,16 +721,14 @@ class MiniCartViewModel @Inject constructor(
                         params = paramsToUpdateGwp,
                         offerId = offerId
                     )
-                    _miniCartListBottomSheetUiModel.updateGwpSuccessState(
-                        uiModels = getVisitables(),
-                        miniCartListUiModelMapper = miniCartListUiModelMapper,
+                    _miniCartListBottomSheetUiModel.value = getGwpSuccessState(
+                        uiModel = _miniCartListBottomSheetUiModel.value,
                         response = updateGwpUseCase.invoke(params)
                     )
                 },
                 onError = {
-                    _miniCartListBottomSheetUiModel.updateGwpErrorState(
-                        uiModels = getVisitables(),
-                        miniCartListUiModelMapper = miniCartListUiModelMapper,
+                    _miniCartListBottomSheetUiModel.value = getGwpErrorState(
+                        uiModel = _miniCartListBottomSheetUiModel.value,
                         offerId = offerId
                     )
                 }
@@ -741,9 +739,8 @@ class MiniCartViewModel @Inject constructor(
     private fun updateGwpWidget(offerId: Long) = getBmGmGroupProductTicker(offerId)
 
     fun refreshGwpWidget(offerId: Long) {
-        _miniCartListBottomSheetUiModel.updateGwpLoadingState(
-            uiModels = getVisitables(),
-            miniCartListUiModelMapper = miniCartListUiModelMapper,
+        _miniCartListBottomSheetUiModel.value = getGwpLoadingState(
+            uiModel = _miniCartListBottomSheetUiModel.value,
             offerId = offerId
         )
 

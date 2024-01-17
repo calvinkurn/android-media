@@ -9,6 +9,7 @@ import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataR
 import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartGqlResponse
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartGqlResponse
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.cartcommon.domain.model.bmgm.response.BmGmGetGroupProductTickerResponse
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductBundleRecomUiModel
@@ -212,5 +213,13 @@ object DataProvider {
             shopId = shopId,
             userId = userId
         )
+    }
+
+    fun provideGetMiniCartGwpSuccess(): MiniCartData {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_success_bmgm_gwp"), MiniCartGqlResponse::class.java).miniCart
+    }
+
+    fun provideUpdateGwpSuccess(): BmGmGetGroupProductTickerResponse {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/get_group_product_ticker"), BmGmGetGroupProductTickerResponse::class.java)
     }
 }
