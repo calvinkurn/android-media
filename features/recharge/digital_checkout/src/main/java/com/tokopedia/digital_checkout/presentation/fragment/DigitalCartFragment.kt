@@ -688,13 +688,15 @@ class DigitalCartFragment :
     }
 
     private fun renderMyBillsLayout(cartInfo: CartDigitalInfoData) {
-        myBillsAdapter = DigitalMyBillsAdapter(this)
+        myBillsAdapter = DigitalMyBillsAdapter(this, isGotoPlus())
 
         binding?.rvMyBills?.let {
             it.layoutManager = LinearLayoutManager(context)
             it.isNestedScrollingEnabled = false
             it.adapter = myBillsAdapter
         }
+
+        binding?.separator?.showWithCondition(cartInfo.attributes.fintechProduct.isNotEmpty())
 
         val (subscriptions, fintechProducts) = cartInfo.attributes.fintechProduct.partition {
             it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT

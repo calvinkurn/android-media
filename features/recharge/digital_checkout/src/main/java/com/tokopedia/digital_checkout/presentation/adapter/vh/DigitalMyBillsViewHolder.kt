@@ -16,41 +16,43 @@ class DigitalMyBillsViewHolder(
     val listener: MyBillsActionListener
 ) : RecyclerView.ViewHolder(view) {
 
-    fun bindSubscription(subscription: FintechProduct) {
+    fun bindSubscription(subscription: FintechProduct, isGotoPlus: Boolean) {
         val binding = ItemDigitalCheckoutMyBillsSectionBinding.bind(itemView)
 
         with(binding) {
+            itemView.show()
+            listener.onSubscriptionImpression(subscription)
+
+            widgetMyBills.hasMoreInfo(!isGotoPlus)
             if (subscription.info.title.isNotEmpty()) {
-                itemView.show()
-                listener.onSubscriptionImpression(subscription)
-
-                widgetMyBills.hasMoreInfo(true)
                 widgetMyBills.setTitle(subscription.info.title)
-                if (subscription.optIn) {
-                    widgetMyBills.setDescription(subscription.info.checkedSubtitle)
-                } else {
-                    widgetMyBills.setDescription(subscription.info.subtitle)
+                widgetMyBills.showTitle()
+            } else {
+                widgetMyBills.hideTitle()
+            }
+            if (subscription.optIn) {
+                widgetMyBills.setDescription(subscription.info.checkedSubtitle)
+            } else {
+                widgetMyBills.setDescription(subscription.info.subtitle)
+            }
+
+            widgetMyBills.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
+                override fun onMoreInfoClicked() {
+                    listener.onSubscriptionMoreInfoClicked(subscription)
                 }
 
-                widgetMyBills.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
-                    override fun onMoreInfoClicked() {
-                        listener.onSubscriptionMoreInfoClicked(subscription)
-                    }
-
-                    override fun onCheckChanged(isChecked: Boolean) {
-                        if (isChecked) widgetMyBills.setDescription(subscription.info.checkedSubtitle)
-                        else widgetMyBills.setDescription(subscription.info.subtitle)
-                        listener.onSubscriptionChecked(subscription, isChecked)
-                    }
+                override fun onCheckChanged(isChecked: Boolean) {
+                    if (isChecked) widgetMyBills.setDescription(subscription.info.checkedSubtitle)
+                    else widgetMyBills.setDescription(subscription.info.subtitle)
+                    listener.onSubscriptionChecked(subscription, isChecked)
                 }
+            }
 
-                if (subscription.checkBoxDisabled) {
-                    widgetMyBills.disableCheckBox()
-                } else {
-                    if (!widgetMyBills.isChecked() && subscription.optIn) {
-                        widgetMyBills.setChecked(subscription.optIn)
-                    }
-                }
+            if (subscription.checkBoxDisabled) {
+                widgetMyBills.disableCheckBox()
+            }
+            if (!widgetMyBills.isChecked() && subscription.optIn) {
+                widgetMyBills.setChecked(subscription.optIn)
             }
         }
     }
