@@ -1,7 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import android.graphics.Color
-import com.google.gson.Gson
+import com.tokopedia.cachemanager.gson.GsonSingleton
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -155,7 +155,7 @@ class TableMapper @Inject constructor(
 
     private fun getTableRowMeta(meta: String): TableRowsUiModel.Meta {
         return try {
-            val metaModel = Gson().fromJson(meta, TableRowMeta::class.java)
+            val metaModel = GsonSingleton.instance.fromJson(meta, TableRowMeta::class.java)
             TableRowsUiModel.Meta(flag = metaModel.flag)
         } catch (e: Exception) {
             TableRowsUiModel.Meta(flag = String.EMPTY)
@@ -190,7 +190,7 @@ class TableMapper @Inject constructor(
 
     private fun getHtmlMeta(meta: String): TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta? {
         return try {
-             Gson().fromJson(meta, TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta::class.java)
+            GsonSingleton.instance.fromJson(meta, TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta::class.java)
         } catch (ex: Exception) {
             null
         }

@@ -732,9 +732,11 @@ class SellerHomeFragment :
     }
 
     override fun onHtmlMetaClick(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) {
-        HtmlMetaBottomSheet.createInstance(meta).apply {
+        val fm = childFragmentManager
+        HtmlMetaBottomSheet.createInstance(fm).apply {
+            setMetaData(meta)
             setOnMetaLinkClicked(::goToHtmlMetaLink)
-        }.show(childFragmentManager)
+        }.show(fm)
     }
 
     override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
@@ -839,9 +841,11 @@ class SellerHomeFragment :
     }
 
     override fun onUnificationHtmlMetaClick(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) {
-        HtmlMetaBottomSheet.createInstance(meta).apply {
+        val fm = childFragmentManager
+        HtmlMetaBottomSheet.createInstance(fm).apply {
+            setMetaData(meta)
             setOnMetaLinkClicked(::goToHtmlMetaLink)
-        }.show(childFragmentManager)
+        }.show(fm)
     }
 
     override fun sendUnificationSeeMoreClickEvent(dataKey: String, tab: UnificationTabUiModel) {
@@ -2291,9 +2295,11 @@ class SellerHomeFragment :
 
     private fun <D : BaseDataUiModel> handleShopShareMilestoneWidget(widget: BaseWidgetUiModel<D>) {
         if (widget is MilestoneWidgetUiModel) {
-            val shareMission = widget.data?.milestoneMissions?.filterIsInstance<BaseMilestoneMissionUiModel>()?.firstOrNull {
-                return@firstOrNull it.missionButton.urlType == BaseMilestoneMissionUiModel.UrlType.SHARE
-            }
+            val shareMission =
+                widget.data?.milestoneMissions?.filterIsInstance<BaseMilestoneMissionUiModel>()
+                    ?.firstOrNull {
+                        return@firstOrNull it.missionButton.urlType == BaseMilestoneMissionUiModel.UrlType.SHARE
+                    }
             val isShareMissionAvailable = !shareMission?.missionCompletionStatus.orFalse()
             if (isShareMissionAvailable) {
                 sellerHomeViewModel.getShopInfoById()

@@ -20,25 +20,15 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class HtmlMetaBottomSheet : BaseBottomSheet<ShcBottomSheetHtmlMetaBinding>() {
 
     companion object {
-        private const val META_KEY = "meta"
-
         private const val NUNITO_TYPOGRAPHY_FONT = "NunitoSansExtraBold.ttf"
-
         private const val TAG = "HtmlMetaBottomSheet"
 
-        fun createInstance(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta): HtmlMetaBottomSheet {
-            return HtmlMetaBottomSheet().also { bottomSheet ->
-                bottomSheet.arguments = Bundle().apply {
-                    putParcelable(META_KEY, meta)
-                }
-            }
+        fun createInstance(fm: FragmentManager): HtmlMetaBottomSheet {
+            return (fm.findFragmentByTag(TAG) as? HtmlMetaBottomSheet) ?: HtmlMetaBottomSheet()
         }
     }
 
-    private val meta by lazy {
-        arguments?.getParcelable(META_KEY) as? TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta
-    }
-
+    private var meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta? = null
     private var onHtmlMetaLinkClicked: (String, String) -> Unit = { _, _ -> }
     private var onCloseButtonClicked: (String) -> Unit = {}
 
@@ -60,6 +50,10 @@ class HtmlMetaBottomSheet : BaseBottomSheet<ShcBottomSheetHtmlMetaBinding>() {
         setCloseButtonListener()
     }
 
+    fun setMetaData(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) {
+        this.meta = meta
+    }
+
     fun setOnMetaLinkClicked(onClick: (String, String) -> Unit) {
         onHtmlMetaLinkClicked = onClick
     }
@@ -68,7 +62,7 @@ class HtmlMetaBottomSheet : BaseBottomSheet<ShcBottomSheetHtmlMetaBinding>() {
         onCloseButtonClicked = onClick
     }
 
-    fun show(fm: FragmentManager) {
+    fun show(fm: FragmentManager, ) {
         if (fm.isStateSaved && isVisible) return
         show(fm, TAG)
     }
@@ -105,7 +99,9 @@ class HtmlMetaBottomSheet : BaseBottomSheet<ShcBottomSheetHtmlMetaBinding>() {
             } else {
                 meta?.value.orEmpty()
             }
-        binding?.tvShcHtmlMeta?.text = metaText
+        if (!metaText.isNullOrBlank()) {
+            binding?.tvShcHtmlMeta?.text = metaText
+        }
     }
 
     private fun getSpannableStringBuilder(

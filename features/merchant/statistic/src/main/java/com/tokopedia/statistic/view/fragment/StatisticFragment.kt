@@ -51,7 +51,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
 import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.FilterTabUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.MilestoneItemRewardUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentTab
 import com.tokopedia.sellerhomecommon.presentation.model.MultiComponentWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
@@ -645,37 +644,27 @@ class StatisticFragment :
         rejectedOrderRateCoachMark.show()
     }
 
-    override fun sendMilestoneRewardImpressionEvent(
-        reward: MilestoneItemRewardUiModel,
-        position: Int
-    ) {
-        // NO-OP
-    }
-
-    override fun sendMilestoneRewardActionClickedListener(
-        reward: MilestoneItemRewardUiModel,
-        position: Int
-    ) {
-        // NO-OP
-    }
-
     override fun onHtmlMetaClick(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) {
         StatisticTracker.sendTableMetaLabelClickEvent(
             statisticPage?.pageSource.orEmpty(),
             meta.title,
-            "" // TODO: Use productId
+            meta.productId
         )
-        HtmlMetaBottomSheet.createInstance(meta).apply {
+        val fm = childFragmentManager
+        HtmlMetaBottomSheet.createInstance(fm).apply {
+            setMetaData(meta)
             setOnMetaLinkClicked(::goToHtmlMetaLink)
             setOnCloseButtonClicked(::onHtmlMetaBottomSheetCloseClicked)
-        }.show(childFragmentManager)
+        }.show(fm)
     }
 
     override fun onUnificationHtmlMetaClick(meta: TableRowsUiModel.RowColumnHtmlWithMeta.HtmlMeta) {
-        HtmlMetaBottomSheet.createInstance(meta).apply {
+        val fm = childFragmentManager
+        HtmlMetaBottomSheet.createInstance(fm).apply {
+            setMetaData(meta)
             setOnMetaLinkClicked(::goToHtmlMetaLink)
             setOnCloseButtonClicked(::onHtmlMetaBottomSheetCloseClicked)
-        }.show(childFragmentManager)
+        }.show(fm)
     }
 
     fun setSelectedWidget(widget: String) {
