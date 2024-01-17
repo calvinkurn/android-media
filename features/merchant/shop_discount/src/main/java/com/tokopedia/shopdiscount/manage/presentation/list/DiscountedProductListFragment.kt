@@ -204,21 +204,8 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
                 }
             }
             ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY -> {
-                sendClickOptOutSubsidyTracker(data)
                 showBottomSheetOptOutReason(data)
             }
-        }
-    }
-
-    private fun sendClickOptOutSubsidyTracker(data: ShopDiscountManageProductSubsidyUiModel) {
-        val totalSelectedProduct = viewModel.getSelectedProducts().size
-        val listProductIdSubsidy = data.listProductDetailData.filter { it.isSubsidy }.map {
-            it.productId
-        }
-        if (viewModel.isOnMultiSelectMode()) {
-            tracker.sendClickOptOutSubsidyBulkEvent(totalSelectedProduct, listProductIdSubsidy)
-        } else {
-            tracker.sendClickOptOutSubsidyNonBulkEvent(listProductIdSubsidy)
         }
     }
 
@@ -308,9 +295,18 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
                 configBulkDeleteProduct()
             }
             btnBulkOptOut.setOnClickListener {
+                sendClickOptOutSubsidyBulkTracker()
                 configBulkOptOutProduct()
             }
         }
+    }
+
+    private fun sendClickOptOutSubsidyBulkTracker() {
+        val listSelectedProduct = viewModel.getSelectedProducts()
+        tracker.sendClickOptOutSubsidyBulkEvent(
+            listSelectedProduct.size,
+            listSelectedProduct.map { it.id }
+        )
     }
 
     private fun configBulkOptOutProduct() {
@@ -542,7 +538,12 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
+    private fun sendClickOptOutSubsidyNonBulkTracker(product: Product) {
+        tracker.sendClickOptOutSubsidyNonBulkEvent(product.id)
+    }
+
     private fun onOptOutSubsidyOptionClicked(product: Product) {
+        sendClickOptOutSubsidyNonBulkTracker(product)
         getListProductSubsidy(
             listOf(product.id),
             discountStatusId,

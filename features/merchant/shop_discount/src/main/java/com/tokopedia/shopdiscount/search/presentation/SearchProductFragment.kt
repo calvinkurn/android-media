@@ -248,7 +248,24 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
                     displayBulkDeleteConfirmationDialog()
                 }
             }
+            btnOptOut.setOnClickListener {
+                sendClickOptOutSubsidyBulkTracker()
+                val selectedProductIds = viewModel.getSelectedProductIds()
+                getListProductSubsidy(
+                    selectedProductIds,
+                    discountStatusId,
+                    ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY
+                )
+            }
         }
+    }
+
+    private fun sendClickOptOutSubsidyBulkTracker() {
+        val listSelectedProductId = viewModel.getSelectedProductIds()
+        tracker.sendClickOptOutSubsidyBulkEvent(
+            listSelectedProductId.size,
+            listSelectedProductId
+        )
     }
 
     private fun observeProducts() {
@@ -336,23 +353,10 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
                 }
             }
             ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY -> {
-                sendClickOptOutSubsidyTracker(data)
                 showBottomSheetOptOutReason(data)
             }
         }
 
-    }
-
-    private fun sendClickOptOutSubsidyTracker(data: ShopDiscountManageProductSubsidyUiModel) {
-        val totalSelectedProduct = viewModel.getSelectedProductCount()
-        val listProductIdSubsidy = data.listProductDetailData.filter { it.isSubsidy }.map {
-            it.productId
-        }
-        if (viewModel.isOnMultiSelectMode()) {
-            tracker.sendClickOptOutSubsidyBulkEvent(totalSelectedProduct, listProductIdSubsidy)
-        } else {
-            tracker.sendClickOptOutSubsidyNonBulkEvent(listProductIdSubsidy)
-        }
     }
 
     private fun showBottomSheetOptOutReason(data: ShopDiscountManageProductSubsidyUiModel) {
@@ -729,7 +733,23 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
                 displayDeleteConfirmationDialog(product)
             }
         }
+        bottomSheet.setOnOptOutSubsidyMenuClicked{
+            onOptOutSubsidyOptionClicked(product)
+        }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun onOptOutSubsidyOptionClicked(product: Product) {
+        sendClickOptOutSubsidyNonBulkTracker(product)
+        getListProductSubsidy(
+            listOf(product.id),
+            discountStatusId,
+            ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY
+        )
+    }
+
+    private fun sendClickOptOutSubsidyNonBulkTracker(product: Product) {
+        tracker.sendClickOptOutSubsidyNonBulkEvent(product.id)
     }
 
     private fun displayDeleteConfirmationDialog(product: Product) {

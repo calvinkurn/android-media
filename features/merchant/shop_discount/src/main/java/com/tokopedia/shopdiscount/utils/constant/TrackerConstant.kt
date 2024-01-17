@@ -30,6 +30,7 @@ object TrackerConstant {
         const val CLICK_CTA_OPT_OUT_PARENT = "click cta keluar parent"
         const val CLICK_OPT_OUT_BULK = "click opt out bulk"
         const val CLICK_OPT_OUT_NON_BULK = "click opt out"
+        const val CLICK_OPT_OUT_VARIANT = "click opt out variant"
     }
 
     object EventCategory{
@@ -60,5 +61,6 @@ object TrackerConstant {
         const val TRACKER_ID_CLICK_CTA_OPT_OUT_PARENT = "49506"
         const val TRACKER_ID_CLICK_OPT_OUT_BULK = "49507"
         const val TRACKER_ID_CLICK_OPT_OUT_NON_BULK = "49508"
+        const val TRACKER_ID_CLICK_OPT_OUT_VARIANT = "49509"
     }
 }

@@ -164,6 +164,10 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
 
     }
 
+    private fun sendClickOptOutSubsidyTracker(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData) {
+        tracker.sendClickOptOutSubsidyVariantEvent(uiModel.productId)
+    }
+
     private fun observeDeleteProductDiscount() {
         viewModel.deleteProductDiscount.observe(viewLifecycleOwner, {
             hideLoading()
@@ -198,7 +202,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
     }
 
     private fun observeReserveProduct() {
-        viewModel.reserveProduct.observe(viewLifecycleOwner, {
+        viewModel.reserveProduct.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     if (!it.data.responseHeader.success) {
@@ -208,12 +212,13 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
                         redirectToManageDiscountPage(it.data)
                     }
                 }
+
                 is Fail -> {
                     val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
                     showToasterError(errorMessage)
                 }
             }
-        })
+        }
     }
 
     private fun redirectToManageDiscountPage(uiModel: ShopDiscountDetailReserveProductUiModel) {
@@ -537,6 +542,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
     }
 
     override fun onClickOptOutSubsidy(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData) {
+        sendClickOptOutSubsidyTracker(uiModel)
         getListProductSubsidy(
             listOf(uiModel),
             ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY
