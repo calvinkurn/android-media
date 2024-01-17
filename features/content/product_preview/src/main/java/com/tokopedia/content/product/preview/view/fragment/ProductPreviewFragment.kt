@@ -52,11 +52,8 @@ class ProductPreviewFragment @Inject constructor(
     private val router: Router
 ) : TkpdBaseV4Fragment() {
 
-    // TODO find other approach for child fragment to implement this
-    val viewModelProvider get() = viewModelFactory.create(EntrySource(productPreviewData))
-
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
-        viewModelProvider
+        viewModelFactory.create(EntrySource(productPreviewData))
     }
 
     private var _binding: FragmentProductPreviewBinding? = null

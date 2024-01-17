@@ -37,12 +37,7 @@ class ReviewFragment @Inject constructor(
     private val binding: FragmentReviewBinding
         get() = _binding!!
 
-    private val parentPage: ProductPreviewFragment
-        get() = (requireParentFragment() as ProductPreviewFragment)
-
-    private val viewModel by activityViewModels<ProductPreviewViewModel> {
-        parentPage.viewModelProvider
-    }
+    private val viewModel by activityViewModels<ProductPreviewViewModel>()
 
     private val reviewAdapter by lazyThreadSafetyNone {
         ReviewParentAdapter(this)

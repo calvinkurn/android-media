@@ -39,12 +39,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     private val binding: FragmentProductBinding
         get() = _binding!!
 
-    private val parentPage: ProductPreviewFragment
-        get() = (requireParentFragment() as ProductPreviewFragment)
-
-    private val viewModel by activityViewModels<ProductPreviewViewModel> {
-        parentPage.viewModelProvider
-    }
+    private val viewModel by activityViewModels<ProductPreviewViewModel>()
 
     private var snapHelperContent: PagerSnapHelper = PagerSnapHelper()
 
