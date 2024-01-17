@@ -41,9 +41,9 @@ data class GetMiniProductInfoResponse(
         @SerializedName("isActive")
         val isActive: Boolean = false,
         @SerializedName("discountPercentage")
-        val discountPercentage: Float = 0f,
+        val discountPercentage: Int = 0,
         @SerializedName("discountedPrice")
-        val discountedPrice: Float = 0f,
+        val discountedPrice: Double = 0.0,
     )
 
     data class Shop(

@@ -8,5 +8,5 @@ data class ContentUiModel(
     val contentId: String = "",
     val selected: Boolean = false,
     val type: MediaType = MediaType.Unknown,
-    val url: String = "",
-): Parcelable
+    val url: String = ""
+) : Parcelable

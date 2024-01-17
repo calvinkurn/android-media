@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentProductBinding
 import com.tokopedia.content.product.preview.utils.PRODUCT_CONTENT_VIDEO_KEY_REF
+import com.tokopedia.content.product.preview.utils.PRODUCT_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.adapter.product.ProductContentAdapter
 import com.tokopedia.content.product.preview.view.adapter.product.ProductIndicatorAdapter
 import com.tokopedia.content.product.preview.view.components.items.ProductIndicatorItemDecoration
@@ -24,6 +25,7 @@ import com.tokopedia.content.product.preview.view.listener.ProductIndicatorListe
 import com.tokopedia.content.product.preview.view.listener.ProductPreviewListener
 import com.tokopedia.content.product.preview.view.uimodel.ContentUiModel
 import com.tokopedia.content.product.preview.view.uimodel.MediaType
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.ProductSelected
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction
@@ -41,12 +43,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     private val binding: FragmentProductBinding
         get() = _binding!!
 
-    private val parentPage: ProductPreviewFragment
-        get() = (requireParentFragment() as ProductPreviewFragment)
-
-    private val viewModel by activityViewModels<ProductPreviewViewModel> {
-        parentPage.viewModelParentFactory
-    }
+    private val viewModel by activityViewModels<ProductPreviewViewModel>()
 
     private var snapHelperContent = PagerSnapHelper()
     private var mVideoPlayer: ProductPreviewExoPlayer? = null
@@ -96,7 +93,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
                 ProductIndicatorListener {
                 override fun onClickProductIndicator(position: Int) {
                     scrollTo(position)
-                    viewModel.submitAction(ProductPreviewUiAction.ProductSelected(position))
+                    viewModel.onAction(ProductSelected(position))
                 }
             }
         )
@@ -106,7 +103,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 val position = getContentCurrentPosition()
                 scrollTo(position)
-                viewModel.submitAction(ProductPreviewUiAction.ProductSelected(position))
+                viewModel.onAction(ProductSelected(position))
             }
         }
     }
@@ -114,7 +111,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     private var autoScrollFirstOpenContent = true
     private var autoScrollFirstOpenIndicator = true
 
-    override fun getScreenName() = TAG
+    override fun getScreenName() = PRODUCT_FRAGMENT_TAG
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -156,7 +153,7 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
 
     private fun setupObservers() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.productReviewUiState.withCache().collectLatest { (prevState, currState) ->
+            viewModel.productUiState.withCache().collectLatest { (prevState, currState) ->
                 renderContent(prevState?.productContent, currState.productContent)
                 renderIndicator(prevState?.productIndicator, currState.productIndicator)
             }
@@ -170,6 +167,9 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
         if (prev == state) return
 
         prepareVideoPlayerIfNeeded(state)
+
+        val position = state.indexOfFirst { it.selected }
+        if (position < 0) return
 
         productContentAdapter.submitList(state)
         if (autoScrollFirstOpenContent) {
@@ -185,8 +185,8 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     ) {
         if (prev == state) return
 
-        val selectedData = state.firstOrNull { it.selected }
-        val position = state.indexOf(selectedData)
+        val position = state.indexOfFirst { it.selected }
+        if (position < 0) return
 
         productIndicatorAdapter.submitList(state)
         if (autoScrollFirstOpenIndicator) {
@@ -258,14 +258,13 @@ class ProductFragment @Inject constructor() : TkpdBaseV4Fragment() {
     }
 
     companion object {
-        const val TAG = "ProductFragment"
-
         fun getOrCreate(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             bundle: Bundle
         ): ProductFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ProductFragment
+            val oldInstance =
+                fragmentManager.findFragmentByTag(PRODUCT_FRAGMENT_TAG) as? ProductFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 ProductFragment::class.java.name

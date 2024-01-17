@@ -10,6 +10,8 @@ import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.content.product.preview.databinding.ActivityProductPreviewBinding
 import com.tokopedia.content.product.preview.di.ProductPreviewInjector
+import com.tokopedia.content.product.preview.utils.PRODUCT_DATA
+import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.fragment.ProductPreviewFragment
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
 import javax.inject.Inject
@@ -49,9 +51,9 @@ class ProductPreviewActivity : BaseActivity() {
 
     private fun getData() {
         productPreviewData = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.extras?.getParcelable(PRODUCT_PREVIEW_DATA, ProductContentUiModel::class.java)
+            intent.extras?.getParcelable(PRODUCT_DATA, ProductContentUiModel::class.java)
         } else {
-            intent.extras?.getParcelable(PRODUCT_PREVIEW_DATA)
+            intent.extras?.getParcelable(PRODUCT_DATA)
         }
         productVideoLastDuration = intent.extras?.getLong(PRODUCT_VIDEO_LAST_DURATION, 0L)
     }
@@ -66,13 +68,13 @@ class ProductPreviewActivity : BaseActivity() {
     private fun openFragment() {
         supportFragmentManager.apply {
             executePendingTransactions()
-            val existingFragment = findFragmentByTag(ProductPreviewFragment.TAG)
+            val existingFragment = findFragmentByTag(PRODUCT_PREVIEW_FRAGMENT_TAG)
             if (existingFragment is ProductPreviewFragment && existingFragment.isVisible) return
             beginTransaction().apply {
                 replace(
                     binding.fragmentContainer.id,
                     getMediaPreviewFragment(),
-                    ProductPreviewFragment.TAG
+                    PRODUCT_PREVIEW_FRAGMENT_TAG
                 )
             }.commit()
         }
@@ -90,8 +92,6 @@ class ProductPreviewActivity : BaseActivity() {
     }
 
     companion object {
-
-        private const val PRODUCT_PREVIEW_DATA = "product_preview_data"
         private const val PRODUCT_VIDEO_LAST_DURATION = "product_video_last_duration"
 
         fun createIntent(
@@ -101,7 +101,7 @@ class ProductPreviewActivity : BaseActivity() {
         ): Intent {
             val intent = Intent(context, ProductPreviewActivity::class.java)
             val bundle = Bundle()
-            bundle.putParcelable(PRODUCT_PREVIEW_DATA, productContentData)
+            bundle.putParcelable(PRODUCT_DATA, productContentData)
             bundle.putLong(PRODUCT_VIDEO_LAST_DURATION, productVideoLastDuration)
             intent.putExtras(bundle)
             return intent

@@ -15,11 +15,7 @@ data class ReviewUiModel(
 data class MediaUiModel(
     val type: String,
     val url: String
-) {
-    enum class MediaType(val value: String) {
-        Image(""), Video("") // check response
-    }
-}
+)
 
 data class LikeUiState(
     val count: Int,

@@ -488,8 +488,7 @@ open class DynamicProductDetailFragment :
     @Inject
     lateinit var affiliateCookieHelper: dagger.Lazy<AffiliateCookieHelper>
 
-    @Inject
-    lateinit var productDetailMapper: ProductDetailMapper
+    private val productDetailMapper: ProductDetailMapper = ProductDetailMapper()
 
     private var sharedViewModel: ProductDetailSharedViewModel? = null
     private var screenshotDetector: ScreenshotDetector? = null

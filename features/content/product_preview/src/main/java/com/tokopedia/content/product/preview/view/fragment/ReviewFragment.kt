@@ -17,12 +17,13 @@ import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentReviewBinding
 import com.tokopedia.content.product.preview.utils.PAGE_SOURCE
 import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
+import com.tokopedia.content.product.preview.utils.REVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction.InitializeReviewMainData
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -36,12 +37,7 @@ class ReviewFragment @Inject constructor(
     private val binding: FragmentReviewBinding
         get() = _binding!!
 
-    private val parentPage: ProductPreviewFragment
-        get() = (requireParentFragment() as ProductPreviewFragment)
-
-    private val viewModel by activityViewModels<ProductPreviewViewModel> {
-        parentPage.viewModelParentFactory
-    }
+    private val viewModel by activityViewModels<ProductPreviewViewModel>()
 
     private val reviewAdapter by lazyThreadSafetyNone {
         ReviewParentAdapter(this)
@@ -49,9 +45,7 @@ class ReviewFragment @Inject constructor(
 
     private val snapHelper = PagerSnapHelper() // TODO: adjust pager snap helper
 
-    private var page: Int = 1
-
-    override fun getScreenName() = TAG
+    override fun getScreenName() = REVIEW_FRAGMENT_TAG
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -71,7 +65,7 @@ class ReviewFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
 
-        viewModel.submitAction(InitializeReviewMainData(page))
+        viewModel.onAction(ProductPreviewAction.FetchReview)
     }
 
     private fun setupView() {
@@ -81,11 +75,11 @@ class ReviewFragment @Inject constructor(
 
     private fun observeReview() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.productReviewUiState.flowWithLifecycle(
+            viewModel.review.flowWithLifecycle(
                 viewLifecycleOwner.lifecycle,
                 Lifecycle.State.RESUMED
             ).withCache().collectLatest { (prev, curr) ->
-                renderList(prev?.reviewContent, curr.reviewContent)
+                renderList(prev, curr)
             }
         }
     }
@@ -109,14 +103,12 @@ class ReviewFragment @Inject constructor(
     }
 
     companion object {
-        const val TAG = "ReviewFragment"
-
         fun getOrCreate(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             bundle: Bundle
         ): ReviewFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ReviewFragment
+            val oldInstance = fragmentManager.findFragmentByTag(REVIEW_FRAGMENT_TAG) as? ReviewFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 ReviewFragment::class.java.name
