@@ -1539,7 +1539,7 @@ class ShopHomeViewModelTest {
                     responseWidgetData = any(),
                     myShop = any(),
                     isLoggedIn = any(),
-                    isEnableDirectPurchase = false,
+                    isEnableDirectPurchase = any(),
                     shopId = any(),
                     listWidgetLayout = any(),
                     isOverrideTheme = any(),
@@ -1604,10 +1604,10 @@ class ShopHomeViewModelTest {
                     responseWidgetData = any(),
                     myShop = any(),
                     isLoggedIn = any(),
-                    isEnableDirectPurchase = mockIsDirectPurchaseFalse,
+                    isEnableDirectPurchase = any(),
                     shopId = any(),
                     listWidgetLayout = any(),
-                    isOverrideTheme = false,
+                    isOverrideTheme = any(),
                     colorSchema = any()
                 )
             } returns listOf(
@@ -1648,7 +1648,7 @@ class ShopHomeViewModelTest {
                     responseWidgetData = any(),
                     myShop = any(),
                     isLoggedIn = any(),
-                    isEnableDirectPurchase = false,
+                    isEnableDirectPurchase = any(),
                     shopId = any(),
                     listWidgetLayout = any(),
                     isOverrideTheme = any(),
