@@ -51,7 +51,7 @@
             android:id="@+id/article_link"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Waktunya buat iklan dengan TopAds untuk bantu perkembangan bisnis tokomu. Baca Artikel"
+            android:text="@string/topads_autops_onboarding_article_link"
             android:textAlignment="center"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintStart_toStartOf="parent"

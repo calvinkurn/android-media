@@ -69,10 +69,10 @@ class AutoPsViewModel @Inject constructor(
         launchCatchError(dispatcher.io, {
             getBudgetRecommendations()
             getTopAdsDeposit()
-            val statisticEstimatorJob = async { getStatisticsEstimator() }
-            statisticEstimatorJob.await()
             val budgetInfoJob = async { getBudgetInfo() }
             budgetInfoJob.await()
+            val statisticEstimatorJob = async { getStatisticsEstimator() }
+            statisticEstimatorJob.await()
             getAutoAds()
         }, {})
     }

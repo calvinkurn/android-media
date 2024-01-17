@@ -16,6 +16,7 @@ object TopAdsOnBoardingConstant {
     }
 
     const val ONBOARDING_IMG_URL = "https://images.tokopedia.net/img/android/topads/autops/autops_onboarding.png"
+    const val ONBOARDING_ARTICLE_LINK = "https://seller.tokopedia.com/edu/tambah-iklan-otomatis-topads/"
     const val ONBOARDING_FAQ_TITLE_1 = "Apa itu TopAds?"
     const val ONBOARDING_FAQ_TITLE_2 = "Apa saja jenis Iklan TopAds?"
     const val ONBOARDING_FAQ_TITLE_3 = "Apa perbedaan antara Iklan Otomatis dengan Iklan Manual?"

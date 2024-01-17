@@ -190,6 +190,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
                 headlineAdsViePager?.show()
                 headlineTabLayout?.show()
                 autoPsStatisticTable?.gone()
+                recommendationWidget?.show()
                 setupOnboarding()
             }
             else -> {
@@ -200,6 +201,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
                 headlineAdsViePager?.gone()
                 headlineTabLayout?.gone()
                 autoPsStatisticTable?.show()
+                recommendationWidget?.gone()
                 val resources = context?.resources
                 if(resources != null) {
                     presenter.getProductStats(

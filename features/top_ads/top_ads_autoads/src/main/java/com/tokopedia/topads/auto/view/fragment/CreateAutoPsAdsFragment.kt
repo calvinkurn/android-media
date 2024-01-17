@@ -28,13 +28,11 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.auto.data.TopadsAutoPsConstants
-import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.AUTO_PS_DAILY_BUDGET_DEFAULT_VALUE
 import com.tokopedia.topads.auto.R as topadsautoR
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
-import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.SEEKBAR_DEFAULT_INCREMENT
-import com.tokopedia.topads.auto.data.TopadsAutoPsConstants.TURNOFF_AUTO_PS_DIALOG_IMG_URL
 import com.tokopedia.topads.auto.databinding.TopadsAutoadsPsLayoutBinding
 import com.tokopedia.topads.auto.di.AutoAdsComponent
+import com.tokopedia.topads.auto.view.sheet.AutoPsFeedbackBottomSheet
 import com.tokopedia.topads.auto.view.viewmodel.AutoPsViewModel
 import com.tokopedia.topads.auto.view.widget.Range
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus
@@ -82,18 +80,18 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         binding = TopadsAutoadsPsLayoutBinding.inflate(inflater, container, false)
+        setViews()
+        setupObservers()
+        setupListeners()
         return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel?.loadData()
-        setViews()
         setupTooltip(view)
-        setupObservers()
-        setupListeners()
+        viewModel?.loadData()
     }
 
-    private fun setViews(){
+    private fun setViews() {
         binding?.autoAdsCta?.movementMethod = LinkMovementMethod.getInstance()
         binding?.autoAdsCta?.text = getClickableString()
     }
@@ -122,14 +120,13 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
     }
 
     private fun setupObservers() {
-        viewModel?.topAdsGetAutoAds?.observe(viewLifecycleOwner){
+        viewModel?.topAdsGetAutoAds?.observe(viewLifecycleOwner) {
             setAutoAds(it.data)
         }
 
         viewModel?.bidInfo?.observe(viewLifecycleOwner) {
             it.data.firstOrNull()?.let { dataItem ->
                 binding?.loading?.hide()
-                binding?.seekbar?.value = dataItem.minDailyBudget
                 binding?.rangeStart?.text = dataItem.minDailyBudgetFmt
                 binding?.rangeEnd?.text = dataItem.maxDailyBudgetFmt
                 minDailyBudget = dataItem.minDailyBudget
@@ -137,28 +134,29 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
                 binding?.seekbar?.range = Range(
                     dataItem.minDailyBudget,
                     dataItem.maxDailyBudget,
-                    SEEKBAR_DEFAULT_INCREMENT
+                    TopadsAutoPsConstants.SEEKBAR_DEFAULT_INCREMENT
                 )
             }
         }
 
         viewModel?.autoAdsData?.observe(viewLifecycleOwner) {
+            binding?.btnSubmit?.isLoading = false
             when (it) {
                 is Success -> postAutoPsSuccess()
                 is Fail -> it.throwable.message?.let { errorMessage ->
                     view?.showErrorAutoAds(errorMessage)
                 }
             }
-            binding?.btnSubmit?.isLoading = false
         }
     }
 
-    private fun setDefaultDailyBudget(){
-        if(autoPsToggleOn){
+    private fun setDefaultDailyBudget() {
+        if (autoPsToggleOn) {
             binding?.dailyBudget?.editText?.setText(currentDailyBudget.toInt().toString())
         } else {
-            binding?.dailyBudget?.editText?.setText(AUTO_PS_DAILY_BUDGET_DEFAULT_VALUE.toString())
+            binding?.dailyBudget?.editText?.setText(TopadsAutoPsConstants.AUTO_PS_DAILY_BUDGET_DEFAULT_VALUE.toString())
         }
+        setSeekbarChangeListener()
     }
 
     private fun setAutoAds(data: AutoAdsResponse.TopAdsGetAutoAds.Data) {
@@ -171,6 +169,7 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
                 autoPsToggleOn = false
                 setManualAdsWidget()
             }
+
             else -> {
                 binding?.autoAdsCard?.show()
                 binding?.btnSubmit?.text = getString(topadscommonR.string.topads_common_save_butt)
@@ -181,18 +180,32 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
         setDefaultDailyBudget()
     }
 
-    private fun setManualAdsWidget(){
+    private fun setManualAdsWidget() {
         activity?.intent?.extras?.let {
-            val feature = it.getString(com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_FEATURE)
+            val feature =
+                it.getString(com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_FEATURE)
             binding?.manualAdsCard?.showWithCondition(feature == com.tokopedia.topads.common.constant.TopAdsCommonConstant.ONBOARDING_PARAM)
         }
     }
 
     private fun postAutoPsSuccess() {
-        if(viewModel?.checkDeposits() == true){
-            moveToDashboard()
+        if (viewModel?.checkDeposits() == true) {
+            if (autoPsToggleOn) {
+                moveToDashboard()
+            } else {
+                showFeedbackform()
+            }
         } else {
             showInsufficientCredits()
+        }
+    }
+
+    private fun showFeedbackform() {
+        val feedbackForm = AutoPsFeedbackBottomSheet()
+        feedbackForm.overlayClickDismiss = false
+        feedbackForm.show(childFragmentManager)
+        feedbackForm.setOnDismissListener {
+            moveToDashboard()
         }
     }
 
@@ -200,8 +213,8 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
         val intent = RouteManager.getIntent(
             context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
         ).apply {
-            if(autoPsToggleOn){
-                if(binding?.btnSubmit?.text == getString(topadscommonR.string.topads_common_save_butt)){
+            if (autoPsToggleOn) {
+                if (binding?.btnSubmit?.text == getString(topadscommonR.string.topads_common_save_butt)) {
                     putExtra(
                         com.tokopedia.topads.common.constant.TopAdsCommonConstant.TOPADS_AUTOADS_BUDGET_UPDATED,
                         com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_AUTOADS_BUDGET
@@ -223,7 +236,7 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
         startActivity(intent)
     }
 
-    private fun showInsufficientCredits(){
+    private fun showInsufficientCredits() {
         val sheet = TopAdsOutofCreditSheet()
         sheet.overlayClickDismiss = false
         sheet.show(childFragmentManager)
@@ -234,16 +247,6 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
         binding?.manualAdsCta?.setOnClickListener(this)
         binding?.btnSubmit?.setOnClickListener(this)
         binding?.infoTextCta?.setOnClickListener(this)
-
-        binding?.seekbar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                updateDailyBudget(progress)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {}
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {}
-        })
 
         binding?.dailyBudget?.editText?.addTextChangedListener(object :
             NumberTextWatcher(binding?.dailyBudget?.editText!!) {
@@ -261,7 +264,7 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
                 }
                 binding?.dailyBudget?.editText?.selectionEnd
                 setSubmitCtaEnabled(errorMsg.isEmpty())
-                if (autoPsToggleOn && number == currentDailyBudget){
+                if (autoPsToggleOn && number == currentDailyBudget) {
                     setSubmitCtaEnabled(false)
                 }
             }
@@ -270,6 +273,18 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
 
     private fun updateDailyBudget(progress: Int) {
         binding?.dailyBudget?.editText?.setText(progress.toString())
+    }
+
+    private fun setSeekbarChangeListener(){
+        binding?.seekbar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                updateDailyBudget(progress)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+        })
     }
 
     private fun setSubmitCtaEnabled(isEnabled: Boolean) {
@@ -290,11 +305,11 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
         else String.EMPTY
     }
 
-    private fun getClickableString() : SpannableString {
+    private fun getClickableString(): SpannableString {
         val desc = getString(topadsautoR.string.topads_auto_ps_set_auto_ads_cta_desc)
         val ctaText = getString(topadsautoR.string.topads_auto_ps_set_auto_ads_cta)
         val ss = SpannableString("$desc $ctaText")
-        val cs = object : ClickableSpan(){
+        val cs = object : ClickableSpan() {
             override fun onClick(p0: View) {
                 showManualAdsConfirmationDailog()
             }
@@ -309,11 +324,16 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
             }
         }
 
-        ss.setSpan(cs, desc.length, desc.length + ctaText.length+1, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+        ss.setSpan(
+            cs,
+            desc.length,
+            desc.length + ctaText.length + 1,
+            SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
         return ss
     }
 
-    private fun showManualAdsConfirmationDailog(){
+    private fun showManualAdsConfirmationDailog() {
         if (confirmationDailog?.isShowing != true) {
             confirmationDailog =
                 DialogUnify(
@@ -329,7 +349,7 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
 
         confirmationDailog?.let {
             it.setTitle(title)
-            it.setImageUrl(TURNOFF_AUTO_PS_DIALOG_IMG_URL)
+            it.setImageUrl(TopadsAutoPsConstants.TURNOFF_AUTO_PS_DIALOG_IMG_URL)
             it.setDescription(description)
 
             it.setPrimaryCTAText(getString(topadsautoR.string.topads_auto_ps_dailog_submit_cta))
@@ -337,7 +357,8 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
 
             it.setPrimaryCTAClickListener {
                 binding?.dailyBudget?.editText?.let { editText ->
-                    viewModel?.postAutoPs(TopadsCommonUtil.convertMoneyToValue(editText.text.toString()),
+                    viewModel?.postAutoPs(
+                        TopadsCommonUtil.convertMoneyToValue(editText.text.toString()),
                         TopadsAutoPsConstants.AUTO_PS_TOGGLE_OFF
                     )
                     autoPsToggleOn = false
@@ -365,7 +386,8 @@ class CreateAutoPsAdsFragment : BaseDaggerFragment(), View.OnClickListener {
 
             binding?.btnSubmit?.id -> {
                 binding?.dailyBudget?.editText?.let {
-                    viewModel?.postAutoPs(TopadsCommonUtil.convertMoneyToValue(it.text.toString()),
+                    viewModel?.postAutoPs(
+                        TopadsCommonUtil.convertMoneyToValue(it.text.toString()),
                         TopadsAutoPsConstants.AUTO_PS_TOGGLE_ON
                     )
                     autoPsToggleOn = true

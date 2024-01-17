@@ -63,5 +63,14 @@
     <string name="autoads_selanjutnya">Selanjutnya</string>
     <string name="autoads_coba_iklan">Coba Iklan Otomatis</string>
     <string name="autoads_skip">"Skip</string>
+    <string name="autops_feedback_form_title">Sebelum menonaktifkan, bantu tingkatkan layanan Iklan Otomatis, yuk!</string>
+    <string name="autops_feedback_form_what_is_your_exp">Gimana pengalamanmu pakai Iklan Otomatis?</string>
+    <string name="autops_feedback_form_what_made_you_turn_off_autops">Apa yang membuatmu menonaktifkan Iklan Otomatis?</string>
+    <string name="autops_feedback_form_review_item_1">Saya tidak merasakan efek TopAds ke toko dan penjualan saya</string>
+    <string name="autops_feedback_form_review_item_2">Biaya iklan yang terlalu berat untuk toko saya</string>
+    <string name="autops_feedback_form_review_item_3">Penjualan toko sudah cukup tanpa menggunakan TopAds</string>
+    <string name="autops_feedback_form_review_item_4">Saya ingin melihat efek tanpa TopAds ke toko saya</string>
+    <string name="autops_feedback_form_review_item_5">Saya ingin beriklan dengan pengaturan saya sendiri</string>
+    <string name="autops_feedback_form_do_you_have_any_suggestions">Adakah saran atau kritik untuk Iklan Otomatis?</string>
 
 </resources>

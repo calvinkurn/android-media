@@ -218,6 +218,7 @@ class TopAdsDashboardActivity :
                             setMultiActionButtonEnabled(true)
                         }
                         IKLANKAN_PRODUK_TAB -> {
+                            txtBuatIklan.text = getString(R.string.topads_dash_buat_iklan)
                             removeBtn()
                             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(
                                 VIEW_IKLAN_PRODUK,

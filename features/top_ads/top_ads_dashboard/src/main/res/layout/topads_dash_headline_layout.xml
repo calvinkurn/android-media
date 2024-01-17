@@ -80,18 +80,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
-                        <com.tokopedia.topads.common.recommendation.RecommendationWidget
-                            android:id="@+id/insightCentreEntryPointHeadline"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginEnd="8dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintBottom_toTopOf="@+id/autoadsOnboarding"
-                            app:layout_constraintTop_toBottomOf="@+id/hari_ini"/>
-
                         <include
                             android:id="@+id/autoadsOnboarding"
                             layout="@layout/topads_dash_auto_ads_onboarding_widget"
@@ -102,8 +90,8 @@
                             android:layout_marginEnd="8dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintBottom_toTopOf="@+id/statistic_graph"
-                            app:layout_constraintTop_toBottomOf="@+id/insightCentreEntryPointHeadline" />
+                            app:layout_constraintBottom_toTopOf="@+id/insightCentreEntryPointHeadline"
+                            app:layout_constraintTop_toBottomOf="@+id/hari_ini" />
 
                         <include
                             android:id="@+id/autoadsDeactivationProgress"
@@ -112,8 +100,8 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="8dp"
                             android:visibility="gone"
-                            app:layout_constraintBottom_toTopOf="@id/statistic_graph"
-                            app:layout_constraintTop_toBottomOf="@id/hari_ini" />
+                            app:layout_constraintBottom_toTopOf="@+id/insightCentreEntryPointHeadline"
+                            app:layout_constraintTop_toBottomOf="@+id/hari_ini" />
 
                         <com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
                             android:id="@+id/autoads_edit_widget"
@@ -126,8 +114,20 @@
                             android:visibility="gone"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintBottom_toTopOf="@+id/insightCentreEntryPointHeadline"
+                            app:layout_constraintTop_toBottomOf="@+id/hari_ini" />
+
+                        <com.tokopedia.topads.common.recommendation.RecommendationWidget
+                            android:id="@+id/insightCentreEntryPointHeadline"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="8dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintBottom_toTopOf="@+id/statistic_graph"
-                            app:layout_constraintTop_toBottomOf="@+id/insightCentreEntryPointHeadline" />
+                            app:layout_constraintTop_toBottomOf="@+id/autoadsOnboarding"/>
 
                         <com.tokopedia.unifycomponents.CardUnify
                             android:id="@+id/statistic_graph"
@@ -135,7 +135,7 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="8dp"
                             android:padding="8dp"
-                            app:layout_constraintTop_toBottomOf="@id/autoadsOnboarding">
+                            app:layout_constraintTop_toBottomOf="@id/insightCentreEntryPointHeadline">
 
                             <LinearLayout
                                 android:id="@+id/topads_dashboard_content"

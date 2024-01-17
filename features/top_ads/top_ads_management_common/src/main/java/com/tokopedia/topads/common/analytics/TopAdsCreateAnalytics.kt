@@ -72,6 +72,25 @@ class TopAdsCreateAnalytics : BaseTrackerConst() {
         getTracker().sendGeneralEvent(map)
     }
 
+    fun sendTopAdsCustomEvent(
+        eventCategory: String,
+        eventAction: String,
+        eventLabel: String,
+        trackerId: String
+    ) {
+        val map = mapOf(
+            Event.KEY to CLICK_TOP_ADS,
+            Category.KEY to eventCategory,
+            Action.KEY to eventAction,
+            Label.KEY to eventLabel,
+            TrackerId.KEY to trackerId,
+            BusinessUnit.KEY to KEY_BUSINESS_UNIT,
+            CurrentSite.KEY to KEY_CURRENT_SITE,
+        )
+
+        getTracker().sendGeneralEvent(map)
+    }
+
     fun sendTopAdsEventEdit(eventAction: String, eventLabel: String, userId: String) {
         val map = mapOf(
                 Event.KEY to KEY_EVENT_VALUE_EDIT,
