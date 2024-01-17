@@ -24,16 +24,18 @@ class AutomateCouponListView @JvmOverloads constructor(
     private var binding = AutomateCouponListLayoutBinding
         .inflate(LayoutInflater.from(context), this)
 
-    override fun setModel(model: AutomateCouponModel) {
-        renderBackgroundImage(model.backgroundUrl)
-        renderDetails(model)
-        renderIcon(model.iconUrl)
-        renderExpiredDate(model.endDate, model.timeLimitPrefix)
-        renderBadge(model.badgeText)
+    override fun setModel(couponModel: AutomateCouponModel) {
+        (couponModel as? AutomateCouponModel.List)?.let { model ->
+            renderBackgroundImage(model.backgroundUrl)
+            renderDetails(model)
+            renderIcon(model.iconUrl)
+            renderExpiredDate(model.endDate, model.timeLimitPrefix)
+            renderBadge(model.badgeText)
+        }
     }
 
     //region private methods
-    private fun renderDetails(model: AutomateCouponModel) {
+    private fun renderDetails(model: AutomateCouponModel.List) {
         with(binding) {
             tvType.render(model.type)
             tvBenefit.render(model.benefit)

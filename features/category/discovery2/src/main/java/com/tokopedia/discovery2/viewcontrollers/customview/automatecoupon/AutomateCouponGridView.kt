@@ -24,16 +24,18 @@ class AutomateCouponGridView @JvmOverloads constructor(
     private var binding = AutomateCouponGridLayoutBinding
         .inflate(LayoutInflater.from(context), this)
 
-    override fun setModel(model: AutomateCouponModel) {
-        renderBackgroundImage(model.backgroundUrl)
-        renderDetails(model)
-        renderShopLogo(model.iconUrl)
-        renderBadge(model.badgeText)
-        renderShopInfo(model.iconUrl, model.shopName)
+    override fun setModel(couponModel: AutomateCouponModel) {
+        (couponModel as? AutomateCouponModel.Grid)?.let { model ->
+            renderBackgroundImage(model.backgroundUrl)
+            renderDetails(model)
+            renderShopLogo(model.iconUrl)
+            renderBadge(model.badgeText)
+            renderShopInfo(model.iconUrl, model.shopName)
+        }
     }
 
     //region private methods
-    private fun renderDetails(model: AutomateCouponModel) {
+    private fun renderDetails(model: AutomateCouponModel.Grid) {
         with(binding) {
             tvType.render(model.type)
             tvBenefit.render(model.benefit)
