@@ -27,6 +27,7 @@ object TrackerConstant {
         const val CLICK_CTA_OPT_OUT_VARIANT = "click cta keluar variant"
         const val CLICK_CLOSE_BOTTOM_SHEET = "click close bottomsheet"
         const val CLICK_CTA = "click cta"
+        const val CLICK_CTA_OPT_OUT_PARENT = "click cta keluar parent"
     }
 
     object EventCategory{
@@ -54,5 +55,6 @@ object TrackerConstant {
         const val TRACKER_ID_CLICK_OPT_OUT_VARIANT = "49499"
         const val TRACKER_ID_CLICK_CLOSE_BOTTOM_SHEET_OPT_OUT_REASON = "49500"
         const val TRACKER_ID_CLICK_SUBMIT_OPT_OUT_REASON = "49501"
+        const val TRACKER_ID_CLICK_OPT_OUT_PARENT = "49506"
     }
 }

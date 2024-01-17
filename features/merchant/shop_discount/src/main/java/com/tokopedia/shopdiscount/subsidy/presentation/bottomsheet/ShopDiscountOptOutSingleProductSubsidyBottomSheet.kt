@@ -99,7 +99,16 @@ class ShopDiscountOptOutSingleProductSubsidyBottomSheet : BottomSheetUnify() {
         buttonOptOutSubsidy?.setOnClickListener {
             addCurrentProductDetailDataToOptOutList()
             showBottomSheetOptOutReason()
+            sendClickOptOutSingleProductSubsidyTracker()
         }
+    }
+
+    private fun sendClickOptOutSingleProductSubsidyTracker() {
+        tracker.sendClickOptOutSingleProductSubsidyEvent(
+            data.entrySource.value,
+            buttonOptOutSubsidy?.text.toString(),
+            data.selectedProductToOptOut.firstOrNull()?.productId.orEmpty()
+        )
     }
 
     private fun addCurrentProductDetailDataToOptOutList() {
