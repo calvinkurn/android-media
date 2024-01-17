@@ -3,8 +3,6 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -15,10 +13,11 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.Companion.ERROR_PINPOINT_NEEDED
 import com.tokopedia.logisticcart.databinding.ItemDurationBinding
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
+import com.tokopedia.logisticcart.utils.ShippingViewUtils
+import com.tokopedia.logisticcart.utils.ShippingViewUtils.errorPinpoint
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil.setTextAndContentDescription
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -51,7 +50,8 @@ class ShippingDurationViewHolder(
 
             // error message
             if (shippingDurationUiModel.errorMessage?.isNotEmpty() == true) {
-                tvError.text = shippingDurationUiModel.constructErrorUi()
+                val error = shippingDurationUiModel.serviceData.error
+                tvError.text = ShippingViewUtils.constructErrorUi(binding.root.context, error.errorMessage, error.errorId)
                 tvError.visibility = View.VISIBLE
             } else {
                 tvError.visibility = View.GONE
@@ -167,7 +167,7 @@ class ShippingDurationViewHolder(
                     shippingDurationUiModel.serviceData.serviceName,
                     tvDurationOrPrice.context.getString(logisticcartR.string.content_desc_tv_duration)
                 )
-                if (shippingDurationUiModel.serviceData.error.errorId != ERROR_PINPOINT_NEEDED) {
+                if (!shippingDurationUiModel.serviceData.error.errorId.errorPinpoint) {
                     tvPriceOrDuration.text = shippingDurationUiModel.serviceData.texts.textRangePrice
                 } else {
                     tvPriceOrDuration.gone()
@@ -218,68 +218,6 @@ class ShippingDurationViewHolder(
         showCaseCoachmark = CoachMark2(binding.root.context)
         showCaseCoachmark?.showCoachMark(list, null)
     }
-
-    fun ShippingDurationUiModel.constructErrorUi(): CharSequence? {
-        this.errorMessage?.takeIf { it.isNotEmpty() }?.let { errorMessage ->
-            val action = this.errorAction
-            val wording = "$errorMessage $action".trim()
-            val result = SpannableString(wording).apply {
-                setErrorMessageSpan(errorMessage)
-                setActionErrorSpan(action, errorMessage, wording)
-            }
-            return result
-        }
-        return null
-    }
-
-    fun SpannableString.setErrorMessageSpan(errorMessage: String) {
-        setSpan(
-            ForegroundColorSpan(
-                MethodChecker.getColor(
-                    binding.root.context,
-                    unifyprinciplesR.color.Unify_RN500
-                )
-            ),
-            0,
-            errorMessage.length,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-    }
-
-    fun SpannableString.setActionErrorSpan(
-        action: String,
-        errorMessage: String,
-        fullWording: String
-    ) {
-        if (action.isNotEmpty()) {
-            setSpan(
-                StyleSpan(Typeface.BOLD),
-                fullWording.indexOf(action, errorMessage.length),
-                fullWording.length,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            setSpan(
-                ForegroundColorSpan(
-                    MethodChecker.getColor(
-                        binding.root.context,
-                        unifyprinciplesR.color.Unify_GN500
-                    )
-                ),
-                fullWording.indexOf(action, errorMessage.length),
-                fullWording.length,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-        }
-    }
-
-    val ShippingDurationUiModel.errorAction: String
-        get() {
-            return if (this.errorPinpoint) binding.root.context.getString(logisticcartR.string.service_error_pinpoint_action) else ""
-        }
-    val ShippingDurationUiModel.errorPinpoint: Boolean
-        get() {
-            return serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
-        }
 
     private val ShippingDurationUiModel.disabled: Boolean
         get() {
