@@ -105,7 +105,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
                 if (result) _uiEvent.emit(ProductPreviewEvent.ShowSuccessToaster(type = ProductPreviewEvent.ShowSuccessToaster.Type.ATC, message = ProductPreviewEvent.ShowSuccessToaster.Type.ATC.textRes)) else throw MessageErrorException()
             }
             ) {
-                _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it) { addToCart(model) })
+                _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it, ProductPreviewEvent.ShowErrorToaster.Type.ATC) { addToCart(model) })
             }
         }
     }
@@ -196,7 +196,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
             val result = repo.submitReport(model, currentReview.reviewId)
             if (result) _uiEvent.emit(ProductPreviewEvent.ShowSuccessToaster(type = ProductPreviewEvent.ShowSuccessToaster.Type.Report)) else throw MessageErrorException()
         }) {
-            _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it) {
+            _uiEvent.emit(ProductPreviewEvent.ShowErrorToaster(it, ProductPreviewEvent.ShowErrorToaster.Type.ATC) {
                 submitReport(model)
             })
         }

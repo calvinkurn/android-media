@@ -29,6 +29,7 @@ import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
 import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
+import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.product.detail.common.AtcVariantHelper
@@ -188,7 +189,7 @@ class ProductPreviewFragment @Inject constructor(
                     is ProductPreviewEvent.ShowErrorToaster -> {
                         Toaster.build(
                             requireView().rootView,
-                            text = getString(R.string.bottom_atc_failed_toaster),
+                            text = event.message.message.ifNull { getString(event.type.textRes) },
                             actionText = getString(R.string.bottom_atc_failed_click_toaster),
                             duration = Toaster.LENGTH_LONG,
                             clickListener = {
