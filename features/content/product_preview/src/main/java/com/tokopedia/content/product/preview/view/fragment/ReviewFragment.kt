@@ -126,11 +126,7 @@ class ReviewFragment @Inject constructor(
         setupView()
         observeReview()
         observeEvent()
-    }
 
-    override fun onResume() {
-        super.onResume()
-        //TODO: need to check
         viewModel.onAction(ProductPreviewAction.FetchReview(isRefresh = true))
     }
 
