@@ -56,7 +56,7 @@ class ProductPreviewActivity : BaseActivity() {
         } else {
             intent.extras?.getParcelable(PRODUCT_DATA)
         }
-        productVideoLastDuration = intent.extras?.getLong(PRODUCT_VIDEO_LAST_DURATION, 0L)
+        productVideoLastDuration = intent.extras?.getLong(PRODUCT_LAST_VIDEO_DURATION, 0L)
     }
 
     private fun setupViews() {
@@ -93,8 +93,6 @@ class ProductPreviewActivity : BaseActivity() {
     }
 
     companion object {
-        private const val PRODUCT_VIDEO_LAST_DURATION = "product_video_last_duration"
-
         fun createIntent(
             context: Context,
             productContentData: ProductContentUiModel,
@@ -103,7 +101,7 @@ class ProductPreviewActivity : BaseActivity() {
             val intent = Intent(context, ProductPreviewActivity::class.java)
             val bundle = Bundle()
             bundle.putParcelable(PRODUCT_DATA, productContentData)
-            bundle.putLong(PRODUCT_VIDEO_LAST_DURATION, productVideoLastDuration)
+            bundle.putLong(PRODUCT_LAST_VIDEO_DURATION, productVideoLastDuration)
             intent.putExtras(bundle)
             return intent
         }
