@@ -55,7 +55,7 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
                         ),
                         listOf(
                             mapOf(
-                                "sourcesRequestType" to "cdp-pagename",
+                                "sourcesRequestType" to FEEDXHEADER_CATEGORY_INSPIRATION_PAGENAME,
                                 "sourcesRequestID" to source
                             )
                         )
@@ -106,5 +106,9 @@ internal class FeedBrowseRepositoryImpl @Inject constructor(
         )
 
         mapper.mapWidgetResponse(response)
+    }
+
+    companion object {
+        private const val FEEDXHEADER_CATEGORY_INSPIRATION_PAGENAME = "cdp-pagename"
     }
 }
