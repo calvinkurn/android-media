@@ -204,8 +204,21 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
                 }
             }
             ShopDiscountManageDiscountMode.OPT_OUT_SUBSIDY -> {
+                sendClickOptOutSubsidyTracker(data)
                 showBottomSheetOptOutReason(data)
             }
+        }
+    }
+
+    private fun sendClickOptOutSubsidyTracker(data: ShopDiscountManageProductSubsidyUiModel) {
+        val totalSelectedProduct = viewModel.getSelectedProducts().size
+        val listProductIdSubsidy = data.listProductDetailData.filter { it.isSubsidy }.map {
+            it.productId
+        }
+        if (viewModel.isOnMultiSelectMode()) {
+            tracker.sendClickOptOutSubsidyBulkEvent(totalSelectedProduct, listProductIdSubsidy)
+        } else {
+            tracker.sendClickOptOutSubsidyNonBulkEvent(listProductIdSubsidy)
         }
     }
 
