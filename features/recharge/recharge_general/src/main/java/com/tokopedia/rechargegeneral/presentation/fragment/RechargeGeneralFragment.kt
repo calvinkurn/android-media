@@ -14,6 +14,13 @@ import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -71,6 +78,9 @@ import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.nest.components.ButtonSize
+import com.tokopedia.nest.components.ButtonVariant
+import com.tokopedia.nest.components.NestButton
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
@@ -187,6 +197,22 @@ class RechargeGeneralFragment :
     private var enquiryData: TopupBillsEnquiry? = null
 
     private lateinit var checkoutBottomSheet: BottomSheetUnify
+
+    private var isEnableButtonEnquiry : MutableState<Boolean> = mutableStateOf(false)
+    private var titleButtonEnquiry: MutableState<String> = mutableStateOf(context?.resources?.getString(R.string.enquiry_label) ?: "")
+    private var actionButtonEnquiry: MutableState<(() -> Unit)> = mutableStateOf({})
+    private var isLoadingButtonEnquiry: MutableState<Boolean> = mutableStateOf(false)
+    private var visibilityButtonEnquiry: MutableState<Boolean> = mutableStateOf(false)
+    private var variantButtonEnquiry: MutableState<ButtonVariant> = mutableStateOf(ButtonVariant.GHOST)
+    private var viewEnquiry: View? = null
+
+    private var isEnableButtonSecondary : MutableState<Boolean> = mutableStateOf(false)
+    private var titleButtonSecondary: MutableState<String> = mutableStateOf(context?.resources?.getString(R.string.enquiry_label) ?: "")
+    private var actionButtonSecondary: MutableState<(() -> Unit)> = mutableStateOf({})
+    private var isLoadingButtonSecondary: MutableState<Boolean> = mutableStateOf(false)
+    private var visibilityButtonSecondary: MutableState<Boolean> = mutableStateOf(false)
+    private var variantButtonSecondary: MutableState<ButtonVariant> = mutableStateOf(ButtonVariant.GHOST)
+    private var viewSecondary: View? = null
 
     override fun onUpdateMultiCheckout() {
         //do nothing
@@ -377,8 +403,44 @@ class RechargeGeneralFragment :
                     }
                 }
             })
-            rechargeGeneralEnquiryButton.isEnabled = false
-            rechargeGeneralSecondaryButton.isEnabled = false
+            isEnableButtonEnquiry.value = false
+            isEnableButtonSecondary.value = false
+
+            rechargeGeneralEnquiryButtonCompose.apply {
+                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                setContent {
+                    viewEnquiry = LocalView.current
+                    if (visibilityButtonEnquiry.value) {
+                        NestButton(
+                            text = titleButtonEnquiry.value,
+                            onClick = actionButtonEnquiry.value,
+                            variant = variantButtonEnquiry.value,
+                            size = ButtonSize.MEDIUM,
+                            isEnabled = isEnableButtonEnquiry.value,
+                            isClickable = isEnableButtonEnquiry.value,
+                            isLoading = isLoadingButtonEnquiry.value,
+                        )
+                    }
+                }
+            }
+
+            rechargeGeneralSecondaryButtonCompose.apply {
+                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                setContent {
+                    viewSecondary = LocalView.current
+                    if (visibilityButtonSecondary.value) {
+                        NestButton(
+                            text = titleButtonSecondary.value,
+                            onClick = actionButtonSecondary.value,
+                            variant = variantButtonSecondary.value,
+                            size = ButtonSize.MEDIUM,
+                            isEnabled = isEnableButtonSecondary.value,
+                            isClickable = isEnableButtonSecondary.value,
+                            isLoading = isLoadingButtonSecondary.value,
+                        )
+                    }
+                }
+            }
 
             rechargeGeneralSwipeRefreshLayout.setOnRefreshListener {
                 rechargeGeneralSwipeRefreshLayout.isRefreshing = true
@@ -389,6 +451,12 @@ class RechargeGeneralFragment :
         }
 
         viewModel.getDppoConsent(categoryId)
+    }
+
+
+    @Composable
+    private fun EnquiryButton() {
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -957,8 +1025,8 @@ class RechargeGeneralFragment :
         binding?.run {
             operatorClusterSelect.hide()
             operatorSelect.hide()
-            rechargeGeneralEnquiryButton.hide()
-            rechargeGeneralSecondaryButton.hide()
+            visibilityButtonEnquiry.value = false
+            visibilityButtonSecondary.value = false
         }
     }
 
@@ -971,7 +1039,7 @@ class RechargeGeneralFragment :
 
     override fun loadData() {
         binding?.run {
-            rechargeGeneralEnquiryButton.show()
+            visibilityButtonEnquiry.value = true
             loadingView.show()
         }
         getMenuDetail(menuId)
@@ -1011,7 +1079,7 @@ class RechargeGeneralFragment :
     }
 
     override fun onTextChangeInput() {
-        binding?.rechargeGeneralEnquiryButton?.isEnabled = false
+        isEnableButtonEnquiry.value = false
     }
 
     override fun onCustomInputClick(
@@ -1039,9 +1107,9 @@ class RechargeGeneralFragment :
 
     private fun toggleEnquiryButton() {
         binding?.run {
-            rechargeGeneralEnquiryButton.isEnabled = validateEnquiry()
-            rechargeGeneralSecondaryButton.isEnabled = validateEnquiry()
-            if (enquiryLabel.isNotEmpty()) rechargeGeneralEnquiryButton.text = enquiryLabel
+            isEnableButtonEnquiry.value = validateEnquiry()
+            isEnableButtonSecondary.value = validateEnquiry()
+            if (enquiryLabel.isNotEmpty()) titleButtonEnquiry.value = enquiryLabel
         }
     }
 
@@ -1058,12 +1126,11 @@ class RechargeGeneralFragment :
 
             binding?.apply {
                 if (multiCheckoutButtons.items.size > Int.ONE) {
-                    processMultipleButton(multiCheckoutButtons, rechargeGeneralEnquiryButton,
-                        rechargeGeneralSecondaryButton, coachMarkList)
+                    processMultipleButton(multiCheckoutButtons, coachMarkList)
                 } else if (multiCheckoutButtons.items.size == Int.ONE) {
-                    processOneButton(multiCheckoutButtons, rechargeGeneralEnquiryButton, coachMarkList)
+                    processOneButton(multiCheckoutButtons, coachMarkList)
                 } else {
-                    rechargeGeneralEnquiryButton.setOnClickListener {
+                    actionButtonEnquiry.value = {
                         enquire()
                     }
                 }
@@ -1073,76 +1140,79 @@ class RechargeGeneralFragment :
         }
     }
 
-    private fun processMultipleButton(multiCheckoutButtons: RechargeGeneralDynamicField,
-                                      rechargeGeneralEnquiryButton: UnifyButton, rechargeGeneralSecondaryButton: UnifyButton,
-                                      coachMarkList: ArrayList<CoachMark2Item>) {
+    private fun processMultipleButton(multiCheckoutButtons: RechargeGeneralDynamicField, coachMarkList: ArrayList<CoachMark2Item>) {
         val (leftButton, rightButton) = multiCheckoutButtonSeparator(
             multiCheckoutButtons.items
         )
-        processLeftButton(leftButton, rechargeGeneralSecondaryButton, coachMarkList)
-        processRightButton(rightButton, rechargeGeneralEnquiryButton, coachMarkList)
+        processLeftButton(leftButton, coachMarkList)
+        processRightButton(rightButton, coachMarkList)
     }
 
     private fun processRightButton(rightButton: RechargeGeneralDynamicField.Item,
-                                   rechargeGeneralEnquiryButton: UnifyButton,
                                    coachMarkList: ArrayList<CoachMark2Item>) {
         if (rightButton.text.isNotEmpty() && rightButton.color.isNotEmpty() && rightButton.style.isNotEmpty()) {
-            rechargeGeneralEnquiryButton.text = rightButton.text
-            rechargeGeneralEnquiryButton.buttonVariant =
+            visibilityButtonEnquiry.value = true
+            titleButtonEnquiry.value = rightButton.text
+            variantButtonEnquiry.value =
                 variantButton(rightButton.color)
-            rechargeGeneralEnquiryButton.setOnClickListener {
+            actionButtonEnquiry.value = {
                 chooseListenerAction(rightButton.style)
             }
 
-            if (rightButton.coachmark.isNotEmpty()) {
-                coachMarkList.add(
-                    CoachMark2Item(
-                        rechargeGeneralEnquiryButton, "", rightButton.coachmark
+            viewEnquiry?.let { viewEnquiry ->
+                if (rightButton.coachmark.isNotEmpty()) {
+                    coachMarkList.add(
+                        CoachMark2Item(
+                            viewEnquiry, "", rightButton.coachmark
+                        )
                     )
-                )
+                }
             }
         }
     }
 
     private fun processLeftButton(leftButton: RechargeGeneralDynamicField.Item,
-                                  rechargeGeneralSecondaryButton: UnifyButton,
                                   coachMarkList: ArrayList<CoachMark2Item>) {
         if (leftButton.text.isNotEmpty() && leftButton.color.isNotEmpty() && leftButton.style.isNotEmpty()) {
-            rechargeGeneralSecondaryButton.show()
-            rechargeGeneralSecondaryButton.text = leftButton.text
-            rechargeGeneralSecondaryButton.buttonVariant =
+            visibilityButtonSecondary.value = true
+            titleButtonSecondary.value = leftButton.text
+            variantButtonSecondary.value =
                 variantButton(leftButton.color)
-            rechargeGeneralSecondaryButton.setOnClickListener {
+            actionButtonSecondary.value = {
                 chooseListenerAction(leftButton.style)
             }
 
-            if (leftButton.coachmark.isNotEmpty()) {
-                coachMarkList.add(
-                    CoachMark2Item(
-                        rechargeGeneralSecondaryButton, "", leftButton.coachmark
+            viewSecondary?.let { viewSecondary ->
+                if (leftButton.coachmark.isNotEmpty()) {
+                    coachMarkList.add(
+                        CoachMark2Item(
+                            viewSecondary, "", leftButton.coachmark
+                        )
                     )
-                )
+                }
             }
         } else {
-            rechargeGeneralSecondaryButton.hide()
+            visibilityButtonSecondary.value = false
         }
     }
 
     private fun processOneButton(multiCheckoutButtons: RechargeGeneralDynamicField,
-                                 rechargeGeneralEnquiryButton: UnifyButton, coachMarkList: ArrayList<CoachMark2Item>) {
+                                 coachMarkList: ArrayList<CoachMark2Item>) {
         val button = multiCheckoutButtons.items.first()
-        rechargeGeneralEnquiryButton.text = button.text
-        rechargeGeneralEnquiryButton.buttonVariant = variantButton(button.color)
-        rechargeGeneralEnquiryButton.setOnClickListener {
+        titleButtonEnquiry.value = button.text
+        variantButtonEnquiry.value = variantButton(button.color)
+        actionButtonEnquiry.value = {
             chooseListenerAction(button.style)
         }
 
-        if (button.coachmark.isNotEmpty()) {
-            coachMarkList.add(
-                CoachMark2Item(
-                    rechargeGeneralEnquiryButton, "", button.coachmark
+        viewEnquiry?.let { viewEnquiry ->
+            if (button.coachmark.isNotEmpty()) {
+                coachMarkList.add(
+                    CoachMark2Item(
+                        viewEnquiry, "", button.coachmark
+                    )
                 )
-            )
+            }
         }
     }
     private fun updateCoachMark(localCacheHandler: LocalCacheHandler,
@@ -1192,19 +1262,19 @@ class RechargeGeneralFragment :
             enquire()
         }
     }
-    private fun variantButton(color: String): Int {
+    private fun variantButton(color: String): ButtonVariant {
         return if (color.equals(WHITE_COLOR)) {
-            UnifyButton.Variant.GHOST
+            ButtonVariant.GHOST
         } else {
-            UnifyButton.Variant.FILLED
+            ButtonVariant.FILLED
         }
     }
 
     private fun setEnquiryButtonLabel(label: String) {
         if (label.isNotEmpty()) {
             enquiryLabel = label
-            binding?.rechargeGeneralEnquiryButton?.text = enquiryLabel
-            binding?.rechargeGeneralEnquiryButton?.setOnClickListener {
+            titleButtonEnquiry.value = enquiryLabel
+            actionButtonEnquiry.value = {
                 enquire()
             }
         }
@@ -1269,8 +1339,8 @@ class RechargeGeneralFragment :
     }
 
     override fun onLoadingAtc(showLoading: Boolean) {
-        binding?.rechargeGeneralEnquiryButton?.isLoading = showLoading
-        binding?.rechargeGeneralSecondaryButton?.isLoading = showLoading
+        isLoadingButtonEnquiry.value = showLoading
+        isLoadingButtonSecondary.value = showLoading
     }
 
     override fun processFavoriteNumbers(data: List<TopupBillsSearchNumberDataModel>) {
