@@ -48,7 +48,7 @@ class BuyerReviewViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.widget_buyer_review
         private const val MAX_LINE = 3
-        private const val MAX_LINE_WITHOUT_IMAGES = 7
+        private const val MAX_LINE_WITHOUT_IMAGES = 8
     }
 
     private val binding: WidgetBuyerReviewBinding? by viewBinding()
@@ -120,10 +120,8 @@ class BuyerReviewViewHolder(
             carouselItem.totalCompleteReview?.let { total ->
                 if (total.isMoreThanZero()) {
                     totalReview?.text = "$total ulasan lengkap"
-                    totalReview?.visibility = View.VISIBLE
                     isTotalCompleteReviewEmpty = false
                 } else {
-                    totalReview?.visibility = View.GONE
                     separatorTotalReview?.visibility = View.GONE
                     isTotalCompleteReviewEmpty = true
                 }
