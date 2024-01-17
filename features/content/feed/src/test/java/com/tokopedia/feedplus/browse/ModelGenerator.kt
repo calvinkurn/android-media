@@ -28,6 +28,7 @@ internal class ModelGenerator {
     val authorModel = indexGenerator.map {
         AuthorWidgetModel(
             id = it.toString(),
+            contentId = it.toString(),
             name = "Author widget $it",
             avatarUrl = "Avatar $it",
             coverUrl = "Cover $it",
