@@ -274,7 +274,11 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope, CarouselProductC
                 isReimagine,
             )
         else
-            productCardModelList.getMaxHeightForListView(context, Dispatchers.Default)
+            productCardModelList.getMaxHeightForListView(
+                context,
+                Dispatchers.Default,
+                isReimagine,
+            )
 
     private fun productCardGridCarouselWidth() =
         context.resources.getDimensionPixelSize(productcardR.dimen.carousel_product_card_grid_width)

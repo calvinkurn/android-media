@@ -7,6 +7,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.productcard.reimagine.getMaxHeightForGridCarouselView
+import com.tokopedia.productcard.reimagine.getMaxHeightForListCarouselView
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.coroutines.CoroutineDispatcher
@@ -105,28 +106,47 @@ private fun getTextCategoryBottomHeight(context: Context, hasLabelBestSeller: Bo
     else 0
 }
 
-suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, coroutineDispatcher: CoroutineDispatcher): Int {
+suspend fun List<ProductCardModel>?.getMaxHeightForListView(
+    context: Context?,
+    coroutineDispatcher: CoroutineDispatcher,
+    isReimagine: Boolean = false,
+): Int {
     if (this == null || context == null) return 0
 
+    return if (isReimagine && ProductCardExperiment.isReimagine())
+        map(ProductCardModelReimagine::from).getMaxHeightForListCarouselView(context)
+    else
+        nonReimagineListViewHeight(context, coroutineDispatcher)
+}
+
+private suspend fun List<ProductCardModel>.nonReimagineListViewHeight(
+    context: Context,
+    coroutineDispatcher: CoroutineDispatcher,
+): Int {
     return withContext(coroutineDispatcher) {
         val productCardHeightList = mutableListOf<Int>()
         forEach { productCardModel ->
-            val cardPaddingTop = context.resources.getDimensionPixelSize(R.dimen.product_card_padding_top)
-            val cardPaddingBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_padding_bottom)
+            val cardPaddingTop =
+                context.resources.getDimensionPixelSize(R.dimen.product_card_padding_top)
+            val cardPaddingBottom =
+                context.resources.getDimensionPixelSize(R.dimen.product_card_padding_bottom)
 
             val hasLabelBestSeller = productCardModel.isShowLabelBestSeller()
             val bestSellerLabelHeight = getLabelBestSellerHeight(context, hasLabelBestSeller)
 
             val hasLabelCategoryBottom = productCardModel.isShowLabelCategoryBottom()
-            val categoryBottomLabelHeight = getTextCategoryBottomHeight(context, hasLabelCategoryBottom)
+            val categoryBottomLabelHeight =
+                getTextCategoryBottomHeight(context, hasLabelCategoryBottom)
 
             val hasLabelCampaign = productCardModel.isShowLabelCampaign()
             val campaignLabelHeight = getLabelCampaignHeight(context, hasLabelCampaign)
 
             val contentMarginTop = getListViewContentMarginTop(context, hasLabelCampaign)
-            val imageSize = context.resources.getDimensionPixelSize(R.dimen.product_card_list_image_size)
+            val imageSize =
+                context.resources.getDimensionPixelSize(R.dimen.product_card_list_image_size)
             val contentHeight = productCardModel.getContentHeightList(context)
-            val buttonDeleteProductSectionHeight = productCardModel.getButtonDeleteProductSectionHeight(context)
+            val buttonDeleteProductSectionHeight =
+                productCardModel.getButtonDeleteProductSectionHeight(context)
             val commonFooterHeight = productCardModel.getCommonFooterHeight(context)
 
             val totalHeight = cardPaddingTop +

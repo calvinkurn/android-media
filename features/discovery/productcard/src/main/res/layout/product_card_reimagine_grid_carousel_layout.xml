@@ -343,7 +343,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productCardLabelOffer"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/product_card_reimagine_label_benefit_height"
+                android:layout_height="@dimen/product_card_reimagine_label_offer_height"
                 android:layout_marginTop="@dimen/product_card_reimagine_label_offer_margin_top"
                 android:background="@drawable/product_card_reimagine_label_background"
                 android:ellipsize="end"

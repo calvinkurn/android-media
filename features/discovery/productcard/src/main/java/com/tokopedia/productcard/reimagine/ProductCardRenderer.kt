@@ -1,7 +1,6 @@
 package com.tokopedia.productcard.reimagine
 
 import android.graphics.PorterDuff
-import android.graphics.drawable.GradientDrawable
 import android.text.Spannable
 import android.text.SpannableString
 import android.view.View
@@ -283,8 +282,8 @@ internal class ProductCardRenderer(
             offerLabel.hide()
         } else {
             val hasLabelBenefit = productCardModel.labelBenefit() != null
-            val isNotCarousel = type != ProductCardType.GridCarousel && type != ProductCardType.ListCarousel
-            val showLabelProductOffer = !hasLabelBenefit || isNotCarousel
+            val isCarousel = type == ProductCardType.GridCarousel || type == ProductCardType.ListCarousel
+            val showLabelProductOffer = !hasLabelBenefit || !isCarousel
 
             offerLabel.shouldShowWithAction(showLabelProductOffer) {
                 ProductCardLabel(it.background, it).render(labelProductOffer)
