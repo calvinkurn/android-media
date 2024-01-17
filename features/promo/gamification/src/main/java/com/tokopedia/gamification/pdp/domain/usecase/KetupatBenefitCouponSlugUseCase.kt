@@ -16,8 +16,8 @@ class KetupatBenefitCouponSlugUseCase @Inject constructor(
     private fun createRequestParams(): Map<String, Any> {
         return mapOf<String, Any>(
             INPUT to BenefitCouponSlugRequest(
-                serviceID = "marketplace",
-                categoryIDCoupon = 1,
+                serviceID = "",
+                categoryIDCoupon = -1,
                 categoryID = 0,
                 limit = 10,
                 page = 1,
@@ -25,7 +25,8 @@ class KetupatBenefitCouponSlugUseCase @Inject constructor(
                 source = "discovery-page",
                 isGetPromoInfo = true,
                 apiVersion = "2.0.0",
-                catalogSlugs = arrayListOf("KETUPATDONG", "KETUPATDONG2")
+                catalogSlugs = arrayListOf("DC200STG", "DC300STG", "DC300STG"),
+                clientID = "disco"
             )
         )
     }

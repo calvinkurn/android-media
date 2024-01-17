@@ -67,9 +67,7 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
         ketupatRV?.layoutManager = layoutManager
         ketupatRV?.adapter = adapter
 
-        ketupatLandingViewModel?.getTokopointsCouponList()
-        ketupatLandingViewModel?.getTokopointsCouponListStack()
-        ketupatLandingViewModel?.getScratchCardsLandingInfo("ketupat-thr-2024")
+        ketupatLandingViewModel?.getGamificationLandingPageData("ketupat-thr-2024")
         ketupatLandingViewModel?.getProductRecommendation()
     }
 

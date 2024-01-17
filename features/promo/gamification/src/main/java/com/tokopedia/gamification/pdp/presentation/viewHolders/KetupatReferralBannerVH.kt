@@ -6,7 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatReferralBannerVHModel
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 import com.tokopedia.gamification.R as gamificationR
 
 class KetupatReferralBannerVH(itemView: View) : AbstractViewHolder<KetupatReferralBannerVHModel>(itemView) {
@@ -30,6 +32,13 @@ class KetupatReferralBannerVH(itemView: View) : AbstractViewHolder<KetupatReferr
                     )
                 }
             }
+            itemView.findViewById<TimerUnifySingle>(gamificationR.id.referral_timer)?.apply {
+                isShowClockIcon = true
+                this.timerText = "Berakhir dalam"
+                this.timerVariant = TimerUnifySingle.VARIANT_ALTERNATE
+                this.targetDate = Calendar.getInstance()
+            }
+
         }
     }
 }

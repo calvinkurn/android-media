@@ -22,6 +22,8 @@ data class BenefitCouponSlugRequest(
     @SerializedName("apiVersion")
     val apiVersion: String?,
     @SerializedName("catalogSlugs")
-    val catalogSlugs: List<String>?
+    val catalogSlugs: List<String>?,
+    @SerializedName("clientID")
+    val clientID: String?
 )
 
