@@ -113,8 +113,6 @@ class CheckoutShippingProcessor @Inject constructor(
                 )
                 var errorReason = "rates invalid data"
                 if (shouldResetCourier) {
-                    // todo should this error be sent to CheckoutLogger.logOnErrorLoadCourierNew ?
-//                    orderModel.shouldResetCourier = false
                     error("racing condition against epharmacy validation")
                 }
                 if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
@@ -130,16 +128,6 @@ class CheckoutShippingProcessor @Inject constructor(
                                     for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                         if (shippingCourierUiModel.productData.shipperProductId == logisticPromo.shipperProductId && shippingCourierUiModel.productData.shipperId == logisticPromo.shipperId) {
                                             if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
-//                                                CheckoutLogger.logOnErrorLoadCourierNew(
-//                                                    MessageErrorException(
-//                                                        shippingCourierUiModel.productData.error.errorMessage
-//                                                    ),
-//                                                    orderModel,
-//                                                    isOneClickShipment,
-//                                                    isTradeIn,
-//                                                    isTradeInByDropOff,
-//                                                    boPromoCode
-//                                                )
                                                 return@withContext RatesResult(
                                                     courier = null,
                                                     couriers = listOf(),
@@ -191,18 +179,6 @@ class CheckoutShippingProcessor @Inject constructor(
                                                     shippingCourierUiModel.productData.error.errorMessage
                                                 )
                                             )
-
-//                                            CheckoutLogger.logOnErrorLoadCourierNew(
-//                                                MessageErrorException(
-//                                                    shippingCourierUiModel.productData.error.errorMessage
-//                                                ),
-//                                                orderModel,
-//                                                isOneClickShipment,
-//                                                isTradeIn,
-//                                                isTradeInByDropOff,
-//                                                boPromoCode
-//                                            )
-//                                            return@withContext null
                                         } else {
                                             val courierItemData = generateCourierItemData(
                                                 false,
@@ -280,17 +256,6 @@ class CheckoutShippingProcessor @Inject constructor(
                 } else {
                     errorReason = "rates empty data"
                 }
-//                CheckoutLogger.logOnErrorLoadCourierNew(
-//                    MessageErrorException(
-//                        errorReason
-//                    ),
-//                    orderModel,
-//                    isOneClickShipment,
-//                    isTradeIn,
-//                    isTradeInByDropOff,
-//                    boPromoCode
-//                )
-//                return@withContext null
                 return@withContext RatesResult(
                     courier = null,
                     couriers = listOf(),
@@ -298,14 +263,11 @@ class CheckoutShippingProcessor @Inject constructor(
                 )
             } catch (t: Throwable) {
                 Timber.d(t)
-//                if (t is AkamaiErrorException) {
                 return@withContext RatesResult(
                     null,
                     emptyList(),
                     ratesError = t
                 )
-//                }
-//                return@withContext null
             }
         }
     }
@@ -313,7 +275,6 @@ class CheckoutShippingProcessor @Inject constructor(
     private fun generateCourierItemData(
         isForceReloadRates: Boolean,
         spId: Int,
-//        orderModel: CheckoutOrderModel,
         shippingCourierUiModel: ShippingCourierUiModel,
         shippingRecommendationData: ShippingRecommendationData,
         logisticPromo: LogisticPromoUiModel? = null,
@@ -381,15 +342,6 @@ class CheckoutShippingProcessor @Inject constructor(
         return courierItemData
     }
 
-//    private fun getBoPromoCode(
-//        shipmentCartItemModel: CheckoutOrderModel
-//    ): String {
-//        if (isBoUnstackEnabled) {
-//            return shipmentCartItemModel.boCode
-//        }
-//        return ""
-//    }
-
     private fun getSelectedSpId(
         spId: Int,
         shippingDurationUiModel: ShippingDurationUiModel,
@@ -441,17 +393,6 @@ class CheckoutShippingProcessor @Inject constructor(
                                     for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                         if (shippingCourierUiModel.productData.shipperProductId == logisticPromo.shipperProductId && shippingCourierUiModel.productData.shipperId == logisticPromo.shipperId) {
                                             if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
-//                                                CheckoutLogger.logOnErrorLoadCourierNew(
-//                                                    MessageErrorException(
-//                                                        shippingCourierUiModel.productData.error.errorMessage
-//                                                    ),
-//                                                    orderModel,
-//                                                    isOneClickShipment,
-//                                                    isTradeIn,
-//                                                    isTradeInByDropOff,
-//                                                    boPromoCode
-//                                                )
-//                                                return@withContext null
                                                 return@withContext RatesResult(
                                                     courier = null,
                                                     couriers = listOf(),
@@ -492,17 +433,6 @@ class CheckoutShippingProcessor @Inject constructor(
                                 for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                     if (shippingCourierUiModel.productData.shipperProductId == selectedSpId && !shippingCourierUiModel.serviceData.isUiRatesHidden) {
                                         if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
-//                                            CheckoutLogger.logOnErrorLoadCourierNew(
-//                                                MessageErrorException(
-//                                                    shippingCourierUiModel.productData.error.errorMessage
-//                                                ),
-//                                                orderModel,
-//                                                isOneClickShipment,
-//                                                isTradeIn,
-//                                                isTradeInByDropOff,
-//                                                boPromoCode
-//                                            )
-//                                            return@withContext null
                                             return@withContext RatesResult(
                                                 courier = null,
                                                 couriers = listOf(),
@@ -524,15 +454,6 @@ class CheckoutShippingProcessor @Inject constructor(
                                                 )
                                             if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.selectedShipper.logPromoCode.isNullOrEmpty()) {
                                                 // courier should only be used with BO, but no BO code found
-//                                                CheckoutLogger.logOnErrorLoadCourierNew(
-//                                                    MessageErrorException("rates ui hidden but no promo"),
-//                                                    orderModel,
-//                                                    isOneClickShipment,
-//                                                    isTradeIn,
-//                                                    isTradeInByDropOff,
-//                                                    boPromoCode
-//                                                )
-//                                                return@withContext null
                                                 return@withContext RatesResult(
                                                     courier = null,
                                                     couriers = listOf(),
@@ -591,17 +512,6 @@ class CheckoutShippingProcessor @Inject constructor(
                 } else {
                     errorReason = "rates empty data"
                 }
-//                CheckoutLogger.logOnErrorLoadCourierNew(
-//                    MessageErrorException(
-//                        errorReason
-//                    ),
-//                    orderModel,
-//                    isOneClickShipment,
-//                    isTradeIn,
-//                    isTradeInByDropOff,
-//                    boPromoCode
-//                )
-//                return@withContext null
                 return@withContext RatesResult(
                     courier = null,
                     couriers = listOf(),
@@ -609,14 +519,11 @@ class CheckoutShippingProcessor @Inject constructor(
                 )
             } catch (t: Throwable) {
                 Timber.d(t)
-//                if (t is AkamaiErrorException) {
                 return@withContext RatesResult(
                     null,
                     emptyList(),
                     ratesError = t
                 )
-//                }
-//                return@withContext null
             }
         }
     }
@@ -635,7 +542,6 @@ class CheckoutShippingProcessor @Inject constructor(
                         schellyData,
                         validationMetadata
                     )
-//                handleSyncShipmentCartItemModel(courierItemData, orderModel)
                 val schellyHasSchedule =
                     courierItemData.scheduleDeliveryUiModel?.isSelected == true && courierItemData.scheduleDeliveryUiModel?.deliveryServices?.isNotEmpty() == true
                 val schellyUnavailable = courierItemData.scheduleDeliveryUiModel?.available == false
@@ -646,20 +552,6 @@ class CheckoutShippingProcessor @Inject constructor(
                     )
                 } else {
                     val errorReason = "schelly is not selected"
-//                    val boPromoCode = getBoPromoCode(
-//                        orderModel
-//                    )
-//                    CheckoutLogger.logOnErrorLoadCourierNew(
-//                        MessageErrorException(
-//                            errorReason
-//                        ),
-//                        orderModel,
-//                        isOneClickShipment,
-//                        false,
-//                        false,
-//                        boPromoCode
-//                    )
-//                    return@withContext null
                     return@withContext RatesResult(
                         courier = null,
                         couriers = listOf(),
@@ -668,14 +560,11 @@ class CheckoutShippingProcessor @Inject constructor(
                 }
             } catch (t: Throwable) {
                 Timber.d(t)
-//                if (t is AkamaiErrorException) {
                 return@withContext RatesResult(
                     null,
                     emptyList(),
                     ratesError = t
                 )
-//                }
-//                return@withContext null
             }
         }
     }
@@ -732,10 +621,6 @@ class CheckoutShippingProcessor @Inject constructor(
             )
         }
 
-        // todo ini sync nya di checkout aja
-
-//        handleSyncShipmentCartItemModel(courierItemData, orderModel)
-
         logisticPromoChosen?.let {
             courierItemData.logPromoCode = it.promoCode
             courierItemData.discountedRate = it.discountedRate
@@ -763,7 +648,6 @@ class CheckoutShippingProcessor @Inject constructor(
         shopShipments: List<ShopShipment>,
         selectedServiceId: Int,
         selectedSpId: Int,
-//        orderModel: CheckoutOrderModel,
         isTradeInDropOff: Boolean,
         promoCode: String
     ): RatesResult? {
@@ -793,17 +677,6 @@ class CheckoutShippingProcessor @Inject constructor(
                                 for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                     if (isTradeInDropOff || shippingCourierUiModel.productData.shipperProductId == selectedSpId && shippingCourierUiModel.productData.shipperId == selectedServiceId) {
                                         if (shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
-//                                            CheckoutLogger.logOnErrorLoadCourierNew(
-//                                                MessageErrorException(
-//                                                    shippingCourierUiModel.productData.error.errorMessage
-//                                                ),
-//                                                orderModel,
-//                                                isOneClickShipment,
-//                                                isTradeIn,
-//                                                isTradeInDropOff,
-//                                                promoCode
-//                                            )
-//                                            return@withContext null
                                             return@withContext RatesResult(
                                                 courier = null,
                                                 couriers = listOf(),
@@ -837,27 +710,11 @@ class CheckoutShippingProcessor @Inject constructor(
                 throw MessageErrorException(errorReason)
             } catch (t: Throwable) {
                 Timber.d(t)
-//                if (t is AkamaiErrorException) {
                 return@withContext RatesResult(
                     null,
                     emptyList(),
                     ratesError = t
                 )
-//                }
-//                CheckoutLogger.logOnErrorLoadCourierNew(
-//                    t,
-//                    orderModel,
-//                    isOneClickShipment,
-//                    isTradeIn,
-//                    isTradeInDropOff,
-//                    promoCode
-//                )
-//                return@withContext RatesResult(
-//                    courier = null,
-//                    couriers = listOf()
-//                )
-
-//                return@withContext null
             }
         }
     }
