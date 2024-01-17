@@ -80,7 +80,7 @@ fun MediaBottomNav(
                 onClick = onAtcClicked,
                 variant = ButtonVariant.GHOST_INVERTED,
                 size = ButtonSize.SMALL,
-                isClickable = product.buttonState != BottomNavUiModel.ButtonState.OOS,
+                isClickable = product.buttonState != BottomNavUiModel.ButtonState.Inactive,
                 modifier = Modifier
                     .constrainAs(atcBtn) {
                         end.linkTo(parent.end)
