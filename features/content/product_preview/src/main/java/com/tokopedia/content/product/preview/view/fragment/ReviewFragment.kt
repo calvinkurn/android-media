@@ -20,7 +20,7 @@ import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
 import com.tokopedia.content.product.preview.utils.REVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
-import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.InitializeReviewMainData
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
@@ -50,8 +50,6 @@ class ReviewFragment @Inject constructor(
 
     private val snapHelper = PagerSnapHelper() // TODO: adjust pager snap helper
 
-    private var page: Int = 1
-
     override fun getScreenName() = REVIEW_FRAGMENT_TAG
 
     override fun onCreateView(
@@ -72,7 +70,7 @@ class ReviewFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
 
-        viewModel.onAction(InitializeReviewMainData(page))
+        viewModel.onAction(ProductPreviewAction.FetchReview)
     }
 
     private fun setupView() {

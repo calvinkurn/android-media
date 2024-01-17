@@ -9,7 +9,6 @@ import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.FetchMiniInfo
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.FetchReview
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.InitializeProductMainData
-import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.InitializeReviewMainData
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.Navigate
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.ProductAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.ProductActionFromResult
@@ -79,7 +78,6 @@ class ProductPreviewViewModel @AssistedInject constructor(
             ProductActionFromResult -> handleProductAction(_miniInfo.value)
             is ProductAction -> handleProductAction(action.model)
             is Navigate -> navigate(action.appLink)
-            is InitializeReviewMainData -> handleInitializeReviewMainData(action.page)
             is ProductSelected -> handleProductSelected(action.position)
         }
     }
