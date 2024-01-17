@@ -153,23 +153,6 @@ class ShopDiscountOptOutMultipleProductSubsidyBottomSheet :
                 setupTextMultipleSelectProduct()
                 configButtonOptOut()
             }
-//            setOnClick { _, isChecked ->
-//                text = if (isChecked) {
-//                    setTextBold(false)
-//                    getString(R.string.sd_subsidy_multiple_product_opt_out_checkbox_default_label)
-//                    subsidyProductAdapter.selectAllProduct()
-////                    if(getIndeterminate()){
-////
-////                    }else{
-////
-////                    }
-////                    subsidyProductAdapter.selectAllProduct()
-//                } else {
-//                    setTextBold(true)
-//                    subsidyProductAdapter.unselectAllProduct()
-//                    getString(R.string.sd_subsidy_multiple_product_opt_out_checkbox_default_label)
-//                }
-//            }
         }
     }
 
@@ -185,6 +168,7 @@ class ShopDiscountOptOutMultipleProductSubsidyBottomSheet :
                 if (data.hasNonSubsidyProduct()) {
                     isEnabled = true
                     setOnClickListener {
+                        sendClickCtaOptOutVariantTracker()
                         onDismissBottomSheetAfterFinishActionListener?.invoke(
                             data.mode,
                             data.getListProductParentId(),
@@ -205,11 +189,22 @@ class ShopDiscountOptOutMultipleProductSubsidyBottomSheet :
                 isEnabled = true
                 text = "Keluar dari Subsidi"
                 setOnClickListener {
+                    sendClickCtaOptOutVariantTracker()
                     addSelectedProductToOptOutList()
                     showBottomSheetOptOutReason(data)
                 }
             }
         }
+    }
+
+    private fun sendClickCtaOptOutVariantTracker() {
+        tracker.sendClickCtaOptOutVariantEvent(
+            data.entrySource.value,
+            subsidyProductAdapter.itemCount,
+            subsidyProductAdapter.getSelectedProduct().size,
+            buttonOptOut?.text.toString(),
+            subsidyProductAdapter.getSelectedProduct().map { it.productDetailData.productId }
+        )
     }
 
     private fun addSelectedProductToOptOutList() {

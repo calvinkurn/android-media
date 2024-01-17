@@ -8,6 +8,7 @@ import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.CLICK_PG
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.CLICK_SAVE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.CREATE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EDIT
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.CLICK_CTA_OPT_OUT_VARIANT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.CLICK_EDU_ARTICLE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.CLICK_SUBSIDY_INFORMATION
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.IMPRESSION_COACH_MARK
@@ -16,7 +17,6 @@ import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.IMP
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventAction.IMPRESSION_SUBSIDY_DETAIL
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventCategory.SLASH_PRICE_SUBSIDY_BOTTOM_SHEET
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventCategory.SLASH_PRICE_SUBSIDY_LIST_OF_PRODUCTS
-import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventLabel.SLASH_PRICE_SUBSIDY_ENTRY_POINT_SOURCE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventLabel.SLASH_PRICE_SUBSIDY_PAGE_SOURCE_BOTTOM_SHEET
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventLabel.SLASH_PRICE_SUBSIDY_PAGE_SOURCE_LIST_OF_PRODUCTS
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.EventLabel.SLASH_PRICE_SUBSIDY_NON_VARIANT_PRODUCT
@@ -28,6 +28,7 @@ import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.SLASH_PRICE_SET
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TOKOPEDIA_SELLER
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_EDU_ARTICLE
+import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_OPT_OUT_VARIANT
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_SUBSIDY_INFORMATION_BOTTOM_SHEET
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_CLICK_SUBSIDY_INFORMATION_PRODUCT_LIST
 import com.tokopedia.shopdiscount.utils.constant.TrackerConstant.TrackerId.TRACKER_ID_IMPRESSION_COACH_MARK_BOTTOM_SHEET
@@ -218,11 +219,12 @@ class ShopDiscountTracker @Inject constructor(private val userSession: UserSessi
         ctaCopy: String,
         noOfProductShown: Int
     ) {
-        val eventLabel = SLASH_PRICE_SUBSIDY_ENTRY_POINT_SOURCE.format(
+        val eventLabel =  listOf(
             entrySource,
             isCtaEnabled,
-            ctaCopy
-        ).plus(" - $noOfProductShown")
+            ctaCopy,
+            noOfProductShown.toString()
+        ).joinToString(" - ")
         Tracker.Builder()
             .setEvent(VIEW_PG_IRIS)
             .setEventAction(IMPRESSION_NON_EDITABLE_VARIANT)
@@ -242,17 +244,48 @@ class ShopDiscountTracker @Inject constructor(private val userSession: UserSessi
         isCtaEnabled: Boolean,
         ctaCopy: String
     ) {
-        val eventLabel = SLASH_PRICE_SUBSIDY_ENTRY_POINT_SOURCE.format(
+        val eventLabel = listOf(
             entrySource,
             isCtaEnabled,
             ctaCopy
-        )
+        ).joinToString(" - ")
         Tracker.Builder()
             .setEvent(VIEW_PG_IRIS)
             .setEventAction(IMPRESSION_NON_EDITABLE_PARENT)
             .setEventCategory(SLASH_PRICE_SUBSIDY_BOTTOM_SHEET)
             .setEventLabel(eventLabel)
             .setCustomProperty(TRACKER_ID, TRACKER_ID_IMPRESSION_NON_EDITABLE_PARENT)
+            .setBusinessUnit(CAMPAIGN_BUSINESS_UNIT)
+            .setCurrentSite(TOKOPEDIA_MARKETPLACE)
+            .setShopId(userSession.shopId)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
+
+    fun sendClickCtaOptOutVariantEvent(
+        entrySource: String,
+        totalShownProduct: Int,
+        totalSelectedProduct: Int,
+        ctaCopy: String,
+        listSelectedProductId: List<String>
+    ) {
+        val eventLabel = listOf(
+            entrySource,
+            totalShownProduct.toString(),
+            totalSelectedProduct.toString(),
+            ctaCopy,
+        ).toMutableList().apply {
+            if(listSelectedProductId.isNotEmpty()){
+                add(listSelectedProductId.joinToString(","))
+            }
+        }.joinToString(" - ")
+        Tracker.Builder()
+            .setEvent(CLICK_PG)
+            .setEventAction(CLICK_CTA_OPT_OUT_VARIANT)
+            .setEventCategory(SLASH_PRICE_SUBSIDY_BOTTOM_SHEET)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(TRACKER_ID, TRACKER_ID_CLICK_OPT_OUT_VARIANT)
             .setBusinessUnit(CAMPAIGN_BUSINESS_UNIT)
             .setCurrentSite(TOKOPEDIA_MARKETPLACE)
             .setShopId(userSession.shopId)

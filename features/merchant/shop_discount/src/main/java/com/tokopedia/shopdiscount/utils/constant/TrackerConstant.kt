@@ -24,6 +24,7 @@ object TrackerConstant {
         const val CLICK_EDU_ARTICLE = "click edu article"
         const val IMPRESSION_NON_EDITABLE_VARIANT = "impression non editable variant"
         const val IMPRESSION_NON_EDITABLE_PARENT = "impression non editable parent"
+        const val CLICK_CTA_OPT_OUT_VARIANT = "click cta keluar variant"
     }
 
     object EventCategory{
@@ -36,8 +37,6 @@ object TrackerConstant {
         const val SLASH_PRICE_SUBSIDY_VARIANT_PRODUCT = "product variant - %1s"
         const val SLASH_PRICE_SUBSIDY_PAGE_SOURCE_LIST_OF_PRODUCTS = "list page - %1s"
         const val SLASH_PRICE_SUBSIDY_PAGE_SOURCE_BOTTOM_SHEET = "bottomsheet - %1s"
-        const val SLASH_PRICE_SUBSIDY_ENTRY_POINT_SOURCE = "%1s - %2s - %3s"
-
     }
 
     object TrackerId{
@@ -49,5 +48,6 @@ object TrackerConstant {
         const val TRACKER_ID_CLICK_EDU_ARTICLE = "49496"
         const val TRACKER_ID_IMPRESSION_NON_EDITABLE_VARIANT = "49497"
         const val TRACKER_ID_IMPRESSION_NON_EDITABLE_PARENT = "49498"
+        const val TRACKER_ID_CLICK_OPT_OUT_VARIANT = "49499"
     }
 }
