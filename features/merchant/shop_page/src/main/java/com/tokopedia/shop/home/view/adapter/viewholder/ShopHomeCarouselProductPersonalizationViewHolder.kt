@@ -18,6 +18,7 @@ import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.common.view.model.ShopPageColorSchema
 import com.tokopedia.shop.databinding.ItemShopHomeProductRecommendationCarouselBinding
 import com.tokopedia.shop.home.WidgetNameEnum
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopHomeCarouselProductAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeCarouselProductAdapterTypeFactory
@@ -38,7 +39,8 @@ import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 class ShopHomeCarouselProductPersonalizationViewHolder(
     itemView: View,
     val shopHomeCarouselProductListener: ShopHomeCarouselProductListener,
-    private val shopHomeListener: ShopHomeListener
+    private val shopHomeListener: ShopHomeListener,
+    private val recyclerviewPoolListener: RecyclerviewPoolListener
 ) : AbstractViewHolder<ShopHomeCarousellProductUiModel>(itemView) {
 
     companion object {
@@ -386,6 +388,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder(
         productCarouselSingleOrDoubleAdapter?.addElement(listShopHomeProductUiModel)
         recyclerViewCarouselSingleOrDoubleProduct?.adapter = productCarouselSingleOrDoubleAdapter
         recyclerViewCarouselSingleOrDoubleProduct?.layoutManager = layoutManager
+        recyclerViewCarouselSingleOrDoubleProduct?.setRecycledViewPool(recyclerviewPoolListener.parentPool)
     }
 
     private fun configColorTheme(element: ShopHomeCarousellProductUiModel) {

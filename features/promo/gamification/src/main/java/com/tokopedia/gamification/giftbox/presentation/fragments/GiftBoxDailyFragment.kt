@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -106,9 +107,11 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment(), RewardContainerListener {
             val component = DaggerGiftBoxComponent.builder()
                 .activityContextModule(ActivityContextModule(it))
                 .appModule(AppModule((context as AppCompatActivity).application))
+                .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
                 .build()
             component.inject(this)
 
+            
             if (it is AppCompatActivity) {
                 val viewModelProvider = ViewModelProviders.of(context as AppCompatActivity, viewModelFactory)
                 viewModel = viewModelProvider[GiftBoxDailyViewModel::class.java]

@@ -12,13 +12,15 @@ import com.tokopedia.hotel.cancellation.di.HotelCancellationComponent
 import com.tokopedia.hotel.cancellation.presentation.fragment.HotelCancellationFragment
 import com.tokopedia.hotel.cancellation.presentation.fragment.HotelCancellationReasonFragment
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
-import kotlinx.android.synthetic.main.activity_hotel_cancellation.*
+import com.tokopedia.hotel.databinding.ActivityHotelCancellationBinding
 
 /**
  * @author by jessica on 27/04/20
  */
 
 class HotelCancellationActivity : HotelBaseActivity(), HasComponent<HotelCancellationComponent> {
+
+    private var binding: ActivityHotelCancellationBinding? = null
     private var invoiceId: String = ""
 
     override fun shouldShowOptionMenu(): Boolean = false
@@ -34,13 +36,18 @@ class HotelCancellationActivity : HotelBaseActivity(), HasComponent<HotelCancell
         if (uri != null) {
             invoiceId = uri.lastPathSegment ?: ""
         }
-
         super.onCreate(savedInstanceState)
-        hotel_cancellation_header.title = getString(R.string.hotel_cancellation_page_title)
+        setupViewBinding()
+        binding?.hotelCancellationHeader?.title = getString(R.string.hotel_cancellation_page_title)
+    }
+
+    private fun setupViewBinding() {
+        binding = ActivityHotelCancellationBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
     }
 
     fun updateSubtitle(subtitle: String) {
-        hotel_cancellation_header.subtitle = subtitle
+        binding?.hotelCancellationHeader?.subtitle = subtitle
     }
 
     fun showCancellationReasonFragment() {

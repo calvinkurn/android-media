@@ -58,23 +58,11 @@ interface DynamicProductDetailListener {
     fun onVideoVolumeCLicked(isMute: Boolean)
     fun onVideoStateChange(stopDuration: Long, videoDuration: Long)
     fun getProductVideoCoordinator(): ProductVideoCoordinator?
-    fun onThumbnailImpress(
-        position: Int,
-        media: MediaDataModel,
-        componentTrackDataModel: ComponentTrackDataModel?
-    )
-
-    fun trackThumbnailClicked(
-        position: Int,
-        media: MediaDataModel,
-        componentTrackDataModel: ComponentTrackDataModel?
-    )
 
     fun onMerchantVoucherSummaryClicked(
         @MvcSource source: Int,
         uiModel: ProductMerchantVoucherSummaryDataModel.UiModel
     )
-    fun showThumbnailImage(): Boolean
     fun onShowProductMediaRecommendationClicked()
 
     /**

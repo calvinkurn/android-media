@@ -52,6 +52,7 @@ object UohConsts {
 
     const val XSOURCE = "recom_widget"
     const val PAGE_NAME = "bom_empty"
+    const val BUY_AGAIN_PAGE_NAME = "buy_it_again_uoh"
 
     const val TYPE_LOADER = "loader"
     const val TYPE_LOADER_PMS_BUTTON = "loader_pms_button"
@@ -62,6 +63,7 @@ object UohConsts {
     const val TYPE_RECOMMENDATION_ITEM = "recommendation"
     const val TDN_BANNER = "tdn"
     const val TYPE_PMS_BUTTON = "pms_button"
+    const val TYPE_BUY_AGAIN = "buy_again"
 
     const val TYPE_ACTION_BUTTON_LINK = "link"
     const val TYPE_ACTION_CANCEL_ORDER = "cancelOrder"
@@ -102,7 +104,6 @@ object UohConsts {
     const val FLIGHT_STATUS_OK = "OK"
 
     const val RECHARGE_GQL_PARAM_ORDER_ID = "orderId"
-    const val BUSINESS_UNIT_REPLACEE = "{business_unit}"
 
     const val APP_LINK_TYPE = "APP_LINK"
     const val WEB_LINK_TYPE = "WEB_LINK"
@@ -186,4 +187,6 @@ object UohConsts {
     const val EVENT_LABEL_OCC_REDIRECTION = "occ"
     const val EVENT_LABEL_ULAS_BUTTON = "star: false"
     const val EVENT_LABEL_STAR_RATING = "star: true"
+
+    const val LIMIT_BUY_AGAIN_WIDGET_PRODUCT = 4
 }

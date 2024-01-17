@@ -51,6 +51,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
+import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
@@ -154,6 +155,7 @@ import com.tokopedia.shop.home.WidgetTypeEnum
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.util.CheckCampaignNplException
+import com.tokopedia.shop.home.util.RecyclerviewPoolListener
 import com.tokopedia.shop.home.util.ShopBannerProductGroupWidgetTabDependencyProvider
 import com.tokopedia.shop.home.util.ShopHomeReimagineShowcaseNavigationDependencyProvider
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
@@ -211,7 +213,6 @@ import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragmen
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageReimagineHeaderFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
-import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.util.StaggeredGridLayoutManagerWrapper
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
@@ -268,7 +269,8 @@ open class ShopPageHomeFragment :
     ShopBannerProductGroupWidgetTabDependencyProvider,
     ShopBannerProductGroupListener,
     ShopHomeDisplayAdvanceCarouselBannerWidgetListener,
-    ShopHomeDirectPurchaseByEtalaseWidgetListener {
+    ShopHomeDirectPurchaseByEtalaseWidgetListener,
+    RecyclerviewPoolListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -432,7 +434,8 @@ open class ShopPageHomeFragment :
             shopBannerProductGroupListener = this,
             shopBannerProductGroupWidgetTabDependencyProvider = this,
             shopHomeDisplayAdvanceCarouselBannerWidgetListener = this,
-            shopHomeDirectPurchaseByEtalaseWidgetListener = this
+            shopHomeDirectPurchaseByEtalaseWidgetListener = this,
+            recyclerviewPoolListener = this
         )
     }
 
@@ -2546,7 +2549,10 @@ open class ShopPageHomeFragment :
             shopHomeShowcaseListSliderUiModel.widgetId,
             ShopUtil.getActualPositionFromIndex(parentPosition),
             shopHomeShowcaseListSliderUiModel.widgetMasterId,
-            shopHomeShowcaseListSliderUiModel.isFestivity
+            shopHomeShowcaseListSliderUiModel.isFestivity,
+            isFulfillment = showcaseItem.isFulfilment,
+            warehouseId = showcaseItem.warehouseId
+
         )
         shopPageHomeTracking.clickShowcaseListWidgetItem(
             showcaseItem,
@@ -2672,7 +2678,9 @@ open class ShopPageHomeFragment :
                     displayWidgetUiModel?.widgetId.orEmpty(),
                     ShopUtil.getActualPositionFromIndex(parentPosition),
                     displayWidgetUiModel?.widgetMasterId.orEmpty(),
-                    displayWidgetUiModel?.isFestivity.orFalse()
+                    displayWidgetUiModel?.isFestivity.orFalse(),
+                    displayWidgetItem.isFulfillment,
+                    displayWidgetItem.warehouseId
                 )
                 shopPageHomeTracking.clickDisplayWidget(
                     false,
@@ -2727,7 +2735,9 @@ open class ShopPageHomeFragment :
         widgetId: String,
         position: Int,
         widgetMasterId: String,
-        isFestivity: Boolean
+        isFestivity: Boolean,
+        isFulfillment: Boolean? = null,
+        warehouseId: String? = null
     ) {
         if (!isOwner) {
             shopPageHomeTracking.onImpressionShopHomeWidget(
@@ -2738,7 +2748,9 @@ open class ShopPageHomeFragment :
                 shopId,
                 userId,
                 widgetMasterId,
-                isFestivity
+                isFestivity,
+                isFulfillment,
+                warehouseId
             )
         }
     }
@@ -2749,7 +2761,9 @@ open class ShopPageHomeFragment :
         widgetId: String,
         position: Int,
         widgetMasterId: String,
-        isFestivity: Boolean
+        isFestivity: Boolean,
+        isFulfillment: Boolean? = null,
+        warehouseId: String? = null
     ) {
         if (!isOwner) {
             shopPageHomeTracking.onClickedShopHomeWidget(
@@ -2760,7 +2774,9 @@ open class ShopPageHomeFragment :
                 shopId,
                 userId,
                 widgetMasterId,
-                isFestivity
+                isFestivity,
+                isFulfillment,
+                warehouseId
             )
         }
     }
@@ -2824,7 +2840,8 @@ open class ShopPageHomeFragment :
                     ),
                     shopProductFilterParameter?.getListFilterForTracking().orEmpty(),
                     shopId,
-                    getSelectedTabName()
+                    getSelectedTabName(),
+                    shopHomeProductViewModel.warehouseId
                 )
             }
             goToPDP(it.productUrl)
@@ -2857,7 +2874,8 @@ open class ShopPageHomeFragment :
                     ),
                     shopProductFilterParameter?.getListFilterForTracking().orEmpty(),
                     userId,
-                    getSelectedTabName()
+                    getSelectedTabName(),
+                    shopHomeProductViewModel.warehouseId
                 )
             }
         }
@@ -2977,7 +2995,9 @@ open class ShopPageHomeFragment :
                 shopHomeCarousellProductUiModel?.widgetId.orEmpty(),
                 ShopUtil.getActualPositionFromIndex(parentPosition),
                 shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
-                shopHomeCarousellProductUiModel?.isFestivity.orFalse()
+                shopHomeCarousellProductUiModel?.isFestivity.orFalse(),
+                shopHomeProductViewModel.isFulfillment,
+                shopHomeProductViewModel.warehouseId
             )
             shopPageHomeTracking.clickProductPersonalization(
                 isOwner,
@@ -3009,7 +3029,9 @@ open class ShopPageHomeFragment :
             shopHomeCarousellProductUiModel?.widgetId.orEmpty(),
             ShopUtil.getActualPositionFromIndex(parentPosition),
             shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
-            shopHomeCarousellProductUiModel?.isFestivity.orFalse()
+            shopHomeCarousellProductUiModel?.isFestivity.orFalse(),
+            isFulfillment = shopHomeProductViewModel?.isFulfillment,
+            warehouseId = shopHomeProductViewModel?.warehouseId
         )
         shopHomeProductViewModel?.let {
             shopPageHomeTracking.clickProductPersonalizationReminder(
@@ -3042,7 +3064,9 @@ open class ShopPageHomeFragment :
             shopHomeCarousellProductUiModel.widgetId,
             ShopUtil.getActualPositionFromIndex(parentPosition),
             shopHomeCarousellProductUiModel.widgetMasterId,
-            shopHomeCarousellProductUiModel.isFestivity
+            shopHomeCarousellProductUiModel.isFestivity,
+            isFulfillment = shopHomeProductViewModel.isFulfillment,
+            warehouseId = shopHomeProductViewModel.warehouseId
         )
         shopPageHomeTracking.clickProductPersonalizationTrendingWidget(
             itemPosition,
@@ -3248,7 +3272,9 @@ open class ShopPageHomeFragment :
                 shopHomeCarousellProductUiModel?.widgetId.orEmpty(),
                 ShopUtil.getActualPositionFromIndex(parentPosition),
                 shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
-                shopHomeCarousellProductUiModel?.isFestivity.orFalse()
+                shopHomeCarousellProductUiModel?.isFestivity.orFalse(),
+                isFulfillment = shopHomeProductViewModel.isFulfillment,
+                warehouseId = shopHomeProductViewModel.warehouseId
             )
             if (!isOwner) {
                 shopPageHomeTracking.clickProductShopDecoration(
@@ -3263,7 +3289,9 @@ open class ShopPageHomeFragment :
                         shopHomeCarousellProductUiModel?.name.orEmpty(),
                         shopHomeCarousellProductUiModel?.header?.isATC.orZero(),
                         shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
-                        shopHomeCarousellProductUiModel?.isFestivity.orFalse()
+                        shopHomeCarousellProductUiModel?.isFestivity.orFalse(),
+                        isFulfilment = shopHomeProductViewModel.isFulfillment,
+                        warehouseId = shopHomeProductViewModel.warehouseId
                     )
                 )
             }
@@ -3291,7 +3319,9 @@ open class ShopPageHomeFragment :
                         shopHomeCarousellProductUiModel?.name.orEmpty(),
                         shopHomeCarousellProductUiModel?.header?.isATC.orZero(),
                         shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
-                        shopHomeCarousellProductUiModel?.isFestivity.orFalse()
+                        shopHomeCarousellProductUiModel?.isFestivity.orFalse(),
+                        isFulfilment = shopHomeProductViewModel.isFulfillment,
+                        warehouseId = shopHomeProductViewModel.warehouseId
                     )
                 )
             }
@@ -3327,7 +3357,9 @@ open class ShopPageHomeFragment :
                 shopHomeCarousellProductUiModel?.widgetId.orEmpty(),
                 ShopUtil.getActualPositionFromIndex(parentPosition),
                 shopHomeCarousellProductUiModel?.widgetMasterId.orEmpty(),
-                shopHomeCarousellProductUiModel?.isFestivity.orFalse()
+                shopHomeCarousellProductUiModel?.isFestivity.orFalse(),
+                isFulfillment = shopHomeProductUiModel.isFulfillment,
+                warehouseId = shopHomeProductUiModel.warehouseId
             )
             shopPageHomeTracking.clickCarouselProductShowcaseItem(
                 isOwner,
@@ -3488,7 +3520,11 @@ open class ShopPageHomeFragment :
             model.widgetId,
             ShopUtil.getActualPositionFromIndex(adapterPosition),
             model.widgetMasterId,
-            model.isFestivity
+            model.isFestivity,
+            // TODO: Make sure these lines below are correct based on Data team
+            isFulfillment = model.productList.getOrNull(adapterPosition)?.isFulfillment,
+            warehouseId = model.productList.getOrNull(adapterPosition)?.warehouseId
+            // ======== //
         )
     }
 
@@ -3818,7 +3854,9 @@ open class ShopPageHomeFragment :
             shopHomeNewProductLaunchCampaignUiModel.widgetId,
             ShopUtil.getActualPositionFromIndex(parentPosition),
             shopHomeNewProductLaunchCampaignUiModel.widgetMasterId,
-            shopHomeNewProductLaunchCampaignUiModel.isFestivity
+            shopHomeNewProductLaunchCampaignUiModel.isFestivity,
+            isFulfillment = shopHomeProductViewModel?.isFulfillment,
+            warehouseId = shopHomeProductViewModel?.warehouseId
         )
         shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
             if (!isOwner) {
@@ -3835,7 +3873,10 @@ open class ShopPageHomeFragment :
                         shopHomeNewProductLaunchCampaignUiModel.isFestivity,
                         shopHomeProductViewModel?.id.orEmpty(),
                         shopHomeProductViewModel?.name.orEmpty(),
-                        shopHomeProductViewModel?.displayedPrice.orEmpty()
+                        shopHomeProductViewModel?.displayedPrice.orEmpty(),
+                        shopHomeProductViewModel?.isFulfillment,
+                        shopHomeProductViewModel?.warehouseId
+
                     )
                 )
             }
@@ -3866,7 +3907,9 @@ open class ShopPageHomeFragment :
                         shopHomeNewProductLaunchCampaignUiModel.isFestivity,
                         shopHomeProductViewModel?.id.orEmpty(),
                         shopHomeProductViewModel?.name.orEmpty(),
-                        shopHomeProductViewModel?.displayedPrice.orEmpty()
+                        shopHomeProductViewModel?.displayedPrice.orEmpty(),
+                        shopHomeProductViewModel?.isFulfillment,
+                        shopHomeProductViewModel?.warehouseId
                     )
                 )
             }
@@ -4011,7 +4054,9 @@ open class ShopPageHomeFragment :
                         widgetModel.isFestivity,
                         model.id,
                         model.name,
-                        model.displayedPrice
+                        model.displayedPrice,
+                        model.isFulfillment,
+                        model.warehouseId
                     )
                 )
             }
@@ -4040,7 +4085,9 @@ open class ShopPageHomeFragment :
                         flashSaleUiModel.isFestivity,
                         shopHomeProductUiModel.id,
                         shopHomeProductUiModel.name,
-                        shopHomeProductUiModel.displayedPrice
+                        shopHomeProductUiModel.displayedPrice,
+                        shopHomeProductUiModel.isFulfillment,
+                        shopHomeProductUiModel.warehouseId
                     )
                 )
             }
@@ -4221,7 +4268,8 @@ open class ShopPageHomeFragment :
             shopId,
             extParam,
             ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
-            getSelectedTabName()
+            getSelectedTabName(),
+            activity?.let { DeviceConnectionInfo.getConnectionType(it) }.orEmpty()
         )
     }
 
@@ -5620,4 +5668,7 @@ open class ShopPageHomeFragment :
             )
         }
     }
+
+    override val parentPool: RecyclerView.RecycledViewPool?
+        get() = null
 }

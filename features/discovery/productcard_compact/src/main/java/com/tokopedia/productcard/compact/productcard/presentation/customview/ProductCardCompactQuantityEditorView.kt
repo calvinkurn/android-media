@@ -327,7 +327,7 @@ class ProductCardCompactQuantityEditorView @JvmOverloads constructor(
         editText.addTextChangedListener(
             TextWatcherImpl(
                 onTextChanged = {
-                    executeTimerAfterTextChanged = if (executeTimerAfterTextChanged || it.isNullOrBlank()) {
+                    executeTimerAfterTextChanged = if (executeTimerAfterTextChanged || (it.isNullOrBlank() && executeTimerAfterTextChanged)) {
                         executeTimer()
                         false
                     } else {

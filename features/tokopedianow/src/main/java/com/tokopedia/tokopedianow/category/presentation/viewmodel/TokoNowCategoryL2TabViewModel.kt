@@ -30,8 +30,8 @@ import com.tokopedia.productcard.compact.productcard.presentation.uimodel.Produc
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2QuickFilterMapper
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addCategoryMenu
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addCategoryRecommendation
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addEmptyState
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addDivider
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addEmptyState
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addFeedbackWidget
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addLoadMoreLoading
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryL2TabMapper.addProductCardItems
@@ -188,7 +188,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         product: ProductCardCompactUiModel,
         shopId: String,
         quantity: Int,
-        layoutType: String,
+        layoutType: String
     ) {
         val productId = product.productId
         val isVariant = product.isVariant
@@ -342,7 +342,6 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         launchCatchError(block = {
             getCategoryMenuDataAsync().await()
         }) {
-
         }
     }
 
@@ -374,17 +373,19 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
             val getProductResponse = getCategoryProduct()
             val productList = getProductResponse.searchProduct.data.productList
 
-            if(productList.isNotEmpty()) {
+            if (productList.isNotEmpty()) {
                 val tickerData = categoryData.tickerData
                 val components = categoryData.componentList
                 val categoryDetail = categoryData.categoryDetail
                 val totalData = getProductResponse.searchProduct.header.totalData
+                val filterMap = filterController.getParameter()
                 isAllProductShown = totalData == productList.count()
 
                 visitableList.mapCategoryTabLayout(
                     categoryIdL2,
                     tickerData,
                     categoryDetail,
+                    filterMap,
                     components
                 )
 
@@ -461,7 +462,6 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
             getFeedbackToggleAsync().await()
             getMiniCartAsync().await()
         }) {
-
         }
     }
 
@@ -579,11 +579,10 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     private fun getFeedbackToggleAsync(): Deferred<Unit?> {
         return asyncCatchError(block = {
             val toggle = getFeedbackToggleUseCase.execute()
-            if(!toggle.isActive) return@asyncCatchError
+            if (!toggle.isActive) return@asyncCatchError
             visitableList.addFeedbackWidget()
             updateVisitableListLiveData()
         }) {
-
         }
     }
 
@@ -591,7 +590,6 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
         return asyncCatchError(block = {
             getMiniCart()
         }) {
-
         }
     }
 
@@ -846,7 +844,7 @@ class TokoNowCategoryL2TabViewModel @Inject constructor(
     }
 
     private fun getConstructedLink(categoryUrl: String, categoryIdLvl2: String, categoryIdLvl3: String): Pair<String, String> {
-        var deeplinkParam = "${DEFAULT_DEEPLINK_PARAM}/$categoryIdL1"
+        var deeplinkParam = "$DEFAULT_DEEPLINK_PARAM/$categoryIdL1"
         var url = categoryUrl
 
         deeplinkParam += "/$categoryIdLvl2"

@@ -1,8 +1,6 @@
 package com.tokopedia.devicefingerprint.di
 
 import android.content.Context
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
@@ -32,22 +30,14 @@ class DeviceFingerprintModule(val context: Context) {
 
     @DeviceFingerprintScope
     @Provides
-    fun provideFusedLocationProviderClient(): FusedLocationProviderClient {
-        return LocationServices.getFusedLocationProviderClient(context)
-    }
-
-    @DeviceFingerprintScope
-    @Provides
     fun provideSession(): UserSessionInterface {
         return UserSession(context)
     }
 
     @DeviceFingerprintScope
     @Provides
-    fun provideDeviceInfoPayloadCreator(
-            fusedLocationProviderClient: FusedLocationProviderClient
-    ): DeviceInfoPayloadCreator {
-        return DeviceInfoPayloadCreator(context, UserSession(context), fusedLocationProviderClient)
+    fun provideDeviceInfoPayloadCreator(): DeviceInfoPayloadCreator {
+        return DeviceInfoPayloadCreator(context, UserSession(context))
     }
 
     @DeviceFingerprintScope
