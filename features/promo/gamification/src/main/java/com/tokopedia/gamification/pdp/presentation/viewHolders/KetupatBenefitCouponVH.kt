@@ -32,10 +32,12 @@ class KetupatBenefitCouponVH(itemView: View) : AbstractViewHolder<KetupatBenefit
                 couponData?.text?.find { it?.key == "SUBTITLE" }?.value
 
             itemView.findViewById<Typography>(gamificationR.id.coupon_banner_subtitle)?.apply {
-                RouteManager.route(
-                    context,
-                    couponData?.cta?.find { it?.type == "redirection" }?.appLink
-                )
+                setOnClickListener {
+                    RouteManager.route(
+                        context,
+                        couponData?.cta?.find { it?.type == "redirection" }?.appLink
+                    )
+                }
             }
         }
         element?.value.let {

@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatBenefitCouponItemVH
+import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatBenefitCouponSlugItemVH
 import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatTopBannerVH
 import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatCrackBannerVH
 import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatReferralBannerVH
@@ -14,6 +15,7 @@ import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatProductRec
 import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatProductRecommVH
 import com.tokopedia.gamification.pdp.presentation.viewHolders.KetupatRedirectionBannerVH
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatBenefitCouponItemVHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatBenefitCouponSlugItemVHModel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatTopBannerVHModel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatCrackBannerVHModel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatReferralBannerVHModel
@@ -50,6 +52,10 @@ class KetupatLandingAdapterTypeFactory(/*Listener if needed*/) : BaseAdapterType
         return KetupatBenefitCouponSlugVH.LAYOUT
     }
 
+    override fun type(model: KetupatBenefitCouponSlugItemVHModel): Int {
+        return KetupatBenefitCouponSlugItemVH.LAYOUT
+    }
+
     override fun type(model: KetupatRedirectionBannerVHModel): Int {
         return KetupatRedirectionBannerVH.LAYOUT
     }
@@ -72,6 +78,7 @@ class KetupatLandingAdapterTypeFactory(/*Listener if needed*/) : BaseAdapterType
             KetupatRedirectionBannerVH.LAYOUT -> KetupatRedirectionBannerVH(parent)
             KetupatProductRecommItemVH.LAYOUT -> KetupatProductRecommItemVH(parent)
             KetupatBenefitCouponItemVH.LAYOUT -> KetupatBenefitCouponItemVH(parent)
+            KetupatBenefitCouponSlugItemVH.LAYOUT -> KetupatBenefitCouponSlugItemVH(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

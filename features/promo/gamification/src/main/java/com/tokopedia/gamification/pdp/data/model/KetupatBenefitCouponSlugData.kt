@@ -2,27 +2,27 @@ package com.tokopedia.gamification.pdp.data.model
 
 import com.google.gson.annotations.SerializedName
 
-data class KetupatBenefitCouponData(
-    @SerializedName("tokopointsCouponList")
-    var tokopointsCouponList: TokopointsCouponList
+data class KetupatBenefitCouponSlugData(
+    @SerializedName("tokopointsCouponListStack")
+    var tokopointsCouponListStack: TokopointsCouponListStack
 ) {
-    data class TokopointsCouponList(
-        @SerializedName("tokopointsCouponData")
-        var tokopointsCouponData: List<TokopointsCouponData?>,
+    data class TokopointsCouponListStack(
+        @SerializedName("tokopointsCouponDataStack")
+        var tokopointsCouponDataStack: List<TokopointsCouponDataStack?>,
         @SerializedName("tokopointsExtraInfo")
-        var tokopointsExtraInfo: List<Any?>,
+        var tokopointsExtraInfo: List<TokopointsExtraInfo?>,
         @SerializedName("tokopointsPaging")
         var tokopointsPaging: TokopointsPaging?,
         @SerializedName("tokopointsEmptyMessage")
         var tokopointsEmptyMessage: TokopointsEmptyMessage?
     ) {
-        data class TokopointsCouponData(
+        data class TokopointsCouponDataStack(
             @SerializedName("id")
             val id: Long,
             @SerializedName("code")
             val code: String?,
-            @SerializedName("imageUrlMobile")
-            val imageUrlMobile: String?
+            @SerializedName("imageURLMobile")
+            val imageURLMobile: String?
         )
 
         data class TokopointsExtraInfo(

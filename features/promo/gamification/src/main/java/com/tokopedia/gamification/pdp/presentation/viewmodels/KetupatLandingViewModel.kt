@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.gamification.pdp.data.model.KetupatBenefitCouponData
+import com.tokopedia.gamification.pdp.data.model.KetupatBenefitCouponSlugData
 import com.tokopedia.gamification.pdp.data.model.KetupatLandingPageData
+import com.tokopedia.gamification.pdp.domain.usecase.KetupatBenefitCouponSlugUseCase
 import com.tokopedia.gamification.pdp.domain.usecase.KetupatBenefitCouponUseCase
 import com.tokopedia.gamification.pdp.domain.usecase.KetupatLandingUseCase
 import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingTypeFactory
@@ -27,12 +29,14 @@ import javax.inject.Inject
 class KetupatLandingViewModel @Inject constructor(
     private val ketupatLandingUseCase: KetupatLandingUseCase,
     private val getRecommendationUseCase: GetRecommendationUseCase,
-    private val ketupatBenefitCouponUseCase: KetupatBenefitCouponUseCase
+    private val ketupatBenefitCouponUseCase: KetupatBenefitCouponUseCase,
+    private val ketupatBenefitCouponSlugUseCase: KetupatBenefitCouponSlugUseCase
 ) : BaseViewModel() {
 
     private val errorMessage = MutableLiveData<Throwable>()
     private val landingPageData = MutableLiveData<KetupatLandingPageData>()
     private val benefitCouponData = MutableLiveData<KetupatBenefitCouponData>()
+    private val benefitCouponSlugData = MutableLiveData<KetupatBenefitCouponSlugData>()
     private val ketaupatLandingDataList =
         MutableLiveData<ArrayList<Visitable<KetupatLandingTypeFactory>>>()
     var data: KetupatLandingPageData? = null
@@ -57,7 +61,20 @@ class KetupatLandingViewModel @Inject constructor(
     fun getTokopointsCouponList() {
         launchCatchError(
             block = {
-                benefitCouponData.value = ketupatBenefitCouponUseCase.getTokopointsCouponList()
+                benefitCouponData.value  = ketupatBenefitCouponUseCase.getTokopointsCouponList()
+            },
+            onError = {
+                it.printStackTrace()
+                errorMessage.value = it
+            }
+        )
+    }
+
+    fun getTokopointsCouponListStack() {
+        launchCatchError(
+            block = {
+                val v  = ketupatBenefitCouponSlugUseCase.getTokopointsCouponListStack()
+                benefitCouponSlugData.value = v
             },
             onError = {
                 it.printStackTrace()
@@ -136,7 +153,7 @@ class KetupatLandingViewModel @Inject constructor(
             tempList.add(KetupatBenefitCouponVHModel(benefitCoupon!!, benefitCouponData.value))
         }
         if (benefitCouponSlug != null) {
-            tempList.add(KetupatBenefitCouponSlugVHModel(benefitCouponSlug!!))
+            tempList.add(KetupatBenefitCouponSlugVHModel(benefitCouponSlug!!, benefitCouponSlugData.value))
         }
         if (banner != null) {
             tempList.add(KetupatRedirectionBannerVHModel(banner!!))

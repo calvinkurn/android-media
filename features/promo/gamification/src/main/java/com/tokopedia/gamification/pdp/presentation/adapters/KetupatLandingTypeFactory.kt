@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.pdp.presentation.adapters
 
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatBenefitCouponItemVHModel
+import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatBenefitCouponSlugItemVHModel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatTopBannerVHModel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatCrackBannerVHModel
 import com.tokopedia.gamification.pdp.presentation.viewHolders.viewModel.KetupatReferralBannerVHModel
@@ -24,6 +25,8 @@ interface KetupatLandingTypeFactory{
     fun type(model: KetupatBenefitCouponItemVHModel): Int
 
     fun type(model: KetupatBenefitCouponSlugVHModel): Int
+
+    fun type(model: KetupatBenefitCouponSlugItemVHModel): Int
 
     fun type(model: KetupatRedirectionBannerVHModel): Int
 

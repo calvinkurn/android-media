@@ -16,6 +16,7 @@ class KetupatBenefitCouponUseCase @Inject constructor(
     private fun createRequestParams(): Map<String, Any> {
         return mapOf<String, Any>(
             INPUT to BenefitCouponRequest(
+                serviceID = "marketplace",
                 categoryIDCoupon = 1,
                 categoryID = 54,
                 limit = 6,
