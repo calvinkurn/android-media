@@ -96,15 +96,10 @@ class CheckoutShippingProcessor @Inject constructor(
         selectedServiceId: Int,
         selectedSpId: Int,
         boPromoCode: String,
-        // todo orderModel.shouldResetCourier
         shouldResetCourier: Boolean,
-        // todo orderModel.validationMetadata
         validationMetadata: String,
-        // todo orderModel.isDisableChangeCourier
         isDisableChangeCourier: Boolean,
-        // todo orderModel.shipment.courierItemData?.serviceId
         currentServiceId: Int?,
-        // todo orderModel.isAutoCourierSelection
         isAutoCourierSelection: Boolean
     ): RatesResult? {
         return withContext(dispatchers.io) {
@@ -417,10 +412,6 @@ class CheckoutShippingProcessor @Inject constructor(
         shopShipments: List<ShopShipment>,
         selectedServiceId: Int,
         selectedSpId: Int,
-        // todo pass this to schellymapper instead
-//        fullfilmentId: String,
-//        orderModel: CheckoutOrderModel,
-        // todo should sync with getBoPromoCode
         boPromoCode: String,
         validationMetadata: String,
         isDisableChangeCourier: Boolean,
@@ -632,24 +623,11 @@ class CheckoutShippingProcessor @Inject constructor(
 
     suspend fun getScheduleDelivery(
         schellyParam: ScheduleDeliveryParam,
-        // todo move to getScheduleDelivery
-//        fullfilmentId: String,
-//        orderModel: CheckoutOrderModel,
-//        isOneClickShipment: Boolean,
         validationMetadata: String
     ): RatesResult? {
         return withContext(dispatchers.io) {
             try {
-                val schellyResponse =
-                    scheduleDeliveryUseCase(
-//                        schellyMapper.map(
-//                            ratesParam,
-//                            fullfilmentId,
-//                            isRecommend = orderModel.isRecommendScheduleDelivery,
-//                            startDate = orderModel.startDate
-//                        )
-                        schellyParam
-                    )
+                val schellyResponse = scheduleDeliveryUseCase(schellyParam)
                 val schellyData =
                     schellyResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
                 val courierItemData =
@@ -787,9 +765,7 @@ class CheckoutShippingProcessor @Inject constructor(
         selectedSpId: Int,
 //        orderModel: CheckoutOrderModel,
         isTradeInDropOff: Boolean,
-        promoCode: String,
-        isOneClickShipment: Boolean,
-        isTradeIn: Boolean
+        promoCode: String
     ): RatesResult? {
         return withContext(dispatchers.io) {
             try {
@@ -929,10 +905,6 @@ data class EditAddressResult(
 
 data class RatesResult(
     val courier: CourierItemData?,
-    // todo ini set insurance nya di leave di PP aja ya? jadi 870 ini di delete
     val couriers: List<ShippingCourierUiModel>,
-    // todo ambil dari ratesError.message
-//    val akamaiError: String = "",
-    // todo ini errornya di passing kesini aja ya? jadi yang hit CheckoutLogger dari checkout?
     val ratesError: Throwable? = null
 )
