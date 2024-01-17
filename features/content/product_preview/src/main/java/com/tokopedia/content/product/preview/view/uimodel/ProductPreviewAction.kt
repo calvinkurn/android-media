@@ -11,4 +11,5 @@ sealed interface ProductPreviewAction {
     data class ProductAction(val model: BottomNavUiModel) : ProductPreviewAction
     data class Navigate(val appLink: String) : ProductPreviewAction
     data class ProductSelected(val position: Int) : ProductPreviewAction
+    data class SetProductVideoLastDuration(val duration: Long) : ProductPreviewAction
 }

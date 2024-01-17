@@ -28,7 +28,6 @@ import com.tokopedia.content.product.preview.view.uimodel.MediaType
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.ProductSelected
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductIndicatorUiModel
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
-import com.tokopedia.content.product.preview.viewmodel.action.ProductPreviewUiAction
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible

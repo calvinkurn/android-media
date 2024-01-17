@@ -20,12 +20,14 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.content.common.util.withCache
 import com.tokopedia.content.product.preview.databinding.FragmentProductPreviewBinding
 import com.tokopedia.content.product.preview.utils.PRODUCT_DATA
+import com.tokopedia.content.product.preview.utils.PRODUCT_LAST_VIDEO_DURATION
 import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.components.MediaBottomNav
 import com.tokopedia.content.product.preview.view.pager.ProductPreviewPagerAdapter
 import com.tokopedia.content.product.preview.view.uimodel.BottomNavUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.InitializeProductMainData
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.SetProductVideoLastDuration
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_PRODUCT_POS
 import com.tokopedia.content.product.preview.view.uimodel.pager.ProductPreviewTabUiModel.Companion.TAB_REVIEW_POS
@@ -52,22 +54,12 @@ class ProductPreviewFragment @Inject constructor(
     private val router: Router
 ) : TkpdBaseV4Fragment() {
 
-    private val viewModel by activityViewModels<ProductPreviewViewModel> {
-        viewModelFactory.create(EntrySource(productPreviewData))
-    }
-
     private var _binding: FragmentProductPreviewBinding? = null
     private val binding: FragmentProductPreviewBinding
         get() = _binding!!
 
-    val viewModelParentFactory: ProductPreviewViewModelFactory by lazyThreadSafetyNone {
-        viewModelFactory.create(
-            EntrySource(productId = productPreviewData.productId)
-        )
-    }
-
     private val viewModel by activityViewModels<ProductPreviewViewModel> {
-        viewModelParentFactory
+        viewModelFactory.create(EntrySource(productPreviewData))
     }
 
     private val productPreviewData: ProductContentUiModel by lazyThreadSafetyNone {
@@ -132,9 +124,7 @@ class ProductPreviewFragment @Inject constructor(
 
     private fun initData() {
         viewModel.onAction(InitializeProductMainData)
-        viewModel.submitAction(
-            ProductPreviewUiAction.SetProductVideoLastDuration(productVideoLastDuration)
-        )
+        viewModel.onAction(SetProductVideoLastDuration(productVideoLastDuration))
     }
 
     private fun initViews() = with(binding) {
@@ -283,8 +273,6 @@ class ProductPreviewFragment @Inject constructor(
     }
 
     companion object {
-        const val PRODUCT_LAST_VIDEO_DURATION = "product_video_last_duration"
-
         fun getOrCreate(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,

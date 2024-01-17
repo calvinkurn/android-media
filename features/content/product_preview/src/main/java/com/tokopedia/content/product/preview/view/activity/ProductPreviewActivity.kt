@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.content.product.preview.databinding.ActivityProductPreviewBinding
 import com.tokopedia.content.product.preview.di.ProductPreviewInjector
 import com.tokopedia.content.product.preview.utils.PRODUCT_DATA
+import com.tokopedia.content.product.preview.utils.PRODUCT_LAST_VIDEO_DURATION
 import com.tokopedia.content.product.preview.utils.PRODUCT_PREVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.fragment.ProductPreviewFragment
 import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
@@ -85,8 +86,8 @@ class ProductPreviewActivity : BaseActivity() {
             fragmentManager = supportFragmentManager,
             classLoader = classLoader,
             bundle = Bundle().apply {
-                putParcelable(ProductPreviewFragment.PRODUCT_DATA, productPreviewData)
-                putLong(ProductPreviewFragment.PRODUCT_LAST_VIDEO_DURATION, productVideoLastDuration ?: 0L)
+                putParcelable(PRODUCT_DATA, productPreviewData)
+                putLong(PRODUCT_LAST_VIDEO_DURATION, productVideoLastDuration ?: 0L)
             }
         )
     }

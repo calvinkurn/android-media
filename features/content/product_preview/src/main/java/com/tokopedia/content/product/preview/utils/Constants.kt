@@ -10,4 +10,4 @@ internal const val PRODUCT_PREVIEW_FRAGMENT_TAG = "ProductPreviewFragment"
 internal const val PRODUCT_FRAGMENT_TAG = "ProductFragment"
 internal const val REVIEW_FRAGMENT_TAG = "ReviewFragment"
 internal const val PRODUCT_CONTENT_VIDEO_KEY_REF = "productContentVideo_"
-internal const val KEY_REF_SELECTED_PRODUCT_CONTENT = 12345
+internal const val PRODUCT_LAST_VIDEO_DURATION = "product_video_last_duration"

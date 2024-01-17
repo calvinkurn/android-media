@@ -13,6 +13,7 @@ import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.N
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.ProductAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.ProductActionFromResult
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.ProductSelected
+import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction.SetProductVideoLastDuration
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.uimodel.finalPrice
