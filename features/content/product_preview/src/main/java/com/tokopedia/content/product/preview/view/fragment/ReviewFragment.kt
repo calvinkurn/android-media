@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -22,6 +22,7 @@ import com.tokopedia.content.product.preview.databinding.FragmentReviewBinding
 import com.tokopedia.content.product.preview.utils.LoginReviewContract
 import com.tokopedia.content.product.preview.utils.PAGE_SOURCE
 import com.tokopedia.content.product.preview.utils.REVIEW_CREDIBILITY_APPLINK
+import com.tokopedia.content.product.preview.utils.REVIEW_FRAGMENT_TAG
 import com.tokopedia.content.product.preview.view.adapter.review.ReviewParentAdapter
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
@@ -32,7 +33,6 @@ import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
-import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -47,11 +47,7 @@ class ReviewFragment @Inject constructor(
     private val binding: FragmentReviewBinding
         get() = _binding!!
 
-    private val viewModel by viewModels<ProductPreviewViewModel> {
-        viewModelFactory.create(
-            EntrySource(productId = "4937529690") // TODO: Testing purpose, change from arguments
-        )
-    }
+    private val viewModel by activityViewModels<ProductPreviewViewModel>()
 
     private val reviewAdapter by lazyThreadSafetyNone {
         ReviewParentAdapter(this)
@@ -76,7 +72,7 @@ class ReviewFragment @Inject constructor(
         if (loginStatus) viewModel.onAction(ProductPreviewAction.ClickMenu(true))
     }
 
-    override fun getScreenName() = TAG
+    override fun getScreenName() = REVIEW_FRAGMENT_TAG
 
     override fun onCreate(savedInstanceState: Bundle?) {
         childFragmentManager.addFragmentOnAttachListener { _, fragment ->
@@ -191,14 +187,12 @@ class ReviewFragment @Inject constructor(
     }
 
     companion object {
-        const val TAG = "ReviewFragment"
-
         fun getOrCreate(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
             bundle: Bundle
         ): ReviewFragment {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ReviewFragment
+            val oldInstance = fragmentManager.findFragmentByTag(REVIEW_FRAGMENT_TAG) as? ReviewFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 ReviewFragment::class.java.name

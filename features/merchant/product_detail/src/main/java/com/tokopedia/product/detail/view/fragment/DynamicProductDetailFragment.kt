@@ -71,6 +71,7 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.common_tradein.utils.TradeInPDPHelper
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.content.product.preview.view.activity.ProductPreviewActivity
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.permission.ImeiPermissionAsker
 import com.tokopedia.dialog.DialogUnify
@@ -144,7 +145,6 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.carttype.PostAtcLayout
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
@@ -162,7 +162,6 @@ import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.ProductDetailCoachMarkHelper
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
-import com.tokopedia.product.detail.common.view.ProductDetailGalleryActivity
 import com.tokopedia.product.detail.common.view.ProductDetailRestrictionHelper
 import com.tokopedia.product.detail.component.shipment.ShipmentUiModel
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
@@ -216,6 +215,7 @@ import com.tokopedia.product.detail.data.util.VariantMapper
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.di.ProductDetailComponent
+import com.tokopedia.product.detail.mapper.ProductDetailMapper
 import com.tokopedia.product.detail.tracking.APlusContentTracking
 import com.tokopedia.product.detail.tracking.BMGMTracking
 import com.tokopedia.product.detail.tracking.CommonTracker
@@ -487,6 +487,8 @@ open class DynamicProductDetailFragment :
 
     @Inject
     lateinit var affiliateCookieHelper: dagger.Lazy<AffiliateCookieHelper>
+
+    private val productDetailMapper: ProductDetailMapper = ProductDetailMapper()
 
     private var sharedViewModel: ProductDetailSharedViewModel? = null
     private var screenshotDetector: ScreenshotDetector? = null
@@ -2144,33 +2146,30 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onVideoFullScreenClicked() {
-        activity?.let { activity ->
-            productVideoCoordinator?.let {
-                val trackerData = viewModel.getDynamicProductInfoP1
-                it.pauseVideoAndSaveLastPosition()
-                sharedViewModel?.updateVideoDetailData(
-                    ProductVideoDetailDataModel(
-                        it.getVideoDataModel(),
-                        // Tracker Data
-                        trackerData?.shopTypeString
-                            ?: "",
-                        trackerData?.basic?.shopID.orEmpty(),
-                        viewModel.userId,
-                        trackerData?.basic?.productID.orEmpty()
-                    )
-                )
+        val dynamicProductInfoData = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
 
-                getProductDetailActivity()?.addNewFragment(ProductVideoDetailFragment())
-                DynamicProductDetailTracking.Click.eventClickFullScreenVideo(
-                    viewModel.getDynamicProductInfoP1,
+        productVideoCoordinator?.let {
+            it.pauseVideoAndSaveLastPosition()
+            sharedViewModel?.updateVideoDetailData(
+                ProductVideoDetailDataModel(
+                    it.getVideoDataModel(),
+                    // Tracker Data
+                    dynamicProductInfoData.shopTypeString,
+                    dynamicProductInfoData.basic.shopID,
                     viewModel.userId,
-                    DynamicProductDetailTracking.generateComponentTrackModel(
-                        pdpUiUpdater?.mediaMap,
-                        0
-                    )
+                    dynamicProductInfoData.basic.productID
                 )
-            }
+            )
+            DynamicProductDetailTracking.Click.eventClickFullScreenVideo(
+                viewModel.getDynamicProductInfoP1,
+                viewModel.userId,
+                DynamicProductDetailTracking.generateComponentTrackModel(
+                    pdpUiUpdater?.mediaMap,
+                    0
+                )
+            )
         }
+        openProductPreviewActivity(dynamicProductInfoData, 0)
     }
 
     override fun onVideoVolumeCLicked(isMute: Boolean) {
@@ -2310,22 +2309,21 @@ open class DynamicProductDetailFragment :
 
     override fun onImageClicked(position: Int) {
         val dynamicProductInfoData = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
+        openProductPreviewActivity(dynamicProductInfoData, position)
+    }
 
-        activity?.let {
-            val items = dynamicProductInfoData.data.getGalleryItems()
-            if (items.isEmpty()) return
-            val intent = ProductDetailGalleryActivity.createIntent(
-                context = it,
-                productDetailGallery = ProductDetailGallery(
-                    productId = dynamicProductInfoData.basic.productID,
-                    userId = viewModel.userId,
-                    page = ProductDetailGallery.Page.ProductDetail,
-                    items = items,
-                    selectedId = position.toString()
-                )
+    private fun openProductPreviewActivity(
+        data: DynamicProductInfoP1,
+        position: Int
+    ) {
+        val intent = ProductPreviewActivity.createIntent(
+            context = requireActivity(),
+            productContentData = productDetailMapper.mapProductDetailToProductPreview(
+                data = data,
+                position = position
             )
-            startActivity(intent)
-        }
+        )
+        startActivity(intent)
     }
 
     override fun txtTradeinClicked(componentTrackDataModel: ComponentTrackDataModel) {
