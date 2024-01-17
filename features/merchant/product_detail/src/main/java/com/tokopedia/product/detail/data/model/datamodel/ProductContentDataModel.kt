@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.data.model.datamodel
 import android.os.Bundle
 import com.tokopedia.analytics.performance.perf.BlocksLoadableComponent
 import com.tokopedia.analytics.performance.perf.LoadableComponent
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.common.data.model.pdplayout.Price
@@ -23,7 +22,6 @@ data class ProductContentDataModel(
     var freeOngkirImgUrl: String = "",
 
     // Ribbon Data
-    var shouldShowTradein: Boolean = false,
     var isNpl: Boolean = false,
     var shouldShowShareWidget: Boolean = false,
 ) : DynamicPdpDataModel,
@@ -38,19 +36,6 @@ data class ProductContentDataModel(
 
     override fun type(): String = type
 
-    fun showTradeIn(): Boolean {
-        return shouldShowTradein && !campaignWillShowRibbon()
-    }
-
-    private fun campaignWillShowRibbon(): Boolean {
-        val identifier = data?.campaign?.campaignIdentifier ?: return false
-        return when (identifier) {
-            CampaignRibbon.FLASH_SALE, CampaignRibbon.NEW_USER, CampaignRibbon.NPL, CampaignRibbon.THEMATIC_CAMPAIGN -> true
-            CampaignRibbon.SLASH_PRICE -> data?.campaign?.shouldShowRibbonCampaign == true || data?.thematicCampaign?.campaignName?.isNotEmpty() == true // if ribbon slash price appear, return true
-            else -> false
-        }
-    }
-
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }
@@ -58,7 +43,6 @@ data class ProductContentDataModel(
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductContentDataModel) {
             data?.hashCode() == newData.data?.hashCode() &&
-                shouldShowTradein == newData.shouldShowTradein &&
                 isNpl == newData.isNpl &&
                 isWishlisted == newData.isWishlisted &&
                 freeOngkirImgUrl == newData.freeOngkirImgUrl &&
@@ -81,10 +65,9 @@ data class ProductContentDataModel(
             }
 
             val bundle = Bundle()
-            if (shouldShowTradein != newData.shouldShowTradein ||
-                freeOngkirImgUrl != newData.freeOngkirImgUrl ||
+            if (freeOngkirImgUrl != newData.freeOngkirImgUrl ||
                 shouldShowShareWidget != newData.shouldShowShareWidget) {
-                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, PAYLOAD_TRADEIN_BOE_SHARE)
+                bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, PAYLOAD_BOE_SHARE)
                 return bundle
             }
 
@@ -104,7 +87,7 @@ data class ProductContentDataModel(
 
     companion object{
         const val PAYLOAD_WISHLIST = 1
-        const val PAYLOAD_TRADEIN_BOE_SHARE = 421321
+        const val PAYLOAD_BOE_SHARE = 421321
     }
 }
 
@@ -122,6 +105,10 @@ data class ProductContentMainData(
     val hasCampaign
         get() = campaign.campaignIdentifier != CampaignRibbon.NO_CAMPAIGN
 
+    /**
+     * Render priority => ongoing > mega thematic > upcoming > regular thematic
+     * return true if campaign is mega thematic and ongoing(id=1,2,3,4 or 7)
+     */
     val shouldOngoingRenderPriority
         get() = run {
             val id = campaign.campaignIdentifier

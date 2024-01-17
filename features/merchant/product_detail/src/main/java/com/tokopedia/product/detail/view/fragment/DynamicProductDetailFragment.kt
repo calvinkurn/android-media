@@ -2773,8 +2773,11 @@ open class DynamicProductDetailFragment :
 
         pdpUiUpdater?.updateNotifyMeAndContent(
             selectedChild?.productId.toString(),
-            viewModel.p2Data.value?.upcomingCampaigns,
+            viewModel.getP2()?.upcomingCampaigns,
             boeData.imageURL
+        )
+        pdpUiUpdater?.updateTradeInRibbon(
+            isEligible = viewModel.getP2()?.validateTradeIn?.isEligible.orFalse()
         )
         val selectedTicker = viewModel.p2Data.value?.getTickerByProductId(productId ?: "")
         pdpUiUpdater?.updateTicker(selectedTicker)

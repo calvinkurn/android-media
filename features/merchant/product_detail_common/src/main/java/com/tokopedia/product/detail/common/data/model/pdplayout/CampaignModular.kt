@@ -29,6 +29,10 @@ data class CampaignModular(
     @SerializedName("hideGimmick")
     val hideGimmick: Boolean = false,
     @SerializedName("isActive")
+    /**
+     * isActive is false when identifier is thematic and no campaign(0)
+     * otherwise when identifier 1,2,3,4,7
+     */
     val isActive: Boolean = false,
     @SerializedName("isAppsOnly")
     val isAppsOnly: Boolean = false,

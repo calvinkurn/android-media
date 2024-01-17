@@ -492,11 +492,15 @@ class CampaignRibbon @JvmOverloads constructor(
         }
     }
 
-    private fun hideComponent() {
+    fun hideComponent() {
         setLayoutHeight(Int.ZERO)
+        // set blank content to compose
+        if (_campaignTypeState.value != CampaignType.None) {
+            _campaignTypeState.value = CampaignType.None
+        }
     }
 
-    private fun showComponent() {
+    fun showComponent() {
         setLayoutHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 

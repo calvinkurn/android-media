@@ -214,7 +214,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateData(ProductDetailConstant.ONGOING_CAMPAIGN, loadInitialData) {
                 ongoingCampaignData?.apply {
                     data = it.createOngoingCampaignData()
-                    shouldShow = data?.hasCampaign.orFalse()
+                    shouldShowCampaign = data?.hasCampaign.orFalse()
                 }
             }
 
@@ -536,9 +536,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateNotifyMeAndContent(
                 productId,
                 it.upcomingCampaigns,
-                it.validateTradeIn.isEligible,
                 boeImageUrl
             )
+            updateTradeInRibbon(isEligible = it.validateTradeIn.isEligible)
             updateDataTradein(context, it.validateTradeIn)
             updateData(ProductDetailConstant.REVIEW) {
                 productReviewMap?.setData(
@@ -649,25 +649,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    private fun updateNotifyMeAndContent(
-        productId: String,
-        upcomingData: Map<String, ProductUpcomingData>?,
-        eligibleTradein: Boolean,
-        freeOngkirImgUrl: String
-    ) {
-        updateData(ProductDetailConstant.PRODUCT_CONTENT) {
-            basicContentMap?.run {
-                val selectedUpcoming = upcomingData?.get(productId)
-                this.isNpl = !selectedUpcoming?.upcomingType.isNullOrBlank()
-                this.shouldShowTradein = if (productTradeinMap == null) false else eligibleTradein
-                this.freeOngkirImgUrl = freeOngkirImgUrl
-                this.shouldShowShareWidget = true
-            }
-        }
-
-        updateCampaign(productId = productId, upcomingData = upcomingData)
-    }
-
     /**
      * Use this only when update variant, because no need to update tradein when variant changed
      */
@@ -681,25 +662,30 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 val selectedUpcoming = upcomingData?.get(productId)
                 this.isNpl = !selectedUpcoming?.upcomingType.isNullOrBlank()
                 this.freeOngkirImgUrl = freeOngkirImgUrl
+                this.shouldShowShareWidget = true
             }
         }
 
-        updateCampaign(productId = productId, upcomingData = upcomingData)
+        updateAllCampaign(productId = productId, upcomingData = upcomingData)
     }
 
     /**
      * Render priority => ongoing > mega thematic > upcoming > regular thematic
      */
-    private fun updateCampaign(
+    private fun updateAllCampaign(
         productId: String,
         upcomingData: Map<String, ProductUpcomingData>?,
     ) {
         updateUpcoming(productId, upcomingData)
 
+        updateOngoing()
+    }
+
+    private fun updateOngoing() {
         updateData(ProductDetailConstant.ONGOING_CAMPAIGN) {
             ongoingCampaignData?.run {
                 val upComing = notifyMeMap?.data
-                shouldShow = if (upComing?.hasValue == true) {
+                shouldShowCampaign = if (upComing?.hasValue == true) {
                     !upComing.isNpl.orFalse() && data?.shouldOngoingRenderPriority.orFalse()
                 } else {
                     data?.hasCampaign.orFalse()
@@ -731,6 +717,20 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 val ongoingHasRegular = !ongoingCampaignData?.data?.shouldOngoingRenderPriority
                     .orFalse()
                 shouldShow = data.campaignID.isNotBlank() && ongoingHasRegular
+            }
+        }
+    }
+
+    /**
+     * please call this function after you set campaign data
+     * because trade in ribbon not apprear when this is campaign
+     */
+    fun updateTradeInRibbon(isEligible: Boolean) {
+        updateData(ProductDetailConstant.ONGOING_CAMPAIGN) {
+            ongoingCampaignData?.run {
+                val isTradInEligible = isEligible && productTradeinMap != null
+                val hasNoCampaign = notifyMeMap?.shouldShow == false && data?.hasCampaign == false
+                shouldShowTradeIn = isTradInEligible && hasNoCampaign
             }
         }
     }

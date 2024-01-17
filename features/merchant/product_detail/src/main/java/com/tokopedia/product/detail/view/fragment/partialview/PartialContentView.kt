@@ -144,10 +144,4 @@ class PartialContentView(
             textDiscountRed.visibility = View.VISIBLE
         }
     }
-
-    fun renderTradein(showTradein: Boolean) = with(binding) {
-        tradeinHeaderContainer.shouldShowWithAction(showTradein) {
-            tradeinHeaderContainer.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, common_tradeinR.drawable.tradein_white), null, null, null)
-        }
-    }
 }
