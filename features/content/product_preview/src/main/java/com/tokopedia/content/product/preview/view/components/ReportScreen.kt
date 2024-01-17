@@ -43,7 +43,7 @@ fun ReportScreen(reports: List<ReportUiModel>, onSubmit: (ReportUiModel) -> Unit
             NestTypography(
                 text = stringResource(R.string.review_report_header),
                 textStyle = NestTheme.typography.paragraph2.copy(
-                    color = colorResource(id = unifyprinciplesR.color.Unify_NN950),
+                    color = NestTheme.colors.NN._950,
                 )
             )
             LazyColumn(modifier = Modifier.padding(vertical = 12.dp)) {
