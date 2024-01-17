@@ -14,9 +14,17 @@ import com.tokopedia.gamification.R
 import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.pdp.data.di.components.DaggerPdpComponent
 import com.tokopedia.gamification.pdp.data.di.components.PdpComponent
+import com.tokopedia.gamification.pdp.data.model.KetupatLandingPageData
 import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingAdapter
 import com.tokopedia.gamification.pdp.presentation.adapters.KetupatLandingAdapterTypeFactory
 import com.tokopedia.gamification.pdp.presentation.viewmodels.KetupatLandingViewModel
+import com.tokopedia.gamification.utils.KetupatSharingComponent
+import com.tokopedia.searchbar.navigation_component.NavSource
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
+import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
 class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() {
@@ -68,6 +76,30 @@ class KetupatLandingFragment : BaseViewModelFragment<KetupatLandingViewModel>() 
         ketupatRV?.adapter = adapter
 
         ketupatLandingViewModel?.getScratchCardsLandingInfo("ketupat-thr-2024")
+    }
+
+    //Call from the function where we get the landing page data
+    fun setSharingHeaderIconAndListener(view: View, ketupatLandingPageData: KetupatLandingPageData){
+        if(ketupatLandingPageData.gamiGetScratchCardLandingPage.appBar?.shared != null) {
+            val userSession = UserSession(context)
+            val toolBar = view.findViewById<NavToolbar>(R.id.ketupat_navToolbar)
+            toolBar.setIcon(
+                IconBuilder(IconBuilderFlag(NavSource.SOS))
+                    .addIcon(
+                        IconList.ID_SHARE,
+                        onClick = {
+                            //Open share bottom sheet
+                            val sharingComponent = KetupatSharingComponent(view)
+                            sharingComponent.show(
+                                childFragmentManager,
+                                ketupatLandingPageData.gamiGetScratchCardLandingPage.appBar?.shared,
+                                userSession.userId
+                            )
+                        },
+                        disableDefaultGtmTracker = true
+                    )
+            )
+        }
     }
 
     override fun getViewModelType(): Class<KetupatLandingViewModel> {
