@@ -8,10 +8,17 @@
     android:gravity="start"
     android:padding="4dp">
 
-    <com.tokopedia.productcard.reimagine.ProductCardListCarouselView
-        android:id="@+id/productCardReimagineListCarouselView"
+    <FrameLayout
+        android:id="@+id/productCardContainerHeightCalculator"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.productcard.reimagine.ProductCardListCarouselView
+            android:id="@+id/productCardReimagineListCarouselView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/productCardReimagineTestDescription"

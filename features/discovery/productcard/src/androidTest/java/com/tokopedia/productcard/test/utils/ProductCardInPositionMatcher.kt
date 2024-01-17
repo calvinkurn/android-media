@@ -82,6 +82,7 @@ private class ProductCardInPositionMatcher(
         productcardtestR.id.productCardReimagineListView,
         productcardtestR.id.productCardTestDivider,
         productcardtestR.id.productCardReimagineListCarouselView,
+        productcardtestR.id.productCardContainerHeightCalculator,
     )
 
     private fun ViewGroup.getUncheckedChildren(): List<View> {

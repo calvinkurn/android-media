@@ -17,28 +17,7 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridCarouselView(
 
     return withContext(coroutineDispatcher) {
         val maxHeight = maxOfOrNull { productCardModel ->
-            val productCardComponentHeightList = listOf(
-                productImageWidth,
-                gridCarouselCardPaddingBottom(context),
-                stockInfoHeight(context, productCardModel),
-                gridCarouselNameHeight(context),
-                priceSectionHeight(context, productCardModel),
-                discountSectionBelowPriceHeight(context, productCardModel),
-                benefitSectionHeight(context, productCardModel),
-                credibilitySectionHeight(context, productCardModel),
-                shopSectionHeight(context, productCardModel),
-                freeShippingHeight(context, productCardModel),
-            )
-
-            val productCardHeight = productCardComponentHeightList.sum()
-
-            Timber.d(
-                "Product Card Components Height List: %s; Total: %s",
-                productCardComponentHeightList.joinToString(separator = ", "),
-                productCardHeight.toString(),
-            )
-
-            productCardHeight
+            productCardGridCarouselHeight(context, productCardModel, productImageWidth)
         }?.toInt() ?: 0
 
         Timber.d("Product Card Grid Max Height: %s", maxHeight.toString())
@@ -47,14 +26,44 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridCarouselView(
     }
 }
 
+internal fun productCardGridCarouselHeight(
+    context: Context?,
+    productCardModel: ProductCardModel,
+    productImageWidth: Int = context.getPixel(productcardR.dimen.product_card_reimagine_grid_carousel_width),
+): Int {
+    val productCardComponentHeightList = listOf(
+        productImageWidth,
+        gridCarouselCardPaddingBottom(context),
+        stockInfoHeight(context, productCardModel),
+        gridCarouselNameHeight(context, productCardModel),
+        priceSectionHeight(context, productCardModel),
+        discountSectionBelowPriceHeight(context, productCardModel),
+        benefitSectionHeight(context, productCardModel),
+        credibilitySectionHeight(context, productCardModel),
+        shopSectionHeight(context, productCardModel),
+        freeShippingHeight(context, productCardModel),
+    )
+
+    val productCardHeight = productCardComponentHeightList.sum()
+
+    Timber.d(
+        "Product Card Components Height List: %s; Total: %s",
+        productCardComponentHeightList.joinToString(separator = ", "),
+        productCardHeight.toString(),
+    )
+
+    return productCardHeight
+}
+
 private fun gridCarouselCardPaddingBottom(context: Context?) =
     context.getPixel(productcardR.dimen.product_card_reimagine_carousel_padding_bottom)
 
-private fun gridCarouselNameHeight(context: Context?): Int {
+private fun gridCarouselNameHeight(context: Context?, productCardModel: ProductCardModel): Int {
     val nameLineHeight = productcardR.dimen.product_card_reimagine_name_1_line_height
 
     return context.getPixel(productcardR.dimen.product_card_reimagine_name_image_margin_top)
         .plus(context.getPixel(nameLineHeight))
+        .plus(labelAssignedValueAdditionalHeight(context, productCardModel))
 }
 
 suspend fun List<ProductCardModel>?.getMaxHeightForListCarouselView(
@@ -65,34 +74,7 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListCarouselView(
 
     return withContext(coroutineDispatcher) {
         val maxHeight = maxOfOrNull { productCardModel ->
-            val productCardImageHeight =
-                context.getPixel(productcardR.dimen.product_card_reimagine_list_carousel_image_size)
-            val productCardStockInfoHeight = stockInfoHeight(context, productCardModel)
-
-            val productCardComponentHeightList = listOf(
-                context.getPixel(productcardR.dimen.product_card_reimagine_name_1_line_height),
-                priceSectionHeight(context, productCardModel),
-                discountSectionBelowPriceHeight(context, productCardModel),
-                benefitSectionHeight(context, productCardModel),
-                credibilitySectionHeight(context, productCardModel),
-                shopSectionHeight(context, productCardModel),
-                freeShippingHeight(context, productCardModel),
-            )
-
-            val productCardComponentHeight = productCardComponentHeightList.sum()
-            val productCardHeight = maxOf(
-                productCardImageHeight + productCardStockInfoHeight,
-                productCardComponentHeight
-            )
-
-            Timber.d(
-                "Product Card Components Height List: %s; Total Component Height: %s; Final Height: %s",
-                productCardComponentHeightList.joinToString(separator = ", "),
-                productCardComponentHeight.toString(),
-                productCardHeight
-            )
-
-            productCardHeight
+            productCardListCarouselHeight(context, productCardModel)
         }?.toInt() ?: 0
 
         Timber.d("Product Card List Max Height: %s", maxHeight.toString())
@@ -100,6 +82,49 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListCarouselView(
         maxHeight
     }
 }
+
+internal fun productCardListCarouselHeight(
+    context: Context?,
+    productCardModel: ProductCardModel
+): Int {
+    val productCardImageHeight =
+        context.getPixel(productcardR.dimen.product_card_reimagine_list_carousel_image_size)
+    val productCardStockInfoHeight = stockInfoHeight(context, productCardModel)
+
+    val productCardComponentHeightList = listOf(
+        listCarouselNameHeight(context, productCardModel),
+        priceSectionHeight(context, productCardModel),
+        discountSectionBelowPriceHeight(context, productCardModel),
+        benefitSectionHeight(context, productCardModel),
+        credibilitySectionHeight(context, productCardModel),
+        shopSectionHeight(context, productCardModel),
+        freeShippingHeight(context, productCardModel),
+    )
+
+    val productCardComponentHeight = productCardComponentHeightList.sum()
+    val productCardHeight = maxOf(
+        productCardImageHeight + productCardStockInfoHeight,
+        productCardComponentHeight
+    )
+
+    Timber.d(
+        "Product Card Components Height List: %s; Total Component Height: %s; Final Height: %s",
+        productCardComponentHeightList.joinToString(separator = ", "),
+        productCardComponentHeight.toString(),
+        productCardHeight
+    )
+
+    return productCardHeight
+}
+
+private fun listCarouselNameHeight(context: Context?, productCardModel: ProductCardModel) =
+    context.getPixel(productcardR.dimen.product_card_reimagine_name_2_line_height)
+        .plus(labelAssignedValueAdditionalHeight(context, productCardModel))
+
+private fun labelAssignedValueAdditionalHeight(context: Context?, productCardModel: ProductCardModel) =
+    if (productCardModel.labelAssignedValue() != null)
+        context.getPixel(productcardR.dimen.product_card_reimagine_label_assigned_value_additional_height)
+    else 0
 
 private fun stockInfoHeight(context: Context?, productCardModel: ProductCardModel) =
     if (productCardModel.stockInfo() != null)

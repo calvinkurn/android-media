@@ -5,15 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productcard.reimagine.ProductCardGridCarouselView
 import com.tokopedia.productcard.reimagine.ProductCardModel
+import com.tokopedia.productcard.reimagine.productCardGridCarouselHeight
 import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.productcard.R as productcardR
 import com.tokopedia.productcard.test.R as productcardtestR
@@ -71,13 +73,26 @@ class ProductCardGridCarouselActivityTest: AppCompatActivity() {
         private val testDescription: TextView? by lazy {
             itemView.findViewById(productcardtestR.id.productCardReimagineTestDescription)
         }
+        private val productCardContainerCalculator: FrameLayout? by lazy {
+            itemView.findViewById(productcardtestR.id.productCardContainerHeightCalculator)
+        }
         private val productCardView: ProductCardGridCarouselView? by lazy {
             itemView.findViewById(productcardtestR.id.productCardReimagineGridCarouselView)
         }
 
         fun bind(productCardModel: ProductCardModel, description: String) {
+            val productCardGridCarouselHeight =
+                productCardGridCarouselHeight(itemView.context, productCardModel)
+
+            productCardContainerCalculator?.layoutParams?.apply {
+                height = productCardGridCarouselHeight
+            }
+
             setBackgroundContainer(productCardModel, itemView)
-            testDescription?.text = "$bindingAdapterPosition $description"
+
+            testDescription?.text =
+                "$bindingAdapterPosition $description, " +
+                "\nHeight: $productCardGridCarouselHeight px; ${productCardGridCarouselHeight.toDp()} dp"
 
             productCardView?.findViewById<CardUnify2?>(
                 productcardR.id.productCardCardUnifyContainer

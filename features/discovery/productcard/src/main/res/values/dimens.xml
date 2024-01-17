@@ -179,7 +179,8 @@
 
     <dimen name="product_card_reimagine_name_image_margin_top">6dp</dimen>
     <dimen name="product_card_reimagine_name_1_line_height">18dp</dimen>
-    <dimen name="product_card_reimagine_name_2_line_height">36dp</dimen>
+    <dimen name="product_card_reimagine_name_2_line_height">38dp</dimen>
+    <dimen name="product_card_reimagine_label_assigned_value_additional_height">4dp</dimen>
     <dimen name="product_card_reimagine_price_margin_top">4dp</dimen>
     <dimen name="product_card_reimagine_price_height">18dp</dimen>
     <dimen name="product_card_reimagine_slashed_price_margin_top">2dp</dimen>
