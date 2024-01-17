@@ -1,7 +1,10 @@
 package com.tokopedia.play.broadcaster.shorts.helper
 
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
+import androidx.compose.ui.test.onLast
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -210,4 +213,21 @@ fun AndroidComposeTestRule<ActivityScenarioRule<PlayShortsTestActivity>, PlaySho
 
 fun AndroidComposeTestRule<ActivityScenarioRule<PlayShortsTestActivity>, PlayShortsTestActivity>.clickRefreshContentTag() {
     onNode(hasContentDescription("bg local load")).performClick()
+}
+
+/** Interspersing Video Helper */
+fun AndroidComposeTestRule<ActivityScenarioRule<PlayShortsTestActivity>, PlayShortsTestActivity>.clickInterspersingToggle() {
+    onNodeWithTag("interspersing_switch_test_tag").performClick()
+}
+
+fun AndroidComposeTestRule<ActivityScenarioRule<PlayShortsTestActivity>, PlayShortsTestActivity>.clickVideoPdpOnInterspersingConfirmation() {
+    onAllNodes(hasTestTag("card_interspersing_video")).onLast().performClick()
+}
+
+fun AndroidComposeTestRule<ActivityScenarioRule<PlayShortsTestActivity>, PlayShortsTestActivity>.clickBackInterspersingConfirmation() {
+    onNodeWithTag("btn_back_interspersing_confirmation_test_tag").performClick()
+}
+
+fun AndroidComposeTestRule<ActivityScenarioRule<PlayShortsTestActivity>, PlayShortsTestActivity>.clickNextInterspersingConfirmation() {
+    onNodeWithTag("btn_next_interspersing_confirmation_test_tag").performClick()
 }

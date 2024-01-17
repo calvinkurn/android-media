@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -64,10 +65,12 @@ fun InterspersingVideoLayout(
         NestSwitch(
             isChecked = isChecked,
             onCheckedChanged = onSwitchChanged,
-            modifier = Modifier.constrainAs(switch) {
-                end.linkTo(parent.end)
-                start.linkTo(tvTitle.end)
-            }
+            modifier = Modifier
+                .testTag("interspersing_switch_test_tag")
+                .constrainAs(switch) {
+                    end.linkTo(parent.end)
+                    start.linkTo(tvTitle.end)
+                }
         )
     }
 }

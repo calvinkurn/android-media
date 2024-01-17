@@ -11,6 +11,7 @@ import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRe
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ContentProductPickerSellerRepository
 import com.tokopedia.content.product.picker.seller.domain.repository.ProductPickerSellerCommonRepository
+import com.tokopedia.content.test.util.pressBack
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.helper.PlayBroadcastCassavaValidator
 import com.tokopedia.play.broadcaster.shorts.builder.ShortsUiModelBuilder
@@ -21,7 +22,14 @@ import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.helper.PlayShortsInjector
 import com.tokopedia.play.broadcaster.shorts.helper.PlayShortsLauncher
+import com.tokopedia.play.broadcaster.shorts.helper.clickBackInterspersingConfirmation
+import com.tokopedia.play.broadcaster.shorts.helper.clickCloseBottomSheet
+import com.tokopedia.play.broadcaster.shorts.helper.clickContentTag
 import com.tokopedia.play.broadcaster.shorts.helper.clickContinueOnPreparationPage
+import com.tokopedia.play.broadcaster.shorts.helper.clickInterspersingToggle
+import com.tokopedia.play.broadcaster.shorts.helper.clickNextInterspersingConfirmation
+import com.tokopedia.play.broadcaster.shorts.helper.clickUploadVideo
+import com.tokopedia.play.broadcaster.shorts.helper.clickVideoPdpOnInterspersingConfirmation
 import com.tokopedia.play.broadcaster.shorts.helper.completeMandatoryMenu
 import com.tokopedia.play.broadcaster.shorts.view.activity.PlayShortsActivity
 import com.tokopedia.test.application.compose.createAndroidIntentComposeRule
@@ -47,7 +55,7 @@ class PlayShortsInterspersingAnalyticTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private val cassavaValidator = PlayBroadcastCassavaValidator.buildForShorts(cassavaTestRule)
+    private val cassavaValidator = PlayBroadcastCassavaValidator.buildForInterspersingVideo(cassavaTestRule)
 
     private val launcher = PlayShortsLauncher(targetContext)
 
@@ -62,12 +70,15 @@ class PlayShortsInterspersingAnalyticTest {
 
     private val uiModelBuilder = ShortsUiModelBuilder()
 
-    private val mockShortsConfig = uiModelBuilder.buildShortsConfig()
+    private val mockShortsConfig = uiModelBuilder.buildShortsConfig(eligibleForInterspersing = true, productCountForInterspersing = 1)
     private val mockAccountList = uiModelBuilder.buildAccountListModel(usernameBuyer = false, tncBuyer = false)
     private val mockAccountShop = mockAccountList[0]
     private val mockProductTagSection = uiModelBuilder.buildProductTagSectionList(size = 1)
     private val mockEtalaseProducts = uiModelBuilder.buildEtalaseProducts()
     private val mockTags = uiModelBuilder.buildTags()
+    private val mockFirstTagText = mockTags.tags.first().tag
+    private val mockHasPdpVideo = uiModelBuilder.buildHasPdpVideo()
+    private val mockHasNoPdpVideo = uiModelBuilder.buildHasNoPdpVideo()
     private val mockException = Exception("Network Error")
 
     init {
@@ -83,6 +94,7 @@ class PlayShortsInterspersingAnalyticTest {
         coEvery { mockContentProductPickerSGCRepo.getProductsInEtalase(any(), any(), any(), any()) } returns mockEtalaseProducts
         coEvery { mockContentProductPickerSGCRepo.setProductTags(any(), any()) } returns Unit
         coEvery { mockContentProductPickerSGCRepo.getProductTagSummarySection(any()) } returns mockProductTagSection
+        coEvery { mockShortsRepo.checkProductCustomVideo(any()) } returns mockHasPdpVideo
         coEvery { mockShortsRepo.getTagRecommendation(any()) } returns mockTags
         coEvery { mockShortsRepo.saveTag(any(), any()) } returns true
 
@@ -113,10 +125,43 @@ class PlayShortsInterspersingAnalyticTest {
         completeMandatoryMenu()
 
         clickContinueOnPreparationPage()
+
+        composeActivityTestRule.clickContentTag(mockFirstTagText)
     }
 
     @Test
     fun testAnalytic_interspersingVideo() {
         setupSummaryFlow()
+
+        composeActivityTestRule.apply {
+            clickInterspersingToggle()
+            clickInterspersingToggle()
+            verify("click - show video on pdp")
+
+            coEvery { mockShortsRepo.checkProductCustomVideo(any()) } throws mockException
+            clickUploadVideo()
+            verify("view - error toaster show video PDP")
+
+            coEvery { mockShortsRepo.checkProductCustomVideo(any()) } returns mockHasPdpVideo
+            clickUploadVideo()
+            clickCloseBottomSheet()
+            verify("click - x icon video product option for pdp")
+
+            clickUploadVideo()
+            clickBackInterspersingConfirmation()
+            verify("click - kembali show video on pdp")
+
+            clickUploadVideo()
+            clickVideoPdpOnInterspersingConfirmation()
+            verify("click - video card option for pdp")
+
+            pressBack()
+            clickNextInterspersingConfirmation()
+            verify("click - lanjut show video on pdp")
+        }
+    }
+
+    private fun verify(eventAction: String) {
+        cassavaValidator.verify(eventAction)
     }
 }

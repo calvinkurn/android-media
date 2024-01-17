@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -120,27 +121,31 @@ fun InterspersingConfirmationLayout(
             text = stringResource(id = R.string.play_back),
             variant = ButtonVariant.GHOST,
             onClick = onClickBack,
-            modifier = Modifier.constrainAs(btnBack) {
-                top.linkTo(oldContentSection.bottom, 28.dp)
-                bottom.linkTo(parent.bottom, 16.dp)
-                start.linkTo(parent.start)
-                end.linkTo(btnNext.start, 4.dp)
+            modifier = Modifier
+                .testTag("btn_back_interspersing_confirmation_test_tag")
+                .constrainAs(btnBack) {
+                    top.linkTo(oldContentSection.bottom, 28.dp)
+                    bottom.linkTo(parent.bottom, 16.dp)
+                    start.linkTo(parent.start)
+                    end.linkTo(btnNext.start, 4.dp)
 
-                width = Dimension.fillToConstraints
-            }
+                    width = Dimension.fillToConstraints
+                }
         )
 
         NestButton(
             text = stringResource(id = R.string.play_bro_next_action),
             onClick = onClickNext,
-            modifier = Modifier.constrainAs(btnNext) {
-                top.linkTo(btnBack.top)
-                bottom.linkTo(btnBack.bottom)
-                end.linkTo(parent.end)
-                start.linkTo(btnBack.end, 4.dp)
+            modifier = Modifier
+                .testTag("btn_next_interspersing_confirmation_test_tag")
+                .constrainAs(btnNext) {
+                    top.linkTo(btnBack.top)
+                    bottom.linkTo(btnBack.bottom)
+                    end.linkTo(parent.end)
+                    start.linkTo(btnBack.end, 4.dp)
 
-                width = Dimension.fillToConstraints
-            }
+                    width = Dimension.fillToConstraints
+                }
         )
     }
 }
@@ -160,6 +165,7 @@ private fun ContentPreviewSection(
                 onClickCover?.invoke()
             }
             .padding(horizontal = 16.dp, vertical = 12.dp)
+            .testTag("card_interspersing_video")
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
