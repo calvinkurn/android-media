@@ -184,7 +184,7 @@ class ShareExBottomSheet :
                         showFailGenerateAffiliateLinkToaster(it.message, it.error.message.toString())
                     }
                 } else {
-                    when(it.channelEnum) {
+                    when (it.channelEnum) {
                         ShareExChannelEnum.COPY_LINK -> {
                             val isSuccessCopy = copyTextToClipboard(it.message)
                             if (isSuccessCopy) {
@@ -201,6 +201,7 @@ class ShareExBottomSheet :
                                     copyTextToClipboard(it.message)
                                 }
                                 navigateWithIntent(intent)
+                                dismiss()
                             }
                         }
                     }
@@ -241,7 +242,10 @@ class ShareExBottomSheet :
         message: String,
         toasterMessage: String
     ) {
-        showToaster(toasterMessage, Toaster.TYPE_ERROR, Toaster.LENGTH_LONG,
+        showToaster(
+            toasterMessage,
+            Toaster.TYPE_ERROR,
+            Toaster.LENGTH_LONG,
             getString(R.string.shareex_action_copy_link)
         ) {
             val isSuccessCopy = copyTextToClipboard(message)
