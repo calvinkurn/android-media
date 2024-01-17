@@ -96,7 +96,7 @@ class ReviewParentContentViewHolder(
 
     interface Listener {
         fun onReviewCredibilityClicked(author: AuthorUiModel)
-        fun onMenuClicked(menus: MenuStatus)
+        fun onMenuClicked(menu: MenuStatus)
         fun onLike(status: LikeUiState)
     }
 

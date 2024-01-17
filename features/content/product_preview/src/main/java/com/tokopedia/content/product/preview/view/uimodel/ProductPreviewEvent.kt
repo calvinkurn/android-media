@@ -18,8 +18,13 @@ sealed interface ProductPreviewEvent {
 
     data class ShowErrorToaster(
         val message: Throwable,
+        val type: Type = Type.Unknown,
         val onClick: () -> Unit
-    ) : ProductPreviewEvent
+    ) : ProductPreviewEvent {
+        enum class Type(val textRes: Int) {
+            ATC(R.string.bottom_atc_failed_toaster), Report(R.string.review_report_failed_toaster), Unknown(0);
+        }
+    }
 
     data class NavigateEvent(
         val appLink: String

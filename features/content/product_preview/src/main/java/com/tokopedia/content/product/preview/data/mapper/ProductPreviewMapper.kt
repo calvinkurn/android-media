@@ -74,8 +74,8 @@ class ProductPreviewMapper @Inject constructor(private val userSession: UserSess
         )
     fun mapRemindMe(response: AddWishlistResponse): BottomNavUiModel.RemindMeUiModel =
         BottomNavUiModel.RemindMeUiModel(
-            isSuccess = response.data.wishlistAdd.success,
-            message = response.data.wishlistAdd.message
+            isSuccess = response.wishlistAdd.success,
+            message = response.wishlistAdd.message
         )
     fun mapLike(response: LikeReviewResponse): LikeUiState = LikeUiState(
         count = response.data.totalLike,
