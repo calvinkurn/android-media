@@ -15,9 +15,9 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -53,46 +53,48 @@ class DigitalAddToCartViewModel @Inject constructor(
         if (!userSession.isLoggedIn) {
             _addToCartResult.postValue(Fail(MessageErrorException(MESSAGE_ERROR_NON_LOGIN)))
         } else {
-            launchCatchError(block = {
-                val data = withContext(dispatcher) {
-                    digitalAddToCartUseCase.execute(
-                        digitalCheckoutPassData,
-                        userSession.userId,
-                        digitalIdentifierParam,
-                        atcMultiCheckoutParam
-                    )
-                }
-                data?.let {
-                    if (atcMultiCheckoutParam.isEmpty()) {
-                        rechargeAnalytics.eventAddToCart(it)
+            launch {
+                runCatching {
+                    val data = withContext(dispatcher) {
+                        digitalAddToCartUseCase.execute(
+                            digitalCheckoutPassData,
+                            userSession.userId,
+                            digitalIdentifierParam,
+                            atcMultiCheckoutParam
+                        )
                     }
-                    if (it.atcError != null) {
-                        resetAtcMultiCheckoutParam()
-                        _errorAtc.postValue(it.atcError)
-                    } else {
-                        if (atcMultiCheckoutParam.isNotEmpty()) {
-                            resetAtcMultiCheckoutParam()
-                            _addToCartMultiCheckoutResult.postValue(it)
-                        } else if (it.categoryId.isNotEmpty()) {
-                            _addToCartResult.postValue(Success(it.categoryId))
-                        } else {
-                            _addToCartResult.postValue(
-                                Success(
-                                    digitalCheckoutPassData.categoryId ?: ""
-                                )
-                            )
+                    data?.let {
+                        if (atcMultiCheckoutParam.isEmpty()) {
+                            rechargeAnalytics.eventAddToCart(it)
                         }
+                        if (it.atcError != null) {
+                            resetAtcMultiCheckoutParam()
+                            _errorAtc.postValue(it.atcError)
+                        } else {
+                            if (atcMultiCheckoutParam.isNotEmpty()) {
+                                resetAtcMultiCheckoutParam()
+                                _addToCartMultiCheckoutResult.postValue(it)
+                            } else if (it.categoryId.isNotEmpty()) {
+                                _addToCartResult.postValue(Success(it.categoryId))
+                            } else {
+                                _addToCartResult.postValue(
+                                    Success(
+                                        digitalCheckoutPassData.categoryId ?: ""
+                                    )
+                                )
+                            }
+                        }
+                        return@launch
                     }
-                    return@launchCatchError
-                }
-                _addToCartResult.postValue(Fail(Throwable(DigitalFailGetCartId())))
-            }) {
-                if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
-                    _addToCartResult.postValue(Fail(MessageErrorException(it.message)))
-                } else if (it is DigitalAtcErrorException) {
-                    _errorAtc.postValue(it.getError())
-                } else {
-                    _addToCartResult.postValue(Fail(it))
+                    _addToCartResult.postValue(Fail(Throwable(DigitalFailGetCartId())))
+                }.onFailure {
+                    if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
+                        _addToCartResult.postValue(Fail(MessageErrorException(it.message)))
+                    } else if (it is DigitalAtcErrorException) {
+                        _errorAtc.postValue(it.getError())
+                    } else {
+                        _addToCartResult.postValue(Fail(it))
+                    }
                 }
             }
         }
