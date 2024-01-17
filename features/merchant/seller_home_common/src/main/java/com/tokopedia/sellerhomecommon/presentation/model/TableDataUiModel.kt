@@ -130,7 +130,9 @@ sealed class TableRowsUiModel(
             @SerializedName("cta")
             val cta: String = String.EMPTY,
             @SerializedName("url")
-            val url: String = String.EMPTY
+            val url: String = String.EMPTY,
+            @SerializedName("productID")
+            val productId: String = String.EMPTY
         ): Parcelable
     }
 
