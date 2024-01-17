@@ -7,7 +7,7 @@ sealed class AutomateCouponModel {
         val tnc: DynamicColorText,
         val backgroundUrl: String,
         val timeLimit: TimeLimit,
-        val iconUrl: String?,
+        val iconUrl: String,
         val shopName: DynamicColorText?,
         val badgeText: String?
     ) : AutomateCouponModel()
