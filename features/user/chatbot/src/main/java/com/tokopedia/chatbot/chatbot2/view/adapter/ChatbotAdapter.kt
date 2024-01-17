@@ -169,6 +169,18 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl) :
         notifyDataSetChanged()
     }
 
+    override fun removeTyping() {
+        val index = visitables.indexOf(typingModel)
+        if (index != -1) {
+            this.visitables.removeAt(index)
+            notifyItemRemoved(index)
+            val prevIndex = index - 1
+            if (prevIndex < visitables.size) {
+                notifyItemChanged(prevIndex)
+            }
+        }
+    }
+
     companion object {
         const val TOKOPEDIA_CARE = "Tokopedia Care"
         const val SENDER_INFO_PREFIX = "chatbot_"
