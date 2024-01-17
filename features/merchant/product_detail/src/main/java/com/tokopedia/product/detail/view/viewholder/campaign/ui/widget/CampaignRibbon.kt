@@ -140,7 +140,7 @@ class CampaignRibbon @JvmOverloads constructor(
             binding.campaignRibbonCompose.isVisible = type.value != CampaignType.None
 
             NestTheme {
-                CampaignRibbonCompose(type = type.value)
+                type.value.Content()
             }
         }
     }
