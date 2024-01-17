@@ -23,6 +23,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvcwidget.databinding.PromoBenefitBottomsheetBinding
 import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
@@ -107,7 +108,10 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
                         }
 
                         usablePromoAdapter.submitList(model.usablePromo)
-                        infoAdapter.submitList(model.promoInfo)
+//                        infoAdapter.submitList(model.promoInfo)
+
+                        tvTnc.text = MethodChecker.fromHtml(model.tnc.html)
+                        tvTnc.setTextColor(Color.parseColor(model.tnc.color))
                     }
                 }
             }
@@ -130,6 +134,7 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
 
                 infoStateIsShown = !infoStateIsShown
                 rvInfo.isVisible = infoStateIsShown
+                tvTnc.isVisible = infoStateIsShown
             }
         }
     }
