@@ -1,25 +1,26 @@
 package com.tokopedia.shareexperience.ui
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.shareexperience.data.di.ShareExComponent
+import com.tokopedia.shareexperience.R
+import com.tokopedia.shareexperience.data.di.DaggerShareExComponent
 import com.tokopedia.shareexperience.databinding.ShareexperienceBottomSheetBinding
 import com.tokopedia.shareexperience.domain.model.ShareExChannelEnum
 import com.tokopedia.shareexperience.domain.model.ShareExMimeTypeEnum
@@ -29,10 +30,12 @@ import com.tokopedia.shareexperience.ui.adapter.decoration.ShareExBottomSheetSpa
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactoryImpl
 import com.tokopedia.shareexperience.ui.listener.ShareExAffiliateRegistrationListener
+import com.tokopedia.shareexperience.ui.listener.ShareExBottomSheetListener
 import com.tokopedia.shareexperience.ui.listener.ShareExChannelListener
 import com.tokopedia.shareexperience.ui.listener.ShareExChipsListener
 import com.tokopedia.shareexperience.ui.listener.ShareExErrorListener
 import com.tokopedia.shareexperience.ui.listener.ShareExImageGeneratorListener
+import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -40,7 +43,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
-import com.tokopedia.shareexperience.R
 
 class ShareExBottomSheet :
     BottomSheetUnify(),
@@ -51,8 +53,7 @@ class ShareExBottomSheet :
     ShareExErrorListener {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModel: ShareExViewModel by activityViewModels { viewModelFactory }
+    lateinit var viewModel: ShareExViewModel
 
     private var viewBinding by autoClearedNullable<ShareexperienceBottomSheetBinding>()
     private val adapter by lazy {
@@ -65,6 +66,12 @@ class ShareExBottomSheet :
                 errorListener = this
             )
         )
+    }
+
+    private var listener: ShareExBottomSheetListener? = null
+
+    fun setListener(listener: ShareExBottomSheetListener) {
+        this.listener = listener
     }
 
     override fun onCreateView(
@@ -80,7 +87,6 @@ class ShareExBottomSheet :
         viewBinding = ShareexperienceBottomSheetBinding.inflate(inflater)
         setChild(viewBinding?.root)
         clearContentPadding = true
-        overlayClickDismiss = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,16 +94,32 @@ class ShareExBottomSheet :
         initInjector()
     }
 
-    @Suppress("UNCHECKED_CAST")
     private fun initInjector() {
-        (activity as HasComponent<ShareExComponent>).component.inject(this)
+        val baseMainApplication = activity?.applicationContext as? BaseMainApplication
+        baseMainApplication?.let {
+            DaggerShareExComponent
+                .builder()
+                .baseAppComponent(it.baseAppComponent)
+                .build()
+                .inject(this)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupBottomSheetModel()
         initializeRecyclerView()
         initObservers()
         viewModel.processAction(ShareExAction.InitializePage)
+    }
+
+    @SuppressLint("DeprecatedMethod")
+    private fun setupBottomSheetModel() {
+        viewModel.bottomSheetArgs = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable(BOTTOM_SHEET_DATA_KEY, ShareExBottomSheetArg::class.java)
+        } else {
+            arguments?.getParcelable(BOTTOM_SHEET_DATA_KEY)
+        }
     }
 
     private fun initializeRecyclerView() {
@@ -126,6 +148,7 @@ class ShareExBottomSheet :
                 }
             }
         }
+        viewModel.setupViewModelObserver()
     }
 
     private suspend fun observeBottomSheetUiState() {
@@ -165,7 +188,8 @@ class ShareExBottomSheet :
                         ShareExChannelEnum.COPY_LINK -> {
                             val isSuccessCopy = copyTextToClipboard(it.message)
                             if (isSuccessCopy) {
-                                showSuccessCopyLinkToaster()
+                                dismiss()
+                                listener?.onSuccessCopyLink()
                             }
                         }
                         ShareExChannelEnum.OTHERS -> {
@@ -222,17 +246,10 @@ class ShareExBottomSheet :
         ) {
             val isSuccessCopy = copyTextToClipboard(message)
             if (isSuccessCopy) {
-                showSuccessCopyLinkToaster()
+                dismiss()
+                listener?.onSuccessCopyLink()
             }
         }
-    }
-
-    private fun showSuccessCopyLinkToaster() {
-        showToaster(
-            getString(R.string.shareex_success_copy_link),
-            Toaster.TYPE_NORMAL,
-            Toaster.LENGTH_SHORT
-        )
     }
 
     override fun onChipClicked(position: Int, text: String) {
@@ -252,9 +269,7 @@ class ShareExBottomSheet :
     }
 
     override fun onErrorActionClicked() {
-        if (activity is ShareExLoadingActivity) {
-            (activity as? ShareExLoadingActivity)?.refreshPage()
-        }
+        listener?.refreshPage()
     }
 
     private fun navigateToPage(appLink: String) {
@@ -275,12 +290,30 @@ class ShareExBottomSheet :
     private fun copyTextToClipboard(text: String): Boolean {
         return try {
             val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
-            val clip = ClipData.newPlainText("Share Link", text)
+            val clip = ClipData.newPlainText(getString(R.string.shareex_action_copy_link), text)
             clipboard?.setPrimaryClip(clip)
             true
         } catch (throwable: Throwable) {
             Timber.d(throwable)
             false
+        }
+    }
+
+    override fun onDestroyView() {
+        listener = null
+        super.onDestroyView()
+    }
+
+    companion object {
+        private const val BOTTOM_SHEET_DATA_KEY = "bottom_sheet_data_key"
+
+        fun newInstance(bottomSheetArg: ShareExBottomSheetArg): ShareExBottomSheet {
+            val fragment = ShareExBottomSheet()
+            val bundle = Bundle().apply {
+                putParcelable(BOTTOM_SHEET_DATA_KEY, bottomSheetArg)
+            }
+            fragment.arguments = bundle
+            return fragment
         }
     }
 }

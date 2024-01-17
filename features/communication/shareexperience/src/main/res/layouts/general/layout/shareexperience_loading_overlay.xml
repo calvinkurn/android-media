@@ -8,13 +8,12 @@
         android:id="@+id/shareex_dim_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_NN900"
-        android:alpha="0.7"/>
+        android:background="@color/Unify_NN900_50"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shareex_loader"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="center"
         app:loader_type="circular"/>
 

@@ -1,7 +1,10 @@
 package com.tokopedia.shareexperience.domain.model.property
 
+import android.os.Parcelable
 import com.tokopedia.shareexperience.domain.model.ShareExFeatureEnum
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class ShareExLinkProperties(
     val message: String = "",
     val ogTitle: String = "",
@@ -28,4 +31,4 @@ data class ShareExLinkProperties(
      Example: PDP - 123456 - 765389 - 230321 - RXAbs1
      */
     val campaign: String = ""
-)
+): Parcelable

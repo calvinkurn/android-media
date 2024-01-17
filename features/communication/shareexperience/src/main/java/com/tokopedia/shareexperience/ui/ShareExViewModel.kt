@@ -16,7 +16,6 @@ import com.tokopedia.shareexperience.domain.model.ShareExPageTypeEnum
 import com.tokopedia.shareexperience.domain.model.channel.ShareExChannelItemModel
 import com.tokopedia.shareexperience.domain.model.property.ShareExLinkProperties
 import com.tokopedia.shareexperience.domain.model.property.ShareExPropertyModel
-import com.tokopedia.shareexperience.domain.model.request.bottomsheet.ShareExProductBottomSheetRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorArgRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorRequest
 import com.tokopedia.shareexperience.domain.model.request.imagegenerator.ShareExImageGeneratorWrapperRequest
@@ -27,6 +26,7 @@ import com.tokopedia.shareexperience.domain.usecase.ShareExGetGeneratedImageUseC
 import com.tokopedia.shareexperience.domain.usecase.ShareExGetSharePropertiesUseCase
 import com.tokopedia.shareexperience.domain.usecase.shortlink.ShareExGetShortLinkUseCase
 import com.tokopedia.shareexperience.ui.adapter.typefactory.ShareExTypeFactory
+import com.tokopedia.shareexperience.ui.model.arg.ShareExBottomSheetArg
 import com.tokopedia.shareexperience.ui.uistate.ShareExBottomSheetUiState
 import com.tokopedia.shareexperience.ui.uistate.ShareExChannelIntentUiState
 import com.tokopedia.shareexperience.ui.uistate.ShareExImageGeneratorUiState
@@ -41,7 +41,6 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flatMapConcat
@@ -68,26 +67,8 @@ class ShareExViewModel @Inject constructor(
     private val _actionFlow =
         MutableSharedFlow<ShareExAction>(extraBufferCapacity = 16)
 
-    // Cache id & page type for short link
-    private var _id: String = ""
-    private var _pageType: ShareExPageTypeEnum = ShareExPageTypeEnum.PDP
-
-    // Cache the model from activity and body switching when chip clicked
-    private var _bottomSheetModel: ShareExBottomSheetModel? = null
-    private var _selectedIdChip: String = ""
-
-    // Cache the default url
-    private var _defaultUrl = ""
-
-    // Cache the throwable for showing error state
-    private var _fetchThrowable: Throwable? = null
-
-    /**
-     * This ui state only for trigger show bottomsheet
-     * Mark the data has been fetched
-     */
-    private val _fetchedDataState = MutableSharedFlow<Unit>()
-    val fetchedDataState = _fetchedDataState.asSharedFlow()
+    // Cache the args from initializer & fetcher
+    var bottomSheetArgs: ShareExBottomSheetArg? = null
 
     /**
      * Ui state for bottom sheet views
@@ -124,9 +105,6 @@ class ShareExViewModel @Inject constructor(
     private fun Flow<ShareExAction>.process() {
         onEach {
             when (it) {
-                is ShareExAction.FetchShareData -> {
-                    getShareData(it.id, it.source, it.defaultUrl, it.selectedIdChip)
-                }
                 is ShareExAction.InitializePage -> {
                     getShareBottomSheetData()
                 }
@@ -143,58 +121,26 @@ class ShareExViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun getShareData(
-        id: String,
-        pageTypeEnum: ShareExPageTypeEnum,
-        defaultUrl: String,
-        selectedIdChip: String
-    ) {
-        viewModelScope.launch {
-            try {
-                _id = id
-                _pageType = pageTypeEnum
-                _defaultUrl = defaultUrl
-                _selectedIdChip = selectedIdChip
-                getSharePropertiesUseCase.getData(
-                    ShareExProductBottomSheetRequest(
-                        pageType = pageTypeEnum.valueInt,
-                        id = id.toLong()
-                    )
-                )
-                    .collectLatest {
-                        when (it) {
-                            is ShareExResult.Success -> {
-                                _bottomSheetModel = it.data
-                                _fetchThrowable = null
-                                _fetchedDataState.emit(Unit)
-                            }
-                            is ShareExResult.Error -> {
-                                _bottomSheetModel = null
-                                _fetchThrowable = it.throwable
-                                _fetchedDataState.emit(Unit)
-                            }
-                            ShareExResult.Loading -> Unit
-                        }
-                    }
-            } catch (throwable: Throwable) {
-                Timber.d(throwable)
-                _bottomSheetModel = null
-                _fetchThrowable = throwable
-                _fetchedDataState.emit(Unit)
-            }
-        }
-    }
-
     private fun getShareBottomSheetData() {
         viewModelScope.launch {
             try {
-                when {
-                    (_fetchThrowable != null) -> {
-                        getDefaultBottomSheetModel()
+                bottomSheetArgs?.let {
+                    when {
+                        (it.throwable != null) -> {
+                            getDefaultBottomSheetModel(
+                                it.throwable,
+                                it.defaultUrl
+                            )
+                        }
+                        (it.bottomSheetModel != null) -> {
+                            handleFirstLoadBottomSheetModel(
+                                it.bottomSheetModel,
+                                it.selectedChip
+                            )
+                        }
                     }
-                    (_bottomSheetModel != null) -> {
-                        handleFirstLoadBottomSheetModel(_bottomSheetModel!!) // Safe !!
-                    }
+                } ?: run {
+                    throw IllegalArgumentException("BottomSheetArgs is null")
                 }
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
@@ -202,8 +148,11 @@ class ShareExViewModel @Inject constructor(
         }
     }
 
-    private fun handleFirstLoadBottomSheetModel(bottomSheetModel: ShareExBottomSheetModel) {
-        val chipPosition = bottomSheetModel.getSelectedChipPosition(_selectedIdChip).orZero()
+    private fun handleFirstLoadBottomSheetModel(
+        bottomSheetModel: ShareExBottomSheetModel,
+        selectedChip: String
+    ) {
+        val chipPosition = bottomSheetModel.getSelectedChipPosition(selectedChip).orZero()
         val uiResult = bottomSheetModel.map(chipPosition)
         updateBottomSheetUiState(
             title = bottomSheetModel.title,
@@ -213,12 +162,12 @@ class ShareExViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getDefaultBottomSheetModel() {
+    private suspend fun getDefaultBottomSheetModel(throwable: Throwable, defaultUrl: String) {
         getSharePropertiesUseCase.getDefaultData()
             .collectLatest {
                 when (it) {
                     is ShareExResult.Success -> {
-                        val uiResult = it.data.mapError(_defaultUrl, _fetchThrowable ?: Throwable())
+                        val uiResult = it.data.mapError(defaultUrl, throwable)
                         updateBottomSheetUiState(
                             title = it.data.title,
                             uiModelList = uiResult,
@@ -235,8 +184,10 @@ class ShareExViewModel @Inject constructor(
         position: Int,
         text: String
     ) {
-        _selectedIdChip = text
-        _bottomSheetModel?.let { bottomSheetModel ->
+        bottomSheetArgs = bottomSheetArgs?.copy(
+            selectedChip = text
+        )
+        bottomSheetArgs?.bottomSheetModel?.let { bottomSheetModel ->
             val updatedUiResult = bottomSheetModel.map(position = position)
             updateBottomSheetUiState(
                 title = bottomSheetModel.title,
@@ -273,7 +224,7 @@ class ShareExViewModel @Inject constructor(
 
     private fun handleUpdateShareImage(imageUrl: String) {
         // Each chip might have different source id and args
-        val imageGeneratorProperty = _bottomSheetModel?.getImageGeneratorProperty(imageUrl)
+        val imageGeneratorProperty = bottomSheetArgs?.bottomSheetModel?.getImageGeneratorProperty(imageUrl)
         updateImageGeneratorUiState(
             imageUrl = imageUrl,
             sourceId = imageGeneratorProperty?.sourceId,
@@ -298,50 +249,68 @@ class ShareExViewModel @Inject constructor(
     private fun generateLink(channelItemModel: ShareExChannelItemModel) {
         viewModelScope.launch {
             try {
-                if (_bottomSheetModel != null) {
-                    val channelEnum = channelItemModel.channelEnum
-                    val bottomSheetModel = _bottomSheetModel!! // Safe !!, don't want ? every time calling this variable
-                    val chipPosition = bottomSheetModel.getSelectedChipPosition(_selectedIdChip).orZero()
-                    val shareProperty = bottomSheetModel.bottomSheetPage.listShareProperty[chipPosition]
-                    val campaign = generateCampaign(shareProperty)
-                    val linkPropertiesWithCampaign = shareProperty.linkProperties.copy(
-                        androidUrl = generateUrlWithUTM(shareProperty.linkProperties.androidUrl, channelEnum, campaign),
-                        iosUrl = generateUrlWithUTM(shareProperty.linkProperties.iosUrl, channelEnum, campaign),
-                        desktopUrl = generateUrlWithUTM(shareProperty.linkProperties.desktopUrl, channelEnum, campaign),
-                        campaign = campaign
-                    )
-                    // Get generated image first
-                    generateImageFlow(channelEnum).collectLatest {
-                        val isAffiliate = bottomSheetModel.bottomSheetPage.listShareProperty[chipPosition].affiliate.eligibility.isEligible
-                        val finalLinkProperties = linkPropertiesWithCampaign.copy(
-                            ogImageUrl = it
+                bottomSheetArgs?.let {
+                    val bottomSheetModel = it.bottomSheetModel
+                    if (bottomSheetModel != null) {
+                        val channelEnum = channelItemModel.channelEnum
+                        val chipPosition = bottomSheetModel.getSelectedChipPosition(it.selectedChip).orZero()
+                        val shareProperty = bottomSheetModel.bottomSheetPage.listShareProperty[chipPosition]
+                        val campaign = generateCampaign(shareProperty, it.identifier, it.pageTypeEnum)
+                        val linkPropertiesWithCampaign = shareProperty.linkProperties.copy(
+                            androidUrl = generateUrlWithUTM(shareProperty.linkProperties.androidUrl, channelEnum, campaign),
+                            iosUrl = generateUrlWithUTM(shareProperty.linkProperties.iosUrl, channelEnum, campaign),
+                            desktopUrl = generateUrlWithUTM(shareProperty.linkProperties.desktopUrl, channelEnum, campaign),
+                            campaign = campaign
                         )
-                        val shortLinkRequest = generateShortLinkRequest(channelEnum, finalLinkProperties, isAffiliate)
-
-                        // Get short link
-                        generateShortLink(shortLinkRequest, channelItemModel)
+                        // Get generated image first
+                        generateImageFlow(channelEnum).collectLatest { imageUrl ->
+                            val isAffiliate = bottomSheetModel.bottomSheetPage.listShareProperty[chipPosition].affiliate.eligibility.isEligible
+                            val finalLinkProperties = linkPropertiesWithCampaign.copy(
+                                ogImageUrl = imageUrl
+                            )
+                            val shortLinkRequest = generateShortLinkRequest(
+                                it.identifier,
+                                it.defaultUrl,
+                                it.pageTypeEnum,
+                                channelEnum,
+                                finalLinkProperties,
+                                isAffiliate
+                            )
+                            generateShortLink(shortLinkRequest, channelItemModel)
+                        }
+                    } else {
+                        updateWithDefaultUrl(
+                            channelItemModel,
+                            it.defaultUrl,
+                            null
+                        )
                     }
-                } else {
-                    updateShortLinkUiState(
-                        intent = getAppIntent(channelItemModel, _defaultUrl, null),
-                        message = _defaultUrl,
-                        channelEnum = channelItemModel.channelEnum,
-                        isLoading = false,
-                        error = null
-                    )
+                } ?: run {
+                    throw IllegalArgumentException("BottomSheetArgs is null")
                 }
             } catch (throwable: Throwable) {
                 Timber.d(throwable)
-                // Use default URL
-                updateShortLinkUiState(
-                    intent = getAppIntent(channelItemModel, _defaultUrl, null),
-                    message = _defaultUrl,
-                    channelEnum = channelItemModel.channelEnum,
-                    isLoading = false,
-                    error = throwable
+                updateWithDefaultUrl(
+                    channelItemModel,
+                    bottomSheetArgs?.defaultUrl ?: "",
+                    throwable
                 )
             }
         }
+    }
+
+    private fun updateWithDefaultUrl(
+        channelItemModel: ShareExChannelItemModel,
+        defaultUrl: String,
+        throwable: Throwable?
+    ) {
+        updateShortLinkUiState(
+            intent = getAppIntent(channelItemModel, defaultUrl, null),
+            message = defaultUrl,
+            channelEnum = channelItemModel.channelEnum,
+            isLoading = false,
+            error = throwable
+        )
     }
 
     private fun generateUrlWithUTM(
@@ -365,8 +334,12 @@ class ShareExViewModel @Inject constructor(
         return newUri.build().toString()
     }
 
-    private fun generateCampaign(shareProperty: ShareExPropertyModel): String {
-        var campaign = "${_pageType.name}-$_id"
+    private fun generateCampaign(
+        shareProperty: ShareExPropertyModel,
+        identifier: String,
+        pageTypeEnum: ShareExPageTypeEnum
+    ): String {
+        var campaign = "${pageTypeEnum.name}-$identifier"
         campaign += if (userSession.isLoggedIn) {
             "-${userSession.userId}"
         } else {
@@ -384,17 +357,20 @@ class ShareExViewModel @Inject constructor(
     }
 
     private fun generateShortLinkRequest(
+        identifier: String,
+        defaultUrl: String,
+        pageTypeEnum: ShareExPageTypeEnum,
         channelEnum: ShareExChannelEnum,
         finalLinkProperties: ShareExLinkProperties,
         isAffiliate: Boolean
     ): ShareExShortLinkRequest {
         return ShareExShortLinkRequest(
-            identifierId = _id,
+            identifierId = identifier,
             channelEnum = channelEnum,
             linkerPropertiesRequest = finalLinkProperties,
             fallbackPriorityEnumList = getFallbackPriorityEnumList(isAffiliate),
-            defaultUrl = _defaultUrl,
-            pageTypeEnum = _pageType
+            defaultUrl = defaultUrl,
+            pageTypeEnum = pageTypeEnum
         )
     }
 
