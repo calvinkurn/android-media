@@ -13,17 +13,16 @@ import com.tokopedia.content.common.util.buildSpannedString
 import com.tokopedia.content.common.util.doOnLayout
 import com.tokopedia.content.product.preview.R
 import com.tokopedia.content.product.preview.databinding.ItemReviewParentContentBinding
-import com.tokopedia.content.product.preview.view.components.LikeDanceAnim
 import com.tokopedia.content.product.preview.view.uimodel.AuthorUiModel
 import com.tokopedia.content.product.preview.view.uimodel.DescriptionUiModel
 import com.tokopedia.content.product.preview.view.uimodel.LikeUiState
 import com.tokopedia.content.product.preview.view.uimodel.MenuStatus
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -31,10 +30,6 @@ class ReviewParentContentViewHolder(
     private val binding: ItemReviewParentContentBinding,
     private val listener: Listener,
 ) : ViewHolder(binding.root) {
-
-    private val danceAnim by lazyThreadSafetyNone {
-        LikeDanceAnim(binding.ivDanceLike)
-    }
 
     private val clickableSpan: (String) -> ClickableSpan = { desc ->
         object : ClickableSpan() {
@@ -120,9 +115,11 @@ class ReviewParentContentViewHolder(
         }
 
         if (!state.withAnimation) return@with
-        danceAnim.setEnabled(isEnabled = true)
-        danceAnim.setIsLiked(state.state == LikeUiState.LikeStatus.Like)
-        danceAnim.playLikeAnimation()
+        binding.ivDanceLike.onAnimStartAction = { binding.ivDanceLike.show() }
+        binding.ivDanceLike.onAnimEndAction = { binding.ivDanceLike.gone() }
+        binding.ivDanceLike.setIconEnabled(isEnabled = true)
+        binding.ivDanceLike.setIsLiked(state.state == LikeUiState.LikeStatus.Like)
+        binding.ivDanceLike.playLikeAnimation()
     }
 
     private fun setupTap(item: ReviewUiModel) {

@@ -4,19 +4,39 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.content.Context
+import android.util.AttributeSet
 import android.view.HapticFeedbackConstants
+import android.view.LayoutInflater
 import android.view.View
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.OnLifecycleEvent
+import android.widget.FrameLayout
 import com.tokopedia.content.common.util.DefaultAnimatorListener
+import com.tokopedia.content.product.preview.databinding.ViewDanceLikeBinding
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
 
 /**
  * @author by astidhiyaa on 12/01/24
  */
-class LikeDanceAnim(private val iconLike: IconUnify) {
+
+class LikeDanceAnim : FrameLayout {
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
+
+    private val binding = ViewDanceLikeBinding.inflate(
+        LayoutInflater.from(context),
+        this,
+        true
+    )
+
+    var onAnimStartAction: () -> Unit = {}
+    var onAnimEndAction: () -> Unit = {}
+    private val iconLike get() = binding.ivDanceLike
+
     private val clickRotateAnimation = ObjectAnimator.ofFloat(
         iconLike, View.ROTATION, 0f, -30f
     )
@@ -35,7 +55,7 @@ class LikeDanceAnim(private val iconLike: IconUnify) {
             iconLike.scaleX = 1f
             iconLike.scaleY = 1f
             iconLike.rotation = 0f
-            iconLike.gone()
+            onAnimEndAction()
         }
     }
 
@@ -50,11 +70,11 @@ class LikeDanceAnim(private val iconLike: IconUnify) {
         clickAnimator.addListener(animationListener)
 
         iconLike.isHapticFeedbackEnabled = true
-        iconLike.show()
     }
 
-    fun setEnabled(isEnabled: Boolean) {
+    fun setIconEnabled(isEnabled: Boolean) {
         iconLike.isClickable = isEnabled
+        onAnimStartAction()
     }
 
     fun setIsLiked(isLiked: Boolean) {
@@ -88,8 +108,8 @@ class LikeDanceAnim(private val iconLike: IconUnify) {
         clickAnimator.removeAllListeners()
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
         removeAllAnimationListeners()
         cancelAllAnimations()
     }
