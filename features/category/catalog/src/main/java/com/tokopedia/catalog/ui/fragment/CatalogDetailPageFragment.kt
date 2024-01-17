@@ -906,7 +906,7 @@ class CatalogDetailPageFragment :
     override fun onComparisonSeeMoreButtonClicked(
         items: List<ComparisonUiModel.ComparisonContent>
     ) {
-        val comparedId = if (items.size >= 2) {
+        val comparedId = if (items.size >= TOTAL_MINIMUM_SIZE_COMPARE_ID) {
             items.slice(Int.ONE until items.size).joinToString(",") { it.id }
         } else {
             String.EMPTY
