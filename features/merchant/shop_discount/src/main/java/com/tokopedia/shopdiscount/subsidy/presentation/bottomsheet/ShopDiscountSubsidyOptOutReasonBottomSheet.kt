@@ -176,6 +176,7 @@ class ShopDiscountSubsidyOptOutReasonBottomSheet : BottomSheetUnify(),
     private fun setButtonSubmit() {
         buttonSubmit?.apply {
             setOnClickListener {
+                sendClickButtonSubmitOptOutReasonTracker()
                 doOptOutProductSubsidy()
             }
             text = if (data.isAllSelectedProductFullSubsidy()) {
@@ -199,6 +200,14 @@ class ShopDiscountSubsidyOptOutReasonBottomSheet : BottomSheetUnify(),
 
         }
         configButtonState()
+    }
+
+    private fun sendClickButtonSubmitOptOutReasonTracker() {
+        tracker.sendClickButtonSubmitOptOutReasonEvent(
+            data.entrySource.value,
+            buttonSubmit?.text.toString(),
+            data.selectedProductToOptOut.map { it.productId }
+        )
     }
 
     private fun doOptOutProductSubsidy() {
