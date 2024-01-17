@@ -1,9 +1,11 @@
 package com.tokopedia.catalogcommon.viewholder
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.view.View
-import android.widget.RatingBar
 import androidx.annotation.LayoutRes
 import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,12 +23,21 @@ import com.tokopedia.catalogcommon.util.getClickableSpan
 import com.tokopedia.catalogcommon.util.getGreenColorSpan
 import com.tokopedia.catalogcommon.util.setSpanOnText
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.JvmMediaLoader
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.reviewcommon.R as reviewcommonR
+
 
 class BuyerReviewViewHolder(
     itemView: View,
@@ -74,7 +85,8 @@ class BuyerReviewViewHolder(
             val totalReview: Typography? = bindingBuyerReviewCardSlider?.cardBrTotalReview
             val separatorTotalReview: Typography? = bindingBuyerReviewCardSlider?.cardBrSeparatorTotalHelp
             val reviewTotalHelp: Typography? = bindingBuyerReviewCardSlider?.cardBrReviewTotalHelp
-            val rating: RatingBar? = bindingBuyerReviewCardSlider?.cardBrProductRating
+            val rating = bindingBuyerReviewCardSlider?.cardBrProductRating
+            val ratingInactive = bindingBuyerReviewCardSlider?.cardBrProductRatingInactive
             val separatorRating: Typography? = bindingBuyerReviewCardSlider?.cardBrSeparatorRating
             val variant: Typography? = bindingBuyerReviewCardSlider?.cardBrVariant
             val separatorTime: Typography? = bindingBuyerReviewCardSlider?.cardBrSeparatorTimestamp
@@ -128,7 +140,11 @@ class BuyerReviewViewHolder(
                 }
             }
 
-            rating?.rating = carouselItem.rating
+            val starDrawable = MethodChecker.getDrawable(itemView.context, reviewcommonR.drawable.review_ic_rating_star_five)
+            val starInactiveDrawable = MethodChecker.getDrawable(itemView.context, reviewcommonR.drawable.review_ic_rating_star_zero)
+            val starActiveBitmap = createRatingBitmap(starDrawable, carouselItem.rating)
+            rating?.setImageBitmap(starActiveBitmap)
+            ratingInactive?.setImageDrawable(starInactiveDrawable)
 
             carouselItem.variantName?.let {
                 variant?.text = it
@@ -183,6 +199,25 @@ class BuyerReviewViewHolder(
         listener?.onBuyerReviewImpression(element)
     }
 
+    private fun createRatingBitmap(drawable: Drawable, value: Float): Bitmap {
+        val bitmap = Bitmap.createBitmap(
+            if (!drawable.intrinsicWidth.isMoreThanZero()) Int.ONE else drawable.intrinsicWidth,
+            if (!drawable.intrinsicHeight.isMoreThanZero()) Int.ONE else drawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(Int.ZERO, Int.ZERO, canvas.width, canvas.height)
+        drawable.draw(canvas)
+        return Bitmap.createBitmap(
+            bitmap,
+            Int.ZERO,
+            Int.ZERO,
+            (drawable.intrinsicWidth * (value/5f)).toInt(),
+            drawable.intrinsicHeight
+        )
+    }
+
     private fun setupReviewCardColor(
         element: BuyerReviewUiModel,
         bindingBuyerReviewCardSlider: ItemBuyerReviewBinding?
@@ -228,6 +263,11 @@ class BuyerReviewViewHolder(
             divShopInfo.setBackgroundColor(MethodChecker.getColor(
                 itemView.context, R.color.dms_static_color_divider))
             cardBrShopInfoPrefix.setTextColor(textColorSmall)
+
+            if (element.darkMode) {
+                cardBrProductRating.setColorFilter(MethodChecker.getColor(itemView.context, R.color.dms_static_star_dark))
+                cardBrProductRatingInactive.setColorFilter(MethodChecker.getColor(itemView.context, R.color.dms_static_star_inactive_dark))
+            }
         }
     }
 
