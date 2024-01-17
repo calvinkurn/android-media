@@ -77,8 +77,8 @@ class MenuBottomSheet : BottomSheetUnify() {
         super.dismiss()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDetach() {
+        super.onDetach()
         mListener = null
     }
 

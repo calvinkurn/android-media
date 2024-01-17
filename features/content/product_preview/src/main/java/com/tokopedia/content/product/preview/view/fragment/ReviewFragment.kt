@@ -161,9 +161,10 @@ class ReviewFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.rvReview.removeOnScrollListener(scrollListener)
         _binding = null
     }
-    override fun onMenuClicked(menus: MenuStatus) {
+    override fun onMenuClicked(menu: MenuStatus) {
         viewModel.onAction(ProductPreviewAction.ClickMenu(false))
     }
 

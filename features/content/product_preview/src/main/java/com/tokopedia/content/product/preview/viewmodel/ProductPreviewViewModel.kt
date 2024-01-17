@@ -63,7 +63,7 @@ class ProductPreviewViewModel @AssistedInject constructor(
     private val reviewPosition get() = _reviewIndex.value
 
     private val currentReview
-        get() = if (_review.value.isNotEmpty() && reviewPosition >= 0)
+        get() = if (_review.value.isNotEmpty() && reviewPosition in 0 until _review.value.size)
             _review.value[reviewPosition] else ReviewUiModel.Empty
 
     fun onAction(action: ProductPreviewAction) {
