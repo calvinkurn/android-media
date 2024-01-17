@@ -18,7 +18,6 @@ import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
 import com.tokopedia.media.editor.analytics.getToolEditorText
 import com.tokopedia.media.editor.base.BaseEditorFragment
-import com.tokopedia.media.editor.data.FeatureToggleManager
 import com.tokopedia.media.editor.databinding.FragmentMainEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.main.EditorViewModel
@@ -43,8 +42,7 @@ import javax.inject.Inject
 import com.tokopedia.media.editor.R as mediaeditorR
 
 class EditorFragment @Inject constructor(
-    private val editorHomeAnalytics: EditorHomeAnalytics,
-    private val featureToggleManager: FeatureToggleManager
+    private val editorHomeAnalytics: EditorHomeAnalytics
 ) : BaseEditorFragment(), ToolsUiComponent.Listener,
     DrawerUiComponent.Listener {
 
@@ -394,18 +392,10 @@ class EditorFragment @Inject constructor(
                 }
             }
 
-            // show/hide add logo base on rollence
+            // show/hide add logo base on user shop
             if (!viewModel.isShopAvailable()) {
                 it.editorToolsList().apply {
                     val removeIndex = find { toolId -> toolId == EditorToolType.ADD_LOGO }
-                    remove(removeIndex)
-                }
-            }
-
-            // show/hide add text base on rollence
-            if (!featureToggleManager.isAddTextEnable()) {
-                it.editorToolsList().apply {
-                    val removeIndex = find { toolId -> toolId == EditorToolType.ADD_TEXT }
                     remove(removeIndex)
                 }
             }

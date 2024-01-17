@@ -110,6 +110,7 @@ import com.tokopedia.chatbot.chatbot2.domain.video.VideoUploadData
 import com.tokopedia.chatbot.chatbot2.util.convertMessageIdToLong
 import com.tokopedia.chatbot.chatbot2.view.activity.ChatBotCsatActivity
 import com.tokopedia.chatbot.chatbot2.view.activity.ChatBotProvideRatingActivity
+import com.tokopedia.chatbot.chatbot2.view.activity.ChatbotImageActivity
 import com.tokopedia.chatbot.chatbot2.view.activity.ChatbotVideoActivity
 import com.tokopedia.chatbot.chatbot2.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.chatbot2.view.adapter.ChatbotTypeFactoryImpl
@@ -197,6 +198,7 @@ import com.tokopedia.chatbot.view.uimodel.ChatbotReplyOptionsUiModel
 import com.tokopedia.chatbot.view.util.OnboardingVideoDismissListener
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.imagepreview.imagesecure.ImageSecurePreviewActivity
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -216,6 +218,8 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
@@ -376,6 +380,7 @@ class ChatbotFragment2 :
         private const val ZERO_RATIO = 0F
         private const val ZERO_POSITION = 0
         private const val REPLY_BOX_SIZE = 150
+        private const val GIF_EXTENSION = ".gif"
     }
 
     override fun initInjector() {
@@ -1591,6 +1596,19 @@ class ChatbotFragment2 :
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String, isSecure: Boolean) {
         activity?.let {
+            val loadSecureImage = FirebaseRemoteConfigImpl(it)
+                .getBoolean(RemoteConfigKey.ANDROID_CHATBOT_SECURE_IMAGE, true)
+
+            if (loadSecureImage) {
+                previewSecureImage(imageUrl)
+            } else {
+                previewImage(imageUrl)
+            }
+        }
+    }
+
+    private fun previewImage(imageUrl: String) {
+        activity?.let {
             val strings: ArrayList<String> = ArrayList()
             strings.add(imageUrl)
             it.startActivity(
@@ -1601,6 +1619,28 @@ class ChatbotFragment2 :
                     0
                 )
             )
+        }
+    }
+
+    private fun previewSecureImage(imageUrl: String) {
+        activity?.let {
+            if (imageUrl.endsWith(GIF_EXTENSION, true)) {
+                it.startActivity(
+                    ChatbotImageActivity.getCallingIntent(it, imageUrl)
+                )
+            } else {
+                val strings: ArrayList<String> = ArrayList()
+                strings.add(imageUrl)
+                it.startActivity(
+                    ImageSecurePreviewActivity.getCallingIntent(
+                        context = it,
+                        imageUris = strings,
+                        imageDesc = null,
+                        position = 0,
+                        isSecure = true
+                    )
+                )
+            }
         }
     }
 

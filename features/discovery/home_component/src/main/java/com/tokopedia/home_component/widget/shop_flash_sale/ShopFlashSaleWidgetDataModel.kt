@@ -63,6 +63,10 @@ data class ShopFlashSaleWidgetDataModel(
         else DataStatus.SUCCESS
     }
 
+    fun getShopTab(id: String): ShopFlashSaleTabDataModel? {
+        return tabList.find { it.channelGrid.id == id }
+    }
+
     fun getActivatedTab(): ShopFlashSaleTabDataModel? {
         return tabList.find { it.isActivated }
     }

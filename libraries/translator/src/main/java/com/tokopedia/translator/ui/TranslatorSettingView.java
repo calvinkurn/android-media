@@ -4,7 +4,15 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.FrameLayout;
+import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.tokopedia.translator.R;
 import com.tokopedia.translator.repository.source.GetDataService;
 import com.tokopedia.translator.repository.source.RetrofitClientInstance;
@@ -12,12 +20,13 @@ import com.tokopedia.unifycomponents.TextFieldUnify;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import java.text.NumberFormat;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class TranslatorSettingView extends FrameLayout {
     public static String IS_ENABLE = "tl_is_enable";
@@ -28,6 +37,7 @@ public class TranslatorSettingView extends FrameLayout {
     public static String CHARS_COUNT = "chars_count";
     private boolean mIsSelectedOrigin = false;
     private boolean mIsSelectedDestination = false;
+    private SwitchListener listener = null;
 
 
     public TranslatorSettingView(Context context) {
@@ -43,6 +53,10 @@ public class TranslatorSettingView extends FrameLayout {
     public TranslatorSettingView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView();
+    }
+
+    public void setOnSwithcListener(SwitchListener listener) {
+        this.listener = listener;
     }
 
     private void initView() {
@@ -71,6 +85,7 @@ public class TranslatorSettingView extends FrameLayout {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 Toast.makeText(getContext(), b ? "Translator enabled" : "Translator disabled", Toast.LENGTH_SHORT).show();
+                if (listener != null) listener.onSwitched(b);
                 SharedPrefsUtils.INSTANCE.setBooleanPreference(getContext(), IS_ENABLE, b);
             }
         });
@@ -141,7 +156,7 @@ public class TranslatorSettingView extends FrameLayout {
         // Apply the adapter to the spinner
         spDestination.setAdapter(adapter);
         spOrigin.setAdapter(adapter);
-        spOrigin.setSelection(1,false);
+        spOrigin.setSelection(1, false);
 
         spOrigin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -195,6 +210,10 @@ public class TranslatorSettingView extends FrameLayout {
         });
 
         addView(view);
+    }
+
+    public interface SwitchListener {
+        void onSwitched(Boolean value);
     }
 
 }

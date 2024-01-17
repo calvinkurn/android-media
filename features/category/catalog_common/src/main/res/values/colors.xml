@@ -5,4 +5,7 @@
     <color name="dms_static_color_divider">#33AAB4C8</color>
     <color name="dms_static_dark_mode_nav">#00A958</color>
     <color name="dms_static_divider">#AAB4C8</color>
+    <color name="dms_static_green_GN500">#00A958</color>
+    <color name="dms_static_green_reviewer_status">#009C93</color>
+    <color name="dms_static_fade_divider">#32AAB4C8</color>
 </resources>

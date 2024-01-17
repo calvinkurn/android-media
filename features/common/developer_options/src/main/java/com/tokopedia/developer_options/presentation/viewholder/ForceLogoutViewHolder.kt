@@ -8,12 +8,13 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.ForceLogoutUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.unifycomponents.UnifyButton
 
 class ForceLogoutViewHolder(
     itemView: View
-): AbstractViewHolder<ForceLogoutUiModel>(itemView)
-{
+) : AbstractViewHolder<ForceLogoutUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_force_logout
@@ -22,6 +23,7 @@ class ForceLogoutViewHolder(
     override fun bind(element: ForceLogoutUiModel) {
         val btn = itemView.findViewById<UnifyButton>(R.id.force_logout_btn)
         btn.setOnClickListener {
+            DevOpsTracker.trackEntryEvent(DevopsFeature.FORCE_LOGOUT)
             broadcastForceLogoutInfo(itemView.context)
         }
     }
@@ -34,5 +36,4 @@ class ForceLogoutViewHolder(
         intent.putExtra("url", "https://google.com")
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
     }
-
 }

@@ -64,6 +64,7 @@ import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.ResultBalanceAndPoint
+import com.tokopedia.home_account.account_settings.presentation.activity.TkpdPaySettingActivity
 import com.tokopedia.home_account.analytics.AddVerifyPhoneAnalytics
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
 import com.tokopedia.home_account.analytics.TokopediaCardAnalytics
@@ -85,7 +86,6 @@ import com.tokopedia.home_account.ui.accountsettings.AccountSettingActivity
 import com.tokopedia.home_account.ui.fundsAndInvestment.FundsAndInvestmentComposeActivity
 import com.tokopedia.home_account.ui.mediaquality.MediaQualitySettingActivity
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
-import com.tokopedia.home_account.view.activity.FundsAndInvestmentActivity
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
@@ -239,10 +239,6 @@ open class HomeAccountUserFragment :
 
     override fun initInjector() {
         getComponent(HomeAccountUserComponents::class.java).inject(this)
-    }
-
-    private fun isEnablePrivacyAccount(): Boolean {
-        return remoteConfig.getBoolean(REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT, false)
     }
 
     // feature explicit profile for temporary disabled, because Product Manager have not capacity for this.
@@ -413,21 +409,6 @@ open class HomeAccountUserFragment :
 
     override fun onSwitchChanged(item: CommonDataView, isActive: Boolean, switch: SwitchUnify) {
         when (item.id) {
-            AccountConstants.SettingCode.SETTING_SHAKE_ID -> {
-                homeAccountAnalytic.eventClickAppSettingShake(isActive)
-                accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SHAKE, isActive)
-            }
-
-            AccountConstants.SettingCode.SETTING_GEOLOCATION_ID -> {
-                homeAccountAnalytic.eventClickAppSettingGeolocation(isActive)
-                if (isActive) {
-                    switch.isChecked = false
-                    createAndShowLocationAlertDialog(isActive)
-                } else {
-                    goToApplicationDetailActivity()
-                }
-            }
-
             AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID -> {
                 homeAccountAnalytic.eventClickAppSettingSafeMode(isActive)
                 switch.isChecked = !isActive
@@ -442,24 +423,6 @@ open class HomeAccountUserFragment :
             }
 
             else -> {
-            }
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            AccountConstants.REQUEST.REQUEST_LOCATION_PERMISSION -> {
-                if (grantResults.isNotEmpty() &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED
-                ) {
-                    updateLocationSwitch(true)
-                } else {
-                    goToApplicationDetailActivity()
-                }
             }
         }
     }
@@ -1211,10 +1174,6 @@ open class HomeAccountUserFragment :
 
             settingsMenuIterator.shouldRemove(
                 when (value.id) {
-                    AccountConstants.SettingCode.SETTING_PRIVACY_ACCOUNT -> {
-                        !isEnablePrivacyAccount()
-                    }
-
                     AccountConstants.SettingCode.SETTING_EXPLICIT_PROFILE -> {
                         !isEnableExplicitProfileMenu()
                     }
@@ -1284,15 +1243,7 @@ open class HomeAccountUserFragment :
     }
 
     private fun goToFundsAndInvestment() {
-        val fundsInvestmentComposeRollence = abTest
-            .getString(DeeplinkMapperUser.ROLLENCE_FUNDS_AND_INVESTMENT_COMPOSE).isNotEmpty()
-        val directionActivity = if (fundsInvestmentComposeRollence) {
-            FundsAndInvestmentComposeActivity::class.java
-        } else {
-            FundsAndInvestmentActivity::class.java
-        }
-
-        val intent = Intent(activity, directionActivity)
+        val intent = Intent(activity, FundsAndInvestmentComposeActivity::class.java)
         startActivity(intent)
     }
 
@@ -1375,7 +1326,7 @@ open class HomeAccountUserFragment :
 
             AccountConstants.SettingCode.SETTING_INSTANT_PAYMENT -> {
                 homeAccountAnalytic.eventClickAccountSettingInstantPayment()
-                goToApplink(item.applink)
+                goToPaymentSetting()
             }
 
             AccountConstants.SettingCode.SETTING_INSTANT_BUY -> {
@@ -1617,49 +1568,6 @@ open class HomeAccountUserFragment :
         }
     }
 
-    private fun createAndShowLocationAlertDialog(currentValue: Boolean) {
-        if (!currentValue) {
-            homeAccountAnalytic.eventClickToggleOnGeolocation()
-        } else {
-            homeAccountAnalytic.eventClickToggleOffGeolocation()
-        }
-
-        context?.run {
-            val dialog =
-                DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                    setTitle(getString(R.string.new_home_account_title_geolocation_alertdialog))
-                    setDescription(getString(R.string.new_home_account_body_geolocation_alertdialog))
-                    setPrimaryCTAText(getString(R.string.new_home_account_ok_geolocation_alertdialog))
-                    setPrimaryCTAClickListener {
-                        askPermissionLocation()
-                        dismiss()
-                    }
-                    setSecondaryCTAText(getString(R.string.new_home_account_batal_geolocation_alertdialog))
-                    setSecondaryCTAClickListener {
-                        dismiss()
-                    }
-                }
-            dialog.show()
-        }
-    }
-
-    private fun askPermissionLocation() {
-        requestPermissions(
-            arrayOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ),
-            AccountConstants.REQUEST.REQUEST_LOCATION_PERMISSION
-        )
-    }
-
-    private fun updateLocationSwitch(isEnable: Boolean) {
-        commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_GEOLOCATION_ID }?.isChecked =
-            isEnable
-        commonAdapter?.notifyItemChanged(POSITION_1)
-        adapter?.notifyItemChanged(POSITION_3)
-    }
-
     private fun shouldScrollToSafeMode(): Boolean {
         return arguments?.containsKey(AccountConstants.PARAM_SCROLL_TO) ?: false &&
             arguments?.getString(
@@ -1679,18 +1587,17 @@ open class HomeAccountUserFragment :
     private fun updateSafeModeSwitch(isEnable: Boolean) {
         commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID }?.isChecked =
             isEnable
-        commonAdapter?.notifyItemChanged(POSITION_2)
+        val element = commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID }
+        val index = commonAdapter?.list?.indexOf(element)
+        if (index != null) {
+            commonAdapter?.notifyItemChanged(index)
+        }
         adapter?.notifyItemChanged(POSITION_3)
     }
 
-    private fun goToApplicationDetailActivity() {
-        activity?.let {
-            val intent = Intent()
-            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-            val uri = Uri.fromParts("package", it.packageName, null)
-            intent.data = uri
-            it.startActivity(intent)
-        }
+    private fun goToPaymentSetting() {
+        val intent = Intent(activity, TkpdPaySettingActivity::class.java)
+        startActivity(intent)
     }
 
     private fun goToReviewApp() {

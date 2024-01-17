@@ -38,7 +38,7 @@ class ImageViewPager @JvmOverloads constructor(context: Context, attrs: Attribut
     }
 
     interface ImageViewPagerListener {
-        fun onImageClicked(position: Int)
+        fun onImageClicked(imageView: ImageView, position: Int)
     }
 
     init {
