@@ -124,6 +124,7 @@ import com.tokopedia.catalogcommon.viewholder.BuyerReviewViewHolder
 import com.tokopedia.catalogcommon.viewholder.ComparisonViewHolder
 import com.tokopedia.catalogcommon.viewholder.StickyNavigationListener
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
@@ -178,7 +179,7 @@ class CatalogDetailPageFragment :
         private const val POSITION_TWO_IN_WIDGET_LIST = 2
         private const val NAVIGATION_SCROLL_DURATION = 800L
         const val CATALOG_DETAIL_PAGE_FRAGMENT_TAG = "CATALOG_DETAIL_PAGE_FRAGMENT_TAG"
-
+        const val TOTAL_MINIMUM_SIZE_COMPARE_ID = 2
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
             val fragment = CatalogDetailPageFragment()
             val bundle = Bundle()
@@ -875,7 +876,13 @@ class CatalogDetailPageFragment :
     }
 
     override fun onComparisonSwitchButtonClicked(items: List<ComparisonUiModel.ComparisonContent>) {
-        val label = "$catalogId | compared catalog id: $compareCatalogId"
+        val comparedId = if (items.size >= TOTAL_MINIMUM_SIZE_COMPARE_ID) {
+            items.slice(Int.ONE until items.size).joinToString(",") { it.id }
+        } else {
+            String.EMPTY
+        }
+
+        val label = "$catalogId | compared catalog id: $comparedId"
         CatalogReimagineDetailAnalytics.sendEvent(
             event = EVENT_VIEW_CLICK_PG,
             action = EVENT_CLICK_CHANGE_COMPARISON,
@@ -899,7 +906,12 @@ class CatalogDetailPageFragment :
     override fun onComparisonSeeMoreButtonClicked(
         items: List<ComparisonUiModel.ComparisonContent>
     ) {
-        val label = "$catalogId | compared catalog id: ${items.joinToString { it.id }}"
+        val comparedId = if (items.size >= 2) {
+            items.slice(Int.ONE until items.size).joinToString(",") { it.id }
+        } else {
+            String.EMPTY
+        }
+        val label = "$catalogId | compared catalog id: $comparedId"
         CatalogReimagineDetailAnalytics.sendEvent(
             event = EVENT_VIEW_CLICK_PG,
             action = EVENT_CLICK_SEE_MORE_COMPARISON,
