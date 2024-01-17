@@ -5,6 +5,7 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.productcard.experiments.ProductCardExperiment
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.recommendation_widget_common.domain.coroutines.base.UseCase
 import com.tokopedia.recommendation_widget_common.domain.query.ListProductRecommendationQuery
@@ -20,22 +21,36 @@ class GetViewToViewRecommendationUseCase @Inject constructor(
     context: Context,
     graphqlRepository: GraphqlRepository
 ) : UseCase<GetRecommendationRequestParam, List<RecommendationWidget>>() {
+
     private val contextReference: WeakReference<Context> = WeakReference(context)
-    private val context: Context?
-        get() = contextReference.get()
+    private val context: Context? get() = contextReference.get()
 
     private val graphqlUseCase = GraphqlUseCase<RecommendationEntity>(graphqlRepository)
     private val getRecommendationQuery: GqlQueryInterface
         get() {
             return ListProductRecommendationQuery()
         }
+
     init {
         graphqlUseCase.setTypeClass(RecommendationEntity::class.java)
         graphqlUseCase.setGraphqlQuery(getRecommendationQuery)
     }
+
     override suspend fun getData(inputParameter: GetRecommendationRequestParam): List<RecommendationWidget> {
-        val queryParam = context?.let { ChooseAddressUtils.getLocalizingAddressData(it).toQueryParam(inputParameter.queryParam) } ?: inputParameter.queryParam
+        inputParameter.productCardVersion = if (ProductCardExperiment.isReimagine()) 5 else 0
+
+        val queryParam = context?.let {
+            ChooseAddressUtils
+                .getLocalizingAddressData(it)
+                .toQueryParam(inputParameter.queryParam)
+        } ?: inputParameter.queryParam
+
         graphqlUseCase.setRequestParams(inputParameter.copy(queryParam = queryParam).toViewToViewGqlRequest())
-        return graphqlUseCase.executeOnBackground().productRecommendationWidget.data.mappingToRecommendationModel()
+
+        return graphqlUseCase
+            .executeOnBackground()
+            .productRecommendationWidget
+            .data
+            .mappingToRecommendationModel()
     }
 }
