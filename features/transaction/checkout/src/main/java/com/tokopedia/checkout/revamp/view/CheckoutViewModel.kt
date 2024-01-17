@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.presentation.uimodel.AddOnPageResult
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
@@ -61,6 +62,7 @@ import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.logisticcart.shipping.processor.CheckoutShippingProcessor
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promousage.util.PromoUsageRollenceManager
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -107,6 +109,7 @@ import javax.inject.Inject
 class CheckoutViewModel @Inject constructor(
     private val cartProcessor: CheckoutCartProcessor,
     private val logisticProcessor: CheckoutLogisticProcessor,
+    private val logisticCartProcessor: CheckoutShippingProcessor,
     private val promoProcessor: CheckoutPromoProcessor,
     private val addOnProcessor: CheckoutAddOnProcessor,
     private val paymentProcessor: CheckoutPaymentProcessor,
@@ -1234,7 +1237,7 @@ class CheckoutViewModel @Inject constructor(
         )
         listData.value = checkoutItems
 
-        val result = logisticProcessor.getRates(
+        val result = logisticCartProcessor.getRates(
             logisticProcessor.getRatesParam(
                 order,
                 helper.getOrderProducts(checkoutItems, order.cartStringGroup),
@@ -1250,16 +1253,18 @@ class CheckoutViewModel @Inject constructor(
             order.shopShipmentList,
             order.shippingId,
             order.spId,
-            order,
-            isOneClickShipment,
-            isTradeIn,
-            isTradeInByDropOff
+            order.boCode,
+            order.shouldResetCourier,
+            order.validationMetadata,
+            order.isDisableChangeCourier,
+            order.shipment.courierItemData?.serviceId,
+            order.isAutoCourierSelection
         )
         val list = listData.value.toMutableList()
         val orderModel = list[cartPosition] as? CheckoutOrderModel
         if (orderModel != null) {
-            if (result?.courier != null) {
-                val courierItemData = result.courier
+            val courierItemData = result?.courier
+            if (courierItemData != null) {
                 val shouldValidatePromo =
                     courierItemData.selectedShipper.logPromoCode != null && courierItemData.selectedShipper.logPromoCode!!.isNotEmpty()
                 if (shouldValidatePromo) {
@@ -1307,9 +1312,27 @@ class CheckoutViewModel @Inject constructor(
                     return
                 }
             }
-            if (result != null && result.akamaiError.isNotEmpty()) {
-                pageState.value = CheckoutPageState.AkamaiRatesError(result.akamaiError)
+
+            // handle error
+            val ratesError = result?.ratesError
+            val boPromoCode = logisticProcessor.getBoPromoCode(order)
+            if (ratesError != null) {
+                if (ratesError is MessageErrorException) {
+                    CheckoutLogger.logOnErrorLoadCourierNew(
+                        ratesError,
+                        order,
+                        isOneClickShipment,
+                        isTradeIn,
+                        isTradeInByDropOff,
+                        boPromoCode
+                    )
+                } else if (ratesError is AkamaiErrorException) {
+                    ratesError.message?.let { pageState.value = CheckoutPageState.AkamaiRatesError(it) }
+                } else if (ratesError.message == "racing condition against epharmacy validation") {
+                    order.shouldResetCourier = false
+                }
             }
+
             if (orderModel.boCode.isNotEmpty()) {
                 promoProcessor.clearPromo(
                     ClearPromoOrder(
@@ -1335,7 +1358,12 @@ class CheckoutViewModel @Inject constructor(
                     isLoading = false,
                     courierItemData = result?.courier,
                     shippingCourierUiModels = result?.couriers ?: emptyList(),
-                    insurance = result?.insurance ?: CheckoutOrderInsurance()
+                    insurance = result?.courier?.run {
+                        generateCheckoutOrderInsuranceFromCourier(
+                            this,
+                            order
+                        )
+                    } ?: CheckoutOrderInsurance()
                 )
             )
             list[cartPosition] = newOrderModel

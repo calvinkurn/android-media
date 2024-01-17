@@ -564,7 +564,7 @@ class CheckoutLogisticProcessor @Inject constructor(
         return courierItemData
     }
 
-    private fun getBoPromoCode(
+    fun getBoPromoCode(
         shipmentCartItemModel: CheckoutOrderModel
     ): String {
         if (isBoUnstackEnabled) {

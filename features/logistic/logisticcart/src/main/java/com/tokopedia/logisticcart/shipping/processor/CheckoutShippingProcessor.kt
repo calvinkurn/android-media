@@ -118,7 +118,7 @@ class CheckoutShippingProcessor @Inject constructor(
                 )
                 var errorReason = "rates invalid data"
                 if (shouldResetCourier) {
-                    // todo move this
+                    // todo should this error be sent to CheckoutLogger.logOnErrorLoadCourierNew ?
 //                    orderModel.shouldResetCourier = false
                     error("racing condition against epharmacy validation")
                 }
