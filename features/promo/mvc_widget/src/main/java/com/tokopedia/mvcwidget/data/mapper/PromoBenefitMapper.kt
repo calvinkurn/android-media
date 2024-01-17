@@ -1,7 +1,9 @@
 package com.tokopedia.mvcwidget.data.mapper
 
 import com.tokopedia.mvcwidget.data.entity.PromoCatalogResponse
-import com.tokopedia.mvcwidget.views.benefit.UiModel
+import com.tokopedia.mvcwidget.views.benefit.BenefitText
+import com.tokopedia.mvcwidget.views.benefit.BenefitTnc
+import com.tokopedia.mvcwidget.views.benefit.BenefitUiModel
 import com.tokopedia.mvcwidget.views.benefit.UsablePromoModel
 
 enum class PdpComponent(val id: String) {
@@ -15,23 +17,47 @@ enum class PdpComponent(val id: String) {
 
 enum class Style(val id: String) {
     BgColor("background_color"),
-    BgImage("background_image")
+    BgImage("background_image"),
+    Title("text_title_value"),
+    TitleColor("text_title_color"),
+    TitleFormat("text_title_format"),
+    Text("text_value"),
+    TextColor("text_color"),
+    TextFormat("text_format"),
+    TextHtml("text_html"),
 }
 
-private fun List<PromoCatalogResponse.PromoCatalogGetPDEBottomSheet.Result.Widget.Component.Attribute>.attributeOf(style: Style) =
-    first { it.type == style.id }.value
+private fun List<PromoCatalogResponse.PromoCatalogGetPDEBottomSheet.Result.Widget.Component.Attribute>.toTextModel() =
+    BenefitText(
+        attributeOf(Style.Title),
+        attributeOf(Style.TitleColor),
+        attributeOf(Style.TitleFormat),
+        attributeOf(Style.Text),
+        attributeOf(Style.TextColor),
+        attributeOf(Style.TextFormat),
+    )
 
-internal fun PromoCatalogResponse.toUiModel(): UiModel {
+private fun List<PromoCatalogResponse.PromoCatalogGetPDEBottomSheet.Result.Widget.Component.Attribute>.attributeOf(
+    style: Style
+) = first { it.type == style.id }.value
+
+private fun List<PromoCatalogResponse.PromoCatalogGetPDEBottomSheet.Result.Widget.Component>.componentOf(
+    component: PdpComponent
+) = first { it.componentType == component.id }.attributeList
+
+internal fun PromoCatalogResponse.toUiModel(): BenefitUiModel {
     val components =
         promoCatalogGetPDEBottomSheet.resultList.first().widgetList.first().componentList
-    val headerComponent =
-        components.first { it.componentType == PdpComponent.Background.id }.attributeList
+    val headerComponent = components.componentOf(PdpComponent.Background)
+    val estimatePriceComponent = components.componentOf(PdpComponent.FinalPrice)
+    val basePriceComponent = components.componentOf(PdpComponent.NetPrice)
+    val tncComponent = components.componentOf(PdpComponent.TnC)
 
-    return UiModel(
+    return BenefitUiModel(
         headerComponent.attributeOf(Style.BgImage),
         headerComponent.attributeOf(Style.BgColor),
-        "Rp9,000,000",
-        "Rp9,500,000",
+        estimatePriceComponent.toTextModel(),
+        basePriceComponent.toTextModel(),
         listOf(
             UsablePromoModel(
                 "https://images.tokopedia.net/img/retention/gopaycoins/gopay.png",
@@ -47,6 +73,10 @@ internal fun PromoCatalogResponse.toUiModel(): UiModel {
         listOf(
             "Nominal promo bisa berubah dikarenakan waktu pembelian, ketersediaan produk, periode promosi, ketentuan promo.",
             "Harga akhir akan ditampilkan di halaman “Pengiriman / Checkout”. Perhatikan sebelum mengkonfirmasi pesanan."
+        ),
+        BenefitTnc(
+            tncComponent.attributeOf(Style.TextHtml),
+            tncComponent.attributeOf(Style.TextColor)
         )
     )
 }

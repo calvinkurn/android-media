@@ -13,8 +13,8 @@ class PromoBenefitViewModel @Inject constructor(
     private val getPromoBenefit: GetPromoBenefitBottomSheetUseCase
 ) : ViewModel() {
 
-    private val _state: MutableStateFlow<UiModel> = MutableStateFlow(UiModel())
-    val state: StateFlow<UiModel> = _state
+    private val _state: MutableStateFlow<BenefitUiModel> = MutableStateFlow(BenefitUiModel())
+    val state: StateFlow<BenefitUiModel> = _state
 
     fun setId(id: String) {
         viewModelScope.launch {

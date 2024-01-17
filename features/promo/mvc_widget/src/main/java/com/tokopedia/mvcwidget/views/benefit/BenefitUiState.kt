@@ -1,0 +1,31 @@
+package com.tokopedia.mvcwidget.views.benefit
+
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class BenefitUiModel(
+    val bgImgUrl: String = "",
+    val bgColor: String = "#FFF5F6",
+    val estimatePrice: BenefitText = BenefitText(text = ""),
+    val basePrice: BenefitText = BenefitText(text = ""),
+    val usablePromo: List<UsablePromoModel> = listOf(),
+    val promoInfo: List<String> = listOf(),
+    val tnc: BenefitTnc = BenefitTnc(),
+) : Parcelable
+
+@Parcelize
+data class BenefitText(
+    val title: String = "Perkiraan harga terhemat",
+    val titleColor: String = "#212121",
+    val titleFormat: String = "normal",
+    val text: String,
+    val textColor: String = "#212121",
+    val textFormat: String = "bold"
+) : Parcelable
+
+@Parcelize
+data class BenefitTnc(
+    val html: String = "",
+    val color: String = "#6D7588"
+) : Parcelable

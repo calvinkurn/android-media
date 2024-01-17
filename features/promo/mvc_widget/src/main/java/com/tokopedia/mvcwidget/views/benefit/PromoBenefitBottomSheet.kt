@@ -6,13 +6,14 @@ import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -27,7 +28,6 @@ import com.tokopedia.mvcwidget.databinding.PromoBenefitBottomsheetBinding
 import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.Parcelize
 import javax.inject.Inject
 import com.tokopedia.unifycomponents.R as unifycomponentsR
 
@@ -97,8 +97,14 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
                         }
                         topSection.background = drawable
                         benefitBackground.loadImage(model.bgImgUrl)
-                        layoutBenefit.tvEstimate.text = model.estimatePrice
-                        layoutBenefit.tvBasePrice.text = model.basePrice
+                        model.estimatePrice.run {
+                            layoutBenefit.tvEstimate.setAttribute(text, textColor, textFormat)
+                            layoutBenefit.tvEstimateTitle.setAttribute(title, titleColor, titleFormat)
+                        }
+                        model.basePrice.run {
+                            layoutBenefit.tvBasePrice.setAttribute(text, textColor, textFormat)
+                            layoutBenefit.tvBasePriceTitle.setAttribute(title, titleColor, titleFormat)
+                        }
 
                         usablePromoAdapter.submitList(model.usablePromo)
                         infoAdapter.submitList(model.promoInfo)
@@ -138,12 +144,11 @@ class PromoBenefitBottomSheet : BottomSheetDialogFragment() {
     }
 }
 
-@Parcelize
-data class UiModel(
-    val bgImgUrl: String = "",
-    val bgColor: String = "#FFF5F6",
-    val estimatePrice: String = "Rp0",
-    val basePrice: String = "Rp0",
-    val usablePromo: List<UsablePromoModel> = listOf(),
-    val promoInfo: List<String> = listOf()
-) : Parcelable
+internal fun TextView.setAttribute(text: String, color: String, typeFace: String) {
+    this.text = text
+    setTextColor(Color.parseColor(color))
+    typeface = when (typeFace) {
+        "bold" -> Typeface.DEFAULT_BOLD
+        else -> Typeface.DEFAULT
+    }
+}

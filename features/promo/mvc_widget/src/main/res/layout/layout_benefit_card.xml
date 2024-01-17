@@ -13,7 +13,7 @@
         android:layout_height="match_parent">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/typography"
+            android:id="@+id/tv_estimate_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -27,8 +27,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="@+id/typography"
-            app:layout_constraintTop_toBottomOf="@+id/typography"
+            app:layout_constraintStart_toStartOf="@+id/tv_estimate_title"
+            app:layout_constraintTop_toBottomOf="@+id/tv_estimate_title"
             app:typographyType="display_1"
             app:typographyWeight="bold"
             tools:text="Rp9,000,000" />
@@ -44,7 +44,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_estimate" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/textView4"
+            android:id="@+id/tv_base_price_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -59,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            app:layout_constraintBaseline_toBaselineOf="@+id/textView4"
+            app:layout_constraintBaseline_toBaselineOf="@+id/tv_base_price_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="display_3"
             app:typographyWeight="bold"
@@ -73,7 +73,7 @@
             android:layout_marginTop="8dp"
             android:text="@string/promo_yang_bisa_dipakai"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView4"
+            app:layout_constraintTop_toBottomOf="@+id/tv_base_price_title"
             app:typographyType="display_3" />
 
         <androidx.recyclerview.widget.RecyclerView
