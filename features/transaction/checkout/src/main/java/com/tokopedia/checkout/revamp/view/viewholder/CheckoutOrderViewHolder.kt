@@ -128,6 +128,7 @@ class CheckoutOrderViewHolder(
                 logPromoDesc = courierItemData.logPromoDesc ?: "",
                 voucherLogisticExists = !courierItemData.selectedShipper.logPromoCode.isNullOrEmpty(),
                 logisticPromoCode = courierItemData.selectedShipper.logPromoCode,
+                isWhitelabel = courierItemData.isHideChangeCourierCard,
                 isHasShownCourierError = false,
                 boOrderMessage = courierItemData.boOrderMessage,
                 estimatedTimeDelivery = courierItemData.estimatedTimeDelivery ?: "",
