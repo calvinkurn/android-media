@@ -74,6 +74,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                 }
                 shipment {
                   id
+                  title
                   name
                   product_id
                   product_name

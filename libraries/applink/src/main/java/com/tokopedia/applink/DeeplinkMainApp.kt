@@ -1245,7 +1245,7 @@ object DeeplinkMainApp {
             },
             DLP.matchPattern("bottomsheet/{type}") { deeplink: String ->
                 DeeplinkMapperCommunication.getRegisteredNavigation(deeplink)
-            },
+            }
         ),
         "tokopoints" to mutableListOf(
             DLP.goTo { deeplink: String ->

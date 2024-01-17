@@ -34,7 +34,7 @@ import com.tokopedia.home_account.domain.usecase.HomeAccountUserUsecase
 import com.tokopedia.home_account.domain.usecase.OfferInterruptUseCase
 import com.tokopedia.home_account.domain.usecase.SaveAttributeOnLocalUseCase
 import com.tokopedia.home_account.domain.usecase.UpdateSafeModeUseCase
-import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
+import com.tokopedia.home_account.data.model.LinkStatusResponse
 import com.tokopedia.home_account.view.mapper.ProfileWithDataStoreMapper
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult

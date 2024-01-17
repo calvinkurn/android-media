@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">explore_category</string>
+    <string name="title_home_browse_all_category">Browse All Categories</string>
+    <string name="secondary_title_go_to_setting">Ke Pengaturan</string>
+</resources>

@@ -20,6 +20,7 @@ import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import io.mockk.*
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -1949,21 +1950,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check privacy center appLink then should return tokopedia internal privacy center in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/privacy-center"
-
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(DeeplinkMapperUser.ROLLENCE_PRIVACY_CENTER)
-        } returns DeeplinkMapperUser.ROLLENCE_PRIVACY_CENTER
-
-        assertEqualsDeepLinkMapper(ApplinkConst.PRIVACY_CENTER, expectedDeepLink)
-    }
-
-    @Test
-    fun `check privacy center appLink then should return tokopedia internal home navigation in customerapp`() {
-        val expectedDeepLink = ApplinkConsInternalHome.HOME_NAVIGATION
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(DeeplinkMapperUser.ROLLENCE_PRIVACY_CENTER)
-        } returns ""
-
         assertEqualsDeepLinkMapper(ApplinkConst.PRIVACY_CENTER, expectedDeepLink)
     }
 
@@ -2351,6 +2337,41 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check digital browse appLink then should return tokopedia internal digital browse in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://category-explore"
         assertEqualsDeepLinkMapper(ApplinkConst.Digital.DIGITAL_BROWSE, expectedDeepLink)
+    }
+
+    @Test
+    fun `check digital browse appLink with type 1 then should return old tokopedia internal explore category in customerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://category-explore?source=homepage.category_widget_v2.0.290303&type=1"
+
+        val expectedDeppLink = "${ApplinkConstInternalCategory.INTERNAL_BELANJA_CATEGORY}?source=homepage.category_widget_v2.0.290303&type=1"
+
+        assertEqualsDeepLinkMapper(appLink, expectedDeppLink)
+    }
+
+    @Test
+    fun `check digital browse appLink with type 2 then should return old tokopedia internal explore category in customerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://category-explore?source=homepage.dynamic_icon.0.1718&tab=1&type=2"
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.JELAJAH_REVAMP, RollenceKey.EXPLORE_CATEGORY_DEFAULT)
+        } returns RollenceKey.EXPLORE_CATEGORY_DEFAULT
+
+        val expectedDeppLink = "${ApplinkConstInternalCategory.INTERNAL_EXPLORE_CATEGORY}?source=homepage.dynamic_icon.0.1718&tab=1&type=2"
+
+        assertEqualsDeepLinkMapper(appLink, expectedDeppLink)
+    }
+
+    @Test
+    fun `check digital browse appLink with type 2 then should return new tokopedia internal home explore category in customerapp`() {
+        val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://category-explore?source=homepage.dynamic_icon.0.1718&tab=1&type=2"
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.JELAJAH_REVAMP, RollenceKey.EXPLORE_CATEGORY_DEFAULT)
+        } returns RollenceKey.EXPLORE_CATEGORY_EXP
+
+        val expectedDeppLink = "${ApplinkConstInternalDiscovery.INTERNAL_HOME_EXPLORE_CATEGORY}?source=homepage.dynamic_icon.0.1718&tab=1&type=2"
+
+        assertEqualsDeepLinkMapper(appLink, expectedDeppLink)
     }
 
     @Test
