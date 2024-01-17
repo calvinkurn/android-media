@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -30,9 +30,12 @@ import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewAction
 import com.tokopedia.content.product.preview.view.uimodel.ProductPreviewEvent
 import com.tokopedia.content.product.preview.view.uimodel.ReportUiModel
 import com.tokopedia.content.product.preview.view.uimodel.ReviewUiModel
+import com.tokopedia.content.product.preview.view.uimodel.product.ProductContentUiModel
 import com.tokopedia.content.product.preview.view.viewholder.review.ReviewParentContentViewHolder
 import com.tokopedia.content.product.preview.viewmodel.ProductPreviewViewModel
 import com.tokopedia.content.product.preview.viewmodel.factory.ProductPreviewViewModelFactory
+import com.tokopedia.content.product.preview.viewmodel.utils.EntrySource
+import com.tokopedia.kotlin.extensions.view.ifNull
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -47,7 +50,10 @@ class ReviewFragment @Inject constructor(
     private val binding: FragmentReviewBinding
         get() = _binding!!
 
-    private val viewModel by activityViewModels<ProductPreviewViewModel>()
+    private val arguments
+        get() = (requireParentFragment() as? ProductPreviewFragment)?.productPreviewData.ifNull { ProductContentUiModel() }
+
+    private val viewModel by viewModels<ProductPreviewViewModel> { viewModelFactory.create(EntrySource((arguments))) }
 
     private val reviewAdapter by lazyThreadSafetyNone {
         ReviewParentAdapter(this)

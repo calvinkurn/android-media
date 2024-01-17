@@ -61,7 +61,7 @@ class ProductPreviewFragment @Inject constructor(
     private val binding: FragmentProductPreviewBinding
         get() = _binding!!
 
-    private val productPreviewData: ProductContentUiModel by lazyThreadSafetyNone {
+    val productPreviewData: ProductContentUiModel by lazyThreadSafetyNone {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arguments?.getParcelable(
                 PRODUCT_DATA,
