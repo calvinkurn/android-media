@@ -40,7 +40,7 @@ class CheckoutOrderViewHolder(
     fun bind(order: CheckoutOrderModel, addressModel: CheckoutAddressModel?) {
         this.order = order
         renderAddOnOrderLevel(order)
-        renderShippingWidget(order, addressModel)
+        renderShippingWidget(order)
         renderDropshipWidget(order)
     }
 
@@ -83,8 +83,7 @@ class CheckoutOrderViewHolder(
     }
 
     private fun renderShippingWidget(
-        order: CheckoutOrderModel,
-        addressModel: CheckoutAddressModel?
+        order: CheckoutOrderModel
     ) {
         binding.shippingWidget.setupListener(this)
         binding.shippingWidget.hideTradeInShippingInfo()

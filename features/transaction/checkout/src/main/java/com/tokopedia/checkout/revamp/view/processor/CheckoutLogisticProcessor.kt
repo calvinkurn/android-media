@@ -290,15 +290,15 @@ class CheckoutLogisticProcessor @Inject constructor(
             promo
         )
         return LogisticProcessorGetRatesParam(
-            ratesParam,
-            order.shippingId,
-            order.spId,
-            order.boCode,
-            order.shouldResetCourier,
-            order.validationMetadata,
-            order.isDisableChangeCourier,
-            order.shipment.courierItemData?.serviceId,
-            order.isAutoCourierSelection,
+            ratesParam = ratesParam,
+            selectedServiceId = order.shippingId,
+            selectedSpId = order.spId,
+            boPromoCode = order.boCode,
+            shouldResetCourier = order.shouldResetCourier,
+            validationMetadata = order.validationMetadata,
+            isDisableChangeCourier = order.isDisableChangeCourier,
+            currentServiceId = order.shipment.courierItemData?.serviceId,
+            isAutoCourierSelection = order.isAutoCourierSelection,
             isTradeInDropOff = isTradeInDropOff
         )
     }

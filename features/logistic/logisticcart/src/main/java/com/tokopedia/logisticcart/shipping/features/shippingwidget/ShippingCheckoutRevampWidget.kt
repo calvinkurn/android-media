@@ -278,10 +278,10 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
     private fun setLabelSelectedShippingCourier(shippingWidgetUiModel: ShippingWidgetUiModel) {
         binding?.apply {
             val courierName = "${shippingWidgetUiModel.courierName} (${
-            convertPriceValueToIdrFormat(
-                shippingWidgetUiModel.courierShipperPrice,
-                false
-            ).removeDecimalSuffix()
+                convertPriceValueToIdrFormat(
+                    shippingWidgetUiModel.courierShipperPrice,
+                    false
+                ).removeDecimalSuffix()
             })"
 
             if (shippingWidgetUiModel.etaErrorCode == 0 && shippingWidgetUiModel.estimatedTimeArrival.isNotEmpty()) {
@@ -410,10 +410,10 @@ class ShippingCheckoutRevampWidget : ConstraintLayout {
             }
             if (shippingWidgetUiModel.estimatedTimeDelivery.isNotEmpty()) {
                 val titleText = "${shippingWidgetUiModel.estimatedTimeDelivery} (${
-                convertPriceValueToIdrFormat(
-                    shippingWidgetUiModel.courierShipperPrice,
-                    false
-                ).removeDecimalSuffix()
+                    convertPriceValueToIdrFormat(
+                        shippingWidgetUiModel.courierShipperPrice,
+                        false
+                    ).removeDecimalSuffix()
                 })"
                 val htmlLinkHelper =
                     HtmlLinkHelper(labelSelectedWhitelabelShipping.context, titleText)

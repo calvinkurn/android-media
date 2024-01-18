@@ -26,7 +26,6 @@ data class ShippingWidgetUiModel(
     // new OFOC
     val boOrderMessage: String = "",
 
-    // showNormalShippingCourier
     // CourierItemData.estimatedTimeDelivery
     val estimatedTimeDelivery: String = "",
 
