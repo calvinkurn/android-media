@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.gamification.pdp.data.model.KetupatLandingPageData.GamiGetScratchCardLandingPage.AppBar
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.universal_sharing.view.model.ShareModel
 
 /**
@@ -46,6 +47,17 @@ class KetupatSharingComponent(rootView: View) {
                 userId = userId,
                 pageId = data.identifier!!,
                 feature = "share"
+            )
+            setLinkProperties(
+                LinkProperties(
+                    linkerType = TAG,
+                    id = TAG,
+                    ogTitle = data.ogTitle,
+                    ogDescription = data.message!!,
+                    ogImageUrl = data.ogImageURL,
+                    deeplink = "tokopedia-android-internal://gamification/ketupat_rewards_landing_page",
+                    desktopUrl = "https://www.tokopedia.com"
+                )
             )
             setShareText(data.message!!)
             setOnDismissListener { mListener?.onDismissEvent(false, this@KetupatSharingComponent) }

@@ -5,12 +5,11 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/ketupat_benefit_coupon_banner_image"
-        android:layout_width="220dp"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_height="0dp"
+        android:id="@+id/ketupat_benefit_coupon_slug_banner_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
-        app:layout_constraintDimensionRatio="2:1"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:unify_image_corner_radius="8" />
 </androidx.constraintlayout.widget.ConstraintLayout>

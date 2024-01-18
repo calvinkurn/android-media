@@ -46,11 +46,13 @@
     <string name="title_tokopoints">TokoPoints</string>
 
     <!--gamification-->
+    <string name="host_gamification">gamification</string>
     <string name="path_gamification">/gamification</string>
     <string name="path_gamification2">/gamification2</string>
     <string name="path_daily_gift">/gamification_gift_daily</string>
     <string name="path_gift_60s">/gamification_gift_60s</string>
     <string name="path_smc_referral">/smc-referral</string>
+    <string name="path_ketupat_landing_page">/ketupat_rewards_landing_page</string>
     <string name="internet_title_gamification">Gamification</string>
 
     <!--promo checkout-->

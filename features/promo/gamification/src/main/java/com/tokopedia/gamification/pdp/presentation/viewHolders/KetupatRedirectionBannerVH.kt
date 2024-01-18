@@ -22,6 +22,7 @@ class KetupatRedirectionBannerVH(itemView: View) : AbstractViewHolder<KetupatRed
             itemView.findViewById<Typography>(gamificationR.id.redirection_banner_title)?.text =
                 bannerData?.title
             itemView.findViewById<ImageUnify>(gamificationR.id.redirection_img_1)?.apply {
+                setImageUrl(bannerData?.cta?.get(0)?.imageURL.toString())
                 this.setOnClickListener {
                     RouteManager.route(
                         context,
@@ -30,6 +31,7 @@ class KetupatRedirectionBannerVH(itemView: View) : AbstractViewHolder<KetupatRed
                 }
             }
             itemView.findViewById<ImageUnify>(gamificationR.id.redirection_img_2)?.apply {
+                setImageUrl(bannerData?.cta?.get(1)?.imageURL.toString())
                 this.setOnClickListener {
                     RouteManager.route(
                         context,

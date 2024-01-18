@@ -39,9 +39,10 @@ class KetupatCrackBannerVH(itemView: View) : AbstractViewHolder<KetupatCrackBann
                     )
                 }
             }
-            itemView.findViewById<UnifyButton>(gamificationR.id.open_btn).apply {
-                text = "Belah Ketupat, Yuk!"
-                this.buttonVariant = UnifyButton.Variant.GHOST
+            itemView.findViewById<ImageUnify>(gamificationR.id.open_btn_bg).apply {
+//                text = "Belah Ketupat, Yuk!"
+
+//                this.buttonVariant = UnifyButton.Variant.GHOST
                 this.setOnClickListener {
                     itemView.findViewById<ImageUnify>(gamificationR.id.crack_icon_img)
                         ?.setImageUrl(crackData?.assets?.find { it?.key == "IMAGE_ICON_OPENED" }?.value.toString())
@@ -49,6 +50,11 @@ class KetupatCrackBannerVH(itemView: View) : AbstractViewHolder<KetupatCrackBann
                         crackData?.text?.find { it?.key == "OPENED" }?.value
                     this.hide()
                 }
+            }
+            crackData?.cta?.get(0)?.imageURL?.let {
+                itemView.findViewById<ImageUnify>(gamificationR.id.open_btn_bg).setImageUrl(
+                    it
+                )
             }
 
         }
