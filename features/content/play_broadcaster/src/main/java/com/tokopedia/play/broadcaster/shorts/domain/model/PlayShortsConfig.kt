@@ -18,8 +18,8 @@ data class PlayShortsConfig(
     @SerializedName("short_video_source_id")
     val shortVideoSourceId: String = "",
 
-    @SerializedName("eligible_for_interspersing") /** TODO: adjust this if contract is updated */
-    val eligibleForInterspersing: Boolean = true,
+    @SerializedName("eligible_interspersing")
+    val eligibleInterspersing: Boolean = false,
 
     @SerializedName("product_count_for_interspersing") /** TODO: adjust this if contract is updated */
     val productCountForInterspersing: Int = 1,

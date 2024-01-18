@@ -58,6 +58,7 @@ class UserProfileSettingsViewModel @AssistedInject constructor(
             val reviewSettings = repo.getProfileSettings(userID).getReviewSettings()
 
             _oldReviewSettings.update { reviewSettings }
+
             _reviewSettings.update { reviewSettings }
         }) {
 

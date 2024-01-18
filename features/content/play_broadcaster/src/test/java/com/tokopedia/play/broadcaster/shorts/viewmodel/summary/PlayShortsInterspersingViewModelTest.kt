@@ -33,7 +33,7 @@ class PlayShortsInterspersingViewModelTest {
     private val productModelBuilder = ProductSetupUiModelBuilder()
 
     private val mockConfigInterspersingAllowed = uiModelBuilder.buildShortsConfig(shortsAllowed = true)
-    private val mockConfigInterspersingNotAllowed = uiModelBuilder.buildShortsConfig(shortsAllowed = true, eligibleForInterspersing = false)
+    private val mockConfigInterspersingNotAllowed = uiModelBuilder.buildShortsConfig(shortsAllowed = true, eligibleInterspersing = false)
     private val mockTagsSize5 = uiModelBuilder.buildTags(size = 5)
     private val mockAccountShop = uiModelBuilder.buildAccountListModel(onlyShop = true).first()
     private val mockHasPdpVideo = uiModelBuilder.buildHasPdpVideo()

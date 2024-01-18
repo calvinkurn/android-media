@@ -437,7 +437,7 @@ class PlayShortsViewModel @Inject constructor(
         viewModelScope.launch {
 
             _interspersingConfig.update { interspersingConfig ->
-                val isInterspersingAllowed = _config.value.eligibleForInterspersing &&
+                val isInterspersingAllowed = _config.value.eligibleInterspersing &&
                     productSectionList.flatMap { it.products }.size == _config.value.productCountForInterspersing
 
                 interspersingConfig.copy(

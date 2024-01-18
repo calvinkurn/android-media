@@ -63,7 +63,7 @@ class PlayShortsInterspersingAnalyticTest {
 
     private val uiModelBuilder = ShortsUiModelBuilder()
 
-    private val mockShortsConfig = uiModelBuilder.buildShortsConfig(eligibleForInterspersing = true, productCountForInterspersing = 1)
+    private val mockShortsConfig = uiModelBuilder.buildShortsConfig(eligibleInterspersing = true, productCountForInterspersing = 1)
     private val mockAccountList = uiModelBuilder.buildAccountListModel(usernameBuyer = false, tncBuyer = false)
     private val mockAccountShop = mockAccountList[0]
     private val mockProductTagSection = uiModelBuilder.buildProductTagSectionList(size = 1)

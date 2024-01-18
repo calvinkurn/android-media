@@ -31,7 +31,7 @@ class ShortsUiModelBuilder {
         maxTaggedProduct: Int = 30,
         maxTitleCharacter: Int = 24,
         shortsVideoSourceId: String = "asdf",
-        eligibleForInterspersing: Boolean = false,
+        eligibleInterspersing: Boolean = false,
         productCountForInterspersing: Int = 0,
     ) = PlayShortsConfigUiModel(
         shortsId = shortsId,
@@ -42,7 +42,7 @@ class ShortsUiModelBuilder {
         maxTitleCharacter = maxTitleCharacter,
         shortsVideoSourceId = shortsVideoSourceId,
         hasContent = hasContent,
-        eligibleForInterspersing = eligibleForInterspersing,
+        eligibleInterspersing = eligibleInterspersing,
         productCountForInterspersing = productCountForInterspersing,
     )
 
