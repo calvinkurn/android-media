@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -20,7 +21,6 @@ import com.tokopedia.productcard.reimagine.ProductCardType
 import com.tokopedia.productcard.reimagine.lazyView
 import com.tokopedia.productcard.reimagine.showView
 import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.productcard.reimagine.ProductCardModel.Companion as ProductCardModelReimagine
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -37,7 +37,7 @@ internal class ReimagineListCarouselViewStrategy(
 
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val cardConstraintLayout by lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
-    private val imageView by lazyView<ImageUnify?>(R.id.productCardImage)
+    private val imageView by lazyView<ImageView?>(R.id.productCardImage)
 
     override fun additionalMarginStart() = cardContainer?.marginStart ?: 0
 

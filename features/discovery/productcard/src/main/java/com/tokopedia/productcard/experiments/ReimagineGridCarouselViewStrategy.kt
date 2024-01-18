@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.ImageView
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
@@ -24,7 +25,6 @@ import com.tokopedia.productcard.reimagine.ProductCardType.GridCarousel
 import com.tokopedia.productcard.reimagine.lazyView
 import com.tokopedia.productcard.reimagine.showView
 import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.productcard.reimagine.ProductCardModel as ProductCardModelReimagine
 import com.tokopedia.unifyprinciples.R as unifyprinciplesR
 
@@ -43,7 +43,7 @@ internal class ReimagineGridCarouselViewStrategy(
     private val cardContainer by lazyView<CardUnify2?>(R.id.productCardCardUnifyContainer)
     private val productCardOutlineCard by lazyView<View?>(R.id.productCardOutline)
     private val cardConstraintLayout by lazyView<ConstraintLayout?>(R.id.productCardConstraintLayout)
-    private val imageView by lazyView<ImageUnify?>(R.id.productCardImage)
+    private val imageView by lazyView<ImageView?>(R.id.productCardImage)
     private val productCardGuidelineStartContent by lazyView<Guideline?>(R.id.productCardGuidelineStartContent)
     private val productCardGuidelineEndContent by lazyView<Guideline?>(R.id.productCardGuidelineEndContent)
 
