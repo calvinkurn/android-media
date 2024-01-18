@@ -89,6 +89,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.topads.common.R as topadscommonR
 
 /**
  * Created by hadi.putra on 23/04/2018.
@@ -142,6 +143,7 @@ class TopAdsDashboardActivity :
     private var redirectToTab = 0
     private var redirectToTabInsight = 0
     private var autoPsData : AutoAdsResponse.TopAdsGetAutoAds.Data? = null
+    private var isAutoPsWhitelisted: Boolean = false
 
     companion object {
         const val INSIGHT_PAGE = 3
@@ -160,6 +162,7 @@ class TopAdsDashboardActivity :
         initInjector()
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
+        topAdsDashboardPresenter.getVariantById()
         topAdsDashboardPresenter.getShopListHiddenTrial(resources)
         topAdsDashboardPresenter.getAutoAdsStatus(resources, ::setAutoAds)
         setContentView(R.layout.topads_dash_activity_base_layout)
@@ -167,6 +170,14 @@ class TopAdsDashboardActivity :
         initView()
         setUpClick()
         renderTabAndViewPager()
+
+        topAdsDashboardPresenter.shopVariant.observe(this) { shopVariants ->
+            isAutoPsWhitelisted =
+                shopVariants.isNotEmpty() && shopVariants.filter {
+                    it.experiment == TopAdsCommonConstant.AUTOPS_EXPERIMENT &&
+                        it.variant == TopAdsCommonConstant.AUTOPS_VARIANT }
+                    .isNotEmpty()
+        }
 
         topAdsDashboardPresenter.isShopWhiteListed.observe(this) {
             if (it) {
@@ -232,7 +243,7 @@ class TopAdsDashboardActivity :
                                 bottom?.gone()
                                 multiActionBtn?.buttonSize = UnifyButton.Size.MEDIUM
                                 multiActionBtn?.text =
-                                    getString(com.tokopedia.topads.common.R.string.topads_iklankan_button)
+                                    getString(topadscommonR.string.topads_iklankan_button)
                                 checkVisibility()
                             }
                             RecommendationTracker.clickTabSaranTopads()
@@ -243,7 +254,7 @@ class TopAdsDashboardActivity :
                             txtBuatIklan.hide()
                         }
                         HEADLINE_ADS_TAB -> {
-                            txtBuatIklan.text = getString(R.string.topads_dashboard_create_shop_advertisement)
+                            txtBuatIklan.text = if(isAutoPsWhitelisted) getString(R.string.topads_dashboard_create_shop_advertisement) else getString(R.string.topads_dash_buat_iklan)
                             removeBtn()
                             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(
                                 CLICK_IKLAN_TOKO,
@@ -269,9 +280,13 @@ class TopAdsDashboardActivity :
 
         multiActionBtn?.setOnClickListener {
             if (tabLayout?.getUnifyTabLayout()?.selectedTabPosition == CONST_0) {
-                val sheet = TopadsBerandaCreationBottomSheet()
-                sheet.overlayClickDismiss = false
-                sheet.show(supportFragmentManager,autoPsData)
+                if(isAutoPsWhitelisted){
+                    val sheet = TopadsBerandaCreationBottomSheet()
+                    sheet.overlayClickDismiss = false
+                    sheet.show(supportFragmentManager,autoPsData)
+                } else {
+                    navigateToAdTypeSelection()
+                }
             }
             if (tabLayout?.getUnifyTabLayout()?.selectedTabPosition == CONST_3) {
                 val fragments = (viewPager.adapter as TopAdsDashboardBasePagerAdapter).getList()
@@ -411,7 +426,7 @@ class TopAdsDashboardActivity :
     }
 
     fun hideButton(toHide: Boolean) {
-        if (multiActionBtn?.text?.equals(getString(com.tokopedia.topads.common.R.string.topads_iklankan_button)) == true) {
+        if (multiActionBtn?.text?.equals(getString(topadscommonR.string.topads_iklankan_button)) == true) {
             bottom?.visibility = if (toHide) View.GONE else View.VISIBLE
             if (toHide) {
                 viewPager.setPadding(0, 0, 0, 0)
@@ -633,18 +648,24 @@ class TopAdsDashboardActivity :
                 "{${userSession.shopId}}",
                 userSession.userId
             )
-            if(tabLayout?.getUnifyTabLayout()?.selectedTabPosition == IKLANKAN_PRODUK_TAB){
-                val intent = RouteManager.getIntent(
-                    this,
-                    ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE_MANUAL_ADS
-                )
-                startActivity(intent)
-            } else if(tabLayout?.getUnifyTabLayout()?.selectedTabPosition == HEADLINE_ADS_TAB){
-                val intent = RouteManager.getIntent(
-                    this,
-                    ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION
-                )
-                startActivity(intent)
+            if(isAutoPsWhitelisted){
+                if(tabLayout?.getUnifyTabLayout()?.selectedTabPosition == IKLANKAN_PRODUK_TAB){
+                    val intent = RouteManager.getIntent(
+                        this,
+                        ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE_MANUAL_ADS
+                    )
+                    startActivity(intent)
+                } else if(tabLayout?.getUnifyTabLayout()?.selectedTabPosition == HEADLINE_ADS_TAB){
+                    val intent = RouteManager.getIntent(
+                        this,
+                        ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION
+                    )
+                    startActivity(intent)
+                }
+            } else {
+                val intent =
+                    RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_ADS_SELECTION)
+                startActivityForResult(intent, AUTO_ADS_DISABLED)
             }
         }
     }
@@ -711,6 +732,10 @@ class TopAdsDashboardActivity :
         customEndDate = Utils.outputFormat.format(endDate)
         customStartDate = Utils.outputFormat.format(dateSelected)
         loadSummaryStats()
+    }
+
+    fun getAutoPsWhitelist(): Boolean{
+        return isAutoPsWhitelisted
     }
 
     private fun loadSummaryStats() {

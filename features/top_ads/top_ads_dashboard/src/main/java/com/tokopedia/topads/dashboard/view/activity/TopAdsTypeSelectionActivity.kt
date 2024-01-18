@@ -3,116 +3,43 @@ package com.tokopedia.topads.dashboard.view.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
-import com.tokopedia.kotlin.extensions.view.getResDrawable
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
-import com.tokopedia.topads.dashboard.R
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.topads.common.fragment.LoaderFragment
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.AUTO_ADS_DISABLED
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.IKLAN_PRODUCT_AD_TYPE_IMG_URL
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.IKLAN_TOKO_AD_TYPE_IMG_URL
-import com.tokopedia.unifycomponents.CardUnify
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsAutoPsTypeSelectionFragment
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsTypeSelectionFragment
+import com.tokopedia.topads.dashboard.viewmodel.TopAdsTypeSelectionViewModel
+import javax.inject.Inject
 
-private const val click_iklan_toko = "click - iklan toko"
+class TopAdsTypeSelectionActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboardComponent> {
 
-class TopAdsTypeSelectionActivity : BaseSimpleActivity() {
+    @JvmField
+    @Inject
+    var viewModelFactory: ViewModelFactory? = null
 
-    private lateinit var userSession: UserSessionInterface
-
-    override fun getNewFragment(): Fragment? {
-        return null
-    }
-
-    override fun getLayoutRes(): Int {
-        return R.layout.activity_ad_type_selection
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        userSession = UserSession(this)
-        findViewById<CardUnify>(R.id.topads_ad_card1).run {
-            findViewById<Typography>(R.id.title)?.text =
-                getString(R.string.topads_dash_iklan_produck)
-            findViewById<Typography>(R.id.subtitle)?.text =
-                getString(R.string.topads_ad_type_selection_product_subtitle)
-            val accordianData = findViewById<Group>(R.id.accordian_group)
-            findViewById<Typography>(R.id.accordian_text)?.run {
-                text = getString(R.string.topads_ad_type_selection_product_accordian_title)
-                setOnClickListener { expandAccordian(accordianData) }
-            }
-            findViewById<ImageUnify>(R.id.accordian_icon)?.setOnClickListener { expandAccordian(accordianData) }
-            findViewById<Typography>(R.id.item1)?.text =
-                getString(R.string.topads_ad_type_selection_product_accordian_item1)
-            findViewById<Typography>(R.id.item2)?.text =
-                getString(R.string.topads_ad_type_selection_product_accordian_item2)
-            findViewById<Typography>(R.id.item3)?.text =
-                getString(R.string.topads_ad_type_selection_product_accordian_item3)
-            findViewById<ImageUnify>(R.id.image)?.urlSrc = IKLAN_PRODUCT_AD_TYPE_IMG_URL
-            findViewById<UnifyButton>(R.id.submit).run {
-                text = getString(R.string.topads_dashboard_create_product_advertisement)
-                setOnClickListener {
-                    val intent = RouteManager.getIntent(
-                        this@TopAdsTypeSelectionActivity,
-                        ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER
-                    )
-                    startActivityForResult(intent, AUTO_ADS_DISABLED)
-                }
-            }
-        }
-
-        findViewById<CardUnify>(R.id.topads_ad_card2).run {
-            findViewById<Typography>(R.id.title)?.text =
-                getString(R.string.topads_dashboard_ad_headline_type_selection_title)
-            findViewById<Typography>(R.id.subtitle)?.text =
-                getString(R.string.topads_ad_type_selection_shop_subtitle)
-            val accordianData = findViewById<Group>(R.id.accordian_group)
-            findViewById<Typography>(R.id.accordian_text)?.run {
-                text = getString(R.string.topads_ad_type_selection_shop_accordian_title)
-                setOnClickListener { expandAccordian(accordianData) }
-            }
-            findViewById<ImageUnify>(R.id.accordian_icon)?.setOnClickListener { expandAccordian(accordianData) }
-            findViewById<Typography>(R.id.item1)?.text =
-                getString(R.string.topads_ad_type_selection_shop_accordian_item1)
-            findViewById<Typography>(R.id.item2)?.text =
-                getString(R.string.topads_ad_type_selection_shop_accordian_item2)
-            findViewById<Typography>(R.id.item3)?.text =
-                getString(R.string.topads_ad_type_selection_shop_accordian_item3)
-            findViewById<ImageUnify>(R.id.image)?.urlSrc = IKLAN_TOKO_AD_TYPE_IMG_URL
-            findViewById<UnifyButton>(R.id.submit).run {
-                text = getString(R.string.topads_dashboard_create_shop_advertisement)
-                setOnClickListener {
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormClickEvent(
-                        click_iklan_toko,
-                        "{${userSession.shopId}}",
-                        userSession.userId
-                    )
-                    RouteManager.route(
-                        this@TopAdsTypeSelectionActivity,
-                        ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION
-                    )
-                }
-            }
+    private val viewModel: TopAdsTypeSelectionViewModel? by lazy(LazyThreadSafetyMode.NONE) {
+        viewModelFactory?.let {
+            ViewModelProvider(
+                this,
+                it
+            )[TopAdsTypeSelectionViewModel::class.java]
         }
     }
 
-    private fun expandAccordian(accordianData: Group){
-        if (accordianData.isVisible)
-            accordianData.gone()
-        else
-            accordianData.show()
+    private fun initInjector() {
+        component.inject(this)
+    }
+
+    override fun getNewFragment(): Fragment {
+        return LoaderFragment.newInstance()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -121,5 +48,39 @@ class TopAdsTypeSelectionActivity : BaseSimpleActivity() {
             setResult(Activity.RESULT_OK)
             finish()
         }
+    }
+
+    override fun getComponent(): TopAdsDashboardComponent =
+        DaggerTopAdsDashboardComponent.builder()
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initInjector()
+        viewModel?.getVariantById()
+        setObservers()
+    }
+
+
+    private fun setObservers(){
+        viewModel?.shopVariant?.observe(this){ shopVariants ->
+            if(shopVariants.isNotEmpty() && shopVariants.filter { it.experiment == TopAdsCommonConstant.AUTOPS_EXPERIMENT && it.variant == TopAdsCommonConstant.AUTOPS_VARIANT }.isNotEmpty()){
+                showAutoPsTypeSelection()
+            } else {
+                showTypeSelection()
+            }
+        }
+    }
+
+    private fun showTypeSelection(){
+        supportFragmentManager.beginTransaction()
+            .replace(parentViewResourceID, TopAdsTypeSelectionFragment.newInstance(), tagFragment)
+            .commit()
+    }
+
+    private fun showAutoPsTypeSelection(){
+        supportFragmentManager.beginTransaction()
+            .replace(parentViewResourceID, TopAdsAutoPsTypeSelectionFragment.newInstance(), tagFragment)
+            .commit()
     }
 }

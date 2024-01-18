@@ -102,7 +102,6 @@ class AutoPsOnboardingFragment : BaseDaggerFragment() {
         return ss
     }
 
-
     companion object {
         fun newInstance(): AutoPsOnboardingFragment {
             return AutoPsOnboardingFragment()

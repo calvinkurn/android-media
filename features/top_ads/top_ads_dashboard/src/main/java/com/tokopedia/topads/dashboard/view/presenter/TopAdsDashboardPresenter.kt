@@ -4,6 +4,7 @@ import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.GraphqlConstant
@@ -22,6 +23,7 @@ import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProduc
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
 import com.tokopedia.topads.common.data.util.Utils.locale
 import com.tokopedia.topads.common.domain.interactor.*
+import com.tokopedia.topads.common.domain.model.GetVariantByIdResponse
 import com.tokopedia.topads.common.domain.usecase.*
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -81,13 +83,19 @@ class TopAdsDashboardPresenter @Inject constructor(
     private val whiteListedUserUseCase: GetWhiteListedUserUseCase,
     private val topAdsGetDeletedAdsUseCase: TopAdsGetDeletedAdsUseCase,
     private val topAdsGetTotalAdGroupsWithInsightUseCase: TopAdsGetTotalAdGroupsWithInsightUseCase,
+    private val getVariantByIdUseCase: GetVariantByIdUseCase,
     private val userSession: UserSessionInterface,
+    private val dispatchers: CoroutineDispatchers,
 ) : BaseDaggerPresenter<TopAdsDashboardView>(), CoroutineScope {
 
     private val job = SupervisorJob()
     var isShopWhiteListed: MutableLiveData<Boolean> = MutableLiveData()
     private val _expiryDateHiddenTrial: MutableLiveData<String> = MutableLiveData()
     val expiryDateHiddenTrial: LiveData<String> = _expiryDateHiddenTrial
+
+    private val _shopVariant = MutableLiveData<List<GetVariantByIdResponse.GetVariantById.ExperimentVariant>>()
+    val shopVariant: LiveData<List<GetVariantByIdResponse.GetVariantById.ExperimentVariant>>
+        get() = _shopVariant
 
     private var _groupAdsInsight: MutableLiveData<TopAdsListAllInsightState<GroupInsightCountUiModel>> = MutableLiveData()
     val groupAdsInsight: LiveData<TopAdsListAllInsightState<GroupInsightCountUiModel>> = _groupAdsInsight
@@ -327,6 +335,15 @@ class TopAdsDashboardPresenter @Inject constructor(
             onSuccess(it.topAdsGetAutoAds.data)
         }, {
             Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_AUTO_TOPADS_STATUS#%s", it.localizedMessage)
+        })
+    }
+
+    fun getVariantById() {
+        launchCatchError(dispatchers.io, {
+            val data = getVariantByIdUseCase()
+            _shopVariant.postValue(data.getVariantById.shopIdVariants)
+        }, {
+            _shopVariant.postValue(listOf())
         })
     }
 

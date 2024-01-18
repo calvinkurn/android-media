@@ -433,7 +433,6 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         }
     }
 
-
     private fun setNoAdsView() {
         viewPagerFrag?.gone()
         autoadsLayout?.gone()
@@ -677,7 +676,6 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     override fun setDeletedGroupCount(size: Int) {
         tabLayout?.getUnifyTabLayout()?.getTabAt(2)?.setCounter(size)
     }
-
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
